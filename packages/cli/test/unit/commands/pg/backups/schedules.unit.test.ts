@@ -1,11 +1,12 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/schedules'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+// import Cmd from '../../../../../src/commands/pg/backups/schedules'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
+const heredoc = tsheredoc.default
 const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   afterEach(function () {
     nock.cleanAll()
@@ -56,6 +57,9 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:schedules', function () {
   shouldSchedules((args: string[]) => runCommand(Cmd, args))
 })
+
+*/

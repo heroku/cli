@@ -1,9 +1,9 @@
-import Cmd  from '../../../../src/commands/orgs/open'
-import runCommand from '../../../helpers/runCommand'
-const sinon = require('sinon')
-const expect = require('chai').expect
-import * as nock from 'nock'
-import {teamInfo} from '../../../helpers/stubs/get'
+import Cmd from '../../../../src/commands/orgs/open.js'
+import runCommand from '../../../helpers/runCommand.js'
+import sinon from 'sinon'
+import {expect} from 'chai'
+import nock from 'nock'
+import {teamInfo} from '../../../helpers/stubs/get.js'
 
 describe('heroku org:open', function () {
   let apiGetOrgInfo: nock.Scope

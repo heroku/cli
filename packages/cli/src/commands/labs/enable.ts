@@ -1,4 +1,4 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, flags, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -24,7 +24,7 @@ export default class LabsEnable extends Command {
 
   async run() {
     const {flags, args} = await this.parse(LabsEnable)
-    const feature = args.feature
+    const {feature} = args
     let target = null
     let request
 

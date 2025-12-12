@@ -1,8 +1,8 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/spaces/peerings/accept'
+import runCommand from '../../../../helpers/runCommand.js'
+import Cmd from '../../../../../src/commands/spaces/peerings/accept.js'
 
 describe('spaces:peerings:accept', function () {
   it('accepts a pending peering connection', async function () {

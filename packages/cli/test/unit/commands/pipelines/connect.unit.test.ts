@@ -82,3 +82,4 @@ describe('pipelines:connect', function () {
       .it('shows an error if GitHub request fails')
   })
 })
+

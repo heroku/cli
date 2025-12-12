@@ -135,9 +135,11 @@ libexec
 localdb
 localspace
 logfile
+loglevel
 logplex
 lolex
 lowercasedb
+lshift
 lshztxe
 ltrim
 mactive
@@ -148,6 +150,7 @@ mbytes
 mbare
 mcli
 mcode
+mocharc
 mcolorized
 mcomplete
 mcompleted
@@ -254,6 +257,7 @@ pico
 pinentry
 pipefail
 pjson
+printenv
 pooler
 portfinder
 postdeploy
@@ -261,6 +265,7 @@ postgis
 postpublish
 postrelease
 postrun
+preauth
 prerun
 processname
 processtype

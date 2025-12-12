@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
 
 export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'
@@ -66,19 +66,19 @@ export default class ReviewappsDisable extends Command {
 
     // flags.autodeploy are back supported
     if (flags['no-autodeploy'] || flags.autodeploy) {
-      this.log('Disabling auto deployment...')
+      ux.stdout('Disabling auto deployment...')
       settings.automatic_review_apps = false
     }
 
     // flags.autodestroy are back supported
     if (flags['no-autodestroy'] || flags.autodestroy) {
-      this.log('Disabling auto destroy...')
+      ux.stdout('Disabling auto destroy...')
       settings.destroy_stale_apps = false
     }
 
     // flags['wait-for-ci'] are back supported
     if (flags['no-wait-for-ci'] || flags['wait-for-ci']) {
-      this.log('Disabling wait for CI...')
+      ux.stdout('Disabling wait for CI...')
       settings.wait_for_ci = false
     }
 

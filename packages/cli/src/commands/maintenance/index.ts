@@ -15,6 +15,6 @@ export default class MaintenanceIndex extends Command {
     const {flags} = await this.parse(MaintenanceIndex)
     const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const app = appResponse.body
-    ux.log(app.maintenance ? 'on' : 'off')
+    ux.stdout(app.maintenance ? 'on' : 'off')
   }
 }

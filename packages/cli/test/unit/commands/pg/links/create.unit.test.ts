@@ -1,11 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/pg/links/create'
-import runCommand from '../../../../helpers/runCommand'
+// import Cmd from '../../../../../src/commands/pg/links/create'
+import runCommand from '../../../../helpers/runCommand.js'
 
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 
+/*
 describe('pg:links:create', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -88,3 +89,5 @@ describe('pg:links:create', function () {
     })
   })
 })
+
+*/

@@ -1,7 +1,8 @@
 import {expect, test} from '@oclif/test'
-import * as fs from 'async-file'
+import {promises as fs} from 'fs'
+import {PassThrough} from 'node:stream'
 
-import * as git from '../../../../src/lib/ci/git'
+import * as git from '../../../../src/lib/ci/git.js'
 import got from 'got'
 
 describe('ci:run', function () {
@@ -37,28 +38,43 @@ describe('ci:run', function () {
       createArchive: () => Promise.resolve('new-archive.tgz'),
       spawn: () => Promise.resolve(),
       urlExists: () => Promise.resolve(),
-      exec: (args: any) => {
+      exec(args: any) {
         switch (args.join(' ')) {
-        case 'remote':
+        case 'remote': {
           return Promise.resolve('heroku')
-        default:
+        }
+
+        default: {
           return Promise.resolve()
+        }
         }
       },
     }
 
     const fsFake = {
       stat: () => Promise.resolve({size: 500}),
-      createReadStream: () => ({pipe: () => {}}),
+      createReadStream: () => ({
+        pipe(dest: any) {
+          // Simulate a readable stream that properly pipes to destination
+          if (dest && typeof dest.once === 'function') {
+            dest.once('response', () => {})
+          }
+
+          return dest
+        },
+        once() {},
+        on() {},
+      }),
     }
 
     const gotFake = {
-      stream: {put: () => {
-        return {
-          on: (eventName: string, callback: () => void) => {
-            if (eventName === 'response') callback()
-          },
-        }
+      stream: {put() {
+        const stream = new PassThrough()
+        // Simulate HTTP response by emitting 'response' event
+        setImmediate(() => {
+          stream.emit('response')
+        })
+        return stream
       }},
     }
 
@@ -92,6 +108,9 @@ describe('ci:run', function () {
               output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
             },
           ])
+
+        api.post('/sources')
+          .reply(200, {source_blob: {put_url: 'https://aws-puturl', get_url: 'https://aws-geturl'}})
       })
       .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
         testOutputAPI.get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
@@ -102,10 +121,6 @@ describe('ci:run', function () {
           .reply(200, 'New Test output')
       })
       .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-        kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${ghRepository.ref}`)
-          .reply(200, {
-            archive_link: 'https://kolkrabbi.heroku.com/source/archive/gAAAAABb',
-          })
         kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
           .reply(200, {
             ci: true,
@@ -122,12 +137,25 @@ describe('ci:run', function () {
               type: 'github',
             },
           })
-        kolkrabbiAPI.head('/source/archive/gAAAAABb')
-          .reply(200)
       })
       .stub(git, 'readCommit', gitFake.readCommit)
       .stub(git, 'githubRepository', gitFake.githubRepository)
       .stub(git, 'createArchive', gitFake.createArchive)
+      .stub(fs, 'stat', fsFake.stat)
+      .stub(fs, 'createReadStream', () => {
+        const stream = new PassThrough()
+        // Optionally, write some data and end the stream to simulate file contents
+        stream.end('fake archive data')
+        return stream
+      })
+      .stub(
+        got,
+        'stream',
+        // disable below is due to incomplete type definition of `stub`
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore-next-line
+        gotFake.stream,
+      )
       .command(['ci:run', `--pipeline=${pipeline.name}`])
       .it('it runs the test and displays the test output for the first node', ({stdout}) => {
         expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
@@ -177,8 +205,6 @@ describe('ci:run', function () {
             .reply(200, 'New Test output')
         })
         .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-          kolkrabbiAPI.get(`/github/repos/${ghRepository.user}/${ghRepository.repo}/tarball/${ghRepository.ref}`)
-            .reply(404)
           kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
             .reply(200, {
               ci: true,
@@ -200,7 +226,11 @@ describe('ci:run', function () {
         .stub(git, 'githubRepository', gitFake.githubRepository)
         .stub(git, 'createArchive', gitFake.createArchive)
         .stub(fs, 'stat', fsFake.stat)
-        .stub(fs, 'createReadStream', fsFake.createReadStream)
+        .stub(fs, 'createReadStream', () => {
+          const stream = new PassThrough()
+          stream.end('fake archive data')
+          return stream
+        })
         .stub(
           got,
           'stream',

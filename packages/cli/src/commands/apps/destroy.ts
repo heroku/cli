@@ -1,8 +1,8 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import confirmCommand from '../../lib/confirmCommand'
-import * as git from '../../lib/ci/git'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import * as git from '../../lib/ci/git.js'
 
 export default class Destroy extends Command {
   static description = 'permanently destroy an app'
@@ -26,7 +26,7 @@ export default class Destroy extends Command {
 
     // this appears to report errors if app not found
     await this.heroku.get(`/apps/${app}`)
-    await confirmCommand(app, flags.confirm, `WARNING: This will delete ${color.app(app)} including all add-ons.`)
+    await new ConfirmCommand().confirm(app, flags.confirm, `WARNING: This will delete ${color.app(app)} including all add-ons.`)
     ux.action.start(`Destroying ${color.app(app)} (including all add-ons)`)
     await this.heroku.delete(`/apps/${app}`)
 
@@ -47,4 +47,3 @@ export default class Destroy extends Command {
     ux.action.stop()
   }
 }
-

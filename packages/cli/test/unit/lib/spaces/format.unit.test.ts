@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import {displayCIDR, hostStatus, peeringStatus, displayVPNStatus} from '../../../../src/lib/spaces/format'
+import {displayCIDR, hostStatus, peeringStatus, displayVPNStatus} from '../../../../src/lib/spaces/format.js'
 
 describe('displayCIDR', function () {
   it('formats an array of cidrs', function () {
@@ -53,4 +53,3 @@ describe('peeringStatus', function () {
     expect(peeringStatus('foo')).to.eq('foo')
   })
 })
-

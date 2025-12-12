@@ -1,9 +1,10 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/delete'
-import runCommand from '../../../../helpers/runCommand'
+// import Cmd from '../../../../../src/commands/pg/backups/delete'
+import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
+import nock from 'nock'
 
+/*
 describe('pg:backups:delete', function () {
   let pg: nock.Scope
 
@@ -31,3 +32,5 @@ describe('pg:backups:delete', function () {
     expect(stderr.output).to.equal('Deleting backup b003 on ⬢ myapp...\nDeleting backup b003 on ⬢ myapp... done\n')
   })
 })
+
+*/

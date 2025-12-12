@@ -1,9 +1,11 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove'
-import runCommand from '../../../../helpers/runCommand'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove.js'
+import runCommand from '../../../../helpers/runCommand.js'
+
+const heredoc = tsheredoc.default
 
 describe('trusted-ips:remove', function () {
   it('removes a CIDR entry from the trusted IP ranges', async function () {

@@ -1,10 +1,9 @@
 import {APIClient} from '@heroku-cli/command'
 import {HTTP, HTTPError} from '@heroku/http-call'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
-import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
-import type {ExtendedAddon} from '../pg/types'
-import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
-
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
+import type {ExtendedAddon} from '../pg/types.js'
+import type { ExtendedAddonAttachment } from '@heroku/heroku-cli-util/dist/types/pg/data-api.js'
 const addonHeaders = {
   Accept: 'application/vnd.heroku+json; version=3.sdk',
   'Accept-Expansion': 'addon_service,plan',
@@ -164,11 +163,12 @@ export class NotFound extends Error {
 export class AmbiguousError extends Error {
   public readonly statusCode = 422
   public readonly message: string
-  public readonly body = {id: 'multiple_matches', message: this.message}
+  public readonly body: {id: string, message: string}
 
   constructor(public readonly matches: { name?: string }[], public readonly type: string) {
     super()
     this.message = `Ambiguous identifier; multiple matching add-ons found: ${matches.map(match => match.name).join(', ')}.`
+    this.body = {id: 'multiple_matches', message: this.message}
   }
 }
 

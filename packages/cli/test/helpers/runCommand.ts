@@ -1,4 +1,4 @@
-import {getConfig} from './testInstances'
+import {getConfig} from './testInstances.js'
 import {Command} from '@heroku-cli/command'
 import {stdout, stderr} from 'stdout-stderr'
 
@@ -11,15 +11,14 @@ const stopMock = () => {
 }
 
 const runCommand = async (Cmd: GenericCmd, args: string[] = [], printStd = false) => {
+  stdout.start()
+  stderr.start()
   const conf = await getConfig()
   const instance = new Cmd(args, conf)
   if (printStd) {
     stdout.print = true
     stderr.print = true
   }
-
-  stdout.start()
-  stderr.start()
 
   return instance
     .run()

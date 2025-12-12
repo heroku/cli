@@ -1,9 +1,9 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {isTeamApp, getOwner} from '../../lib/teamUtils'
-import * as _ from 'lodash'
+import {isTeamApp, getOwner} from '../../lib/teamUtils.js'
+
 export default class AccessAdd extends Command {
   static description = 'add new users to your app'
   static flags = {
@@ -39,7 +39,7 @@ export default class AccessAdd extends Command {
         this.error('Missing argument: permissions', {exit: 1})
       const permissionsArray = permissions ? permissions.split(',') : []
       permissionsArray.push('view')
-      const permissionsArraySorted = _.uniq(permissionsArray.sort())
+      const permissionsArraySorted = [...new Set(permissionsArray.sort())]
       output += ` with ${color.green(permissionsArraySorted.join(', '))} permissions`
       ux.action.start(output)
       await this.heroku.post<Heroku.TeamAppCollaborator[]>(`/teams/apps/${appName}/collaborators`, {

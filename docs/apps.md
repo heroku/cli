@@ -97,7 +97,7 @@ permanently destroy an app
 
 ```
 USAGE
-  $ heroku apps:destroy [APP] [-a <value>] [-r <value>] [-c <value>]
+  $ heroku apps:destroy [-a <value>] [-r <value>] [-c <value>]
 
 FLAGS
   -a, --app=<value>      app to run command against
@@ -191,7 +191,7 @@ show detailed app information
 
 ```
 USAGE
-  $ heroku apps:info [APP] [-a <value>] [-r <value>] [-s] [-j]
+  $ heroku apps:info [-a <value>] [-r <value>] [-s] [-j]
 
 FLAGS
   -a, --app=<value>     app to run command against

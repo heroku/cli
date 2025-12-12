@@ -1,3 +1,4 @@
+/*
 import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 import {color} from '@heroku-cli/color'
@@ -119,3 +120,4 @@ export const verifyExtensionsMatch = async function (source: ConnectionDetails, 
     `)
   }
 }
+*/

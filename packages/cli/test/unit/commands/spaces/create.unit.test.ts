@@ -1,11 +1,13 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/create'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import Cmd from '../../../../src/commands/spaces/create.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
-import {getGeneration} from '../../../../src/lib/apps/generation'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import tsheredoc from 'tsheredoc'
+import {getGeneration} from '../../../../src/lib/apps/generation.js'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
+
+const heredoc = tsheredoc.default
 
 describe('spaces:create', function () {
   const now = new Date()
@@ -18,7 +20,7 @@ describe('spaces:create', function () {
   it('creates a Standard space', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -63,7 +65,7 @@ describe('spaces:create', function () {
   it('shows Standard Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -97,7 +99,7 @@ describe('spaces:create', function () {
   it('creates a Shield space', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -144,7 +146,7 @@ describe('spaces:create', function () {
   it('shows Shield Private Space Add-on cost warning', async function () {
     const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/spaces', {
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',
@@ -182,7 +184,7 @@ describe('spaces:create', function () {
       .post('/spaces', {
         cidr: '10.0.0.0/24',
         data_cidr: '172.23.0.0/28',
-        features: features,
+        features,
         generation: 'cedar',
         name: 'my-space',
         region: 'my-region',

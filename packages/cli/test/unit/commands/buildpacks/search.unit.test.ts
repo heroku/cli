@@ -1,8 +1,6 @@
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect, test} from '@oclif/test'
-import * as nock from 'nock'
-
-nock.disableNetConnect()
+import nock from 'nock'
 
 describe('buildpacks:search', function () {
   test

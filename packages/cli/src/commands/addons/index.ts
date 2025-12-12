@@ -1,11 +1,12 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {formatPrice, grandfatheredPrice, formatState} from '../../lib/addons/util'
-import {groupBy, some, sortBy, values} from 'lodash'
-const printf = require('printf')
+import {formatPrice, grandfatheredPrice, formatState} from '../../lib/addons/util.js'
+import _ from 'lodash'
+
+import printf from 'printf'
 
 const topic = 'addons'
 
@@ -42,12 +43,12 @@ async function addonGetter(api: APIClient, app?: string) {
   // Get addons and attachments in parallel
   const [{body: addonsRaw}, potentialAttachments] = await Promise.all([addonsResponse, attachmentsResponse])
   function isRelevantToApp(addon: Heroku.AddOn) {
-    return !app || addon.app?.name === app || some(addon.attachments, att => att.app.name === app)
+    return !app || addon.app?.name === app || _.some(addon.attachments, att => att.app.name === app)
   }
 
-  const groupedAttachments = groupBy<Heroku.AddOnAttachment>(potentialAttachments?.body, 'addon.id')
+  const groupedAttachments = _.groupBy<Heroku.AddOnAttachment>(potentialAttachments?.body, 'addon.id')
   const addons: Heroku.AddOn[] = []
-  addonsRaw.forEach(function (addon: Heroku.AddOn) {
+  addonsRaw.forEach((addon: Heroku.AddOn) => {
     addon.attachments = groupedAttachments[addon.id as string]  || []
     delete groupedAttachments[addon.id as string]
     if (isRelevantToApp(addon)) {
@@ -63,8 +64,8 @@ async function addonGetter(api: APIClient, app?: string) {
   // This is probably normal (because we are asking API for all attachments)
   // but it could also be due to certain types of permissions issues, so check
   // if the attachment looks relevant to the app, and then render whatever
-  values(groupedAttachments)
-    .forEach(function (atts) {
+  _.values(groupedAttachments)
+    .forEach(atts => {
       const inaccessibleAddon = {
         app: atts[0].addon.app, name: atts[0].addon.name, addon_service: {}, plan: {}, attachments: atts,
       }
@@ -77,9 +78,9 @@ async function addonGetter(api: APIClient, app?: string) {
 }
 
 function displayAll(addons: Heroku.AddOn[]) {
-  addons = sortBy(addons, 'app.name', 'plan.name', 'addon.name')
+  addons = _.sortBy(addons, 'app.name', 'plan.name', 'addon.name')
   if (addons.length === 0) {
-    ux.log('No add-ons.')
+    ux.stdout('No add-ons.')
     return
   }
 
@@ -93,44 +94,53 @@ function displayAll(addons: Heroku.AddOn[]) {
         get: ({name}) => color.magenta(name || ''),
       },
       Plan: {
-        get: function ({plan}) {
-          if (typeof plan === 'undefined')
+        get({plan}) {
+          if (plan === undefined)
             return color.dim('?')
           return plan.name
         },
       },
       Price: {
-        get: function ({plan}) {
-          if (typeof plan?.price === 'undefined')
+        get({plan}) {
+          if (plan?.price === undefined)
             return color.dim('?')
           return formatPrice({price: plan?.price, hourly: true})
         },
       },
       'Max Price': {
-        get: function ({plan}) {
-          if (typeof plan?.price === 'undefined')
+        get({plan}) {
+          if (plan?.price === undefined)
             return color.dim('?')
           return formatPrice({price: plan?.price, hourly: false})
         },
       },
       State: {
-        get: function ({state}) {
+        get({state}) {
           let result: string = state || ''
           switch (state) {
-          case 'provisioned':
+          case 'provisioned': {
             result = 'created'
             break
-          case 'provisioning':
+          }
+
+          case 'provisioning': {
             result = 'creating'
             break
-          case 'deprovisioned':
+          }
+
+          case 'deprovisioned': {
             result = 'errored'
+          }
           }
 
           return result
         },
       },
-    })
+    },
+    {
+      overflow: 'wrap',
+    },
+  )
 }
 
 function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
@@ -152,7 +162,7 @@ export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string
 
 function displayForApp(app: string, addons: Heroku.AddOn[]) {
   if (addons.length === 0) {
-    ux.log(`No add-ons for app ${app}.`)
+    ux.stdout(`No add-ons for app ${app}.`)
     return
   }
 
@@ -165,9 +175,9 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
     }
 
     const addonLine = `${service} (${name})`
-    const atts = sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
+    const atts = _.sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
     // render each attachment under the add-on
-    const attLines = atts.map(function (attachment, idx) {
+    const attLines = atts.map((attachment, idx) => {
       const isFirst = (idx === addon.attachments.length - 1)
       return renderAttachment(attachment, app, isFirst)
     })
@@ -175,19 +185,19 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       .join('\n') + '\n' // Separate each add-on row by a blank line
   }
 
-  addons = sortBy(addons, isForeignApp, 'plan.name', 'name')
-  ux.log()
+  addons = _.sortBy(addons, isForeignApp, 'plan.name', 'name')
+  ux.stdout()
   hux.table(
     addons,
     {
       'Add-on': {get: presentAddon},
       Plan: {
-        get: ({plan}) => plan && plan.name !== undefined ?
-          plan.name.replace(/^[^:]+:/, '') :
-          color.dim('?'),
+        get: ({plan}) => plan && plan.name !== undefined
+          ? plan.name.replace(/^[^:]+:/, '')
+          : color.dim('?'),
       },
       Price: {
-        get: function (addon) {
+        get(addon) {
           if (addon.app?.name === app) {
             return formatPrice({price: addon.plan?.price, hourly: true})
           }
@@ -196,7 +206,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
         },
       },
       'Max Price': {
-        get: function (addon) {
+        get(addon) {
           if (addon.app?.name === app) {
             return formatPrice({price: addon.plan?.price, hourly: false})
           }
@@ -209,18 +219,14 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       },
     },
     {
-      // Separate each add-on row by a blank line
-      // printLine: (s: string) => {
-      //   ux.log(s)
-      //   ux.log('\n')
-      // },
+      overflow: 'wrap',
     },
   )
-  ux.log(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)
+  ux.stdout(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)
 }
 
 function displayJSON(addons: Heroku.AddOn[]) {
-  ux.log(JSON.stringify(addons, null, 2))
+  ux.stdout(JSON.stringify(addons, null, 2))
 }
 
 export default class Addons extends Command {

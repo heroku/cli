@@ -1,25 +1,32 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {sum} from 'lodash'
-import errorInfo from '../../lib/apps/error_info'
+import _ from 'lodash'
+import errorInfo from '../../lib/apps/error_info.js'
 import * as Heroku from '@heroku-cli/schema'
-import {AppErrors} from '../../lib/types/app_errors'
+import {AppErrors} from '../../lib/types/app_errors.js'
 
 type ErrorSummary = Record<string, number>
 
 const colorize = (level: string, s: string) => {
   switch (level) {
-  case 'critical':
+  case 'critical': {
     return color.red(s)
-  case 'warning':
+  }
+
+  case 'warning': {
     return color.yellow(s)
-  case 'info':
+  }
+
+  case 'info': {
     return color.cyan(s)
-  default:
+  }
+
+  default: {
     return s
+  }
   }
 }
 
@@ -38,7 +45,7 @@ function buildErrorTable(errors: ErrorSummary, source: string) {
 const sumErrors = (errors: AppErrors) => {
   const summed: ErrorSummary = {}
   Object.keys(errors.data).forEach(key => {
-    summed[key] = sum(errors.data[key])
+    summed[key] = _.sum(errors.data[key])
   })
   return summed
 }
@@ -72,35 +79,31 @@ export default class Errors extends Command {
       return memo
     }
 
-    const routerErrors = () => {
-      return this.heroku.get<AppErrors>(
-        `/apps/${flags.app}/router-metrics/errors?${DATE_QUERY}&process_type=web`,
-        {
-          hostname: 'api.metrics.herokai.com',
-        },
-      ).then(({body}) => sumErrors(body))
-    }
+    const routerErrors = () => this.heroku.get<AppErrors>(
+      `/apps/${flags.app}/router-metrics/errors?${DATE_QUERY}&process_type=web`,
+      {
+        hostname: 'api.metrics.herokai.com',
+      },
+    ).then(({body}) => sumErrors(body))
 
-    const dynoErrors = (type: string) => {
-      return this.heroku.get<AppErrors>(
-        `/apps/${flags.app}/formation/${type}/metrics/errors?${DATE_QUERY}`,
-        {
-          hostname: 'api.metrics.herokai.com',
-        },
-      ).catch(error => {
-        const {http} = error
-        // eslint-disable-next-line prefer-regex-literals
-        const match = new RegExp('^invalid process_type provided', 'i')
-        if (http && http.statusCode === 400 && http.body && http.body.message && match.test(http.body.message)) {
-          return {body: {data: {}}}
-        }
+    const dynoErrors = (type: string) => this.heroku.get<AppErrors>(
+      `/apps/${flags.app}/formation/${type}/metrics/errors?${DATE_QUERY}`,
+      {
+        hostname: 'api.metrics.herokai.com',
+      },
+    ).catch(error => {
+      const {http} = error
+      // eslint-disable-next-line prefer-regex-literals
+      const match = new RegExp('^invalid process_type provided', 'i')
+      if (http && http.statusCode === 400 && http.body && http.body.message && match.test(http.body.message)) {
+        return {body: {data: {}}}
+      }
 
-        throw error
-      }).then(rsp => {
-        const {body} = rsp as HTTP<AppErrors>
-        return sumErrors(body)
-      })
-    }
+      throw error
+    }).then(rsp => {
+      const {body} = rsp as HTTP<AppErrors>
+      return sumErrors(body)
+    })
 
     const {body: formation} = await this.heroku.get<Heroku.Formation>(`/apps/${flags.app}/formation`)
     const types = formation.map((p: Heroku.Formation) => p.type)
@@ -128,18 +131,16 @@ export default class Errors extends Command {
       }
 
       if (t.length === 0) {
-        ux.log(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
+        ux.stdout(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
       } else {
-        hux.styledHeader(`Errors on ${color.app(flags.app)} in the last ${hours} hours`)
         hux.table(t, {
-          source: {},
-          name: {get: ({name, level}) => colorize(level, name)},
-          level: {get: ({level}) => colorize(level, level)},
+          Source: {get: ({source}) => source},
+          Name: {get: ({name, level}) => colorize(level, name)},
+          Level: {get: ({level}) => colorize(level, level)},
           title: {header: 'Desc'},
-          count: {},
-        })
+          Count: {get: ({count}) => count},
+        }, {title: `Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}})
       }
     }
   }
 }
-

@@ -24,7 +24,7 @@ export default class Pipelines extends Command {
     } else {
       hux.styledHeader('My Pipelines')
       for (const pipeline of pipelines) {
-        ux.log(pipeline.name)
+        ux.stdout(pipeline.name)
       }
     }
   }

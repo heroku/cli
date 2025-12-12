@@ -1,9 +1,8 @@
 import {Args, ux} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as _ from 'lodash'
-import * as git from '../../lib/ci/git'
-import color from '@heroku-cli/color'
+import * as git from '../../lib/ci/git.js'
+import {color} from '@heroku-cli/color'
 
 export default class AppsRename extends Command {
   static description = 'rename an app'
@@ -35,10 +34,10 @@ export default class AppsRename extends Command {
     ux.action.stop()
 
     const gitUrl = git.gitUrl(app.name)
-    ux.log(`${app.web_url} | ${gitUrl}`)
+    ux.stdout(`${app.web_url} | ${gitUrl}`)
 
     if (!app.web_url!.includes('https')) {
-      ux.log('Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.')
+      ux.stdout('Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.')
     }
 
     if (git.inGitRepo()) {
@@ -58,7 +57,7 @@ export default class AppsRename extends Command {
           const {name} = remote
           await git.rmRemote(name)
           await git.createRemote(name, url.replace(oldApp, newApp))
-          ux.log(`Git remote ${name} updated`)
+          ux.stdout(`Git remote ${name} updated`)
         }
       }
 

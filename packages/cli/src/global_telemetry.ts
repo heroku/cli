@@ -6,30 +6,39 @@ import {
   SentryPropagator,
   SentrySampler,
 } from '@sentry/opentelemetry'
-import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from './lib/data-scrubber/presets'
-import {Scrubber} from './lib/data-scrubber/scrubber'
-import {PII_PATTERNS} from './lib/data-scrubber/patterns'
+import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from './lib/data-scrubber/presets.js'
+import {Scrubber} from './lib/data-scrubber/scrubber.js'
+import {PII_PATTERNS} from './lib/data-scrubber/patterns.js'
 
-const {Resource} = require('@opentelemetry/resources')
-const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions')
-const {registerInstrumentations} = require('@opentelemetry/instrumentation')
-const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node')
-const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base')
-const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http')
-const path = require('path')
-const {version} = require('../package.json')
+import {Resource} from '@opentelemetry/resources'
+import {SemanticResourceAttributes} from '@opentelemetry/semantic-conventions'
+import {registerInstrumentations} from '@opentelemetry/instrumentation'
+import {NodeTracerProvider} from '@opentelemetry/sdk-trace-node'
+import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-base'
+import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http'
+import path from 'path'
+import {promises as fs} from 'fs'
+import {fileURLToPath} from 'url'
+import debug from 'debug'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
+
+async function getVersion() {
+  const pkg = JSON.parse(await fs.readFile(root, 'utf8'))
+  return pkg.version
+}
+
+const version = await getVersion()
 
 function getToken() {
   const config = new Config({root})
   const heroku = new APIClient(config)
   return heroku.auth
 }
-
-const debug = require('debug')('global_telemetry')
 
 registerInstrumentations({
   instrumentations: [],
@@ -56,7 +65,7 @@ const resource = Resource
   .merge(
     new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
-      [SemanticResourceAttributes.SERVICE_VERSION]: version,
+      [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
     }),
   )
 
@@ -65,12 +74,13 @@ const provider = new NodeTracerProvider({
   sampler: sentryClient ? new SentrySampler(sentryClient) : undefined,
 })
 
+// eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
 const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
 
 const exporter = new OTLPTraceExporter({
   url: isDev ? 'https://backboard.staging.herokudev.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces',
   headers,
-  compression: 'none',
+  compression: undefined,
 })
 export const processor = new BatchSpanProcessor(exporter)
 provider.addSpanProcessor(processor)

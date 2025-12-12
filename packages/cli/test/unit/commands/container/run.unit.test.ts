@@ -1,12 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/run'
-import runCommand from '../../../helpers/runCommand'
-import * as sinon from 'sinon'
+import Cmd from '../../../../src/commands/container/run.js'
+import runCommand from '../../../helpers/runCommand.js'
+import sinon from 'sinon'
 import {expect} from 'chai'
-import * as DockerHelper from '../../../../src/lib/container/docker_helper'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import {CLIError} from '@oclif/core/lib/errors'
-import * as nock from 'nock'
+import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {Errors} from '@oclif/core'
+import nock from 'nock'
 
 describe('container run', function () {
   let api: nock.Scope
@@ -31,7 +31,7 @@ describe('container run', function () {
     ]).catch(error_ => {
       error = error_
     })
-    const {message} = error as unknown as CLIError
+    const {message} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires one process type')
     expect(stdout.output).to.equal('')
   })
@@ -48,7 +48,7 @@ describe('container run', function () {
     ]).catch(error_ => {
       error = error_
     })
-    const {message, oclif} = error as unknown as CLIError
+    const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.equal('This command is for Docker apps only.')
     expect(oclif.exit).to.equal(1)
     expectOutput(stdout.output, '')
@@ -62,9 +62,9 @@ describe('container run', function () {
     })
 
     it('runs a container', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const run = sandbox.stub(DockerHelper, 'runImage')
+      const run = sandbox.stub(DockerHelper.prototype, 'runImage')
         .withArgs('registry.heroku.com/testapp/web', '', 5000)
       await runCommand(Cmd, [
         '--app',
@@ -78,9 +78,9 @@ describe('container run', function () {
     })
 
     it('runs a container with a command', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const run = sandbox.stub(DockerHelper, 'runImage')
+      const run = sandbox.stub(DockerHelper.prototype, 'runImage')
         .withArgs('registry.heroku.com/testapp/web', 'bash', 5000)
       await runCommand(Cmd, [
         '--app',
@@ -95,7 +95,7 @@ describe('container run', function () {
     })
 
     it('requires a known dockerfile', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns([])
       await runCommand(Cmd, [
         '--app',

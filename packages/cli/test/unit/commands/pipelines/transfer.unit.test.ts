@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
 
 describe('pipelines:transfer', function () {
@@ -31,14 +31,12 @@ describe('pipelines:transfer', function () {
 
   let update: {isDone(): boolean}
 
-  const addMocks = (testInstance: typeof test) => {
-    return testInstance
-      .nock('https://api.heroku.com', api => {
-        api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
-        api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
-        api.post('/filters/apps').reply(200, [app])
-      })
-  }
+  const addMocks = (testInstance: typeof test) => testInstance
+    .nock('https://api.heroku.com', api => {
+      api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
+      api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
+      api.post('/filters/apps').reply(200, [app])
+    })
 
   addMocks(test)
     .stderr()
@@ -85,7 +83,7 @@ describe('pipelines:transfer', function () {
         pipeline: {id: pipeline.id},
       }).reply(200, {})
     })
-    .stub(ux, 'prompt', promptStub)
+    .stub(hux, 'prompt', promptStub)
     .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, account.email])
     .it('does not pass confirm flag', ctx => {
       expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)

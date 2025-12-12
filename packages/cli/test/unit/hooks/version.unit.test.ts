@@ -1,5 +1,6 @@
 // import {expect, test} from '@oclif/test'
 
+/*
 describe('version hook', function () {
   // test
   //   .stderr()
@@ -10,3 +11,5 @@ describe('version hook', function () {
   //   })
   //   .it('warns of set env var')
 })
+
+*/

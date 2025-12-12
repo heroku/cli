@@ -1,18 +1,18 @@
 import {stdout, stderr} from 'stdout-stderr'
-import * as nock from 'nock'
+import nock from 'nock'
 import {expect} from 'chai'
-import Cmd  from '../../../../src/commands/apps/join'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import {userAccount} from '../../../helpers/stubs/get'
-import {teamAppCollaborators} from '../../../helpers/stubs/post'
+import Cmd from '../../../../src/commands/apps/join.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {userAccount} from '../../../helpers/stubs/get.js'
+import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
 describe('heroku apps:join', function () {
   let apiGetUserAccount: nock.Scope
   let apiPostCollaborators: nock.Scope
 
   beforeEach(function () {
-    apiGetUserAccount = userAccount('raulb@heroku.com')
+    apiGetUserAccount = userAccount('gandalf@heroku.com')
   })
 
   afterEach(function () {
@@ -20,13 +20,13 @@ describe('heroku apps:join', function () {
   })
 
   it('joins the app', async function () {
-    apiPostCollaborators = teamAppCollaborators('raulb@heroku.com')
+    apiPostCollaborators = teamAppCollaborators('gandalf@heroku.com')
     await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
     expectOutput(stdout.output, '')
-    expectOutput(stderr.output, 'Joining myapp...\nJoining myapp... done\n')
+    expectOutput(stderr.output, 'Joining ⬢ myapp... done')
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })
@@ -35,7 +35,7 @@ describe('heroku apps:join', function () {
     const response = {
       code: 403, description: {id: 'forbidden', error: 'You do not have access to the team heroku-tools.'},
     }
-    apiPostCollaborators = teamAppCollaborators('raulb@heroku.com', [], response)
+    apiPostCollaborators = teamAppCollaborators('gandalf@heroku.com', [], response)
     let thrown = false
     await runCommand(Cmd, [
       '--app',

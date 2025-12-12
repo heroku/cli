@@ -1,37 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import * as DockerHelper from '../../lib/container/docker_helper'
-import {debug} from '../../lib/container/debug'
-
-async function dockerLogin(registry: string, password: string) {
-  const [major, minor] = await DockerHelper.version()
-
-  if (major > 17 || (major === 17 && minor >= 7)) {
-    return dockerLoginStdin(registry, password)
-  }
-
-  return dockerLoginArgv(registry, password)
-}
-
-function dockerLoginStdin(registry: string, password: string) {
-  const args = [
-    'login',
-    '--username=_',
-    '--password-stdin',
-    registry,
-  ]
-  return DockerHelper.cmd('docker', args, {input: password})
-}
-
-function dockerLoginArgv(registry: string, password: string) {
-  const args = [
-    'login',
-    '--username=_',
-    `--password=${password}`,
-    registry,
-  ]
-  return DockerHelper.cmd('docker', args)
-}
+import {DockerHelper} from '../../lib/container/docker_helper.js'
+import {debug} from '../../lib/container/debug.js'
 
 export default class Login extends Command {
   static topic = 'container'
@@ -39,6 +9,8 @@ export default class Login extends Command {
   static flags = {
     verbose: flags.boolean({char: 'v'}),
   }
+
+  dockerHelper = new DockerHelper()
 
   async run() {
     const {flags} = await this.parse(Login)
@@ -54,9 +26,39 @@ export default class Login extends Command {
     if (!password) throw new Error('not logged in')
 
     try {
-      await dockerLogin(registry, password)
+      await this.dockerLogin(registry, password)
     } catch (error: any) {
       ux.error(`Login failed${error.message ? ` with: ${error.message}` : ''}.`, {exit: 1})
     }
+  }
+
+  async dockerLogin(registry: string, password: string) {
+    const [major, minor] = await new DockerHelper().version()
+
+    if (major > 17 || (major === 17 && minor >= 7)) {
+      return this.dockerLoginStdin(registry, password)
+    }
+
+    return this.dockerLoginArgv(registry, password)
+  }
+
+  dockerLoginStdin(registry: string, password: string) {
+    const args = [
+      'login',
+      '--username=_',
+      '--password-stdin',
+      registry,
+    ]
+    return this.dockerHelper.cmd('docker', args, {input: password})
+  }
+
+  dockerLoginArgv(registry: string, password: string) {
+    const args = [
+      'login',
+      '--username=_',
+      `--password=${password}`,
+      registry,
+    ]
+    return this.dockerHelper.cmd('docker', args)
   }
 }

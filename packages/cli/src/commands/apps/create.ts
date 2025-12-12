@@ -1,19 +1,17 @@
-import {ParserOutput} from '@oclif/core/lib/interfaces/parser'
-import yaml = require('js-yaml')
-import {readFile} from 'fs-extra'
+import {parse} from 'yaml'
+import fs from 'fs-extra'
 import {APIClient, flags, Command} from '@heroku-cli/command'
 import {
   BuildpackCompletion,
   RegionCompletion,
   SpaceCompletion,
   StackCompletion,
-} from '@heroku-cli/command/lib/completions'
+} from '@heroku-cli/command/lib/completions.js'
 import {Args, Interfaces, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-import {get} from 'lodash'
-import Git from '../../lib/git/git'
+import Git from '../../lib/git/git.js'
 
 const git = new Git()
 
@@ -26,7 +24,7 @@ function createText(name: string, space: string) {
   return text
 }
 
-async function createApp(context: ParserOutput<Create>, heroku: APIClient, name: string, stack: string) {
+async function createApp(context: Interfaces.ParserOutput, heroku: APIClient, name: string, stack: string) {
   const {flags} = context
   const params = {
     name,
@@ -88,7 +86,7 @@ function addonsFromPlans(plans: string[]) {
   }))
 }
 
-async function configureGitRemote(context: ParserOutput<Create>, app: Heroku.App) {
+async function configureGitRemote(context: Interfaces.ParserOutput, app: Heroku.App) {
   const remoteUrl = git.httpGitUrl(app.name || '')
   if (!context.flags['no-remote'] && git.inGitRepo()) {
     await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
@@ -97,15 +95,15 @@ async function configureGitRemote(context: ParserOutput<Create>, app: Heroku.App
   return remoteUrl
 }
 
-function printAppSummary(context: ParserOutput<Create>, app: Heroku.App, remoteUrl: string) {
+function printAppSummary(context: Interfaces.ParserOutput, app: Heroku.App, remoteUrl: string) {
   if (context.flags.json) {
     hux.styledJSON(app)
   } else {
-    ux.log(`${color.cyan(app.web_url || '')} | ${color.green(remoteUrl)}`)
+    ux.stdout(`${color.cyan(app.web_url || '')} | ${color.green(remoteUrl)}`)
   }
 }
 
-async function runFromFlags(context: ParserOutput<Create>, heroku: APIClient, config: Interfaces.Config) {
+async function runFromFlags(context: Interfaces.ParserOutput, heroku: APIClient, config: Interfaces.Config) {
   const {flags, args} = context
   if (flags['internal-routing'] && !flags.space) {
     throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
@@ -116,8 +114,8 @@ async function runFromFlags(context: ParserOutput<Create>, heroku: APIClient, co
   async function addBuildpack(app: Heroku.App, buildpack: string) {
     ux.action.start(`Setting buildpack to ${color.cyan(buildpack)}`)
     await heroku.put(`/apps/${app.name}/buildpack-installations`, {
+      body: {updates: [{buildpack}]},
       headers: {Range: ''},
-      body: {updates: [{buildpack: buildpack}]},
     })
     ux.action.stop()
   }
@@ -139,35 +137,6 @@ async function runFromFlags(context: ParserOutput<Create>, heroku: APIClient, co
   const remoteUrl = await configureGitRemote(context, app)
 
   await config.runHook('recache', {type: 'app', app: app.name})
-  printAppSummary(context, app, remoteUrl)
-}
-
-async function readManifest() {
-  const buffer = await readFile('heroku.yml')
-  return yaml.load(buffer.toString(), {filename: 'heroku.yml'})
-}
-
-async function runFromManifest(context: ParserOutput<Create>, heroku: APIClient) {
-  const {flags, args} = context
-  const name = flags.app || args.app || process.env.HEROKU_APP
-
-  ux.action.start('Reading heroku.yml manifest')
-  const manifest = await readManifest()
-  ux.action.stop()
-
-  ux.action.start(createText(name, flags.space))
-  const app = await createApp(context, heroku, name, 'container')
-  ux.action.stop()
-
-  // _.get used here to avoid type guards when working with `unknown`
-  const setup = get(manifest, 'setup', {})
-  const addons = setup.addons || []
-  const configVars = setup.config || {}
-
-  await addAddons(heroku, app, addons)
-  await addConfigVars(heroku, app, configVars)
-  const remoteUrl = await configureGitRemote(context, app)
-
   printAppSummary(context, app, remoteUrl)
 }
 
@@ -230,12 +199,40 @@ $ heroku apps:create --region eu`,
     team: flags.team(),
   }
 
+  async readManifest() {
+    const buffer = await fs.readFile('heroku.yml')
+    return parse(buffer.toString())
+  }
+
+  async runFromManifest(context: Interfaces.ParserOutput, heroku: APIClient) {
+    const {flags, args} = context
+    const name = flags.app || args.app || process.env.HEROKU_APP
+
+    ux.action.start('Reading heroku.yml manifest')
+    const manifest = await this.readManifest()
+    ux.action.stop()
+
+    ux.action.start(createText(name, flags.space))
+    const app = await createApp(context, heroku, name, 'container')
+    ux.action.stop()
+
+    const setup = (manifest as any)?.setup ?? {}
+    const addons = setup.addons || []
+    const configVars = setup.config || {}
+
+    await addAddons(heroku, app, addons)
+    await addConfigVars(heroku, app, configVars)
+    const remoteUrl = await configureGitRemote(context, app)
+
+    printAppSummary(context, app, remoteUrl)
+  }
+
   async run() {
     const context = await this.parse(Create)
     const {flags} = context
 
-    if (this.config.channel === 'beta' && flags.manifest) {
-      return runFromManifest(context, this.heroku)
+    if (flags.manifest) {
+      return this.runFromManifest(context, this.heroku)
     }
 
     await runFromFlags(context, this.heroku, this.config)

@@ -1,9 +1,11 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/spaces/vpn/update'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
+import {stderr, stdout} from 'stdout-stderr'
+import Cmd from '../../../../../src/commands/spaces/vpn/update.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
+
+const heredoc = tsheredoc.default
 
 describe('spaces:vpn:update', function () {
   it('updates VPN', async function () {
@@ -22,10 +24,7 @@ describe('spaces:vpn:update', function () {
     ])
 
     api.done()
-    expect(stderr.output).to.eq(heredoc`
-      Updating VPN Connection in space my-space...
-      Updating VPN Connection in space my-space... done
-    `)
+    expect(stderr.output).to.eq('Updating VPN Connection in space my-space... done\n')
 
     nock.cleanAll()
   })

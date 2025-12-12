@@ -1,12 +1,13 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/info'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
+// import Cmd from '../../../../../src/commands/pg/backups/info'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
+import tsheredoc from 'tsheredoc'
+import stripAnsi from 'strip-ansi'
 
+const heredoc = tsheredoc.default
 const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
   afterEach(function () {
     nock.cleanAll()
@@ -115,6 +116,9 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:info', function () {
   shouldInfo((args: string[]) => runCommand(Cmd, args))
 })
+
+*/

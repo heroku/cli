@@ -1,12 +1,10 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {ux} from '@oclif/core'
-import {findIndex as lodashFindIndex} from 'lodash'
-import {Result} from 'true-myth'
-import push from '../git/push'
-import {OciImage} from '../../lib/types/fir'
-import {isURL} from 'validator'
+import _ from 'lodash'
+import push from '../git/push.js'
+import {OciImage} from '../../lib/types/fir.js'
 import * as Heroku from '@heroku-cli/schema'
 
 export type BuildpackResponse = {
@@ -15,6 +13,16 @@ export type BuildpackResponse = {
     name: string;
   };
   ordinal: number;
+}
+
+// Simple URL validation function that returns boolean
+function isValidURL(url: string): boolean {
+  try {
+    const urlObj = new URL(url)
+    return Boolean(urlObj)
+  } catch {
+    return false
+  }
 }
 
 export class BuildpackCommand {
@@ -44,15 +52,13 @@ export class BuildpackCommand {
           Accept: 'application/vnd.heroku+json; version=3.sdk',
         },
       })
-      buildpacks = ociImages[0].buildpacks.map((b, index) => {
-        return {
-          buildpack: {
-            url: b.id || b.homepage,
-            name: b.id,
-          },
-          ordinal: index,
-        }
-      })
+      buildpacks = ociImages[0].buildpacks.map((b, index) => ({
+        buildpack: {
+          url: b.id || b.homepage,
+          name: b.id,
+        },
+        ordinal: index,
+      }))
     } else {
       const {body: buildpackInstallations} = await this.heroku.get(`/apps/${app}/buildpack-installations`)
       buildpacks = buildpackInstallations
@@ -70,25 +76,23 @@ export class BuildpackCommand {
 
   display(buildpacks: BuildpackResponse[], indent: string) {
     if (buildpacks.length === 1) {
-      ux.log(this.registryUrlToName(buildpacks[0].buildpack.url, true))
+      ux.stdout(this.registryUrlToName(buildpacks[0].buildpack.url, true))
     } else {
       buildpacks.forEach((b, i) => {
-        ux.log(`${indent}${i + 1}. ${this.registryUrlToName(b.buildpack.url, true)}`)
+        ux.stdout(`${indent}${i + 1}. ${this.registryUrlToName(b.buildpack.url, true)}`)
       })
     }
   }
 
   async registryNameToUrl(buildpack: string): Promise<string> {
-    if (isURL(buildpack)) {
+    if (isValidURL(buildpack)) {
       return buildpack
     }
 
-    Result.match({
-      Ok: () => {},
-      Err: err => {
-        ux.error(`Could not find the buildpack: ${buildpack}. ${err}`, {exit: 1})
-      },
-    }, BuildpackRegistry.isValidBuildpackSlug(buildpack))
+    const validationResult = BuildpackRegistry.isValidBuildpackSlug(buildpack)
+    if (!validationResult.isOk) {
+      ux.error(`Could not find the buildpack: ${buildpack}. ${(validationResult as any).error}`, {exit: 1})
+    }
 
     try {
       const response = await this.registry.buildpackExists(buildpack)
@@ -109,9 +113,7 @@ export class BuildpackCommand {
 
   async findUrl(buildpacks: BuildpackResponse[], buildpack: string): Promise<number> {
     const mappedUrl = await this.registryNameToUrl(buildpack)
-    return lodashFindIndex(buildpacks, (b: BuildpackResponse) => {
-      return b.buildpack.url === buildpack || b.buildpack.url === mappedUrl
-    })
+    return _.findIndex(buildpacks, (b: BuildpackResponse) => b.buildpack.url === buildpack || b.buildpack.url === mappedUrl)
   }
 
   async validateUrlNotSet(buildpacks: BuildpackResponse[], buildpack: string) {
@@ -122,18 +124,14 @@ export class BuildpackCommand {
 
   findIndex(buildpacks: BuildpackResponse[], index?: number) {
     if (index) {
-      return lodashFindIndex(buildpacks, function (b: BuildpackResponse) {
-        return b.ordinal + 1 === index
-      })
+      return _.findIndex(buildpacks, (b: BuildpackResponse) => b.ordinal + 1 === index)
     }
 
     return -1
   }
 
   async mutate(app: string, buildpacks: BuildpackResponse[], spliceIndex: number, buildpack: string, command: 'add' | 'set' | 'remove'): Promise<BuildpackResponse[]> {
-    const buildpackUpdates = buildpacks.map(function (b: BuildpackResponse) {
-      return {buildpack: b.buildpack.url}
-    })
+    const buildpackUpdates = buildpacks.map((b: BuildpackResponse) => ({buildpack: b.buildpack.url}))
 
     const howmany = (command === 'add') ? 0 : 1
     const urls = (command === 'remove') ? [] : [{buildpack: await this.registryNameToUrl(buildpack)}]
@@ -156,12 +154,12 @@ export class BuildpackCommand {
 
   displayUpdate(app: string, remote: string, buildpacks: BuildpackResponse[], action: 'added' | 'set' | 'removed') {
     if (buildpacks.length === 1) {
-      ux.log(`Buildpack ${action}. Next release on ${app} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
-      ux.log(`Run ${color.magenta(push(remote))} to create a new release using this buildpack.`)
+      ux.stdout(`Buildpack ${action}. Next release on ${app} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
+      ux.stdout(`Run ${color.magenta(push(remote))} to create a new release using this buildpack.`)
     } else {
-      ux.log(`Buildpack ${action}. Next release on ${app} will use:`)
+      ux.stdout(`Buildpack ${action}. Next release on ${app} will use:`)
       this.display(buildpacks, '  ')
-      ux.log(`Run ${color.magenta(push(remote))} to create a new release using these buildpacks.`)
+      ux.stdout(`Run ${color.magenta(push(remote))} to create a new release using these buildpacks.`)
     }
   }
 
@@ -189,13 +187,13 @@ export class BuildpackCommand {
     const configVars: any = await this.heroku.get(`/apps/${app}/config-vars`)
     const message = `Buildpack${command === 'clear' ? 's' : ''} ${action}.`
     if (configVars.body.BUILDPACK_URL) {
-      ux.log(message)
+      ux.stdout(message)
       ux.warn('The BUILDPACK_URL config var is still set and will be used for the next release')
     } else if (configVars.body.LANGUAGE_PACK_URL) {
-      ux.log(message)
+      ux.stdout(message)
       ux.warn('The LANGUAGE_PACK_URL config var is still set and will be used for the next release')
     } else {
-      ux.log(`${message} Next release on ${app} will detect buildpacks normally.`)
+      ux.stdout(`${message} Next release on ${app} will detect buildpacks normally.`)
     }
   }
 

@@ -1,16 +1,16 @@
 import {expect} from 'chai'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-import Cmd from '../../../../src/commands/accounts/set'
-import * as accounts from '../../../../src/lib/accounts/accounts'
+import Cmd from '../../../../src/commands/accounts/set.js'
+import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 describe('accounts:set', function () {
   let listStub: sinon.SinonStub
   let setStub: sinon.SinonStub
 
   beforeEach(function () {
-    listStub = sinon.stub(accounts, 'list')
-    setStub = sinon.stub(accounts, 'set')
+    listStub = sinon.stub(AccountsModule, 'list')
+    setStub = sinon.stub(AccountsModule, 'set')
   })
 
   afterEach(function () {

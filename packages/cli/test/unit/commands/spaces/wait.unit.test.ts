@@ -1,24 +1,26 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/wait'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
+import Cmd from '../../../../src/commands/spaces/wait.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import * as fixtures from '../../../fixtures/spaces/fixtures'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 import * as sinon from 'sinon'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces'
-import {getGeneration} from '../../../../src/lib/apps/generation'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import {getGeneration} from '../../../../src/lib/apps/generation.js'
+
+const heredoc = tsheredoc.default
 
 describe('spaces:wait', function () {
   let allocatingSpace: SpaceWithOutboundIps
   let allocatedSpace: SpaceWithOutboundIps
   let sandbox: sinon.SinonSandbox
-  let notifySpy: sinon.SinonSpy
+  let notifyStub: sinon.SinonStub
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
-    notifySpy = sandbox.spy(require('@heroku-cli/notifications'), 'notify')
+    notifyStub = sandbox.stub(Cmd.prototype, 'notify' as any)
     allocatingSpace = fixtures.spaces['allocating-space']
     allocatedSpace = fixtures.spaces['non-shield-space']
   })
@@ -44,7 +46,6 @@ describe('spaces:wait', function () {
       '0',
     ])
     expectOutput(stderr.output, heredoc(`
-      Waiting for space ${allocatedSpace.name} to allocate...
       Waiting for space ${allocatedSpace.name} to allocate... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -60,8 +61,8 @@ describe('spaces:wait', function () {
       Generation:   ${getGeneration(allocatedSpace)}
       Created at:   ${allocatedSpace.created_at}
     `))
-    expect(notifySpy.called).to.be.true
-    expect(notifySpy.calledOnce).to.be.true
+    expect(notifyStub.called).to.be.true
+    expect(notifyStub.calledOnce).to.be.true
   })
 
   it('waits for space with --json', async function () {
@@ -87,7 +88,6 @@ describe('spaces:wait', function () {
       {outbound_ips: {state: 'enabled', sources: ['123.456.789.123']}},
     )
     expectOutput(stderr.output, heredoc(`
-      Waiting for space ${allocatedSpace.name} to allocate...
       Waiting for space ${allocatedSpace.name} to allocate... done
     `))
     expectOutput(stdout.output, JSON.stringify(allocatedSpaceWithOutboundIPs, null, 2))
@@ -119,7 +119,7 @@ describe('spaces:wait', function () {
       Generation:   ${getGeneration(allocatedSpace)}
       Created at:   ${allocatedSpace.created_at}
     `))
-    expect(notifySpy.called).to.be.true
-    expect(notifySpy.calledOnce).to.be.true
+    expect(notifyStub.called).to.be.true
+    expect(notifyStub.calledOnce).to.be.true
   })
 })

@@ -1,9 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/info'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import heredoc from 'tsheredoc'
-import * as nock from 'nock'
+import Cmd from '../../../../src/commands/certs/info.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import tsheredoc from 'tsheredoc'
+import nock from 'nock'
+
 import {
   endpoint,
   endpointWithDomains,
@@ -12,9 +13,11 @@ import {
   certificateDetails,
   certificateDetailsWithDomains,
   untrustedCertificateDetails,
-} from '../../../helpers/stubs/sni-endpoints'
-import sharedSni = require('./shared_sni.unit.test')
-import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint'
+} from '../../../helpers/stubs/sni-endpoints.js'
+import * as sharedSni from './shared_sni.unit.test.js'
+import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
+
+const heredoc = tsheredoc.default
 
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {
@@ -25,7 +28,6 @@ describe('heroku certs:info', function () {
       .reply(200, endpoint)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -66,7 +68,6 @@ describe('heroku certs:info', function () {
       .reply(200, endpointUntrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(heredoc(stdout.output), heredoc(`
@@ -83,7 +84,6 @@ describe('heroku certs:info', function () {
       .reply(200, endpointTrusted)
     await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr.output, heredoc(`
-      Fetching SSL certificate tokyo-1050 info for ⬢ example...
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -109,7 +109,6 @@ describe('heroku shared', function () {
 
   const stderr = function (endpoint: Partial<SniEndpoint>) {
     return heredoc(`
-      Fetching SSL certificate ${endpoint.name} info for ⬢ example...
       Fetching SSL certificate ${endpoint.name} info for ⬢ example... done
     `)
   }

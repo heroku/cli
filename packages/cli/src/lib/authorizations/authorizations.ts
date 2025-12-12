@@ -17,10 +17,10 @@ export function display(auth: Heroku.OAuthAuthorization) {
   }
 
   const obj: StyledObject = {
+    Client: '<none>',
     ID: auth.id,
     Description: auth.description,
     Scope: auth.scope ? auth.scope.join(',') : undefined,
-    Client: '<none>',
   }
 
   if (auth.client) {

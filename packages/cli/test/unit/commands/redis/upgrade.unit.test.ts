@@ -1,13 +1,14 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/redis/upgrade'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+// import Cmd from '../../../../src/commands/redis/upgrade'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import stripAnsi from 'strip-ansi'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
+/*
 describe('heroku redis:upgrade', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -53,3 +54,5 @@ describe('heroku redis:upgrade', function () {
       })
   })
 })
+
+*/

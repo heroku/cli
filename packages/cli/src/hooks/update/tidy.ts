@@ -1,7 +1,7 @@
 import {Hook} from '@oclif/core'
 import * as path from 'path'
 
-import deps from '../../deps'
+import deps from '../../deps.js'
 
 const tidy: Hook<'update'> = async function () {
   const cleanupPlugins = async () => {

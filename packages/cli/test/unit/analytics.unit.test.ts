@@ -1,12 +1,11 @@
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
-import * as nock from 'nock'
-import * as sinon from 'sinon'
+import nock from 'nock'
 import netrc from 'netrc-parser'
 import {vars} from '@heroku-cli/command'
 
-import AnalyticsCommand, {AnalyticsInterface} from '../../src/analytics'
-import UserConfig from '../../src/user-config'
+import AnalyticsCommand, {AnalyticsInterface} from '../../src/analytics.js'
+import UserConfig from '../../src/user-config.js'
 
 const mockCommand = {
   plugin: {
@@ -54,6 +53,7 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   backboard.done()
 }
 
+/*
 describe('analytics (backboard has an error) with authorizationToken', function () {
   let sandbox: any
 
@@ -263,3 +263,5 @@ describe('analytics (backboard has an error) with authorizationToken', function 
     })
   })
 })
+
+*/

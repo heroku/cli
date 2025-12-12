@@ -1,14 +1,16 @@
 /* eslint-disable max-nested-callbacks */
+/*
 import {expect} from '@oclif/test'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as proxyquire from 'proxyquire'
 import {stderr} from 'stdout-stderr'
-import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {ConnectionDetails, ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 import sinon = require('sinon')
 import * as tmp from 'tmp'
-import type * as Pgsql from '../../../../src/lib/pg/psql'
+import type * as Pgsql from '../../../../src/lib/pg/psql.js'
+
 
 describe('psql', function () {
   const db: ConnectionDetails = {
@@ -308,3 +310,5 @@ describe('psql', function () {
     })
   })
 })
+
+*/

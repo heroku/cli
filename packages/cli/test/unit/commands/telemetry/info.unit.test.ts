@@ -1,10 +1,12 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/info'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import heredoc from 'tsheredoc'
-import {TelemetryDrain} from '../../../../src/lib/types/telemetry'
+import Cmd from '../../../../src/commands/telemetry/info.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import tsheredoc from 'tsheredoc'
+import {TelemetryDrain} from '../../../../src/lib/types/telemetry.js'
+
+const heredoc = tsheredoc.default
 
 describe('telemetry:info', function () {
   const appId = '87654321-5717-4562-b3fc-2c963f66afa6'

@@ -1,9 +1,8 @@
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/rename'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import Cmd from '../../../../src/commands/spaces/rename.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('spaces:rename', function () {
   it('renames a space', async function () {
@@ -17,9 +16,6 @@ describe('spaces:rename', function () {
       '--to',
       'new-space-name',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Renaming space from old-space-name to new-space-name...
-      Renaming space from old-space-name to new-space-name... done
-    `))
+    expectOutput(stderr.output, 'Renaming space from old-space-name to new-space-name... done')
   })
 })

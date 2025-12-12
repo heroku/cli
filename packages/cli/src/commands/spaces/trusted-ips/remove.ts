@@ -1,8 +1,10 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Remove extends Command {
   static topic = 'spaces'
@@ -27,7 +29,7 @@ export default class Remove extends Command {
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Remove)
-    const space = flags.space
+    const {space} = flags
     const url = `/spaces/${space}/inbound-ruleset`
     const {body: rules} = await this.heroku.get<Heroku.InboundRuleset>(url)
     if (rules.rules?.length === 0) {
@@ -41,7 +43,7 @@ export default class Remove extends Command {
     }
 
     await this.heroku.put(url, {body: rules})
-    ux.log(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
+    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
 
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
@@ -50,9 +52,9 @@ export default class Remove extends Command {
     // Once the API always includes the applied field (W-19525612), this can be simplified to:
     //   if (updatedRuleset.applied) { ... } else { ... }
     if (updatedRuleset.applied === true) {
-      ux.log('Trusted IP rules are applied to this space.')
+      ux.stdout('Trusted IP rules are applied to this space.')
     } else if (updatedRuleset.applied === false) {
-      ux.log('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+      ux.stdout('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     }
   }
 }

@@ -1,9 +1,7 @@
-'use strict'
-
-import {resolveAddon, appAddon} from '../../../../src/lib/addons/resolve'
-import {getHerokuAPI} from '../../../helpers/testInstances'
-const {expect} = require('chai')
-import * as nock from 'nock'
+import {resolveAddon, appAddon} from '../../../../src/lib/addons/resolve.js'
+import {getHerokuAPI} from '../../../helpers/testInstances.js'
+import {expect} from 'chai'
+import nock from 'nock'
 import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
 
@@ -91,7 +89,7 @@ describe('resolve', function () {
         })
     })
 
-    it('fails if no addon found', function () {
+    it('fails if no addon found with an addon service', function () {
       const api = nock('https://api.heroku.com:443')
         .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'add_on'})
         .post('/actions/addons/resolve', {app: null, addon: 'myaddon-3', addon_service: 'slowdb'}).reply(404, {resource: 'add_on'})

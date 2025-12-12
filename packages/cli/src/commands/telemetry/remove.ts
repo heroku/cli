@@ -1,7 +1,10 @@
+
 import {flags, Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {TelemetryDrain} from '../../lib/types/telemetry'
-import heredoc from 'tsheredoc'
+import {TelemetryDrain} from '../../lib/types/telemetry.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Remove extends Command {
   static topic = 'telemetry'

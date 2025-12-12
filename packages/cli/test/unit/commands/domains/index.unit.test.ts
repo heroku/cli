@@ -1,6 +1,8 @@
 import {expect, test} from '@oclif/test'
-import * as inquirer from '@inquirer/prompts'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+import DomainsIndex from '../../../../src/commands/domains/index.js'
+import sinon from 'sinon'
 
 describe('domains', function () {
   const herokuOnlyDomainsResponse = [{
@@ -89,6 +91,15 @@ describe('domains', function () {
       status: 'succeeded',
     },
   ]
+  let confirmStub: sinon.SinonStub
+
+  beforeEach(async function () {
+    confirmStub = sinon.stub(DomainsIndex.prototype, 'confirmDisplayAllDomains').resolves(true)
+  })
+
+  afterEach(function () {
+    confirmStub.restore()
+  })
 
   test
     .nock('https://api.heroku.com', api => api
@@ -111,13 +122,14 @@ describe('domains', function () {
     .stdout()
     .command(['domains', '--app', 'myapp'])
     .it('shows a list of domains and their DNS targets when there are custom domains', ctx => {
+      const actual = removeAllWhitespace(ctx.stdout)
       expect(ctx.stdout).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
       expect(ctx.stdout).to.contain('myapp.herokuapp.com')
       expect(ctx.stdout).to.contain('=== myapp Custom Domains')
-      expect(ctx.stdout).to.contain('Domain Name     DNS Record Type DNS Target')
-      expect(ctx.stdout).to.contain('example.com     ALIAS or ANAME  foo.herokudns.com')
-      expect(ctx.stdout).to.contain('www.example.com CNAME           bar.herokudns.com')
-      expect(ctx.stdout).to.contain('*.example.com   CNAME           buzz.herokudns.com')
+      expect(actual).to.contain(removeAllWhitespace('Domain Name     DNS Record Type DNS Target'))
+      expect(actual).to.contain(removeAllWhitespace('example.com     ALIAS or ANAME  foo.herokudns.com'))
+      expect(actual).to.contain(removeAllWhitespace('www.example.com CNAME           bar.herokudns.com'))
+      expect(actual).to.contain(removeAllWhitespace('*.example.com   CNAME           buzz.herokudns.com'))
     })
 
   test
@@ -128,14 +140,14 @@ describe('domains', function () {
     .stdout()
     .command(['domains', '--app', 'myapp'])
     .it('shows the SNI endpoint column when multiple sni endpoints are enabled', ctx => {
-      expect(ctx.stdout).to.contain('Domain Name   DNS Record Type DNS Target         SNI Endpoint')
-      expect(ctx.stdout).to.contain('*.example.com CNAME           buzz.herokudns.com some haiku')
+      const actual = removeAllWhitespace(ctx.stdout)
+      expect(actual).to.contain(removeAllWhitespace('Domain Name   DNS Record Type DNS Target         SNI Endpoint'))
+      expect(actual).to.contain(removeAllWhitespace('*.example.com CNAME           buzz.herokudns.com some haiku'))
     })
 
   test
     .stdout()
     .stderr()
-    .stub(inquirer, 'confirm', () => async () => process.stdin.write('\n'))
     .nock('https://api.heroku.com', api => api
       .get('/apps/myapp/domains')
       .reply(200, () => {

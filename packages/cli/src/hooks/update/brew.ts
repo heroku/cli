@@ -1,13 +1,14 @@
 import {Hook} from '@oclif/core'
 import {spawnSync, SpawnSyncOptions} from 'child_process'
 import * as path from 'path'
+import debug from 'debug'
 
-import * as fs from '../../file'
+import * as fs from '../../file.js'
 
-const debug = require('debug')('heroku:brewhook')
+const debugLog = debug('heroku:brewhook')
 
 function brew(args: string[], opts: SpawnSyncOptions = {}) {
-  debug('brew %o', args)
+  debugLog('brew %o', args)
   return spawnSync('brew', args, {stdio: 'inherit', ...opts, encoding: 'utf8'})
 }
 
@@ -47,7 +48,7 @@ const brewHook: Hook<'update'> = async function () {
 
   if (!await needsMigrate()) return
 
-  debug('migrating from brew')
+  debugLog('migrating from brew')
   // not on private tap, move to it
   brew(['uninstall', 'heroku'])
   brew(['install', 'heroku/brew/heroku'])

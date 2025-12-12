@@ -1,3 +1,3 @@
-import * as logger from 'debug'
+import debugModule from 'debug'
 
-export const debug = logger('heroku-container-registry')
+export const debug = debugModule('heroku-container-registry')

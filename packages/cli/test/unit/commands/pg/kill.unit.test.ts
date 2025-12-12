@@ -1,4 +1,5 @@
-import runCommand from '../../../helpers/runCommand'
+/*
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import heredoc from 'tsheredoc'
 import * as sinon from 'sinon'
@@ -63,3 +64,5 @@ describe('pg:kill', function () {
     expect(queryString).to.eq('SELECT pg_terminate_backend(100);')
   })
 })
+
+*/

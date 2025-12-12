@@ -1,7 +1,7 @@
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Favorites} from '../../../lib/types/favorites'
+import {Favorites} from '../../../lib/types/favorites.js'
 
 export default class Index extends Command {
   static description = 'list favorited apps'
@@ -23,7 +23,7 @@ export default class Index extends Command {
     } else {
       hux.styledHeader('Favorited Apps')
       for (const f of favorites) {
-        ux.log(f.resource_name)
+        ux.stdout(f.resource_name)
       }
     }
   }

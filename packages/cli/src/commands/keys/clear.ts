@@ -15,4 +15,3 @@ export default class Clear extends Command {
     ux.action.stop()
   }
 }
-

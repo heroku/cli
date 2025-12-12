@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
-import {IOptions} from '@heroku-cli/command/lib/api-client'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {spawn} from 'child_process'
@@ -15,7 +14,7 @@ import * as tls from 'tls'
 import * as tty from 'tty'
 import {URL, parse} from 'url'
 
-import {buildEnvFromFlag} from './helpers'
+import {buildEnvFromFlag} from './helpers.js'
 
 const debug = debugFactory('heroku:run')
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
@@ -40,6 +39,13 @@ interface DynoOpts {
   showStatus?: boolean;
   size?: string;
   type?: string;
+}
+
+interface IOptions {
+  debug?: boolean
+  debugHeaders?: boolean
+  preauth?: boolean
+  required?: boolean
 }
 
 export default class Dyno extends Duplex {
@@ -288,13 +294,13 @@ export default class Dyno extends Duplex {
   _handle(localServer: net.Server) {
     const addr = localServer.address() as net.AddressInfo
     const host = addr.address
-    const port = addr.port
+    const {port} = addr
     let lastErr = ''
 
     // does not actually uncork but allows error to be displayed when attempting to read
     this.uncork()
     if (this.opts.listen) {
-      ux.log(`listening on port ${host}:${port} for ssh client`)
+      ux.stderr(`listening on port ${host}:${port} for ssh client`)
     } else {
       const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
@@ -435,7 +441,7 @@ export default class Dyno extends Duplex {
 
   _readStdin(c: tls.TLSSocket) {
     this.input = c
-    const stdin: NodeJS.ReadStream & { unref?(): any } = process.stdin
+    const {stdin} = process
     stdin.setEncoding('utf8')
 
     // without this the CLI will hang on rake db:migrate
@@ -449,7 +455,7 @@ export default class Dyno extends Duplex {
       stdin.setRawMode(true)
       stdin.pipe(c)
       let sigints: any[] = []
-      stdin.on('data', function (c) {
+      stdin.on('data', c => {
         if (c.toString() === '\u0003') {
           sigints.push(Date.now())
         }

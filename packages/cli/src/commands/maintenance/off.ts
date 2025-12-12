@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 
 export default class MaintenanceOff extends Command {

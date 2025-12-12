@@ -1,17 +1,17 @@
 import {expect} from 'chai'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import * as sinon from 'sinon'
-import Cmd from '../../../../src/commands/accounts/add'
-import * as accounts from '../../../../src/lib/accounts/accounts'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import sinon from 'sinon'
+import Cmd from '../../../../src/commands/accounts/add.js'
+import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 describe('accounts:add', function () {
   let api: nock.Scope
   let addStub: sinon.SinonStub
 
   beforeEach(function () {
-    sinon.stub(accounts, 'list').returns([])
-    addStub = sinon.stub(accounts, 'add')
+    sinon.stub(AccountsModule, 'list').returns([])
+    addStub = sinon.stub(AccountsModule, 'add')
     api = nock('https://api.heroku.com')
   })
 

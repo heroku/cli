@@ -1,3 +1,4 @@
+/*
 import Command from '@heroku-cli/command'
 import {Completion} from '@oclif/core/lib/interfaces/parser'
 import * as fs from 'fs-extra'
@@ -48,3 +49,4 @@ export abstract class AutocompleteBase extends Command {
     return new CompletionLookup(cmdId, name, description).run()
   }
 }
+*/

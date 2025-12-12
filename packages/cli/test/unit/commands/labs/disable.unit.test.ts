@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
 
 const promptStub = sinon.stub()
@@ -42,7 +42,7 @@ describe('labs:disable', function () {
       })
       .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false}).reply(200),
     )
-    .stub(ux, 'prompt', () => Promise.resolve('myapp'))
+    .stub(hux, 'prompt', () => Promise.resolve('myapp'))
     .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
     .it('warns user of insecure action', ({stderr}) => {
       expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for myapp...')
@@ -54,7 +54,7 @@ describe('labs:disable', function () {
       promptStub.onFirstCall().resolves('myapp')
       promptStub.onSecondCall().resolves('notMyApp')
     })
-    .stub(ux, 'prompt', () => promptStub)
+    .stub(hux, 'prompt', () => promptStub)
     .command(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
     .catch(error => {
       expect(error.message).to.equal('Confirmation name did not match app name. Try again.')

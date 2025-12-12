@@ -1,10 +1,11 @@
 /* eslint-disable mocha/no-setup-in-describe */
 import {expect, test} from '@oclif/test'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
+import nock from 'nock'
 
-import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
-nock.disableNetConnect()
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+
+import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 
 const cedarApp = {
   acm: false,
@@ -119,6 +120,7 @@ const ociImages = [
     architecture: 'arm64',
   },
 ]
+
 describe('buildpacks', function () {
   test
     .nock('https://api.heroku.com', (api: nock.Scope) => {

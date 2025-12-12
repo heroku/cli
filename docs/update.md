@@ -11,10 +11,11 @@ update the heroku CLI
 
 ```
 USAGE
-  $ heroku update [CHANNEL] [-a] [-v <value> | -i] [--force]
+  $ heroku update [CHANNEL] [--force |  | [-a | -v <value> | -i]] [-b ]
 
 FLAGS
-  -a, --available        Install a specific version.
+  -a, --available        See available versions.
+  -b, --verbose          Show more details about the available versions.
   -i, --interactive      Interactively select version to install. This is ignored if a channel is provided.
   -v, --version=<value>  Install a specific version.
       --force            Force a re-download of the requested version.
@@ -40,4 +41,4 @@ EXAMPLES
     $ heroku update --available
 ```
 
-_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v3.2.4/src/commands/update.ts)_
+_See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v4.6.42/src/commands/update.ts)_

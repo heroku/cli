@@ -44,13 +44,11 @@ export default class Search extends Command {
       category: Category;
       description: string;
     }
-    const buildpacks: TableRow[] = searchResults.map((buildpack: BuildpackBody) => {
-      return {
-        buildpack: `${buildpack.namespace}/${buildpack.name}`,
-        category: buildpack.category,
-        description: buildpack.description,
-      }
-    })
+    const buildpacks: TableRow[] = searchResults.map((buildpack: BuildpackBody) => ({
+      buildpack: `${buildpack.namespace}/${buildpack.name}`,
+      category: buildpack.category,
+      description: buildpack.description,
+    }))
     const displayTable = (buildpacks: TableRow[]) => {
       hux.table(buildpacks, {
         buildpack: {
@@ -66,13 +64,13 @@ export default class Search extends Command {
     }
 
     if (buildpacks.length === 0) {
-      ux.log('No buildpacks found')
+      ux.stdout('No buildpacks found')
     } else if (buildpacks.length === 1) {
       displayTable(buildpacks)
-      ux.log('\n1 buildpack found')
+      ux.stdout('\n1 buildpack found')
     } else {
       displayTable(buildpacks)
-      ux.log(`\n${buildpacks.length} buildpacks found`)
+      ux.stdout(`\n${buildpacks.length} buildpacks found`)
     }
   }
 }

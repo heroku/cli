@@ -1,14 +1,16 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {displayCertificateDetails} from '../../../lib/certs/certificate_details'
-import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains'
+import {displayCertificateDetails} from '../../../lib/certs/certificate_details.js'
+import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
 import {formatDistanceToNow} from 'date-fns'
-import {SniEndpoint} from '../../../lib/types/sni_endpoint'
-import {Domain} from '../../../lib/types/domain'
-import heredoc from 'tsheredoc'
+import {SniEndpoint} from '../../../lib/types/sni_endpoint.js'
+import {Domain} from '../../../lib/types/domain.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 function humanize(value: string | null) {
   if (!value) {
@@ -62,7 +64,7 @@ export default class Index extends Command {
 
     if (sniEndpoints.length === 1 && sniEndpoints[0].ssl_cert.acm) {
       displayCertificateDetails(sniEndpoints[0])
-      ux.log('')
+      ux.stdout('')
     }
 
     if (flags.wait) {
@@ -98,7 +100,7 @@ export default class Index extends Command {
           },
           ...(domains.some(d => d.acm_status_reason) ? {
             Reason: {
-              get: (domain: Domain) => domain.acm_status_reason ? domain.acm_status_reason : '',
+              get: (domain: Domain) => domain.acm_status_reason ?? '',
             },
           } : {}),
           lastUpdated: {
@@ -108,7 +110,7 @@ export default class Index extends Command {
         },
       )
       if (message) {
-        ux.log('')
+        ux.stdout('')
       }
     }
 

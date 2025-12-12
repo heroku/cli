@@ -1,29 +1,19 @@
 import {HTTP} from '@heroku/http-call'
-import UserConfig from './user-config'
-import FS = require('fs-extra')
-
-import file = require('./file')
-
-const cache: any = {}
-function fetch(s: string) {
-  if (!cache[s]) {
-    cache[s] = require(s)
-  }
-
-  return cache[s]
-}
+import UserConfig from './user-config.js'
+import FS from 'fs-extra'
+import * as file from './file.js'
 
 export default {
-  get fs(): typeof FS {
-    return fetch('fs-extra')
+  get fs() {
+    return FS
   },
-  get HTTP(): typeof HTTP {
-    return fetch('@heroku/http-call').HTTP
+  get HTTP() {
+    return HTTP
   },
-  get file(): typeof file {
-    return fetch('./file')
+  get file() {
+    return file
   },
-  get UserConfig(): typeof UserConfig {
-    return fetch('./user-config').default
+  get UserConfig() {
+    return UserConfig
   },
 }

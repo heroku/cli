@@ -11,7 +11,7 @@ describe('authorizations:revoke', function () {
     .command(['authorizations:revoke', authorizationID])
     .it('revokes the authorization', ctx => {
       expect(ctx.stderr).to.contain(
-        'done, revoked authorization from Example Auth\n',
+        'done, revoked authorization from Example Auth',
       )
     })
 

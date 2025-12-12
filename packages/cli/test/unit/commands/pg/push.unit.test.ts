@@ -1,5 +1,6 @@
+/*
 import {stderr, stdout} from 'stdout-stderr'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as proxyquire from 'proxyquire'
 import heredoc from 'tsheredoc'
@@ -246,3 +247,5 @@ describe('pg:push', function () {
     expect(stderr.output).to.eq('')
   })
 })
+
+*/

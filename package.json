@@ -5,28 +5,26 @@
     "@types/psl": "^1.1.3",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
-    "cspell": "7.3.9",
-    "eslint": "^7.32.0",
-    "eslint-config-oclif": "^4.0.0",
-    "eslint-config-oclif-typescript": "^1.0.2",
-    "eslint-import-resolver-typescript": "^3.5.5",
+    "cspell": "9.2.1",
+    "eslint": "8.57.0",
+    "eslint-config-oclif": "^5.0.0",
+    "eslint-config-oclif-typescript": "^3.1.14",
+    "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-mocha": "^10.4.3",
+    "eslint-plugin-n": "^16.6.2",
     "execa": "5.1.1",
     "husky": "8.0.3",
     "lerna": "^6.4.1",
     "mkdirp": "^0.5.2",
-    "oclif": "4.14.36",
+    "oclif": "^4.22.27",
     "qqjs": "0.3.11",
     "standard": "17.1.0",
-    "tmp": "^0.2.1"
+    "tmp": "^0.2.1",
+    "ts-node": "^10.9.2"
   },
-  "resolutions": {
-    "ansi-regex@^2.0.0": "4.1.1",
-    "ansi-regex@^3.0.0": "4.1.1",
-    "js-yaml@4.1.0": "4.1.1",
-    "semver": "7.7.3",
-    "tmp": "0.2.5"
+  "overrides": {
+    "ansi-regex": "4.1.1"
   },
   "standard": {
     "env": "mocha",
@@ -36,21 +34,30 @@
     ]
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "private": true,
   "scripts": {
-    "build": "cd packages/cli && yarn prepack",
+    "build": "cd packages/cli && npm run prepack",
     "test": "lerna run test --concurrency 4",
-    "lint": "cd packages/cli && yarn lint",
+    "lint": "cd packages/cli && npm run lint",
+    "cspell:ci": "cspell --no-progress --gitignore --no-must-find-files --file-list stdin",
+    "cspell:commit": "cspell --no-progress --gitignore --no-must-find-files --no-show-suggestions --config ./cspell.json --quiet",
+    "pack:deb": "oclif pack:deb --root=\"./packages/cli\"",
+    "pack:tarballs": "oclif pack:tarballs --root=\"./packages/cli\" --xz --parallel",
+    "pack:win": "oclif pack:win --root=\"./packages/cli\" --defender-exclusion hidden",
+    "promote:deb": "oclif promote --root=\"./packages/cli\" --deb --xz --indexes",
+    "promote:win": "oclif promote --root=\"./packages/cli\" --win --indexes",
+    "upload:deb": "oclif upload:deb --root=\"./packages/cli\"",
+    "upload:tarballs": "oclif upload:tarballs --root=\"./packages/cli\" --xz",
+    "upload:win": "oclif upload:win --root=\"./packages/cli\"",
     "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
-    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules && rm -rf ./.yarn/cache",
+    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules",
     "postinstall": "husky install"
   },
   "workspaces": {
     "packages": [
       "packages/*"
     ]
-  },
-  "packageManager": "yarn@3.6.1"
+  }
 }

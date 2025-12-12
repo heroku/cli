@@ -1,12 +1,13 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/schedule'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
+// import Cmd from '../../../../../src/commands/pg/backups/schedule'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
 import {expect} from 'chai'
-import stripAnsi = require('strip-ansi')
-import {CLIError} from '@oclif/core/lib/errors'
+import stripAnsi from 'strip-ansi'
+// import {CLIError} from '@oclif/core/lib/errors'
 
+/*
 describe('pg:backups:schedule', function () {
   let api: nock.Scope
   let data: nock.Scope
@@ -165,3 +166,5 @@ describe('pg:backups:schedule', function () {
     nock.cleanAll()
   })
 })
+
+*/

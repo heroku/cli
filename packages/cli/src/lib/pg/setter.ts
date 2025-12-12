@@ -1,3 +1,4 @@
+/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {addonResolver} from '../addons/resolve'
@@ -70,3 +71,4 @@ export const numericConverter = (value: string) => {
 
   return n
 }
+*/

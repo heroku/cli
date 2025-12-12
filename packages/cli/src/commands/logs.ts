@@ -1,8 +1,11 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-import logDisplayer from '../lib/run/log-displayer'
-import heredoc from 'tsheredoc'
+import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
+import tsheredoc from 'tsheredoc'
+
+import {LogDisplayer} from '../lib/run/log-displayer.js'
+
+const heredoc = tsheredoc.default
 
 export default class Logs extends Command {
   static description = heredoc`
@@ -77,13 +80,15 @@ export default class Logs extends Command {
     if (forceColors)
       color.enabled = true
 
-    await logDisplayer(this.heroku, {
+    const options = {
       app,
       dyno,
       lines: num || 100,
       source,
       tail,
       type: type || ps,
-    })
+    }
+    const displayer = new LogDisplayer(this.heroku)
+    await displayer.display(options)
   }
 }

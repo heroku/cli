@@ -1,5 +1,4 @@
-'use strict'
-import * as nock from 'nock'
+import nock from 'nock'
 
 export function apps() {
   return nock('https://api.heroku.com:443')
@@ -11,8 +10,8 @@ export function apps() {
 }
 
 export function appCollaborators(collaborators =
-[{user: {email: 'raulb@heroku.com'}, role: 'owner'},
-  {user: {email: 'jeff@heroku.com'}, role: 'collaborator'}]) {
+[{user: {email: 'gandalf@heroku.com'}, role: 'owner'},
+  {user: {email: 'frodo@heroku.com'}, role: 'collaborator'}]) {
   return nock('https://api.heroku.com:443')
     .get('/apps/myapp/collaborators')
     .reply(200, collaborators)
@@ -43,12 +42,17 @@ export function teams(teams = [
 }
 
 export function teamApp(locked = false) {
-  return nock('https://api.heroku.com:443')
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {
+      accept: 'application/vnd.heroku+json; version=3',
+      'user-agent': /heroku-cli\/.*/,
+    },
+  })
     .get('/apps/myapp')
     .reply(200, {
       name: 'myapp',
       owner: {email: 'myteam@herokumanager.com'},
-      locked: locked,
+      locked,
     })
 }
 
@@ -86,13 +90,13 @@ export function teamInfo(type = 'enterprise') {
     .reply(200, {
       name: 'myteam',
       role: 'admin',
-      type: type,
+      type,
     })
 }
 
 export function teamInvites(invites = [
   {
-    invited_by: {email: 'raulb@heroku.com'},
+    invited_by: {email: 'gandalf@heroku.com'},
     role: 'admin',
     user: {email: 'invited-user@mail.com'},
   },
@@ -106,9 +110,9 @@ export function teamInvites(invites = [
 
 export function teamMembers(members = [
   {
-    email: 'raulb@heroku.com',
+    email: 'gandalf@heroku.com',
     role: 'admin',
-    user: {email: 'raulb@heroku.com'},
+    user: {email: 'gandalf@heroku.com'},
   },
   {
     email: 'bob@heroku.com',
@@ -131,11 +135,11 @@ export function personalApp() {
     .get('/apps/myapp')
     .reply(200, {
       name: 'myapp',
-      owner: {email: 'raulb@heroku.com'},
+      owner: {email: 'gandalf@heroku.com'},
     })
 }
 
-export function userAccount(email = 'raulb@heroku.com') {
+export function userAccount(email = 'gandalf@heroku.com') {
   return nock('https://api.heroku.com:443')
     .get('/account')
     .reply(200, {email})
@@ -148,7 +152,7 @@ export function userFeatureFlags(features: any) {
 }
 
 export function variableSizeTeamInvites(teamSize: number) {
-  teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
+  teamSize = ((teamSize) === undefined) ? 1 : teamSize
   const invites = []
   for (let i = 0; i < teamSize; i++) {
     invites.push({
@@ -164,7 +168,7 @@ export function variableSizeTeamInvites(teamSize: number) {
 }
 
 export function variableSizeTeamMembers(teamSize: number) {
-  teamSize = (typeof (teamSize) === 'undefined') ? 1 : teamSize
+  teamSize = ((teamSize) === undefined) ? 1 : teamSize
   const teamMembers = []
   for (let i = 0; i < teamSize; i++) {
     teamMembers.push({

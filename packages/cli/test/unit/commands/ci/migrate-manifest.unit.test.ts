@@ -1,12 +1,22 @@
 import {expect, test} from '@oclif/test'
-import * as fs from 'async-file'
-import * as _ from 'lodash'
-const writeFile = fs.writeFile
-const unlinkFile = fs.unlink
+import {promises as fs} from 'node:fs'
+const {readFile, writeFile, unlink} = fs
+const unlinkFile = unlink
 
 describe('ci:migrate-manifest', function () {
   let appJsonFileContents
   const appJsonPath = './app.json'
+
+  afterEach(async () => {
+    // Clean up any files created during tests
+    try {
+      await unlinkFile(appJsonPath)
+    } catch {}
+
+    try {
+      await unlinkFile('./app-ci.json')
+    } catch {}
+  })
   const mockNewAppJsonFileContents = {environments: {}}
   const mockOldAppCiJsonFileContents = {
     name: 'Small Sharp Tool',
@@ -134,12 +144,11 @@ describe('ci:migrate-manifest', function () {
     .stdout()
     .command(['ci:migrate-manifest'])
     .it('creates an app.json file if none exists', async ({stdout}) => {
-      appJsonFileContents = require(`${process.cwd()}/app.json`)
-      const areJsonObjectsEqual = _.isEqual(appJsonFileContents, mockNewAppJsonFileContents)
+      const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
+      appJsonFileContents = JSON.parse(fileContents)
 
       expect(stdout).to.equal('We couldn\'t find an app-ci.json file in the current directory, but we\'re creating a new app.json manifest for you.\nPlease check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
-      expect(areJsonObjectsEqual).to.equal(true)
-      await unlinkFile(appJsonPath)
+      expect(appJsonFileContents).to.deep.equal(mockNewAppJsonFileContents)
     })
 
   test
@@ -149,11 +158,10 @@ describe('ci:migrate-manifest', function () {
     })
     .command(['ci:migrate-manifest'])
     .it('creates converted app.json file when app-ci.json file is present', async ({stdout}) => {
-      appJsonFileContents = require(`${process.cwd()}/app.json`)
-      const areJsonObjectsEqual = _.isEqual(appJsonFileContents, mockConvertedAppJSONFileContents)
+      const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
+      appJsonFileContents = JSON.parse(fileContents)
 
       expect(stdout).to.equal('Please check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
-      expect(areJsonObjectsEqual).to.equal(true)
-      await unlinkFile(appJsonPath)
+      expect(appJsonFileContents).to.deep.equal(mockConvertedAppJSONFileContents)
     })
 })

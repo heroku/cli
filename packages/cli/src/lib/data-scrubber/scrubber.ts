@@ -1,4 +1,4 @@
-import {ScrubConfig, ScrubResult} from './types'
+import {ScrubConfig, ScrubResult} from './types.js'
 
 /**
  * Core Scrubber - Deep object traversal with PII scrubbing
@@ -237,7 +237,7 @@ export class Scrubber {
    * Check if a field name matches any configured sensitive field patterns
    */
   private isSensitiveField(key: string): boolean {
-    return this.config.fields.some(field => {
+    return this.config.fields.some((field: string | RegExp) => {
       if (field instanceof RegExp) {
         return field.test(key)
       }

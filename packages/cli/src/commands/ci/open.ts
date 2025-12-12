@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as open from 'open'
-import {getPipeline} from '../../lib/ci/pipelines'
+import open from 'open'
+import {getPipeline} from '../../lib/ci/pipelines.js'
 
 export default class CiOpen extends Command {
   static description = 'open the Dashboard version of Heroku CI'
@@ -10,8 +10,7 @@ export default class CiOpen extends Command {
   ]
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    app: flags.app({required: true}),
+    app: flags.app(),
     remote: flags.remote(),
     pipeline: flags.pipeline({required: false}),
   }

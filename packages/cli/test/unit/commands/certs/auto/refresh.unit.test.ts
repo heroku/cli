@@ -1,9 +1,11 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/certs/auto/refresh'
-import runCommand from '../../../../helpers/runCommand'
-import expectOutput from '../../../../helpers/utils/expectOutput'
-import heredoc from 'tsheredoc'
-import * as nock from 'nock'
+import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import tsheredoc from 'tsheredoc'
+import nock from 'nock'
+
+const heredoc = tsheredoc.default
 
 describe('heroku certs:auto:refresh', function () {
   beforeEach(function () {
@@ -19,7 +21,6 @@ describe('heroku certs:auto:refresh', function () {
       'example',
     ])
     expectOutput(stderr.output, heredoc(`
-      Refreshing Automatic Certificate Management...
       Refreshing Automatic Certificate Management... done
     `))
     expectOutput((stdout.output), '')

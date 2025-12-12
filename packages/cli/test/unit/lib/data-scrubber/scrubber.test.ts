@@ -1,6 +1,6 @@
 import {describe, it} from 'mocha'
 import {expect} from 'chai'
-import {Scrubber} from '../../../../src/lib/data-scrubber/scrubber'
+import {Scrubber} from '../../../../src/lib/data-scrubber/scrubber.js'
 
 describe('Scrubber', () => {
   describe('Field-based scrubbing', () => {

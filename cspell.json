@@ -5,9 +5,16 @@
     "dictionaryDefinitions": [
       {
         "name": "cspell-dictionary",
-        "path": "./cspell-dictionary.txt",
+        "path": "./cspell-dictionary.txt"
       }
     ],
-    "ignorePaths": ["./cspell-dictionary.txt", "./packages/cli/CHANGELOG.md", "./CHANGELOG.md"]
+    "ignorePaths": [
+      "./cspell-dictionary.txt", 
+      "./packages/cli/CHANGELOG.md", 
+      "./CHANGELOG.md", 
+      "**/package-lock.json",
+      "**/node_modules/**",
+      "**/coverage/**"
+    ]
   }
   

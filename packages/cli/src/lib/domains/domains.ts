@@ -3,7 +3,7 @@ import {parse, ParsedDomain, ParseError} from 'psl'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 
 const wait = function (ms: number) {
   return new Promise(function (resolve) {
@@ -69,6 +69,7 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
     hux.table(domains_with_type,
       {
         domain: {
+          header: 'Domain',
           get: ({hostname}) => hostname,
         },
         recordType: {

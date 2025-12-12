@@ -12,3 +12,4 @@ describe('clients:destroy', function () {
       expect(ctx.stderr).to.contain('Destroying f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
     })
 })
+

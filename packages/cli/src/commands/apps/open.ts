@@ -1,7 +1,7 @@
 import {Args} from '@oclif/core'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as open from 'open'
+import open from 'open'
 
 export default class AppsOpen extends Command {
   static description = 'open the app in a web browser'
@@ -28,7 +28,6 @@ export default class AppsOpen extends Command {
     const app = appResponse.body
     const path = args.path || ''
     const url = new URL(path, app.web_url)
-
     await open(url.toString())
   }
 }

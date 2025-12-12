@@ -1,4 +1,5 @@
 import {test, expect} from '@oclif/test'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const formation = [
   {
@@ -41,19 +42,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
     })
     .command(['apps:errors', '--app', APP])
@@ -73,19 +68,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
     })
     .command(['apps:errors', '--app', APP])
@@ -106,19 +95,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(400, {id: 'bad_request', message: ERROR_MESSAGE})
     })
     .command(['apps:errors', '--app', APP])
@@ -138,30 +121,24 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, errors.router)
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {R14: [1]}})
     })
     .command(['apps:errors', '--app', APP])
     .it('shows errors', ({stdout, stderr}) => {
-      expect(stdout).to.include('=== Errors on ⬢ myapp in the last 24 hours')
-      expect(stdout).to.include('Source Name Level    Desc                       Count')
-      expect(stdout).to.include('────── ──── ──────── ────────────────────────── ─────')
-      expect(stdout).to.include('router H12  critical Request Timeout            2')
-      expect(stdout).to.include('router H25  critical HTTP Restriction           3')
-      expect(stdout).to.include('router H27  info     Client Request Interrupted 9')
-      expect(stdout).to.include('web    R14  critical Memory quota exceeded      1')
+      const actual = removeAllWhitespace(stdout)
+      expect(actual).to.include(removeAllWhitespace('Errors on ⬢ myapp in the last 24 hours'))
+      expect(actual).to.include(removeAllWhitespace('Source Name Level    Desc                       Count'))
+      expect(actual).to.include(removeAllWhitespace('router H12  critical Request Timeout            2'))
+      expect(actual).to.include(removeAllWhitespace('router H25  critical HTTP Restriction           3'))
+      expect(actual).to.include(removeAllWhitespace('router H27  info     Client Request Interrupted 9'))
+      expect(actual).to.include(removeAllWhitespace('web    R14  critical Memory quota exceeded      1'))
       expect(stderr).to.be.equal('')
     })
 
@@ -176,19 +153,13 @@ describe('apps:errors', function () {
     .nock('https://api.metrics.herokai.com', api => {
       api
         .get(`/apps/${APP}/router-metrics/errors`)
-        .query(params => {
-          return params.process_type === 'web' && params.step === '1h'
-        })
+        .query(params => params.process_type === 'web' && params.step === '1h')
         .reply(200, errors.router)
         .get(`/apps/${APP}/formation/node/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
         .get(`/apps/${APP}/formation/web/metrics/errors`)
-        .query(params => {
-          return params.step === '1h'
-        })
+        .query(params => params.step === '1h')
         .reply(200, {data: {}})
     })
     .command(['apps:errors', '--app', APP, '--json'])

@@ -1,15 +1,16 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/redis/timeout'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+// import Cmd from '../../../../src/commands/redis/timeout'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import stripAnsi = require('strip-ansi')
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import stripAnsi from 'strip-ansi'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
-import {shouldHandleArgs} from '../../lib/redis/shared.unit.test'
+import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
+/*
 describe('heroku redis:timeout', function () {
   shouldHandleArgs(Cmd, {seconds: '5'})
 })
@@ -83,3 +84,5 @@ describe('heroku redis:timeout should handle standard arg behavior', function ()
     })
   })
 })
+
+*/

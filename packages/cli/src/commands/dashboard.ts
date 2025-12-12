@@ -1,15 +1,16 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {round, flatten, mean, groupBy, map, sum, sumBy, sortBy, zip} from 'lodash'
-import * as img from 'term-img'
+import _ from 'lodash'
+import img from 'term-img'
 import * as path from 'path'
 import {execSync} from 'child_process'
-const sparkline = require('sparkline')
-import {ago} from '../lib/time'
-import {AppErrors} from '../lib/types/app_errors'
+import {sparkline} from '../lib/utils/sparkline.js'
+import {ago} from '../lib/time.js'
+import {AppErrors} from '../lib/types/app_errors.js'
 import * as process from 'process'
+import {hux} from '@heroku/heroku-cli-util'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
@@ -27,28 +28,28 @@ type FetchMetricsResponse =  {
 const empty = (o: Record<string, any>) => Object.keys(o).length === 0
 
 function displayFormation(formation: Heroku.Formation) {
-  formation = groupBy(formation, 'size')
-  formation = map(formation, (p, size) => `${bold(sumBy(p, 'quantity').toString())} | ${size}`)
-  ux.log(`  ${label('Dynos:')} ${formation.join(', ')}`)
+  formation = _.groupBy(formation, 'size')
+  formation = _.map(formation, (p, size) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
+  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
 }
 
 function displayErrors(metrics: FetchMetricsResponse[0]) {
   let errors: string[] = []
   if (metrics.routerErrors) {
     errors = errors.concat(Object.entries(metrics.routerErrors.data)
-      .map(e => color.red(`${sum(e[1])} ${e[0]}`)))
+      .map(e => color.red(`${_.sum(e[1])} ${e[0]}`)))
   }
 
   if (metrics.dynoErrors) {
-    metrics.dynoErrors.filter(d => d)
+    metrics.dynoErrors.filter(Boolean)
       .forEach(dynoErrors => {
         errors = errors.concat(Object.entries(dynoErrors?.data || {})
-          .map(e => color.red(`${sum(e[1])} ${e[0]}`)))
+          .map(e => color.red(`${_.sum(e[1])} ${e[0]}`)))
       })
   }
 
   if (errors.length > 0)
-    ux.log(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.cyan.bold('heroku apps:errors')})`)
+    ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.cyan.bold('heroku apps:errors')})`)
 }
 
 function displayMetrics(metrics: FetchMetricsResponse[0]) {
@@ -72,15 +73,15 @@ function displayMetrics(metrics: FetchMetricsResponse[0]) {
   if (metrics.routerLatency && !empty(metrics.routerLatency.data)) {
     const latency = metrics.routerLatency.data['latency.ms.p50']
     if (!empty(latency))
-      ms = `${round(mean(latency))} ms `
+      ms = `${_.round(_.mean(latency))} ms `
   }
 
   if (metrics.routerStatus && !empty(metrics.routerStatus.data)) {
-    rpm = `${round(sum(flatten(Object.values(metrics.routerStatus.data))) / 24 / 60)} rpm ${rpmSparkline()}`
+    rpm = `${_.round(_.sum(Object.values(metrics.routerStatus.data).flat()) / 24 / 60)} rpm ${rpmSparkline()}`
   }
 
   if (rpm || ms)
-    ux.log(`  ${label('Metrics:')} ${ms}${rpm}`)
+    ux.stdout(`  ${label('Metrics:')} ${ms}${rpm}`)
 }
 
 function displayNotifications(notifications?: {read: boolean}[]) {
@@ -88,13 +89,13 @@ function displayNotifications(notifications?: {read: boolean}[]) {
     return
   notifications = notifications.filter(n => !n.read)
   if (notifications.length > 0) {
-    ux.log(`\nYou have ${color.yellow(notifications.length.toString())} unread notifications. Read them with ${color.cyan.bold('heroku notifications')}`)
+    ux.stdout(`\nYou have ${color.yellow(notifications.length.toString())} unread notifications. Read them with ${color.cyan.bold('heroku notifications')}`)
   }
 }
 
 const dim = (s: string) => color.dim(s)
 const bold = (s: string) => color.bold(s)
-const label = (s: string) => color.blue(s)
+const label = (s: string) => color.heroku(s)
 
 const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<FetchMetricsResponse> => {
   const NOW = new Date().toISOString()
@@ -125,76 +126,76 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
 
 function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse) {
   const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
-  const zipped = zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
+  const zipped = _.zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
   for (const a of zipped) {
     const app = a[0]
     const metrics = a[1]
-    ux.log(color.magenta(app.app.name || ''))
-    ux.log(`  ${label('Owner:')} ${getOwner(app.app.owner)}`)
+    hux.styledHeader(color.app(app.app.name || ''))
+    ux.stdout(`  ${label('Owner:')} ${getOwner(app.app.owner)}`)
     if (app.pipeline) {
-      ux.log(`  ${label('Pipeline:')} ${app.pipeline.pipeline?.name}`)
+      ux.stdout(`  ${label('Pipeline:')} ${app.pipeline.pipeline?.name}`)
     }
 
     displayFormation(app.formation)
-    ux.log(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
+    ux.stdout(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
     displayMetrics(metrics)
     displayErrors(metrics)
-    ux.log()
+    ux.stdout()
   }
 }
 
 export default class Dashboard extends Command {
-    static topic = 'dashboard';
-    static description = 'display information about favorite apps';
-    static hidden = true;
-    public async run(): Promise<void> {
-      if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
-        execSync('heroku help', {stdio: 'inherit'})
-        return
-      }
-
-      const favoriteApps = async () => {
-        const {body: apps} = await this.heroku.get<Heroku.App[]>('/favorites?type=app', {
-          hostname: 'particleboard.heroku.com',
-        })
-        return apps.map(app => app.resource_name)
-      }
-
-      try {
-        img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback: () => {}})
-      } catch {}
-
-      ux.action.start('Loading')
-      const apps = await favoriteApps()
-      const [{body: teams}, notificationsResponse, appsWithMoreInfo] = await Promise.all([
-        this.heroku.get<Heroku.Team[]>('/teams'),
-        this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'})
-          .catch(() => null),
-        Promise.all(apps.map(async appID => {
-          const [{body: app}, {body: formation}, pipelineResponse] = await Promise.all([
-            this.heroku.get<Heroku.App>(`/apps/${appID}`),
-            this.heroku.get<Heroku.Formation>(`/apps/${appID}/formation`),
-            this.heroku.get<Heroku.PipelineCoupling>(`/apps/${appID}/pipeline-couplings`)
-              .catch(() => null),
-          ])
-          return {
-            app, formation, pipeline: pipelineResponse?.body,
-          }
-        })),
-      ])
-
-      const metrics = await fetchMetrics(appsWithMoreInfo, this.heroku)
-      ux.action.stop()
-      if (apps.length > 0)
-        displayApps(appsWithMoreInfo, metrics)
-      else
-        ux.warn(`Add apps to this dashboard by favoriting them with ${color.cyan.bold('heroku apps:favorites:add')}`)
-      ux.log(`See all add-ons with ${color.cyan.bold('heroku addons')}`)
-      const sampleTeam = sortBy(teams.filter(o => o.role !== 'collaborator'), o => new Date(o.created_at || ''))[0]
-      if (sampleTeam)
-        ux.log(`See all apps in ${color.yellow.dim(sampleTeam.name || '')} with ${color.cyan.bold('heroku apps --team ' + sampleTeam.name)}`)
-      ux.log(`See all apps with ${color.cyan.bold('heroku apps --all')}`)
-      displayNotifications(notificationsResponse?.body)
-      ux.log(`\nSee other CLI commands with ${color.cyan.bold('heroku help')}\n`)
+  static topic = 'dashboard'
+  static description = 'display information about favorite apps'
+  static hidden = true
+  public async run(): Promise<void> {
+    if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
+      execSync('heroku help', {stdio: 'inherit'})
+      return
     }
+
+    const favoriteApps = async () => {
+      const {body: apps} = await this.heroku.get<Heroku.App[]>('/favorites?type=app', {
+        hostname: 'particleboard.heroku.com',
+      })
+      return apps.map(app => app.resource_name)
+    }
+
+    try {
+      img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback() {}})
+    } catch {}
+
+    ux.action.start('Loading')
+    const apps = await favoriteApps()
+    const [{body: teams}, notificationsResponse, appsWithMoreInfo] = await Promise.all([
+      this.heroku.get<Heroku.Team[]>('/teams'),
+      this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'})
+        .catch(() => null),
+      Promise.all(apps.map(async appID => {
+        const [{body: app}, {body: formation}, pipelineResponse] = await Promise.all([
+          this.heroku.get<Heroku.App>(`/apps/${appID}`),
+          this.heroku.get<Heroku.Formation>(`/apps/${appID}/formation`),
+          this.heroku.get<Heroku.PipelineCoupling>(`/apps/${appID}/pipeline-couplings`)
+            .catch(() => null),
+        ])
+        return {
+          app, formation, pipeline: pipelineResponse?.body,
+        }
+      })),
+    ])
+
+    const metrics = await fetchMetrics(appsWithMoreInfo, this.heroku)
+    ux.action.stop()
+    if (apps.length > 0)
+      displayApps(appsWithMoreInfo, metrics)
+    else
+      ux.warn(`Add apps to this dashboard by favoriting them with ${color.cmd('heroku apps:favorites:add')}`)
+    ux.stdout(`See all add-ons with ${color.cmd('heroku addons')}`)
+    const sampleTeam = _.sortBy(teams.filter(o => o.role !== 'collaborator'), o => new Date(o.created_at || ''))[0]
+    if (sampleTeam)
+      ux.stdout(`See all apps in ${color.magenta(sampleTeam.name || '')} with ${color.cmd('heroku apps --team ' + sampleTeam.name)}`)
+    ux.stdout(`See all apps with ${color.cmd('heroku apps --all')}`)
+    displayNotifications(notificationsResponse?.body)
+    ux.stdout(`\nSee other CLI commands with ${color.cmd('heroku help')}\n`)
+  }
 }

@@ -1,9 +1,8 @@
-import color from '@heroku-cli/color'
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import runCommand from '../../../../helpers/runCommand'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips/add'
+import runCommand from '../../../../helpers/runCommand.js'
+import Cmd from '../../../../../src/commands/spaces/trusted-ips/add.js'
 
 describe('trusted-ips:add', function () {
   it('adds a CIDR entry to the trusted IP ranges', async function () {

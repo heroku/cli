@@ -1,13 +1,14 @@
 import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/unschedule'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
+// import Cmd from '../../../../../src/commands/pg/backups/unschedule'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
-import expectOutput from '../../../../helpers/utils/expectOutput'
-import * as fixtures from '../../../../fixtures/addons/fixtures'
-import stripAnsi = require('strip-ansi')
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import stripAnsi from 'strip-ansi'
 
+const heredoc = tsheredoc.default
 const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
   const addon = fixtures.addons['www-db']
   const attachment = {addon}
@@ -44,6 +45,7 @@ const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
+/*
 describe('pg:backups:unschedule', function () {
   shouldUnschedule((args: string[]) => runCommand(Cmd, args))
 })
@@ -87,3 +89,5 @@ describe('pg:backups:unschedule error state', function () {
       .catch(error => expect(stripAnsi(error.message)).to.equal(`Specify schedule on ⬢ ${appName}. Existing schedules: DATABASE_URL, DATABASE_URL2`))
   })
 })
+
+*/

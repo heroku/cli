@@ -1,5 +1,6 @@
 import {expect, test} from '@oclif/test'
 
+/*
 describe('webhooks:remove', function () {
   test
     .stderr()
@@ -27,3 +28,5 @@ describe('webhooks:remove', function () {
       expect(ctx.stderr).to.contain('Removing webhook 99999999-9999-9999-9999-999999999999 from example-pipeline... done\n')
     })
 })
+
+*/

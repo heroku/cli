@@ -1,9 +1,7 @@
-
 import * as fs from 'fs-extra'
 import * as Path from 'path'
-const https = require('https')
-const bytes = require('bytes')
-const progress = require('smooth-progress')
+import * as https from 'https'
+import cliProgress from 'cli-progress'
 
 type downloadOptions = {
   progress: boolean
@@ -13,15 +11,19 @@ export default function download(url: string, path: string, opts: downloadOption
   const tty = process.stderr.isTTY && process.env.TERM !== 'dumb'
 
   function showProgress(rsp: any) {
-    const bar = progress({
-      tmpl: `Downloading ${path}... :bar :percent :eta :data`,
-      width: 25,
-      total: Number.parseInt(rsp.headers['content-length'], 10),
+    const bar = new cliProgress.SingleBar({
+      format: `Downloading ${path}... |{bar}| {percentage}% | ETA: {eta}s | {value}/{total} bytes`,
+      barCompleteChar: '\u2588',
+      barIncompleteChar: '\u2591',
     })
+    bar.start(Number.parseInt(rsp.headers['content-length'], 10), 0)
     let total = 0
     rsp.on('data', function (chunk: string) {
       total += chunk.length
-      bar.tick(chunk.length, {data: bytes(total, {decimalPlaces: 2, fixedDecimals: 2})})
+      bar.update(total)
+    })
+    rsp.on('end', () => {
+      bar.stop()
     })
   }
 

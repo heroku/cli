@@ -1,8 +1,8 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/transfer'
-import runCommand from '../../../helpers/runCommand'
+import Cmd from '../../../../src/commands/spaces/transfer.js'
+import runCommand from '../../../helpers/runCommand.js'
 
 describe('spaces:transfer', function () {
   it('yields success when the API succeeds', async function () {

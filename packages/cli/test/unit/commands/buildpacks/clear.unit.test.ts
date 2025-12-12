@@ -1,9 +1,8 @@
 import {expect, test} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 
-import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub'
-import {unwrap} from '../../../helpers/utils/unwrap'
-nock.disableNetConnect()
+import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('buildpacks:clear', function () {
   test

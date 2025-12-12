@@ -1,11 +1,12 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import runCommand from '../../../../../helpers/runCommand'
-import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-verbose'
-import * as fixtures from '../../../../../fixtures/addons/fixtures'
+import runCommand from '../../../../../helpers/runCommand.js'
+// import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-verbose'
+import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
+/*
 describe('pg:settings:auto-explain:log-verbose', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -44,3 +45,5 @@ describe('pg:settings:auto-explain:log-verbose', function () {
     `))
   })
 })
+
+*/

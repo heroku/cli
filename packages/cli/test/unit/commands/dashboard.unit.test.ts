@@ -1,13 +1,15 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../src/commands/dashboard'
-import runCommand from '../../helpers/runCommand'
-import * as nock from 'nock'
+import Cmd from '../../../src/commands/dashboard.js'
+import runCommand from '../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import {ago} from '../../../src/lib/time'
-import {unwrap} from '../../helpers/utils/unwrap'
-import * as os from 'os'
-import heredoc from 'tsheredoc'
-import * as sinon from 'sinon'
+import {ago} from '../../../src/lib/time.js'
+import {unwrap} from '../../helpers/utils/unwrap.js'
+import os from 'node:os'
+import tsheredoc from 'tsheredoc'
+import sinon from 'sinon'
+
+const heredoc = tsheredoc.default
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
@@ -69,7 +71,7 @@ describe('dashboard', function () {
       expect(stdout.output).to.contain(heredoc(`
         See all add-ons with heroku addons
         See all apps with heroku apps --all
-        
+
         See other CLI commands with heroku help
       `))
       expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
@@ -92,7 +94,7 @@ describe('dashboard', function () {
       expect(stdout.output).to.contain(heredoc(`
         See all add-ons with heroku addons
         See all apps with heroku apps --all
-        
+
         See other CLI commands with heroku help
       `))
       expect(unwrap(stderr.output)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
@@ -158,8 +160,10 @@ describe('dashboard', function () {
         .reply(200, {data: {}})
 
       await runCommand(Cmd, [])
+
       expect(stdout.output).to.contain(heredoc(`
-        myapp
+        === ⬢ myapp
+
           Owner: foo@bar.com
           Dynos: 1 | Standard-1X
           Last release: ${ago(now)}

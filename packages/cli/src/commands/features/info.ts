@@ -1,6 +1,6 @@
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 
@@ -34,4 +34,3 @@ export default class Info extends Command {
     }
   }
 }
-

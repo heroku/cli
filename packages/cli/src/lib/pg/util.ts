@@ -1,3 +1,4 @@
+/*
 import color from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -120,3 +121,4 @@ export const databaseNameFromUrl = (uri: string, config: Record<string, string>)
   const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(uri)
   return `${conn.host}:${conn.port}${conn.pathname}`
 }
+*/

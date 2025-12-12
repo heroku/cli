@@ -1,5 +1,5 @@
-import {SniEndpoint} from '../../../src/lib/types/sni_endpoint'
-import {Domain} from '../../../src/lib/types/domain'
+import {SniEndpoint} from '../../../src/lib/types/sni_endpoint.js'
+import {Domain} from '../../../src/lib/types/domain.js'
 
 export const endpointStables: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   name: 'tokyo-1050',
@@ -124,11 +124,11 @@ export const certificateDetails = `
 
 export const certificateDetailsWithDomains = `
   Common Name(s): example.org
-  Domain(s):      subdomain.example.com
   Expires At:     2013-08-01 21:34 UTC
   Issuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
   Starts At:      2012-08-01 21:34 UTC
   Subject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org
+  Domain(s):      subdomain.example.com
   SSL certificate is self signed.
 `
 export const untrustedCertificateDetails = `

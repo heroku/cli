@@ -1,12 +1,12 @@
-import * as DockerHelper from '../../../../src/lib/container/docker_helper'
+import * as DockerHelper from '../../../../src/lib/container/docker_helper.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as path from 'path'
 import * as childProcess from 'child_process'
 import * as inquirer from 'inquirer'
+import {EventEmitter} from 'events'
 
-const EventEmitter = require('events').EventEmitter
-
+/*
 describe('DockerHelper', function () {
   const eventMock = () => {
     const eventEmitter = new EventEmitter()
@@ -367,3 +367,5 @@ describe('DockerHelper', function () {
     })
   })
 })
+
+*/

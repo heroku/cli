@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
-import * as inquirer from 'inquirer'
-import {SniEndpoint} from '../../lib/types/sni_endpoint'
+import inquirer from 'inquirer'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 function getCommand(certs: SniEndpoint[], domain: string): 'update' | 'add' {
   const shouldUpdate = certs
@@ -35,23 +35,25 @@ export default class Generate extends Command {
     domain: Args.string({required: true, description: 'domain name to generate'}),
   }
 
-  private parsed = this.parse(Generate)
+  async promptForOwnerInfo() {
+    return inquirer.prompt([
+      {type: 'input', message: 'Owner of this certificate', name: 'owner'},
+      {type: 'input', message: 'Country of owner (two-letter ISO code)', name: 'country'},
+      {type: 'input', message: 'State/province/etc. of owner', name: 'area'},
+      {type: 'input', message: 'City of owner', name: 'city'},
+    ])
+  }
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parsed
+    const {flags, args} = await this.parse(Generate)
     const {app, selfsigned} = flags
     if (this.requiresPrompt(flags)) {
-      const {owner, country, area, city} = await inquirer.prompt([
-        {type: 'input', message: 'Owner of this certificate', name: 'owner'},
-        {type: 'input', message: 'Country of owner (two-letter ISO code)', name: 'country'},
-        {type: 'input', message: 'State/province/etc. of owner', name: 'area'},
-        {type: 'input', message: 'City of owner', name: 'city'},
-      ])
+      const {owner, country, area, city} = await this.promptForOwnerInfo()
       Object.assign(flags, {owner, country, area, city})
     }
 
     const subject = this.getSubject(args, flags)
-    const domain = args.domain
+    const {domain} = args
     const keysize = flags.keysize || 2048
     const keyfile = `${domain}.key`
     const {body: certs} = await this.heroku.get<SniEndpoint[]>(`/apps/${app}/sni-endpoints`)
@@ -72,18 +74,24 @@ export default class Generate extends Command {
     }
   }
 
-  protected requiresPrompt(flags: Awaited<typeof this.parsed>['flags']) {
+  protected requiresPrompt(flags: any) {
     if (flags.subject) {
       return false
     }
 
+    if (flags.now) {
+      return false
+    }
+
     const args = [flags.owner, flags.country, flags.area, flags.city]
-    if (!flags.now && args.every((arg: string | undefined) => !arg)) {
+    if (args.every((arg: string | undefined) => !arg)) {
       return true
     }
+
+    return false
   }
 
-  protected getSubject(args: Awaited<typeof this.parsed>['args'], flags: Awaited<typeof this.parsed>['flags']) {
+  protected getSubject(args: any, flags: any) {
     const {domain} = args
     const {owner, country, area, city, subject} = flags
     if (subject) {

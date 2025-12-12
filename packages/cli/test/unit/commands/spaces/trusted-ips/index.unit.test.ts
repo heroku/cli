@@ -1,9 +1,11 @@
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips'
-import runCommand from '../../../../helpers/runCommand'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../../src/commands/spaces/trusted-ips/index.js'
+import runCommand from '../../../../helpers/runCommand.js'
+
+const heredoc = tsheredoc.default
 
 const now = new Date()
 
@@ -24,7 +26,7 @@ describe('trusted-ips', function () {
     await runCommand(Cmd, ['--space', 'my-space'])
     expect(stdout.output).to.equal(heredoc(`
     === Trusted IP Ranges
-    
+
     127.0.0.1/20
     Trusted IP rules are applied to this space.
     `))

@@ -1,8 +1,9 @@
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
 
-import {stringToConfig} from '../../../../src/commands/config/edit'
-import {Editor} from '../../../../src/lib/config/util'
+import {stringToConfig} from '../../../../src/commands/config/edit.js'
+import {Editor} from '../../../../src/lib/config/util.js'
 import {expect, test} from '@oclif/test'
 
 let sandbox: any
@@ -22,17 +23,11 @@ describe('config:edit', function () {
     beforeEach(function () {
       sandbox = sinon.createSandbox()
       sandbox.stub(Editor.prototype, 'edit')
-        .callsFake(() => {
-          return Promise.resolve(editedConfig)
-        })
-      sandbox.stub(ux, 'confirm')
-        .value(() => {
-          return Promise.resolve(true)
-        })
-      sandbox.stub(ux, 'log')
-        .value(() => {
-          return Promise.resolve()
-        })
+        .callsFake(() => Promise.resolve(editedConfig))
+      sandbox.stub(hux, 'confirm')
+        .value(() => Promise.resolve(true))
+      sandbox.stub(ux, 'stdout')
+        .value(() => Promise.resolve())
       sandbox.stub(ux.action, 'start')
         .value(() => {})
       sandbox.stub(ux.action, 'stop')

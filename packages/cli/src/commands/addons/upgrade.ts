@@ -1,12 +1,12 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {formatPriceText} from '../../lib/addons/util'
-import {addonResolver} from '../../lib/addons/resolve'
+import {formatPriceText} from '../../lib/addons/util.js'
+import {addonResolver} from '../../lib/addons/resolve.js'
 import type {AddOn, Plan} from '@heroku-cli/schema'
 import {HTTP} from '@heroku/http-call'
-import {HerokuAPIError} from '@heroku-cli/command/lib/api-client'
-import type {ExtendedAddon} from '../../lib/pg/types'
+import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
+import type {ExtendedAddon} from '../../lib/pg/types.js'
 
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
@@ -30,10 +30,8 @@ export default class Upgrade extends Command {
     plan: Args.string({description: 'unique identifier or name of the plan'}),
   }
 
-  private parsed = this.parse(Upgrade)
-
   public async run(): Promise<void> {
-    const ctx = await this.parsed
+    const ctx = await this.parse(Upgrade)
     const {flags: {app}, args} = ctx
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
@@ -68,9 +66,9 @@ export default class Upgrade extends Command {
       let errorToThrow = error as Error
       if (error instanceof HerokuAPIError) {
         const {http} = error
-        if (http.statusCode === 422 &&
-          http.body.message &&
-          http.body.message.startsWith('Couldn\'t find either the add-on')) {
+        if (http.statusCode === 422
+          && http.body.message
+          && http.body.message.startsWith('Couldn\'t find either the add-on')) {
           const plans = await this.getPlans(addonServiceName)
           errorToThrow = new Error(`${http.body.message}
 
@@ -87,7 +85,7 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
 
     ux.action.stop(`done${resolvedAddon.plan?.price ? `, ${formatPriceText(resolvedAddon.plan.price)}` : ''}`)
     if (resolvedAddon.provision_message) {
-      ux.log(resolvedAddon.provision_message)
+      ux.stdout(resolvedAddon.provision_message)
     }
   }
 
@@ -117,7 +115,7 @@ For example: ${color.blue('heroku addons:upgrade heroku-redis:premium-0')}
 ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
   }
 
-  protected buildApiErrorMessage(errorMessage: string, ctx: Awaited<typeof this.parsed>) {
+  protected buildApiErrorMessage(errorMessage: string, ctx: any) {
     const {flags: {app}, args: {addon, plan}} = ctx
     const example = errorMessage.split(', ')[2] || 'redis-triangular-1234'
     return `${errorMessage}

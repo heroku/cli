@@ -2,10 +2,10 @@ import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as _ from 'lodash'
-import color from '@heroku-cli/color'
-import {SpaceCompletion} from '@heroku-cli/command/lib/completions'
-import {App} from '../../lib/types/app'
+import _ from 'lodash'
+import {color} from '@heroku-cli/color'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
+import {App} from '../../lib/types/app.js'
 
 function annotateAppName(app: App) {
   let name = `${app.name}`
@@ -30,14 +30,14 @@ function regionizeAppName(app: App) {
 }
 
 function listApps(apps: Heroku.App) {
-  apps.forEach((app: App) => ux.log(regionizeAppName(app)))
+  apps.forEach((app: App) => ux.stdout(regionizeAppName(app)))
 }
 
 function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: string | null) {
   if (apps.length === 0) {
-    if (space) ux.log(`There are no apps in space ${color.green(space)}.`)
-    else if (team) ux.log(`There are no apps in team ${color.magenta(team)}.`)
-    else ux.log('You have no apps.')
+    if (space) ux.stdout(`There are no apps in space ${color.green(space)}.`)
+    else if (team) ux.stdout(`There are no apps in team ${color.magenta(team)}.`)
+    else ux.stdout('You have no apps.')
   } else if (space) {
     hux.styledHeader(`Apps in space ${color.green(space)}`)
     listApps(apps)
@@ -52,13 +52,13 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
     }
 
     const columns = {
-      name: {get: regionizeAppName},
-      email: {get: ({owner}: any) => owner.email},
+      Name: {get: regionizeAppName},
+      Email: {get: ({owner}: any) => owner.email},
     }
 
     if (apps[1].length > 0) {
-      hux.styledHeader('Collaborated Apps')
-      hux.table(apps[1], columns, {'no-header': true})
+      ux.stdout()
+      hux.table(apps[1], columns, {title: 'Collaborated Apps\n', titleOptions: {bold: true}})
     }
   }
 }
@@ -90,7 +90,7 @@ export default class AppsIndex extends Command {
 
     const teamIdentifier = flags.team
     let team = (!flags.personal && teamIdentifier) ? teamIdentifier : null
-    const space = flags.space
+    const {all, json, space} = flags
     const internalRouting = flags['internal-routing']
     if (space) {
       const teamResponse = await this.heroku.get<Heroku.Team>(`/spaces/${space}`)
@@ -99,7 +99,7 @@ export default class AppsIndex extends Command {
 
     let path = '/users/~/apps'
     if (team) path = `/teams/${team}/apps`
-    else if (flags.all) path = '/apps'
+    else if (all) path = '/apps'
     const [appsResponse, userResponse] = await Promise.all([
       this.heroku.get<Heroku.App>(path),
       this.heroku.get<Heroku.Account>('/account'),
@@ -116,7 +116,7 @@ export default class AppsIndex extends Command {
       apps = apps.filter((a: App) => a.internal_routing)
     }
 
-    if (flags.json) {
+    if (json) {
       hux.styledJSON(apps)
     } else {
       print(apps, user, space, team)

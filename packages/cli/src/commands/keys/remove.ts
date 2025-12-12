@@ -1,5 +1,5 @@
 import {Args, ux} from '@oclif/core'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {Command} from '@heroku-cli/command'
 
@@ -30,4 +30,3 @@ Found keys: ${color.yellow(keys.map(k => k.comment).join(', '))}.`)
     ux.action.stop()
   }
 }
-

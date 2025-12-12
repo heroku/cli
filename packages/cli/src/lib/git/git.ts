@@ -1,15 +1,16 @@
 import {vars} from '@heroku-cli/command'
-import * as cp from 'child_process'
+import cp from 'node:child_process'
 import {ux} from '@oclif/core'
-import * as fs from 'fs'
-import {promisify} from 'util'
+import fs from 'fs'
+import {promisify} from 'node:util'
 const execFile = promisify(cp.execFile)
 
-const debug = require('debug')('git')
+import debug from 'debug'
+const gitDebug = debug('git')
 
 export default class Git {
   public async exec(args: string[]): Promise<string> {
-    debug('exec: git %o', args)
+    gitDebug('exec: git %o', args)
     try {
       const {stdout, stderr} = await execFile('git', args)
       if (stderr) process.stderr.write(stderr)
@@ -25,7 +26,7 @@ export default class Git {
 
   public spawn(args: string[]) {
     return new Promise((resolve, reject) => {
-      debug('spawn: git %o', args)
+      gitDebug('spawn: git %o', args)
       const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
       s.on('error', (err: Error & {code?: string}) => {
         if (err.code === 'ENOENT') {
@@ -73,11 +74,11 @@ export default class Git {
     const ref = await this.getRef(commit)
     const message = await this.getCommitTitle(ref)
 
-    return Promise.resolve({
-      branch: branch,
-      ref: ref,
-      message: message,
-    })
+    return {
+      branch,
+      message,
+      ref,
+    }
   }
 
   inGitRepo() {
@@ -91,12 +92,13 @@ export default class Git {
 
   hasGitRemote(remote: string) {
     return this.remoteUrl(remote)
+      // eslint-disable-next-line unicorn/prefer-native-coercion-functions
       .then((remote?: string) => Boolean(remote))
   }
 
   createRemote(remote: string, url: string) {
     return this.hasGitRemote(remote)
-      .then(exists => !exists ? this.exec(['remote', 'add', remote, url]) : null)
+      .then(exists => exists ? null : this.exec(['remote', 'add', remote, url]))
   }
 }
 

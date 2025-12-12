@@ -70,14 +70,13 @@ get a CI config var
 
 ```
 USAGE
-  $ heroku ci:config:get KEY [-h] [-a <value>] [-r <value>] [-p <value>] [-s]
+  $ heroku ci:config:get KEY [-a <value>] [-r <value>] [-p <value>] [-s]
 
 ARGUMENTS
   KEY  name of the config var key
 
 FLAGS
   -a, --app=<value>       app to run command against
-  -h, --help              Show CLI help.
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
   -s, --shell             output config var in shell format
@@ -230,11 +229,10 @@ open the Dashboard version of Heroku CI
 
 ```
 USAGE
-  $ heroku ci:open -a <value> [-h] [-r <value>] [-p <value>]
+  $ heroku ci:open [-a <value>] [-r <value>] [-p <value>]
 
 FLAGS
-  -a, --app=<value>       (required) app to run command against
-  -h, --help              Show CLI help.
+  -a, --app=<value>       app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
 

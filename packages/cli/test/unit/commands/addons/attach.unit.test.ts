@@ -1,21 +1,22 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/addons/attach'
-import runCommand from '../../../helpers/runCommand'
+import Cmd from '../../../../src/commands/addons/attach.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as nock from 'nock'
-import * as confirmCommand from '../../../../src/lib/confirmCommand'
-import * as sinon from 'sinon'
+import nock from 'nock'
+import ConfirmCommand from '../../../../src/lib/confirmCommand.js'
+import sinon from 'sinon'
 
 let confirmStub: sinon.SinonStub
 
 describe('addons:attach', function () {
   beforeEach(function () {
-    confirmStub = sinon.stub(confirmCommand, 'default').returns(Promise.resolve())
+    confirmStub = sinon.stub(ConfirmCommand.prototype, 'confirm').resolves()
   })
 
   afterEach(function () {
     confirmStub.restore()
     nock.cleanAll()
+    sinon.restore()
   })
 
   it('attaches an add-on', async function () {
@@ -34,8 +35,8 @@ describe('addons:attach', function () {
     ])
 
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Attaching redis-123 to myapp... done\n')
-    expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting myapp... done, v10\n')
+    expect(stderr.output).to.contain('Attaching redis-123 to myapp... done')
+    expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting myapp... done, v10')
     return api.done()
   })
 
@@ -57,8 +58,8 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done\n')
-        expect(stderr.output).to.contain('\nSetting foo config vars and restarting myapp... done, v10\n')
+        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done')
+        expect(stderr.output).to.contain('\nSetting foo config vars and restarting myapp... done, v10')
         api.done()
       })
   })
@@ -83,9 +84,9 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp...\n')
-        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done\n')
-        expect(stderr.output).to.contain('Setting foo config vars and restarting myapp... done, v10\n')
+        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp...')
+        expect(stderr.output).to.contain('Attaching redis-123 as foo to myapp... done')
+        expect(stderr.output).to.contain('Setting foo config vars and restarting myapp... done, v10')
         api.done()
       })
   })
@@ -108,8 +109,8 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching default of postgres-123 to myapp... done\n')
-        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10\n')
+        expect(stderr.output).to.contain('Attaching default of postgres-123 to myapp... done')
+        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10')
         api.done()
       })
   })
@@ -134,8 +135,8 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching hello of postgres-123 to myapp... done\n')
-        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10\n')
+        expect(stderr.output).to.contain('Attaching hello of postgres-123 to myapp... done')
+        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting myapp... done, v10')
         api.done()
       })
   })

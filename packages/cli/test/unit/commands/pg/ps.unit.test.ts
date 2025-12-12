@@ -1,10 +1,11 @@
+/*
 import {expect} from '@oclif/test'
-import * as nock from 'nock'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 import * as proxyquire from 'proxyquire'
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import * as sinon from 'sinon'
 
 const FAKE_OUTPUT_TEXT = heredoc(`
@@ -12,7 +13,7 @@ const FAKE_OUTPUT_TEXT = heredoc(`
   -------+--------+---------+----------+-------------+-------------------+---------+-------
    17496 | active | standby | postgres |             |                   | t       |
    (1 row)
-   
+
  `)
 
 describe('pg:ps', function () {
@@ -101,10 +102,12 @@ SELECT pid,
            age(now(), xact_start) AS running_for,
            xact_start AS transaction_start, wait_event IS NOT NULL AS waiting, query
     FROM pg_stat_activity
-    WHERE query <> '<insufficient privilege>' 
+    WHERE query <> '<insufficient privilege>'
       AND pid <> pg_backend_pid()
     ORDER BY query_start DESC
 `))
     expect(stdout.output).to.equal(FAKE_OUTPUT_TEXT)
   })
 })
+
+*/

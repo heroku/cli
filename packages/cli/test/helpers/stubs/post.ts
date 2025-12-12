@@ -1,13 +1,13 @@
-import * as nock from 'nock'
+import nock from 'nock'
 
 export function collaborators() {
   return nock('https://api.heroku.com:443')
     .post('/apps/myapp/collaborators', {
-      user: 'raulb@heroku.com',
+      user: 'gandalf@heroku.com',
     }).reply(200)
 }
 
-export function teamAppCollaborators(email = 'raulb@heroku.com', permissions: string[] = [], response: {code?: number, description?: Record<string, unknown>} = {}) {
+export function teamAppCollaborators(email = 'gandalf@heroku.com', permissions: string[] = [], response: {code?: number, description?: Record<string, unknown>} = {}) {
   const body: {user: string, permissions?: string[]} = {user: email}
   if (permissions.length > 0) {
     body.permissions = permissions
@@ -21,6 +21,6 @@ export function teamAppCollaborators(email = 'raulb@heroku.com', permissions: st
 
 export function personalToPersonal() {
   return nock('https://api.heroku.com:443')
-    .post('/account/app-transfers', {app: 'myapp', recipient: 'raulb@heroku.com'})
+    .post('/account/app-transfers', {app: 'myapp', recipient: 'gandalf@heroku.com'})
     .reply(200, {state: 'pending'})
 }

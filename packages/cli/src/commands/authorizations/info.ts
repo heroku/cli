@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import {display} from '../../lib/authorizations/authorizations'
+import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsInfo extends Command {
   static description = 'show an existing OAuth authorization'

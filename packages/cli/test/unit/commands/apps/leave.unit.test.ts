@@ -1,10 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/apps/leave'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
+import Cmd from '../../../../src/commands/apps/leave.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from '@oclif/test'
 
-function mockUserAccount(email = 'raulb@heroku.com') {
+function mockUserAccount(email = 'gandalf@heroku.com') {
   return nock('https://api.heroku.com:443')
     .get('/account')
     .reply(200, {email})
@@ -27,7 +27,7 @@ describe('heroku apps:leave', function () {
 
   beforeEach(function () {
     apiGetUserAccount = mockUserAccount()
-    apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalApp('myapp', 'raulb@heroku.com')
+    apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalApp('myapp', 'gandalf@heroku.com')
   })
 
   afterEach(function () {
@@ -41,7 +41,7 @@ describe('heroku apps:leave', function () {
         'myapp',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Leaving myapp...\nLeaving myapp... done\n')
+      expect(stderr.output).to.eq('Leaving ⬢ myapp... done\n')
       apiGetUserAccount.done()
       apiDeletePersonalAppCollaborator.done()
     })
@@ -54,7 +54,7 @@ describe('heroku apps:leave', function () {
         'myapp',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Leaving myapp...\nLeaving myapp... done\n')
+      expect(stderr.output).to.eq('Leaving ⬢ myapp... done\n')
       apiGetUserAccount.done()
       apiDeletePersonalAppCollaborator.done()
     })
@@ -63,7 +63,7 @@ describe('heroku apps:leave', function () {
   describe('when the user tries to leave the app', function () {
     before(function () {
       apiGetUserAccount = mockUserAccount()
-      apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalAppDeleteFailure('myapp', 'raulb@heroku.com')
+      apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalAppDeleteFailure('myapp', 'gandalf@heroku.com')
     })
 
     after(function () {

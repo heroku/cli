@@ -1,9 +1,8 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, Flags, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {capitalize} from '@oclif/core/lib/util'
 import {formatDistanceToNow} from 'date-fns'
-import HTTP from '@heroku/http-call'
+import {HTTP} from '@heroku/http-call'
 import {
   TrustInstance,
   TrustIncident,
@@ -12,10 +11,11 @@ import {
   FormattedTrustStatus,
   SystemStatus,
   Localization,
-} from '../lib/types/status'
+} from '../lib/types/status.js'
 
-import {getMaxUpdateTypeLength} from '../lib/status/util'
+import {getMaxUpdateTypeLength} from '../lib/status/util.js'
 
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
 
 const printStatus = (status: string) => {
@@ -74,19 +74,13 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
   const incidents: TrustIncident[] = []
   const scheduled: TrustMaintenance[] = []
   const instanceKeyArray = new Set(instances.map(instance => instance.key))
-  const herokuActiveIncidents = activeIncidents.filter(incident => {
-    return incident.instanceKeys.some(key => instanceKeyArray.has(key))
-  })
+  const herokuActiveIncidents = activeIncidents.filter(incident => incident.instanceKeys.some(key => instanceKeyArray.has(key)))
   const toolsIncidents = herokuActiveIncidents.filter(incident => {
     const tools = ['TOOLS', 'Tools', 'CLI', 'Dashboard', 'Platform API']
     return tools.some(tool => incident.serviceKeys.includes(tool))
   })
-  const appsIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuApps') || incident.serviceKeys.includes('Apps')
-  })
-  const dataIncidents = herokuActiveIncidents.filter(incident => {
-    return incident.serviceKeys.includes('HerokuData') || incident.serviceKeys.includes('Data')
-  })
+  const appsIncidents = herokuActiveIncidents.filter(incident => incident.serviceKeys.includes('HerokuApps') || incident.serviceKeys.includes('Apps'))
+  const dataIncidents = herokuActiveIncidents.filter(incident => incident.serviceKeys.includes('HerokuData') || incident.serviceKeys.includes('Data'))
 
   if (appsIncidents.length > 0) {
     const severity = determineIncidentSeverity(appsIncidents)
@@ -177,25 +171,25 @@ export default class Status extends Command {
 
     if (herokuStatus) {
       for (const incident of herokuStatus.incidents) {
-        ux.log()
+        ux.stdout()
         hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
 
         const padding = getMaxUpdateTypeLength(incident.updates.map(update => update.update_type))
         for (const u of incident.updates) {
-          ux.log(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
-          ux.log(`${u.contents}\n`)
+          ux.stdout(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
+          ux.stdout(`${u.contents}\n`)
         }
       }
     } else if (formattedTrustStatus) {
       for (const incident of formattedTrustStatus.incidents) {
-        ux.log()
+        ux.stdout()
         hux.styledHeader(`${incident.id} ${color.yellow(incident.createdAt)} ${color.cyan(`https://status.salesforce.com/incidents/${incident.id}`)}`)
 
         const padding = getMaxUpdateTypeLength(incident.IncidentEvents.map(event => event.localizedType ?? event.type))
         for (const event of incident.IncidentEvents) {
           const eventType = event.localizedType ?? event.type
-          ux.log(`${color.yellow(eventType.padEnd(padding))} ${new Date(event.createdAt).toISOString()} (${formatDistanceToNow(new Date(event.createdAt))} ago)`)
-          ux.log(`${event.message}\n`)
+          ux.stdout(`${color.yellow(eventType.padEnd(padding))} ${new Date(event.createdAt).toISOString()} (${formatDistanceToNow(new Date(event.createdAt))} ago)`)
+          ux.stdout(`${event.message}\n`)
         }
       }
     }

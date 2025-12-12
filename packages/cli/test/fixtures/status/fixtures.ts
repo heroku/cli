@@ -3,7 +3,7 @@ import {
   TrustIncident,
   TrustMaintenance,
   Localization,
-} from '../../../src/lib/types/status'
+} from '../../../src/lib/types/status.js'
 
 export const fixtureNow = Date.now()
 export const fixtureNowISO = new Date(fixtureNow).toISOString()

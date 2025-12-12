@@ -2,7 +2,9 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Index extends Command {
   static topic = 'spaces'
@@ -35,7 +37,7 @@ export default class Index extends Command {
     const {body: rules} = await this.heroku.get<Required<Heroku.InboundRuleset>>(`/spaces/${space}/inbound-ruleset`)
 
     if (flags.json) {
-      ux.log(JSON.stringify(rules, null, 2))
+      ux.stdout(JSON.stringify(rules, null, 2))
     } else {
       this.displayRules(space, rules)
     }
@@ -45,7 +47,7 @@ export default class Index extends Command {
     if (ruleset.rules.length > 0) {
       hux.styledHeader('Trusted IP Ranges')
       for (const rule of ruleset.rules) {
-        ux.log(rule.source)
+        ux.stdout(rule.source)
       }
     } else {
       hux.styledHeader(`${space} has no trusted IP ranges. All inbound web requests to dynos are blocked.`)
@@ -56,9 +58,9 @@ export default class Index extends Command {
     // Once the API always includes the applied field (W-19525612), this can be simplified to:
     //   if (ruleset.applied) { ... } else { ... }
     if (ruleset.applied === true) {
-      ux.log('Trusted IP rules are applied to this space.')
+      ux.stdout('Trusted IP rules are applied to this space.')
     } else if (ruleset.applied === false) {
-      ux.log('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+      ux.stdout('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     }
   }
 }

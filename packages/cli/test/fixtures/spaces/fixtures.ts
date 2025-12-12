@@ -1,6 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
-import type {SpaceTopology} from '../../../src/commands/spaces/topology'
-import {SpaceWithOutboundIps} from '../../../src/lib/types/spaces'
+import type {SpaceTopology, SpaceWithOutboundIps} from '../../../src/lib/types/spaces.js'
 
 export const spaces: Record<string, SpaceWithOutboundIps> = {
   'non-shield-space': {

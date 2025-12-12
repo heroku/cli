@@ -1,13 +1,15 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/topology'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
-import expectOutput from '../../../helpers/utils/expectOutput'
-import * as fixtures from '../../../fixtures/spaces/fixtures'
+import Cmd from '../../../../src/commands/spaces/topology.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 import {expect} from 'chai'
-import type {SpaceTopology} from '../../../../src/commands/spaces/topology'
+import type {SpaceTopology} from '../../../../src/lib/types/spaces.js'
 import {App} from '@heroku-cli/schema'
+
+const heredoc = tsheredoc.default
 
 describe('spaces:topology', function () {
   let topo1: SpaceTopology

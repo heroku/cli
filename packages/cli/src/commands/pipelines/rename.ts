@@ -1,9 +1,9 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {updatePipeline} from '../../lib/api'
-import disambiguate from '../../lib/pipelines/disambiguate'
+import {updatePipeline} from '../../lib/api.js'
+import disambiguate from '../../lib/pipelines/disambiguate.js'
 
 export default class PipelinesRename extends Command {
   static description = 'rename a pipeline'

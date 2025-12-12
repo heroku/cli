@@ -4,10 +4,10 @@ import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import * as _ from 'lodash'
+import _ from 'lodash'
 
-import {parse, quote} from '../../lib/config/quote'
-import {Editor} from '../../lib/config/util'
+import {parse, quote} from '../../lib/config/quote.js'
+import {Editor} from '../../lib/config/util.js'
 
 const editor = new Editor()
 
@@ -21,9 +21,7 @@ interface UploadConfig {
 function configToString(config: Config): string {
   return Object.keys(config)
     .sort()
-    .map(key => {
-      return `${key}=${quote(config[key])}`
-    })
+    .map(key => `${key}=${quote(config[key])}`)
     .join('\n')
 }
 
@@ -58,11 +56,11 @@ function showDiff(from: Config, to: Config) {
   for (const k of allKeys(from, to)) {
     if (from[k] === to[k]) continue
     if (k in from) {
-      ux.log(color.red(`- ${k}=${quote(from[k])}`))
+      ux.stdout(color.red(`- ${k}=${quote(from[k])}`))
     }
 
     if (k in to) {
-      ux.log(color.green(`+ ${k}=${quote(to[k])}`))
+      ux.stdout(color.green(`+ ${k}=${quote(to[k])}`))
     }
   }
 }
@@ -130,10 +128,10 @@ $ VISUAL="atom --wait" heroku config:edit`,
       return false
     }
 
-    ux.log()
-    ux.log('Config Diff:')
+    ux.stdout()
+    ux.stdout('Config Diff:')
     showDiff(original, newConfig)
-    ux.log()
+    ux.stdout()
     return hux.confirm(`Update config on ${color.app(this.app)} with these values?`)
   }
 

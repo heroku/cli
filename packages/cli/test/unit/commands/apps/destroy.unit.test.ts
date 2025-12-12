@@ -11,7 +11,7 @@ describe('apps:destroy', function () {
     .command(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
     .it('deletes the app',  ({stdout, stderr}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done\n')
+      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
     })
 
   test
@@ -24,7 +24,7 @@ describe('apps:destroy', function () {
     .command(['apps:destroy', 'myapp', '--confirm', 'myapp'])
     .it('deletes the app via arg',  ({stdout, stderr}) => {
       expect(stdout).to.equal('')
-      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done\n')
+      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
     })
 
   test

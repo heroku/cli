@@ -1,3 +1,4 @@
+/*
 import {ux} from '@oclif/core'
 import {SpawnOptions} from 'child_process'
 import debug from 'debug'
@@ -76,3 +77,4 @@ export async function interactive(db: ConnectionDetails) {
 
   return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
 }
+*/

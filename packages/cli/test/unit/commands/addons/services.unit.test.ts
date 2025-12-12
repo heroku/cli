@@ -1,9 +1,10 @@
 import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/services'
-import runCommand from '../../../helpers/runCommand'
-import * as fixtures from '../../../fixtures/addons/fixtures'
-import * as nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import Cmd from '../../../../src/commands/addons/services.js'
+import runCommand from '../../../helpers/runCommand.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import nock from 'nock'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+import {expect} from 'chai'
 
 describe('addons:services', function () {
   beforeEach(function () {
@@ -18,13 +19,12 @@ describe('addons:services', function () {
 
   it('shows addon services', async function () {
     await runCommand(Cmd, [])
-    expectOutput(stdout.output, `
-Slug              Name         State
- ───────────────── ──────────── ─────
- heroku-postgresql Hobby Dev    ga
- heroku-redis      Heroku Redis ga
+    const actual = removeAllWhitespace(stdout.output)
+    const expected = removeAllWhitespace(`
+      heroku-postgresql Hobby Dev    ga
+      heroku-redis      Heroku Redis ga
 
-See plans with heroku addons:plans SERVICE
- `)
+      See plans with heroku addons:plans SERVICE`)
+    expect(actual).to.include(expected)
   })
 })

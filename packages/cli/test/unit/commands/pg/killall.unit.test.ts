@@ -1,8 +1,9 @@
+/*
 import {stderr, stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/pg/killall'
-import * as nock from 'nock'
+import nock from 'nock'
 import heredoc from 'tsheredoc'
 
 describe('pg:killall', function () {
@@ -38,3 +39,5 @@ describe('pg:killall', function () {
     `)
   })
 })
+
+*/

@@ -2,6 +2,7 @@ import {expect, test} from '@oclif/test'
 
 const MY_APP = 'myapp'
 const MY_APP2 = 'myotherapp'
+
 describe('apps:favorites', function () {
   test
     .stdout()

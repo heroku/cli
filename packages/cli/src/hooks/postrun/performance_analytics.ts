@@ -1,6 +1,6 @@
 import {Hook} from '@oclif/core'
 
-import * as telemetry from '../../global_telemetry'
+import * as telemetry from '../../global_telemetry.js'
 
 declare const global: telemetry.TelemetryGlobal
 

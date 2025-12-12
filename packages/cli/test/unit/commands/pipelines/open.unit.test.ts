@@ -1,10 +1,10 @@
 import {expect, test} from '@oclif/test'
-import * as childProcess from 'child_process'
-import * as sinon from 'sinon'
+import childProcess from 'child_process'
+import sinon from 'sinon'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
-  const spawnStub = sinon.stub().returns({unref: () => {}})
+  const spawnStub = sinon.stub().returns({unref() {}})
 
   test
     .stdout()

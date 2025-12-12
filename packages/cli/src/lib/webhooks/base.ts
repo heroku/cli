@@ -1,4 +1,4 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command} from '@heroku-cli/command'
 
 import {Config} from '@oclif/core'
@@ -14,7 +14,7 @@ export default abstract class extends Command {
       ...this.heroku.defaults.headers,
       Accept: 'application/vnd.heroku+json; version=3.webhooks',
       authorization: `Basic ${Buffer.from(':' + this.heroku.auth).toString('base64')}`,
-    }
+    } as any
     this.webhooksClient = client
   }
 

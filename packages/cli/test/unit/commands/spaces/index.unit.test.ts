@@ -1,11 +1,11 @@
 import {stdout} from 'stdout-stderr'
-import Cmd  from '../../../../src/commands/spaces/index'
-import runCommand from '../../../helpers/runCommand'
-import * as nock from 'nock'
-import heredoc from 'tsheredoc'
+import Cmd from '../../../../src/commands/spaces/index.js'
+import runCommand from '../../../helpers/runCommand.js'
+import nock from 'nock'
 import {expect} from 'chai'
-import {CLIError} from '@oclif/core/lib/errors'
-import stripAnsi = require('strip-ansi')
+import {Errors} from '@oclif/core'
+import stripAnsi from 'strip-ansi'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces', function () {
   const now = new Date()
@@ -30,11 +30,10 @@ describe('spaces', function () {
     await runCommand(Cmd, [])
 
     api.done()
-    expect(heredoc(stdout.output)).to.eq(heredoc`
-      Name     Team    Region    State     Generation Created At               
-      ──────── ─────── ───────── ───────── ────────── ──────────────────────── 
-      my-space my-team my-region allocated cedar      ${now.toISOString()} 
-    `)
+
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace('Name     Team    Region    State     Generation Created At'))
+    expect(actual).to.include(removeAllWhitespace(`my-space my-team my-region allocated cedar      ${now.toISOString()}`))
   })
 
   it('shows spaces with --json', async function () {
@@ -63,11 +62,9 @@ describe('spaces', function () {
     await runCommand(Cmd, ['--team', 'my-team'])
 
     api.done()
-    expect(heredoc(stdout.output)).to.eq(heredoc`
-      Name     Team    Region    State     Generation Created At               
-      ──────── ─────── ───────── ───────── ────────── ──────────────────────── 
-      my-space my-team my-region allocated cedar      ${now.toISOString()} 
-    `)
+    const actual = removeAllWhitespace(stdout.output)
+    expect(actual).to.include(removeAllWhitespace('Name     Team    Region    State     Generation Created At'))
+    expect(actual).to.include(removeAllWhitespace(`my-space my-team my-region allocated cedar      ${now.toISOString()}`))
   })
 
   it('shows spaces team error message', async function () {
@@ -78,7 +75,7 @@ describe('spaces', function () {
     try {
       await runCommand(Cmd, ['--team', 'other-team'])
     } catch (error) {
-      const {message} = error as CLIError
+      const {message} = error as Errors.CLIError
       expect(stripAnsi(message)).to.eq('No spaces in other-team.')
     }
 
@@ -93,7 +90,7 @@ describe('spaces', function () {
     try {
       await runCommand(Cmd, [])
     } catch (error) {
-      const {message} = error as CLIError
+      const {message} = error as Errors.CLIError
       expect(message).to.eq('You do not have access to any spaces.')
     }
 

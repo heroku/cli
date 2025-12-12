@@ -1,11 +1,13 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/certs/auto/disable'
-import runCommand from '../../../../helpers/runCommand'
-import * as nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput'
-import stripAnsi = require('strip-ansi')
+import Cmd from '../../../../../src/commands/certs/auto/disable.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import nock from 'nock'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import stripAnsi from 'strip-ansi'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {
@@ -23,7 +25,6 @@ describe('heroku certs:auto:disable', function () {
       'example',
     ])
     expectOutput(stderr.output, heredoc(`
-      Disabling Automatic Certificate Management...
       Disabling Automatic Certificate Management... done
     `))
     expectOutput(stdout.output, '')

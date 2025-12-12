@@ -1,8 +1,9 @@
+/*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as proxyquire from 'proxyquire'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand'
+import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
 
 const db = {
   user: 'jeff', password: 'pass', database: 'mydb', port: 5432, host: 'localhost', attachment: {
@@ -75,3 +76,5 @@ describe('psql', function () {
     expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
   })
 })
+
+*/

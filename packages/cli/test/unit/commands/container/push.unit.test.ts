@@ -1,20 +1,20 @@
 import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/push'
-import runCommand from '../../../helpers/runCommand'
+import Cmd from '../../../../src/commands/container/push.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import * as DockerHelper from '../../../../src/lib/container/docker_helper'
-import * as nock from 'nock'
-import {CLIError} from '@oclif/core/lib/errors'
-import color from '@heroku-cli/color'
-
-const sandbox = sinon.createSandbox()
+import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
+import nock from 'nock'
+import {color} from '@heroku-cli/color'
+import {Errors} from '@oclif/core'
 
 describe('container push', function () {
   let api: nock.Scope
+  let sandbox: sinon.SinonSandbox
 
   beforeEach(function () {
     api = nock('https://api.heroku.com:443')
+    sandbox = sinon.createSandbox()
     return nock.cleanAll()
   })
 
@@ -39,7 +39,7 @@ describe('container push', function () {
       ]).catch((error_: any) => {
         error = error_
       })
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.yellow('heroku-24')}, run ${color.cmd('git push heroku main')} instead.`)
       expect(oclif.exit).to.equal(1)
     })
@@ -53,10 +53,10 @@ describe('container push', function () {
     })
 
     it('allows push to the docker registry', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
       await runCommand(Cmd, [
@@ -84,9 +84,9 @@ describe('container push', function () {
 
     it('gets a build error', async function () {
       let error
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
         .throws()
 
       await runCommand(Cmd, [
@@ -96,7 +96,7 @@ describe('container push', function () {
       ]).catch(error_ => {
         error = error_
       })
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.contain('docker build exited with Error: Error')
       expect(oclif.exit).to.equal(1)
 
@@ -107,10 +107,10 @@ describe('container push', function () {
 
     it('gets a push error', async function () {
       let error
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .throws()
 
       await runCommand(Cmd, [
@@ -120,7 +120,7 @@ describe('container push', function () {
       ]).catch(error_ => {
         error = error_
       })
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.contain('docker push exited with Error: Error')
       expect(oclif.exit).to.equal(1)
 
@@ -131,10 +131,10 @@ describe('container push', function () {
     })
 
     it('pushes to the docker registry', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
       await runCommand(Cmd, [
@@ -153,10 +153,10 @@ describe('container push', function () {
     })
 
     it('pushes the standard dockerfile to non-web', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/worker')
 
       await runCommand(Cmd, [
@@ -175,10 +175,10 @@ describe('container push', function () {
     })
 
     it('pushes specified dockerfiles recursively', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
 
@@ -202,15 +202,15 @@ describe('container push', function () {
     })
 
     it('warns when a specified Dockerfile is missing', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
       build.withArgs({
         dockerfile: '/path/to/Dockerfile.web',
         resource: 'registry.heroku.com/testapp/web',
         buildArgs: [],
       })
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
 
@@ -231,10 +231,10 @@ describe('container push', function () {
     })
 
     it('pushes all dockerfiles recursively when process types are not specified', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile.web', '/path/to/Dockerfile.worker'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
 
@@ -256,10 +256,10 @@ describe('container push', function () {
     })
 
     it('builds with custom context path and pushes to the docker registry', async function () {
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
-      const build = sandbox.stub(DockerHelper, 'buildImage')
-      const push = sandbox.stub(DockerHelper, 'pushImage')
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
       await runCommand(Cmd, [
@@ -284,7 +284,7 @@ describe('container push', function () {
 
     it('does not find an image to push', async function () {
       let error
-      const dockerfiles = sandbox.stub(DockerHelper, 'getDockerfiles')
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns([])
 
       await runCommand(Cmd, [
@@ -294,7 +294,7 @@ describe('container push', function () {
       ]).catch(error_ => {
         error = error_
       })
-      const {message, oclif} = error as unknown as CLIError
+      const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.contain('No images to push')
       expect(oclif.exit).to.equal(1)
 
@@ -311,7 +311,7 @@ describe('container push', function () {
     ]).catch(error_ => {
       error = error_
     })
-    const {message, oclif} = error as unknown as CLIError
+    const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires either --recursive or one or more process types')
     expect(oclif.exit).to.equal(1)
     expect(stdout.output).to.equal('')
@@ -327,7 +327,7 @@ describe('container push', function () {
     ]).catch(error_ => {
       error = error_
     })
-    const {message, oclif} = error as unknown as CLIError
+    const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires exactly one target process type, or --recursive option')
     expect(oclif.exit).to.equal(1)
     expect(stdout.output).to.equal('')

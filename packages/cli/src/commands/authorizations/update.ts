@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import {display} from '../../lib/authorizations/authorizations'
+import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsUpdate extends Command {
   static description = 'updates an OAuth authorization'

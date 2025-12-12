@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import {unwrap} from '../../../helpers/utils/unwrap'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 const d = new Date()
 const notifications = [

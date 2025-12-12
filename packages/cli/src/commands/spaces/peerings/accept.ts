@@ -1,7 +1,9 @@
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Accept extends Command {
   static topic = 'spaces'
@@ -33,6 +35,6 @@ export default class Accept extends Command {
       body: {pcx_id: pcxID},
       headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
     })
-    ux.log(`Accepting and configuring peering connection ${color.cyan.bold(pcxID)}`)
+    ux.stdout(`Accepting and configuring peering connection ${color.cyan.bold(pcxID)}`)
   }
 }

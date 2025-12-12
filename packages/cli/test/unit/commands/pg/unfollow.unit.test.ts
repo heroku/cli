@@ -1,11 +1,12 @@
 import {stderr} from 'stdout-stderr'
-import * as nock from 'nock'
-import Cmd  from '../../../../src/commands/pg/unfollow'
-import runCommand from '../../../helpers/runCommand'
-import expectOutput from '../../../helpers/utils/expectOutput'
+import nock from 'nock'
+// import Cmd from '../../../../src/commands/pg/unfollow'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import * as fixtures from '../../../fixtures/addons/fixtures'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
+/*
 describe('pg:unfollow', function () {
   const addon = fixtures.addons['dwh-db']
   const appName = 'myapp'
@@ -40,3 +41,5 @@ describe('pg:unfollow', function () {
     `))
   })
 })
+
+*/

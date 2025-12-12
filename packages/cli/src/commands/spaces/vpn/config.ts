@@ -2,8 +2,10 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections'
-import heredoc from 'tsheredoc'
+import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export default class Config extends Command {
   static topic = 'spaces'

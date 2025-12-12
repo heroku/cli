@@ -1,11 +1,9 @@
 import {Hook} from '@oclif/core'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import execa from 'execa'
 
-const exec = (cmd: string, args: string[]) => {
-  const execa = require('execa')
-  return execa(cmd, args, {stdio: 'inherit'})
-}
+const exec = (cmd: string, args: string[]) => execa(cmd, args, {stdio: 'inherit'})
 
 const migrate: Hook<'init'> = async function () {
   if (process.argv[2] && process.argv[2].startsWith('plugins')) return
