@@ -1,12 +1,12 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
-import heredoc from 'tsheredoc'
-import Dyno from '../../lib/run/dyno'
-import {buildCommandWithLauncher} from '../../lib/run/helpers'
+import tsheredoc from 'tsheredoc'
+import Dyno from '../../lib/run/dyno.js'
+import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
 
 const debug = debugFactory('heroku:run:inside')
+const heredoc = tsheredoc.default
 
 export default class RunInside extends Command {
   static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
@@ -18,7 +18,7 @@ export default class RunInside extends Command {
       required: true,
     }),
     command: Args.string({
-      description: 'command to run (Heroku automatically prepends ‘launcher’ to the command)',
+      description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
       required: true,
     }),
   }
@@ -31,7 +31,7 @@ export default class RunInside extends Command {
     }),
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
     'no-launcher': flags.boolean({
-      description: 'don’t prepend ‘launcher’ before a command',
+      description: 'don\'t prepend \'launcher\' before a command',
       default: false,
     }),
     remote: flags.remote(),
@@ -71,14 +71,15 @@ export default class RunInside extends Command {
 
     try {
       await dyno.start()
-    } catch (error: any) {
+    } catch (error: unknown) {
       debug(error)
-      if (error.exitCode) {
-        ux.exit(error.exitCode)
+      const err = error as {exitCode?: number}
+      if (err.exitCode) {
+        ux.exit(err.exitCode)
       } else {
         throw error
       }
     }
   }
 }
-*/
+

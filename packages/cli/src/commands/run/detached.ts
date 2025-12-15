@@ -1,11 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
+import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
-import Dyno from '../../lib/run/dyno'
-import {buildCommandWithLauncher} from '../../lib/run/helpers'
-import logDisplayer from '../../lib/run/log-displayer'
+import Dyno from '../../lib/run/dyno.js'
+import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
+import {LogDisplayer} from '../../lib/run/log-displayer.js'
 
 export default class RunDetached extends Command {
   static description = 'run a detached dyno, where output is sent to your logs'
@@ -24,7 +23,7 @@ export default class RunDetached extends Command {
     tail: flags.boolean({char: 't', description: 'continually stream logs'}),
     type: flags.string({description: 'process type', completion: ProcessTypeCompletion}),
     'no-launcher': flags.boolean({
-      description: 'don’t prepend ‘launcher’ before a command',
+      description: 'don\'t prepend \'launcher\' before a command',
       default: false,
     }),
   }
@@ -51,14 +50,15 @@ export default class RunDetached extends Command {
     await dyno.start()
 
     if (flags.tail) {
-      await logDisplayer(this.heroku, {
+      const displayer = new LogDisplayer(this.heroku)
+      await displayer.display({
         app: flags.app,
         dyno: dyno.dyno?.name,
         tail: true,
       })
     } else {
-      ux.log(`Run ${color.cmd(`heroku logs --app ${dyno.opts.app} --dyno ${dyno.dyno?.name || ''}`)} to view the output.`)
+      ux.stdout(`Run ${color.cmd(`heroku logs --app ${dyno.opts.app} --dyno ${dyno.dyno?.name || ''}`)} to view the output.\n`)
     }
   }
 }
-*/
+
