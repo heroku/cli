@@ -1,13 +1,13 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/ps/restart'
+import Cmd from '../../../../src/commands/ps/restart.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
-/*
 describe('ps:restart', function () {
   it('restarts all dynos', async function () {
     nock('https://api.heroku.com')
@@ -72,5 +72,3 @@ describe('ps:restart', function () {
     expect(stderr.output).to.include('Restarting dyno web.1 on ⬢ myapp... done')
   })
 })
-
-*/
