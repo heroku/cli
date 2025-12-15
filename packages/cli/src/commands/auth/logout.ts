@@ -8,6 +8,8 @@ export default class Logout extends Command {
   static aliases = ['logout']
 
   async run() {
+    this.parse(Logout)
+
     ux.action.start('Logging out')
     await this.heroku.logout()
     await this.config.runHook('recache', {type: 'logout'})

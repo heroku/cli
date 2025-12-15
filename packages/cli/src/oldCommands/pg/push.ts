@@ -56,7 +56,7 @@ export default class Push extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const target = await dbResolver.getDatabase(app, args.target)
 
-    ux.log(`Pushing ${color.cyan(args.source)} to ${color.addon(target.attachment.addon.name)}`)
+    ux.log(`Pushing ${color.cyan(args.source)} to ${color.addon(target.attachment!.addon.name)}`)
     await this.push(source, target, exclusions)
     ux.log('Pushing complete.')
   }

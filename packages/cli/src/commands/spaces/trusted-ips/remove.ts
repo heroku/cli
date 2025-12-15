@@ -44,6 +44,17 @@ export default class Remove extends Command {
 
     await this.heroku.put(url, {body: rules})
     ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
-    ux.warn('It may take a few moments for the changes to take effect.')
+
+    // Fetch updated ruleset to check applied status
+    const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
+    // Check applied status to inform users whether rules are effectively applied to the space.
+    // The applied field is optional for backward compatibility with API versions that don't include it yet.
+    // Once the API always includes the applied field (W-19525612), this can be simplified to:
+    //   if (updatedRuleset.applied) { ... } else { ... }
+    if (updatedRuleset.applied === true) {
+      ux.stdout('Trusted IP rules are applied to this space.')
+    } else if (updatedRuleset.applied === false) {
+      ux.stdout('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+    }
   }
 }

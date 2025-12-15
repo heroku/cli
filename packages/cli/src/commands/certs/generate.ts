@@ -35,8 +35,6 @@ export default class Generate extends Command {
     domain: Args.string({required: true, description: 'domain name to generate'}),
   }
 
-  private parsed = this.parse(Generate)
-
   async promptForOwnerInfo() {
     return inquirer.prompt([
       {type: 'input', message: 'Owner of this certificate', name: 'owner'},
@@ -47,7 +45,7 @@ export default class Generate extends Command {
   }
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parsed
+    const {flags, args} = await this.parse(Generate)
     const {app, selfsigned} = flags
     if (this.requiresPrompt(flags)) {
       const {owner, country, area, city} = await this.promptForOwnerInfo()
@@ -76,7 +74,7 @@ export default class Generate extends Command {
     }
   }
 
-  protected requiresPrompt(flags: Awaited<typeof this.parsed>['flags']) {
+  protected requiresPrompt(flags: any) {
     if (flags.subject) {
       return false
     }
@@ -93,7 +91,7 @@ export default class Generate extends Command {
     return false
   }
 
-  protected getSubject(args: Awaited<typeof this.parsed>['args'], flags: Awaited<typeof this.parsed>['flags']) {
+  protected getSubject(args: any, flags: any) {
     const {domain} = args
     const {owner, country, area, city, subject} = flags
     if (subject) {

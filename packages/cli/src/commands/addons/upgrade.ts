@@ -30,10 +30,8 @@ export default class Upgrade extends Command {
     plan: Args.string({description: 'unique identifier or name of the plan'}),
   }
 
-  private parsed = this.parse(Upgrade)
-
   public async run(): Promise<void> {
-    const ctx = await this.parsed
+    const ctx = await this.parse(Upgrade)
     const {flags: {app}, args} = ctx
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
@@ -117,7 +115,7 @@ For example: ${color.blue('heroku addons:upgrade heroku-redis:premium-0')}
 ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
   }
 
-  protected buildApiErrorMessage(errorMessage: string, ctx: Awaited<typeof this.parsed>) {
+  protected buildApiErrorMessage(errorMessage: string, ctx: any) {
     const {flags: {app}, args: {addon, plan}} = ctx
     const example = errorMessage.split(', ')[2] || 'redis-triangular-1234'
     return `${errorMessage}
