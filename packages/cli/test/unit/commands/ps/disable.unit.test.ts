@@ -6,7 +6,6 @@ const APP_NAME = 'wubalubadubdub'
 const APP_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-111111111111'
 const MONITOR_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-222222222222'
 
-/*
 describe('ps:autoscale:disable without a web dyno/monitor', function () {
   test
     .stderr()
@@ -43,5 +42,3 @@ describe('ps:autoscale:disable with a web dyno/monitor', function () {
       expect(ctx.stderr).to.contain('Disabling dyno autoscaling... done')
     })
 })
-
-*/
