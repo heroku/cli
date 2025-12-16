@@ -1,5 +1,7 @@
+import stripAnsi from 'strip-ansi'
+
 export default function normalizeTableOutput(output: string): string {
-  return output
+  return stripAnsi(output)
     .toLowerCase()
     .split('\n')
     .map(line => line.replaceAll(/\s+/g, ' ').trim())
