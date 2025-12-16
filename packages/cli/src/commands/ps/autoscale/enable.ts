@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {App, Formation} from '../../../lib/types/fir'
-import {getGeneration} from '../../../lib/apps/generation'
+import {App, Formation} from '../../../lib/types/fir.js'
+import {getGeneration} from '../../../lib/apps/generation.js'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
@@ -14,6 +13,7 @@ const isPerfOrPrivateTier = (size: string) => {
 
 export default class Enable extends Command {
   static description = 'enable web dyno autoscaling'
+  static topic = 'ps:autoscale'
 
   static flags = {
     app: flags.app({required: true}),
@@ -74,7 +74,7 @@ export default class Enable extends Command {
       updatedValues = {...updatedValues,
         min_quantity: flags.min || scaleMonitor.min_quantity,
         max_quantity: flags.max || scaleMonitor.max_quantity,
-        value: flags.p95 ? flags.p95 : scaleMonitor.value,
+        value: flags.p95 || scaleMonitor.value,
       }
 
       await this.heroku.patch(`/apps/${app.id}/formation/web/monitors/${scaleMonitor.id}`,
@@ -87,7 +87,7 @@ export default class Enable extends Command {
         name: 'LATENCY_SCALE',
         min_quantity: flags.min,
         max_quantity: flags.max,
-        value: flags.p95 ? flags.p95 : 1000,
+        value: flags.p95 || 1000,
       }
 
       await this.heroku.post(`/apps/${app.id}/formation/web/monitors`, {
@@ -99,4 +99,3 @@ export default class Enable extends Command {
     ux.action.stop()
   }
 }
-*/
