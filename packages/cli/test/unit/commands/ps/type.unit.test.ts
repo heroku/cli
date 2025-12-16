@@ -4,7 +4,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
 import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
@@ -69,7 +69,7 @@ describe('ps:type', function () {
       'myapp',
     ])
 
-    expectOutput(removeAllWhitespace(stdout.output), removeAllWhitespace(`
+    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
       === Process Types
 
         type   size                 qty   cost/hour   max cost/month
@@ -178,7 +178,7 @@ describe('ps:type', function () {
 
     api.done()
 
-    expect(removeAllWhitespace(stdout.output)).to.eq(removeAllWhitespace(`
+    expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(`
       === Process Types
       type   size                qty   cost/hour   max cost/month  
       ───────────────────────────────────────────────────────────── 
@@ -209,7 +209,7 @@ describe('ps:type', function () {
       'basic',
     ])
 
-    expectOutput(removeAllWhitespace(stdout.output), removeAllWhitespace(`
+    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
       === Process Types
        type     size    qty   cost/hour   max cost/month
       ───────────────────────────────────────────────────
@@ -243,7 +243,7 @@ describe('ps:type', function () {
       'worker=standard-2x',
     ])
 
-    expectOutput(removeAllWhitespace(stdout.output), removeAllWhitespace(`
+    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
     === Process Types
      type     size          qty   cost/hour   max cost/month
     ─────────────────────────────────────────────────────────
@@ -272,7 +272,7 @@ describe('ps:type', function () {
       'myapp',
     ])
 
-    expectOutput(removeAllWhitespace(stdout.output), removeAllWhitespace(`
+    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
     === Process Types
      type   size       qty   cost/hour   max cost/month
     ────────────────────────────────────────────────────

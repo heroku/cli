@@ -1,11 +1,13 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/ps/index'
+import Cmd from '../../../../src/commands/ps/index.js'
 import runCommand from '../../../helpers/runCommand.js'
+import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import strftime from 'strftime'
-import heredoc from 'tsheredoc'
 import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
@@ -34,7 +36,6 @@ function stubAppAndAccount() {
     .reply(200, {id: '1234'})
 }
 
-/*
 describe('ps', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -216,12 +217,13 @@ describe('ps', function () {
 
     api.done()
 
-    expect(heredoc(stdout.output)).to.equal(heredoc`
+    expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`
       Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az      Release Command   Route    Size
       ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ─────── ─────── ───────── ──────── ────
       101 run.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.2 8000 us-east 40      bash      da route Eco
       100 web.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.1 8000 us-east 40      npm start da route Eco
-    `)
+    `))
+
     expect(stderr.output).to.equal('')
   })
 
@@ -280,12 +282,12 @@ describe('ps', function () {
 
     api.done()
 
-    expect(heredoc(stdout.output)).to.equal(heredoc`
+    expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`
       Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az Release Command   Route Size
       ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ── ─────── ───────── ───── ────
       101 run.1   up ${hourAgoStr} (~ 1h ago) us                           instance 10.0.0.1         40      bash            Eco
       100 web.1   up ${hourAgoStr} (~ 1h ago) us                           instance 10.0.0.1         40      npm start       Eco
-    `)
+    `))
     expect(stderr.output).to.equal('')
   })
 
@@ -326,12 +328,12 @@ describe('ps', function () {
 
     api.done()
 
-    expect(heredoc(stdout.output)).to.equal(heredoc`
+    expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`
       Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az      Release Command   Route    Size
       ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ─────── ─────── ───────── ──────── ────────
       101 run.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.2 8000 us-east 40      bash      da route Shield-L
       100 web.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.1 8000 us-east 40      npm start da route Shield-M
-    `)
+    `))
     expect(stderr.output).to.equal('')
   })
 
@@ -559,5 +561,3 @@ describe('ps', function () {
     expect(stderr.output).to.equal('')
   })
 })
-
-*/
