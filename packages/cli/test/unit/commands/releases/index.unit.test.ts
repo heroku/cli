@@ -177,7 +177,8 @@ describe('releases', function () {
     const actual = removeAllWhitespace(stdout.output)
     expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
-    expect(actual).to.include(removeAllWhitespace('v41   third commit release…   rdagg@heroku.com'))
+    // cspell:ignore releas
+    expect(actual).to.include(removeAllWhitespace('v41   third commit releas…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
     api.done()
