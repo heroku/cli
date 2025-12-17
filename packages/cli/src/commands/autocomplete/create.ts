@@ -44,23 +44,22 @@ export default class Create extends AutocompleteBase {
 
   private get bashSetupScriptPath(): string {
     // <cacheDir>/autocomplete/bash_setup
-    // Match test expectation: ${cacheDir}/autocomplete/bash_setup
-    return `${this.config.cacheDir}/autocomplete/bash_setup`
+    return path.join(this.autocompleteCacheDir, 'bash_setup')
   }
 
   private get bashCommandsListPath(): string {
     // <cacheDir>/autocomplete/commands
-    return `${this.config.cacheDir}/autocomplete/commands`
+    return path.join(this.autocompleteCacheDir, 'commands')
   }
 
   private get zshSetupScriptPath(): string {
     // <cacheDir>/autocomplete/zsh_setup
-    return `${this.config.cacheDir}/autocomplete/zsh_setup`
+    return path.join(this.autocompleteCacheDir, 'zsh_setup')
   }
 
   private get zshCompletionSettersPath(): string {
     // <cacheDir>/autocomplete/commands_setters
-    return `${this.config.cacheDir}/autocomplete/commands_setters`
+    return path.join(this.autocompleteCacheDir, 'commands_setters')
   }
 
   private get skipEllipsis(): boolean {
@@ -81,7 +80,9 @@ export default class Create extends AutocompleteBase {
         } catch (error: any) {
           debugLog(`Error creating completions for command ${c.id}`)
           debugLog(error.message)
-          this.writeLogFile(error.message).catch(() => {})
+          this.writeLogFile(error.message).catch(err => {
+            debugLog(`Failed to write log file: ${err.message}`)
+          })
         }
       })
     })
@@ -98,7 +99,9 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating bash completion for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message).catch(() => {})
+        this.writeLogFile(error.message).catch(err => {
+          debugLog(`Failed to write log file: ${err.message}`)
+        })
         return ''
       }
     }).join('\n')
@@ -117,7 +120,9 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message).catch(() => {})
+        this.writeLogFile(error.message).catch(err => {
+          debugLog(`Failed to write log file: ${err.message}`)
+        })
         return ''
       }
     })
@@ -132,7 +137,9 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message).catch(() => {})
+        this.writeLogFile(error.message).catch(err => {
+          debugLog(`Failed to write log file: ${err.message}`)
+        })
         return ''
       }
     }).join('\n')
@@ -203,17 +210,14 @@ ${cmdsWithDesc.join('\n')}
   }
 
   private get envAnalyticsDir(): string {
-    // Match test expectation: ${cacheDir}/autocomplete/completion_analytics
-    return `HEROKU_AC_ANALYTICS_DIR=${this.config.cacheDir}/autocomplete/completion_analytics;`
+    return `HEROKU_AC_ANALYTICS_DIR=${path.join(this.autocompleteCacheDir, 'completion_analytics')};`
   }
 
   private get envCommandsPath(): string {
-    // Match test expectation: ${cacheDir}/autocomplete/commands
-    return `HEROKU_AC_COMMANDS_PATH=${this.config.cacheDir}/autocomplete/commands;`
+    return `HEROKU_AC_COMMANDS_PATH=${path.join(this.autocompleteCacheDir, 'commands')};`
   }
 
   private get bashSetupScript(): string {
-    // Match test expectation: ${AC_LIB_PATH}/bash/heroku.bash
     return `${this.envAnalyticsDir}
 ${this.envCommandsPath}
 HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
@@ -221,7 +225,6 @@ HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_
   }
 
   private get zshSetupScript(): string {
-    // Match test expectation: ${AC_LIB_PATH}/zsh
     return `${this.skipEllipsis ? '' : this.completionDotsFunc}
 ${this.envAnalyticsDir}
 ${this.envCommandsPath}

@@ -2,7 +2,6 @@ import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color} from '@heroku-cli/color'
 import {Args, ux} from '@oclif/core'
-// @ts-expect-error - type definition may not be available in current TypeScript setup
 import type {FlagInput} from '@oclif/core/lib/interfaces/parser'
 
 import * as path from 'path'

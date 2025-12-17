@@ -51,11 +51,10 @@ describe('private methods', function () {
   })
 
   it('file paths', function () {
-    const dir = cmd.config.cacheDir
-    expect(cmd.bashSetupScriptPath).to.eq(`${dir}/autocomplete/bash_setup`)
-    expect(cmd.zshSetupScriptPath).to.eq(`${dir}/autocomplete/zsh_setup`)
-    expect(cmd.bashCommandsListPath).to.eq(`${dir}/autocomplete/commands`)
-    expect(cmd.zshCompletionSettersPath).to.eq(`${dir}/autocomplete/commands_setters`)
+    expect(cmd.bashSetupScriptPath).to.eq(path.join(cmd.autocompleteCacheDir, 'bash_setup'))
+    expect(cmd.zshSetupScriptPath).to.eq(path.join(cmd.autocompleteCacheDir, 'zsh_setup'))
+    expect(cmd.bashCommandsListPath).to.eq(path.join(cmd.autocompleteCacheDir, 'commands'))
+    expect(cmd.zshCompletionSettersPath).to.eq(path.join(cmd.autocompleteCacheDir, 'commands_setters'))
   })
 
   it('#genCmdWithDescription', function () {
@@ -111,8 +110,8 @@ bindkey "^I" expand-or-complete-with-dots`)
 
   it('#bashSetupScript', function () {
     const shellSetup = cmd.bashSetupScript
-    expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
-HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
+    expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${path.join(cmd.autocompleteCacheDir, 'completion_analytics')};
+HEROKU_AC_COMMANDS_PATH=${path.join(cmd.autocompleteCacheDir, 'commands')};
 HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `)
   })
@@ -126,8 +125,8 @@ HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_
 }
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
-HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
-HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
+HEROKU_AC_ANALYTICS_DIR=${path.join(cmd.autocompleteCacheDir, 'completion_analytics')};
+HEROKU_AC_COMMANDS_PATH=${path.join(cmd.autocompleteCacheDir, 'commands')};
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
 ${AC_LIB_PATH}/zsh
@@ -144,8 +143,8 @@ compinit;
     const shellSetup = cmd.zshSetupScript
 
     expect(shellSetup).to.eq(`
-HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
-HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
+HEROKU_AC_ANALYTICS_DIR=${path.join(cmd.autocompleteCacheDir, 'completion_analytics')};
+HEROKU_AC_COMMANDS_PATH=${path.join(cmd.autocompleteCacheDir, 'commands')};
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
 ${AC_LIB_PATH}/zsh

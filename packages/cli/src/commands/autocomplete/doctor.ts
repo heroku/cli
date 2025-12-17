@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-// @ts-expect-error - type definition may not be available in current TypeScript setup
 import type {FlagInput} from '@oclif/core/lib/interfaces/parser'
 import fs from 'fs-extra'
 import * as path from 'path'

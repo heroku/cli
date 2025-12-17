@@ -1,6 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git.js'
-// @ts-expect-error - type definition may not be available in current TypeScript setup
 import type {Completion, CompletionContext} from '@oclif/core/lib/interfaces/parser'
 import fs from 'fs-extra'
 import * as path from 'path'
