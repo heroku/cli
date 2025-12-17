@@ -59,7 +59,7 @@ export default class Pull extends Command {
     const source = await dbResolver.getDatabase(app, args.source)
     const target = utils.pg.DatabaseResolver.parsePostgresConnectionString(args.target)
 
-    ux.log(`Pulling ${color.cyan(source.attachment.addon.name)} to ${color.addon(args.target)}`)
+    ux.log(`Pulling ${color.cyan(source.attachment!.addon.name)} to ${color.addon(args.target)}`)
     await this.pull(source, target, exclusions)
     ux.log('Pulling complete.')
   }

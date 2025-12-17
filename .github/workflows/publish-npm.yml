@@ -32,9 +32,9 @@ jobs:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Use Node.js 22.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: npm

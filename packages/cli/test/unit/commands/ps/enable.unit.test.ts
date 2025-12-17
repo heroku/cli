@@ -40,7 +40,6 @@ function dynoTest(dynoType: string) {
     .command(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
 }
 
-/*
 describe('without specifying an app', function () {
   test
     .stderr()
@@ -146,5 +145,3 @@ describe('with a fir app', function () {
     .catch(error => expect(error.message).to.contain('Autoscaling is unavailable for apps in this space. See https://devcenter.heroku.com/articles/generations.'))
     .it('rejected fir app')
 })
-
-*/

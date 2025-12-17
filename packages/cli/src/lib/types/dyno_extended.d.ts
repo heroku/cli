@@ -1,6 +1,6 @@
 import {Dyno} from './fir'
 
-export interface DynoExtended extends Dyno {
+export type DynoExtended = {
   /**
    * Extended information.
    */
@@ -15,4 +15,5 @@ export interface DynoExtended extends Dyno {
     route: string | null,
   }
   [name: string]: unknown
-}
+
+} & Dyno

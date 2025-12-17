@@ -5,7 +5,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as proxyquire from 'proxyquire'
 import {stderr} from 'stdout-stderr'
-import {ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
+import {ConnectionDetails, ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 import sinon = require('sinon')
 import * as tmp from 'tmp'
@@ -13,8 +13,8 @@ import type * as Pgsql from '../../../../src/lib/pg/psql.js'
 
 
 describe('psql', function () {
-  const db: ConnectionDetailsWithAttachment = {
-    attachment: {} as ConnectionDetailsWithAttachment['attachment'],
+  const db: ConnectionDetails = {
+    attachment: {} as ConnectionDetails['attachment'],
     user: 'jeff',
     password: 'pass',
     database: 'mydb',
@@ -26,8 +26,8 @@ describe('psql', function () {
     url: '',
   }
 
-  const bastionDb: ConnectionDetailsWithAttachment = {
-    attachment: {} as  ConnectionDetailsWithAttachment['attachment'],
+  const bastionDb: ConnectionDetails = {
+    attachment: {} as  ConnectionDetails['attachment'],
     user: 'jeff',
     password: 'pass',
     database: 'mydb',
@@ -70,7 +70,7 @@ describe('psql', function () {
           runWithTunnel = psqlServiceRunWithTunnelSpy
         },
         psql: {
-          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetailsWithAttachment) => {
+          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetails) => {
             return utils.pg.psql.getPsqlConfigs(db)
           }),
         },
@@ -78,7 +78,7 @@ describe('psql', function () {
     }
     psql = proxyquire('../../../../src/lib/pg/psql', {
       '@heroku/heroku-cli-util': {
-        ConnectionDetailsWithAttachment: {} as ConnectionDetailsWithAttachment,
+        ConnectionDetailsWithAttachment: {} as ConnectionDetails,
         utils: mockUtils,
       },
     })
@@ -177,7 +177,7 @@ describe('psql', function () {
         },
         name: 'DATABASE',
       },
-    } as ConnectionDetailsWithAttachment
+    } as ConnectionDetails
 
     context('when HEROKU_PSQL_HISTORY is set', function () {
       let historyPath: string

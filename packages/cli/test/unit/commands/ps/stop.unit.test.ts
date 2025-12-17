@@ -1,13 +1,13 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/ps/stop'
+import Cmd from '../../../../src/commands/ps/stop.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
-/*
 describe('ps:stop', function () {
   it('requires a dyno name or type', async function () {
     await runCommand(Cmd, [
@@ -29,10 +29,7 @@ describe('ps:stop', function () {
       '--process-type',
       'web',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Stopping all web dynos on ⬢ myapp...
-      Stopping all web dynos on ⬢ myapp... done
-    `))
+    expectOutput(stderr.output, 'Stopping all web dynos on ⬢ myapp... done')
   })
 
   it('restarts a specific dyno', async function () {
@@ -46,10 +43,7 @@ describe('ps:stop', function () {
       '--dyno-name',
       'web.1',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Stopping dyno web.1 on ⬢ myapp...
-      Stopping dyno web.1 on ⬢ myapp... done
-    `))
+    expectOutput(stderr.output, 'Stopping dyno web.1 on ⬢ myapp... done')
   })
 
   it('emits a warning when passing dyno as an arg', async function () {
@@ -66,5 +60,3 @@ describe('ps:stop', function () {
     expect(stderr.output).to.include('Stopping dyno web.1 on ⬢ myapp... done')
   })
 })
-
-*/

@@ -40,7 +40,7 @@ export default class Psql extends Command {
 
       const psqlService = new utils.pg.PsqlService(db)
 
-      console.error(`--> Connecting to ${color.yellow(db.attachment.addon.name)}`)
+      console.error(`--> Connecting to ${color.yellow(db.attachment!.addon.name)}`)
       if (command) {
         const output = await psqlService.execQuery(command)
         process.stdout.write(output)

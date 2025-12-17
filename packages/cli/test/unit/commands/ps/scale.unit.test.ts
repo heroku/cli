@@ -1,11 +1,10 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/ps/scale'
+import Cmd from '../../../../src/commands/ps/scale.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
 
-/*
 describe('ps:scale', function () {
   afterEach(function () {
     return nock.cleanAll()
@@ -121,5 +120,3 @@ describe('ps:scale', function () {
     api.done()
   })
 })
-
-*/
