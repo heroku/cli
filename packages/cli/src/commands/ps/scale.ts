@@ -1,14 +1,14 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {compact} from 'lodash'
-import heredoc from 'tsheredoc'
+import _ from 'lodash'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
-const emptyFormationErr = (app: string) => {
-  return new Error(`No process types on ${color.magenta(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
-}
+const emptyFormationErr = (app: string) => (
+  new Error(`No process types on ${color.magenta(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
+)
 
 export default class Scale extends Command {
   static strict = false
@@ -40,7 +40,7 @@ export default class Scale extends Command {
     const {app} = flags
 
     function parse(args: string[]) {
-      return compact(args.map(arg => {
+      return _.compact(args.map(arg => {
         const change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
         if (!change)
           return
@@ -69,7 +69,7 @@ export default class Scale extends Command {
         throw emptyFormationErr(app)
       }
 
-      ux.log(formation.map(d => `${d.type}=${d.quantity}:${d.size}`)
+      ux.stdout(formation.map(d => `${d.type}=${d.quantity}:${d.size}`)
         .sort()
         .join(' '))
     } else {
@@ -91,4 +91,3 @@ export default class Scale extends Command {
     }
   }
 }
-*/

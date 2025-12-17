@@ -1,11 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {sortBy, compact} from 'lodash'
-import heredoc from 'tsheredoc'
+import _ from 'lodash'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
 const COST_MONTHLY: Record<string, number> = {
   Free: 0,
@@ -56,9 +56,9 @@ const COST_MONTHLY: Record<string, number> = {
 
 const calculateHourly =  (size: string) => COST_MONTHLY[size] / 720
 
-const emptyFormationErr = (app: string) => {
-  return new Error(`No process types on ${app}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
-}
+const emptyFormationErr = (app: string) => (
+  new Error(`No process types on ${app}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
+)
 
 const displayFormation = async (heroku: APIClient, app: string) => {
   const {body: formation} = await heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
@@ -67,7 +67,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
   const dynoTotals: Record<string, number> = {}
   let isShowingEcoCostMessage = false
 
-  const formationTableData = sortBy(formation, 'type')
+  const formationTableData = _.sortBy(formation, 'type')
     // this filter shouldn't be necessary, but it makes TS happy
     .filter((f): f is Heroku.Formation & {size: string, quantity: number} => typeof f.size === 'string' && typeof f.quantity === 'number')
     .map((d => {
@@ -90,15 +90,12 @@ const displayFormation = async (heroku: APIClient, app: string) => {
         type: color.green(d.type || ''),
         size: color.cyan(d.size),
         qty: color.yellow(`${d.quantity}`),
-        'cost/hour': calculateHourly(d.size) ?
-          '~$' + (calculateHourly(d.size) * (d.quantity || 1)).toFixed(3)
-            .toString() :
-          '',
-        'max cost/month': COST_MONTHLY[d.size] ?
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          '$' + (COST_MONTHLY[d.size] * d.quantity).toString() :
-          '',
+        'cost/hour': calculateHourly(d.size)
+          ? '~$' + (calculateHourly(d.size) * (d.quantity || 1)).toFixed(3).toString()
+          : '',
+        'max cost/month': COST_MONTHLY[d.size]
+          ? '$' + (COST_MONTHLY[d.size] * d.quantity).toString()
+          :  '',
       }
     }))
 
@@ -119,7 +116,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     'cost/hour': {},
     'max cost/month': {},
   })
-  ux.log()
+  ux.stdout()
   hux.styledHeader('Dyno Totals')
   hux.table(dynoTotalsTableData, {
     type: {},
@@ -127,7 +124,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
   })
 
   if (isShowingEcoCostMessage) {
-    ux.log('\n$5 (flat monthly fee, shared across all Eco dynos)')
+    ux.stdout('\n$5 (flat monthly fee, shared across all Eco dynos)')
   }
 }
 
@@ -159,7 +156,7 @@ export default class Type extends Command {
         return []
       const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
       if (argv.some(a => a.match(/=/))) {
-        return compact(argv.map(arg => {
+        return _.compact(argv.map(arg => {
           const match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
           const type = match && match[1]
           const size = match && match[2]
@@ -186,4 +183,3 @@ export default class Type extends Command {
     await displayFormation(this.heroku, app)
   }
 }
-*/
