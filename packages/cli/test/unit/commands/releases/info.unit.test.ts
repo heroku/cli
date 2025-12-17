@@ -17,7 +17,8 @@ describe('releases:info', function () {
 
   const release = {
     addon_plan_names: ['addon1', 'addon2'],
-    created_at: d, description: 'something changed',
+    created_at: d,
+    description: 'something changed',
     eligible_for_rollback: true,
     user: {
       email: 'foo@foo.com',

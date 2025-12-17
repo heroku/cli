@@ -135,11 +135,9 @@ describe('releases', function () {
     const actual = removeAllWhitespace(stdout.output)
     expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
-    expect(actual).to.include(removeAllWhitespace('v41   th… releas…   rdagg@heroku.com'))
+    expect(actual).to.include(removeAllWhitespace('v41   th… release…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -161,8 +159,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v41   third comm…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -184,8 +180,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v41   third commit release…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -207,8 +201,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v41   third commit            rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -232,8 +224,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v40'))
     expect(actual).to.include(removeAllWhitespace('v37'))
     expect(actual).to.include(removeAllWhitespace('rdagg'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -257,8 +247,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v40'))
     expect(actual).to.include(removeAllWhitespace('v37'))
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -280,8 +268,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('v1'))
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 
@@ -392,8 +378,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v40'))
     expect(actual).to.include(removeAllWhitespace('v37'))
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
-    // Line width assertion removed - table format includes headers and may exceed terminal width
-    // stderr may contain warnings from other plugins in test environment
     api.done()
   })
 })

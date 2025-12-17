@@ -38,7 +38,7 @@ const getDescriptionTruncation = function (releases: Heroku.Release[], columns: 
           continue
         }
 
-        let colValue: any = row
+        let colValue = row
         for (const part of parts) {
           colValue = colValue[part]
         }

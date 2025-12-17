@@ -292,7 +292,6 @@ relname
 relnamespace
 relpages
 reltuples
-releas
 remov
 reponame
 reporttime
