@@ -1,8 +1,7 @@
 import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color} from '@heroku-cli/color'
-import {Args, ux} from '@oclif/core'
-import type {FlagInput} from '@oclif/core/lib/interfaces/parser'
+import {Args, Interfaces, ux} from '@oclif/core'
 
 import * as path from 'path'
 
@@ -18,7 +17,7 @@ export default class Index extends AutocompleteBase {
     shell: Args.string({description: 'shell type', required: false}),
   }
 
-  static flags: FlagInput = {
+  static flags: Interfaces.FlagInput = {
     'refresh-cache': flags.boolean({description: 'refresh cache only (ignores displaying instructions)', char: 'r'}),
   }
 

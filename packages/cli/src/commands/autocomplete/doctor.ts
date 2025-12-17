@@ -1,7 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
+import {Args, Interfaces} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import type {FlagInput} from '@oclif/core/lib/interfaces/parser'
 import fs from 'fs-extra'
 import * as path from 'path'
 import {fileURLToPath} from 'node:url'
@@ -20,7 +19,7 @@ export default class Doctor extends AutocompleteBase {
     shell: Args.string({description: 'shell type', required: false}),
   }
 
-  static flags: FlagInput = {
+  static flags: Interfaces.FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
 
