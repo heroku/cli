@@ -1,13 +1,13 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/ps/restart'
+import Cmd from '../../../../src/commands/ps/restart.js'
 import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
-/*
 describe('ps:restart', function () {
   it('restarts all dynos', async function () {
     nock('https://api.heroku.com')
@@ -18,10 +18,7 @@ describe('ps:restart', function () {
       '--app',
       'myapp',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Restarting all dynos on ⬢ myapp...
-      Restarting all dynos on ⬢ myapp... done
-    `))
+    expectOutput(stderr.output, 'Restarting all dynos on ⬢ myapp... done')
   })
 
   it('restarts web dynos', async function () {
@@ -35,10 +32,7 @@ describe('ps:restart', function () {
       '--process-type',
       'web',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Restarting all web dynos on ⬢ myapp...
-      Restarting all web dynos on ⬢ myapp... done
-    `))
+    expectOutput(stderr.output, 'Restarting all web dynos on ⬢ myapp... done')
   })
 
   it('restarts a specific dyno', async function () {
@@ -52,10 +46,7 @@ describe('ps:restart', function () {
       '--dyno-name',
       'web.1',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Restarting dyno web.1 on ⬢ myapp...
-      Restarting dyno web.1 on ⬢ myapp... done
-    `))
+    expectOutput(stderr.output, 'Restarting dyno web.1 on ⬢ myapp... done')
   })
 
   it('emits a warning when passing dyno as an arg', async function () {
@@ -72,5 +63,3 @@ describe('ps:restart', function () {
     expect(stderr.output).to.include('Restarting dyno web.1 on ⬢ myapp... done')
   })
 })
-
-*/

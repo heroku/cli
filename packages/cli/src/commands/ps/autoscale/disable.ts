@@ -1,4 +1,3 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -7,6 +6,7 @@ const METRICS_HOST = 'api.metrics.heroku.com'
 
 export default class Disable extends Command {
   static description = 'disable web dyno autoscaling'
+  static topic = 'ps:autoscale'
 
   static flags = {
     app: flags.app({required: true}),
@@ -39,4 +39,3 @@ export default class Disable extends Command {
     ux.action.stop()
   }
 }
-*/

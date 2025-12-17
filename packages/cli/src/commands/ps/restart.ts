@@ -1,10 +1,12 @@
-/*
+
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Args, ux} from '@oclif/core'
-import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions'
-import heredoc from 'tsheredoc'
+import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+
 export default class Restart extends Command {
   static description = heredoc(`
     restart an app dyno or process type
@@ -42,7 +44,7 @@ export default class Restart extends Command {
 
   async run() {
     const {args, flags} = await this.parse(Restart)
-    const app = flags.app
+    const {app} = flags
     const dyno = flags['dyno-name'] || args.dyno
     const type = flags['process-type']
     let msg = 'Restarting'
@@ -74,4 +76,3 @@ export default class Restart extends Command {
     ux.action.stop()
   }
 }
-*/

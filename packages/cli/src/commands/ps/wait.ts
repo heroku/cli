@@ -1,4 +1,3 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -7,6 +6,7 @@ import {Dyno, Release} from '@heroku-cli/schema'
 
 export default class Wait extends Command {
   static description = 'wait for all dynos to be running latest version after a release'
+  static topic = 'ps'
 
   static flags = {
     app: flags.app({required: true}),
@@ -18,7 +18,7 @@ export default class Wait extends Command {
     'wait-interval': flags.integer({
       char: 'w',
       description: 'how frequently to poll in seconds (to avoid hitting Heroku API rate limits)',
-      parse: async input => {
+      async parse(input) {
         const w = Number.parseInt(input, 10)
         if (w < 10) {
           ux.error('wait-interval must be at least 10', {exit: 1})
@@ -62,13 +62,13 @@ export default class Wait extends Command {
         .filter(dyno => flags['with-run'] || dyno.type !== 'run')
         .filter(dyno => !flags.type || dyno.type === flags.type)
 
-      const onLatest = relevantDynos.filter((dyno: Dyno) => {
-        return dyno.state === 'up' &&
-          latestRelease.version !== undefined &&
-          dyno.release !== undefined &&
-          dyno.release.version !== undefined &&
-          dyno.release.version >= latestRelease.version
-      })
+      const onLatest = relevantDynos.filter((dyno: Dyno) => (
+        dyno.state === 'up'
+        && latestRelease.version !== undefined
+        && dyno.release !== undefined
+        && dyno.release.version !== undefined
+        && dyno.release.version >= latestRelease.version
+      ))
       const releasedFraction = `${onLatest.length} / ${relevantDynos.length}`
       if (onLatest.length === relevantDynos.length) {
         if (!released) {
@@ -89,4 +89,3 @@ export default class Wait extends Command {
     }
   }
 }
-*/
