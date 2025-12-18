@@ -182,7 +182,8 @@ export default class Index extends Command {
       }
 
       hux.styledHeader(header)
-      hux.table(releases, columns)
+      const sortedReleases = releases.sort((a, b) => (b.version ?? 0) - (a.version ?? 0))
+      hux.table(sortedReleases, columns)
     }
   }
 }
