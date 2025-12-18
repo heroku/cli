@@ -136,7 +136,7 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41'))
-    expect(actual).to.include(removeAllWhitespace('th… release…'))
+    expect(actual).to.include(removeAllWhitespace('releas…'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
     api.done()
@@ -180,7 +180,7 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
     // cspell:ignore releas
     expect(actual).to.include(removeAllWhitespace('v41'))
-    expect(actual).to.include(removeAllWhitespace('third commit releas…'))
+    expect(actual).to.include(removeAllWhitespace('releas…'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
     api.done()
