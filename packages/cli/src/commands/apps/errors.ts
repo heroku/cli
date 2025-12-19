@@ -91,15 +91,15 @@ export default class Errors extends Command {
       {
         hostname: 'api.metrics.herokai.com',
       },
-    ).catch(error_ => {
-      const {http} = error_
+    ).catch(error => {
+      const {http} = error
       // eslint-disable-next-line prefer-regex-literals
       const match = new RegExp('^invalid process_type provided', 'i')
       if (http && http.statusCode === 400 && http.body && http.body.message && match.test(http.body.message)) {
         return {body: {data: {}}}
       }
 
-      throw error_
+      throw error
     }).then(rsp => {
       const {body} = rsp as HTTP<AppErrors>
       return sumErrors(body)
