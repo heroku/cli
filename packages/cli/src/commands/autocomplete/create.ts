@@ -80,8 +80,8 @@ export default class Create extends AutocompleteBase {
         } catch (error: any) {
           debugLog(`Error creating completions for command ${c.id}`)
           debugLog(error.message)
-          this.writeLogFile(error.message).catch(err => {
-            debugLog(`Failed to write log file: ${err.message}`)
+          this.writeLogFile(error.message).catch(error_ => {
+            debugLog(`Failed to write log file: ${error_.message}`)
           })
         }
       })
@@ -99,8 +99,8 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating bash completion for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message).catch(err => {
-          debugLog(`Failed to write log file: ${err.message}`)
+        this.writeLogFile(error.message).catch(error_ => {
+          debugLog(`Failed to write log file: ${error_.message}`)
         })
         return ''
       }
@@ -120,8 +120,8 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message).catch(err => {
-          debugLog(`Failed to write log file: ${err.message}`)
+        this.writeLogFile(error.message).catch(error_ => {
+          debugLog(`Failed to write log file: ${error_.message}`)
         })
         return ''
       }
@@ -137,8 +137,8 @@ export default class Create extends AutocompleteBase {
       } catch (error: any) {
         debugLog(`Error creating zsh autocomplete for command ${c.id}, moving on...`)
         debugLog(error.message)
-        this.writeLogFile(error.message).catch(err => {
-          debugLog(`Failed to write log file: ${err.message}`)
+        this.writeLogFile(error.message).catch(error_ => {
+          debugLog(`Failed to write log file: ${error_.message}`)
         })
         return ''
       }
