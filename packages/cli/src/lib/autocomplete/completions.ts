@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git.js'
-import type {Completion, CompletionContext} from '@oclif/core/lib/interfaces/parser'
+import type {Completion, CompletionContext} from '../types/completion.js'
 import fs from 'fs-extra'
 import * as path from 'path'
 import pkg from 'lodash'
