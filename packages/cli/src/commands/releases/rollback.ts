@@ -1,10 +1,9 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {findByPreviousOrId} from '../../lib/releases/releases'
-import {stream} from '../../lib/releases/output'
+import {findByPreviousOrId} from '../../lib/releases/releases.js'
+import {stream} from '../../lib/releases/output.js'
 
 export default class Rollback extends Command {
   static topic = 'releases'
@@ -48,7 +47,7 @@ export default class Rollback extends Command {
     }
 
     if (streamUrl) {
-      ux.log('Running release command...')
+      ux.stdout('Running release command...')
       await stream(streamUrl)
         .catch(error => {
           if (error.statusCode === 404 || error.response?.statusCode === 404) {
@@ -61,4 +60,4 @@ export default class Rollback extends Command {
     }
   }
 }
-*/
+
