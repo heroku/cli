@@ -19,10 +19,10 @@ export default class Script extends AutocompleteBase {
 
     const shellUpcase = shell.toUpperCase()
     this.log(
-      `${this.prefix}HEROKU_AC_${shellUpcase}_SETUP_PATH=${this.normalizePathForShell(path.join(
+      `${this.prefix}HEROKU_AC_${shellUpcase}_SETUP_PATH=${path.join(
         this.autocompleteCacheDir,
         `${shell}_setup`,
-      ))} && test -f $HEROKU_AC_${shellUpcase}_SETUP_PATH && source $HEROKU_AC_${shellUpcase}_SETUP_PATH;`,
+      )} && test -f $HEROKU_AC_${shellUpcase}_SETUP_PATH && source $HEROKU_AC_${shellUpcase}_SETUP_PATH;`,
     )
   }
 
