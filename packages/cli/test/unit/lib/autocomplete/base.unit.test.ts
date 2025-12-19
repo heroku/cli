@@ -6,56 +6,56 @@ import {fileURLToPath} from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-// import {AutocompleteBase} from '../../../../src/lib/autocomplete/base'
+import {AutocompleteBase} from '../../../../src/lib/autocomplete/base.js'
 
 // autocomplete will throw error on windows
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
 
-// class AutocompleteTest extends AutocompleteBase {
-//   static id = 'test:foo'
+class AutocompleteTest extends AutocompleteBase {
+  static id = 'test:foo'
 
-//   static flags = {
-//     app: flags.app(),
-//     bar: flags.boolean(),
-//   }
+  static flags = {
+    app: flags.app(),
+    bar: flags.boolean(),
+  }
 
-//   async run() {
-//     'do work!'
-//   }
-// }
+  async run() {
+    'do work!'
+  }
+}
 
 const root = path.resolve(__dirname, '../../package.json')
 const config = new Config({root})
 
-// const cmd = new AutocompleteTest([], config)
+const cmd = new AutocompleteTest([], config)
 
 runtest('AutocompleteBase', () => {
-  // before(async function () {
-  //   await config.load()
-  // })
+  before(async function () {
+    await config.load()
+  })
 
-  // it('#errorIfWindows', async function () {
-  //   try {
-  //     new AutocompleteTest([], config).errorIfWindows()
-  //   } catch (error: any) {
-  //     expect(error.message).to.eq('Autocomplete is not currently supported in Windows')
-  //   }
-  // })
+  it('#errorIfWindows', async function () {
+    try {
+      new AutocompleteTest([], config).errorIfWindows()
+    } catch (error: any) {
+      expect(error.message).to.eq('Autocomplete is not currently supported in Windows')
+    }
+  })
 
-  // it('#autocompleteCacheDir', async function () {
-  //   expect(cmd.autocompleteCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete'))
-  // })
+  it('#autocompleteCacheDir', async function () {
+    expect(cmd.autocompleteCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete'))
+  })
 
-  // it('#completionsCacheDir', async function () {
-  //   expect(cmd.completionsCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete', 'completions'))
-  // })
+  it('#completionsCacheDir', async function () {
+    expect(cmd.completionsCacheDir).to.eq(path.join(config.cacheDir, 'autocomplete', 'completions'))
+  })
 
-  // it('#acLogfilePath', async function () {
-  //   expect(cmd.acLogfilePath).to.eq(path.join(config.cacheDir, 'autocomplete.log'))
-  // })
+  it('#acLogfilePath', async function () {
+    expect(cmd.acLogfilePath).to.eq(path.join(config.cacheDir, 'autocomplete.log'))
+  })
 
-  // it('#findCompletion', async function () {
-  //   expect((cmd as any).findCompletion(AutocompleteTest.id, 'app')).to.be.ok
-  //   expect((cmd as any).findCompletion(AutocompleteTest.id, 'bar')).to.not.be.ok
-  // })
+  it('#findCompletion', async function () {
+    expect((cmd as any).findCompletion(AutocompleteTest.id, 'app')).to.be.ok
+    expect((cmd as any).findCompletion(AutocompleteTest.id, 'bar')).to.not.be.ok
+  })
 })

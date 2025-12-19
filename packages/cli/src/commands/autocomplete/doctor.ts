@@ -1,12 +1,14 @@
-/*
 import {flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
+import {Args, Interfaces} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {FlagInput} from '@oclif/core/lib/interfaces/parser'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import * as path from 'path'
+import {fileURLToPath} from 'node:url'
 
-import {AutocompleteBase} from '../../lib/autocomplete/base'
+import {AutocompleteBase} from '../../lib/autocomplete/base.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default class Doctor extends AutocompleteBase {
   static hidden = true
@@ -17,7 +19,7 @@ export default class Doctor extends AutocompleteBase {
     shell: Args.string({description: 'shell type', required: false}),
   }
 
-  static flags: FlagInput = {
+  static flags: Interfaces.FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
 
@@ -33,32 +35,41 @@ export default class Doctor extends AutocompleteBase {
     data.push({name: 'cli version', value: this.config.version})
 
     // plugin version
-    const pjson = require(path.resolve(__dirname, '..', '..', '..', 'package.json'))
+    const pjsonPath = path.resolve(__dirname, '..', '..', '..', 'package.json')
+    const pjson = await fs.readJSON(pjsonPath)
     data.push({name: 'plugin version', value: pjson.version})
 
     // check shell shim source env var
     // i.e. HEROKU_AC_<shell>_SETUP_PATH
     const shellProfilePath = path.join(process.env.HOME || '', shell === 'zsh' ? '.zshrc' : '.bashrc')
-    const shellProfile = fs.readFileSync(shellProfilePath)
-    const regex = /AC_\w+_SETUP_PATH/
-    const shimValue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
+    let shimValue = 'missing'
+    try {
+      const shellProfile = await fs.readFile(shellProfilePath)
+      const regex = /AC_\w+_SETUP_PATH/
+      shimValue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
+    } catch {
+      // File doesn't exist or can't be read
+      shimValue = 'missing'
+    }
+
     data.push({name: `~/${shell === 'zsh' ? '.zshrc' : '.bashrc'} shimmed`, value: shimValue})
 
     // check shell shim
     const shellCompletion = path.join(this.autocompleteCacheDir, `${shell}_setup`)
-    const shellCompletionValue = fs.existsSync(shellCompletion) ? 'present' : 'missing'
+    const shellCompletionValue = await fs.pathExists(shellCompletion) ? 'present' : 'missing'
     data.push({name: `${shell} shim file`, value: shellCompletionValue})
 
     // check shell command cache
     const shellCmdCache = path.join(this.autocompleteCacheDir, shell === 'zsh' ? 'commands_setters' : 'commands')
-    const shellCmdCacheValue = fs.existsSync(shellCmdCache) ? 'present' : 'missing'
+    const shellCmdCacheValue = await fs.pathExists(shellCmdCache) ? 'present' : 'missing'
     data.push({name: `${shell} commands cache`, value: shellCmdCacheValue})
 
     // check app completion cache
     const appsCache = path.join(this.completionsCacheDir, 'app')
     let appsCacheValue
-    if (fs.existsSync(appsCache)) {
-      const length = fs.readJSONSync(appsCache).length
+    if (await fs.pathExists(appsCache)) {
+      const cacheData = await fs.readJSON(appsCache)
+      const {length} = cacheData
       appsCacheValue = length || 'empty'
     } else {
       appsCacheValue = 'missing'
@@ -69,7 +80,11 @@ export default class Doctor extends AutocompleteBase {
     hux.table(data, {
       name: {},
       value: {},
-    }, {'no-header': true, printLine})
+    }, {
+      // @ts-expect-error - no-header option exists but may not be in type definition
+      'no-header': true,
+      printLine,
+    })
 
     if (flags.verbose) this.printList()
   }
@@ -85,7 +100,7 @@ export default class Doctor extends AutocompleteBase {
           if (c.hidden) {
             this.log(`${c.id} (hidden)`)
           } else {
-            const results = Object.keys(c.flags).map((f: string) => {
+            const results = Object.keys(c.flags || {}).map((f: string) => {
               let out = `--${f}`
               const flag = c.flags[f]
               if (flag.type === 'option') out += '='
@@ -106,4 +121,3 @@ export default class Doctor extends AutocompleteBase {
     })
   }
 }
-*/

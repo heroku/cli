@@ -1,16 +1,22 @@
-/*
-import Command from '@heroku-cli/command'
-import {Completion} from '@oclif/core/lib/interfaces/parser'
-import * as fs from 'fs-extra'
+import {Command} from '@heroku-cli/command'
+import fs from 'fs-extra'
 import * as path from 'path'
 
-import {CompletionLookup} from './completions'
+import type {Completion} from '../types/completion.js'
+
+import {CompletionLookup} from './completions.js'
 
 export abstract class AutocompleteBase extends Command {
-  public errorIfWindows() {
-    if (this.config.windows) {
-      throw new Error('Autocomplete is not currently supported in Windows')
-    }
+  public get acLogfilePath(): string {
+    return path.join(this.config.cacheDir, 'autocomplete.log')
+  }
+
+  public get autocompleteCacheDir(): string {
+    return path.join(this.config.cacheDir, 'autocomplete')
+  }
+
+  public get completionsCacheDir(): string {
+    return path.join(this.config.cacheDir, 'autocomplete', 'completions')
   }
 
   public errorIfNotSupportedShell(shell: string) {
@@ -24,29 +30,19 @@ export abstract class AutocompleteBase extends Command {
     }
   }
 
-  public get autocompleteCacheDir(): string {
-    return path.join(this.config.cacheDir, 'autocomplete')
-  }
-
-  public get completionsCacheDir(): string {
-    return path.join(this.config.cacheDir, 'autocomplete', 'completions')
-  }
-
-  public get acLogfilePath(): string {
-    return path.join(this.config.cacheDir, 'autocomplete.log')
-  }
-
-  writeLogFile(msg: string) {
-    const now = new Date()
-    const entry = `[${now}] ${msg}\n`
-    const fd = fs.openSync(this.acLogfilePath, 'a')
-    // eslint-disable-next-line
-    // @ts-ignore
-    fs.write(fd, entry)
+  public errorIfWindows() {
+    if (this.config.windows) {
+      throw new Error('Autocomplete is not currently supported in Windows')
+    }
   }
 
   protected findCompletion(cmdId: string, name: string, description = ''): Completion | undefined {
     return new CompletionLookup(cmdId, name, description).run()
   }
+
+  async writeLogFile(msg: string) {
+    const now = new Date()
+    const entry = `[${now}] ${msg}\n`
+    await fs.appendFile(this.acLogfilePath, entry)
+  }
 }
-*/

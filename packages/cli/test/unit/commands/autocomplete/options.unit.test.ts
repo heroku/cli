@@ -7,7 +7,7 @@ import {fileURLToPath} from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// import Options from '../../../../src/commands/autocomplete/options'
+import Options from '../../../../src/commands/autocomplete/options.js'
 
 const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
@@ -32,7 +32,6 @@ class TestCommand extends Command {
   }
 }
 
-/*
 describe('AutocompleteOptions', function () {
   let cmd: any
 
@@ -142,5 +141,3 @@ describe('AutocompleteOptions', function () {
     })
   })
 })
-
-*/

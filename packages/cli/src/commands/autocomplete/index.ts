@@ -1,16 +1,14 @@
-/*
 import {flags} from '@heroku-cli/command'
-import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions'
-import chalk from 'chalk'
-import {Args, ux} from '@oclif/core'
-import {FlagInput} from '@oclif/core/lib/interfaces/parser'
+import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions.js'
+import {color} from '@heroku-cli/color'
+import {Args, Interfaces, ux} from '@oclif/core'
 
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../lib/autocomplete/base'
-import {updateCache} from '../../lib/autocomplete/cache'
+import {AutocompleteBase} from '../../lib/autocomplete/base.js'
+import {updateCache} from '../../lib/autocomplete/cache.js'
 
-import Create from './create'
+import Create from './create.js'
 
 export default class Index extends AutocompleteBase {
   static description = 'display autocomplete installation instructions'
@@ -19,7 +17,7 @@ export default class Index extends AutocompleteBase {
     shell: Args.string({description: 'shell type', required: false}),
   }
 
-  static flags: FlagInput = {
+  static flags: Interfaces.FlagInput = {
     'refresh-cache': flags.boolean({description: 'refresh cache only (ignores displaying instructions)', char: 'r'}),
   }
 
@@ -35,8 +33,9 @@ export default class Index extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    ux.action.start(`${chalk.bold('Building the autocomplete cache')}`)
-    await Create.run([], this.config)
+    ux.action.start(`${color.bold('Building the autocomplete cache')}`)
+    const create = new Create([], this.config)
+    await create.run()
     await this.updateCache(AppCompletion, 'app')
     await this.updateCache(PipelineCompletion, 'pipeline')
     await this.updateCache(SpaceCompletion, 'space')
@@ -44,24 +43,24 @@ export default class Index extends AutocompleteBase {
     ux.action.stop()
 
     if (!flags['refresh-cache']) {
-      const bin = this.config.bin
+      const {bin} = this.config
       const bashNote = 'If your terminal starts as a login shell you may need to print the init script into ~/.bash_profile or ~/.profile.'
-      const zshNote = `After sourcing, you can run \`${chalk.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present`
+      const zshNote = `After sourcing, you can run \`${color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present`
       const note = shell === 'zsh' ? zshNote : bashNote
       const tabStr = shell === 'bash' ? '<TAB><TAB>' : '<TAB>'
 
       this.log(`
-${chalk.bold(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
+${color.bold(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
 
 1) Add the autocomplete env var to your ${shell} profile and source it
-${chalk.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc; source ~/.${shell}rc`)}
+${color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc; source ~/.${shell}rc`)}
 
 NOTE: ${note}
 
 2) Test it out, e.g.:
-${chalk.cyan(`$ ${bin} ${tabStr}`)}                 # Command completion
-${chalk.cyan(`$ ${bin} apps:info --${tabStr}`)}     # Flag completion
-${chalk.cyan(`$ ${bin} apps:info --app=${tabStr}`)} # Flag option completion
+${color.cyan(`$ ${bin} ${tabStr}`)}                 # Command completion
+${color.cyan(`$ ${bin} apps:info --${tabStr}`)}     # Flag completion
+${color.cyan(`$ ${bin} apps:info --app=${tabStr}`)} # Flag option completion
 
 Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/heroku-cli-autocomplete
 
@@ -76,4 +75,4 @@ Enjoy!
     await updateCache(cachePath, options)
   }
 }
-*/
+

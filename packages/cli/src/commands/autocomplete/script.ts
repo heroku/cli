@@ -1,8 +1,7 @@
-/*
 import {Args} from '@oclif/core'
 import * as path from 'path'
 
-import {AutocompleteBase} from '../../lib/autocomplete/base'
+import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 
 export default class Script extends AutocompleteBase {
   static description = 'display autocomplete setup script for shell'
@@ -31,4 +30,4 @@ export default class Script extends AutocompleteBase {
     return `\n# ${this.config.bin} autocomplete setup\n`
   }
 }
-*/
+

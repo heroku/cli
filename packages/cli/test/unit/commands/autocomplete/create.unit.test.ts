@@ -1,86 +1,80 @@
 import {Config, Plugin} from '@oclif/core'
-// import {loadJSON} from '@oclif/core/lib/config/util'
 import {expect} from 'chai'
+import fs from 'fs-extra'
 import * as path from 'path'
 import {fileURLToPath} from 'url'
+
+import Create from '../../../../src/commands/autocomplete/create.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// import Create from '../../../../src/commands/autocomplete/create'
-
 const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
-
-let runtest: any
-
-// (async () => {
-//   const mod = await import('../../../helpers/autocomplete/runtest.js')
-//   runtest = mod.default
-//   runtest('Create', () => {})
-// })()
 
 const AC_LIB_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'autocomplete-scripts')
 
 const CacheBuildFlagsTest = {
-  id: 'autocomplete:create',
-  flags:
-  {app: {name: 'app', type: 'option', description: 'app to use'},
-    visible: {name: 'visible', type: 'boolean', description: 'visible flag'},
-    hidden: {name: 'hidden', type: 'boolean', description: 'hidden flag', hidden: true},
-  },
   args: [],
+  flags:
+  {
+    app: {description: 'app to use', name: 'app', type: 'option'},
+    hidden: {
+      description: 'hidden flag', hidden: true, name: 'hidden', type: 'boolean',
+    },
+    visible: {description: 'visible flag', name: 'visible', type: 'boolean'},
+  },
+  id: 'autocomplete:create',
 }
 
 // Unit test private methods for extra coverage
-/*
 describe('private methods', function () {
-    let cmd: any
-    let Klass: any
-    let plugin: any
+  let cmd: any
+  let Klass: any
+  let plugin: any
 
-    before(async function () {
-      await config.load()
-      cmd = new Create([], config)
-      plugin = new Plugin({root})
-      cmd.config.plugins = [plugin]
-      await plugin.load()
-      // eslint-disable-next-line require-atomic-updates
-      plugin.manifest = await loadJSON(path.resolve(__dirname, '../../../test.oclif.manifest.json'))
-      // eslint-disable-next-line require-atomic-updates
-      plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({
-        ...c as Record<string, unknown>,
-        load: () => plugin.findCommand(id, {must: true})}
-      ))
-      Klass = plugin.commands[1]
-    })
+  before(async function () {
+    await config.load()
+    cmd = new Create([], config)
+    plugin = new Plugin({root})
+    cmd.config.plugins = [plugin]
+    await plugin.load()
 
-    it('file paths', function () {
-      const dir = cmd.config.cacheDir
-      expect(cmd.bashSetupScriptPath).to.eq(`${dir}/autocomplete/bash_setup`)
-      expect(cmd.zshSetupScriptPath).to.eq(`${dir}/autocomplete/zsh_setup`)
-      expect(cmd.bashCommandsListPath).to.eq(`${dir}/autocomplete/commands`)
-      expect(cmd.zshCompletionSettersPath).to.eq(`${dir}/autocomplete/commands_setters`)
-    })
+    plugin.manifest = await fs.readJSON(path.resolve(__dirname, '../../../test.oclif.manifest.json'))
 
-    it('#genCmdWithDescription', function () {
-      expect(cmd.genCmdWithDescription(Klass)).to.eq(
-        '"autocomplete\\:foo":"foo cmd for autocomplete testing"',
-      )
-    })
+    plugin.commands = Object.entries(plugin.manifest.commands).map(([id, c]) => ({
+      ...c as Record<string, unknown>,
+      load: () => plugin.findCommand(id, {must: true}),
+    }
+    ))
+    Klass = plugin.commands[1]
+  })
 
-    it('#genCmdPublicFlags', function () {
-      expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.eq('--app --visible')
-      expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.not.match(/--hidden/)
-      expect(cmd.genCmdPublicFlags(Create)).to.eq('')
-    })
+  it('file paths', function () {
+    expect(cmd.bashSetupScriptPath).to.eq(path.join(cmd.autocompleteCacheDir, 'bash_setup'))
+    expect(cmd.zshSetupScriptPath).to.eq(path.join(cmd.autocompleteCacheDir, 'zsh_setup'))
+    expect(cmd.bashCommandsListPath).to.eq(path.join(cmd.autocompleteCacheDir, 'commands'))
+    expect(cmd.zshCompletionSettersPath).to.eq(path.join(cmd.autocompleteCacheDir, 'commands_setters'))
+  })
 
-    it('#bashCommandsList', function () {
-      expect(cmd.bashCommandsList).to.eq('autocomplete --skip-instructions\nautocomplete:foo --app --bar --json')
-    })
+  it('#genCmdWithDescription', function () {
+    expect(cmd.genCmdWithDescription(Klass)).to.eq(
+      '"autocomplete\\:foo":"foo cmd for autocomplete testing"',
+    )
+  })
 
-    it('#zshCompletionSetters', function () {
-      expect(cmd.zshCompletionSetters).to.eq(`
+  it('#genCmdPublicFlags', function () {
+    expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.eq('--app --visible')
+    expect(cmd.genCmdPublicFlags(CacheBuildFlagsTest)).to.not.match(/--hidden/)
+    expect(cmd.genCmdPublicFlags(Create)).to.eq('')
+  })
+
+  it('#bashCommandsList', function () {
+    expect(cmd.bashCommandsList).to.eq('autocomplete --skip-instructions\nautocomplete:foo --app --bar --json')
+  })
+
+  it('#zshCompletionSetters', function () {
+    expect(cmd.zshCompletionSetters).to.eq(`
 _set_all_commands_list () {
 _all_commands_list=(
 "autocomplete":"display autocomplete instructions"
@@ -102,37 +96,37 @@ _flags=(
 )
 }
 `)
-    })
+  })
 
-    it('#genCompletionDotsFunc', function () {
-      expect(cmd.completionDotsFunc).to.eq(`expand-or-complete-with-dots() {
+  it('#genCompletionDotsFunc', function () {
+    expect(cmd.completionDotsFunc).to.eq(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
   zle redisplay
 }
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots`)
-    })
+  })
 
-    it('#bashSetupScript', function () {
-      const shellSetup = cmd.bashSetupScript
-      expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
-HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
+  it('#bashSetupScript', function () {
+    const shellSetup = cmd.bashSetupScript
+    expect(shellSetup).to.eq(`HEROKU_AC_ANALYTICS_DIR=${path.join(cmd.autocompleteCacheDir, 'completion_analytics')};
+HEROKU_AC_COMMANDS_PATH=${path.join(cmd.autocompleteCacheDir, 'commands')};
 HEROKU_AC_BASH_COMPFUNC_PATH=${AC_LIB_PATH}/bash/heroku.bash && test -f $HEROKU_AC_BASH_COMPFUNC_PATH && source $HEROKU_AC_BASH_COMPFUNC_PATH;
 `)
-    })
+  })
 
-    it('#zshSetupScript', function () {
-      const shellSetup = cmd.zshSetupScript
-      expect(shellSetup).to.eq(`expand-or-complete-with-dots() {
+  it('#zshSetupScript', function () {
+    const shellSetup = cmd.zshSetupScript
+    expect(shellSetup).to.eq(`expand-or-complete-with-dots() {
   echo -n "..."
   zle expand-or-complete
   zle redisplay
 }
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
-HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
-HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
+HEROKU_AC_ANALYTICS_DIR=${path.join(cmd.autocompleteCacheDir, 'completion_analytics')};
+HEROKU_AC_COMMANDS_PATH=${path.join(cmd.autocompleteCacheDir, 'commands')};
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
 ${AC_LIB_PATH}/zsh
@@ -141,16 +135,16 @@ $fpath
 autoload -Uz compinit;
 compinit;
 `)
-    })
+  })
 
-    it('#zshSetupScript (w/o ellipsis)', function () {
-      const oldEnv = process.env
-      process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS = '1'
-      const shellSetup = cmd.zshSetupScript
+  it('#zshSetupScript (w/o ellipsis)', function () {
+    const oldEnv = process.env
+    process.env.HEROKU_AC_ZSH_SKIP_ELLIPSIS = '1'
+    const shellSetup = cmd.zshSetupScript
 
-      expect(shellSetup).to.eq(`
-HEROKU_AC_ANALYTICS_DIR=${cmd.config.cacheDir}/autocomplete/completion_analytics;
-HEROKU_AC_COMMANDS_PATH=${cmd.config.cacheDir}/autocomplete/commands;
+    expect(shellSetup).to.eq(`
+HEROKU_AC_ANALYTICS_DIR=${path.join(cmd.autocompleteCacheDir, 'completion_analytics')};
+HEROKU_AC_COMMANDS_PATH=${path.join(cmd.autocompleteCacheDir, 'commands')};
 HEROKU_AC_ZSH_SETTERS_PATH=\${HEROKU_AC_COMMANDS_PATH}_setters && test -f $HEROKU_AC_ZSH_SETTERS_PATH && source $HEROKU_AC_ZSH_SETTERS_PATH;
 fpath=(
 ${AC_LIB_PATH}/zsh
@@ -159,12 +153,12 @@ $fpath
 autoload -Uz compinit;
 compinit;
 `)
-      process.env = oldEnv
-    })
+    process.env = oldEnv
+  })
 
-    it('#genZshAllCmdsListSetter', function () {
-      const cmdsWithDesc = ['"foo\\:alpha":"foo:alpha description"', '"foo\\:beta":"foo:beta description"']
-      expect(cmd.genZshAllCmdsListSetter(cmdsWithDesc)).to.eq(`
+  it('#genZshAllCmdsListSetter', function () {
+    const cmdsWithDesc = ['"foo\\:alpha":"foo:alpha description"', '"foo\\:beta":"foo:beta description"']
+    expect(cmd.genZshAllCmdsListSetter(cmdsWithDesc)).to.eq(`
 _set_all_commands_list () {
 _all_commands_list=(
 "foo\\:alpha":"foo:alpha description"
@@ -172,18 +166,15 @@ _all_commands_list=(
 )
 }
 `)
-    })
+  })
 
-    it('#genZshCmdFlagsSetter', function () {
-      expect(cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).to.eq(`_set_autocomplete_create_flags () {
+  it('#genZshCmdFlagsSetter', function () {
+    expect(cmd.genZshCmdFlagsSetter(CacheBuildFlagsTest)).to.eq(`_set_autocomplete_create_flags () {
 _flags=(
 "--app=-[(autocomplete) app to use]: :_compadd_flag_options"
 "--visible[(switch) visible flag]"
 )
 }
 `)
-    })
   })
 })
-
-*/
