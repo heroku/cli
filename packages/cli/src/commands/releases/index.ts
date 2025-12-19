@@ -1,17 +1,21 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {truncate} from 'lodash'
+import _ from 'lodash'
 import * as Heroku from '@heroku-cli/schema'
-import * as statusHelper from '../../lib/releases/status_helper'
-import * as time from '../../lib/time'
-import stripAnsi from 'strip-ansi'
-import {table} from '@oclif/core/lib/cli-ux/styled/table'
-import Columns = table.Columns
 
-const getDescriptionTruncation = function (releases: Heroku.Formation[], columns: Columns<Heroku.Release>, optimizeKey: string) {
+import * as statusHelper from '../../lib/releases/status_helper.js'
+import * as time from '../../lib/time.js'
+import stripAnsi from 'strip-ansi'
+
+type ColumnConfig = {
+  get?: (row: Heroku.Release) => string | number | undefined
+  header?: string
+  extended?: boolean
+}
+
+const getDescriptionTruncation = function (releases: Heroku.Release[], columns: Record<string, ColumnConfig>, optimizeKey: string) {
   // width management here is quite opaque.
   // This entire function is to determine how much of Formation.description should be truncated to accommodate for Formation.status. They both go in the same column.
   // Nothing else is truncated and the table is passed `'no-truncate': true` in options.
@@ -49,7 +53,7 @@ const getDescriptionTruncation = function (releases: Heroku.Formation[], columns
         if (key !== optimizeKey) {
           optimizationWidthMap[key] = Math.max(
             optimizationWidthMap[key],
-            stripAnsi(formattedValue).length,
+            stripAnsi(String(formattedValue)).length,
           )
         }
       }
@@ -103,7 +107,7 @@ export default class Index extends Command {
       const width = () => process.stdout?.columns && process.stdout.columns > 80 ? process.stdout.columns : 80
       const trunc = (l: number, s?: string) => {
         if (process.stdout.isTTY) {
-          return truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
+          return _.truncate(s, {length: width() - (optimizationWidth + l), omission: '…'})
         }
 
         return s
@@ -111,16 +115,50 @@ export default class Index extends Command {
 
       const status = statusHelper.description(release)
       if (status) {
-        const sc = color[statusHelper.color(release.status)](status)
+        const statusColor = statusHelper.color(release.status)
+        let colorFn: (s: string) => string
+        switch (statusColor) {
+        case 'red': {
+          colorFn = color.red
+
+          break
+        }
+
+        case 'yellow': {
+          colorFn = color.yellow
+
+          break
+        }
+
+        case 'gray': {
+          colorFn = color.gray
+
+          break
+        }
+
+        default: {
+          colorFn = color.cyan
+        }
+        }
+
+        const sc = colorFn(status)
         return trunc(status.length + 1, description) + ' ' + sc
       }
 
       return trunc(0, description)
     }
 
-    const columns: Columns<Heroku.Formation> = {
+    const getVersionColor = (release: Heroku.Release) => {
+      const statusColor = statusHelper.color(release.status)
+      if (statusColor === 'red') return color.red('v' + release.version)
+      if (statusColor === 'yellow') return color.yellow('v' + release.version)
+      if (statusColor === 'gray') return color.gray('v' + release.version)
+      return color.cyan('v' + release.version)
+    }
+
+    const columns: Record<string, ColumnConfig> = {
       // column name "v" as ux.table will make it's width at least "version" even though 'no-header': true
-      v: {get: release => color[statusHelper.color(release.status)]('v' + release.version)},
+      v: {get: getVersionColor},
       description: {get: descriptionWithStatus},
       user: {get: ({user}) => color.magenta(user?.email || '')},
       created_at: {get: ({created_at}) => time.ago(new Date(created_at || ''))},
@@ -133,9 +171,9 @@ export default class Index extends Command {
     optimizationWidth = getDescriptionTruncation(releases, columns, 'description')
 
     if (json) {
-      ux.log(JSON.stringify(releases, null, 2))
+      hux.styledJSON(releases)
     } else if (releases.length === 0) {
-      ux.log(`${app} has no releases.`)
+      ux.stdout(`${app} has no releases.`)
     } else {
       let header = `${app} Releases`
       const currentRelease = releases.find(r => r.current === true)
@@ -144,12 +182,9 @@ export default class Index extends Command {
       }
 
       hux.styledHeader(header)
-      hux.table(
-        releases,
-        columns,
-        {'no-header': true, 'no-truncate': true,  extended},
-      )
+      const sortedReleases = releases.sort((a, b) => (b.version ?? 0) - (a.version ?? 0))
+      hux.table(sortedReleases, columns)
     }
   }
 }
-*/
+
