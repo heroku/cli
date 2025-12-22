@@ -20,7 +20,7 @@ jobs:
         run: yarn --immutable --network-timeout 1000000
       - name: Building deb
         run: yarn oclif pack:deb --root="./packages/cli"
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
@@ -38,7 +38,7 @@ jobs:
         run: yarn --immutable --network-timeout 1000000
       - name: Building tarballs
         run: yarn oclif pack tarballs --root="./packages/cli"
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/packages/cli/dist
@@ -62,7 +62,7 @@ jobs:
       - run: |
           cd /home/runner/work/cli/cli/packages/cli/dist/deb
           /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: signed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
