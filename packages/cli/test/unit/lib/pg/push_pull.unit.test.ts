@@ -1,9 +1,10 @@
 import {expect} from 'chai'
 import sinon from 'sinon'
+import {Server} from 'node:net';
 
 import { ux } from '@oclif/core'
 import { utils } from '@heroku/heroku-cli-util'
-import {parseExclusions, prepare} from '../../../../src/lib/pg/push_pull.js'
+import {parseExclusions, prepare, maybeTunnel} from '../../../../src/lib/pg/push_pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -92,6 +93,51 @@ describe('push_pull', function () {
         await prepare(target as any)
         expect(uxErrorStub.calledOnce).to.be.false
       })
+    })
+  })
+
+  describe('maybeTunnel', function() {
+    const target = {
+      database: 'firecrackers',
+      host: 'heroku.com',
+      port: '5432',
+      user: 'vic',
+    }
+
+    const dbTunnelConfig = {
+      localHost: '127.0.0.1',
+      localPort: 49152,
+    }
+
+    afterEach(function () {
+      sinon.restore()
+    })
+
+    it('returns connection details containing tunnel config, when a tunnel is configured', async () => {
+      const fakeTunnel = {close: sinon.stub()} as unknown as Server
+      sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
+      sinon.stub(utils.pg.psql, 'sshTunnel').resolves(fakeTunnel)
+
+      const result = await maybeTunnel(target as any)
+
+      expect(result.host).to.equal(dbTunnelConfig.localHost)
+      expect(result.port).to.equal(dbTunnelConfig.localPort.toString())
+      expect(result._tunnel).to.equal(fakeTunnel)
+      expect(result.database).to.equal(target.database)
+      expect(result.user).to.equal(target.user)
+    })
+
+    it('does not return tunnel config in the connection details, when a tunnel is not configured', async () => {
+      sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
+      sinon.stub(utils.pg.psql, 'sshTunnel').resolves(undefined)
+
+      const result = await maybeTunnel(target as any)
+
+      expect(result.host).to.equal(target.host)
+      expect(result.port).to.equal(target.port)
+      expect(result._tunnel).to.be.undefined
+      expect(result.database).to.equal(target.database)
+      expect(result.user).to.equal(target.user)
     })
   })
 })
