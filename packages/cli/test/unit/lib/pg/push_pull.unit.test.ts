@@ -1,10 +1,12 @@
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {Server} from 'node:net';
+import {Server} from 'node:net'
+import {EventEmitter} from 'node:events'
+import {PassThrough} from 'node:stream'
 
 import { ux } from '@oclif/core'
 import { utils } from '@heroku/heroku-cli-util'
-import {parseExclusions, prepare, maybeTunnel, connArgs} from '../../../../src/lib/pg/push_pull.js'
+import {parseExclusions, prepare, maybeTunnel, connArgs, spawnPipe} from '../../../../src/lib/pg/push_pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -191,4 +193,82 @@ describe('push_pull', function () {
       expect(actual).to.eql(expected)
     })
   })
+
+  describe('spawnPipe', function () {
+    it('resolves when both pgDump and pgRestore close successfully', async function () {
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
+      pgDump.stdout = new PassThrough()
+      pgRestore.stdin = new PassThrough()
+
+      const promise = spawnPipe(pgDump as any, pgRestore as any)
+
+      pgDump.emit('close', 0)
+      pgRestore.emit('close', 0)
+
+      await expect(promise).to.eventually.be.fulfilled
+    })
+    
+    it('rejects with pg_dump error when pgDump closes with non-zero code', async function () {
+      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
+      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      pgDump.stdout = new PassThrough()
+      pgRestore.stdin = new PassThrough()
+  
+      const promise = spawnPipe(pgDump as any, pgRestore as any)
+  
+      pgDump.emit('close', 1)
+  
+      await expect(promise).to.eventually.be.rejectedWith('pg_dump errored with 1')
+    })
+
+    it('rejects with pg_restore error when pgRestore closes with non-zero code', async function () {
+      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
+      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      pgDump.stdout = new PassThrough()
+      pgRestore.stdin = new PassThrough()
+
+      const promise = spawnPipe(pgDump as any, pgRestore as any)
+
+      pgDump.emit('close', 0)
+      pgRestore.emit('close', 1)
+
+      await expect(promise).to.eventually.be.rejectedWith('pg_restore errored with 1')
+    })
+
+    it('pipes pgDump stdout to pgRestore stdin', async function () {
+      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
+      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      pgDump.stdout = new PassThrough()
+      pgRestore.stdin = new PassThrough()
+
+      const chunks: Buffer[] = []
+      pgRestore.stdin.on('data', (chunk: Buffer) => chunks.push(chunk))
+
+      spawnPipe(pgDump as any, pgRestore as any)
+
+      pgDump.stdout.write('test data')
+      pgDump.emit('close', 0)
+      pgRestore.emit('close', 0)
+
+      expect(Buffer.concat(chunks).toString()).to.equal('test data')
+    })
+
+    it('ends pgRestore stdin when pgDump closes successfully', async function () {
+      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
+      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      pgDump.stdout = new PassThrough()
+      pgRestore.stdin = new PassThrough()
+
+      const endSpy = sinon.spy(pgRestore.stdin, 'end')
+
+      spawnPipe(pgDump as any, pgRestore as any)
+
+      pgDump.emit('close', 0)
+      pgRestore.emit('close', 0)
+
+      expect(endSpy.calledOnce).to.be.true
+    })
+  })
 })
+
