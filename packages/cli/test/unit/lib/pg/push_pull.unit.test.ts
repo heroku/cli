@@ -6,7 +6,7 @@ import {PassThrough} from 'node:stream'
 
 import { ux } from '@oclif/core'
 import { utils } from '@heroku/heroku-cli-util'
-import {parseExclusions, prepare, maybeTunnel, connArgs, spawnPipe} from '../../../../src/lib/pg/push_pull.js'
+import {parseExclusions, prepare, maybeTunnel, connArgs, spawnPipe, verifyExtensionsMatch} from '../../../../src/lib/pg/push_pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -268,6 +268,66 @@ describe('push_pull', function () {
       pgRestore.emit('close', 0)
 
       expect(endSpy.calledOnce).to.be.true
+    })
+  })
+
+  describe('verifyExtensionsMatch', function () {
+    let uxWarnStub: sinon.SinonStub
+    let execQueryStub: sinon.SinonStub
+
+    const source = { database: 'source_db', host: 'localhost', port: '5432', user: 'user1' }
+    const target = { database: 'target_db', host: 'localhost', port: '5432', user: 'user2' }
+
+    beforeEach(function () {
+      uxWarnStub = sinon.stub(ux, 'warn')
+    })
+
+    afterEach(function () {
+      sinon.restore()
+    })
+
+    it('does not warn when extensions match', async function () {
+      const extensions = 'plpgsql\nuuid-ossp\n'
+      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(extensions)
+
+      await verifyExtensionsMatch(source as any, target as any)
+
+      expect(uxWarnStub.called).to.be.false
+    })
+
+    it('warns when extensions differ between source and target', async function () {
+      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub.onFirstCall().resolves('plpgsql\n')  // target
+      execQueryStub.onSecondCall().resolves('plpgsql\nuuid-ossp\n')  // source
+
+      await verifyExtensionsMatch(source as any, target as any)
+
+      expect(uxWarnStub.calledOnce).to.be.true
+    })
+
+    it('includes both extension lists in the warning message', async function () {
+      const targetExtensions = 'plpgsql\n'
+      const sourceExtensions = 'plpgsql\nuuid-ossp\n'
+      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub.onFirstCall().resolves(targetExtensions)
+      execQueryStub.onSecondCall().resolves(sourceExtensions)
+
+      await verifyExtensionsMatch(source as any, target as any)
+
+      const warningMessage = uxWarnStub.firstCall.args[0]
+      expect(warningMessage).to.include(targetExtensions)
+      expect(warningMessage).to.include(sourceExtensions)
+      expect(warningMessage).to.include('Extensions in newly created target database differ')
+    })
+
+    it('queries both databases for installed extensions', async function () {
+      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+
+      await verifyExtensionsMatch(source as any, target as any)
+
+      expect(execQueryStub.calledTwice).to.be.true
+      expect(execQueryStub.firstCall.args[0]).to.equal('SELECT extname FROM pg_extension ORDER BY extname;')
+      expect(execQueryStub.secondCall.args[0]).to.equal('SELECT extname FROM pg_extension ORDER BY extname;')
     })
   })
 })
