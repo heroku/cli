@@ -272,6 +272,8 @@ describe('push_pull', function () {
   })
 
   describe('verifyExtensionsMatch', function () {
+    // cspell:ignore plpgsql
+    
     let uxWarnStub: sinon.SinonStub
     let execQueryStub: sinon.SinonStub
 
