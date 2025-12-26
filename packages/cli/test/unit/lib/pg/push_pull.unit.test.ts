@@ -4,7 +4,7 @@ import {Server} from 'node:net';
 
 import { ux } from '@oclif/core'
 import { utils } from '@heroku/heroku-cli-util'
-import {parseExclusions, prepare, maybeTunnel} from '../../../../src/lib/pg/push_pull.js'
+import {parseExclusions, prepare, maybeTunnel, connArgs} from '../../../../src/lib/pg/push_pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -138,6 +138,57 @@ describe('push_pull', function () {
       expect(result._tunnel).to.be.undefined
       expect(result.database).to.equal(target.database)
       expect(result.user).to.equal(target.user)
+    })
+  })
+
+  describe('connArgs', function () {
+    it('pushes the -U, -h, -p, and -d flags into the args array when connection details contain a user, host, and port and skipDFlag is not specified', function () {
+      const actual = connArgs({user: 'john-rambo', host: 'heroku.com', port: 5432} as any)
+      const expected  = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, '-d', undefined]
+
+      expect(actual).to.eql(expected)
+    })
+
+    it('does not push a -U flag into the args array when connection details do not contain a user', function () {
+      const actual = connArgs({ host: 'heroku.com', port: 5432 } as any)
+      const expected = ['-h', 'heroku.com', '-p', 5432, '-d', undefined]
+
+      expect(actual).to.eql(expected)
+    })
+
+    it('does not push a -h flag into the args array when connection details do not contain a host', function () {
+      const actual = connArgs({ user: 'john-rambo', port: 5432 } as any)
+      const expected = ['-U', 'john-rambo', '-p', 5432, '-d', undefined]
+
+      expect(actual).to.eql(expected)
+    })
+
+    it('does not push a -p flag into the args array when connection details do not contain a port', function () {
+      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com' } as any)
+      const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-d', undefined]
+
+      expect(actual).to.eql(expected)
+    })
+
+    it('pushes the -d flag into the args array when the `skipDFlag` argument is provided as `false`', function () {
+      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com', port: 5432 } as any, false)
+      const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, '-d', undefined]
+
+      expect(actual).to.eql(expected)
+    })
+
+    it('does not push a -d flag into the args array when the `skipDFlag` argument is provided as `true`', function () {
+      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com', port: 5432 } as any, true)
+      const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, undefined]
+
+      expect(actual).to.eql(expected)
+    })
+
+    it('pushes the connection detail value for database into the args array', function() {
+      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com', port: 5432, database: 'favorite-candy' } as any)
+      const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, '-d', 'favorite-candy']
+
+      expect(actual).to.eql(expected)
     })
   })
 })
