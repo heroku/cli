@@ -1,5 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
-import type { pg } from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
 
 export const apps: Record<string, Heroku.App> = {
   api: {
