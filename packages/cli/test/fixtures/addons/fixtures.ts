@@ -1,5 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
-import {ExtendedAddonAttachment} from '@heroku/heroku-cli-util/dist/types/pg/data-api.js'
+import type {pg} from '@heroku/heroku-cli-util'
 
 export const apps: Record<string, Heroku.App> = {
   api: {
@@ -369,7 +369,7 @@ export const attachments: Record<string, Heroku.AddOnAttachment> = {
   },
 }
 
-export const resolvedAttachments: Record<string, ExtendedAddonAttachment> = {
+export const resolvedAttachments: Record<string, pg.ExtendedAddonAttachment> = {
   'myapp::postgres-1': {
     addon: {
       id: '3cc8af1b-7c3d-4aab-873d-73c92a23bd35',

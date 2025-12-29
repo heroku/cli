@@ -1,23 +1,27 @@
-/*
-import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
+import {utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 import {color} from '@heroku-cli/color'
 import {ChildProcess, SpawnSyncReturns, execSync} from 'node:child_process'
 import {Readable, Writable} from 'node:stream'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import debugFactory from 'debug'
+
+const heredoc = tsheredoc.default
 const debug = debugFactory('pg:push-pull')
 
-export const parseExclusions = (rawExcludeList: string | undefined) => {
-  return (rawExcludeList || '')
+export const parseExclusions = (rawExcludeList: string | undefined): Array<string> => (
+  (rawExcludeList || '')
     .split(';').map(excl => excl.trim())
     .filter(texcl => texcl !== '')
-}
+)
 
-export const prepare = async (target: ConnectionDetails) => {
+type ExecFn = typeof exec
+
+export const prepare = async (target: pg.ConnectionDetails, execFn: ExecFn = exec): Promise<void> => {
   const psqlService = new utils.pg.PsqlService(target)
   if (target.host === 'localhost' || !target.host) {
-    exec(`createdb ${connArgs(target, true).join(' ')}`)
+    execFn(`createdb ${connArgs(target, true).join(' ')}`)
   } else {
     // N.B.: we don't have a proper postgres driver and we don't want to rely on overriding
     // possible .psqlrc output configurations, so we generate a random marker that is returned
@@ -31,9 +35,9 @@ export const prepare = async (target: ConnectionDetails) => {
 }
 
 export const maybeTunnel = async (
-  herokuDb: ConnectionDetails,
-): Promise<ConnectionDetails> => {
-  let withTunnel: ConnectionDetails = Object.assign({}, herokuDb)
+  herokuDb: pg.ConnectionDetails,
+): Promise<pg.ConnectionDetails> => {
+  let withTunnel: pg.ConnectionDetails = Object.assign({}, herokuDb)
   const configs = utils.pg.psql.getPsqlConfigs(herokuDb)
   const tunnel = await utils.pg.psql.sshTunnel(herokuDb, configs.dbTunnelConfig)
 
@@ -50,7 +54,7 @@ export const maybeTunnel = async (
   return withTunnel
 }
 
-export const connArgs = (uri: ConnectionDetails, skipDFlag = false) => {
+export const connArgs = (uri: pg.ConnectionDetails, skipDFlag = false) => {
   const args: string[] = []
 
   if (uri.user) args.push('-U', uri.user)
@@ -75,8 +79,8 @@ const exec = (cmd: string, opts = {}) => {
   }
 }
 
-export const spawnPipe = async (pgDump: ChildProcess, pgRestore: ChildProcess) => {
-  return new Promise<void>((resolve, reject) => {
+export const spawnPipe = async (pgDump: ChildProcess, pgRestore: ChildProcess): Promise<void> => (
+  new Promise<void>((resolve, reject) => {
     const dumpStdout = pgDump.stdout as Readable
     const restoreStdin = pgRestore.stdin as Writable
 
@@ -85,9 +89,9 @@ export const spawnPipe = async (pgDump: ChildProcess, pgRestore: ChildProcess) =
     pgDump.on('close', code => code ? reject(new Error(`pg_dump errored with ${code}`)) : restoreStdin.end())
     pgRestore.on('close', code => code ? reject(new Error(`pg_restore errored with ${code}`)) : resolve())
   })
-}
+)
 
-export const verifyExtensionsMatch = async function (source: ConnectionDetails, target: ConnectionDetails) {
+export const verifyExtensionsMatch = async function (source: pg.ConnectionDetails, target: pg.ConnectionDetails) {
   const psqlSource = new utils.pg.PsqlService(source)
   const psqlTarget = new utils.pg.PsqlService(target)
   // It's pretty common for local DBs to not have extensions available that
@@ -120,4 +124,3 @@ export const verifyExtensionsMatch = async function (source: ConnectionDetails, 
     `)
   }
 }
-*/

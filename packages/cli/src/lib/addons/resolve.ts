@@ -3,7 +3,7 @@ import {HTTP, HTTPError} from '@heroku/http-call'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
 import type {ExtendedAddon} from '../pg/types.js'
-import type { ExtendedAddonAttachment } from '@heroku/heroku-cli-util/dist/types/pg/data-api.js'
+import type { pg } from '@heroku/heroku-cli-util'
 const addonHeaders = {
   Accept: 'application/vnd.heroku+json; version=3.sdk',
   'Accept-Expansion': 'addon_service,plan',
@@ -74,8 +74,8 @@ const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }
 export const appAttachment = async (heroku: APIClient, app: string | undefined, id: string, options: {
   addon_service?: string,
   namespace?: string
-} = {}): Promise<ExtendedAddonAttachment> => {
-  const result = await heroku.post<ExtendedAddonAttachment[]>('/actions/addon-attachments/resolve', {
+} = {}): Promise<pg.ExtendedAddonAttachment> => {
+  const result = await heroku.post<pg.ExtendedAddonAttachment[]>('/actions/addon-attachments/resolve', {
     headers: attachmentHeaders, body: {app, addon_attachment: id, addon_service: options.addon_service},
   })
   return singularize('addon_attachment', options.namespace)(result.body)
