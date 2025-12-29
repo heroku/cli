@@ -2,7 +2,6 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {arbitraryAppDB} from '../../../lib/pg/fetcher'
 import {utils} from '@heroku/heroku-cli-util'
 import {TransferSchedule} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
@@ -25,7 +24,8 @@ export default class Unschedule extends Command {
     const {database} = args
     let db = database
     if (!db) {
-      const appDB = await arbitraryAppDB(this.heroku, app)
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const appDB = await dbResolver.getArbitraryLegacyDB(app)
       const {body: schedules} = await this.heroku.get<TransferSchedule[]>(
         `/client/v11/databases/${appDB.id}/transfer-schedules`,
         {hostname: utils.pg.host()},

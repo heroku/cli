@@ -3,7 +3,6 @@ import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux, utils} from '@heroku/heroku-cli-util'
-import {all} from '../../../lib/pg/fetcher'
 import type {Link} from '../../../lib/pg/types'
 import {nls} from '../../../nls'
 
@@ -23,13 +22,18 @@ export default class Index extends Command {
     const {flags, args} = await this.parse(Index)
     const {app} = flags
     const {database} = args
-    let dbs: Array<(Awaited<ReturnType<typeof all>>)[number] & {links?: Link[]}>
+    type all = typeof utils.pg.DatabaseResolver.prototype.getAllLegacyDatabases
+
+    let dbs: Array<(Awaited<ReturnType<all>>)[number] & {links?: Link[]}>
     if (database) {
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon} = await dbResolver.getAttachment(app, database)
       dbs = [addon]
-    } else
-      dbs = await all(this.heroku, app)
+    } else {
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      dbs = await dbResolver.getAllLegacyDatabases(app)
+    }
+
     if (dbs.length === 0)
       throw new Error(`No databases on ${color.app(app)}`)
     dbs = await Promise.all(dbs.map(async db => {
