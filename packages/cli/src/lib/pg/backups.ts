@@ -1,11 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import type {BackupTransfer} from './types'
+import type {BackupTransfer} from './types.js'
 import bytes = require('bytes')
+
+const heredoc = tsheredoc.default
 
 function prefix(transfer: BackupTransfer) {
   if (transfer.from_type === 'pg_dump') {
@@ -43,7 +44,7 @@ class Backups {
     return bytes(size, opts)
   }
 
-  public status = (transfer: BackupTransfer): string => {
+  public status(transfer: BackupTransfer): string {
     if (transfer.finished_at && transfer.succeeded) {
       const warnings = transfer.warnings
       if (warnings > 0) {
@@ -64,7 +65,7 @@ class Backups {
     return 'Pending'
   }
 
-  public num = async (name: string) => {
+  public async num(name: string): Promise<number | undefined> {
     let m = name.match(/^[abcr](\d+)$/)
     if (m) return Number.parseInt(m[1], 10)
     m = name.match(/^o[ab]\d+$/)
@@ -75,15 +76,15 @@ class Backups {
     }
   }
 
-  public name = (transfer: BackupTransfer) => {
-    const oldPGBName = transfer.options && transfer.options.pgbackups_name
+  public name(transfer: BackupTransfer): string {
+    const oldPGBName = transfer.options?.pgbackups_name
     if (oldPGBName) return `o${oldPGBName}`
     return `${prefix(transfer)}${(transfer.num || '').toString().padStart(3, '0')}`
   }
 
-  public wait = async (action: string, transferID: string, interval: number, verbose: boolean, app: string) => {
+  public async wait(action: string, transferID: string, interval: number, verbose: boolean, app: string): Promise<void> {
     if (verbose) {
-      ux.log(`${action}...`)
+      ux.stdout(`${action}...`)
     }
 
     ux.action.start(action)
@@ -107,7 +108,7 @@ class Backups {
       }
 
       this.logsAlreadyShown.add(log.created_at + log.message)
-      ux.log(`${log.created_at} ${log.message}`)
+      ux.stdout(`${log.created_at} ${log.message}`)
     }
   }
 
@@ -171,4 +172,3 @@ function factory(app: string, heroku: APIClient) {
 }
 
 export default factory
-*/
