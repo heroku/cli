@@ -21,8 +21,8 @@ jobs:
       - name: Create npm-shrinkwrap.json for oclif pack:deb
         run: cd packages/cli && npm run create-shrinkwrap
       - name: Building deb
-        run: npm run pack:deb
-      - uses: actions/upload-artifact@v5
+        run: yarn oclif pack:deb --root="./packages/cli"
+      - uses: actions/upload-artifact@v6
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
@@ -41,8 +41,8 @@ jobs:
       - name: Create npm-shrinkwrap.json for oclif pack:tarballs
         run: cd packages/cli && npm run create-shrinkwrap
       - name: Building tarballs
-        run: npm run pack:tarballs
-      - uses: actions/upload-artifact@v5
+        run: yarn oclif pack tarballs --root="./packages/cli"
+      - uses: actions/upload-artifact@v6
         with:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/packages/cli/dist
@@ -59,14 +59,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo mkdir -p /build
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
       - run: |
           cd /home/runner/work/cli/cli/packages/cli/dist/deb
           /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: signed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
@@ -83,12 +83,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo mkdir -p /build
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: signed-deb
           path: /home/runner/work/cli/cli/packages/cli/dist
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/packages/cli/dist
