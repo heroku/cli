@@ -4,7 +4,6 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import {ExtendedAddonAttachment, utils} from '@heroku/heroku-cli-util'
-import {all} from '../../lib/pg/fetcher'
 import notify from '../../lib/notify'
 import {PgStatus} from '../../lib/pg/types'
 import {HTTPError} from '@heroku/http-call'
@@ -86,7 +85,8 @@ export default class Wait extends Command {
       const {addon} = await dbResolver.getAttachment(app, dbName)
       dbs = [addon]
     } else {
-      dbs = await all(this.heroku, app)
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      dbs = await dbResolver.getAllLegacyDatabases(app)
     }
 
     for (const db of dbs) {

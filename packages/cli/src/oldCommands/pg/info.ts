@@ -4,7 +4,6 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {ExtendedAddonAttachment, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {all} from '../../lib/pg/fetcher'
 import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util'
 import {PgDatabaseTenant} from '../../lib/pg/types'
 import {nls} from '../../nls'
@@ -75,7 +74,8 @@ export default class Info extends Command {
         const {addon} = await dbResolver.getAttachment(app, db)
         addons = [addon]
       } else {
-        addons = await all(this.heroku, app)
+        const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+        addons = await dbResolver.getAllLegacyDatabases(app)
         if (addons.length === 0) {
           ux.log(`${color.magenta(app)} has no heroku-postgresql databases.`)
           return
