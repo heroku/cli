@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect, test} from '@oclif/test'
+import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 // import Dyno from '../../../src/lib/run/dyno'

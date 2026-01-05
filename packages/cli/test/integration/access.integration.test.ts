@@ -1,4 +1,4 @@
-import {expect, test} from '@oclif/test'
+import {expect} from 'chai'
 
 /*
 describe('access', function () {

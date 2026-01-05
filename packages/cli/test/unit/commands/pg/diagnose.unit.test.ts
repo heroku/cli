@@ -1,6 +1,6 @@
 /*
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 import {randomUUID} from 'node:crypto'
 import {stdout} from 'stdout-stderr'
