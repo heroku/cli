@@ -1,5 +1,5 @@
 import {ux} from '@oclif/core'
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
 import heredoc from 'tsheredoc'
