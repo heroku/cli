@@ -49,5 +49,3 @@ describe('webhooks type', function () {
     .catch(error => expect(error.message).to.equal('No app specified'))
     .it('returns error if no arguments are given')
 })
-
-*/

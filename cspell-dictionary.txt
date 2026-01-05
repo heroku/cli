@@ -41,6 +41,7 @@ buildpacks
 buildpath
 cachecompl
 CEDARPRIVATESPACES
+CERTFILE
 ckey
 clearsign
 clientsecret
@@ -212,6 +213,7 @@ mywork
 myworker
 ncalls
 netrc
+newkey
 newname
 newpassword
 nodir
@@ -331,6 +333,7 @@ splunkhec
 sshdir
 sslmode
 stampy
+strftime
 stubber
 supersecretkey
 syncer
@@ -356,6 +359,7 @@ unfollow
 unfollowing
 unfollows
 unidling
+unref
 unschedules
 unscheduling
 unsetting
