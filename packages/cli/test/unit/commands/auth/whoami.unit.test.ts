@@ -7,6 +7,7 @@ describe('auth:whoami', function () {
     delete process.env.HEROKU_API_KEY
     nock.cleanAll()
   })
+  
   it('shows user email when logged in', async () => {
     process.env.HEROKU_API_KEY = 'foobar'
 
