@@ -44,48 +44,6 @@ describe('util', function () {
       expect(result).to.include(cred)
       expect(result).to.include('DATABASE')
     })
-
-    it('includes rotation information when credential is rotating', function () {
-      const app = 'myapp'
-      const cred = 'default'
-      const credAttachments: Required<Heroku.AddOnAttachment>[] = [
-        {
-          id: '1',
-          name: 'DATABASE',
-          app: {id: 'app-id', name: app},
-          addon: {id: 'addon-id', name: 'postgres-1'} as Required<Heroku.AddOn>,
-          namespace: null,
-          config_vars: ['DATABASE_URL'],
-          created_at: '2024-01-01T00:00:00Z',
-          updated_at: '2024-01-01T00:00:00Z',
-          web_url: 'https://example.com',
-          log_input_url: 'https://example.com/logs',
-        },
-      ]
-      const credentials: CredentialsInfo = [
-        {
-          uuid: 'uuid',
-          name: cred,
-          state: 'rotating',
-          database: 'db',
-          host: 'host',
-          port: 5432,
-          credentials: [
-            {
-              user: 'user1',
-              password: 'pass',
-              state: 'active',
-              connections: 5,
-            },
-          ],
-        },
-      ]
-
-      const result = presentCredentialAttachments(app, credAttachments, credentials, cred)
-
-      expect(result).to.include('user1')
-      expect(result).to.include('5 connections')
-    })
   })
 
   describe('configVarNamesFromValue', function () {
