@@ -46,8 +46,6 @@ export default class Cancel extends Command {
   }
 
   protected sortByCreatedAtDesc(transfers: BackupTransfer[]): BackupTransfer[] {
-    return transfers.sort((a, b) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    })
+    return transfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
   }
 }

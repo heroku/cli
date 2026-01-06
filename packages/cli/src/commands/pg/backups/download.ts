@@ -19,17 +19,17 @@ function defaultFilename() {
 }
 
 export default class Download extends Command {
-  static topic = 'pg';
-  static description = 'downloads database backup';
+  static topic = 'pg'
+  static description = 'downloads database backup'
   static flags = {
     output: flags.string({char: 'o', description: 'location to download to. Defaults to latest.dump'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Download)

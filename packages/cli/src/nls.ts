@@ -1,4 +1,4 @@
-import {nlsValues} from './nls-data.js';
+import {nlsValues} from './nls-data.js'
 
 /**
  * Non-localized strings util.

@@ -11,18 +11,18 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Capture extends Command {
-  static topic = 'pg';
-  static description = 'capture a new backup';
+  static topic = 'pg'
+  static description = 'capture a new backup'
   static flags = {
     'wait-interval': flags.string(),
     verbose: flags.boolean({char: 'v'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Capture)
