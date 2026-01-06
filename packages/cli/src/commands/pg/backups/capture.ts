@@ -1,13 +1,14 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import backupsApi from '../../../lib/pg/backups'
-import {BackupTransfer, PgDatabase} from '../../../lib/pg/types'
+import backupsApi from '../../../lib/pg/backups.js'
+import {BackupTransfer, PgDatabase} from '../../../lib/pg/types.js'
 import {utils} from '@heroku/heroku-cli-util'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {HTTPError} from '@heroku/http-call'
-import {nls} from '../../../nls'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Capture extends Command {
   static topic = 'pg';
@@ -56,7 +57,7 @@ export default class Capture extends Command {
     ux.action.start(`Starting backup of ${color.yellow(db.name)}`)
     const {body: backup} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${db.id}/backups`, {hostname: utils.pg.host()})
     ux.action.stop()
-    ux.log(heredoc`
+    ux.stdout(heredoc`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
       Use ${color.cmd('heroku pg:backups:info')} to check progress.
@@ -64,7 +65,7 @@ export default class Capture extends Command {
     `)
 
     if (app !== db.app.name) {
-      ux.log(heredoc`
+      ux.stdout(heredoc`
         HINT: You are running this command with a non-billing application.
         Use ${color.cmd('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
       `)
@@ -73,4 +74,3 @@ export default class Capture extends Command {
     await pgBackupsApi.wait(`Backing up ${color.green(backup.from_name)} to ${color.cyan(pgBackupsApi.name(backup))}`, backup.uuid, interval, verbose, db.app.name || app)
   }
 }
-*/

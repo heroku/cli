@@ -1,11 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import backupsFactory from '../../../lib/pg/backups'
+import backupsFactory from '../../../lib/pg/backups.js'
 import {utils} from '@heroku/heroku-cli-util'
-import type {BackupTransfer} from '../../../lib/pg/types'
+import type {BackupTransfer} from '../../../lib/pg/types.js'
 
 export default class Index extends Command {
   static topic = 'pg'
@@ -27,17 +26,7 @@ export default class Index extends Command {
 
     const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
     // NOTE that the sort order is descending
-    transfers.sort((transferA, transferB) => {
-      if (transferA.created_at > transferB.created_at) {
-        return -1
-      }
-
-      if (transferB.created_at > transferA.created_at) {
-        return 1
-      }
-
-      return 0
-    })
+    transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))
 
     this.displayBackups(transfers, app)
     this.displayRestores(transfers, app)
@@ -49,7 +38,7 @@ export default class Index extends Command {
     const {name, status, filesize} = backupsFactory(app, this.heroku)
     hux.styledHeader('Backups')
     if (backups.length === 0) {
-      ux.log(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+      ux.stdout(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
     } else {
       hux.table<BackupTransfer>(backups, {
         ID: {
@@ -70,7 +59,7 @@ export default class Index extends Command {
       })
     }
 
-    ux.log()
+    ux.stdout()
   }
 
   private displayRestores(transfers: BackupTransfer[], app: string) {
@@ -80,7 +69,7 @@ export default class Index extends Command {
     const {name, status, filesize} = backupsFactory(app, this.heroku)
     hux.styledHeader('Restores')
     if (restores.length === 0) {
-      ux.log(`No restores found. Use ${color.cyan.bold('heroku pg:backups:restore')} to restore a backup`)
+      ux.stdout(`No restores found. Use ${color.cyan.bold('heroku pg:backups:restore')} to restore a backup`)
     } else {
       hux.table(restores, {
         ID: {
@@ -101,7 +90,7 @@ export default class Index extends Command {
       })
     }
 
-    ux.log()
+    ux.stdout()
   }
 
   private displayCopies(transfers: BackupTransfer[], app: string) {
@@ -109,7 +98,7 @@ export default class Index extends Command {
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
     hux.styledHeader('Copies')
     if (copies.length === 0) {
-      ux.log(`No copies found. Use ${color.cyan.bold('heroku pg:copy')} to copy a database to another`)
+      ux.stdout(`No copies found. Use ${color.cyan.bold('heroku pg:copy')} to copy a database to another`)
     } else {
       hux.table(copies, {
         ID: {
@@ -133,8 +122,6 @@ export default class Index extends Command {
       })
     }
 
-    ux.log()
+    ux.stdout()
   }
 }
-
-*/

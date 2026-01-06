@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import backupsFactory from '../../../lib/pg/backups'
-import {BackupTransfer} from '../../../lib/pg/types'
+import backupsFactory from '../../../lib/pg/backups.js'
+import {BackupTransfer} from '../../../lib/pg/types.js'
 
 export default class Cancel extends Command {
   static topic = 'pg'
@@ -48,8 +47,7 @@ export default class Cancel extends Command {
 
   protected sortByCreatedAtDesc(transfers: BackupTransfer[]): BackupTransfer[] {
     return transfers.sort((a, b) => {
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
   }
 }
-*/
