@@ -1,20 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
-import {renderAttachment} from '../../commands/addons'
-import {multiSortCompareFn} from '../utils/multisort'
-import type {CredentialsInfo} from './types'
+import {hux} from '@heroku/heroku-cli-util'
+import {renderAttachment} from '../../commands/addons/index.js'
+import {multiSortCompareFn} from '../utils/multisort.js'
+import type {CredentialsInfo} from './types.js'
 import {utils} from '@heroku/heroku-cli-util'
-import type {ExtendedAddon} from './types'
-
-export const essentialNumPlan = (addon: ExtendedAddonAttachment['addon'] | ExtendedAddon) => Boolean(addon?.plan?.name?.split(':')[1].match(/^essential/))
-export const legacyEssentialPlan = (addon: ExtendedAddonAttachment['addon'] | ExtendedAddon) => Boolean(addon?.plan?.name?.split(':')[1].match(/(dev|basic|mini)$/))
-
-export function essentialPlan(addon: ExtendedAddonAttachment['addon'] | ExtendedAddon) {
-  return essentialNumPlan(addon) || legacyEssentialPlan(addon)
-}
 
 export function formatResponseWithCommands(response: string): string {
   return response.replace(/`(.*?)`/g, (_, word) => color.cmd(word))
@@ -53,7 +43,10 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
     if (connectionInformationAvailable) {
       const prefix = '       '
       rotationLines.push(`${prefix}Usernames currently active for this credential:`)
-      ux.table(formatted, {
+      const printLine = (line: unknown) => {
+        rotationLines.push(line as string)
+      }
+      hux.table(formatted, {
         user: {
           get(row: typeof formatted[0]) {
             return `${prefix}${row.user}`
@@ -70,10 +63,7 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
           },
         },
       }, {
-        'no-header': true,
-        printLine(line: unknown): void {
-          rotationLines.push(line)
-        },
+        printLine,
       })
     }
   }
@@ -121,4 +111,3 @@ export const databaseNameFromUrl = (uri: string, config: Record<string, string>)
   const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(uri)
   return `${conn.host}:${conn.port}${conn.pathname}`
 }
-*/
