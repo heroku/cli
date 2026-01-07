@@ -66,23 +66,23 @@ export default class Index extends Command {
     const restores = transfers
       .filter(t => t.from_type !== 'pg_dump' && t.to_type === 'pg_restore')
       .slice(0, 10) // first 10 only
-    const {name, status, filesize} = backupsFactory(app, this.heroku)
+    const pgbackups = backupsFactory(app, this.heroku)
     hux.styledHeader('Restores')
     if (restores.length === 0) {
       ux.stdout(`No restores found. Use ${color.cyan.bold('heroku pg:backups:restore')} to restore a backup`)
     } else {
       hux.table(restores, {
         ID: {
-          get: (transfer: BackupTransfer) => color.cyan(name(transfer)),
+          get: (transfer: BackupTransfer) => color.cyan(pgbackups.name(transfer)),
         },
         'Started at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
         },
         Status: {
-          get: (transfer: BackupTransfer) => status(transfer),
+          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
         },
         Size: {
-          get: (transfer: BackupTransfer) => filesize(transfer.processed_bytes),
+          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         Database: {
           get: (transfer: BackupTransfer) => color.green(transfer.to_name) || 'UNKNOWN',
@@ -94,7 +94,7 @@ export default class Index extends Command {
   }
 
   private displayCopies(transfers: BackupTransfer[], app: string) {
-    const {name, status, filesize} = backupsFactory(app, this.heroku)
+    const pgbackups = backupsFactory(app, this.heroku)
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
     hux.styledHeader('Copies')
     if (copies.length === 0) {
@@ -102,16 +102,16 @@ export default class Index extends Command {
     } else {
       hux.table(copies, {
         ID: {
-          get: (transfer: BackupTransfer) => color.cyan(name(transfer)),
+          get: (transfer: BackupTransfer) => color.cyan(pgbackups.name(transfer)),
         },
         'Started at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
         },
         Status: {
-          get: (transfer: BackupTransfer) => status(transfer),
+          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
         },
         Size: {
-          get: (transfer: BackupTransfer) => filesize(transfer.processed_bytes),
+          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         From: {
           get: (transfer: BackupTransfer) => color.green(transfer.from_name) || 'UNKNOWN',

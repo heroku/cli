@@ -38,7 +38,7 @@ export default class Cancel extends Command {
 
     if (transfer) {
       ux.action.start(`Cancelling ${pgbackups.name(transfer)}`)
-      this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: utils.pg.host()})
+      await this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: utils.pg.host()})
       ux.action.stop()
     } else {
       ux.error('No active backups/transfers')
