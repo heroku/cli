@@ -3,12 +3,10 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
 import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
-import {GitService} from '../../lib/ci/git.js'
+import {gitService} from '../../lib/ci/git.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
-
-const gitService = new GitService()
 
 export default class CiRun extends Command {
   static description = 'run tests against current directory'

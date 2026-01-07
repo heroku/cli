@@ -158,6 +158,9 @@ export class GitService {
   }
 }
 
+// Export a shared instance for use across commands
+export const gitService = new GitService()
+
 export {
   createArchive,
   createRemote,

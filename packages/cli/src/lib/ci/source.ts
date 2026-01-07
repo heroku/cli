@@ -3,10 +3,9 @@ import debug from 'debug'
 import {createReadStream, promises as fs} from 'fs'
 import {got} from 'got'
 
-import {GitService} from './git.js'
+import {gitService} from './git.js'
 
 const ciDebug = debug('ci')
-const gitService = new GitService()
 
 // FileService class for easier testing/stubbing
 export class FileService {

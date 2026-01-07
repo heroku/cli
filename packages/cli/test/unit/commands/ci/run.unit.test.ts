@@ -6,7 +6,8 @@ import sinon from 'sinon'
 import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ci/run.js'
-import {fileService, gitService} from '../../../../src/lib/ci/source.js'
+import {gitService} from '../../../../src/lib/ci/git.js'
+import {fileService} from '../../../../src/lib/ci/source.js'
 import customRunCommand from '../../../helpers/runCommand.js'
 
 describe('ci:run', function () {
