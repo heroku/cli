@@ -55,13 +55,12 @@ export default class Connect extends Command {
     const pipeline = await getPipeline(this.heroku, pipelineName)
 
     ux.action.start('Linking to repo')
-    
     // Attempt repos-api connection first
     try {
       const repoUrl = repoName.includes('.') ? repoName : `https://github.com/${repoName}`
       await createPipelineRepository(this.heroku, pipeline.body.id!, repoUrl)
     // Fallback to kolkrabbi
-    } catch (error) {
+    } catch {
       const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
       const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
       const repo = await getRepo(github, repoName)
