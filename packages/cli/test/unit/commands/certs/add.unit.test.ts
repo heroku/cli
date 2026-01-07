@@ -1,21 +1,20 @@
-import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {expect} from 'chai'
 import nock from 'nock'
-
-import sinon from 'sinon'
-import {SinonStub} from 'sinon'
+import sinon, {SinonStub} from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import runCommand from '../../../helpers/runCommand.js'
 const heredoc = tsheredoc.default
-import {
-  endpoint,
-  endpointStables,
-  endpointWildcard,
-  certificateDetails,
-  endpointHeroku,
-} from '../../../helpers/stubs/sni-endpoints.js'
 import Cmd from '../../../../src/commands/certs/add.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
-import {expect} from '@oclif/test'
+import {
+  certificateDetails,
+  endpoint,
+  endpointHeroku,
+  endpointStables,
+  endpointWildcard,
+} from '../../../helpers/stubs/sni-endpoints.js'
 
 describe('heroku certs:add', function () {
   let stubbedSelectDomainsReturnValue: {domains: string[]} = {domains: []}
