@@ -1,8 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/apps/leave.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {expect} from 'chai'
 import nock from 'nock'
-import {expect} from '@oclif/test'
+import {stderr, stdout} from 'stdout-stderr'
+
+import LeaveCommand from '../../../../src/commands/apps/leave.js'
+import runCommandHelper from '../../../helpers/runCommand.js'
 
 function mockUserAccount(email = 'gandalf@heroku.com') {
   return nock('https://api.heroku.com:443')
@@ -36,12 +37,12 @@ describe('heroku apps:leave', function () {
 
   context('when it is an org app', function () {
     it('leaves the app', async function () {
-      await runCommand(Cmd, [
+      await runCommandHelper(LeaveCommand, [
         '--app',
         'myapp',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Leaving ⬢ myapp... done\n')
+      expect(stderr.output).to.eq('Leaving myapp... done\n')
       apiGetUserAccount.done()
       apiDeletePersonalAppCollaborator.done()
     })
@@ -49,12 +50,12 @@ describe('heroku apps:leave', function () {
 
   context('when it is not an org app', function () {
     it('leaves the app', async function () {
-      await runCommand(Cmd, [
+      await runCommandHelper(LeaveCommand, [
         '--app',
         'myapp',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Leaving ⬢ myapp... done\n')
+      expect(stderr.output).to.eq('Leaving myapp... done\n')
       apiGetUserAccount.done()
       apiDeletePersonalAppCollaborator.done()
     })
@@ -72,7 +73,7 @@ describe('heroku apps:leave', function () {
 
     it('shows an error if the heroku.delete() operation returns an error', async function () {
       try {
-        await runCommand(Cmd, [
+        await runCommandHelper(LeaveCommand, [
           '--app',
           'myapp',
         ])
