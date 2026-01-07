@@ -1,12 +1,12 @@
-import Cmd from '../../../../src/commands/certs/generate.js'
-import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {expect} from 'chai'
 import nock from 'nock'
-import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sinon from 'sinon'
-
-import {expect} from '@oclif/test'
 import {SinonStub} from 'sinon'
+import {stdout, stderr} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/certs/generate.js'
+import runCommand from '../../../helpers/runCommand.js'
+import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 
 describe('heroku certs:generate', function () {
   let promptForOwnerInfoStub: SinonStub
@@ -27,6 +27,7 @@ describe('heroku certs:generate', function () {
   afterEach(function () {
     promptForOwnerInfoStub.restore()
     spawnOpenSSLStub.restore()
+    nock.cleanAll()
   })
 
   it('# with certificate prompts emitted if no parts of subject provided', async function () {
