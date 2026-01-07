@@ -35,23 +35,23 @@ export default class Index extends Command {
 
   private displayBackups(transfers: BackupTransfer[], app: string) {
     const backups = transfers.filter(backupTransfer => backupTransfer.from_type === 'pg_dump' && backupTransfer.to_type === 'gof3r')
-    const {name, status, filesize} = backupsFactory(app, this.heroku)
+    const pgbackups = backupsFactory(app, this.heroku)
     hux.styledHeader('Backups')
     if (backups.length === 0) {
       ux.stdout(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
     } else {
       hux.table<BackupTransfer>(backups, {
         ID: {
-          get: (transfer: BackupTransfer) => color.cyan(name(transfer)),
+          get: (transfer: BackupTransfer) => color.cyan(pgbackups.name(transfer)),
         },
         'Created at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
         },
         Status: {
-          get: (transfer: BackupTransfer) => status(transfer),
+          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
         },
         Size: {
-          get: (transfer: BackupTransfer) => filesize(transfer.processed_bytes),
+          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         Database: {
           get: (transfer: BackupTransfer) => color.green(transfer.from_name) || 'UNKNOWN',
