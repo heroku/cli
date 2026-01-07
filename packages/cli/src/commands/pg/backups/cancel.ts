@@ -33,7 +33,9 @@ export default class Cancel extends Command {
       ({body: transfer} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${num}`, {hostname: utils.pg.host()}))
     } else {
       const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
-      transfer = this.sortByCreatedAtDesc(transfers).find(t => !t.finished_at)
+      transfer = transfers
+        .sort((a, b) => b.created_at.localeCompare(a.created_at))
+        .find(t => !t.finished_at)
     }
 
     if (transfer) {
@@ -43,9 +45,5 @@ export default class Cancel extends Command {
     } else {
       ux.error('No active backups/transfers')
     }
-  }
-
-  protected sortByCreatedAtDesc(transfers: BackupTransfer[]): BackupTransfer[] {
-    return transfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
   }
 }
