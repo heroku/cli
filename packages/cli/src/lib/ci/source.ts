@@ -1,20 +1,34 @@
 import {Command} from '@heroku-cli/command'
-import {promises as fs} from 'fs'
-import {createReadStream} from 'fs'
-import * as git from './git.js'
-import {got} from 'got'
 import debug from 'debug'
+import {createReadStream, promises as fs} from 'fs'
+import {got} from 'got'
+
+import {GitService} from './git.js'
 
 const ciDebug = debug('ci')
+const gitService = new GitService()
+
+// FileService class for easier testing/stubbing
+export class FileService {
+  createReadStream(filePath: string) {
+    return createReadStream(filePath)
+  }
+
+  async stat(filePath: string) {
+    return fs.stat(filePath)
+  }
+}
+
+const fileService = new FileService()
 
 async function uploadArchive(url: string, filePath: string) {
   const request = got.stream.put(url, {
     headers: {
-      'content-length': (await fs.stat(filePath)).size.toString(),
+      'content-length': (await fileService.stat(filePath)).size.toString(),
     },
   })
 
-  createReadStream(filePath).pipe(request)
+  fileService.createReadStream(filePath).pipe(request)
 
   return new Promise((resolve: any, reject: any) => {
     request.on('error', reject)
@@ -23,15 +37,15 @@ async function uploadArchive(url: string, filePath: string) {
 }
 
 async function prepareSource(ref: any, command: Command) {
-  const filePath = await git.createArchive(ref)
+  const filePath = await gitService.createArchive(ref)
   const {body: source} = await command.heroku.post<any>('/sources')
   await uploadArchive(source.source_blob.put_url, filePath)
-  return Promise.resolve(source)
+  return source
 }
 
 export async function createSourceBlob(ref: any, command: Command) {
   try {
-    const githubRepository = await git.githubRepository()
+    const githubRepository = await gitService.githubRepository()
     const {user, repo} = githubRepository
 
     const {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
@@ -46,3 +60,6 @@ export async function createSourceBlob(ref: any, command: Command) {
   const sourceBlob = await prepareSource(ref, command)
   return sourceBlob.source_blob.get_url
 }
+
+// Export service instances for testing
+export {fileService, gitService}
