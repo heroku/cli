@@ -1,4 +1,5 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import {promises as fs} from 'node:fs'
 const {readFile, writeFile, unlink} = fs
 const unlinkFile = unlink
@@ -140,28 +141,25 @@ describe('ci:migrate-manifest', function () {
     },
   }
 
-  test
-    .stdout()
-    .command(['ci:migrate-manifest'])
-    .it('creates an app.json file if none exists', async ({stdout}) => {
-      const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
-      appJsonFileContents = JSON.parse(fileContents)
+  it('creates an app.json file if none exists', async () => {
+    const {stdout} = await runCommand(['ci:migrate-manifest'])
 
-      expect(stdout).to.equal('We couldn\'t find an app-ci.json file in the current directory, but we\'re creating a new app.json manifest for you.\nPlease check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
-      expect(appJsonFileContents).to.deep.equal(mockNewAppJsonFileContents)
-    })
+    const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
+    appJsonFileContents = JSON.parse(fileContents)
 
-  test
-    .stdout()
-    .do(async () => {
-      await writeFile('app-ci.json', `${JSON.stringify(mockOldAppCiJsonFileContents, null, '  ')}\n`)
-    })
-    .command(['ci:migrate-manifest'])
-    .it('creates converted app.json file when app-ci.json file is present', async ({stdout}) => {
-      const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
-      appJsonFileContents = JSON.parse(fileContents)
+    expect(stdout).to.equal('We couldn\'t find an app-ci.json file in the current directory, but we\'re creating a new app.json manifest for you.\nPlease check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
+    expect(appJsonFileContents).to.deep.equal(mockNewAppJsonFileContents)
+  })
 
-      expect(stdout).to.equal('Please check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
-      expect(appJsonFileContents).to.deep.equal(mockConvertedAppJSONFileContents)
-    })
+  it('creates converted app.json file when app-ci.json file is present', async () => {
+    await writeFile('app-ci.json', `${JSON.stringify(mockOldAppCiJsonFileContents, null, '  ')}\n`)
+
+    const {stdout} = await runCommand(['ci:migrate-manifest'])
+
+    const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
+    appJsonFileContents = JSON.parse(fileContents)
+
+    expect(stdout).to.equal('Please check the contents of your app.json before committing to your repo.\nYou\'re all set! 🎉\n')
+    expect(appJsonFileContents).to.deep.equal(mockConvertedAppJSONFileContents)
+  })
 })
