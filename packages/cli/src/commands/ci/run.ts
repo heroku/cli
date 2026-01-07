@@ -3,10 +3,12 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
 import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
-import * as git from '../../lib/ci/git.js'
+import {GitService} from '../../lib/ci/git.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
+
+const gitService = new GitService()
 
 export default class CiRun extends Command {
   static description = 'run tests against current directory'
@@ -25,7 +27,7 @@ export default class CiRun extends Command {
   async run() {
     const {flags} = await this.parse(CiRun)
     const pipeline = await getPipeline(flags, this.heroku)
-    const commit = await git.readCommit('HEAD')
+    const commit = await gitService.readCommit('HEAD')
 
     ux.action.start('Preparing source')
     const sourceBlobUrl = await createSourceBlob(commit.ref, this)

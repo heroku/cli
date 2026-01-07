@@ -152,6 +152,10 @@ export class GitService {
   async githubRepository() {
     return githubRepository()
   }
+
+  async readCommit(commit: string) {
+    return readCommit(commit)
+  }
 }
 
 export {
