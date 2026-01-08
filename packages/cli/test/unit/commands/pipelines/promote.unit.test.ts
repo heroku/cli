@@ -148,7 +148,7 @@ describe('pipelines:promote', function () {
       expect(stdout).to.contain('Because reasons')
     })
 
-    it('can promote by app name', async function () {
+    it('can promote by app id', async function () {
       setupNock()
       mockPromotionTargets()
 
