@@ -1,13 +1,14 @@
 import {stderr, stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/backups/schedule'
+import Cmd from '../../../../../src/commands/pg/backups/schedule.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
 import stripAnsi from 'strip-ansi'
-// import {CLIError} from '@oclif/core/lib/errors'
 
-/*
+const heredoc = tsheredoc.default
+
+type CLIError = Error & {oclif?: {exit?: number}}
 describe('pg:backups:schedule', function () {
   let api: nock.Scope
   let data: nock.Scope
@@ -98,9 +99,9 @@ describe('pg:backups:schedule', function () {
     try {
       await runCommand(Cmd, ['--at', '24:00', '--app', 'myapp'])
     } catch (error: unknown) {
-      const {message, oclif} = error as CLIError
-      expect(message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-      expect(oclif.exit).to.equal(1)
+      const err = error as CLIError
+      expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
+      expect(err.oclif?.exit).to.equal(1)
     }
   })
 
@@ -108,9 +109,9 @@ describe('pg:backups:schedule', function () {
     try {
       await runCommand(Cmd, ['--at', '01:00 New York', '--app', 'myapp'])
     } catch (error: unknown) {
-      const {message, oclif} = error as CLIError
-      expect(message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-      expect(oclif.exit).to.equal(1)
+      const err = error as CLIError
+      expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
+      expect(err.oclif?.exit).to.equal(1)
     }
   })
 
@@ -118,9 +119,9 @@ describe('pg:backups:schedule', function () {
     try {
       await runCommand(Cmd, ['--at', '06:15 EDT', '--app', 'myapp'])
     } catch (error: unknown) {
-      const {message, oclif} = error as CLIError
-      expect(message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-      expect(oclif.exit).to.equal(1)
+      const err = error as CLIError
+      expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
+      expect(err.oclif?.exit).to.equal(1)
     }
   })
 
@@ -157,8 +158,8 @@ describe('pg:backups:schedule', function () {
     try {
       await runCommand(Cmd, ['--at', '06:00 New_York', '--app', 'myapp'])
     } catch (error: unknown) {
-      const {message} = error as CLIError
-      expect(message).to.contain('Bad request.')
+      const err = error as CLIError
+      expect(err.message).to.contain('Bad request.')
     }
 
     api.done()
@@ -166,5 +167,3 @@ describe('pg:backups:schedule', function () {
     nock.cleanAll()
   })
 })
-
-*/

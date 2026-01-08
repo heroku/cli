@@ -1,5 +1,5 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/backups/url'
+import Cmd from '../../../../../src/commands/pg/backups/url.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
@@ -40,9 +40,6 @@ const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
   })
 }
 
-/*
 describe('pg:backups:url', function () {
   shouldUrl((args: string[]) => runCommand(Cmd, args))
 })
-
-*/
