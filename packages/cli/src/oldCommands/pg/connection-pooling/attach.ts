@@ -1,12 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
-import {essentialPlan} from '../../../lib/pg/util'
+import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import {nls} from '../../../nls'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Attach extends Command {
     static topic = 'pg'
@@ -31,7 +31,7 @@ export default class Attach extends Command {
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon: db} = await dbResolver.getAttachment(app, args.database)
 
-      if (essentialPlan(db))
+      if (utils.pg.isEssentialDatabase(db))
         ux.error('You can’t perform this operation on Essential-tier databases.')
 
       ux.action.start(`Enabling Connection Pooling on ${color.yellow(db.name)} to ${color.magenta(app)}`)
@@ -48,4 +48,3 @@ export default class Attach extends Command {
       ux.action.stop(`done, v${releases[0].version}`)
     }
 }
-*/

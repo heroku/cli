@@ -1,11 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util'
-import {nls} from '../../../nls'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Create extends Command {
     static topic = 'pg'
@@ -25,7 +25,7 @@ export default class Create extends Command {
       const {app, name} = flags
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon: db} = await dbResolver.getAttachment(app, args.database)
-      if (essentialPlan(db)) {
+      if (utils.pg.isEssentialDatabase(db)) {
         throw new Error("You can't create a custom credential on Essential-tier databases.")
       }
 
@@ -37,10 +37,9 @@ export default class Create extends Command {
 
       const attachCmd = `heroku addons:attach ${db.name} --credential ${name} -a ${app}`
       const psqlCmd = `heroku pg:psql ${db.name} -a ${app}`
-      ux.log(heredoc(`
+      ux.stdout(heredoc(`
 
       Please attach the credential to the apps you want to use it in by running ${color.cyan.bold(attachCmd)}.
       Please define the new grants for the credential within Postgres: ${color.cyan.bold(psqlCmd)}.`))
     }
 }
-*/

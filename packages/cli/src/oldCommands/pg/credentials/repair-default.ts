@@ -1,18 +1,18 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util'
-import confirmCommand from '../../../lib/confirmCommand'
-import heredoc from 'tsheredoc'
-import {nls} from '../../../nls'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class RepairDefault extends Command {
   static topic = 'pg';
   static description = 'repair the permissions of the default credential within database';
   static example = '$ heroku pg:credentials:repair-default postgresql-something-12345';
   static flags = {
-    confirm: flags.string({char: 'c'}),
+    confirm: flags.string({char: 'c', hidden: true}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   };
@@ -27,9 +27,9 @@ export default class RepairDefault extends Command {
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (essentialPlan(db))
+    if (utils.pg.isEssentialDatabase(db))
       throw new Error("You can't perform this operation on Essential-tier databases.")
-    await confirmCommand(app, confirm, heredoc(`
+    await new ConfirmCommand().confirm(app, confirm, heredoc(`
       Destructive Action
       Ownership of all database objects owned by additional credentials will be transferred to the default credential.
       This command will also grant the default credential admin option for all additional credentials.
@@ -39,4 +39,3 @@ export default class RepairDefault extends Command {
     ux.action.stop()
   }
 }
-*/

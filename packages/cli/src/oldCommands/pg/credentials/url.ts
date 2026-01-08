@@ -1,13 +1,13 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {legacyEssentialPlan} from '../../../lib/pg/util'
 import {utils} from '@heroku/heroku-cli-util'
 import {URL} from 'url'
-import type {CredentialInfo} from '../../../lib/pg/types'
-import heredoc from 'tsheredoc'
-import {nls} from '../../../nls'
+import type {CredentialInfo} from '../../../lib/pg/types.js'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Url extends Command {
   static topic = 'pg'
@@ -32,7 +32,7 @@ export default class Url extends Command {
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (legacyEssentialPlan(db) && name !== 'default') {
+    if (utils.pg.isLegacyEssentialDatabase(db) && name !== 'default') {
       ux.error('Legacy Essential-tier databases do not support named credentials.')
     }
 
@@ -62,7 +62,7 @@ export default class Url extends Command {
       connUrl.password = creds.password
     }
 
-    ux.log(heredoc(`
+    ux.stdout(heredoc(`
       Connection information for ${color.yellow(name)} credential.
       Connection info string:
         "dbname=${creds.database} host=${creds.host} port=${creds.port} user=${creds.user} password=${creds.password} sslmode=require"
@@ -71,4 +71,3 @@ export default class Url extends Command {
     `))
   }
 }
-*/
