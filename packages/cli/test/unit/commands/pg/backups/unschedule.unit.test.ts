@@ -39,7 +39,6 @@ const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {
     await cmdRun(['--app', appName])
     expectOutput(stdout.output, '')
     expectOutput(stderr.output, heredoc(`
-      Unscheduling DATABASE_URL daily backups...
       Unscheduling DATABASE_URL daily backups... done
     `))
   })

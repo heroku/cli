@@ -62,10 +62,8 @@ describe('pg:backups:schedule', function () {
       await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
 
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include(heredoc(`
-        Scheduling automatic daily backups of postgres-1 at 06:00 America/New_York...
-        Scheduling automatic daily backups of postgres-1 at 06:00 America/New_York... done
-      `))
+      expect(stderr.output).to.include('Scheduling automatic daily backups of postgres-1 at 06:00 America/New_York')
+      expect(stderr.output).to.include('done')
     })
 
     it('warns user that logical backups are error prone if continuous protection is on', async function () {

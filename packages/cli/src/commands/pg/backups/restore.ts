@@ -80,7 +80,7 @@ export default class Restore extends Command {
     const interval = Math.max(3, waitInterval)
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app as string, args.database)
-    const {name, wait} = backupsFactory(app, this.heroku)
+    const pgbackups = backupsFactory(app, this.heroku)
     let backupURL
     let backupName = args.backup
 
@@ -99,7 +99,7 @@ export default class Restore extends Command {
 
       let backup
       if (backupName) {
-        backup = backups.find(b => name(b) === backupName)
+        backup = backups.find(b => pgbackups.name(b) === backupName)
         if (!backup)
           throw new Error(`Backup ${color.cyan(backupName)} not found for ${color.app(backupApp)}`)
         if (!backup.succeeded)
@@ -118,7 +118,7 @@ export default class Restore extends Command {
           throw new Error(`No backups for ${color.app(backupApp)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
         }
 
-        backupName = name(backup)
+        backupName = pgbackups.name(backup)
       }
 
       backupURL = backup.to_url
@@ -139,7 +139,7 @@ export default class Restore extends Command {
     })
 
     ux.action.stop()
-    await wait('Restoring', restore.uuid, interval, verbose, db.app.id as string)
+    await pgbackups.wait('Restoring', restore.uuid, interval, verbose, db.app.id as string)
   }
 
   protected getSortedExtensions(extensions: string | null | undefined): string[] | undefined {

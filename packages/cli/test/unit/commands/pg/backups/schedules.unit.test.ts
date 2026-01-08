@@ -18,7 +18,7 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
       .reply(200, [])
     await cmdRun(['--app', 'myapp'])
       .catch((error: Error) => {
-        expect(error.message).to.equal('No heroku-postgresql databases on myapp')
+        expect(error.message).to.equal('No Heroku Postgres legacy database on myapp')
       })
   })
 

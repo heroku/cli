@@ -47,8 +47,8 @@ export default class Info extends Command {
   getBackup = async (id: string | undefined, app: string) => {
     let backupID
     if (id) {
-      const {num} = pgBackupsApi(app, this.heroku)
-      backupID = await num(id)
+      const pgbackups = pgBackupsApi(app, this.heroku)
+      backupID = await pgbackups.num(id)
       if (!backupID)
         throw new Error(`Invalid ID: ${id}`)
     } else {
@@ -66,15 +66,15 @@ export default class Info extends Command {
   }
 
   displayBackup = (backup: BackupTransfer, app: string) => {
-    const {filesize, name} = pgBackupsApi(app, this.heroku)
-    hux.styledHeader(`Backup ${color.cyan(name(backup))}`)
+    const pgbackups = pgBackupsApi(app, this.heroku)
+    hux.styledHeader(`Backup ${color.cyan(pgbackups.name(backup))}`)
     hux.styledObject({
       Database: color.green(backup.from_name),
       'Started at': backup.started_at,
       'Finished at': backup.finished_at,
       Status: status(backup),
-      Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': filesize(backup.source_bytes),
-      'Backup Size': `${filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes) : ''}`,
+      Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': pgbackups.filesize(backup.source_bytes),
+      'Backup Size': `${pgbackups.filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes) : ''}`,
     }, ['Database', 'Started at', 'Finished at', 'Status', 'Type', 'Original DB Size', 'Backup Size'])
     ux.stdout('\n')
   }
