@@ -1,30 +1,34 @@
-import {expect} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips/index.js'
-import runCommand from '../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
 const now = new Date()
 
 describe('trusted-ips', function () {
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
   it('shows the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
-        version: '1',
-        default_action: 'allow',
+        applied: true,
         created_at: now,
         created_by: 'dickeyxxx',
+        default_action: 'allow',
         rules: [
-          {source: '127.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '127.0.0.1/20'},
         ],
-        applied: true,
+        version: '1',
       })
-    await runCommand(Cmd, ['--space', 'my-space'])
-    expect(stdout.output).to.equal(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+
+    expect(stdout).to.equal(heredoc(`
     === Trusted IP Ranges
 
     127.0.0.1/20
@@ -37,35 +41,39 @@ describe('trusted-ips', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
-        version: '1',
-        default_action: 'allow',
+        applied: true,
         created_at: now,
         created_by: 'dickeyxxx',
+        default_action: 'allow',
         rules: [],
-        applied: true,
+        version: '1',
       })
-    await runCommand(Cmd, ['--space', 'my-space'])
-    expect(stdout.output).to.equal('=== my-space has no trusted IP ranges. All inbound web requests to dynos are blocked.\n\nTrusted IP rules are applied to this space.\n')
+
+    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+
+    expect(stdout).to.equal('=== my-space has no trusted IP ranges. All inbound web requests to dynos are blocked.\n\nTrusted IP rules are applied to this space.\n')
     api.done()
   })
 
   it('shows the trusted IP ranges --json', async function () {
     const ruleSet = {
-      version: '1',
-      default_action: 'allow',
+      applied: true,
       created_at: now.toISOString(),
       created_by: 'dickeyxxx',
+      default_action: 'allow',
       rules: [
-        {source: '127.0.0.1/20', action: 'allow'},
+        {action: 'allow', source: '127.0.0.1/20'},
       ],
-      applied: true,
+      version: '1',
     }
 
     const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, ruleSet)
-    await runCommand(Cmd, ['--space', 'my-space', '--json', 'true'])
-    expect(JSON.parse(stdout.output)).to.eql(ruleSet)
+
+    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space', '--json', 'true'])
+
+    expect(JSON.parse(stdout)).to.eql(ruleSet)
     api.done()
   })
 
@@ -73,17 +81,19 @@ describe('trusted-ips', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
-        version: '1',
-        default_action: 'allow',
+        applied: false,
         created_at: now,
         created_by: 'dickeyxxx',
+        default_action: 'allow',
         rules: [
-          {source: '127.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '127.0.0.1/20'},
         ],
-        applied: false,
+        version: '1',
       })
-    await runCommand(Cmd, ['--space', 'my-space'])
-    expect(stdout.output).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+
+    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+
+    expect(stdout).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     api.done()
   })
 
@@ -91,18 +101,20 @@ describe('trusted-ips', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
-        version: '1',
-        default_action: 'allow',
         created_at: now,
         created_by: 'dickeyxxx',
+        default_action: 'allow',
         rules: [
-          {source: '127.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '127.0.0.1/20'},
         ],
+        version: '1',
       })
-    await runCommand(Cmd, ['--space', 'my-space'])
-    expect(stdout.output).to.equal(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+
+    expect(stdout).to.equal(heredoc(`
     === Trusted IP Ranges
-    
+
     127.0.0.1/20
     `))
     api.done()
