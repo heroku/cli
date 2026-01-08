@@ -9,7 +9,7 @@ export default class Delete extends Command {
   static topic = 'pg'
   static description = 'delete a backup'
   static flags = {
-    confirm: flags.string({char: 'c'}),
+    confirm: flags.string({char: 'c', hidden: true}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
