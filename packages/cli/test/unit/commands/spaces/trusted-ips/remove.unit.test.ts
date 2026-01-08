@@ -1,41 +1,45 @@
-import {expect} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/spaces/trusted-ips/remove.js'
-import runCommand from '../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
 describe('trusted-ips:remove', function () {
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
   it('removes a CIDR entry from the trusted IP ranges', async function () {
     const api = nock('https://api.heroku.com:443')
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
-          {source: '127.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
+          {action: 'allow', source: '127.0.0.1/20'},
         ],
       },
       )
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
         ],
       })
       .reply(200, {rules: []})
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
+        applied: true,
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
         ],
-        applied: true,
       })
-    await runCommand(Cmd, ['127.0.0.1/20', '--space', 'my-space'])
-    expect(stdout.output).to.eq(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:trusted-ips:remove', '127.0.0.1/20', '--space', 'my-space'])
+
+    expect(stdout).to.eq(heredoc(`
     Removed 127.0.0.1/20 from trusted IP ranges on my-space
     Trusted IP rules are applied to this space.
     `))
@@ -48,29 +52,31 @@ describe('trusted-ips:remove', function () {
       .reply(200, {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
-          {source: '127.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
+          {action: 'allow', source: '127.0.0.1/20'},
         ],
       },
       )
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
         ],
       })
       .reply(200, {rules: []})
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, {
+        applied: false,
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
         ],
-        applied: false,
       })
-    await runCommand(Cmd, ['127.0.0.1/20', '--space', 'my-space'])
-    expect(stdout.output).to.include('Removed 127.0.0.1/20 from trusted IP ranges on my-space')
-    expect(stdout.output).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
+
+    const {stdout} = await runCommand(['spaces:trusted-ips:remove', '127.0.0.1/20', '--space', 'my-space'])
+
+    expect(stdout).to.include('Removed 127.0.0.1/20 from trusted IP ranges on my-space')
+    expect(stdout).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
     api.done()
   })
 
@@ -80,15 +86,15 @@ describe('trusted-ips:remove', function () {
       .reply(200, {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
-          {source: '127.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
+          {action: 'allow', source: '127.0.0.1/20'},
         ],
       },
       )
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
         ],
       })
       .reply(200, {rules: []})
@@ -96,11 +102,13 @@ describe('trusted-ips:remove', function () {
       .reply(200, {
         created_by: 'dickeyxxx',
         rules: [
-          {source: '128.0.0.1/20', action: 'allow'},
+          {action: 'allow', source: '128.0.0.1/20'},
         ],
       })
-    await runCommand(Cmd, ['127.0.0.1/20', '--space', 'my-space'])
-    expect(stdout.output).to.eq(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:trusted-ips:remove', '127.0.0.1/20', '--space', 'my-space'])
+
+    expect(stdout).to.eq(heredoc(`
     Removed 127.0.0.1/20 from trusted IP ranges on my-space
     `))
     api.done()
