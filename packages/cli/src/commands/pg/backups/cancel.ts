@@ -1,9 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import backupsFactory from '../../../lib/pg/backups'
-import {BackupTransfer} from '../../../lib/pg/types'
+import backupsFactory from '../../../lib/pg/backups.js'
+import {BackupTransfer} from '../../../lib/pg/types.js'
 
 export default class Cancel extends Command {
   static topic = 'pg'
@@ -34,22 +33,17 @@ export default class Cancel extends Command {
       ({body: transfer} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${num}`, {hostname: utils.pg.host()}))
     } else {
       const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
-      transfer = this.sortByCreatedAtDesc(transfers).find(t => !t.finished_at)
+      transfer = transfers
+        .sort((a, b) => b.created_at.localeCompare(a.created_at))
+        .find(t => !t.finished_at)
     }
 
     if (transfer) {
       ux.action.start(`Cancelling ${pgbackups.name(transfer)}`)
-      this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: utils.pg.host()})
+      await this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: utils.pg.host()})
       ux.action.stop()
     } else {
       ux.error('No active backups/transfers')
     }
   }
-
-  protected sortByCreatedAtDesc(transfers: BackupTransfer[]): BackupTransfer[] {
-    return transfers.sort((a, b) => {
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-    })
-  }
 }
-*/

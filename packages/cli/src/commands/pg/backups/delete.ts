@@ -1,16 +1,15 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import confirmCommand from '../../../lib/confirmCommand'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
 import {utils} from '@heroku/heroku-cli-util'
-import backupsFactory from '../../../lib/pg/backups'
+import backupsFactory from '../../../lib/pg/backups.js'
 
 export default class Delete extends Command {
   static topic = 'pg'
   static description = 'delete a backup'
   static flags = {
-    confirm: flags.string({char: 'c'}),
+    confirm: flags.string({char: 'c', hidden: true}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
@@ -29,7 +28,7 @@ export default class Delete extends Command {
     const {backup_id} = args
     const pgbackups = backupsFactory(app, this.heroku)
 
-    await confirmCommand(app, confirm)
+    await new ConfirmCommand().confirm(app, confirm)
     ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.app(app)}`)
 
     const num = await pgbackups.num(backup_id)
@@ -41,4 +40,3 @@ export default class Delete extends Command {
     ux.action.stop()
   }
 }
-*/

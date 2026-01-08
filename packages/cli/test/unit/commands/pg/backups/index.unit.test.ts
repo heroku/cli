@@ -5,10 +5,10 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
 
 const heredoc = tsheredoc.default
+
 describe('pg:backups', function () {
   let pg: nock.Scope
   let transfers: BackupTransfer[]
@@ -34,13 +34,20 @@ describe('pg:backups', function () {
         '--app',
         'myapp',
       ])
-      const actual = removeAllWhitespace(stdout.output)
-      expect(actual).to.include(removeAllWhitespace('=== Backups'))
-      expect(actual).to.include(removeAllWhitespace('No backups. Capture one with heroku pg:backups:capture'))
-      expect(actual).to.include(removeAllWhitespace('=== Restores'))
-      expect(actual).to.include(removeAllWhitespace('No restores found. Use heroku pg:backups:restore to restore a backup'))
-      expect(actual).to.include(removeAllWhitespace('=== Copies'))
-      expect(actual).to.include(removeAllWhitespace('No copies found. Use heroku pg:copy to copy a database to another'))
+      expect(stdout.output).to.equal(heredoc(`
+      === Backups
+
+      No backups. Capture one with heroku pg:backups:capture
+
+      === Restores
+
+      No restores found. Use heroku pg:backups:restore to restore a backup
+
+      === Copies
+
+      No copies found. Use heroku pg:copy to copy a database to another
+
+      `))
     })
   })
 
@@ -101,23 +108,25 @@ describe('pg:backups', function () {
         '--app',
         'myapp',
       ])
-      const actual = removeAllWhitespace(stdout.output)
-      expect(actual).to.include(removeAllWhitespace('=== Backups'))
-      expect(actual).to.include(removeAllWhitespace('ID'))
-      expect(actual).to.include(removeAllWhitespace('Created at'))
-      expect(actual).to.include(removeAllWhitespace('Status'))
-      expect(actual).to.include(removeAllWhitespace('Size'))
-      expect(actual).to.include(removeAllWhitespace('Database'))
-      expect(actual).to.include(removeAllWhitespace('b006'))
-      expect(actual).to.include(removeAllWhitespace('b005'))
-      expect(actual).to.include(removeAllWhitespace('b004'))
-      expect(actual).to.include(removeAllWhitespace('a010'))
-      expect(actual).to.include(removeAllWhitespace('b003'))
-      expect(actual).to.include(removeAllWhitespace('DATABASE'))
-      expect(actual).to.include(removeAllWhitespace('=== Restores'))
-      expect(actual).to.include(removeAllWhitespace('No restores found. Use heroku pg:backups:restore to restore a backup'))
-      expect(actual).to.include(removeAllWhitespace('=== Copies'))
-      expect(actual).to.include(removeAllWhitespace('No copies found. Use heroku pg:copy to copy a database to another'))
+      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
+
+ Id   Created at                Status                              Size   Database
+ ──── ───────────────────────── ─────────────────────────────────── ────── ────────
+ b006 2016-10-05 00:42:54 +0000 Running (processed 1.40KB)          1.40KB DATABASE
+ b005 2016-10-04 00:42:54 +0000 Pending                             1.40KB DATABASE
+ b004 2016-10-03 00:42:54 +0000 Failed 2016-10-08 00:43:00 +0000    1.40KB DATABASE
+ a010 2016-10-02 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB DATABASE
+ b003 2016-10-01 00:42:54 +0000 Finished with 2 warnings            1.40KB DATABASE
+
+=== Restores
+
+No restores found. Use heroku pg:backups:restore to restore a backup
+
+=== Copies
+
+No copies found. Use heroku pg:copy to copy a database to another
+
+`))
     })
   })
 
@@ -143,16 +152,21 @@ describe('pg:backups', function () {
         '--app',
         'myapp',
       ])
-      const actual = removeAllWhitespace(stdout.output)
-      expect(actual).to.include(removeAllWhitespace('=== Backups'))
-      expect(actual).to.include(removeAllWhitespace('No backups. Capture one with heroku pg:backups:capture'))
-      expect(actual).to.include(removeAllWhitespace('=== Restores'))
-      expect(actual).to.include(removeAllWhitespace('ID'))
-      expect(actual).to.include(removeAllWhitespace('Started at'))
-      expect(actual).to.include(removeAllWhitespace('r003'))
-      expect(actual).to.include(removeAllWhitespace('IVORY'))
-      expect(actual).to.include(removeAllWhitespace('=== Copies'))
-      expect(actual).to.include(removeAllWhitespace('No copies found. Use heroku pg:copy to copy a database to another'))
+      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
+
+No backups. Capture one with heroku pg:backups:capture
+
+=== Restores
+
+ Id   Started at                Status                              Size   Database
+ ──── ───────────────────────── ─────────────────────────────────── ────── ────────
+ r003 2016-10-08 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB IVORY
+
+=== Copies
+
+No copies found. Use heroku pg:copy to copy a database to another
+
+`))
     })
   })
 
@@ -180,19 +194,21 @@ describe('pg:backups', function () {
         '--app',
         'myapp',
       ])
-      const actual = removeAllWhitespace(stdout.output)
-      expect(actual).to.include(removeAllWhitespace('=== Backups'))
-      expect(actual).to.include(removeAllWhitespace('No backups. Capture one with heroku pg:backups:capture'))
-      expect(actual).to.include(removeAllWhitespace('=== Restores'))
-      expect(actual).to.include(removeAllWhitespace('No restores found. Use heroku pg:backups:restore to restore a backup'))
-      expect(actual).to.include(removeAllWhitespace('=== Copies'))
-      expect(actual).to.include(removeAllWhitespace('ID'))
-      expect(actual).to.include(removeAllWhitespace('Started at'))
-      expect(actual).to.include(removeAllWhitespace('From'))
-      expect(actual).to.include(removeAllWhitespace('To'))
-      expect(actual).to.include(removeAllWhitespace('c003'))
-      expect(actual).to.include(removeAllWhitespace('RED'))
-      expect(actual).to.include(removeAllWhitespace('IVORY'))
+      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
+
+No backups. Capture one with heroku pg:backups:capture
+
+=== Restores
+
+No restores found. Use heroku pg:backups:restore to restore a backup
+
+=== Copies
+
+ Id   Started at                Status                              Size   From To
+ ──── ───────────────────────── ─────────────────────────────────── ────── ──── ─────
+ c003 2016-10-08 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB RED  IVORY
+
+`))
     })
   })
 })

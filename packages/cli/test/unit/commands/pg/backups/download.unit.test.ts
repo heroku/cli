@@ -1,10 +1,9 @@
-// import Cmd from '../../../../../src/commands/pg/backups/download'
+import Cmd from '../../../../../src/commands/pg/backups/download.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 
-/*
 describe('pg:backups:download', function () {
   beforeEach(function () {
     nock('https://api.data.heroku.com')
@@ -53,5 +52,3 @@ describe('pg:backups:download', function () {
     })
   })
 })
-
-*/
