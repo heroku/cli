@@ -56,9 +56,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -79,9 +77,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -102,9 +98,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -145,9 +139,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -182,9 +174,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of https://www.dropbox.com to postgres-1...
       Starting restore of https://www.dropbox.com to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -224,9 +214,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
