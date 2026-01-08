@@ -1,4 +1,4 @@
-import * as nlsValues from './package.nls.json'
+import {nlsValues} from './nls-data.js'
 
 /**
  * Non-localized strings util.

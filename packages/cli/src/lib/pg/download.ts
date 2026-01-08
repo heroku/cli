@@ -1,4 +1,4 @@
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import * as Path from 'path'
 import * as https from 'https'
 import cliProgress from 'cli-progress'

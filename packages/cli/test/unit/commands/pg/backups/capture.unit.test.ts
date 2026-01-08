@@ -1,11 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/backups/capture'
+import Cmd from '../../../../../src/commands/pg/backups/capture.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:backups:capture', function () {
   const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
 
@@ -50,9 +51,7 @@ describe('pg:backups:capture', function () {
 
     `)
     expect(stderr.output).to.match(new RegExp(heredoc`
-      Starting backup of postgres-1...
       Starting backup of postgres-1... done
-      Backing up DATABASE to b005...
       Backing up DATABASE to b005... done
     `))
     expect(stderr.output).to.match(/backups of large databases are likely to fail/)
@@ -148,5 +147,3 @@ describe('pg:backups:capture', function () {
     expect(stderr.output).to.match(/backups of large databases are likely to fail/)
   })
 })
-
-*/

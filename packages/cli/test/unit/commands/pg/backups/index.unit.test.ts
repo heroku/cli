@@ -1,12 +1,14 @@
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../../../src/commands/pg/backups/index'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 import runCommand from '../../../../helpers/runCommand.js'
+import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:backups', function () {
   let pg: nock.Scope
   let transfers: BackupTransfer[]
@@ -106,7 +108,7 @@ describe('pg:backups', function () {
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal(heredoc(`=== Backups
+      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
 
  Id   Created at                Status                              Size   Database
  ──── ───────────────────────── ─────────────────────────────────── ────── ────────
@@ -150,7 +152,7 @@ No copies found. Use heroku pg:copy to copy a database to another
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal(heredoc(`=== Backups
+      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
 
 No backups. Capture one with heroku pg:backups:capture
 
@@ -192,7 +194,7 @@ No copies found. Use heroku pg:copy to copy a database to another
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal(heredoc(`=== Backups
+      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
 
 No backups. Capture one with heroku pg:backups:capture
 
@@ -210,5 +212,3 @@ No restores found. Use heroku pg:backups:restore to restore a backup
     })
   })
 })
-
-*/

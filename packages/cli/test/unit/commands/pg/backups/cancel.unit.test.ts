@@ -1,11 +1,12 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/backups/cancel'
+import Cmd from '../../../../../src/commands/pg/backups/cancel.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:backups:cancel', function () {
   let pg: nock.Scope
 
@@ -33,7 +34,6 @@ describe('pg:backups:cancel', function () {
       ])
 
       expect(stderr.output).to.equal(heredoc`
-        Cancelling b003...
         Cancelling b003... done
       `)
     })
@@ -54,11 +54,8 @@ describe('pg:backups:cancel', function () {
       ])
 
       expect(stderr.output).to.equal(heredoc`
-        Cancelling b003...
         Cancelling b003... done
       `)
     })
   })
 })
-
-*/
