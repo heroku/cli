@@ -11,8 +11,6 @@ import * as util from 'util'
 import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api.js'
 import keyBy from '../../lib/pipelines/key-by.js'
 
-export const sleep  = (time: number) => new Promise(resolve => setTimeout(resolve, time))
-
 function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
 }
@@ -153,7 +151,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
           throw error
         }
 
-        await sleep(1000)
+        await Promote.sleep(1000)
       }
     }
   }
@@ -179,6 +177,10 @@ export default class Promote extends Command {
       char: 't',
       description: 'comma separated list of apps to promote to',
     }),
+  }
+
+  public static sleep(time: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, time))
   }
 
   async run() {
