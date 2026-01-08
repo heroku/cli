@@ -55,7 +55,7 @@ describe('apps:errors', function () {
 
     const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP])
 
-    expect(stdout).to.equal('No errors on myapp in the last 24 hours\n')
+    expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
   })
 
@@ -77,7 +77,7 @@ describe('apps:errors', function () {
 
     const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP])
 
-    expect(stdout).to.equal('No errors on myapp in the last 24 hours\n')
+    expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
   })
 
@@ -123,7 +123,7 @@ describe('apps:errors', function () {
     const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP])
 
     const actual = removeAllWhitespace(stdout)
-    expect(actual).to.include(removeAllWhitespace('Errors on myapp in the last 24 hours'))
+    expect(actual).to.include(removeAllWhitespace('Errors on ⬢ myapp in the last 24 hours'))
     expect(actual).to.include(removeAllWhitespace('Source Name Level    Desc                       Count'))
     expect(actual).to.include(removeAllWhitespace('router H12  critical Request Timeout            2'))
     expect(actual).to.include(removeAllWhitespace('router H25  critical HTTP Restriction           3'))

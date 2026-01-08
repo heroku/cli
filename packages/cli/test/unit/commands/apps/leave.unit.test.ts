@@ -42,7 +42,7 @@ describe('heroku apps:leave', function () {
         'myapp',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Leaving myapp... done\n')
+      expect(stderr.output).to.eq('Leaving ⬢ myapp... done\n')
       apiGetUserAccount.done()
       apiDeletePersonalAppCollaborator.done()
     })
@@ -55,7 +55,7 @@ describe('heroku apps:leave', function () {
         'myapp',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Leaving myapp... done\n')
+      expect(stderr.output).to.eq('Leaving ⬢ myapp... done\n')
       apiGetUserAccount.done()
       apiDeletePersonalAppCollaborator.done()
     })

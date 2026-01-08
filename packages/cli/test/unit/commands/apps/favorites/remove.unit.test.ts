@@ -19,7 +19,7 @@ describe('apps:favorites:remove', function () {
     const {stdout, stderr} = await runCommand(['apps:favorites:remove', `--app=${MY_APP}`])
 
     expect(stdout).to.equal('')
-    expect(stderr).to.contain('Removing myapp from favorites... done')
+    expect(stderr).to.contain('Removing ⬢ myapp from favorites... done')
   })
 
   it('errors if app is not already favorited', async function () {

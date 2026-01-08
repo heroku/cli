@@ -19,7 +19,7 @@ describe('apps:favorites:add', function () {
     const {stdout, stderr} = await runCommand(['apps:favorites:add', `--app=${MY_APP}`])
 
     expect(stdout).to.equal('')
-    expect(stderr).to.contain(`Adding ${MY_APP} to favorites... done`)
+    expect(stderr).to.contain(`Adding ⬢ ${MY_APP} to favorites... done`)
   })
 
   it('errors if app is already favorited', async function () {

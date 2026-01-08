@@ -15,7 +15,7 @@ describe('apps:destroy', function () {
     const {stdout, stderr} = await runCommand(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
 
     expect(stdout).to.equal('')
-    expect(stderr).to.include('Destroying myapp (including all add-ons)... done')
+    expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
   })
 
   it('deletes the app via arg', async function () {
@@ -26,7 +26,7 @@ describe('apps:destroy', function () {
     const {stdout, stderr} = await runCommand(['apps:destroy', 'myapp', '--confirm', 'myapp'])
 
     expect(stdout).to.equal('')
-    expect(stderr).to.include('Destroying myapp (including all add-ons)... done')
+    expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
   })
 
   it('errors without an app', async function () {
