@@ -2,34 +2,44 @@ import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
+
 import {
+  fixtureNow,
+  fixtureNowISO,
   herokuDataAppsToolsIncidentResponse,
   herokuMaintenanceResponse,
   instancesResponse,
   nonHerokuIncidentResponse,
   trustLocalizationsResponse,
-  fixtureNowISO,
-  fixtureNow,
 } from '../../fixtures/status/fixtures.js'
 
-const herokuStatusApi = 'https://status.heroku.com:443'
-const salesforceTrustApi = 'https://api.status.salesforce.com/v1'
-
 describe('status - Heroku Status API', function () {
-  afterEach(() => nock.cleanAll())
+  let herokuStatusApi: nock.Scope
+  let salesforceTrustApi: nock.Scope
+
+  beforeEach(function () {
+    herokuStatusApi = nock('https://status.heroku.com')
+    salesforceTrustApi = nock('https://api.status.salesforce.com/v1')
+  })
+
+  afterEach(function () {
+    herokuStatusApi.done()
+    salesforceTrustApi.done()
+    nock.cleanAll()
+  })
 
   describe('when heroku is green', function () {
-    it('shows success message', async () => {
-      nock(herokuStatusApi)
+    it('shows success message', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(200, {
-          status: [
-            {system: 'Apps', status: 'green'},
-            {system: 'Data', status: 'green'},
-            {system: 'Tools', status: 'green'},
-          ],
           incidents: [],
           scheduled: [],
+          status: [
+            {status: 'green', system: 'Apps'},
+            {status: 'green', system: 'Data'},
+            {status: 'green', system: 'Tools'},
+          ],
         })
 
       const {stdout} = await runCommand(['status'])
@@ -39,17 +49,17 @@ Data:      No known issues at this time.
 Tools:     No known issues at this time.\n`)
     })
 
-    it('--json', async () => {
-      nock(herokuStatusApi)
+    it('--json', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(200, {
-          status: [
-            {system: 'Apps', status: 'green'},
-            {system: 'Data', status: 'green'},
-            {system: 'Tools', status: 'green'},
-          ],
           incidents: [],
           scheduled: [],
+          status: [
+            {status: 'green', system: 'Apps'},
+            {status: 'green', system: 'Data'},
+            {status: 'green', system: 'Tools'},
+          ],
         })
 
       const {stdout} = await runCommand(['status', '--json'])
@@ -70,24 +80,24 @@ Tools:     No known issues at this time.\n`)
       sinon.restore()
     })
 
-    it('shows the issues', async () => {
-      nock(herokuStatusApi)
+    it('shows the issues', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(200, {
-          status: [
-            {system: 'Apps', status: 'red'},
-            {system: 'Data', status: 'green'},
-            {system: 'Tools', status: 'green'},
-          ],
           incidents: [
             {
-              title: 'incident title',
               created_at: timeISO,
               full_url: 'https://status.heroku.com',
-              updates: [{update_type: 'update type', updated_at: timeISO, contents: 'update contents'}],
+              title: 'incident title',
+              updates: [{contents: 'update contents', update_type: 'update type', updated_at: timeISO}],
             },
           ],
           scheduled: [],
+          status: [
+            {status: 'red', system: 'Apps'},
+            {status: 'green', system: 'Data'},
+            {status: 'green', system: 'Tools'},
+          ],
         })
 
       const {stdout} = await runCommand(['status'])
@@ -107,14 +117,26 @@ update contents
 })
 
 describe('status - SF Trust API', function () {
-  afterEach(() => nock.cleanAll())
+  let herokuStatusApi: nock.Scope
+  let salesforceTrustApi: nock.Scope
+
+  beforeEach(function () {
+    herokuStatusApi = nock('https://status.heroku.com')
+    salesforceTrustApi = nock('https://api.status.salesforce.com/v1')
+  })
+
+  afterEach(function () {
+    herokuStatusApi.done()
+    salesforceTrustApi.done()
+    nock.cleanAll()
+  })
 
   describe('when there are no Heroku incidents', function () {
-    it('shows success message', async () => {
-      nock(herokuStatusApi)
+    it('shows success message', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(404)
-      nock(salesforceTrustApi)
+      salesforceTrustApi
         .get('/instances?products=Heroku')
         .reply(200, instancesResponse)
         .get('/incidents/active')
@@ -132,11 +154,11 @@ Data:      No known issues at this time.
 Tools:     No known issues at this time.\n`)
     })
 
-    it('returns json response with --json flag', async () => {
-      nock(herokuStatusApi)
+    it('returns json response with --json flag', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(404)
-      nock(salesforceTrustApi)
+      salesforceTrustApi
         .get('/instances?products=Heroku')
         .reply(200, instancesResponse)
         .get('/incidents/active')
@@ -152,11 +174,11 @@ Tools:     No known issues at this time.\n`)
       expect(JSON.parse(stdout).status[0]).to.deep.include({status: 'green'})
     })
 
-    it('includes planned maintenances in the json response with --json flag', async () => {
-      nock(herokuStatusApi)
+    it('includes planned maintenances in the json response with --json flag', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(404)
-      nock(salesforceTrustApi)
+      salesforceTrustApi
         .get('/instances?products=Heroku')
         .reply(200, instancesResponse)
         .get('/incidents/active')
@@ -182,11 +204,11 @@ Tools:     No known issues at this time.\n`)
       sinon.restore()
     })
 
-    it('shows the issues', async () => {
-      nock(herokuStatusApi)
+    it('shows the issues', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(404)
-      nock(salesforceTrustApi)
+      salesforceTrustApi
         .get('/instances?products=Heroku')
         .reply(200, instancesResponse)
         .get('/incidents/active')
@@ -243,11 +265,11 @@ Incident update 3
   })
 
   describe('when calls to both the Heroku Status API and the SF Trust API fail', function () {
-    it('displays an error message', async () => {
-      nock(herokuStatusApi)
+    it('displays an error message', async function () {
+      herokuStatusApi
         .get('/api/v4/current-status')
         .reply(404)
-      nock(salesforceTrustApi)
+      salesforceTrustApi
         .get('/instances?products=Heroku')
         .reply(404, instancesResponse)
         .get('/incidents/active')

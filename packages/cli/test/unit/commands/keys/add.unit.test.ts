@@ -1,36 +1,41 @@
+import {hux} from '@heroku/heroku-cli-util'
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
-import path from 'node:path'
 import inquirer from 'inquirer'
-import os from 'node:os'
-import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
+import os from 'node:os'
+import path from 'node:path'
 import sinon from 'sinon'
 
 describe('keys:add', function () {
-  const home = path.join('tmp', 'home')
-  const sshDir = path.join(home, '.ssh')
   const PUBLIC_KEY = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn'
+  let api: nock.Scope
+  let home: string
+  let sshDir: string
 
   beforeEach(async function () {
     // Clean up and recreate directories
+    home = path.join('tmp', 'home')
+    sshDir = path.join(home, '.ssh')
     await fs.remove(home)
     await fs.ensureDir(sshDir)
+    api = nock('https://api.heroku.com')
   })
 
   afterEach(async function () {
     delete process.env.HEROKU_API_KEY
     await fs.remove(home)
     nock.cleanAll()
+    api.done()
     sinon.restore()
   })
 
   describe('direct key addition', function () {
-    it('adds a specified key file', async () => {
+    it('adds a specified key file', async function () {
       process.env.HEROKU_API_KEY = 'authtoken'
 
-      nock('https://api.heroku.com:443')
+      api
         .post('/account/keys', {public_key: PUBLIC_KEY})
         .reply(200)
 
@@ -43,10 +48,10 @@ describe('keys:add', function () {
   })
 
   describe('key generation scenarios', function () {
-    it('generates and adds a new key when none exists', async () => {
+    it('generates and adds a new key when none exists', async function () {
       process.env.HEROKU_API_KEY = 'authtoken'
 
-      nock('https://api.heroku.com:443')
+      api
         .post('/account/keys')
         .reply(200)
 
@@ -70,10 +75,10 @@ describe('keys:add', function () {
       )
     })
 
-    it('handles multiple existing keys', async () => {
+    it('handles multiple existing keys', async function () {
       process.env.HEROKU_API_KEY = 'authtoken'
 
-      nock('https://api.heroku.com:443')
+      api
         .post('/account/keys', {public_key: PUBLIC_KEY})
         .reply(200)
 

@@ -3,10 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('keys:clear', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('removes all SSH keys', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes all SSH keys', async function () {
+    api
       .get('/account/keys')
       .reply(200, [{id: 1}, {id: 2}])
       .delete('/account/keys/1')
@@ -14,7 +23,7 @@ describe('keys:clear', function () {
       .delete('/account/keys/2')
       .reply(200)
 
-    const {stdout, stderr} = await runCommand(['keys:clear'])
+    const {stderr, stdout} = await runCommand(['keys:clear'])
 
     expect('').to.equal(stdout)
     expect(stderr).to.contain('Removing all SSH keys... done\n')

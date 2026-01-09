@@ -6,12 +6,20 @@ describe('heroku members', function () {
   const adminTeamMember = {email: 'admin@heroku.com', role: 'admin', user: {email: 'admin@heroku.com'}}
   const collaboratorTeamMember = {email: 'collab@heroku.com', role: 'collaborator', user: {email: 'collab@heroku.com'}}
   const memberTeamMember = {email: 'member@heroku.com', role: 'member', user: {email: 'member@heroku.com'}}
+  let api: nock.Scope
 
-  afterEach(() => nock.cleanAll())
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   context('when it is an Enterprise team', function () {
-    it('shows there are not team members if it is an orphan team', async () => {
-      nock('https://api.heroku.com')
+    it('shows there are not team members if it is an orphan team', async function () {
+      api
         .get('/teams/myteam')
         .reply(200, {type: 'enterprise'})
         .get('/teams/myteam/members')
@@ -22,8 +30,8 @@ describe('heroku members', function () {
       expect(stdout).to.contain('No members in myteam')
     })
 
-    it('shows all the team members', async () => {
-      nock('https://api.heroku.com')
+    it('shows all the team members', async function () {
+      api
         .get('/teams/myteam')
         .reply(200, {type: 'enterprise'})
         .get('/teams/myteam/members')
@@ -37,8 +45,8 @@ describe('heroku members', function () {
       expect(stdout).to.contain('collaborator')
     })
 
-    it('filters members by role', async () => {
-      nock('https://api.heroku.com')
+    it('filters members by role', async function () {
+      api
         .get('/teams/myteam')
         .reply(200, {type: 'enterprise'})
         .get('/teams/myteam/members')
@@ -50,8 +58,8 @@ describe('heroku members', function () {
       expect(stdout).to.contain('member')
     })
 
-    it("shows the right message when filter doesn't return results", async () => {
-      nock('https://api.heroku.com')
+    it("shows the right message when filter doesn't return results", async function () {
+      api
         .get('/teams/myteam')
         .reply(200, {type: 'enterprise'})
         .get('/teams/myteam/members')
@@ -65,8 +73,8 @@ describe('heroku members', function () {
 
   context('when it is a team', function () {
     context('without the feature flag team-invite-acceptance', function () {
-      it('does not show the Status column when there are no pending invites', async () => {
-        nock('https://api.heroku.com')
+      it('does not show the Status column when there are no pending invites', async function () {
+        api
           .get('/teams/myteam')
           .reply(200, {type: 'team'})
           .get('/teams/myteam/features')
@@ -81,18 +89,18 @@ describe('heroku members', function () {
     })
 
     context('with the feature flag team-invite-acceptance', function () {
-      it('shows all members including those with pending invites', async () => {
-        nock('https://api.heroku.com')
+      it('shows all members including those with pending invites', async function () {
+        api
           .get('/teams/myteam')
           .reply(200, {type: 'team'})
           .get('/teams/myteam/features')
-          .reply(200, [{name: 'team-invite-acceptance', enabled: true}])
+          .reply(200, [{enabled: true, name: 'team-invite-acceptance'}])
           .get('/teams/myteam/invitations')
           .reply(200, [{
-            user: {email: 'invited-user@mail.com'},
-            role: 'admin',
             created_at: '2023-01-01T00:00:00Z',
+            role: 'admin',
             updated_at: '2023-01-01T00:00:00Z',
+            user: {email: 'invited-user@mail.com'},
           }])
           .get('/teams/myteam/members')
           .reply(200, [adminTeamMember, collaboratorTeamMember])
@@ -107,12 +115,12 @@ describe('heroku members', function () {
         expect(stdout).to.contain('pending')
       })
 
-      it('does not show the Status column when there are no pending invites', async () => {
-        nock('https://api.heroku.com')
+      it('does not show the Status column when there are no pending invites', async function () {
+        api
           .get('/teams/myteam')
           .reply(200, {type: 'team'})
           .get('/teams/myteam/features')
-          .reply(200, [{name: 'team-invite-acceptance', enabled: true}])
+          .reply(200, [{enabled: true, name: 'team-invite-acceptance'}])
           .get('/teams/myteam/invitations')
           .reply(200, [])
           .get('/teams/myteam/members')
@@ -123,18 +131,18 @@ describe('heroku members', function () {
         expect(stdout).to.not.contain('Status')
       })
 
-      it('filters members by pending invites', async () => {
-        nock('https://api.heroku.com')
+      it('filters members by pending invites', async function () {
+        api
           .get('/teams/myteam')
           .reply(200, {type: 'team'})
           .get('/teams/myteam/features')
-          .reply(200, [{name: 'team-invite-acceptance', enabled: true}])
+          .reply(200, [{enabled: true, name: 'team-invite-acceptance'}])
           .get('/teams/myteam/invitations')
           .reply(200, [{
-            user: {email: 'invited-user@mail.com'},
-            role: 'admin',
             created_at: '2023-01-01T00:00:00Z',
+            role: 'admin',
             updated_at: '2023-01-01T00:00:00Z',
+            user: {email: 'invited-user@mail.com'},
           }])
           .get('/teams/myteam/members')
           .reply(200, [adminTeamMember, collaboratorTeamMember])

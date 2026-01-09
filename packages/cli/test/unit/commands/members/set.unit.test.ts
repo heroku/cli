@@ -3,11 +3,20 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('heroku members:set', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   context('and group is a team', function () {
-    it('does not warn the user when under the free org limit', async () => {
-      nock('https://api.heroku.com')
+    it('does not warn the user when under the free org limit', async function () {
+      api
         .patch('/teams/myteam/members')
         .reply(200)
 
@@ -16,8 +25,8 @@ describe('heroku members:set', function () {
       expect(stderr).to.contain('Adding foo@foo.com to myteam as admin')
     })
 
-    it('does not warn the user when over the free org limit', async () => {
-      nock('https://api.heroku.com')
+    it('does not warn the user when over the free org limit', async function () {
+      api
         .patch('/teams/myteam/members')
         .reply(200)
 
@@ -27,8 +36,8 @@ describe('heroku members:set', function () {
     })
   })
   context('and group is an enterprise org', function () {
-    it('adds a member to an org', async () => {
-      nock('https://api.heroku.com')
+    it('adds a member to an org', async function () {
+      api
         .patch('/teams/myteam/members')
         .reply(200)
 

@@ -3,10 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('heroku members:add', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('adds a member to an org', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('adds a member to an org', async function () {
+    api
       .get('/teams/myteam')
       .reply(200, {type: 'enterprise'})
       .put('/teams/myteam/members')
@@ -17,8 +26,8 @@ describe('heroku members:add', function () {
     expect(stderr).to.contain('Adding foo@foo.com to myteam as admin')
   })
 
-  it('sends an invite when adding a new user to the team', async () => {
-    nock('https://api.heroku.com')
+  it('sends an invite when adding a new user to the team', async function () {
+    api
       .get('/teams/myteam')
       .reply(200, {type: 'team'})
       .get('/teams/myteam/features')

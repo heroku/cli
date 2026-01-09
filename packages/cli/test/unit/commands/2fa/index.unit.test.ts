@@ -3,10 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('2fa', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('shows 2fa is enabled', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows 2fa is enabled', async function () {
+    api
       .get('/account')
       .reply(200, {two_factor_authentication: true})
 
@@ -15,8 +24,8 @@ describe('2fa', function () {
     expect(stdout).to.equal('Two-factor authentication is enabled\n')
   })
 
-  it('shows 2fa is not enabled', async () => {
-    nock('https://api.heroku.com')
+  it('shows 2fa is not enabled', async function () {
+    api
       .get('/account')
       .reply(200, {two_factor_authentication: false})
 

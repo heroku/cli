@@ -4,23 +4,32 @@ import nock from 'nock'
 import stripAnsi from 'strip-ansi'
 
 describe('keys:remove', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('removes an SSH key', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes an SSH key', async function () {
+    api
       .get('/account/keys')
-      .reply(200, [{id: 1, comment: 'user@machine'}])
+      .reply(200, [{comment: 'user@machine', id: 1}])
       .delete('/account/keys/1')
       .reply(200)
 
-    const {stdout, stderr} = await runCommand(['keys:remove', 'user@machine'])
+    const {stderr, stdout} = await runCommand(['keys:remove', 'user@machine'])
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Removing user@machine SSH key... done\n')
   })
 
-  it('errors if no SSH keys on account', async () => {
-    nock('https://api.heroku.com:443')
+  it('errors if no SSH keys on account', async function () {
+    api
       .get('/account/keys')
       .reply(200, [])
 
@@ -29,10 +38,10 @@ describe('keys:remove', function () {
     expect(error?.message).to.equal('No SSH keys on account')
   })
 
-  it('errors with incorrect SSH key on account', async () => {
-    nock('https://api.heroku.com:443')
+  it('errors with incorrect SSH key on account', async function () {
+    api
       .get('/account/keys')
-      .reply(200, [{id: 1, comment: 'user@machine'}])
+      .reply(200, [{comment: 'user@machine', id: 1}])
 
     const {error} = await runCommand(['keys:remove', 'different@machine'])
 
