@@ -1,10 +1,13 @@
 import {color} from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
-import {hux} from '@heroku/heroku-cli-util'
+import {hux, utils, pg} from '@heroku/heroku-cli-util'
 import {renderAttachment} from '../../commands/addons/index.js'
 import {multiSortCompareFn} from '../utils/multisort.js'
 import type {CredentialsInfo} from './types.js'
-import {utils} from '@heroku/heroku-cli-util'
+
+export function essentialPlan(addon: pg.ExtendedAddonAttachment['addon'] | pg.ExtendedAddon) {
+  return utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
+}
 
 export function formatResponseWithCommands(response: string): string {
   return response.replace(/`(.*?)`/g, (_, word) => color.cmd(word))

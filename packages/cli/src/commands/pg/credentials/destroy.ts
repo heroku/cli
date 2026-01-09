@@ -2,24 +2,25 @@ import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {essentialPlan} from '../../../lib/pg/util.js'
 import {utils} from '@heroku/heroku-cli-util'
 import ConfirmCommand from '../../../lib/confirmCommand.js'
 import {nls} from '../../../nls.js'
 
 export default class Destroy extends Command {
-  static topic = 'pg';
-  static description = 'destroy credential within database';
-  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production';
+  static topic = 'pg'
+  static description = 'destroy credential within database'
+  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production'
   static flags = {
     name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
     confirm: flags.string({char: 'c', hidden: true}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Destroy)
@@ -31,7 +32,7 @@ export default class Destroy extends Command {
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isEssentialDatabase(db) || utils.pg.isLegacyEssentialDatabase(db)) {
+    if (essentialPlan(db)) {
       throw new Error("You can't destroy the default credential on Essential-tier databases.")
     }
 
