@@ -3,16 +3,24 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('authorizations:rotate', function () {
+  let api: nock.Scope
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
-  afterEach(() => nock.cleanAll())
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  it('rotates and prints the authentication', async () => {
-    nock('https://api.heroku.com:443')
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('rotates and prints the authentication', async function () {
+    api
       .post(`/oauth/authorizations/${authorizationID}/actions/regenerate-tokens`)
-      .reply(200, {scope: ['global', 'app'], access_token: {token: 'secrettoken'}})
+      .reply(200, {access_token: {token: 'secrettoken'}, scope: ['global', 'app']})
 
-    const {stdout, stderr} = await runCommand(['authorizations:rotate', authorizationID])
+    const {stderr, stdout} = await runCommand(['authorizations:rotate', authorizationID])
 
     expect(stdout).to.contain('Client:      <none>\n')
     expect(stdout).to.contain('Scope:       global,app\n')
