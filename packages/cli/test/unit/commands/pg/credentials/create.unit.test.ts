@@ -3,9 +3,8 @@ import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
 
-// import Cmd from '../../../../../src/commands/pg/credentials/create'
+import Cmd from '../../../../../src/commands/pg/credentials/create.js'
 
-/*
 describe('pg:credentials:create', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -40,7 +39,7 @@ describe('pg:credentials:create', function () {
       'credname',
     ])
     expect(stdout.output).to.equal('\nPlease attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.\nPlease define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.\n')
-    return expect(stderr.output).to.equal('Creating credential credname...\nCreating credential credname... done\n')
+    return expect(stderr.output).to.equal('Creating credential credname... done\n')
   })
 
   it('throws an error when the db is numbered essential plan', async function () {
@@ -82,5 +81,3 @@ describe('pg:credentials:create', function () {
     ]).catch(error => expect(error.message).to.contain(err))
   })
 })
-
-*/

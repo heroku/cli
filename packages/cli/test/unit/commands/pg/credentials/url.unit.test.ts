@@ -1,13 +1,14 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/credentials/url'
+import Cmd from '../../../../../src/commands/pg/credentials/url.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:credentials:url', function () {
   const addon = fixtures.addons['dwh-db']
   const attachments = [fixtures.attachments['acme-inc-dwh::DATABASE']]
@@ -129,5 +130,3 @@ describe('pg:credentials:url', function () {
     `))
   })
 })
-
-*/
