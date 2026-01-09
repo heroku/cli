@@ -4,23 +4,32 @@ import {formatDistanceToNow} from 'date-fns'
 import nock from 'nock'
 
 describe('authorizations:info', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
   const authorization = {
-    id: authorizationID,
-    description: 'desc',
-    scope: ['global'],
     access_token: {token: 'secrettoken'},
+    description: 'desc',
+    id: authorizationID,
+    scope: ['global'],
     updated_at: new Date(0),
   }
   const authorizationWithExpiration = {
     ...authorization,
-    access_token: {token: 'secrettoken', expires_in: 100000},
+    access_token: {expires_in: 100000, token: 'secrettoken'},
   }
 
-  it('shows the authorization', async () => {
-    nock('https://api.heroku.com:443')
+  it('shows the authorization', async function () {
+    api
       .get(`/oauth/authorizations/${authorizationID}`)
       .reply(200, authorization)
 
@@ -36,8 +45,8 @@ describe('authorizations:info', function () {
     )
   })
 
-  it('shows expires in', async () => {
-    nock('https://api.heroku.com:443')
+  it('shows expires in', async function () {
+    api
       .get(`/oauth/authorizations/${authorizationID}`)
       .reply(200, authorizationWithExpiration)
 
@@ -47,8 +56,8 @@ describe('authorizations:info', function () {
   })
 
   describe('with json flag', function () {
-    it('shows the authorization as json', async () => {
-      nock('https://api.heroku.com:443')
+    it('shows the authorization as json', async function () {
+      api
         .get(`/oauth/authorizations/${authorizationID}`)
         .reply(200, authorization)
 

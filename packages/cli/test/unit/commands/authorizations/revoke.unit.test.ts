@@ -3,12 +3,20 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('authorizations:revoke', function () {
+  let api: nock.Scope
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
-  afterEach(() => nock.cleanAll())
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  it('revokes the authorization', async () => {
-    nock('https://api.heroku.com:443')
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('revokes the authorization', async function () {
+    api
       .delete(`/oauth/authorizations/${authorizationID}`)
       .reply(200, {description: 'Example Auth'})
 
@@ -20,7 +28,7 @@ describe('authorizations:revoke', function () {
   })
 
   context('without an ID argument', function () {
-    it('shows required ID error', async () => {
+    it('shows required ID error', async function () {
       const {error} = await runCommand(['authorizations:revoke'])
 
       expect(error?.message).to.equal(

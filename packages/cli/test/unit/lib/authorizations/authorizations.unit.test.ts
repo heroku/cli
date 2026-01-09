@@ -1,7 +1,8 @@
 import * as Heroku from '@heroku-cli/schema'
-import {expect} from 'chai'
-import {formatDistanceToNow, addSeconds} from 'date-fns'
 import {captureOutput} from '@oclif/test'
+import {expect} from 'chai'
+import {addSeconds, formatDistanceToNow} from 'date-fns'
+
 import {display} from '../../../../src/lib/authorizations/authorizations.js'
 
 describe('display', function () {
@@ -10,12 +11,12 @@ describe('display', function () {
 
   context('with an auth', function () {
     const auth: Heroku.OAuthAuthorization = {
-      id: authId,
       description: authDesc,
+      id: authId,
       scope: ['global', 'app'],
     }
 
-    it('prints the styled authorization', async () => {
+    it('prints the styled authorization', async function () {
       const {stdout} = await captureOutput(async () => {
         display(auth)
       })
@@ -36,17 +37,17 @@ describe('display', function () {
   context('with an auth access token', function () {
     const updatedAt = new Date(0)
     const auth: Heroku.OAuthAuthorization = {
-      id: authId,
+      access_token: {
+        expires_in: 10000,
+        token: '1234abcd-129f-42d2-854b-EfGhIjKlMn12',
+      },
       description: authDesc,
+      id: authId,
       scope: ['global', 'app'],
       updated_at: `${updatedAt}`,
-      access_token: {
-        token: '1234abcd-129f-42d2-854b-EfGhIjKlMn12',
-        expires_in: 10000,
-      },
     }
 
-    it('prints the styled authorization with access token info', async () => {
+    it('prints the styled authorization with access token info', async function () {
       const {stdout} = await captureOutput(async () => {
         display(auth)
       })
@@ -70,17 +71,17 @@ describe('display', function () {
 
   context('with a client', function () {
     const client: Heroku.OAuthClient = {
-      redirect_uri: 'https://myapp.com',
       name: 'a cool client',
+      redirect_uri: 'https://myapp.com',
     }
 
     const auth: Heroku.OAuthAuthorization = {
-      id: authId,
-      description: authDesc,
       client,
+      description: authDesc,
+      id: authId,
     }
 
-    it('prints the styled authorization with client info', async () => {
+    it('prints the styled authorization with client info', async function () {
       const {stdout} = await captureOutput(async () => {
         display(auth)
       })

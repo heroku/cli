@@ -1,10 +1,20 @@
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('authorizations', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   const exampleAuthorization1 = {
     description: 'b description',
@@ -17,8 +27,8 @@ describe('authorizations', function () {
     scope: ['app', 'user'],
   }
 
-  it('lists the authorizations alphabetically by description', async () => {
-    nock('https://api.heroku.com:443')
+  it('lists the authorizations alphabetically by description', async function () {
+    api
       .get('/oauth/authorizations')
       .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
@@ -32,8 +42,8 @@ describe('authorizations', function () {
   })
 
   context('with json flag', function () {
-    it('lists the authorizations alphabetically as json', async () => {
-      nock('https://api.heroku.com:443')
+    it('lists the authorizations alphabetically as json', async function () {
+      api
         .get('/oauth/authorizations')
         .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
@@ -46,8 +56,8 @@ describe('authorizations', function () {
   })
 
   context('without authorizations', function () {
-    it('shows no authorizations message', async () => {
-      nock('https://api.heroku.com:443')
+    it('shows no authorizations message', async function () {
+      api
         .get('/oauth/authorizations')
         .reply(200, [])
 

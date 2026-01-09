@@ -3,19 +3,32 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('authorizations:update', function () {
+  let api: nock.Scope
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
-  afterEach(() => nock.cleanAll())
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  it('updates the authorization', async () => {
-    nock('https://api.heroku.com:443')
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('updates the authorization', async function () {
+    api
       .patch(
         `/oauth/authorizations/${authorizationID}`,
-        {description: 'awesome', client: {id: '100', secret: 'secret'}},
+        {client: {id: '100', secret: 'secret'}, description: 'awesome'},
       )
       .reply(
         200,
-        {scope: ['global'], access_token: {token: 'secrettoken'}, description: 'awesome', id: '100'},
+        {
+          access_token: {token: 'secrettoken'},
+          description: 'awesome',
+          id: '100',
+          scope: ['global'],
+        },
       )
 
     const {stdout} = await runCommand(

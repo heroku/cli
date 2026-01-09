@@ -3,12 +3,21 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('authorizations:create', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('creates the authorization', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('creates the authorization', async function () {
+    api
       .post('/oauth/authorizations', {description: 'awesome'})
-      .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
+      .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
     const {stdout} = await runCommand(['authorizations:create', '--description', 'awesome'])
 
@@ -18,10 +27,10 @@ describe('authorizations:create', function () {
   })
 
   context('with short flag', function () {
-    it('only prints token', async () => {
-      nock('https://api.heroku.com:443')
+    it('only prints token', async function () {
+      api
         .post('/oauth/authorizations', {expires_in: '10000'})
-        .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
+        .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
       const {stdout} = await runCommand(['authorizations:create', '--expires-in', '10000', '--short'])
 
@@ -30,10 +39,10 @@ describe('authorizations:create', function () {
   })
 
   context('with json flag', function () {
-    it('prints json', async () => {
-      nock('https://api.heroku.com:443')
+    it('prints json', async function () {
+      api
         .post('/oauth/authorizations', {})
-        .reply(201, {scope: ['global'], access_token: {token: 'secrettoken'}})
+        .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
       const {stdout} = await runCommand(['authorizations:create', '--json'])
 
