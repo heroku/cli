@@ -31,7 +31,7 @@ export default class Attach extends Command {
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon: db} = await dbResolver.getAttachment(app, args.database)
 
-      if (utils.pg.isEssentialDatabase(db))
+      if (utils.pg.isEssentialDatabase(db) || utils.pg.isLegacyEssentialDatabase(db))
         ux.error('You can’t perform this operation on Essential-tier databases.')
 
       ux.action.start(`Enabling Connection Pooling on ${color.yellow(db.name)} to ${color.magenta(app)}`)

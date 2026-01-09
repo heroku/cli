@@ -25,7 +25,7 @@ export default class Create extends Command {
       const {app, name} = flags
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon: db} = await dbResolver.getAttachment(app, args.database)
-      if (utils.pg.isEssentialDatabase(db)) {
+      if (utils.pg.isEssentialDatabase(db) || utils.pg.isLegacyEssentialDatabase(db)) {
         throw new Error("You can't create a custom credential on Essential-tier databases.")
       }
 

@@ -31,7 +31,7 @@ export default class Destroy extends Command {
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isEssentialDatabase(db)) {
+    if (utils.pg.isEssentialDatabase(db) || utils.pg.isLegacyEssentialDatabase(db)) {
       throw new Error("You can't destroy the default credential on Essential-tier databases.")
     }
 

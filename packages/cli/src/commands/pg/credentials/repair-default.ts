@@ -27,7 +27,7 @@ export default class RepairDefault extends Command {
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isEssentialDatabase(db))
+    if (utils.pg.isEssentialDatabase(db) || utils.pg.isLegacyEssentialDatabase(db))
       throw new Error("You can't perform this operation on Essential-tier databases.")
     await new ConfirmCommand().confirm(app, confirm, heredoc(`
       Destructive Action
