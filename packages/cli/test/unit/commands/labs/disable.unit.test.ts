@@ -1,28 +1,35 @@
+import {hux} from '@heroku/heroku-cli-util'
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
-import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
-import * as sinon from 'sinon'
-
-const promptStub = sinon.stub()
+import sinon from 'sinon'
 
 describe('labs:disable', function () {
-  afterEach(() => {
+  let api: nock.Scope
+  let promptStub: sinon.SinonStub
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    promptStub = sinon.stub()
+  })
+
+  afterEach(function () {
+    api.done()
     nock.cleanAll()
     sinon.restore()
   })
 
   // TODO: make this work on CI
-  it.skip('disables a user lab feature', async () => {
-    nock('https://api.heroku.com')
+  it.skip('disables a user lab feature', async function () {
+    api
       .get('/account')
       .reply(200, {email: 'gandalf@heroku.com'})
       .get('/account/features/feature-a')
       .reply(200, {
-        enabled: true,
-        name: 'feature-a',
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com',
+        enabled: true,
+        name: 'feature-a',
       })
       .patch('/account/features/feature-a', {enabled: false})
       .reply(200)
@@ -32,18 +39,18 @@ describe('labs:disable', function () {
     expect(stderr).to.contain('Disabling feature-a for gandalf@heroku.com...')
   })
 
-  it('warns user of insecure action', async () => {
+  it('warns user of insecure action', async function () {
     sinon.stub(hux, 'prompt').resolves('myapp')
 
-    nock('https://api.heroku.com')
+    api
       .get('/account/features/spaces-strict-tls')
       .reply(404)
       .get('/apps/myapp/features/spaces-strict-tls')
       .reply(200, {
-        enabled: true,
-        name: 'spaces-strict-tls',
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com',
+        enabled: true,
+        name: 'spaces-strict-tls',
       })
       .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false})
       .reply(200)
@@ -53,7 +60,7 @@ describe('labs:disable', function () {
     expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for myapp...')
   })
 
-  it('errors when confirmation name does not match', async () => {
+  it('errors when confirmation name does not match', async function () {
     promptStub.onFirstCall().resolves('myapp')
     promptStub.onSecondCall().resolves('notMyApp')
     sinon.stub(hux, 'prompt').returns(promptStub as any)
@@ -63,16 +70,16 @@ describe('labs:disable', function () {
     expect(error?.message).to.equal('Confirmation name did not match app name. Try again.')
   })
 
-  it('disables an app feature', async () => {
-    nock('https://api.heroku.com')
+  it('disables an app feature', async function () {
+    api
       .get('/account/features/feature-a')
       .reply(404)
       .get('/apps/myapp/features/feature-a')
       .reply(200, {
-        enabled: true,
-        name: 'feature-a',
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com',
+        enabled: true,
+        name: 'feature-a',
       })
       .patch('/apps/myapp/features/feature-a', {enabled: false})
       .reply(200)

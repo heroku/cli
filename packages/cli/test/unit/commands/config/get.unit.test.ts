@@ -3,10 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('config', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('shows config vars', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows config vars', async function () {
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
@@ -15,8 +24,8 @@ describe('config', function () {
     expect(stdout).to.equal('production\n')
   })
 
-  it('--shell', async () => {
-    nock('https://api.heroku.com')
+  it('--shell', async function () {
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
@@ -25,8 +34,8 @@ describe('config', function () {
     expect(stdout).to.equal('RACK_ENV=production\n')
   })
 
-  it('missing', async () => {
-    nock('https://api.heroku.com')
+  it('missing', async function () {
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 

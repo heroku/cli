@@ -2,10 +2,19 @@ import {runCommand} from '@oclif/test'
 import nock from 'nock'
 
 describe('config', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('removes 2 config vars', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes 2 config vars', async function () {
+    api
       .patch('/apps/myapp/config-vars', {
         FOO: null,
         RACK_ENV: null,

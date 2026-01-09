@@ -3,16 +3,30 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('features', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('shows the app features', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows the app features', async function () {
+    api
       .get('/apps/myapp/features')
       .reply(200, [
-        {enabled: true, state: 'general', name: 'feature a', description: 'an app feature'},
+        {
+          description: 'an app feature',
+          enabled: true,
+          name: 'feature a',
+          state: 'general',
+        },
       ])
 
-    const {stdout, stderr} = await runCommand(['features', '--app', 'myapp'])
+    const {stderr, stdout} = await runCommand(['features', '--app', 'myapp'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`=== App Features ⬢ myapp

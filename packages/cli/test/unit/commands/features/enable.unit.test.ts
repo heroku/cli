@@ -4,16 +4,25 @@ import nock from 'nock'
 import stripAnsi from 'strip-ansi'
 
 describe('features:enable', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('enables an app feature', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('enables an app feature', async function () {
+    api
       .get('/apps/myapp/features/feature-a')
       .reply(200, {enabled: false})
       .patch('/apps/myapp/features/feature-a', {enabled: true})
       .reply(200)
 
-    const {stdout, stderr} = await runCommand(['features:enable', 'feature-a', '--app', 'myapp'])
+    const {stderr, stdout} = await runCommand(['features:enable', 'feature-a', '--app', 'myapp'])
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Enabling feature-a for')
@@ -21,8 +30,8 @@ describe('features:enable', function () {
     expect(stderr).to.contain('done')
   })
 
-  it('errors if feature is already enabled', async () => {
-    nock('https://api.heroku.com:443')
+  it('errors if feature is already enabled', async function () {
+    api
       .get('/apps/myapp/features/feature-a')
       .reply(200, {enabled: true})
 

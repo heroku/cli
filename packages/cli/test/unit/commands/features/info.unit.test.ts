@@ -3,12 +3,26 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('features:info', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('shows feature info', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows feature info', async function () {
+    api
       .get('/apps/myapp/features/feature-a')
-      .reply(200, {name: 'myfeature', description: 'the description', doc_url: 'https://devcenter.heroku.com', enabled: true})
+      .reply(200, {
+        description: 'the description',
+        doc_url: 'https://devcenter.heroku.com',
+        enabled: true,
+        name: 'myfeature',
+      })
 
     const {stderr, stdout} = await runCommand(['features:info', '-a', 'myapp', 'feature-a'])
 
