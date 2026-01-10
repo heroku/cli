@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-escape */
+/* eslint-disable mocha/no-top-level-hooks */
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -7,10 +7,18 @@ import nock from 'nock'
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
 
 runtest('autocomplete:index', () => {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('provides bash instructions', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('provides bash instructions', async function () {
+    api
       .get('/apps')
       .reply(200, [{name: 'foo'}, {name: 'bar'}])
       .get('/pipelines')
@@ -43,8 +51,8 @@ Enjoy!
     )
   })
 
-  it('provides zsh instructions', async () => {
-    nock('https://api.heroku.com')
+  it('provides zsh instructions', async function () {
+    api
       .get('/apps')
       .reply(200, [{name: 'foo'}, {name: 'bar'}])
       .get('/pipelines')

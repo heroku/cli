@@ -5,7 +5,7 @@ import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
 import {getConfig} from '../../../helpers/testInstances.js'
 
 runtest('autocomplete:script', () => {
-  it('outputs bash profile config', async () => {
+  it('outputs bash profile config', async function () {
     const config = await getConfig()
     const {stdout} = await runCommand(['autocomplete:script', 'bash'])
 
@@ -17,7 +17,7 @@ HEROKU_AC_BASH_SETUP_PATH=${
 `)
   })
 
-  it('outputs zsh profile config', async () => {
+  it('outputs zsh profile config', async function () {
     const config = await getConfig()
     const {stdout} = await runCommand(['autocomplete:script', 'zsh'])
 
@@ -29,7 +29,7 @@ HEROKU_AC_ZSH_SETUP_PATH=${
 `)
   })
 
-  it('errors on unsupported shell', async () => {
+  it('errors on unsupported shell', async function () {
     const {error} = await runCommand(['autocomplete:script', 'fish'])
 
     expect(error?.message).to.contain('fish is not a supported shell for autocomplete')
