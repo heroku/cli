@@ -33,3 +33,9 @@ export class Editor {
     return result
   }
 }
+
+export class EditorFactory {
+  public static createEditor(): Editor {
+    return new Editor()
+  }
+}

@@ -7,9 +7,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import _ from 'lodash'
 
 import {parse, quote} from '../../lib/config/quote.js'
-import {Editor} from '../../lib/config/util.js'
-
-const editor = new Editor()
+import {EditorFactory} from '../../lib/config/util.js'
 
 interface Config {
   [key: string]: string;
@@ -100,6 +98,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
     ux.action.stop()
     let newConfig = {...original}
     const prefix = `heroku-${app}-config-`
+    const editor = EditorFactory.createEditor()
     if (key) {
       newConfig[key] = await editor.edit(original[key], {prefix})
       if (!original[key].endsWith('\n') && newConfig[key].endsWith('\n')) newConfig[key] = newConfig[key].slice(0, -1)
