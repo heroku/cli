@@ -3,10 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('drains:remove', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('removes a log drain', async () => {
-    nock('https://api.heroku.com:443')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes a log drain', async function () {
+    api
       .delete('/apps/myapp/log-drains/syslog%3A%2F%2Flogs.example.com')
       .reply(200, {url: 'syslog://logs.example.com'})
 
