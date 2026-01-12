@@ -2,7 +2,7 @@ import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
-describe('domains:wait', function () {  
+describe('domains:wait', function () {
   let api: nock.Scope
 
   beforeEach(function () {
