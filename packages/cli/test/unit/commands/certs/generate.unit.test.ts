@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import * as sinon from 'sinon'
-import {SinonStub} from 'sinon'
-import {stdout, stderr} from 'stdout-stderr'
+import sinon, {SinonStub} from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/certs/generate.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -11,9 +10,11 @@ import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 describe('heroku certs:generate', function () {
   let promptForOwnerInfoStub: SinonStub
   let spawnOpenSSLStub: SinonStub
+  let api: nock.Scope
 
   beforeEach(function () {
-    nock('https://api.heroku.com')
+    api = nock('https://api.heroku.com')
+    api
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
@@ -27,11 +28,17 @@ describe('heroku certs:generate', function () {
   afterEach(function () {
     promptForOwnerInfoStub.restore()
     spawnOpenSSLStub.restore()
+    api.done()
     nock.cleanAll()
   })
 
   it('# with certificate prompts emitted if no parts of subject provided', async function () {
-    promptForOwnerInfoStub.returns(Promise.resolve({owner: 'Heroku', country: 'US', area: 'California', city: 'San Francisco'}))
+    promptForOwnerInfoStub.returns(Promise.resolve({
+      area: 'California',
+      city: 'San Francisco',
+      country: 'US',
+      owner: 'Heroku',
+    }))
 
     await runCommand(Cmd, [
       '--app',

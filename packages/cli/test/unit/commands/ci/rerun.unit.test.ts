@@ -1,18 +1,28 @@
 import {expect} from 'chai'
-import nock from 'nock'
-import sinon from 'sinon'
-import {PassThrough} from 'node:stream'
-import {gitService} from '../../../../src/lib/ci/git.js'
-import {fileService} from '../../../../src/lib/ci/source.js'
 import {got} from 'got'
-import customRunCommand from '../../../helpers/runCommand.js'
-import Cmd from '../../../../src/commands/ci/rerun.js'
+import nock from 'nock'
+import {PassThrough} from 'node:stream'
+import sinon from 'sinon'
 import {stdout} from 'stdout-stderr'
 
-describe('ci:rerun', function () {
-  afterEach(() => nock.cleanAll())
+import Cmd from '../../../../src/commands/ci/rerun.js'
+import {gitService} from '../../../../src/lib/ci/git.js'
+import {fileService} from '../../../../src/lib/ci/source.js'
+import customRunCommand from '../../../helpers/runCommand.js'
 
-  it('errors when not specifying a pipeline or an app', async () => {
+describe('ci:rerun', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('errors when not specifying a pipeline or an app', async function () {
     try {
       await customRunCommand(Cmd, [])
     } catch (error: any) {
@@ -23,7 +33,7 @@ describe('ci:rerun', function () {
   describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const ghRepository = {
-      user: 'heroku-fake', repo: 'my-repo', ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add', branch: 'my-test-branch',
+      branch: 'my-test-branch', ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add', repo: 'my-repo', user: 'heroku-fake',
     }
     const oldTestRun = {
       commit_branch: ghRepository.branch,
@@ -49,7 +59,7 @@ describe('ci:rerun', function () {
       sandbox = sinon.createSandbox()
 
       // Stub gitService methods
-      sandbox.stub(gitService, 'githubRepository').resolves({user: ghRepository.user, repo: ghRepository.repo} as any)
+      sandbox.stub(gitService, 'githubRepository').resolves({repo: ghRepository.repo, user: ghRepository.user} as any)
       sandbox.stub(gitService, 'createArchive').resolves('new-archive.tgz')
 
       // Stub fileService methods
@@ -77,8 +87,8 @@ describe('ci:rerun', function () {
     })
 
     describe('when not specifying a run #', function () {
-      it('it runs the test and displays the test output for the first node', async () => {
-        nock('https://api.heroku.com')
+      it('it runs the test and displays the test output for the first node', async function () {
+        api
           .get(`/pipelines?eq[name]=${pipeline.name}`)
           .reply(200, [
             {id: pipeline.id},
@@ -96,17 +106,17 @@ describe('ci:rerun', function () {
               commit_branch: newTestRun.commit_branch,
               commit_message: newTestRun.commit_message,
               commit_sha: newTestRun.commit_sha,
+              exit_code: 0,
               id: newTestRun.id,
               number: newTestRun.number,
-              pipeline: {id: pipeline.id},
-              exit_code: 0,
-              status: newTestRun.status,
-              setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
               output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+              pipeline: {id: pipeline.id},
+              setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+              status: newTestRun.status,
             },
           ])
           .post('/sources')
-          .reply(200, {source_blob: {put_url: 'https://aws-puturl', get_url: 'https://aws-geturl'}})
+          .reply(200, {source_blob: {get_url: 'https://aws-geturl', put_url: 'https://aws-puturl'}})
 
         nock('https://test-setup-output.heroku.com/streams')
           .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
@@ -122,10 +132,9 @@ describe('ci:rerun', function () {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-              heroku: {
-                user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               github: {user_id: 306015},
+              heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
+              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
               id: 138865824,
@@ -141,8 +150,8 @@ describe('ci:rerun', function () {
     })
 
     describe('when specifying a run #', function () {
-      it('it runs the test and displays the test output for the first node', async () => {
-        nock('https://api.heroku.com')
+      it('it runs the test and displays the test output for the first node', async function () {
+        api
           .get(`/pipelines?eq[name]=${pipeline.name}`)
           .reply(200, [
             {id: pipeline.id},
@@ -160,17 +169,17 @@ describe('ci:rerun', function () {
               commit_branch: newTestRun.commit_branch,
               commit_message: newTestRun.commit_message,
               commit_sha: newTestRun.commit_sha,
+              exit_code: 0,
               id: newTestRun.id,
               number: newTestRun.number,
-              pipeline: {id: pipeline.id},
-              exit_code: 0,
-              status: newTestRun.status,
-              setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
               output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+              pipeline: {id: pipeline.id},
+              setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+              status: newTestRun.status,
             },
           ])
           .post('/sources')
-          .reply(200, {source_blob: {put_url: 'https://aws-puturl', get_url: 'https://aws-geturl'}})
+          .reply(200, {source_blob: {get_url: 'https://aws-geturl', put_url: 'https://aws-puturl'}})
 
         nock('https://test-setup-output.heroku.com/streams')
           .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
@@ -186,10 +195,9 @@ describe('ci:rerun', function () {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-              heroku: {
-                user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               github: {user_id: 306015},
+              heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
+              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
               id: 138865824,

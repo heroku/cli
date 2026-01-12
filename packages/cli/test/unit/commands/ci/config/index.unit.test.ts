@@ -9,16 +9,24 @@ describe('ci:config', function () {
     OTHER: 'test',
     RAILS_ENV: 'test',
   }
+  let api: nock.Scope
 
-  afterEach(() => nock.cleanAll())
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  it('errors when not specifying a pipeline or an app', async () => {
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('errors when not specifying a pipeline or an app', async function () {
     const {error} = await runCommand(['ci:config'])
     expect(error?.message).to.contain('Exactly one of the following must be provided: --app, --pipeline')
   })
 
-  it('displays config when a pipeline is specified', async () => {
-    nock('https://api.heroku.com')
+  it('displays config when a pipeline is specified', async function () {
+    api
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [
         {
@@ -35,8 +43,8 @@ describe('ci:config', function () {
     expect(stdout).to.include('KEY1:      VALUE1\nOTHER:     test\nRAILS_ENV: test\n')
   })
 
-  it('displays config formatted as JSON', async () => {
-    nock('https://api.heroku.com')
+  it('displays config formatted as JSON', async function () {
+    api
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [
         {
@@ -52,8 +60,8 @@ describe('ci:config', function () {
     expect(stdout).to.equal('{\n  "KEY1": "VALUE1",\n  "OTHER": "test",\n  "RAILS_ENV": "test"\n}\n')
   })
 
-  it('displays config formatted for shell', async () => {
-    nock('https://api.heroku.com')
+  it('displays config formatted for shell', async function () {
+    api
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [
         {

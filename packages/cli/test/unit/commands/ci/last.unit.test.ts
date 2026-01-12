@@ -5,10 +5,18 @@ import nock from 'nock'
 describe('ci:last', function () {
   const testRunNumber = 10
   const testRunId = 'f53d34b4-c3a9-4608-a186-17257cf71d62'
+  let api: nock.Scope
 
-  afterEach(() => nock.cleanAll())
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  it('errors when not specifying a pipeline or an app', async () => {
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('errors when not specifying a pipeline or an app', async function () {
     const {error} = await runCommand(['ci:last'])
     expect(error?.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
@@ -17,14 +25,14 @@ describe('ci:last', function () {
     const application = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const pipeline = {id: '45450264-b207-467a-Abc1-999c34883645', name: 'aquafresh'}
 
-    it('warns the user that there are no CI runs', async () => {
-      nock('https://api.heroku.com')
+    it('warns the user that there are no CI runs', async function () {
+      api
         .get(`/apps/${application.name}/pipeline-couplings`)
         .reply(200, {
-          id: '01234567-89ab-cdef-0123-456789abcdef',
           app: {
             id: `${application.id}`,
           },
+          id: '01234567-89ab-cdef-0123-456789abcdef',
           pipeline: {
             id: `${pipeline.id}`,
           },
@@ -38,8 +46,8 @@ describe('ci:last', function () {
       expect(stderr).to.contain('No Heroku CI runs found for the specified app and/or pipeline.')
     })
 
-    it('errors when no pipelines exist', async () => {
-      nock('https://api.heroku.com')
+    it('errors when no pipelines exist', async function () {
+      api
         .get(`/apps/${application.name}/pipeline-couplings`)
         .reply(200, {})
 
@@ -52,8 +60,8 @@ describe('ci:last', function () {
   describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
 
-    it('and a pipeline without parallel test runs it shows node output', async () => {
-      nock('https://api.heroku.com')
+    it('and a pipeline without parallel test runs it shows node output', async function () {
+      api
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [
           {id: pipeline.id},
@@ -99,10 +107,10 @@ describe('ci:last', function () {
             commit_sha: 'b9e982a60904730510a1c9e2dd2df64aef6f0d84',
             id: testRunId,
             number: testRunNumber,
-            pipeline: {id: pipeline.id},
-            status: 'succeeded',
-            setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRunId.slice(0, 3)}/test-runs/${testRunId}`,
             output_stream_url: `https://test-output.heroku.com/streams/${testRunId.slice(0, 3)}/test-runs/${testRunId}`,
+            pipeline: {id: pipeline.id},
+            setup_stream_url: `https://test-setup-output.heroku.com/streams/${testRunId.slice(0, 3)}/test-runs/${testRunId}`,
+            status: 'succeeded',
           },
         ])
 
@@ -123,8 +131,8 @@ describe('ci:last', function () {
   describe('when test nodes is an empty array', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
 
-    it('shows an error about not test nodes found', async () => {
-      nock('https://api.heroku.com')
+    it('shows an error about not test nodes found', async function () {
+      api
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [
           {id: pipeline.id},

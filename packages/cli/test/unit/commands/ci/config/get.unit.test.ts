@@ -10,10 +10,19 @@ const pipeline =  {
 }
 
 describe('heroku ci:config:get', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('displays the config value', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('displays the config value', async function () {
+    api
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
@@ -24,8 +33,8 @@ describe('heroku ci:config:get', function () {
     expect(stdout).to.equal(`${value}\n`)
   })
 
-  it('displays config formatted for shell', async () => {
-    nock('https://api.heroku.com')
+  it('displays config formatted for shell', async function () {
+    api
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)

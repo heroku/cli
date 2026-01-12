@@ -11,7 +11,14 @@ import {fileService} from '../../../../src/lib/ci/source.js'
 import customRunCommand from '../../../helpers/runCommand.js'
 
 describe('ci:run', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     return nock.cleanAll()
   })
 
@@ -47,8 +54,8 @@ describe('ci:run', function () {
       sandbox = sinon.createSandbox()
 
       // Stub gitService methods
-      sandbox.stub(gitService, 'readCommit').resolves({branch: ghRepository.branch, ref: ghRepository.ref, message: `pushed to ${ghRepository.branch}`})
-      sandbox.stub(gitService, 'githubRepository').resolves({user: ghRepository.user, repo: ghRepository.repo} as any)
+      sandbox.stub(gitService, 'readCommit').resolves({branch: ghRepository.branch, message: `pushed to ${ghRepository.branch}`, ref: ghRepository.ref})
+      sandbox.stub(gitService, 'githubRepository').resolves({repo: ghRepository.repo, user: ghRepository.user} as any)
       sandbox.stub(gitService, 'createArchive').resolves('new-archive.tgz')
 
       // Stub fileService methods
@@ -76,7 +83,7 @@ describe('ci:run', function () {
     })
 
     it('it runs the test and displays the test output for the first node', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [
           {id: pipeline.id},
@@ -119,8 +126,7 @@ describe('ci:run', function () {
           organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
           owner: {
             github: {user_id: 306015},
-            heroku: {
-              user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
+            heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
             id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
           },
           repository: {
@@ -137,7 +143,7 @@ describe('ci:run', function () {
 
     describe('when the commit is not in the remote repository', function () {
       it('it runs the test and displays the test output for the first node', async function () {
-        nock('https://api.heroku.com')
+        api
           .get(`/pipelines?eq[name]=${pipeline.name}`)
           .reply(200, [
             {id: pipeline.id},
@@ -163,7 +169,7 @@ describe('ci:run', function () {
             },
           ])
           .post('/sources')
-          .reply(200, {source_blob: {put_url: 'https://aws-puturl', get_url: 'https://aws-geturl'}})
+          .reply(200, {source_blob: {get_url: 'https://aws-geturl', put_url: 'https://aws-puturl'}})
 
         nock('https://test-setup-output.heroku.com/streams')
           .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)

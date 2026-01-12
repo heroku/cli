@@ -2,15 +2,25 @@ import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
-import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
-import customRunCommand from '../../../helpers/runCommand.js'
+
 import Cmd from '../../../../src/commands/ci/index.js'
+import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
+import customRunCommand from '../../../helpers/runCommand.js'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('ci', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('errors when not specifying a pipeline or an app', async () => {
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('errors when not specifying a pipeline or an app', async function () {
     const {error} = await runCommand(['ci'])
     expect(error?.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
@@ -27,9 +37,9 @@ describe('ci', function () {
 
     const chosenOption = {
       pipeline: {
+        created_at: '05/10/2023',
         id: '14402644-c207-43aa-9bc1-974a34914010',
         name: '14402644-c207-43aa-9bc1-974a34914010',
-        created_at: '05/10/2023',
       },
     }
 
@@ -46,8 +56,8 @@ describe('ci', function () {
       }
     })
 
-    it('shows the latest 15 test runs', async () => {
-      nock('https://api.heroku.com')
+    it('shows the latest 15 test runs', async function () {
+      api
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [
           {
@@ -77,8 +87,8 @@ describe('ci', function () {
       expect(actual).not.to.contain(removeAllWhitespace(`${testRuns[4].number} ${testRuns[4].commit_sha}`))
     })
 
-    it('returns pipeline id', async () => {
-      nock('https://api.heroku.com')
+    it('returns pipeline id', async function () {
+      api
         .get(`/pipelines/${pipeline.id}`)
         .reply(200,
           {
@@ -94,8 +104,8 @@ describe('ci', function () {
       expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.id} pipeline`)
     })
 
-    it('errors if no pipeline is found', async () => {
-      nock('https://api.heroku.com')
+    it('errors if no pipeline is found', async function () {
+      api
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [])
 
@@ -114,24 +124,24 @@ describe('ci', function () {
         promptStub.restore()
       })
 
-      it('selects a pipeline from the prompt', async () => {
-        nock('https://api.heroku.com')
+      it('selects a pipeline from the prompt', async function () {
+        api
           .get(`/pipelines?eq[name]=${pipeline.name}`)
           .reply(200, [
             {
-              id: pipeline.id,
-              name: pipeline.id,
               created_at: '05/10/2023',
-            },
-            {
               id: pipeline.id,
               name: pipeline.id,
+            },
+            {
               created_at: '05/11/2023',
-            },
-            {
               id: pipeline.id,
               name: pipeline.id,
+            },
+            {
               created_at: '05/12/2023',
+              id: pipeline.id,
+              name: pipeline.id,
             },
           ])
           .get(`/pipelines/${pipeline.id}/test-runs`)
@@ -143,8 +153,8 @@ describe('ci', function () {
       })
     })
 
-    it('shows the latest 15 test runs in json', async () => {
-      nock('https://api.heroku.com')
+    it('shows the latest 15 test runs in json', async function () {
+      api
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [
           {
