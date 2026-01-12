@@ -1,21 +1,28 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
+
 import removeAllWhitespace from '../../helpers/utils/remove-whitespaces.js'
 
 describe('regions', function () {
   const regionData = [
-    {name: 'eu', description: 'Europe', private_capable: false},
-    {name: 'us', description: 'United States', private_capable: false},
-    {name: 'oregon', description: 'Oregon, United States', private_capable: true},
+    {description: 'Europe', name: 'eu', private_capable: false},
+    {description: 'United States', name: 'us', private_capable: false},
+    {description: 'Oregon, United States', name: 'oregon', private_capable: true},
   ]
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('list regions', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/regions')
       .reply(200, regionData)
 
@@ -27,7 +34,7 @@ describe('regions', function () {
   })
 
   it('--private', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/regions')
       .reply(200, regionData)
 
@@ -38,7 +45,7 @@ describe('regions', function () {
   })
 
   it('--common', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/regions')
       .reply(200, regionData)
 
@@ -50,7 +57,7 @@ describe('regions', function () {
   })
 
   it('--json', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/regions')
       .reply(200, regionData)
 

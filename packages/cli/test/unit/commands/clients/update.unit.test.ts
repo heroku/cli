@@ -1,19 +1,26 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('clients:update', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   context('with a name flag', function () {
     it('updates the client name', async function () {
-      nock('https://api.heroku.com')
+      api
         .patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', {name: 'newname'})
         .reply(200, {
-          name: 'newname',
           id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
+          name: 'newname',
           redirect_uri: 'https://myapp.com',
           secret: 'clientsecret',
         })
@@ -26,11 +33,11 @@ describe('clients:update', function () {
 
   context('with a url flag', function () {
     it('updates the client url', async function () {
-      nock('https://api.heroku.com')
+      api
         .patch('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e', {redirect_uri: 'https://heroku.com'})
         .reply(200, {
-          name: 'newname',
           id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
+          name: 'newname',
           redirect_uri: 'https://heroku.com',
           secret: 'clientsecret',
         })
