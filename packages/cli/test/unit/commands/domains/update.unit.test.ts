@@ -3,7 +3,16 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('domains:update', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   const responseBody = {
     acm_status: null,
@@ -14,14 +23,14 @@ describe('domains:update', function () {
     hostname: 'example.com',
     id: '7ac15e30-6460-48e1-919a-e794bf3512ac',
     kind: 'custom',
-    status: 'succeeded',
     sni_endpoint: {
       id: '8cae023a-d8f1-4aca-9929-e516dc011694',
     },
+    status: 'succeeded',
   }
 
-  it('updates the domain to use a different certificate', async () => {
-    nock('https://api.heroku.com')
+  it('updates the domain to use a different certificate', async function () {
+    api
       .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
       .reply(200, responseBody)
 

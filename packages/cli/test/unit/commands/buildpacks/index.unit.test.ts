@@ -1,8 +1,6 @@
-/* eslint-disable mocha/no-setup-in-describe */
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
-
 import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
@@ -13,13 +11,13 @@ const cedarApp = {
   archived_at: null,
   build_stack: {name: 'heroku-24'},
   created_at: '2024-09-06T17:45:29Z',
+  generation: 'cedar',
   git_url: 'https://git.heroku.com',
   id: '12345678-aaaa-bbbb-cccc-b2443790f501',
-  generation: 'cedar',
+  internal_routing: null,
   maintenance: false,
   name: 'example',
   owner: {email: 'example-owner@heroku.com'},
-  internal_routing: null,
   region: {name: 'virginia'},
   released_at: '2024-11-13T20:07:47Z',
   repo_size: null,
@@ -37,10 +35,10 @@ const firApp = {
   generation: 'fir',
   git_url: 'https://git.heroku.com',
   id: '12345678-aaaa-bbbb-cccc-b2443790f501',
+  internal_routing: null,
   maintenance: false,
   name: 'example',
   owner: {email: 'example-owner@heroku.com'},
-  internal_routing: null,
   region: {name: 'virginia'},
   released_at: '2024-11-13T20:07:47Z',
   repo_size: null,
@@ -55,82 +53,90 @@ const releases = [
     addon_plan_names: [
       'heroku-postgresql:dev',
     ],
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'example',
+    },
     artifacts: [
       {
-        type: 'oci-image',
         id: '01234567-89ab-cdef-0123-456789abcdef',
+        type: 'oci-image',
       },
     ],
-    app: {
-      name: 'example',
-      id: '01234567-89ab-cdef-0123-456789abcdef',
-    },
     created_at: '2012-01-01T12:00:00Z',
+    current: true,
     description: 'Added new feature',
+    eligible_for_rollback: true,
     id: '01234567-89ab-cdef-0123-456789abcdef',
-    updated_at: '2012-01-01T12:00:00Z',
     oci_image: {
       id: '01234567-89ab-cdef-0123-456789abcdef',
     },
+    output_stream_url: 'https://release-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef',
     slug: {
       id: '01234567-89ab-cdef-0123-456789abcdef',
     },
     status: 'succeeded',
+    updated_at: '2012-01-01T12:00:00Z',
     user: {
-      id: '01234567-89ab-cdef-0123-456789abcdef',
       email: 'username@example.com',
+      id: '01234567-89ab-cdef-0123-456789abcdef',
     },
     version: 11,
-    current: true,
-    output_stream_url: 'https://release-output.heroku.com/streams/01234567-89ab-cdef-0123-456789abcdef',
-    eligible_for_rollback: true,
   },
 ]
 
 const ociImages = [
   {
-    id: '01234567-89ab-cdef-0123-456789abcdef',
+    architecture: 'arm64',
     base_image_name: 'heroku/heroku:22-cnb',
     base_top_layer: 'sha256:ea36ae5fbc1e7230e0a782bf216fb46500e210382703baa6bab8acf2c6a23f78',
+    buildpacks: [
+      {
+        homepage: 'https://github.com/heroku/buildpacks-ruby',
+        id: 'heroku/ruby',
+        version: '2.0.0',
+      },
+    ],
     commit: '60883d9e8947a57e04dc9124f25df004866a2051',
     commit_description: 'fixed a bug with API documentation',
-    image_repo: 'd7ba1ace-b396-4691-968c-37ae53153426/builds',
+    created_at: '2012-01-01T12:00:00Z',
     digest: 'sha256:dc14ae5fbc1e7230e0a782bf216fb46500e210631703bcc6bab8acf2c6a23f42',
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    image_repo: 'd7ba1ace-b396-4691-968c-37ae53153426/builds',
+    process_types: {
+      web: {
+        command: '/cnb/process/web',
+        default: true,
+        display_cmd: 'bundle exec puma -p $PORT',
+        name: 'web',
+        working_dir: '/workspace/webapp',
+      },
+    },
     stack: {
       id: 'ba46bf09-7bd1-42fd-90df-a1a9a93eb4a2',
       name: 'cnb',
     },
-    process_types: {
-      web: {
-        name: 'web',
-        display_cmd: 'bundle exec puma -p $PORT',
-        command: '/cnb/process/web',
-        working_dir: '/workspace/webapp',
-        default: true,
-      },
-    },
-    buildpacks: [
-      {
-        id: 'heroku/ruby',
-        version: '2.0.0',
-        homepage: 'https://github.com/heroku/buildpacks-ruby',
-      },
-    ],
-    created_at: '2012-01-01T12:00:00Z',
     updated_at: '2012-01-01T12:00:00Z',
-    architecture: 'arm64',
   },
 ]
 
 describe('buildpacks', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('# displays the buildpack URL', async () => {
-    const api = nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('# displays the buildpack URL', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -140,12 +146,11 @@ describe('buildpacks', function () {
     `))
   })
 
-  it('# maps buildpack urns to names', async () => {
-    const api = nock('https://api.heroku.com')
+  it('# maps buildpack urns to names', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
-    Stubber.get(api, [{url: 'urn:buildpack:heroku/ruby', name: 'heroku/ruby'}])
+    Stubber.get(api, [{name: 'heroku/ruby', url: 'urn:buildpack:heroku/ruby'}])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -155,12 +160,11 @@ describe('buildpacks', function () {
     `))
   })
 
-  it('# does not map buildpack s3 to names', async () => {
-    const api = nock('https://api.heroku.com')
+  it('# does not map buildpack s3 to names', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, ['https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz'])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -170,12 +174,12 @@ describe('buildpacks', function () {
     `))
   })
 
-  it('# with no buildpack URL set does not display a buildpack URL', async () => {
+  it('# with no buildpack URL set does not display a buildpack URL', async function () {
     const api = nock('https://api.heroku.com')
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api)
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -183,7 +187,7 @@ describe('buildpacks', function () {
     `))
   })
 
-  it('# with two buildpack URLs set displays the buildpack URL', async () => {
+  it('# with two buildpack URLs set displays the buildpack URL', async function () {
     const api = nock('https://api.heroku.com')
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, [
@@ -191,7 +195,7 @@ describe('buildpacks', function () {
       'https://github.com/heroku/heroku-buildpack-ruby',
     ])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -202,15 +206,14 @@ describe('buildpacks', function () {
     `))
   })
 
-  it('# returns the buildpack registry name back', async () => {
-    const api = nock('https://api.heroku.com')
+  it('# returns the buildpack registry name back', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, [
       'https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/java.tgz',
       'https://buildpack-registry.s3.amazonaws.com/buildpacks/rust-lang/rust.tgz',
     ])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -221,12 +224,11 @@ describe('buildpacks', function () {
     `))
   })
 
-  it('# displays the buildpack URL with classic buildpack source', async () => {
-    const api = nock('https://api.heroku.com')
+  it('# displays the buildpack URL with classic buildpack source', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -236,7 +238,7 @@ describe('buildpacks', function () {
   `))
   })
 
-  it('# returns cnb buildpack ids for fir apps with OCI source', async () => {
+  it('# returns cnb buildpack ids for fir apps with OCI source', async function () {
     nock('https://api.heroku.com', {
       reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'},
     })
@@ -244,7 +246,7 @@ describe('buildpacks', function () {
       .get(`/apps/${firApp.name}/releases`).reply(200, releases)
       .get(`/apps/${firApp.name}/oci-images/${releases[0].id}`).reply(200, ociImages)
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', firApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', firApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -254,15 +256,14 @@ describe('buildpacks', function () {
   `))
   })
 
-  it('# with multiple buildpack URLs shows plural form and source', async () => {
-    const api = nock('https://api.heroku.com')
+  it('# with multiple buildpack URLs shows plural form and source', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, [
       'https://github.com/heroku/heroku-buildpack-java',
       'https://github.com/heroku/heroku-buildpack-ruby',
     ])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -273,25 +274,24 @@ describe('buildpacks', function () {
   `))
   })
 
-  it('# with no buildpack URL set shows appropriate message', async () => {
-    const api = nock('https://api.heroku.com')
+  it('# with no buildpack URL set shows appropriate message', async function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api)
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`⬢ ${cedarApp.name} has no Buildpacks.\n`)
   })
 
-  it('# returns nothing when no releases for fir app', async () => {
+  it('# returns nothing when no releases for fir app', async function () {
     nock('https://api.heroku.com', {
       reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'},
     })
       .get(`/apps/${firApp.name}`).reply(200, firApp)
       .get(`/apps/${firApp.name}/releases`).reply(200, [])
 
-    const {stdout, stderr} = await runCommand(['buildpacks', '-a', firApp.name])
+    const {stderr, stdout} = await runCommand(['buildpacks', '-a', firApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`⬢ ${firApp.name} has no Buildpacks.\n`)

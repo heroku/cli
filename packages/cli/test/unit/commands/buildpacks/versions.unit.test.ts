@@ -5,13 +5,16 @@ import nock from 'nock'
 
 describe('buildpacks:versions', function () {
   let originalApiKey: string | undefined
+  let registryApi: nock.Scope
 
-  beforeEach(() => {
+  beforeEach(function () {
+    registryApi = nock('https://buildpack-registry.heroku.com')
     originalApiKey = process.env.HEROKU_API_KEY
     process.env.HEROKU_API_KEY = 'authtoken'
   })
 
-  afterEach(() => {
+  afterEach(function () {
+    registryApi.done()
     nock.cleanAll()
     if (originalApiKey) {
       process.env.HEROKU_API_KEY = originalApiKey
@@ -20,8 +23,8 @@ describe('buildpacks:versions', function () {
     }
   })
 
-  it('shows info about the buildpack', async () => {
-    nock('https://buildpack-registry.heroku.com')
+  it('shows info about the buildpack', async function () {
+    registryApi
       .get('/buildpacks/heroku%2Fruby/revisions')
       .reply(200, [
         Fixture.revision({
@@ -34,8 +37,8 @@ describe('buildpacks:versions', function () {
     expect(stdout).to.contain('138')
   })
 
-  it('handles buildpack not existing', async () => {
-    nock('https://buildpack-registry.heroku.com')
+  it('handles buildpack not existing', async function () {
+    registryApi
       .get('/buildpacks/hone%2Ftest/revisions')
       .reply(404, '')
 
@@ -44,8 +47,8 @@ describe('buildpacks:versions', function () {
     expect(error?.message).to.include("Could not find 'hone/test'")
   })
 
-  it('handles server error', async () => {
-    nock('https://buildpack-registry.heroku.com')
+  it('handles server error', async function () {
+    registryApi
       .get('/buildpacks/hone%2Ftest/revisions')
       .reply(500, 'some error')
 

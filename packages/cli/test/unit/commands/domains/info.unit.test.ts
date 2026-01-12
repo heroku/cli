@@ -3,26 +3,35 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('domains:info', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   const domainInfoResponse = {
     acm_status: 'pending',
     acm_status_reason: 'Failing CCA check',
     app: {
-      name: 'myapp',
       id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
     },
     cname: 'example.herokudns.com',
     created_at: '2012-01-01T12:00:00Z',
     hostname: 'www.example.com',
     id: '01234567-89ab-cdef-0123-456789abcdef',
     kind: 'custom',
-    updated_at: '2012-01-01T12:00:00Z',
     status: 'pending',
+    updated_at: '2012-01-01T12:00:00Z',
   }
 
-  it('shows detailed information about a domain', async () => {
-    nock('https://api.heroku.com')
+  it('shows detailed information about a domain', async function () {
+    api
       .get('/apps/myapp/domains/www.example.com')
       .reply(200, domainInfoResponse)
 

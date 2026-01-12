@@ -3,10 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('domains:remove', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('removes a single domain provided by an argument', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes a single domain provided by an argument', async function () {
+    api
       .delete('/apps/myapp/domains/example.com')
       .reply(200, {})
 

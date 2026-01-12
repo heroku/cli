@@ -4,17 +4,26 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('buildpacks:info', function () {
-  afterEach(() => nock.cleanAll())
+  let registryApi: nock.Scope
 
-  it('shows info about the buildpack', async () => {
-    nock('https://buildpack-registry.heroku.com')
+  beforeEach(function () {
+    registryApi = nock('https://buildpack-registry.heroku.com')
+  })
+
+  afterEach(function () {
+    registryApi.done()
+    nock.cleanAll()
+  })
+
+  it('shows info about the buildpack', async function () {
+    registryApi
       .get('/buildpacks/heroku%2Fruby')
       .reply(200, Fixture.buildpack({
         name: 'ruby',
         source: {
-          type: 'github',
           owner: 'heroku',
           repo: 'heroku-buildpack-ruby',
+          type: 'github',
         },
       }))
       .get('/buildpacks/heroku%2Fruby/revisions')
@@ -29,8 +38,8 @@ describe('buildpacks:info', function () {
     expect(stdout).to.match(/source:\s+https:\/\/github\.com\/heroku\/heroku-buildpack-ruby/)
   })
 
-  it("handles if the buildpack doesn't exist", async () => {
-    nock('https://buildpack-registry.heroku.com')
+  it("handles if the buildpack doesn't exist", async function () {
+    registryApi
       .get('/buildpacks/hone%2Ftest')
       .reply(404, {})
 
@@ -39,8 +48,8 @@ describe('buildpacks:info', function () {
     expect(error?.message).to.include("Could not find the buildpack 'hone/test'")
   })
 
-  it('handles case if there are errors from the API', async () => {
-    nock('https://buildpack-registry.heroku.com')
+  it('handles case if there are errors from the API', async function () {
+    registryApi
       .get('/buildpacks/hone%2Ftest')
       .reply(500, 'some error')
 

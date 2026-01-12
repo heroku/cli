@@ -3,10 +3,14 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('domains:clear', function () {
-  afterEach(() => nock.cleanAll())
+  let api: nock.Scope
 
-  it('clears domains all domains', async () => {
-    nock('https://api.heroku.com')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  it('clears domains all domains', async function () {
+    api
       .get('/apps/myapp/domains')
       .reply(200, [{hostname: 'example.com', kind: 'custom'}])
       .delete('/apps/myapp/domains/example.com')

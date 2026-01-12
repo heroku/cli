@@ -9,11 +9,16 @@ import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('domains', function () {
+  let confirmStub: sinon.SinonStub
+  let api: nock.Scope
+
   beforeEach(function () {
+    api = nock('https://api.heroku.com')
     confirmStub = sinon.stub(DomainsIndex.prototype, 'confirmDisplayAllDomains').resolves(true)
   })
 
   afterEach(function () {
+    api.done()
     confirmStub.restore()
     nock.cleanAll()
     stdout.stop()
@@ -107,10 +112,8 @@ describe('domains', function () {
     },
   ]
 
-  let confirmStub: sinon.SinonStub
-
   it('does not show the custom domain header if there are no custom domains', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/domains')
       .reply(200, herokuOnlyDomainsResponse)
 
@@ -122,7 +125,7 @@ describe('domains', function () {
   })
 
   it('shows a list of domains and their DNS targets when there are custom domains', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/domains')
       .reply(200, herokuAndCustomDomainsResponse)
 
@@ -139,7 +142,7 @@ describe('domains', function () {
   })
 
   it('shows the SNI endpoint column when multiple sni endpoints are enabled', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/domains')
       .reply(200, herokuDomainWithSniEndpoint)
 
@@ -151,7 +154,7 @@ describe('domains', function () {
   })
 
   it('shows warning message for over 100 domains', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/domains')
       .reply(200, () => {
         const domainData = {
