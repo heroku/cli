@@ -1,15 +1,25 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines:connect', function () {
+  let api: nock.Scope
+  let kolkrabbiApi: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
+    kolkrabbiApi.done()
     nock.cleanAll()
   })
 
   describe('when the user is not linked to GitHub', function () {
     it('displays an error', async function () {
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get('/account/github/token')
         .reply(401, {})
 
@@ -31,15 +41,15 @@ describe('pipelines:connect', function () {
         name: 'my-pipeline',
       }
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get('/account/github/token')
         .reply(200, kolkrabbiAccount)
         .post(`/pipelines/${pipeline.id}/repository`)
         .reply(201, {})
 
       const repo = {
-        id: 1235,
         default_branch: 'main',
+        id: 1235,
         name: 'my-org/my-repo',
       }
 
@@ -47,14 +57,14 @@ describe('pipelines:connect', function () {
         .get(`/repos/${repo.name}`)
         .reply(200, {repo})
 
-      nock('https://api.heroku.com')
+      api
         .get(`/pipelines/${pipeline.name}`)
         .reply(200, {
           id: pipeline.id,
           name: pipeline.name,
         })
 
-      const {stdout, stderr} = await runCommand(['pipelines:connect', 'my-pipeline', '--repo=my-org/my-repo'])
+      const {stderr, stdout} = await runCommand(['pipelines:connect', 'my-pipeline', '--repo=my-org/my-repo'])
 
       expect(stderr).to.include('Linking to repo...')
       expect(stdout).to.equal('')
@@ -69,13 +79,13 @@ describe('pipelines:connect', function () {
         },
       }
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get('/account/github/token')
         .reply(200, kolkrabbiAccount)
 
       const repo = {
-        id: 1235,
         default_branch: 'main',
+        id: 1235,
         name: 'my-org/my-repo',
       }
 

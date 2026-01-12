@@ -3,10 +3,17 @@ import inquirer from 'inquirer'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import runCommandHelper from '../../../helpers/runCommand.js'
+
 import AddCommand from '../../../../src/commands/pipelines/add.js'
+import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:add', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
     sinon.restore()
     nock.cleanAll()
@@ -17,7 +24,7 @@ describe('pipelines:add', function () {
     const pipeline = {id: '0123', name: 'example-pipeline'}
     const pipelines = [pipeline]
 
-    nock('https://api.heroku.com')
+    api
       .post('/pipeline-couplings')
       .reply(201, coupling)
       .get('/pipelines')
@@ -53,7 +60,7 @@ describe('pipelines:add', function () {
     const pipeline = {id: '0123', name: 'example-pipeline'}
     const pipelines = [pipeline]
 
-    nock('https://api.heroku.com')
+    api
       .post('/pipeline-couplings')
       .reply(201, coupling)
       .get('/pipelines')
@@ -79,10 +86,12 @@ describe('pipelines:add', function () {
       const question = questions[0]
 
       if (question && question.name === 'pipeline') {
-        return Promise.resolve({pipeline: {
-          name: 'pipeline-with-identical-name-to-another-pipeline',
-          id: '0987',
-        }})
+        return Promise.resolve({
+          pipeline: {
+            id: '0987',
+            name: 'pipeline-with-identical-name-to-another-pipeline',
+          },
+        })
       }
 
       return Promise.resolve({})
@@ -101,7 +110,7 @@ describe('pipelines:add', function () {
       secondIdenticallyNamedPipeline,
     ]
 
-    nock('https://api.heroku.com')
+    api
       .post('/pipeline-couplings')
       .reply(201, coupling)
       .get('/pipelines')

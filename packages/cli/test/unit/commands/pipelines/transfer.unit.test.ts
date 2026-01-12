@@ -35,13 +35,20 @@ describe('pipelines:transfer', function () {
     name: 'my-app',
   }
 
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
     sinon.restore()
   })
 
   function setupCommonMocks() {
-    nock('https://api.heroku.com')
+    api
       .get(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
       .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -55,7 +62,7 @@ describe('pipelines:transfer', function () {
 
     setupCommonMocks()
 
-    const transferNock = nock('https://api.heroku.com')
+    api
       .get(`/teams/${team.name}`)
       .reply(200, team)
       .post('/pipeline-transfers', {
@@ -67,13 +74,12 @@ describe('pipelines:transfer', function () {
     const {stderr} = await runCommand(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
 
     expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
-    expect(transferNock.isDone()).to.be.true
   })
 
   it('transfers to an account', async function () {
     setupCommonMocks()
 
-    const transferNock = nock('https://api.heroku.com')
+    api
       .get(`/users/${account.email}`)
       .reply(200, account)
       .post('/pipeline-transfers', {
@@ -85,7 +91,6 @@ describe('pipelines:transfer', function () {
     const {stderr} = await runCommand(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
 
     expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
-    expect(transferNock.isDone()).to.be.true
   })
 
   it('does not pass confirm flag', async function () {
@@ -93,7 +98,7 @@ describe('pipelines:transfer', function () {
 
     setupCommonMocks()
 
-    const transferNock = nock('https://api.heroku.com')
+    api
       .get(`/users/${account.email}`)
       .reply(200, account)
       .post('/pipeline-transfers', {
@@ -105,7 +110,6 @@ describe('pipelines:transfer', function () {
     await runCommandHelper(TransferCommand, [`--pipeline=${pipeline.id}`, account.email])
 
     expect(stderr.output).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
-    expect(transferNock.isDone()).to.be.true
     expect(promptStub.calledOnce).to.be.true
   })
 })

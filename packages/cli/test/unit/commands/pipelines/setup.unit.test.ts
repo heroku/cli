@@ -1,3 +1,4 @@
+/* eslint-disable max-nested-callbacks */
 import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {runCommand} from '@oclif/test'
@@ -9,7 +10,17 @@ import SetupCommand from '../../../../src/commands/pipelines/setup.js'
 import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:setup', function () {
+  let api: nock.Scope
+  let kolkrabbiApi: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
+    kolkrabbiApi.done()
     nock.cleanAll()
     sinon.restore()
   })
@@ -32,7 +43,7 @@ describe('pipelines:setup', function () {
     const prodApp = {id: '123-prod-app', name: pipeline.name}
     const stagingApp = {id: '123-staging-app', name: `${pipeline.name}-staging`}
 
-    function setupApiNock(api: any) {
+    function setupApiNock() {
       api
         .post('/pipelines')
         .reply(201, pipeline)
@@ -56,8 +67,8 @@ describe('pipelines:setup', function () {
       return api
     }
 
-    function setupKolkrabbiNock(kolkrabbi: any) {
-      kolkrabbi
+    function setupKolkrabbiNock() {
+      return kolkrabbiApi
         .get('/account/github/token')
         .reply(200, kolkrabbiAccount)
         .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
@@ -68,8 +79,6 @@ describe('pipelines:setup', function () {
         .reply(201, {})
         .patch(`/apps/${stagingApp.id}/github`)
         .reply(200, {})
-
-      return kolkrabbi
     }
 
     context('when pipeline name is too long', function () {
@@ -82,8 +91,13 @@ describe('pipelines:setup', function () {
 
     context('and pipeline name is valid', function () {
       context('in a personal account', function () {
-        const promptStub = sinon.stub()
-        const confirmStub = sinon.stub()
+        let promptStub: sinon.SinonStub
+        let confirmStub: sinon.SinonStub
+
+        beforeEach(function () {
+          promptStub = sinon.stub()
+          confirmStub = sinon.stub()
+        })
 
         it('creates apps in the personal account with CI enabled', async function () {
           promptStub.onFirstCall().resolves(pipeline.name)
@@ -94,10 +108,10 @@ describe('pipelines:setup', function () {
           sinon.stub(hux, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
-          setupApiNock(nock('https://api.heroku.com'))
+          setupApiNock()
           nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
 
-          const kolkrabbi = setupKolkrabbiNock(nock('https://kolkrabbi.heroku.com'))
+          const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
             .patch(`/pipelines/${pipeline.id}/repository`, {
               ci: true,
@@ -119,10 +133,10 @@ describe('pipelines:setup', function () {
           sinon.stub(hux, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
-          setupApiNock(nock('https://api.heroku.com'))
+          setupApiNock()
           nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
 
-          const kolkrabbi = setupKolkrabbiNock(nock('https://kolkrabbi.heroku.com'))
+          const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
             .patch(`/pipelines/${pipeline.id}/repository`, {
               ci: true,
@@ -141,10 +155,10 @@ describe('pipelines:setup', function () {
           sinon.stub(hux, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
-          setupApiNock(nock('https://api.heroku.com'))
+          setupApiNock()
           nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
 
-          const kolkrabbi = setupKolkrabbiNock(nock('https://kolkrabbi.heroku.com'))
+          const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
             .patch(`/pipelines/${pipeline.id}/repository`, {
               ci: true,
@@ -160,9 +174,14 @@ describe('pipelines:setup', function () {
       })
 
       context('in a team', function () {
+        let promptStub: sinon.SinonStub
+        let confirmStub: sinon.SinonStub
         const team = 'test-org'
-        const promptStub = sinon.stub()
-        const confirmStub = sinon.stub()
+
+        beforeEach(function () {
+          promptStub = sinon.stub()
+          confirmStub = sinon.stub()
+        })
 
         it('creates apps in a team with CI enabled', async function () {
           promptStub.onFirstCall().resolves(pipeline.name)
@@ -173,7 +192,6 @@ describe('pipelines:setup', function () {
           sinon.stub(hux, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
-          const api = nock('https://api.heroku.com')
           api.post('/pipelines').reply(201, pipeline)
 
           const couplings = [
@@ -197,7 +215,7 @@ describe('pipelines:setup', function () {
 
           nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
 
-          const kolkrabbi = setupKolkrabbiNock(nock('https://kolkrabbi.heroku.com'))
+          const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
             .patch(`/pipelines/${pipeline.id}/repository`, {
               ci: true,
@@ -214,7 +232,11 @@ describe('pipelines:setup', function () {
 
       context('when pollAppSetup status fails', function () {
         const team = 'test-org'
-        const confirmStub = sinon.stub()
+        let confirmStub: sinon.SinonStub
+
+        beforeEach(function () {
+          confirmStub = sinon.stub()
+        })
 
         it('shows error if getAppSetup returns body with setup.status === failed', async function () {
           confirmStub.resolves(true)
@@ -222,7 +244,6 @@ describe('pipelines:setup', function () {
           sinon.stub(hux, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
-          const api = nock('https://api.heroku.com')
           api.post('/pipelines').reply(201, pipeline)
 
           const couplings = [
@@ -246,7 +267,7 @@ describe('pipelines:setup', function () {
 
           nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
 
-          nock('https://kolkrabbi.heroku.com')
+          kolkrabbiApi
             .get('/account/github/token')
             .reply(200, kolkrabbiAccount)
             .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
@@ -267,7 +288,11 @@ describe('pipelines:setup', function () {
 
       context('when pollAppSetup status times out', function () {
         const team = 'test-org'
-        const confirmStub = sinon.stub()
+        let confirmStub: sinon.SinonStub
+
+        beforeEach(function () {
+          confirmStub = sinon.stub()
+        })
 
         it('shows error if getAppSetup times out', async function () {
           confirmStub.resolves(true)
@@ -275,7 +300,6 @@ describe('pipelines:setup', function () {
           sinon.stub(hux, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
-          const api = nock('https://api.heroku.com')
           api.post('/pipelines').reply(201, pipeline)
 
           const couplings = [
@@ -300,7 +324,7 @@ describe('pipelines:setup', function () {
 
           nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
 
-          nock('https://kolkrabbi.heroku.com')
+          kolkrabbiApi
             .get('/account/github/token')
             .reply(200, kolkrabbiAccount)
             .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)

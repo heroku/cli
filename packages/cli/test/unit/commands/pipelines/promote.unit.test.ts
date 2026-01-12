@@ -64,14 +64,21 @@ describe('pipelines:promote', function () {
     status: 'pending',
   }
 
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
     sinon.restore()
   })
 
   function mockPromotionTargets() {
     let pollCount = 0
-    nock(apiUrl)
+    api
       .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
       .thrice()
       .reply(function () {
@@ -97,7 +104,7 @@ describe('pipelines:promote', function () {
   }
 
   function setupNock() {
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${sourceApp.name}/pipeline-couplings`)
       .reply(200, sourceCoupling)
       .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -110,7 +117,7 @@ describe('pipelines:promote', function () {
     setupNock()
     mockPromotionTargets()
 
-    nock('https://api.heroku.com')
+    api
       .post('/pipeline-promotions', {
         pipeline: {id: pipeline.id},
         source: {app: {id: sourceApp.id}},
@@ -132,7 +139,7 @@ describe('pipelines:promote', function () {
       setupNock()
       mockPromotionTargets()
 
-      nock('https://api.heroku.com')
+      api
         .post('/pipeline-promotions', {
           pipeline: {id: pipeline.id},
           source: {app: {id: sourceApp.id}},
@@ -152,7 +159,7 @@ describe('pipelines:promote', function () {
       setupNock()
       mockPromotionTargets()
 
-      nock('https://api.heroku.com')
+      api
         .post('/pipeline-promotions', {
           pipeline: {id: pipeline.id},
           source: {app: {id: sourceApp.id}},
@@ -175,7 +182,7 @@ describe('pipelines:promote', function () {
 
       let pollCount = 0
 
-      nock(apiUrl)
+      api
         .post('/pipeline-promotions', {
           pipeline: {id: pipeline.id},
           source: {app: {id: sourceApp.id}},
@@ -220,7 +227,7 @@ describe('pipelines:promote', function () {
 
       let pollCount = 0
 
-      nock(apiUrl)
+      api
         .post('/pipeline-promotions', {
           pipeline: {id: pipeline.id},
           source: {app: {id: sourceApp.id}},

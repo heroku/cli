@@ -1,10 +1,8 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines:diff', function () {
-  const apiUrl = 'https://api.heroku.com'
-  const kolkrabbiApi = 'https://kolkrabbi.heroku.com'
   const githubApi = 'https://api.github.com'
 
   const pipelineWithGeneration = {
@@ -35,18 +33,18 @@ describe('pipelines:diff', function () {
 
   const targetCoupling = {
     app: targetApp,
+    generation: 'cedar',
     id: '123-target-app-456',
     pipeline,
     stage: 'staging',
-    generation: 'cedar',
   }
 
   const targetFirCoupling = {
     app: targetFirApp,
+    generation: 'fir',
     id: '123-target-app-fir',
     pipeline: firPipeline,
     stage: 'staging',
-    generation: 'fir',
   }
 
   const targetGithubApp = {
@@ -67,18 +65,18 @@ describe('pipelines:diff', function () {
 
   const downstreamCoupling1 = {
     app: downstreamApp1,
+    generation: 'cedar',
     id: '123-target-app-456',
     pipeline,
     stage: 'production',
-    generation: 'cedar',
   }
 
   const downstreamFirCoupling1 = {
     app: downstreamFirApp1,
+    generation: 'fir',
     id: '123-target-app-fir',
     pipeline: firPipeline,
     stage: 'production',
-    generation: 'fir',
   }
 
   const downstreamApp1Github = {
@@ -99,31 +97,41 @@ describe('pipelines:diff', function () {
 
   const downstreamCoupling2 = {
     app: downstreamApp2,
+    generation: 'cedar',
     id: '123-target-app-456',
     pipeline,
     stage: 'production',
-    generation: 'cedar',
   }
 
   const downstreamFirCoupling2 = {
     app: downstreamFirApp2,
+    generation: 'fir',
     id: '123-target-app-fir',
     pipeline: firPipeline,
     stage: 'production',
-    generation: 'fir',
   }
 
   const downstreamApp2Github = {
     repo: 'heroku/some-other-app',
   }
 
+  let api: nock.Scope
+  let kolkrabbiApi: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
+    kolkrabbiApi.done()
     nock.cleanAll()
   })
 
   describe('for app without a pipeline', function () {
     it('should return an error', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(404, {message: 'Not found.'})
 
@@ -135,7 +143,7 @@ describe('pipelines:diff', function () {
 
   describe('for app with a pipeline but no downstream apps', function () {
     it('should return an error', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
         .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -153,7 +161,7 @@ describe('pipelines:diff', function () {
 
   describe('for invalid apps with a pipeline', function () {
     it('should return an error if the target app is not connected to GitHub', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
         .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -163,7 +171,7 @@ describe('pipelines:diff', function () {
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
         .reply(404, {message: 'Not found.'})
         .get(`/apps/${downstreamApp1.id}/github`)
@@ -177,7 +185,7 @@ describe('pipelines:diff', function () {
     })
 
     it('should return an error if the target app has a release with no slug', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
         .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -187,7 +195,7 @@ describe('pipelines:diff', function () {
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp)
         .get(`/apps/${downstreamApp1.id}/github`)
@@ -201,7 +209,7 @@ describe('pipelines:diff', function () {
     })
 
     it('should return an error if the target app has no release', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
         .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -213,7 +221,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${targetApp.id}/releases`)
         .reply(200, [])
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp)
         .get(`/apps/${downstreamApp1.id}/github`)
@@ -232,7 +240,7 @@ describe('pipelines:diff', function () {
     const downstreamSlugId = 'downstream-slug-id'
 
     it('should not compare apps if update to date NOR if repo differs', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
         .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -253,7 +261,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
         .reply(200, {commit: 'COMMIT-HASH'})
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp)
         .get(`/apps/${downstreamApp1.id}/github`)
@@ -272,7 +280,7 @@ describe('pipelines:diff', function () {
     it('should handle non-200 responses from GitHub', async function () {
       const hashes = ['hash-1', 'hash-2']
 
-      nock(apiUrl)
+      api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
         .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
@@ -293,7 +301,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
         .reply(200, {commit: hashes[1]})
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
         .reply(200, targetGithubApp)
         .get(`/apps/${downstreamApp1.id}/github`)
@@ -318,7 +326,7 @@ describe('pipelines:diff', function () {
     const downstreamOciImageId = 'downstream-oci-image-id'
 
     it('should not compare apps if update to date NOR if repo differs', async function () {
-      nock(apiUrl)
+      api
         .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
         .reply(200, targetFirCoupling)
         .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
@@ -339,7 +347,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
         .reply(200, [{commit: 'COMMIT-HASH'}])
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetFirApp.id}/github`)
         .reply(200, targetGithubApp)
         .get(`/apps/${downstreamFirApp1.id}/github`)
@@ -358,7 +366,7 @@ describe('pipelines:diff', function () {
     it('should handle non-200 responses from GitHub', async function () {
       const hashes = ['hash-1', 'hash-2']
 
-      nock(apiUrl)
+      api
         .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
         .reply(200, targetFirCoupling)
         .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
@@ -379,7 +387,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
         .reply(200, [{commit: hashes[1]}])
 
-      nock(kolkrabbiApi)
+      kolkrabbiApi
         .get(`/apps/${targetFirApp.id}/github`)
         .reply(200, targetGithubApp)
         .get(`/apps/${downstreamFirApp1.id}/github`)

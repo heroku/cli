@@ -1,5 +1,5 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines:update', function () {
@@ -7,13 +7,19 @@ describe('pipelines:update', function () {
   const id = '0123'
   const stage = 'production'
   const coupling = {id, stage}
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('displays the right messages', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${app}/pipeline-couplings`)
       .reply(200, coupling)
       .patch(`/pipeline-couplings/${id}`)
