@@ -7,8 +7,17 @@ describe('reviewapps:enable', function () {
     id: '123-pipeline',
     name: 'my-pipeline',
   }
+  let api: nock.Scope
+  let kolkrabbiApi: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+  })
 
   afterEach(function () {
+    api.done()
+    kolkrabbiApi.done()
     nock.cleanAll()
   })
 
@@ -23,7 +32,7 @@ describe('reviewapps:enable', function () {
     }
 
     it('succeeds with defaults', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(200, feature)
         .get(`/pipelines/${pipeline.name}`)
@@ -39,7 +48,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('succeeds with autodeploy', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(200, feature)
         .get(`/pipelines/${pipeline.name}`)
@@ -56,7 +65,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('it succeeds with autodestroy', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(200, feature)
         .get(`/pipelines/${pipeline.name}`)
@@ -73,7 +82,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('it succeeds with wait-for-ci', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(200, feature)
         .get(`/pipelines/${pipeline.name}`)
@@ -90,7 +99,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('it succeeds with autodeploy and autodestroy and wait-for-ci', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(200, feature)
         .get(`/pipelines/${pipeline.name}`)
@@ -122,7 +131,7 @@ describe('reviewapps:enable', function () {
     }
 
     it('succeeds with defaults', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(404, {})
         .get(`/pipelines/${pipeline.name}`)
@@ -130,7 +139,7 @@ describe('reviewapps:enable', function () {
         .post(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
@@ -140,7 +149,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('succeeds with autodeploy', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(404, {})
         .get(`/pipelines/${pipeline.name}`)
@@ -148,7 +157,7 @@ describe('reviewapps:enable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
@@ -159,7 +168,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('it succeeds with autodestroy', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(404, {})
         .get(`/pipelines/${pipeline.name}`)
@@ -167,7 +176,7 @@ describe('reviewapps:enable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
@@ -178,7 +187,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('it succeeds with wait-for-ci', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(404, {})
         .get(`/pipelines/${pipeline.name}`)
@@ -186,7 +195,7 @@ describe('reviewapps:enable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
@@ -197,7 +206,7 @@ describe('reviewapps:enable', function () {
     })
 
     it('it succeeds with autodeploy and autodestroy and wait-for-ci', async function () {
-      nock('https://api.heroku.com')
+      api
         .get(`/account/features/${feature.name}`)
         .reply(404, {})
         .get(`/pipelines/${pipeline.name}`)
@@ -205,7 +214,7 @@ describe('reviewapps:enable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      nock('https://kolkrabbi.heroku.com')
+      kolkrabbiApi
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 

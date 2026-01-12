@@ -3,12 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('spaces:drains:set', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('sets the log drain', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .put('/spaces/my-space/log-drain', {
         url: 'https://example.com',
       })
@@ -24,6 +31,5 @@ describe('spaces:drains:set', function () {
     const {stdout} = await runCommand(['spaces:drains:set', 'https://example.com', '--space', 'my-space'])
 
     expect(stdout).to.equal('Successfully set drain https://example.com for my-space.\n')
-    api.done()
   })
 })

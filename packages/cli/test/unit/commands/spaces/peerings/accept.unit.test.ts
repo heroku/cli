@@ -3,12 +3,19 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('spaces:peerings:accept', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('accepts a pending peering connection', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .post('/spaces/my-space/peerings', {
         pcx_id: 'pcx-12345',
       })
@@ -17,6 +24,5 @@ describe('spaces:peerings:accept', function () {
     const {stdout} = await runCommand(['spaces:peerings:accept', '--pcxid', 'pcx-12345', '--space', 'my-space'])
 
     expect(stdout).to.equal('Accepting and configuring peering connection pcx-12345\n')
-    api.done()
   })
 })

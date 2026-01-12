@@ -3,14 +3,21 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('spaces:transfer', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('yields success when the API succeeds', async function () {
     const space = 'dimension-c137'
     const team = 'jerry'
-    const api = nock('https://api.heroku.com:443')
+    api
       .post(`/spaces/${space}/transfer`, {
         new_owner: team,
       })
@@ -31,7 +38,6 @@ describe('spaces:transfer', function () {
     const {stderr} = await runCommand(['spaces:transfer', '--team', team, '--space', space])
 
     expect(stderr).to.contain('done')
-    api.done()
   })
 
   it('yields the API error messages when the API fails', async function () {
@@ -39,13 +45,12 @@ describe('spaces:transfer', function () {
     const team = 'jerry'
     const message = 'rikki tikki tavi!'
     const id = 'oops'
-    const api = nock('https://api.heroku.com:443')
+    api
       .post(`/spaces/${space}/transfer`, {new_owner: team})
       .reply(500, {id, message})
 
     const {error} = await runCommand(['spaces:transfer', '--team', team, '--space', space])
 
     expect(error?.message).to.eq(message)
-    api.done()
   })
 })
