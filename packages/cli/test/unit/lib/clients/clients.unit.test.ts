@@ -1,4 +1,4 @@
-import {expect, test} from '@oclif/test'
+import {expect} from 'chai'
 
 import {validateURL} from '../../../../src/lib/clients/clients.js'
 
@@ -18,10 +18,9 @@ describe('validateURL', function () {
       {uri: 'http://192.168.0.1'},
       {uri: 'http://192.168.0.1:8080/foo'},
     ].forEach(({uri}) => {
-      test
-        .it(`passes when secure (${uri})`, () => {
-          expect(validateURL(uri))
-        })
+      it(`passes when secure (${uri})`, function () {
+        expect(validateURL(uri))
+      })
     })
 
     describe('insecure URLs', function () {
@@ -31,20 +30,28 @@ describe('validateURL', function () {
         {uri: 'http://127.foo.com'},
         {uri: 'http://192.foo.com'},
       ].forEach(({uri}) => {
-        test
-          .do(() => validateURL(uri))
-          .catch(error => expect(error.message).to.equal(
-            'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.',
-          ))
-          .it(`fails when insecure (${uri})`)
+        it(`fails when insecure (${uri})`, function () {
+          try {
+            validateURL(uri)
+            expect.fail('Expected validateURL to throw an error')
+          } catch (error: any) {
+            expect(error.message).to.equal(
+              'Unsupported callback URL. Clients have to use HTTPS for non-local addresses.',
+            )
+          }
+        })
       })
     })
 
     describe('invalid URLs', function () {
-      test
-        .do(() => validateURL('foo'))
-        .catch(error => expect(error.message).to.contain('Invalid URL'))
-        .it('fails when invalid')
+      it('fails when invalid', function () {
+        try {
+          validateURL('foo')
+          expect.fail('Expected validateURL to throw an error')
+        } catch (error: any) {
+          expect(error.message).to.contain('Invalid URL')
+        }
+      })
     })
   })
 })
