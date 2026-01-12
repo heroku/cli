@@ -1,21 +1,28 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('shows a list of pipelines', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/pipelines')
       .reply(200, [
         {id: '0123', name: 'Betelgeuse'},
         {id: '9876', name: 'Sirius'},
       ])
 
-    const {stdout, stderr} = await runCommand(['pipelines'])
+    const {stderr, stdout} = await runCommand(['pipelines'])
 
     expect(stderr).to.contain('')
     expect(stdout).to.contain('My Pipelines')
@@ -24,14 +31,14 @@ describe('pipelines', function () {
   })
 
   it('shows a list of pipelines, json formatted', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/pipelines')
       .reply(200, [
         {id: '0123', name: 'Betelgeuse'},
         {id: '9876', name: 'Sirius'},
       ])
 
-    const {stdout, stderr} = await runCommand(['pipelines', '--json'])
+    const {stderr, stdout} = await runCommand(['pipelines', '--json'])
 
     expect(stderr).to.contain('')
     expect(JSON.parse(stdout)).to.eql([

@@ -1,15 +1,23 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines:destroy', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('displays the right messages', async function () {
-    const pipeline = {name: 'example', id: '0123'}
-    nock('https://api.heroku.com')
+    const pipeline = {id: '0123', name: 'example'}
+
+    api
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [pipeline])
       .delete(`/pipelines/${pipeline.id}`)

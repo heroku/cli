@@ -1,113 +1,122 @@
+/* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
+
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const appNames = [
-  'development-app-1',
-  'development-app-2',
-  'review-app-1',
-  'review-app-2',
-  'review-app-3',
-  'review-app-4',
-  'staging-app-1',
-  'staging-app-2',
-  'production-app-1',
-]
+describe('pipelines:info', function () {
+  let api: nock.Scope
 
-type Stage = 'test' | 'review' | 'development' | 'staging' | 'production'
-
-function itShowsPipelineApps(stdout: string) {
-  expect(stdout).to.include('=== example')
-
-  appNames.forEach(name => {
-    expect(stdout).to.contain(name)
-  })
-
-  const expectedTable = [
-    'app name             stage       \n',
-    '⬢ development-app-1  development \n',
-    '⬢ development-app-2  development \n',
-    '⬢ review-app-1       review      \n',
-    '⬢ review-app-2       review      \n',
-    '⬢ review-app-3       review      \n',
-    '⬢ review-app-4       review      \n',
-    '⬢ staging-app-1      staging     \n',
-    '⬢ staging-app-2      staging     \n',
-    '⬢ production-app-1   production ',
+  const appNames = [
+    'development-app-1',
+    'development-app-2',
+    'review-app-1',
+    'review-app-2',
+    'review-app-3',
+    'review-app-4',
+    'staging-app-1',
+    'staging-app-2',
+    'production-app-1',
   ]
 
-  expectedTable.forEach(ln => {
-    expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace(ln))
-  })
-}
+  type Stage = 'development' | 'production' | 'review' | 'staging' | 'test'
 
-function setupNock(owner?: Heroku.Account) {
-  const pipeline = {name: 'example', id: '0123', owner}
-  const pipelines = [pipeline]
-  const apps: Array<Heroku.App> = []
-  const couplings: Array<Heroku.PipelineCoupling> = []
+  function itShowsPipelineApps(stdout: string) {
+    expect(stdout).to.include('=== example')
 
-  // Build couplings
-  appNames.forEach((name, id) => {
-    const stage: Stage = name.split('-')[0] as Stage
-    couplings.push({
-      stage,
-      app: {id: `app-${id + 1}`},
+    appNames.forEach(name => {
+      expect(stdout).to.contain(name)
     })
-  })
 
-  // Build apps
-  appNames.forEach((name, id) => {
-    apps.push(
-      {
-        id: `app-${id + 1}`,
-        name,
-        pipeline,
-        owner: {id: '1234', email: 'foo@user.com'},
-      },
-    )
-  })
+    const expectedTable = [
+      'app name             stage       \n',
+      '⬢ development-app-1  development \n',
+      '⬢ development-app-2  development \n',
+      '⬢ review-app-1       review      \n',
+      '⬢ review-app-2       review      \n',
+      '⬢ review-app-3       review      \n',
+      '⬢ review-app-4       review      \n',
+      '⬢ staging-app-1      staging     \n',
+      '⬢ staging-app-2      staging     \n',
+      '⬢ production-app-1   production ',
+    ]
 
-  const api = nock('https://api.heroku.com')
-    .get('/pipelines')
-    .query(true)
-    .reply(200, pipelines)
-    .get('/pipelines/0123/pipeline-couplings')
-    .reply(200, couplings)
-    .post('/filters/apps')
-    .reply(200, apps)
-
-  if (owner && owner.type === 'team') {
-    api.get(`/teams/${owner.id}`).reply(200, {
-      id: owner.id,
-      name: 'my-team',
+    expectedTable.forEach(ln => {
+      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace(ln))
     })
   }
-}
 
-function itDoesNotShowMixedOwnershipWarning(stderr: string) {
-  const warningMessage = 'Some apps in this pipeline do not belong'
-  expect(stderr).to.not.contain(warningMessage)
-}
+  function setupNock(owner?: Heroku.Account) {
+    const pipeline = {id: '0123', name: 'example', owner}
+    const pipelines = [pipeline]
+    const apps: Array<Heroku.App> = []
+    const couplings: Array<Heroku.PipelineCoupling> = []
 
-function itShowsMixedOwnershipWarning(owner: string, stderr: string) {
-  const warningMessage = [
-    `Warning: Some apps in this pipeline do not belong to ${owner}.`,
-    'All apps in a pipeline must have the same owner as the pipeline owner.',
-    'Transfer these apps or change the pipeline owner in pipeline settings.',
-    'See https://devcenter.heroku.com/articles/pipeline-ownership-transition',
-    'for more info.',
-  ]
+    // Build couplings
+    appNames.forEach((name, id) => {
+      const stage: Stage = name.split('-')[0] as Stage
+      couplings.push({
+        app: {id: `app-${id + 1}`},
+        stage,
+      })
+    })
 
-  warningMessage.forEach(message => {
-    expect(stderr).to.contain(message)
+    // Build apps
+    appNames.forEach((name, id) => {
+      apps.push(
+        {
+          id: `app-${id + 1}`,
+          name,
+          owner: {email: 'foo@user.com', id: '1234'},
+          pipeline,
+        },
+      )
+    })
+
+    api
+      .get('/pipelines')
+      .query(true)
+      .reply(200, pipelines)
+      .get('/pipelines/0123/pipeline-couplings')
+      .reply(200, couplings)
+      .post('/filters/apps')
+      .reply(200, apps)
+
+    if (owner && owner.type === 'team') {
+      api.get(`/teams/${owner.id}`).reply(200, {
+        id: owner.id,
+        name: 'my-team',
+      })
+    }
+  }
+
+  function itDoesNotShowMixedOwnershipWarning(stderr: string) {
+    const warningMessage = 'Some apps in this pipeline do not belong'
+    expect(stderr).to.not.contain(warningMessage)
+  }
+
+  function itShowsMixedOwnershipWarning(owner: string, stderr: string) {
+    const warningMessage = [
+      `Warning: Some apps in this pipeline do not belong to ${owner}.`,
+      'All apps in a pipeline must have the same owner as the pipeline owner.',
+      'Transfer these apps or change the pipeline owner in pipeline settings.',
+      'See https://devcenter.heroku.com/articles/pipeline-ownership-transition',
+      'for more info.',
+    ]
+
+    warningMessage.forEach(message => {
+      expect(stderr).to.contain(message)
+    })
+  }
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
   })
-}
 
-describe('pipelines:info', function () {
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
@@ -140,7 +149,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '5678', type: 'user'}
           setupNock(pipelineOwner)
 
-          const {stdout, stderr} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
 
           const warningMessage = 'Some apps in this pipeline do not belong'
           expect(stdout).to.not.contain(warningMessage)
@@ -155,7 +164,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '1234', type: 'user'}
           setupNock(pipelineOwner)
 
-          const {stdout, stderr} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
 
           expect(stdout).to.contain('owner: foo@user.com')
           itDoesNotShowMixedOwnershipWarning(stderr)
@@ -170,7 +179,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '5678', type: 'team'}
           setupNock(pipelineOwner)
 
-          const {stdout, stderr} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
 
           expect(stdout).to.contain('owner: my-team (team)')
           itShowsPipelineApps(stdout)
@@ -183,7 +192,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '1234', type: 'team'}
           setupNock(pipelineOwner)
 
-          const {stdout, stderr} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
 
           expect(stdout).to.contain('owner: my-team (team)')
           itShowsPipelineApps(stdout)

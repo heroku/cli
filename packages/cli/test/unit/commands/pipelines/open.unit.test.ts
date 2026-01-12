@@ -8,8 +8,14 @@ import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
   afterEach(function () {
+    api.done()
     sinon.restore()
     nock.cleanAll()
   })
@@ -24,7 +30,7 @@ describe('pipelines:open', function () {
       }, unref() {},
     } as any)
 
-    nock('https://api.heroku.com')
+    api
       .get('/pipelines')
       .query({eq: {name: pipeline.name}})
       .reply(200, [pipeline])

@@ -1,33 +1,43 @@
-/* eslint-disable mocha/no-setup-in-describe */
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines:create', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   describe('successful pipeline creation', function () {
     context('when not specifying ownership', function () {
       it('creates a pipeline with default user ownership', async function () {
-        nock('https://api.heroku.com')
+        api
           .post('/pipeline-couplings')
           .reply(201, {id: '0123', stage: 'production'})
           .get('/users/~')
           .reply(200, {id: '1234-567'})
-          .post('/pipelines', {name: 'example-pipeline', owner: {id: '1234-567', type: 'user'}, generation: {name: 'fir'}})
-          .reply(201, {
+          .post('/pipelines', {
+            generation: {name: 'fir'},
             name: 'example-pipeline',
+            owner: {id: '1234-567', type: 'user'},
+          })
+          .reply(201, {
             id: '0123',
+            name: 'example-pipeline',
             owner: {id: '1234-567', type: 'user'},
           })
 
         nock('https://api.heroku.com')
           .get('/apps/example-app')
-          .reply(200, {id: '0123', name: 'example-app', generation: 'fir'})
+          .reply(200, {generation: 'fir', id: '0123', name: 'example-app'})
 
-        const {stdout, stderr} = await runCommand([
+        const {stderr, stdout} = await runCommand([
           'pipelines:create',
           '--app',
           'example-app',
@@ -49,18 +59,22 @@ describe('pipelines:create', function () {
           .reply(201, {id: '0123', stage: 'production'})
           .get('/teams/my-team')
           .reply(200, {id: '89-0123-456'})
-          .post('/pipelines', {name: 'example-pipeline', owner: {id: '89-0123-456', type: 'team'}, generation: {name: 'fir'}})
-          .reply(201, {
+          .post('/pipelines', {
+            generation: {name: 'fir'},
             name: 'example-pipeline',
+            owner: {id: '89-0123-456', type: 'team'},
+          })
+          .reply(201, {
             id: '0123',
+            name: 'example-pipeline',
             owner: {id: '89-0123-456', type: 'team'},
           })
 
         nock('https://api.heroku.com')
           .get('/apps/example-app')
-          .reply(200, {id: '0123', name: 'example-app', generation: 'fir'})
+          .reply(200, {generation: 'fir', id: '0123', name: 'example-app'})
 
-        const {stdout, stderr} = await runCommand([
+        const {stderr, stdout} = await runCommand([
           'pipelines:create',
           '--app',
           'example-app',
