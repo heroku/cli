@@ -1,42 +1,41 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/apps/leave.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {expect} from 'chai'
 import nock from 'nock'
-import {expect} from '@oclif/test'
+import {stderr, stdout} from 'stdout-stderr'
 
-function mockUserAccount(email = 'gandalf@heroku.com') {
-  return nock('https://api.heroku.com:443')
-    .get('/account')
-    .reply(200, {email})
-}
-
-function mockCollaboratorsPersonalApp(app: string, email: string) {
-  return nock('https://api.heroku.com:443', {})
-    .delete(`/apps/${app}/collaborators/${encodeURIComponent(email)}`)
-    .reply(200, {})
-}
-
-function mockCollaboratorsPersonalAppDeleteFailure(app: string, email: string) {
-  return nock('https://api.heroku.com:443', {})
-    .delete(`/apps/${app}/collaborators/${encodeURIComponent(email)}`).reply(404, {})
-}
+import LeaveCommand from '../../../../src/commands/apps/leave.js'
+import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('heroku apps:leave', function () {
   let apiGetUserAccount: ReturnType<typeof mockUserAccount>
   let apiDeletePersonalAppCollaborator: ReturnType<typeof mockCollaboratorsPersonalApp>
+  let api: nock.Scope
+
+  function mockUserAccount(email = 'gandalf@heroku.com') {
+    return api
+      .get('/account')
+      .reply(200, {email})
+  }
+
+  function mockCollaboratorsPersonalApp(app: string, email: string) {
+    return api
+      .delete(`/apps/${app}/collaborators/${encodeURIComponent(email)}`)
+      .reply(200, {})
+  }
 
   beforeEach(function () {
+    api = nock('https://api.heroku.com')
     apiGetUserAccount = mockUserAccount()
     apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalApp('myapp', 'gandalf@heroku.com')
   })
 
   afterEach(function () {
-    return nock.cleanAll()
+    api.done()
+    nock.cleanAll()
   })
 
   context('when it is an org app', function () {
     it('leaves the app', async function () {
-      await runCommand(Cmd, [
+      await runCommandHelper(LeaveCommand, [
         '--app',
         'myapp',
       ])
@@ -49,7 +48,7 @@ describe('heroku apps:leave', function () {
 
   context('when it is not an org app', function () {
     it('leaves the app', async function () {
-      await runCommand(Cmd, [
+      await runCommandHelper(LeaveCommand, [
         '--app',
         'myapp',
       ])
@@ -61,18 +60,9 @@ describe('heroku apps:leave', function () {
   })
 
   describe('when the user tries to leave the app', function () {
-    before(function () {
-      apiGetUserAccount = mockUserAccount()
-      apiDeletePersonalAppCollaborator = mockCollaboratorsPersonalAppDeleteFailure('myapp', 'gandalf@heroku.com')
-    })
-
-    after(function () {
-      return nock.cleanAll()
-    })
-
     it('shows an error if the heroku.delete() operation returns an error', async function () {
       try {
-        await runCommand(Cmd, [
+        await runCommandHelper(LeaveCommand, [
           '--app',
           'myapp',
         ])
