@@ -1,6 +1,7 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
+
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const formation = [
@@ -19,30 +20,39 @@ const formation = [
 ]
 const errors = {
   router: {
-    start_time: '2016-04-17T19:00:00Z',
-    end_time: '2016-04-18T19:00:00Z',
-    step: '1h0m0s',
     data: {
       H12: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, null, null],
       H25: [null, null, null, null, 1, null, null, 1, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null],
       H27: [null, null, null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, null, null, 4, null, null, null, 3, null],
     },
+    end_time: '2016-04-18T19:00:00Z',
+    start_time: '2016-04-17T19:00:00Z',
+    step: '1h0m0s',
   },
 }
 
 const APP = 'myapp'
 
 describe('apps:errors', function () {
+  let api: nock.Scope
+  let metricsApi: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    metricsApi = nock('https://api.metrics.herokai.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('shows no errors', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${APP}/formation`)
       .reply(200, formation)
 
-    nock('https://api.metrics.herokai.com')
+    metricsApi
       .get(`/apps/${APP}/router-metrics/errors`)
       .query(params => params.process_type === 'web' && params.step === '1h')
       .reply(200, {data: {}})
@@ -53,18 +63,18 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(200, {data: {}})
 
-    const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP])
+    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP])
 
     expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
   })
 
   it('traps bad request', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${APP}/formation`)
       .reply(200, formation)
 
-    nock('https://api.metrics.herokai.com')
+    metricsApi
       .get(`/apps/${APP}/router-metrics/errors`)
       .query(params => params.process_type === 'web' && params.step === '1h')
       .reply(200, {data: {}})
@@ -75,7 +85,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
 
-    const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP])
+    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP])
 
     expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
@@ -84,11 +94,11 @@ describe('apps:errors', function () {
   it('propagates other bad request', async function () {
     const ERROR_MESSAGE = 'ack!'
 
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${APP}/formation`)
       .reply(200, formation)
 
-    nock('https://api.metrics.herokai.com')
+    metricsApi
       .get(`/apps/${APP}/router-metrics/errors`)
       .query(params => params.process_type === 'web' && params.step === '1h')
       .reply(200, {data: {}})
@@ -105,11 +115,11 @@ describe('apps:errors', function () {
   })
 
   it('shows errors', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${APP}/formation`)
       .reply(200, formation)
 
-    nock('https://api.metrics.herokai.com')
+    metricsApi
       .get(`/apps/${APP}/router-metrics/errors`)
       .query(params => params.process_type === 'web' && params.step === '1h')
       .reply(200, errors.router)
@@ -120,7 +130,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(200, {data: {R14: [1]}})
 
-    const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP])
+    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP])
 
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('Errors on ⬢ myapp in the last 24 hours'))
@@ -133,11 +143,11 @@ describe('apps:errors', function () {
   })
 
   it('shows errors as json', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/apps/${APP}/formation`)
       .reply(200, formation)
 
-    nock('https://api.metrics.herokai.com')
+    metricsApi
       .get(`/apps/${APP}/router-metrics/errors`)
       .query(params => params.process_type === 'web' && params.step === '1h')
       .reply(200, errors.router)
@@ -148,7 +158,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(200, {data: {}})
 
-    const {stdout, stderr} = await runCommand(['apps:errors', '--app', APP, '--json'])
+    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP, '--json'])
 
     expect(JSON.parse(stdout).router.H12).to.equal(2)
     expect(stderr).to.be.equal('')

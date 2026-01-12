@@ -1,75 +1,67 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
+
 import type {App} from '../../../../src/lib/types/fir.js'
+
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
-const app = {
-  id: 'app-id',
-  name: 'myapp',
-  database_size: 1000,
-  create_status: 'complete',
-  repo_size: 1000,
-  slug_size: 1000,
-  git_url: 'https://git.heroku.com/myapp',
-  web_url: 'https://myapp.herokuapp.com',
-  region: {name: 'eu'},
-  build_stack: {name: 'cedar-14'},
-  stack: {name: 'cedar-14'},
-  owner: {email: 'foo@foo.com'},
-  space: {name: 'myspace'},
-  generation: 'cedar',
-  internal_routing: true,
-}
+describe('apps:info', function () {
+  const app = {
+    build_stack: {name: 'cedar-14'},
+    create_status: 'complete',
+    database_size: 1000,
+    generation: 'cedar',
+    git_url: 'https://git.heroku.com/myapp',
+    id: 'app-id',
+    internal_routing: true,
+    name: 'myapp',
+    owner: {email: 'foo@foo.com'},
+    region: {name: 'eu'},
+    repo_size: 1000,
+    slug_size: 1000,
+    space: {name: 'myspace'},
+    stack: {name: 'cedar-14'},
+    web_url: 'https://myapp.herokuapp.com',
+  }
 
-const firApp = {
-  id: 'app-id',
-  name: 'myapp',
-  database_size: 1000,
-  create_status: 'complete',
-  repo_size: 1000,
-  slug_size: null,
-  git_url: 'https://git.heroku.com/myapp',
-  web_url: 'https://myapp.herokuapp.com',
-  region: {name: 'eu', id: ''},
-  build_stack: {name: 'cedar-14'},
-  stack: {name: 'cedar-14'},
-  owner: {email: 'foo@foo.com', id: ''},
-  space: {name: 'myspace'},
-  generation: 'fir',
-  internal_routing: true,
-}
+  const firApp = {
+    build_stack: {name: 'cedar-14'},
+    create_status: 'complete',
+    database_size: 1000,
+    generation: 'fir',
+    git_url: 'https://git.heroku.com/myapp',
+    id: 'app-id',
+    internal_routing: true,
+    name: 'myapp',
+    owner: {email: 'foo@foo.com', id: ''},
+    region: {name: 'eu', id: ''},
+    repo_size: 1000,
+    slug_size: null,
+    space: {name: 'myspace'},
+    stack: {name: 'cedar-14'},
+    web_url: 'https://myapp.herokuapp.com',
+  }
 
-const appStackChange = Object.assign({}, app, {
-  build_stack: {name: 'heroku-24'},
-})
+  const appStackChange = {...app, build_stack: {name: 'heroku-24'}}
 
-const appExtended = Object.assign({}, app, {
-  extended: {
-    foo: 'bar',
-    id: 12345,
-  },
-})
+  const appExtended = {...app, extended: {foo: 'bar', id: 12345}}
 
-const appAcm = Object.assign({}, app, {
-  acm: true,
-})
+  const appAcm = {...app, acm: true}
 
-const firAppAcm = Object.assign({}, firApp, {
-  acm: true,
-})
+  const firAppAcm = {...firApp, acm: true}
 
-const addons = [
-  {plan: {name: 'papertrail'}},
-  {plan: {name: 'heroku-redis'}},
-]
+  const addons = [
+    {plan: {name: 'papertrail'}},
+    {plan: {name: 'heroku-redis'}},
+  ]
 
-const collaborators = [
-  {user: {email: 'foo@foo.com'}},
-  {user: {email: 'foo2@foo.com'}},
-]
+  const collaborators = [
+    {user: {email: 'foo@foo.com'}},
+    {user: {email: 'foo2@foo.com'}},
+  ]
 
-const BASE_INFO = `=== myapp
+  const BASE_INFO = `=== myapp
 
 Addons:           heroku-redis
                   papertrail
@@ -88,7 +80,7 @@ Dynos:            web: 1
 Stack:            cedar-14
 `
 
-const BASE_INFO_FIR = `=== myapp
+  const BASE_INFO_FIR = `=== myapp
 
 Addons:           heroku-redis
                   papertrail
@@ -106,34 +98,40 @@ Dynos:            web: 1
 Stack:            cedar-14
 `
 
-describe('apps:info', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('shows app info', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons')
       .reply(200, addons)
       .get('/apps/myapp/collaborators')
       .reply(200, collaborators)
       .get('/apps/myapp/dynos')
-      .reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp'])
 
     expect(stdout).to.equal(BASE_INFO)
     expect(unwrap(stderr)).to.contains('')
   })
 
   it('shows extended app info', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp?extended=true')
       .reply(200, appExtended)
       .get('/apps/myapp/addons')
@@ -141,9 +139,9 @@ describe('apps:info', function () {
       .get('/apps/myapp/collaborators')
       .reply(200, collaborators)
       .get('/apps/myapp/dynos')
-      .reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', '-a', 'myapp', '--extended'])
+    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp', '--extended'])
 
     expect(stdout).to.equal(`${BASE_INFO}
 
@@ -156,16 +154,16 @@ describe('apps:info', function () {
   })
 
   it('shows empty extended app info when not defined', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp?extended=true').reply(200, appAcm)
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', '-a', 'myapp', '--extended'])
+    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp', '--extended'])
 
     expect(stdout).to.equal(`${BASE_INFO}
 
@@ -177,31 +175,31 @@ describe('apps:info', function () {
   })
 
   it('shows app info via arg', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
 
     expect(stdout).to.equal(BASE_INFO)
     expect(unwrap(stderr)).to.contains('')
   })
 
   it('shows app info via arg when the app is in a pipeline', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}, stage: 'production'})
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
 
     expect(stdout).to.equal(`=== myapp
 
@@ -226,15 +224,15 @@ Stack:            cedar-14
   })
 
   it('shows app info in shell format', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp', '--shell'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--shell'])
 
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
@@ -253,16 +251,16 @@ stack=cedar-14
   })
 
   it('shows app info in shell format when the app is in pipeline', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}, stage: 'production'})
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp', '--shell'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--shell'])
 
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
@@ -282,16 +280,16 @@ stack=cedar-14
   })
 
   it('shows extended app info in json format', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp?extended=true').reply(200, appExtended)
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp', '--extended', '--json'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--extended', '--json'])
 
     const json = JSON.parse(stdout)
     expect(json.appExtended).to.equal(undefined)
@@ -301,16 +299,16 @@ stack=cedar-14
   })
 
   it('shows app info in json format', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
       .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}})
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp', '--json'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--json'])
 
     const json = JSON.parse(stdout)
     expect(json.appExtended).to.equal(undefined)
@@ -323,15 +321,15 @@ stack=cedar-14
   })
 
   it('shows app info with a stack change', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, appStackChange)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
 
     expect(stdout).to.equal(`=== myapp
 
@@ -354,33 +352,33 @@ Stack:            cedar-14 (next build will use heroku-24)
   })
 
   it('shows fir app info without slug size', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, firAppAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons')
       .reply(200, addons)
       .get('/apps/myapp/collaborators')
       .reply(200, collaborators)
       .get('/apps/myapp/dynos')
-      .reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp'])
 
     expect(stdout).to.equal(BASE_INFO_FIR)
     expect(unwrap(stderr)).to.contains('')
   })
 
   it('shows fir app info in shell format without slug size', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, firAppAcm)
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addons').reply(200, addons)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{type: 'web', size: 'Standard-1X', quantity: 2}])
+      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stdout, stderr} = await runCommand(['apps:info', 'myapp', '--shell'])
+    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--shell'])
 
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail

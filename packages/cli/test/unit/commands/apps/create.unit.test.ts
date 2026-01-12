@@ -1,19 +1,26 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
 import CreateCommand from '../../../../src/commands/apps/create.js'
-import {Config} from '@oclif/core'
 import runCommandHelper from '../../../helpers/runCommand.js'
-import {stdout, stderr} from 'stdout-stderr'
 
 describe('apps:create', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('creates an app', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/apps', {})
       .reply(200, {
         name: 'foobar',
@@ -28,7 +35,7 @@ describe('apps:create', function () {
   })
 
   it('creates an app with feature flags', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/apps', {feature_flags: 'feature-1,feature-2'})
       .reply(200, {
         name: 'foobar',
@@ -43,7 +50,7 @@ describe('apps:create', function () {
   })
 
   it('creates an app in a space', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/teams/apps', {
         space: 'my-space-name',
       })
@@ -60,15 +67,15 @@ describe('apps:create', function () {
   })
 
   it('creates an Internal Web App in a space', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/teams/apps', {
-        space: 'my-space-name',
         internal_routing: true,
+        space: 'my-space-name',
       })
       .reply(200, {
+        internal_routing: true,
         name: 'foobar',
         stack: {name: 'cedar-14'},
-        internal_routing: true,
         web_url: 'https://foobar.com',
       })
 
@@ -92,7 +99,7 @@ describe('apps:create', function () {
       web_url: 'https://foobar.com',
     }
 
-    nock('https://api.heroku.com')
+    api
       .post('/apps', {})
       .reply(200, json)
 
@@ -106,17 +113,17 @@ describe('apps:create', function () {
     const appName = 'foo'
 
     const manifest = {
-      setup: {addons: [{plan: 'heroku-postgresql', as: 'DATABASE'}], config: {S3_BUCKET: 'my-example-bucket'}},
       build: {
+        config: {FOO: 'bar', RAILS_ENV: 'development'},
         docker: {web: 'Dockerfile', worker: 'worker/Dockerfile'},
-        config: {RAILS_ENV: 'development', FOO: 'bar'},
       },
       release: {command: ['./deployment-tasks.sh'], image: 'worker'},
       run: {
+        'asset-syncer': {command: ['python asset-syncer.py'], image: 'worker'},
         web: 'bundle exec puma -C config/puma.rb',
         worker: 'python myworker.py',
-        'asset-syncer': {command: ['python asset-syncer.py'], image: 'worker'},
       },
+      setup: {addons: [{as: 'DATABASE', plan: 'heroku-postgresql'}], config: {S3_BUCKET: 'my-example-bucket'}},
     }
 
     let readManifestStub: sinon.SinonStub
@@ -127,11 +134,10 @@ describe('apps:create', function () {
 
     afterEach(function () {
       readManifestStub.restore()
-      nock.cleanAll()
     })
 
     it('sets config vars when manifest flag is present', async function () {
-      nock('https://api.heroku.com')
+      api
         .post('/apps', {name: 'foo', stack: 'container'})
         .reply(200, {
           name: appName,
@@ -163,7 +169,7 @@ describe('apps:create', function () {
     const addon = 'foobar, secondPlan'
 
     it('adds addon if addons flag is present', async function () {
-      nock('https://api.heroku.com')
+      api
         .post('/apps', {name: 'foo'})
         .reply(200, {
           name: appName,
@@ -186,7 +192,7 @@ describe('apps:create', function () {
     it('sets buildpack if buildpack flag is present', async function () {
       const exampleBuildpack = 'https://github.com/some/buildpack.git'
 
-      nock('https://api.heroku.com')
+      api
         .post('/apps', {name: 'foo'})
         .reply(200, {
           name: appName,
@@ -211,13 +217,13 @@ describe('apps:create', function () {
   })
 
   it('creates an app in the region', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/apps', {region: 'eu'})
       .reply(200, {
         name: 'foobar',
+        region: {name: 'eu'},
         stack: {name: 'cedar-14'},
         web_url: 'https://foobar.com',
-        region: {name: 'eu'},
       })
 
     const {stderr, stdout} = await runCommand(['apps:create', '--region', 'eu'])
@@ -227,7 +233,7 @@ describe('apps:create', function () {
   })
 
   it('creates an with stack', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/apps', {stack: 'test'})
       .reply(200, {
         name: 'foobar',

@@ -10,8 +10,14 @@ describe('apps:open', function () {
   const app = {
     web_url: 'https://myapp.herokuapp.com',
   }
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
   afterEach(function () {
+    api.done()
     nock.cleanAll()
     sinon.restore()
   })
@@ -22,9 +28,10 @@ describe('apps:open', function () {
         if (event === 'exit') {
           cb()
         }
-      }, unref() {}} as any)
+      }, unref() {},
+    } as any)
 
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app)
 
@@ -43,9 +50,10 @@ describe('apps:open', function () {
         if (event === 'exit') {
           cb()
         }
-      }, unref() {}} as any)
+      }, unref() {},
+    } as any)
 
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app)
 

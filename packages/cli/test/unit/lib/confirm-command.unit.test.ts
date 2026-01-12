@@ -1,8 +1,9 @@
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import {stdout, stderr} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+import stripAnsi from 'strip-ansi'
+
 import ConfirmCommand from '../../../src/lib/confirmCommand.js'
 
 describe('confirmApp', function () {

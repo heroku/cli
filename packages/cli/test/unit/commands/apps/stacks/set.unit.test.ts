@@ -1,5 +1,5 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 const APP = 'myapp'
@@ -8,32 +8,39 @@ const MAIN_REMOTE = 'main'
 const STAGE_REMOTE = 'staging'
 
 const pendingUpgradeApp = {
+  build_stack: {
+    name: TO_STACK,
+  },
   name: APP,
   stack: {
     name: 'heroku-16',
   },
-  build_stack: {
-    name: TO_STACK,
-  },
 }
 
 const completedUpgradeApp = {
-  name: APP,
-  stack: {
+  build_stack: {
     name: TO_STACK,
   },
-  build_stack: {
+  name: APP,
+  stack: {
     name: TO_STACK,
   },
 }
 
 describe('stack:set', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('sets the stack', async function () {
-    nock('https://api.heroku.com')
+    api
       .patch(`/apps/${APP}`, {build_stack: TO_STACK})
       .reply(200, pendingUpgradeApp)
 
@@ -45,7 +52,7 @@ describe('stack:set', function () {
   })
 
   it('sets the stack on a different remote', async function () {
-    nock('https://api.heroku.com')
+    api
       .patch(`/apps/${APP}`, {build_stack: TO_STACK})
       .reply(200, pendingUpgradeApp)
 
@@ -57,7 +64,7 @@ describe('stack:set', function () {
   })
 
   it('does not show the redeploy message if the stack was immediately updated by API', async function () {
-    nock('https://api.heroku.com')
+    api
       .patch(`/apps/${APP}`, {build_stack: TO_STACK})
       .reply(200, completedUpgradeApp)
 

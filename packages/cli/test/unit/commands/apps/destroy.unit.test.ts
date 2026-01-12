@@ -1,29 +1,36 @@
-import {expect} from 'chai'
 import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('apps:destroy', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('deletes the app', async function () {
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp').reply(200, {name: 'myapp'})
       .delete('/apps/myapp').reply(200)
 
-    const {stdout, stderr} = await runCommand(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
 
     expect(stdout).to.equal('')
     expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
   })
 
   it('deletes the app via arg', async function () {
-    nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp').reply(200, {name: 'myapp'})
       .delete('/apps/myapp').reply(200)
 
-    const {stdout, stderr} = await runCommand(['apps:destroy', 'myapp', '--confirm', 'myapp'])
+    const {stderr, stdout} = await runCommand(['apps:destroy', 'myapp', '--confirm', 'myapp'])
 
     expect(stdout).to.equal('')
     expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')

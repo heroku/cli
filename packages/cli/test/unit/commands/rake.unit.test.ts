@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {expect} from 'chai'
-import * as sinon from 'sinon'
+import sinon from 'sinon'
 
 import RakeCommand from '../../../src/commands/rake.js'
 import Dyno from '../../../src/lib/run/dyno.js'
