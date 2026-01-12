@@ -1,8 +1,7 @@
-import fs from 'fs-extra'
 import {vars} from '@heroku-cli/command'
-import {spawn} from 'node:child_process'
-
+import fs from 'fs-extra'
 import gh from 'github-url-to-object'
+import {spawn} from 'node:child_process'
 import tmp from 'tmp'
 
 const NOT_A_GIT_REPOSITORY = 'not a git repository'
@@ -79,11 +78,11 @@ async function readCommit(commit: string) {
   const ref = await getRef(commit)
   const message = await getCommitTitle(ref!)
 
-  return Promise.resolve({
+  return {
     branch,
-    ref,
     message,
-  })
+    ref,
+  }
 }
 
 function sshGitUrl(app: string) {
@@ -144,14 +143,32 @@ async function createRemote(remote: string, url: string) {
   return null
 }
 
+// GitService class for easier testing/stubbing
+export class GitService {
+  async createArchive(ref: string) {
+    return createArchive(ref)
+  }
+
+  async githubRepository() {
+    return githubRepository()
+  }
+
+  async readCommit(commit: string) {
+    return readCommit(commit)
+  }
+}
+
+// Export a shared instance for use across commands
+export const gitService = new GitService()
+
 export {
   createArchive,
-  githubRepository,
-  readCommit,
-  sshGitUrl,
-  gitUrl,
   createRemote,
-  listRemotes,
-  rmRemote,
+  gitUrl,
+  githubRepository,
   inGitRepo,
+  listRemotes,
+  readCommit,
+  rmRemote,
+  sshGitUrl,
 }
