@@ -1,8 +1,9 @@
-import {stdout} from 'stdout-stderr'
-import runCommand from '../../../../helpers/runCommand.js'
-import Cmd from '../../../../../src/commands/spaces/drains/get.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../../src/commands/spaces/drains/get.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 describe('spaces:drains:get', function () {
   const drain = {
