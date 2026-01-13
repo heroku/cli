@@ -1,58 +1,71 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('labs:info', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows user labs feature info', async function () {
+    api
       .get('/account/features/feature-a')
       .reply(200, {
-        enabled: true,
-        name: 'feature-a',
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com',
-      }),
-    )
-    .command(['labs:info', 'feature-a'])
-    .it('shows user labs feature info', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== feature-a\n\nDescription: a user lab feature\nEnabled:     true\nDocs:        https://devcenter.heroku.com\n')
-      expect(stderr).to.be.empty
-    })
+        enabled: true,
+        name: 'feature-a',
+      })
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
+    const {stderr, stdout} = await runCommand(['labs:info', 'feature-a'])
+
+    expect(stdout).to.equal('=== feature-a\n\nDescription: a user lab feature\nEnabled:     true\nDocs:        https://devcenter.heroku.com\n')
+    expect(stderr).to.be.empty
+  })
+
+  it('shows user labs feature info as json', async function () {
+    api
       .get('/account/features/feature-a')
       .reply(200, {
-        enabled: true,
-        name: 'feature-a',
         description: 'a user lab feature',
         doc_url: 'https://devcenter.heroku.com',
-      }),
-    )
-    .command(['labs:info', 'feature-a', '--json'])
-    .it('shows user labs feature info as json', ({stdout, stderr}) => {
-      expect(stdout).to.equal('{\n  "enabled": true,\n  "name": "feature-a",\n  "description": "a user lab feature",\n  "doc_url": "https://devcenter.heroku.com"\n}\n')
-      expect(stderr).to.be.empty
-    })
+        enabled: true,
+        name: 'feature-a',
+      })
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
+    const {stderr, stdout} = await runCommand(['labs:info', 'feature-a', '--json'])
+
+    expect(stdout).to.equal(`{
+  "description": "a user lab feature",
+  "doc_url": "https://devcenter.heroku.com",
+  "enabled": true,
+  "name": "feature-a"
+}
+`)
+    expect(stderr).to.be.empty
+  })
+
+  it('shows app labs feature info', async function () {
+    api
       .get('/account/features/feature-a').reply(404)
       .get('/apps/myapp/features/feature-a')
       .reply(200, {
-        enabled: true,
-        name: 'feature-a',
         description: 'an app labs feature',
         doc_url: 'https://devcenter.heroku.com',
-      }),
-    )
-    .command(['labs:info', 'feature-a', '-a', 'myapp'])
-    .it('shows app labs feature info', ({stdout, stderr}) => {
-      expect(stdout).to.equal('=== feature-a\n\nDescription: an app labs feature\nEnabled:     true\nDocs:        https://devcenter.heroku.com\n')
-      expect(stderr).to.be.empty
-    })
+        enabled: true,
+        name: 'feature-a',
+      })
+
+    const {stderr, stdout} = await runCommand(['labs:info', 'feature-a', '-a', 'myapp'])
+
+    expect(stdout).to.equal('=== feature-a\n\nDescription: an app labs feature\nEnabled:     true\nDocs:        https://devcenter.heroku.com\n')
+    expect(stderr).to.be.empty
+  })
 })

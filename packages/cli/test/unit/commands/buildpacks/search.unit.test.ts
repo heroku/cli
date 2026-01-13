@@ -1,44 +1,52 @@
 import {Fixture} from '@heroku/buildpack-registry'
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 describe('buildpacks:search', function () {
-  test
-    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
-      api
-        .get('/buildpacks?in[namespace][]=heroku')
-        .reply(200, [
-          Fixture.buildpack({
-            name: 'ruby',
-            description: 'Official Heroku Buildpack for Ruby',
-          }),
-        ])
-    })
-    .stdout()
-    .command(['buildpacks:search', '--namespace', 'heroku'])
-    .it('searches using the namespace', ctx => {
-      expect(ctx.stdout).to.contain('heroku/ruby')
-      expect(ctx.stdout).to.contain('1 buildpack found')
+  let registryApi: nock.Scope
+
+  beforeEach(function () {
+    registryApi = nock('https://buildpack-registry.heroku.com')
+  })
+
+  afterEach(function () {
+    registryApi.done()
+    nock.cleanAll()
+  })
+
+  it('searches using the namespace', async function () {
+    registryApi
+      .get('/buildpacks?in[namespace][]=heroku')
+      .reply(200, [
+        Fixture.buildpack({
+          description: 'Official Heroku Buildpack for Ruby',
+          name: 'ruby',
+        }),
+      ])
+
+    const {stdout} = await runCommand(['buildpacks:search', '--namespace', 'heroku'])
+
+    expect(stdout).to.contain('heroku/ruby')
+    expect(stdout).to.contain('1 buildpack found')
+  })
+
+  it('searches only returns unique buildpacks', async function () {
+    const rubyBuildpack = Fixture.buildpack({
+      description: 'Official Heroku Buildpack for Ruby',
+      name: 'ruby',
     })
 
-  test
-    .nock('https://buildpack-registry.heroku.com', (api: nock.Scope) => {
-      const rubyBuildpack = Fixture.buildpack({
-        name: 'ruby',
-        description: 'Official Heroku Buildpack for Ruby',
-      })
+    registryApi
+      .get('/buildpacks?in[namespace][]=ruby')
+      .reply(200, [])
+      .get('/buildpacks?in[name][]=ruby')
+      .reply(200, [rubyBuildpack])
+      .get('/buildpacks?like[description]=ruby')
+      .reply(200, [rubyBuildpack])
 
-      api
-        .get('/buildpacks?in[namespace][]=ruby')
-        .reply(200, [])
-        .get('/buildpacks?in[name][]=ruby')
-        .reply(200, [rubyBuildpack])
-        .get('/buildpacks?like[description]=ruby')
-        .reply(200, [rubyBuildpack])
-    })
-    .stdout()
-    .command(['buildpacks:search', 'ruby'])
-    .it('searches only returns unique buildpacks', ctx => {
-      expect(ctx.stdout).to.contain('1 buildpack found')
-    })
+    const {stdout} = await runCommand(['buildpacks:search', 'ruby'])
+
+    expect(stdout).to.contain('1 buildpack found')
+  })
 })

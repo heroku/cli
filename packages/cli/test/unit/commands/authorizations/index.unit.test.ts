@@ -1,7 +1,21 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
+
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('authorizations', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
   const exampleAuthorization1 = {
     description: 'b description',
     id: 'aBcD1234-129f-42d2-854b-dEf123abc123',
@@ -13,39 +27,43 @@ describe('authorizations', function () {
     scope: ['app', 'user'],
   }
 
-  const testWithAuthorizations = (auths = [exampleAuthorization1, exampleAuthorization2]) =>
-    test
-      .stdout()
-      .nock('https://api.heroku.com:443', api => {
-        api.get('/oauth/authorizations').reply(200, auths)
-      })
+  it('lists the authorizations alphabetically by description', async function () {
+    api
+      .get('/oauth/authorizations')
+      .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
-  testWithAuthorizations()
-    .command(['authorizations'])
-    .it('lists the authorizations alphabetically by description', ctx => {
-      const actual = removeAllWhitespace(ctx.stdout)
-      const expected = removeAllWhitespace(`
-        awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user
-        b description aBcD1234-129f-42d2-854b-dEf123abc123 global`)
-      expect(actual).to.include(expected)
-    })
+    const {stdout} = await runCommand(['authorizations'])
+
+    const actual = removeAllWhitespace(stdout)
+    const expected = removeAllWhitespace(`
+      awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user
+      b description aBcD1234-129f-42d2-854b-dEf123abc123 global`)
+    expect(actual).to.include(expected)
+  })
 
   context('with json flag', function () {
-    testWithAuthorizations()
-      .command(['authorizations', '--json'])
-      .it('lists the authorizations alphabetically as json', ctx => {
-        const authJSON = JSON.parse(ctx.stdout)
+    it('lists the authorizations alphabetically as json', async function () {
+      api
+        .get('/oauth/authorizations')
+        .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
-        expect(authJSON[0]).to.eql(exampleAuthorization2)
-        expect(authJSON[1]).to.eql(exampleAuthorization1)
-      })
+      const {stdout} = await runCommand(['authorizations', '--json'])
+
+      const authJSON = JSON.parse(stdout)
+      expect(authJSON[0]).to.eql(exampleAuthorization2)
+      expect(authJSON[1]).to.eql(exampleAuthorization1)
+    })
   })
 
   context('without authorizations', function () {
-    testWithAuthorizations([])
-      .command(['authorizations'])
-      .it('shows no authorizations message', ctx => {
-        expect(ctx.stdout).to.equal('No OAuth authorizations.\n')
-      })
+    it('shows no authorizations message', async function () {
+      api
+        .get('/oauth/authorizations')
+        .reply(200, [])
+
+      const {stdout} = await runCommand(['authorizations'])
+
+      expect(stdout).to.equal('No OAuth authorizations.\n')
+    })
   })
 })

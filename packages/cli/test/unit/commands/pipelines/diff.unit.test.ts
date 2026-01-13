@@ -1,10 +1,8 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('pipelines:diff', function () {
-  const apiUrl = 'https://api.heroku.com'
-  const kolkrabbiApi = 'https://kolkrabbi.heroku.com'
-  const githubApi = 'https://api.github.com'
-
   const pipelineWithGeneration = {
     generation: {name: 'cedar'},
   }
@@ -33,18 +31,18 @@ describe('pipelines:diff', function () {
 
   const targetCoupling = {
     app: targetApp,
+    generation: 'cedar',
     id: '123-target-app-456',
     pipeline,
     stage: 'staging',
-    generation: 'cedar',
   }
 
   const targetFirCoupling = {
     app: targetFirApp,
+    generation: 'fir',
     id: '123-target-app-fir',
     pipeline: firPipeline,
     stage: 'staging',
-    generation: 'fir',
   }
 
   const targetGithubApp = {
@@ -65,18 +63,18 @@ describe('pipelines:diff', function () {
 
   const downstreamCoupling1 = {
     app: downstreamApp1,
+    generation: 'cedar',
     id: '123-target-app-456',
     pipeline,
     stage: 'production',
-    generation: 'cedar',
   }
 
   const downstreamFirCoupling1 = {
     app: downstreamFirApp1,
+    generation: 'fir',
     id: '123-target-app-fir',
     pipeline: firPipeline,
     stage: 'production',
-    generation: 'fir',
   }
 
   const downstreamApp1Github = {
@@ -97,321 +95,316 @@ describe('pipelines:diff', function () {
 
   const downstreamCoupling2 = {
     app: downstreamApp2,
+    generation: 'cedar',
     id: '123-target-app-456',
     pipeline,
     stage: 'production',
-    generation: 'cedar',
   }
 
   const downstreamFirCoupling2 = {
     app: downstreamFirApp2,
+    generation: 'fir',
     id: '123-target-app-fir',
     pipeline: firPipeline,
     stage: 'production',
-    generation: 'fir',
   }
 
   const downstreamApp2Github = {
     repo: 'heroku/some-other-app',
   }
 
-  function mockPipelineCoupling(testInstance: typeof test) {
-    return testInstance
-      .stderr()
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetApp.name}/pipeline-couplings`)
-          .reply(200, targetCoupling)
-      })
-  }
+  let api: nock.Scope
+  let kolkrabbiApi: nock.Scope
+  let githubApi: nock.Scope
 
-  function mockFirPipelineCoupling(testInstance: typeof test) {
-    return testInstance
-      .stderr()
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
-          .reply(200, targetFirCoupling)
-      })
-  }
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+    githubApi = nock('https://api.github.com')
+  })
 
-  function mockApps(testInstance: typeof test) {
-    return testInstance
-      .stderr()
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-          .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
-
-        api
-          .post('/filters/apps')
-          .reply(200, [targetApp, downstreamApp1, downstreamApp2])
-      })
-  }
-
-  function mockFirApps(testInstance: typeof test) {
-    return testInstance
-      .stderr()
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
-          .reply(200, [targetFirCoupling, downstreamFirCoupling1, downstreamFirCoupling2])
-
-        api
-          .post('/filters/apps')
-          .reply(200, [targetFirApp, downstreamFirApp1, downstreamFirApp2])
-      })
-  }
+  afterEach(function () {
+    api.done()
+    kolkrabbiApi.done()
+    githubApi.done()
+    nock.cleanAll()
+  })
 
   describe('for app without a pipeline', function () {
-    test
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetApp.name}/pipeline-couplings`)
-          .reply(404, {message: 'Not found.'})
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .catch(error => {
-        expect(error.message).to.contain('to be a part of any pipeline')
-      })
-      .it('should return an error')
+    it('should return an error', async function () {
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(404, {message: 'Not found.'})
+
+      const {error} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
+
+      expect(error?.message).to.contain('to be a part of any pipeline')
+    })
   })
 
   describe('for app with a pipeline but no downstream apps', function () {
-    mockPipelineCoupling(test)
-      .nock(apiUrl, api => {
-        api
-          .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-          .reply(200, [targetCoupling])
-          .post('/filters/apps')
-          .reply(200, [targetApp])
-      })
-      .nock(apiUrl, api => {
-        api
-          .get(`/pipelines/${targetCoupling.pipeline.id}`)
-          .reply(200, pipelineWithGeneration)
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .catch(error => {
-        expect(error.message).to.contain('no downstream apps')
-      })
-      .it('should return an error')
+    it('should return an error', async function () {
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(200, targetCoupling)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling])
+        .post('/filters/apps')
+        .reply(200, [targetApp])
+        .get(`/pipelines/${targetCoupling.pipeline.id}`)
+        .reply(200, pipelineWithGeneration)
+
+      const {error} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
+
+      expect(error?.message).to.contain('no downstream apps')
+    })
   })
 
   describe('for invalid apps with a pipeline', function () {
-    const mockedTest = (testInstance: typeof test) => {
-      const t = mockPipelineCoupling(mockApps(testInstance))
+    it('should return an error if the target app is not connected to GitHub', async function () {
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(200, targetCoupling)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
+        .get(`/pipelines/${targetCoupling.pipeline.id}`)
+        .reply(200, pipelineWithGeneration)
 
-      return t
-        .stdout()
-        .stderr()
-        .nock(kolkrabbiApi, api => {
-          api
-            .get(`/apps/${downstreamApp1.id}/github`)
-            .reply(200, downstreamApp1Github)
-            .get(`/apps/${downstreamApp2.id}/github`)
-            .reply(200, downstreamApp2Github)
-        })
-        .nock(apiUrl, api => {
-          api
-            .get(`/pipelines/${targetCoupling.pipeline.id}`)
-            .reply(200, pipelineWithGeneration)
-        })
-    }
+      kolkrabbiApi
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(404, {message: 'Not found.'})
+        .get(`/apps/${downstreamApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
 
-    mockedTest(test)
-      .nock(kolkrabbiApi, api => {
-        api
-          .get(`/apps/${targetApp.id}/github`)
-          .reply(404, {message: 'Not found.'})
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .catch(error => {
-        expect(error.message).to.contain('connected to GitHub')
-      })
-      .it('should return an error if the target app is not connected to GitHub')
+      const {error} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
 
-    mockedTest(test)
-      .nock(kolkrabbiApi, api => {
-        api
-          .get(`/apps/${targetApp.id}/github`)
-          .reply(200, targetGithubApp)
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .catch(error => {
-        expect(error.message).to.contain('No release was found')
-      })
-      .it('should return an error if the target app has a release with no slug')
+      expect(error?.message).to.contain('connected to GitHub')
+    })
 
-    mockedTest(test)
-      .nock(kolkrabbiApi, api => {
-        api
-          .get(`/apps/${targetApp.id}/github`)
-          .reply(200, targetGithubApp)
-      })
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetApp.id}/releases`)
-          .reply(200, [])
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .catch(error => {
-        expect(error.message).to.contain('No release was found')
-      })
-      .it('should return an error if the target app has no release')
+    it('should return an error if the target app has a release with no slug', async function () {
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(200, targetCoupling)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
+        .get(`/pipelines/${targetCoupling.pipeline.id}`)
+        .reply(200, pipelineWithGeneration)
+
+      kolkrabbiApi
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(200, targetGithubApp)
+        .get(`/apps/${downstreamApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
+
+      const {error} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
+
+      expect(error?.message).to.contain('No release was found')
+    })
+
+    it('should return an error if the target app has no release', async function () {
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(200, targetCoupling)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
+        .get(`/pipelines/${targetCoupling.pipeline.id}`)
+        .reply(200, pipelineWithGeneration)
+        .get(`/apps/${targetApp.id}/releases`)
+        .reply(200, [])
+
+      kolkrabbiApi
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(200, targetGithubApp)
+        .get(`/apps/${downstreamApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
+
+      const {error} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
+
+      expect(error?.message).to.contain('No release was found')
+    })
   })
 
   describe('for valid Cedar apps with a pipeline', function () {
     const targetSlugId = 'target-slug-id'
     const downstreamSlugId = 'downstream-slug-id'
 
-    const mockedTest = (testInstance: typeof test) => {
-      const t = mockPipelineCoupling(mockApps(testInstance))
+    it('should not compare apps if update to date NOR if repo differs', async function () {
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(200, targetCoupling)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
+        .get(`/pipelines/${targetCoupling.pipeline.id}`)
+        .reply(200, pipelineWithGeneration)
+        .get(`/apps/${targetApp.id}/releases`)
+        .reply(200, [{slug: {id: targetSlugId}, status: 'succeeded'}])
+        .get(`/apps/${downstreamApp1.id}/releases`)
+        .reply(200, [
+          {status: 'failed'},
+          {slug: {id: downstreamSlugId}, status: 'succeeded'},
+        ])
+        .get(`/apps/${targetApp.id}/slugs/${targetSlugId}`)
+        .reply(200, {commit: 'COMMIT-HASH'})
+        .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
+        .reply(200, {commit: 'COMMIT-HASH'})
 
-      return t
-        .stderr()
-        .stdout()
-        .nock(kolkrabbiApi, api => {
-          api
-            .get(`/apps/${targetApp.id}/github`)
-            .reply(200, targetGithubApp)
-            .get(`/apps/${downstreamApp1.id}/github`)
-            .reply(200, downstreamApp1Github)
-            .get(`/apps/${downstreamApp2.id}/github`)
-            .reply(200, downstreamApp2Github)
-            .get('/account/github/token')
-            .reply(200, {github: {token: 'github-token'}})
-        })
-        .nock(apiUrl, api => {
-          api
-            .get(`/apps/${targetApp.id}/releases`)
-            .reply(200, [{slug: {id: targetSlugId}, status: 'succeeded'}])
-            .get(`/apps/${downstreamApp1.id}/releases`)
-            .reply(200, [
-              {status: 'failed'},
-              {slug: {id: downstreamSlugId}, status: 'succeeded'},
-            ])
-        })
-        .nock(apiUrl, api => {
-          api
-            .get(`/pipelines/${targetCoupling.pipeline.id}`)
-            .reply(200, pipelineWithGeneration)
-        })
-    }
+      kolkrabbiApi
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(200, targetGithubApp)
+        .get(`/apps/${downstreamApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
+        .get('/account/github/token')
+        .reply(200, {github: {token: 'github-token'}})
 
-    mockedTest(test)
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetApp.id}/slugs/${targetSlugId}`)
-          .reply(200, {commit: 'COMMIT-HASH'})
-          .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
-          .reply(200, {commit: 'COMMIT-HASH'})
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .it('should not compare apps if update to date NOR if repo differs', ctx => {
-        expect(ctx.stdout).to.contain(`⬢ ${targetApp.name} is up to date with ⬢ ${downstreamApp1.name}`)
-        expect(ctx.stdout).to.contain(`⬢ ${targetApp.name} was not compared to ⬢ ${downstreamApp2.name}`)
-      })
+      const {stdout} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
 
-    const hashes = ['hash-1', 'hash-2']
+      expect(stdout).to.contain(`⬢ ${targetApp.name} is up to date with ⬢ ${downstreamApp1.name}`)
+      expect(stdout).to.contain(`⬢ ${targetApp.name} was not compared to ⬢ ${downstreamApp2.name}`)
+    })
 
-    mockedTest(test)
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetApp.id}/slugs/${targetSlugId}`)
-          .reply(200, {commit: hashes[0]})
-          .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
-          .reply(200, {commit: hashes[1]})
-      })
-      .nock(githubApi, api => {
-        api
-          .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
-          .reply(404)
-      })
-      .command(['pipelines:diff', `--app=${targetApp.name}`])
-      .it('should handle non-200 responses from GitHub', ctx => {
-        expect(ctx.stdout).to.contain('unable to perform a diff')
-      })
+    it('should handle non-200 responses from GitHub', async function () {
+      const hashes = ['hash-1', 'hash-2']
+
+      api
+        .get(`/apps/${targetApp.name}/pipeline-couplings`)
+        .reply(200, targetCoupling)
+        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
+        .get(`/pipelines/${targetCoupling.pipeline.id}`)
+        .reply(200, pipelineWithGeneration)
+        .get(`/apps/${targetApp.id}/releases`)
+        .reply(200, [{slug: {id: targetSlugId}, status: 'succeeded'}])
+        .get(`/apps/${downstreamApp1.id}/releases`)
+        .reply(200, [
+          {status: 'failed'},
+          {slug: {id: downstreamSlugId}, status: 'succeeded'},
+        ])
+        .get(`/apps/${targetApp.id}/slugs/${targetSlugId}`)
+        .reply(200, {commit: hashes[0]})
+        .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
+        .reply(200, {commit: hashes[1]})
+
+      kolkrabbiApi
+        .get(`/apps/${targetApp.id}/github`)
+        .reply(200, targetGithubApp)
+        .get(`/apps/${downstreamApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
+        .get('/account/github/token')
+        .reply(200, {github: {token: 'github-token'}})
+
+      githubApi
+        .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
+        .reply(404)
+
+      const {stdout} = await runCommand(['pipelines:diff', `--app=${targetApp.name}`])
+
+      expect(stdout).to.contain('unable to perform a diff')
+    })
   })
 
   describe('for valid Fir apps with a pipeline', function () {
     const targetOciImageId = 'oci-image-id'
     const downstreamOciImageId = 'downstream-oci-image-id'
 
-    const mockedTest = (testInstance: typeof test) => {
-      const t = mockFirPipelineCoupling(mockFirApps(testInstance))
+    it('should not compare apps if update to date NOR if repo differs', async function () {
+      api
+        .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
+        .reply(200, targetFirCoupling)
+        .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
+        .reply(200, [targetFirCoupling, downstreamFirCoupling1, downstreamFirCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetFirApp, downstreamFirApp1, downstreamFirApp2])
+        .get(`/pipelines/${targetFirCoupling.pipeline.id}`)
+        .reply(200, {generation: {name: 'fir'}})
+        .get(`/apps/${targetFirApp.id}/releases`)
+        .reply(200, [{oci_image: {id: targetOciImageId}, status: 'succeeded'}])
+        .get(`/apps/${downstreamFirApp1.id}/releases`)
+        .reply(200, [
+          {status: 'failed'},
+          {oci_image: {id: downstreamOciImageId}, status: 'succeeded'},
+        ])
+        .get(`/apps/${targetFirApp.id}/oci-images/${targetOciImageId}`)
+        .reply(200, [{commit: 'COMMIT-HASH'}])
+        .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
+        .reply(200, [{commit: 'COMMIT-HASH'}])
 
-      return t
-        .stderr()
-        .stdout()
-        .nock(kolkrabbiApi, api => {
-          api
-            .get(`/apps/${targetFirApp.id}/github`)
-            .reply(200, targetGithubApp)
-            .get(`/apps/${downstreamFirApp1.id}/github`)
-            .reply(200, downstreamApp1Github)
-            .get(`/apps/${downstreamFirApp2.id}/github`)
-            .reply(200, downstreamApp2Github)
-            .get('/account/github/token')
-            .reply(200, {github: {token: 'github-token'}})
-        })
-        .nock(apiUrl, api => {
-          api
-            .get(`/apps/${targetFirApp.id}/releases`)
-            .reply(200, [{oci_image: {id: targetOciImageId}, status: 'succeeded'}])
-            .get(`/apps/${downstreamFirApp1.id}/releases`)
-            .reply(200, [
-              {status: 'failed'},
-              {oci_image: {id: downstreamOciImageId}, status: 'succeeded'},
-            ])
-        })
-        .nock(apiUrl, api => {
-          api
-            .get(`/pipelines/${targetFirCoupling.pipeline.id}`)
-            .reply(200, {generation: {name: 'fir'}})
-        })
-    }
+      kolkrabbiApi
+        .get(`/apps/${targetFirApp.id}/github`)
+        .reply(200, targetGithubApp)
+        .get(`/apps/${downstreamFirApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamFirApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
+        .get('/account/github/token')
+        .reply(200, {github: {token: 'github-token'}})
 
-    mockedTest(test)
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetFirApp.id}/oci-images/${targetOciImageId}`)
-          .reply(200, [{commit: 'COMMIT-HASH'}])
-          .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
-          .reply(200, [{commit: 'COMMIT-HASH'}])
-      })
-      .command(['pipelines:diff', `--app=${targetFirApp.name}`])
-      .it('should not compare apps if update to date NOR if repo differs', ctx => {
-        expect(ctx.stdout).to.contain(`⬢ ${targetApp.name} is up to date with ⬢ ${downstreamApp1.name}`)
-        expect(ctx.stdout).to.contain(`⬢ ${targetApp.name} was not compared to ⬢ ${downstreamApp2.name}`)
-      })
+      const {stdout} = await runCommand(['pipelines:diff', `--app=${targetFirApp.name}`])
 
-    const hashes = ['hash-1', 'hash-2']
+      expect(stdout).to.contain(`⬢ ${targetApp.name} is up to date with ⬢ ${downstreamApp1.name}`)
+      expect(stdout).to.contain(`⬢ ${targetApp.name} was not compared to ⬢ ${downstreamApp2.name}`)
+    })
 
-    mockedTest(test)
-      .stdout()
-      .nock(apiUrl, api => {
-        api
-          .get(`/apps/${targetFirApp.id}/oci-images/${targetOciImageId}`)
-          .reply(200, [{commit: hashes[0]}])
-          .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
-          .reply(200, [{commit: hashes[1]}])
-      })
-      .nock(githubApi, api => {
-        api
-          .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
-          .reply(404)
-      })
-      .command(['pipelines:diff', `--app=${targetFirApp.name}`])
-      .it('should handle non-200 responses from GitHub', ctx => {
-        expect(ctx.stdout).to.contain('unable to perform a diff')
-      })
+    it('should handle non-200 responses from GitHub', async function () {
+      const hashes = ['hash-1', 'hash-2']
+
+      api
+        .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
+        .reply(200, targetFirCoupling)
+        .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
+        .reply(200, [targetFirCoupling, downstreamFirCoupling1, downstreamFirCoupling2])
+        .post('/filters/apps')
+        .reply(200, [targetFirApp, downstreamFirApp1, downstreamFirApp2])
+        .get(`/pipelines/${targetFirCoupling.pipeline.id}`)
+        .reply(200, {generation: {name: 'fir'}})
+        .get(`/apps/${targetFirApp.id}/releases`)
+        .reply(200, [{oci_image: {id: targetOciImageId}, status: 'succeeded'}])
+        .get(`/apps/${downstreamFirApp1.id}/releases`)
+        .reply(200, [
+          {status: 'failed'},
+          {oci_image: {id: downstreamOciImageId}, status: 'succeeded'},
+        ])
+        .get(`/apps/${targetFirApp.id}/oci-images/${targetOciImageId}`)
+        .reply(200, [{commit: hashes[0]}])
+        .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
+        .reply(200, [{commit: hashes[1]}])
+
+      kolkrabbiApi
+        .get(`/apps/${targetFirApp.id}/github`)
+        .reply(200, targetGithubApp)
+        .get(`/apps/${downstreamFirApp1.id}/github`)
+        .reply(200, downstreamApp1Github)
+        .get(`/apps/${downstreamFirApp2.id}/github`)
+        .reply(200, downstreamApp2Github)
+        .get('/account/github/token')
+        .reply(200, {github: {token: 'github-token'}})
+
+      githubApi
+        .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
+        .reply(404)
+
+      const {stdout} = await runCommand(['pipelines:diff', `--app=${targetFirApp.name}`])
+
+      expect(stdout).to.contain('unable to perform a diff')
+    })
   })
 })

@@ -1,52 +1,51 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 import stripAnsi from 'strip-ansi'
 
 describe('keys:remove', function () {
-  test
-    .stderr()
-    .stdout()
-    .nock('https://api.heroku.com:443', api => {
-      api
-        .get('/account/keys')
-        .reply(200, [{id: 1, comment: 'user@machine'}])
-        .delete('/account/keys/1')
-        .reply(200)
-    })
-    .command(['keys:remove', 'user@machine'])
-    .it('removes an SSH key', ({stdout, stderr}) => {
-      expect(stdout).to.equal('')
-      expect(stderr).to.contain('Removing user@machine SSH key... done\n')
-    })
+  let api: nock.Scope
 
-  test
-    .stdout()
-    .nock('https://api.heroku.com:443', api => {
-      api
-        .get('/account/keys')
-        .reply(200, [])
-    })
-    .command(['keys:remove', 'user@machine'])
-    .catch((error: any) => {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error.message).to.equal('No SSH keys on account')
-    })
-    .it('errors if no SSH keys on account', ({stdout}) => {
-      expect(stdout).to.equal('')
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  test
-    .stdout()
-    .nock('https://api.heroku.com:443', api => {
-      api
-        .get('/account/keys')
-        .reply(200, [{id: 1, comment: 'user@machine'}])
-    })
-    .command(['keys:remove', 'different@machine'])
-    .catch((error: any) => {
-      expect(error).to.be.an.instanceof(Error)
-      expect(stripAnsi(error.message)).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
-    })
-    .it('errors with incorrect SSH key on account', ({stdout}) => {
-      expect(stdout).to.equal('')
-    })
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes an SSH key', async function () {
+    api
+      .get('/account/keys')
+      .reply(200, [{comment: 'user@machine', id: 1}])
+      .delete('/account/keys/1')
+      .reply(200)
+
+    const {stderr, stdout} = await runCommand(['keys:remove', 'user@machine'])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Removing user@machine SSH key... done\n')
+  })
+
+  it('errors if no SSH keys on account', async function () {
+    api
+      .get('/account/keys')
+      .reply(200, [])
+
+    const {error} = await runCommand(['keys:remove', 'user@machine'])
+
+    expect(error?.message).to.equal('No SSH keys on account')
+  })
+
+  it('errors with incorrect SSH key on account', async function () {
+    api
+      .get('/account/keys')
+      .reply(200, [{comment: 'user@machine', id: 1}])
+
+    const {error} = await runCommand(['keys:remove', 'different@machine'])
+
+    expect(error).to.exist
+    expect(stripAnsi(error!.message)).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
+  })
 })

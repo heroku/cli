@@ -1,4 +1,6 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('ci:config', function () {
   const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline'}
@@ -7,69 +9,71 @@ describe('ci:config', function () {
     OTHER: 'test',
     RAILS_ENV: 'test',
   }
+  let api: nock.Scope
 
-  test
-    .command(['ci:config'])
-    .catch(error => {
-      expect(error.message).to.contain('Exactly one of the following must be provided: --app, --pipeline')
-    })
-    .it('errors when not specifying a pipeline or an app')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  test
-    .stdout()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines?eq[name]=${pipeline.name}`)
-        .reply(200, [
-          {
-            id: pipeline.id,
-            name: pipeline.name,
-          },
-        ])
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
-      api.get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-        .reply(200, config)
-    })
-    .command(['ci:config', `--pipeline=${pipeline.name}`])
-    .it('displays config when a pipeline is specified', ({stdout}) => {
-      expect(stdout).to.include('=== my-pipeline test config vars')
-      expect(stdout).to.include('KEY1:      VALUE1\nOTHER:     test\nRAILS_ENV: test\n')
-    })
+  it('errors when not specifying a pipeline or an app', async function () {
+    const {error} = await runCommand(['ci:config'])
+    expect(error?.message).to.contain('Exactly one of the following must be provided: --app, --pipeline')
+  })
 
-  test
-    .stdout()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines?eq[name]=${pipeline.name}`)
-        .reply(200, [
-          {
-            id: pipeline.id,
-            name: pipeline.name,
-          },
-        ])
+  it('displays config when a pipeline is specified', async function () {
+    api
+      .get(`/pipelines?eq[name]=${pipeline.name}`)
+      .reply(200, [
+        {
+          id: pipeline.id,
+          name: pipeline.name,
+        },
+      ])
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, config)
 
-      api.get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-        .reply(200, config)
-    })
-    .command(['ci:config', `--pipeline=${pipeline.name}`, '--json'])
-    .it('displays config formatted as JSON', ({stdout}) => {
-      expect(stdout).to.equal('{\n  "KEY1": "VALUE1",\n  "OTHER": "test",\n  "RAILS_ENV": "test"\n}\n')
-    })
+    const {stdout} = await runCommand(['ci:config', `--pipeline=${pipeline.name}`])
 
-  test
-    .stdout()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines?eq[name]=${pipeline.name}`)
-        .reply(200, [
-          {
-            id: pipeline.id,
-            name: pipeline.name,
-          },
-        ])
+    expect(stdout).to.include('=== my-pipeline test config vars')
+    expect(stdout).to.include('KEY1:      VALUE1\nOTHER:     test\nRAILS_ENV: test\n')
+  })
 
-      api.get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-        .reply(200, config)
-    })
-    .command(['ci:config', `--pipeline=${pipeline.name}`, '--shell'])
-    .it('displays config formatted for shell', ({stdout}) => {
-      expect(stdout).to.equal('KEY1=VALUE1\nOTHER=test\nRAILS_ENV=test\n')
-    })
+  it('displays config formatted as JSON', async function () {
+    api
+      .get(`/pipelines?eq[name]=${pipeline.name}`)
+      .reply(200, [
+        {
+          id: pipeline.id,
+          name: pipeline.name,
+        },
+      ])
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, config)
+
+    const {stdout} = await runCommand(['ci:config', `--pipeline=${pipeline.name}`, '--json'])
+
+    expect(stdout).to.equal('{\n  "KEY1": "VALUE1",\n  "OTHER": "test",\n  "RAILS_ENV": "test"\n}\n')
+  })
+
+  it('displays config formatted for shell', async function () {
+    api
+      .get(`/pipelines?eq[name]=${pipeline.name}`)
+      .reply(200, [
+        {
+          id: pipeline.id,
+          name: pipeline.name,
+        },
+      ])
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, config)
+
+    const {stdout} = await runCommand(['ci:config', `--pipeline=${pipeline.name}`, '--shell'])
+
+    expect(stdout).to.equal('KEY1=VALUE1\nOTHER=test\nRAILS_ENV=test\n')
+  })
 })

@@ -1,52 +1,54 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('buildpacks:clear', function () {
-  test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
-      Stubber.put(api)
-      api
-        .get('/apps/example/config-vars')
-        .reply(200, {})
-    })
-    .stdout()
-    .command(['buildpacks:clear', '-a', 'example'])
-    .it('# clears the buildpack URL', ctx => {
-      nock('https://api.heroku.com')
+  let api: nock.Scope
 
-      expect(ctx.stdout).to.equal('Buildpacks cleared. Next release on example will detect buildpacks normally.\n')
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
-      Stubber.put(api)
-      api
-        .get('/apps/example/config-vars')
-        .reply(200, {BUILDPACK_URL: 'https://github.com/foo/foo'})
-    })
-    .stdout()
-    .stderr()
-    .command(['buildpacks:clear', '-a', 'example'])
-    .it('# clears and warns about buildpack URL config var', ctx => {
-      expect(ctx.stdout).to.equal('Buildpacks cleared.\n')
-      expect(unwrap(ctx.stderr)).to.equal('Warning: The BUILDPACK_URL config var is still set and will be used for the next release\n')
-    })
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
-  test
-    .nock('https://api.heroku.com', (api: nock.Scope) => {
-      Stubber.put(api)
-      api
-        .get('/apps/example/config-vars')
-        .reply(200, {LANGUAGE_PACK_URL: 'https://github.com/foo/foo'})
-    })
-    .stdout()
-    .stderr()
-    .command(['buildpacks:clear', '-a', 'example'])
-    .it('# clears and warns about language pack URL config var', ctx => {
-      expect(ctx.stdout).to.equal('Buildpacks cleared.\n')
-      expect(unwrap(ctx.stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
-    })
+  it('# clears the buildpack URL', async function () {
+    Stubber.put(api)
+    api
+      .get('/apps/example/config-vars')
+      .reply(200, {})
+
+    const {stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
+
+    expect(stdout).to.equal('Buildpacks cleared. Next release on example will detect buildpacks normally.\n')
+  })
+
+  it('# clears and warns about buildpack URL config var', async function () {
+    Stubber.put(api)
+    api
+      .get('/apps/example/config-vars')
+      .reply(200, {BUILDPACK_URL: 'https://github.com/foo/foo'})
+
+    const {stderr, stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
+
+    expect(stdout).to.equal('Buildpacks cleared.\n')
+    expect(unwrap(stderr)).to.equal('Warning: The BUILDPACK_URL config var is still set and will be used for the next release\n')
+  })
+
+  it('# clears and warns about language pack URL config var', async function () {
+    Stubber.put(api)
+    api
+      .get('/apps/example/config-vars')
+      .reply(200, {LANGUAGE_PACK_URL: 'https://github.com/foo/foo'})
+
+    const {stderr, stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
+
+    expect(stdout).to.equal('Buildpacks cleared.\n')
+    expect(unwrap(stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
+  })
 })

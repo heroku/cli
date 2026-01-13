@@ -1,17 +1,28 @@
-import {test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import nock from 'nock'
 
 describe('config', function () {
-  test
-    .nock('https://api.heroku.com', api => api
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('removes 2 config vars', async function () {
+    api
       .patch('/apps/myapp/config-vars', {
         FOO: null,
         RACK_ENV: null,
       })
       .reply(200, {})
       .get('/apps/myapp/releases')
-      .reply(200, [{version: 1}]),
-    )
-    .stdout()
-    .command(['config:unset', '-amyapp', 'FOO', 'RACK_ENV'])
-    .it('removes 2 config vars')
+      .reply(200, [{version: 1}])
+
+    await runCommand(['config:unset', '-amyapp', 'FOO', 'RACK_ENV'])
+  })
 })

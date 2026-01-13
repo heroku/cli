@@ -1,20 +1,32 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
-/*
+import {unwrap} from '../../../helpers/utils/unwrap.js'
+
 describe('webhooks:add', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it.skip('adds a specific app webhook', async function () {
+    api
       .post('/apps/example-app/webhooks', {
         include: ['foo', 'bar'],
         level: 'notify',
         secret: '1234',
         url: 'http://foobar.com',
       })
-      .reply(200, {}),
-    )
-    .command([
+      .reply(200, {})
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:add',
       '--app',
       'example-app',
@@ -27,24 +39,22 @@ describe('webhooks:add', function () {
       '--url',
       'http://foobar.com',
     ])
-    .it('adds a specific app webhook', ctx => {
-      expect(ctx.stdout.trim()).to.equal('')
-      expect(ctx.stderr).to.include('Adding webhook to ⬢ example-app... done')
-    })
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+    expect(stdout.trim()).to.equal('')
+    expect(unwrap(stderr)).to.include('Adding webhook to ⬢ example-app... done')
+  })
+
+  it.skip('adds a specific pipeline webhook', async function () {
+    api
       .post('/pipelines/example-pipeline/webhooks', {
         include: ['foo', 'bar'],
         level: 'notify',
         secret: '1234',
         url: 'http://foobar.com',
       })
-      .reply(200, {}),
-    )
-    .command([
+      .reply(200, {})
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:add',
       '--pipeline',
       'example-pipeline',
@@ -57,23 +67,21 @@ describe('webhooks:add', function () {
       '--url',
       'http://foobar.com',
     ])
-    .it('adds a specific pipeline webhook', ctx => {
-      expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Adding webhook to example-pipeline... done\n')
-    })
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+    expect(stdout).to.equal('')
+    expect(unwrap(stderr)).to.contain('Adding webhook to example-pipeline... done\n')
+  })
+
+  it.skip('adds a specific pipeline webhook with secret in header', async function () {
+    api
       .post('/pipelines/example-pipeline/webhooks', {
         include: ['foo', 'bar'],
         level: 'notify',
         url: 'http://foobar.com',
       })
-      .reply(200, {}, {'heroku-webhook-secret': '1234'}),
-    )
-    .command([
+      .reply(200, {}, {'heroku-webhook-secret': '1234'})
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:add',
       '--pipeline',
       'example-pipeline',
@@ -84,11 +92,9 @@ describe('webhooks:add', function () {
       '--url',
       'http://foobar.com',
     ])
-    .it('adds a specific pipeline webhook', ctx => {
-      expect(ctx.stdout).to.contain('=== Webhooks Signing Secret')
-      expect(ctx.stdout).to.contain('1234')
-      expect(ctx.stderr).to.contain('Adding webhook to example-pipeline... done')
-    })
-})
 
-*/
+    expect(stdout).to.contain('=== Webhooks Signing Secret')
+    expect(stdout).to.contain('1234')
+    expect(unwrap(stderr)).to.contain('Adding webhook to example-pipeline... done')
+  })
+})

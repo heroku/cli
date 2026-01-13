@@ -1,29 +1,38 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('maintenance', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
-      .get('/apps/myapp')
-      .reply(200, {maintenance: true}),
-    )
-    .command(['maintenance', '-a', 'myapp'])
-    .it('shows that maintenance is on', ({stdout, stderr}) => {
-      expect(stdout).to.equal('on\n')
-      expect(stderr).to.be.empty
-    })
+  let api: nock.Scope
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => api
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows that maintenance is on', async function () {
+    api
       .get('/apps/myapp')
-      .reply(200, {maintenance: false}),
-    )
-    .command(['maintenance', '-a', 'myapp'])
-    .it('shows that maintenance is off', ({stdout, stderr}) => {
-      expect(stdout).to.equal('off\n')
-      expect(stderr).to.be.empty
-    })
+      .reply(200, {maintenance: true})
+
+    const {stderr, stdout} = await runCommand(['maintenance', '-a', 'myapp'])
+
+    expect(stdout).to.equal('on\n')
+    expect(stderr).to.be.empty
+  })
+
+  it('shows that maintenance is off', async function () {
+    api
+      .get('/apps/myapp')
+      .reply(200, {maintenance: false})
+
+    const {stderr, stdout} = await runCommand(['maintenance', '-a', 'myapp'])
+
+    expect(stdout).to.equal('off\n')
+    expect(stderr).to.be.empty
+  })
 })

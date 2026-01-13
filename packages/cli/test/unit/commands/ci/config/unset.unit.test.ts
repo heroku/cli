@@ -1,30 +1,38 @@
-import {expect, test} from '@oclif/test'
-
-const key = 'FOO'
-const pipeline =  {
-  id: '123e4567-e89b-12d3-a456-426655440000',
-  name: 'test-pipeline',
-}
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('heroku ci:config:unset', function () {
-  test
-    .stderr()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines/${pipeline.id}`)
-        .reply(200, pipeline)
-        .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-        .reply(200, {[key]: null})
-    })
-    .command(['ci:config:unset', `--pipeline=${pipeline.id}`, key])
-    .it('displays the config value key being unset', ({stderr}) => {
-      expect(stderr).to.contain('Unsetting FOO... done')
-    })
+  const key = 'FOO'
+  const pipeline =  {
+    id: '123e4567-e89b-12d3-a456-426655440000',
+    name: 'test-pipeline',
+  }
+  let api: nock.Scope
 
-  test
-    .stderr()
-    .command(['ci:config:unset', `--pipeline=${pipeline.id}`])
-    .catch(error => {
-      expect(error.message).to.equal('Usage: heroku ci:config:unset KEY1 [KEY2 ...]\nMust specify KEY to unset.')
-    })
-    .it('errors with example of valid args')
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('displays the config value key being unset', async function () {
+    api
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: null})
+
+    const {stderr} = await runCommand(['ci:config:unset', `--pipeline=${pipeline.id}`, key])
+
+    expect(stderr).to.contain('Unsetting FOO... done')
+  })
+
+  it('errors with example of valid args', async function () {
+    const {error} = await runCommand(['ci:config:unset', `--pipeline=${pipeline.id}`])
+    expect(error?.message).to.equal('Usage: heroku ci:config:unset KEY1 [KEY2 ...]\nMust specify KEY to unset.')
+  })
 })

@@ -1,11 +1,12 @@
-import {expect} from '@oclif/test'
-import {Config} from '@oclif/core'
-import {paginateRequest} from '../../../src/lib/utils/paginator.js'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Config} from '@oclif/core'
+import {expect} from 'chai'
 import nock from 'nock'
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
+
+import {paginateRequest} from '../../../src/lib/utils/paginator.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,6 +17,10 @@ const exampleAPIClient = new APIClient(config)
 const requestUrl = '/apps/myapp/domains'
 
 describe('paginator', function () {
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
   it('paginates through 2 requests', async function () {
     nock('https://api.heroku.com')
       .get(requestUrl)

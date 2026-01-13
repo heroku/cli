@@ -1,39 +1,56 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {expect, test} from '@oclif/test'
-import * as sinon from 'sinon'
+import {expect} from 'chai'
+import sinon from 'sinon'
 
+import RakeCommand from '../../../src/commands/rake.js'
 import Dyno from '../../../src/lib/run/dyno.js'
+import runCommandHelper from '../../helpers/runCommand.js'
 
 describe('rake', function () {
   let dynoOpts: { command: any }
 
-  test
-    .stub(Dyno.prototype, 'start', sinon.stub().callsFake(function () {
+  afterEach(function () {
+    sinon.restore()
+  })
+
+  it('runs rake', async function () {
+    sinon.stub(Dyno.prototype, 'start').callsFake(function () {
       // @ts-ignore
       dynoOpts = this.opts
       return Promise.resolve()
-    }))
-    .command(['rake', '--app=heroku-cli-ci-smoke-test-app', 'test'])
-    .it('runs rake', () => {
-      expect(dynoOpts.command).to.equal('rake test')
     })
 
-  test
-    .stub(Dyno.prototype, 'start', sinon.stub().callsFake(function () {
+    await runCommandHelper(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+
+    expect(dynoOpts.command).to.equal('rake test')
+  })
+
+  it('catches error with an exit code', async function () {
+    sinon.stub(Dyno.prototype, 'start').callsFake(function () {
       const err:any = new Error('rake error')
       err.exitCode = 1
       throw err
-    }))
-    .command(['rake', '--app=heroku-cli-ci-smoke-test-app', 'test'])
-    .catch(error => expect(error.message).to.equal('rake error'))
-    .it('catches error with an exit code')
+    })
 
-  test
-    .stub(Dyno.prototype, 'start', sinon.stub().callsFake(function () {
+    try {
+      await runCommandHelper(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+      expect.fail('Expected command to throw error')
+    } catch (error: any) {
+      expect(error.message).to.equal('rake error')
+    }
+  })
+
+  it('catches error without an exit code', async function () {
+    sinon.stub(Dyno.prototype, 'start').callsFake(function () {
       const err = new Error('rake error')
       throw err
-    }))
-    .command(['rake', '--app=heroku-cli-ci-smoke-test-app', 'test'])
-    .catch(error => expect(error.message).to.equal('rake error'))
-    .it('catches error without an exit code')
+    })
+
+    try {
+      await runCommandHelper(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+      expect.fail('Expected command to throw error')
+    } catch (error: any) {
+      expect(error.message).to.equal('rake error')
+    }
+  })
 })

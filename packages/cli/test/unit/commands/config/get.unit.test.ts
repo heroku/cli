@@ -1,36 +1,46 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('config', function () {
-  test
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'}),
-    )
-    .stdout()
-    .command(['config:get', '--app=myapp', 'RACK_ENV'])
-    .it('shows config vars', ({stdout}) => {
-      expect(stdout).to.equal('production\n')
-    })
+  let api: nock.Scope
 
-  test
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'}),
-    )
-    .stdout()
-    .command(['config:get', '--app=myapp', '-s', 'RACK_ENV'])
-    .it('--shell', ({stdout}) => {
-      expect(stdout).to.equal('RACK_ENV=production\n')
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  test
-    .nock('https://api.heroku.com', api => api
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows config vars', async function () {
+    api
       .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'}),
-    )
-    .stdout()
-    .command(['config:get', '--app=myapp', 'MISSING'])
-    .it('missing', ({stdout}) => {
-      expect(stdout).to.equal('\n')
-    })
+      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+
+    const {stdout} = await runCommand(['config:get', '--app=myapp', 'RACK_ENV'])
+
+    expect(stdout).to.equal('production\n')
+  })
+
+  it('--shell', async function () {
+    api
+      .get('/apps/myapp/config-vars')
+      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+
+    const {stdout} = await runCommand(['config:get', '--app=myapp', '-s', 'RACK_ENV'])
+
+    expect(stdout).to.equal('RACK_ENV=production\n')
+  })
+
+  it('missing', async function () {
+    api
+      .get('/apps/myapp/config-vars')
+      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+
+    const {stdout} = await runCommand(['config:get', '--app=myapp', 'MISSING'])
+
+    expect(stdout).to.equal('\n')
+  })
 })

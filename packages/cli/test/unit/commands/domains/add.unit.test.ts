@@ -1,22 +1,32 @@
-import {expect, test} from '@oclif/test'
-import DomainsAdd from '../../../../src/commands/domains/add.js'
+import {expect} from 'chai'
+import nock from 'nock'
 import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
+import DomainsAdd from '../../../../src/commands/domains/add.js'
+import runCommand from '../../../helpers/runCommand.js'
 
 describe('domains:add', function () {
+  afterEach(function () {
+    nock.cleanAll()
+    stdout.stop()
+    stderr.stop()
+  })
+
   const domainsResponse = {
     acm_status: null,
     acm_status_reason: null,
     app: {
-      name: 'myapp',
       id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
     },
     cname: null,
     created_at: '2012-01-01T12:00:00Z',
     hostname: 'example.com',
     id: '01234567-89ab-cdef-0123-456789abcdef',
     kind: 'custom',
-    updated_at: '2012-01-01T12:00:00Z',
     status: 'pending',
+    updated_at: '2012-01-01T12:00:00Z',
   }
 
   describe('adding a domain to an app with multiple certs', function () {
@@ -28,19 +38,18 @@ describe('domains:add', function () {
     }
 
     describe('using the --cert flag', function () {
-      test
-        .stderr()
-        .nock('https://api.heroku.com', api => api
+      it('adds the domain to the app', async function () {
+        nock('https://api.heroku.com')
           .post('/apps/myapp/domains', {
             hostname: 'example.com',
             sni_endpoint: 'my-cert',
           })
-          .reply(200, domainsResponseWithEndpoint),
-        )
-        .command(['domains:add', 'example.com', '--app', 'myapp', '--cert', 'my-cert'])
-        .it('adds the domain to the app', ctx => {
-          expect(ctx.stderr).to.contain('Adding example.com to ⬢ myapp... done')
-        })
+          .reply(200, domainsResponseWithEndpoint)
+
+        await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
+
+        expect(stderr.output).to.contain('Adding example.com to ⬢ myapp... done')
+      })
     })
 
     describe('without passing a cert', function () {
@@ -49,8 +58,8 @@ describe('domains:add', function () {
           app: {
             name: 'myapp',
           },
-          name: 'cert1',
           displayName: 'Best Cert Ever',
+          name: 'cert1',
           ssl_cert: {
             cert_domains: ['foo.com', 'bar.com', 'baz.com', 'baq.com', 'blah.com', 'rejairieja.com'],
           },
@@ -68,7 +77,7 @@ describe('domains:add', function () {
 
       let promptForCertStub: sinon.SinonStub
 
-      beforeEach(async function () {
+      beforeEach(function () {
         promptForCertStub = sinon.stub(DomainsAdd.prototype, 'promptForCert').resolves('my-cert')
       })
 
@@ -76,21 +85,20 @@ describe('domains:add', function () {
         promptForCertStub.restore()
       })
 
-      test
-        .stderr()
-        .nock('https://api.heroku.com', api => api
+      it('adds the domain to the app', async function () {
+        nock('https://api.heroku.com')
           .post('/apps/myapp/domains', {
             hostname: 'example.com',
             sni_endpoint: 'my-cert',
           })
           .reply(200, domainsResponseWithEndpoint)
           .get('/apps/myapp/sni-endpoints')
-          .reply(200, certsResponse),
-        )
-        .command(['domains:add', 'example.com', '--app', 'myapp'])
-        .it('adds the domain to the app', ctx => {
-          expect(ctx.stderr).to.contain('Adding example.com to ⬢ myapp... done')
-        })
+          .reply(200, certsResponse)
+
+        await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
+
+        expect(stderr.output).to.contain('Adding example.com to ⬢ myapp... done')
+      })
     })
   })
 })

@@ -1,69 +1,89 @@
-import {expect} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import strftime from 'strftime'
 import tsheredoc from 'tsheredoc'
-import Cmd from '../../../../src/commands/spaces/ps.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
-const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
-const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
-const spaceDynos = [
-  {
-    app_id: 'app_id1', app_name: 'app_name1', dynos: [
-      {
-        command: 'npm start',
-        size: 'Free',
-        name: 'web.1',
-        type: 'web',
-        updated_at: hourAgoStr,
-        state: 'up',
-      }, {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgoStr, state: 'up'},
-    ],
-  }, {
-    app_id: 'app_id2', app_name: 'app_name2', dynos: [
-      {
-        command: 'npm start',
-        size: 'Free',
-        name: 'web.1',
-        type: 'web',
-        updated_at: hourAgoStr,
-        state: 'up',
-      }, {command: 'bash', size: 'Free', name: 'run.1', type: 'run', updated_at: hourAgoStr, state: 'up'},
-    ],
-  },
-]
-const privateDynos = [
-  {
-    app_id: 'app_id1', app_name: 'app_name1', dynos: [
-      {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgoStr, state: 'up'},
-    ],
-  },
-]
-
 describe('spaces:ps', function () {
+  const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
+  const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
+  const spaceDynos = [
+    {
+      app_id: 'app_id1', app_name: 'app_name1', dynos: [
+        {
+          command: 'npm start',
+          name: 'web.1',
+          size: 'Free',
+          state: 'up',
+          type: 'web',
+          updated_at: hourAgoStr,
+        }, {
+          command: 'bash',
+          name: 'run.1',
+          size: 'Free',
+          state: 'up',
+          type: 'run',
+          updated_at: hourAgoStr,
+        },
+      ],
+    }, {
+      app_id: 'app_id2', app_name: 'app_name2', dynos: [
+        {
+          command: 'npm start',
+          name: 'web.1',
+          size: 'Free',
+          state: 'up',
+          type: 'web',
+          updated_at: hourAgoStr,
+        }, {
+          command: 'bash',
+          name: 'run.1',
+          size: 'Free',
+          state: 'up',
+          type: 'run',
+          updated_at: hourAgoStr,
+        },
+      ],
+    },
+  ]
+  const privateDynos = [
+    {
+      app_id: 'app_id1', app_name: 'app_name1', dynos: [
+        {
+          command: 'npm start',
+          name: 'web.1',
+          size: 'Private-M',
+          state: 'up',
+          type: 'web',
+          updated_at: hourAgoStr,
+        },
+      ],
+    },
+  ]
   let api: nock.Scope
-  let apiSpace: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
   afterEach(function () {
     api.done()
-    apiSpace.done()
+    nock.cleanAll()
   })
 
   it('shows space dynos', async function () {
-    api = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space/dynos')
       .reply(200, spaceDynos)
-    apiSpace = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space')
       .reply(200, {shield: false})
-    await runCommand(Cmd, [
-      '--space',
-      'my-space',
-    ])
-    expect(stdout.output).to.equal(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space'])
+
+    expect(stdout).to.equal(heredoc(`
     === app_name1 web (Free): npm start (1)
 
     web.1: up ${hourAgoStr} (~ 1h ago)
@@ -84,17 +104,16 @@ describe('spaces:ps', function () {
   })
 
   it('shows shield space dynos', async function () {
-    api = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space/dynos')
       .reply(200, privateDynos)
-    apiSpace = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space')
       .reply(200, {shield: true})
-    await runCommand(Cmd, [
-      '--space',
-      'my-space',
-    ])
-    expect(stdout.output).to.equal(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space'])
+
+    expect(stdout).to.equal(heredoc(`
     === app_name1 web (Shield-M): npm start (1)
 
     web.1: up ${hourAgoStr} (~ 1h ago)
@@ -103,17 +122,16 @@ describe('spaces:ps', function () {
   })
 
   it('shows private space dynos', async function () {
-    api = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space/dynos')
       .reply(200, privateDynos)
-    apiSpace = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space')
       .reply(200, {shield: false})
-    await runCommand(Cmd, [
-      '--space',
-      'my-space',
-    ])
-    expect(stdout.output).to.equal(heredoc(`
+
+    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space'])
+
+    expect(stdout).to.equal(heredoc(`
     === app_name1 web (Private-M): npm start (1)
 
     web.1: up ${hourAgoStr} (~ 1h ago)
@@ -122,17 +140,15 @@ describe('spaces:ps', function () {
   })
 
   it('shows space dynos with --json', async function () {
-    api = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space/dynos')
       .reply(200, spaceDynos)
-    apiSpace = nock('https://api.heroku.com:443')
+    api
       .get('/spaces/my-space')
       .reply(200, {shield: false})
-    await runCommand(Cmd, [
-      '--space',
-      'my-space',
-      '--json',
-    ])
-    expect(JSON.parse(stdout.output)).to.eql(spaceDynos)
+
+    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space', '--json'])
+
+    expect(JSON.parse(stdout)).to.eql(spaceDynos)
   })
 })

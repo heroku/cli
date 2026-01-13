@@ -1,22 +1,42 @@
-import {expect, test} from '@oclif/test'
-import {promises as fs} from 'fs'
+import {expect} from 'chai'
+import {got} from 'got'
+import nock from 'nock'
 import {PassThrough} from 'node:stream'
+import sinon from 'sinon'
+import {stdout} from 'stdout-stderr'
 
-import * as git from '../../../../src/lib/ci/git.js'
-import got from 'got'
+import Cmd from '../../../../src/commands/ci/run.js'
+import {gitService} from '../../../../src/lib/ci/git.js'
+import {fileService} from '../../../../src/lib/ci/source.js'
+import customRunCommand from '../../../helpers/runCommand.js'
 
 describe('ci:run', function () {
-  test
-    .command(['ci:run'])
-    .catch(error => {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    return nock.cleanAll()
+  })
+
+  it('errors when not specifying a pipeline or an app', async function () {
+    try {
+      await customRunCommand(Cmd, [])
+    } catch (error: any) {
       expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
-    })
-    .it('errors when not specifying a pipeline or an app')
+    }
+  })
 
   describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const ghRepository = {
-      user: 'heroku-fake', repo: 'my-repo', ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add', branch: 'my-test-branch',
+      branch: 'my-test-branch',
+      ref: '668a5ce22eefc7b67c84c1cfe3a766f1958e0add',
+      repo: 'my-repo',
+      user: 'heroku-fake',
     }
     const newTestRun = {
       commit_branch: ghRepository.branch,
@@ -28,108 +48,146 @@ describe('ci:run', function () {
       status: 'succeeded',
     }
 
-    const gitFake = {
-      readCommit: () => ({branch: ghRepository.branch, ref: ghRepository.ref}),
-      remoteFromGitConfig: () => Promise.resolve('heroku'),
-      getBranch: () => Promise.resolve(ghRepository.branch),
-      getRef: () => Promise.resolve(ghRepository.ref),
-      getCommitTitle: () => Promise.resolve(`pushed to ${ghRepository.branch}`),
-      githubRepository: () => Promise.resolve({user: ghRepository.user, repo: ghRepository.repo}),
-      createArchive: () => Promise.resolve('new-archive.tgz'),
-      spawn: () => Promise.resolve(),
-      urlExists: () => Promise.resolve(),
-      exec(args: any) {
-        switch (args.join(' ')) {
-        case 'remote': {
-          return Promise.resolve('heroku')
-        }
+    let sandbox: ReturnType<typeof sinon.createSandbox>
 
-        default: {
-          return Promise.resolve()
-        }
-        }
-      },
-    }
+    beforeEach(function () {
+      sandbox = sinon.createSandbox()
 
-    const fsFake = {
-      stat: () => Promise.resolve({size: 500}),
-      createReadStream: () => ({
-        pipe(dest: any) {
-          // Simulate a readable stream that properly pipes to destination
-          if (dest && typeof dest.once === 'function') {
-            dest.once('response', () => {})
-          }
+      // Stub gitService methods
+      sandbox.stub(gitService, 'readCommit').resolves({branch: ghRepository.branch, message: `pushed to ${ghRepository.branch}`, ref: ghRepository.ref})
+      sandbox.stub(gitService, 'githubRepository').resolves({repo: ghRepository.repo, user: ghRepository.user} as any)
+      sandbox.stub(gitService, 'createArchive').resolves('new-archive.tgz')
 
-          return dest
-        },
-        once() {},
-        on() {},
-      }),
-    }
-
-    const gotFake = {
-      stream: {put() {
+      // Stub fileService methods
+      sandbox.stub(fileService, 'stat').resolves({size: 500} as any)
+      sandbox.stub(fileService, 'createReadStream').returns((() => {
         const stream = new PassThrough()
-        // Simulate HTTP response by emitting 'response' event
-        setImmediate(() => {
-          stream.emit('response')
-        })
+        stream.end('fake archive data')
         return stream
-      }},
-    }
+      })() as any)
 
-    test
-      .stdout()
-      .nock('https://api.heroku.com', api => {
-        api.get(`/pipelines?eq[name]=${pipeline.name}`)
+      // Stub got.stream
+      sandbox.stub(got, 'stream').value({
+        put() {
+          const stream = new PassThrough()
+          setImmediate(() => {
+            stream.emit('response')
+          })
+          return stream
+        },
+      })
+    })
+
+    afterEach(function () {
+      sandbox.restore()
+    })
+
+    it('it runs the test and displays the test output for the first node', async function () {
+      api
+        .get(`/pipelines?eq[name]=${pipeline.name}`)
+        .reply(200, [
+          {id: pipeline.id},
+        ])
+        .post('/test-runs')
+        .reply(200, newTestRun)
+        .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
+        .reply(200, newTestRun)
+        .get(`/test-runs/${newTestRun.id}/test-nodes`)
+        .times(2)
+        .reply(200, [
+          {
+            commit_branch: newTestRun.commit_branch,
+            commit_message: newTestRun.commit_message,
+            commit_sha: newTestRun.commit_sha,
+            exit_code: 0,
+            id: newTestRun.id,
+            number: newTestRun.number,
+            output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+            pipeline: {id: pipeline.id},
+            setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+            status: newTestRun.status,
+          },
+        ])
+        .post('/sources')
+        .reply(200, {source_blob: {get_url: 'https://aws-geturl', put_url: 'https://aws-puturl'}})
+
+      nock('https://test-setup-output.heroku.com/streams')
+        .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
+        .reply(200, 'New Test setup output')
+
+      nock('https://test-output.heroku.com/streams')
+        .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
+        .reply(200, 'New Test output')
+
+      nock('https://kolkrabbi.heroku.com')
+        .get(`/pipelines/${pipeline.id}/repository`)
+        .reply(200, {
+          ci: true,
+          organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
+          owner: {
+            github: {user_id: 306015},
+            heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
+            id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
+          },
+          repository: {
+            id: 138865824,
+            name: 'raulb/atleti',
+            type: 'github',
+          },
+        })
+
+      await customRunCommand(Cmd, [`--pipeline=${pipeline.name}`])
+
+      expect(stdout.output).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
+    })
+
+    describe('when the commit is not in the remote repository', function () {
+      it('it runs the test and displays the test output for the first node', async function () {
+        api
+          .get(`/pipelines?eq[name]=${pipeline.name}`)
           .reply(200, [
             {id: pipeline.id},
           ])
-
-        api.post('/test-runs')
+          .post('/test-runs')
           .reply(200, newTestRun)
-
-        api.get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
+          .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
           .reply(200, newTestRun)
-
-        api.get(`/test-runs/${newTestRun.id}/test-nodes`)
+          .get(`/test-runs/${newTestRun.id}/test-nodes`)
           .times(2)
           .reply(200, [
             {
               commit_branch: newTestRun.commit_branch,
               commit_message: newTestRun.commit_message,
               commit_sha: newTestRun.commit_sha,
+              exit_code: 0,
               id: newTestRun.id,
               number: newTestRun.number,
-              pipeline: {id: pipeline.id},
-              exit_code: 0,
-              status: newTestRun.status,
-              setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
               output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+              pipeline: {id: pipeline.id},
+              setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+              status: newTestRun.status,
             },
           ])
+          .post('/sources')
+          .reply(200, {source_blob: {get_url: 'https://aws-geturl', put_url: 'https://aws-puturl'}})
 
-        api.post('/sources')
-          .reply(200, {source_blob: {put_url: 'https://aws-puturl', get_url: 'https://aws-geturl'}})
-      })
-      .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
-        testOutputAPI.get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
+        nock('https://test-setup-output.heroku.com/streams')
+          .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
           .reply(200, 'New Test setup output')
-      })
-      .nock('https://test-output.heroku.com/streams', testOutputAPI => {
-        testOutputAPI.get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
+
+        nock('https://test-output.heroku.com/streams')
+          .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
           .reply(200, 'New Test output')
-      })
-      .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-        kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
+
+        nock('https://kolkrabbi.heroku.com')
+          .get(`/pipelines/${pipeline.id}/repository`)
           .reply(200, {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-              heroku: {
-                user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               github: {user_id: 306015},
+              heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
+              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
               id: 138865824,
@@ -137,112 +195,11 @@ describe('ci:run', function () {
               type: 'github',
             },
           })
+
+        await customRunCommand(Cmd, [`--pipeline=${pipeline.name}`])
+
+        expect(stdout.output).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
       })
-      .stub(git, 'readCommit', gitFake.readCommit)
-      .stub(git, 'githubRepository', gitFake.githubRepository)
-      .stub(git, 'createArchive', gitFake.createArchive)
-      .stub(fs, 'stat', fsFake.stat)
-      .stub(fs, 'createReadStream', () => {
-        const stream = new PassThrough()
-        // Optionally, write some data and end the stream to simulate file contents
-        stream.end('fake archive data')
-        return stream
-      })
-      .stub(
-        got,
-        'stream',
-        // disable below is due to incomplete type definition of `stub`
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore-next-line
-        gotFake.stream,
-      )
-      .command(['ci:run', `--pipeline=${pipeline.name}`])
-      .it('it runs the test and displays the test output for the first node', ({stdout}) => {
-        expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
-      })
-
-    describe('when the commit is not in the remote repository', function () {
-      test
-        .stdout()
-        .nock('https://api.heroku.com', api => {
-          api.get(`/pipelines?eq[name]=${pipeline.name}`)
-            .reply(200, [
-              {id: pipeline.id},
-            ])
-
-          api.post('/test-runs')
-            .reply(200, newTestRun)
-
-          api.get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
-            .reply(200, newTestRun)
-
-          api.get(`/test-runs/${newTestRun.id}/test-nodes`)
-            .times(2)
-            .reply(200, [
-              {
-                commit_branch: newTestRun.commit_branch,
-                commit_message: newTestRun.commit_message,
-                commit_sha: newTestRun.commit_sha,
-                id: newTestRun.id,
-                number: newTestRun.number,
-                pipeline: {id: pipeline.id},
-                exit_code: 0,
-                status: newTestRun.status,
-                setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
-                output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
-              },
-            ])
-
-          api.post('/sources')
-            .reply(200, {source_blob: {put_url: 'https://aws-puturl', get_url: 'https://aws-geturl'}})
-        })
-        .nock('https://test-setup-output.heroku.com/streams', testOutputAPI => {
-          testOutputAPI.get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
-            .reply(200, 'New Test setup output')
-        })
-        .nock('https://test-output.heroku.com/streams', testOutputAPI => {
-          testOutputAPI.get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
-            .reply(200, 'New Test output')
-        })
-        .nock('https://kolkrabbi.heroku.com', kolkrabbiAPI => {
-          kolkrabbiAPI.get(`/pipelines/${pipeline.id}/repository`)
-            .reply(200, {
-              ci: true,
-              organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
-              owner: {
-                id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-                heroku: {
-                  user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
-                github: {user_id: 306015},
-              },
-              repository: {
-                id: 138865824,
-                name: 'raulb/atleti',
-                type: 'github',
-              },
-            })
-        })
-        .stub(git, 'readCommit', gitFake.readCommit)
-        .stub(git, 'githubRepository', gitFake.githubRepository)
-        .stub(git, 'createArchive', gitFake.createArchive)
-        .stub(fs, 'stat', fsFake.stat)
-        .stub(fs, 'createReadStream', () => {
-          const stream = new PassThrough()
-          stream.end('fake archive data')
-          return stream
-        })
-        .stub(
-          got,
-          'stream',
-          // disable below is due to incomplete type definition of `stub`
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore-next-line
-          gotFake.stream,
-        )
-        .command(['ci:run', `--pipeline=${pipeline.name}`])
-        .it('it runs the test and displays the test output for the first node', ({stdout}) => {
-          expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
-        })
     })
   })
 })

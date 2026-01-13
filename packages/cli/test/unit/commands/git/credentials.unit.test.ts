@@ -1,12 +1,10 @@
-'use strict'
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
-describe('git:clone', function () {
-  test
-    .stderr()
-    .command(['git:credentials'])
-    .catch(error => {
-      expect(error.message).to.contain('Missing 1 required arg')
-    })
-    .it('errors if no app given')
+describe('git:credentials', function () {
+  it('errors if no app given', async function () {
+    const {error} = await runCommand(['git:credentials'])
+
+    expect(error?.message).to.contain('Missing 1 required arg')
+  })
 })

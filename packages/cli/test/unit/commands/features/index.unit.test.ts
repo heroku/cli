@@ -1,22 +1,37 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('features', function () {
-  test
-    .stderr()
-    .stdout()
-    .nock('https://api.heroku.com:443', api => {
-      api
-        .get('/apps/myapp/features')
-        .reply(200, [
-          {enabled: true, state: 'general', name: 'feature a', description: 'an app feature'},
-        ])
-    })
-    .command(['features', '--app', 'myapp'])
-    .it('shows the app features', ({stdout, stderr}) => {
-      expect(stderr).to.equal('')
-      expect(stdout).to.equal(`=== App Features ⬢ myapp
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows the app features', async function () {
+    api
+      .get('/apps/myapp/features')
+      .reply(200, [
+        {
+          description: 'an app feature',
+          enabled: true,
+          name: 'feature a',
+          state: 'general',
+        },
+      ])
+
+    const {stderr, stdout} = await runCommand(['features', '--app', 'myapp'])
+
+    expect(stderr).to.equal('')
+    expect(stdout).to.equal(`=== App Features ⬢ myapp
 
 [+] feature a  an app feature
 `)
-    })
+  })
 })

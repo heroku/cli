@@ -1,36 +1,44 @@
-import {test, expect} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('apps:destroy', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => {
-      api.get('/apps/myapp').reply(200, {name: 'myapp'})
-        .delete('/apps/myapp').reply(200)
-    })
-    .command(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
-    .it('deletes the app',  ({stdout, stderr}) => {
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
-    })
+  let api: nock.Scope
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com:443', api => {
-      api.get('/apps/myapp').reply(200, {name: 'myapp'})
-        .delete('/apps/myapp').reply(200)
-    })
-    .command(['apps:destroy', 'myapp', '--confirm', 'myapp'])
-    .it('deletes the app via arg',  ({stdout, stderr}) => {
-      expect(stdout).to.equal('')
-      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  test
-    .command(['apps:destroy'])
-    .catch(error => {
-      expect(error.message).to.include('No app specified.')
-    })
-    .it('errors without an app')
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('deletes the app', async function () {
+    api
+      .get('/apps/myapp').reply(200, {name: 'myapp'})
+      .delete('/apps/myapp').reply(200)
+
+    const {stderr, stdout} = await runCommand(['apps:destroy', '--app', 'myapp', '--confirm', 'myapp'])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
+  })
+
+  it('deletes the app via arg', async function () {
+    api
+      .get('/apps/myapp').reply(200, {name: 'myapp'})
+      .delete('/apps/myapp').reply(200)
+
+    const {stderr, stdout} = await runCommand(['apps:destroy', 'myapp', '--confirm', 'myapp'])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
+  })
+
+  it('errors without an app', async function () {
+    const {error} = await runCommand(['apps:destroy'])
+
+    expect(error?.message).to.include('No app specified.')
+  })
 })

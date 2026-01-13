@@ -1,18 +1,23 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('domains:clear', function () {
-  test
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  it('clears domains all domains', async function () {
+    api
       .get('/apps/myapp/domains')
-      .reply(200, [{hostname: 'example.com', kind: 'custom'}]),
-    )
-    .nock('https://api.heroku.com', api => api
+      .reply(200, [{hostname: 'example.com', kind: 'custom'}])
       .delete('/apps/myapp/domains/example.com')
-      .reply(200, {}),
-    )
-    .command(['domains:clear', '--app', 'myapp'])
-    .it('clears domains all domains', ctx => {
-      expect(ctx.stderr).to.contain('Removing all domains from ⬢ myapp... done')
-    })
+      .reply(200, {})
+
+    const {stderr} = await runCommand(['domains:clear', '--app', 'myapp'])
+
+    expect(stderr).to.contain('Removing all domains from ⬢ myapp... done')
+  })
 })

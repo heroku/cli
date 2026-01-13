@@ -1,4 +1,6 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 const key = 'FOO'
 const value = 'bar'
@@ -8,29 +10,38 @@ const pipeline =  {
 }
 
 describe('heroku ci:config:get', function () {
-  test
-    .stdout()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines/${pipeline.id}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-        .reply(200, {[key]: value})
-    })
-    .command(['ci:config:get', `--pipeline=${pipeline.id}`, key])
-    .it('displays the config value', ({stdout}) => {
-      expect(stdout).to.equal(`${value}\n`)
-    })
+  let api: nock.Scope
 
-  test
-    .stdout()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines/${pipeline.id}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
-        .reply(200, {[key]: value})
-    })
-    .command(['ci:config:get', `--pipeline=${pipeline.id}`, '--shell',  key])
-    .it('displays config formatted for shell', ({stdout}) => {
-      expect(stdout).to.equal(`${key}=${value}\n`)
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('displays the config value', async function () {
+    api
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: value})
+
+    const {stdout} = await runCommand(['ci:config:get', `--pipeline=${pipeline.id}`, key])
+
+    expect(stdout).to.equal(`${value}\n`)
+  })
+
+  it('displays config formatted for shell', async function () {
+    api
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
+      .reply(200, {[key]: value})
+
+    const {stdout} = await runCommand(['ci:config:get', `--pipeline=${pipeline.id}`, '--shell',  key])
+
+    expect(stdout).to.equal(`${key}=${value}\n`)
+  })
 })

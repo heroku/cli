@@ -1,6 +1,19 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('domains:update', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
   const responseBody = {
     acm_status: null,
     acm_status_reason: null,
@@ -10,20 +23,19 @@ describe('domains:update', function () {
     hostname: 'example.com',
     id: '7ac15e30-6460-48e1-919a-e794bf3512ac',
     kind: 'custom',
-    status: 'succeeded',
     sni_endpoint: {
       id: '8cae023a-d8f1-4aca-9929-e516dc011694',
     },
+    status: 'succeeded',
   }
 
-  test
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+  it('updates the domain to use a different certificate', async function () {
+    api
       .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
-      .reply(200, responseBody),
-    )
-    .command(['domains:update', 'example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
-    .it('updates the domain to use a different certificate', ctx => {
-      expect(ctx.stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
-    })
+      .reply(200, responseBody)
+
+    const {stderr} = await runCommand(['domains:update', 'example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
+
+    expect(stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
+  })
 })

@@ -1,6 +1,12 @@
-import {expect, test} from '@oclif/test'
 import {hux} from '@heroku/heroku-cli-util'
-import * as sinon from 'sinon'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
+import sinon from 'sinon'
+import {stderr} from 'stdout-stderr'
+
+import TransferCommand from '../../../../src/commands/pipelines/transfer.js'
+import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:transfer', function () {
   const pipeline = {
@@ -14,8 +20,8 @@ describe('pipelines:transfer', function () {
   }
 
   const account = {
-    id: 'bcf91aa0-9465-4ad8-a38f-983cd177780f',
     email: 'user@example.com',
+    id: 'bcf91aa0-9465-4ad8-a38f-983cd177780f',
   }
 
   const coupling = {
@@ -29,64 +35,81 @@ describe('pipelines:transfer', function () {
     name: 'my-app',
   }
 
-  let update: {isDone(): boolean}
+  let api: nock.Scope
 
-  const addMocks = (testInstance: typeof test) => testInstance
-    .nock('https://api.heroku.com', api => {
-      api.get(`/pipelines/${pipeline.id}`).reply(200, pipeline)
-      api.get(`/pipelines/${pipeline.id}/pipeline-couplings`).reply(200, [coupling])
-      api.post('/filters/apps').reply(200, [app])
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  addMocks(test)
-    .stderr()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/teams/${team.name}`).reply(200, team)
-      update = api.post('/pipeline-transfers', {
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+    sinon.restore()
+  })
+
+  function setupCommonMocks() {
+    api
+      .get(`/pipelines/${pipeline.id}`)
+      .reply(200, pipeline)
+      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
+      .reply(200, [coupling])
+      .post('/filters/apps')
+      .reply(200, [app])
+  }
+
+  it('transfers to a team', async function () {
+    this.retries(2)
+
+    setupCommonMocks()
+
+    api
+      .get(`/teams/${team.name}`)
+      .reply(200, team)
+      .post('/pipeline-transfers', {
         new_owner: {id: team.id, type: 'team'},
         pipeline: {id: pipeline.id},
-      }).reply(200, {})
-    })
-    .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
-    .retries(2)
-    .it('transfers to a team', ctx => {
-      expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
-      expect(update.isDone()).to.be.true
-    })
+      })
+      .reply(200, {})
 
-  addMocks(test)
-    .stderr()
-    .nock('https://api.heroku.com', api => {
-      api.get(`/users/${account.email}`).reply(200, account)
-      update = api.post('/pipeline-transfers', {
+    const {stderr} = await runCommand(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
+
+    expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
+  })
+
+  it('transfers to an account', async function () {
+    setupCommonMocks()
+
+    api
+      .get(`/users/${account.email}`)
+      .reply(200, account)
+      .post('/pipeline-transfers', {
         new_owner: {id: account.id, type: 'user'},
         pipeline: {id: pipeline.id},
-      }).reply(200, {})
-    })
-    .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
-    .it('transfers to an account', ctx => {
-      expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
-      expect(update.isDone()).to.be.true
-    })
+      })
+      .reply(200, {})
 
-  const promptStub = sinon.stub()
+    const {stderr} = await runCommand(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
 
-  addMocks(test)
-    .stderr()
-    .do(() => {
-      promptStub.onFirstCall().resolves(pipeline.name)
-    })
-    .nock('https://api.heroku.com', api => {
-      api.get(`/users/${account.email}`).reply(200, account)
-      update = api.post('/pipeline-transfers', {
+    expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
+  })
+
+  it('does not pass confirm flag', async function () {
+    const promptStub = sinon.stub(hux, 'prompt').onFirstCall().resolves(pipeline.name)
+
+    setupCommonMocks()
+
+    api
+      .get(`/users/${account.email}`)
+      .reply(200, account)
+      .post('/pipeline-transfers', {
         new_owner: {id: account.id, type: 'user'},
         pipeline: {id: pipeline.id},
-      }).reply(200, {})
-    })
-    .stub(hux, 'prompt', promptStub)
-    .command(['pipelines:transfer', `--pipeline=${pipeline.id}`, account.email])
-    .it('does not pass confirm flag', ctx => {
-      expect(ctx.stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
-      expect(update.isDone()).to.be.true
-    })
+      })
+      .reply(200, {})
+
+    await runCommandHelper(TransferCommand, [`--pipeline=${pipeline.id}`, account.email])
+
+    expect(stderr.output).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
+    expect(promptStub.calledOnce).to.be.true
+  })
 })

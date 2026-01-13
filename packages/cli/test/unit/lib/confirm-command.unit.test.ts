@@ -1,55 +1,81 @@
 import {hux} from '@heroku/heroku-cli-util'
-import {expect, test} from '@oclif/test'
+import {expect} from 'chai'
+import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
 import stripAnsi from 'strip-ansi'
 
 import ConfirmCommand from '../../../src/lib/confirmCommand.js'
 
 describe('confirmApp', function () {
-  test
-    .stdout()
-    .stderr()
-    .do(() => new ConfirmCommand().confirm('app', 'app'))
-    .it('should not error or prompt with confirm flag match', ({stderr, stdout}) => {
-      expect(stderr).to.equal('')
-      expect(stdout).to.equal('')
-    })
+  afterEach(function () {
+    sinon.restore()
+  })
 
-  test
-    .stdout()
-    .stderr()
-    .do(() => new ConfirmCommand().confirm('app', 'nope'))
-    .catch((error: Error) => {
+  it('should not error or prompt with confirm flag match', async function () {
+    stdout.start()
+    stderr.start()
+
+    await new ConfirmCommand().confirm('app', 'app')
+
+    stdout.stop()
+    stderr.stop()
+
+    expect(stderr.output).to.equal('')
+    expect(stdout.output).to.equal('')
+  })
+
+  it('should err on confirm flag mismatch', async function () {
+    stdout.start()
+    stderr.start()
+
+    try {
+      await new ConfirmCommand().confirm('app', 'nope')
+      expect.fail('Expected confirm to throw error')
+    } catch (error: any) {
       expect(stripAnsi(error.message)).to.equal('Confirmation nope did not match app. Aborted.')
-    })
-    .it('should err on confirm flag mismatch')
+    } finally {
+      stdout.stop()
+      stderr.stop()
+    }
+  })
 
-  test
-    .stdout()
-    .stderr()
-    .stub(hux, 'prompt', () => Promise.resolve('app'))
-    .do(() => new ConfirmCommand().confirm('app'))
-    .it('should not err on confirm prompt match', ({stderr, stdout}) => {
-      expect(stderr).to.contain('Warning: WARNING: Destructive Action')
-      expect(stdout).to.equal('')
-    })
+  it('should not err on confirm prompt match', async function () {
+    sinon.stub(hux, 'prompt').resolves('app')
+    stdout.start()
+    stderr.start()
 
-  const customMessage = 'custom message'
+    await new ConfirmCommand().confirm('app')
 
-  test
-    .stdout()
-    .stderr()
-    .stub(hux, 'prompt', () => Promise.resolve('app'))
-    .do(() => new ConfirmCommand().confirm('app', undefined, customMessage))
-    .it('should display custom message', ({stderr, stdout}) => {
-      expect(stderr).to.contain(customMessage)
-      expect(stdout).to.equal('')
-    })
+    stdout.stop()
+    stderr.stop()
 
-  test
-    .stub(hux, 'prompt', () => Promise.resolve('nope'))
-    .do(() => new ConfirmCommand().confirm('app'))
-    .catch((error: Error) => {
+    expect(stderr.output).to.contain('Warning: WARNING: Destructive Action')
+    expect(stdout.output).to.equal('')
+  })
+
+  it('should display custom message', async function () {
+    const customMessage = 'custom message'
+    sinon.stub(hux, 'prompt').resolves('app')
+    stdout.start()
+    stderr.start()
+
+    await new ConfirmCommand().confirm('app', undefined, customMessage)
+
+    stdout.stop()
+    stderr.stop()
+
+    expect(stderr.output).to.contain(customMessage)
+    expect(stdout.output).to.equal('')
+  })
+
+  it('should err on confirm prompt mismatch', async function () {
+    sinon.stub(hux, 'prompt').resolves('nope')
+
+    try {
+      await new ConfirmCommand().confirm('app')
+      expect.fail('Expected confirm to throw error')
+    } catch (error: any) {
       expect(stripAnsi(error.message)).to.equal('Confirmation did not match app. Aborted.')
-    })
-    .it('should err on confirm prompt mismatch')
+    }
+  })
 })

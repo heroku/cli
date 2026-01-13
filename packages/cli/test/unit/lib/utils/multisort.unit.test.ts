@@ -1,4 +1,4 @@
-import {expect} from '@oclif/test'
+import {expect} from 'chai'
 import {multiSortCompareFn, type Comparator} from '../../../../src/lib/utils/multisort.js'
 
 /*

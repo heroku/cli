@@ -1,48 +1,55 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 const MY_APP = 'myapp'
 
 describe('apps:favorites:add', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://particleboard.heroku.com', api => {
-      api.get('/favorites?type=app')
-        .reply(200, [])
-        .post('/favorites', {type: 'app', resource_id: MY_APP})
-        .reply(201)
-    })
-    .command(['apps:favorites:add', `--app=${MY_APP}`])
-    .it('adds the app as a favorite', ({stdout, stderr}) => {
-      expect(stdout).to.equal('')
-      expect(stderr).to.contain(`Adding ⬢ ${MY_APP} to favorites... done`)
-    })
+  let particleboardApi: nock.Scope
 
-  test
-    .stderr()
-    .nock('https://particleboard.heroku.com', api => {
-      api.get('/favorites?type=app')
-        .reply(200, [{resource_name: MY_APP}])
-    })
-    .command(['apps:favorites:add', `--app=${MY_APP}`])
-    .catch((error: any) => {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error.message).to.contain('is already a favorite app.')
-    })
-    .it('errors if app is already favorited')
+  beforeEach(function () {
+    particleboardApi = nock('https://particleboard.heroku.com')
+  })
 
-  test
-    .stderr()
-    .nock('https://particleboard.heroku.com', {}, api => {
-      api.get('/favorites?type=app')
-        .reply(200, [{resource_name: MY_APP}])
-        .post('/favorites', {type: 'app', resource_id: 'NOT_AN_APP'})
-        .replyWithError({statusCode: 404})
-    })
-    .command(['apps:favorites:add', '--app=NOT_AN_APP'])
-    .catch((error: any) => {
-      expect(error).to.be.an.instanceof(Error)
-      expect(error.message).to.contain('App not found')
-    })
-    .it('errors if app not found')
+  afterEach(function () {
+    particleboardApi.done()
+    nock.cleanAll()
+  })
+
+  it('adds the app as a favorite', async function () {
+    particleboardApi
+      .get('/favorites?type=app')
+      .reply(200, [])
+      .post('/favorites', {resource_id: MY_APP, type: 'app'})
+      .reply(201)
+
+    const {stderr, stdout} = await runCommand(['apps:favorites:add', `--app=${MY_APP}`])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain(`Adding ⬢ ${MY_APP} to favorites... done`)
+  })
+
+  it('errors if app is already favorited', async function () {
+    particleboardApi
+      .get('/favorites?type=app')
+      .reply(200, [{resource_name: MY_APP}])
+
+    const {error} = await runCommand(['apps:favorites:add', `--app=${MY_APP}`])
+
+    expect(error).to.be.an.instanceof(Error)
+    expect(error?.message).to.contain('is already a favorite app.')
+  })
+
+  it('errors if app not found', async function () {
+    particleboardApi
+      .get('/favorites?type=app')
+      .reply(200, [{resource_name: MY_APP}])
+      .post('/favorites', {resource_id: 'NOT_AN_APP', type: 'app'})
+      .replyWithError({statusCode: 404})
+
+    const {error} = await runCommand(['apps:favorites:add', '--app=NOT_AN_APP'])
+
+    expect(error).to.be.an.instanceof(Error)
+    expect(error?.message).to.contain('App not found')
+  })
 })

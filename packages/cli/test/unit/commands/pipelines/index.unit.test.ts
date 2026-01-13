@@ -1,42 +1,49 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('pipelines', function () {
-  test
-    .stderr()
-    .stdout()
-    .nock('https://api.heroku.com', api =>
-      api.get('/pipelines')
-        .reply(200, [
-          {id: '0123', name: 'Betelgeuse'},
-          {id: '9876', name: 'Sirius'},
-        ]),
-    )
-    .command(['pipelines'])
-    .it('shows a list of pipelines', ctx => {
-      expect(ctx.stderr).to.contain('')
+  let api: nock.Scope
 
-      expect(ctx.stdout).to.contain('My Pipelines')
-      expect(ctx.stdout).to.contain('Betelgeuse')
-      expect(ctx.stdout).to.contain('Sirius')
-    })
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-  test
-    .stderr()
-    .stdout()
-    .nock('https://api.heroku.com', api =>
-      api.get('/pipelines')
-        .reply(200, [
-          {id: '0123', name: 'Betelgeuse'},
-          {id: '9876', name: 'Sirius'},
-        ]),
-    )
-    .command(['pipelines', '--json'])
-    .it('shows a list of pipelines, json formatted', ctx => {
-      expect(ctx.stderr).to.contain('')
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
-      expect(JSON.parse(ctx.stdout)).to.eql([
+  it('shows a list of pipelines', async function () {
+    api
+      .get('/pipelines')
+      .reply(200, [
         {id: '0123', name: 'Betelgeuse'},
         {id: '9876', name: 'Sirius'},
       ])
-    })
+
+    const {stderr, stdout} = await runCommand(['pipelines'])
+
+    expect(stderr).to.contain('')
+    expect(stdout).to.contain('My Pipelines')
+    expect(stdout).to.contain('Betelgeuse')
+    expect(stdout).to.contain('Sirius')
+  })
+
+  it('shows a list of pipelines, json formatted', async function () {
+    api
+      .get('/pipelines')
+      .reply(200, [
+        {id: '0123', name: 'Betelgeuse'},
+        {id: '9876', name: 'Sirius'},
+      ])
+
+    const {stderr, stdout} = await runCommand(['pipelines', '--json'])
+
+    expect(stderr).to.contain('')
+    expect(JSON.parse(stdout)).to.eql([
+      {id: '0123', name: 'Betelgeuse'},
+      {id: '9876', name: 'Sirius'},
+    ])
+  })
 })

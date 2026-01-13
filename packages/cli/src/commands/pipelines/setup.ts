@@ -1,7 +1,7 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import open from 'open'
+import openBrowser from 'open'
 import Debug from 'debug'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../lib/api.js'
@@ -21,6 +21,7 @@ import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/vali
 const debug = Debug('pipelines:setup')
 
 export default class Setup extends Command {
+  static open = openBrowser
   static description
     = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
@@ -103,7 +104,7 @@ export default class Setup extends Command {
     ux.action.start('Configuring pipeline')
     try {
       await setup
-      await open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
+      await Setup.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
       debug(error)
       ux.error(error)

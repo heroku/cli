@@ -1,11 +1,21 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
-/*
 describe('webhooks:deliveries:info', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it.skip('shows an app webhook delivery', async function () {
+    api
       .get('/apps/example-app/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',
@@ -16,9 +26,7 @@ describe('webhooks:deliveries:info', function () {
           id: '77777777-7777-7777-7777-777777777777',
         },
         status: 'pending',
-      }),
-    )
-    .nock('https://api.heroku.com', api => api
+      })
       .get('/apps/example-app/webhook-events/88888888-8888-8888-8888-888888888888')
       .reply(200, {
         id: '88888888-8888-8888-8888-888888888888',
@@ -30,32 +38,30 @@ describe('webhooks:deliveries:info', function () {
             foo: 'bar',
           },
         },
-      }),
-    )
-    .command([
+      })
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:deliveries:info',
       '--app',
       'example-app',
       '99999999-9999-9999-9999-999999999999',
     ])
-    .it('shows an app webhook delivery', ctx => {
-      expect(ctx.stderr).to.equal('')
-      expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
-      expect(ctx.stdout).to.contain('Event:        88888888-8888-8888-8888-888888888888')
-      expect(ctx.stdout).to.contain('Status:       pending')
-      expect(ctx.stdout).to.contain('Webhook:      77777777-7777-7777-7777-777777777777')
-      expect(ctx.stdout).to.contain('=== Event Payload')
-      expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
-      expect(ctx.stdout).to.contain('"resource": "api:release",')
-      expect(ctx.stdout).to.contain('"action": "create",')
-      expect(ctx.stdout).to.contain('"data": {')
-      expect(ctx.stdout).to.contain('"foo": "bar"')
-    })
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+    expect(stderr).to.equal('')
+    expect(stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(stdout).to.contain('Event:        88888888-8888-8888-8888-888888888888')
+    expect(stdout).to.contain('Status:       pending')
+    expect(stdout).to.contain('Webhook:      77777777-7777-7777-7777-777777777777')
+    expect(stdout).to.contain('=== Event Payload')
+    expect(stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
+    expect(stdout).to.contain('"resource": "api:release",')
+    expect(stdout).to.contain('"action": "create",')
+    expect(stdout).to.contain('"data": {')
+    expect(stdout).to.contain('"foo": "bar"')
+  })
+
+  it.skip('shows a pipeline webhook delivery ', async function () {
+    api
       .get('/pipelines/example-pipeline/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
         id: '99999999-9999-9999-9999-999999999999',
@@ -66,9 +72,7 @@ describe('webhooks:deliveries:info', function () {
           id: '77777777-7777-7777-7777-777777777777',
         },
         status: 'pending',
-      }),
-    )
-    .nock('https://api.heroku.com', api => api
+      })
       .get('/pipelines/example-pipeline/webhook-events/88888888-8888-8888-8888-888888888888')
       .reply(200, {
         id: '88888888-8888-8888-8888-888888888888',
@@ -80,27 +84,25 @@ describe('webhooks:deliveries:info', function () {
             foo: 'bar',
           },
         },
-      }),
-    )
-    .command([
+      })
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:deliveries:info',
       '--pipeline',
       'example-pipeline',
       '99999999-9999-9999-9999-999999999999',
     ])
-    .it('shows a pipeline webhook delivery ', ctx => {
-      expect(ctx.stderr).to.equal('')
-      expect(ctx.stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
-      expect(ctx.stdout).to.contain('Event:        88888888-8888-8888-8888-888888888888')
-      expect(ctx.stdout).to.contain('Status:       pending')
-      expect(ctx.stdout).to.contain('Webhook:      77777777-7777-7777-7777-777777777777')
-      expect(ctx.stdout).to.contain('=== Event Payload')
-      expect(ctx.stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
-      expect(ctx.stdout).to.contain('"resource": "api:release",')
-      expect(ctx.stdout).to.contain('"action": "create",')
-      expect(ctx.stdout).to.contain('"data": {')
-      expect(ctx.stdout).to.contain('"foo": "bar"')
-    })
-})
 
-*/
+    expect(stderr).to.equal('')
+    expect(stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
+    expect(stdout).to.contain('Event:        88888888-8888-8888-8888-888888888888')
+    expect(stdout).to.contain('Status:       pending')
+    expect(stdout).to.contain('Webhook:      77777777-7777-7777-7777-777777777777')
+    expect(stdout).to.contain('=== Event Payload')
+    expect(stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
+    expect(stdout).to.contain('"resource": "api:release",')
+    expect(stdout).to.contain('"action": "create",')
+    expect(stdout).to.contain('"data": {')
+    expect(stdout).to.contain('"foo": "bar"')
+  })
+})

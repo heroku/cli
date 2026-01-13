@@ -1,123 +1,131 @@
-import {expect, test} from '@oclif/test'
+import {expect} from 'chai'
 import inquirer from 'inquirer'
+import nock from 'nock'
+import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
+import AddCommand from '../../../../src/commands/pipelines/add.js'
+import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:add', function () {
-  test
-    .stderr()
-    .stdout()
-    .nock('https://api.heroku.com', api => {
-      const coupling = {id: '0123', stage: 'production'}
-      const pipeline = {id: '0123', name: 'example-pipeline'}
-      const pipelines = [pipeline]
+  let api: nock.Scope
 
-      api.post('/pipeline-couplings')
-        .reply(201, coupling)
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
 
-      api.get('/pipelines')
-        .query(true)
-        .reply(200, pipelines)
-    })
-    .command([
-      'pipelines:add',
+  afterEach(function () {
+    sinon.restore()
+    nock.cleanAll()
+  })
+
+  it('adds a pipeline', async function () {
+    const coupling = {id: '0123', stage: 'production'}
+    const pipeline = {id: '0123', name: 'example-pipeline'}
+    const pipelines = [pipeline]
+
+    api
+      .post('/pipeline-couplings')
+      .reply(201, coupling)
+      .get('/pipelines')
+      .query(true)
+      .reply(200, pipelines)
+
+    await runCommandHelper(AddCommand, [
       '--app',
       'example-app',
       '--stage',
       'production',
       'example-pipeline',
     ])
-    .it('adds a pipeline', ctx => {
-      expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as production... done')
-    })
 
-  test
-    .stderr()
-    .stdout()
-  // this `stub` overrides the prompt function on
-  // the inquirer package to simulate what would be
-  // returned from answering if "development" was
-  // selected by the user
-    .stub(inquirer, 'prompt', function () {
-    // eslint-disable-next-line prefer-rest-params
-      const questions = arguments[0]
+    expect(stdout.output).to.equal('')
+    expect(stderr.output).to.contain('Adding ⬢ example-app to example-pipeline pipeline as production... done')
+  })
+
+  it('adds a pipeline with stage specified from prompt', async function () {
+    // this `stub` overrides the prompt function on
+    // the inquirer package to simulate what would be
+    // returned from answering if "development" was
+    // selected by the user
+    sinon.stub(inquirer, 'prompt').callsFake(function (questions: any) {
       if (questions[0].name === 'stage') {
         return Promise.resolve({stage: 'development'})
       }
-    })
-    .nock('https://api.heroku.com', api => {
-      const coupling = {id: '0123', stage: 'development'}
-      const pipeline = {id: '0123', name: 'example-pipeline'}
-      const pipelines = [pipeline]
 
-      api.post('/pipeline-couplings')
-        .reply(201, coupling)
-
-      api.get('/pipelines')
-        .query(true)
-        .reply(200, pipelines)
+      return Promise.resolve({})
     })
-    .command([
-      'pipelines:add',
+
+    const coupling = {id: '0123', stage: 'development'}
+    const pipeline = {id: '0123', name: 'example-pipeline'}
+    const pipelines = [pipeline]
+
+    api
+      .post('/pipeline-couplings')
+      .reply(201, coupling)
+      .get('/pipelines')
+      .query(true)
+      .reply(200, pipelines)
+
+    await runCommandHelper(AddCommand, [
       '--app',
       'example-app',
       'example-pipeline',
     ])
-    .it('adds a pipeline with stage specified from prompt', ctx => {
-      expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as development... done')
-    })
 
-  test
-    .stderr()
-    .stdout()
-  // this `stub` overrides the prompt function,
-  // simulating that the user picked the identical
-  // pipeline value with id: '0987' for the pipeline
-  // question
-    .stub(inquirer, 'prompt', function () {
-    // eslint-disable-next-line prefer-rest-params
-      const question = arguments[0][0]
+    expect(stdout.output).to.equal('')
+    expect(stderr.output).to.contain('Adding ⬢ example-app to example-pipeline pipeline as development... done')
+  })
+
+  it('adds a pipeline by disambiguating by user choice of identically named pipelines', async function () {
+    // this `stub` overrides the prompt function,
+    // simulating that the user picked the identical
+    // pipeline value with id: '0987' for the pipeline
+    // question
+    sinon.stub(inquirer, 'prompt').callsFake(function (questions: any) {
+      const question = questions[0]
 
       if (question && question.name === 'pipeline') {
-        return Promise.resolve({pipeline: {
-          name: 'pipeline-with-identical-name-to-another-pipeline',
-          id: '0987',
-        }})
+        return Promise.resolve({
+          pipeline: {
+            id: '0987',
+            name: 'pipeline-with-identical-name-to-another-pipeline',
+          },
+        })
       }
 
-      return {}
+      return Promise.resolve({})
     })
-    .nock('https://api.heroku.com', api => {
-      const coupling = {id: '0123', stage: 'development'}
 
-      const firstIdenticallyNamedPipeline = {id: '0123', name: 'pipeline-with-identical-name-to-another-pipeline'}
-      const secondIdenticallyNamedPipeline = {id: '0987', name: 'pipeline-with-identical-name-to-another-pipeline'}
+    const coupling = {id: '0123', stage: 'development'}
 
-      // by returning to a query for pipeline names with
-      // multiple results we trigger a choice from the
-      // user to disambiguate between the choices
-      const pipelinesWithIdenticalNames = [
-        firstIdenticallyNamedPipeline,
-        secondIdenticallyNamedPipeline,
-      ]
+    const firstIdenticallyNamedPipeline = {id: '0123', name: 'pipeline-with-identical-name-to-another-pipeline'}
+    const secondIdenticallyNamedPipeline = {id: '0987', name: 'pipeline-with-identical-name-to-another-pipeline'}
 
-      api.post('/pipeline-couplings')
-        .reply(201, coupling)
+    // by returning to a query for pipeline names with
+    // multiple results we trigger a choice from the
+    // user to disambiguate between the choices
+    const pipelinesWithIdenticalNames = [
+      firstIdenticallyNamedPipeline,
+      secondIdenticallyNamedPipeline,
+    ]
 
-      api.get('/pipelines')
-        .query({eq: {name: 'pipeline-with-identical-name-to-another-pipeline'}})
-        .reply(200, pipelinesWithIdenticalNames)
-    })
-    .command([
-      'pipelines:add',
+    api
+      .post('/pipeline-couplings')
+      .reply(201, coupling)
+      .get('/pipelines')
+      .query({eq: {name: 'pipeline-with-identical-name-to-another-pipeline'}})
+      .reply(200, pipelinesWithIdenticalNames)
+
+    await runCommandHelper(AddCommand, [
       '--app',
       'example-app',
       '--stage',
       'staging',
       'pipeline-with-identical-name-to-another-pipeline',
     ])
-    .it('adds a pipeline by disambiguating by user choice of identically named pipelines', ctx => {
-      expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Adding ⬢ example-app to pipeline-with-identical-name-to-another-pipeline pipeline as staging... done')
-    })
+
+    expect(stdout.output).to.equal('')
+    expect(stderr.output).to.contain('Adding ⬢ example-app to pipeline-with-identical-name-to-another-pipeline pipeline as staging... done')
+  })
 })

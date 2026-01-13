@@ -1,10 +1,9 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
 
 describe('2fa:disable remove', function () {
-  test
-    .command(['2fa:disable'])
-    .catch(error => {
-      expect(error.message).to.contain('this command has been removed, in favor of disabling MFA in your Account Settings in a browser: https://dashboard.heroku.com/account')
-    })
-    .it('shows error when trying to disable 2fa')
+  it('shows error when trying to disable 2fa', async function () {
+    const {error} = await runCommand(['2fa:disable'])
+    expect(error?.message).to.contain('this command has been removed, in favor of disabling MFA in your Account Settings in a browser: https://dashboard.heroku.com/account')
+  })
 })

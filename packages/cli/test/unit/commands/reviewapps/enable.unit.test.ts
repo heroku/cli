@@ -1,146 +1,127 @@
-import {expect, test} from '@oclif/test'
+import {runCommand} from '@oclif/test'
+import {expect} from 'chai'
+import nock from 'nock'
 
 describe('reviewapps:enable', function () {
   const pipeline = {
     id: '123-pipeline',
     name: 'my-pipeline',
   }
+  let api: nock.Scope
+  let kolkrabbiApi: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    kolkrabbiApi.done()
+    nock.cleanAll()
+  })
 
   describe('with repos api enabled', function () {
     const feature = {
-      name: 'dashboard-repositories-api',
       enabled: true,
+      name: 'dashboard-repositories-api',
     }
 
     const repo = {
       full_name: 'james/repo',
     }
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
+    it('succeeds with defaults', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(200, feature)
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .get(`/pipelines/${pipeline.id}/repo`)
+        .reply(200, repo)
+        .post(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-        api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`])
-      .it('succeeds with defaults', ctx => {
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      const {stderr} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`])
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
+      expect(stderr).to.include('Configuring pipeline')
+    })
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
-      .it('succeeds with autodeploy', ctx => {
-        expect(ctx.stdout).to.include('Enabling auto deployment')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+    it('succeeds with autodeploy', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(200, feature)
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .get(`/pipelines/${pipeline.id}/repo`)
+        .reply(200, repo)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
-      .it('it succeeds with autodestroy', ctx => {
-        expect(ctx.stdout).to.include('Enabling auto destroy')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      expect(stdout).to.include('Enabling auto deployment')
+      expect(stderr).to.include('Configuring pipeline')
+    })
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
+    it('it succeeds with autodestroy', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(200, feature)
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .get(`/pipelines/${pipeline.id}/repo`)
+        .reply(200, repo)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--wait-for-ci'])
-      .it('it succeeds with wait-for-ci', ctx => {
-        expect(ctx.stdout).to.include('Enabling wait for CI')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(200, feature)
+      expect(stdout).to.include('Enabling auto destroy')
+      expect(stderr).to.include('Configuring pipeline')
+    })
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .get(`/pipelines/${pipeline.id}/repo`)
-          .reply(200, repo)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
-      .it('it succeeds with autodeploy and autodestroy and wait-for-ci', ctx => {
-        expect(ctx.stdout).to.include('Enabling auto deployment')
-        expect(ctx.stdout).to.include('Enabling auto destroy')
-        expect(ctx.stdout).to.include('Enabling wait for CI')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+    it('it succeeds with wait-for-ci', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(200, feature)
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .get(`/pipelines/${pipeline.id}/repo`)
+        .reply(200, repo)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
+
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--wait-for-ci'])
+
+      expect(stdout).to.include('Enabling wait for CI')
+      expect(stderr).to.include('Configuring pipeline')
+    })
+
+    it('it succeeds with autodeploy and autodestroy and wait-for-ci', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(200, feature)
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .get(`/pipelines/${pipeline.id}/repo`)
+        .reply(200, repo)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
+
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
+
+      expect(stdout).to.include('Enabling auto deployment')
+      expect(stdout).to.include('Enabling auto destroy')
+      expect(stdout).to.include('Enabling wait for CI')
+      expect(stderr).to.include('Configuring pipeline')
+    })
   })
 
   describe('with repos api disabled', function () {
     const feature = {
-      name: 'dashboard-repositories-api',
       enabled: false,
+      name: 'dashboard-repositories-api',
     }
 
     const repo = {
@@ -149,134 +130,100 @@ describe('reviewapps:enable', function () {
       },
     }
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(404, {})
+    it('succeeds with defaults', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(404, {})
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .post(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .post(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`])
-      .it('succeeds with defaults', ctx => {
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      kolkrabbiApi
+        .get(`/pipelines/${pipeline.id}/repository`)
+        .reply(200, repo)
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(404, {})
+      const {stderr} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`])
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
-      .it('succeeds with autodeploy', ctx => {
-        expect(ctx.stdout).to.include('Enabling auto deployment')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      expect(stderr).to.include('Configuring pipeline')
+    })
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(404, {})
+    it('succeeds with autodeploy', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(404, {})
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
-      .it('it succeeds with autodestroy', ctx => {
-        expect(ctx.stdout).to.include('Enabling auto destroy')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      kolkrabbiApi
+        .get(`/pipelines/${pipeline.id}/repository`)
+        .reply(200, repo)
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(404, {})
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy'])
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--wait-for-ci'])
-      .it('it succeeds with wait-for-ci', ctx => {
-        expect(ctx.stdout).to.include('Enabling wait for CI')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      expect(stdout).to.include('Enabling auto deployment')
+      expect(stderr).to.include('Configuring pipeline')
+    })
 
-    test
-      .nock('https://api.heroku.com', api => {
-        api
-          .get(`/account/features/${feature.name}`)
-          .reply(404, {})
+    it('it succeeds with autodestroy', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(404, {})
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
 
-        api
-          .get(`/pipelines/${pipeline.name}`)
-          .reply(200, pipeline)
-        api
-          .patch(`/pipelines/${pipeline.id}/review-app-config`)
-          .reply(200, {})
-      })
-      .nock('https://kolkrabbi.heroku.com', api => {
-        api
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, repo)
-      })
-      .stdout()
-      .stderr()
-      .command(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
-      .it('it succeeds with autodeploy and autodestroy and wait-for-ci', ctx => {
-        expect(ctx.stdout).to.include('Enabling auto deployment')
-        expect(ctx.stdout).to.include('Enabling auto destroy')
-        expect(ctx.stdout).to.include('Enabling wait for CI')
-        expect(ctx.stderr).to.include('Configuring pipeline')
-      })
+      kolkrabbiApi
+        .get(`/pipelines/${pipeline.id}/repository`)
+        .reply(200, repo)
+
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodestroy'])
+
+      expect(stdout).to.include('Enabling auto destroy')
+      expect(stderr).to.include('Configuring pipeline')
+    })
+
+    it('it succeeds with wait-for-ci', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(404, {})
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
+
+      kolkrabbiApi
+        .get(`/pipelines/${pipeline.id}/repository`)
+        .reply(200, repo)
+
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--wait-for-ci'])
+
+      expect(stdout).to.include('Enabling wait for CI')
+      expect(stderr).to.include('Configuring pipeline')
+    })
+
+    it('it succeeds with autodeploy and autodestroy and wait-for-ci', async function () {
+      api
+        .get(`/account/features/${feature.name}`)
+        .reply(404, {})
+        .get(`/pipelines/${pipeline.name}`)
+        .reply(200, pipeline)
+        .patch(`/pipelines/${pipeline.id}/review-app-config`)
+        .reply(200, {})
+
+      kolkrabbiApi
+        .get(`/pipelines/${pipeline.id}/repository`)
+        .reply(200, repo)
+
+      const {stderr, stdout} = await runCommand(['reviewapps:enable', `--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
+
+      expect(stdout).to.include('Enabling auto deployment')
+      expect(stdout).to.include('Enabling auto destroy')
+      expect(stdout).to.include('Enabling wait for CI')
+      expect(stderr).to.include('Configuring pipeline')
+    })
   })
 })
