@@ -1,22 +1,21 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {TransferSchedule} from '../../../lib/pg/types'
-import {nls} from '../../../nls'
+import {TransferSchedule} from '../../../lib/pg/types.js'
+import {nls} from '../../../nls.js'
 
 export default class Unschedule extends Command {
-  static topic = 'pg';
-  static description = 'stop daily backups';
+  static topic = 'pg'
+  static description = 'stop daily backups'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:arbitrary:suffix')}`}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Unschedule)
@@ -57,4 +56,4 @@ export default class Unschedule extends Command {
     ux.action.stop()
   }
 }
-*/
+

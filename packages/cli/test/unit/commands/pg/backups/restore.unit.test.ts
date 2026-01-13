@@ -1,13 +1,12 @@
 import {expect} from '@oclif/test'
 import nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../../../src/commands/pg/backups/restore'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../../src/commands/pg/backups/restore.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
+const heredoc = tsheredoc.default
 const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
-
-/*
 describe('pg:backups:restore', function () {
   let pg: nock.Scope
   let api: nock.Scope
@@ -57,9 +56,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -80,9 +77,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -103,9 +98,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -146,9 +139,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -183,9 +174,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of https://www.dropbox.com to postgres-1...
       Starting restore of https://www.dropbox.com to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
@@ -225,13 +214,9 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1...
       Starting restore of b005 to postgres-1... done
-      Restoring...
       Restoring... done
       `))
     })
   })
 })
-
-*/

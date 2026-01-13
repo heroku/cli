@@ -1,11 +1,10 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {PgDatabase} from '../../../lib/pg/types'
+import {PgDatabase} from '../../../lib/pg/types.js'
 import {HTTPError} from '@heroku/http-call'
-import {nls} from '../../../nls'
+import {nls} from '../../../nls.js'
 
 type Timezone = {
   PST: string
@@ -103,4 +102,4 @@ export default class Schedule extends Command {
     ux.action.stop()
   }
 }
-*/
+

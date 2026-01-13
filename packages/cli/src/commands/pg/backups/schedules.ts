@@ -1,18 +1,17 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {utils} from '@heroku/heroku-cli-util'
-import type {TransferSchedule} from '../../../lib/pg/types'
+import type {TransferSchedule} from '../../../lib/pg/types.js'
 
 export default class Schedules extends Command {
-  static topic = 'pg';
-  static description = 'list backup schedule';
+  static topic = 'pg'
+  static description = 'list backup schedule'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Schedules)
@@ -25,9 +24,9 @@ export default class Schedules extends Command {
     } else {
       hux.styledHeader('Backup Schedules')
       for (const s of schedules) {
-        ux.log(`${color.green(s.name)}: daily at ${s.hour}:00 ${s.timezone}`)
+        ux.stdout(`${color.green(s.name)}: daily at ${s.hour}:00 ${s.timezone}\n`)
       }
     }
   }
 }
-*/
+
