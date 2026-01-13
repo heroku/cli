@@ -1,20 +1,32 @@
+import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
+import nock from 'nock'
 
-/*
+import {unwrap} from '../../../helpers/utils/unwrap.js'
+
 describe('webhooks:update', function () {
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it.skip('updates app webhooks', async function () {
+    api
       .patch('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999', {
         include: ['foo', 'bar'],
         level: 'notify',
         secret: '1234',
         url: 'http://foobar.com',
       })
-      .reply(200, {}),
-    )
-    .command([
+      .reply(200, {})
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:update',
       '--app',
       'example-app',
@@ -28,24 +40,22 @@ describe('webhooks:update', function () {
       'http://foobar.com',
       '99999999-9999-9999-9999-999999999999',
     ])
-    .it('updates app webhooks', ctx => {
-      expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for ⬢ example-app... done\n')
-    })
 
-  test
-    .stdout()
-    .stderr()
-    .nock('https://api.heroku.com', api => api
+    expect(stdout).to.equal('')
+    expect(unwrap(stderr)).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for ⬢ example-app... done\n')
+  })
+
+  it.skip('updates pipelines webhooks', async function () {
+    api
       .patch('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999', {
         include: ['foo', 'bar'],
         level: 'notify',
         secret: '1234',
         url: 'http://foobar.com',
       })
-      .reply(200, {}),
-    )
-    .command([
+      .reply(200, {})
+
+    const {stderr, stdout} = await runCommand([
       'webhooks:update',
       '--pipeline',
       'example-pipeline',
@@ -59,9 +69,8 @@ describe('webhooks:update', function () {
       'http://foobar.com',
       '99999999-9999-9999-9999-999999999999',
     ])
-    .it('updates pipelines webhooks', ctx => {
-      expect(ctx.stdout).to.equal('')
-      expect(ctx.stderr).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for example-pipeline... done\n')
-    })
+
+    expect(stdout).to.equal('')
+    expect(unwrap(stderr)).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for example-pipeline... done\n')
+  })
 })
-*/
