@@ -12,21 +12,24 @@ import runCommandHelper from '../../../helpers/runCommand.js'
 describe('pipelines:setup', function () {
   let api: nock.Scope
   let kolkrabbiApi: nock.Scope
+  let githubApi: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
     kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+    githubApi = nock('https://api.github.com')
   })
 
   afterEach(function () {
     api.done()
     kolkrabbiApi.done()
+    githubApi.done()
     nock.cleanAll()
     sinon.restore()
   })
 
   it('errors if the user is not linked to GitHub', async function () {
-    nock('https://kolkrabbi.heroku.com')
+    kolkrabbiApi
       .get('/account/github/token')
       .replyWithError('')
 
@@ -109,7 +112,7 @@ describe('pipelines:setup', function () {
           sinon.stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
-          nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
+          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
 
           const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
@@ -134,7 +137,7 @@ describe('pipelines:setup', function () {
           sinon.stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
-          nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
+          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
 
           const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
@@ -156,7 +159,7 @@ describe('pipelines:setup', function () {
           sinon.stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
-          nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
+          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
 
           const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
@@ -213,7 +216,7 @@ describe('pipelines:setup', function () {
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
-          nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
+          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
 
           const kolkrabbi = setupKolkrabbiNock()
           kolkrabbi
@@ -265,7 +268,7 @@ describe('pipelines:setup', function () {
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
-          nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
+          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
 
           kolkrabbiApi
             .get('/account/github/token')
@@ -322,7 +325,7 @@ describe('pipelines:setup', function () {
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
-          nock('https://api.github.com').get(`/repos/${repo.name}`).reply(200, repo)
+          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
 
           kolkrabbiApi
             .get('/account/github/token')

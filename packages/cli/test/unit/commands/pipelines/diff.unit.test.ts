@@ -3,8 +3,6 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 describe('pipelines:diff', function () {
-  const githubApi = 'https://api.github.com'
-
   const pipelineWithGeneration = {
     generation: {name: 'cedar'},
   }
@@ -117,15 +115,18 @@ describe('pipelines:diff', function () {
 
   let api: nock.Scope
   let kolkrabbiApi: nock.Scope
+  let githubApi: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
     kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+    githubApi = nock('https://api.github.com')
   })
 
   afterEach(function () {
     api.done()
     kolkrabbiApi.done()
+    githubApi.done()
     nock.cleanAll()
   })
 
@@ -311,7 +312,7 @@ describe('pipelines:diff', function () {
         .get('/account/github/token')
         .reply(200, {github: {token: 'github-token'}})
 
-      nock(githubApi)
+      githubApi
         .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
         .reply(404)
 
@@ -397,7 +398,7 @@ describe('pipelines:diff', function () {
         .get('/account/github/token')
         .reply(200, {github: {token: 'github-token'}})
 
-      nock(githubApi)
+      githubApi
         .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
         .reply(404)
 

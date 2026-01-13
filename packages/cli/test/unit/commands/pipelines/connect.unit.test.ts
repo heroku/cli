@@ -5,15 +5,18 @@ import nock from 'nock'
 describe('pipelines:connect', function () {
   let api: nock.Scope
   let kolkrabbiApi: nock.Scope
+  let githubApi: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
     kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+    githubApi = nock('https://api.github.com')
   })
 
   afterEach(function () {
     api.done()
     kolkrabbiApi.done()
+    githubApi.done()
     nock.cleanAll()
   })
 
@@ -53,7 +56,7 @@ describe('pipelines:connect', function () {
         name: 'my-org/my-repo',
       }
 
-      nock('https://api.github.com')
+      githubApi
         .get(`/repos/${repo.name}`)
         .reply(200, {repo})
 
@@ -89,7 +92,7 @@ describe('pipelines:connect', function () {
         name: 'my-org/my-repo',
       }
 
-      nock('https://api.github.com')
+      githubApi
         .get(`/repos/${repo.name}`)
         .reply(401, {})
 

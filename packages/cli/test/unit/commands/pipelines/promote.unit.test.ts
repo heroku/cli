@@ -7,8 +7,6 @@ import Cmd from '../../../../src/commands/pipelines/promote.js'
 import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:promote', function () {
-  const apiUrl = 'https://api.heroku.com'
-
   const pipeline = {
     id: '123-pipeline-456',
     name: 'example-pipeline',
@@ -89,14 +87,14 @@ describe('pipelines:promote', function () {
           [
             {
               app: {id: targetApp1.id},
-              status: 'successful',
               error_message: null,
+              status: 'successful',
             },
             {
               app: {id: targetApp2.id},
+              error_message: pollCount > 1 ? 'Because reasons' : null,
               // Return failed on the second poll loop
               status: pollCount > 1 ? 'failed' : 'pending',
-              error_message: pollCount > 1 ? 'Because reasons' : null,
             },
           ],
         ]
@@ -201,9 +199,9 @@ describe('pipelines:promote', function () {
 
           return [{
             app: {id: targetApp1.id},
+            error_message: null,
             release: {id: targetReleaseWithOutput.id},
             status: pollCount > 1 ? 'successful' : 'pending',
-            error_message: null,
           }]
         })
 
@@ -245,9 +243,9 @@ describe('pipelines:promote', function () {
 
           return [{
             app: {id: targetApp1.id},
+            error_message: null,
             release: {id: targetReleaseWithOutput.id},
             status: pollCount > 1 ? 'successful' : 'pending',
-            error_message: null,
           }]
         })
 
