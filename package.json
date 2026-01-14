@@ -15,22 +15,13 @@
     "execa": "5.1.1",
     "husky": "8.0.3",
     "lerna": "^6.4.1",
-    "mkdirp": "^0.5.2",
     "oclif": "^4.22.27",
     "qqjs": "0.3.11",
-    "standard": "17.1.0",
     "tmp": "^0.2.1",
     "ts-node": "^10.9.2"
   },
   "overrides": {
     "ansi-regex": "4.1.1"
-  },
-  "standard": {
-    "env": "mocha",
-    "ignore": [
-      "**/node_modules/**",
-      "packages/*/lib/**"
-    ]
   },
   "engines": {
     "node": ">=20"
