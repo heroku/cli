@@ -13,7 +13,7 @@ export default class Destroy extends Command {
   static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production'
   static flags = {
     name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
-    confirm: flags.string({char: 'c', hidden: true}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }

@@ -13,7 +13,7 @@ export default class RepairDefault extends Command {
   static description = 'repair the permissions of the default credential within database'
   static example = '$ heroku pg:credentials:repair-default postgresql-something-12345'
   static flags = {
-    confirm: flags.string({char: 'c', hidden: true}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
