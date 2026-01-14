@@ -68,10 +68,6 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
 
     hux.table(domains_with_type,
       {
-        dnsTarget: {
-          get: ({cname}) => cname,
-          header: 'DNS Target',
-        },
         domain: {
           get: ({hostname}) => hostname,
           header: 'Domain',
@@ -79,6 +75,11 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
         recordType: {
           get: ({type}) => type,
           header: 'Record Type',
+        },
+        // eslint-disable-next-line perfectionist/sort-objects
+        dnsTarget: {
+          get: ({cname}) => cname,
+          header: 'DNS Target',
         },
       },
     )
