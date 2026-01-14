@@ -31,6 +31,8 @@
     "no-prototype-builtins": "warn", // TODO: fix issues and turn this back on
     "no-return-await":"warn", // TODO: fix issues and turn this back on
     "n/no-deprecated-api": "warn", // TODO: fix issues and turn this back on
+    "n/no-unsupported-features/es-builtins": "warn", // TODO: fix issues and turn this back on
+    "n/no-unsupported-features/node-builtins": "warn", // TODO: fix issues and turn this back on
     "node/no-missing-import": "off", // using import/no-unresolved instead
     "object-curly-newline": "warn",
     "perfectionist/sort-classes": "warn",
