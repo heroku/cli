@@ -1,8 +1,9 @@
-import ConfirmCommand from '../confirmCommand.js'
+import {HTTPError} from '@heroku/http-call'
 import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-import {HTTPError} from '@heroku/http-call'
 import printf from 'printf'
+
+import ConfirmCommand from '../confirmCommand.js'
 
 const confirmCommand = new ConfirmCommand()
 
@@ -26,7 +27,7 @@ function isHttpError(error: unknown): error is HTTPError {
 // This function assumes that price.cents will reflect price per month.
 // If the API returns any unit other than month
 // this function will need to be updated.
-export const formatPrice = function ({price, hourly}: {price: Heroku.AddOn['price'] | number, hourly?: boolean}) {
+export const formatPrice = function ({hourly, price}: {hourly?: boolean, price: Heroku.AddOn['price'] | number}) {
   if (!price) return
   if (price.contract) return 'contract'
   if (price.metered) return 'metered'
@@ -40,8 +41,8 @@ export const formatPrice = function ({price, hourly}: {price: Heroku.AddOn['pric
 }
 
 export const formatPriceText = function (price: Heroku.AddOn['price']) {
-  const priceHourly = formatPrice({price, hourly: true})
-  const priceMonthly = formatPrice({price, hourly: false})
+  const priceHourly = formatPrice({hourly: true, price})
+  const priceMonthly = formatPrice({hourly: false, price})
   if (!priceHourly) return ''
   if (priceHourly === 'free' || priceHourly === 'contract' || priceHourly === 'metered') return `${color.green(priceHourly)}`
 
@@ -50,28 +51,39 @@ export const formatPriceText = function (price: Heroku.AddOn['price']) {
 
 export const grandfatheredPrice = function (addon: Heroku.AddOn) {
   const price = addon.plan?.price
-  return Object.assign({}, price, {
+  return {
+    ...price,
     cents: addon.billed_price?.cents,
     contract: addon.billed_price?.contract,
-  })
+  }
 }
 
 export const formatState = function (state: string) {
   switch (state) {
-  case 'provisioned':
+  case 'provisioned': {
     state = 'created'
     break
-  case 'provisioning':
+  }
+
+  case 'provisioning': {
     state = 'creating'
     break
-  case 'deprovisioning':
+  }
+
+  case 'deprovisioning': {
     state = 'destroying'
     break
-  case 'deprovisioned':
+  }
+
+  case 'deprovisioned': {
     state = 'errored'
     break
-  default:
+  }
+
+  default: {
     state = ''
+    break
+  }
   }
 
   return state

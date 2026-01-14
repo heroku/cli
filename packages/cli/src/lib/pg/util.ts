@@ -1,4 +1,3 @@
-import {color} from '@heroku-cli/color'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {hux, utils, pg} from '@heroku/heroku-cli-util'
 import {renderAttachment} from '../../commands/addons/index.js'
@@ -26,7 +25,7 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
   ]
   credAttachments.sort(multiSortCompareFn(comparators))
   // render each attachment under the credential
-  const attLines = credAttachments.map(function (attachment, idx) {
+  const attLines = credAttachments.map((attachment, idx) => {
     const isLast = (idx === credAttachments.length - 1)
     return renderAttachment(attachment, app, isLast)
   })
@@ -34,13 +33,11 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
   const rotationLines = []
   const credentialStore = credentials.find(a => a.name === cred)
   if (credentialStore?.state === 'rotating') {
-    const formatted = credentialStore?.credentials.map(credential => {
-      return {
-        user: credential.user,
-        state: credential.state,
-        connections: credential.connections,
-      }
-    })
+    const formatted = credentialStore?.credentials.map(credential => ({
+      connections: credential.connections,
+      state: credential.state,
+      user: credential.user,
+    }))
     // eslint-disable-next-line no-eq-null, eqeqeq
     const connectionInformationAvailable = formatted.some(c => c.connections != null)
     if (connectionInformationAvailable) {
@@ -49,10 +46,11 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
       const printLine = (line: unknown) => {
         rotationLines.push(line as string)
       }
+
       hux.table(formatted, {
-        user: {
-          get(row: typeof formatted[0]) {
-            return `${prefix}${row.user}`
+        connections: {
+          get(row) {
+            return `${row.connections} connections`
           },
         },
         state: {
@@ -60,9 +58,9 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
             return row.state === 'revoking' ? 'waiting for no connections to be revoked' : row.state
           },
         },
-        connections: {
-          get(row) {
-            return `${row.connections} connections`
+        user: {
+          get(row: typeof formatted[0]) {
+            return `${prefix}${row.user}`
           },
         },
       }, {

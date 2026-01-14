@@ -1,17 +1,17 @@
-import {APIClient} from '@heroku-cli/command'
-import {parse, ParsedDomain, ParseError} from 'psl'
-import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
+import {APIClient} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import {ParseError, ParsedDomain, parse} from 'psl'
 
 const wait = function (ms: number) {
-  return new Promise(function (resolve) {
+  return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }
 
-function isParseError(parsed: ParsedDomain | ParseError): parsed is ParseError {
+function isParseError(parsed: ParseError | ParsedDomain): parsed is ParseError {
   return (parsed as ParseError).error !== undefined
 }
 
@@ -59,7 +59,7 @@ export async function waitForDomains(heroku: APIClient, app: string) {
 
 export function printDomains(domains: Required<Heroku.Domain>[], message: string) {
   domains = domains.filter(domain => domain.kind === 'custom')
-  const domains_with_type: (Required<Heroku.Domain> & { type: string })[] = domains.map(domain => Object.assign({}, domain, {type: type(domain)}))
+  const domains_with_type: ({ type: string } & Required<Heroku.Domain>)[] = domains.map(domain => ({...domain, type: type(domain)}))
 
   if (domains_with_type.length === 0) {
     hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.cmd('heroku domains:add <yourdomain.com>')}`)
@@ -68,17 +68,17 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
 
     hux.table(domains_with_type,
       {
+        dnsTarget: {
+          get: ({cname}) => cname,
+          header: 'DNS Target',
+        },
         domain: {
-          header: 'Domain',
           get: ({hostname}) => hostname,
+          header: 'Domain',
         },
         recordType: {
-          header: 'Record Type',
           get: ({type}) => type,
-        },
-        dnsTarget: {
-          header: 'DNS Target',
-          get: ({cname}) => cname,
+          header: 'Record Type',
         },
       },
     )

@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 export type Comparator = Parameters<typeof Array.prototype.sort>[0]
 /**
  * The multiSortCompareFn function is used to
@@ -41,7 +42,7 @@ export function multiSortCompareFn(comparators: Comparator[]): Comparator {
   // are used for 1. the bitLength and 2. the two's
   // compliment signed bit. This means we have a
   // limit of 30 comparators max.
-  return (a: unknown, b: unknown): 1 | -1 | 0 => {
+  return (a: unknown, b: unknown): -1 | 0 | 1 => {
     const bitLen = comparators.length - 1
     let bitA = 0
     let bitB = 0

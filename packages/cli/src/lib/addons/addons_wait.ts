@@ -1,7 +1,7 @@
-import {ux} from '@oclif/core'
 import {color} from '@heroku-cli/color'
-import * as Heroku from '@heroku-cli/schema'
 import {APIClient} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 
 export const waitForAddonProvisioning = async function (api: APIClient, addon: Heroku.AddOn, interval: number) {
   const app = addon.app?.name || ''
@@ -46,7 +46,7 @@ export const waitForAddonDeprovisioning = async function (api: APIClient, addon:
       headers: {'Accept-Expansion': 'addon_service,plan'},
     }).then(response => {
       addonResponse = response?.body
-    }).catch(function (error) {
+    }).catch(error => {
       // Not ideal, but API deletes the record returning a 404 when deprovisioned.
       if (error.statusCode === 404 || error.http?.statusCode === 404) {
         addonResponse.state = 'deprovisioned'

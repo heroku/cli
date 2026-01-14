@@ -30,11 +30,11 @@ getColorForIdentifier('heroku-postgres')
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
-const red = color.red
+const {bold, red} = color
 const dim = (i: string) => color.dim(i)
 const other = dim
 const path = (i: string) => color.green(i)
-const method = (i: string) => color.bold.magenta(i)
+const method = (i: string) => bold.magenta(i)
 const status = (code: any) => {
   if (code < 200) return code
   if (code < 300) return color.green(code)
@@ -57,15 +57,41 @@ const ms = (s: string) => {
 function colorizeRouter(body: string) {
   const encodeColor = ([k, v]: [string, string]) => {
     switch (k) {
-    case 'at': return [k, v === 'error' ? red(v) : other(v)]
-    case 'code': return [k, red.bold(v)]
-    case 'method': return [k, method(v)]
-    case 'dyno': return [k, getColorForIdentifier(v)(v)]
-    case 'status': return [k, status(v)]
-    case 'path': return [k, path(v)]
-    case 'connect': return [k, ms(v)]
-    case 'service': return [k, ms(v)]
-    default: return [k, other(v)]
+    case 'at': {
+      return [k, v === 'error' ? red(v) : other(v)]
+    }
+
+    case 'code': {
+      return [k, red.bold(v)]
+    }
+
+    case 'method': {
+      return [k, method(v)]
+    }
+
+    case 'dyno': {
+      return [k, getColorForIdentifier(v)(v)]
+    }
+
+    case 'status': {
+      return [k, status(v)]
+    }
+
+    case 'path': {
+      return [k, path(v)]
+    }
+
+    case 'connect': {
+      return [k, ms(v)]
+    }
+
+    case 'service': {
+      return [k, ms(v)]
+    }
+
+    default: {
+      return [k, other(v)]
+    }
     }
   }
 
@@ -98,11 +124,25 @@ function colorizeRouter(body: string) {
 
 const state = (s: string) => {
   switch (s) {
-  case 'down': return red(s)
-  case 'up': return color.greenBright(s)
-  case 'starting': return color.yellowBright(s)
-  case 'complete': return color.greenBright(s)
-  default: return s
+  case 'down': {
+    return red(s)
+  }
+
+  case 'up': {
+    return color.greenBright(s)
+  }
+
+  case 'starting': {
+    return color.yellowBright(s)
+  }
+
+  case 'complete': {
+    return color.greenBright(s)
+  }
+
+  default: {
+    return s
+  }
   }
 }
 
@@ -208,7 +248,6 @@ function colorizeWeb(body: string) {
 
 function colorizeAPI(body: string) {
   if (body.match(/^Build succeeded$/)) return color.greenBright(body)
-  // eslint-disable-next-line unicorn/prefer-starts-ends-with
   if (body.match(/^Build failed/)) return color.red(body)
   const build = body.match(/^(Build started by user )(.+)$/)
   if (build) {
@@ -286,24 +325,36 @@ export default function colorize(line: string) {
   const identifier = parsed[2]
   let body = (parsed[4] || '').trim()
   switch (identifier) {
-  case 'api':
+  case 'api': {
     body = colorizeAPI(body)
     break
-  case 'router':
+  }
+
+  case 'router': {
     body = colorizeRouter(body)
     break
-  case 'run':
+  }
+
+  case 'run': {
     body = colorizeRun(body)
     break
-  case 'web':
+  }
+
+  case 'web': {
     body = colorizeWeb(body)
     break
-  case 'heroku-redis':
+  }
+
+  case 'heroku-redis': {
     body = colorizeRedis(body)
     break
+  }
+
   case 'heroku-postgres':
-  case 'postgres':
+  case 'postgres': {
     body = colorizePG(body)
+    break
+  }
   }
 
   return getColorForIdentifier(identifier)(header) + ' ' + body

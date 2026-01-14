@@ -1,24 +1,13 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import inquirer from 'inquirer'
 import {ux} from '@oclif/core'
+import inquirer from 'inquirer'
+
 import {uuidValidate} from '../utils/uuid-validate.js'
 
 export class PipelineService {
-  // eslint-disable-next-line no-useless-constructor
   constructor(private herokuAPI: APIClient) {
     // Constructor required to inject herokuAPI dependency
-  }
-
-  promptForPipeline(pipelineIDOrName: string, choices: {name: string, value: Heroku.Pipeline}[]) {
-    const questions = [{
-      type: 'list',
-      name: 'pipeline',
-      message: `Which ${pipelineIDOrName} pipeline?`,
-      choices,
-    }]
-
-    return inquirer.prompt(questions)
   }
 
   async disambiguatePipeline(pipelineIDOrName: string) {
@@ -33,21 +22,24 @@ export class PipelineService {
 
     let choices
     switch (pipelines.length) {
-    case 0:
+    case 0: {
       ux.error('Pipeline not found')
       break
-    case 1:
+    }
+
+    case 1: {
       return pipelines[0]
-    default:
-      choices = pipelines.map(function (x: Heroku.Pipeline) {
-        return {name: new Date(x.created_at!), value: x}
-      })
+    }
+
+    default: {
+      choices = pipelines.map((x: Heroku.Pipeline) => ({name: new Date(x.created_at!), value: x}))
 
       return this.promptForPipeline(pipelineIDOrName, choices)
     }
+    }
   }
 
-  async getPipeline(flags: { pipeline: string | null; app: string | null }) {
+  async getPipeline(flags: { app: null | string; pipeline: null | string }) {
     let pipeline
 
     if ((!flags.pipeline) && (!flags.app)) {
@@ -70,6 +62,17 @@ export class PipelineService {
     }
 
     return pipeline
+  }
+
+  promptForPipeline(pipelineIDOrName: string, choices: {name: string, value: Heroku.Pipeline}[]) {
+    const questions = [{
+      choices,
+      message: `Which ${pipelineIDOrName} pipeline?`,
+      name: 'pipeline',
+      type: 'list',
+    }]
+
+    return inquirer.prompt(questions)
   }
 }
 

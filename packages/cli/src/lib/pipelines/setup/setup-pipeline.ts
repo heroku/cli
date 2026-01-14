@@ -9,9 +9,7 @@ export default function setupPipeline(kolkrabbi: any, app: any, settings: any, p
     )
   }
 
-  return Promise.all(promises).then(([appLink]) => {
-    return appLink
-  }, error => {
+  return Promise.all(promises).then(([appLink]) => appLink, error => {
     ux.error(error.body.message || error.message)
   })
 }

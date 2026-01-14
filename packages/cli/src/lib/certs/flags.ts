@@ -1,9 +1,10 @@
-import {SniEndpoint} from '../types/sni_endpoint.js'
-import {APIClient} from '@heroku-cli/command'
 import {HTTP} from '@heroku/http-call'
-import {Domain} from '../types/domain.js'
+import {APIClient} from '@heroku-cli/command'
 
-export default async function (flags: { endpoint: string | undefined; name: string | undefined; app: string }, heroku: APIClient) {
+import {Domain} from '../types/domain.js'
+import {SniEndpoint} from '../types/sni_endpoint.js'
+
+export default async function (flags: { app: string; endpoint: string | undefined; name: string | undefined }, heroku: APIClient) {
   if (flags.endpoint && flags.name) {
     throw new Error('Specified both --name and --endpoint, please use just one')
   }
@@ -22,11 +23,10 @@ export default async function (flags: { endpoint: string | undefined; name: stri
 
     const domains = (await Promise.all(promises)).map(({body: domain}) => domain)
 
-    sniEndpoints = sniEndpoints.filter(endpoint => {
+    sniEndpoints = sniEndpoints.filter(endpoint =>
       // This was modified from `endpoint.cname === flags.endpoint` because `cname` doesn't exist anymore in the SniEndpoint serialization.
       // We're making the assumption that the `--endpoint` flag was being used to search by hostname (internationalized domain name).
-      return domains.some(domain => domain.hostname === flags.endpoint && domain.sni_endpoint?.name === endpoint.name)
-    })
+      domains.some(domain => domain.hostname === flags.endpoint && domain.sni_endpoint?.name === endpoint.name))
 
     if (sniEndpoints.length > 1) {
       throw new Error('Must pass --name when more than one endpoint matches --endpoint')
@@ -34,9 +34,7 @@ export default async function (flags: { endpoint: string | undefined; name: stri
   }
 
   if (flags.name) {
-    sniEndpoints = sniEndpoints.filter(endpoint => {
-      return endpoint.name === flags.name
-    })
+    sniEndpoints = sniEndpoints.filter(endpoint => endpoint.name === flags.name)
 
     if (sniEndpoints.length > 1) {
       throw new Error(`More than one endpoint matches ${flags.name}, please file a support ticket`)

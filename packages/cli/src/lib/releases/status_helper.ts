@@ -1,25 +1,39 @@
-export const description = function (release: {status?: string, [k: string]: any}) {
+export const description = function (release: {[k: string]: any, status?: string}) {
   switch (release.status) {
-  case 'pending':
+  case 'pending': {
     return 'release command executing'
-  case 'failed':
+  }
+
+  case 'failed': {
     return 'release command failed'
-  case 'expired':
+  }
+
+  case 'expired': {
     return 'release expired'
-  default:
+  }
+
+  default: {
     return ''
+  }
   }
 }
 
 export const color = function (s?: string) {
   switch (s) {
-  case 'pending':
+  case 'pending': {
     return 'yellow'
-  case 'failed':
+  }
+
+  case 'failed': {
     return 'red'
-  case 'expired':
+  }
+
+  case 'expired': {
     return 'gray'
-  default:
+  }
+
+  default: {
     return 'cyan'
+  }
   }
 }

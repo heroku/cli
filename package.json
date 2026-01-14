@@ -40,6 +40,7 @@
     "build": "cd packages/cli && npm run prepack",
     "test": "lerna run test --concurrency 4",
     "lint": "cd packages/cli && npm run lint",
+    "lint:fix": "cd packages/cli && npm run lint:fix",
     "cspell:ci": "cspell --no-progress --gitignore --no-must-find-files --file-list stdin",
     "cspell:commit": "cspell --no-progress --gitignore --no-must-find-files --no-show-suggestions --config ./cspell.json --quiet",
     "pack:deb": "oclif pack:deb --root=\"./packages/cli\"",

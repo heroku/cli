@@ -6,7 +6,7 @@
     "oclif-typescript",
     "plugin:mocha/recommended"
   ],
-  "ignorePatterns": ["**/test/**/*.js", "**/oldCommands/**/*"],
+  "ignorePatterns": ["**/test/**/*.js", "**/oldCommands/**/*", "packages/*/lib/**"],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-empty-function": "off",

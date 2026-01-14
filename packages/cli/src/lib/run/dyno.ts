@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import {HTTP} from '@heroku/http-call'
 import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
-import {spawn} from 'child_process'
 import {ux} from '@oclif/core'
+import {spawn} from 'child_process'
 import debugFactory from 'debug'
-import {HTTP} from '@heroku/http-call'
 import * as https from 'https'
 import * as net from 'net'
 import {Duplex, Transform} from 'stream'
@@ -20,21 +20,21 @@ const debug = debugFactory('heroku:run')
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
 
 interface HerokuApiClientRun extends APIClient {
-  options: IOptions & {
+  options: {
     rejectUnauthorized?: boolean;
-  };
+  } & IOptions;
 }
 
 interface DynoOpts {
-  'exit-code'?: boolean;
-  'no-tty'?: boolean;
   app: string;
   attach?: boolean;
   command: string;
   dyno?: string;
   env?: string;
+  'exit-code'?: boolean;
   heroku: APIClient;
   listen?: boolean;
+  'no-tty'?: boolean;
   notify?: boolean;
   showStatus?: boolean;
   size?: string;
@@ -49,19 +49,13 @@ interface IOptions {
 }
 
 export default class Dyno extends Duplex {
-  get _useSSH() {
-    if (this.uri) {
-      /* tslint:disable:no-http-string */
-      return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
-      /* tslint:enable:no-http-string */
-    }
-  }
-
   dyno?: APIDyno
 
   heroku: HerokuApiClientRun
 
   input: any
+
+  legacyUri?: {[key: string]: any}
 
   p: any
 
@@ -69,11 +63,9 @@ export default class Dyno extends Duplex {
 
   resolve?: (value?: unknown) => void
 
-  uri?: URL
-
-  legacyUri?: {[key: string]: any}
-
   unpipeStdin: any
+
+  uri?: URL
 
   useSSH: any
 
@@ -92,6 +84,25 @@ export default class Dyno extends Duplex {
     }
   }
 
+  // Attaches stdin/stdout to dyno
+  attach() {
+    this.pipe(process.stdout)
+    if (this.dyno && this.dyno.attach_url) {
+      this.uri = new URL(this.dyno.attach_url)
+      this.legacyUri = parse(this.dyno.attach_url)
+    }
+
+    if (this._useSSH) {
+      this.p = this._ssh()
+    } else {
+      this.p = this._rendezvous()
+    }
+
+    return this.p.then(() => {
+      this.end()
+    })
+  }
+
   /**
    * Starts the dyno
    */
@@ -104,21 +115,70 @@ export default class Dyno extends Duplex {
     await this._doStart()
   }
 
+  _connect() {
+    return new Promise((resolve, reject) => {
+      this.resolve = resolve
+      this.reject = reject
+
+      // @ts-ignore
+      const options: { rejectUnauthorized?: boolean } & https.RequestOptions = this.legacyUri
+      options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
+      options.rejectUnauthorized = false
+      const r = https.request(options)
+      r.end()
+
+      r.on('error', this.reject)
+
+      r.on('response', response => {
+        const {statusCode} = response
+        if (statusCode === 403) {
+          r.destroy()
+          this.reject?.(new Error("You can't access this space from your IP address. Contact your team admin."))
+        }
+      })
+      r.on('upgrade', (_, remote) => {
+        const s = net.createServer(client => {
+          client.on('end', () => {
+            s.close()
+            // @ts-ignore
+            this.resolve()
+          })
+          client.on('connect', () => s.close())
+
+          client.on('error', () => this.reject)
+          remote.on('error', () => this.reject)
+
+          client.setNoDelay(true)
+          remote.setNoDelay(true)
+
+          remote.on('data', (data: any) => client.write(data))
+          client.on('data', data => remote.write(data))
+        })
+
+        s.listen(0, 'localhost', () => this._handle(s))
+        // abort the request when the local pipe server is closed
+        s.on('close', () => {
+          r.abort()
+        })
+      })
+    })
+  }
+
   async _doStart(retries = 2): Promise<HTTP<unknown> | undefined> {
     const command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
 
     try {
       const dyno = await this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
-        headers: {
-          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
-        },
         body: {
-          command,
           attach: this.opts.attach,
-          size: this.opts.size,
-          type: this.opts.type,
+          command,
           env: this._env(),
           force_no_tty: this.opts['no-tty'],
+          size: this.opts.size,
+          type: this.opts.type,
+        },
+        headers: {
+          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
         },
       })
       // @ts-ignore
@@ -151,23 +211,214 @@ export default class Dyno extends Duplex {
     }
   }
 
-  // Attaches stdin/stdout to dyno
-  attach() {
-    this.pipe(process.stdout)
-    if (this.dyno && this.dyno.attach_url) {
-      this.uri = new URL(this.dyno.attach_url)
-      this.legacyUri = parse(this.dyno.attach_url)
+  _env() {
+    const c: {[key: string]: any} = this.opts.env ? buildEnvFromFlag(this.opts.env) : {}
+    c.TERM = process.env.TERM
+    if (tty.isatty(1)) {
+      c.COLUMNS = process.stdout.columns
+      c.LINES = process.stdout.rows
     }
 
-    if (this._useSSH) {
-      this.p = this._ssh()
+    return c
+  }
+
+  _handle(localServer: net.Server) {
+    const addr = localServer.address() as net.AddressInfo
+    const host = addr.address
+    const {port} = addr
+    let lastErr = ''
+
+    // does not actually uncork but allows error to be displayed when attempting to read
+    this.uncork()
+    if (this.opts.listen) {
+      ux.stderr(`listening on port ${host}:${port} for ssh client`)
     } else {
-      this.p = this._rendezvous()
+      const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
+
+      // Debug SSH
+      if (this._isDebug()) {
+        params.push('-vvv')
+      }
+
+      const stdio: Array<('pipe' | number)> = [0, 1, 'pipe']
+      if (this.opts['exit-code']) {
+        stdio[1] = 'pipe'
+        if (process.stdout.isTTY) {
+          // force tty
+          params.push('-t')
+        }
+      }
+
+      const sshProc = spawn('ssh', params, {stdio})
+
+      // only receives stdout with --exit-code
+      if (sshProc.stdout) {
+        sshProc.stdout.setEncoding('utf8')
+        sshProc.stdout.on('data', this._readData())
+      }
+
+      sshProc.stderr?.on('data', data => {
+        lastErr = data.toString()
+
+        // suppress host key and permission denied messages
+        const messages = [
+          "Warning: Permanently added '[127.0.0.1]",
+        ]
+
+        const killMessages = [
+          'too many authentication failures',
+          'No more authentication methods to try',
+          'Permission denied (publickey).',
+        ]
+        if (this._isDebug() || [...killMessages, ...messages].some(message => data.includes(message))) {
+          process.stderr.write(data)
+        }
+
+        if (killMessages.some(message => data.includes(message))) {
+          sshProc.kill()
+          localServer.close()
+          this.reject?.(lastErr)
+        }
+      })
+      sshProc.on('close', () => {
+        // there was a problem connecting with the ssh key
+        if (lastErr.length > 0 && lastErr.includes('Permission denied')) {
+          const msgs = ['There was a problem connecting to the dyno.']
+          if (process.env.SSH_AUTH_SOCK) {
+            msgs.push('Confirm that your ssh key is added to your agent by running `ssh-add`.')
+          }
+
+          msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
+          // eslint-disable-next-line unicorn/no-array-push-push
+          msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
+          ux.error(msgs.join('\n'))
+        }
+
+        // cleanup local server
+        localServer.close()
+      })
+      this.p
+        .then(() => sshProc.kill())
+        .catch(() => sshProc.kill())
     }
 
-    return this.p.then(() => {
-      this.end()
-    })
+    this._notify()
+  }
+
+  _isDebug() {
+    const debug = process.env.HEROKU_DEBUG
+    return debug && (debug === '1' || debug.toUpperCase() === 'TRUE')
+  }
+
+  _notify() {
+    try {
+      if (this._notified) return
+      this._notified = true
+      if (!this.opts.notify) return
+      // only show notifications if dyno took longer than 20 seconds to start
+      // @ts-ignore
+      if (Date.now() - this._startedAt < 1000 * 20) return
+
+      const notification: { subtitle?: string } & Notification = {
+        // @ts-ignore
+        message: 'dyno is up',
+        subtitle: `heroku run ${this.opts.command}`,
+        title: this.opts.app,
+        // sound: true
+      }
+
+      notify(notification)
+    } catch (error: any) {
+      ux.warn(error)
+    }
+  }
+
+  _read() {
+    if (this.useSSH) {
+      throw new Error('Cannot read stream from ssh dyno')
+    }
+    // do not need to do anything to handle Readable interface
+  }
+
+  _readData(c?: tls.TLSSocket) {
+    let firstLine = true
+    return (data: string) => {
+      debug('input: %o', data)
+      // discard first line
+      if (c && firstLine) {
+        if (this.opts.showStatus) ux.action.stop(this._status('up'))
+        firstLine = false
+        this._readStdin(c)
+        return
+      }
+
+      this._notify()
+
+      // carriage returns break json parsing of output
+      if (!process.stdout.isTTY) {
+        // eslint-disable-next-line no-control-regex, prefer-regex-literals
+        data = data.replace(new RegExp('\r\n', 'g'), '\n')
+      }
+
+      const exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
+      if (exitCode) {
+        debug('got exit code: %d', exitCode[1])
+        this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
+        const code = Number.parseInt(exitCode[1], 10)
+        if (code === 0) {
+          // @ts-ignore
+          this.resolve()
+        } else {
+          const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
+          err.exitCode = code
+          // @ts-ignore
+          this.reject(err)
+        }
+
+        return
+      }
+
+      this.push(data)
+    }
+  }
+
+  _readStdin(c: tls.TLSSocket) {
+    this.input = c
+    const {stdin} = process
+    stdin.setEncoding('utf8')
+
+    // without this the CLI will hang on rake db:migrate
+    // until a character is pressed
+    if (stdin.unref) {
+      stdin.unref()
+    }
+
+    if (!this.opts['no-tty'] && tty.isatty(0)) {
+      // @ts-ignore
+      stdin.setRawMode(true)
+      stdin.pipe(c)
+      let sigints: any[] = []
+      stdin.on('data', c => {
+        if (c.toString() === '\u0003') {
+          sigints.push(Date.now())
+        }
+
+        sigints = sigints.filter(d => d > Date.now() - 1000)
+
+        if (sigints.length >= 4) {
+          ux.error('forcing dyno disconnect', {exit: 1})
+        }
+      })
+    } else {
+      stdin.pipe(new Transform({
+        // eslint-disable-next-line unicorn/no-hex-escape
+        flush: done => c.write('\x04', done),
+        objectMode: true,
+        transform: (chunk, _, next) => c.write(chunk, next),
+      }))
+    }
+
+    this.uncork()
   }
 
   _rendezvous() {
@@ -242,154 +493,6 @@ export default class Dyno extends Duplex {
     }
   }
 
-  _connect() {
-    return new Promise((resolve, reject) => {
-      this.resolve = resolve
-      this.reject = reject
-
-      // @ts-ignore
-      const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.legacyUri
-      options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
-      options.rejectUnauthorized = false
-      const r = https.request(options)
-      r.end()
-
-      r.on('error', this.reject)
-
-      r.on('response', response => {
-        const statusCode = response.statusCode
-        if (statusCode === 403) {
-          r.destroy()
-          this.reject?.(new Error("You can't access this space from your IP address. Contact your team admin."))
-        }
-      })
-      r.on('upgrade', (_, remote) => {
-        const s = net.createServer(client => {
-          client.on('end', () => {
-            s.close()
-            // @ts-ignore
-            this.resolve()
-          })
-          client.on('connect', () => s.close())
-
-          client.on('error', () => this.reject)
-          remote.on('error', () => this.reject)
-
-          client.setNoDelay(true)
-          remote.setNoDelay(true)
-
-          remote.on('data', (data: any) => client.write(data))
-          client.on('data', data => remote.write(data))
-        })
-
-        s.listen(0, 'localhost', () => this._handle(s))
-        // abort the request when the local pipe server is closed
-        s.on('close', () => {
-          r.abort()
-        })
-      })
-    })
-  }
-
-  _handle(localServer: net.Server) {
-    const addr = localServer.address() as net.AddressInfo
-    const host = addr.address
-    const {port} = addr
-    let lastErr = ''
-
-    // does not actually uncork but allows error to be displayed when attempting to read
-    this.uncork()
-    if (this.opts.listen) {
-      ux.stderr(`listening on port ${host}:${port} for ssh client`)
-    } else {
-      const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
-
-      // Debug SSH
-      if (this._isDebug()) {
-        params.push('-vvv')
-      }
-
-      const stdio: Array<(number | 'pipe')> = [0, 1, 'pipe']
-      if (this.opts['exit-code']) {
-        stdio[1] = 'pipe'
-        if (process.stdout.isTTY) {
-          // force tty
-          params.push('-t')
-        }
-      }
-
-      const sshProc = spawn('ssh', params, {stdio})
-
-      // only receives stdout with --exit-code
-      if (sshProc.stdout) {
-        sshProc.stdout.setEncoding('utf8')
-        sshProc.stdout.on('data', this._readData())
-      }
-
-      sshProc.stderr?.on('data', data => {
-        lastErr = data.toString()
-
-        // suppress host key and permission denied messages
-        const messages = [
-          "Warning: Permanently added '[127.0.0.1]",
-        ]
-
-        const killMessages = [
-          'too many authentication failures',
-          'No more authentication methods to try',
-          'Permission denied (publickey).',
-        ]
-        if (this._isDebug() || [...killMessages, ...messages].some(message => data.includes(message))) {
-          process.stderr.write(data)
-        }
-
-        if (killMessages.some(message => data.includes(message))) {
-          sshProc.kill()
-          localServer.close()
-          this.reject?.(lastErr)
-        }
-      })
-      sshProc.on('close', () => {
-        // there was a problem connecting with the ssh key
-        if (lastErr.length > 0 && lastErr.includes('Permission denied')) {
-          const msgs = ['There was a problem connecting to the dyno.']
-          if (process.env.SSH_AUTH_SOCK) {
-            msgs.push('Confirm that your ssh key is added to your agent by running `ssh-add`.')
-          }
-
-          msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
-          // eslint-disable-next-line unicorn/no-array-push-push
-          msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
-          ux.error(msgs.join('\n'))
-        }
-
-        // cleanup local server
-        localServer.close()
-      })
-      this.p
-        .then(() => sshProc.kill())
-        .catch(() => sshProc.kill())
-    }
-
-    this._notify()
-  }
-
-  _isDebug() {
-    const debug = process.env.HEROKU_DEBUG
-    return debug && (debug === '1' || debug.toUpperCase() === 'TRUE')
-  }
-
-  _env() {
-    const c: {[key: string]: any} = this.opts.env ? buildEnvFromFlag(this.opts.env) : {}
-    c.TERM = process.env.TERM
-    if (tty.isatty(1)) {
-      c.COLUMNS = process.stdout.columns
-      c.LINES = process.stdout.rows
-    }
-
-    return c
-  }
-
   _status(status: string | undefined) {
     // @ts-ignore
     const size = this.dyno.size > 0 ? ` (${this.dyno.size})` : ''
@@ -397,92 +500,12 @@ export default class Dyno extends Duplex {
     return `${status}, ${this.dyno.name || this.opts.dyno}${size}`
   }
 
-  _readData(c?: tls.TLSSocket) {
-    let firstLine = true
-    return (data: string) => {
-      debug('input: %o', data)
-      // discard first line
-      if (c && firstLine) {
-        if (this.opts.showStatus) ux.action.stop(this._status('up'))
-        firstLine = false
-        this._readStdin(c)
-        return
-      }
-
-      this._notify()
-
-      // carriage returns break json parsing of output
-      if (!process.stdout.isTTY) {
-        // eslint-disable-next-line no-control-regex, prefer-regex-literals
-        data = data.replace(new RegExp('\r\n', 'g'), '\n')
-      }
-
-      const exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
-      if (exitCode) {
-        debug('got exit code: %d', exitCode[1])
-        this.push(data.replace(/^\uFFFF heroku-command-exit-status: \d+$\n?/m, ''))
-        const code = Number.parseInt(exitCode[1], 10)
-        if (code === 0) {
-          // @ts-ignore
-          this.resolve()
-        } else {
-          const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
-          err.exitCode = code
-          // @ts-ignore
-          this.reject(err)
-        }
-
-        return
-      }
-
-      this.push(data)
+  get _useSSH() {
+    if (this.uri) {
+      /* tslint:disable:no-http-string */
+      return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
+      /* tslint:enable:no-http-string */
     }
-  }
-
-  _readStdin(c: tls.TLSSocket) {
-    this.input = c
-    const {stdin} = process
-    stdin.setEncoding('utf8')
-
-    // without this the CLI will hang on rake db:migrate
-    // until a character is pressed
-    if (stdin.unref) {
-      stdin.unref()
-    }
-
-    if (!this.opts['no-tty'] && tty.isatty(0)) {
-      // @ts-ignore
-      stdin.setRawMode(true)
-      stdin.pipe(c)
-      let sigints: any[] = []
-      stdin.on('data', c => {
-        if (c.toString() === '\u0003') {
-          sigints.push(Date.now())
-        }
-
-        sigints = sigints.filter(d => d > Date.now() - 1000)
-
-        if (sigints.length >= 4) {
-          ux.error('forcing dyno disconnect', {exit: 1})
-        }
-      })
-    } else {
-      stdin.pipe(new Transform({
-        objectMode: true,
-        transform: (chunk, _, next) => c.write(chunk, next),
-        // eslint-disable-next-line unicorn/no-hex-escape
-        flush: done => c.write('\x04', done),
-      }))
-    }
-
-    this.uncork()
-  }
-
-  _read() {
-    if (this.useSSH) {
-      throw new Error('Cannot read stream from ssh dyno')
-    }
-    // do not need to do anything to handle Readable interface
   }
 
   _write(chunk: any, encoding: any, callback: any) {
@@ -492,28 +515,5 @@ export default class Dyno extends Duplex {
 
     if (!this.input) throw new Error('no input')
     this.input.write(chunk, encoding, callback)
-  }
-
-  _notify() {
-    try {
-      if (this._notified) return
-      this._notified = true
-      if (!this.opts.notify) return
-      // only show notifications if dyno took longer than 20 seconds to start
-      // @ts-ignore
-      if (Date.now() - this._startedAt < 1000 * 20) return
-
-      const notification: Notification & { subtitle?: string } = {
-        // @ts-ignore
-        title: this.opts.app,
-        subtitle: `heroku run ${this.opts.command}`,
-        message: 'dyno is up',
-        // sound: true
-      }
-
-      notify(notification)
-    } catch (error: any) {
-      ux.warn(error)
-    }
   }
 }

@@ -11,7 +11,6 @@ import sinon = require('sinon')
 import * as tmp from 'tmp'
 import type * as Pgsql from '../../../../src/lib/pg/psql.js'
 
-
 describe('psql', function () {
   const db: ConnectionDetails = {
     attachment: {} as ConnectionDetails['attachment'],

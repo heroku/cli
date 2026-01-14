@@ -1,16 +1,19 @@
 'use strict'
 
 export default {
-  remoteFromGitConfig: () => Promise.resolve('heroku'),
-  url: (app: any) => `https://git.heroku.com/${app}.git`,
-  remoteUrl: () => Promise.resolve('https://git.heroku.com/myapp.git'),
-  spawn: () => Promise.resolve(),
-  exec: function (args: any[]) {
+  exec(args: any[]) {
     switch (args.join(' ')) {
-    case 'remote':
+    case 'remote': {
       return Promise.resolve('heroku')
-    default:
+    }
+
+    default: {
       return Promise.resolve()
     }
+    }
   },
+  remoteFromGitConfig: () => Promise.resolve('heroku'),
+  remoteUrl: () => Promise.resolve('https://git.heroku.com/myapp.git'),
+  spawn: () => Promise.resolve(),
+  url: (app: any) => `https://git.heroku.com/${app}.git`,
 }

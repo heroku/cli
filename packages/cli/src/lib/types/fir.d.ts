@@ -4432,7 +4432,7 @@ export interface InboundRuleset {
   created_by: string;
   /**
    * whether the trusted IP rules have been applied to the space
-   * 
+   *
    * @example true
    */
   applied?: boolean;

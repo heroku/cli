@@ -1,3 +1,4 @@
+import {ux} from '@oclif/core'
 import {fork as forkChildProcess} from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -34,8 +35,8 @@ export function fork(argv: string[]): Promise<void> {
   const nf = forkChildProcess(script, argv, {stdio: 'inherit'})
 
   return new Promise(resolve => {
-    nf.on('exit', function (code: number) {
-      if (code !== 0) process.exit(code)
+    nf.on('exit', (code: number) => {
+      if (code !== 0) ux.exit(code)
       resolve()
     })
   })

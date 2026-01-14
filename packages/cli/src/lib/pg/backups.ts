@@ -1,9 +1,11 @@
+import {utils} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
+
 import type {BackupTransfer} from './types.js'
+
 import bytes = require('bytes')
 
 const heredoc = tsheredoc.default
@@ -36,6 +38,17 @@ class Backups {
     this.heroku = heroku
   }
 
+  protected displayLogs(logs: BackupTransfer['logs']) {
+    for (const log of logs) {
+      if (this.logsAlreadyShown.has(log.created_at + log.message)) {
+        continue
+      }
+
+      this.logsAlreadyShown.add(log.created_at + log.message)
+      ux.stdout(`${log.created_at} ${log.message}`)
+    }
+  }
+
   public filesize(size: number, opts = {}): string {
     Object.assign(opts, {
       decimalPlaces: 2,
@@ -44,25 +57,10 @@ class Backups {
     return bytes(size, opts)
   }
 
-  public status(transfer: BackupTransfer): string {
-    if (transfer.finished_at && transfer.succeeded) {
-      const warnings = transfer.warnings
-      if (warnings > 0) {
-        return `Finished with ${warnings} warnings`
-      }
-
-      return `Completed ${transfer.finished_at}`
-    }
-
-    if (transfer.finished_at) {
-      return `Failed ${transfer.finished_at}`
-    }
-
-    if (transfer.started_at) {
-      return `Running (processed ${this.filesize(transfer.processed_bytes)})`
-    }
-
-    return 'Pending'
+  public name(transfer: BackupTransfer): string {
+    const oldPGBName = transfer.options?.pgbackups_name
+    if (oldPGBName) return `o${oldPGBName}`
+    return `${prefix(transfer)}${(transfer.num || '').toString().padStart(3, '0')}`
   }
 
   public async num(name: string): Promise<number | undefined> {
@@ -73,42 +71,6 @@ class Backups {
       const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: utils.pg.host()})
       const transfer = transfers.find(t => this.name(t) === name)
       if (transfer) return transfer.num
-    }
-  }
-
-  public name(transfer: BackupTransfer): string {
-    const oldPGBName = transfer.options?.pgbackups_name
-    if (oldPGBName) return `o${oldPGBName}`
-    return `${prefix(transfer)}${(transfer.num || '').toString().padStart(3, '0')}`
-  }
-
-  public async wait(action: string, transferID: string, interval: number, verbose: boolean, app: string): Promise<void> {
-    if (verbose) {
-      ux.stdout(`${action}...`)
-    }
-
-    ux.action.start(action)
-    try {
-      for await (const backupSucceeded of this.poll(transferID, interval, verbose, app || this.app)) {
-        if (backupSucceeded) {
-          ux.action.stop()
-          break
-        }
-      }
-    } catch (error) {
-      ux.action.stop('!')
-      ux.error(error as Error)
-    }
-  }
-
-  protected displayLogs(logs: BackupTransfer['logs']) {
-    for (const log of logs) {
-      if (this.logsAlreadyShown.has(log.created_at + log.message)) {
-        continue
-      }
-
-      this.logsAlreadyShown.add(log.created_at + log.message)
-      ux.stdout(`${log.created_at} ${log.message}`)
     }
   }
 
@@ -163,6 +125,46 @@ class Backups {
       yield new Promise(resolve => {
         setTimeout(resolve, interval * 1000)
       })
+    }
+  }
+
+  public status(transfer: BackupTransfer): string {
+    const {finished_at, processed_bytes, started_at, succeeded, warnings} = transfer
+    if (finished_at && succeeded) {
+      if (warnings > 0) {
+        return `Finished with ${warnings} warnings`
+      }
+
+      return `Completed ${finished_at}`
+    }
+
+    if (finished_at) {
+      return `Failed ${finished_at}`
+    }
+
+    if (started_at) {
+      return `Running (processed ${this.filesize(processed_bytes)})`
+    }
+
+    return 'Pending'
+  }
+
+  public async wait(action: string, transferID: string, interval: number, verbose: boolean, app: string): Promise<void> {
+    if (verbose) {
+      ux.stdout(`${action}...`)
+    }
+
+    ux.action.start(action)
+    try {
+      for await (const backupSucceeded of this.poll(transferID, interval, verbose, app || this.app)) {
+        if (backupSucceeded) {
+          ux.action.stop()
+          break
+        }
+      }
+    } catch (error) {
+      ux.action.stop('!')
+      ux.error(error as Error)
     }
   }
 }
