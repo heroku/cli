@@ -127,7 +127,6 @@
     "oclif": "^4.22.65",
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
-    "read-pkg": "^9.0.1",
     "rimraf": "5.0.5",
     "sinon": "^19.0.2",
     "source-map-support": "^0.5.21",
