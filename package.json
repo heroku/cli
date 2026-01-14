@@ -50,8 +50,5 @@
     "packages": [
       "packages/*"
     ]
-  },
-  "dependencies": {
-    "@heroku/heroku-cli-util": "10.3.0"
   }
 }
