@@ -1,11 +1,12 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import type {BackupTransfer} from '../../../lib/pg/types.js'
+
 import ConfirmCommand from '../../../lib/confirmCommand.js'
 import backupsFactory from '../../../lib/pg/backups.js'
-import {utils} from '@heroku/heroku-cli-util'
-import type {BackupTransfer} from '../../../lib/pg/types.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
@@ -24,28 +25,12 @@ function dropboxURL(url: string) {
 }
 
 export default class Restore extends Command {
-  static topic = 'pg'
-  static description = 'restore a backup (default latest) to a database'
-  static flags = {
-    'wait-interval': flags.integer({default: 3}),
-    extensions: flags.string({
-      char: 'e',
-      description: heredoc(`
-        comma-separated list of extensions to pre-install in the default
-        public schema or an optional custom schema
-        (for example: hstore or myschema.hstore)
-      `),
-    }),
-    verbose: flags.boolean({char: 'v'}),
-    confirm: flags.string({char: 'c'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     backup: Args.string({description: 'URL or backup ID from another app'}),
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+
+  static description = 'restore a backup (default latest) to a database'
 
   static examples = [
     heredoc(`
@@ -74,9 +59,31 @@ export default class Restore extends Command {
     `),
   ]
 
+  static flags = {
+    app: flags.app({required: true}),
+    confirm: flags.string({char: 'c'}),
+    extensions: flags.string({
+      char: 'e',
+      description: heredoc(`
+        comma-separated list of extensions to pre-install in the default
+        public schema or an optional custom schema
+        (for example: hstore or myschema.hstore)
+      `),
+    }),
+    remote: flags.remote(),
+    verbose: flags.boolean({char: 'v'}),
+    'wait-interval': flags.integer({default: 3}),
+  }
+
+  static topic = 'pg'
+
+  protected getSortedExtensions(extensions: null | string | undefined): string[] | undefined {
+    return extensions?.split(',').map(ext => ext.trim().toLowerCase()).sort()
+  }
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Restore)
-    const {app, 'wait-interval': waitInterval, extensions, confirm, verbose} = flags
+    const {args, flags} = await this.parse(Restore)
+    const {app, confirm, extensions, verbose, 'wait-interval': waitInterval} = flags
     const interval = Math.max(3, waitInterval)
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app as string, args.database)
@@ -140,10 +147,6 @@ export default class Restore extends Command {
 
     ux.action.stop()
     await pgbackups.wait('Restoring', restore.uuid, interval, verbose, db.app.id as string)
-  }
-
-  protected getSortedExtensions(extensions: string | null | undefined): string[] | undefined {
-    return extensions?.split(',').map(ext => ext.trim().toLowerCase()).sort()
   }
 }
 

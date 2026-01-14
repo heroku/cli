@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 import * as api from '../../api.js'

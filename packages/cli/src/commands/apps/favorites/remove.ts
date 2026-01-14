@@ -1,15 +1,17 @@
-import {color} from '@heroku-cli/color'
-import {ux} from '@oclif/core'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
+
 import {Favorites} from '../../../lib/types/favorites.js'
 
 export default class Remove extends Command {
   static description = 'unfavorites an app'
-  static topic = 'apps'
   static flags  = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static topic = 'apps'
 
   async run() {
     const {flags} = await this.parse(Remove)

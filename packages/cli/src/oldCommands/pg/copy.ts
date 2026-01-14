@@ -1,5 +1,5 @@
 /*
-import color from '@heroku-cli/color'
+import color from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -23,7 +23,7 @@ const getAttachmentInfo = async function (heroku: APIClient, db: string, app: st
 
   const attachment = await dbResolver.getAttachment(app, db)
   if (!attachment)
-    throw new Error(`${db} not found on ${color.magenta(app)}`)
+    throw new Error(`${db} not found on ${color.app(app)}`)
 
   const {body: addon} = await heroku.get<Heroku.AddOnAttachment>(`/addons/${attachment.addon.name}`)
   const {body: config} = await heroku.get<Heroku.ConfigVars>(`/apps/${attachment.app.name}/config-vars`)

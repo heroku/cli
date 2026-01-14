@@ -1,36 +1,40 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import notify from '../../lib/notify.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
-import destroyAddon from '../../lib/addons/destroy_addon.js'
-import {resolveAddon} from '../../lib/addons/resolve.js'
+import {Args} from '@oclif/core'
 import _ from 'lodash'
 
+import destroyAddon from '../../lib/addons/destroy_addon.js'
+import {resolveAddon} from '../../lib/addons/resolve.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import notify from '../../lib/notify.js'
+
 export default class Destroy extends Command {
-  static topic = 'addons'
-  static description = 'permanently destroy an add-on resource'
-  static strict = false
-  static examples = ['addons:destroy [ADDON]... [flags]']
-  static hiddenAliases = ['addons:remove']
-  static flags = {
-    force: flags.boolean({char: 'f', description: 'allow destruction even if connected to other apps'}),
-    confirm: flags.string({char: 'c'}),
-    wait: flags.boolean({description: 'watch add-on destruction status and exit when complete'}),
-    app: flags.app(),
-    remote: flags.remote(),
-  }
-
   static args = {
-    addonName: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
+    addonName: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
 
+  static description = 'permanently destroy an add-on resource'
+  static examples = ['addons:destroy [ADDON]... [flags]']
+
+  static flags = {
+    app: flags.app(),
+    confirm: flags.string({char: 'c'}),
+    force: flags.boolean({char: 'f', description: 'allow destruction even if connected to other apps'}),
+    remote: flags.remote(),
+    wait: flags.boolean({description: 'watch add-on destruction status and exit when complete'}),
+  }
+
+  static hiddenAliases = ['addons:remove']
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
 
+  static strict = false
+
+  static topic = 'addons'
+
   public async run(): Promise<void> {
-    const {flags, argv} = await this.parse(Destroy)
-    const {app, wait, confirm} = flags
+    const {argv, flags} = await this.parse(Destroy)
+    const {app, confirm, wait} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
 
     const addons = await Promise.all(argv.map((name: string) => resolveAddon(this.heroku, app, name as string)))
@@ -38,7 +42,7 @@ export default class Destroy extends Command {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
       const addonApp = addon.app?.name
       if (app && addonApp !== app) {
-        throw new Error(`${color.yellow(addon.name ?? '')} is on ${color.magenta(addonApp ?? '')} not ${color.magenta(app)}`)
+        throw new Error(`${color.yellow(addon.name ?? '')} is on ${color.app(addonApp ?? '')} not ${color.app(app)}`)
       }
     }
 

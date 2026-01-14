@@ -1,20 +1,24 @@
+import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {waitForDomains} from '../../lib/certs/domains.js'
+import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
-import {CertAndKeyManager} from '../../lib/certs/get_cert_and_key.js'
 import tsheredoc from 'tsheredoc'
-import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+
 import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
+import {waitForDomains} from '../../lib/certs/domains.js'
+import {CertAndKeyManager} from '../../lib/certs/get_cert_and_key.js'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 const heredoc = tsheredoc.default
 
 export default class Add extends Command {
-  static topic = 'certs'
-  static strict = true
+  static args = {
+    CRT: Args.string({description: 'absolute path of the certificate file on disk', required: true}),
+    KEY: Args.string({description: 'absolute path of the key file on disk', required: true}),
+  }
+
   static description = `Add an SSL certificate to an app.
 
   Note: certificates with PEM encoding are also valid.
@@ -30,19 +34,9 @@ export default class Add extends Command {
     remote: flags.remote(),
   }
 
-  static args = {
-    CRT: Args.string({required: true, description: 'absolute path of the certificate file on disk'}),
-    KEY: Args.string({required: true, description: 'absolute path of the key file on disk'}),
-  }
+  static strict = true
 
-  getDomainsToAssociate(sniEndpoint: SniEndpoint) {
-    return inquirer.prompt<{domains: string[]}>([{
-      type: 'checkbox',
-      name: 'domains',
-      message: 'Select domains',
-      choices: sniEndpoint.ssl_cert.cert_domains,
-    }])
-  }
+  static topic = 'certs'
 
   async configureDomains(app: string, heroku: APIClient, cert: SniEndpoint) {
     const certDomains = cert.ssl_cert.cert_domains
@@ -58,21 +52,21 @@ export default class Add extends Command {
     }
   }
 
-  async selectDomains(domainOptions: string[]) {
+  getDomainsToAssociate(sniEndpoint: SniEndpoint) {
     return inquirer.prompt<{domains: string[]}>([{
-      type: 'checkbox',
-      name: 'domains',
+      choices: sniEndpoint.ssl_cert.cert_domains,
       message: 'Select domains',
-      choices: domainOptions,
+      name: 'domains',
+      type: 'checkbox',
     }])
   }
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Add)
+    const {args, flags} = await this.parse(Add)
     const {app} = flags
     const certManager = new CertAndKeyManager()
     const files = await certManager.getCertAndKey(args)
-    ux.action.start(`Adding SSL certificate to ${color.magenta(app)}`)
+    ux.action.start(`Adding SSL certificate to ${color.app(app)}`)
     const {body: sniEndpoint} = await this.heroku.post<SniEndpoint>(`/apps/${app}/sni-endpoints`, {
       body: {
         certificate_chain: files.crt.toString(),
@@ -83,6 +77,15 @@ export default class Add extends Command {
 
     displayCertificateDetails(sniEndpoint)
     await this.configureDomains(app, this.heroku, sniEndpoint)
+  }
+
+  async selectDomains(domainOptions: string[]) {
+    return inquirer.prompt<{domains: string[]}>([{
+      choices: domainOptions,
+      message: 'Select domains',
+      name: 'domains',
+      type: 'checkbox',
+    }])
   }
 }
 
@@ -98,7 +101,7 @@ function createMatcherFromSplitDomain([firstChar, rest]: [string, string]) {
     matcherContents.push(firstChar)
   }
 
-  const escapedRest = rest.replace(/\./g, '\\.')
+  const escapedRest = rest.replaceAll('.', '\\.')
 
   matcherContents.push(escapedRest)
 

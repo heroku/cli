@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
@@ -17,8 +17,8 @@ export default class PipelinesUpdate extends Command {
     remote: flags.remote(),
     stage: flags.string({
       char: 's',
-      description: 'new stage of app',
       completion: StageCompletion,
+      description: 'new stage of app',
       required: true,
     }),
   }

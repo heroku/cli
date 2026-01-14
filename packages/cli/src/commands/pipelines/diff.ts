@@ -1,19 +1,25 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {HTTP} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
 
-import {getCoupling, getPipeline, getReleases, listPipelineApps, SDK_HEADER} from '../../lib/api.js'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
-import type {OciImage, Slug, PipelineCoupling} from '../../lib/types/fir.js'
+import type {OciImage, PipelineCoupling, Slug} from '../../lib/types/fir.js'
 import type {Commit, GitHubDiff} from '../../lib/types/github.js'
+
+import {
+  SDK_HEADER,
+  getCoupling,
+  getPipeline,
+  getReleases,
+  listPipelineApps,
+} from '../../lib/api.js'
 import {GenerationKind, getGeneration} from '../../lib/apps/generation.js'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
 
 interface AppInfo {
+  hash?: string;
   name: string;
   repo?: string;
-  hash?: string;
 }
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
@@ -39,9 +45,9 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
   try {
     const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
     const headers = {
-      authorization: 'token ' + githubToken,
       'Content-Type': 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
+      authorization: 'token ' + githubToken,
     }
 
     if (herokuUserAgent) {
@@ -85,12 +91,10 @@ export default class PipelinesDiff extends Command {
     remote: flags.remote(),
   }
 
-  kolkrabbi: KolkrabbiAPI = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
-
   getAppInfo = async (appName: string, appId: string, generation: GenerationKind): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
-      .catch(() => ({name: appName, repo: null, hash: null}))
+      .catch(() => ({hash: null, name: appName, repo: null}))
 
     // Find the commit hash of the latest release for this app
     let slug: Slug
@@ -116,11 +120,13 @@ export default class PipelinesDiff extends Command {
         commit = ociImages[0]?.commit
       }
     } catch {
-      return {name: appName, repo: githubApp.repo, hash: undefined}
+      return {hash: undefined, name: appName, repo: githubApp.repo}
     }
 
-    return {name: appName, repo: githubApp.repo, hash: commit}
+    return {hash: commit, name: appName, repo: githubApp.repo}
   }
+
+  kolkrabbi: KolkrabbiAPI = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
   async run() {
     const {flags} = await this.parse(PipelinesDiff)

@@ -1,21 +1,23 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import getEndpoint from '../../lib/certs/flags.js'
+
 import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
-import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+import getEndpoint from '../../lib/certs/flags.js'
 import {Domain} from '../../lib/types/domain.js'
+import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 export default class Info extends Command {
-  static topic = 'certs'
   static description = 'show certificate information for an SSL certificate'
   static flags = {
-    name: flags.string({description: 'name to check info on'}),
-    endpoint: flags.string({description: 'endpoint to check info on'}),
-    'show-domains': flags.boolean({description: 'show associated domains'}),
     app: flags.app({required: true}),
+    endpoint: flags.string({description: 'endpoint to check info on'}),
+    name: flags.string({description: 'name to check info on'}),
     remote: flags.remote(),
+    'show-domains': flags.boolean({description: 'show associated domains'}),
   }
+
+  static topic = 'certs'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Info)

@@ -1,57 +1,56 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 import _ from 'lodash'
 import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
 const COST_MONTHLY: Record<string, number> = {
-  Free: 0,
-  Eco: 0,
-  Hobby: 7,
-  Basic: 7,
-  'Standard-1X': 25,
-  'Standard-2X': 50,
-  'Performance-M': 250,
-  Performance: 500,
-  'Performance-L': 500,
   '1X': 36,
   '2X': 72,
+  Basic: 7,
+  Eco: 0,
+  Free: 0,
+  Hobby: 7,
   PX: 576,
-  'Performance-L-RAM': 500,
-  'Performance-XL': 750,
+  Performance: 500,
   'Performance-2XL': 1500,
-  'Private-S': 225,
-  'Private-M': 450,
+  'Performance-L': 500,
+  'Performance-L-RAM': 500,
+  'Performance-M': 250,
+  'Performance-XL': 750,
   'Private-L': 900,
-  'Shield-M': 540,
-  'Shield-L': 1080,
-  'Shield-S': 270,
+  'Private-M': 450,
+  'Private-Memory-2XL': 1500,
   'Private-Memory-L': 500,
   'Private-Memory-XL': 750,
-  'Private-Memory-2XL': 1500,
+  'Private-S': 225,
+  'Shield-L': 1080,
+  'Shield-M': 540,
+  'Shield-Memory-2XL': 1800,
   'Shield-Memory-L': 600,
   'Shield-Memory-XL': 900,
-  'Shield-Memory-2XL': 1800,
+  'Shield-S': 270,
+  'Standard-1X': 25,
+  'Standard-2X': 50,
   'dyno-1c-0.5gb': 25,
-  'dyno-2c-1gb': 50,
   'dyno-1c-4gb': 80,
-  'dyno-2c-8gb': 160,
-  'dyno-4c-16gb': 320,
-  'dyno-8c-32gb': 640,
-  'dyno-16c-64gb': 1000,
-  'dyno-2c-4gb': 150,
-  'dyno-4c-8gb': 300,
-  'dyno-8c-16gb': 600,
-  'dyno-16c-32gb': 1200,
-  'dyno-32c-64gb': 2400,
   'dyno-1c-8gb': 100,
+  'dyno-2c-1gb': 50,
+  'dyno-2c-4gb': 150,
+  'dyno-2c-8gb': 160,
   'dyno-2c-16gb': 250,
+  'dyno-4c-8gb': 300,
+  'dyno-4c-16gb': 320,
   'dyno-4c-32gb': 500,
+  'dyno-8c-16gb': 600,
+  'dyno-8c-32gb': 640,
   'dyno-8c-64gb': 750,
+  'dyno-16c-32gb': 1200,
+  'dyno-16c-64gb': 1000,
   'dyno-16c-128gb': 1500,
+  'dyno-32c-64gb': 2400,
 }
 
 const calculateHourly =  (size: string) => COST_MONTHLY[size] / 720
@@ -69,7 +68,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 
   const formationTableData = _.sortBy(formation, 'type')
     // this filter shouldn't be necessary, but it makes TS happy
-    .filter((f): f is Heroku.Formation & {size: string, quantity: number} => typeof f.size === 'string' && typeof f.quantity === 'number')
+    .filter((f): f is {quantity: number, size: string} & Heroku.Formation => typeof f.size === 'string' && typeof f.quantity === 'number')
     .map((d => {
       if (d.size === 'Eco') {
         isShowingEcoCostMessage = true
@@ -129,7 +128,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 }
 
 export default class Type extends Command {
-  static strict = false
+  static aliases = ['ps:resize', 'dyno:resize']
   static description = heredoc`
     manage dyno sizes
     Called with no arguments shows the current dyno size.
@@ -139,12 +138,13 @@ export default class Type extends Command {
 
     Called with 1..n TYPE=SIZE arguments sets the quantity per type.
   `
-  static aliases = ['ps:resize', 'dyno:resize']
-  static hiddenAliases = ['resize', 'dyno:type']
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static hiddenAliases = ['resize', 'dyno:type']
+  static strict = false
 
   public async run(): Promise<void> {
     const {flags, ...restParse} = await this.parse(Type)
@@ -175,7 +175,7 @@ export default class Type extends Command {
     const changes = await parse()
 
     if (changes.length > 0) {
-      ux.action.start(`Scaling dynos on ${color.magenta(app)}`)
+      ux.action.start(`Scaling dynos on ${color.app(app)}`)
       await this.heroku.patch(`/apps/${app}/formation`, {body: {updates: changes}})
       ux.action.stop()
     }

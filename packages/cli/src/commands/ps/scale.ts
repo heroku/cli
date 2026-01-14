@@ -1,17 +1,18 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 import _ from 'lodash'
 import tsheredoc from 'tsheredoc'
+
 const heredoc = tsheredoc.default
 
 const emptyFormationErr = (app: string) => (
-  new Error(`No process types on ${color.magenta(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
+  new Error(`No process types on ${color.app(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
 )
 
 export default class Scale extends Command {
-  static strict = false
+  static aliases = ['dyno:scale']
   static description = heredoc`
     scale dyno quantity up or down
     Appending a size (eg. web=2:Standard-2X) allows simultaneous scaling and resizing.
@@ -27,12 +28,13 @@ export default class Scale extends Command {
     web=3:Standard-2X worker=1:Standard-1X
   `]
 
-  static aliases = ['dyno:scale']
-  static hiddenAliases = ['scale']
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static hiddenAliases = ['scale']
+  static strict = false
 
   public async run(): Promise<void> {
     const {flags, ...restParse} = await this.parse(Scale)

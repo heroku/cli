@@ -1,28 +1,31 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {findByPreviousOrId} from '../../lib/releases/releases.js'
+import {Args, ux} from '@oclif/core'
+
 import {stream} from '../../lib/releases/output.js'
+import {findByPreviousOrId} from '../../lib/releases/releases.js'
 
 export default class Rollback extends Command {
-  static topic = 'releases'
-  static hiddenAliases = ['rollback']
+  static args = {
+    release: Args.string({description: 'ID of the release. If omitted, we use the last eligible release.'}),
+  }
+
   static description = `Roll back to a previous release.
 
     If RELEASE is not specified, it will roll back to the last eligible release.
     `
   static flags = {
-    remote: flags.remote(),
     app: flags.app({required: true}),
+    remote: flags.remote(),
   }
 
-  static args = {
-    release: Args.string({description: 'ID of the release. If omitted, we use the last eligible release.'}),
-  }
+  static hiddenAliases = ['rollback']
+
+  static topic = 'releases'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Rollback)
+    const {args, flags} = await this.parse(Rollback)
     const {app} = flags
     const release = await findByPreviousOrId(this.heroku, app, args.release)
 

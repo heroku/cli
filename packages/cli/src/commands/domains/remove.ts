@@ -1,8 +1,12 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
 export default class DomainsRemove extends Command {
+  static args = {
+    hostname: Args.string({description: 'unique identifier of the domain or full hostname', required: true}),
+  }
+
   static description = 'remove a domain from an app'
 
   static examples = ['heroku domains:remove www.example.com']
@@ -10,10 +14,6 @@ export default class DomainsRemove extends Command {
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  }
-
-  static args = {
-    hostname: Args.string({required: true, description: 'unique identifier of the domain or full hostname'}),
   }
 
   async run() {

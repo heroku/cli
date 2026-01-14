@@ -1,8 +1,7 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import assert from 'assert'
 import fetch from 'node-fetch'
 import * as Stream from 'stream'
@@ -68,12 +67,12 @@ async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.Pipel
 
 async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<AppWithPipelineCoupling>, secondFactor?: string): Promise<Heroku.PipelinePromotion> {
   const options = {
-    headers: {},
     body: {
       pipeline: {id},
       source: {app: {id: sourceAppId}},
       targets: targetApps.map(app => ({app: {id: app.id}})),
     },
+    headers: {},
   }
 
   if (secondFactor) {

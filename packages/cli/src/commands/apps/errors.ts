@@ -1,11 +1,12 @@
-import {color} from '@heroku-cli/color'
-import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+/* eslint-disable perfectionist/sort-objects */
+import {color, hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import _ from 'lodash'
-import errorInfo from '../../lib/apps/error_info.js'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import _ from 'lodash'
+
+import errorInfo from '../../lib/apps/error_info.js'
 import {AppErrors} from '../../lib/types/app_errors.js'
 
 type ErrorSummary = Record<string, number>
@@ -35,10 +36,22 @@ function buildErrorTable(errors: ErrorSummary, source: string) {
     const count = errors[name]
     const info = errorInfo.find(e => e.name === name)
     if (info) {
-      return {name, count, source, level: info.level, title: info.title}
+      return {
+        count,
+        level: info.level,
+        name,
+        source,
+        title: info.title,
+      }
     }
 
-    return {name, count, source, level: 'critical', title: 'unknown error'}
+    return {
+      count,
+      level: 'critical',
+      name,
+      source,
+      title: 'unknown error',
+    }
   })
 }
 
@@ -55,11 +68,11 @@ export default class Errors extends Command {
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
-    json: flags.boolean({description: 'output in json format'}),
-    hours: flags.string({description: 'number of hours to look back (default 24)', default: '24'}),
-    router: flags.boolean({description: 'show only router errors'}),
     dyno: flags.boolean({description: 'show only dyno errors'}),
+    hours: flags.string({default: '24', description: 'number of hours to look back (default 24)'}),
+    json: flags.boolean({description: 'output in json format'}),
+    remote: flags.remote(),
+    router: flags.boolean({description: 'show only router errors'}),
   }
 
   async run() {

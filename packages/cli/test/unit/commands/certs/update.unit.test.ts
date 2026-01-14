@@ -1,17 +1,18 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/update.js'
-import runCommand from '../../../helpers/runCommand.js'
-import tsheredoc from 'tsheredoc'
-import nock from 'nock'
-import {endpoint, certificateDetails} from '../../../helpers/stubs/sni-endpoints.js'
-import * as sharedSni from './shared_sni.unit.test.js'
-import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
-import {expect} from 'chai'
-import stripAnsi from 'strip-ansi'
-import * as sinon from 'sinon'
 import {Errors} from '@oclif/core'
-import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
+import {expect} from 'chai'
+import nock from 'nock'
+import * as sinon from 'sinon'
 import {SinonStub} from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/certs/update.js'
+import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
+import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
+import runCommand from '../../../helpers/runCommand.js'
+import {certificateDetails, endpoint} from '../../../helpers/stubs/sni-endpoints.js'
+import * as sharedSni from './shared_sni.unit.test.js'
 
 const heredoc = tsheredoc.default
 
@@ -90,7 +91,7 @@ describe('heroku certs:update', function () {
 
     api.done()
     expect(stderr.output).to.equal(heredoc`
-      Updating SSL certificate tokyo-1050 for example... done
+      Updating SSL certificate tokyo-1050 for ⬢ example... done
     `)
     expect(stdout.output).to.equal(`Updated certificate details:\n${heredoc(certificateDetails)}`)
   })
@@ -140,7 +141,7 @@ describe('shared', function () {
 
   const stderr = function (endpoint: Partial<SniEndpoint>) {
     return heredoc`
-      Updating SSL certificate ${endpoint.name} for example... done\n
+      Updating SSL certificate ${endpoint.name} for ⬢ example... done\n
     `
   }
 
@@ -149,5 +150,10 @@ describe('shared', function () {
     return `Updated certificate details:\n${heredoc(certificateDetails)}\n`
   }
 
-  sharedSni.shouldHandleArgs('certs:update', Cmd, callback, {stdout, stderr, flags: {confirm: 'example'}, args: ['pem_file', 'key_file']})
+  sharedSni.shouldHandleArgs('certs:update', Cmd, callback, {
+    args: ['pem_file', 'key_file'],
+    flags: {confirm: 'example'},
+    stderr,
+    stdout,
+  })
 })
