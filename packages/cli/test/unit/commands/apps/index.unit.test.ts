@@ -116,7 +116,7 @@ describe('apps', function () {
       const actual = removeAllWhitespace(stdout)
       const expectedPersonalApps = removeAllWhitespace(`
           === foo@bar.com Apps
-          example`)
+          ⬢ example`)
       const expectedCollaboratedAppsHeader = removeAllWhitespace('Collaborated Apps')
       const expectedCollaboratedApps = removeAllWhitespace('collab-app someone-else@bar.com')
       expect(actual).to.include(expectedPersonalApps)
@@ -137,7 +137,7 @@ describe('apps', function () {
       const actual = removeAllWhitespace(stdout)
       const expectedPersonalApps = removeAllWhitespace(`
           === foo@bar.com Apps
-          example`)
+          ⬢ example`)
       const expectedCollaboratedAppsHeader = removeAllWhitespace('Collaborated Apps')
       const expectedCollaboratedApps = removeAllWhitespace('collab-app someone-else@bar.com')
       expect(actual).to.include(expectedPersonalApps)
@@ -168,7 +168,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n')
     })
 
     it('shows locked app', async function () {
@@ -181,7 +181,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\nlocked-app [locked]\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ locked-app [locked]\n')
     })
 
     it('shows locked eu app', async function () {
@@ -196,7 +196,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\nlocked-app [locked] (eu)\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ locked-app [locked] (eu)\n')
     })
 
     it('shows internal app', async function () {
@@ -209,7 +209,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal]\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal]\n')
     })
 
     it('shows internal locked app', async function () {
@@ -222,7 +222,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal/locked]\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal/locked]\n')
     })
 
     it('shows internal eu app', async function () {
@@ -237,7 +237,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal] (eu)\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal] (eu)\n')
     })
 
     it('shows internal locked eu app', async function () {
@@ -252,7 +252,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== foo@bar.com Apps\n\nexample\nexample-eu (eu)\ninternal-app [internal/locked] (eu)\n')
+      expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal/locked] (eu)\n')
     })
   })
 
@@ -280,7 +280,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps', '--team', 'test-team'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== Apps in team test-team\n\nteam-app-1\nteam-app-2\n')
+      expect(stdout).to.equal('=== Apps in team test-team\n\n⬢ team-app-1\n⬢ team-app-2\n')
     })
   })
 
@@ -312,7 +312,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== Apps in space test-space\n\nspace-app-1\nspace-app-2\n')
+      expect(stdout).to.equal('=== Apps in space test-space\n\n⬢ space-app-1\n⬢ space-app-2\n')
     })
 
     it('lists only internal apps in spaces by name', async function () {
@@ -327,7 +327,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space', '--internal-routing'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== Apps in space test-space\n\nspace-internal-app [internal]\n')
+      expect(stdout).to.equal('=== Apps in space test-space\n\n⬢ space-internal-app [internal]\n')
     })
   })
 })

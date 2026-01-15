@@ -119,9 +119,9 @@ describe('domains', function () {
 
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
-    expect(stdout.output).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
+    expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
     expect(stdout.output).to.contain('myapp.herokuapp.com')
-    expect(stdout.output).to.not.contain('=== myapp Custom Domains')
+    expect(stdout.output).to.not.contain('=== ⬢ myapp Custom Domains')
   })
 
   it('shows a list of domains and their DNS targets when there are custom domains', async function () {
@@ -132,9 +132,9 @@ describe('domains', function () {
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(stdout.output).to.contain('=== myapp Heroku Domain\n\nmyapp.herokuapp.com')
+    expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
     expect(stdout.output).to.contain('myapp.herokuapp.com')
-    expect(stdout.output).to.contain('=== myapp Custom Domains')
+    expect(stdout.output).to.contain('=== ⬢ myapp Custom Domains')
     expect(actual).to.contain(removeAllWhitespace('Domain Name     DNS Record Type DNS Target'))
     expect(actual).to.contain(removeAllWhitespace('example.com     ALIAS or ANAME  foo.herokudns.com'))
     expect(actual).to.contain(removeAllWhitespace('www.example.com CNAME           bar.herokudns.com'))
@@ -178,7 +178,7 @@ describe('domains', function () {
 
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
-    expect(stdout.output).to.contain('=== myapp Heroku Domain')
+    expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain')
     expect(unwrap(stderr.output)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
   })
 })

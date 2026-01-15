@@ -127,7 +127,6 @@ www.example.com  CNAME            www.example.herokudns.com
 
   tableConfig = (needsEndpoints: boolean, extended: boolean, requestedColumns?: string[]) => {
     const tableConfig: Record<string, any> = {
-      cname: {header: 'DNS Target'},
       hostname: {
         header: 'Domain Name',
       },
@@ -139,6 +138,8 @@ www.example.com  CNAME            www.example.herokudns.com
         },
         header: 'DNS Record Type',
       },
+      // eslint-disable-next-line perfectionist/sort-objects
+      cname: {header: 'DNS Target'},
     }
 
     if (extended) {

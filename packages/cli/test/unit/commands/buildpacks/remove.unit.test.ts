@@ -133,7 +133,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       const {error} = await runCommand(['buildpacks:remove', '-i', '1', '-a', 'example'])
 
-      expect(error?.message).to.include('No buildpacks were found. Next release on example will detect buildpack normally.')
+      expect(error?.message).to.include('No buildpacks were found. Next release on ⬢ example will detect buildpack normally.')
     })
 
     it('# returns an error when the index > 1 and the size is one', async function () {
@@ -222,7 +222,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       const {error} = await runCommand(['buildpacks:remove', 'https://github.com/bar/bar', '-a', 'example'])
 
-      expect(error?.message).to.include('No buildpacks were found. Next release on example will detect buildpack normally.')
+      expect(error?.message).to.include('No buildpacks were found. Next release on ⬢ example will detect buildpack normally.')
     })
 
     it('# returns an error when the url is not found', async function () {
