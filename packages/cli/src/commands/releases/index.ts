@@ -1,18 +1,18 @@
+import {color as newColor, hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import _ from 'lodash'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import _ from 'lodash'
+import stripAnsi from 'strip-ansi'
 
 import * as statusHelper from '../../lib/releases/status_helper.js'
 import * as time from '../../lib/time.js'
-import stripAnsi from 'strip-ansi'
 
 type ColumnConfig = {
-  get?: (row: Heroku.Release) => string | number | undefined
-  header?: string
   extended?: boolean
+  get?: (row: Heroku.Release) => number | string | undefined
+  header?: string
 }
 
 const getDescriptionTruncation = function (releases: Heroku.Release[], columns: Record<string, ColumnConfig>, optimizeKey: string) {
@@ -70,7 +70,6 @@ const getDescriptionTruncation = function (releases: Heroku.Release[], columns: 
 }
 
 export default class Index extends Command {
-  static topic = 'releases'
   static description = 'display the releases for an app'
   static examples = [
     'v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)',
@@ -79,25 +78,27 @@ export default class Index extends Command {
   ]
 
   static flags = {
-    num: flags.string({char: 'n', description: 'number of releases to show'}),
-    json: flags.boolean({description: 'output releases in json format'}),
-    extended: flags.boolean({char: 'x', hidden: true}),
-    remote: flags.remote(),
     app: flags.app({required: true}),
+    extended: flags.boolean({char: 'x', hidden: true}),
+    json: flags.boolean({description: 'output releases in json format'}),
+    num: flags.string({char: 'n', description: 'number of releases to show'}),
+    remote: flags.remote(),
   }
+
+  static topic = 'releases'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
-    const {app, num, json, extended} = flags
+    const {app, extended, json, num} = flags
 
     const url = `/apps/${app}/releases${extended ? '?extended=true' : ''}`
 
     const {body: releases} = await this.heroku.request<Heroku.Release[]>(url, {
-      partial: true,
       headers: {
-        Range: `version ..; max=${num || 15}, order=desc`,
         Accept: 'application/vnd.heroku+json; version=3.sdk',
+        Range: `version ..; max=${num || 15}, order=desc`,
       },
+      partial: true,
     })
 
     let optimizationWidth = 0
@@ -173,9 +174,9 @@ export default class Index extends Command {
     if (json) {
       hux.styledJSON(releases)
     } else if (releases.length === 0) {
-      ux.stdout(`${app} has no releases.`)
+      ux.stdout(`${newColor.app(app)} has no releases.`)
     } else {
-      let header = `${app} Releases`
+      let header = `${newColor.app(app)} Releases`
       const currentRelease = releases.find(r => r.current === true)
       if (currentRelease) {
         header += ' - ' + color.cyan(`Current: v${currentRelease.version}`)

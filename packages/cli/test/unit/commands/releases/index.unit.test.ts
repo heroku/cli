@@ -300,7 +300,7 @@ describe('releases', function () {
       'myapp',
     ])
 
-    expect(stdout.output).to.equal('myapp has no releases.\n')
+    expect(stdout.output).to.equal('⬢ myapp has no releases.\n')
     // stderr may contain warnings from other plugins in test environment
     api.done()
   })
@@ -317,7 +317,7 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('slug_id'))
@@ -344,7 +344,7 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('slug_id'))
@@ -374,7 +374,7 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('v41'))

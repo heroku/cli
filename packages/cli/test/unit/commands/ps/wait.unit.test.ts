@@ -34,7 +34,7 @@ describe('heroku ps:wait', function () {
 
     const {stderr} = await runCommand(['ps:wait', '--app', APP_NAME])
 
-    expect(stderr).to.include(`Warning: App ${APP_NAME} has no releases`)
+    expect(stderr).to.include(`Warning: App ⬢ ${APP_NAME} has no releases`)
   })
 
   it('exits with no output if app is already on the latest release', async function () {
