@@ -1,6 +1,7 @@
-import {stderr, stdout} from 'stdout-stderr'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/access/add.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {personalApp, teamApp, teamFeatures} from '../../../helpers/stubs/get.js'
@@ -34,7 +35,7 @@ describe('heroku access:add', function () {
       apiGetOrgFeatures.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done\n')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
     })
 
     it('adds user to the app with permissions, and view is implicit', async function () {
@@ -49,7 +50,7 @@ describe('heroku access:add', function () {
       apiGetOrgFeatures.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp with deploy, view permissions... done\n')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
     })
 
     it('raises an error when permissions are not specified', function () {
@@ -88,7 +89,7 @@ describe('heroku access:add', function () {
       apiGetOrgFeatures.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp... done\n')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
     })
   })
 
@@ -111,7 +112,7 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiPost.done()
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app myapp... done\n')
+      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
     })
   })
 })

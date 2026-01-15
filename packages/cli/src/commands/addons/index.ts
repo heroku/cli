@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 import {hux, color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {APIClient, Command, flags} from '@heroku-cli/command'
@@ -87,18 +88,11 @@ function displayAll(addons: Heroku.AddOn[]) {
   hux.table(
     addons,
     {
-      'Add-on': {
-        get: ({name}) => color.magenta(name || ''),
-      },
-      'Max Price': {
-        get({plan}) {
-          if (plan?.price === undefined)
-            return color.dim('?')
-          return formatPrice({hourly: false, price: plan?.price})
-        },
-      },
       'Owning App': {
         get: ({app}) => newColor.app(app?.name || ''),
+      },
+      'Add-on': {
+        get: ({name}) => color.magenta(name || ''),
       },
       Plan: {
         get({plan}) {
@@ -114,6 +108,14 @@ function displayAll(addons: Heroku.AddOn[]) {
           return formatPrice({hourly: true, price: plan?.price})
         },
       },
+      'Max Price': {
+        get({plan}) {
+          if (plan?.price === undefined)
+            return color.dim('?')
+          return formatPrice({hourly: false, price: plan?.price})
+        },
+      },
+
       State: {
         get({state}) {
           let result: string = state || ''
@@ -147,7 +149,7 @@ function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
   const attName = color.green(attachment.name || '')
   const output = [color.dim('as'), attName]
   if (showApp) {
-    const appInfo = `on ${color.cyan(attachment.app?.name || '')} app`
+    const appInfo = `on ${newColor.app(attachment.app?.name || '')} app`
     output.push(color.dim(appInfo))
   }
 
@@ -223,7 +225,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       overflow: 'wrap',
     },
   )
-  ux.stdout(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${app}) or other ${color.cyan('apps')}.\n  `)
+  ux.stdout(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${newColor.app(app)}) or other ${color.cyan('apps')}.\n  `)
 }
 
 function displayJSON(addons: Heroku.AddOn[]) {

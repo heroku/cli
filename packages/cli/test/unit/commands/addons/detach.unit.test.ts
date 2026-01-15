@@ -1,16 +1,26 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/addons/detach.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 
 describe('addons:detach', function () {
-  afterEach(nock.cleanAll)
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
 
   it('detaches an add-on', function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/addon-attachments/redis-123')
-      .reply(200, {id: 100, name: 'redis-123', addon: {name: 'redis'}})
+      .reply(200, {addon: {name: 'redis'}, id: 100, name: 'redis-123'})
       .delete('/addon-attachments/100')
       .reply(200)
       .get('/apps/myapp/releases')
@@ -19,9 +29,8 @@ describe('addons:detach', function () {
     return runCommand(Cmd, ['--app', 'myapp', 'redis-123'])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Detaching redis-123 to redis from myapp... done')
-        expect(stderr.output).to.contain('Unsetting redis-123 config vars and restarting myapp... done, v10')
+        expect(stderr.output).to.contain('Detaching redis-123 to redis from ⬢ myapp... done')
+        expect(stderr.output).to.contain('Unsetting redis-123 config vars and restarting ⬢ myapp... done, v10')
       })
-      .then(() => api.done())
   })
 })

@@ -1,19 +1,27 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/ps/scale.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 import stripAnsi from 'strip-ansi'
 
+import Cmd from '../../../../src/commands/ps/scale.js'
+import runCommand from '../../../helpers/runCommand.js'
+
 describe('ps:scale', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
-    return nock.cleanAll()
+    api.done()
+    nock.cleanAll()
   })
 
   it('shows formation with no args', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Free'}, {type: 'worker', quantity: 2, size: 'Free'}])
+      .reply(200, [{quantity: 1, size: 'Free', type: 'web'}, {quantity: 2, size: 'Free', type: 'worker'}])
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
@@ -24,13 +32,12 @@ describe('ps:scale', function () {
 
     expect(stdout.output).to.equal('web=1:Free worker=2:Free\n')
     expect(stderr.output).to.equal('')
-    api.done()
   })
 
   it('shows formation with shield dynos for apps in a shielded private space', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Private-L'}, {type: 'worker', quantity: 2, size: 'Private-M'}])
+      .reply(200, [{quantity: 1, size: 'Private-L', type: 'web'}, {quantity: 2, size: 'Private-M', type: 'worker'}])
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', space: {shield: true}})
 
@@ -41,11 +48,10 @@ describe('ps:scale', function () {
 
     expect(stdout.output).to.equal('web=1:Shield-L worker=2:Shield-M\n')
     expect(stderr.output).to.equal('')
-    api.done()
   })
 
   it('errors with no process types', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/formation')
       .reply(200, [])
       .get('/apps/myapp')
@@ -57,18 +63,17 @@ describe('ps:scale', function () {
         'myapp',
       ])
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.include('No process types on myapp.')
+      expect(stripAnsi(error.message)).to.include('No process types on ⬢ myapp.')
     }
 
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal('')
-    api.done()
   })
 
   it('scales web=1 worker=2', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1'}, {type: 'worker', quantity: '2'}]})
-      .reply(200, [{type: 'web', quantity: 1, size: 'Free'}, {type: 'worker', quantity: 2, size: 'Free'}])
+    api
+      .patch('/apps/myapp/formation', {updates: [{quantity: '1', type: 'web'}, {quantity: '2', type: 'worker'}]})
+      .reply(200, [{quantity: 1, size: 'Free', type: 'web'}, {quantity: 2, size: 'Free', type: 'worker'}])
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
@@ -81,13 +86,12 @@ describe('ps:scale', function () {
 
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n')
-    api.done()
   })
 
   it('scales up a shield dyno if the app is in a shielded private space', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '1', size: 'Private-L'}]})
-      .reply(200, [{type: 'web', quantity: 1, size: 'Private-L'}])
+    api
+      .patch('/apps/myapp/formation', {updates: [{quantity: '1', size: 'Private-L', type: 'web'}]})
+      .reply(200, [{quantity: 1, size: 'Private-L', type: 'web'}])
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', space: {shield: true}})
 
@@ -99,13 +103,12 @@ describe('ps:scale', function () {
 
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Scaling dynos... done, now running web at 1:Shield-L\n')
-    api.done()
   })
 
   it('scales web-1', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', quantity: '+1'}]})
-      .reply(200, [{type: 'web', quantity: 2, size: 'Free'}])
+    api
+      .patch('/apps/myapp/formation', {updates: [{quantity: '+1', type: 'web'}]})
+      .reply(200, [{quantity: 2, size: 'Free', type: 'web'}])
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
@@ -117,6 +120,5 @@ describe('ps:scale', function () {
 
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.contain('Scaling dynos... done, now running web at 2:Free\n')
-    api.done()
   })
 })

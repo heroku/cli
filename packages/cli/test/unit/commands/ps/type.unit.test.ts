@@ -1,67 +1,73 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/ps/type.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
 
 describe('ps:type', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
   function app(args = {}) {
     const base = {name: 'myapp'}
     return Object.assign(base, args)
   }
 
-  beforeEach(function () {
-    nock.cleanAll()
-  })
-
   it('displays cost/hour and max cost/month for all individually-priced dyno sizes', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
       .reply(200, [
-        {type: 'web', quantity: 1, size: 'Eco'},
-        {type: 'web', quantity: 1, size: 'Basic'},
-        {type: 'web', quantity: 1, size: 'Standard-1X'},
-        {type: 'web', quantity: 1, size: 'Standard-2X'},
-        {type: 'web', quantity: 1, size: 'Performance-M'},
-        {type: 'web', quantity: 1, size: 'Performance-L'},
-        {type: 'web', quantity: 1, size: 'Performance-L-RAM'},
-        {type: 'web', quantity: 1, size: 'Performance-XL'},
-        {type: 'web', quantity: 1, size: 'Performance-2XL'},
-        {type: 'web', quantity: 1, size: 'Private-S'},
-        {type: 'web', quantity: 1, size: 'Private-M'},
-        {type: 'web', quantity: 1, size: 'Private-L'},
-        {type: 'web', quantity: 1, size: 'Shield-M'},
-        {type: 'web', quantity: 1, size: 'Shield-L'},
-        {type: 'web', quantity: 1, size: 'Shield-S'},
-        {type: 'web', quantity: 1, size: 'Private-Memory-L'},
-        {type: 'web', quantity: 1, size: 'Private-Memory-XL'},
-        {type: 'web', quantity: 1, size: 'Private-Memory-2XL'},
-        {type: 'web', quantity: 1, size: 'Shield-Memory-L'},
-        {type: 'web', quantity: 1, size: 'Shield-Memory-XL'},
-        {type: 'web', quantity: 1, size: 'Shield-Memory-2XL'},
-        {type: 'web', quantity: 1, size: 'dyno-1c-0.5gb'},
-        {type: 'web', quantity: 1, size: 'dyno-2c-1gb'},
-        {type: 'web', quantity: 1, size: 'dyno-1c-4gb'},
-        {type: 'web', quantity: 1, size: 'dyno-2c-8gb'},
-        {type: 'web', quantity: 1, size: 'dyno-4c-16gb'},
-        {type: 'web', quantity: 1, size: 'dyno-8c-32gb'},
-        {type: 'web', quantity: 1, size: 'dyno-16c-64gb'},
-        {type: 'web', quantity: 1, size: 'dyno-2c-4gb'},
-        {type: 'web', quantity: 1, size: 'dyno-4c-8gb'},
-        {type: 'web', quantity: 1, size: 'dyno-8c-16gb'},
-        {type: 'web', quantity: 1, size: 'dyno-16c-32gb'},
-        {type: 'web', quantity: 1, size: 'dyno-32c-64gb'},
-        {type: 'web', quantity: 1, size: 'dyno-1c-8gb'},
-        {type: 'web', quantity: 1, size: 'dyno-2c-16gb'},
-        {type: 'web', quantity: 1, size: 'dyno-4c-32gb'},
-        {type: 'web', quantity: 1, size: 'dyno-8c-64gb'},
-        {type: 'web', quantity: 1, size: 'dyno-16c-128gb'},
+        {quantity: 1, size: 'Eco', type: 'web'},
+        {quantity: 1, size: 'Basic', type: 'web'},
+        {quantity: 1, size: 'Standard-1X', type: 'web'},
+        {quantity: 1, size: 'Standard-2X', type: 'web'},
+        {quantity: 1, size: 'Performance-M', type: 'web'},
+        {quantity: 1, size: 'Performance-L', type: 'web'},
+        {quantity: 1, size: 'Performance-L-RAM', type: 'web'},
+        {quantity: 1, size: 'Performance-XL', type: 'web'},
+        {quantity: 1, size: 'Performance-2XL', type: 'web'},
+        {quantity: 1, size: 'Private-S', type: 'web'},
+        {quantity: 1, size: 'Private-M', type: 'web'},
+        {quantity: 1, size: 'Private-L', type: 'web'},
+        {quantity: 1, size: 'Shield-M', type: 'web'},
+        {quantity: 1, size: 'Shield-L', type: 'web'},
+        {quantity: 1, size: 'Shield-S', type: 'web'},
+        {quantity: 1, size: 'Private-Memory-L', type: 'web'},
+        {quantity: 1, size: 'Private-Memory-XL', type: 'web'},
+        {quantity: 1, size: 'Private-Memory-2XL', type: 'web'},
+        {quantity: 1, size: 'Shield-Memory-L', type: 'web'},
+        {quantity: 1, size: 'Shield-Memory-XL', type: 'web'},
+        {quantity: 1, size: 'Shield-Memory-2XL', type: 'web'},
+        {quantity: 1, size: 'dyno-1c-0.5gb', type: 'web'},
+        {quantity: 1, size: 'dyno-2c-1gb', type: 'web'},
+        {quantity: 1, size: 'dyno-1c-4gb', type: 'web'},
+        {quantity: 1, size: 'dyno-2c-8gb', type: 'web'},
+        {quantity: 1, size: 'dyno-4c-16gb', type: 'web'},
+        {quantity: 1, size: 'dyno-8c-32gb', type: 'web'},
+        {quantity: 1, size: 'dyno-16c-64gb', type: 'web'},
+        {quantity: 1, size: 'dyno-2c-4gb', type: 'web'},
+        {quantity: 1, size: 'dyno-4c-8gb', type: 'web'},
+        {quantity: 1, size: 'dyno-8c-16gb', type: 'web'},
+        {quantity: 1, size: 'dyno-16c-32gb', type: 'web'},
+        {quantity: 1, size: 'dyno-32c-64gb', type: 'web'},
+        {quantity: 1, size: 'dyno-1c-8gb', type: 'web'},
+        {quantity: 1, size: 'dyno-2c-16gb', type: 'web'},
+        {quantity: 1, size: 'dyno-4c-32gb', type: 'web'},
+        {quantity: 1, size: 'dyno-8c-64gb', type: 'web'},
+        {quantity: 1, size: 'dyno-16c-128gb', type: 'web'},
       ])
 
     await runCommand(Cmd, [
@@ -156,27 +162,24 @@ describe('ps:type', function () {
         dyno-16c-128gb       1
       $5 (flat monthly fee, shared across all Eco dynos)
     `))
-    api.done()
   })
 
   it('switches to performance-l-ram dyno', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Eco'}])
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', size: 'performance-l-ram'}]})
-      .reply(200, [{type: 'web', quantity: 1, size: 'Performance-L-RAM'}])
+      .reply(200, [{quantity: 1, size: 'Eco', type: 'web'}])
+      .patch('/apps/myapp/formation', {updates: [{size: 'performance-l-ram', type: 'web'}]})
+      .reply(200, [{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Performance-L-RAM'}])
+      .reply(200, [{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
 
     await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=performance-l-ram',
     ])
-
-    api.done()
 
     expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(`
       === Process Types
@@ -189,19 +192,19 @@ describe('ps:type', function () {
       ─────────────────────────── 
       Performance-L-RAM   1      
     `))
-    expectOutput(stderr.output, 'Scaling dynos on myapp... done')
+    expectOutput(stderr.output, 'Scaling dynos on ⬢ myapp... done')
   })
 
   it('switches to hobby dynos', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Eco'}, {type: 'worker', quantity: 2, size: 'Eco'}])
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', size: 'basic'}, {type: 'worker', size: 'basic'}]})
-      .reply(200, [{type: 'web', quantity: 1, size: 'Basic'}, {type: 'worker', quantity: 2, size: 'Basic'}])
+      .reply(200, [{quantity: 1, size: 'Eco', type: 'web'}, {quantity: 2, size: 'Eco', type: 'worker'}])
+      .patch('/apps/myapp/formation', {updates: [{size: 'basic', type: 'web'}, {size: 'basic', type: 'worker'}]})
+      .reply(200, [{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Basic'}, {type: 'worker', quantity: 2, size: 'Basic'}])
+      .reply(200, [{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
 
     await runCommand(Cmd, [
       '--app',
@@ -221,20 +224,19 @@ describe('ps:type', function () {
       ───────────────
        Basic   3
     `))
-    expect(stderr.output).to.include('Scaling dynos on myapp... done\n')
-    api.done()
+    expect(stderr.output).to.include('Scaling dynos on ⬢ myapp... done\n')
   })
 
   it('switches to standard-1x and standard-2x dynos', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app())
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Eco'}, {type: 'worker', quantity: 2, size: 'Eco'}])
-      .patch('/apps/myapp/formation', {updates: [{type: 'web', size: 'standard-1x'}, {type: 'worker', size: 'standard-2x'}]})
-      .reply(200, [{type: 'web', quantity: 1, size: 'Standard-1X'}, {type: 'worker', quantity: 2, size: 'Standard-2X'}])
+      .reply(200, [{quantity: 1, size: 'Eco', type: 'web'}, {quantity: 2, size: 'Eco', type: 'worker'}])
+      .patch('/apps/myapp/formation', {updates: [{size: 'standard-1x', type: 'web'}, {size: 'standard-2x', type: 'worker'}]})
+      .reply(200, [{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 1, size: 'Standard-1X'}, {type: 'worker', quantity: 2, size: 'Standard-2X'}])
+      .reply(200, [{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
 
     await runCommand(Cmd, [
       '--app',
@@ -256,16 +258,15 @@ describe('ps:type', function () {
      Standard-1X   1
      Standard-2X   2
     `))
-    expect(stderr.output).to.include('Scaling dynos on myapp... done\n')
-    api.done()
+    expect(stderr.output).to.include('Scaling dynos on ⬢ myapp... done\n')
   })
 
   it('displays Shield dynos for apps in shielded spaces', async function () {
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp')
       .reply(200, app({space: {shield: true}}))
       .get('/apps/myapp/formation')
-      .reply(200, [{type: 'web', quantity: 0, size: 'Private-M'}, {type: 'web', quantity: 0, size: 'Private-L'}])
+      .reply(200, [{quantity: 0, size: 'Private-M', type: 'web'}, {quantity: 0, size: 'Private-L', type: 'web'}])
 
     await runCommand(Cmd, [
       '--app',
@@ -285,6 +286,5 @@ describe('ps:type', function () {
      Shield-M   0
      Shield-L   0
     `))
-    api.done()
   })
 })

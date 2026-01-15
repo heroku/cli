@@ -1,6 +1,5 @@
 /* eslint-disable max-nested-callbacks */
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'

@@ -1,6 +1,7 @@
-import {stdout, stderr} from 'stdout-stderr'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/access/remove.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
@@ -26,7 +27,7 @@ describe('heroku access:remove', function () {
       ])
       apiDelete.done()
       expect('').to.eq(stdout.output)
-      expectOutput(stderr.output, 'Removing gandalf@heroku.com access from the app myapp... done\n')
+      expectOutput(stderr.output, 'Removing gandalf@heroku.com access from the app ⬢ myapp... done\n')
     })
   })
 })
