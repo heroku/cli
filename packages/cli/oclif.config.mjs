@@ -186,7 +186,7 @@ export default {
   },
   update: {
     node: {
-      version: '22.20.0',
+      version: '22.22.0',
     },
     s3: {
       bucket: 'heroku-cli-assets',

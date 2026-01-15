@@ -1,10 +1,14 @@
 import type {AddOnAttachment} from '@heroku-cli/schema'
-import {hux, utils, pg} from '@heroku/heroku-cli-util'
-import {renderAttachment} from '../../commands/addons/index.js'
-import {multiSortCompareFn} from '../utils/multisort.js'
+
+import {hux, pg, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku-cli/color'
+
 import type {CredentialsInfo} from './types.js'
 
-export function essentialPlan(addon: pg.ExtendedAddonAttachment['addon'] | pg.ExtendedAddon) {
+import {renderAttachment} from '../../commands/addons/index.js'
+import {multiSortCompareFn} from '../utils/multisort.js'
+
+export function essentialPlan(addon: pg.ExtendedAddon | pg.ExtendedAddonAttachment['addon']) {
   return utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
 }
 
