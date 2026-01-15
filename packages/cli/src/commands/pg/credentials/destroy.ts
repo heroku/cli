@@ -1,31 +1,33 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {essentialPlan} from '../../../lib/pg/util.js'
-import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
+
 import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 export default class Destroy extends Command {
-  static topic = 'pg'
-  static description = 'destroy credential within database'
-  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production'
-  static flags = {
-    name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
-    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'destroy credential within database'
+  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production'
+
+  static flags = {
+    app: flags.app({required: true}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
+    name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Destroy)
+    const {args, flags} = await this.parse(Destroy)
     const {database} = args
-    const {app, name, confirm} = flags
+    const {app, confirm, name} = flags
     if (name === 'default') {
       throw new Error('Default credential cannot be destroyed.')
     }
