@@ -1,13 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {APIClient} from '@heroku-cli/command/lib/api-client'
+import {APIClient} from '@heroku-cli/command'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import confirmCommand from '../../../lib/confirmCommand'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
 import {utils} from '@heroku/heroku-cli-util'
-import {legacyEssentialPlan} from '../../../lib/pg/util'
-import {nls} from '../../../nls'
+import {nls} from '../../../nls.js'
 
 export default class Rotate extends Command {
   static topic = 'pg'
@@ -18,7 +16,7 @@ export default class Rotate extends Command {
       description: 'which credential to rotate (default credentials if not specified and --all is not used)',
     }),
     all: flags.boolean({description: 'rotate all credentials', exclusive: ['name']}),
-    confirm: flags.string({char: 'c'}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     force: flags.boolean({description: 'forces rotating the targeted credentials'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -39,7 +37,7 @@ export default class Rotate extends Command {
       throw new Error('cannot pass both --all and --name')
     }
 
-    if (legacyEssentialPlan(db) && cred !== 'default') {
+    if (utils.pg.isLegacyEssentialDatabase(db) && cred !== 'default') {
       throw new Error('Legacy Essential-tier databases do not support named credentials.')
     }
 
@@ -74,7 +72,7 @@ export default class Rotate extends Command {
       warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${uniqueAttachments}.`)
     }
 
-    await confirmCommand(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
+    await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
     const options: APIClient.Options = {
       hostname: utils.pg.host(),
       body: {forced: force ?? undefined},
@@ -93,4 +91,3 @@ export default class Rotate extends Command {
     ux.action.stop()
   }
 }
-*/

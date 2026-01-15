@@ -1,13 +1,14 @@
 import {stderr, stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/credentials/destroy'
+import Cmd from '../../../../../src/commands/pg/credentials/destroy.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import stripAnsi from 'strip-ansi'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:credentials:destroy', function () {
   const addon = {
     name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
@@ -42,7 +43,6 @@ describe('pg:credentials:destroy', function () {
       'myapp',
     ])
     expectOutput(stderr.output, heredoc(`
-      Destroying credential credname...
       Destroying credential credname... done
     `))
     expectOutput(stdout.output, heredoc(`
@@ -53,7 +53,7 @@ describe('pg:credentials:destroy', function () {
 
   it('throws an error when the db is starter plan', async function () {
     const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
+      name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
@@ -142,5 +142,3 @@ describe('pg:credentials:destroy', function () {
     })
   })
 })
-
-*/

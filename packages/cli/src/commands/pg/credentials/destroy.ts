@@ -1,27 +1,26 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {essentialPlan} from '../../../lib/pg/util'
+import {essentialPlan} from '../../../lib/pg/util.js'
 import {utils} from '@heroku/heroku-cli-util'
-import confirmCommand from '../../../lib/confirmCommand'
-import {nls} from '../../../nls'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {nls} from '../../../nls.js'
 
 export default class Destroy extends Command {
-  static topic = 'pg';
-  static description = 'destroy credential within database';
-  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production';
+  static topic = 'pg'
+  static description = 'destroy credential within database'
+  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production'
   static flags = {
     name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
-    confirm: flags.string({char: 'c'}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Destroy)
@@ -44,12 +43,11 @@ export default class Destroy extends Command {
       throw new Error(`Credential ${name} must be detached from the app${credAttachmentApps.length > 1 ? 's' : ''} ${credAttachmentApps.map(appName => color.app(appName || ''))
         .join(', ')} before destroying.`)
 
-    await confirmCommand(app, confirm)
+    await new ConfirmCommand().confirm(app, confirm)
     ux.action.start(`Destroying credential ${color.cyan.bold(name)}`)
     await this.heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`, {hostname: utils.pg.host()})
     ux.action.stop()
-    ux.log(`The credential has been destroyed within ${db.name}.`)
-    ux.log(`Database objects owned by ${name} will be assigned to the default credential.`)
+    ux.stdout(`The credential has been destroyed within ${db.name}.`)
+    ux.stdout(`Database objects owned by ${name} will be assigned to the default credential.`)
   }
 }
-*/

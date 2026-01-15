@@ -2,11 +2,14 @@ import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../../../src/commands/pg/credentials/rotate'
+import tsheredoc from 'tsheredoc'
+import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
 import stripAnsi from 'strip-ansi'
+import {hux} from '@heroku/heroku-cli-util'
+
+const heredoc = tsheredoc.default
 
 const addon = {
   id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
@@ -22,7 +25,6 @@ const attachments = [
   },
 ]
 
-/*
 describe('pg:credentials:rotate', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -31,7 +33,7 @@ describe('pg:credentials:rotate', function () {
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(ux, 'prompt').resolves('myapp')
+    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {
@@ -75,7 +77,6 @@ describe('pg:credentials:rotate', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-        Rotating my_role on postgres-1...
         Rotating my_role on postgres-1... done
       `))
     })
@@ -92,7 +93,6 @@ describe('pg:credentials:rotate', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-        Rotating all credentials on postgres-1...
         Rotating all credentials on postgres-1... done
       `))
     })
@@ -111,7 +111,6 @@ describe('pg:credentials:rotate', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-        Rotating my_role on postgres-1...
         Rotating my_role on postgres-1... done
       `))
     })
@@ -252,14 +251,13 @@ describe('pg:credentials:rotate', function () {
     ])
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal(heredoc(`
-      Rotating lucy on postgres-1...
       Rotating lucy on postgres-1... done
     `))
   })
 
   it('rotates credentials with no --name with starter plan', async function () {
     const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
+      name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
 
     api.post('/actions/addon-attachments/resolve', {
@@ -278,14 +276,13 @@ describe('pg:credentials:rotate', function () {
     ])
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal(heredoc(`
-      Rotating default on postgres-1...
       Rotating default on postgres-1... done
     `))
   })
 
   it('rotates credentials with --all with starter plan', async function () {
     const hobbyAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'},
+      name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
 
     api.post('/actions/addon-attachments/resolve', {
@@ -305,10 +302,7 @@ describe('pg:credentials:rotate', function () {
     ])
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal(heredoc(`
-      Rotating all credentials on postgres-1...
       Rotating all credentials on postgres-1... done
     `))
   })
 })
-
-*/

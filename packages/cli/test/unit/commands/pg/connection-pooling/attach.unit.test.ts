@@ -1,10 +1,9 @@
-/*
 import {stdout, stderr} from 'stdout-stderr'
 import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import Cmd from '../../../../../src/commands/pg/connection-pooling/attach'
-import {resolvedAttachments} from '../../../../fixtures/addons/fixtures'
+import Cmd from '../../../../../src/commands/pg/connection-pooling/attach.js'
+import {resolvedAttachments} from '../../../../fixtures/addons/fixtures.js'
 
 describe('pg:connection-pooling:attach', function () {
   const addon = {
@@ -76,5 +75,3 @@ describe('pg:connection-pooling:attach', function () {
     })
   })
 })
-
-*/
