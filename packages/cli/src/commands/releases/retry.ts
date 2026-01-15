@@ -1,18 +1,22 @@
-import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
 import {stream} from '../../lib/releases/output.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
 
 export default class Retry extends Command {
-  static topic = 'releases'
   static description = 'retry the latest release-phase command'
   static examples = ['heroku releases:retry --app happy-samurai-42']
-  static help = 'Copies the latest release into a new release and retries the latest release-phase command. App must have a release-phase command.'
   static flags = {
     app: flags.app({required: true}),
   }
+
+  static help = 'Copies the latest release into a new release and retries the latest release-phase command. App must have a release-phase command.'
+
+  static topic = 'releases'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Retry)
@@ -22,19 +26,19 @@ export default class Retry extends Command {
     const releasePhase = formations.filter(formation => formation.type === 'release')
 
     if (!release) {
-      return ux.error('No release found for this app.')
+      return ux.error(`No release found for ${newColor.app(app)}.`)
     }
 
     if (releasePhase.length === 0) {
       return ux.error('App must have a release-phase command to use this command.')
     }
 
-    ux.action.start(`Retrying ${color.green('v' + release.version)} on ${color.app(app)}`)
+    ux.action.start(`Retrying ${color.green('v' + release.version)} on ${newColor.app(app)}`)
 
     const {body: retry} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {
       body: {
-        slug: release?.slug?.id,
         description: `Retry of v${release.version}: ${release.description}`,
+        slug: release?.slug?.id,
       },
     })
 

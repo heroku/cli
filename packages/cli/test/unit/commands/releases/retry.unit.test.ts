@@ -45,7 +45,7 @@ describe('releases:retry', function () {
       '--app',
       'myapp',
     ]).catch((error: Error) => {
-      expect(error.message).to.eq('No release found for this app.')
+      expect(error.message).to.eq('No release found for ⬢ myapp.')
     })
   })
 
