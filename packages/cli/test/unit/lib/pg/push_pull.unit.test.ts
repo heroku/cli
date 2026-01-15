@@ -1,12 +1,12 @@
+import {utils} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core'
 import {expect} from 'chai'
-import sinon from 'sinon'
-import {Server} from 'node:net'
 import {EventEmitter} from 'node:events'
+import {Server} from 'node:net'
 import {PassThrough} from 'node:stream'
+import sinon from 'sinon'
 
-import { ux } from '@oclif/core'
-import { utils } from '@heroku/heroku-cli-util'
-import {parseExclusions, prepare, maybeTunnel, connArgs, spawnPipe, verifyExtensionsMatch} from '../../../../src/lib/pg/push_pull.js'
+import {connArgs, maybeTunnel, parseExclusions, prepare, spawnPipe, verifyExtensionsMatch} from '../../../../src/lib/pg/push_pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -79,8 +79,8 @@ describe('push_pull', function () {
 
       it('prints an error message if the database is not empty', async function () {
         sinon
-        .stub(utils.pg.PsqlService.prototype, 'execQuery')
-        .resolves('hello')
+          .stub(utils.pg.PsqlService.prototype, 'execQuery')
+          .resolves('hello')
 
         await prepare(target as any)
         expect(uxErrorStub.calledOnce).to.be.true
@@ -98,7 +98,7 @@ describe('push_pull', function () {
     })
   })
 
-  describe('maybeTunnel', function() {
+  describe('maybeTunnel', function () {
     const target = {
       database: 'firecrackers',
       host: 'heroku.com',
@@ -115,7 +115,7 @@ describe('push_pull', function () {
       sinon.restore()
     })
 
-    it('returns connection details containing tunnel config, when a tunnel is configured', async () => {
+    it('returns connection details containing tunnel config, when a tunnel is configured', async function () {
       const fakeTunnel = {close: sinon.stub()} as unknown as Server
       sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
       sinon.stub(utils.pg.psql, 'sshTunnel').resolves(fakeTunnel)
@@ -129,7 +129,7 @@ describe('push_pull', function () {
       expect(result.user).to.equal(target.user)
     })
 
-    it('does not return tunnel config in the connection details, when a tunnel is not configured', async () => {
+    it('does not return tunnel config in the connection details, when a tunnel is not configured', async function () {
       sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
       sinon.stub(utils.pg.psql, 'sshTunnel').resolves(undefined)
 
@@ -145,49 +145,54 @@ describe('push_pull', function () {
 
   describe('connArgs', function () {
     it('pushes the -U, -h, -p, and -d flags into the args array when connection details contain a user, host, and port and skipDFlag is not specified', function () {
-      const actual = connArgs({user: 'john-rambo', host: 'heroku.com', port: 5432} as any)
+      const actual = connArgs({host: 'heroku.com', port: 5432, user: 'john-rambo'} as any)
       const expected  = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, '-d', undefined]
 
       expect(actual).to.eql(expected)
     })
 
     it('does not push a -U flag into the args array when connection details do not contain a user', function () {
-      const actual = connArgs({ host: 'heroku.com', port: 5432 } as any)
+      const actual = connArgs({host: 'heroku.com', port: 5432} as any)
       const expected = ['-h', 'heroku.com', '-p', 5432, '-d', undefined]
 
       expect(actual).to.eql(expected)
     })
 
     it('does not push a -h flag into the args array when connection details do not contain a host', function () {
-      const actual = connArgs({ user: 'john-rambo', port: 5432 } as any)
+      const actual = connArgs({port: 5432, user: 'john-rambo'} as any)
       const expected = ['-U', 'john-rambo', '-p', 5432, '-d', undefined]
 
       expect(actual).to.eql(expected)
     })
 
     it('does not push a -p flag into the args array when connection details do not contain a port', function () {
-      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com' } as any)
+      const actual = connArgs({host: 'heroku.com', user: 'john-rambo'} as any)
       const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-d', undefined]
 
       expect(actual).to.eql(expected)
     })
 
     it('pushes the -d flag into the args array when the `skipDFlag` argument is provided as `false`', function () {
-      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com', port: 5432 } as any, false)
+      const actual = connArgs({host: 'heroku.com', port: 5432, user: 'john-rambo'} as any, false)
       const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, '-d', undefined]
 
       expect(actual).to.eql(expected)
     })
 
     it('does not push a -d flag into the args array when the `skipDFlag` argument is provided as `true`', function () {
-      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com', port: 5432 } as any, true)
+      const actual = connArgs({host: 'heroku.com', port: 5432, user: 'john-rambo'} as any, true)
       const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, undefined]
 
       expect(actual).to.eql(expected)
     })
 
-    it('pushes the connection detail value for database into the args array', function() {
-      const actual = connArgs({ user: 'john-rambo', host: 'heroku.com', port: 5432, database: 'favorite-candy' } as any)
+    it('pushes the connection detail value for database into the args array', function () {
+      const actual = connArgs({
+        database: 'favorite-candy',
+        host: 'heroku.com',
+        port: 5432,
+        user: 'john-rambo',
+      } as any)
       const expected = ['-U', 'john-rambo', '-h', 'heroku.com', '-p', 5432, '-d', 'favorite-candy']
 
       expect(actual).to.eql(expected)
@@ -196,8 +201,8 @@ describe('push_pull', function () {
 
   describe('spawnPipe', function () {
     it('resolves when both pgDump and pgRestore close successfully', async function () {
-      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
-      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
+      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
+      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -208,23 +213,23 @@ describe('push_pull', function () {
 
       await expect(promise).to.eventually.be.fulfilled
     })
-    
+
     it('rejects with pg_dump error when pgDump closes with non-zero code', async function () {
-      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
-      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
+      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
-  
+
       const promise = spawnPipe(pgDump as any, pgRestore as any)
-  
+
       pgDump.emit('close', 1)
-  
+
       await expect(promise).to.eventually.be.rejectedWith('pg_dump errored with 1')
     })
 
     it('rejects with pg_restore error when pgRestore closes with non-zero code', async function () {
-      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
-      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
+      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -237,8 +242,8 @@ describe('push_pull', function () {
     })
 
     it('pipes pgDump stdout to pgRestore stdin', async function () {
-      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
-      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
+      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -255,8 +260,8 @@ describe('push_pull', function () {
     })
 
     it('ends pgRestore stdin when pgDump closes successfully', async function () {
-      const pgDump = new EventEmitter() as EventEmitter & { stdout: PassThrough }
-      const pgRestore = new EventEmitter() as EventEmitter & { stdin: PassThrough }
+      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
+      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -273,12 +278,22 @@ describe('push_pull', function () {
 
   describe('verifyExtensionsMatch', function () {
     // cspell:ignore plpgsql
-    
+
     let uxWarnStub: sinon.SinonStub
     let execQueryStub: sinon.SinonStub
 
-    const source = { database: 'source_db', host: 'localhost', port: '5432', user: 'user1' }
-    const target = { database: 'target_db', host: 'localhost', port: '5432', user: 'user2' }
+    const source = {
+      database: 'source_db',
+      host: 'localhost',
+      port: '5432',
+      user: 'user1',
+    }
+    const target = {
+      database: 'target_db',
+      host: 'localhost',
+      port: '5432',
+      user: 'user2',
+    }
 
     beforeEach(function () {
       uxWarnStub = sinon.stub(ux, 'warn')

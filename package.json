@@ -1,37 +1,27 @@
 {
   "devDependencies": {
     "@actions/core": "^1.10.0",
-    "@types/lolex": "^5.1.6",
     "@types/psl": "^1.1.3",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
-    "cspell": "9.2.1",
+    "cspell": "9.6.0",
     "eslint": "8.57.0",
-    "eslint-config-oclif": "^5.0.0",
+    "eslint-config-oclif": "^5.2.2",
     "eslint-config-oclif-typescript": "^3.1.14",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-mocha": "^10.4.3",
-    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-n": "^17.23.2",
     "execa": "5.1.1",
     "husky": "8.0.3",
     "lerna": "^6.4.1",
-    "mkdirp": "^0.5.2",
     "oclif": "^4.22.27",
     "qqjs": "0.3.11",
-    "standard": "17.1.0",
-    "tmp": "^0.2.1",
+    "tmp": "^0.2.5",
     "ts-node": "^10.9.2"
   },
   "overrides": {
     "ansi-regex": "4.1.1"
-  },
-  "standard": {
-    "env": "mocha",
-    "ignore": [
-      "**/node_modules/**",
-      "packages/*/lib/**"
-    ]
   },
   "engines": {
     "node": ">=20"
@@ -41,6 +31,7 @@
     "build": "cd packages/cli && npm run prepack",
     "test": "lerna run test --concurrency 4",
     "lint": "cd packages/cli && npm run lint",
+    "lint:fix": "cd packages/cli && npm run lint:fix",
     "cspell:ci": "cspell --no-progress --gitignore --no-must-find-files --file-list stdin",
     "cspell:commit": "cspell --no-progress --gitignore --no-must-find-files --no-show-suggestions --config ./cspell.json --quiet",
     "pack:deb": "oclif pack:deb --root=\"./packages/cli\"",

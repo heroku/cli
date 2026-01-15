@@ -1,43 +1,43 @@
-import {APIClient} from '@heroku-cli/command'
 import {color} from '@heroku-cli/color'
+import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
 type Options = {
-  heroku: APIClient,
   appName: string,
-  recipient: string,
-  personalToPersonal: boolean,
   bulk: boolean,
+  heroku: APIClient,
+  personalToPersonal: boolean,
+  recipient: string,
 }
 
 const getRequestOpts = (options: Options) => {
-  const {appName, bulk, recipient, personalToPersonal} = options
+  const {appName, bulk, personalToPersonal, recipient} = options
   const isPersonalToPersonal = personalToPersonal || personalToPersonal === undefined
-  const requestOpts = isPersonalToPersonal ?
-    {
+  const requestOpts = isPersonalToPersonal
+    ? {
       body: {app: appName, recipient},
-      transferMsg: `Initiating transfer of ${color.app(appName)}`,
-      path: '/account/app-transfers',
       method: 'POST',
+      path: '/account/app-transfers',
+      transferMsg: `Initiating transfer of ${color.app(appName)}`,
     } : {
       body: {owner: recipient},
-      transferMsg: `Transferring ${color.app(appName)}`,
-      path: `/teams/apps/${appName}`,
       method: 'PATCH',
+      path: `/teams/apps/${appName}`,
+      transferMsg: `Transferring ${color.app(appName)}`,
     }
   if (!bulk) requestOpts.transferMsg += ` to ${color.magenta(recipient)}`
   return requestOpts
 }
 
 export const appTransfer = async (options: Options) => {
-  const {body, transferMsg, path, method} = getRequestOpts(options)
+  const {body, method, path, transferMsg} = getRequestOpts(options)
   ux.action.start(transferMsg)
   const {body: request} = await options.heroku.request<Heroku.TeamApp>(
     path,
     {
-      method,
       body,
+      method,
     },
   )
   const message = request.state === 'pending' ? 'email sent' : undefined

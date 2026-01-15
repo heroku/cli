@@ -1,42 +1,43 @@
-import {stdout} from 'stdout-stderr'
-import {displayPeeringInfo, displayPeeringsAsJSON, displayPeerings} from '../../../../src/lib/spaces/peering.js'
 import {Peering, PeeringInfo} from '@heroku-cli/schema'
-import tsheredoc from 'tsheredoc'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
+import {stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import {displayPeeringInfo, displayPeerings, displayPeeringsAsJSON} from '../../../../src/lib/spaces/peering.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
 
 const peerings: Peering[] = [
   {
-    pcx_id: 'pcx-12345',
-    type: 'heroku-managed',
-    status: 'active',
-    cidr_blocks: ['10.0.0.0/16'],
-    aws_vpc_id: 'vpc-1234568a',
-    aws_region: 'us-west-2',
     aws_account_id: '012345678910',
+    aws_region: 'us-west-2',
+    aws_vpc_id: 'vpc-1234568a',
+    cidr_blocks: ['10.0.0.0/16'],
+    pcx_id: 'pcx-12345',
+    status: 'active',
+    type: 'heroku-managed',
   },
   {
-    pcx_id: 'pcx-12346',
-    type: 'heroku-managed',
-    status: 'active',
-    cidr_blocks: ['10.0.0.0/16'],
-    aws_vpc_id: 'vpc-1234568b',
-    aws_region: 'us-west-2',
     aws_account_id: '012345678911',
-  }
+    aws_region: 'us-west-2',
+    aws_vpc_id: 'vpc-1234568b',
+    cidr_blocks: ['10.0.0.0/16'],
+    pcx_id: 'pcx-12346',
+    status: 'active',
+    type: 'heroku-managed',
+  },
 ]
 
 describe('displayPeeringInfo', function () {
   const peeringInfo: PeeringInfo = {
     aws_account_id: '012345678900',
     aws_region: 'us-west-2',
-    vpc_id: 'vpc-1234568a',
-    vpc_cidr: '10.0.0.0/16',
     space_cidr_blocks: ['10.0.128.0/20', '10.0.144.0/20'],
-    unavailable_cidr_blocks: ['192.168.2.0/30']
+    unavailable_cidr_blocks: ['192.168.2.0/30'],
+    vpc_cidr: '10.0.0.0/16',
+    vpc_id: 'vpc-1234568a',
   }
 
   it('outputs peering info', function () {

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {ux} from '@oclif/core'
 import type {APIClient} from '@heroku-cli/command'
-import type {App} from '../types/fir.js'
+
+import {ux} from '@oclif/core'
 import * as https from 'https'
 import {URL} from 'url'
+
+import type {App} from '../types/fir.js'
 
 // this function exists because oclif sorts argv
 // and to capture all non-flag command inputs
@@ -23,8 +25,8 @@ export function revertSortedArgs(processArgs: Array<string>, argv: Array<string>
       isSeparatorPresent = true
     }
 
-    if ((argv.includes(processArg) && (!isSeparatorPresent && !argIsFlag)) ||
-        (argv.includes(processArg) && (isSeparatorPresent))) {
+    if ((argv.includes(processArg) && (!isSeparatorPresent && !argIsFlag))
+        || (argv.includes(processArg) && (isSeparatorPresent))) {
       originalInputOrder.push(processArg)
     }
   }
@@ -72,7 +74,7 @@ export function buildEnvFromFlag(flag: string) {
 export async function shouldPrependLauncher(heroku: APIClient, appName: string, disableLauncher: boolean): Promise<boolean> {
   if (disableLauncher) return false
 
-  const {body: app} = await heroku.get<App>(`/apps/${appName}` , {
+  const {body: app} = await heroku.get<App>(`/apps/${appName}`, {
     headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
   })
 
@@ -120,11 +122,11 @@ export async function fetchHttpResponseBody(url: string, expectedStatusCode: num
     if (parsedUrl.protocol !== 'https:') {
       // For non-HTTPS URLs, use native fetch
       const response = await fetch(url, {
-        method: 'GET',
         headers: {
-          'User-Agent': userAgent,
           Accept: 'text/plain',
+          'User-Agent': userAgent,
         },
+        method: 'GET',
         signal: controller.signal,
       })
 
@@ -146,14 +148,14 @@ export async function fetchHttpResponseBody(url: string, expectedStatusCode: num
       }
 
       const options: https.RequestOptions = {
-        hostname: parsedUrl.hostname,
-        port: parsedUrl.port || 443,
-        path: parsedUrl.pathname + parsedUrl.search,
-        method: 'GET',
         headers: {
-          'User-Agent': userAgent,
           Accept: 'text/plain',
+          'User-Agent': userAgent,
         },
+        hostname: parsedUrl.hostname,
+        method: 'GET',
+        path: parsedUrl.pathname + parsedUrl.search,
+        port: parsedUrl.port || 443,
         rejectUnauthorized: false, // Allow staging self-signed certificates
       }
 

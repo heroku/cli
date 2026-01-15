@@ -1,24 +1,25 @@
-import Child from 'node:child_process'
-import {debug} from './debug.js'
-import {glob} from 'glob'
-import Path from 'node:path'
-import inquirer from 'inquirer'
-import os from 'node:os'
 import {ux} from '@oclif/core'
+import {glob} from 'glob'
+import inquirer from 'inquirer'
+import Child from 'node:child_process'
+import os from 'node:os'
+import Path from 'node:path'
+
+import {debug} from './debug.js'
 
 const DOCKERFILE_REGEX = /\bDockerfile(.\w*)?$/
 
 export type CmdOptions = {
-  output?: boolean
   input?: string
+  output?: boolean
 }
 
 export type DockerJob = {
-  name: string,
-  resource: string,
-  dockerfile: string,
-  postfix: number,
   depth: number,
+  dockerfile: string,
+  name: string,
+  postfix: number,
+  resource: string,
 }
 
 export type GroupedDockerJobs = {
@@ -26,14 +27,72 @@ export type GroupedDockerJobs = {
 }
 
 type BuildImageParams = {
-  dockerfile: string,
-  resource: string,
-  buildArgs: string[],
-  path?: string,
   arch?: string,
+  buildArgs: string[],
+  dockerfile: string,
+  path?: string,
+  resource: string,
 }
 
 export class DockerHelper {
+  async buildImage({arch, buildArgs, dockerfile, path, resource}: BuildImageParams): Promise<string> {
+    const cwd = path || Path.dirname(dockerfile)
+    const args = ['build', '-f', dockerfile, '-t', resource]
+    // Older Docker versions don't allow for this flag, but we are
+    // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
+    if (arch === 'arm64' || arch === 'aarch64') args.push('--platform', 'linux/amd64')
+
+    // newer docker versions support attestations and software bill of materials, so we want to disable them to save time/space
+    // Heroku's container registry doesn't support pushing them right now
+    if (await this.version() >= [24, 0, 0]) {
+      args.push('--provenance', 'false', '--sbom', 'false')
+    }
+
+    for (const element of buildArgs) {
+      if (element.length > 0) {
+        args.push('--build-arg', element)
+      }
+    }
+
+    args.push(cwd)
+
+    return this.cmd('docker', args)
+  }
+
+  async chooseJobs(jobs: GroupedDockerJobs): Promise<DockerJob[]> {
+    const chosenJobs = [] as DockerJob[]
+
+    for (const processType in jobs) {
+      if (Object.hasOwn(jobs, processType)) {
+        const group = jobs[processType]
+        if (group === undefined) {
+          ux.warn(`Dockerfile.${processType} not found`)
+          continue
+        }
+
+        if (group.length > 1) {
+          const prompt = [{
+            choices: group.map(j => j.dockerfile),
+            message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
+            name: processType,
+            type: 'list',
+          }] as inquirer.QuestionCollection
+
+          const answer = await inquirer.prompt(prompt)
+          const found = group.find(o => o.dockerfile === answer[processType])
+
+          if (found) {
+            chosenJobs.push(found)
+          }
+        } else {
+          chosenJobs.push(group[0])
+        }
+      }
+    }
+
+    return chosenJobs
+  }
+
   async cmd(cmd: string, args: string[], options: CmdOptions = {}): Promise<string> {
     debug(cmd, args)
 
@@ -44,7 +103,7 @@ export class DockerHelper {
     ] as Child.StdioOptions
 
     return new Promise((resolve, reject) => {
-      const child = Child.spawn(cmd, args, {stdio: stdio})
+      const child = Child.spawn(cmd, args, {stdio})
 
       if (child.stdin) {
         child.stdin.end(options.input)
@@ -77,16 +136,12 @@ export class DockerHelper {
     })
   }
 
-  async version(): Promise<[number, number]> {
-    const version = await this.cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
-    const [major, minor] = version.split(/\./)
-
-    return [Number.parseInt(major, 10) || 0, Number.parseInt(minor, 10) || 0] // ensure exactly 2 components
-  }
-
-  async pullImage(resource: string): Promise<string> {
-    const args = ['pull', resource]
-    return this.cmd('docker', args)
+  filterByProcessType(jobs: GroupedDockerJobs, processTypes: string[]): GroupedDockerJobs {
+    const filteredJobs: GroupedDockerJobs = {}
+    processTypes.forEach(processType => {
+      filteredJobs[processType] = jobs[processType]
+    })
+    return filteredJobs
   }
 
   getDockerfiles(rootdir: string, recursive: boolean): string[] {
@@ -112,19 +167,17 @@ export class DockerHelper {
       if (match) {
         const proc = (match[1] || '.standard').slice(1)
         jobs.push({
-          name: proc,
-          resource: `${resourceRoot}/${proc}`,
-          dockerfile: dockerfile,
-          postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
           depth: Path.normalize(dockerfile).split(Path.sep).length,
+          dockerfile,
+          name: proc,
+          postfix: Path.basename(dockerfile) === 'Dockerfile' ? 0 : 1,
+          resource: `${resourceRoot}/${proc}`,
         })
       }
     })
 
     // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
-    jobs.sort((a, b) => {
-      return a.depth - b.depth || a.postfix - b.postfix
-    })
+    jobs.sort((a, b) => a.depth - b.depth || a.postfix - b.postfix)
 
     // group all Dockerfiles for the same process type together
     const groupedJobs: GroupedDockerJobs = {}
@@ -136,70 +189,8 @@ export class DockerHelper {
     return groupedJobs
   }
 
-  filterByProcessType(jobs: GroupedDockerJobs, processTypes: string[]): GroupedDockerJobs {
-    const filteredJobs: GroupedDockerJobs = {}
-    processTypes.forEach(processType => {
-      filteredJobs[processType] = jobs[processType]
-    })
-    return filteredJobs
-  }
-
-  async chooseJobs(jobs: GroupedDockerJobs): Promise<DockerJob[]> {
-    const chosenJobs = [] as DockerJob[]
-
-    for (const processType in jobs) {
-      if (Object.prototype.hasOwnProperty.call(jobs, processType)) {
-        const group = jobs[processType]
-        if (group === undefined) {
-          ux.warn(`Dockerfile.${processType} not found`)
-          continue
-        }
-
-        if (group.length > 1) {
-          const prompt = [{
-            type: 'list',
-            name: processType,
-            choices: group.map(j => j.dockerfile),
-            message: `Found multiple Dockerfiles with process type ${processType}. Please choose one to build and push `,
-          }] as inquirer.QuestionCollection
-
-          const answer = await inquirer.prompt(prompt)
-          const found = group.find(o => o.dockerfile === answer[processType])
-
-          if (found) {
-            chosenJobs.push(found)
-          }
-        } else {
-          chosenJobs.push(group[0])
-        }
-      }
-    }
-
-    return chosenJobs
-  }
-
-  async buildImage({dockerfile, resource, buildArgs, path, arch}: BuildImageParams): Promise<string> {
-    const cwd = path || Path.dirname(dockerfile)
-    const args = ['build', '-f', dockerfile, '-t', resource]
-    // Older Docker versions don't allow for this flag, but we are
-    // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
-    if (arch === 'arm64' || arch === 'aarch64') args.push('--platform', 'linux/amd64')
-
-    // newer docker versions support attestations and software bill of materials, so we want to disable them to save time/space
-    // Heroku's container registry doesn't support pushing them right now
-    if (await this.version() >= [24, 0, 0]) {
-      args.push('--provenance', 'false')
-      args.push('--sbom', 'false')
-    }
-
-    for (const element of buildArgs) {
-      if (element.length > 0) {
-        args.push('--build-arg', element)
-      }
-    }
-
-    args.push(cwd)
-
+  async pullImage(resource: string): Promise<string> {
+    const args = ['pull', resource]
     return this.cmd('docker', args)
   }
 
@@ -226,6 +217,13 @@ export class DockerHelper {
       command,
     ]
     return this.cmd('docker', args)
+  }
+
+  async version(): Promise<[number, number]> {
+    const version = await this.cmd('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
+    const [major, minor] = version.split(/\./)
+
+    return [Number.parseInt(major, 10) || 0, Number.parseInt(minor, 10) || 0] // ensure exactly 2 components
   }
 }
 

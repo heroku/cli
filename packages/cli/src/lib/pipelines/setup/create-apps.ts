@@ -14,12 +14,12 @@ interface CreateAppOptions {
 
 function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage}: CreateAppOptions) {
   const params: any = {
-    source_blob: {url: archiveURL},
     app: {name},
     pipeline_coupling: {
-      stage,
       pipeline: pipeline.id,
+      stage,
     },
+    source_blob: {url: archiveURL},
   }
 
   if (organization) {
@@ -34,25 +34,23 @@ function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage
 export default function createApps(heroku: any, archiveURL: any, pipeline: any, pipelineName: any, stagingAppName: any, organization: any) {
   const prodAppSetupPromise = createApp(heroku, {
     archiveURL,
-    pipeline,
     name: pipelineName,
-    stage: 'production',
     organization,
+    pipeline,
+    stage: 'production',
   })
 
   const stagingAppSetupPromise = createApp(heroku, {
     archiveURL,
-    pipeline,
     name: stagingAppName,
-    stage: 'staging',
     organization,
+    pipeline,
+    stage: 'staging',
   })
 
   const promises = [prodAppSetupPromise, stagingAppSetupPromise]
 
-  return Promise.all(promises).then(appSetups => {
-    return appSetups
-  }, error => {
+  return Promise.all(promises).then(appSetups => appSetups, error => {
     ux.error(error, {exit: 1})
   })
 }

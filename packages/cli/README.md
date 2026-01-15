@@ -15,9 +15,19 @@ To get started see <https://devcenter.heroku.com/start>
 Overview
 ========
 
-This is the next generation Node-based Heroku CLI.  The goals of this project were to make plugins more flexible, remove Ruby as a runtime dependency, and make the CLI faster.
+The Heroku CLI is a command-line interface for managing Heroku applications and services. Built with Node.js and [oclif](https://oclif.io), it provides an extensible architecture for interacting with the Heroku platform.
 
-It has identical functionality to the old Ruby CLI. Under the hood, it is a modular CLI made up of node.js plugins.
+Key features include:
+
+- **App management** - Deploy, scale, and monitor your applications
+- **Heroku Postgres database management** - Backup, restore, and manage Heroku Postgres databases
+- **Heroku CI/CD pipelines** - Run automated tests and manage review apps for streamlined deployment workflows
+- **Add-ons marketplace** - Provision and manage tools and services to extend your application
+- **SSL certificates and domains** - Configure custom domains and automatically manage SSL/TLS certificates
+- **Team collaboration** - Manage organization and team access with granular permissions
+- **Private Spaces** - Deploy applications in network-isolated environments with VPN support
+- **Logs and monitoring** - Stream application logs and forward them to external services
+- **Plugin ecosystem** - Extend functionality with community and custom plugins
 
 For more on developing plugins, read [Developing CLI Plugins](https://devcenter.heroku.com/articles/developing-cli-plugins)
 

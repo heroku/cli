@@ -1,12 +1,12 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import inquirer from 'inquirer'
-import {uuidValidate} from '../utils/uuid-validate.js'
 
 import {
   findPipelineByName,
   getPipeline,
 } from '../api.js'
+import {uuidValidate} from '../utils/uuid-validate.js'
 
 export default async function disambiguate(heroku: APIClient, pipelineIDOrName: string): Promise<Heroku.Pipeline> {
   let pipeline: Heroku.Pipeline
@@ -23,22 +23,20 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
       pipeline = pipelines[0]
     } else {
       // Disambiguate
-      const choices = pipelines.map(x => {
-        return {
-          name: new Date(x.created_at!).toString(),
-          value: x,
-        }
-      })
+      const choices = pipelines.map(x => ({
+        name: new Date(x.created_at!).toString(),
+        value: x,
+      }))
 
       const questions = [{
-        type: 'list',
-        name: 'pipeline',
-        message: `Which ${pipelineIDOrName} pipeline?`,
         choices,
+        message: `Which ${pipelineIDOrName} pipeline?`,
+        name: 'pipeline',
+        type: 'list',
       }]
 
       // eslint-disable-next-line no-async-promise-executor
-      pipeline = await new Promise(async function (resolve, reject) {
+      pipeline = await new Promise(async (resolve, reject) => {
         const answers: any = await inquirer.prompt(questions)
         if (answers.pipeline) {
           resolve(answers.pipeline)

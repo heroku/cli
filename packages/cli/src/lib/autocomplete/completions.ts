@@ -1,9 +1,11 @@
 import {APIClient} from '@heroku-cli/command'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git.js'
-import type {Completion, CompletionContext} from '../types/completion.js'
 import fs from 'fs-extra'
-import * as path from 'path'
 import pkg from 'lodash'
+import * as path from 'path'
+
+import type {Completion, CompletionContext} from '../types/completion.js'
+
 const {flatten} = pkg
 
 export const oneDay = 60 * 60 * 24
@@ -17,7 +19,7 @@ export const herokuGet = async (resource: string, ctx: CompletionContext): Promi
 
 export const AppCompletion: Completion = {
   cacheDuration: oneDay,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const teams = await herokuGet('teams', ctx)
     const apps = {
       personal: await herokuGet('users/~/apps', ctx),
@@ -29,10 +31,10 @@ export const AppCompletion: Completion = {
 
 export const AppAddonCompletion: Completion = {
   cacheDuration: oneDay,
-  cacheKey: async (ctx: CompletionContext) => {
+  async cacheKey(ctx: CompletionContext) {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_addons` : ''
   },
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const addons = ctx.flags && ctx.flags.app ? await herokuGet(`apps/${ctx.flags.app}/addons`, ctx) : []
     return addons
   },
@@ -40,19 +42,17 @@ export const AppAddonCompletion: Completion = {
 
 export const AppDynoCompletion: Completion = {
   cacheDuration: oneDay,
-  cacheKey: async (ctx: CompletionContext) => {
+  async cacheKey(ctx: CompletionContext) {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_dynos` : ''
   },
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const dynos = ctx.flags && ctx.flags.app ? await herokuGet(`apps/${ctx.flags.app}/dynos`, ctx) : []
     return dynos
   },
 }
 
 export const BuildpackCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     return [
       'heroku/ruby',
       'heroku/nodejs',
@@ -65,14 +65,16 @@ export const BuildpackCompletion: Completion = {
       'heroku/go',
     ]
   },
+
+  skipCache: true,
 }
 
 const ConfigCompletion: Completion = {
   cacheDuration: 60 * 60 * 24 * 7,
-  cacheKey: async (ctx: any) => {
+  async cacheKey(ctx: any) {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_vars` : ''
   },
-  options: async (ctx: any) => {
+  async options(ctx: any) {
     const heroku = new APIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
       const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
@@ -85,10 +87,10 @@ const ConfigCompletion: Completion = {
 
 const ConfigSetCompletion: Completion = {
   cacheDuration: 60 * 60 * 24 * 7,
-  cacheKey: async (ctx: any) => {
+  async cacheKey(ctx: any) {
     return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_set_vars` : ''
   },
-  options: async (ctx: any) => {
+  async options(ctx: any) {
     const heroku = new APIClient(ctx.config)
     if (ctx.flags && ctx.flags.app) {
       const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
@@ -101,7 +103,7 @@ const ConfigSetCompletion: Completion = {
 
 export const DynoSizeCompletion: Completion = {
   cacheDuration: oneDay * 90,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     let sizes = await herokuGet('dyno-sizes', ctx)
     if (sizes) sizes = sizes.map(s => s.toLowerCase())
     return sizes
@@ -109,26 +111,24 @@ export const DynoSizeCompletion: Completion = {
 }
 
 export const FileCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     const files = await fs.readdir(process.cwd())
     return files
   },
+
+  skipCache: true,
 }
 
 export const PipelineCompletion: Completion = {
   cacheDuration: oneDay,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const pipelines = await herokuGet('pipelines', ctx)
     return pipelines
   },
 }
 
 export const ProcessTypeCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     let types: string[] = []
     const procfile = path.join(process.cwd(), 'Procfile')
     try {
@@ -141,57 +141,60 @@ export const ProcessTypeCompletion: Completion = {
           const m = s.match(/^([A-Za-z0-9_-]+)/)
           return m ? m[0] : false
         })
-        .filter((t: string | false): t is string => t !== false) as string[]
+        .filter((t: false | string): t is string => t !== false) as string[]
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
     }
 
     return types
   },
+
+  skipCache: true,
 }
 
 export const ProtocolCompletion = {
-  cacheDuration: 60 * 60 * 24 * 365, options: async () => {
+  cacheDuration: 60 * 60 * 24 * 365,
+  async options() {
     return ['tcp', 'udp', 'icmp', '0-255', 'any']
   },
 }
 
 export const RegionCompletion: Completion = {
   cacheDuration: oneDay * 7,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const regions = await herokuGet('regions', ctx)
     return regions
   },
 }
 
 export const RemoteCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     const remotes = getGitRemotes(configRemote())
     return remotes.map((r: any) => r.remote)
   },
+
+  skipCache: true,
 }
 
 export const RoleCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     return ['admin', 'collaborator', 'member', 'owner']
   },
+
+  skipCache: true,
 }
 
 export const ScopeCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     return ['global', 'identity', 'read', 'write', 'read-protected', 'write-protected']
   },
+
+  skipCache: true,
 }
 
 export const SpaceCompletion: Completion = {
   cacheDuration: oneDay,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const spaces = await herokuGet('spaces', ctx)
     return spaces
   },
@@ -199,35 +202,35 @@ export const SpaceCompletion: Completion = {
 
 export const StackCompletion: Completion = {
   cacheDuration: oneDay,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const stacks = await herokuGet('stacks', ctx)
     return stacks
   },
 }
 
 export const StageCompletion: Completion = {
-  skipCache: true,
-
-  options: async () => {
+  async options() {
     return ['test', 'review', 'development', 'staging', 'production']
   },
+
+  skipCache: true,
 }
 
 export const TeamCompletion: Completion = {
   cacheDuration: oneDay,
-  options: async (ctx: CompletionContext) => {
+  async options(ctx: CompletionContext) {
     const teams = await herokuGet('teams', ctx)
     return teams
   },
 }
 
 export const CompletionMapping: { [key: string]: Completion } = {
-  app: AppCompletion,
   addon: AppAddonCompletion,
-  dyno: AppDynoCompletion,
+  app: AppCompletion,
   buildpack: BuildpackCompletion,
   config: ConfigCompletion,
   configSet: ConfigSetCompletion,
+  dyno: AppDynoCompletion,
   dynosize: DynoSizeCompletion,
   pipeline: PipelineCompletion,
   processtype: ProcessTypeCompletion,
@@ -242,19 +245,9 @@ export const CompletionMapping: { [key: string]: Completion } = {
 }
 
 export class CompletionLookup {
-  private get key(): string {
-    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
-  }
-
   private readonly blocklistMap: { [key: string]: string[] } = {
     app: ['apps:create'],
     space: ['spaces:create'],
-  }
-
-  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
-    key: {
-      'config:get': 'config',
-    },
   }
 
   private readonly commandArgsMap: { [key: string]: { [key: string]: string } } = {
@@ -263,7 +256,12 @@ export class CompletionLookup {
     },
   }
 
-  // eslint-disable-next-line no-useless-constructor
+  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
+    key: {
+      'config:get': 'config',
+    },
+  }
+
   constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {}
 
   run(): Completion | undefined {
@@ -275,19 +273,21 @@ export class CompletionLookup {
     return this.commandArgsMap[this.name] && this.commandArgsMap[this.name][this.cmdId]
   }
 
-  private keyAlias(): string | undefined {
-    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
+  private blocklisted(): boolean {
+    return this.blocklistMap[this.name] && this.blocklistMap[this.name].includes(this.cmdId)
   }
 
   private descriptionAlias(): string | undefined {
     const d = this.description!
-    // eslint-disable-next-line unicorn/prefer-starts-ends-with
     if (d.match(/^dyno size/)) return 'dynosize'
-    // eslint-disable-next-line unicorn/prefer-starts-ends-with
     if (d.match(/^process type/)) return 'processtype'
   }
 
-  private blocklisted(): boolean {
-    return this.blocklistMap[this.name] && this.blocklistMap[this.name].includes(this.cmdId)
+  private get key(): string {
+    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
+  }
+
+  private keyAlias(): string | undefined {
+    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
   }
 }

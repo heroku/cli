@@ -88,7 +88,7 @@ export class Scrubber {
       paths: config.paths || [],
       patterns: config.patterns || [],
       replacement: config.replacement || '[SCRUBBED]',
-      recursive: config.recursive !== undefined ? config.recursive : true,
+      recursive: config.recursive === undefined ? true : config.recursive,
     }
 
     // Pre-compute path set for O(1) lookups
@@ -202,9 +202,9 @@ export class Scrubber {
       }
 
       // Recursively scrub value
-      result[key] = this.config.recursive ?
-        this.scrubObject(value, keyPath, paths) :
-        this.scrubValue(value, keyPath, paths)
+      result[key] = this.config.recursive
+        ? this.scrubObject(value, keyPath, paths)
+        : this.scrubValue(value, keyPath, paths)
     }
 
     return result

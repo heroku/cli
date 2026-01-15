@@ -4,11 +4,11 @@ import shell from 'shell-quote'
 export function quote(s: string): string {
   // eslint-disable-next-line no-useless-escape
   if (/["\s#!$&'()*,:;<=>?@\[\\\]^`{|}]/.test(s)) {
-    if (/['\n]/.test(s)) return '"' +
-      s
+    if (/['\n]/.test(s)) return '"'
+      + s
         .replace(/(["\\$`!])/g, '\\$1')
-        .replace(/\n/g, '\\n') +
-      '"'
+        .replace(/\n/g, '\\n')
+      + '"'
     return "'" + s.replace(/(['\\])/g, '\\$1') + "'"
   }
 

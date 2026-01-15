@@ -1,6 +1,7 @@
-import * as api from '../../api.js'
-import {ux} from '@oclif/core'
 import {color} from '@heroku-cli/color'
+import {ux} from '@oclif/core'
+
+import * as api from '../../api.js'
 
 function wait(ms: any) {
   return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))
@@ -17,9 +18,7 @@ function pollAppSetup(heroku: any, appSetup: any): any {
     }
 
     return wait(1000).then(() => pollAppSetup(heroku, appSetup))
-  }).catch((error: any) => {
-    return ux.error(error, {exit: 1})
-  })
+  }).catch((error: any) => ux.error(error, {exit: 1}))
 }
 
 export default function pollAppSetups(heroku: any, appSetups: any) {

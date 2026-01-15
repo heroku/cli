@@ -45,7 +45,7 @@ async function prepareSource(ref: any, command: Command) {
 export async function createSourceBlob(ref: any, command: Command) {
   try {
     const githubRepository = await gitService.githubRepository()
-    const {user, repo} = githubRepository
+    const {repo, user} = githubRepository
 
     const {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
     if (await command.heroku.request(archiveLink.archive_link, {method: 'HEAD'})) {
@@ -61,4 +61,5 @@ export async function createSourceBlob(ref: any, command: Command) {
 }
 
 // Export service instances for testing
-export {fileService, gitService}
+export {fileService}
+export {gitService} from './git.js'

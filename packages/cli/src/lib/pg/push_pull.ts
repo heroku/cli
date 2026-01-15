@@ -1,11 +1,12 @@
-import {utils} from '@heroku/heroku-cli-util'
 import type {pg} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+
+import {utils} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
+import {ux} from '@oclif/core'
+import debugFactory from 'debug'
 import {ChildProcess, SpawnSyncReturns, execSync} from 'node:child_process'
 import {Readable, Writable} from 'node:stream'
 import tsheredoc from 'tsheredoc'
-import debugFactory from 'debug'
 
 const heredoc = tsheredoc.default
 const debug = debugFactory('pg:push-pull')
@@ -37,15 +38,15 @@ export const prepare = async (target: pg.ConnectionDetails, execFn: ExecFn = exe
 export const maybeTunnel = async (
   herokuDb: pg.ConnectionDetails,
 ): Promise<pg.ConnectionDetails> => {
-  let withTunnel: pg.ConnectionDetails = Object.assign({}, herokuDb)
+  let withTunnel: pg.ConnectionDetails = {...herokuDb}
   const configs = utils.pg.psql.getPsqlConfigs(herokuDb)
   const tunnel = await utils.pg.psql.sshTunnel(herokuDb, configs.dbTunnelConfig)
 
   if (tunnel) {
     const tunnelHost = {
+      _tunnel: tunnel,
       host: configs.dbTunnelConfig.localHost,
       port: configs.dbTunnelConfig.localPort?.toString(),
-      _tunnel: tunnel,
     }
 
     withTunnel = Object.assign(withTunnel, tunnelHost)
@@ -68,13 +69,13 @@ export const connArgs = (uri: pg.ConnectionDetails, skipDFlag = false) => {
 
 const exec = (cmd: string, opts = {}) => {
   debug(cmd)
-  opts = Object.assign({}, opts, {stdio: 'inherit'})
+  opts = {...opts, stdio: 'inherit'}
 
   try {
     return execSync(cmd, opts)
   } catch (error) {
-    const {status} = error as SpawnSyncReturns<string | Buffer>
-    if (status) process.exit(status)
+    const {status} = error as SpawnSyncReturns<Buffer | string>
+    if (status) ux.exit(status)
     throw error
   }
 }
@@ -105,8 +106,8 @@ export const verifyExtensionsMatch = async function (source: pg.ConnectionDetail
     psqlSource.execQuery(sql),
   ])
   const extensions = {
-    target: extensionTarget,
     source: extensionSource,
+    target: extensionTarget,
   }
 
   // TODO: it shouldn't matter if the target has *more* extensions than the source

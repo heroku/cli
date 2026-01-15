@@ -6,9 +6,7 @@ import {ux} from '@oclif/core'
 import {AppWithPipelineCoupling, getTeam} from '../api.js'
 
 export function warnMixedOwnership(pipelineApps: Array<AppWithPipelineCoupling>, pipeline: Heroku.Pipeline, owner: string) {
-  const hasMixedOwnership = pipelineApps.some(app => {
-    return (app.owner && app.owner.id) !== pipeline.owner.id
-  })
+  const hasMixedOwnership = pipelineApps.some(app => (app.owner && app.owner.id) !== pipeline.owner.id)
 
   if (hasMixedOwnership) {
     ux.stdout()
@@ -27,9 +25,7 @@ export function getOwner(heroku: APIClient, apps: Array<AppWithPipelineCoupling>
   if (pipeline.owner.type === 'team') {
     ownerPromise = getTeam(heroku, pipeline.owner.id).then(response => response.body)
   } else {
-    const app = apps.find(app => {
-      return app.owner ? app.owner.id === pipeline.owner.id : false
-    })
+    const app = apps.find(app => (app.owner ? app.owner.id === pipeline.owner.id : false))
 
     // If pipeline owner doesn't own any application and type is user (unlikely)
     // We return the uuid as default
@@ -37,7 +33,5 @@ export function getOwner(heroku: APIClient, apps: Array<AppWithPipelineCoupling>
     ownerPromise = Promise.resolve(owner)
   }
 
-  return ownerPromise.then(owner => {
-    return owner.name ? `${owner.name} (team)` : owner
-  })
+  return ownerPromise.then(owner => (owner.name ? `${owner.name} (team)` : owner))
 }

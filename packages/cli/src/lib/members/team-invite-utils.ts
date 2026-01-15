@@ -11,11 +11,11 @@ export const ROLE_DESCRIPTION = 'member role (admin, collaborator, member, owner
  */
 export async function isTeamInviteFeatureEnabled(team: string, heroku: APIClient): Promise<boolean> {
   const {body: teamInfo} = await heroku.get<Heroku.Team>(`/teams/${team}`)
-  
+
   if (teamInfo.type !== 'team') {
     return false
   }
-  
+
   const {body: teamFeatures} = await heroku.get<Heroku.TeamFeature[]>(`/teams/${team}/features`)
   return teamFeatures.some(feature => feature.name === 'team-invite-acceptance' && feature.enabled)
 }
