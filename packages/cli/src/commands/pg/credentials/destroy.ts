@@ -18,7 +18,7 @@ export default class Destroy extends Command {
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
-    name: flags.string({char: 'n', required: true, description: 'unique identifier for the credential'}),
+    name: flags.string({char: 'n', description: 'unique identifier for the credential', required: true}),
     remote: flags.remote(),
   }
 
