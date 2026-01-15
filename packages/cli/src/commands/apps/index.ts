@@ -1,20 +1,20 @@
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import _ from 'lodash'
-import {color} from '@heroku-cli/color'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import _ from 'lodash'
+
 import {App} from '../../lib/types/app.js'
 
 function annotateAppName(app: App) {
-  let name = `${app.name}`
+  let name = color.app(app.name)
   if (app.locked && app.internal_routing) {
-    name = `${app.name} [internal/locked]`
+    name = `${color.app(app.name)} [internal/locked]`
   } else if (app.locked) {
-    name = `${app.name} [locked]`
+    name = `${color.app(app.name)} [locked]`
   } else if (app.internal_routing) {
-    name = `${app.name} [internal]`
+    name = `${color.app(app.name)} [internal]`
   }
 
   return name

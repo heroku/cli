@@ -1,28 +1,20 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
-import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
-import AppsLock from './lock.js'
+
 import {appTransfer} from '../../lib/apps/app-transfer.js'
 import ConfirmCommand from '../../lib/confirmCommand.js'
+import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
+import AppsLock from './lock.js'
 
 export default class AppsTransfer extends Command {
-  static topic = 'apps'
-  static description = 'transfer applications to another user or team'
-  static flags = {
-    locked: flags.boolean({char: 'l', required: false, description: 'lock the app upon transfer'}),
-    bulk: flags.boolean({required: false, description: 'transfer applications in bulk'}),
-    app: flags.app(),
-    remote: flags.remote({char: 'r'}),
-    confirm: flags.string({char: 'c', hidden: true}),
-  }
-
   static args = {
     recipient: Args.string({description: 'user or team to transfer applications to', required: true}),
   }
 
+  static description = 'transfer applications to another user or team'
   static examples = [`$ heroku apps:transfer collaborator@example.com
 Transferring example to collaborator@example.com... done
 
@@ -32,21 +24,31 @@ Transferring example to acme-widgets... done
 $ heroku apps:transfer --bulk acme-widgets
 ...`]
 
+  static flags = {
+    app: flags.app(),
+    bulk: flags.boolean({description: 'transfer applications in bulk', required: false}),
+    confirm: flags.string({char: 'c', hidden: true}),
+    locked: flags.boolean({char: 'l', description: 'lock the app upon transfer', required: false}),
+    remote: flags.remote({char: 'r'}),
+  }
+
+  static topic = 'apps'
+
   getAppsToTransfer(apps: Heroku.App[]) {
     return inquirer.prompt([{
-      type: 'checkbox',
+      choices: apps.map(app => ({
+        name: `${color.app(app.name)} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
+      })),
+      message: 'Select applications you would like to transfer',
       name: 'choices',
       pageSize: 20,
-      message: 'Select applications you would like to transfer',
-      choices: apps.map(app => ({
-        name: `${app.name} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
-      })),
+      type: 'checkbox',
     }])
   }
 
   public async run() {
-    const {flags, args} = await this.parse(AppsTransfer)
-    const {app, bulk, locked, confirm} = flags
+    const {args, flags} = await this.parse(AppsTransfer)
+    const {app, bulk, confirm, locked} = flags
     const {recipient} = args
     if (bulk) {
       const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
@@ -55,11 +57,11 @@ $ heroku apps:transfer --bulk acme-widgets
       for (const app of selectedApps.choices) {
         try {
           await appTransfer({
-            heroku: this.heroku,
             appName: app.name,
-            recipient,
-            personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
             bulk: true,
+            heroku: this.heroku,
+            personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
+            recipient,
           })
         } catch (error) {
           const {message} = error as {message: string}
@@ -74,11 +76,11 @@ $ heroku apps:transfer --bulk acme-widgets
       }
 
       await appTransfer({
-        heroku: this.heroku,
         appName,
-        recipient,
-        personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
         bulk,
+        heroku: this.heroku,
+        personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
+        recipient,
       })
       if (locked) {
         await AppsLock.run(['--app', appName], this.config)

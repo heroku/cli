@@ -1,8 +1,8 @@
+import {hux, color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 import {quote} from '../../lib/config/quote.js'
 
@@ -11,9 +11,9 @@ export class ConfigIndex extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    json: flags.boolean({char: 'j', description: 'output config vars in json format'}),
     remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output config vars in shell format'}),
-    json: flags.boolean({char: 'j', description: 'output config vars in json format'}),
   }
 
   async run() {
@@ -25,7 +25,7 @@ export class ConfigIndex extends Command {
     } else if (flags.json) {
       hux.styledJSON(config)
     } else {
-      hux.styledHeader(`${flags.app} Config Vars`)
+      hux.styledHeader(`${newColor.app(flags.app)} Config Vars`)
       const coloredConfig = Object.fromEntries(
         Object.entries(config).map(([key, value]) => [color.configVar(key), value]),
       )

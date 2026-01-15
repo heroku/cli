@@ -1,18 +1,19 @@
+import {hux, color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import {formatDistanceToNow} from 'date-fns'
+import tsheredoc from 'tsheredoc'
+
 import {displayCertificateDetails} from '../../../lib/certs/certificate_details.js'
 import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
-import {formatDistanceToNow} from 'date-fns'
-import {SniEndpoint} from '../../../lib/types/sni_endpoint.js'
 import {Domain} from '../../../lib/types/domain.js'
-import tsheredoc from 'tsheredoc'
+import {SniEndpoint} from '../../../lib/types/sni_endpoint.js'
 
 const heredoc = tsheredoc.default
 
-function humanize(value: string | null) {
+function humanize(value: null | string) {
   if (!value) {
     return color.yellow('Waiting')
   }
@@ -39,14 +40,15 @@ function humanize(value: string | null) {
 }
 
 export default class Index extends Command {
-  static topic = 'certs'
   static command: 'auto'
   static description = 'show ACM status for an app'
   static flags = {
-    wait: flags.boolean({description: 'watch ACM status and display the status when complete'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
+    wait: flags.boolean({description: 'watch ACM status and display the status when complete'}),
   }
+
+  static topic = 'certs'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
@@ -56,11 +58,11 @@ export default class Index extends Command {
     ])
 
     if (!app.acm) {
-      hux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${flags.app}`)
+      hux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${newColor.app(flags.app)}`)
       return
     }
 
-    hux.styledHeader(`Automatic Certificate Management is ${color.green('enabled')} on ${flags.app}`)
+    hux.styledHeader(`Automatic Certificate Management is ${color.green('enabled')} on ${newColor.app(flags.app)}`)
 
     if (sniEndpoints.length === 1 && sniEndpoints[0].ssl_cert.acm) {
       displayCertificateDetails(sniEndpoints[0])
@@ -104,8 +106,8 @@ export default class Index extends Command {
             },
           } : {}),
           lastUpdated: {
-            header: 'Last Updated',
             get: (domain: Domain) => formatDistanceToNow(new Date(domain.updated_at)),
+            header: 'Last Updated',
           },
         },
       )

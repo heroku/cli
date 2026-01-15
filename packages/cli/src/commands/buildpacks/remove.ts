@@ -1,24 +1,25 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
 
 export default class Remove extends Command {
-  static description = 'remove a buildpack set on the app'
-
-  static flags = {
-    app: Flags.app({required: true}),
-    remote: Flags.remote(),
-    index: Flags.integer({
-      description: 'the 1-based index of the URL to remove from the list of URLs',
-      char: 'i',
-    }),
-  }
-
   static args = {
     buildpack: Args.string({
       description: 'namespace/name of the buildpack',
     }),
+  }
+
+  static description = 'remove a buildpack set on the app'
+
+  static flags = {
+    app: Flags.app({required: true}),
+    index: Flags.integer({
+      char: 'i',
+      description: 'the 1-based index of the URL to remove from the list of URLs',
+    }),
+    remote: Flags.remote(),
   }
 
   async run() {
@@ -35,7 +36,7 @@ export default class Remove extends Command {
 
     const buildpacks = await buildpackCommand.fetch(flags.app)
     if (buildpacks.length === 0) {
-      ux.error(`No buildpacks were found. Next release on ${flags.app} will detect buildpack normally.`, {exit: 1})
+      ux.error(`No buildpacks were found. Next release on ${color.app(flags.app)} will detect buildpack normally.`, {exit: 1})
     }
 
     let spliceIndex: number
