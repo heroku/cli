@@ -1,3 +1,4 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
@@ -6,8 +7,15 @@ import Cmd from '../../../../src/commands/releases/retry.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 describe('releases:retry', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
-    return nock.cleanAll()
+    api.done()
+    nock.cleanAll()
   })
 
   const release = [{
@@ -35,7 +43,7 @@ describe('releases:retry', function () {
   }
 
   it('errors when there are no releases yet', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/releases')
       .reply(200, [])
       .get('/apps/myapp/formation')
@@ -45,12 +53,12 @@ describe('releases:retry', function () {
       '--app',
       'myapp',
     ]).catch((error: Error) => {
-      expect(error.message).to.eq('No release found for ⬢ myapp.')
+      expect(ansis.strip(error.message)).to.eq('No release found for ⬢ myapp.')
     })
   })
 
   it('retries the release', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/releases')
       .reply(200, release)
       .get('/apps/myapp/formation')
@@ -69,7 +77,7 @@ describe('releases:retry', function () {
       .get('/streams/release.log')
       .reply(200, 'Release Output Content')
 
-    const api = nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/releases')
       .reply(200, release)
       .get('/apps/myapp/formation')
@@ -82,7 +90,6 @@ describe('releases:retry', function () {
       'myapp',
     ])
 
-    api.done()
     busl.done()
     expect(stderr.output).to.contain('Retrying v40 on')
     expect(stderr.output).to.contain('myapp')
@@ -90,7 +97,7 @@ describe('releases:retry', function () {
   })
 
   it('errors if app does not use release-phase', async function () {
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/releases')
       .reply(200, release)
       .get('/apps/myapp/formation')
