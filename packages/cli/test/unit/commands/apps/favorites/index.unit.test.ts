@@ -23,7 +23,7 @@ describe('apps:favorites', function () {
 
     const {stderr, stdout} = await runCommand(['apps:favorites'])
 
-    expect(stdout).to.contain('=== Favorited Apps\n\nmyapp\nmyotherapp\n')
+    expect(stdout).to.contain('=== Favorited Apps\n\n⬢ myapp\n⬢ myotherapp\n')
     expect(stderr).to.equal('')
   })
 
