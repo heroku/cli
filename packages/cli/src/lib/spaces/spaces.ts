@@ -1,9 +1,10 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+
+import {getGeneration} from '../apps/generation.js'
 import {SpaceNat} from '../types/fir.js'
 import {SpaceWithOutboundIps} from '../types/spaces.js'
-import {getGeneration} from '../apps/generation.js'
 
 export function displayShieldState(space: Heroku.Space) {
   return space.shield ? 'on' : 'off'
@@ -19,7 +20,7 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
   if (json) {
     ux.stdout(JSON.stringify(space, null, 2))
   } else {
-    hux.styledHeader(space.name || '')
+    hux.styledHeader(color.space(space.name || ''))
     hux.styledObject(
       {
         ID: space.id,

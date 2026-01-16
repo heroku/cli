@@ -91,7 +91,7 @@ export default class Create extends Command {
     ux.warn(`${color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
     ux.warn(`Use ${color.command('heroku spaces:wait')} to track allocation.`)
 
-    hux.styledHeader(space.name)
+    hux.styledHeader(color.space(space.name))
     hux.styledObject({
       // eslint-disable-next-line perfectionist/sort-objects
       ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,

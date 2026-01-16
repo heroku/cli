@@ -1,11 +1,12 @@
-import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/update.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/telemetry/update.js'
 import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -34,7 +35,7 @@ describe('telemetry:update', function () {
     `))
     expectOutput(stdout.output, heredoc(`
       === ${updatedAppTelemetryDrain.id}
-      App:       myapp
+      App:       ⬢ myapp
       Signals:   ${updatedAppTelemetryDrain.signals.join(', ')}
       Endpoint:  ${updatedAppTelemetryDrain.exporter.endpoint}
       Transport: HTTP
@@ -45,23 +46,23 @@ describe('telemetry:update', function () {
   it('updates a telemetry drain with multiple fields', async function () {
     const updatedAppTelemetryDrain = {
       ...appTelemetryDrain1,
-      signals: ['logs'],
       exporter: {
         endpoint: 'https://api-new.honeycomb.io/',
-        type: 'otlp',
         headers: {
-          'x-honeycomb-team': 'your-api-key',
           'x-honeycomb-dataset': 'your-dataset',
+          'x-honeycomb-team': 'your-api-key',
         },
+        type: 'otlp',
       },
+      signals: ['logs'],
     }
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .patch(`/telemetry-drains/${appTelemetryDrain1.id}`, {
-        signals: ['logs'],
         exporter: {
           endpoint: 'https://api-new.honeycomb.io/',
           type: 'otlp',
         },
+        signals: ['logs'],
       })
       .reply(200, updatedAppTelemetryDrain)
 
@@ -83,11 +84,11 @@ describe('telemetry:update', function () {
     `))
     expectOutput(stdout.output, heredoc(`
       === ${updatedAppTelemetryDrain.id}
-      App:       myapp
+      App:       ⬢ myapp
       Signals:   ${updatedAppTelemetryDrain.signals.join(', ')}
       Endpoint:  ${updatedAppTelemetryDrain.exporter.endpoint}
       Transport: gRPC
-      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
+      Headers:   {"x-honeycomb-dataset":"your-dataset","x-honeycomb-team":"your-api-key"}
     `))
   })
 

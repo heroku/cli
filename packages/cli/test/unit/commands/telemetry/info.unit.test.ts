@@ -1,10 +1,11 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/info.js'
-import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/telemetry/info.js'
 import {TelemetryDrain} from '../../../../src/lib/types/telemetry.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -16,30 +17,30 @@ describe('telemetry:info', function () {
 
   beforeEach(function () {
     spaceTelemetryDrain = {
+      exporter: {
+        endpoint: 'https://api.honeycomb.io/',
+        headers: {
+          'x-honeycomb-dataset': 'your-dataset',
+          'x-honeycomb-team': 'your-api-key',
+        },
+        type: 'otlphttp',
+      },
       id: '44444321-5717-4562-b3fc-2c963f66afa6',
       owner: {id: spaceId, type: 'space'},
       signals: ['traces', 'metrics', 'logs'],
-      exporter: {
-        type: 'otlphttp',
-        endpoint: 'https://api.honeycomb.io/',
-        headers: {
-          'x-honeycomb-team': 'your-api-key',
-          'x-honeycomb-dataset': 'your-dataset',
-        },
-      },
     }
     appTelemetryDrain = {
+      exporter: {
+        endpoint: 'https://api.honeycomb.io/',
+        headers: {
+          'x-honeycomb-dataset': 'your-dataset',
+          'x-honeycomb-team': 'your-api-key',
+        },
+        type: 'otlphttp',
+      },
       id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
       owner: {id: appId, type: 'app'},
       signals: ['traces', 'metrics'],
-      exporter: {
-        type: 'otlphttp',
-        endpoint: 'https://api.honeycomb.io/',
-        headers: {
-          'x-honeycomb-team': 'your-api-key',
-          'x-honeycomb-dataset': 'your-dataset',
-        },
-      },
     }
   })
 
@@ -61,11 +62,11 @@ describe('telemetry:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === ${spaceTelemetryDrain.id}
-      Space:     myspace
+      Space:     ⬡ myspace
       Signals:   ${spaceTelemetryDrain.signals.join(', ')}
       Endpoint:  ${spaceTelemetryDrain.exporter.endpoint}
       Transport: HTTP
-      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
+      Headers:   {"x-honeycomb-dataset":"your-dataset","x-honeycomb-team":"your-api-key"}
     `))
   })
 
@@ -83,11 +84,11 @@ describe('telemetry:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === ${appTelemetryDrain.id}
-      App:       myapp
+      App:       ⬢ myapp
       Signals:   ${appTelemetryDrain.signals.join(', ')}
       Endpoint:  ${appTelemetryDrain.exporter.endpoint}
       Transport: HTTP
-      Headers:   {"x-honeycomb-team":"your-api-key","x-honeycomb-dataset":"your-dataset"}
+      Headers:   {"x-honeycomb-dataset":"your-dataset","x-honeycomb-team":"your-api-key"}
     `))
   })
 })

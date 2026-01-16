@@ -1,10 +1,11 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/create.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/spaces/create.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default
@@ -12,13 +13,19 @@ const heredoc = tsheredoc.default
 describe('spaces:create', function () {
   const now = new Date()
   const features = ['one', 'two']
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+  })
 
   afterEach(function () {
+    api.done()
     nock.cleanAll()
   })
 
   it('creates a Standard space', async function () {
-    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    api
       .post('/spaces', {
         features,
         generation: 'cedar',
@@ -27,16 +34,16 @@ describe('spaces:create', function () {
         team: 'my-team',
       })
       .reply(201, {
-        shield: false,
-        name: 'my-space',
-        team: {name: 'my-team'},
-        region: {name: 'my-region'},
+        cidr: '10.0.0.0/16',
+        created_at: now,
+        data_cidr: '172.23.0.0/20',
         features: ['one', 'two'],
         generation: 'cedar',
+        name: 'my-space',
+        region: {name: 'my-region'},
+        shield: false,
         state: 'allocated',
-        created_at: now,
-        cidr: '10.0.0.0/16',
-        data_cidr: '172.23.0.0/20',
+        team: {name: 'my-team'},
       })
 
     await runCommand(Cmd, [
@@ -46,10 +53,8 @@ describe('spaces:create', function () {
       '--features=one, two',
     ])
 
-    api.done()
-
     expect(stdout.output).to.eq(heredoc`
-      === my-space
+      === ⬡ my-space
 
       Team:       my-team
       Region:     my-region
@@ -63,7 +68,7 @@ describe('spaces:create', function () {
   })
 
   it('shows Standard Private Space Add-on cost warning', async function () {
-    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    api
       .post('/spaces', {
         features,
         generation: 'cedar',
@@ -72,16 +77,16 @@ describe('spaces:create', function () {
         team: 'my-team',
       })
       .reply(201, {
-        shield: false,
-        name: 'my-space',
-        team: {name: 'my-team'},
-        region: {name: 'my-region'},
+        cidr: '10.0.0.0/16',
+        created_at: now,
+        data_cidr: '172.23.0.0/20',
         features: ['one', 'two'],
         generation: 'cedar',
+        name: 'my-space',
+        region: {name: 'my-region'},
+        shield: false,
         state: 'allocated',
-        created_at: now,
-        cidr: '10.0.0.0/16',
-        data_cidr: '172.23.0.0/20',
+        team: {name: 'my-team'},
       })
 
     await runCommand(Cmd, [
@@ -91,13 +96,11 @@ describe('spaces:create', function () {
       '--features=one, two',
     ])
 
-    api.done()
-
     expect(unwrap(stderr.output)).to.include('Warning: Spend Alert. Each Heroku Standard Private Space costs ~$1.39/hour (max $1000/month), pro-rated to the second.')
   })
 
   it('creates a Shield space', async function () {
-    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    api
       .post('/spaces', {
         features,
         generation: 'cedar',
@@ -107,16 +110,16 @@ describe('spaces:create', function () {
         team: 'my-team',
       })
       .reply(201, {
-        shield: true,
-        name: 'my-space',
-        team: {name: 'my-team'},
-        region: {name: 'my-region'},
+        cidr: '10.0.0.0/16',
+        created_at: now,
+        data_cidr: '172.23.0.0/20',
         features: ['one', 'two'],
         generation: 'cedar',
+        name: 'my-space',
+        region: {name: 'my-region'},
+        shield: true,
         state: 'allocated',
-        created_at: now,
-        cidr: '10.0.0.0/16',
-        data_cidr: '172.23.0.0/20',
+        team: {name: 'my-team'},
       })
 
     await runCommand(Cmd, [
@@ -127,10 +130,8 @@ describe('spaces:create', function () {
       '--shield',
     ])
 
-    api.done()
-
     expect(stdout.output).to.eq(heredoc`
-      === my-space
+      === ⬡ my-space
 
       Team:       my-team
       Region:     my-region
@@ -144,7 +145,7 @@ describe('spaces:create', function () {
   })
 
   it('shows Shield Private Space Add-on cost warning', async function () {
-    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    api
       .post('/spaces', {
         features,
         generation: 'cedar',
@@ -154,16 +155,16 @@ describe('spaces:create', function () {
         team: 'my-team',
       })
       .reply(201, {
-        shield: true,
-        name: 'my-space',
-        team: {name: 'my-team'},
-        region: {name: 'my-region'},
+        cidr: '10.0.0.0/16',
+        created_at: now,
+        data_cidr: '172.23.0.0/20',
         features: ['one', 'two'],
         generation: 'cedar',
+        name: 'my-space',
+        region: {name: 'my-region'},
+        shield: true,
         state: 'allocated',
-        created_at: now,
-        cidr: '10.0.0.0/16',
-        data_cidr: '172.23.0.0/20',
+        team: {name: 'my-team'},
       })
 
     await runCommand(Cmd, [
@@ -174,13 +175,11 @@ describe('spaces:create', function () {
       '--shield',
     ])
 
-    api.done()
-
     expect(unwrap(stderr.output)).to.include('Warning: Spend Alert. Each Heroku Shield Private Space costs ~$4.17/hour (max $3000/month), pro-rated to the second.')
   })
 
   it('creates a space with custom cidr and data cidr', async function () {
-    const api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    api
       .post('/spaces', {
         cidr: '10.0.0.0/24',
         data_cidr: '172.23.0.0/28',
@@ -191,15 +190,15 @@ describe('spaces:create', function () {
         team: 'my-team',
       })
       .reply(201, {
-        shield: false,
-        name: 'my-space',
-        team: {name: 'my-team'},
-        region: {name: 'my-region'},
-        features: ['one', 'two'],
-        state: 'allocated',
-        created_at: now,
         cidr: '10.0.0.0/24',
+        created_at: now,
         data_cidr: '172.23.0.0/28',
+        features: ['one', 'two'],
+        name: 'my-space',
+        region: {name: 'my-region'},
+        shield: false,
+        state: 'allocated',
+        team: {name: 'my-team'},
       })
 
     await runCommand(Cmd, [
@@ -211,10 +210,8 @@ describe('spaces:create', function () {
       '--data-cidr=172.23.0.0/28',
     ])
 
-    api.done()
-
     expect(stdout.output).to.eq(heredoc`
-      === my-space
+      === ⬡ my-space
 
       Team:       my-team
       Region:     my-region
@@ -239,7 +236,7 @@ describe('spaces:create', function () {
       state: 'allocated',
       team: {name: 'my-team'},
     }
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    api
       .post('/spaces', {
         features: firSpace.features,
         generation: getGeneration(firSpace),
@@ -262,7 +259,7 @@ describe('spaces:create', function () {
       getGeneration(firSpace)!,
     ])
     expect(stdout.output).to.eq(heredoc`
-      === ${firSpace.name}
+      === ⬡ ${firSpace.name}
 
       Team:       ${firSpace.team.name}
       Region:     ${firSpace.region.name}

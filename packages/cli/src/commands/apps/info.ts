@@ -1,10 +1,11 @@
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as util from 'util'
-import _ from 'lodash'
+import {Args, ux} from '@oclif/core'
 import {filesize} from 'filesize'
+import _ from 'lodash'
+import * as util from 'util'
+
 import {getGeneration} from '../../lib/apps/generation.js'
 
 const {countBy, snakeCase} = _
@@ -38,8 +39,8 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   const data: Heroku.App = {
     addons,
     app: appWithMoreInfo,
-    dynos,
     collaborators,
+    dynos,
     pipeline_coupling: pipelineCouplings,
   }
 
@@ -66,7 +67,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   if (info.app.cron_next_run) data['Cron Next Run'] = formatDate(new Date(info.app.cron_next_run))
   if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {standard: 'jedec', round: 0})
   if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
-  if (info.app.space) data.Space = info.app.space.name
+  if (info.app.space) data.Space = color.space(info.app.space.name)
   if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
   if (info.pipeline_coupling) data.Pipeline = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline_coupling.stage}`
 
@@ -87,7 +88,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
     return stack
   })(info.app)
 
-  hux.styledHeader(info.app.name)
+  hux.styledHeader(color.app(info.app.name))
   hux.styledObject(data)
 
   if (extended) {

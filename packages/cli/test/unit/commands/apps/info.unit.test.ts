@@ -2,8 +2,6 @@ import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
-import type {App} from '../../../../src/lib/types/fir.js'
-
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('apps:info', function () {
@@ -61,13 +59,13 @@ describe('apps:info', function () {
     {user: {email: 'foo2@foo.com'}},
   ]
 
-  const BASE_INFO = `=== myapp
+  const BASE_INFO = `=== ⬢ myapp
 
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Space:            myspace
+Space:            ⬡ myspace
 Internal Routing: true
 Auto Cert Mgmt:   true
 Git URL:          https://git.heroku.com/myapp
@@ -80,13 +78,13 @@ Dynos:            web: 1
 Stack:            cedar-14
 `
 
-  const BASE_INFO_FIR = `=== myapp
+  const BASE_INFO_FIR = `=== ⬢ myapp
 
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Space:            myspace
+Space:            ⬡ myspace
 Internal Routing: true
 Auto Cert Mgmt:   true
 Git URL:          https://git.heroku.com/myapp
@@ -201,13 +199,13 @@ Stack:            cedar-14
 
     const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
 
-    expect(stdout).to.equal(`=== myapp
+    expect(stdout).to.equal(`=== ⬢ myapp
 
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Space:            myspace
+Space:            ⬡ myspace
 Internal Routing: true
 Pipeline:         my-pipeline - production
 Auto Cert Mgmt:   true
@@ -331,13 +329,13 @@ stack=cedar-14
 
     const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
 
-    expect(stdout).to.equal(`=== myapp
+    expect(stdout).to.equal(`=== ⬢ myapp
 
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
 Database Size:    1000 B
-Space:            myspace
+Space:            ⬡ myspace
 Internal Routing: true
 Git URL:          https://git.heroku.com/myapp
 Web URL:          https://myapp.herokuapp.com

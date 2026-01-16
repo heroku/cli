@@ -1,16 +1,17 @@
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {TelemetryDrain} from '../types/telemetry.js'
-import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
+import {TelemetryDrain} from '../types/telemetry.js'
 
 interface TelemetryDisplayObject {
   App?: string
-  Space?: string
-  Signals: string
   Endpoint: string
-  Transport: string
   Headers?: string
+  Signals: string
+  Space?: string
+  Transport: string
 }
 
 export function validateAndFormatSignals(signalInput: string | undefined): string[] {
@@ -38,14 +39,14 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, hero
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    displayObject.Space = space.name
+    displayObject.Space = color.space(space.name || '')
   } else {
     const {body: app} = await heroku.get<Heroku.App>(`/apps/${telemetryDrain.owner.id}`, {
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
     })
-    displayObject.App = app.name
+    displayObject.App = color.app(app.name || '')
   }
 
   // Add the other properties after App/Space
