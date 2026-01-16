@@ -1,19 +1,23 @@
-import {Args, ux} from '@oclif/core'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {getGeneration} from '../../lib/apps/generation.js'
 import ConfirmCommand from '../../lib/confirmCommand.js'
 import {displayNat} from '../../lib/spaces/spaces.js'
-import {color} from '@heroku-cli/color'
 import {Space} from '../../lib/types/fir.js'
-import {getGeneration} from '../../lib/apps/generation.js'
 
 const heredoc = tsheredoc.default
 
-type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
+type RequiredSpaceWithNat = {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>} & Required<Space>
 
 export default class Destroy extends Command {
-  static topic = 'spaces'
+  static args = {
+    space: Args.string({hidden: true}),
+  }
+
   static description = heredoc`
     destroy a space
   `
@@ -23,16 +27,14 @@ export default class Destroy extends Command {
   `]
 
   static flags = {
-    space: flags.string({char: 's', description: 'space to destroy'}),
     confirm: flags.string({description: 'set to space name to bypass confirm prompt', hasValue: true}),
+    space: flags.string({char: 's', description: 'space to destroy'}),
   }
 
-  static args = {
-    space: Args.string({hidden: true}),
-  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Destroy)
+    const {args, flags} = await this.parse(Destroy)
     const {confirm} = flags
     const spaceName = flags.space || args.space
     if (!spaceName) {
@@ -68,10 +70,10 @@ export default class Destroy extends Command {
     await new ConfirmCommand().confirm(
       spaceName as string,
       confirm,
-      `Destructive Action\nThis command will destroy the space ${color.bold.red(spaceName as string)}\n${natWarning}\n`,
+      `Destructive Action\nThis command will destroy the space ${color.space(spaceName as string)}\n${natWarning}\n`,
     )
 
-    ux.action.start(`Destroying space ${color.cyan(spaceName as string)}`)
+    ux.action.start(`Destroying space ${color.space(spaceName as string)}`)
     await this.heroku.delete(`/spaces/${spaceName}`)
     ux.action.stop()
   }

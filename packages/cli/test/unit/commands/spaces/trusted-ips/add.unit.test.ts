@@ -43,7 +43,7 @@ describe('trusted-ips:add', function () {
 
     const {stdout} = await runCommand(['spaces:trusted-ips:add', '127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
 
-    expect(stdout).to.eq('Added 127.0.0.1/20 to trusted IP ranges on my-space\nTrusted IP rules are applied to this space.\n')
+    expect(stdout).to.eq('Added 127.0.0.1/20 to trusted IP ranges on ⬡ my-space\nTrusted IP rules are applied to this space.\n')
   })
 
   it('shows message when applied is false after add', async function () {
@@ -75,7 +75,7 @@ describe('trusted-ips:add', function () {
 
     const {stdout} = await runCommand(['spaces:trusted-ips:add', '127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
 
-    expect(stdout).to.include('Added 127.0.0.1/20 to trusted IP ranges on my-space')
+    expect(stdout).to.include('Added 127.0.0.1/20 to trusted IP ranges on ⬡ my-space')
     expect(stdout).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
   })
 
@@ -107,6 +107,6 @@ describe('trusted-ips:add', function () {
 
     const {stdout} = await runCommand(['spaces:trusted-ips:add', '127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
 
-    expect(stdout).to.eq('Added 127.0.0.1/20 to trusted IP ranges on my-space\n')
+    expect(stdout).to.eq('Added 127.0.0.1/20 to trusted IP ranges on ⬡ my-space\n')
   })
 })

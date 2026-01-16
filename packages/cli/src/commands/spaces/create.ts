@@ -1,18 +1,21 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {Space} from '../../lib/types/fir.js'
-import tsheredoc from 'tsheredoc'
-import {displayShieldState} from '../../lib/spaces/spaces.js'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
-import {splitCsv} from '../../lib/spaces/parsers.js'
+import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
 import {getGeneration} from '../../lib/apps/generation.js'
+import {splitCsv} from '../../lib/spaces/parsers.js'
+import {displayShieldState} from '../../lib/spaces/spaces.js'
+import {Space} from '../../lib/types/fir.js'
 
 const heredoc = tsheredoc.default
 
 export default class Create extends Command {
-  static topic = 'spaces'
+  static args = {
+    space: Args.string({hidden: true}),
+  }
+
   static description = heredoc`
     create a new space
   `
@@ -36,23 +39,21 @@ export default class Create extends Command {
     channel: flags.string({hidden: true}),
     cidr: flags.string({description: 'RFC-1918 CIDR the space will use'}),
     'data-cidr': flags.string({description: 'RFC-1918 CIDR used by Heroku Data resources for the space'}),
-    features: flags.string({hidden: true, description: 'a list of features separated by commas'}),
-    generation: flags.string({description: 'generation for space', default: 'cedar', options: ['cedar', 'fir']}),
-    'kpi-url': flags.string({hidden: true, description: 'self-managed KPI endpoint to use'}),
-    'log-drain-url': flags.string({hidden: true, description: 'direct log drain url'}),
-    region: flags.string({description: 'region name', completion: RegionCompletion}),
-    shield: flags.boolean({hidden: true, description: 'create a Shield space'}),
+    features: flags.string({description: 'a list of features separated by commas', hidden: true}),
+    generation: flags.string({default: 'cedar', description: 'generation for space', options: ['cedar', 'fir']}),
+    'kpi-url': flags.string({description: 'self-managed KPI endpoint to use', hidden: true}),
+    'log-drain-url': flags.string({description: 'direct log drain url', hidden: true}),
+    region: flags.string({completion: RegionCompletion, description: 'region name'}),
+    shield: flags.boolean({description: 'create a Shield space', hidden: true}),
     space: flags.string({char: 's', description: 'name of space to create'}),
     team: flags.team({required: true}),
   }
 
-  static args = {
-    space: Args.string({hidden: true}),
-  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Create)
-    const {channel, region, features, generation, 'log-drain-url': logDrainUrl, shield, cidr, 'kpi-url': kpiUrl, 'data-cidr': dataCidr, team} = flags
+    const {args, flags} = await this.parse(Create)
+    const {channel, cidr, 'data-cidr': dataCidr, features, generation, 'kpi-url': kpiUrl, 'log-drain-url': logDrainUrl, region, shield, team} = flags
     const spaceName = flags.space || args.space
 
     if (!spaceName) {
@@ -66,11 +67,8 @@ export default class Create extends Command {
     const dollarAmountHourly = shield ? '$4.17' : '$1.39'
     const spaceType = shield ? 'Shield' : 'Standard'
 
-    ux.action.start(`Creating space ${color.green(spaceName as string)} in team ${color.cyan(team as string)}`)
+    ux.action.start(`Creating space ${color.space(spaceName as string)} in team ${color.cyan(team as string)}`)
     const {body: space} = await this.heroku.post<Required<Space>>('/spaces', {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
       body: {
         channel_name: channel,
         cidr,
@@ -84,14 +82,18 @@ export default class Create extends Command {
         shield,
         team,
       },
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
     })
     ux.action.stop()
 
     ux.warn(`${color.bold('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)
-    ux.warn(`Use ${color.cmd('heroku spaces:wait')} to track allocation.`)
+    ux.warn(`Use ${color.command('heroku spaces:wait')} to track allocation.`)
 
     hux.styledHeader(space.name)
     hux.styledObject({
+      // eslint-disable-next-line perfectionist/sort-objects
       ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }

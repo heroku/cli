@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -6,7 +6,6 @@ import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
 export default class Transfer extends Command {
-  static topic = 'spaces'
   static description = 'transfer a space to another team'
   static examples = [heredoc(`
   $ heroku spaces:transfer --space=space-name --team=team-name
@@ -14,9 +13,11 @@ export default class Transfer extends Command {
   `)]
 
   static flags = {
-    space: flags.string({required: true, char: 's', description: 'name of space'}),
-    team: flags.string({required: true, char: 't', description: 'desired owner of space'}),
+    space: flags.string({char: 's', description: 'name of space', required: true}),
+    team: flags.string({char: 't', description: 'desired owner of space', required: true}),
   }
+
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Transfer)
@@ -24,7 +25,7 @@ export default class Transfer extends Command {
     const {team} = flags
 
     try {
-      ux.action.start(`Transferring space ${color.yellow(space)} to team ${color.green(team)}`)
+      ux.action.start(`Transferring space ${color.space(space)} to team ${color.green(team)}`)
       await this.heroku.post(`/spaces/${space}/transfer`, {body: {new_owner: team}})
     } catch (error) {
       const {body: {message}} = error as {body: {message: string}}

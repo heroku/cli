@@ -33,13 +33,13 @@ function listApps(apps: Heroku.App) {
   apps.forEach((app: App) => ux.stdout(regionizeAppName(app)))
 }
 
-function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: string | null) {
+function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: null | string) {
   if (apps.length === 0) {
-    if (space) ux.stdout(`There are no apps in space ${color.green(space)}.`)
+    if (space) ux.stdout(`There are no apps in space ${color.space(space)}.`)
     else if (team) ux.stdout(`There are no apps in team ${color.magenta(team)}.`)
     else ux.stdout('You have no apps.')
   } else if (space) {
-    hux.styledHeader(`Apps in space ${color.green(space)}`)
+    hux.styledHeader(`Apps in space ${color.space(space)}`)
     listApps(apps)
   } else if (team) {
     hux.styledHeader(`Apps in team ${color.magenta(team)}`)
@@ -53,6 +53,7 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
 
     const columns = {
       Name: {get: regionizeAppName},
+      // eslint-disable-next-line perfectionist/sort-objects
       Email: {get: ({owner}: any) => owner.email},
     }
 
@@ -65,25 +66,27 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: st
 
 export default class AppsIndex extends Command {
   static description = 'list your apps'
-  static topic = 'apps'
-  static hiddenAliases = ['list', 'apps:list']
-
   static examples = [
     '$ heroku apps',
   ]
 
   static flags = {
     all: flags.boolean({char: 'A', description: 'include apps in all teams'}),
+    'internal-routing': flags.boolean({char: 'i', description: 'filter to Internal Web Apps', hidden: true}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
+
+    personal: flags.boolean({char: 'p', description: 'list apps in personal account when a default team is set'}),
     space: flags.string({
       char: 's',
-      description: 'filter by space',
       completion: SpaceCompletion,
+      description: 'filter by space',
     }),
-    personal: flags.boolean({char: 'p', description: 'list apps in personal account when a default team is set'}),
-    'internal-routing': flags.boolean({char: 'i', description: 'filter to Internal Web Apps', hidden: true}),
     team: flags.team(),
   }
+
+  static hiddenAliases = ['list', 'apps:list']
+
+  static topic = 'apps'
 
   async run() {
     const {flags} = await this.parse(AppsIndex)

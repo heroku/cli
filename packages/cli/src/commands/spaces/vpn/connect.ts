@@ -1,13 +1,21 @@
+import {color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
 import {splitCsv} from '../../../lib/spaces/parsers.js'
 
 const heredoc = tsheredoc.default
 
 export default class Connect extends Command {
-  static topic = 'spaces'
+  static args = {
+    name: Args.string({
+      description: 'name or id of the VPN connection to create',
+      required: true,
+    }),
+  }
+
   static description = heredoc`
     create VPN
     Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
@@ -20,25 +28,20 @@ export default class Connect extends Command {
   `]
 
   static flags = {
-    ip: flags.string({char: 'i', description: 'public IP of customer gateway', required: true}),
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),
+    ip: flags.string({char: 'i', description: 'public IP of customer gateway', required: true}),
     space: flags.string({char: 's', description: 'space name', required: true}),
   }
 
-  static args = {
-    name: Args.string({
-      required: true,
-      description: 'name or id of the VPN connection to create',
-    }),
-  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Connect)
-    const {space, cidrs, ip} = flags
+    const {args, flags} = await this.parse(Connect)
+    const {cidrs, ip, space} = flags
     const {name} = args
     const parsed_cidrs = splitCsv(cidrs)
 
-    ux.action.start(`Creating VPN Connection in space ${color.green(space)}`)
+    ux.action.start(`Creating VPN Connection in space ${newColor.space(space)}`)
     await this.heroku.post(`/spaces/${space}/vpn-connections`, {
       body: {
         name,
