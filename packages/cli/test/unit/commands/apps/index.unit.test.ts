@@ -297,7 +297,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('There are no apps in space test-space.\n')
+      expect(stdout).to.equal('There are no apps in space ⬡ test-space.\n')
     })
 
     it('lists only apps in spaces by name', async function () {
@@ -312,7 +312,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== Apps in space test-space\n\n⬢ space-app-1\n⬢ space-app-2\n')
+      expect(stdout).to.equal('=== Apps in space ⬡ test-space\n\n⬢ space-app-1\n⬢ space-app-2\n')
     })
 
     it('lists only internal apps in spaces by name', async function () {
@@ -327,7 +327,7 @@ describe('apps', function () {
       const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space', '--internal-routing'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('=== Apps in space test-space\n\n⬢ space-internal-app [internal]\n')
+      expect(stdout).to.equal('=== Apps in space ⬡ test-space\n\n⬢ space-internal-app [internal]\n')
     })
   })
 })

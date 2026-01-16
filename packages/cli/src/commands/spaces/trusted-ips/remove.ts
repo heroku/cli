@@ -1,14 +1,16 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
 export default class Remove extends Command {
-  static topic = 'spaces'
-  static hiddenAliases = ['trusted-ips:remove']
+  static args = {
+    source: Args.string({description: 'IP address in CIDR notation', required: true}),
+  }
+
   static description = heredoc(`
   Remove a range from the list of trusted IP ranges
   Uses CIDR notation.`)
@@ -19,16 +21,16 @@ export default class Remove extends Command {
         `)]
 
   static flags = {
-    space: flags.string({required: true, char: 's', description: 'space to remove rule from'}),
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
+    space: flags.string({char: 's', description: 'space to remove rule from', required: true}),
   }
 
-  static args = {
-    source: Args.string({required: true, description: 'IP address in CIDR notation'}),
-  }
+  static hiddenAliases = ['trusted-ips:remove']
+
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Remove)
+    const {args, flags} = await this.parse(Remove)
     const {space} = flags
     const url = `/spaces/${space}/inbound-ruleset`
     const {body: rules} = await this.heroku.get<Heroku.InboundRuleset>(url)
@@ -43,7 +45,7 @@ export default class Remove extends Command {
     }
 
     await this.heroku.put(url, {body: rules})
-    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.cyan.bold(space)}`)
+    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.space(space)}`)
 
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)

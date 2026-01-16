@@ -30,6 +30,6 @@ describe('spaces:drains:set', function () {
 
     const {stdout} = await runCommand(['spaces:drains:set', 'https://example.com', '--space', 'my-space'])
 
-    expect(stdout).to.equal('Successfully set drain https://example.com for my-space.\n')
+    expect(stdout).to.equal('Successfully set drain https://example.com for ⬡ my-space.\n')
   })
 })

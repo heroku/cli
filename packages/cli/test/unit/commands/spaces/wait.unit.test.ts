@@ -1,14 +1,15 @@
-import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/wait.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import nock from 'nock'
 import * as sinon from 'sinon'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/spaces/wait.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -17,8 +18,10 @@ describe('spaces:wait', function () {
   let allocatedSpace: SpaceWithOutboundIps
   let sandbox: sinon.SinonSandbox
   let notifyStub: sinon.SinonStub
+  let api: nock.Scope
 
   beforeEach(function () {
+    api = nock('https://api.heroku.com')
     sandbox = sinon.createSandbox()
     notifyStub = sandbox.stub(Cmd.prototype, 'notify' as any)
     allocatingSpace = fixtures.spaces['allocating-space']
@@ -26,6 +29,8 @@ describe('spaces:wait', function () {
   })
 
   afterEach(function () {
+    nock.cleanAll()
+    api.done()
     sandbox.restore()
   })
 
@@ -35,9 +40,9 @@ describe('spaces:wait', function () {
       .reply(200, allocatingSpace)
       .get(`/spaces/${allocatingSpace.name}`)
       .reply(200, allocatedSpace)
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${allocatedSpace.name}/nat`)
-      .reply(200, {state: 'enabled', sources: ['123.456.789.123']})
+      .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
 
     await runCommand(Cmd, [
       '--space',
@@ -46,10 +51,10 @@ describe('spaces:wait', function () {
       '0',
     ])
     expectOutput(stderr.output, heredoc(`
-      Waiting for space ${allocatedSpace.name} to allocate... done
+      Waiting for space ⬡ ${allocatedSpace.name} to allocate... done
     `))
     expectOutput(stdout.output, heredoc(`
-      === ${allocatedSpace.name}
+      === ⬡ ${allocatedSpace.name}
       ID:           ${allocatedSpace.id}
       Team:         ${allocatedSpace.team.name}
       Region:       ${allocatedSpace.region.description}
@@ -66,14 +71,14 @@ describe('spaces:wait', function () {
   })
 
   it('waits for space with --json', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${allocatingSpace.name}`)
       .reply(200, allocatingSpace)
       .get(`/spaces/${allocatedSpace.name}`)
       .reply(200, allocatedSpace)
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${allocatedSpace.name}/nat`)
-      .reply(200, {state: 'enabled', sources: ['123.456.789.123']})
+      .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
 
     await runCommand(Cmd, [
       '--space',
@@ -82,13 +87,12 @@ describe('spaces:wait', function () {
       '--interval',
       '0',
     ])
-    const allocatedSpaceWithOutboundIPs = Object.assign(
-      {},
-      allocatedSpace,
-      {outbound_ips: {state: 'enabled', sources: ['123.456.789.123']}},
-    )
+    const allocatedSpaceWithOutboundIPs = {
+      ...allocatedSpace,
+      outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'},
+    }
     expectOutput(stderr.output, heredoc(`
-      Waiting for space ${allocatedSpace.name} to allocate... done
+      Waiting for space ⬡ ${allocatedSpace.name} to allocate... done
     `))
     expectOutput(stdout.output, JSON.stringify(allocatedSpaceWithOutboundIPs, null, 2))
   })
@@ -97,7 +101,7 @@ describe('spaces:wait', function () {
     nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
       .get(`/spaces/${allocatedSpace.name}`)
       .reply(200, allocatedSpace)
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${allocatedSpace.name}/nat`)
       .reply(503, {})
 
@@ -108,7 +112,7 @@ describe('spaces:wait', function () {
       '0',
     ])
     expectOutput(stdout.output, heredoc(`
-      === ${allocatedSpace.name}
+      === ⬡ ${allocatedSpace.name}
       ID:           ${allocatedSpace.id}
       Team:         ${allocatedSpace.team.name}
       Region:       ${allocatedSpace.region.description}
