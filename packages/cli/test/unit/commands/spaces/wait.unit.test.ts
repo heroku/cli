@@ -40,9 +40,9 @@ describe('spaces:wait', function () {
       .reply(200, allocatingSpace)
       .get(`/spaces/${allocatingSpace.name}`)
       .reply(200, allocatedSpace)
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${allocatedSpace.name}/nat`)
-      .reply(200, {state: 'enabled', sources: ['123.456.789.123']})
+      .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
 
     await runCommand(Cmd, [
       '--space',
@@ -54,7 +54,7 @@ describe('spaces:wait', function () {
       Waiting for space ⬡ ${allocatedSpace.name} to allocate... done
     `))
     expectOutput(stdout.output, heredoc(`
-      === ${allocatedSpace.name}
+      === ⬡ ${allocatedSpace.name}
       ID:           ${allocatedSpace.id}
       Team:         ${allocatedSpace.team.name}
       Region:       ${allocatedSpace.region.description}
@@ -112,7 +112,7 @@ describe('spaces:wait', function () {
       '0',
     ])
     expectOutput(stdout.output, heredoc(`
-      === ${allocatedSpace.name}
+      === ⬡ ${allocatedSpace.name}
       ID:           ${allocatedSpace.id}
       Team:         ${allocatedSpace.team.name}
       Region:       ${allocatedSpace.region.description}

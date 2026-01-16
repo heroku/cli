@@ -45,7 +45,7 @@ export default class Remove extends Command {
     }
 
     await this.heroku.put(url, {body: rules})
-    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ⬡ ${color.space(space)}`)
+    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.space(space)}`)
 
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)

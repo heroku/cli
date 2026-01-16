@@ -1,10 +1,11 @@
-import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
-import {displayShieldState, displayNat, renderInfo} from '../../../../src/lib/spaces/spaces.js'
-import {SpaceNat} from '../../../../src/lib/types/fir.js'
-import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import {expect} from 'chai'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import {displayNat, displayShieldState, renderInfo} from '../../../../src/lib/spaces/spaces.js'
+import {SpaceNat} from '../../../../src/lib/types/fir.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -33,9 +34,9 @@ describe('displayNat', function () {
 
   it('returns state when NAT state is updating', function () {
     const nat: SpaceNat = {
-      state: 'updating',
-      sources: [],
       created_at: '2024-01-01T00:00:00Z',
+      sources: [],
+      state: 'updating',
       updated_at: '2024-01-01T00:00:00Z',
     }
     expect(displayNat(nat)).to.equal('updating')
@@ -43,9 +44,9 @@ describe('displayNat', function () {
 
   it('returns state when NAT state is disabled', function () {
     const nat: SpaceNat = {
-      state: 'disabled',
-      sources: [],
       created_at: '2024-01-01T00:00:00Z',
+      sources: [],
+      state: 'disabled',
       updated_at: '2024-01-01T00:00:00Z',
     }
     expect(displayNat(nat)).to.equal('disabled')
@@ -53,9 +54,9 @@ describe('displayNat', function () {
 
   it('returns empty string when NAT is enabled with no IPs', function () {
     const nat: SpaceNat = {
-      state: 'enabled',
-      sources: [],
       created_at: '2024-01-01T00:00:00Z',
+      sources: [],
+      state: 'enabled',
       updated_at: '2024-01-01T00:00:00Z',
     }
     expect(displayNat(nat)).to.equal('')
@@ -63,9 +64,9 @@ describe('displayNat', function () {
 
   it('returns a single IP when NAT is enabled with one IP', function () {
     const nat: SpaceNat = {
-      state: 'enabled',
-      sources: ['1.2.3.4'],
       created_at: '2024-01-01T00:00:00Z',
+      sources: ['1.2.3.4'],
+      state: 'enabled',
       updated_at: '2024-01-01T00:00:00Z',
     }
     expect(displayNat(nat)).to.equal('1.2.3.4')
@@ -73,9 +74,9 @@ describe('displayNat', function () {
 
   it('returns comma-separated IPs when NAT is enabled with multiple IPs', function () {
     const nat: SpaceNat = {
-      state: 'enabled',
-      sources: ['1.2.3.4', '5.6.7.8', '9.10.11.12'],
       created_at: '2024-01-01T00:00:00Z',
+      sources: ['1.2.3.4', '5.6.7.8', '9.10.11.12'],
+      state: 'enabled',
       updated_at: '2024-01-01T00:00:00Z',
     }
     expect(displayNat(nat)).to.equal('1.2.3.4, 5.6.7.8, 9.10.11.12')
@@ -83,7 +84,7 @@ describe('displayNat', function () {
 })
 
 describe('renderInfo', function () {
-  const space = Object.assign({}, fixtures.spaces['non-shield-space'], {outbound_ips: {state: 'enabled', sources: ['123.456.789.123']}})
+  const space = Object.assign({}, fixtures.spaces['non-shield-space'], {outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'}})
 
   it('outputs space info in JSON format when json flag is true', function () {
     stdout.start()
@@ -98,7 +99,7 @@ describe('renderInfo', function () {
     stdout.stop()
 
     expectOutput(stdout.output, heredoc(`
-      === ${space.name}
+      === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
       Region:       ${space.region.description}

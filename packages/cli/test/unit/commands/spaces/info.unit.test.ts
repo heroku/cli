@@ -1,22 +1,30 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/info.js'
-import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
+import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+
+import Cmd from '../../../../src/commands/spaces/info.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
 describe('spaces:info', function () {
   let space: SpaceWithOutboundIps
   let shieldSpace: SpaceWithOutboundIps
+  let api: nock.Scope
 
   beforeEach(function () {
     space = fixtures.spaces['non-shield-space']
     shieldSpace = fixtures.spaces['shield-space']
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
   })
 
   it('shows space info', async function () {
@@ -29,7 +37,7 @@ describe('spaces:info', function () {
       space.name,
     ])
     expectOutput(stdout.output, heredoc(`
-      === ${space.name}
+      === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
       Region:       ${space.region.description}
@@ -43,7 +51,7 @@ describe('spaces:info', function () {
   })
 
   it('shows space info --json', async function () {
-    nock('https://api.heroku.com:443')
+    api
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
@@ -59,16 +67,16 @@ describe('spaces:info', function () {
     nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
       .get(`/spaces/${space.name}`)
       .reply(200, space)
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${space.name}/nat`)
-      .reply(200, {state: 'enabled', sources: ['123.456.789.123']})
+      .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
     await runCommand(Cmd, [
       '--space',
       space.name,
     ])
 
     expectOutput(stdout.output, heredoc(`
-      === ${space.name}
+      === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
       Region:       ${space.region.description}
@@ -86,16 +94,16 @@ describe('spaces:info', function () {
     nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
       .get(`/spaces/${space.name}`)
       .reply(200, space)
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${space.name}/nat`)
-      .reply(200, {state: 'disabled', sources: ['123.456.789.123']})
+      .reply(200, {sources: ['123.456.789.123'], state: 'disabled'})
 
     await runCommand(Cmd, [
       '--space',
       space.name,
     ])
     expectOutput(stdout.output, heredoc(`
-      === ${space.name}
+      === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
       Region:       ${space.region.description}
@@ -110,7 +118,7 @@ describe('spaces:info', function () {
   })
 
   it('shows a space with Shield turned off', async function () {
-    nock('https://api.heroku.com:443')
+    api
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
@@ -119,7 +127,7 @@ describe('spaces:info', function () {
       space.name,
     ])
     expectOutput(stdout.output, heredoc(`
-      === ${space.name}
+      === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
       Region:       ${space.region.description}
@@ -133,7 +141,7 @@ describe('spaces:info', function () {
   })
 
   it('shows a space with Shield turned on', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${shieldSpace.name}`)
       .reply(200, shieldSpace)
     await runCommand(Cmd, [
@@ -142,7 +150,7 @@ describe('spaces:info', function () {
     ])
 
     expectOutput(stdout.output, heredoc(`
-      === ${shieldSpace.name}
+      === ⬡ ${shieldSpace.name}
       ID:           ${shieldSpace.id}
       Team:         ${shieldSpace.team.name}
       Region:       ${shieldSpace.region.description}
@@ -156,7 +164,7 @@ describe('spaces:info', function () {
   })
 
   it('test if nat API call fails ', async function () {
-    nock('https://api.heroku.com')
+    api
       .get(`/spaces/${space.name}`)
       .reply(200, space)
     await runCommand(Cmd, [
@@ -164,7 +172,7 @@ describe('spaces:info', function () {
       space.name,
     ])
     expectOutput(stdout.output, heredoc(`
-      === ${space.name}
+      === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
       Region:       ${space.region.description}
