@@ -1,5 +1,5 @@
 /*
-import color from '@heroku-cli/color'
+import color from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux, utils} from '@heroku/heroku-cli-util'

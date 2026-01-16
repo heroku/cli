@@ -1,34 +1,36 @@
-import {color} from '@heroku-cli/color'
-import {Command, flags} from '@heroku-cli/command'
-import {APIClient} from '@heroku-cli/command'
 import type {AddOnAttachment} from '@heroku-cli/schema'
+
+import {color, utils} from '@heroku/heroku-cli-util'
+import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+
 import ConfirmCommand from '../../../lib/confirmCommand.js'
-import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../../nls.js'
 
 export default class Rotate extends Command {
-  static topic = 'pg'
-  static description = 'rotate the database credentials'
-  static flags = {
-    name: flags.string({
-      char: 'n',
-      description: 'which credential to rotate (default credentials if not specified and --all is not used)',
-    }),
-    all: flags.boolean({description: 'rotate all credentials', exclusive: ['name']}),
-    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
-    force: flags.boolean({description: 'forces rotating the targeted credentials'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'rotate the database credentials'
+
+  static flags = {
+    all: flags.boolean({description: 'rotate all credentials', exclusive: ['name']}),
+    app: flags.app({required: true}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
+    force: flags.boolean({description: 'forces rotating the targeted credentials'}),
+    name: flags.string({
+      char: 'n',
+      description: 'which credential to rotate (default credentials if not specified and --all is not used)',
+    }),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Rotate)
-    const {app, all, confirm, name, force} = flags
+    const {args, flags} = await this.parse(Rotate)
+    const {all, app, confirm, force, name} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, args.database)
     const warnings: string[] = []
@@ -74,11 +76,11 @@ export default class Rotate extends Command {
 
     await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
     const options: APIClient.Options = {
-      hostname: utils.pg.host(),
       body: {forced: force ?? undefined},
       headers: {
         Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
       },
+      hostname: utils.pg.host(),
     }
     if (all) {
       ux.action.start(`Rotating all credentials on ${color.yellow(db.name)}`)

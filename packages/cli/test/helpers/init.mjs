@@ -22,3 +22,6 @@ if (process.env.ENABLE_NET_CONNECT === 'true') {
 }
 
 chai.use(chaiAsPromised)
+
+// Disable truncation of assertion error messages
+chai.config.truncateThreshold = 0

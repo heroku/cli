@@ -1,9 +1,7 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-
 import _ from 'lodash'
 
 import {parse, quote} from '../../lib/config/quote.js'
@@ -64,6 +62,10 @@ function showDiff(from: Config, to: Config) {
 }
 
 export default class ConfigEdit extends Command {
+  static args = {
+    key: Args.string({description: 'edit a single key', optional: true}),
+  }
+
   static description = `interactively edit config vars
 This command opens the app config in a text editor set by $VISUAL or $EDITOR.
 Any variables added/removed/changed will be updated on the app after saving and closing the file.`
@@ -84,14 +86,10 @@ $ VISUAL="atom --wait" heroku config:edit`,
     remote: flags.remote(),
   }
 
-  static args = {
-    key: Args.string({optional: true, description: 'edit a single key'}),
-  }
-
   app!: string
 
   async run() {
-    const {flags: {app}, args: {key}} = await this.parse(ConfigEdit)
+    const {args: {key}, flags: {app}} = await this.parse(ConfigEdit)
     this.app = app
     ux.action.start('Fetching config')
     const original = await this.fetchLatestConfig()
@@ -103,7 +101,7 @@ $ VISUAL="atom --wait" heroku config:edit`,
       newConfig[key] = await editor.edit(original[key], {prefix})
       if (!original[key].endsWith('\n') && newConfig[key].endsWith('\n')) newConfig[key] = newConfig[key].slice(0, -1)
     } else {
-      const s = await editor.edit(configToString(original), {prefix, postfix: '.sh'})
+      const s = await editor.edit(configToString(original), {postfix: '.sh', prefix})
       newConfig = stringToConfig(s)
     }
 
@@ -114,11 +112,6 @@ $ VISUAL="atom --wait" heroku config:edit`,
     removeDeleted(newConfig, original)
     await this.updateConfig(newConfig)
     ux.action.stop()
-  }
-
-  private async fetchLatestConfig() {
-    const {body: original} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${this.app}/config-vars`)
-    return original
   }
 
   private async diffPrompt(original: Config, newConfig: Config): Promise<boolean> {
@@ -134,16 +127,21 @@ $ VISUAL="atom --wait" heroku config:edit`,
     return hux.confirm(`Update config on ${color.app(this.app)} with these values?`)
   }
 
-  private async verifyUnchanged(original: Config) {
-    const latest = await this.fetchLatestConfig()
-    if (!_.isEqual(original, latest)) {
-      throw new Error('Config changed on server. Refusing to update.')
-    }
+  private async fetchLatestConfig() {
+    const {body: original} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${this.app}/config-vars`)
+    return original
   }
 
   private async updateConfig(newConfig: UploadConfig) {
     await this.heroku.patch(`/apps/${this.app}/config-vars`, {
       body: newConfig,
     })
+  }
+
+  private async verifyUnchanged(original: Config) {
+    const latest = await this.fetchLatestConfig()
+    if (!_.isEqual(original, latest)) {
+      throw new Error('Config changed on server. Refusing to update.')
+    }
   }
 }

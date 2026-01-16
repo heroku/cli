@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import {color} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import {Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'

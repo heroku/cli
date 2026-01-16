@@ -1,40 +1,43 @@
-import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
-import {Args, ux} from '@oclif/core'
+import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
+import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
 const heredoc = tsheredoc.default
 
 export default class Stop extends Command {
-  static description = 'stop an app dyno or process type'
-  static topic = 'ps'
   static aliases = ['dyno:stop', 'ps:kill', 'dyno:kill']
-  static hiddenAliases = ['stop', 'kill']
+  static args = {
+    dyno: Args.string({deprecated: true, description: 'name of the dyno to stop', required: false}),
+  }
 
+  static description = 'stop an app dyno or process type'
   static examples = [
     '$ heroku ps:stop --app myapp --dyno-name run.1828',
     '$ heroku ps:stop --app myapp --process-type run',
   ]
 
-  static args = {
-    dyno: Args.string({description: 'name of the dyno to stop', required: false, deprecated: true}),
-  }
-
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
     'dyno-name': flags.string({
       char: 'd',
       description: 'name of the dyno to stop',
     }),
     'process-type': flags.string({
       char: 'p',
-      description: 'name of the process type to stop',
       completion: ProcessTypeCompletion,
+      description: 'name of the process type to stop',
       exclusive: ['dyno-name'],
     }),
+    remote: flags.remote(),
   }
+
+  static hiddenAliases = ['stop', 'kill']
+
+  static topic = 'ps'
 
   async run() {
     const {args, flags} = await this.parse(Stop)
@@ -62,7 +65,7 @@ export default class Stop extends Command {
       `))
     }
 
-    msg += ` on ${color.app(app)}`
+    msg += ` on ${newColor.app(app)}`
 
     ux.action.start(msg)
     await this.heroku.post<Heroku.Dyno>(stopUrl, {headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})

@@ -64,7 +64,7 @@ describe('heroku certs:add', function () {
       'pem_file',
       'key_file',
     ])
-    expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+    expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout.output).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
@@ -81,7 +81,7 @@ describe('heroku certs:add', function () {
       'pem_file',
       'key_file',
     ])
-    expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+    expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
@@ -100,7 +100,7 @@ describe('heroku certs:add', function () {
       'pem_file',
       'key_file',
     ])
-    expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+    expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
   })
 
@@ -140,7 +140,7 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'biz.example.com',
       ])
-      expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
@@ -171,7 +171,7 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'tokyo-1050.herokuapp.com',
       ])
-      expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): tokyo-1050.herokuapp.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com\nSSL certificate is not trusted.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
@@ -200,7 +200,7 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.called).to.be.false
       mock.done()
       domainsMock.done()
-      expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
     })
 
@@ -224,7 +224,7 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.called).to.be.false
       mock.done()
       domainsMock.done()
-      expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
     })
 
@@ -260,7 +260,7 @@ describe('heroku certs:add', function () {
       mock.done()
       domainsMock.done()
       domainsMockPatch.done()
-      expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
       expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
@@ -392,7 +392,7 @@ describe('heroku certs:add', function () {
         domainsCreateFoo.done()
         domainsCreateBar.done()
         domainsCreateBiz.done()
-        expect(stderr.output).to.contain('Adding SSL certificate to example... done\n')
+        expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
         expect(stderr.output).to.contain('Waiting for stable domains to be created... done\n')
         expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
       })
@@ -441,7 +441,7 @@ describe('heroku certs:add', function () {
           expect(message).to.contain('Timed out while waiting for stable domains to be created')
         }
 
-        expect(stderr.output).to.contain('Adding SSL certificate to example... done')
+        expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done')
         expect(stderr.output).to.contain('Waiting for stable domains to be created... !')
         expect(stdout.output).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n')
       })

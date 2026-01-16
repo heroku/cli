@@ -1,24 +1,25 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
+
 import {TransferSchedule} from '../../../lib/pg/types.js'
 import {nls} from '../../../nls.js'
 
 export default class Unschedule extends Command {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:arbitrary:suffix')}`}),
+  }
+
   static description = 'stop daily backups'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:arbitrary:suffix')}`}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Unschedule)
+    const {args, flags} = await this.parse(Unschedule)
     const {app} = flags
     const {database} = args
     let db = database

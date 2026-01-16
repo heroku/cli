@@ -1,14 +1,14 @@
-import {color} from '@heroku-cli/color'
-import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import tsheredoc from 'tsheredoc'
+
 import {ago} from '../../lib/time.js'
-import {APIClient} from '@heroku-cli/command'
 import {AccountQuota} from '../../lib/types/account_quota.js'
 import {AppProcessTier} from '../../lib/types/app_process_tier.js'
 import {DynoExtended} from '../../lib/types/dyno_extended.js'
 import {Account} from '../../lib/types/fir.js'
-import tsheredoc from 'tsheredoc'
+
 const heredoc = tsheredoc.default
 
 function getProcessNumber(s: string) : number {
@@ -174,11 +174,7 @@ function printDynos(dynos: DynoExtended[]) : void {
 }
 
 export default class Index extends Command {
-  static topic = 'ps'
   static description = 'list dynos for an app'
-  static strict = false
-  static usage = 'ps [TYPE [TYPE ...]]'
-
   static examples = [heredoc`
     $ heroku ps
     === run: one-off dyno
@@ -193,24 +189,30 @@ export default class Index extends Command {
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
-    json: flags.boolean({description: 'display as json'}),
     extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
+    json: flags.boolean({description: 'display as json'}),
+    remote: flags.remote(),
   }
+
+  static strict = false
+
+  static topic = 'ps'
+
+  static usage = 'ps [TYPE [TYPE ...]]'
 
   public async run(): Promise<void> {
     const {flags, ...restParse} = await this.parse(Index)
-    const {app, json, extended} = flags
+    const {app, extended, json} = flags
     const types = restParse.argv as string[]
     const suffix = extended ? '?extended=true' : ''
     const promises = {
-      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
+      accountInfo: this.heroku.request<Account>('/account', {
         headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
       }),
       appInfo: this.heroku.request<AppProcessTier>(`/apps/${app}`, {
         headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
       }),
-      accountInfo: this.heroku.request<Account>('/account', {
+      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
         headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
       }),
     }
@@ -229,7 +231,7 @@ export default class Index extends Command {
       selectedDynos = selectedDynos.filter(dyno => types.find((t: string) => dyno.type === t))
       types.forEach(t => {
         if (!selectedDynos.some(d => d.type === t)) {
-          throw new Error(`No ${color.cyan(t)} dynos on ${color.magenta(app)}`)
+          throw new Error(`No ${color.cyan(t)} dynos on ${color.app(app)}`)
         }
       })
     }
@@ -243,7 +245,7 @@ export default class Index extends Command {
     else {
       await printAccountQuota(this.heroku, appInfo, accountInfo)
       if (selectedDynos.length === 0)
-        ux.stdout(`No dynos on ${color.magenta(app)}`)
+        ux.stdout(`No dynos on ${color.app(app)}`)
       else
         printDynos(selectedDynos)
     }

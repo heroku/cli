@@ -1,25 +1,29 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+
 import * as git from '../../lib/ci/git.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
 
 export default class Destroy extends Command {
-  static description = 'permanently destroy an app'
-  static help = 'This will also destroy all add-ons on the app.'
-  static hiddenAliases = ['destroy', 'apps:delete']
-  static flags = {
-    app: flags.app(),
-    remote: flags.remote(),
-    confirm: flags.string({char: 'c'}),
-  }
-
   static args = {
     app: Args.string({hidden: true}),
   }
 
+  static description = 'permanently destroy an app'
+
+  static flags = {
+    app: flags.app(),
+    confirm: flags.string({char: 'c'}),
+    remote: flags.remote(),
+  }
+
+  static help = 'This will also destroy all add-ons on the app.'
+
+  static hiddenAliases = ['destroy', 'apps:delete']
+
   async run() {
-    const {flags, args} = await this.parse(Destroy)
+    const {args, flags} = await this.parse(Destroy)
 
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')

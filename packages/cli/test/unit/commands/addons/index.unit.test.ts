@@ -1,15 +1,32 @@
 /* eslint-disable max-nested-callbacks */
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/index.js'
-import runCommand from '../../../helpers/runCommand.js'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import nock from 'nock'
-import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/addons/index.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com', {
+      reqheaders: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+        'Accept-Expansion': 'addon_service,plan',
+      },
+    })
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
   describe('--all', function () {
     let addons: Heroku.AddOn[]
 
@@ -21,22 +38,20 @@ describe('addons', function () {
 
     context('with add-ons', function () {
       beforeEach(function () {
-        nock('https://api.heroku.com', {reqheaders: {
-          'Accept-Expansion': 'addon_service,plan',
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        }})
+        api
           .get('/addons')
           .reply(200, addons)
       })
+
       it('prints add-ons in a table', async function () {
         await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout.output)
         const expectedHeader = removeAllWhitespace(`
           Owning App   Add-on    Plan                   Price        Max Price State`)
         const expected = removeAllWhitespace(`
-          acme-inc-api api-redis heroku-redis:premium-2 ~$0.083/hour $60/month created
-          acme-inc-www www-db    heroku-postgresql:mini ~$0.007/hour $5/month  created
-          acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating`)
+          ⬢ acme-inc-api api-redis heroku-redis:premium-2 ~$0.083/hour $60/month created
+          ⬢ acme-inc-www www-db    heroku-postgresql:mini ~$0.007/hour $5/month  created
+          ⬢ acme-inc-www www-redis heroku-redis:premium-2 ~$0.083/hour $60/month creating`)
         expect(actual).to.include(expectedHeader)
         expect(actual).to.include(expected)
       })
@@ -58,10 +73,7 @@ describe('addons', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
         addon.billed_price = {cents: 10000}
-        nock('https://api.heroku.com', {reqheaders: {
-          'Accept-Expansion': 'addon_service,plan',
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        }})
+        api
           .get('/addons')
           .reply(200, [addon])
       })
@@ -71,7 +83,7 @@ describe('addons', function () {
         const expectedHeader = removeAllWhitespace(`
           Owning App   Add-on    Plan                   Price        Max Price State`)
         const expected = removeAllWhitespace(`
-          acme-inc-dwh dwh-db heroku-postgresql:standard-2 ~$0.139/hour $100/month created`)
+          ⬢ acme-inc-dwh dwh-db heroku-postgresql:standard-2 ~$0.139/hour $100/month created`)
         expect(actual).to.include(expectedHeader)
         expect(actual).to.include(expected)
       })
@@ -80,10 +92,7 @@ describe('addons', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
         addon.billed_price = {cents: 0, contract: true}
-        nock('https://api.heroku.com', {reqheaders: {
-          'Accept-Expansion': 'addon_service,plan',
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        }})
+        api
           .get('/addons')
           .reply(200, [addon])
       })
@@ -93,7 +102,7 @@ describe('addons', function () {
         const expectedHeader = removeAllWhitespace(`
           Owning App   Add-on Plan                         Price    Max Price State`)
         const expected = removeAllWhitespace(`
-          acme-inc-dwh dwh-db heroku-postgresql:standard-2 contract contract  created`)
+          ⬢ acme-inc-dwh dwh-db heroku-postgresql:standard-2 contract contract  created`)
         expect(actual).to.include(expectedHeader)
         expect(actual).to.include(expected)
       })
@@ -110,10 +119,7 @@ describe('addons', function () {
 
   describe('--app', function () {
     function mockAPI(appName: string, addons: Heroku.AddOn[] = [], attachments: Heroku.AddOnAttachment[] = []) {
-      nock('https://api.heroku.com', {reqheaders: {
-        'Accept-Expansion': 'addon_service,plan',
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      }})
+      api
         .get(`/apps/${appName}/addons`)
         .reply(200, addons)
       nock('https://api.heroku.com')
@@ -168,8 +174,8 @@ describe('addons', function () {
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)'))
           expect(actual).to.include(removeAllWhitespace('mini ~$0.007/hour $5/month  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
-          expect(actual).to.include(removeAllWhitespace('as WWW_DB on acme-inc-dwh app'))
-          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-www) or other apps.'))
+          expect(actual).to.include(removeAllWhitespace('as WWW_DB on ⬢ acme-inc-dwh app'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (⬢ acme-inc-www) or other apps.'))
         })
       })
       it('shows add-ons owned by foreign apps if attached to targeted app', function () {
@@ -182,10 +188,10 @@ describe('addons', function () {
             Add-on    Plan                   Price        Max Price State`)
           expect(actual).to.include(expectedHeader)
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (www-db)'))
-          expect(actual).to.include(removeAllWhitespace('mini (billed to acme-inc-www app) (billed to acme-inc-www app) created'))
+          expect(actual).to.include(removeAllWhitespace('mini (billed to ⬢ acme-inc-www app) (billed to ⬢ acme-inc-www app) created'))
           expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
-          expect(actual).to.include(removeAllWhitespace('as DATABASE on acme-inc-www app'))
-          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
+          expect(actual).to.include(removeAllWhitespace('as DATABASE on ⬢ acme-inc-www app'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (⬢ acme-inc-dwh) or other apps.'))
         })
       })
       it("doesn't show attachments that are not related to the targeted app", function () {
@@ -209,7 +215,7 @@ describe('addons', function () {
 
         it('includes app name for foreign attachments', function () {
           return run('acme-inc-dwh', function () {
-            expect(stdout.output).to.match(/└─ as DATABASE on acme-inc-www app\s*$/m)
+            expect(stdout.output).to.match(/└─ as DATABASE on ⬢ acme-inc-www app\s*$/m)
           })
         })
       })
@@ -264,7 +270,7 @@ describe('addons', function () {
               fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
             ])
             return run('acme-inc-dwh', function () {
-              expect(stdout.output.indexOf('as WWW_DB')).to.be.lt(stdout.output.indexOf('as DATABASE on acme-inc-www app'))
+              expect(stdout.output.indexOf('as WWW_DB')).to.be.lt(stdout.output.indexOf('as DATABASE on ⬢ acme-inc-www app'))
             })
           })
           it('sorts local attachments by name', function () {
@@ -280,7 +286,7 @@ describe('addons', function () {
               fixtures.attachments['acme-inc-api::WWW_DB'], fixtures.attachments['acme-inc-dwh::WWW_DB'], fixtures.attachments['acme-inc-www::DATABASE'],
             ])
             return run('acme-inc-api', function () {
-              expect(stdout.output.indexOf('as WWW_DB on acme-inc-dwh')).to.be.lt(stdout.output.indexOf('as DATABASE on acme-inc-www'))
+              expect(stdout.output.indexOf('as WWW_DB on ⬢ acme-inc-dwh')).to.be.lt(stdout.output.indexOf('as DATABASE on ⬢ acme-inc-www'))
             })
           })
           it('sorts foreign attachments for same app by name', function () {
@@ -288,7 +294,7 @@ describe('addons', function () {
               fixtures.attachments['acme-inc-api::WWW_DB'], fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'],
             ])
             return run('acme-inc-api', function () {
-              expect(stdout.output.indexOf('as DATABASE on acme-inc-www')).to.be.lt(stdout.output.indexOf('as HEROKU_POSTGRESQL_RED on acme-inc-www'))
+              expect(stdout.output.indexOf('as DATABASE on ⬢ acme-inc-www')).to.be.lt(stdout.output.indexOf('as HEROKU_POSTGRESQL_RED on ⬢ acme-inc-www'))
             })
           })
         })
@@ -313,7 +319,7 @@ describe('addons', function () {
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db)'))
           expect(actual).to.include(removeAllWhitespace('standard-2 ~$0.139/hour $100/month created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
-          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (⬢ acme-inc-dwh) or other apps.'))
         })
       })
     })
@@ -336,7 +342,7 @@ describe('addons', function () {
           expect(actual).to.include(removeAllWhitespace('heroku-postgresql (dwh-db)'))
           expect(actual).to.include(removeAllWhitespace('standard-2 contract contract  created'))
           expect(actual).to.include(removeAllWhitespace('as DATABASE'))
-          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-dwh) or other apps.'))
+          expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (⬢ acme-inc-dwh) or other apps.'))
         })
       })
     })
@@ -349,9 +355,9 @@ describe('addons', function () {
           Add-on    Plan                   Price        Max Price State`)
         expect(actual).to.include(expectedHeader)
         expect(actual).to.include(removeAllWhitespace('? (www-db)'))
-        expect(actual).to.include(removeAllWhitespace('?    (billed to acme-inc-www app) (billed to acme-inc-www app)'))
+        expect(actual).to.include(removeAllWhitespace('?    (billed to ⬢ acme-inc-www app) (billed to ⬢ acme-inc-www app)'))
         expect(actual).to.include(removeAllWhitespace('as WWW_DB'))
-        expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (acme-inc-api) or other apps.'))
+        expect(actual).to.include(removeAllWhitespace('The table above shows add-ons and the attachments to the current app (⬢ acme-inc-api) or other apps.'))
       })
     })
   })

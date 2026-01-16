@@ -1,8 +1,7 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {color} from '@heroku-cli/color'
+import {ux} from '@oclif/core'
 
 interface AppUsage {
   addons: Array<{
@@ -17,8 +16,8 @@ interface AppUsage {
 
 interface TeamUsage {
   apps: Array<{
-    id: string;
     addons: AppUsage['addons'];
+    id: string;
   }>;
 }
 
@@ -28,11 +27,26 @@ interface AppInfo extends Record<string, unknown> {
 }
 
 export default class UsageAddons extends Command {
-  static topic = 'usage'
   static description = 'list usage for metered add-ons attached to an app or apps within a team'
   static flags = {
     app: flags.string({char: 'a', description: 'app to list metered add-ons usage for'}),
     team: flags.team({description: 'team to list metered add-ons usage for'}),
+  }
+
+  static topic = 'usage'
+
+  public async run(): Promise<void> {
+    const {flags} = await this.parse(UsageAddons)
+    const {app, team} = flags
+    if (!app && !team) {
+      ux.error('Specify an app with --app or a team with --team')
+    }
+
+    if (app) {
+      await this.fetchAndDisplayAppUsageData(app, team)
+    } else if (team) {
+      await this.fetchAndDisplayTeamUsageData(team)
+    }
   }
 
   private displayAppUsage(app: string, usageAddons: AppUsage['addons'], appAddons: Heroku.AddOn[]): void {
@@ -119,7 +133,7 @@ export default class UsageAddons extends Command {
     const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
 
     // Display usage for each app
-    usageData.apps.forEach((app: { id: string; addons: any[] }) => {
+    usageData.apps.forEach((app: { addons: any[]; id: string }) => {
       const appInfo = appInfoArray.find(info => info.id === app.id)
       this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
       ux.stdout()
@@ -138,19 +152,5 @@ export default class UsageAddons extends Command {
       id,
       name,
     }))
-  }
-
-  public async run(): Promise<void> {
-    const {flags} = await this.parse(UsageAddons)
-    const {app, team} = flags
-    if (!app && !team) {
-      ux.error('Specify an app with --app or a team with --team')
-    }
-
-    if (app) {
-      await this.fetchAndDisplayAppUsageData(app, team)
-    } else if (team) {
-      await this.fetchAndDisplayTeamUsageData(team)
-    }
   }
 }

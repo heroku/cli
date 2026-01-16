@@ -1,6 +1,5 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
-
 import {Config} from '@oclif/core'
 
 export default abstract class extends Command {
@@ -18,18 +17,18 @@ export default abstract class extends Command {
     this.webhooksClient = client
   }
 
-  webhookType(context: {pipeline?: string; app?: string}): {path: string; display: string} {
+  webhookType(context: {app?: string; pipeline?: string}): {display: string; path: string} {
     if (context.pipeline) {
       return {
-        path: `/pipelines/${context.pipeline}`,
         display: context.pipeline,
+        path: `/pipelines/${context.pipeline}`,
       }
     }
 
     if (context.app) {
       return {
-        path: `/apps/${context.app}`,
         display: color.app(context.app),
+        path: `/apps/${context.app}`,
       }
     }
 

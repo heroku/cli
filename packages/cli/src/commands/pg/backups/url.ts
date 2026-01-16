@@ -1,24 +1,27 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
-import pgBackupsApi from '../../../lib/pg/backups.js'
+
 import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
 
+import pgBackupsApi from '../../../lib/pg/backups.js'
+
 export default class Url extends Command {
-  static topic = 'pg'
+  static args = {
+    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
+  }
+
   static description = 'get secret but publicly accessible URL of a backup'
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static args = {
-    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Url)
+    const {args, flags} = await this.parse(Url)
     const {backup_id} = args
     const {app} = flags
 

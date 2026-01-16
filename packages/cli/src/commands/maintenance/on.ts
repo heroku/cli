@@ -1,16 +1,16 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 
 export default class MaintenanceOn extends Command {
   static description = 'put the app into maintenance mode'
-  static topic = 'maintenance'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static topic = 'maintenance'
 
   async run() {
     const {flags} = await this.parse(MaintenanceOn)

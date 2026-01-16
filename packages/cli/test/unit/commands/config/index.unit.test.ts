@@ -21,7 +21,7 @@ describe('config', function () {
 
     const {stdout} = await runCommand(['config', '--app=myapp'])
 
-    expect(stdout).to.equal('=== myapp Config Vars\n\nLANG:     en_US.UTF-8\nRACK_ENV: production\n')
+    expect(stdout).to.equal('=== ⬢ myapp Config Vars\n\nLANG:     en_US.UTF-8\nRACK_ENV: production\n')
   })
 
   it('--json', async function () {

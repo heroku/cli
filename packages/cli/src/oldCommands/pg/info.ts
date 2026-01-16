@@ -2,12 +2,12 @@
 import color from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {ExtendedAddonAttachment, hux} from '@heroku/heroku-cli-util'
+import {ExtendedAddonAttachment, hux} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util'
 import {PgDatabaseTenant} from '../../lib/pg/types'
 import {nls} from '../../nls'
-import {utils} from '@heroku/heroku-cli-util'
+import {utils} from '@heroku-cli/color'
 
 type DBObject = {
   addon: ExtendedAddonAttachment | ExtendedAddonAttachment['addon'] & {attachment_names?: string[]},
@@ -77,7 +77,7 @@ export default class Info extends Command {
         const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
         addons = await dbResolver.getAllLegacyDatabases(app)
         if (addons.length === 0) {
-          ux.log(`${color.magenta(app)} has no heroku-postgresql databases.`)
+          ux.log(`${color.app(app)} has no heroku-postgresql databases.`)
           return
         }
       }

@@ -1,14 +1,16 @@
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
+
 import {Favorites} from '../../../lib/types/favorites.js'
 
 export default class Index extends Command {
   static description = 'list favorited apps'
-  static topic = 'apps'
   static flags  = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }
+
+  static topic = 'apps'
 
   async run() {
     const {flags} = await this.parse(Index)
@@ -23,7 +25,7 @@ export default class Index extends Command {
     } else {
       hux.styledHeader('Favorited Apps')
       for (const f of favorites) {
-        ux.stdout(f.resource_name)
+        ux.stdout(color.app(f.resource_name))
       }
     }
   }

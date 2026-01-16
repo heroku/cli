@@ -1,16 +1,17 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 
 export default class AppsJoin extends Command {
-  static topic = 'apps'
-  static description = 'add yourself to a team app'
   static aliases = ['join']
+  static description = 'add yourself to a team app'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),
   }
+
+  static topic = 'apps'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(AppsJoin)

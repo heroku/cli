@@ -1,12 +1,14 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/ps/index.js'
-import runCommand from '../../../helpers/runCommand.js'
-import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 import strftime from 'strftime'
 import stripAnsi from 'strip-ansi'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/ps/index.js'
+import runCommand from '../../../helpers/runCommand.js'
+import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+
 const heredoc = tsheredoc.default
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
@@ -15,10 +17,10 @@ const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)
 function stubAccountQuota(code: number, body: Record<string, unknown>) {
   nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp')
-    .reply(200, {process_tier: 'eco', owner: {id: '1234'}, id: '6789'})
+    .reply(200, {id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
   nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp/dynos')
-    .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
+    .reply(200, [{command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo}])
   nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/account')
     .reply(200, {id: '1234'})
@@ -30,7 +32,7 @@ function stubAccountQuota(code: number, body: Record<string, unknown>) {
 function stubAppAndAccount() {
   nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp')
-    .reply(200, {process_tier: 'basic', owner: {id: '1234'}, id: '6789'})
+    .reply(200, {id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
   nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/account')
     .reply(200, {id: '1234'})
@@ -45,8 +47,22 @@ describe('ps', function () {
     const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+        {
+          command: 'npm start',
+          name: 'web.1',
+          size: 'Eco',
+          state: 'up',
+          type: 'web',
+          updated_at: hourAgo,
+        },
+        {
+          command: 'bash',
+          name: 'run.1',
+          size: 'Eco',
+          state: 'up',
+          type: 'run',
+          updated_at: hourAgo,
+        },
       ])
     stubAppAndAccount()
 
@@ -74,9 +90,9 @@ describe('ps', function () {
     const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: '1X-Classic', name: 'web.4ed720fa31-ur8z1', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'npm start', size: '1X-Classic', name: 'web.4ed720fa31-5om2v', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'npm start ./worker.js', size: '2X-Compute', name: 'node-worker.4ed720fa31-w4llb', type: 'node-worker', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start', name: 'web.4ed720fa31-ur8z1', size: '1X-Classic', state: 'up', type: 'web', updated_at: hourAgo},
+        {command: 'npm start', name: 'web.4ed720fa31-5om2v', size: '1X-Classic', state: 'up', type: 'web', updated_at: hourAgo},
+        {command: 'npm start ./worker.js', name: 'node-worker.4ed720fa31-w4llb', size: '2X-Compute', state: 'up', type: 'node-worker', updated_at: hourAgo},
       ])
     stubAppAndAccount()
 
@@ -107,8 +123,8 @@ describe('ps', function () {
       .reply(200, {space: {shield: true}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: 'Private-M', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'bash', size: 'Private-L', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start', name: 'web.1', size: 'Private-M', state: 'up', type: 'web', updated_at: hourAgo},
+        {command: 'bash', name: 'run.1', size: 'Private-L', state: 'up', type: 'run', updated_at: hourAgo},
       ])
 
     stubAppAndAccount()
@@ -137,8 +153,8 @@ describe('ps', function () {
     const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
-        {command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start', name: 'web.1', size: 'Eco', state: 'up', type: 'web', updated_at: hourAgo},
+        {command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo},
       ])
 
     stubAppAndAccount()
@@ -150,7 +166,7 @@ describe('ps', function () {
         'myapp',
       ])
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.include('No foo dynos on myapp')
+      expect(stripAnsi(error.message)).to.include('No foo dynos on ⬢ myapp')
     }
 
     api.done()
@@ -166,7 +182,7 @@ describe('ps', function () {
       .reply(200, {name: 'myapp'})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', size: 'Eco', name: 'web.1', type: 'web', updated_at: hourAgo, state: 'up'},
+        {command: 'npm start', name: 'web.1', size: 'Eco', state: 'up', type: 'web', updated_at: hourAgo},
       ])
 
     await runCommand(Cmd, [
@@ -188,25 +204,43 @@ describe('ps', function () {
       .reply(200, {name: 'myapp'})
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [{
-        id: '100',
         command: 'npm start',
-        size: 'Eco',
+        extended: {
+          az: 'us-east',
+          execution_plane: 'execution_plane',
+          fleet: 'fleet',
+          instance: 'instance',
+          ip: '10.0.0.1',
+          port: 8000,
+          region: 'us',
+          route: 'da route',
+        },
+        id: '100',
         name: 'web.1',
+        release: {id: '10', version: '40'},
+        size: 'Eco',
+        state: 'up',
         type: 'web',
         updated_at: hourAgo,
-        state: 'up',
-        release: {id: '10', version: '40'},
-        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'},
       }, {
-        id: '101',
         command: 'bash',
-        size: 'Eco',
+        extended: {
+          az: 'us-east',
+          execution_plane: 'execution_plane',
+          fleet: 'fleet',
+          instance: 'instance',
+          ip: '10.0.0.2',
+          port: 8000,
+          region: 'us',
+          route: 'da route',
+        },
+        id: '101',
         name: 'run.1',
+        release: {id: '10', version: '40'},
+        size: 'Eco',
+        state: 'up',
         type: 'run',
         updated_at: hourAgo,
-        state: 'up',
-        release: {id: '10', version: '40'},
-        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'},
       }])
 
     await runCommand(Cmd, [
@@ -235,14 +269,26 @@ describe('ps', function () {
       .reply(200, {name: 'myapp'})
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [{
-        id: '100',
         command: 'npm start',
-        size: 'Eco',
+        extended: {
+          az: null,
+          execution_plane: null,
+          fleet: null,
+          instance: 'instance',
+          ip: '10.0.0.1',
+          port: null,
+          region: 'us',
+          route: null,
+        },
+        id: '100',
         name: 'web.1',
+        release: {id: '10', version: '40'},
+        size: 'Eco',
+        state: 'up',
         type: 'web',
         updated_at: hourAgo,
-        state: 'up',
-        release: {id: '10', version: '40'},
+      }, {
+        command: 'bash',
         extended: {
           az: null,
           execution_plane: null,
@@ -253,25 +299,13 @@ describe('ps', function () {
           region: 'us',
           route: null,
         },
-      }, {
         id: '101',
-        command: 'bash',
-        size: 'Eco',
         name: 'run.1',
+        release: {id: '10', version: '40'},
+        size: 'Eco',
+        state: 'up',
         type: 'run',
         updated_at: hourAgo,
-        state: 'up',
-        release: {id: '10', version: '40'},
-        extended: {
-          az: null,
-          execution_plane: null,
-          fleet: null,
-          instance: 'instance',
-          ip: '10.0.0.1',
-          port: null,
-          region: 'us',
-          route: null,
-        },
       }])
 
     await runCommand(Cmd, [
@@ -299,25 +333,25 @@ describe('ps', function () {
       .reply(200, {space: {shield: true}})
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [{
-        id: 100,
         command: 'npm start',
-        size: 'Private-M',
+        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'},
+        id: 100,
         name: 'web.1',
+        release: {id: '10', version: '40'},
+        size: 'Private-M',
+        state: 'up',
         type: 'web',
         updated_at: hourAgo,
-        state: 'up',
-        release: {id: '10', version: '40'},
-        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'},
       }, {
-        id: 101,
         command: 'bash',
-        size: 'Private-L',
+        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'},
+        id: 101,
         name: 'run.1',
+        release: {id: '10', version: '40'},
+        size: 'Private-L',
+        state: 'up',
         type: 'run',
         updated_at: hourAgo,
-        state: 'up',
-        release: {id: '10', version: '40'},
-        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'},
       }])
 
     await runCommand(Cmd, [
@@ -349,7 +383,7 @@ describe('ps', function () {
       run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
 
     `
-    stubAccountQuota(200, {account_quota: 1000, quota_used: 1, apps: []})
+    stubAccountQuota(200, {account_quota: 1000, apps: [], quota_used: 1})
 
     await runCommand(Cmd, [
       '--app',
@@ -372,7 +406,7 @@ describe('ps', function () {
       run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
 
     `
-    stubAccountQuota(200, {account_quota: 3600000, quota_used: 178200, apps: []})
+    stubAccountQuota(200, {account_quota: 3600000, apps: [], quota_used: 178200})
 
     await runCommand(Cmd, [
       '--app',
@@ -395,7 +429,7 @@ describe('ps', function () {
       run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
 
     `
-    stubAccountQuota(200, {account_quota: 3600000, quota_used: 178200, apps: [{app_uuid: '6789', quota_used: 178200}]})
+    stubAccountQuota(200, {account_quota: 3600000, apps: [{app_uuid: '6789', quota_used: 178200}], quota_used: 178200})
 
     await runCommand(Cmd, [
       '--app',
@@ -418,7 +452,7 @@ describe('ps', function () {
       run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
 
     `
-    stubAccountQuota(200, {account_quota: 0, quota_used: 0, apps: []})
+    stubAccountQuota(200, {account_quota: 0, apps: [], quota_used: 0})
 
     await runCommand(Cmd, [
       '--app',
@@ -472,14 +506,14 @@ describe('ps', function () {
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp')
       .reply(200, {
-        process_tier: 'eco', owner: {id: '5678'},
+        owner: {id: '5678'}, process_tier: 'eco',
       })
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}})
       .get('/accounts/1234/actions/get-quota')
-      .reply(200, {account_quota: 1000, quota_used: 1, apps: []})
+      .reply(200, {account_quota: 1000, apps: [], quota_used: 1})
     const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
-      .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
+      .reply(200, [{command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo}])
     const ecoExpression = heredoc`
       === run: one-off processes (1)
 
@@ -504,10 +538,10 @@ describe('ps', function () {
       .reply(200, {id: '1234'})
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp')
-      .reply(200, {process_tier: 'eco', owner: {id: 1234}})
+      .reply(200, {owner: {id: 1234}, process_tier: 'eco'})
     const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
-      .reply(200, [{command: 'bash', size: 'Eco', name: 'run.1', type: 'run', updated_at: hourAgo, state: 'up'}])
+      .reply(200, [{command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo}])
     const ecoExpression = heredoc`
       === run: one-off processes (1)
 
@@ -557,7 +591,7 @@ describe('ps', function () {
 
     dynos.done()
 
-    expect(stdout.output).to.equal('No dynos on myapp\n')
+    expect(stdout.output).to.equal('No dynos on ⬢ myapp\n')
     expect(stderr.output).to.equal('')
   })
 })

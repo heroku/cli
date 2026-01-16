@@ -1,8 +1,8 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import debug from 'debug'
 import openBrowser from 'open'
-import Debug from 'debug'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../lib/api.js'
 import GitHubAPI from '../../lib/pipelines/github-api.js'
@@ -15,13 +15,22 @@ import getRepo from '../../lib/pipelines/setup/get-repo.js'
 import getSettings from '../../lib/pipelines/setup/get-settings.js'
 import pollAppSetups from '../../lib/pipelines/setup/poll-app-setups.js'
 import setupPipeline from '../../lib/pipelines/setup/setup-pipeline.js'
-import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/validate.js'
+import {STAGING_APP_INDICATOR, nameAndRepo} from '../../lib/pipelines/setup/validate.js'
 
-// eslint-disable-next-line new-cap
-const debug = Debug('pipelines:setup')
+const pipelineDebug = debug('pipelines:setup')
 
 export default class Setup extends Command {
-  static open = openBrowser
+  static args = {
+    name: Args.string({
+      description: 'name of pipeline',
+      required: false,
+    }),
+    repo: Args.string({
+      description: 'a GitHub repository to connect the pipeline to',
+      required: false,
+    }),
+  }
+
   static description
     = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
@@ -38,16 +47,7 @@ export default class Setup extends Command {
     }),
   }
 
-  static args = {
-    name: Args.string({
-      description: 'name of pipeline',
-      required: false,
-    }),
-    repo: Args.string({
-      description: 'a GitHub repository to connect the pipeline to',
-      required: false,
-    }),
-  }
+  static open = openBrowser
 
   async run() {
     const {args, flags} = await this.parse(Setup)
@@ -106,7 +106,7 @@ export default class Setup extends Command {
       await setup
       await Setup.open(`https://dashboard.heroku.com/pipelines/${pipeline.id}`)
     } catch (error: any) {
-      debug(error)
+      pipelineDebug(error)
       ux.error(error)
     } finally {
       ux.action.stop()

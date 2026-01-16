@@ -1,17 +1,17 @@
-import {color} from '@heroku-cli/color'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {utils} from '@heroku/heroku-cli-util'
+
 import type {TransferSchedule} from '../../../lib/pg/types.js'
 
 export default class Schedules extends Command {
-  static topic = 'pg'
   static description = 'list backup schedule'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static topic = 'pg'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Schedules)

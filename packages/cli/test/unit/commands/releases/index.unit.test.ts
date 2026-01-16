@@ -9,6 +9,7 @@ import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 describe('releases', function () {
   let originalColumns: number | undefined
   let originalIsTTY: boolean | undefined
+  let api: nock.Scope
 
   before(function () {
     process.env.TZ = 'UTC' // Use UTC time always
@@ -17,6 +18,7 @@ describe('releases', function () {
   beforeEach(function () {
     originalColumns = process.stdout.columns
     originalIsTTY = process.stdout.isTTY
+    api = nock('https://api.heroku.com')
   })
 
   afterEach(function () {
@@ -32,6 +34,8 @@ describe('releases', function () {
     } else {
       process.stdout.columns = originalColumns
     }
+
+    api.done()
   })
 
   const releases = [
@@ -123,7 +127,7 @@ describe('releases', function () {
   it('shows releases', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
@@ -133,19 +137,18 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41'))
     expect(actual).to.include(removeAllWhitespace('releas…'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
-    api.done()
   })
 
   it('shows successful releases', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
 
@@ -155,18 +158,17 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41   third comm…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
-    api.done()
   })
 
   it('shows releases in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
@@ -176,20 +178,19 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
     // cspell:ignore releas
     expect(actual).to.include(removeAllWhitespace('v41'))
     expect(actual).to.include(removeAllWhitespace('releas…'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
-    api.done()
   })
 
   it('shows successful releases in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
 
@@ -199,18 +200,17 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41   third commit            rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
-    api.done()
   })
 
   it('shows releases in narrow terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 65
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
@@ -220,20 +220,19 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('v41'))
     expect(actual).to.include(removeAllWhitespace('v40'))
     expect(actual).to.include(removeAllWhitespace('v37'))
     expect(actual).to.include(removeAllWhitespace('rdagg'))
-    api.done()
   })
 
   it('shows pending releases without release phase', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
@@ -243,20 +242,19 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases - Current: v37'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('v41'))
     expect(actual).to.include(removeAllWhitespace('v40'))
     expect(actual).to.include(removeAllWhitespace('v37'))
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
-    api.done()
   })
 
   it('shows pending releases without a slug', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releasesNoSlug)
 
@@ -266,16 +264,15 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('v1'))
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
-    api.done()
   })
 
   it('shows releases as json', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
@@ -287,11 +284,10 @@ describe('releases', function () {
 
     expect(JSON.parse(stdout.output)[0]).to.have.nested.include({version: 41})
     // stderr may contain warnings from other plugins in test environment
-    api.done()
   })
 
   it('shows message if no releases', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, [])
 
@@ -300,13 +296,12 @@ describe('releases', function () {
       'myapp',
     ])
 
-    expect(stdout.output).to.equal('myapp has no releases.\n')
+    expect(stdout.output).to.equal('⬢ myapp has no releases.\n')
     // stderr may contain warnings from other plugins in test environment
-    api.done()
   })
 
   it('shows extended info', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
 
@@ -317,7 +312,7 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('slug_id'))
@@ -327,13 +322,12 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('1'))
     expect(actual).to.include(removeAllWhitespace('uuid'))
     // stderr may contain warnings from other plugins in test environment
-    api.done()
   })
 
   it('shows extended info in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
 
@@ -344,7 +338,7 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('slug_id'))
@@ -355,7 +349,6 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('1'))
     expect(actual).to.include(removeAllWhitespace('uuid'))
     // stderr may contain warnings from other plugins in test environment
-    api.done()
   })
 
   it('shows no current release', async function () {
@@ -364,7 +357,7 @@ describe('releases', function () {
     // Create a copy to avoid mutating the shared releases array
     const releasesCopy = releases.map(r => ({...r}))
     releasesCopy.at(-1)!.current = false
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/apps/myapp/releases')
       .reply(200, releasesCopy)
 
@@ -374,13 +367,12 @@ describe('releases', function () {
     ])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.include(removeAllWhitespace('=== myapp Releases'))
+    expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
     expect(actual).to.include(removeAllWhitespace('v41'))
     expect(actual).to.include(removeAllWhitespace('v40'))
     expect(actual).to.include(removeAllWhitespace('v37'))
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
-    api.done()
   })
 })

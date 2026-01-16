@@ -1,13 +1,10 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-
 import {Dyno, Release} from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 
 export default class Wait extends Command {
   static description = 'wait for all dynos to be running latest version after a release'
-  static topic = 'ps'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -17,6 +14,7 @@ export default class Wait extends Command {
     }),
     'wait-interval': flags.integer({
       char: 'w',
+      default: 10,
       description: 'how frequently to poll in seconds (to avoid hitting Heroku API rate limits)',
       async parse(input) {
         const w = Number.parseInt(input, 10)
@@ -26,7 +24,6 @@ export default class Wait extends Command {
 
         return w
       },
-      default: 10,
     }),
     'with-run': flags.boolean({
       char: 'R',
@@ -35,18 +32,20 @@ export default class Wait extends Command {
     }),
   }
 
+  static topic = 'ps'
+
   async run() {
     const {flags} = await this.parse(Wait)
 
     const {body: releases} = await this.heroku.request<Release[]>(`/apps/${flags.app}/releases`, {
-      partial: true,
       headers: {
         Range: 'version ..; max=1, order=desc',
       },
+      partial: true,
     })
 
     if (releases.length === 0) {
-      this.warn(`App ${flags.app} has no releases`)
+      this.warn(`App ${color.app(flags.app)} has no releases`)
       return
     }
 

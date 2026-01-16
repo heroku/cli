@@ -1,17 +1,18 @@
-import {Command, flags} from '@heroku-cli/command'
+import {hux, color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import Uri from 'urijs'
 import {confirm} from '@inquirer/prompts'
+import {ux} from '@oclif/core'
 import {orderBy} from 'natural-orderby'
-import {paginateRequest} from '../../lib/utils/paginator.js'
+import Uri from 'urijs'
+
 import parseKeyValue from '../../lib/utils/keyValueParser.js'
+import {paginateRequest} from '../../lib/utils/paginator.js'
 
 function isApexDomain(hostname: string) {
   if (hostname.includes('*')) return false
-  const a = new Uri({protocol: 'http', hostname})
+  const a = new Uri({hostname, protocol: 'http'})
   return a.subdomain() === ''
 }
 
@@ -32,70 +33,16 @@ www.example.com  CNAME            www.example.herokudns.com
   static flags = {
     app: flags.app({required: true}),
     columns: flags.string({description: 'only show provided columns (comma-separated)'}),
-    extended: flags.boolean({description: 'show extra columns', char: 'x'}),
+    csv: flags.boolean({char: 'c', description: 'output in csv format'}),
+    extended: flags.boolean({char: 'x', description: 'show extra columns'}),
     filter: flags.string({description: 'filter property by partial string matching, ex: name=foo'}),
-    json: flags.boolean({description: 'output in json format', char: 'j'}),
-    csv: flags.boolean({description: 'output in csv format', char: 'c'}),
+    json: flags.boolean({char: 'j', description: 'output in json format'}),
     remote: flags.remote(),
     sort: flags.string({description: 'sort by property'}),
   }
 
-  tableConfig = (needsEndpoints: boolean, extended: boolean, requestedColumns?: string[]) => {
-    const tableConfig: Record<string, any> = {
-      hostname: {
-        header: 'Domain Name',
-      },
-      kind: {
-        get(domain: Heroku.Domain) {
-          if (domain.hostname) {
-            return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
-          }
-        },
-        header: 'DNS Record Type',
-      },
-      cname: {header: 'DNS Target'},
-    }
-
-    if (extended) {
-      tableConfig.acm_status = {header: 'ACM Status'}
-      tableConfig.acm_status_reason = {header: 'ACM Status'}
-    }
-
-    const sniConfig = {
-      sni_endpoint: {
-        header: 'SNI Endpoint',
-        get(domain: Heroku.Domain) {
-          if (domain.sni_endpoint) {
-            return domain.sni_endpoint.name
-          }
-        },
-      },
-    }
-
-    let fullConfig = tableConfig
-    if (needsEndpoints) {
-      fullConfig = {
-        ...tableConfig,
-        ...sniConfig,
-      }
-    }
-
-    // If specific columns are requested, filter the configuration
-    if (requestedColumns && requestedColumns.length > 0) {
-      const filteredConfig: Record<string, any> = {}
-      requestedColumns.forEach(columnKey => {
-        if (fullConfig[columnKey]) {
-          filteredConfig[columnKey] = fullConfig[columnKey]
-        }
-      })
-      return filteredConfig
-    }
-
-    return fullConfig
-  }
-
   getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
-    const filteredInfo = {size: 0, filteredDomains: domains}
+    const filteredInfo = {filteredDomains: domains, size: 0}
     const {key: filterName, value} = parseKeyValue(filterKeyValue)
 
     if (!value) {
@@ -128,28 +75,28 @@ www.example.com  CNAME            www.example.herokudns.com
     return filteredInfo
   }
 
-  mapSortFieldToProperty = (sortField: string): string => {
-    const headerToPropertyMap: Record<string, string> = {
-      'Domain Name': 'hostname',
-      'DNS Record Type': 'kind',
-      'DNS Target': 'cname',
-      'SNI Endpoint': 'sni_endpoint',
-      'ACM Status': 'acm_status',
-    }
-
-    return headerToPropertyMap[sortField] || sortField
-  }
-
   mapColumnHeadersToKeys = (columnHeaders: string[]): string[] => {
     const headerToKeyMap: Record<string, string> = {
-      'Domain Name': 'hostname',
+      'ACM Status': 'acm_status',
       'DNS Record Type': 'kind',
       'DNS Target': 'cname',
+      'Domain Name': 'hostname',
       'SNI Endpoint': 'sni_endpoint',
-      'ACM Status': 'acm_status',
     }
 
     return columnHeaders.map(header => headerToKeyMap[header.trim()] || header.trim())
+  }
+
+  mapSortFieldToProperty = (sortField: string): string => {
+    const headerToPropertyMap: Record<string, string> = {
+      'ACM Status': 'acm_status',
+      'DNS Record Type': 'kind',
+      'DNS Target': 'cname',
+      'Domain Name': 'hostname',
+      'SNI Endpoint': 'sni_endpoint',
+    }
+
+    return headerToPropertyMap[sortField] || sortField
   }
 
   outputCSV = (customDomains: Heroku.Domain[], tableConfig: Record<string, any>, sortProperty?: string) => {
@@ -178,6 +125,61 @@ www.example.com  CNAME            www.example.herokudns.com
     }
   }
 
+  tableConfig = (needsEndpoints: boolean, extended: boolean, requestedColumns?: string[]) => {
+    const tableConfig: Record<string, any> = {
+      hostname: {
+        header: 'Domain Name',
+      },
+      kind: {
+        get(domain: Heroku.Domain) {
+          if (domain.hostname) {
+            return isApexDomain(domain.hostname) ? 'ALIAS or ANAME' : 'CNAME'
+          }
+        },
+        header: 'DNS Record Type',
+      },
+      // eslint-disable-next-line perfectionist/sort-objects
+      cname: {header: 'DNS Target'},
+    }
+
+    if (extended) {
+      tableConfig.acm_status = {header: 'ACM Status'}
+      tableConfig.acm_status_reason = {header: 'ACM Status'}
+    }
+
+    const sniConfig = {
+      sni_endpoint: {
+        get(domain: Heroku.Domain) {
+          if (domain.sni_endpoint) {
+            return domain.sni_endpoint.name
+          }
+        },
+        header: 'SNI Endpoint',
+      },
+    }
+
+    let fullConfig = tableConfig
+    if (needsEndpoints) {
+      fullConfig = {
+        ...tableConfig,
+        ...sniConfig,
+      }
+    }
+
+    // If specific columns are requested, filter the configuration
+    if (requestedColumns && requestedColumns.length > 0) {
+      const filteredConfig: Record<string, any> = {}
+      requestedColumns.forEach(columnKey => {
+        if (fullConfig[columnKey]) {
+          filteredConfig[columnKey] = fullConfig[columnKey]
+        }
+      })
+      return filteredConfig
+    }
+
+    return fullConfig
+  }
+
   async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
     return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
   }
@@ -196,7 +198,7 @@ www.example.com  CNAME            www.example.herokudns.com
     if (flags.json) {
       hux.styledJSON(domains)
     } else {
-      hux.styledHeader(`${flags.app} Heroku Domain`)
+      hux.styledHeader(`${newColor.app(flags.app)} Heroku Domain`)
       ux.stdout(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
         ux.stdout()
@@ -210,7 +212,7 @@ www.example.com  CNAME            www.example.herokudns.com
         }
 
         ux.stdout()
-        hux.styledHeader(`${flags.app} Custom Domains`)
+        hux.styledHeader(`${newColor.app(flags.app)} Custom Domains`)
 
         const tableConfig = this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined)
         const sortProperty = this.mapSortFieldToProperty(flags.sort)

@@ -1,27 +1,30 @@
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
+
 import {trapConfirmationRequired} from '../../lib/addons/util.js'
 
 export default class Attach extends Command {
-  static topic = 'addons'
+  static args = {
+    addon_name: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
+  }
+
   static description = 'attach an existing add-on resource to an app'
+
   static flags = {
-    as: flags.string({description: 'name for add-on attachment'}),
-    credential: flags.string({description: 'credential name for scoped access to Heroku Postgres'}),
-    confirm: flags.string({description: 'overwrite existing add-on attachment with same name'}),
     app: flags.app({required: true}),
+    as: flags.string({description: 'name for add-on attachment'}),
+    confirm: flags.string({description: 'overwrite existing add-on attachment with same name'}),
+    credential: flags.string({description: 'credential name for scoped access to Heroku Postgres'}),
     remote: flags.remote(),
   }
 
-  static args = {
-    addon_name: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
-  }
+  static topic = 'addons'
 
   public async run(): Promise<void> {
-    const {flags,  args} = await this.parse(Attach)
-    const {app, credential, as, confirm} = flags
+    const {args,  flags} = await this.parse(Attach)
+    const {app, as, confirm, credential} = flags
     const {body: addon} = await this.heroku.get<Heroku.AddOn>(`/addons/${encodeURIComponent(args.addon_name)}`)
     const createAttachment = async (confirmed?: string) =>  {
       let namespace: string | undefined
@@ -30,10 +33,10 @@ export default class Attach extends Command {
       }
 
       const body = {
-        name: as, app: {name: app}, addon: {name: addon.name}, confirm: confirmed, namespace,
+        addon: {name: addon.name}, app: {name: app}, confirm: confirmed, name: as, namespace,
       }
 
-      ux.action.start(`Attaching ${credential ? color.yellow(credential) + ' of ' : ''}${color.yellow(addon.name || '')}${as ? ' as ' + color.cyan(as) : ''} to ${color.magenta(app)}`)
+      ux.action.start(`Attaching ${credential ? color.yellow(credential) + ' of ' : ''}${color.yellow(addon.name || '')}${as ? ' as ' + color.cyan(as) : ''} to ${color.app(app)}`)
       const {body: attachments} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {body})
       ux.action.stop()
       return attachments
@@ -47,9 +50,9 @@ export default class Attach extends Command {
     }
 
     const attachment = await trapConfirmationRequired<Heroku.AddOnAttachment>(app, confirm, (confirmed?: string) => createAttachment(confirmed))
-    ux.action.start(`Setting ${color.cyan(attachment.name || '')} config vars and restarting ${color.magenta(app)}`)
+    ux.action.start(`Setting ${color.cyan(attachment.name || '')} config vars and restarting ${color.app(app)}`)
     const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      partial: true, headers: {Range: 'version ..; max=1, order=desc'},
+      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
     })
     ux.action.stop(`done, v${releases[0].version}`)
   }

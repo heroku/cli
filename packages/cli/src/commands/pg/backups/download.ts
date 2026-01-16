@@ -1,11 +1,12 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
+import fs from 'fs-extra'
+
+import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
+
 import pgBackupsApi from '../../../lib/pg/backups.js'
 import download from '../../../lib/pg/download.js'
-import fs from 'fs-extra'
-import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
 
 function defaultFilename() {
   let f = 'latest.dump'
@@ -19,25 +20,27 @@ function defaultFilename() {
 }
 
 export default class Download extends Command {
-  static topic = 'pg'
-  static description = 'downloads database backup'
-  static flags = {
-    output: flags.string({char: 'o', description: 'location to download to. Defaults to latest.dump'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
   }
 
+  static description = 'downloads database backup'
+
+  static flags = {
+    app: flags.app({required: true}),
+    output: flags.string({char: 'o', description: 'location to download to. Defaults to latest.dump'}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Download)
+    const {args, flags} = await this.parse(Download)
     const {backup_id} = args
     const {app} = flags
     const output = flags.output || defaultFilename()
     let num
-    ux.action.start(`Getting backup from ${color.magenta(app)}`)
+    ux.action.start(`Getting backup from ${color.app(app)}`)
     if (backup_id) {
       num = await pgBackupsApi(app, this.heroku).num(backup_id)
       if (!num)
@@ -48,7 +51,7 @@ export default class Download extends Command {
         .filter(t => t.succeeded && t.to_type === 'gof3r')
         .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
       if (!lastBackup)
-        throw new Error(`No backups on ${color.magenta(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+        throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
       num = lastBackup.num
     }
 
