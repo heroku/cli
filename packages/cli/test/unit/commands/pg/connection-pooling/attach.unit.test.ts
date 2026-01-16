@@ -1,14 +1,15 @@
-import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../../src/commands/pg/connection-pooling/attach.js'
 import {resolvedAttachments} from '../../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 describe('pg:connection-pooling:attach', function () {
   const addon = {
-    name: 'postgres-1',
     id: '1234',
+    name: 'postgres-1',
     plan: {name: 'heroku-postgresql:standard-0'},
   }
   let api: nock.Scope
@@ -36,7 +37,7 @@ describe('pg:connection-pooling:attach', function () {
   context('includes an attachment name', function () {
     beforeEach(function () {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
-        credential: defaultCredential, name: attachmentName, app: 'myapp',
+        app: 'myapp', credential: defaultCredential, name: attachmentName,
       }).reply(201, {name: attachmentName})
     })
 
@@ -51,14 +52,14 @@ describe('pg:connection-pooling:attach', function () {
 
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.contain('Enabling Connection Pooling on')
-      expect(stderr.output).to.contain(`Setting ${attachmentName} config vars and restarting myapp... done, v0`)
+      expect(stderr.output).to.contain(`Setting ${attachmentName} config vars and restarting ⬢ myapp... done, v0`)
     })
   })
 
   context('base command with no credential or attachment name', function () {
     beforeEach(function () {
       pg.post(`/client/v11/databases/${addon.name}/connection-pooling`, {
-        credential: defaultCredential, app: 'myapp',
+        app: 'myapp', credential: defaultCredential,
       }).reply(201, {name: 'HEROKU_COLOR'})
     })
 
@@ -71,7 +72,7 @@ describe('pg:connection-pooling:attach', function () {
 
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.contain('Enabling Connection Pooling on')
-      expect(stderr.output).to.contain('Setting HEROKU_COLOR config vars and restarting myapp... done, v0')
+      expect(stderr.output).to.contain('Setting HEROKU_COLOR config vars and restarting ⬢ myapp... done, v0')
     })
   })
 })
