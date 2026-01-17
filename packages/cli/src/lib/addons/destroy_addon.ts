@@ -1,8 +1,9 @@
-import {waitForAddonDeprovisioning} from './addons_wait.js'
-import {color} from '@heroku-cli/color'
-import {ux} from '@oclif/core'
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
+import {waitForAddonDeprovisioning} from './addons_wait.js'
 
 export default async function (heroku: APIClient, addon: Heroku.AddOn, force = false, wait = false) {
   const addonName = addon.name || ''
@@ -11,8 +12,8 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
     ux.action.start(`Destroying ${color.addon(addonName)} on ${color.app(addon.app?.name || '')}`)
 
     const {body: addonDelete} = await heroku.delete<Heroku.AddOn>(`/apps/${addon.app?.id}/addons/${addon.id}`, {
-      headers: {'Accept-Expansion': 'plan'},
       body: {force},
+      headers: {'Accept-Expansion': 'plan'},
     }).catch(error => {
       if (error.body && error.body.message) {
         throw new Error(`The add-on was unable to be destroyed: ${error.body.message}.`)
@@ -40,7 +41,7 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
       addonResponse = await waitForAddonDeprovisioning(heroku, addonResponse, 5)
     } else {
       ux.stdout(`${color.addon(addonName)} is being destroyed in the background. The app will restart when complete...`)
-      ux.stdout(`Use ${color.cmd('heroku addons:info ' + addonName)} to check destruction progress`)
+      ux.stdout(`Use ${color.command('heroku addons:info ' + addonName)} to check destruction progress`)
     }
   } else if (addonResponse.state !== 'deprovisioned') {
     throw new Error(`The add-on was unable to be destroyed, with status ${addonResponse.state}.`)

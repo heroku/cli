@@ -64,7 +64,7 @@ async function addAddons(heroku: APIClient, app: Heroku.App, addons: { as?: stri
       plan: addon.plan,
     }
 
-    ux.action.start(`Adding ${color.green(addon.plan)}`)
+    ux.action.start(`Adding ${color.addon(addon.plan)}`)
     await heroku.post(`/apps/${app.name}/addons`, {body})
     ux.action.stop()
   }

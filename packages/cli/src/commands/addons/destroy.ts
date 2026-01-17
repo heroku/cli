@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
@@ -42,7 +42,7 @@ export default class Destroy extends Command {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
       const addonApp = addon.app?.name
       if (app && addonApp !== app) {
-        throw new Error(`${color.yellow(addon.name ?? '')} is on ${color.app(addonApp ?? '')} not ${color.app(app)}`)
+        throw new Error(`${color.addon(addon.name ?? '')} is on ${color.app(addonApp ?? '')} not ${color.app(app)}`)
       }
     }
 

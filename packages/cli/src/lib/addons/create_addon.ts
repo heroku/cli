@@ -1,15 +1,16 @@
-import {ux} from '@oclif/core'
-import {color} from '@heroku-cli/color'
-import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
-import * as util from './util.js'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
 import {waitForAddonProvisioning} from './addons_wait.js'
+import * as util from './util.js'
 
 function formatConfigVarsMessage(addon: Heroku.AddOn) {
   const configVars = addon.config_vars || []
 
   if (configVars.length > 0) {
-    return `Created ${color.addon(addon.name || '')} as ${configVars.map((c: string) => color.configVar(c)).join(', ')}`
+    return `Created ${color.addon(addon.name || '')} as ${configVars.map((c: string) => color.name(c)).join(', ')}`
   }
 
   return `Created ${color.addon(addon.name || '')}`
@@ -26,11 +27,11 @@ export default async function (
 ) {
   async function createAddonRequest(confirmed?: string) {
     const body = {
+      attachment: {name: options.as},
+      config: options.config,
       confirm: confirmed,
       name: options.name,
-      config: options.config,
       plan: {name: plan},
-      attachment: {name: options.as},
     }
 
     ux.action.start(`Creating ${plan} on ${color.app(app)}`)
@@ -60,7 +61,7 @@ export default async function (
       ux.stdout(formatConfigVarsMessage(addon))
     } else {
       ux.stdout(`${color.addon(addon.name || '')} is being created in the background. The app will restart when complete...`)
-      ux.stdout(`Use ${color.cmd('heroku addons:info ' + addon.name)} to check creation progress`)
+      ux.stdout(`Use ${color.command('heroku addons:info ' + addon.name)} to check creation progress`)
     }
   } else if (addon.state === 'deprovisioned') {
     throw new Error(`The add-on was unable to be created, with status ${addon.state}`)

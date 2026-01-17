@@ -92,7 +92,7 @@ function displayAll(addons: Heroku.AddOn[]) {
         get: ({app}) => newColor.app(app?.name || ''),
       },
       'Add-on': {
-        get: ({name}) => color.magenta(name || ''),
+        get: ({name}) => newColor.addon(name || ''),
       },
       Plan: {
         get({plan}) {
@@ -170,7 +170,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
 
   const isForeignApp = (attOrAddon: Heroku.AddOn | Heroku.AddOnAttachment) => attOrAddon.app?.name !== app
   function presentAddon(addon: Heroku.AddOn) {
-    const name = color.magenta(addon.name || '')
+    const name = newColor.addon(addon.name || '')
     let service = addon.addon_service?.name
     if (service === undefined) {
       service = color.dim('?')

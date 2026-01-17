@@ -1,28 +1,30 @@
-import {color} from '@heroku-cli/color'
+/* eslint-disable perfectionist/sort-objects */
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {grandfatheredPrice, formatPrice, formatState} from '../../lib/addons/util.js'
+import {Args} from '@oclif/core'
+
 import {resolveAddon} from '../../lib/addons/resolve.js'
+import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
 
 const topic = 'addons'
 
 export default class Info extends Command {
-  static topic = topic
+  static args = {
+    addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
+  }
+
   static description = 'show detailed add-on resource and attachment information'
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
   }
 
+  static topic = topic
   static usage = `${topic}:info ADDON`
-  static args = {
-    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
-  }
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const {app} = flags
 
     const addon = await resolveAddon(this.heroku, app, args.addon)
@@ -30,16 +32,16 @@ export default class Info extends Command {
 
     addon.plan.price = grandfatheredPrice(addon)
     addon.attachments = attachments
-    hux.styledHeader(color.magenta(addon.name ?? ''))
+    hux.styledHeader(color.addon(addon.name ?? ''))
 
     hux.styledObject({
       Plan: addon.plan.name,
-      Price: formatPrice({price: addon.plan.price, hourly: true}),
-      'Max Price': formatPrice({price: addon.plan.price, hourly: false}),
+      Price: formatPrice({hourly: true, price: addon.plan.price}),
+      'Max Price': formatPrice({hourly: false, price: addon.plan.price}),
       Attachments: addon.attachments.map((att: Heroku.AddOnAttachment) => [
         color.cyan(att.app?.name || ''), color.green(att.name || ''),
       ].join('::'))
-        .sort(), 'Owning app': color.cyan(addon.app?.name ?? ''), 'Installed at': (new Date(addon.created_at ?? ''))
+        .sort(), 'Owning app': color.app(addon.app?.name ?? ''), 'Installed at': (new Date(addon.created_at ?? ''))
         .toString(), State: formatState(addon.state),
     })
   }
