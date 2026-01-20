@@ -37,13 +37,13 @@ export default class Attach extends Command {
     if (essentialPlan(db))
       ux.error('You can\'t perform this operation on Essential-tier databases.')
 
-    ux.action.start(`Enabling Connection Pooling on ${color.yellow(db.name)} to ${color.app(app)}`)
+    ux.action.start(`Enabling Connection Pooling on ${color.addon(db.name)} to ${color.app(app)}`)
     const {body: attachment} = await this.heroku.post<Required<Heroku.AddOnAttachment>>(`/client/v11/databases/${encodeURIComponent(db.name)}/connection-pooling`, {
       body: {app, credential: 'default', name: flags.as}, hostname: utils.pg.host(),
     })
     ux.action.stop()
 
-    ux.action.start(`Setting ${color.cyan(attachment.name)} config vars and restarting ${color.app(app)}`)
+    ux.action.start(`Setting ${color.attachment(attachment.name)} config vars and restarting ${color.app(app)}`)
     const {body: releases} = await this.heroku.get<Required<Heroku.Release>[]>(
       `/apps/${app}/releases`,
       {headers: {Range: 'version ..; max=1, order=desc'}, partial: true},

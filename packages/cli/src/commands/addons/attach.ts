@@ -36,7 +36,7 @@ export default class Attach extends Command {
         addon: {name: addon.name}, app: {name: app}, confirm: confirmed, name: as, namespace,
       }
 
-      ux.action.start(`Attaching ${credential ? color.yellow(credential) + ' of ' : ''}${color.addon(addon.name || '')}${as ? ' as ' + color.cyan(as) : ''} to ${color.app(app)}`)
+      ux.action.start(`Attaching ${credential ? color.name(credential) + ' of ' : ''}${color.addon(addon.name || '')}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`)
       const {body: attachments} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {body})
       ux.action.stop()
       return attachments
@@ -45,12 +45,12 @@ export default class Attach extends Command {
     if (credential && credential !== 'default') {
       const {body: credentialConfig} = await this.heroku.get<Heroku.AddOnConfig[]>(`/addons/${addon.name}/config/credential:${encodeURIComponent(credential)}`)
       if (credentialConfig.length === 0) {
-        throw new Error(`Could not find credential ${credential} for database ${addon.name}`)
+        throw new Error(`Could not find credential ${color.name(credential)} for database ${(addon.name || '')}`)
       }
     }
 
     const attachment = await trapConfirmationRequired<Heroku.AddOnAttachment>(app, confirm, (confirmed?: string) => createAttachment(confirmed))
-    ux.action.start(`Setting ${color.cyan(attachment.name || '')} config vars and restarting ${color.app(app)}`)
+    ux.action.start(`Setting ${color.attachment(attachment.name || '')} config vars and restarting ${color.app(app)}`)
     const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
       headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
     })

@@ -146,7 +146,7 @@ function displayAll(addons: Heroku.AddOn[]) {
 }
 
 function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
-  const attName = color.green(attachment.name || '')
+  const attName = color.attachment(attachment.name || '')
   const output = [color.dim('as'), attName]
   if (showApp) {
     const appInfo = `on ${newColor.app(attachment.app?.name || '')} app`

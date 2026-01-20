@@ -22,13 +22,13 @@ export default class Detach extends Command {
     const {app} = flags
     const {body: attachment} = await this.heroku.get<Heroku.AddOnAttachment>(`/apps/${app}/addon-attachments/${args.attachment_name}`)
 
-    ux.action.start(`Detaching ${color.cyan(attachment.name || '')} to ${color.addon(attachment.addon?.name || '')} from ${color.app(app)}`)
+    ux.action.start(`Detaching ${color.attachment(attachment.name || '')} to ${color.addon(attachment.addon?.name || '')} from ${color.app(app)}`)
 
     await this.heroku.delete(`/addon-attachments/${attachment.id}`)
 
     ux.action.stop()
 
-    ux.action.start(`Unsetting ${color.cyan(attachment.name || '')} config vars and restarting ${color.app(app)}`)
+    ux.action.start(`Unsetting ${color.attachment(attachment.name || '')} config vars and restarting ${color.app(app)}`)
 
     const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
       headers: {Range: 'version ..; max=1, order=desc'}, partial: true,

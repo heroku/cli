@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-objects */
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -15,6 +14,7 @@ export default class Info extends Command {
   }
 
   static description = 'show detailed add-on resource and attachment information'
+
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
@@ -35,14 +35,14 @@ export default class Info extends Command {
     hux.styledHeader(color.addon(addon.name ?? ''))
 
     hux.styledObject({
-      Plan: addon.plan.name,
-      Price: formatPrice({hourly: true, price: addon.plan.price}),
-      'Max Price': formatPrice({hourly: false, price: addon.plan.price}),
       Attachments: addon.attachments.map((att: Heroku.AddOnAttachment) => [
-        color.cyan(att.app?.name || ''), color.green(att.name || ''),
+        color.app(att.app?.name || ''), color.attachment(att.name || ''),
       ].join('::'))
-        .sort(), 'Owning app': color.app(addon.app?.name ?? ''), 'Installed at': (new Date(addon.created_at ?? ''))
-        .toString(), State: formatState(addon.state),
+        .sort(),
+      'Installed at': (new Date(addon.created_at ?? ''))
+        .toString(),
+      'Max Price': formatPrice({hourly: false, price: addon.plan.price}),
+      'Owning app': color.app(addon.app?.name ?? ''), Plan: addon.plan.name, Price: formatPrice({hourly: true, price: addon.plan.price}), State: formatState(addon.state),
     })
   }
 }
