@@ -1,31 +1,33 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {resolveAddon} from '../../lib/addons/resolve.js'
+import {Args, ux} from '@oclif/core'
+
 import {waitForAddonProvisioning, waitForAddonDeprovisioning} from '../../lib/addons/addons_wait.js'
+import {resolveAddon} from '../../lib/addons/resolve.js'
 import notify from '../../lib/notify.js'
 import {ExtendedAddon} from '../../lib/pg/types.js'
 
 export default class Wait extends Command {
-  static topic = 'addons'
-  static description = 'show provisioning status of the add-ons on the app'
-  static flags = {
-    'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
-    app: flags.app(),
-    remote: flags.remote(),
-  }
-
   static args = {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on'}),
   }
 
+  static description = 'show provisioning status of the add-ons on the app'
+  static flags = {
+    app: flags.app(),
+    remote: flags.remote(),
+    'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
+  }
+
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
 
+  static topic = 'addons'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Wait)
+    const {args, flags} = await this.parse(Wait)
     // TODO: remove this type once the schema is fixed
-    type AddonWithDeprovisioningState  = Omit<ExtendedAddon, 'state'> & {state?: ExtendedAddon['state'] | 'deprovisioning'}
+    type AddonWithDeprovisioningState  = {state?: 'deprovisioning' | ExtendedAddon['state']} & Omit<ExtendedAddon, 'state'>
     let addonsToWaitFor: AddonWithDeprovisioningState[]
     if (args.addon) {
       addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
@@ -57,9 +59,9 @@ export default class Wait extends Command {
 
         const configVars = (addonResponse.config_vars || [])
         if (configVars.length > 0) {
-          const decoratedConfigVars = configVars.map(c => color.green(c))
+          const decoratedConfigVars = configVars.map(c => color.name(c))
             .join(', ')
-          ux.stdout(`Created ${color.yellow(addonName)} as ${decoratedConfigVars}`)
+          ux.stdout(`Created ${color.addon(addonName)} as ${decoratedConfigVars}`)
         }
 
         if (Date.now() - startTime.valueOf() >= 1000 * 5) {

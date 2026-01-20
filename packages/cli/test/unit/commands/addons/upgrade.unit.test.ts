@@ -1,16 +1,17 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/upgrade.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
 import {AddOn} from '@heroku-cli/schema'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 import stripAnsi from 'strip-ansi'
+
+import Cmd from '../../../../src/commands/addons/upgrade.js'
+import runCommand from '../../../helpers/runCommand.js'
 
 describe('addons:upgrade', function () {
   let api: ReturnType<typeof nock>
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com:443')
+    api = nock('https://api.heroku.com')
   })
 
   afterEach(function () {
@@ -20,13 +21,13 @@ describe('addons:upgrade', function () {
 
   it('upgrades an add-on', async function () {
     const addon: AddOn = {
-      name: 'kafka-swiftly-123',
       addon_service: {name: 'heroku-kafka'},
       app: {name: 'myapp'},
+      name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
     api
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-kafka'})
+      .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
       .reply(200, [addon])
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
       .reply(200, {plan: {price: {cents: 0}}, provision_message: 'provision msg'})
@@ -38,19 +39,19 @@ describe('addons:upgrade', function () {
       'heroku-kafka:hobby',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done, free')
+    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done, free')
   })
 
   it('displays hourly and monthly price when upgrading an add-on', async function () {
     const addon: AddOn = {
-      name: 'kafka-swiftly-123',
       addon_service: {name: 'heroku-kafka'},
       app: {name: 'myapp'},
+      name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
 
     api
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-kafka'})
+      .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
       .reply(200, [addon])
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:standard'}})
       .reply(200, {plan: {price: {cents: 2500, unit: 'month'}}, provision_message: 'provision msg'})
@@ -62,19 +63,19 @@ describe('addons:upgrade', function () {
       'heroku-kafka:standard',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)')
+    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)')
   })
 
   it('does not display a price when upgrading an add-on and no price is returned from the api', async function () {
     const addon = {
-      name: 'kafka-swiftly-123',
       addon_service: {name: 'heroku-kafka'},
       app: {name: 'myapp'},
+      name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
 
     api
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-kafka'})
+      .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
       .reply(200, [addon])
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
       .reply(200, {plan: {}, provision_message: 'provision msg'})
@@ -86,19 +87,19 @@ describe('addons:upgrade', function () {
       'heroku-kafka:hobby',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on myapp from premium-0 to heroku-kafka:hobby... done')
+    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done')
   })
 
   it('upgrades to a contract add-on', async function () {
     const addon = {
-      name: 'connect-swiftly-123',
       addon_service: {name: 'heroku-connect'},
       app: {name: 'myapp'},
+      name: 'connect-swiftly-123',
       plan: {name: 'free'},
     }
 
     api
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-connect'})
+      .post('/actions/addons/resolve', {addon: 'heroku-connect', app: 'myapp'})
       .reply(200, [addon])
       .patch('/apps/myapp/addons/connect-swiftly-123', {plan: {name: 'heroku-connect:contract'}})
       .reply(200, {plan: {price: {cents: 0, contract: true}}, provision_message: 'provision msg'})
@@ -110,18 +111,18 @@ describe('addons:upgrade', function () {
       'heroku-connect:contract',
     ])
     expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing connect-swiftly-123 on myapp from free to heroku-connect:contract... done, contract')
+    expect(stderr.output).to.contain('Changing connect-swiftly-123 on ⬢ myapp from free to heroku-connect:contract... done, contract')
   })
 
   it('upgrades an add-on with only one argument', async function () {
     const addon = {
-      name: 'postgresql-swiftly-123',
       addon_service: {name: 'heroku-postgresql'},
       app: {name: 'myapp'},
+      name: 'postgresql-swiftly-123',
       plan: {name: 'premium-0'},
     }
     api
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-postgresql'})
+      .post('/actions/addons/resolve', {addon: 'heroku-postgresql', app: 'myapp'})
       .reply(200, [addon])
       .patch('/apps/myapp/addons/postgresql-swiftly-123', {plan: {name: 'heroku-postgresql:hobby'}})
       .reply(200, {plan: {price: {cents: 0}}})
@@ -132,7 +133,7 @@ describe('addons:upgrade', function () {
       'heroku-postgresql:hobby',
     ])
     expect(stdout.output, 'to be empty')
-    expect(stderr.output).to.contain('Changing postgresql-swiftly-123 on myapp from premium-0 to heroku-postgresql:hobby... done, free')
+    expect(stderr.output).to.contain('Changing postgresql-swiftly-123 on ⬢ myapp from premium-0 to heroku-postgresql:hobby... done, free')
   })
 
   it('errors with no plan', async function () {
@@ -151,14 +152,14 @@ describe('addons:upgrade', function () {
 
   it('errors with invalid plan', async function () {
     const addon = {
-      name: 'db1-swiftly-123',
       addon_service: {name: 'heroku-db1'},
       app: {name: 'myapp'},
+      name: 'db1-swiftly-123',
       plan: {name: 'premium-0'},
     }
 
     api
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-db1'})
+      .post('/actions/addons/resolve', {addon: 'heroku-db1', app: 'myapp'})
       .reply(200, [addon])
       .get('/addon-services/heroku-db1/plans')
       .reply(200, [
@@ -183,8 +184,8 @@ describe('addons:upgrade', function () {
   })
 
   it('displays an error when multiple matches exist', async function () {
-    api.post('/actions/addons/resolve', {app: 'myapp', addon: 'heroku-postgresql'})
-      .reply(422, {message: 'Multiple matches', id: 'multiple_matches'})
+    api.post('/actions/addons/resolve', {addon: 'heroku-postgresql', app: 'myapp'})
+      .reply(422, {id: 'multiple_matches', message: 'Multiple matches'})
     try {
       await runCommand(Cmd, [
         '--app',
@@ -199,7 +200,7 @@ describe('addons:upgrade', function () {
   })
 
   it('handles multiple add-ons', async function () {
-    api.post('/actions/addons/resolve', {app: null, addon: 'heroku-redis'})
+    api.post('/actions/addons/resolve', {addon: 'heroku-redis', app: null})
       .reply(200, [{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}])
     try {
       await runCommand(Cmd, [

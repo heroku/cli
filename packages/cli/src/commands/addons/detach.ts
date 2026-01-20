@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -22,7 +22,7 @@ export default class Detach extends Command {
     const {app} = flags
     const {body: attachment} = await this.heroku.get<Heroku.AddOnAttachment>(`/apps/${app}/addon-attachments/${args.attachment_name}`)
 
-    ux.action.start(`Detaching ${color.cyan(attachment.name || '')} to ${color.yellow(attachment.addon?.name || '')} from ${color.app(app)}`)
+    ux.action.start(`Detaching ${color.cyan(attachment.name || '')} to ${color.addon(attachment.addon?.name || '')} from ${color.app(app)}`)
 
     await this.heroku.delete(`/addon-attachments/${attachment.id}`)
 

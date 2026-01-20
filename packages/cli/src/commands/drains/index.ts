@@ -1,8 +1,7 @@
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {flags, Command} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
 
 function styledDrain(id: string, name: string, drain: Heroku.LogDrain) {
   let output = `${id} (${name})`
@@ -15,9 +14,9 @@ export default class Drains extends Command {
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
     extended: flags.boolean({char: 'x', hidden: true}),
     json: flags.boolean({description: 'output in json format'}),
+    remote: flags.remote(),
   }
 
   async run() {
@@ -58,7 +57,7 @@ export default class Drains extends Command {
         )
         hux.styledHeader('Add-on Drains')
         addons.forEach(({body: addon}, i) => {
-          styledDrain(color.yellow(addon.plan?.name || ''), color.green(addon.name || ''), drainsWithAddons[i])
+          styledDrain(color.addon(addon.plan?.name || ''), color.addon(addon.name || ''), drainsWithAddons[i])
         })
       }
     }
