@@ -1,3 +1,4 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
@@ -159,6 +160,6 @@ describe('addons:attach', function () {
         // this line should not be called if test works
         throw new Error('unreachable')
       })
-      .catch(error => expect(error.message).to.equal('Could not find credential hello for database postgres-123'))
+      .catch(error => expect(ansis.strip(error.message)).to.equal('Could not find credential hello for database postgres-123'))
   })
 })

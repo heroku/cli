@@ -71,7 +71,7 @@ export default class Rotate extends Command {
         .sort()
         .join(', ')
 
-      warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${uniqueAttachments}.`)
+      warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${color.attachment(uniqueAttachments)}.`)
     }
 
     await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
