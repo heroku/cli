@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -45,7 +45,7 @@ export default class Attach extends Command {
     if (credential && credential !== 'default') {
       const {body: credentialConfig} = await this.heroku.get<Heroku.AddOnConfig[]>(`/addons/${addon.name}/config/credential:${encodeURIComponent(credential)}`)
       if (credentialConfig.length === 0) {
-        throw new Error(`Could not find credential ${color.name(credential)} for database ${(addon.name || '')}`)
+        throw new Error(`Could not find credential ${color.name(credential)} for database ${color.datastore(addon.name || '')}`)
       }
     }
 

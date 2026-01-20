@@ -1,8 +1,7 @@
 /*
-import color from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
 import {nls} from '../../nls'
 import {execFile, interactive} from '../../lib/pg/psql'
 
@@ -40,7 +39,7 @@ export default class Psql extends Command {
 
       const psqlService = new utils.pg.PsqlService(db)
 
-      console.error(`--> Connecting to ${color.yellow(db.attachment!.addon.name)}`)
+      console.error(`--> Connecting to ${color.datastore(db.attachment!.addon.name)}`)
       if (command) {
         const output = await psqlService.execQuery(command)
         process.stdout.write(output)
