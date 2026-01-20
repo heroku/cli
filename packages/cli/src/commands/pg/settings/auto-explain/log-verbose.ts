@@ -1,10 +1,11 @@
-/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter'
-import type {Setting, SettingKey} from '../../../../lib/pg/types'
-import {nls} from '../../../../nls'
+import tsheredoc from 'tsheredoc'
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
+import type {Setting, SettingKey} from '../../../../lib/pg/types.js'
+import {nls} from '../../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class AutoExplainLogVerbose extends PGSettingsCommand {
   static topic = 'pg'
@@ -36,4 +37,3 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
     return booleanConverter(val as BooleanAsString)
   }
 }
-*/

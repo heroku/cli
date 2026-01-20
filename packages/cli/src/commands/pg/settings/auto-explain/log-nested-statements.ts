@@ -1,8 +1,7 @@
-/*
 import {Args} from '@oclif/core'
-import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter'
-import type {Setting, SettingKey} from '../../../../lib/pg/types'
-import {nls} from '../../../../nls'
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
+import type {Setting, SettingKey} from '../../../../lib/pg/types.js'
+import {nls} from '../../../../nls.js'
 
 export default class LogNestedStatements extends PGSettingsCommand {
   static description = "Nested statements are included in the execution plan's log."
@@ -26,4 +25,3 @@ export default class LogNestedStatements extends PGSettingsCommand {
     return 'Only top-level execution plans will be included in logs.'
   }
 }
-*/
