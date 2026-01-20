@@ -1,12 +1,13 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import runCommand from '../../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-min-duration'
+import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-min-duration.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:settings:auto-explain:log-min-duration', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -52,5 +53,3 @@ describe('pg:settings:auto-explain:log-min-duration', function () {
     `))
   })
 })
-
-*/
