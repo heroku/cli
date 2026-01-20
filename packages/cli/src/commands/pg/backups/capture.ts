@@ -59,14 +59,14 @@ export default class Capture extends Command {
     ux.stdout(heredoc`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
-      Use ${color.command('heroku pg:backups:info')} to check progress.
-      Stop a running backup with ${color.command('heroku pg:backups:cancel')}.
+      Use ${color.code('heroku pg:backups:info')} to check progress.
+      Stop a running backup with ${color.code('heroku pg:backups:cancel')}.
     `)
 
     if (app !== db.app.name) {
       ux.stdout(heredoc`
         HINT: You are running this command with a non-billing application.
-        Use ${color.command('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
+        Use ${color.code('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
       `)
     }
 

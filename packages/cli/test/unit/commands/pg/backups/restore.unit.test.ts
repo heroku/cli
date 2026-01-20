@@ -1,12 +1,18 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout, stderr} from 'stdout-stderr'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/pg/backups/restore.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
-const addon = {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'}}
+const addon = {
+  app: {name: 'myapp'},
+  id: 1,
+  name: 'postgres-1',
+  plan: {name: 'heroku-postgresql:standard-0'},
+}
 describe('pg:backups:restore', function () {
   let pg: nock.Scope
   let api: nock.Scope
@@ -14,7 +20,7 @@ describe('pg:backups:restore', function () {
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
+      addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp',
     }).reply(200, [{addon}])
     pg = nock('https://api.data.heroku.com')
   })
@@ -29,11 +35,13 @@ describe('pg:backups:restore', function () {
     beforeEach(async function () {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'},
+          {
+            from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+          },
         ])
       pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'})
         .reply(200, {
-          num: 5, from_name: 'DATABASE', uuid: '100-001',
+          from_name: 'DATABASE', num: 5, uuid: '100-001',
         })
       pg.get('/client/v11/apps/myapp/transfers/100-001')
         .reply(200, {
@@ -56,7 +64,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1... done
+      Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })
@@ -77,7 +85,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1... done
+      Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })
@@ -98,7 +106,7 @@ describe('pg:backups:restore', function () {
 
       `))
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1... done
+      Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })
@@ -108,15 +116,17 @@ describe('pg:backups:restore', function () {
     beforeEach(async function () {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'},
+          {
+            from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+          },
         ])
       pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'})
         .reply(200, {
-          num: 5, from_name: 'DATABASE', uuid: '100-001',
+          from_name: 'DATABASE', num: 5, uuid: '100-001',
         })
       pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
         .reply(200, {
-          finished_at: '101', succeeded: true, logs: [{created_at: '100', message: 'log message 1'}],
+          finished_at: '101', logs: [{created_at: '100', message: 'log message 1'}], succeeded: true,
         })
     })
 
@@ -139,7 +149,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1... done
+      Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })
@@ -149,7 +159,7 @@ describe('pg:backups:restore', function () {
     beforeEach(async function () {
       pg.post('/client/v11/databases/1/restores', {backup_url: 'https://www.dropbox.com?dl=1'})
         .reply(200, {
-          num: 5, from_name: 'DATABASE', uuid: '100-001',
+          from_name: 'DATABASE', num: 5, uuid: '100-001',
         })
       pg.get('/client/v11/apps/myapp/transfers/100-001')
         .reply(200, {
@@ -174,7 +184,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of https://www.dropbox.com to postgres-1... done
+      Starting restore of https://www.dropbox.com to ⛁ postgres-1... done
       Restoring... done
       `))
     })
@@ -184,11 +194,13 @@ describe('pg:backups:restore', function () {
     beforeEach(async function () {
       pg.get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {num: 5, from_type: 'pg_dump', to_type: 'gof3r', succeeded: true, to_url: 'https://myurl'},
+          {
+            from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+          },
         ])
       pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl', extensions: ['postgis', 'uuid-ossp']})
         .reply(200, {
-          num: 5, from_name: 'DATABASE', uuid: '100-001',
+          from_name: 'DATABASE', num: 5, uuid: '100-001',
         })
       pg.get('/client/v11/apps/myapp/transfers/100-001')
         .reply(200, {
@@ -214,7 +226,7 @@ describe('pg:backups:restore', function () {
       `))
 
       expect(stderr.output).to.equal(heredoc(`
-      Starting restore of b005 to postgres-1... done
+      Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })

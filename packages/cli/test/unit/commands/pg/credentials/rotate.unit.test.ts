@@ -77,7 +77,7 @@ describe('pg:credentials:rotate', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-        Rotating my_role on postgres-1... done
+        Rotating my_role on ⛁ postgres-1... done
       `))
     })
 
@@ -93,7 +93,7 @@ describe('pg:credentials:rotate', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-        Rotating all credentials on postgres-1... done
+        Rotating all credentials on ⛁ postgres-1... done
       `))
     })
 
@@ -111,7 +111,7 @@ describe('pg:credentials:rotate', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-        Rotating my_role on postgres-1... done
+        Rotating my_role on ⛁ postgres-1... done
       `))
     })
 
@@ -251,7 +251,7 @@ describe('pg:credentials:rotate', function () {
     ])
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal(heredoc(`
-      Rotating lucy on postgres-1... done
+      Rotating lucy on ⛁ postgres-1... done
     `))
   })
 
@@ -276,7 +276,7 @@ describe('pg:credentials:rotate', function () {
     ])
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal(heredoc(`
-      Rotating default on postgres-1... done
+      Rotating default on ⛁ postgres-1... done
     `))
   })
 
@@ -302,7 +302,7 @@ describe('pg:credentials:rotate', function () {
     ])
     expect(stdout.output).to.equal('')
     expect(stderr.output).to.equal(heredoc(`
-      Rotating all credentials on postgres-1... done
+      Rotating all credentials on ⛁ postgres-1... done
     `))
   })
 })
