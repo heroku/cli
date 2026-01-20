@@ -1,4 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
+import {color as newColor} from '@heroku/heroku-cli-util'
+import {color} from '@heroku-cli/color'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -10,10 +11,10 @@ function formatConfigVarsMessage(addon: Heroku.AddOn) {
   const configVars = addon.config_vars || []
 
   if (configVars.length > 0) {
-    return `Created ${color.addon(addon.name || '')} as ${configVars.map((c: string) => color.name(c)).join(', ')}`
+    return `Created ${newColor.addon(addon.name || '')} as ${configVars.map((c: string) => newColor.name(c)).join(', ')}`
   }
 
-  return `Created ${color.addon(addon.name || '')}`
+  return `Created ${newColor.addon(addon.name || '')}`
 }
 
 // eslint-disable-next-line max-params
@@ -23,7 +24,7 @@ export default async function (
   plan: string,
   confirm: string | undefined,
   wait: boolean,
-  options: {name?: string, config: Record<string, string | boolean>, as?: string},
+  options: {as?: string, config: Record<string, boolean | string>, name?: string},
 ) {
   async function createAddonRequest(confirmed?: string) {
     const body = {
@@ -34,7 +35,7 @@ export default async function (
       plan: {name: plan},
     }
 
-    ux.action.start(`Creating ${plan} on ${color.app(app)}`)
+    ux.action.start(`Creating ${plan} on ${newColor.app(app)}`)
     const {body: addon} = await heroku.post<Heroku.AddOn>(`/apps/${app}/addons`, {
       body,
       headers: {
@@ -56,12 +57,12 @@ export default async function (
 
   if (addon.state === 'provisioning') {
     if (wait) {
-      ux.stdout(`Waiting for ${color.addon(addon.name || '')}...`)
+      ux.stdout(`Waiting for ${newColor.addon(addon.name || '')}...`)
       addon = await waitForAddonProvisioning(heroku, addon, 5)
       ux.stdout(formatConfigVarsMessage(addon))
     } else {
-      ux.stdout(`${color.addon(addon.name || '')} is being created in the background. The app will restart when complete...`)
-      ux.stdout(`Use ${color.command('heroku addons:info ' + addon.name)} to check creation progress`)
+      ux.stdout(`${newColor.addon(addon.name || '')} is being created in the background. The app will restart when complete...`)
+      ux.stdout(`Use ${color.cmd('heroku addons:info ' + addon.name)} to check creation progress`)
     }
   } else if (addon.state === 'deprovisioned') {
     throw new Error(`The add-on was unable to be created, with status ${addon.state}`)
