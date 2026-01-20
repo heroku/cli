@@ -83,10 +83,10 @@ export default class Rotate extends Command {
       hostname: utils.pg.host(),
     }
     if (all) {
-      ux.action.start(`Rotating all credentials on ${color.yellow(db.name)}`)
+      ux.action.start(`Rotating all credentials on ${color.datastore(db.name)}`)
       await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials_rotation`, options)
     } else {
-      ux.action.start(`Rotating ${cred} on ${color.yellow(db.name)}`)
+      ux.action.start(`Rotating ${cred} on ${color.datastore(db.name)}`)
       await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(cred)}/credentials_rotation`, options)
     }
 

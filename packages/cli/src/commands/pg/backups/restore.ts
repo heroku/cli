@@ -133,7 +133,7 @@ export default class Restore extends Command {
 
     const confirmCmd = new ConfirmCommand()
     await confirmCmd.confirm(app, confirm)
-    ux.action.start(`Starting restore of ${color.cyan(backupName)} to ${color.yellow(db.name)}`)
+    ux.action.start(`Starting restore of ${color.cyan(backupName)} to ${color.datastore(db.name)}`)
     ux.stdout(heredoc(`
 
     Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.

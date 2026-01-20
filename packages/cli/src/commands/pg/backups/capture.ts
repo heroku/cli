@@ -1,9 +1,8 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import backupsApi from '../../../lib/pg/backups.js'
 import {BackupTransfer, PgDatabase} from '../../../lib/pg/types.js'
-import {utils} from '@heroku/heroku-cli-util'
 import tsheredoc from 'tsheredoc'
 import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls.js'
@@ -47,30 +46,30 @@ export default class Capture extends Command {
         throw httpError
       ux.error(
         heredoc`
-          ${color.yellow(db.name)} is not yet provisioned.
-          Run ${color.cmd('heroku addons:wait')} to wait until the db is provisioned.
+          ${color.datastore(db.name)} is not yet provisioned.
+          Run ${color.command('heroku addons:wait')} to wait until the db is provisioned.
         `,
         {exit: 1},
       )
     }
 
-    ux.action.start(`Starting backup of ${color.yellow(db.name)}`)
+    ux.action.start(`Starting backup of ${color.datastore(db.name)}`)
     const {body: backup} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${db.id}/backups`, {hostname: utils.pg.host()})
     ux.action.stop()
     ux.stdout(heredoc`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
-      Use ${color.cmd('heroku pg:backups:info')} to check progress.
-      Stop a running backup with ${color.cmd('heroku pg:backups:cancel')}.
+      Use ${color.command('heroku pg:backups:info')} to check progress.
+      Stop a running backup with ${color.command('heroku pg:backups:cancel')}.
     `)
 
     if (app !== db.app.name) {
       ux.stdout(heredoc`
         HINT: You are running this command with a non-billing application.
-        Use ${color.cmd('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
+        Use ${color.command('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
       `)
     }
 
-    await pgBackupsApi.wait(`Backing up ${color.green(backup.from_name)} to ${color.cyan(pgBackupsApi.name(backup))}`, backup.uuid, interval, verbose, db.app.name || app)
+    await pgBackupsApi.wait(`Backing up ${color.datastore(backup.from_name)} to ${color.cyan(pgBackupsApi.name(backup))}`, backup.uuid, interval, verbose, db.app.name || app)
   }
 }

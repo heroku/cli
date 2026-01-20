@@ -1,7 +1,6 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
 import {PgDatabase} from '../../../lib/pg/types.js'
 import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls.js'
@@ -83,7 +82,7 @@ export default class Schedule extends Command {
       .catch((error: HTTPError) => {
         if (error.statusCode !== 404)
           throw error
-        ux.error(`${color.yellow(db.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
+        ux.error(`${color.datastore(db.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
       })
     const {body: dbInfo} = pgResponse || {body: null}
     if (dbInfo) {
@@ -94,7 +93,7 @@ export default class Schedule extends Command {
       }
     }
 
-    ux.action.start(`Scheduling automatic daily backups of ${color.yellow(db.name)} at ${at}`)
+    ux.action.start(`Scheduling automatic daily backups of ${color.datastore(db.name)} at ${at}`)
     schedule.schedule_name = name + '_URL'
     await this.heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
       body: schedule, hostname: utils.pg.host(),
