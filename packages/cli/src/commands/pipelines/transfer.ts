@@ -2,7 +2,12 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import {createPipelineTransfer, getAccountInfo, getTeam, listPipelineApps} from '../../lib/api.js'
+import {
+  createPipelineTransfer,
+  getAccountInfo,
+  getTeam,
+  listPipelineApps,
+} from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import renderPipeline from '../../lib/pipelines/render-pipeline.js'
 
@@ -25,13 +30,6 @@ function getOwner(heroku: APIClient, name: string) {
 }
 
 export default class PipelinesTransfer extends Command {
-  static description = 'transfer ownership of a pipeline'
-
-  static examples = [
-    '$ heroku pipelines:transfer admin@example.com -p my-pipeline',
-    '$ heroku pipelines:transfer admin-team -p my-pipeline',
-  ]
-
   static args = {
     owner: Args.string({
       description: 'the owner to transfer the pipeline to',
@@ -39,9 +37,16 @@ export default class PipelinesTransfer extends Command {
     }),
   }
 
+  static description = 'transfer ownership of a pipeline'
+
+  static examples = [
+    '$ heroku pipelines:transfer admin@example.com -p my-pipeline',
+    '$ heroku pipelines:transfer admin-team -p my-pipeline',
+  ]
+
   static flags = {
-    pipeline: flags.pipeline({required: true}),
     confirm: flags.string({char: 'c'}),
+    pipeline: flags.pipeline({required: true}),
   }
 
   async run() {
@@ -61,12 +66,12 @@ export default class PipelinesTransfer extends Command {
     }
 
     if (confirmName !== pipeline.name) {
-      ux.warn(`Confirmation did not match ${color.red(pipeline.name!)}. Aborted.`)
+      ux.warn(`Confirmation did not match ${color.pipeline(pipeline.name!)}. Aborted.`)
       return
     }
 
     ux.action.start(`Transferring ${color.pipeline(pipeline.name!)} pipeline to the ${args.owner} ${displayType}`)
-    await createPipelineTransfer(this.heroku, {pipeline: {id: pipeline.id}, new_owner: newOwner})
+    await createPipelineTransfer(this.heroku, {new_owner: newOwner, pipeline: {id: pipeline.id}})
     ux.action.stop()
   }
 }
