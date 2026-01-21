@@ -1,6 +1,4 @@
-/* eslint-disable perfectionist/sort-objects */
-import {hux, color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -85,14 +83,15 @@ function displayAll(addons: Heroku.AddOn[]) {
     return
   }
 
+  /* eslint-disable perfectionist/sort-objects */
   hux.table(
     addons,
     {
       'Owning App': {
-        get: ({app}) => newColor.app(app?.name || ''),
+        get: ({app}) => color.app(app?.name || ''),
       },
       'Add-on': {
-        get: ({name}) => newColor.addon(name || ''),
+        get: ({name}) => color.addon(name || ''),
       },
       Plan: {
         get({plan}) {
@@ -143,13 +142,14 @@ function displayAll(addons: Heroku.AddOn[]) {
       overflow: 'wrap',
     },
   )
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
   const attName = color.attachment(attachment.name || '')
   const output = [color.dim('as'), attName]
   if (showApp) {
-    const appInfo = `on ${newColor.app(attachment.app?.name || '')} app`
+    const appInfo = `on ${color.app(attachment.app?.name || '')} app`
     output.push(color.dim(appInfo))
   }
 
@@ -170,7 +170,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
 
   const isForeignApp = (attOrAddon: Heroku.AddOn | Heroku.AddOnAttachment) => attOrAddon.app?.name !== app
   function presentAddon(addon: Heroku.AddOn) {
-    const name = newColor.addon(addon.name || '')
+    const name = color.addon(addon.name || '')
     let service = addon.addon_service?.name
     if (service === undefined) {
       service = color.dim('?')
@@ -204,7 +204,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
             return formatPrice({hourly: true, price: addon.plan?.price})
           }
 
-          return color.dim(printf('(billed to %s app)', newColor.app(addon.app?.name || '')))
+          return color.dim(printf('(billed to %s app)', color.app(addon.app?.name || '')))
         },
       },
       // eslint-disable-next-line perfectionist/sort-objects
@@ -214,7 +214,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
             return formatPrice({hourly: false, price: addon.plan?.price})
           }
 
-          return color.dim(printf('(billed to %s app)', newColor.app(addon.app?.name || '')))
+          return color.dim(printf('(billed to %s app)', color.app(addon.app?.name || '')))
         },
       },
       State: {
@@ -225,7 +225,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       overflow: 'wrap',
     },
   )
-  ux.stdout(`The table above shows ${color.magenta('add-ons')} and the ${color.green('attachments')} to the current app (${newColor.app(app)}) or other ${color.cyan('apps')}.\n  `)
+  ux.stdout(`The table above shows add-ons and the attachments to the current app (${color.app(app)}) or other apps.\n  `)
 }
 
 function displayJSON(addons: Heroku.AddOn[]) {
