@@ -181,7 +181,7 @@ export default class PipelinesDiff extends Command {
     const targetAppInfo = appInfo[0]
     if (!targetAppInfo.repo) {
       const command = `heroku pipelines:open ${coupling.pipeline!.name}`
-      return ux.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${color.cyan(command)} and "Connect to GitHub".`)
+      return ux.error(`${targetAppName} does not seem to be connected to GitHub!\nRun ${color.command(command)} and "Connect to GitHub".`)
     }
 
     if (!targetAppInfo.hash) {

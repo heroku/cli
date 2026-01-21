@@ -1,7 +1,7 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
@@ -24,7 +24,7 @@ export default class Pipelines extends Command {
     } else {
       hux.styledHeader('My Pipelines')
       for (const pipeline of pipelines) {
-        ux.stdout(pipeline.name)
+        ux.stdout(color.pipeline(pipeline.name || ''))
       }
     }
   }

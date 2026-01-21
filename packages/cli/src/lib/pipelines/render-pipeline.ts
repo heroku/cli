@@ -1,8 +1,7 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 import {getOwner, warnMixedOwnership} from './ownership.js'
 import {AppWithPipelineCoupling} from '../api.js'
