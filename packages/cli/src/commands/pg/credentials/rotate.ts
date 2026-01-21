@@ -67,11 +67,11 @@ export default class Rotate extends Command {
     }
 
     if (attachments.length > 0) {
-      const uniqueAttachments = [...new Set(attachments.map(attachment => color.app(attachment.app.name || '')))]
+      const uniqueAppNames = [...new Set(attachments.map(attachment => color.app(attachment.app.name || '')))]
         .sort()
         .join(', ')
 
-      warnings.push(`This command will affect the app${(attachments.length > 1) ? 's' : ''} ${color.attachment(uniqueAttachments)}.`)
+      warnings.push(`This command will affect the app${(uniqueAppNames.length > 1) ? 's' : ''} ${uniqueAppNames}.`)
     }
 
     await new ConfirmCommand().confirm(app, confirm, `Destructive Action\n${warnings.join('\n')}`)
