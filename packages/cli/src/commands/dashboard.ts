@@ -189,13 +189,13 @@ export default class Dashboard extends Command {
     if (apps.length > 0)
       displayApps(appsWithMoreInfo, metrics)
     else
-      ux.warn(`Add apps to this dashboard by favoriting them with ${color.command('heroku apps:favorites:add')}`)
-    ux.stdout(`See all add-ons with ${color.command('heroku addons')}`)
+      ux.warn(`Add apps to this dashboard by favoriting them with ${color.code('heroku apps:favorites:add')}`)
+    ux.stdout(`See all add-ons with ${color.code('heroku addons')}`)
     const sampleTeam = _.sortBy(teams.filter(o => o.role !== 'collaborator'), o => new Date(o.created_at || ''))[0]
     if (sampleTeam)
       ux.stdout(`See all apps in ${color.team(sampleTeam.name || '')} with ${color.code('heroku apps --team ' + sampleTeam.name)}`)
-    ux.stdout(`See all apps with ${color.command('heroku apps --all')}`)
+    ux.stdout(`See all apps with ${color.code('heroku apps --all')}`)
     displayNotifications(notificationsResponse?.body)
-    ux.stdout(`\nSee other CLI commands with ${color.command('heroku help')}\n`)
+    ux.stdout(`\nSee other CLI commands with ${color.code('heroku help')}\n`)
   }
 }
