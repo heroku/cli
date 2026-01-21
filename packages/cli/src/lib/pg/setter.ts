@@ -1,10 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {addonResolver} from '../addons/resolve'
 import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from './util'
-import {SettingKey, Setting, SettingsResponse} from './types'
+import {essentialPlan} from './util.js'
+import type {SettingKey, Setting, SettingsResponse} from './types.js'
 
 export abstract class PGSettingsCommand extends Command {
   protected abstract settingKey: SettingKey
@@ -23,9 +21,12 @@ export abstract class PGSettingsCommand extends Command {
     const {app} = flags
     const {value, database} = args as {value: string | undefined, database: string | undefined}
 
-    const db = await addonResolver(this.heroku, app, database || 'DATABASE_URL')
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
 
-    if (essentialPlan(db)) ux.error('You can’t perform this operation on Essential-tier databases.')
+    if (essentialPlan(db)) {
+      ux.error('You can\'t perform this operation on Essential-tier databases.')
+    }
 
     if (value) {
       const {body: settings} = await this.heroku.patch<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {
@@ -33,13 +34,13 @@ export abstract class PGSettingsCommand extends Command {
         body: {[this.settingKey]: this.convertValue(value)},
       })
       const setting = settings[this.settingKey]
-      ux.log(`${this.settingKey.replace(/_/g, '-')} has been set to ${setting.value} for ${db.name}.`)
-      ux.log(this.explain(setting))
+      ux.stdout(`${this.settingKey.replace(/_/g, '-')} has been set to ${setting.value} for ${db.name}.`)
+      ux.stdout(this.explain(setting))
     } else {
       const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
       const setting = settings[this.settingKey]
-      ux.log(`${this.settingKey.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
-      ux.log(this.explain(setting))
+      ux.stdout(`${this.settingKey.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
+      ux.stdout(this.explain(setting))
     }
   }
 }
@@ -71,4 +72,3 @@ export const numericConverter = (value: string) => {
 
   return n
 }
-*/
