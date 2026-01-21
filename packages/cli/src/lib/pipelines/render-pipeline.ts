@@ -1,19 +1,18 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
-import {getOwner, warnMixedOwnership} from './ownership.js'
 import {AppWithPipelineCoupling} from '../api.js'
+import {getOwner, warnMixedOwnership} from './ownership.js'
 
 export default async function renderPipeline(
   heroku: APIClient,
   pipeline: Heroku.Pipeline,
   pipelineApps: Array<AppWithPipelineCoupling>,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  {withOwners, showOwnerWarning} = {withOwners: false, showOwnerWarning: false}) {
-  hux.styledHeader(pipeline.name!)
+  {showOwnerWarning, withOwners} = {showOwnerWarning: false, withOwners: false}) {
+  hux.styledHeader(color.pipeline(pipeline.name!))
 
   let owner
 
@@ -23,25 +22,24 @@ export default async function renderPipeline(
   }
 
   ux.stdout('')
-
+  /* eslint-disable perfectionist/sort-objects */
   const columns: Parameters<typeof hux.table<AppWithPipelineCoupling>>[1] = {
     name: {
-      header: 'app name',
       get(row) {
         return color.app(row.name || '')
       },
+      header: 'app name',
     },
     'coupling.stage': {
-      header: 'stage',
       get(row) {
         return row.pipelineCoupling.stage
       },
+      header: 'stage',
     },
   }
-
+  /* eslint-enable perfectionist/sort-objects */
   if (withOwners) {
     columns['owner.email'] = {
-      header: 'owner',
       get(row) {
         const email = row.owner && row.owner.email
 
@@ -49,6 +47,7 @@ export default async function renderPipeline(
           return email.endsWith('@herokumanager.com') ? `${email.split('@')[0]} (team)` : email
         }
       },
+      header: 'owner',
     }
   }
 

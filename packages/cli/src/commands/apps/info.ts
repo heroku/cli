@@ -65,17 +65,17 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   if (info.app.archived_at) data['Archived At'] = formatDate(new Date(info.app.archived_at))
   if (info.app.cron_finished_at) data['Cron Finished At'] = formatDate(new Date(info.app.cron_finished_at))
   if (info.app.cron_next_run) data['Cron Next Run'] = formatDate(new Date(info.app.cron_next_run))
-  if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {standard: 'jedec', round: 0})
+  if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0, standard: 'jedec'})
   if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
   if (info.app.space) data.Space = color.space(info.app.space.name)
   if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
-  if (info.pipeline_coupling) data.Pipeline = `${info.pipeline_coupling.pipeline.name} - ${info.pipeline_coupling.stage}`
+  if (info.pipeline_coupling) data.Pipeline = `${color.pipeline(info.pipeline_coupling.pipeline.name)} - ${info.pipeline_coupling.stage}`
 
   data['Auto Cert Mgmt'] = info.app.acm
   data['Git URL'] = info.app.git_url
   data['Web URL'] = info.app.web_url
-  data['Repo Size'] = filesize(info.app.repo_size, {standard: 'jedec', round: 0})
-  if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {standard: 'jedec', round: 0})
+  data['Repo Size'] = filesize(info.app.repo_size, {round: 0, standard: 'jedec'})
+  if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {round: 0, standard: 'jedec'})
   data.Owner = info.app.owner.email
   data.Region = info.app.region.name
   data.Dynos = countBy(info.dynos, 'type')
@@ -100,14 +100,23 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
 }
 
 export default class AppsInfo extends Command {
-  static description = 'show detailed app information'
-  static topic = 'apps'
-  static hiddenAliases = ['info']
+  static args = {
+    app: Args.string({hidden: true}),
+  }
 
+  static description = 'show detailed app information'
   static examples = [
     '$ heroku apps:info',
     '$ heroku apps:info --shell',
   ]
+
+  static flags = {
+    app: flags.app(),
+    extended: flags.boolean({char: 'x', hidden: true}),
+    json: flags.boolean({char: 'j', description: 'output in json format'}),
+    remote: flags.remote(),
+    shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
+  }
 
   static help = `$ heroku apps:info
 === example
@@ -120,20 +129,12 @@ git_url=https://git.heroku.com/example.git
 repo_size=5000000
 ...`
 
-  static flags = {
-    app: flags.app(),
-    remote: flags.remote(),
-    shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
-    extended: flags.boolean({char: 'x', hidden: true}),
-    json: flags.boolean({char: 'j', description: 'output in json format'}),
-  }
+  static hiddenAliases = ['info']
 
-  static args = {
-    app: Args.string({hidden: true}),
-  }
+  static topic = 'apps'
 
   async run() {
-    const {flags, args} = await this.parse(AppsInfo)
+    const {args, flags} = await this.parse(AppsInfo)
 
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
@@ -156,14 +157,14 @@ repo_size=5000000
       if (info.app.archived_at) print('archived_at', formatDate(new Date(info.app.archived_at)))
       if (info.app.cron_finished_at) print('cron_finished_at', formatDate(new Date(info.app.cron_finished_at)))
       if (info.app.cron_next_run) print('cron_next_run', formatDate(new Date(info.app.cron_next_run)))
-      if (info.app.database_size) print('database_size', filesize(info.app.database_size, {standard: 'jedec', round: 0}))
+      if (info.app.database_size) print('database_size', filesize(info.app.database_size, {round: 0, standard: 'jedec'}))
       if (info.app.create_status !== 'complete') print('create_status', info.app.create_status)
       if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:${info.pipeline_coupling.stage}`)
 
       print('git_url', info.app.git_url)
       print('web_url', info.app.web_url)
-      print('repo_size', filesize(info.app.repo_size, {standard: 'jedec', round: 0}))
-      if (getGeneration(info.app) !== 'fir') print('slug_size', filesize(info.app.slug_size, {standard: 'jedec', round: 0}))
+      print('repo_size', filesize(info.app.repo_size, {round: 0, standard: 'jedec'}))
+      if (getGeneration(info.app) !== 'fir') print('slug_size', filesize(info.app.slug_size, {round: 0, standard: 'jedec'}))
       print('owner', info.app.owner.email)
       print('region', info.app.region.name)
       print('dynos', util.inspect(countBy(info.dynos, 'type')))

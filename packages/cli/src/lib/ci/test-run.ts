@@ -1,16 +1,17 @@
+import {hux} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import ansiEscapes from 'ansi-escapes'
+import debug from 'debug'
 import * as http from 'http'
-import {get, RequestOptions} from 'https'
+import {RequestOptions, get} from 'https'
 import {randomUUID} from 'node:crypto'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
 import WebSocket from 'ws'
-import debug from 'debug'
-import ansiEscapes from 'ansi-escapes'
+
 const ciDebug = debug('ci')
 const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://particleboard.heroku.com/socket'
 
@@ -35,7 +36,7 @@ function stream(url: string) {
   })
 }
 
-function statusIcon({status}: Heroku.TestRun | Heroku.TestNode) {
+function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   if (!status) {
     return color.yellow('-')
   }
@@ -127,6 +128,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
   const data: any = []
 
   latestTestRuns.forEach(testRun => {
+    /* eslint-disable perfectionist/sort-objects */
     data.push(
       {
         iconStatus: `${statusIcon(testRun)}`,
@@ -136,6 +138,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
         status: testRun.status,
       },
     )
+    /* eslint-enable perfectionist/sort-objects */
   })
 
   hux.table(
@@ -161,7 +164,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   const watchable = (Boolean(watchOption && !jsonOption))
 
   if (!jsonOption) {
-    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${pipeline.name} pipeline`
+    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${color.pipeline(pipeline.name)} pipeline`
     hux.styledHeader(header)
   }
 
@@ -172,12 +175,12 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   }
 
   const socket = new Socket(HEROKU_CI_WEBSOCKET_URL, {
-    transport: WebSocket,
-    params: {
-      token: command.heroku.auth,
-      tab_id: `heroku-cli-${randomUUID()}`,
-    },
     logger: (kind: any, msg: any, data: any) => ciDebug(`${kind}: ${msg}\n${inspect(data)}`),
+    params: {
+      tab_id: `heroku-cli-${randomUUID()}`,
+      token: command.heroku.auth,
+    },
+    transport: WebSocket,
   })
   socket.connect()
 

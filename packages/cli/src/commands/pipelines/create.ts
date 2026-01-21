@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
@@ -93,7 +93,7 @@ export default class Create extends Command {
     const {body: pipeline} = await createPipeline(this.heroku, name, owner, generation)
     ux.action.stop()
 
-    ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name)} pipeline as ${stage}`)
+    ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name || '')} pipeline as ${stage}`)
     await createCoupling(this.heroku, pipeline, app, stage)
     ux.action.stop()
   }
