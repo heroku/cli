@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -36,7 +36,7 @@ export default class Attach extends Command {
         addon: {name: addon.name}, app: {name: app}, confirm: confirmed, name: as, namespace,
       }
 
-      ux.action.start(`Attaching ${credential ? color.name(credential) + ' of ' : ''}${color.addon(addon.name || '')}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`)
+      ux.action.start(`Attaching ${credential ? color.name(credential) + ' of ' : ''}${color.datastore(addon.name || '')}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`)
       const {body: attachments} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {body})
       ux.action.stop()
       return attachments
