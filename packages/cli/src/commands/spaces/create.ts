@@ -94,7 +94,7 @@ export default class Create extends Command {
     hux.styledHeader(color.space(space.name))
     hux.styledObject({
       // eslint-disable-next-line perfectionist/sort-objects
-      ID: space.id, Team: space.team.name, Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
+      ID: space.id, Team: color.team(space.team.name || ''), Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
   }
 }

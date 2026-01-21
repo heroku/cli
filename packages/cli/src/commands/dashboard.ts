@@ -1,27 +1,28 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import _ from 'lodash'
-import img from 'term-img'
-import * as path from 'path'
+import {ux} from '@oclif/core'
 import {execSync} from 'child_process'
-import {sparkline} from '../lib/utils/sparkline.js'
+import _ from 'lodash'
+import * as path from 'path'
+import * as process from 'process'
+import img from 'term-img'
+
 import {ago} from '../lib/time.js'
 import {AppErrors} from '../lib/types/app_errors.js'
-import * as process from 'process'
+import {sparkline} from '../lib/utils/sparkline.js'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
-  pipeline?: Heroku.PipelineCoupling
   formation: Heroku.Formation
+  pipeline?: Heroku.PipelineCoupling
 }
 
 type FetchMetricsResponse =  {
-  routerLatency?: AppErrors
-  routerErrors?: AppErrors
-  routerStatus?: AppErrors
   dynoErrors: (AppErrors | undefined)[]
+  routerErrors?: AppErrors
+  routerLatency?: AppErrors
+  routerStatus?: AppErrors
 }[]
 
 const empty = (o: Record<string, any>) => Object.keys(o).length === 0
@@ -119,7 +120,7 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
   }))
 
   return metricsData.map(([dynoErrors, routerLatency, routerErrors, routerStatus]) => ({
-    dynoErrors, routerLatency: routerLatency?.body, routerErrors: routerErrors?.body, routerStatus: routerStatus?.body,
+    dynoErrors, routerErrors: routerErrors?.body, routerLatency: routerLatency?.body, routerStatus: routerStatus?.body,
   }))
 }
 
@@ -144,9 +145,9 @@ function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse
 }
 
 export default class Dashboard extends Command {
-  static topic = 'dashboard'
   static description = 'display information about favorite apps'
   static hidden = true
+  static topic = 'dashboard'
   public async run(): Promise<void> {
     if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
       execSync('heroku help', {stdio: 'inherit'})
@@ -192,7 +193,7 @@ export default class Dashboard extends Command {
     ux.stdout(`See all add-ons with ${color.command('heroku addons')}`)
     const sampleTeam = _.sortBy(teams.filter(o => o.role !== 'collaborator'), o => new Date(o.created_at || ''))[0]
     if (sampleTeam)
-      ux.stdout(`See all apps in ${color.team(sampleTeam.name || '')} with ${color.command('heroku apps --team ' + sampleTeam.name)}`)
+      ux.stdout(`See all apps in ${color.team(sampleTeam.name || '')} with ${color.code('heroku apps --team ' + sampleTeam.name)}`)
     ux.stdout(`See all apps with ${color.command('heroku apps --all')}`)
     displayNotifications(notificationsResponse?.body)
     ux.stdout(`\nSee other CLI commands with ${color.command('heroku help')}\n`)
