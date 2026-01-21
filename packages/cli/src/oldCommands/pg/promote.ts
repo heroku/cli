@@ -36,7 +36,7 @@ export default class Promote extends Command {
       // eslint-disable-next-line eqeqeq
       if (current.addon?.name === attachment.addon.name && current.namespace == attachment.namespace) {
         if (attachment.namespace) {
-          ux.error(`${color.cyan(attachment.name)} is already promoted on ${color.app(app)}`)
+          ux.error(`${color.attachment(attachment.name)} is already promoted on ${color.app(app)}`)
         } else {
           ux.error(`${color.addon(attachment.addon.name)} is already promoted on ${color.app(app)}`)
         }
@@ -45,7 +45,7 @@ export default class Promote extends Command {
       const existing = attachments.filter(a => a.addon?.id === current.addon?.id && a.namespace === current.namespace)
         .find(a => a.name !== 'DATABASE')
       if (existing) {
-        ux.action.stop(color.green(existing.name + '_URL'))
+        ux.action.stop(color.attachment(existing.name + '_URL'))
       } else {
         // The current add-on occupying the DATABASE attachment has no
         // other attachments. In order to promote this database without
@@ -58,7 +58,7 @@ export default class Promote extends Command {
             confirm: app,
           },
         })
-        ux.action.stop(color.green(backup.name + '_URL'))
+        ux.action.stop(color.attachment(backup.name + '_URL'))
       }
     }
 
@@ -70,7 +70,7 @@ export default class Promote extends Command {
         ux.error(heredoc(`
           Database cannot be promoted while in state: ${status.message}
 
-          Promoting this database can lead to application errors and outage. Please run ${color.cmd('heroku pg:wait')} to wait for database to become available.
+          Promoting this database can lead to application errors and outage. Please run ${color.code('heroku pg:wait')} to wait for database to become available.
 
           To ignore this error, you can pass the --force flag to promote the database and risk application issues.
         `))
@@ -79,9 +79,9 @@ export default class Promote extends Command {
 
     let promotionMessage
     if (attachment.namespace) {
-      promotionMessage = `Promoting ${color.cyan(attachment.name)} to ${color.green('DATABASE_URL')} on ${color.app(app)}`
+      promotionMessage = `Promoting ${color.attachment(attachment.name)} to ${color.green('DATABASE_URL')} on ${color.app(app)}`
     } else {
-      promotionMessage = `Promoting ${color.addon(attachment.addon.name)} to ${color.green('DATABASE_URL')} on ${color.app(app)}`
+      promotionMessage = `Promoting ${color.datastore(attachment.addon.name)} to ${color.green('DATABASE_URL')} on ${color.app(app)}`
     }
 
     ux.action.start(promotionMessage)

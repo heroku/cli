@@ -41,7 +41,7 @@ describe('addons:attach', function () {
     ])
 
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Attaching redis-123 to ⬢ myapp... done')
+    expect(stderr.output).to.contain('Attaching ⛁ redis-123 to ⬢ myapp... done')
     expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting ⬢ myapp... done, v10')
   })
 
@@ -63,7 +63,7 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching redis-123 as foo to ⬢ myapp... done')
+        expect(stderr.output).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp... done')
         expect(stderr.output).to.contain('\nSetting foo config vars and restarting ⬢ myapp... done, v10')
       })
   })
@@ -74,7 +74,9 @@ describe('addons:attach', function () {
       .reply(200, {name: 'redis-123'})
       .post('/addon-attachments', {addon: {name: 'redis-123'}, app: {name: 'myapp'}, name: 'foo'})
       .reply(400, {id: 'confirmation_required'})
-      .post('/addon-attachments', {addon: {name: 'redis-123'}, app: {name: 'myapp'}, confirm: 'myapp', name: 'foo'})
+      .post('/addon-attachments', {
+        addon: {name: 'redis-123'}, app: {name: 'myapp'}, confirm: 'myapp', name: 'foo',
+      })
       .reply(201, {name: 'foo'})
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
@@ -88,8 +90,8 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching redis-123 as foo to ⬢ myapp...')
-        expect(stderr.output).to.contain('Attaching redis-123 as foo to ⬢ myapp... done')
+        expect(stderr.output).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp...')
+        expect(stderr.output).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp... done')
         expect(stderr.output).to.contain('Setting foo config vars and restarting ⬢ myapp... done, v10')
       })
   })
@@ -112,7 +114,7 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching default of postgres-123 to ⬢ myapp... done')
+        expect(stderr.output).to.contain('Attaching default of ⛁ postgres-123 to ⬢ myapp... done')
         expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting ⬢ myapp... done, v10')
       })
   })
@@ -137,7 +139,7 @@ describe('addons:attach', function () {
     ])
       .then(() => {
         expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching hello of postgres-123 to ⬢ myapp... done')
+        expect(stderr.output).to.contain('Attaching hello of ⛁ postgres-123 to ⬢ myapp... done')
         expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting ⬢ myapp... done, v10')
       })
   })
@@ -160,6 +162,6 @@ describe('addons:attach', function () {
         // this line should not be called if test works
         throw new Error('unreachable')
       })
-      .catch(error => expect(ansis.strip(error.message)).to.equal('Could not find credential hello for database postgres-123'))
+      .catch(error => expect(ansis.strip(error.message)).to.equal('Could not find credential hello for database ⛁ postgres-123'))
   })
 })

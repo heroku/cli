@@ -1,5 +1,5 @@
 /*
-import color from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {ExtendedAddonAttachment, hux} from '@heroku-cli/color'
@@ -7,7 +7,6 @@ import * as Heroku from '@heroku-cli/schema'
 import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util'
 import {PgDatabaseTenant} from '../../lib/pg/types'
 import {nls} from '../../nls'
-import {utils} from '@heroku-cli/color'
 
 type DBObject = {
   addon: ExtendedAddonAttachment | ExtendedAddonAttachment['addon'] & {attachment_names?: string[]},
@@ -18,7 +17,7 @@ type DBObject = {
 
 function displayDB(db: DBObject, app: string) {
   if (db.addon.attachment_names) {
-    hux.styledHeader(db.addon.attachment_names.map((c: string) => color.green(c + '_URL'))
+    hux.styledHeader(db.addon.attachment_names.map((c: string) => color.attachment(c + '_URL'))
       .join(', '))
   } else {
     hux.styledHeader(db.configVars?.map(c => color.green(c))
@@ -26,10 +25,10 @@ function displayDB(db: DBObject, app: string) {
   }
 
   if (db.addon.app.name && db.addon.app.name !== app) {
-    db.dbInfo?.info.push({name: 'Billing App', values: [color.cyan(db.addon.app.name)]})
+    db.dbInfo?.info.push({name: 'Billing App', values: [color.app(db.addon.app.name)]})
   }
 
-  db.dbInfo?.info.push({name: 'Add-on', values: [color.yellow(db.addon.name)]})
+  db.dbInfo?.info.push({name: 'Add-on', values: [color.database(db.addon.name)]})
   const info: Record<string, never> | Record<string, string> = {}
   db.dbInfo?.info.forEach(infoObject => {
     if (infoObject.values.length > 0) {
@@ -91,7 +90,7 @@ export default class Info extends Command {
           .catch(error => {
             if (error.statusCode !== 404)
               throw error
-            ux.warn(`${color.yellow(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
+            ux.warn(`${color.database(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
           })
         const {body: dbInfo} = pgResponse || {body: null}
         return {
