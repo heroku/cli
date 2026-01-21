@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-objects */
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -34,7 +33,7 @@ export default class Info extends Command {
     addon.plan.price = grandfatheredPrice(addon)
     addon.attachments = attachments
     hux.styledHeader(color.addon(addon.name ?? ''))
-
+    /* eslint-disable perfectionist/sort-objects */
     hux.styledObject({
       Plan: addon.plan.name,
       Price: formatPrice({hourly: true, price: addon.plan.price}),
@@ -48,5 +47,6 @@ export default class Info extends Command {
         .toString(),
       State: formatState(addon.state),
     })
+    /* eslint-enable perfectionist/sort-objects */
   }
 }
