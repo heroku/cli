@@ -1,7 +1,6 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {color} from '@heroku-cli/color'
 
 export const printGroups = function (teams: Heroku.Team[], type: {label: string}) {
   const typeLabel = type.label ?? 'Team'
@@ -11,7 +10,7 @@ export const printGroups = function (teams: Heroku.Team[], type: {label: string}
     teams,
     {
       name: {
-        get: ({name}: any): string => color.green(name),
+        get: ({name}: any): string => color.team(name),
         header: typeLabel,
       },
       role: {

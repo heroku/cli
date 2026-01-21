@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -10,7 +10,6 @@ import {sparkline} from '../lib/utils/sparkline.js'
 import {ago} from '../lib/time.js'
 import {AppErrors} from '../lib/types/app_errors.js'
 import * as process from 'process'
-import {hux} from '@heroku/heroku-cli-util'
 
 type AppsWithMoreInfo = {
   app: Heroku.App
@@ -95,7 +94,7 @@ function displayNotifications(notifications?: {read: boolean}[]) {
 
 const dim = (s: string) => color.dim(s)
 const bold = (s: string) => color.bold(s)
-const label = (s: string) => color.heroku(s)
+const label = (s: string) => color.label(s)
 
 const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<FetchMetricsResponse> => {
   const NOW = new Date().toISOString()
@@ -189,13 +188,13 @@ export default class Dashboard extends Command {
     if (apps.length > 0)
       displayApps(appsWithMoreInfo, metrics)
     else
-      ux.warn(`Add apps to this dashboard by favoriting them with ${color.cmd('heroku apps:favorites:add')}`)
-    ux.stdout(`See all add-ons with ${color.cmd('heroku addons')}`)
+      ux.warn(`Add apps to this dashboard by favoriting them with ${color.command('heroku apps:favorites:add')}`)
+    ux.stdout(`See all add-ons with ${color.command('heroku addons')}`)
     const sampleTeam = _.sortBy(teams.filter(o => o.role !== 'collaborator'), o => new Date(o.created_at || ''))[0]
     if (sampleTeam)
-      ux.stdout(`See all apps in ${color.magenta(sampleTeam.name || '')} with ${color.cmd('heroku apps --team ' + sampleTeam.name)}`)
-    ux.stdout(`See all apps with ${color.cmd('heroku apps --all')}`)
+      ux.stdout(`See all apps in ${color.team(sampleTeam.name || '')} with ${color.command('heroku apps --team ' + sampleTeam.name)}`)
+    ux.stdout(`See all apps with ${color.command('heroku apps --all')}`)
     displayNotifications(notificationsResponse?.body)
-    ux.stdout(`\nSee other CLI commands with ${color.cmd('heroku help')}\n`)
+    ux.stdout(`\nSee other CLI commands with ${color.command('heroku help')}\n`)
   }
 }

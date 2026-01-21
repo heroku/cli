@@ -1,11 +1,11 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {isTeamInviteFeatureEnabled, getTeamInvites} from '../../lib/members/team-invite-utils.js'
 
 const revokeInvite = async (email: string, team: string, heroku: APIClient) => {
-  ux.action.start(`Revoking invite for ${color.cyan(email)} in ${color.magenta(team)}`)
+  ux.action.start(`Revoking invite for ${color.user(email)} in ${color.team(team)}`)
   await heroku.delete<Heroku.TeamInvitation[]>(
     `/teams/${team}/invitations/${email}`,
     {
@@ -17,7 +17,7 @@ const revokeInvite = async (email: string, team: string, heroku: APIClient) => {
 }
 
 const removeUserMembership = async (email: string, team: string, heroku: APIClient) => {
-  ux.action.start(`Removing ${color.cyan(email)} from ${color.magenta(team)}`)
+  ux.action.start(`Removing ${color.user(email)} from ${color.team(team)}`)
   await heroku.delete(`/teams/${team}/members/${encodeURIComponent(email)}`)
   ux.action.stop()
 }
