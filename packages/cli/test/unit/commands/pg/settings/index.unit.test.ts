@@ -1,11 +1,12 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../src/commands/pg/settings/index'
+import Cmd from '../../../../../src/commands/pg/settings/index.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:settings', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -19,18 +20,19 @@ describe('pg:settings', function () {
     }
 
     api = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve', {
+      .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
-        addon: 'postgres-1',
-      }).reply(200, [addon])
+        addon_attachment: 'postgres-1',
+        addon_service: 'heroku-postgresql',
+      }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')
   })
 
   afterEach(function () {
-    nock.cleanAll()
     api.done()
     pg.done()
+    nock.cleanAll()
   })
 
   it('shows settings', async function () {
@@ -45,5 +47,3 @@ describe('pg:settings', function () {
     `)
   })
 })
-
-*/

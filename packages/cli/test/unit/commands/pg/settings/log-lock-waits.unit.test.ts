@@ -1,28 +1,30 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import runCommand from '../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../src/commands/pg/settings/log-lock-waits'
+import Cmd from '../../../../../src/commands/pg/settings/log-lock-waits.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:settings:log-lock-waits', function () {
   const addon = fixtures.addons['dwh-db']
 
   beforeEach(function () {
     nock('https://api.heroku.com')
-      .post('/actions/addons/resolve', {
+      .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
-        addon: 'test-database',
-      }).reply(200, [addon])
+        addon_attachment: 'test-database',
+        addon_service: 'heroku-postgresql',
+      }).reply(200, [{addon}])
   })
 
   afterEach(function () {
     nock.cleanAll()
   })
 
-  it('shows settings for auto_explain with value', async function () {
+  it('shows settings for log-lock-waits with value', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_lock_waits: {value: 'test_value'}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
@@ -32,7 +34,7 @@ describe('pg:settings:log-lock-waits', function () {
     `))
   })
 
-  it('shows settings for auto_explain with no value', async function () {
+  it('shows settings for log-lock-waits with no value', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_lock_waits: {value: ''}})
     await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
@@ -42,5 +44,3 @@ describe('pg:settings:log-lock-waits', function () {
     `))
   })
 })
-
-*/

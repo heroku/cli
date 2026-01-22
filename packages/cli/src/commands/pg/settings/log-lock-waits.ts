@@ -1,9 +1,10 @@
-/*
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter'
-import type {Setting, SettingKey} from '../../../lib/pg/types'
-import {nls} from '../../../nls'
+import tsheredoc from 'tsheredoc'
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
+import type {Setting, SettingKey} from '../../../lib/pg/types.js'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class LogLockWaits extends PGSettingsCommand {
   static topic = 'pg'
@@ -32,4 +33,3 @@ export default class LogLockWaits extends PGSettingsCommand {
     return "When a deadlock is detected, no log message will be emitted in your application's logs."
   }
 }
-*/
