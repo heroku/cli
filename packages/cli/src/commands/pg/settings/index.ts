@@ -1,12 +1,9 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {SettingKey, SettingsResponse} from '../../../lib/pg/types'
-import {addonResolver} from '../../../lib/addons/resolve'
-import {essentialPlan} from '../../../lib/pg/util'
-import {utils} from '@heroku/heroku-cli-util'
-import {nls} from '../../../nls'
+import {hux, utils} from '@heroku/heroku-cli-util'
+import type {SettingKey, SettingsResponse} from '../../../lib/pg/types.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
+import {nls} from '../../../nls.js'
 
 export default class Index extends Command {
   static topic = 'pg'
@@ -24,9 +21,12 @@ export default class Index extends Command {
     const {flags, args} = await this.parse(Index)
     const {app} = flags
     const {database} = args
-    const db = await addonResolver(this.heroku, app, database || 'DATABASE_URL')
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const {addon: db} = await dbResolver.getAttachment(app, database)
 
-    if (essentialPlan(db)) ux.error('You can’t perform this operation on Essential-tier databases.')
+    if (essentialPlan(db)) {
+      ux.error('You can\'t perform this operation on Essential-tier databases.')
+    }
 
     const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
     hux.styledHeader(db.name)
@@ -37,4 +37,3 @@ export default class Index extends Command {
     hux.styledObject(remapped)
   }
 }
-*/
