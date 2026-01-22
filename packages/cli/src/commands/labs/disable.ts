@@ -1,8 +1,7 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
@@ -16,16 +15,22 @@ To proceed, type ${app} or re-run this command with --confirm ${app}`)
 }
 
 export default class LabsDisable extends Command {
-  static description = 'disables an experimental feature'
-
   static args = {
-    feature: Args.string({required: true, description: 'unique identifier or name of the account feature'}),
+    feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
+
+  static description = 'disables an experimental feature'
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     confirm: flags.string({required: false}),
+    remote: flags.remote(),
+  }
+
+  disableFeature(feature: string, app?: string): Promise<any> {
+    return this.heroku.patch(app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`, {
+      body: {enabled: false},
+    })
   }
 
   async run() {
@@ -47,24 +52,19 @@ export default class LabsDisable extends Command {
     try {
       await this.heroku.get(`/account/features/${feature}`)
       request = this.disableFeature(feature)
-      target = (await this.heroku.get<Heroku.Account>('/account')).body.email
+      const targetResponse = await this.heroku.get<Heroku.Account>('/account')
+      target = color.user(targetResponse.body.email || '')
     } catch (error: any) {
       if (error.http.statusCode !== 404) throw error
       // might be an app feature
       if (!flags.app) throw error
       await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${feature}`)
       request = this.disableFeature(feature, flags.app)
-      target = flags.app
+      target = color.app(flags.app)
     }
 
-    ux.action.start(`Disabling ${color.green(feature)} for ${color.cyan(target!)}`)
+    ux.action.start(`Disabling ${color.name(feature)} for ${target}`)
     await request
     ux.action.stop()
-  }
-
-  disableFeature(feature: string, app?: string): Promise<any> {
-    return this.heroku.patch(app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`, {
-      body: {enabled: false},
-    })
   }
 }

@@ -1,25 +1,26 @@
-import {color} from '@heroku-cli/color'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import backupsFactory from '../../../lib/pg/backups.js'
-import {utils} from '@heroku/heroku-cli-util'
+
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 
+import backupsFactory from '../../../lib/pg/backups.js'
+
 export default class Index extends Command {
-  static topic = 'pg'
   static description = 'list database backups'
-  static strict = false
   static flags = {
-    verbose: flags.boolean({char: 'v', hidden: true}),
+    app: flags.app({required: true}),
+    at: flags.string({hidden: true}),
     confirm: flags.string({char: 'c', hidden: true}),
     output: flags.string({char: 'o', hidden: true}),
-    'wait-interval': flags.string({hidden: true}),
-    at: flags.string({hidden: true}),
     quiet: flags.boolean({char: 'q', hidden: true}),
-    app: flags.app({required: true}),
     remote: flags.remote(),
+    verbose: flags.boolean({char: 'v', hidden: true}),
+    'wait-interval': flags.string({hidden: true}),
   }
+
+  static strict = false
+  static topic = 'pg'
 
   public async run(): Promise<void> {
     const {flags: {app}} = await this.parse(Index)
@@ -40,9 +41,10 @@ export default class Index extends Command {
     if (backups.length === 0) {
       ux.stdout(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table<BackupTransfer>(backups, {
         ID: {
-          get: (transfer: BackupTransfer) => color.cyan(pgbackups.name(transfer)),
+          get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
         },
         'Created at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
@@ -54,10 +56,45 @@ export default class Index extends Command {
           get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         Database: {
-          get: (transfer: BackupTransfer) => color.green(transfer.from_name) || 'UNKNOWN',
+          get: (transfer: BackupTransfer) => color.datastore(transfer.from_name) || 'UNKNOWN',
+        },
+      })
+      /* eslint-enable perfectionist/sort-objects */
+    }
+
+    ux.stdout()
+  }
+
+  private displayCopies(transfers: BackupTransfer[], app: string) {
+    const pgbackups = backupsFactory(app, this.heroku)
+    const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
+    hux.styledHeader('Copies')
+    if (copies.length === 0) {
+      ux.stdout(`No copies found. Use ${color.cyan.bold('heroku pg:copy')} to copy a database to another`)
+    } else {
+      /* eslint-disable perfectionist/sort-objects */
+      hux.table(copies, {
+        ID: {
+          get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
+        },
+        'Started at': {
+          get: (transfer: BackupTransfer) => transfer.created_at,
+        },
+        Status: {
+          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
+        },
+        Size: {
+          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
+        },
+        From: {
+          get: (transfer: BackupTransfer) => color.datastore(transfer.from_name) || color.inactive('UNKNOWN'),
+        },
+        To: {
+          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || color.inactive('UNKNOWN'),
         },
       })
     }
+    /* eslint-enable perfectionist/sort-objects */
 
     ux.stdout()
   }
@@ -85,38 +122,6 @@ export default class Index extends Command {
           get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         Database: {
-          get: (transfer: BackupTransfer) => color.green(transfer.to_name) || 'UNKNOWN',
-        },
-      })
-    }
-
-    ux.stdout()
-  }
-
-  private displayCopies(transfers: BackupTransfer[], app: string) {
-    const pgbackups = backupsFactory(app, this.heroku)
-    const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
-    hux.styledHeader('Copies')
-    if (copies.length === 0) {
-      ux.stdout(`No copies found. Use ${color.cyan.bold('heroku pg:copy')} to copy a database to another`)
-    } else {
-      hux.table(copies, {
-        ID: {
-          get: (transfer: BackupTransfer) => color.cyan(pgbackups.name(transfer)),
-        },
-        'Started at': {
-          get: (transfer: BackupTransfer) => transfer.created_at,
-        },
-        Status: {
-          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
-        },
-        Size: {
-          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
-        },
-        From: {
-          get: (transfer: BackupTransfer) => color.green(transfer.from_name) || 'UNKNOWN',
-        },
-        To: {
           get: (transfer: BackupTransfer) => color.green(transfer.to_name) || 'UNKNOWN',
         },
       })

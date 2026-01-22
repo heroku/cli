@@ -1,5 +1,4 @@
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -59,7 +58,7 @@ function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   }
 
   case 'succeeded': {
-    return color.green('✓')
+    return color.success('✓')
   }
 
   case 'cancelled': {
@@ -140,7 +139,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
     )
     /* eslint-enable perfectionist/sort-objects */
   })
-
+  /* eslint-disable perfectionist/sort-objects */
   hux.table(
     data,
     {
@@ -154,7 +153,7 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
       sha: {},
       status: {},
     })
-
+  /* eslint-enable perfectionist/sort-objects */
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
   }
@@ -164,7 +163,7 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   const watchable = (Boolean(watchOption && !jsonOption))
 
   if (!jsonOption) {
-    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${color.pipeline(pipeline.name)} pipeline`
+    const header = `${watchOption ? 'Watching' : 'Showing'} latest test runs for the ${color.pipeline(pipeline.name ?? '')} pipeline`
     hux.styledHeader(header)
   }
 
