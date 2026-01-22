@@ -50,11 +50,11 @@ function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   }
 
   case 'errored': {
-    return color.red('!')
+    return color.failure('!')
   }
 
   case 'failed': {
-    return color.red('✗')
+    return color.failure('✗')
   }
 
   case 'succeeded': {

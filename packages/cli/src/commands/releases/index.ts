@@ -120,7 +120,7 @@ export default class Index extends Command {
         let colorFn: (s: string) => string
         switch (statusColor) {
         case 'red': {
-          colorFn = color.red
+          colorFn = color.failure
 
           break
         }
@@ -132,7 +132,7 @@ export default class Index extends Command {
         }
 
         case 'gray': {
-          colorFn = color.gray
+          colorFn = color.inactive
 
           break
         }
@@ -151,9 +151,9 @@ export default class Index extends Command {
 
     const getVersionColor = (release: Heroku.Release) => {
       const statusColor = statusHelper.color(release.status)
-      if (statusColor === 'red') return color.red('v' + release.version)
+      if (statusColor === 'red') return color.failure('v' + release.version)
       if (statusColor === 'yellow') return color.yellow('v' + release.version)
-      if (statusColor === 'gray') return color.gray('v' + release.version)
+      if (statusColor === 'gray') return color.inactive('v' + release.version)
       return color.cyan('v' + release.version)
     }
 

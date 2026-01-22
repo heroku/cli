@@ -34,7 +34,7 @@ export default class Enable extends Command {
         Enable.notifier('heroku certs:auto:enable', 'Certificate issued to all domains')
       } catch (error) {
         Enable.notifier('heroku certs:auto:enable', 'An error occurred', false)
-        hux.styledHeader(`${color.red('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
+        hux.styledHeader(`${color.failure('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
         throw error
       }
     } else {

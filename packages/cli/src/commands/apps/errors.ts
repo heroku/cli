@@ -14,7 +14,7 @@ type ErrorSummary = Record<string, number>
 const colorize = (level: string, s: string) => {
   switch (level) {
   case 'critical': {
-    return color.red(s)
+    return color.failure(s)
   }
 
   case 'warning': {

@@ -109,7 +109,7 @@ export default class Dyno extends Duplex {
   async start() {
     this._startedAt = Date.now()
     if (this.opts.showStatus) {
-      ux.action.start(`Running ${color.cyan.bold(this.opts.command)} on ${color.app(this.opts.app)}`)
+      ux.action.start(`Running ${color.code(this.opts.command)} on ${color.app(this.opts.app)}`)
     }
 
     await this._doStart()
@@ -290,7 +290,7 @@ export default class Dyno extends Duplex {
 
           msgs.push('Check that your ssh key has been uploaded to heroku with `heroku keys:add`.')
           // eslint-disable-next-line unicorn/no-array-push-push
-          msgs.push(`See ${color.cyan('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
+          msgs.push(`See ${color.info('https://devcenter.heroku.com/articles/one-off-dynos#shield-private-spaces')}`)
           ux.error(msgs.join('\n'))
         }
 
@@ -369,7 +369,7 @@ export default class Dyno extends Duplex {
           // @ts-ignore
           this.resolve()
         } else {
-          const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.red(code.toString())}`)
+          const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.failure(code.toString())}`)
           err.exitCode = code
           // @ts-ignore
           this.reject(err)
