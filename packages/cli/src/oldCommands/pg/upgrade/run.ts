@@ -1,14 +1,15 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import {legacyEssentialPlan, databaseNameFromUrl, essentialNumPlan, formatResponseWithCommands} from '../../../lib/pg/util'
-import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types'
+import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
+import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
 import * as Heroku from '@heroku-cli/schema'
-import confirmCommand from '../../../lib/confirmCommand'
-import {nls} from '../../../nls'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
   static topic = 'pg';
@@ -55,14 +56,14 @@ export default class Upgrade extends Command {
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (legacyEssentialPlan(db))
+    if (utils.pg.isLegacyEssentialDatabase(db))
       ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
 
-    if (essentialNumPlan(db)) {
-      await confirmCommand(app, confirm, heredoc(`
+    if (utils.pg.isEssentialDatabase(db)) {
+      await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
         You're upgrading ${color.addon(db.name)} to ${versionPhrase}.
 
@@ -72,14 +73,14 @@ export default class Upgrade extends Command {
       const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       const origin = databaseNameFromUrl(replica.following, configVars)
 
-      await confirmCommand(app, confirm, heredoc(`
+      await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
         You're upgrading ${color.addon(db.name)} to ${versionPhrase}. The database will stop following ${origin} and become writable.
 
         You can't undo this action.
       `))
     } else {
-      await confirmCommand(app, confirm, heredoc(`
+      await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
         You're upgrading the Postgres version on ${color.addon(db.name)}. This action also upgrades any followers on the database.
 
@@ -102,4 +103,3 @@ export default class Upgrade extends Command {
     }
   }
 }
-*/
