@@ -76,7 +76,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   data['Web URL'] = info.app.web_url
   data['Repo Size'] = filesize(info.app.repo_size, {round: 0, standard: 'jedec'})
   if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {round: 0, standard: 'jedec'})
-  data.Owner = info.app.owner.email
+  data.Owner = color.user(info.app.owner.email)
   data.Region = info.app.region.name
   data.Dynos = countBy(info.dynos, 'type')
   data.Stack = (function (app) {

@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 
 export function displayCIDR(cidr: string[] | undefined) {
   return cidr?.join(', ') ?? ''
@@ -7,7 +7,7 @@ export function displayCIDR(cidr: string[] | undefined) {
 export function hostStatus(s: string) {
   switch (s) {
   case 'available': {
-    return `${color.green(s)}`
+    return `${color.success(s)}`
   }
 
   case 'under-assessment': {
@@ -32,7 +32,7 @@ export function hostStatus(s: string) {
 export function peeringStatus(s: string) {
   switch (s) {
   case 'active': {
-    return `${color.green(s)}`
+    return `${color.success(s)}`
   }
 
   case 'pending-acceptance':
@@ -57,7 +57,7 @@ export function displayVPNStatus(s: string | undefined) {
   switch (s) {
   case 'UP':
   case 'available': {
-    return `${color.green(s)}`
+    return `${color.success(s)}`
   }
 
   case 'pending':

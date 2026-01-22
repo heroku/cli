@@ -51,6 +51,6 @@ describe('labs:enable', function () {
     const {stderr, stdout} = await runCommand(['labs:enable', 'feature-a', '-a', 'myapp'])
 
     expect(stdout).to.be.empty
-    expect(stderr).to.contain('Enabling feature-a for myapp... done\n')
+    expect(stderr).to.contain('Enabling feature-a for ⬢ myapp... done\n')
   })
 })

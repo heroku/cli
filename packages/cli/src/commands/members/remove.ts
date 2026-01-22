@@ -1,8 +1,9 @@
 import {color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {isTeamInviteFeatureEnabled, getTeamInvites} from '../../lib/members/team-invite-utils.js'
+import {ux} from '@oclif/core'
+
+import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'
 
 const revokeInvite = async (email: string, team: string, heroku: APIClient) => {
   ux.action.start(`Revoking invite for ${color.user(email)} in ${color.team(team)}`)
@@ -23,17 +24,17 @@ const removeUserMembership = async (email: string, team: string, heroku: APIClie
 }
 
 export default class MembersRemove extends Command {
-  static topic = 'members'
   static description = 'removes a user from a team'
-
   static flags = {
     team: flags.team({required: true}),
   }
 
   static strict = false
 
+  static topic = 'members'
+
   public async run(): Promise<void> {
-    const {flags, argv} = await this.parse(MembersRemove)
+    const {argv, flags} = await this.parse(MembersRemove)
     const {team} = flags
     const email = argv[0] as string
     const teamInviteFeatureEnabled = await isTeamInviteFeatureEnabled(team, this.heroku)

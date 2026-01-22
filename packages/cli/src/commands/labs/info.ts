@@ -1,31 +1,33 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 function print(feature: Record<string, string>) {
   hux.styledHeader(feature.name)
+  /* eslint-disable perfectionist/sort-objects */
   hux.styledObject({
     Description: feature.description,
-    Enabled: feature.enabled ? color.green(feature.enabled) : color.red(feature.enabled),
+    Enabled: feature.enabled ? color.success('true') : color.red('false'),
     Docs: feature.doc_url,
   })
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 export default class LabsInfo extends Command {
-  static description = 'show feature info'
-  static topic = 'labs'
-
   static args = {
-    feature: Args.string({required: true, description: 'unique identifier or name of the account feature'}),
+    feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
+
+  static description = 'show feature info'
 
   static flags = {
     app: flags.app({required: false}),
-    remote: flags.remote(),
     json: flags.boolean({description: 'display as json', required: false}),
+    remote: flags.remote(),
   }
+
+  static topic = 'labs'
 
   async run() {
     const {args, flags} = await this.parse(LabsInfo)

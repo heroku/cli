@@ -1,23 +1,24 @@
-
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import runCommand from '../../../../../helpers/runCommand.js'
-// import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-format'
+import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-format.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:settings:auto-explain:log-format', function () {
   const addon = fixtures.addons['dwh-db']
   let api: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve', {
+      .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
-        addon: 'test-database',
-      }).reply(200, [addon])
+        addon_attachment: 'test-database',
+        addon_service: 'heroku-postgresql',
+      }).reply(200, [{addon}])
   })
 
   afterEach(function () {
@@ -39,5 +40,3 @@ describe('pg:settings:auto-explain:log-format', function () {
     `))
   })
 })
-
-*/

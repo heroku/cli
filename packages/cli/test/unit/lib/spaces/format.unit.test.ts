@@ -1,5 +1,6 @@
 import {expect} from 'chai'
-import {displayCIDR, hostStatus, peeringStatus, displayVPNStatus} from '../../../../src/lib/spaces/format.js'
+
+import {displayCIDR, displayVPNStatus, hostStatus, peeringStatus} from '../../../../src/lib/spaces/format.js'
 
 describe('displayCIDR', function () {
   it('formats an array of cidrs', function () {
@@ -18,19 +19,19 @@ describe('displayCIDR', function () {
 
 describe('hostStatus', function () {
   it('returns ANSI colorized host status if status meets switch statement condition, uncolorized value if it does not', function () {
-    expect(hostStatus('available')).to.eq('\u001B[32mavailable\u001B[39m')
+    expect(hostStatus('available')).to.eq('\u001B[38;5;40mavailable\u001B[39m')
     expect(hostStatus('under-assessment')).to.eq('\u001B[33munder-assessment\u001B[39m')
     expect(hostStatus('permanent-failure')).to.eq('\u001B[31mpermanent-failure\u001B[39m')
     expect(hostStatus('released-permanent-failure')).to.eq('\u001B[31mreleased-permanent-failure\u001B[39m')
-    expect(hostStatus('released')).to.eq('\u001B[2mreleased\u001B[22m')
+    expect(hostStatus('released')).to.eq('\u001B[90mreleased\u001B[39m')
     expect(hostStatus('foo')).to.eq('foo')
   })
 })
 
 describe('displayVPNStatus', function () {
   it('returns ANSI colorized VPN status if status meets switch statement condition, uncolorized value if it does not', function () {
-    expect(displayVPNStatus('UP')).to.eq('\u001B[32mUP\u001B[39m')
-    expect(displayVPNStatus('available')).to.eq('\u001B[32mavailable\u001B[39m')
+    expect(displayVPNStatus('UP')).to.eq('\u001B[38;5;40mUP\u001B[39m')
+    expect(displayVPNStatus('available')).to.eq('\u001B[38;5;40mavailable\u001B[39m')
     expect(displayVPNStatus('pending')).to.eq('\u001B[33mpending\u001B[39m')
     expect(displayVPNStatus('provisioning')).to.eq('\u001B[33mprovisioning\u001B[39m')
     expect(displayVPNStatus('deprovisioning')).to.eq('\u001B[33mdeprovisioning\u001B[39m')
@@ -43,7 +44,7 @@ describe('displayVPNStatus', function () {
 
 describe('peeringStatus', function () {
   it('returns ANSI colorized peering status if status meets switch statement condition, uncolorized value if it does not', function () {
-    expect(peeringStatus('active')).to.eq('\u001B[32mactive\u001B[39m')
+    expect(peeringStatus('active')).to.eq('\u001B[38;5;40mactive\u001B[39m')
     expect(peeringStatus('pending-acceptance')).to.eq('\u001B[33mpending-acceptance\u001B[39m')
     expect(peeringStatus('provisioning')).to.eq('\u001B[33mprovisioning\u001B[39m')
     expect(peeringStatus('expired')).to.eq('\u001B[31mexpired\u001B[39m')
