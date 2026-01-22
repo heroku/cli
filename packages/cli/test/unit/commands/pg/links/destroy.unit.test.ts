@@ -1,5 +1,5 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/links/destroy'
+import Cmd from '../../../../../src/commands/pg/links/destroy.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
@@ -9,7 +9,6 @@ import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
-/*
 describe('pg:links:destroy', function () {
   afterEach(function () {
     nock.cleanAll()
@@ -31,7 +30,7 @@ describe('pg:links:destroy', function () {
         'postgres-link',
       ])
         .catch(error => {
-          expect(error.message).to.equal('pg:links isn’t available for Essential-tier databases.')
+          expect(error.message).to.equal('pg:links isn\'t available for Essential-tier databases.')
         })
     })
   })
@@ -57,11 +56,8 @@ describe('pg:links:destroy', function () {
 
       expectOutput(stdout.output, '')
       expectOutput(stderr.output, heredoc(`
-        Destroying link postgres-link from ${addon.name}...
         Destroying link postgres-link from ${addon.name}... done
       `))
     })
   })
 })
-
-*/

@@ -1,28 +1,28 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util'
-import confirmCommand from '../../../lib/confirmCommand'
-import heredoc from 'tsheredoc'
-import {nls} from '../../../nls'
+import {essentialPlan} from '../../../lib/pg/util.js'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+import {nls} from '../../../nls.js'
 
 export default class Destroy extends Command {
-  static topic = 'pg';
-  static description = 'destroys a link between data stores';
-  static example = '$ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100';
+  static topic = 'pg'
+  static description = 'destroys a link between data stores'
+  static example = '$ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100'
 
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     database: Args.string({required: true, description: nls('pg:database:arg:description')}),
     link: Args.string({required: true, description: 'name of the linked data store'}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Destroy)
@@ -31,8 +31,8 @@ export default class Destroy extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
-      throw new Error('pg:links isn’t available for Essential-tier databases.')
-    await confirmCommand(app, confirm, heredoc(`
+      throw new Error("pg:links isn't available for Essential-tier databases.")
+    await new ConfirmCommand().confirm(app, confirm, heredoc(`
       Destructive action
       This command will affect the database ${color.yellow(db.name)}
       This will delete ${color.cyan(link)} along with the tables and views created within it.
@@ -47,4 +47,3 @@ export default class Destroy extends Command {
     ux.action.stop()
   }
 }
-*/

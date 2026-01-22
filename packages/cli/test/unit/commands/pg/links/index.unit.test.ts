@@ -1,12 +1,12 @@
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../../../src/commands/pg/links/index'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+import Cmd from '../../../../../src/commands/pg/links/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-/*
 describe('pg:links', function () {
   const addon = fixtures.addons['www-db']
   const appName = 'myapp'
@@ -66,5 +66,3 @@ describe('pg:links', function () {
     `))
   })
 })
-
-*/

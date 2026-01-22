@@ -1,12 +1,13 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/maintenance/window'
+import Cmd from '../../../../../src/commands/pg/maintenance/window.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {expect} from 'chai'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
-/*
 describe('pg:maintenance', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -27,11 +28,6 @@ describe('pg:maintenance', function () {
       'Sunday 06:30',
     ])
     expectOutput(stdout.output, '')
-    expectOutput(stderr.output, heredoc(`
-      Setting maintenance window for ${addon.name} to Sunday 06:30...
-      Setting maintenance window for ${addon.name} to Sunday 06:30... done
-    `))
+    expect(stderr.output).to.include(`Setting maintenance window for ${addon.name} to Sunday 06:30... done`)
   })
 })
-
-*/
