@@ -1,8 +1,7 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {isTeamInviteFeatureEnabled, getTeamInvites} from '../../lib/members/team-invite-utils.js'
 
@@ -80,7 +79,7 @@ export default class MembersIndex extends Command {
     if (json) {
       ux.stdout(JSON.stringify(members, null, 3))
     } else if (members.length === 0) {
-      let msg = `No members in ${color.magenta(team || '')}`
+      let msg = `No members in ${color.team(team || '')}`
       if (role)
         msg += ` with role ${color.green(role)}`
       ux.stdout(msg)

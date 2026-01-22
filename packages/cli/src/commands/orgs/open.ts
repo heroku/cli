@@ -1,9 +1,8 @@
-
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import open from 'open'
 import {ux} from '@oclif/core'
-import {color} from '@heroku-cli/color'
 
 export default class OrgsOpen extends Command {
   static topic = 'orgs'
@@ -13,7 +12,7 @@ export default class OrgsOpen extends Command {
   }
 
   public static async openUrl(url: string): Promise<void> {
-    ux.stdout(`Opening ${color.cyan(url)}...`)
+    ux.stdout(`Opening ${color.info(url)}...`)
     await open(url)
   }
 
