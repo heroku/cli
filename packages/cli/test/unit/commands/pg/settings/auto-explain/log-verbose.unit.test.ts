@@ -15,10 +15,11 @@ describe('pg:settings:auto-explain:log-verbose', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    api.post('/actions/addons/resolve', {
+    api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
-      addon: 'test-database',
-    }).reply(200, [addon])
+      addon_attachment: 'test-database',
+      addon_service: 'heroku-postgresql',
+    }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')
   })
