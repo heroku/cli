@@ -1,20 +1,26 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {getDomains, waitForDomains, printDomains, waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
+
+import {
+  getDomains,
+  printDomains,
+  waitForCertIssuedOnDomains,
+  waitForDomains,
+} from '../../../lib/domains/domains.js'
 import notify from '../../../lib/notify.js'
 
 export default class Enable extends Command {
-  static topic = 'certs'
   static description = 'enable ACM status for an app'
   static flags = {
-    wait: flags.boolean({description: 'watch ACM status and exit when complete'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
+    wait: flags.boolean({description: 'watch ACM status and exit when complete'}),
   }
 
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
+  static topic = 'certs'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Enable)
@@ -34,11 +40,11 @@ export default class Enable extends Command {
         Enable.notifier('heroku certs:auto:enable', 'Certificate issued to all domains')
       } catch (error) {
         Enable.notifier('heroku certs:auto:enable', 'An error occurred', false)
-        hux.styledHeader(`${color.failure('Error')}: The certificate could not be issued to all domains. See status with ${color.cmd('heroku certs:auto')}.`)
+        hux.styledHeader(`${color.failure('Error')}: The certificate could not be issued to all domains. See status with ${color.code('heroku certs:auto')}.`)
         throw error
       }
     } else {
-      ux.action.stop(`${color.yellow('starting')}. See status with ${color.cmd('heroku certs:auto')} or wait until active with ${color.cmd('heroku certs:auto --wait')}`)
+      ux.action.stop(`${color.yellow('starting')}. See status with ${color.code('heroku certs:auto')} or wait until active with ${color.code('heroku certs:auto --wait')}`)
     }
 
     const domains = await waitForDomains(this.heroku, app)
@@ -46,7 +52,7 @@ export default class Enable extends Command {
       const domainBeforeEnable = domainsBeforeEnable.find(domainBefore => domain.hostname === domainBefore.hostname)
       return domainBeforeEnable && domain.cname !== domainBeforeEnable.cname
     })
-    const message = `Your certificate will now be managed by Heroku. Check the status by running ${color.cmd('heroku certs:auto')}.`
+    const message = `Your certificate will now be managed by Heroku. Check the status by running ${color.code('heroku certs:auto')}.`
 
     if (domains.length === 0 || changedCnames.length > 0) {
       printDomains(changedCnames, message)
