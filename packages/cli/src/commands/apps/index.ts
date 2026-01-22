@@ -36,25 +36,25 @@ function listApps(apps: Heroku.App) {
 function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: null | string) {
   if (apps.length === 0) {
     if (space) ux.stdout(`There are no apps in space ${color.space(space)}.`)
-    else if (team) ux.stdout(`There are no apps in team ${color.magenta(team)}.`)
+    else if (team) ux.stdout(`There are no apps in team ${color.team(team)}.`)
     else ux.stdout('You have no apps.')
   } else if (space) {
     hux.styledHeader(`Apps in space ${color.space(space)}`)
     listApps(apps)
   } else if (team) {
-    hux.styledHeader(`Apps in team ${color.magenta(team)}`)
+    hux.styledHeader(`Apps in team ${color.team(team)}`)
     listApps(apps)
   } else {
     apps = _.partition(apps, (app: App) => app.owner.email === user.email)
     if (apps[0].length > 0) {
-      hux.styledHeader(`${color.cyan(user.email!)} Apps`)
+      hux.styledHeader(`${color.user(user.email!)} Apps`)
       listApps(apps[0])
     }
 
     const columns = {
       Name: {get: regionizeAppName},
       // eslint-disable-next-line perfectionist/sort-objects
-      Email: {get: ({owner}: any) => owner.email},
+      Email: {get: ({owner}: any) => color.user(owner.email)},
     }
 
     if (apps[1].length > 0) {

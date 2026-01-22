@@ -1,8 +1,7 @@
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {flags, Command} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
 
 function formatKey(key: string) {
   const [name, pub, email] = key.trim().split(/\s/)
@@ -24,7 +23,7 @@ export default class Keys extends Command {
     } else if (keys.length === 0) {
       ux.warn('You have no SSH keys.')
     } else {
-      hux.styledHeader(`${color.cyan(keys[0].email || '')} keys`)
+      hux.styledHeader(`${color.user(keys[0].email || '')} keys`)
       if (flags.long) {
         keys.forEach(k => ux.stdout(k.public_key))
       } else {

@@ -1,9 +1,10 @@
-/*
 import {Args} from '@oclif/core'
-import {PGSettingsCommand} from '../../../../lib/pg/setter'
-import {Setting, SettingKey} from '../../../../lib/pg/types'
-import heredoc from 'tsheredoc'
-import {nls} from '../../../../nls'
+import {PGSettingsCommand} from '../../../../lib/pg/setter.js'
+import {Setting, SettingKey} from '../../../../lib/pg/types.js'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class LogFormat extends PGSettingsCommand {
   static description = heredoc(`
@@ -26,4 +27,3 @@ export default class LogFormat extends PGSettingsCommand {
     return val
   }
 }
-*/

@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -28,7 +28,7 @@ export default class AccessAdd extends Command {
     const {email} = args
     const {app: appName, permissions} = flags
     const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    let output = `Adding ${color.cyan(email)} access to the app ${color.app(appName)}`
+    let output = `Adding ${color.user(email)} access to the app ${color.app(appName)}`
     let teamFeatures: Heroku.TeamFeature[] = []
     if (isTeamApp(appInfo?.owner?.email)) {
       const teamName = getOwner(appInfo?.owner?.email)
