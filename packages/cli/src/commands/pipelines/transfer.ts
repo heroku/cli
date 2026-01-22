@@ -61,7 +61,7 @@ export default class PipelinesTransfer extends Command {
       await renderPipeline(this.heroku, pipeline, apps)
       ux.stdout('')
       ux.warn(`This will transfer ${color.pipeline(pipeline.name!)} and all of the listed apps to the ${args.owner} ${displayType}`)
-      ux.warn(`to proceed, type ${color.red(pipeline.name!)} or re-run this command with ${color.red('--confirm')} ${pipeline.name}`)
+      ux.warn(`to proceed, type ${color.pipeline(pipeline.name!)} or re-run this command with ${color.info('--confirm')} ${pipeline.name}`)
       confirmName = await hux.prompt('', {})
     }
 

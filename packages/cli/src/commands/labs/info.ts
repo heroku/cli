@@ -8,7 +8,7 @@ function print(feature: Record<string, string>) {
   /* eslint-disable perfectionist/sort-objects */
   hux.styledObject({
     Description: feature.description,
-    Enabled: feature.enabled ? color.success('true') : color.red('false'),
+    Enabled: feature.enabled ? color.success('true') : color.failure('false'),
     Docs: feature.doc_url,
   })
   /* eslint-enable perfectionist/sort-objects */

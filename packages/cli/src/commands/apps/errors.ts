@@ -1,10 +1,8 @@
-/* eslint-disable perfectionist/sort-objects */
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import _ from 'lodash'
 
 import errorInfo from '../../lib/apps/error_info.js'
 import {AppErrors} from '../../lib/types/app_errors.js'
@@ -14,7 +12,7 @@ type ErrorSummary = Record<string, number>
 const colorize = (level: string, s: string) => {
   switch (level) {
   case 'critical': {
-    return color.red(s)
+    return color.failure(s)
   }
 
   case 'warning': {
@@ -58,7 +56,7 @@ function buildErrorTable(errors: ErrorSummary, source: string) {
 const sumErrors = (errors: AppErrors) => {
   const summed: ErrorSummary = {}
   Object.keys(errors.data).forEach(key => {
-    summed[key] = _.sum(errors.data[key])
+    summed[key] = errors.data[key].reduce((a, b) => a + b, 0)
   })
   return summed
 }
@@ -146,6 +144,7 @@ export default class Errors extends Command {
       if (t.length === 0) {
         ux.stdout(`No errors on ${color.app(flags.app)} in the last ${hours} hours`)
       } else {
+        /* eslint-disable perfectionist/sort-objects */
         hux.table(t, {
           Source: {get: ({source}) => source},
           Name: {get: ({name, level}) => colorize(level, name)},
@@ -153,6 +152,7 @@ export default class Errors extends Command {
           title: {header: 'Desc'},
           Count: {get: ({count}) => count},
         }, {title: `Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}})
+        /* eslint-enable perfectionist/sort-objects */
       }
     }
   }

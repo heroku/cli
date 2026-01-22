@@ -22,7 +22,7 @@ function humanize(value: null | string) {
   }
 
   if (value === 'failed') {
-    return color.red('Failed')
+    return color.failure('Failed')
   }
 
   if (value === 'verified') {

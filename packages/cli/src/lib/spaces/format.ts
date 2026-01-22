@@ -16,7 +16,7 @@ export function hostStatus(s: string) {
 
   case 'permanent-failure':
   case 'released-permanent-failure': {
-    return `${color.red(s)}`
+    return `${color.failure(s)}`
   }
 
   case 'released': {
@@ -44,7 +44,7 @@ export function peeringStatus(s: string) {
   case 'failed':
   case 'deleted':
   case 'rejected': {
-    return `${color.red(s)}`
+    return `${color.failure(s)}`
   }
 
   default: {
@@ -69,7 +69,7 @@ export function displayVPNStatus(s: string | undefined) {
   case 'DOWN':
   case 'deleting':
   case 'deleted': {
-    return `${color.red(s)}`
+    return `${color.failure(s)}`
   }
 
   default: {

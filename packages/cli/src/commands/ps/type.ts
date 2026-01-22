@@ -84,11 +84,12 @@ const displayFormation = async (heroku: APIClient, app: string) => {
         dynoTotals[d.size] = d.quantity
       }
 
+      /* eslint-disable perfectionist/sort-objects */
       return {
         // this rule does not realize `size` isn't used on an array
-        type: color.green(d.type || ''),
-        size: color.cyan(d.size),
-        qty: color.yellow(`${d.quantity}`),
+        type: color.name(d.type || ''),
+        size: color.info(d.size),
+        qty: color.info(`${d.quantity}`),
         'cost/hour': calculateHourly(d.size)
           ? '~$' + (calculateHourly(d.size) * (d.quantity || 1)).toFixed(3).toString()
           : '',
@@ -96,11 +97,13 @@ const displayFormation = async (heroku: APIClient, app: string) => {
           ? '$' + (COST_MONTHLY[d.size] * d.quantity).toString()
           :  '',
       }
+      /* eslint-enable perfectionist/sort-objects */
     }))
 
   const dynoTotalsTableData = Object.keys(dynoTotals)
     .map(k => ({
-      type: color.green(k), total: color.yellow((dynoTotals[k]).toString()),
+      // eslint-disable-next-line perfectionist/sort-objects
+      type: color.name(k), total: color.info((dynoTotals[k]).toString()),
     }))
 
   if (formation.length === 0) {
@@ -108,6 +111,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
   }
 
   hux.styledHeader('Process Types')
+  /* eslint-disable perfectionist/sort-objects */
   hux.table(formationTableData, {
     type: {},
     size: {},
@@ -115,10 +119,12 @@ const displayFormation = async (heroku: APIClient, app: string) => {
     'cost/hour': {},
     'max cost/month': {},
   })
+  /* eslint-enable perfectionist/sort-objects */
   ux.stdout()
   hux.styledHeader('Dyno Totals')
   hux.table(dynoTotalsTableData, {
     type: {},
+    // eslint-disable-next-line perfectionist/sort-objects
     total: {},
   })
 
@@ -161,7 +167,7 @@ export default class Type extends Command {
           const type = match && match[1]
           const size = match && match[2]
           if (!type || !size || !formation.some(p => p.type === type)) {
-            throw new Error(`Type ${color.red(type || '')} not found in process formation.\nTypes: ${color.yellow(formation.map(f => f.type)
+            throw new Error(`Type ${color.failure(type || '')} not found in process formation.\nTypes: ${color.info(formation.map(f => f.type)
               .join(', '))}`)
           }
 

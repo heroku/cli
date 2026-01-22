@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 export const COLORS: Array<(s: string) => string> = [
@@ -30,17 +30,16 @@ getColorForIdentifier('heroku-postgres')
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
-const {bold, red} = color
 const dim = (i: string) => color.dim(i)
 const other = dim
 const path = (i: string) => color.green(i)
-const method = (i: string) => bold.magenta(i)
+const method = (i: string) => color.magenta(i)
 const status = (code: any) => {
   if (code < 200) return code
-  if (code < 300) return color.green(code)
-  if (code < 400) return color.cyan(code)
-  if (code < 500) return color.yellow(code)
-  if (code < 600) return color.red(code)
+  if (code < 300) return color.success(code)
+  if (code < 400) return color.info(code)
+  if (code < 500) return color.warning(code)
+  if (code < 600) return color.failure(code)
   return code
 }
 
@@ -48,21 +47,21 @@ const ms = (s: string) => {
   const ms = Number.parseInt(s, 10)
   if (!ms) return s
   if (ms < 100) return color.greenBright(s)
-  if (ms < 500) return color.green(s)
-  if (ms < 5000) return color.yellow(s)
+  if (ms < 500) return color.success(s)
+  if (ms < 5000) return color.warning(s)
   if (ms < 10000) return color.yellowBright(s)
-  return color.red(s)
+  return color.failure(s)
 }
 
 function colorizeRouter(body: string) {
   const encodeColor = ([k, v]: [string, string]) => {
     switch (k) {
     case 'at': {
-      return [k, v === 'error' ? red(v) : other(v)]
+      return [k, v === 'error' ? color.failure(v) : other(v)]
     }
 
     case 'code': {
-      return [k, red.bold(v)]
+      return [k, color.failure(color.bold(v))]
     }
 
     case 'method': {
@@ -125,11 +124,11 @@ function colorizeRouter(body: string) {
 const state = (s: string) => {
   switch (s) {
   case 'down': {
-    return red(s)
+    return color.failure(s)
   }
 
   case 'up': {
-    return color.greenBright(s)
+    return color.success(s)
   }
 
   case 'starting': {
@@ -137,7 +136,7 @@ const state = (s: string) => {
   }
 
   case 'complete': {
-    return color.greenBright(s)
+    return color.success(s)
   }
 
   default: {
@@ -148,12 +147,12 @@ const state = (s: string) => {
 
 function colorizeRun(body: string) {
   try {
-    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.red(body)
+    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.failure(body)
     const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [
         starting[1],
-        color.cmd(starting[2]),
+        color.code(starting[2]),
         starting[3] || '',
         color.green(starting[4] || ''),
       ].join('')
@@ -173,7 +172,7 @@ function colorizeRun(body: string) {
     if (exited) {
       return [
         exited[1],
-        exited[2] === '0' ? color.greenBright(exited[2]) : color.red(exited[2]),
+        exited[2] === '0' ? color.success(exited[2]) : color.failure(exited[2]),
       ].join('')
     }
   } catch (error: any) {
@@ -187,12 +186,12 @@ function colorizeWeb(body: string) {
   try {
     if (body.match(/^Unidling$/)) return color.yellow(body)
     if (body.match(/^Restarting$/)) return color.yellow(body)
-    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.red(body)
+    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.failure(body)
     const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [
         (starting[1]),
-        color.cmd(starting[2]),
+        color.code(starting[2]),
         (starting[3] || ''),
         color.green(starting[4] || ''),
       ].join('')
@@ -202,7 +201,7 @@ function colorizeWeb(body: string) {
     if (exited) {
       return [
         exited[1],
-        exited[2] === '0' ? color.greenBright(exited[2]) : color.red(exited[2]),
+        exited[2] === '0' ? color.success(exited[2]) : color.failure(exited[2]),
       ].join('')
     }
 
@@ -247,8 +246,8 @@ function colorizeWeb(body: string) {
 }
 
 function colorizeAPI(body: string) {
-  if (body.match(/^Build succeeded$/)) return color.greenBright(body)
-  if (body.match(/^Build failed/)) return color.red(body)
+  if (body.match(/^Build succeeded$/)) return color.success(body)
+  if (body.match(/^Build failed/)) return color.failure(body)
   const build = body.match(/^(Build started by user )(.+)$/)
   if (build) {
     return [
@@ -281,7 +280,7 @@ function colorizeAPI(body: string) {
   if (starting) {
     return [
       (starting[1]),
-      color.cmd(starting[2]),
+      color.code(starting[2]),
       (starting[3] || ''),
       color.green(starting[4] || ''),
     ].join('')

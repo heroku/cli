@@ -1,5 +1,4 @@
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -62,7 +61,7 @@ export function printDomains(domains: Required<Heroku.Domain>[], message: string
   const domains_with_type: ({ type: string } & Required<Heroku.Domain>)[] = domains.map(domain => ({...domain, type: type(domain)}))
 
   if (domains_with_type.length === 0) {
-    hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.cmd('heroku domains:add <yourdomain.com>')}`)
+    hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.code('heroku domains:add <yourdomain.com>')}`)
   } else {
     hux.styledHeader(`${message}  Update your application's DNS settings as follows`)
 
@@ -118,7 +117,7 @@ export async function waitForCertIssuedOnDomains(heroku: APIClient, app: string)
     }
 
     if (someFailed(domains)) {
-      ux.action.stop(color.red('!'))
+      ux.action.stop(color.failure('!'))
       throw new Error('ACM not enabled for some domains')
     }
 
