@@ -78,14 +78,14 @@ export default class Index extends Command {
 
     let message
     if (domains.length === 0) {
-      message = `Add a custom domain to your app by running: ${color.command('heroku domains:add <yourdomain.com>')}`
+      message = `Add a custom domain to your app by running: ${color.code('heroku domains:add <yourdomain.com>')}`
     } else if (domains.some(domain => domain.acm_status === 'failed')) {
       message = heredoc`
-        Some domains failed validation after multiple attempts, retry by running: ${color.command('heroku certs:auto:refresh')}
+        Some domains failed validation after multiple attempts, retry by running: ${color.code('heroku certs:auto:refresh')}
             See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons`
     } else if (domains.some(domain => domain.acm_status === 'failing')) {
       message = heredoc`
-        Some domains are failing validation, please verify that your DNS matches: ${color.command('heroku domains')}
+        Some domains are failing validation, please verify that your DNS matches: ${color.code('heroku domains')}
             See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons`
     }
 
