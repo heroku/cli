@@ -1,10 +1,11 @@
-import {color} from '@heroku-cli/color'
+
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {utils} from '@heroku/heroku-cli-util'
-import pgBackupsApi from '../../../lib/pg/backups.js'
+
 import type {BackupTransfer} from '../../../lib/pg/types.js'
+
+import pgBackupsApi from '../../../lib/pg/backups.js'
 
 function status(backup: BackupTransfer) {
   if (backup.succeeded) {
@@ -33,15 +34,39 @@ function compression(compressed: number, total: number) {
 }
 
 export default class Info extends Command {
-  static topic = 'pg'
+  static args = {
+    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
+  }
+
   static description = 'get information about a specific backup'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static args = {
-    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
+  static topic = 'pg'
+
+  displayBackup = (backup: BackupTransfer, app: string) => {
+    const pgbackups = pgBackupsApi(app, this.heroku)
+    hux.styledHeader(`Backup ${color.cyan(pgbackups.name(backup))}`)
+    /* eslint-disable perfectionist/sort-objects */
+    hux.styledObject({
+      Database: color.datastore(backup.from_name),
+      'Started at': backup.started_at,
+      'Finished at': backup.finished_at,
+      Status: status(backup),
+      Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': pgbackups.filesize(backup.source_bytes),
+      'Backup Size': `${pgbackups.filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes) : ''}`,
+    }, ['Database', 'Started at', 'Finished at', 'Status', 'Type', 'Original DB Size', 'Backup Size'])
+    /* eslint-enable perfectionist/sort-objects */
+    ux.stdout('\n')
+  }
+
+  displayLogs = (backup: BackupTransfer) => {
+    hux.styledHeader('Backup Logs')
+    for (const log of backup.logs)
+      ux.stdout(`${log.created_at} ${log.message}\n`)
+    ux.stdout('\n')
   }
 
   getBackup = async (id: string | undefined, app: string) => {
@@ -65,29 +90,8 @@ export default class Info extends Command {
     return backup
   }
 
-  displayBackup = (backup: BackupTransfer, app: string) => {
-    const pgbackups = pgBackupsApi(app, this.heroku)
-    hux.styledHeader(`Backup ${color.cyan(pgbackups.name(backup))}`)
-    hux.styledObject({
-      Database: color.green(backup.from_name),
-      'Started at': backup.started_at,
-      'Finished at': backup.finished_at,
-      Status: status(backup),
-      Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': pgbackups.filesize(backup.source_bytes),
-      'Backup Size': `${pgbackups.filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes) : ''}`,
-    }, ['Database', 'Started at', 'Finished at', 'Status', 'Type', 'Original DB Size', 'Backup Size'])
-    ux.stdout('\n')
-  }
-
-  displayLogs = (backup: BackupTransfer) => {
-    hux.styledHeader('Backup Logs')
-    for (const log of backup.logs)
-      ux.stdout(`${log.created_at} ${log.message}\n`)
-    ux.stdout('\n')
-  }
-
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const {app} = flags
     const {backup_id} = args
 

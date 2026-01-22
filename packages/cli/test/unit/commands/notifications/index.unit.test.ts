@@ -56,7 +56,7 @@ describe('notifications', function () {
 
         const {stderr, stdout} = await runCommand(['notifications', '-a', 'myapp', '--read'])
 
-        expect(stdout).to.contain('You have no notifications on myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
+        expect(stdout).to.contain('You have no notifications on ⬢ myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
         expect(unwrap(stderr)).to.be.empty
       })
 
@@ -70,7 +70,7 @@ describe('notifications', function () {
 
         const {stderr, stdout} = await runCommand(['notifications', '-a', 'myapp'])
 
-        expect(stdout).to.contain('No unread notifications on myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
+        expect(stdout).to.contain('No unread notifications on ⬢ myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
         expect(unwrap(stderr)).to.be.empty
       })
     })

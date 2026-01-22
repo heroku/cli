@@ -1,6 +1,5 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import {flags, Command} from '@heroku-cli/command'
 
@@ -28,7 +27,7 @@ export default class Features extends Command {
 
       for (const f of features) {
         let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest)}`
-        if (f.enabled) line = color.green(line)
+        if (f.enabled) line = color.success(line)
         line = `${line}  ${f.description}`
         ux.stdout(line)
       }

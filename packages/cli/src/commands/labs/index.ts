@@ -19,7 +19,7 @@ function printFeatures(features: Heroku.AccountFeature | Heroku.AppFeature) {
   const longest = Math.max(...groupedFeatures.map((f: Heroku.AccountFeature | Heroku.AppFeature) => (f.name || '').length))
   for (const f of groupedFeatures) {
     let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
-    if (f.enabled) line = color.green(line)
+    if (f.enabled) line = color.success(line)
     line = `${line}  ${f.description}`
     ux.stdout(line)
   }
