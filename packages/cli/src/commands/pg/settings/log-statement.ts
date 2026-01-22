@@ -1,9 +1,11 @@
-/*
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {type Setting, type SettingKey} from '../../../lib/pg/types'
-import {PGSettingsCommand} from '../../../lib/pg/setter'
-import {nls} from '../../../nls'
+import tsheredoc from 'tsheredoc'
+import {PGSettingsCommand} from '../../../lib/pg/setter.js'
+import type {Setting, SettingKey} from '../../../lib/pg/types.js'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
+
 export default class LogStatement extends PGSettingsCommand {
   static description = heredoc(`
     log_statement controls which SQL statements are logged.
@@ -29,4 +31,3 @@ export default class LogStatement extends PGSettingsCommand {
     return setting.values[setting.value]
   }
 }
-*/

@@ -1,9 +1,10 @@
-/*
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {PGSettingsCommand} from '../../../lib/pg/setter'
-import type {Setting, SettingKey} from '../../../lib/pg/types'
-import {nls} from '../../../nls'
+import tsheredoc from 'tsheredoc'
+import {PGSettingsCommand} from '../../../lib/pg/setter.js'
+import type {Setting, SettingKey} from '../../../lib/pg/types.js'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class LogMinDurationStatement extends PGSettingsCommand {
   static description = heredoc(`
@@ -17,7 +18,7 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
     value: Args.string({description: 'milliseconds to wait for a statement to complete before logging it'}),
   }
 
-  protected settingKey:SettingKey = 'log_min_duration_statement'
+  protected settingKey: SettingKey = 'log_min_duration_statement'
 
   protected convertValue(val: unknown): number {
     return Number.parseInt(val as string, 10)
@@ -35,4 +36,3 @@ export default class LogMinDurationStatement extends PGSettingsCommand {
     return `The duration of each completed statement will be logged if the statement ran for at least ${setting.value} milliseconds.`
   }
 }
-*/
