@@ -1,11 +1,10 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Index extends Command {
   static topic = 'teams'
-  static description = `list the teams that you are a member of\n\nUse ${color.cmd('heroku members:*')} to manage team members.`
+  static description = `list the teams that you are a member of\n\nUse ${color.command('heroku members:*')} to manage team members.`
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }

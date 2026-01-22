@@ -22,7 +22,7 @@ export default class Index extends Command {
       spaces,
       {
         Name: {get: space => color.space(space.name)},
-        Team: {get: space => color.cyan(space.team.name)},
+        Team: {get: space => color.team(space.team.name || '')},
         Region: {get: space => space.region.name},
         State: {get: space => space.state},
         Generation: {get: space => getGeneration(space)},
