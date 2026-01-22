@@ -1,13 +1,13 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {addonResolver} from '../../../lib/addons/resolve'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+import {addonResolver} from '../../../lib/addons/resolve.js'
 import {utils} from '@heroku/heroku-cli-util'
-import type {Link} from '../../../lib/pg/types'
-import {essentialPlan} from '../../../lib/pg/util'
-import {nls} from '../../../nls'
+import type {Link} from '../../../lib/pg/types.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
+import {nls} from '../../../nls.js'
 
 export default class Create extends Command {
   static topic = 'pg'
@@ -46,9 +46,9 @@ export default class Create extends Command {
     ])
 
     if (essentialPlan(db))
-      throw new Error('pg:links isn’t available for Essential-tier databases.')
-    if (essentialPlan(target))
-      throw new Error('pg:links isn’t available for Essential-tier databases.')
+      throw new Error("pg:links isn't available for Essential-tier databases.")
+    if (essentialPlan(target as any))
+      throw new Error("pg:links isn't available for Essential-tier databases.")
 
     ux.action.start(`Adding link from ${color.yellow(target.name)} to ${color.yellow(db.name)}`)
     const {body: link} = await this.heroku.post<Link>(`/client/v11/databases/${db.id}/links`, {
@@ -68,4 +68,3 @@ export default class Create extends Command {
     ux.action.stop(`done, ${color.cyan(link.name)}`)
   }
 }
-*/

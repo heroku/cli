@@ -1,11 +1,10 @@
 import {stdout} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/maintenance/index'
+import Cmd from '../../../../../src/commands/pg/maintenance/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-/*
 describe('pg:maintenance', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -26,5 +25,3 @@ describe('pg:maintenance', function () {
     expectOutput(stdout.output, 'foo\n')
   })
 })
-
-*/

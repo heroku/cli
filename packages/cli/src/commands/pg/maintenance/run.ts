@@ -1,12 +1,11 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util'
-import {MaintenanceApiResponse} from '../../../lib/pg/types'
+import {essentialPlan} from '../../../lib/pg/util.js'
+import {MaintenanceApiResponse} from '../../../lib/pg/types.js'
 import * as Heroku from '@heroku-cli/schema'
-import {nls} from '../../../nls'
+import {nls} from '../../../nls.js'
 
 export default class Run extends Command {
   static topic = 'pg'
@@ -40,4 +39,3 @@ export default class Run extends Command {
     ux.action.stop(response.message || 'done')
   }
 }
-*/

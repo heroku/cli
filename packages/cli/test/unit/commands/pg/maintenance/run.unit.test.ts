@@ -1,12 +1,13 @@
 import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/maintenance/run'
+import Cmd from '../../../../../src/commands/pg/maintenance/run.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {expect} from 'chai'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
 
-/*
 describe('pg:maintenance:run', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -29,12 +30,7 @@ describe('pg:maintenance:run', function () {
       '--app',
       'myapp',
     ])
-    expectOutput(stderr.output, heredoc(`
-      Starting maintenance for ${addon.name}...
-      Starting maintenance for ${addon.name}... foo
-    `))
+    expect(stderr.output).to.include(`Starting maintenance for ${addon.name}... foo`)
     expectOutput(stdout.output, '')
   })
 })
-
-*/

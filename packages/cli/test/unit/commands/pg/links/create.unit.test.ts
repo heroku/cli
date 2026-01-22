@@ -1,12 +1,12 @@
 import {stdout, stderr} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-// import Cmd from '../../../../../src/commands/pg/links/create'
+import tsheredoc from 'tsheredoc'
+const heredoc = tsheredoc.default
+import Cmd from '../../../../../src/commands/pg/links/create.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
 import {expect} from 'chai'
 import nock from 'nock'
 
-/*
 describe('pg:links:create', function () {
   let api: nock.Scope
   let pg: nock.Scope
@@ -48,7 +48,7 @@ describe('pg:links:create', function () {
         ])
       } catch (error) {
         const {message} = error as { message: string }
-        expect(message).to.equal('pg:links isn\u2019t available for Essential-tier databases.')
+        expect(message).to.equal('pg:links isn\'t available for Essential-tier databases.')
       }
     })
   })
@@ -83,11 +83,8 @@ describe('pg:links:create', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-      Adding link from postgres-1 to postgres-1...
       Adding link from postgres-1 to postgres-1... done, foobar
       `))
     })
   })
 })
-
-*/

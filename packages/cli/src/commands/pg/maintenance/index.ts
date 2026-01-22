@@ -1,14 +1,13 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util'
-import {MaintenanceApiResponse} from '../../../lib/pg/types'
-import {nls} from '../../../nls'
+import {essentialPlan} from '../../../lib/pg/util.js'
+import {MaintenanceApiResponse} from '../../../lib/pg/types.js'
+import {nls} from '../../../nls.js'
 
 export default class Index extends Command {
-  static topic = 'pg';
-  static description = 'show current maintenance information';
+  static topic = 'pg'
+  static description = 'show current maintenance information'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -25,9 +24,8 @@ export default class Index extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
-      ux.error('pg:maintenance isn’t available for Essential-tier databases.')
+      ux.error('pg:maintenance isn\'t available for Essential-tier databases.')
     const {body: info} = await this.heroku.get<MaintenanceApiResponse>(`/client/v11/databases/${db.id}/maintenance`, {hostname: utils.pg.host()})
-    ux.log(info.message)
+    this.log(info.message)
   }
 }
-*/
