@@ -35,7 +35,7 @@ describe('apps:rename', function () {
     const {stderr, stdout} = await runCommand(['apps:rename', '-a', oldApp.name, newApp.name])
 
     expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
-    expect(unwrap(stderr)).to.contains('Renaming myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
+    expect(unwrap(stderr)).to.contains('Renaming ⬢ myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
   })
 
   it('gives a message if the web_url is still http', async function () {
@@ -46,6 +46,6 @@ describe('apps:rename', function () {
     const {stderr, stdout} = await runCommand(['apps:rename', '-a', oldApp.name, newApp.name])
 
     expect(stdout).to.equal('http://newname.com | https://git.heroku.com/newname.git\nPlease note that it may take a few minutes for Heroku to provision a SSL certificate for your application.\n')
-    expect(unwrap(stderr)).to.contains('Renaming myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
+    expect(unwrap(stderr)).to.contains('Renaming ⬢ myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
   })
 })

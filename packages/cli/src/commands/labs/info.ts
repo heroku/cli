@@ -5,26 +5,29 @@ import {Args} from '@oclif/core'
 
 function print(feature: Record<string, string>) {
   hux.styledHeader(feature.name)
+  /* eslint-disable perfectionist/sort-objects */
   hux.styledObject({
     Description: feature.description,
-    Enabled: feature.enabled ? color.success(feature.enabled) : color.red(feature.enabled),
+    Enabled: feature.enabled ? color.success('true') : color.red('false'),
     Docs: feature.doc_url,
   })
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 export default class LabsInfo extends Command {
-  static description = 'show feature info'
-  static topic = 'labs'
-
   static args = {
-    feature: Args.string({required: true, description: 'unique identifier or name of the account feature'}),
+    feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
+
+  static description = 'show feature info'
 
   static flags = {
     app: flags.app({required: false}),
-    remote: flags.remote(),
     json: flags.boolean({description: 'display as json', required: false}),
+    remote: flags.remote(),
   }
+
+  static topic = 'labs'
 
   async run() {
     const {args, flags} = await this.parse(LabsInfo)
