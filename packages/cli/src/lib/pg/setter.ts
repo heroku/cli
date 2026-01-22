@@ -51,16 +51,21 @@ export const booleanConverter = (value: BooleanAsString) => {
   case 'true':
   case 'TRUE':
   case 'ON':
-  case 'on':
+  case 'on': {
     return true
+  }
+
   case 'false':
   case 'FALSE':
   case 'OFF':
   case 'off':
-  case null:
+  case null: {
     return false
-  default:
+  }
+
+  default: {
     throw new TypeError('Invalid value. Valid options are: a boolean value')
+  }
   }
 }
 
