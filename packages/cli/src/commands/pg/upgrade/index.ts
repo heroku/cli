@@ -12,7 +12,7 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
-  static topic = 'pg';
+  static topic = 'pg'
   static description = heredoc(`
     We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 

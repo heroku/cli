@@ -11,7 +11,7 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
-  static topic = 'pg';
+  static topic = 'pg'
   static description = heredoc(`
     simulates a Postgres version upgrade on a Standard-tier and higher leader database by creating and upgrading a follower database. Heroku sends the results of the test upgrade via email.
   `)

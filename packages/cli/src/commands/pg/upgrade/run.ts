@@ -12,7 +12,7 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
-  static topic = 'pg';
+  static topic = 'pg'
   static description = heredoc(`
     starts a Postgres version upgrade
 

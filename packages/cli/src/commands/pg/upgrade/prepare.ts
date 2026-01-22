@@ -11,7 +11,7 @@ import {nls} from '../../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
-  static topic = 'pg';
+  static topic = 'pg'
   static description = heredoc(`
     prepares the upgrade for Standard-tier and higher leader databases and schedules it for the next available maintenance window. To start a version upgrade on Essential-tier and follower databases, use ${color.cmd('heroku pg:upgrade:run')} instead.
   `)

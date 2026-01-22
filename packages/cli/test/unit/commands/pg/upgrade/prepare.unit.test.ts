@@ -1,17 +1,19 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../oldCommands/pg/upgrade/prepare.js'
+import Cmd from '../../../../../src/commands/pg/upgrade/prepare.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
 import stripAnsi from 'strip-ansi'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:upgrade:prepare', function () {
   const addon = fixtures.addons['dwh-db']
   let uxWarnStub: sinon.SinonStub
@@ -19,7 +21,7 @@ describe('pg:upgrade:prepare', function () {
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(ux, 'prompt').resolves('myapp')
+    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {
@@ -76,7 +78,7 @@ describe('pg:upgrade:prepare', function () {
   it('refuses to upgrade follower dbs', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon: addon}])
+      .reply(200, [{addon}])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {
@@ -128,7 +130,6 @@ describe('pg:upgrade:prepare', function () {
     expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Preparing upgrade on ${addon.name}...
       Preparing upgrade on ${addon.name}... done
       Your database is scheduled for upgrade during your next available maintenance window.
       Run heroku pg:upgrade:wait to track its status.
@@ -164,7 +165,6 @@ describe('pg:upgrade:prepare', function () {
     expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Preparing upgrade on ${addon.name}...
       Preparing upgrade on ${addon.name}... done
       Your database is scheduled for upgrade during your next available maintenance window.
       Run heroku pg:upgrade:wait to track its status.
@@ -199,4 +199,3 @@ describe('pg:upgrade:prepare', function () {
     })
   })
 })
-*/
