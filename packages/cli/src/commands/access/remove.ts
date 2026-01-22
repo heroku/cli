@@ -1,5 +1,4 @@
-
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -21,7 +20,7 @@ export default class AccessRemove extends Command {
     const {app} = flags
     const email = argv[0] as string
     const appName = app
-    ux.action.start(`Removing ${color.cyan(email)} access from the app ${color.app(appName)}`)
+    ux.action.start(`Removing ${color.user(email)} access from the app ${color.app(appName)}`)
     await this.heroku.delete<Heroku.Collaborator>(`/apps/${appName}/collaborators/${email}`)
     ux.action.stop()
   }

@@ -1,4 +1,4 @@
-import {color as newColor, hux} from '@heroku/heroku-cli-util'
+import {hux, color as newColor} from '@heroku/heroku-cli-util'
 import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -157,15 +157,17 @@ export default class Index extends Command {
       return color.cyan('v' + release.version)
     }
 
+    /* eslint-disable perfectionist/sort-objects */
     const columns: Record<string, ColumnConfig> = {
       // column name "v" as ux.table will make it's width at least "version" even though 'no-header': true
       v: {get: getVersionColor},
       description: {get: descriptionWithStatus},
-      user: {get: ({user}) => color.magenta(user?.email || '')},
+      user: {get: ({user}) => newColor.user(user?.email || '')},
       created_at: {get: ({created_at}) => time.ago(new Date(created_at || ''))},
       slug_id: {extended: true, get: ({extended}) => extended?.slug_id},
       slug_uuid: {extended: true, get: ({extended}) => extended?.slug_uuid},
     }
+    /* eslint-enable perfectionist/sort-objects */
 
     // `getDescriptionTruncation` is dependent on `columns` being defined and thus `descriptionWithStatus`.
     // `descriptionWithStatus` requires `optimizationWidth` to be defined. Redefine here before `descriptionWithStatus` is actually called.

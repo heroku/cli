@@ -1,29 +1,30 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
+
 import {quote} from '../../lib/config/quote.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
 import {description, color as getStatusColor} from '../../lib/releases/status_helper.js'
 
 export default class Info extends Command {
-  static topic = 'releases'
-  static description = 'view detailed information for a release'
-  static flags = {
-    json: flags.boolean({description: 'output in json format'}),
-    shell: flags.boolean({char: 's', description: 'output in shell format'}),
-    remote: flags.remote(),
-    app: flags.app({required: true}),
-  }
-
   static args = {
     release: Args.string({description: 'ID of the release. If omitted, we use the last release ID.'}),
   }
 
+  static description = 'view detailed information for a release'
+  static flags = {
+    app: flags.app({required: true}),
+    json: flags.boolean({description: 'output in json format'}),
+    remote: flags.remote(),
+    shell: flags.boolean({char: 's', description: 'output in shell format'}),
+  }
+
+  static topic = 'releases'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Info)
-    const {json, shell, app} = flags
+    const {args, flags} = await this.parse(Info)
+    const {app, json, shell} = flags
     const release = await findByLatestOrId(this.heroku, app, args.release)
 
     if (json) {
@@ -32,7 +33,7 @@ export default class Info extends Command {
       let releaseChange = release.description
       const status = description(release)
       const statusColor = getStatusColor(release.status)
-      const userEmail = release?.user?.email ?? ''
+      const userEmail = color.user(release?.user?.email ?? '')
       const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/releases/${release.version}/config-vars`)
 
       if (status) {
@@ -62,6 +63,7 @@ export default class Info extends Command {
       }
 
       hux.styledHeader(`Release ${color.cyan('v' + release.version)}`)
+      /* eslint-disable perfectionist/sort-objects */
       hux.styledObject({
         'Add-ons': release.addon_plan_names,
         Change: releaseChange,
@@ -69,6 +71,7 @@ export default class Info extends Command {
         'Eligible for Rollback?': release.eligible_for_rollback ? 'Yes' : 'No',
         When: release.created_at,
       })
+      /* eslint-enable perfectionist/sort-objects */
       ux.stdout()
       hux.styledHeader(`${color.cyan('v' + release.version)} Config vars`)
       if (shell) {

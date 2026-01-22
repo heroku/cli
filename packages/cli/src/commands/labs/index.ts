@@ -1,13 +1,12 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 interface Features {
+  app?: Heroku.AppFeature | null,
   currentUser: Heroku.Account,
   user: Heroku.AccountFeature,
-  app?: Heroku.AppFeature | null,
 }
 
 function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.AppFeature) {
@@ -15,7 +14,7 @@ function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.App
 }
 
 function printFeatures(features: Heroku.AccountFeature | Heroku.AppFeature) {
-  const groupedFeatures = features.sort((a: Heroku.AccountFeature | Heroku.AppFeature, b: Heroku.AppFeature | Heroku.AccountFeature) =>
+  const groupedFeatures = features.sort((a: Heroku.AccountFeature | Heroku.AppFeature, b: Heroku.AccountFeature | Heroku.AppFeature) =>
     (a.name || '').localeCompare(b.name || ''))
   const longest = Math.max(...groupedFeatures.map((f: Heroku.AccountFeature | Heroku.AppFeature) => (f.name || '').length))
   for (const f of groupedFeatures) {
@@ -28,13 +27,13 @@ function printFeatures(features: Heroku.AccountFeature | Heroku.AppFeature) {
 
 export default class LabsIndex extends Command {
   static description = 'list experimental features'
-  static topic = 'labs'
-
   static flags = {
     app: flags.app({required: false}),
-    remote: flags.remote(),
     json: flags.boolean({description: 'display as json', required: false}),
+    remote: flags.remote(),
   }
+
+  static topic = 'labs'
 
   async run() {
     const {flags} = await this.parse(LabsIndex)
@@ -54,7 +53,7 @@ export default class LabsIndex extends Command {
     }
 
     // makes sure app isn't added to json object if null
-    // eslint-disable-next-line unicorn/no-negated-condition
+    // eslint-disable-next-line unicorn/no-negated-condition, no-negated-condition
     if (appResponse !== null) {
       app = appResponse?.body
       features.app = app
@@ -68,7 +67,7 @@ export default class LabsIndex extends Command {
     if (flags.json) {
       printJSON({app, user})
     } else {
-      hux.styledHeader(`User Features ${color.cyan(features.currentUser.email!)}`)
+      hux.styledHeader(`User Features ${color.user(features.currentUser.email!)}`)
       printFeatures(features.user)
       if (features.app) {
         ux.stdout()
