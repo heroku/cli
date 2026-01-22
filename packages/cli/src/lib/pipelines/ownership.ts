@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -10,10 +10,10 @@ export function warnMixedOwnership(pipelineApps: Array<AppWithPipelineCoupling>,
 
   if (hasMixedOwnership) {
     ux.stdout()
-    let message = `Some apps in this pipeline do not belong to ${color.cmd(owner)}.`
+    let message = `Some apps in this pipeline do not belong to ${color.team(owner)}.`
     message += '\n\nAll apps in a pipeline must have the same owner as the pipeline owner.'
     message += '\nTransfer these apps or change the pipeline owner in pipeline settings.'
-    message += `\nSee ${color.cyan('https://devcenter.heroku.com/articles/pipeline-ownership-transition')} for more info.`
+    message += `\nSee ${color.info('https://devcenter.heroku.com/articles/pipeline-ownership-transition')} for more info.`
     ux.warn(message)
   }
 }
@@ -33,5 +33,5 @@ export function getOwner(heroku: APIClient, apps: Array<AppWithPipelineCoupling>
     ownerPromise = Promise.resolve(owner)
   }
 
-  return ownerPromise.then(owner => (owner.name ? `${owner.name} (team)` : owner))
+  return ownerPromise.then(owner => (owner.name ? `${color.team(owner.name)} (team)` : color.user(owner)))
 }

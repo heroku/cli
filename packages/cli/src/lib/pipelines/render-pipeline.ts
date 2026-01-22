@@ -44,7 +44,7 @@ export default async function renderPipeline(
         const email = row.owner && row.owner.email
 
         if (email) {
-          return email.endsWith('@herokumanager.com') ? `${email.split('@')[0]} (team)` : email
+          return email.endsWith('@herokumanager.com') ? `${color.team(email.split('@')[0])} (team)` : color.user(email)
         }
       },
       header: 'owner',
@@ -74,7 +74,7 @@ export default async function renderPipeline(
 
   hux.table(apps, columns)
 
-  if (showOwnerWarning && pipeline.owner) {
+  if (showOwnerWarning && pipeline.owner && owner) {
     warnMixedOwnership(pipelineApps, pipeline, owner)
   }
 }

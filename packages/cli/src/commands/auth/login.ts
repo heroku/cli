@@ -1,26 +1,26 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Login extends Command {
-  static description = 'login with your Heroku credentials'
-
   static aliases = ['login']
+
+  static description = 'login with your Heroku credentials'
 
   static flags = {
     browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
-    sso: flags.boolean({hidden: true, char: 's', description: 'login for enterprise users under SSO'}),
-    interactive: flags.boolean({char: 'i', description: 'login with username/password'}),
     'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 30 days)'}),
+    interactive: flags.boolean({char: 'i', description: 'login with username/password'}),
+    sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO', hidden: true}),
   }
 
   async run() {
     const {flags} = await this.parse(Login)
     let method: 'interactive' | undefined
     if (flags.interactive) method = 'interactive'
-    await this.heroku.login({method, expiresIn: flags['expires-in'], browser: flags.browser})
+    await this.heroku.login({browser: flags.browser, expiresIn: flags['expires-in'], method})
     const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
-    this.log(`Logged in as ${color.green(account.email!)}`)
+    this.log(`Logged in as ${color.user(account.email!)}`)
     await this.config.runHook('recache', {type: 'login'})
   }
 }

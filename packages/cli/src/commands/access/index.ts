@@ -1,21 +1,21 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 import _ from 'lodash'
-import {isTeamApp, getOwner} from '../../lib/teamUtils.js'
+
+import {getOwner, isTeamApp} from '../../lib/teamUtils.js'
 
 type MemberData = {
   email: string,
-  role: string,
   permissions?: string
+  role: string,
 }
 
-type AdminWithPermissions = Heroku.TeamMember & {
+type AdminWithPermissions = {
   permissions?: Heroku.TeamAppPermission[],
-}
+} & Heroku.TeamMember
 
 function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
   ux.stdout(JSON.stringify(collaborators, null, 2))
@@ -24,7 +24,7 @@ function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
 function buildTableColumns(showPermissions: boolean) {
   const baseColumns = {
     email: {
-      get: ({email}: any): string => color.cyan(email),
+      get: ({email}: any): string => color.user(email),
     },
     role: {
       get: ({role}: any) => color.green(role),
@@ -48,7 +48,7 @@ function printAccess(app: Heroku.App, collaborators: any[]) {
     .reject(c => /herokumanager\.com$/.test(c.user.email))
     .map(collab => {
       const {email} = collab.user
-      const {role, permissions} = collab
+      const {permissions, role} = collab
       const data: MemberData = {email, role: role || 'collaborator'}
       if (showPermissions) {
         data.permissions = _.map(_.sortBy(permissions, 'name'), 'name').join(', ')
@@ -72,12 +72,13 @@ function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[],
 
 export default class AccessIndex extends Command {
   static description = 'list who has access to an app'
-  static topic = 'access'
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote({char: 'r'}),
     json: flags.boolean({description: 'output in json format'}),
+    remote: flags.remote({char: 'r'}),
   }
+
+  static topic = 'access'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(AccessIndex)
