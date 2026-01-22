@@ -2,8 +2,10 @@ import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import Cmd from '../../../../../src/commands/pg/backups/index.js'
+
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
+
+import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
 
@@ -55,50 +57,50 @@ describe('pg:backups', function () {
     before(function () {
       transfers = [
         {
-          num: 3,
-          from_name: 'DATABASE',
-          from_type: 'pg_dump',
-          to_type: 'gof3r',
-          processed_bytes: 1437,
-          succeeded: true,
-          warnings: 2,
           created_at: '2016-10-01 00:42:54 +0000',
-          updated_at: '2016-10-08 00:43:04 +0000',
           finished_at: '2016-10-08 00:43:00 +0000',
-        } as BackupTransfer, {
-          num: 10,
           from_name: 'DATABASE',
           from_type: 'pg_dump',
-          to_type: 'gof3r',
+          num: 3,
           processed_bytes: 1437,
           succeeded: true,
-          warnings: 0,
+          to_type: 'gof3r',
+          updated_at: '2016-10-08 00:43:04 +0000',
+          warnings: 2,
+        } as BackupTransfer, {
           created_at: '2016-10-02 00:42:54 +0000',
           finished_at: '2016-10-08 00:43:00 +0000',
-          schedule: {uuid: '5e5d5bc9-6aed-4ede-81b5-edf9341ee6d2'},
-        } as BackupTransfer, {
-          num: 4,
           from_name: 'DATABASE',
           from_type: 'pg_dump',
-          to_type: 'gof3r',
+          num: 10,
           processed_bytes: 1437,
+          schedule: {uuid: '5e5d5bc9-6aed-4ede-81b5-edf9341ee6d2'},
+          succeeded: true,
+          to_type: 'gof3r',
+          warnings: 0,
+        } as BackupTransfer, {
           created_at: '2016-10-03 00:42:54 +0000',
           finished_at: '2016-10-08 00:43:00 +0000',
-        } as BackupTransfer, {
-          num: 5,
           from_name: 'DATABASE',
           from_type: 'pg_dump',
-          to_type: 'gof3r',
+          num: 4,
           processed_bytes: 1437,
+          to_type: 'gof3r',
+        } as BackupTransfer, {
           created_at: '2016-10-04 00:42:54 +0000',
-        } as BackupTransfer, {
-          num: 6,
           from_name: 'DATABASE',
           from_type: 'pg_dump',
-          to_type: 'gof3r',
+          num: 5,
           processed_bytes: 1437,
+          to_type: 'gof3r',
+        } as BackupTransfer, {
           created_at: '2016-10-05 00:42:54 +0000',
+          from_name: 'DATABASE',
+          from_type: 'pg_dump',
+          num: 6,
+          processed_bytes: 1437,
           started_at: '2016-10-08 00:42:54 +0000',
+          to_type: 'gof3r',
         } as BackupTransfer,
       ]
     })
@@ -112,11 +114,11 @@ describe('pg:backups', function () {
 
  Id   Created at                Status                              Size   Database
  ──── ───────────────────────── ─────────────────────────────────── ────── ────────
- b006 2016-10-05 00:42:54 +0000 Running (processed 1.40KB)          1.40KB DATABASE
- b005 2016-10-04 00:42:54 +0000 Pending                             1.40KB DATABASE
- b004 2016-10-03 00:42:54 +0000 Failed 2016-10-08 00:43:00 +0000    1.40KB DATABASE
- a010 2016-10-02 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB DATABASE
- b003 2016-10-01 00:42:54 +0000 Finished with 2 warnings            1.40KB DATABASE
+ b006 2016-10-05 00:42:54 +0000 Running (processed 1.40KB)          1.40KB ⛁ DATABASE
+ b005 2016-10-04 00:42:54 +0000 Pending                             1.40KB ⛁ DATABASE
+ b004 2016-10-03 00:42:54 +0000 Failed 2016-10-08 00:43:00 +0000    1.40KB ⛁ DATABASE
+ a010 2016-10-02 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB ⛁ DATABASE
+ b003 2016-10-01 00:42:54 +0000 Finished with 2 warnings            1.40KB ⛁ DATABASE
 
 === Restores
 
@@ -134,15 +136,15 @@ No copies found. Use heroku pg:copy to copy a database to another
     before(function () {
       transfers = [
         {
+          created_at: '2016-10-08 00:42:54 +0000',
+          finished_at: '2016-10-08 00:43:00 +0000',
           num: 3,
-          to_name: 'IVORY',
-          to_type: 'pg_restore',
           processed_bytes: 1437,
           succeeded: true,
-          warnings: 0,
-          created_at: '2016-10-08 00:42:54 +0000',
+          to_name: 'IVORY',
+          to_type: 'pg_restore',
           updated_at: '2016-10-08 00:43:04 +0000',
-          finished_at: '2016-10-08 00:43:00 +0000',
+          warnings: 0,
         } as BackupTransfer,
       ]
     })
@@ -174,17 +176,17 @@ No copies found. Use heroku pg:copy to copy a database to another
     before(function () {
       transfers = [
         {
-          num: 3,
+          created_at: '2016-10-08 00:42:54 +0000',
+          finished_at: '2016-10-08 00:43:00 +0000',
           from_name: 'RED',
-          to_name: 'IVORY',
           from_type: 'pg_dump',
-          to_type: 'pg_restore',
+          num: 3,
           processed_bytes: 1437,
           succeeded: true,
-          warnings: 0,
-          created_at: '2016-10-08 00:42:54 +0000',
+          to_name: 'IVORY',
+          to_type: 'pg_restore',
           updated_at: '2016-10-08 00:43:04 +0000',
-          finished_at: '2016-10-08 00:43:00 +0000',
+          warnings: 0,
         } as BackupTransfer,
       ]
     })
@@ -206,7 +208,7 @@ No restores found. Use heroku pg:backups:restore to restore a backup
 
  Id   Started at                Status                              Size   From To
  ──── ───────────────────────── ─────────────────────────────────── ────── ──── ─────
- c003 2016-10-08 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB RED  IVORY
+ c003 2016-10-08 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB ⛁ RED  ⛁ IVORY
 
 `))
     })

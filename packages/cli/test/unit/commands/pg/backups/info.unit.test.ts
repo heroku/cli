@@ -1,11 +1,12 @@
+import {expect} from 'chai'
+import nock from 'nock'
 import {stdout} from 'stdout-stderr'
+import stripAnsi from 'strip-ansi'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/pg/backups/info.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
-import {expect} from 'chai'
-import tsheredoc from 'tsheredoc'
-import stripAnsi from 'strip-ansi'
 
 const heredoc = tsheredoc.default
 const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
@@ -33,7 +34,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers/3?verbose=true')
         .reply(200, {
-          num: 3, source_bytes: 1000000, processed_bytes: 100000, from_name: 'RED', logs: [{created_at: '100', message: 'foo'}],
+          from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], num: 3, processed_bytes: 100000, source_bytes: 1000000,
         })
     })
 
@@ -41,7 +42,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       await cmdRun(['--app', 'myapp', 'b003'])
       expectOutput(stdout.output, heredoc(`
         === Backup b003
-        Database:         RED
+        Database:         ⛁ RED
         Status:           Pending
         Type:             Manual
         Original DB Size: 976.56KB
@@ -59,11 +60,13 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {name: 'ob001', num: 1, from_type: 'pg_dump', to_type: 'gof3r', options: {pgbackups_name: 'b001'}},
+          {
+            from_type: 'pg_dump', name: 'ob001', num: 1, options: {pgbackups_name: 'b001'}, to_type: 'gof3r',
+          },
         ])
         .get('/client/v11/apps/myapp/transfers/1?verbose=true')
         .reply(200, {
-          name: 'ob001', options: {pgbackups_name: 'b001'}, num: 1, source_bytes: 1000000, processed_bytes: 100000, from_name: 'RED', logs: [{created_at: '100', message: 'foo'}],
+          from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], name: 'ob001', num: 1, options: {pgbackups_name: 'b001'}, processed_bytes: 100000, source_bytes: 1000000,
         })
     })
 
@@ -71,7 +74,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       await cmdRun(['--app', 'myapp', 'ob001'])
       expectOutput(stdout.output, heredoc(`
         === Backup ob001
-        Database:         RED
+        Database:         ⛁ RED
         Status:           Pending
         Type:             Manual
         Original DB Size: 976.56KB
@@ -89,11 +92,11 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {num: 3, from_type: 'pg_dump', to_type: 'gof3r'},
+          {from_type: 'pg_dump', num: 3, to_type: 'gof3r'},
         ])
         .get('/client/v11/apps/myapp/transfers/3?verbose=true')
         .reply(200, {
-          num: 3, source_bytes: 1000000, processed_bytes: 100000, from_name: 'RED', finished_at: '100', succeeded: true, logs: [{created_at: '100', message: 'foo'}],
+          finished_at: '100', from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], num: 3, processed_bytes: 100000, source_bytes: 1000000, succeeded: true,
         })
     })
 
@@ -101,7 +104,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       await cmdRun(['--app', 'myapp'])
       expectOutput(stdout.output, heredoc(`
         === Backup b003
-        Database:         RED
+        Database:         ⛁ RED
         Finished at:      100
         Status:           Completed
         Type:             Manual

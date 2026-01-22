@@ -1,5 +1,4 @@
-import {hux, color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -19,7 +18,7 @@ function humanize(value: null | string) {
   }
 
   if (value === 'ok') {
-    return color.green('OK')
+    return color.success('OK')
   }
 
   if (value === 'failed') {
@@ -58,11 +57,11 @@ export default class Index extends Command {
     ])
 
     if (!app.acm) {
-      hux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${newColor.app(flags.app)}`)
+      hux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${color.app(flags.app)}`)
       return
     }
 
-    hux.styledHeader(`Automatic Certificate Management is ${color.green('enabled')} on ${newColor.app(flags.app)}`)
+    hux.styledHeader(`Automatic Certificate Management is ${color.success('enabled')} on ${color.app(flags.app)}`)
 
     if (sniEndpoints.length === 1 && sniEndpoints[0].ssl_cert.acm) {
       displayCertificateDetails(sniEndpoints[0])
@@ -79,14 +78,14 @@ export default class Index extends Command {
 
     let message
     if (domains.length === 0) {
-      message = `Add a custom domain to your app by running: ${color.cmd('heroku domains:add <yourdomain.com>')}`
+      message = `Add a custom domain to your app by running: ${color.code('heroku domains:add <yourdomain.com>')}`
     } else if (domains.some(domain => domain.acm_status === 'failed')) {
       message = heredoc`
-        Some domains failed validation after multiple attempts, retry by running: ${color.cmd('heroku certs:auto:refresh')}
+        Some domains failed validation after multiple attempts, retry by running: ${color.code('heroku certs:auto:refresh')}
             See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons`
     } else if (domains.some(domain => domain.acm_status === 'failing')) {
       message = heredoc`
-        Some domains are failing validation, please verify that your DNS matches: ${color.cmd('heroku domains')}
+        Some domains are failing validation, please verify that your DNS matches: ${color.code('heroku domains')}
             See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons`
     }
 

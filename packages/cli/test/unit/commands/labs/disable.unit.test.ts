@@ -19,8 +19,7 @@ describe('labs:disable', function () {
     sinon.restore()
   })
 
-  // TODO: make this work on CI
-  it.skip('disables a user lab feature', async function () {
+  it('disables a user lab feature', async function () {
     api
       .get('/account')
       .reply(200, {email: 'gandalf@heroku.com'})
@@ -57,7 +56,7 @@ describe('labs:disable', function () {
 
     const {stderr} = await runCommand(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
 
-    expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for myapp...')
+    expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for ⬢ myapp...')
   })
 
   it('errors when confirmation name does not match', async function () {
@@ -86,6 +85,6 @@ describe('labs:disable', function () {
 
     const {stderr} = await runCommand(['labs:disable', 'feature-a', '--app=myapp'])
 
-    expect(stderr).to.contain('Disabling feature-a for myapp...')
+    expect(stderr).to.contain('Disabling feature-a for ⬢ myapp...')
   })
 })
