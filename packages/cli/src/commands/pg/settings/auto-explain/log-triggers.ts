@@ -1,9 +1,10 @@
-/*
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter'
-import {SettingKey, Setting} from '../../../../lib/pg/types'
-import {nls} from '../../../../nls'
+import tsheredoc from 'tsheredoc'
+import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter.js'
+import {SettingKey, Setting} from '../../../../lib/pg/types.js'
+import {nls} from '../../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class LogTriggers extends PGSettingsCommand {
   static topic = 'pg'
@@ -31,4 +32,3 @@ export default class LogTriggers extends PGSettingsCommand {
     return 'Trigger execution statistics have been disabled for auto-explain.'
   }
 }
-*/

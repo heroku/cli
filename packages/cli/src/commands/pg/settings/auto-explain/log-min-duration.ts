@@ -1,9 +1,10 @@
-/*
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {PGSettingsCommand, numericConverter} from '../../../../lib/pg/setter'
-import {Setting, SettingKey} from '../../../../lib/pg/types'
-import {nls} from '../../../../nls'
+import tsheredoc from 'tsheredoc'
+import {PGSettingsCommand, numericConverter} from '../../../../lib/pg/setter.js'
+import {Setting, SettingKey} from '../../../../lib/pg/types.js'
+import {nls} from '../../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class LogMinDuration extends PGSettingsCommand {
   static topic = 'pg'
@@ -35,4 +36,3 @@ export default class LogMinDuration extends PGSettingsCommand {
     return `All execution plans will be logged for queries taking up to ${setting.value} milliseconds or more.`
   }
 }
-*/
