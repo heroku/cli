@@ -186,8 +186,8 @@ describe('pg:upgrade', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expectOutput(error.message, heredoc(`
-        You haven't scheduled a version upgrade on your database. Run ${color.cmd('heroku pg:upgrade:prepare')} to schedule an upgrade.
+      expectOutput(ansis.strip(error.message), heredoc(`
+        You haven't scheduled a version upgrade on your database. Run heroku pg:upgrade:prepare to schedule an upgrade.
 
         Error ID: bad_request
       `))
@@ -214,8 +214,8 @@ describe('pg:upgrade', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expectOutput(error.message, heredoc(`
-        Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with ${color.cmd('heroku pg:upgrade:wait')}.
+      expectOutput(ansis.strip(error.message), heredoc(`
+        Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with heroku pg:upgrade:wait.
 
         Error ID: bad_request
       `))
