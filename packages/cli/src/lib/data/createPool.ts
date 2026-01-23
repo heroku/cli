@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import {AddOn} from '@heroku-cli/schema'
 
-import type {CreatePoolParameters, PoolInfoResponse} from '../../../types/data.js'
+import type {CreatePoolParameters, PoolInfoResponse} from './types.js'
 
 export default async function createPool(
   dataApi: APIClient,

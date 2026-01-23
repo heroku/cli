@@ -1,6 +1,6 @@
 import {hux} from '@heroku/heroku-cli-util'
 
-import type {Quota} from '../../../types/data.js'
+import type {Quota} from './types.js'
 
 /**
  * @description Returns a string describing the current quota compliance status.

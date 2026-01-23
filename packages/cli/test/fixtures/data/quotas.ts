@@ -1,7 +1,7 @@
 import type {
   Quota,
   Quotas,
-} from '../../../types/data.js'
+} from '../../../src/lib/data/types.js'
 
 export const quotasResponse: Quotas = {
   items: [

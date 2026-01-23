@@ -5,7 +5,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import BaseCommand from '../../../../src/lib/data/baseCommand.js'
 import runCommand from '../../../helpers/runCommand.js'
 
-class Command extends BaseCommand {
+class BaseCommandTest extends BaseCommand {
   async run() {
     return this.dataApi.get<unknown>('/data/postgres/v1/levels/advanced')
   }
@@ -30,7 +30,7 @@ describe('BaseCommand', function () {
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, [])
 
-      await runCommand(Command, [], false)
+      await runCommand(BaseCommandTest, [], false)
 
       dataApi.done()
       expect(stderr.output).to.equal('')
@@ -43,7 +43,7 @@ describe('BaseCommand', function () {
         .matchHeader('X-Data-Control-Plane', 'test-control-plane')
         .reply(200, [])
 
-      await runCommand(Command)
+      await runCommand(BaseCommandTest)
 
       dataApi.done()
       expect(stderr.output).to.equal('')

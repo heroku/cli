@@ -1,4 +1,4 @@
-import type {CredentialInfo} from '../../../types/data.js'
+import type {CredentialInfo} from './types.js'
 
 // NEW This is new. something similar exists in core: packages/cli/src/commands/pg/credentials.ts:61
 // protected sortByDefaultAndName(credentials: CredentialsInfo) {
