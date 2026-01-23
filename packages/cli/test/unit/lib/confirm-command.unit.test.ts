@@ -49,7 +49,7 @@ describe('confirmApp', function () {
     stdout.stop()
     stderr.stop()
 
-    expect(stderr.output).to.contain('Warning: WARNING: Destructive Action')
+    expect(stderr.output).to.contain('Warning: Destructive Action')
     expect(stdout.output).to.equal('')
   })
 
