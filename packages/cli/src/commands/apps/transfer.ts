@@ -1,13 +1,16 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
+import tsheredoc from 'tsheredoc'
 
 import {appTransfer} from '../../lib/apps/app-transfer.js'
 import ConfirmCommand from '../../lib/confirmCommand.js'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
 import AppsLock from './lock.js'
+
+const heredoc = tsheredoc.default
 
 export default class AppsTransfer extends Command {
   static args = {
@@ -15,14 +18,13 @@ export default class AppsTransfer extends Command {
   }
 
   static description = 'transfer applications to another user or team'
-  static examples = [`$ heroku apps:transfer collaborator@example.com
-Transferring example to collaborator@example.com... done
-
-$ heroku apps:transfer acme-widgets
-Transferring example to acme-widgets... done
-
-$ heroku apps:transfer --bulk acme-widgets
-...`]
+  static examples = [heredoc(`
+    ${color.command('heroku apps:transfer collaborator@example.com')}
+    Transferring example to collaborator@example.com... done`), heredoc(`
+    ${color.command('heroku apps:transfer acme-widgets')}
+    Transferring example to acme-widgets... done`), heredoc(`
+    ${color.command('heroku apps:transfer --bulk acme-widgets')}
+    ...`)]
 
   static flags = {
     app: flags.app(),
@@ -37,7 +39,7 @@ $ heroku apps:transfer --bulk acme-widgets
   getAppsToTransfer(apps: Heroku.App[]) {
     return inquirer.prompt([{
       choices: apps.map(app => ({
-        name: `${color.app(app.name)} (${getOwner(app.owner?.email)})`, value: {name: app.name, owner: app.owner?.email},
+        name: `${color.app(app.name ?? '')} (${getOwner(app.owner?.email ?? '')})`, value: {name: app.name, owner: app.owner?.email},
       })),
       message: 'Select applications you would like to transfer',
       name: 'choices',
@@ -53,7 +55,7 @@ $ heroku apps:transfer --bulk acme-widgets
     if (bulk) {
       const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
       const selectedApps = await this.getAppsToTransfer(allApps.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')))
-      ux.warn(`Transferring applications to ${color.magenta(recipient)}...\n`)
+      ux.warn(`Transferring applications to ${color.name(recipient)}...\n`)
       for (const app of selectedApps.choices) {
         try {
           await appTransfer({

@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
@@ -9,11 +9,12 @@ export class GitRemote extends Command {
 extra arguments will be passed to git remote add
 `
 
-  static example = `# set git remote heroku to https://git.heroku.com/example.git
-    $ heroku git:remote -a example
+  static example = `
+# set git remote heroku to https://git.heroku.com/example.git
+${color.command('heroku git:remote -a example')}
 
-    # set git remote heroku-staging to https://git.heroku.com/example.git
-    $ heroku git:remote --remote heroku-staging -a example-staging`
+# set git remote heroku-staging to https://git.heroku.com/example.git
+${color.command('heroku git:remote --remote heroku-staging -a example-staging')}`
 
   static flags = {
     app: flags.string({char: 'a', description: 'the Heroku app to use'}),

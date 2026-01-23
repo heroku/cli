@@ -148,7 +148,7 @@ export default class Create extends Command {
   static description = 'creates a new app'
 
   static examples = [
-    `$ heroku apps:create
+    color.command(`heroku apps:create
 Creating app... done, stack is heroku-24
 https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
 
@@ -168,7 +168,7 @@ $ heroku apps:create example
 $ heroku apps:create example-staging --remote staging
 
 # create an app in the eu region
-$ heroku apps:create --region eu`,
+$ heroku apps:create --region eu`),
   ]
 
   static flags = {

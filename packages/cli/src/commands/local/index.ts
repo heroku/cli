@@ -1,30 +1,32 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Args, Command, Flags} from '@oclif/core'
+
+import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 import {fork as foreman} from '../../lib/local/fork-foreman.js'
 import {loadProc} from '../../lib/local/load-foreman-procfile.js'
-import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 
 export default class Index extends Command {
-  // \n splits the description between the title shown in the help
-  // and the DESCRIPTION section shown in the help
-  static description = 'run heroku app locally\nStart the application specified by a Procfile (defaults to ./Procfile)'
-
   static aliases = ['local:start']
 
   static args = {
-    processname: Args.string({required: false, description: 'name of the process'}),
+    processname: Args.string({description: 'name of the process', required: false}),
   }
 
+  static description = `run heroku app locally
+Start the application specified by a Procfile (defaults to ./Procfile)`
+
   static examples = [
-    `$ heroku local
-$ heroku local web
-$ heroku local web=2
-$ heroku local web=1,worker=2`,
+    color.command('heroku local'),
+    color.command('heroku local web'),
+    color.command('heroku local web=2'),
+    color.command('heroku local web=1,worker=2'),
   ]
 
   static flags = {
-    procfile: Flags.string({
-      char: 'f',
-      description: 'use a different Procfile',
+    concurrency: Flags.string({
+      char: 'c',
+      description: 'number of processes to start',
+      hidden: true,
     }),
     env: Flags.string({
       char: 'e',
@@ -34,16 +36,20 @@ $ heroku local web=1,worker=2`,
       char: 'p',
       description: 'port to listen on',
     }),
+    procfile: Flags.string({
+      char: 'f',
+      description: 'use a different Procfile',
+    }),
     restart: Flags.boolean({
       char: 'r',
       description: 'restart process if it dies',
       hidden: true,
     }),
-    concurrency: Flags.string({
-      char: 'c',
-      description: 'number of processes to start',
-      hidden: true,
-    }),
+  }
+
+  // Proxy method to make procfile loading testable
+  public loadProcfile(procfilePath: string): Record<string, string> {
+    return loadProc(procfilePath)
   }
 
   async run() {
@@ -79,10 +85,5 @@ $ heroku local web=1,worker=2`,
   // Proxy method to make foreman calls testable
   public async runForeman(execArgv: string[]): Promise<void> {
     return foreman(execArgv)
-  }
-
-  // Proxy method to make procfile loading testable
-  public loadProcfile(procfilePath: string): Record<string, string> {
-    return loadProc(procfilePath)
   }
 }

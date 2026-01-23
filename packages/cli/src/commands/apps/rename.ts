@@ -12,7 +12,7 @@ export default class AppsRename extends Command {
 
   static description = 'rename an app'
   static examples = [
-    '$ heroku apps:rename --app oldname newname',
+    color.command('heroku apps:rename --app oldname newname'),
   ]
 
   static flags = {

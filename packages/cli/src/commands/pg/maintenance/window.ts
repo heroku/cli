@@ -1,31 +1,32 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {essentialPlan} from '../../../lib/pg/util.js'
-import {utils} from '@heroku/heroku-cli-util'
-import {MaintenanceApiResponse} from '../../../lib/pg/types.js'
 import tsheredoc from 'tsheredoc'
+
+import {MaintenanceApiResponse} from '../../../lib/pg/types.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
 const heredoc = tsheredoc.default
 import {nls} from '../../../nls.js'
 
 export default class Window extends Command {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    window: Args.string({description: 'timestamp of the maintenance window', required: true}),
+  }
+
   static description = heredoc(`
     Set weekly maintenance window.
     All times are in UTC.
   `)
 
-  static example = '$ heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100'
+  static example = `${color.command('heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100')}`
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static args = {
-    window: Args.string({required: true, description: 'timestamp of the maintenance window'}),
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Window)
