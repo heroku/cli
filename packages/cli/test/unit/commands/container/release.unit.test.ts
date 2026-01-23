@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -67,7 +67,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -77,7 +77,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',
