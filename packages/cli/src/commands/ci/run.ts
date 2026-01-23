@@ -3,8 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
-import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
 import {gitService} from '../../lib/ci/git.js'
+import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
@@ -19,8 +19,8 @@ export default class CiRun extends Command {
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({required: false}),
+    remote: flags.remote(),
   }
 
   async run() {
@@ -35,14 +35,15 @@ export default class CiRun extends Command {
     ux.action.start('Starting test run')
     const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
     const organization = pipelineRepository.organization && pipelineRepository.organization.name
-    const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {body: {
-      commit_branch: commit.branch,
-      commit_message: commit.message,
-      commit_sha: commit.ref,
-      pipeline: pipeline.id,
-      organization,
-      source_blob_url: sourceBlobUrl,
-    },
+    const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {
+      body: {
+        commit_branch: commit.branch,
+        commit_message: commit.message,
+        commit_sha: commit.ref,
+        organization,
+        pipeline: pipeline.id,
+        source_blob_url: sourceBlobUrl,
+      },
     })
     ux.action.stop()
 

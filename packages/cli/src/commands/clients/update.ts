@@ -6,8 +6,8 @@ import {Args, ux} from '@oclif/core'
 import {validateURL} from '../../lib/clients/clients.js'
 
 interface Updates {
-  redirect_uri?: string;
   name?: string;
+  redirect_uri?: string;
 }
 
 const isEmpty = (o: Updates) => Object.keys(o).length === 0
@@ -22,6 +22,10 @@ const getUpdates = (flags: any) => {
 }
 
 export default class ClientsUpdate extends Command {
+  static args = {
+    id: Args.string({description: 'ID of the OAuth client', required: true}),
+  }
+
   static description = 'update OAuth client'
 
   static examples = [
@@ -31,10 +35,6 @@ export default class ClientsUpdate extends Command {
   static flags = {
     name: flags.string({char: 'n', description: 'change the client name'}),
     url: flags.string({description: 'change the client redirect URL'}),
-  }
-
-  static args = {
-    id: Args.string({required: true, description: 'ID of the OAuth client'}),
   }
 
   async run() {

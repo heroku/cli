@@ -4,17 +4,17 @@ import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
 export default class AuthorizationsRevoke extends Command {
-  static description = 'revoke OAuth authorization'
-
   static aliases = ['authorizations:destroy']
+
+  static args = {
+    id: Args.string({description: 'ID of the authorization', required: true}),
+  }
+
+  static description = 'revoke OAuth authorization'
 
   static examples = [
     color.command('heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb'),
   ]
-
-  static args = {
-    id: Args.string({required: true, description: 'ID of the authorization'}),
-  }
 
   async run() {
     const {args} = await this.parse(AuthorizationsRevoke)
