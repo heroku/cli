@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
