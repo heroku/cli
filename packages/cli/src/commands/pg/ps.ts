@@ -1,18 +1,17 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import heredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import {nls} from '../../nls'
+import {nls} from '../../nls.js'
 
 export default class Ps extends Command {
-  static topic = 'pg'
   static description = 'view active queries with execution time'
   static flags = {
     verbose: flags.boolean({char: 'v'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+  static topic = 'pg'
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
@@ -53,4 +52,3 @@ export default class Ps extends Command {
     process.stdout.write(output)
   }
 }
-*/
