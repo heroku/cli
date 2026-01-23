@@ -125,7 +125,7 @@ export default class Index extends Command {
         }
 
         case 'yellow': {
-          colorFn = color.yellow
+          colorFn = color.warning
 
           break
         }
@@ -151,7 +151,7 @@ export default class Index extends Command {
     const getVersionColor = (release: Heroku.Release) => {
       const statusColor = statusHelper.color(release.status)
       if (statusColor === 'red') return color.failure('v' + release.version)
-      if (statusColor === 'yellow') return color.yellow('v' + release.version)
+      if (statusColor === 'yellow') return color.warning('v' + release.version)
       if (statusColor === 'gray') return color.inactive('v' + release.version)
       return color.name('v' + release.version)
     }

@@ -3,11 +3,12 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class Index extends Command {
-  static topic = 'teams'
-  static description = `list the teams that you are a member of\n\nUse ${color.command('heroku members:*')} to manage team members.`
+  static description = `list the teams that you are a member of\n\nUse ${color.code('heroku members:*')} to manage team members.`
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }
+
+  static topic = 'teams'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
@@ -22,7 +23,7 @@ export default class Index extends Command {
         return (aName > bName) ? 1 : ((bName > aName) ? -1 : 0)
       }), {
         name: {header: 'Team'},
-        role: {header: 'Role',  get: ({role}) => color.green(role || '')},
+        role: {get: ({role}) => color.green(role || ''),  header: 'Role'},
       })
     }
   }

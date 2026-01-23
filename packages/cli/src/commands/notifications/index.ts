@@ -11,7 +11,7 @@ function displayNotifications(notifications: Notifications, app: Heroku.App | nu
   const read = readNotification ? 'Read' : 'Unread'
   hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
   for (const n of notifications) {
-    ux.stdout(color.yellow(`\n${n.title}\n`))
+    ux.stdout(color.info(`\n${n.title}\n`))
     ux.stdout(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
     for (const followup of n.followup) {
       ux.stdout()

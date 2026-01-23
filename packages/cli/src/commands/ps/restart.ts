@@ -1,6 +1,5 @@
 
-import {color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
@@ -22,9 +21,9 @@ export default class Restart extends Command {
   `)
 
   static examples = [
-    '$ heroku ps:restart --app myapp --dyno-name web.1',
-    '$ heroku ps:restart --app myapp --process-type web',
-    '$ heroku ps:restart --app myapp',
+    `${color.command('heroku ps:restart --app myapp --dyno-name web.1')}`,
+    `${color.command('heroku ps:restart --app myapp --process-type web')}`,
+    `${color.command('heroku ps:restart --app myapp')}`,
   ]
 
   static flags = {
@@ -55,21 +54,21 @@ export default class Restart extends Command {
     let restartUrl
 
     if (type) {
-      msg += ` all ${color.cyan(type)} dynos`
+      msg += ` all ${color.info(type)} dynos`
       restartUrl = `/apps/${app}/formations/${encodeURIComponent(type)}`
     } else if (dyno) {
       if (args.dyno) {
-        ux.warn(`DYNO is a deprecated argument. Use ${color.cmd('--dyno-name')} or ${color.cmd('--process-type')} instead.`)
+        ux.warn(`DYNO is a deprecated argument. Use ${color.code('--dyno-name')} or ${color.code('--process-type')} instead.`)
       }
 
-      msg += ` dyno ${color.cyan(dyno)}`
+      msg += ` dyno ${color.name(dyno)}`
       restartUrl = `/apps/${app}/dynos/${encodeURIComponent(dyno)}`
     } else {
       msg += ' all dynos'
       restartUrl = `/apps/${app}/dynos`
     }
 
-    msg += ` on ${newColor.app(app)}`
+    msg += ` on ${color.app(app)}`
 
     ux.action.start(msg)
     await this.heroku.delete<Heroku.Dyno>(restartUrl, {

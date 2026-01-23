@@ -1,31 +1,33 @@
 import {color, utils} from '@heroku/heroku-cli-util'
+import {HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
 import backupsApi from '../../../lib/pg/backups.js'
 import {BackupTransfer, PgDatabase} from '../../../lib/pg/types.js'
-import tsheredoc from 'tsheredoc'
-import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Capture extends Command {
-  static topic = 'pg'
-  static description = 'capture a new backup'
-  static flags = {
-    'wait-interval': flags.string(),
-    verbose: flags.boolean({char: 'v'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'capture a new backup'
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+    verbose: flags.boolean({char: 'v'}),
+    'wait-interval': flags.string(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Capture)
-    const {app, 'wait-interval': waitInterval, verbose} = flags
+    const {args, flags} = await this.parse(Capture)
+    const {app, verbose, 'wait-interval': waitInterval} = flags
     const {database} = args
 
     const interval = Math.max(3, Number.parseInt(waitInterval || '3', 10))
@@ -47,7 +49,7 @@ export default class Capture extends Command {
       ux.error(
         heredoc`
           ${color.datastore(db.name)} is not yet provisioned.
-          Run ${color.command('heroku addons:wait')} to wait until the db is provisioned.
+          Run ${color.code('heroku addons:wait')} to wait until the db is provisioned.
         `,
         {exit: 1},
       )

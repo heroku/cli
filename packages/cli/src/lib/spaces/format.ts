@@ -11,7 +11,7 @@ export function hostStatus(s: string) {
   }
 
   case 'under-assessment': {
-    return `${color.yellow(s)}`
+    return `${color.info(s)}`
   }
 
   case 'permanent-failure':
@@ -37,7 +37,7 @@ export function peeringStatus(s: string) {
 
   case 'pending-acceptance':
   case 'provisioning': {
-    return `${color.yellow(s)}`
+    return `${color.info(s)}`
   }
 
   case 'expired':
@@ -63,7 +63,7 @@ export function displayVPNStatus(s: string | undefined) {
   case 'pending':
   case 'provisioning':
   case 'deprovisioning': {
-    return `${color.yellow(s)}`
+    return `${color.info(s)}`
   }
 
   case 'DOWN':
