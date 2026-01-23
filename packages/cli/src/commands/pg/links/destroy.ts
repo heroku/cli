@@ -1,17 +1,21 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util.js'
-import ConfirmCommand from '../../../lib/confirmCommand.js'
 import tsheredoc from 'tsheredoc'
+
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
 const heredoc = tsheredoc.default
 import {nls} from '../../../nls.js'
 
 export default class Destroy extends Command {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: nls('pg:database:arg:description'), required: true}),
+    link: Args.string({description: 'name of the linked data store', required: true}),
+  }
+
   static description = 'destroys a link between data stores'
-  static example = '$ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100'
+  static example = `${color.command('heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100')}`
 
   static flags = {
     app: flags.app({required: true}),
@@ -19,13 +23,10 @@ export default class Destroy extends Command {
     remote: flags.remote(),
   }
 
-  static args = {
-    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
-    link: Args.string({required: true, description: 'name of the linked data store'}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Destroy)
+    const {args, flags} = await this.parse(Destroy)
     const {app, confirm} = flags
     const {database, link} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)

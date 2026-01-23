@@ -1,31 +1,34 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {essentialPlan} from '../../../lib/pg/util.js'
-import {utils} from '@heroku/heroku-cli-util'
-import {MaintenanceApiResponse} from '../../../lib/pg/types.js'
 import tsheredoc from 'tsheredoc'
+
+import {MaintenanceApiResponse} from '../../../lib/pg/types.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
 const heredoc = tsheredoc.default
 import {nls} from '../../../nls.js'
 
 export default class Window extends Command {
-  static topic = 'pg'
+  /* eslint-disable perfectionist/sort-objects */
+  static args = {
+    window: Args.string({description: 'timestamp of the maintenance window', required: true}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+  }
+  /* eslint-enable perfectionist/sort-objects */
+
   static description = heredoc(`
     Set weekly maintenance window.
     All times are in UTC.
   `)
 
-  static example = '$ heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100'
+  static example = `${color.command('heroku pg:maintenance:window "Sunday 06:00" postgres-slippery-100')}`
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static args = {
-    window: Args.string({required: true, description: 'timestamp of the maintenance window'}),
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Window)
@@ -38,7 +41,7 @@ export default class Window extends Command {
     if (!window.match(/^[A-Za-z]{2,10} \d\d?:[03]0$/))
       ux.error('Window must be "Day HH:MM" where MM is 00 or 30')
 
-    ux.action.start(`Setting maintenance window for ${color.yellow(db.name)} to ${color.cyan(window)}`)
+    ux.action.start(`Setting maintenance window for ${color.datastore(db.name)} to ${color.info(window)}`)
     const {body: response} = await this.heroku.put<MaintenanceApiResponse>(
       `/client/v11/databases/${db.id}/maintenance_window`,
       {

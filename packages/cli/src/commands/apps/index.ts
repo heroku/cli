@@ -67,7 +67,7 @@ function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: nu
 export default class AppsIndex extends Command {
   static description = 'list your apps'
   static examples = [
-    '$ heroku apps',
+    color.command('heroku apps'),
   ]
 
   static flags = {

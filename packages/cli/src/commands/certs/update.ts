@@ -22,7 +22,7 @@ export default class Update extends Command {
     Note: certificates with PEM encoding are also valid
   `
   static examples = [heredoc`
-    $ heroku certs:update example.com.crt example.com.key
+    ${color.command('heroku certs:update example.com.crt example.com.key')}
 
         If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
         https://help.salesforce.com/s/articleView?id=000333504&type=1

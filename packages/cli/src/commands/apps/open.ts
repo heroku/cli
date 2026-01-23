@@ -1,16 +1,18 @@
-import {Args} from '@oclif/core'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import open from 'open'
 
 export default class AppsOpen extends Command {
-  static description = 'open the app in a web browser'
-  static topic = 'apps'
-  static hiddenAliases = ['open']
+  static args = {
+    path: Args.string({description: 'base URL path of app', required: false}),
+  }
 
+  static description = 'open the app in a web browser'
   static examples = [
-    '$ heroku open -a myapp',
-    '$ heroku open -a myapp /foo',
+    color.command('heroku open -a myapp'),
+    color.command('heroku open -a myapp /foo'),
   ]
 
   static flags = {
@@ -18,16 +20,17 @@ export default class AppsOpen extends Command {
     remote: flags.remote(),
   }
 
-  static args = {
-    path: Args.string({required: false, description: 'base URL path of app'}),
-  }
+  static hiddenAliases = ['open']
+
+  static topic = 'apps'
 
   async run() {
-    const {flags, args} = await this.parse(AppsOpen)
+    const {args, flags} = await this.parse(AppsOpen)
     const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
     const app = appResponse.body
     const path = args.path || ''
     const url = new URL(path, app.web_url)
+    ux.stdout(`Opening ${color.info(url.toString())}...`)
     await open(url.toString())
   }
 }
