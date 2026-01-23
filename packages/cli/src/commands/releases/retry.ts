@@ -1,5 +1,4 @@
-import {color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -26,14 +25,14 @@ export default class Retry extends Command {
     const releasePhase = formations.filter(formation => formation.type === 'release')
 
     if (!release) {
-      return ux.error(`No release found for ${newColor.app(app)}.`)
+      return ux.error(`No release found for ${color.app(app)}.`)
     }
 
     if (releasePhase.length === 0) {
       return ux.error('App must have a release-phase command to use this command.')
     }
 
-    ux.action.start(`Retrying ${color.green('v' + release.version)} on ${newColor.app(app)}`)
+    ux.action.start(`Retrying ${color.name('v' + release.version)} on ${color.app(app)}`)
 
     const {body: retry} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {
       body: {
@@ -42,14 +41,14 @@ export default class Retry extends Command {
       },
     })
 
-    ux.action.stop(`done, ${color.green('v' + retry.version)}`)
+    ux.action.stop(`done, ${color.name('v' + retry.version)}`)
 
     if (retry.output_stream_url) {
       ux.stdout('Running release command...')
       await stream(retry.output_stream_url)
         .catch(error => {
           if (error.statusCode === 404 || error.response?.statusCode === 404) {
-            ux.warn(`Release command starting. Use ${color.cmd('heroku releases:output --app ' + app)} to view the log.`)
+            ux.warn(`Release command starting. Use ${color.code('heroku releases:output --app ' + app)} to view the log.`)
             return
           }
 

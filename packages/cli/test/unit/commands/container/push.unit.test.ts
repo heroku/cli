@@ -1,12 +1,13 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/push.js'
-import runCommand from '../../../helpers/runCommand.js'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
-import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
-import nock from 'nock'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Errors} from '@oclif/core'
+import {expect} from 'chai'
+import nock from 'nock'
+import * as sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/container/push.js'
+import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
+import runCommand from '../../../helpers/runCommand.js'
 
 describe('container push', function () {
   let api: nock.Scope
@@ -40,7 +41,7 @@ describe('container push', function () {
         error = error_
       })
       const {message, oclif} = error as unknown as Errors.CLIError
-      expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.yellow('heroku-24')}, run ${color.cmd('git push heroku main')} instead.`)
+      expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.code('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.name('heroku-24')}, run ${color.code('git push heroku main')} instead.`)
       expect(oclif.exit).to.equal(1)
     })
   })
@@ -49,7 +50,7 @@ describe('container push', function () {
     beforeEach(function () {
       api
         .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}, build_stack: {name: 'container'}})
+        .reply(200, {build_stack: {name: 'container'}, name: 'testapp', stack: {name: 'heroku-24'}})
     })
 
     it('allows push to the docker registry', async function () {
@@ -206,9 +207,9 @@ describe('container push', function () {
         .returns(['/path/to/Dockerfile.web'])
       const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
       build.withArgs({
+        buildArgs: [],
         dockerfile: '/path/to/Dockerfile.web',
         resource: 'registry.heroku.com/testapp/web',
-        buildArgs: [],
       })
       const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
       push.withArgs('registry.heroku.com/testapp/web')

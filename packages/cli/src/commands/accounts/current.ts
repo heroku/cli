@@ -1,8 +1,8 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+
 import AccountsModule from '../../lib/accounts/accounts.js'
-import {color} from '@heroku-cli/color'
 
 export default class Current extends Command {
   static description = 'display the current Heroku account'
@@ -14,7 +14,7 @@ export default class Current extends Command {
     if (accountName) {
       hux.styledHeader(`Current account is ${accountName}`)
     } else {
-      ux.error(`You haven't set an account. Run ${color.cmd('heroku accounts:add <account-name>')} to add an account to your cache or ${color.cmd('heroku accounts:set <account-name>')} to set the current account.`)
+      ux.error(`You haven't set an account. Run ${color.code('heroku accounts:add <account-name>')} to add an account to your cache or ${color.code('heroku accounts:set <account-name>')} to set the current account.`)
     }
   }
 }
