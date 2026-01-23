@@ -1,5 +1,4 @@
-import {utils} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -119,7 +118,7 @@ class Backups {
 
           ${backup.logs.slice(-5).map(l => l.message).join('\n')}
 
-          Run ${color.cmd('heroku pg:backups:info ' + this.name(backup))} for more details.`))
+          Run ${color.code('heroku pg:backups:info ' + this.name(backup))} for more details.`))
       }
 
       yield new Promise(resolve => {

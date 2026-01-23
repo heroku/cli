@@ -1,38 +1,41 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {DockerHelper, GroupedDockerJobs, DockerJob} from '../../lib/container/docker_helper.js'
-import {ensureContainerStack} from '../../lib/container/helpers.js'
-import {debug} from '../../lib/container/debug.js'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
+import {debug} from '../../lib/container/debug.js'
+import {DockerHelper, DockerJob, GroupedDockerJobs} from '../../lib/container/docker_helper.js'
+import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 export default class Push extends Command {
-  static topic = 'container'
   static description = 'builds, then pushes Docker images to deploy your Heroku app'
-  static strict = false
+  static examples = [
+    `${color.command('heroku container:push web')}                          # Pushes Dockerfile to web process type`,
+    `${color.command('heroku container:push worker')}                       # Pushes Dockerfile to worker process type`,
+    `${color.command('heroku container:push web worker --recursive')}       # Pushes Dockerfile.web and Dockerfile.worker`,
+    `${color.command('heroku container:push --recursive')}                  # Pushes Dockerfile.*`,
+    `${color.command('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`,
+    `${color.command('heroku container:push --recursive --context-path .')} # Pushes Dockerfile.* using current dir as build context`,
+  ]
+
   static flags = {
     app: flags.app({required: true}),
-    verbose: flags.boolean({char: 'v'}),
-    recursive: flags.boolean({char: 'R', description: 'pushes Dockerfile.<process> found in current and subdirectories'}),
     arg: flags.string({description: 'set build-time variables'}),
     'context-path': flags.string({description: 'path to use as build context (defaults to Dockerfile dir)'}),
+    recursive: flags.boolean({char: 'R', description: 'pushes Dockerfile.<process> found in current and subdirectories'}),
     remote: flags.remote({char: 'r'}),
+    verbose: flags.boolean({char: 'v'}),
   }
 
-  static examples = [
-    '$ heroku container:push web                          # Pushes Dockerfile to web process type',
-    '$ heroku container:push worker                       # Pushes Dockerfile to worker process type',
-    '$ heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker',
-    '$ heroku container:push --recursive                  # Pushes Dockerfile.*',
-    '$ heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables',
-    '$ heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context',
-  ]
+  static strict = false
+
+  static topic = 'container'
 
   dockerHelper = new DockerHelper()
 
   async run(): Promise<void> {
     const {argv: processTypes, flags} = await this.parse(Push)
-    const {verbose, app, recursive, arg, 'context-path': contextPath} = flags
+    const {app, arg, 'context-path': contextPath, recursive, verbose} = flags
 
     if (verbose) {
       debug.enabled = true
@@ -70,11 +73,11 @@ export default class Push extends Command {
         }
 
         await this.dockerHelper.buildImage({
-          dockerfile: job.dockerfile,
-          resource: job.resource,
-          buildArgs,
-          path: contextPath,
           arch: this.config.arch,
+          buildArgs,
+          dockerfile: job.dockerfile,
+          path: contextPath,
+          resource: job.resource,
         })
       }
     } catch (error) {

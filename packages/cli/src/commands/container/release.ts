@@ -1,31 +1,29 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
 import {debug} from '../../lib/container/debug.js'
-import {streamer} from '../../lib/container/streamer.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {streamer} from '../../lib/container/streamer.js'
 
 type ImageResponse = {
-  schemaVersion: number,
+  config: {
+    digest: string
+  }
   history: [{
     v1Compatibility: string,
     }
   ],
-  config: {
-    digest: string
-  }
+  schemaVersion: number,
 }
 
 export default class ContainerRelease extends Command {
-  static topic = 'container'
   static description = 'Releases previously pushed Docker images to your Heroku app'
-  static usage = 'container:release'
-  static example = `
-  ${color.cmd('heroku container:release web')}        # Releases the previously pushed web process type
-  ${color.cmd('heroku container:release web worker')} # Releases the previously pushed web and worker process types`
-
-  static strict = false
+  static examples = [
+    `${color.command('heroku container:release web')}        # Releases the previously pushed web process type`,
+    `${color.command('heroku container:release web worker')} # Releases the previously pushed web and worker process types`,
+  ]
 
   static flags = {
     app: flags.app({required: true}),
@@ -33,12 +31,18 @@ export default class ContainerRelease extends Command {
     verbose: flags.boolean({char: 'v'}),
   }
 
+  static strict = false
+
+  static topic = 'container'
+
+  static usage = 'container:release'
+
   async run() {
-    const {flags, argv} = await this.parse(ContainerRelease)
+    const {argv, flags} = await this.parse(ContainerRelease)
     const {app, verbose} = flags
 
     if (argv.length === 0) {
-      this.error(`Error: Requires one or more process types\n ${ContainerRelease.example}`)
+      this.error(`Error: Requires one or more process types\n ${ContainerRelease.examples.join('\n')}`)
     }
 
     if (verbose) {
@@ -56,11 +60,12 @@ export default class ContainerRelease extends Command {
       const {body: imageResp} = await this.heroku.get<ImageResponse>(
         `/v2/${image}/manifests/${tag}`,
         {
-          hostname: `registry.${herokuHost}`,
           headers: {
             Accept: 'application/vnd.docker.distribution.manifest.v2+json',
             Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
-          }},
+          },
+          hostname: `registry.${herokuHost}`,
+        },
       )
       let imageID
       let v1Comp
@@ -78,12 +83,12 @@ export default class ContainerRelease extends Command {
       }
 
       updateData.push({
-        type: process, docker_image: imageID,
+        docker_image: imageID, type: process,
       })
     }
 
     const {body: oldReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      partial: true, headers: {Range: 'version ..; max=1, order=desc'},
+      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
     })
     const oldRelease = oldReleases[0]
 
@@ -96,7 +101,7 @@ export default class ContainerRelease extends Command {
     ux.action.stop()
 
     const {body: updatedReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      partial: true, headers: {Range: 'version ..; max=1, order=desc'},
+      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
     })
     const release = updatedReleases[0]
 

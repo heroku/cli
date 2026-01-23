@@ -1,37 +1,37 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import inquirer from 'inquirer'
+
 import {quote} from '../../lib/config/quote.js'
 import waitForDomain from '../../lib/domains/wait-for-domain.js'
 
 interface DomainCreatePayload {
   hostname: string;
-  sni_endpoint: string | null;
+  sni_endpoint: null | string;
 }
 
 type CertChoice = {
   name: string;
-  value: string | null | undefined;
+  value: null | string | undefined;
 }
 
 export default class DomainsAdd extends Command {
+  static args = {
+    hostname: Args.string({description: 'unique identifier of the domain or full hostname', required: true}),
+  }
+
   static description = 'add a domain to an app'
 
   static examples = ['heroku domains:add www.example.com']
 
   static flags = {
     app: flags.app({required: true}),
-    cert: flags.string({description: 'the name of the SSL cert you want to use for this domain', char: 'c'}),
-    json: flags.boolean({description: 'output in json format', char: 'j'}),
-    wait: flags.boolean(),
+    cert: flags.string({char: 'c', description: 'the name of the SSL cert you want to use for this domain'}),
+    json: flags.boolean({char: 'j', description: 'output in json format'}),
     remote: flags.remote(),
-  }
-
-  static args = {
-    hostname: Args.string({required: true, description: 'unique identifier of the domain or full hostname'}),
+    wait: flags.boolean(),
   }
 
   certSelect = async (certs: Array<Heroku.SniEndpoint>) => {
@@ -71,10 +71,10 @@ export default class DomainsAdd extends Command {
   async promptForCert(nullCertChoice: CertChoice, certChoices: CertChoice[]) {
     const selection = await inquirer.prompt<{ cert: string }>([
       {
-        type: 'list',
-        name: 'cert',
-        message: 'Choose an SNI endpoint to associate with this domain',
         choices: [nullCertChoice, ...certChoices],
+        message: 'Choose an SNI endpoint to associate with this domain',
+        name: 'cert',
+        type: 'list',
       },
     ])
 
@@ -92,7 +92,7 @@ export default class DomainsAdd extends Command {
 
     let certs: Array<Heroku.SniEndpoint> = []
 
-    ux.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+    ux.action.start(`Adding ${color.name(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     if (flags.cert) {
       domainCreatePayload.sni_endpoint = flags.cert
     } else {
@@ -109,7 +109,7 @@ export default class DomainsAdd extends Command {
         domainCreatePayload.sni_endpoint = certSelection
       }
 
-      ux.action.start(`Adding ${color.green(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
+      ux.action.start(`Adding ${color.name(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
     }
 
     try {
@@ -120,16 +120,16 @@ export default class DomainsAdd extends Command {
       if (flags.json) {
         hux.styledJSON(domain)
       } else {
-        ux.stdout(`Configure your app's DNS provider to point to the DNS Target ${color.green(domain.cname || '')}.
-    For help, see https://devcenter.heroku.com/articles/custom-domains`)
+        ux.stdout(`Configure your app's DNS provider to point to the DNS Target ${color.name(domain.cname || '')}.
+    For help, see ${color.info('https://devcenter.heroku.com/articles/custom-domains')}`)
         if (domain.status !== 'none') {
           if (flags.wait) {
             await waitForDomain(flags.app, this.heroku, domain)
           } else {
             ux.stdout('')
-            ux.stdout(`The domain ${color.green(hostname)} has been enqueued for addition`)
+            ux.stdout(`The domain ${color.name(hostname)} has been enqueued for addition`)
             const command = `heroku domains:wait ${quote(hostname)}`
-            ux.stdout(`Run ${color.cmd(command)} to wait for completion`)
+            ux.stdout(`Run ${color.code(command)} to wait for completion`)
           }
         }
       }

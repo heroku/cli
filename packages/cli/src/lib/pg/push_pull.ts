@@ -1,7 +1,6 @@
 import type {pg} from '@heroku/heroku-cli-util'
 
-import {utils} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import {ChildProcess, SpawnSyncReturns, execSync} from 'node:child_process'
@@ -31,7 +30,7 @@ export const prepare = async (target: pg.ConnectionDetails, execFn: ExecFn = exe
     const num = Math.random()
     const emptyMarker = `${num}${num}`
     const result = await psqlService.execQuery(`SELECT CASE count(*) WHEN 0 THEN '${num}' || '${num}' END FROM pg_stat_user_tables`)
-    if (!result.includes(emptyMarker)) ux.error(`Remote database is not empty. Please create a new database or use ${color.cmd('heroku pg:reset')}`)
+    if (!result.includes(emptyMarker)) ux.error(`Remote database is not empty. Please create a new database or use ${color.code('heroku pg:reset')}`)
   }
 }
 

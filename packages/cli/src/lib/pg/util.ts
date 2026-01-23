@@ -1,7 +1,11 @@
 import type {AddOnAttachment} from '@heroku-cli/schema'
 
-import {hux, pg, utils} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {
+  color,
+  hux,
+  pg,
+  utils,
+} from '@heroku/heroku-cli-util'
 
 import type {CredentialsInfo} from './types.js'
 
@@ -13,7 +17,7 @@ export function essentialPlan(addon: pg.ExtendedAddon | pg.ExtendedAddonAttachme
 }
 
 export function formatResponseWithCommands(response: string): string {
-  return response.replace(/`(.*?)`/g, (_, word) => color.cmd(word))
+  return response.replaceAll(/`(.*?)`/g, (_, word) => color.code(word))
 }
 
 export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialsInfo, cred: string) {
@@ -110,7 +114,7 @@ export const databaseNameFromUrl = (uri: string, config: Record<string, string>)
   let name = names.pop()
   while (names.length > 0 && name === 'DATABASE_URL') name = names.pop()
   if (name) {
-    return color.configVar(name.replace(/_URL$/, ''))
+    return color.name(name.replace(/_URL$/, ''))
   }
 
   const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(uri)
