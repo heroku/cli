@@ -1,7 +1,7 @@
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import {quote} from '../../../lib/config/quote.js'
 
@@ -12,8 +12,8 @@ export default class CiConfig extends Command {
   static description = 'display CI config vars'
 
   static examples = [
-    `$ heroku ci:config --app murmuring-headland-14719 --json
-`,
+    color.command(`heroku ci:config --app murmuring-headland-14719 --json
+`),
   ]
 
   static flags = {

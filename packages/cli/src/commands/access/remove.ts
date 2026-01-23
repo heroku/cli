@@ -5,7 +5,7 @@ import {ux} from '@oclif/core'
 
 export default class AccessRemove extends Command {
   static description = 'remove users from a team app'
-  static example = '$ heroku access:remove user@email.com --app APP'
+  static example = `${color.command('heroku access:remove user@email.com --app APP')}`
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),

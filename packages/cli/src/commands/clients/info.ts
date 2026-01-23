@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -7,7 +8,7 @@ export default class ClientsInfo extends Command {
   static description = 'show details of an oauth client'
 
   static examples = [
-    '$ heroku clients:info 36120128-fee7-455e-8b7f-807aee130946',
+    color.command('heroku clients:info 36120128-fee7-455e-8b7f-807aee130946'),
   ]
 
   static flags = {

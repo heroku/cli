@@ -15,9 +15,9 @@ export default class Add extends Command {
   Add one range to the list of trusted IP ranges
   Uses CIDR notation.`)
 
-  static examples = [heredoc(`
+  static examples = [heredoc(color.command(`
   $ heroku trusted-ips:add --space my-space 192.168.2.0/24
-    Added 192.168.0.1/24 to trusted IP ranges on my-space`)]
+    Added 192.168.0.1/24 to trusted IP ranges on my-space`))]
 
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),

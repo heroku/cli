@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -6,22 +6,22 @@ import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 
 export default class Accept extends Command {
-  static topic = 'spaces'
+  static args = {
+    pcxid: Args.string({hidden: true}),
+    space: Args.string({hidden: true}),
+  }
+
   static description = 'accepts a pending peering request for a private space'
   static examples = [heredoc(`
-  $ heroku spaces:peerings:accept pcx-4bd27022 --space example-space
-      Accepting and configuring peering connection pcx-4bd27022
-  `)]
+${color.command('heroku spaces:peerings:accept pcx-4bd27022 --space example-space')}
+Accepting and configuring peering connection pcx-4bd27022`)]
 
   static flags = {
     pcxid: flags.string({char: 'p', description: 'PCX ID of a pending peering'}),
     space: flags.string({char: 's', description: 'space to get peering info from'}),
   }
 
-  static args = {
-    pcxid: Args.string({hidden: true}),
-    space: Args.string({hidden: true}),
-  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Accept)

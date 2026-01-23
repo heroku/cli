@@ -1,6 +1,6 @@
 import {flags} from '@heroku-cli/command'
 import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions.js'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Args, Interfaces, ux} from '@oclif/core'
 
 import * as path from 'path'
@@ -22,10 +22,10 @@ export default class Index extends AutocompleteBase {
   }
 
   static examples = [
-    '$ heroku autocomplete',
-    '$ heroku autocomplete bash',
-    '$ heroku autocomplete zsh',
-    '$ heroku autocomplete --refresh-cache',
+    color.command('heroku autocomplete'),
+    color.command('heroku autocomplete bash'),
+    color.command('heroku autocomplete zsh'),
+    color.command('heroku autocomplete --refresh-cache'),
   ]
 
   async run() {

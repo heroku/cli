@@ -5,7 +5,7 @@ import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {Command, flags} from '@heroku-cli/command'
 import {setPipelineConfigVars} from '../../../lib/api.js'
 import {validateArgvPresent} from '../../../lib/ci/validate.js'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 
 function validateInput(str: string) {
   if (!str.includes('=')) {
@@ -21,9 +21,9 @@ export default class CiConfigSet extends Command {
   static topic = 'ci'
 
   static examples = [
-    `$ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
+    color.command(`heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
     Setting test config vars... done
-    RAILS_ENV: test`,
+    RAILS_ENV: test`),
   ]
 
   static flags = {

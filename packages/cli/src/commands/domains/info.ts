@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
@@ -7,7 +8,7 @@ export default class DomainsInfo extends Command {
   static description = 'show detailed information for a domain on an app'
 
   static examples = [
-    '$ heroku domains:info www.example.com',
+    color.command('heroku domains:info www.example.com'),
   ]
 
   static flags = {

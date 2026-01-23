@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
@@ -7,8 +8,10 @@ import {displayPeeringInfo} from '../../../lib/spaces/peering.js'
 const heredoc = tsheredoc.default
 
 export default class Info extends Command {
-  static topic = 'spaces'
-  static hiddenAliases = ['spaces:peering:info']
+  static args = {
+    space: Args.string({hidden: true}),
+  }
+
   static description = heredoc(`
     display the information necessary to initiate a peering connection
 
@@ -24,13 +27,8 @@ export default class Info extends Command {
     configure the peering connection for the space.
   `)
 
-  static flags = {
-    space: flags.string({char: 's', description: 'space to get peering info from'}),
-    json: flags.boolean({description: 'output in json format'}),
-  }
-
   static examples = [heredoc(`
-    $ heroku spaces:peering:info example-space
+    ${color.command('heroku spaces:peering:info example-space')}
     === example-space  Peering Info
 
     AWS Account ID:    012345678910
@@ -41,9 +39,14 @@ export default class Info extends Command {
     Unavailable CIDRs: 10.1.0.0/16
   `)]
 
-  static args = {
-    space: Args.string({hidden: true}),
+  static flags = {
+    json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space to get peering info from'}),
   }
+
+  static hiddenAliases = ['spaces:peering:info']
+
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Info)

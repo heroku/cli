@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -12,8 +13,8 @@ export default class CiRun extends Command {
   static description = 'run tests against current directory'
 
   static examples = [
-    `$ heroku ci:run --app murmuring-headland-14719
-`,
+    color.command(`heroku ci:run --app murmuring-headland-14719
+`),
   ]
 
   static flags = {

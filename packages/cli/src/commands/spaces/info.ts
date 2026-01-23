@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -14,7 +15,7 @@ const spacesDebug = debug('spaces:info')
 export default class Info extends Command {
   static topic = 'spaces'
   static description = 'show info about a space'
-  static example = '$ heroku spaces:info my-space'
+  static example = `${color.command('heroku spaces:info my-space')}`
 
   static flags = {
     space: flags.string({char: 's', description: 'space to get info of'}),

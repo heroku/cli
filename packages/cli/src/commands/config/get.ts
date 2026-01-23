@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
@@ -12,8 +13,8 @@ export class ConfigGet extends Command {
 
   static description = 'display a single config value for an app'
 
-  static example = `$ heroku config:get RAILS_ENV
-production`
+  static example = `${color.command(`heroku config:get RAILS_ENV
+production`)}`
 
   static flags = {
     app: flags.app({required: true}),

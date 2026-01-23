@@ -18,16 +18,17 @@ function isApexDomain(hostname: string) {
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
 
-  static examples = [
-    `$ heroku domains
+  static examples = [`${color.command('heroku domains')}
 === example Heroku Domain
 example-xxxxxxxxxxxx.herokuapp.com
 
 === example Custom Domains
 Domain Name      DNS Record Type  DNS Target
 www.example.com  CNAME            www.example.herokudns.com
-`, "$ heroku domains --filter 'Domain Name=www.example.com'",
-  ]
+`, `${color.command("heroku domains --filter 'Domain Name=www.example.com'")}
+=== example Custom Domains
+Domain Name      DNS Record Type  DNS Target
+www.example.com  CNAME            www.example.herokudns.com`]
 
   static flags = {
     app: flags.app({required: true}),

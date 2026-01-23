@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {quote} from '../../../lib/config/quote.js'
@@ -8,8 +9,7 @@ export default class CiConfigGet extends Command {
   static description = 'get a CI config var'
   static topic = 'ci'
   static examples = [
-    `$ heroku ci:config:get --pipeline=PIPELINE RAILS_ENV
-    test`,
+    color.command('heroku ci:config:get --pipeline=PIPELINE RAILS_ENV test'),
   ]
 
   static flags = {

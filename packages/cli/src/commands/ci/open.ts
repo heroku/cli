@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import open from 'open'
 import {getPipeline} from '../../lib/ci/pipelines.js'
@@ -6,7 +7,7 @@ export default class CiOpen extends Command {
   static description = 'open the Dashboard version of Heroku CI'
   static topic = 'ci'
   static examples = [
-    '$ heroku ci:open --app murmuring-headland-14719',
+    color.command('heroku ci:open --app murmuring-headland-14719'),
   ]
 
   static flags = {
