@@ -10,7 +10,7 @@ import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
 const heredoc = tsheredoc.default
 
@@ -126,8 +126,8 @@ describe('pg:upgrade:prepare', function () {
       '15',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Preparing upgrade on ${addon.name}... done
@@ -161,8 +161,8 @@ describe('pg:upgrade:prepare', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Preparing upgrade on ${addon.name}... done
@@ -192,8 +192,8 @@ describe('pg:upgrade:prepare', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(heredoc(`
-      database has an upgrade already scheduled, please check ${color.cmd('pg:upgrade:wait')} for more information on the status of your upgrade.
+      expect(ansis.strip(error.message)).to.equal(heredoc(`
+      database has an upgrade already scheduled, please check pg:upgrade:wait for more information on the status of your upgrade.
 
       Error ID: unprocessable_entity`))
     })

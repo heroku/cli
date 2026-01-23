@@ -10,7 +10,7 @@ import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
 const heredoc = tsheredoc.default
 
@@ -85,8 +85,8 @@ describe('pg:upgrade', function () {
       '15',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Starting upgrade on ${addon.name}... done
@@ -119,8 +119,8 @@ describe('pg:upgrade', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Starting upgrade on ${addon.name}... done
@@ -157,8 +157,8 @@ describe('pg:upgrade', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Starting upgrade on ${essentialAddon.name}... done
@@ -248,8 +248,8 @@ describe('pg:upgrade', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Starting upgrade on ${addon.name}... done

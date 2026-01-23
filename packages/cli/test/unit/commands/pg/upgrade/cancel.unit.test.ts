@@ -13,7 +13,7 @@ import * as sinon from 'sinon'
 
 const heredoc = tsheredoc.default
 
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
 describe('pg:upgrade:cancel', function () {
   const addon = fixtures.addons['dwh-db']
@@ -127,8 +127,8 @@ describe('pg:upgrade:cancel', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
       Cancelling upgrade on ${addon.name}... done
@@ -156,8 +156,8 @@ describe('pg:upgrade:cancel', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expectOutput(error.message, heredoc(`
-      You haven't scheduled an upgrade on your database. Run ${color.cmd('pg:upgrade:prepare')} to schedule an upgrade.
+      expectOutput(ansis.strip(error.message), heredoc(`
+      You haven't scheduled an upgrade on your database. Run pg:upgrade:prepare to schedule an upgrade.
 
       Error ID: bad_request
     `))
