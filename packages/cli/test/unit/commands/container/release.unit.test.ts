@@ -50,7 +50,7 @@ describe('container release', function () {
     })
 
     const {message, oclif} = error as unknown as Errors.CLIError
-    expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.code('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.yellow('heroku-24')}, run ${color.code('git push heroku main')} instead.`)
+    expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.code('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.name('heroku-24')}, run ${color.code('git push heroku main')} instead.`)
     expect(oclif.exit).to.equal(1)
   })
 
