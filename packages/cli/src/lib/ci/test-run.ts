@@ -37,7 +37,7 @@ function stream(url: string) {
 
 function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   if (!status) {
-    return color.yellow('-')
+    return color.info('-')
   }
 
   switch (status) {
@@ -46,7 +46,7 @@ function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   case 'building':
   case 'running':
   case 'debugging': {
-    return color.yellow('-')
+    return color.info('-')
   }
 
   case 'errored': {
@@ -62,11 +62,11 @@ function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   }
 
   case 'cancelled': {
-    return color.yellow('!')
+    return color.warning('!')
   }
 
   default: {
-    return color.yellow('?')
+    return color.info('?')
   }
   }
 }

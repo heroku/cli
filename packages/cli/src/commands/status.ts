@@ -1,19 +1,18 @@
-import {color} from '@heroku-cli/color'
-import {Command, Flags, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {formatDistanceToNow} from 'date-fns'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {
-  TrustInstance,
-  TrustIncident,
-  TrustMaintenance,
-  HerokuStatus,
-  FormattedTrustStatus,
-  SystemStatus,
-  Localization,
-} from '../lib/types/status.js'
+import {Command, Flags, ux} from '@oclif/core'
+import {formatDistanceToNow} from 'date-fns'
 
 import {getMaxUpdateTypeLength} from '../lib/status/util.js'
+import {
+  FormattedTrustStatus,
+  HerokuStatus,
+  Localization,
+  SystemStatus,
+  TrustIncident,
+  TrustInstance,
+  TrustMaintenance,
+} from '../lib/types/status.js'
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
@@ -84,26 +83,26 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
 
   if (appsIncidents.length > 0) {
     const severity = determineIncidentSeverity(appsIncidents)
-    systemStatus.push({system: 'Apps', status: severity})
+    systemStatus.push({status: severity, system: 'Apps'})
     incidents.push(...appsIncidents)
   } else {
-    systemStatus.push({system: 'Apps', status: 'green'})
+    systemStatus.push({status: 'green', system: 'Apps'})
   }
 
   if (dataIncidents.length > 0) {
     const severity = determineIncidentSeverity(dataIncidents)
-    systemStatus.push({system: 'Data', status: severity})
+    systemStatus.push({status: severity, system: 'Data'})
     incidents.push(...dataIncidents)
   } else {
-    systemStatus.push({system: 'Data', status: 'green'})
+    systemStatus.push({status: 'green', system: 'Data'})
   }
 
   if (toolsIncidents.length > 0) {
     const severity = determineIncidentSeverity(toolsIncidents)
-    systemStatus.push({system: 'Tools', status: severity})
+    systemStatus.push({status: severity, system: 'Tools'})
     incidents.push(...toolsIncidents)
   } else {
-    systemStatus.push({system: 'Tools', status: 'green'})
+    systemStatus.push({status: 'green', system: 'Tools'})
   }
 
   if (maintenances.length > 0) scheduled.push(...maintenances)
@@ -116,11 +115,13 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
     })
   }
 
+  /* eslint-disable perfectionist/sort-objects */
   return {
     status: systemStatus,
     incidents,
     scheduled,
   }
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 export default class Status extends Command {
@@ -172,23 +173,23 @@ export default class Status extends Command {
     if (herokuStatus) {
       for (const incident of herokuStatus.incidents) {
         ux.stdout()
-        hux.styledHeader(`${incident.title} ${color.yellow(incident.created_at)} ${color.cyan(incident.full_url)}`)
+        hux.styledHeader(`${incident.title} ${color.warning(incident.created_at)} ${color.info(incident.full_url)}`)
 
         const padding = getMaxUpdateTypeLength(incident.updates.map(update => update.update_type))
         for (const u of incident.updates) {
-          ux.stdout(`${color.yellow(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
+          ux.stdout(`${color.warning(u.update_type.padEnd(padding))} ${new Date(u.updated_at).toISOString()} (${formatDistanceToNow(new Date(u.updated_at))} ago)`)
           ux.stdout(`${u.contents}\n`)
         }
       }
     } else if (formattedTrustStatus) {
       for (const incident of formattedTrustStatus.incidents) {
         ux.stdout()
-        hux.styledHeader(`${incident.id} ${color.yellow(incident.createdAt)} ${color.cyan(`https://status.salesforce.com/incidents/${incident.id}`)}`)
+        hux.styledHeader(`${incident.id} ${color.warning(incident.createdAt)} ${color.info(`https://status.salesforce.com/incidents/${incident.id}`)}`)
 
         const padding = getMaxUpdateTypeLength(incident.IncidentEvents.map(event => event.localizedType ?? event.type))
         for (const event of incident.IncidentEvents) {
           const eventType = event.localizedType ?? event.type
-          ux.stdout(`${color.yellow(eventType.padEnd(padding))} ${new Date(event.createdAt).toISOString()} (${formatDistanceToNow(new Date(event.createdAt))} ago)`)
+          ux.stdout(`${color.warning(eventType.padEnd(padding))} ${new Date(event.createdAt).toISOString()} (${formatDistanceToNow(new Date(event.createdAt))} ago)`)
           ux.stdout(`${event.message}\n`)
         }
       }
