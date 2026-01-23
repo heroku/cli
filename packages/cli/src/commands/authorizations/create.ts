@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
@@ -10,7 +11,7 @@ export default class AuthorizationsCreate extends Command {
   static description = 'create a new OAuth authorization'
 
   static examples = [
-    '$ heroku authorizations:create --description "For use with Anvil"',
+    color.command('heroku authorizations:create --description "For use with Anvil"'),
   ]
 
   static flags = {

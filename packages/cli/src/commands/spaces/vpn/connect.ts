@@ -20,11 +20,11 @@ export default class Connect extends Command {
     Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
     The connection is established over the public Internet but all traffic is encrypted using IPSec.
   `
-  static examples = [heredoc`
-    $ heroku spaces:vpn:connect vpn-connection-name --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
+  static examples = [heredoc(`
+    ${color.command('heroku spaces:vpn:connect vpn-connection-name --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space')}
     Creating VPN Connection in space my-space... done
     ▸    Use spaces:vpn:wait to track allocation.
-  `]
+  `)]
 
   static flags = {
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),

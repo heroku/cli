@@ -16,7 +16,7 @@ export default class Add extends Command {
   Uses CIDR notation.`)
 
   static examples = [heredoc(`
-  $ heroku trusted-ips:add --space my-space 192.168.2.0/24
+    ${color.command('heroku trusted-ips:add --space my-space 192.168.2.0/24')}
     Added 192.168.0.1/24 to trusted IP ranges on my-space`)]
 
   static flags = {

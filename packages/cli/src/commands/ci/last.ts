@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -9,15 +10,15 @@ export default class CiLast extends Command {
   static description = 'looks for the most recent run and returns the output of that run'
 
   static examples = [
-    `$ heroku ci:last --pipeline=my-pipeline --node 100
-`,
+    color.command(`heroku ci:last --pipeline=my-pipeline --node 100
+`),
   ]
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
     pipeline: flags.pipeline({required: false}),
+    remote: flags.remote(),
   }
 
   async run() {

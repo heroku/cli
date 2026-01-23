@@ -16,10 +16,10 @@ export default class Destroy extends Command {
   }
 
   static description = 'destroys VPN in a private space'
-  static examples = [heredoc`
-    $ heroku spaces:vpn:destroy vpn-connection-name --space example-space --confirm vpn-connection-name
-    Tearing down VPN Connection vpn-connection-name in space example-space
-  `]
+  static examples = [heredoc(`
+    ${color.command('heroku spaces:vpn:destroy vpn-connection-name --space example-space --confirm vpn-connection-name')}
+    Tearing down VPN Connection vpn-connection-name in space example-space... done
+  `)]
 
   static flags = {
     confirm: flags.string({description: 'set to VPN connection name to bypass confirm prompt', hidden: true}),

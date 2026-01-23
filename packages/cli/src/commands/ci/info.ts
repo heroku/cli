@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
@@ -9,8 +10,8 @@ export default class CiInfo extends Command {
   static description = 'show the status of a specific test run'
 
   static examples = [
-    `$ heroku ci:info 1288 --app murmuring-headland-14719
-`,
+    color.command(`heroku ci:info 1288 --app murmuring-headland-14719
+`),
   ]
 
   static flags = {
