@@ -9,10 +9,12 @@ const heredoc = tsheredoc.default
 import {nls} from '../../../nls.js'
 
 export default class Window extends Command {
+  /* eslint-disable perfectionist/sort-objects */
   static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     window: Args.string({description: 'timestamp of the maintenance window', required: true}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+  /* eslint-enable perfectionist/sort-objects */
 
   static description = heredoc(`
     Set weekly maintenance window.
@@ -39,7 +41,7 @@ export default class Window extends Command {
     if (!window.match(/^[A-Za-z]{2,10} \d\d?:[03]0$/))
       ux.error('Window must be "Day HH:MM" where MM is 00 or 30')
 
-    ux.action.start(`Setting maintenance window for ${color.yellow(db.name)} to ${color.cyan(window)}`)
+    ux.action.start(`Setting maintenance window for ${color.datastore(db.name)} to ${color.info(window)}`)
     const {body: response} = await this.heroku.put<MaintenanceApiResponse>(
       `/client/v11/databases/${db.id}/maintenance_window`,
       {
