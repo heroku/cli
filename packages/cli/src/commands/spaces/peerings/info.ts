@@ -1,8 +1,9 @@
 import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
 import {displayPeeringInfo} from '../../../lib/spaces/peering.js'
 
 const heredoc = tsheredoc.default
@@ -49,7 +50,7 @@ export default class Info extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const spaceName = flags.space || args.space
     if (!spaceName) {
       ux.error(heredoc(`

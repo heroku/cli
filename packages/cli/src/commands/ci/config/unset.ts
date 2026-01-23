@@ -1,24 +1,26 @@
 import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {getPipeline} from '../../../lib/ci/pipelines.js'
+
 import {setPipelineConfigVars} from '../../../lib/api.js'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {validateArgvPresent} from '../../../lib/ci/validate.js'
 
 export default class CiConfigUnset extends Command {
   static description = 'unset CI config vars'
-  static topic = 'ci'
   static examples = [
     color.command('heroku ci:config:unset RAILS_ENV'),
   ]
 
-  static strict = false
-
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
+    remote: flags.remote(),
   }
+
+  static strict = false
+
+  static topic = 'ci'
 
   async run() {
     const {argv, flags} = await this.parse(CiConfigUnset)

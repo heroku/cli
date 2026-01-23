@@ -1,12 +1,11 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {quote} from '../../../lib/config/quote.js'
+import {ux} from '@oclif/core'
 
-import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {getPipelineConfigVars} from '../../../lib/api.js'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
+import {quote} from '../../../lib/config/quote.js'
 
 export default class CiConfig extends Command {
   static description = 'display CI config vars'
@@ -18,10 +17,10 @@ export default class CiConfig extends Command {
 
   static flags = {
     app: cmdFlags.app(),
-    remote: cmdFlags.remote(),
-    shell: cmdFlags.boolean({char: 's', description: 'output config vars in shell format'}),
     json: cmdFlags.boolean({description: 'output config vars in json format'}),
     pipeline: cmdFlags.pipeline({exactlyOne: ['pipeline', 'app']}),
+    remote: cmdFlags.remote(),
+    shell: cmdFlags.boolean({char: 's', description: 'output config vars in shell format'}),
   }
 
   async run() {

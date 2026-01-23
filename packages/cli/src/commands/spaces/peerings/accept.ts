@@ -24,7 +24,7 @@ Accepting and configuring peering connection pcx-4bd27022`)]
   static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Accept)
+    const {args, flags} = await this.parse(Accept)
     const space = flags.space || args.space
     if (!space) {
       throw new Error('Space name required.\nUSAGE: heroku spaces:peerings:accept pcx-12345678 --space my-space')
