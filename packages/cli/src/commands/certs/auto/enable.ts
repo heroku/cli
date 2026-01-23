@@ -33,7 +33,7 @@ export default class Enable extends Command {
     await this.heroku.post(`/apps/${app}/acm`, {body: {}})
 
     if (wait) {
-      ux.action.stop(`${color.yellow('starting')}.`)
+      ux.action.stop(`${color.info('starting')}.`)
 
       try {
         await waitForCertIssuedOnDomains(this.heroku, app)
@@ -44,7 +44,7 @@ export default class Enable extends Command {
         throw error
       }
     } else {
-      ux.action.stop(`${color.yellow('starting')}. See status with ${color.code('heroku certs:auto')} or wait until active with ${color.code('heroku certs:auto --wait')}`)
+      ux.action.stop(`${color.info('starting')}. See status with ${color.code('heroku certs:auto')} or wait until active with ${color.code('heroku certs:auto --wait')}`)
     }
 
     const domains = await waitForDomains(this.heroku, app)

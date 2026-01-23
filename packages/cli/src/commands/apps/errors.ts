@@ -16,7 +16,7 @@ const colorize = (level: string, s: string) => {
   }
 
   case 'warning': {
-    return color.yellow(s)
+    return color.warning(s)
   }
 
   case 'info': {
