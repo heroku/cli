@@ -9,7 +9,7 @@ export default class Remove extends Command {
   }
 
   static description = 'remove an SSH key from the user'
-  static example = `$ heroku keys:remove email@example.com
+  static example = `${color.command('heroku keys:remove email@example.com')}
 Removing email@example.com SSH key... done`
 
   async run() {

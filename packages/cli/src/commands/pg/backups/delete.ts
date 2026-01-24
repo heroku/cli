@@ -13,7 +13,7 @@ export default class Delete extends Command {
   static description = 'delete a backup'
 
   static examples = [
-    '$ heroku pg:backup:delete --app APP_ID BACKUP_ID',
+    color.command('heroku pg:backup:delete --app APP_ID BACKUP_ID'),
   ]
 
   static flags = {

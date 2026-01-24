@@ -1,29 +1,31 @@
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
-import {essentialPlan} from '../../../lib/pg/util.js'
-import ConfirmCommand from '../../../lib/confirmCommand.js'
 import tsheredoc from 'tsheredoc'
+
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class RepairDefault extends Command {
-  static topic = 'pg'
-  static description = 'repair the permissions of the default credential within database'
-  static example = '$ heroku pg:credentials:repair-default postgresql-something-12345'
-  static flags = {
-    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'repair the permissions of the default credential within database'
+  static example = `${color.command('heroku pg:credentials:repair-default postgresql-something-12345')}`
+  static flags = {
+    app: flags.app({required: true}),
+    confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(RepairDefault)
+    const {args, flags} = await this.parse(RepairDefault)
     const {app, confirm} = flags
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)

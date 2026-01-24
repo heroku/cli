@@ -1,12 +1,11 @@
+import {color, hux} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
-import {flags, Command} from '@heroku-cli/command'
-import inquirer from 'inquirer'
-import path from 'node:path'
-import os from 'node:os'
 import fs from 'fs-extra'
+import inquirer from 'inquirer'
 import {spawn} from 'node:child_process'
+import os from 'node:os'
+import path from 'node:path'
 
 function sshKeygen(file: string, quiet: boolean) {
   return new Promise((resolve, reject) => {
@@ -18,9 +17,9 @@ function sshKeygen(file: string, quiet: boolean) {
 async function confirmPrompt(message: string) {
   if (process.stdin.isTTY) {
     return inquirer.prompt([{
-      type: 'confirm',
-      name: 'yes',
       message,
+      name: 'yes',
+      type: 'confirm',
     }])
   }
 
@@ -29,15 +28,23 @@ async function confirmPrompt(message: string) {
 }
 
 export default class Add extends Command {
-  static description = 'add an SSH key for a user'
-  static help = 'if no KEY is specified, will try to find ~/.ssh/id_rsa.pub'
-  static example = `$ heroku keys:add
+  static args = {
+    key: Args.string({description: 'absolute path to the key located on disk. If omitted, we use the default rsa key.'}),
+  }
+
+  static description = `
+    add an SSH key for a user
+    if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
+  `
+
+  static example = `
+${color.command('heroku keys:add')}
 Could not find an existing public key.
 Would you like to generate one? [Yn] y
 Generating new SSH public key.
 Uploading SSH public key /.ssh/id_rsa.pub... done
 
-$ heroku keys:add /my/key.pub
+${color.command('heroku keys:add /my/key.pub')}
 Uploading SSH public key /my/key.pub... done`
 
   static flags = {
@@ -45,12 +52,8 @@ Uploading SSH public key /my/key.pub... done`
     yes: flags.boolean({char: 'y', description: 'automatically answer yes for all prompts'}),
   }
 
-  static args = {
-    key: Args.string({description: 'absolute path to the key located on disk. If omitted, we use the default rsa key.'}),
-  }
-
   async run() {
-    const {flags, args} = await this.parse(Add)
+    const {args, flags} = await this.parse(Add)
     const sshdir = path.join(os.homedir(), '.ssh')
 
     const generate = async function () {
@@ -91,10 +94,10 @@ Uploading SSH public key /my/key.pub... done`
       }
 
       const resp = await inquirer.prompt([{
-        type: 'list',
-        name: 'key',
         choices: keys,
         message: 'Which SSH key would you like to upload?',
+        name: 'key',
+        type: 'list',
       }])
       return resp.key
     }

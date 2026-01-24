@@ -147,29 +147,22 @@ export default class Create extends Command {
 
   static description = 'creates a new app'
 
-  static examples = [
-    `$ heroku apps:create
+  static examples = [`
+${color.command('heroku apps:create')}
 Creating app... done, stack is heroku-24
-https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
-
+https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git`, `
 # or just
-$ heroku create
-
+${color.command('heroku create')}`, `
 # use a heroku.yml manifest file
-$ heroku apps:create --manifest
-
+${color.command('heroku apps:create --manifest')}`, `
 # specify a buildpack
-$ heroku apps:create --buildpack https://github.com/some/buildpack.git
-
+${color.command('heroku apps:create --buildpack https://github.com/some/buildpack.git')}`, `
 # specify a name
-$ heroku apps:create example
-
+${color.command('heroku apps:create example')}`, `
 # create a staging app
-$ heroku apps:create example-staging --remote staging
-
+${color.command('heroku apps:create example-staging --remote staging')}`, `
 # create an app in the eu region
-$ heroku apps:create --region eu`,
-  ]
+${color.command('heroku apps:create --region eu')}`]
 
   static flags = {
     addons: flags.string({description: 'comma-delimited list of addons to install'}),
