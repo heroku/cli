@@ -1,15 +1,13 @@
-/*
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, hux, pg, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {ExtendedAddonAttachment, hux} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
-import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util'
-import {PgDatabaseTenant} from '../../lib/pg/types'
-import {nls} from '../../nls'
+import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util.js'
+import {PgDatabaseTenant} from '../../lib/pg/types.js'
+import {nls} from '../../nls.js'
 
 type DBObject = {
-  addon: ExtendedAddonAttachment | ExtendedAddonAttachment['addon'] & {attachment_names?: string[]},
+  addon: pg.ExtendedAddonAttachment | pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]},
   configVars?: string[],
   dbInfo: PgDatabaseTenant | null,
   config: Heroku.ConfigVars,
@@ -28,7 +26,7 @@ function displayDB(db: DBObject, app: string) {
     db.dbInfo?.info.push({name: 'Billing App', values: [color.app(db.addon.app.name)]})
   }
 
-  db.dbInfo?.info.push({name: 'Add-on', values: [color.database(db.addon.name)]})
+  db.dbInfo?.info.push({name: 'Add-on', values: [color.addon(db.addon.name)]})
   const info: Record<string, never> | Record<string, string> = {}
   db.dbInfo?.info.forEach(infoObject => {
     if (infoObject.values.length > 0) {
@@ -44,7 +42,7 @@ function displayDB(db: DBObject, app: string) {
   })
   const keys = db.dbInfo?.info.map(i => i.name)
   hux.styledObject(info, keys)
-  ux.log()
+  ux.stdout('')
 }
 
 export default class Info extends Command {
@@ -64,9 +62,10 @@ export default class Info extends Command {
     public async run(): Promise<void> {
       const {flags, args} = await this.parse(Info)
       const {app} = flags
-      const {sortBy} = require('lodash')
+      const lodash = await import('lodash')
+      const sortBy = lodash.default.sortBy
       const {database: db} = args
-      let addons: Array<ExtendedAddonAttachment | ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>
+      let addons: Array<pg.ExtendedAddonAttachment | pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>
       const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       if (db) {
         const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
@@ -76,7 +75,7 @@ export default class Info extends Command {
         const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
         addons = await dbResolver.getAllLegacyDatabases(app)
         if (addons.length === 0) {
-          ux.log(`${color.app(app)} has no heroku-postgresql databases.`)
+          ux.stdout(`${color.app(app)} has no heroku-postgresql databases.`)
           return
         }
       }
@@ -90,7 +89,7 @@ export default class Info extends Command {
           .catch(error => {
             if (error.statusCode !== 404)
               throw error
-            ux.warn(`${color.database(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
+            ux.warn(`${color.addon(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
           })
         const {body: dbInfo} = pgResponse || {body: null}
         return {
@@ -107,4 +106,3 @@ export default class Info extends Command {
       dbs.forEach(db => displayDB(db, app))
     }
 }
-*/

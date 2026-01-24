@@ -1,9 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import heredoc from 'tsheredoc'
-import {nls} from '../../nls'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Kill extends Command {
   static topic = 'pg';
@@ -31,7 +32,6 @@ export default class Kill extends Command {
       SELECT ${force ? 'pg_terminate_backend' : 'pg_cancel_backend'}(${Number.parseInt(pid, 10)});
     `
     const output = await psqlService.execQuery(query)
-    ux.log(output)
+    ux.stdout(output)
   }
 }
-*/
