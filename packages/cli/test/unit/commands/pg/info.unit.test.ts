@@ -1,9 +1,8 @@
-/*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
 import runCommand from '../../../helpers/runCommand.js'
-import Cmd from '../../../../src/commands/pg/info'
+import Cmd from '../../../../src/commands/pg/info.js'
 
 describe('pg:info', function () {
   let api: nock.Scope
@@ -15,9 +14,9 @@ describe('pg:info', function () {
   })
 
   afterEach(function () {
-    nock.cleanAll()
     api.done()
     pg.done()
+    nock.cleanAll()
   })
   context('with 0 dbs', function () {
     it('shows empty state', async function () {
@@ -137,5 +136,3 @@ describe('pg:info', function () {
     })
   })
 })
-
-*/
