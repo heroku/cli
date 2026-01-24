@@ -11,7 +11,7 @@ export default class RunDetached extends Command {
   static description = 'run a detached dyno, where output is sent to your logs'
 
   static examples = [
-    '$ heroku run:detached ls',
+    color.command('heroku run:detached ls'),
   ]
 
   static flags = {

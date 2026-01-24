@@ -7,10 +7,10 @@ const heredoc = tsheredoc.default
 
 export default class Transfer extends Command {
   static description = 'transfer a space to another team'
-  static examples = [heredoc(`
+  static examples = [heredoc(color.command(`
   $ heroku spaces:transfer --space=space-name --team=team-name
   Transferring space-name to team-name... done
-  `)]
+  `))]
 
   static flags = {
     space: flags.string({char: 's', description: 'name of space', required: true}),

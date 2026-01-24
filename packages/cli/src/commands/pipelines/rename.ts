@@ -6,29 +6,29 @@ import {updatePipeline} from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 
 export default class PipelinesRename extends Command {
-  static description = 'rename a pipeline'
-
-  static examples = [
-    '$ heroku pipelines:rename my-pipeline new-pipeline-name',
-  ]
-
   static args = {
-    pipeline: Args.string({
-      description: 'current name of pipeline',
-      required: true,
-    }),
     name: Args.string({
       description: 'new name of pipeline',
       required: true,
     }),
+    pipeline: Args.string({
+      description: 'current name of pipeline',
+      required: true,
+    }),
   }
+
+  static description = 'rename a pipeline'
+
+  static examples = [
+    color.command('heroku pipelines:rename my-pipeline new-pipeline-name'),
+  ]
 
   async run() {
     const {args} = await this.parse(PipelinesRename)
 
     const pipeline = await disambiguate(this.heroku, args.pipeline)
 
-    ux.action.start(`Renaming ${color.pipeline(pipeline.name!)} pipeline to ${color.pipeline(args.name)}`)
+    ux.action.start(`Renaming ${color.pipeline(pipeline.name!)} pipeline to ${color.info(args.name)}`)
 
     await updatePipeline(this.heroku, pipeline.id!, {
       name: args.name,

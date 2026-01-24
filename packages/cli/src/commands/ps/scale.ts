@@ -21,10 +21,10 @@ export default class Scale extends Command {
     format suitable for passing back into ps:scale.
   `
   static examples = [heredoc`
-    $ heroku ps:scale web=3:Standard-2X worker+1 --app APP
+    ${color.command('heroku ps:scale web=3:Standard-2X worker+1 --app APP')}
     Scaling dynos... done, now running web at 3:Standard-2X, worker at 1:Standard-1X.
   `, heredoc`
-    $ heroku ps:scale --app APP
+    ${color.command('heroku ps:scale --app APP')}
     web=3:Standard-2X worker=1:Standard-1X
   `]
 

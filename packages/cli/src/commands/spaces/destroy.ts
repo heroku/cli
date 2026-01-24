@@ -22,7 +22,7 @@ export default class Destroy extends Command {
     destroy a space
   `
   static examples = [heredoc`
-    $ heroku spaces:destroy --space my-space
+    ${color.command('heroku spaces:destroy --space my-space')}
     Destroying my-space... done
   `]
 
