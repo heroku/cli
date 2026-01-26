@@ -1,24 +1,27 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/upgrade/run.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import tsheredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {color} from '@heroku-cli/color'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
-import ansis from 'ansis'
+import {stderr} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/upgrade/run.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
 describe('pg:upgrade', function () {
-  const hobbyAddon = fixtures.addons['www-db']
-  const addon = fixtures.addons['dwh-db']
+  let hobbyAddon: Heroku.AddOn
+  let addon: Heroku.AddOn
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
+  let api: nock.Scope
+  let dataApi: nock.Scope
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -26,12 +29,17 @@ describe('pg:upgrade', function () {
   })
 
   beforeEach(async function () {
+    api = nock('https://api.heroku.com')
+    dataApi = nock('https://api.data.heroku.com')
+    hobbyAddon = fixtures.addons['www-db']
+    addon = fixtures.addons['dwh-db']
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
   })
 
   afterEach(async function () {
     nock.cleanAll()
+    api.done()
   })
 
   after(function () {
@@ -40,9 +48,7 @@ describe('pg:upgrade', function () {
   })
 
   it('refuses to start test upgrade on legacy essential dbs', async function () {
-    const hobbyAddon = fixtures.addons['www-db']
-
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
     await runCommand(Cmd, [
@@ -58,16 +64,16 @@ describe('pg:upgrade', function () {
   })
 
   it('upgrades follower db with version flag', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {following: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait`.'})
 
@@ -95,13 +101,13 @@ describe('pg:upgrade', function () {
   })
 
   it('upgrades follower db without version flag', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {following: 'postgres://db1'})
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
@@ -130,16 +136,16 @@ describe('pg:upgrade', function () {
 
   it('upgrades essential db', async function () {
     const essentialAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'}, id: 'b68d8f51-6577-4a46-a617-c5f36f1bb031',
+      id: 'b68d8f51-6577-4a46-a617-c5f36f1bb031', name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
     }
 
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${essentialAddon.id}`)
       .reply(200)
       .post(`/client/v11/databases/${essentialAddon.id}/upgrade/run`)
@@ -167,16 +173,16 @@ describe('pg:upgrade', function () {
   })
 
   it('errors when there is no upgrade prepared on leader db', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(400, {id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade."})
 
@@ -195,16 +201,16 @@ describe('pg:upgrade', function () {
   })
 
   it('errors when leader db is not yet ready for upgrade', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(400, {id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.'})
 
@@ -223,16 +229,16 @@ describe('pg:upgrade', function () {
   })
 
   it('runs a scheduled upgrade on a leader db', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
 
