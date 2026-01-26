@@ -6,16 +6,20 @@ import {updatePipeline} from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 
 export default class PipelinesRename extends Command {
+  /* eslint-disable perfectionist/sort-objects */
+  // the order of args is important for the command to work
+  // TODO: change pipeline to be a flag, which would be consistent with apps:rename
   static args = {
+    pipeline: Args.string({
+      description: 'name of pipeline to rename',
+      required: true,
+    }),
     name: Args.string({
       description: 'new name of pipeline',
       required: true,
     }),
-    pipeline: Args.string({
-      description: 'current name of pipeline',
-      required: true,
-    }),
   }
+  /* eslint-enable perfectionist/sort-objects */
 
   static description = 'rename a pipeline'
 
