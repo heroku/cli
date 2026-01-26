@@ -8,7 +8,7 @@ export default class PipelinesRemove extends Command {
   static description = 'remove this app from its pipeline'
 
   static examples = [
-    '$ heroku pipelines:remove -a my-app',
+    color.command('heroku pipelines:remove -a my-app'),
   ]
 
   static flags = {

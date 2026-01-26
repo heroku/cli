@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -8,16 +9,12 @@ export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'
 
   static examples = [
-    '$ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy',
+    color.command('heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy'),
   ]
 
   static flags = {
     app: flags.app({
       description: 'parent app used by review apps',
-    }),
-    remote: flags.remote(),
-    pipeline: flags.pipeline({
-      required: true,
     }),
     autodeploy: flags.boolean({
       description: 'disable autodeployments',
@@ -25,10 +22,6 @@ export default class ReviewappsDisable extends Command {
     }),
     autodestroy: flags.boolean({
       description: 'disable automatically destroying review apps',
-      hidden: true,
-    }),
-    'wait-for-ci': flags.boolean({
-      description: 'disable wait for CI',
       hidden: true,
     }),
     'no-autodeploy': flags.boolean({
@@ -39,6 +32,14 @@ export default class ReviewappsDisable extends Command {
     }),
     'no-wait-for-ci': flags.boolean({
       description: 'disable wait for CI',
+    }),
+    pipeline: flags.pipeline({
+      required: true,
+    }),
+    remote: flags.remote(),
+    'wait-for-ci': flags.boolean({
+      description: 'disable wait for CI',
+      hidden: true,
     }),
   }
 
@@ -53,15 +54,15 @@ export default class ReviewappsDisable extends Command {
     const settings: {
       automatic_review_apps?: boolean;
       destroy_stale_apps?: boolean;
-      wait_for_ci?: boolean;
       pipeline?: string;
       repo?: string;
+      wait_for_ci?: boolean;
     } = {
       automatic_review_apps: undefined,
       destroy_stale_apps: undefined,
-      wait_for_ci: undefined,
       pipeline: undefined,
       repo: undefined,
+      wait_for_ci: undefined,
     }
 
     // flags.autodeploy are back supported

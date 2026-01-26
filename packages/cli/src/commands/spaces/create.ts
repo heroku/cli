@@ -22,7 +22,7 @@ export default class Create extends Command {
   static examples = [heredoc`
     Example:
 
-    $ heroku spaces:create --space my-space --team my-team --region oregon
+    ${color.command('heroku spaces:create --space my-space --team my-team --region oregon')}
     Creating space my-space in team my-team... done
     === my-space
     ID:         e7b99e37-69b3-4475-ad47-a5cc5d75fd9f

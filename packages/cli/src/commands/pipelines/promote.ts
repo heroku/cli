@@ -164,7 +164,7 @@ export default class Promote extends Command {
   static description = 'promote the latest release of this app to its downstream app(s)'
 
   static examples = [
-    '$ heroku pipelines:promote -a my-app-staging',
+    color.command('heroku pipelines:promote -a my-app-staging'),
   ]
 
   static flags = {
