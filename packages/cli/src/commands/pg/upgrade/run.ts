@@ -58,7 +58,7 @@ export default class Upgrade extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     if (utils.pg.isLegacyEssentialDatabase(db))
-      ux.error(`You can only use ${color.command('pg:upgrade:*')} commands on Essential-* and higher plans.`)
+      ux.error(`You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})

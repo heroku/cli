@@ -52,7 +52,7 @@ describe('pg:upgrade', function () {
       'myapp',
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
-      You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.
+      You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.
     `))
     })
   })
