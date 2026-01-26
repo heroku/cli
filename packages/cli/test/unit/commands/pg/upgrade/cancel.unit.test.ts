@@ -1,18 +1,20 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/upgrade/cancel'
+import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
 
-import stripAnsi from 'strip-ansi'
+const heredoc = tsheredoc.default
 
-/*
+import ansis from 'ansis'
+
 describe('pg:upgrade:cancel', function () {
   const addon = fixtures.addons['dwh-db']
   let uxWarnStub: sinon.SinonStub
@@ -20,7 +22,7 @@ describe('pg:upgrade:cancel', function () {
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(ux, 'prompt').resolves('myapp')
+    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {
@@ -77,7 +79,7 @@ describe('pg:upgrade:cancel', function () {
   it('refuses to cancel upgrade on follower dbs', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon: addon}])
+      .reply(200, [{addon}])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {
@@ -125,11 +127,10 @@ describe('pg:upgrade:cancel', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Cancelling upgrade on ${addon.name}...
       Cancelling upgrade on ${addon.name}... done
       You canceled the upgrade.
     `))
@@ -155,8 +156,8 @@ describe('pg:upgrade:cancel', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expectOutput(error.message, heredoc(`
-      You haven't scheduled an upgrade on your database. Run ${color.cmd('pg:upgrade:prepare')} to schedule an upgrade.
+      expectOutput(ansis.strip(error.message), heredoc(`
+      You haven't scheduled an upgrade on your database. Run pg:upgrade:prepare to schedule an upgrade.
 
       Error ID: bad_request
     `))
@@ -199,4 +200,3 @@ describe('pg:upgrade:cancel', function () {
     })
   })
 })
-*/
