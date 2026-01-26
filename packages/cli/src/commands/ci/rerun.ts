@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -8,25 +9,25 @@ import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
 
 export default class CiReRun extends Command {
+  static args = {
+    number: Args.string({description: 'auto-incremented test run number', required: false}),
+  }
+
   static description = 'rerun tests against current directory'
 
   static examples = [
-    `$ heroku ci:rerun 985 --app murmuring-headland-14719
-`,
+    color.command(`heroku ci:rerun 985 --app murmuring-headland-14719
+`),
   ]
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({required: false}),
-  }
-
-  static args = {
-    number: Args.string({required: false, description: 'auto-incremented test run number'}),
+    remote: flags.remote(),
   }
 
   async run() {
-    const {flags, args} = await this.parse(CiReRun)
+    const {args, flags} = await this.parse(CiReRun)
     const pipeline = await getPipeline(flags, this.heroku)
 
     let sourceTestRun: Heroku.TestRun
@@ -54,8 +55,8 @@ export default class CiReRun extends Command {
       commit_branch: sourceTestRun.commit_branch,
       commit_message: sourceTestRun.commit_message,
       commit_sha: sourceTestRun.commit_sha,
-      pipeline: pipeline.id,
       organization,
+      pipeline: pipeline.id,
       source_blob_url: sourceBlobUrl,
     },
     })

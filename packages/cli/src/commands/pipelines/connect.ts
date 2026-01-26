@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {getPipeline} from '../../lib/api.js'
@@ -13,7 +14,7 @@ export default class Connect extends Command {
   static description = 'connect a GitHub repo to an existing pipeline'
 
   static examples = [
-    '$ heroku pipelines:connect my-pipeline -r githuborg/reponame',
+    color.command('heroku pipelines:connect my-pipeline -r githuborg/reponame'),
   ]
 
   static flags = {

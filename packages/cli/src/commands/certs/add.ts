@@ -1,5 +1,4 @@
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {hux, color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -23,11 +22,11 @@ export default class Add extends Command {
 
   Note: certificates with PEM encoding are also valid.
   `
-  static examples = [
-    heredoc(`$ heroku certs:add example.com.crt example.com.key
+  static examples = [heredoc(`
+    ${color.command('heroku certs:add example.com.crt example.com.key')}
     If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
-    https://help.salesforce.com/s/articleView?id=000333504&type=1`),
-  ]
+    ${color.info('https://help.salesforce.com/s/articleView?id=000333504&type=1')}`,
+  )]
 
   static flags = {
     app: flags.app({required: true}),

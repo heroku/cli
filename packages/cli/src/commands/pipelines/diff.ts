@@ -72,7 +72,7 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
       author: {},
       message: {},
     })
-    ux.stdout(`\nhttps://github.com/${path}`)
+    ux.stdout(`\n${color.info(`https://github.com/${path}`)}`)
   } catch {
     ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
     ux.stdout('are you sure you have pushed your latest commits to GitHub?')
@@ -83,7 +83,7 @@ export default class PipelinesDiff extends Command {
   static description = 'compares the latest release of this app to its downstream app(s)'
 
   static examples = [
-    '$ heroku pipelines:diff -a my-app-staging',
+    color.command('heroku pipelines:diff -a my-app-staging'),
   ]
 
   static flags = {

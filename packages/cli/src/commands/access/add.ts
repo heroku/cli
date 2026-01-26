@@ -13,8 +13,8 @@ export default class AccessAdd extends Command {
   static description = 'add new users to your app'
 
   static examples = [
-    '$ heroku access:add user@email.com --app APP # add a collaborator to your app',
-    '$ heroku access:add user@email.com --app APP --permissions deploy,manage,operate # permissions must be comma separated',
+    `${color.command('heroku access:add user@email.com --app APP')} # add a collaborator to your app`,
+    `${color.command('heroku access:add user@email.com --app APP --permissions deploy,manage,operate')} # permissions must be comma separated`,
   ]
 
   static flags = {

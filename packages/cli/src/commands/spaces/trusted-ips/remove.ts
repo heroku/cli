@@ -16,9 +16,9 @@ export default class Remove extends Command {
   Uses CIDR notation.`)
 
   static examples = [heredoc(`
-  $ heroku trusted-ips:remove --space my-space 192.168.2.0/24
-      Removed 192.168.2.0/24 from trusted IP ranges on my-space
-        `)]
+    ${color.command('heroku trusted-ips:remove --space my-space 192.168.2.0/24')}
+    Removed 192.168.2.0/24 from trusted IP ranges on my-space
+  `)]
 
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),

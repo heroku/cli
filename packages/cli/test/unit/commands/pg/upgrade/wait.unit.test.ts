@@ -1,12 +1,13 @@
-/*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
-import Cmd from '../../../../../src/commands/pg/upgrade/wait'
-import heredoc from 'tsheredoc'
-// import {CLIError} from '@oclif/core/lib/errors'
+import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
+import tsheredoc from 'tsheredoc'
+import {Errors} from '@oclif/core'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
+
+const heredoc = tsheredoc.default
 
 const all = [
   {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
@@ -44,7 +45,6 @@ describe('pg:upgrade:wait', function () {
     ])
     expect(stdout.output).to.equal('')
     expectOutput(stderr.output, heredoc(`
-      Waiting for database postgres-1... preparing upgrade service
       Waiting for database postgres-1... (7/7) recreating followers
     `))
   })
@@ -89,10 +89,9 @@ describe('pg:upgrade:wait', function () {
       'myapp',
       'DATABASE_URL',
     ]).catch(error => {
-      const {message, oclif} = error as CLIError
+      const {message, oclif} = error as Errors.CLIError
       expect(message).to.equal('this is an error message')
       expect(oclif.exit).to.equal(1)
     })
   })
 })
-*/

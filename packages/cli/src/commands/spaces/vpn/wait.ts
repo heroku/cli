@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
@@ -15,8 +15,8 @@ const wait = (ms: number) => new Promise(resolve => {
 export default class Wait extends Command {
   static topic = 'spaces'
   static description = 'wait for VPN Connection to be created'
-  static examples = [heredoc`
-      $ heroku spaces:vpn:wait vpn-connection-name --space my-space
+  static examples = [heredoc(`
+    ${color.command('heroku spaces:vpn:wait vpn-connection-name --space my-space')}
       Waiting for VPN Connection vpn-connection-name to allocate... done
       === my-space VPN Tunnels
 
@@ -24,7 +24,7 @@ export default class Wait extends Command {
      ────────── ──────────────── ────────────── ────────────── ──────────────── ───────────
      Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
      Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
-    `]
+    `)]
 
   static flags = {
     space: flags.string({char: 's', description: 'space the vpn connection belongs to', required: true}),

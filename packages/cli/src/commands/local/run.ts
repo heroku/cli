@@ -1,16 +1,16 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, Flags} from '@oclif/core'
+
+import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 import {fork as foreman} from '../../lib/local/fork-foreman.js'
 import {revertSortedArgs} from '../../lib/run/helpers.js'
-import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 
 export default class Run extends Command {
   static description = 'run a one-off command'
 
   static examples = [
-    '$ heroku local:run bin/migrate',
+    color.command('heroku local:run bin/migrate'),
   ]
-
-  static strict = false
 
   static flags = {
     env: Flags.string({
@@ -22,6 +22,8 @@ export default class Run extends Command {
       description: 'port to listen on',
     }),
   }
+
+  static strict = false
 
   async run() {
     const execArgv: string[] = ['run']

@@ -1,17 +1,18 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import {legacyEssentialPlan, databaseNameFromUrl, essentialNumPlan, formatResponseWithCommands} from '../../../lib/pg/util'
-import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types'
+import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
+import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
 import * as Heroku from '@heroku-cli/schema'
-import confirmCommand from '../../../lib/confirmCommand'
-import {nls} from '../../../nls'
+import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
-  static topic = 'pg';
+  static topic = 'pg'
   static description = heredoc(`
     We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
@@ -36,7 +37,7 @@ export default class Upgrade extends Command {
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (legacyEssentialPlan(db))
+    if (utils.pg.isLegacyEssentialDatabase(db))
       ux.error(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
@@ -46,7 +47,7 @@ export default class Upgrade extends Command {
       const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
       const origin = databaseNameFromUrl(replica.following, configVars)
 
-      await confirmCommand(app, confirm, heredoc(`
+      await new ConfirmCommand().confirm(app, confirm, heredoc(`
         We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
         Destructive action
@@ -54,8 +55,8 @@ export default class Upgrade extends Command {
 
         You can't undo this action.
       `))
-    } else if (essentialNumPlan(db)) {
-      await confirmCommand(app, confirm, heredoc(`
+    } else if (utils.pg.isEssentialDatabase(db)) {
+      await new ConfirmCommand().confirm(app, confirm, heredoc(`
         We're deprecating this command. To upgrade your database's Postgres version, use the new ${color.cmd('pg:upgrade:*')} subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
         Destructive action
@@ -81,4 +82,3 @@ export default class Upgrade extends Command {
     }
   }
 }
-*/
