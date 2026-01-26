@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {ux} from '@oclif/core'
@@ -155,11 +155,11 @@ export class BuildpackCommand {
   displayUpdate(app: string, remote: string, buildpacks: BuildpackResponse[], action: 'added' | 'set' | 'removed') {
     if (buildpacks.length === 1) {
       ux.stdout(`Buildpack ${action}. Next release on ${app} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
-      ux.stdout(`Run ${color.magenta(push(remote))} to create a new release using this buildpack.`)
+      ux.stdout(`Run ${color.command(push(remote))} to create a new release using this buildpack.`)
     } else {
       ux.stdout(`Buildpack ${action}. Next release on ${app} will use:`)
       this.display(buildpacks, '  ')
-      ux.stdout(`Run ${color.magenta(push(remote))} to create a new release using these buildpacks.`)
+      ux.stdout(`Run ${color.command(push(remote))} to create a new release using these buildpacks.`)
     }
   }
 

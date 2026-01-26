@@ -36,7 +36,7 @@ export default class Index extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    ux.action.start(`${color.bold('Building the autocomplete cache')}`)
+    ux.action.start(`${color.label('Building the autocomplete cache')}`)
     const create = new Create([], this.config)
     await create.run()
     await this.updateCache(AppCompletion, 'app')
@@ -53,7 +53,7 @@ export default class Index extends AutocompleteBase {
       const tabStr = shell === 'bash' ? '<TAB><TAB>' : '<TAB>'
 
       this.log(`
-${color.bold(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
+${color.label(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
 
 1) Add the autocomplete env var to your ${shell} profile and source it
 ${color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc; source ~/.${shell}rc`)}

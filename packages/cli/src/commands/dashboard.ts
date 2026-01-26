@@ -94,7 +94,7 @@ function displayNotifications(notifications?: {read: boolean}[]) {
 }
 
 const dim = (s: string) => color.dim(s)
-const bold = (s: string) => color.bold(s)
+const bold = (s: string) => color.label(s)
 const label = (s: string) => color.label(s)
 
 const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<FetchMetricsResponse> => {
