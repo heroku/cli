@@ -15,7 +15,7 @@ export default class Destroy extends Command {
   }
 
   static description = 'permanently destroy an add-on resource'
-  static examples = ['addons:destroy [ADDON]... [flags]']
+  static examples = [`${color.command('addons:destroy [ADDON]... [flags]')}`]
 
   static flags = {
     app: flags.app(),

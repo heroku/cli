@@ -1,4 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import {TelemetryDrain} from '../../lib/types/telemetry.js'
 import tsheredoc from 'tsheredoc'
@@ -23,10 +24,10 @@ export default class Add extends Command {
     endpoint: Args.string({required: true, description: 'drain url'}),
   }
 
-  static example = heredoc(`
+  static example = heredoc`
     Add a telemetry drain to an app to collect logs and traces:
-    $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
-  `)
+    ${color.command("heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{\"x-drain-example-team\": \"API_KEY\", \"x-drain-example-dataset\": \"METRICS_DATASET\"}'")}
+  `
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Add)

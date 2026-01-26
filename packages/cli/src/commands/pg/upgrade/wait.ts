@@ -1,14 +1,14 @@
-import {color} from '@heroku-cli/color'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
+import {HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import tsheredoc from 'tsheredoc'
-import {pg, utils} from '@heroku/heroku-cli-util'
+
 import notify from '../../../lib/notify.js'
 import {PgUpgradeStatus} from '../../../lib/pg/types.js'
-import {HTTPError} from '@heroku/http-call'
-import {nls} from '../../../nls.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
+import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
@@ -17,36 +17,37 @@ const wait = (ms: number) => new Promise(resolve => {
 })
 
 export default class Wait extends Command {
-  static topic = 'pg'
-  static description = 'provides the status of an upgrade and blocks it until the operation is complete'
-  static flags = {
-    'wait-interval': flags.integer({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
-    'no-notify': flags.boolean({description: 'do not show OS notification'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
-  static examples = [
-    heredoc(`
-      # Wait for upgrade to complete with default settings
-      $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp
-    `),
-    heredoc(`
-      # Wait with custom polling interval
-      $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --wait-interval 10
-    `),
-    heredoc(`
-      # Wait without showing OS notifications
-      $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --no-notify
-    `),
-  ]
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')}`}),
   }
 
+  static description = 'provides the status of an upgrade and blocks it until the operation is complete'
+  static examples = [
+    heredoc(`
+      # Wait for upgrade to complete with default settings
+      ${color.command('heroku pg:upgrade:wait postgresql-curved-12345 --app myapp')}
+    `),
+    heredoc(`
+      # Wait with custom polling interval
+      ${color.command('heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --wait-interval 10')}
+    `),
+    heredoc(`
+      # Wait without showing OS notifications
+      ${color.command('heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --no-notify')}
+    `),
+  ]
+
+  static flags = {
+    app: flags.app({required: true}),
+    'no-notify': flags.boolean({description: 'do not show OS notification'}),
+    remote: flags.remote(),
+    'wait-interval': flags.integer({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Wait)
+    const {args, flags} = await this.parse(Wait)
     const {app, 'wait-interval': waitInterval} = flags
     const dbName = args.database
     const pgDebug = debug('pg')
@@ -72,7 +73,7 @@ export default class Wait extends Command {
           }
 
           retries--
-          status = {'waiting?': true, message: notFoundMessage}
+          status = {message: notFoundMessage, 'waiting?': true}
         }
 
         let message = formatResponseWithCommands(status.message)

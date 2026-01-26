@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {hux, color} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
 import tsheredoc from 'tsheredoc'
 import {displayVPNStatus} from '../../../lib/spaces/format.js'
@@ -12,13 +12,11 @@ const heredoc = tsheredoc.default
 export default class Connections extends Command {
   static topic = 'spaces'
   static description = 'list the VPN Connections for a space'
-  static example = heredoc`
-    $ heroku spaces:vpn:connections --space my-space
+  static example = heredoc`$ ${color.command('heroku spaces:vpn:connections --space my-space')}
     === my-space VPN Connections
      Name   Status Tunnels
      ────── ────── ───────
-     office active UP/UP
-  `
+     office active UP/UP`
   static flags = {
     space: flags.string({char: 's', description: 'space to get VPN connections from', required: true}),
     json: flags.boolean({description: 'output in json format'}),

@@ -26,7 +26,13 @@ export default class Upgrade extends Command {
 
   https://devcenter.heroku.com/articles/managing-add-ons
   `
-  static examples = ['Upgrade an add-on by service name:\n$ heroku addons:upgrade heroku-redis:premium-2\n\nUpgrade a specific add-on:\n$ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2']
+  static examples = [
+    `# Upgrade an add-on by service name:
+    ${color.command('heroku addons:upgrade heroku-redis:premium-2')}`,
+    `# Upgrade a specific add-on:
+    ${color.command('heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2')}`,
+  ]
+
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
@@ -56,7 +62,7 @@ For example: ${color.blue('heroku addons:upgrade heroku-redis:premium-0')}
 ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
   }
 
-  protected getAddonPartsFromArgs(args: { addon: string, plan: string | undefined }): { plan: string, addon: string } {
+  protected getAddonPartsFromArgs(args: { addon: string, plan: string | undefined }): { addon: string, plan: string } {
     let {addon, plan} = args
 
     if (!plan && addon.includes(':')) {

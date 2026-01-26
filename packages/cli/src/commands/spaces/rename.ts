@@ -7,10 +7,10 @@ const heredoc = tsheredoc.default
 
 export default class Rename extends Command {
   static description = 'renames a space'
-  static example = heredoc(`
-    $ heroku spaces:rename --from old-space-name --to new-space-name
+  static example = heredoc`
+    ${color.command('heroku spaces:rename --from old-space-name --to new-space-name')}
     Renaming space old-space-name to new-space-name... done
-  `)
+  `
 
   static flags = {
     from: flags.string({description: 'current name of space', required: true}),

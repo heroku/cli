@@ -241,8 +241,8 @@ export default class Addons extends Command {
   behavior.
   `
   static examples = [
-    `$ heroku ${topic} --all`,
-    `$ heroku ${topic} --app acme-inc-www`,
+    `${color.command('heroku ' + topic + ' --all')}`,
+    `${color.command('heroku ' + topic + ' --app acme-inc-www')}`,
   ]
 
   static flags = {
