@@ -1,6 +1,5 @@
 {
   "require": [
-    "ts-node/esm",
     "test/helpers/init.mjs",
     "test/helpers/hooks.ts"
   ],
@@ -8,5 +7,6 @@
   "recursive": true,
   "reporter": "spec",
   "timeout": 360000,
-  "node-option": ["loader=ts-node/esm"]
+  "node-option": ["import=./test/register.mjs"],
+  "color": true
 }
