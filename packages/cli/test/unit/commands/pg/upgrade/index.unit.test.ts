@@ -1,25 +1,27 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/upgrade/index.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import tsheredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {color} from '@heroku-cli/color'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
-import ansis from 'ansis'
+import {stderr} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/upgrade/index.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
 describe('pg:upgrade', function () {
-  const hobbyAddon = fixtures.addons['www-db']
-  const essentialAddon = fixtures.addons['www-db-3']
-  const addon = fixtures.addons['dwh-db']
+  let hobbyAddon: Heroku.AddOn
+  let addon: Heroku.AddOn
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
+  let api: nock.Scope
+  let dataApi: nock.Scope
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -27,11 +29,17 @@ describe('pg:upgrade', function () {
   })
 
   beforeEach(async function () {
+    api = nock('https://api.heroku.com')
+    dataApi = nock('https://api.data.heroku.com')
+    addon = fixtures.addons['dwh-db']
+    hobbyAddon = fixtures.addons['www-db']
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
   })
 
   afterEach(async function () {
+    api.done()
+    dataApi.done()
     nock.cleanAll()
   })
 
@@ -41,7 +49,7 @@ describe('pg:upgrade', function () {
   })
 
   it('refuses to upgrade legacy essential dbs', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
     await runCommand(Cmd, [
@@ -50,18 +58,15 @@ describe('pg:upgrade', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
+      expect(error.message).to.equal(`You can only use ${color.code('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
     })
   })
 
   it('refuses to upgrade standard tier leader db', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/config-vars')
-      .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
 
@@ -71,21 +76,21 @@ describe('pg:upgrade', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can only use ${color.cmd('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
+      expect(error.message).to.equal(`You can only use ${color.code('heroku pg:upgrade')} on Essential-tier databases and follower databases on Standard-tier and higher plans.`)
     })
   })
 
   it('upgrades follower db with version flag', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {following: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade`)
       .reply(200, {message: 'Upgrading'})
 
@@ -93,7 +98,7 @@ describe('pg:upgrade', function () {
       We're deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
-      You're upgrading ${addon.name} to Postgres version 15. The database will stop following DATABASE and become writable.
+      You're upgrading ⛁ ${addon.name} to Postgres version 15. The database will stop following ⛁ DATABASE and become writable.
 
       You can't undo this action.
     `)
@@ -109,19 +114,19 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}... done
+      Starting upgrade on ⛁ ${addon.name}... done
       Upgrading
     `))
   })
 
   it('upgrades follower db without version flag', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
+    api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {following: 'postgres://db1'})
       .post(`/client/v11/databases/${addon.id}/upgrade`)
@@ -131,7 +136,7 @@ describe('pg:upgrade', function () {
       We're deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
-      You're upgrading ${addon.name} to the latest supported Postgres version. The database will stop following DATABASE and become writable.
+      You're upgrading ⛁ ${addon.name} to the latest supported Postgres version. The database will stop following ⛁ DATABASE and become writable.
 
       You can't undo this action.
     `)
@@ -145,23 +150,20 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}... done
+      Starting upgrade on ⛁ ${addon.name}... done
       Upgrading
     `))
   })
 
   it('upgrades essential db', async function () {
     const essentialAddon = {
-      name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'}, id: 'b68d8f51-6577-4a46-a617-c5f36f1bb031',
+      id: 'b68d8f51-6577-4a46-a617-c5f36f1bb031', name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
     }
 
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/config-vars')
-      .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${essentialAddon.id}`)
       .reply(200)
       .post(`/client/v11/databases/${essentialAddon.id}/upgrade`)
@@ -171,7 +173,7 @@ describe('pg:upgrade', function () {
       We're deprecating this command. To upgrade your database's Postgres version, use the new pg:upgrade:* subcommands. See https://devcenter.heroku.com/changelog-items/3179.
 
       Destructive action
-      You're upgrading ${essentialAddon.name} to the latest supported Postgres version.
+      You're upgrading ⛁ ${essentialAddon.name} to the latest supported Postgres version.
 
       You can't undo this action.
     `)
@@ -185,7 +187,7 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${essentialAddon.name}... done
+      Starting upgrade on ⛁ ${essentialAddon.name}... done
       Upgrading
     `))
   })

@@ -74,7 +74,7 @@ export default class Upgrade extends Command {
 
     try {
       const data = {version}
-      ux.action.start(`Starting upgrade on ${color.addon(db.name)}`)
+      ux.action.start(`Starting upgrade on ${color.datastore(db.name)}`)
       const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade`, {body: data, hostname: utils.pg.host()})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {

@@ -36,7 +36,7 @@ export default class Remove extends Command {
 
     const buildpacks = await buildpackCommand.fetch(flags.app)
     if (buildpacks.length === 0) {
-      ux.error(`No buildpacks were found. Next release on ${color.app(flags.app)} will detect buildpack normally.`, {exit: 1})
+      ux.error(`No buildpacks were found. Next release on ⬢ ${flags.app} will detect buildpack normally.`, {exit: 1})
     }
 
     let spliceIndex: number

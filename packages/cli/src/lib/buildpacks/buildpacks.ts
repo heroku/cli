@@ -48,7 +48,7 @@ export class BuildpackCommand {
       ux.stdout(message)
       ux.warn('The LANGUAGE_PACK_URL config var is still set and will be used for the next release')
     } else {
-      ux.stdout(`${message} Next release on ${app} will detect buildpacks normally.`)
+      ux.stdout(`${message} Next release on ${color.app(app)} will detect buildpacks normally.`)
     }
   }
 
@@ -64,10 +64,10 @@ export class BuildpackCommand {
 
   displayUpdate(app: string, remote: string, buildpacks: BuildpackResponse[], action: 'added' | 'removed' | 'set') {
     if (buildpacks.length === 1) {
-      ux.stdout(`Buildpack ${action}. Next release on ${color.app(app)} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
+      ux.stdout(`Buildpack ${action}. Next release on ⬢ ${color.app(app)} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
       ux.stdout(`Run ${color.code(push(remote))} to create a new release using this buildpack.`)
     } else {
-      ux.stdout(`Buildpack ${action}. Next release on ${color.app(app)} will use:`)
+      ux.stdout(`Buildpack ${action}. Next release on ⬢ ${color.app(app)} will use:`)
       this.display(buildpacks, '  ')
       ux.stdout(`Run ${color.code(push(remote))} to create a new release using these buildpacks.`)
     }

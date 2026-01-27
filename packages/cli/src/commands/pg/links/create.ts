@@ -9,10 +9,14 @@ import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 export default class Create extends Command {
+  /* eslint-disable perfectionist/sort-objects */
+  // the order of args is important for the command to work
+  // TODO: change database to be a flag, which would be consistent with apps:rename
   static args = {
-    database: Args.string({description: nls('pg:database:arg:description'), required: true}),
     remote: Args.string({description: nls('pg:database:arg:description'), required: true}),
+    database: Args.string({description: nls('pg:database:arg:description'), required: true}),
   }
+  /* eslint-enable perfectionist/sort-objects */
 
   static description = 'create a link between data stores'
 
