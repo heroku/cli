@@ -10,13 +10,11 @@ const heredoc = tsheredoc.default
 
 export default class Update extends Command {
   static args = {
-    telemetry_drain_id: Args.string({required: true, description: 'ID of the drain to update'}),
+    telemetry_drain_id: Args.string({description: 'ID of the drain to update', required: true}),
   }
 
   static description = 'updates a telemetry drain with provided attributes (attributes not provided remain unchanged)'
-  static example = heredoc`
-    ${color.command('heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com')}
-  `
+  static example = `${color.command('heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com')}`
 
   static flags = {
     endpoint: Flags.string({description: 'drain url'}),

@@ -2,11 +2,14 @@ import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../lib/run/log-displayer.js'
 
+const heredoc = tsheredoc.default
+
 export default class Logs extends Command {
-  static description = `
+  static description = heredoc`
     display recent log output
     disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
   `
@@ -76,7 +79,7 @@ export default class Logs extends Command {
     const {app, 'dyno-name': dyno, 'force-colors': forceColors, num, 'process-type': type, ps, source, tail} = flags
 
     if (forceColors)
-      ux.warn('The --force-colors flag is deprecated and will be removed in a future version. Use FORCE_COLORS=true to force colors.')
+      ux.warn('The --force-colors flag is deprecated. Use FORCE_COLORS=true to force colors.')
 
     const options = {
       app,
