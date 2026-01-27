@@ -34,7 +34,7 @@ export default class Setup extends Command {
   static description
     = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
 
-  static examples = ['$ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team']
+  static examples = [color.command('heroku pipelines:setup my-pipeline githuborg/reponame -t my-team')]
 
   static flags = {
     team: flags.team({

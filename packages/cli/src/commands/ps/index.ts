@@ -59,6 +59,7 @@ function truncate(s: string) {
 function printExtended(dynos: DynoExtended[]) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
+  /* eslint-disable perfectionist/sort-objects */
   hux.table<DynoExtended>(
     sortedDynos,
     {
@@ -81,6 +82,7 @@ function printExtended(dynos: DynoExtended[]) {
       overflow: 'wrap',
     },
   )
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account: Account) {
@@ -176,13 +178,13 @@ function printDynos(dynos: DynoExtended[]) : void {
 export default class Index extends Command {
   static description = 'list dynos for an app'
   static examples = [heredoc`
-    $ heroku ps
+    ${color.command('heroku ps')}
     === run: one-off dyno
     run.1: up for 5m: bash
     === web: bundle exec thin start -p $PORT
     web.1: created for 30s
   `, heredoc`
-    $ heroku ps run # specifying types
+    ${color.command('heroku ps run')} # specifying types
     === run: one-off dyno
     run.1: up for 5m: bash
   `]

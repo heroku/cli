@@ -1,17 +1,19 @@
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../../src/commands/pg/upgrade/index'
+import Cmd from '../../../../../src/commands/pg/upgrade/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import {color} from '@heroku-cli/color'
 import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:upgrade', function () {
   const hobbyAddon = fixtures.addons['www-db']
   const essentialAddon = fixtures.addons['www-db-3']
@@ -21,7 +23,7 @@ describe('pg:upgrade', function () {
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(ux, 'prompt').resolves('myapp')
+    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {
@@ -55,7 +57,7 @@ describe('pg:upgrade', function () {
   it('refuses to upgrade standard tier leader db', async function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
-      .reply(200, [{addon: addon}])
+      .reply(200, [{addon}])
     nock('https://api.heroku.com')
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
@@ -103,11 +105,10 @@ describe('pg:upgrade', function () {
       '15',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}...
       Starting upgrade on ${addon.name}... done
       Upgrading
     `))
@@ -140,11 +141,10 @@ describe('pg:upgrade', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}...
       Starting upgrade on ${addon.name}... done
       Upgrading
     `))
@@ -181,14 +181,12 @@ describe('pg:upgrade', function () {
       'myapp',
     ])
 
-    expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-    expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+    expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+    expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${essentialAddon.name}...
       Starting upgrade on ${essentialAddon.name}... done
       Upgrading
     `))
   })
 })
-*/

@@ -15,8 +15,8 @@ export default class Stop extends Command {
 
   static description = 'stop an app dyno or process type'
   static examples = [
-    '$ heroku ps:stop --app myapp --dyno-name run.1828',
-    '$ heroku ps:stop --app myapp --process-type run',
+    color.command('heroku ps:stop --app myapp --dyno-name run.1828'),
+    color.command('heroku ps:stop --app myapp --process-type run'),
   ]
 
   static flags = {

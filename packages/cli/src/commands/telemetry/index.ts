@@ -1,17 +1,36 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+
 import {TelemetryDrains} from '../../lib/types/telemetry.js'
 
 export default class Index extends Command {
-  static topic = 'telemetry'
   static description = 'list telemetry drains'
+  static example = `${color.command('heroku telemetry')}`
   static flags = {
-    space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
     app: Flags.string({char: 'a', description: 'filter by app name'}),
+    space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
   }
 
-  static example = '$ heroku telemetry'
+  static topic = 'telemetry'
+
+  protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {
+    if (telemetryDrains.length === 0) {
+      ux.stdout(`There are no telemetry drains in ${owner}`)
+    } else {
+      hux.styledHeader(`${owner} Telemetry Drains`)
+      /* eslint-disable perfectionist/sort-objects */
+      hux.table(
+        telemetryDrains,
+        {
+          ID: {get: telemetryDrain => telemetryDrain.id},
+          Signals: {get: telemetryDrain => telemetryDrain.signals},
+          Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
+        },
+      )
+      /* eslint-enable perfectionist/sort-objects */
+    }
+  }
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
@@ -34,21 +53,5 @@ export default class Index extends Command {
     }
 
     this.display(drains, app || space)
-  }
-
-  protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {
-    if (telemetryDrains.length === 0) {
-      ux.stdout(`There are no telemetry drains in ${owner}`)
-    } else {
-      hux.styledHeader(`${owner} Telemetry Drains`)
-      hux.table(
-        telemetryDrains,
-        {
-          ID: {get: telemetryDrain => telemetryDrain.id},
-          Signals: {get: telemetryDrain => telemetryDrain.signals},
-          Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
-        },
-      )
-    }
   }
 }
