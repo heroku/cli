@@ -20,7 +20,8 @@ export default class Update extends Command {
     Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
     The connection is established over the public Internet but all traffic is encrypted using IPSec.
   `
-  static example = heredoc`$ ${color.command('heroku spaces:vpn:update vpn-connection-name --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24')}
+  static example = heredoc`
+    ${color.command('heroku spaces:vpn:update vpn-connection-name --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24')}
     Updating VPN Connection in space my-space... done`
 
   static flags = {
