@@ -74,8 +74,8 @@ describe('pg:promote when argument is database', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
       Reattaching pooler to new leader... done
     `))
   })
@@ -113,8 +113,8 @@ describe('pg:promote when argument is database', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -151,8 +151,8 @@ describe('pg:promote when argument is database', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -186,8 +186,8 @@ describe('pg:promote when argument is database', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -223,8 +223,8 @@ describe('pg:promote when argument is database', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -237,7 +237,7 @@ describe('pg:promote when argument is database', function () {
         {name: 'DATABASE', addon: {name: addon.name}, namespace: null},
         {name: 'PURPLE', addon: {name: addon.name}, namespace: null},
       ])
-    const err = `${addon.name} is already promoted on myapp`
+    const err = `${addon.name} is already promoted on ⬢ myapp`
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -281,7 +281,7 @@ describe('pg:promote when argument is database', function () {
       'dwh-db',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... Promoting dwh-db to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote succeeded.
     `))
   })
@@ -344,8 +344,8 @@ describe('pg:promote when argument is a credential attachment', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -386,8 +386,8 @@ describe('pg:promote when argument is a credential attachment', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -420,8 +420,8 @@ describe('pg:promote when argument is a credential attachment', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -457,8 +457,8 @@ describe('pg:promote when argument is a credential attachment', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -495,8 +495,8 @@ describe('pg:promote when argument is a credential attachment', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -517,7 +517,7 @@ describe('pg:promote when argument is a credential attachment', function () {
           namespace: 'credential:hello',
         },
       ])
-    const err = 'PURPLE is already promoted on myapp'
+    const err = 'PURPLE is already promoted on ⬢ myapp'
     await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -596,8 +596,8 @@ describe('pg:promote when release phase is present', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote succeeded.
     `))
   })
@@ -617,8 +617,8 @@ describe('pg:promote when release phase is present', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote succeeded. It is safe to ignore the failed Detach DATABASE release.
     `))
   })
@@ -638,8 +638,8 @@ describe('pg:promote when release phase is present', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running with ${addon.name} attached as DATABASE_URL. Check your release phase logs for failure causes.
     `))
   })
@@ -659,8 +659,8 @@ describe('pg:promote when release phase is present', function () {
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting PURPLE to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running without an attached DATABASE_URL. Check your release phase logs for failure causes.
     `))
   })
@@ -762,8 +762,8 @@ describe('pg:promote when database is not available or force flag is present', f
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 
@@ -800,8 +800,8 @@ describe('pg:promote when database is not available or force flag is present', f
       'DATABASE',
     ])
     expectOutput(stderr.output, heredoc(`
-      Ensuring an alternate alias for existing DATABASE_URL... RED_URL
-      Promoting ${addon.name} to DATABASE_URL on myapp... done
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
   })
 })
