@@ -1,7 +1,8 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import {ux} from '@oclif/core'
+
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
 import {LogDisplayer} from '../../lib/run/log-displayer.js'
@@ -10,35 +11,35 @@ export default class RunDetached extends Command {
   static description = 'run a detached dyno, where output is sent to your logs'
 
   static examples = [
-    '$ heroku run:detached ls',
+    color.command('heroku run:detached ls'),
   ]
-
-  static strict = false
 
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
-    size: flags.string({char: 's', description: 'dyno size', completion: DynoSizeCompletion}),
-    tail: flags.boolean({char: 't', description: 'continually stream logs'}),
-    type: flags.string({description: 'process type', completion: ProcessTypeCompletion}),
     'no-launcher': flags.boolean({
-      description: 'don\'t prepend \'launcher\' before a command',
       default: false,
+      description: 'don\'t prepend \'launcher\' before a command',
     }),
+    remote: flags.remote(),
+    size: flags.string({char: 's', completion: DynoSizeCompletion, description: 'dyno size'}),
+    tail: flags.boolean({char: 't', description: 'continually stream logs'}),
+    type: flags.string({completion: ProcessTypeCompletion, description: 'process type'}),
   }
 
+  static strict = false
+
   async run() {
-    const {flags, argv} = await this.parse(RunDetached)
+    const {argv, flags} = await this.parse(RunDetached)
 
     const opts = {
-      heroku: this.heroku,
       app: flags.app,
+      attach: false,
       command: await buildCommandWithLauncher(this.heroku, flags.app, argv as string[], flags['no-launcher']),
+      env: flags.env,
+      heroku: this.heroku,
       size: flags.size,
       type: flags.type,
-      env: flags.env,
-      attach: false,
     }
 
     if (!opts.command) {
@@ -57,7 +58,7 @@ export default class RunDetached extends Command {
         tail: true,
       })
     } else {
-      ux.stdout(`Run ${color.cmd(`heroku logs --app ${dyno.opts.app} --dyno ${dyno.dyno?.name || ''}`)} to view the output.\n`)
+      ux.stdout(`Run ${color.code(`heroku logs --app ${dyno.opts.app} --dyno ${dyno.dyno?.name || ''}`)} to view the output.\n`)
     }
   }
 }

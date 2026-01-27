@@ -30,7 +30,7 @@ export default class Destroy extends Command {
 
     // this appears to report errors if app not found
     await this.heroku.get(`/apps/${app}`)
-    await new ConfirmCommand().confirm(app, flags.confirm, `WARNING: This will delete ${color.app(app)} including all add-ons.`)
+    await new ConfirmCommand().confirm(app, flags.confirm, `This will delete ${color.app(app)} including all add-ons.`)
     ux.action.start(`Destroying ${color.app(app)} (including all add-ons)`)
     await this.heroku.delete(`/apps/${app}`)
 

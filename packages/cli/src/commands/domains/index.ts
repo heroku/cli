@@ -1,5 +1,4 @@
-import {hux, color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {confirm} from '@inquirer/prompts'
@@ -19,16 +18,17 @@ function isApexDomain(hostname: string) {
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
 
-  static examples = [
-    `$ heroku domains
+  static examples = [`${color.command('heroku domains')}
 === example Heroku Domain
 example-xxxxxxxxxxxx.herokuapp.com
 
 === example Custom Domains
 Domain Name      DNS Record Type  DNS Target
 www.example.com  CNAME            www.example.herokudns.com
-`, "$ heroku domains --filter 'Domain Name=www.example.com'",
-  ]
+`, `${color.command("heroku domains --filter 'Domain Name=www.example.com'")}
+=== example Custom Domains
+Domain Name      DNS Record Type  DNS Target
+www.example.com  CNAME            www.example.herokudns.com`]
 
   static flags = {
     app: flags.app({required: true}),
@@ -198,13 +198,13 @@ www.example.com  CNAME            www.example.herokudns.com
     if (flags.json) {
       hux.styledJSON(domains)
     } else {
-      hux.styledHeader(`${newColor.app(flags.app)} Heroku Domain`)
+      hux.styledHeader(`${color.app(flags.app)} Heroku Domain`)
       ux.stdout(herokuDomain && herokuDomain.hostname)
       if (customDomains && customDomains.length > 0) {
         ux.stdout()
 
         if (customDomains.length > 100 && !flags.json && !flags.csv) {
-          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.cmd('heroku domains -a example-app --csv > example-file.csv')}`)
+          ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.code('heroku domains -a example-app --csv > example-file.csv')}`)
           displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
           if (!displayTotalDomains) {
             return
@@ -212,7 +212,7 @@ www.example.com  CNAME            www.example.herokudns.com
         }
 
         ux.stdout()
-        hux.styledHeader(`${newColor.app(flags.app)} Custom Domains`)
+        hux.styledHeader(`${color.app(flags.app)} Custom Domains`)
 
         const tableConfig = this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined)
         const sortProperty = this.mapSortFieldToProperty(flags.sort)

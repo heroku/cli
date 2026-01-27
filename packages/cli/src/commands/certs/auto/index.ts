@@ -14,7 +14,7 @@ const heredoc = tsheredoc.default
 
 function humanize(value: null | string) {
   if (!value) {
-    return color.yellow('Waiting')
+    return color.info('Waiting')
   }
 
   if (value === 'ok') {
@@ -22,15 +22,15 @@ function humanize(value: null | string) {
   }
 
   if (value === 'failed') {
-    return color.red('Failed')
+    return color.failure('Failed')
   }
 
   if (value === 'verified') {
-    return color.yellow('In Progress')
+    return color.info('In Progress')
   }
 
   if (value === 'dns-verified') {
-    return color.yellow('DNS Verified')
+    return color.info('DNS Verified')
   }
 
   return value.split('-')
@@ -57,7 +57,7 @@ export default class Index extends Command {
     ])
 
     if (!app.acm) {
-      hux.styledHeader(`Automatic Certificate Management is ${color.yellow('disabled')} on ${color.app(flags.app)}`)
+      hux.styledHeader(`Automatic Certificate Management is ${color.inactive('disabled')} on ${color.app(flags.app)}`)
       return
     }
 

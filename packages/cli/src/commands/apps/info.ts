@@ -106,8 +106,8 @@ export default class AppsInfo extends Command {
 
   static description = 'show detailed app information'
   static examples = [
-    '$ heroku apps:info',
-    '$ heroku apps:info --shell',
+    color.command('heroku apps:info'),
+    color.command('heroku apps:info --shell'),
   ]
 
   static flags = {

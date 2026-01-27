@@ -72,13 +72,13 @@ Any variables added/removed/changed will be updated on the app after saving and 
 
   static examples = [
     `# edit with vim
-$ EDITOR="vim" heroku config:edit`,
+${color.command('EDITOR="vim" heroku config:edit')}`,
     `# edit with emacs
-$ EDITOR="emacs" heroku config:edit`,
+${color.command('EDITOR="emacs" heroku config:edit')}`,
     `# edit with pico
-$ EDITOR="pico" heroku config:edit`,
+${color.command('EDITOR="pico" heroku config:edit')}`,
     `# edit with atom editor
-$ VISUAL="atom --wait" heroku config:edit`,
+${color.command('VISUAL="atom --wait" heroku config:edit')}`,
   ]
 
   static flags = {

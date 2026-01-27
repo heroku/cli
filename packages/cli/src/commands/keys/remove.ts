@@ -1,15 +1,16 @@
-import {Args, ux} from '@oclif/core'
-import {color} from '@heroku-cli/color'
-import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 
 export default class Remove extends Command {
-  static description = 'remove an SSH key from the user'
-  static example = `$ heroku keys:remove email@example.com
-Removing email@example.com SSH key... done`
   static args = {
-    key: Args.string({required: true, description: 'email address of the user'}),
+    key: Args.string({description: 'email address of the user', required: true}),
   }
+
+  static description = 'remove an SSH key from the user'
+  static example = `${color.command('heroku keys:remove email@example.com')}
+Removing email@example.com SSH key... done`
 
   async run() {
     const {args} = await this.parse(Remove)
@@ -22,8 +23,8 @@ Removing email@example.com SSH key... done`
 
     const toRemove = keys.filter(k => k.comment === args.key)
     if (toRemove.length === 0) {
-      throw new Error(`SSH Key ${color.red(args.key)} not found.
-Found keys: ${color.yellow(keys.map(k => k.comment).join(', '))}.`)
+      throw new Error(`SSH Key ${color.failure(args.key)} not found.
+Found keys: ${color.info(keys.map(k => k.comment).join(', '))}.`)
     }
 
     await Promise.all(toRemove.map(key => this.heroku.delete(`/account/keys/${key.id}`)))

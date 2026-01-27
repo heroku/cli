@@ -1,10 +1,12 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import tsheredoc from 'tsheredoc'
-import {renderInfo} from '../../lib/spaces/spaces.js'
 import debug from 'debug'
 import {IncomingHttpHeaders} from 'node:http'
-import {Space, SpaceNat} from '../../lib/types/fir.js'
+import tsheredoc from 'tsheredoc'
+
+import {renderInfo} from '../../lib/spaces/spaces.js'
+import {SpaceNat} from '../../lib/types/fir.js'
 import {SpaceWithOutboundIps} from '../../lib/types/spaces.js'
 
 const heredoc = tsheredoc.default
@@ -12,21 +14,22 @@ const heredoc = tsheredoc.default
 const spacesDebug = debug('spaces:info')
 
 export default class Info extends Command {
-  static topic = 'spaces'
-  static description = 'show info about a space'
-  static example = '$ heroku spaces:info my-space'
-
-  static flags = {
-    space: flags.string({char: 's', description: 'space to get info of'}),
-    json: flags.boolean({description: 'output in json format'}),
-  }
-
   static args = {
     space: Args.string({hidden: true}),
   }
 
+  static description = 'show info about a space'
+  static example = `${color.command('heroku spaces:info my-space')}`
+
+  static flags = {
+    json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space to get info of'}),
+  }
+
+  static topic = 'spaces'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const spaceName = flags.space || args.space
     if (!spaceName) {
       ux.error(heredoc(`

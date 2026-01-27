@@ -1,5 +1,4 @@
-import {color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -21,11 +20,11 @@ export default class Connect extends Command {
     Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
     The connection is established over the public Internet but all traffic is encrypted using IPSec.
   `
-  static examples = [heredoc`
-    $ heroku spaces:vpn:connect vpn-connection-name --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space
+  static examples = [heredoc(`
+    ${color.command('heroku spaces:vpn:connect vpn-connection-name --ip 35.161.69.30 --cidrs 172.16.0.0/16,10.0.0.0/24 --space my-space')}
     Creating VPN Connection in space my-space... done
     ▸    Use spaces:vpn:wait to track allocation.
-  `]
+  `)]
 
   static flags = {
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),
@@ -41,7 +40,7 @@ export default class Connect extends Command {
     const {name} = args
     const parsed_cidrs = splitCsv(cidrs)
 
-    ux.action.start(`Creating VPN Connection in space ${newColor.space(space)}`)
+    ux.action.start(`Creating VPN Connection in space ${color.space(space)}`)
     await this.heroku.post(`/spaces/${space}/vpn-connections`, {
       body: {
         name,
@@ -51,6 +50,6 @@ export default class Connect extends Command {
     })
     ux.action.stop()
 
-    ux.warn(`Use ${color.cmd('heroku spaces:vpn:wait')} to track allocation.`)
+    ux.warn(`Use ${color.code('heroku spaces:vpn:wait')} to track allocation.`)
   }
 }

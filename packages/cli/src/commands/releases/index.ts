@@ -1,5 +1,4 @@
-import {hux, color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -120,25 +119,25 @@ export default class Index extends Command {
         let colorFn: (s: string) => string
         switch (statusColor) {
         case 'red': {
-          colorFn = color.red
+          colorFn = color.failure
 
           break
         }
 
         case 'yellow': {
-          colorFn = color.yellow
+          colorFn = color.warning
 
           break
         }
 
         case 'gray': {
-          colorFn = color.gray
+          colorFn = color.inactive
 
           break
         }
 
         default: {
-          colorFn = color.cyan
+          colorFn = color.info
         }
         }
 
@@ -151,10 +150,10 @@ export default class Index extends Command {
 
     const getVersionColor = (release: Heroku.Release) => {
       const statusColor = statusHelper.color(release.status)
-      if (statusColor === 'red') return color.red('v' + release.version)
-      if (statusColor === 'yellow') return color.yellow('v' + release.version)
-      if (statusColor === 'gray') return color.gray('v' + release.version)
-      return color.cyan('v' + release.version)
+      if (statusColor === 'red') return color.failure('v' + release.version)
+      if (statusColor === 'yellow') return color.warning('v' + release.version)
+      if (statusColor === 'gray') return color.inactive('v' + release.version)
+      return color.name('v' + release.version)
     }
 
     /* eslint-disable perfectionist/sort-objects */
@@ -162,7 +161,7 @@ export default class Index extends Command {
       // column name "v" as ux.table will make it's width at least "version" even though 'no-header': true
       v: {get: getVersionColor},
       description: {get: descriptionWithStatus},
-      user: {get: ({user}) => newColor.user(user?.email || '')},
+      user: {get: ({user}) => color.user(user?.email || '')},
       created_at: {get: ({created_at}) => time.ago(new Date(created_at || ''))},
       slug_id: {extended: true, get: ({extended}) => extended?.slug_id},
       slug_uuid: {extended: true, get: ({extended}) => extended?.slug_uuid},
@@ -176,12 +175,12 @@ export default class Index extends Command {
     if (json) {
       hux.styledJSON(releases)
     } else if (releases.length === 0) {
-      ux.stdout(`${newColor.app(app)} has no releases.`)
+      ux.stdout(`${color.app(app)} has no releases.`)
     } else {
-      let header = `${newColor.app(app)} Releases`
+      let header = `${color.app(app)} Releases`
       const currentRelease = releases.find(r => r.current === true)
       if (currentRelease) {
-        header += ' - ' + color.cyan(`Current: v${currentRelease.version}`)
+        header += ' - ' + color.name(`Current: v${currentRelease.version}`)
       }
 
       hux.styledHeader(header)

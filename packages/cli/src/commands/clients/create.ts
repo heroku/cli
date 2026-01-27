@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
@@ -9,7 +10,7 @@ export default class ClientsCreate extends Command {
   static description = 'create a new OAuth client'
 
   static examples = [
-    '$ heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback',
+    color.command('heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback'),
   ]
 
   static flags = {

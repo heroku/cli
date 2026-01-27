@@ -1,4 +1,4 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -18,7 +18,9 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
       if (token && token.access_token.expires_in) {
         const d = new Date()
         d.setSeconds(d.getSeconds() + token.access_token.expires_in)
-        this.warn(`token will expire ${formatRelative(d, new Date())}\n${isInternal ? 'All tokens expire one year after we generate it.' : `To generate a token that expires in one year, use ${color.cmd('heroku authorizations:create')}.`}`)
+        this.warn(`token will expire ${formatRelative(d, new Date())}\n${isInternal
+          ? 'All tokens expire one year after we generate it.'
+          : `To generate a token that expires in one year, use ${color.code('heroku authorizations:create')}.`}`)
       }
     } catch (error: any) {
       this.warn(error)

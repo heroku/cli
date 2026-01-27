@@ -1,7 +1,10 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export class ConfigUnset extends Command {
   static aliases = [
@@ -10,19 +13,18 @@ export class ConfigUnset extends Command {
 
   static description = 'unset one or more config vars'
 
-  static examples = [
-    `$ heroku config:unset RAILS_ENV
-Unsetting RAILS_ENV and restarting example... done, v10`,
-    `$ heroku config:unset RAILS_ENV RACK_ENV
-Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
-  ]
-
-  static strict = false
+  static examples = [heredoc(`
+    ${color.command('heroku config:unset RAILS_ENV')}
+Unsetting RAILS_ENV and restarting example... done, v10`), heredoc(`
+    ${color.command('heroku config:unset RAILS_ENV RACK_ENV')}
+Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`)]
 
   static flags = {
     app: flags.app({char: 'a', required: true}),
     remote: flags.remote({char: 'r'}),
   }
+
+  static strict = false
 
   async run() {
     const parsed = await this.parse(ConfigUnset)
@@ -30,8 +32,8 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
     const argv = parsed.argv as string[]
     const lastRelease = async () => {
       const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${flags.app}/releases`, {
-        partial: true,
         headers: {Range: 'version ..; order=desc,max=1'},
+        partial: true,
       })
       return releases[0]
     }
@@ -40,7 +42,7 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
       this.error('Usage: heroku config:unset KEY1 [KEY2 ...]\nMust specify KEY to unset.')
     }
 
-    const vars = argv.map(v => color.configVar(v)).join(', ')
+    const vars = argv.map(v => color.name(v)).join(', ')
 
     ux.action.start(`Unsetting ${vars} and restarting ${color.app(flags.app)}`)
     await this.heroku.patch(`/apps/${flags.app}/config-vars`, {
@@ -48,6 +50,6 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`,
       body: Object.fromEntries(argv.map(v => [v, null])),
     })
     const release = await lastRelease()
-    ux.action.stop('done, ' + color.release(`v${release.version}`))
+    ux.action.stop('done, ' + color.name(`v${release.version}`))
   }
 }

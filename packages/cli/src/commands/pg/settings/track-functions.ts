@@ -1,9 +1,10 @@
-/*
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
-import {PGSettingsCommand} from '../../../lib/pg/setter'
-import type {Setting, SettingKey} from '../../../lib/pg/types'
-import {nls} from '../../../nls'
+import tsheredoc from 'tsheredoc'
+import {PGSettingsCommand} from '../../../lib/pg/setter.js'
+import type {Setting, SettingKey} from '../../../lib/pg/types.js'
+import {nls} from '../../../nls.js'
+
+const heredoc = tsheredoc.default
 
 // ref: https://www.postgresql.org/docs/current/runtime-config-statistics.html#GUC-TRACK-FUNCTIONS
 export default class TrackFunctions extends PGSettingsCommand {
@@ -29,4 +30,3 @@ export default class TrackFunctions extends PGSettingsCommand {
     return setting.values[setting.value]
   }
 }
-*/

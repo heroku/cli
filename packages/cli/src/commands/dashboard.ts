@@ -37,14 +37,14 @@ function displayErrors(metrics: FetchMetricsResponse[0]) {
   let errors: string[] = []
   if (metrics.routerErrors) {
     errors = errors.concat(Object.entries(metrics.routerErrors.data)
-      .map(e => color.red(`${_.sum(e[1])} ${e[0]}`)))
+      .map(e => color.failure(`${_.sum(e[1])} ${e[0]}`)))
   }
 
   if (metrics.dynoErrors) {
     metrics.dynoErrors.filter(Boolean)
       .forEach(dynoErrors => {
         errors = errors.concat(Object.entries(dynoErrors?.data || {})
-          .map(e => color.red(`${_.sum(e[1])} ${e[0]}`)))
+          .map(e => color.failure(`${_.sum(e[1])} ${e[0]}`)))
       })
   }
 

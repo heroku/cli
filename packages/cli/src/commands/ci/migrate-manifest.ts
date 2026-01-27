@@ -1,18 +1,19 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {color} from '@heroku-cli/color'
 import {promises as fs} from 'node:fs'
 
-const {writeFile, unlink} = fs
+const {unlink, writeFile} = fs
 const unlinkFile = unlink
 const {readFile} = fs
 
 export default class CiMigrateManifest extends Command {
   static description = 'app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.'
-  static topic = 'ci'
   static examples = [
-    '$ heroku ci:migrate-manifest',
+    color.command('heroku ci:migrate-manifest'),
   ]
+
+  static topic = 'ci'
 
   async run() {
     const appJSONPath = `${process.cwd()}/app.json`

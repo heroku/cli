@@ -13,7 +13,7 @@ export default class Destroy extends Command {
   }
 
   static description = 'destroy credential within database'
-  static example = '$ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production'
+  static example = `${color.command('heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production')}`
 
   static flags = {
     app: flags.app({required: true}),

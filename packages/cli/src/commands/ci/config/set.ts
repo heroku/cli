@@ -1,11 +1,14 @@
 
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {getPipeline} from '../../../lib/ci/pipelines.js'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
 import {setPipelineConfigVars} from '../../../lib/api.js'
+import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {validateArgvPresent} from '../../../lib/ci/validate.js'
-import {color} from '@heroku-cli/color'
+
+const heredoc = tsheredoc.default
 
 function validateInput(str: string) {
   if (!str.includes('=')) {
@@ -18,21 +21,20 @@ function validateInput(str: string) {
 export default class CiConfigSet extends Command {
   static description = 'set CI config vars'
 
-  static topic = 'ci'
-
-  static examples = [
-    `$ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
+  static examples = [heredoc(`
+    ${color.command('heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test')}
     Setting test config vars... done
-    RAILS_ENV: test`,
-  ]
+    RAILS_ENV: test`)]
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
+    remote: flags.remote(),
   }
 
   static strict = false
+
+  static topic = 'ci'
 
   async run() {
     const {argv, flags} = await this.parse(CiConfigSet)

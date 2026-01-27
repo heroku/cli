@@ -17,7 +17,7 @@ export default class Attach extends Command {
   static description = 'add an attachment to a database using connection pooling'
 
   static examples = [heredoc`
-      $ heroku pg:connection-pooling:attach postgresql-something-12345
+      ${color.command('heroku pg:connection-pooling:attach postgresql-something-12345')}
     `]
 
   static flags = {

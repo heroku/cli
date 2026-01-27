@@ -7,18 +7,18 @@ import {destroyPipeline} from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 
 export default class PipelinesDestroy extends Command {
-  static description = 'destroy a pipeline'
-
-  static examples = [
-    '$ heroku pipelines:destroy my-pipeline',
-  ]
-
   static args = {
     pipeline: Args.string({
       description: 'name of pipeline',
       required: true,
     }),
   }
+
+  static description = 'destroy a pipeline'
+
+  static examples = [
+    color.command('heroku pipelines:destroy my-pipeline'),
+  ]
 
   async run() {
     const {args} = await this.parse(PipelinesDestroy)

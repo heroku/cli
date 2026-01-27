@@ -1,12 +1,13 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {color} from '@heroku/heroku-cli-util'
+import {Errors} from '@oclif/core'
+import {expect} from 'chai'
+import nock from 'nock'
+import sinon from 'sinon'
+import stdMocks from 'std-mocks'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/container/release.js'
 import runCommand from '../../../helpers/runCommand.js'
-import {expect} from 'chai'
-import sinon from 'sinon'
-import nock from 'nock'
-import stdMocks from 'std-mocks'
-import {Errors} from '@oclif/core'
-import {color} from '@heroku-cli/color'
 
 describe('container release', function () {
   let api: nock.Scope
@@ -49,7 +50,7 @@ describe('container release', function () {
     })
 
     const {message, oclif} = error as unknown as Errors.CLIError
-    expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.cmd('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.yellow('heroku-24')}, run ${color.cmd('git push heroku main')} instead.`)
+    expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.code('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.name('heroku-24')}, run ${color.code('git push heroku main')} instead.`)
     expect(oclif.exit).to.equal(1)
   })
 
@@ -66,7 +67,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -76,7 +77,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -90,7 +91,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -100,7 +101,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -114,7 +115,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -124,7 +125,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id', status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 1, history: [{v1Compatibility: '{"id":"image_id"}'}]})
+        .reply(200, {history: [{v1Compatibility: '{"id":"image_id"}'}], schemaVersion: 1})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -138,7 +139,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -148,7 +149,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id', status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 1, history: [{v1Compatibility: '{"id":"image_id"}'}]})
+        .reply(200, {history: [{v1Compatibility: '{"id":"image_id"}'}], schemaVersion: 1})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -162,7 +163,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'web_image_id'}, {type: 'worker', docker_image: 'worker_image_id'},
+            {docker_image: 'web_image_id', type: 'web'}, {docker_image: 'worker_image_id', type: 'worker'},
           ],
         })
         .reply(200, {})
@@ -172,9 +173,9 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id', status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'web_image_id'}})
+        .reply(200, {config: {digest: 'web_image_id'}, schemaVersion: 2})
         .get('/v2/testapp/worker/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'worker_image_id'}})
+        .reply(200, {config: {digest: 'worker_image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -189,7 +190,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'web_image_id'}, {type: 'worker', docker_image: 'worker_image_id'},
+            {docker_image: 'web_image_id', type: 'web'}, {docker_image: 'worker_image_id', type: 'worker'},
           ],
         })
         .reply(200, {})
@@ -199,9 +200,9 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id', status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'web_image_id'}})
+        .reply(200, {config: {digest: 'web_image_id'}, schemaVersion: 2})
         .get('/v2/testapp/worker/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'worker_image_id'}})
+        .reply(200, {config: {digest: 'worker_image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -216,7 +217,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -226,7 +227,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id', status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -244,7 +245,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -260,7 +261,7 @@ describe('container release', function () {
         .reply(200, [{status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -280,7 +281,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -290,7 +291,7 @@ describe('container release', function () {
         .reply(200, [{id: 'release_id', status: 'failed'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -316,7 +317,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -332,7 +333,7 @@ describe('container release', function () {
         .reply(200, {status: 'failed'})
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -357,7 +358,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -367,7 +368,7 @@ describe('container release', function () {
         .reply(200, [{status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -385,7 +386,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -401,7 +402,7 @@ describe('container release', function () {
         .reply(200, [{status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -421,7 +422,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -431,7 +432,7 @@ describe('container release', function () {
         .reply(200, [{status: 'failed'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -456,7 +457,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -472,7 +473,7 @@ describe('container release', function () {
         .reply(200, {status: 'failed'})
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
       await runCommand(Cmd, [
         '--app',
@@ -497,7 +498,7 @@ describe('container release', function () {
       api
         .patch('/apps/testapp/formation', {
           updates: [
-            {type: 'web', docker_image: 'image_id'},
+            {docker_image: 'image_id', type: 'web'},
           ],
         })
         .reply(200, {})
@@ -507,7 +508,7 @@ describe('container release', function () {
         .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
-        .reply(200, {schemaVersion: 2, config: {digest: 'image_id'}})
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
       await runCommand(Cmd, [
         '--app',
         'testapp',

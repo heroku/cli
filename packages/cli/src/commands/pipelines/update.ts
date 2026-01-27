@@ -9,7 +9,7 @@ export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
 
   static examples = [
-    '$ heroku pipelines:update -s staging -a my-app',
+    color.command('heroku pipelines:update -s staging -a my-app'),
   ]
 
   static flags = {

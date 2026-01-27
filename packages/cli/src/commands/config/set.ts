@@ -1,40 +1,42 @@
-import {color} from '@heroku-cli/color'
-import {Command, flags, APIClient} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 const lastRelease = async (client: APIClient, app: string) => {
   const {body: releases} = await client.get<Heroku.Release[]>(`/apps/${app}/releases`, {
+    headers: {Range: 'version ..; order=desc,max=1'},
     method: 'GET',
     partial: true,
-    headers: {Range: 'version ..; order=desc,max=1'},
   })
   return releases[0]
 }
 
 export default class Set extends Command {
   static description = 'set one or more config vars'
-  static strict = false
-  static hiddenAliases = ['config:add']
-  static examples = [
-    `$ heroku config:set RAILS_ENV=staging
+  static examples = [heredoc(`
+${color.command('heroku config:set RAILS_ENV=staging')}
 Setting config vars and restarting example... done, v10
-RAILS_ENV: staging
-
-$ heroku config:set RAILS_ENV=staging RACK_ENV=staging
+RAILS_ENV: staging)`), heredoc(`
+${color.command('heroku config:set RAILS_ENV=staging RACK_ENV=staging')}
 Setting config vars and restarting example... done, v11
 RAILS_ENV: staging
-RACK_ENV:  staging`,
-  ]
+RACK_ENV:  staging`)]
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
+  static hiddenAliases = ['config:add']
+
+  static strict = false
+
   async run() {
-    const {flags, argv: _argv} = await this.parse(Set)
+    const {argv: _argv, flags} = await this.parse(Set)
     const argv = _argv as string[]
 
     if (argv.length === 0) {
@@ -58,7 +60,7 @@ RACK_ENV:  staging`,
       body: vars,
     })
     const release = await lastRelease(this.heroku, flags.app)
-    ux.action.stop(`done, ${color.release('v' + release.version)}`)
+    ux.action.stop(`done, ${color.name('v' + release.version)}`)
 
     config = Object.fromEntries(
       Object.entries(config)
@@ -66,6 +68,6 @@ RACK_ENV:  staging`,
         .map(([k, v]) => [color.green(k), v]),
     )
     hux.styledObject(config)
-    await this.config.runHook('recache', {type: 'config', app: flags.app})
+    await this.config.runHook('recache', {app: flags.app, type: 'config'})
   }
 }

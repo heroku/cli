@@ -4,12 +4,25 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Args, ux} from '@oclif/core'
 import inquirer, {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
-import {createCoupling, createPipeline, getAccountInfo, getTeam, Owner} from '../../lib/api.js'
+import {
+  Owner,
+  createCoupling,
+  createPipeline,
+  getAccountInfo,
+  getTeam,
+} from '../../lib/api.js'
+import {getGenerationByAppId} from '../../lib/apps/generation.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
-import {getGenerationByAppId} from '../../lib/apps/generation.js'
 
 export default class Create extends Command {
+  static args = {
+    name: Args.string({
+      description: 'name of pipeline (defaults to basename of the app)',
+      required: false,
+    }),
+  }
+
   static description = `create a new pipeline
   An existing app must be specified as the first app in the pipeline.
   The pipeline name will be inferred from the app name if not specified.
@@ -17,28 +30,21 @@ export default class Create extends Command {
   The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.`
 
   static examples = [
-    '$ heroku pipelines:create -a my-app-staging',
-    '$ heroku pipelines:create my-pipeline -a my-app-staging',
+    color.command('heroku pipelines:create -a my-app-staging'),
+    color.command('heroku pipelines:create my-pipeline -a my-app-staging'),
   ]
 
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     stage: flags.string({
-      name: 'stage',
       char: 's',
-      description: 'stage of first app in pipeline',
       completion: StageCompletion,
+      description: 'stage of first app in pipeline',
+      name: 'stage',
     }),
     team: flags.team({
       description: 'the team which will own the apps',
-    }),
-  }
-
-  static args = {
-    name: Args.string({
-      description: 'name of pipeline (defaults to basename of the app)',
-      required: false,
     }),
   }
 
@@ -56,10 +62,10 @@ export default class Create extends Command {
       name = args.name
     } else {
       questions.push({
-        type: 'input',
-        name: 'name',
-        message: 'Pipeline name',
         default: guesses[0],
+        message: 'Pipeline name',
+        name: 'name',
+        type: 'input',
       })
     }
 
@@ -67,11 +73,11 @@ export default class Create extends Command {
       stage = inputStage
     } else {
       questions.push({
-        type: 'list',
-        name: 'stage',
-        message: `Stage of ${app}`,
         choices: stages,
         default: guesses[1],
+        message: `Stage of ${app}`,
+        name: 'stage',
+        type: 'list',
       })
     }
 

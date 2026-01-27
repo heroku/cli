@@ -1,14 +1,13 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
 
   static examples = [
-    '$ heroku authorizations',
+    color.command('heroku authorizations'),
   ]
 
   static flags = {

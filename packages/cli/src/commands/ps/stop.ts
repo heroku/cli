@@ -1,5 +1,4 @@
-import {color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
@@ -16,8 +15,8 @@ export default class Stop extends Command {
 
   static description = 'stop an app dyno or process type'
   static examples = [
-    '$ heroku ps:stop --app myapp --dyno-name run.1828',
-    '$ heroku ps:stop --app myapp --process-type run',
+    color.command('heroku ps:stop --app myapp --dyno-name run.1828'),
+    color.command('heroku ps:stop --app myapp --process-type run'),
   ]
 
   static flags = {
@@ -49,14 +48,14 @@ export default class Stop extends Command {
     let stopUrl = ''
 
     if (type) {
-      msg += ` all ${color.cyan(type)} dynos`
+      msg += ` all ${color.info(type)} dynos`
       stopUrl = `/apps/${app}/formations/${encodeURIComponent(type)}/actions/stop`
     } else if (dyno) {
       if (args.dyno) {
-        ux.warn(`DYNO is a deprecated argument. Use ${color.cmd('--dyno-name')} or ${color.cmd('--process-type')} instead.`)
+        ux.warn(`DYNO is a deprecated argument. Use ${color.code('--dyno-name')} or ${color.code('--process-type')} instead.`)
       }
 
-      msg += ` dyno ${color.cyan(dyno)}`
+      msg += ` dyno ${color.name(dyno)}`
       stopUrl = `/apps/${app}/dynos/${encodeURIComponent(dyno)}/actions/stop`
     } else {
       ux.error(heredoc(`
@@ -65,7 +64,7 @@ export default class Stop extends Command {
       `))
     }
 
-    msg += ` on ${newColor.app(app)}`
+    msg += ` on ${color.app(app)}`
 
     ux.action.start(msg)
     await this.heroku.post<Heroku.Dyno>(stopUrl, {headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})

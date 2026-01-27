@@ -1,5 +1,4 @@
-import {color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
@@ -20,7 +19,7 @@ export default class Index extends Command {
     const {body: certs} = await this.heroku.get<SniEndpoint[]>(`/apps/${flags.app}/sni-endpoints`)
 
     if (certs.length === 0) {
-      ux.stdout(`${newColor.app(flags.app)} has no SSL certificates.\nUse ${color.cmd('heroku certs:add CRT KEY')} to add one.`)
+      ux.stdout(`${color.app(flags.app)} has no SSL certificates.\nUse ${color.code('heroku certs:add CRT KEY')} to add one.`)
     } else {
       const sortedCerts = certs.sort((a, b) => a.name > b.name ? 1 : (b.name > a.name ? -1 : 0))
       displayTable(sortedCerts)

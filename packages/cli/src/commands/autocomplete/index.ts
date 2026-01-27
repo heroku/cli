@@ -1,32 +1,35 @@
+import {color} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
-import {AppCompletion, PipelineCompletion, SpaceCompletion, TeamCompletion} from '@heroku-cli/command/lib/completions.js'
-import {color} from '@heroku-cli/color'
+import {
+  AppCompletion,
+  PipelineCompletion,
+  SpaceCompletion,
+  TeamCompletion,
+} from '@heroku-cli/command/lib/completions.js'
 import {Args, Interfaces, ux} from '@oclif/core'
-
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 import {updateCache} from '../../lib/autocomplete/cache.js'
-
 import Create from './create.js'
 
 export default class Index extends AutocompleteBase {
-  static description = 'display autocomplete installation instructions'
-
   static args = {
     shell: Args.string({description: 'shell type', required: false}),
   }
 
-  static flags: Interfaces.FlagInput = {
-    'refresh-cache': flags.boolean({description: 'refresh cache only (ignores displaying instructions)', char: 'r'}),
-  }
+  static description = 'display autocomplete installation instructions'
 
   static examples = [
-    '$ heroku autocomplete',
-    '$ heroku autocomplete bash',
-    '$ heroku autocomplete zsh',
-    '$ heroku autocomplete --refresh-cache',
+    color.command('heroku autocomplete'),
+    color.command('heroku autocomplete bash'),
+    color.command('heroku autocomplete zsh'),
+    color.command('heroku autocomplete --refresh-cache'),
   ]
+
+  static flags: Interfaces.FlagInput = {
+    'refresh-cache': flags.boolean({char: 'r', description: 'refresh cache only (ignores displaying instructions)'}),
+  }
 
   async run() {
     const {args, flags} = await this.parse(Index)

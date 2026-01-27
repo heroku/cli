@@ -1,3 +1,4 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
@@ -13,8 +14,8 @@ export default class Run extends Command {
   static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.\nHeroku automatically prepends \'launcher\' to the command on CNB apps (use --no-launcher to disable).'
 
   static examples = [
-    '$ heroku run bash',
-    '$ heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2',
+    color.command('heroku run bash'),
+    color.command('heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2'),
   ]
 
   static flags = {
