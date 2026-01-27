@@ -1,7 +1,7 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/pg/copy'
+import Cmd from '../../../../src/commands/pg/copy.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 const addon = {
@@ -38,7 +38,6 @@ const copyingText = () => process.stderr.isTTY ? 'Copying... pending\nCopying...
 
 const copyingFailText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
 
-/*
 describe('pg:copy', function () {
   let pg: nock.Scope
   let api: nock.Scope
@@ -256,5 +255,3 @@ describe('pg:copy', function () {
     })
   })
 })
-
-*/

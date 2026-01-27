@@ -1,10 +1,11 @@
-/*
 import {stdout} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import Cmd from '../../../../src/commands/pg/credentials'
-import heredoc from 'tsheredoc'
+import Cmd from '../../../../src/commands/pg/credentials.js'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 describe('pg:credentials', function () {
   const addon = {
@@ -193,5 +194,3 @@ describe('pg:credentials', function () {
     `)
   })
 })
-
-*/

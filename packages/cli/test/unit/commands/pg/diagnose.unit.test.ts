@@ -1,19 +1,20 @@
-/*
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import nock from 'nock'
 import {randomUUID} from 'node:crypto'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
-import Cmd  from '../../../../src/commands/pg/diagnose'
+import tsheredoc from 'tsheredoc'
+import type {pg} from '@heroku/heroku-cli-util'
+import Cmd from '../../../../src/commands/pg/diagnose.js'
 import runCommand from '../../../helpers/runCommand.js'
+
+const heredoc = tsheredoc.default
 
 describe('pg:diagnose', function () {
   let api: nock.Scope
   let pg: nock.Scope
   let diagnose: nock.Scope
-  let db: Pick<ExtendedAddonAttachment, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
+  let db: Pick<pg.ExtendedAddonAttachment, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
   let dbName: string | undefined
   let app: { name: string; id?: string; }
   let addon: AddOn
@@ -305,5 +306,3 @@ describe('pg:diagnose', function () {
     })
   })
 })
-
-*/
