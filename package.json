@@ -15,6 +15,7 @@
     "execa": "5.1.1",
     "husky": "8.0.3",
     "lerna": "^6.4.1",
+    "commit-and-tag-version": "^12.5.0",
     "oclif": "^4.22.27",
     "qqjs": "0.3.11",
     "tmp": "^0.2.5",
@@ -29,7 +30,7 @@
   "private": true,
   "scripts": {
     "build": "cd packages/cli && npm run prepack",
-    "test": "lerna run test --concurrency 4",
+    "test": "npm run test --workspace=packages/cli",
     "lint": "cd packages/cli && npm run lint",
     "lint:fix": "cd packages/cli && npm run lint:fix",
     "cspell:ci": "cspell --no-progress --gitignore --no-must-find-files --file-list stdin",
@@ -42,7 +43,6 @@
     "upload:deb": "oclif upload:deb --root=\"./packages/cli\"",
     "upload:tarballs": "oclif upload:tarballs --root=\"./packages/cli\" --xz",
     "upload:win": "oclif upload:win --root=\"./packages/cli\"",
-    "version": "cp packages/cli/CHANGELOG.md CHANGELOG.md && git add CHANGELOG.md",
     "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules",
     "postinstall": "husky install"
   },
