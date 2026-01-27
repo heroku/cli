@@ -4,16 +4,16 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 
 export default class TwoFactor extends Command {
-  static description = 'check 2fa status'
-
   static aliases = ['2fa', 'twofactor']
+
+  static description = 'check 2fa status'
 
   async run() {
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')
     if (account.two_factor_authentication) {
-      ux.stdout(`Two-factor authentication is ${color.label('enabled')}`)
+      ux.stdout(`Two-factor authentication is ${color.success('enabled')}`)
     } else {
-      ux.stdout(`Two-factor authentication is ${color.label('not enabled')}`)
+      ux.stdout(`Two-factor authentication is ${color.failure('not enabled')}`)
     }
   }
 }

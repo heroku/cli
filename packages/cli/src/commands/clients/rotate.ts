@@ -1,10 +1,13 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 export default class ClientsRotate extends Command {
+  static args = {
+    id: Args.string({description: 'ID of the OAuth client', required: true}),
+  }
+
   static description = 'rotate OAuth client secret'
 
   static flags = {
@@ -12,14 +15,10 @@ export default class ClientsRotate extends Command {
     shell: flags.boolean({char: 's', description: 'output in shell format'}),
   }
 
-  static args = {
-    id: Args.string({required: true, description: 'ID of the OAuth client'}),
-  }
-
   async run() {
     const {args, flags} = await this.parse(ClientsRotate)
 
-    ux.action.start(`Updating ${color.cyan(args.id)}`)
+    ux.action.start(`Updating ${color.name(args.id)}`)
 
     const {body: client} = await this.heroku.post<Heroku.OAuthClient>(
       `/oauth/clients/${encodeURIComponent(args.id)}/actions/rotate-credentials`,

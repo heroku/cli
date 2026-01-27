@@ -36,7 +36,7 @@ export default class Index extends AutocompleteBase {
     const shell = args.shell || this.config.shell
     this.errorIfNotSupportedShell(shell)
 
-    ux.action.start(`${color.label('Building the autocomplete cache')}`)
+    ux.action.start('Building the autocomplete cache')
     const create = new Create([], this.config)
     await create.run()
     await this.updateCache(AppCompletion, 'app')
@@ -48,7 +48,7 @@ export default class Index extends AutocompleteBase {
     if (!flags['refresh-cache']) {
       const {bin} = this.config
       const bashNote = 'If your terminal starts as a login shell you may need to print the init script into ~/.bash_profile or ~/.profile.'
-      const zshNote = `After sourcing, you can run \`${color.cyan('$ compaudit -D')}\` to ensure no permissions conflicts are present`
+      const zshNote = `After sourcing, you can run \`${color.command('compaudit -D')}\` to ensure no permissions conflicts are present`
       const note = shell === 'zsh' ? zshNote : bashNote
       const tabStr = shell === 'bash' ? '<TAB><TAB>' : '<TAB>'
 
@@ -56,16 +56,16 @@ export default class Index extends AutocompleteBase {
 ${color.label(`Setup Instructions for ${bin.toUpperCase()} CLI Autocomplete ---`)}
 
 1) Add the autocomplete env var to your ${shell} profile and source it
-${color.cyan(`$ printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc; source ~/.${shell}rc`)}
+${color.command(`printf "$(${bin} autocomplete:script ${shell})" >> ~/.${shell}rc; source ~/.${shell}rc`)}
 
 NOTE: ${note}
 
 2) Test it out, e.g.:
-${color.cyan(`$ ${bin} ${tabStr}`)}                 # Command completion
-${color.cyan(`$ ${bin} apps:info --${tabStr}`)}     # Flag completion
-${color.cyan(`$ ${bin} apps:info --app=${tabStr}`)} # Flag option completion
+${color.command(`${bin} ${tabStr}`)}                 # Command completion
+${color.command(`${bin} apps:info --${tabStr}`)}     # Flag completion
+${color.command(`${bin} apps:info --app=${tabStr}`)} # Flag option completion
 
-Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/heroku-cli-autocomplete
+Visit the autocomplete Dev Center doc at ${color.info('https://devcenter.heroku.com/articles/heroku-cli-autocomplete')}
 
 Enjoy!
 `)

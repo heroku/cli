@@ -5,11 +5,11 @@ export const COLORS: Array<(s: string) => string> = [
   s => color.yellow(s),
   s => color.green(s),
   s => color.cyan(s),
-  s => color.name(s),
+  s => color.magenta(s),
   s => color.blue(s),
   s => color.bold.green(s),
   s => color.bold.cyan(s),
-  s => color.bold(color.name(s)),
+  s => color.bold.magenta(s),
   s => color.bold.yellow(s),
   s => color.bold.blue(s),
 ]
@@ -33,7 +33,7 @@ const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 const dim = (i: string) => color.dim(i)
 const other = dim
 const path = (i: string) => color.green(i)
-const method = (i: string) => color.name(i)
+const method = (i: string) => color.magenta(i)
 const status = (code: any) => {
   if (code < 200) return code
   if (code < 300) return color.success(code)
@@ -270,7 +270,7 @@ function colorizeAPI(body: string) {
   if (release) {
     return [
       release[1],
-      color.name(release[2]),
+      color.magenta(release[2]),
       release[3],
       color.green(release[4]),
     ].join('')
@@ -302,7 +302,7 @@ function colorizePG(body: string) {
   if (create) {
     return [
       other(create[1]),
-      color.name(create[2]),
+      color.magenta(create[2]),
       color.cyan(create[3]),
     ].join('')
   }

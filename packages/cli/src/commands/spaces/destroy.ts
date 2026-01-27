@@ -53,7 +53,7 @@ export default class Destroy extends Command {
         const ipv6 = getGeneration(space) === 'fir' ? ' and IPv6' : ''
         natWarning = heredoc`
         ${color.dim('===')} ${color.label('WARNING: Outbound IPs Will Be Reused')}
-        ${color.yellow(`⚠️ Deleting this space frees up the following outbound IPv4${ipv6} IPs for reuse:`)}
+        ${color.warning(`⚠️ Deleting this space frees up the following outbound IPv4${ipv6} IPs for reuse:`)}
         ${color.label(displayNat(space.outbound_ips) ?? '')}
 
         ${color.dim('Update the following configurations:')}
@@ -62,7 +62,7 @@ export default class Destroy extends Command {
         ${color.dim('=')} Security group configurations
         ${color.dim('=')} Network ACLs
 
-        ${color.yellow(`Ensure that you remove the listed IPv4${ipv6} addresses from your security configurations.`)}
+        ${color.warning(`Ensure that you remove the listed IPv4${ipv6} addresses from your security configurations.`)}
       `
       }
     }

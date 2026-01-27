@@ -1,5 +1,4 @@
-import {hux, color as newColor} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -25,9 +24,9 @@ export class ConfigIndex extends Command {
     } else if (flags.json) {
       hux.styledJSON(config)
     } else {
-      hux.styledHeader(`${newColor.app(flags.app)} Config Vars`)
+      hux.styledHeader(`${color.app(flags.app)} Config Vars`)
       const coloredConfig = Object.fromEntries(
-        Object.entries(config).map(([key, value]) => [color.configVar(key), value]),
+        Object.entries(config).map(([key, value]) => [color.name(key), value]),
       )
       hux.styledObject(coloredConfig)
     }

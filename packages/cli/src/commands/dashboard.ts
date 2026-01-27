@@ -49,7 +49,7 @@ function displayErrors(metrics: FetchMetricsResponse[0]) {
   }
 
   if (errors.length > 0)
-    ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.cyan.bold('heroku apps:errors')})`)
+    ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.code('heroku apps:errors')})`)
 }
 
 function displayMetrics(metrics: FetchMetricsResponse[0]) {
@@ -89,12 +89,12 @@ function displayNotifications(notifications?: {read: boolean}[]) {
     return
   notifications = notifications.filter(n => !n.read)
   if (notifications.length > 0) {
-    ux.stdout(`\nYou have ${color.yellow(notifications.length.toString())} unread notifications. Read them with ${color.cyan.bold('heroku notifications')}`)
+    ux.stdout(`\nYou have ${color.yellow(notifications.length.toString())} unread notifications. Read them with ${color.code('heroku notifications')}`)
   }
 }
 
 const dim = (s: string) => color.dim(s)
-const bold = (s: string) => color.label(s)
+const bold = (s: string) => color.bold(s)
 const label = (s: string) => color.label(s)
 
 const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<FetchMetricsResponse> => {
@@ -131,9 +131,9 @@ function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse
     const app = a[0]
     const metrics = a[1]
     hux.styledHeader(color.app(app.app.name || ''))
-    ux.stdout(`  ${label('Owner:')} ${getOwner(app.app.owner)}`)
+    ux.stdout(`  ${label('Owner:')} ${color.user(getOwner(app.app.owner) || '')}`)
     if (app.pipeline) {
-      ux.stdout(`  ${label('Pipeline:')} ${app.pipeline.pipeline?.name}`)
+      ux.stdout(`  ${label('Pipeline:')} ${color.pipeline(app.pipeline.pipeline?.name || '')}`)
     }
 
     displayFormation(app.formation)
