@@ -7,18 +7,18 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Kill extends Command {
-  static topic = 'pg';
-  static description = 'kill a query';
+  static topic = 'pg'
+  static description = 'kill a query'
   static flags = {
     force: flags.boolean({char: 'f'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+  }
 
   static args = {
     pid: Args.string({required: true, description: 'ID of the process'}),
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Kill)

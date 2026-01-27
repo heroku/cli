@@ -11,8 +11,8 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Promote extends Command {
-  static topic = 'pg';
-  static description = 'sets DATABASE as your DATABASE_URL';
+  static topic = 'pg'
+  static description = 'sets DATABASE as your DATABASE_URL'
   static flags = {
     force: flags.boolean({char: 'f'}),
     app: flags.app({required: true}),

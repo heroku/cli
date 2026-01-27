@@ -46,63 +46,63 @@ function displayDB(db: DBObject, app: string) {
 }
 
 export default class Info extends Command {
-    static topic = 'pg';
-    static description = 'show database information';
-    static flags = {
-      app: flags.app({required: true}),
-      remote: flags.remote(),
-    };
+  static topic = 'pg'
+  static description = 'show database information'
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
 
-    static args = {
-      database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
-    };
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
+  }
 
-    static aliases = ['pg']
+  static aliases = ['pg']
 
-    public async run(): Promise<void> {
-      const {flags, args} = await this.parse(Info)
-      const {app} = flags
-      const lodash = await import('lodash')
-      const sortBy = lodash.default.sortBy
-      const {database: db} = args
-      let addons: Array<pg.ExtendedAddonAttachment | pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>
-      const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
-      if (db) {
-        const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-        const {addon} = await dbResolver.getAttachment(app, db)
-        addons = [addon]
-      } else {
-        const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-        addons = await dbResolver.getAllLegacyDatabases(app)
-        if (addons.length === 0) {
-          ux.stdout(`${color.app(app)} has no heroku-postgresql databases.`)
-          return
-        }
+  public async run(): Promise<void> {
+    const {flags, args} = await this.parse(Info)
+    const {app} = flags
+    const lodash = await import('lodash')
+    const {sortBy} = lodash.default
+    const {database: db} = args
+    let addons: Array<pg.ExtendedAddonAttachment | pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>
+    const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
+    if (db) {
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const {addon} = await dbResolver.getAttachment(app, db)
+      addons = [addon]
+    } else {
+      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      addons = await dbResolver.getAllLegacyDatabases(app)
+      if (addons.length === 0) {
+        ux.stdout(`${color.app(app)} has no heroku-postgresql databases.`)
+        return
       }
-
-      let dbs: DBObject[] = await Promise.all(addons.map(async addon => {
-        const pgResponse = await this.heroku.get<PgDatabaseTenant>(
-          `/client/v11/databases/${addon.id}`,
-          {
-            hostname: utils.pg.host(),
-          })
-          .catch(error => {
-            if (error.statusCode !== 404)
-              throw error
-            ux.warn(`${color.addon(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
-          })
-        const {body: dbInfo} = pgResponse || {body: null}
-        return {
-          addon,
-          config,
-          dbInfo,
-        }
-      }))
-      dbs = dbs.filter(db => db.dbInfo)
-      dbs.forEach(db => {
-        db.configVars = configVarNamesFromValue(db.config, db.dbInfo?.resource_url || '')
-      })
-      dbs = sortBy(dbs, (db: DBObject) => db.configVars && db.configVars[0] !== 'DATABASE_URL', 'configVars[0]')
-      dbs.forEach(db => displayDB(db, app))
     }
+
+    let dbs: DBObject[] = await Promise.all(addons.map(async addon => {
+      const pgResponse = await this.heroku.get<PgDatabaseTenant>(
+        `/client/v11/databases/${addon.id}`,
+        {
+          hostname: utils.pg.host(),
+        })
+        .catch(error => {
+          if (error.statusCode !== 404)
+            throw error
+          ux.warn(`${color.addon(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
+        })
+      const {body: dbInfo} = pgResponse || {body: null}
+      return {
+        addon,
+        config,
+        dbInfo,
+      }
+    }))
+    dbs = dbs.filter(db => db.dbInfo)
+    dbs.forEach(db => {
+      db.configVars = configVarNamesFromValue(db.config, db.dbInfo?.resource_url || '')
+    })
+    dbs = sortBy(dbs, (db: DBObject) => db.configVars && db.configVars[0] !== 'DATABASE_URL', 'configVars[0]')
+    dbs.forEach(db => displayDB(db, app))
+  }
 }
