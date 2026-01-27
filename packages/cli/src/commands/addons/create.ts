@@ -1,13 +1,15 @@
-import {color} from '@heroku-cli/color'
+
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import notify from '../../lib/notify.js'
-import createAddon from '../../lib/addons/create_addon.js'
 import tsheredoc from 'tsheredoc'
+
+import createAddon from '../../lib/addons/create_addon.js'
+import notify from '../../lib/notify.js'
 const heredoc = tsheredoc.default
 
 function parseConfig(args: string[]) {
-  const config: Record<string, string | boolean> = {}
+  const config: Record<string, boolean | string> = {}
   while (args.length > 0) {
     let key = args.shift() as string
     if (!key.startsWith('--'))
@@ -39,49 +41,55 @@ function parseConfig(args: string[]) {
 }
 
 export default class Create extends Command {
-  static topic = 'addons'
+  static args = {
+    'service:plan': Args.string({description: 'unique identifier or unique name of the add-on service plan', required: true}),
+  }
+
   static description = heredoc`
   Create a new add-on resource.
 
   In order to add additional config items, please place them at the end of the command after a double-dash (--).
   `
 
-  static example = heredoc`
-  Create an add-on resource:
-  $heroku addons:create heroku-redis --app my-app
+  static examples = [
+    heredoc(`
+      # Create an add-on resource:
+      ${color.command('heroku addons:create heroku-redis --app my-app')}
+    `),
+    heredoc(`
+      # Create an add-on resource with additional config items:
+      ${color.command('heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE')}
+    `),
+  ]
 
-  Create an add-on resource with additional config items:
-  $heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE
-  `
-  static strict = false
-  static hiddenAliases = ['addons:add']
   static flags = {
-    name: flags.string({description: 'name for the add-on resource'}),
+    app: flags.app({required: true}),
     as: flags.string({description: 'name for the initial add-on attachment'}),
     confirm: flags.string({description: 'overwrite existing config vars or existing add-on attachments'}),
-    wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
-    app: flags.app({required: true}),
+    name: flags.string({description: 'name for the add-on resource'}),
     remote: flags.remote(),
+    wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
   }
 
-  static args = {
-    'service:plan': Args.string({required: true, description: 'unique identifier or unique name of the add-on service plan'}),
-  }
-
+  static hiddenAliases = ['addons:add']
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
+
+  static strict = false
+
+  static topic = 'addons'
 
   public async run(): Promise<void> {
     this.allowArbitraryFlags = true
-    const {flags, args, ...restParse} = await this.parse(Create)
-    const {app, name, as, wait, confirm} = flags
+    const {args, flags, ...restParse} = await this.parse(Create)
+    const {app, as, confirm, name, wait} = flags
     const servicePlan = args['service:plan']
     const argv = (restParse.argv as string[])
     // oclif duplicates specified args in argv
       .filter(arg => arg !== servicePlan)
 
     if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
-      process.stderr.write(` ${color.yellow('›')}   For example: ${color.cyan(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
-      process.stderr.write(` ${color.yellow('›')}   See https://devcenter.heroku.com/changelog-items/2925 for more info.\n`)
+      ux.warn(`For example: ${color.code(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
+      ux.warn(`See ${color.info('https://devcenter.heroku.com/changelog-items/2925')} for more info.\n`)
     }
 
     const config = parseConfig(argv)
@@ -99,8 +107,8 @@ export default class Create extends Command {
       throw error
     }
 
-    await this.config.runHook('recache', {type: 'addon', app, addon})
+    await this.config.runHook('recache', {addon, app, type: 'addon'})
     // eslint-disable-next-line no-unsafe-optional-chaining
-    ux.stdout(`Use ${color.cyan.bold('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
+    ux.stdout(`Use ${color.code('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation`)
   }
 }

@@ -1,7 +1,9 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import tsheredoc from 'tsheredoc'
+
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
 
@@ -9,19 +11,32 @@ const debug = debugFactory('heroku:run:inside')
 const heredoc = tsheredoc.default
 
 export default class RunInside extends Command {
-  static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
-
-  static strict = false
   static args = {
-    dyno_name: Args.string({
-      description: 'name of the dyno to run command inside',
-      required: true,
-    }),
     command: Args.string({
       description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
       required: true,
     }),
+    dyno_name: Args.string({
+      description: 'name of the dyno to run command inside',
+      required: true,
+    }),
   }
+
+  static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
+  static examples = [
+    heredoc`
+      # Run bash
+      ${color.command('heroku run:inside web-848cd4f64d-pvpr2 bash -a my-app')}
+    `,
+    heredoc`
+      # Run a command supplied by a script taking option flags
+      ${color.command('heroku run:inside web-848cd4f64d-pvpr2 -a my-app -- myscript.sh -x --log-level=warn')}
+    `,
+    heredoc`
+      # Run a command declared for the worker process type in a Procfile
+      ${color.command('heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app')}
+    `,
+  ]
 
   static flags = {
     app: flags.app({required: true}),
@@ -31,26 +46,13 @@ export default class RunInside extends Command {
     }),
     listen: flags.boolean({description: 'listen on a local port', hidden: true}),
     'no-launcher': flags.boolean({
-      description: 'don\'t prepend \'launcher\' before a command',
       default: false,
+      description: 'don\'t prepend \'launcher\' before a command',
     }),
     remote: flags.remote(),
   }
 
-  static examples = [
-    heredoc`
-      Run bash
-      heroku run:inside web-848cd4f64d-pvpr2 bash -a my-app
-    `,
-    heredoc`
-      Run a command supplied by a script taking option flags
-      heroku run:inside web-848cd4f64d-pvpr2 -a my-app -- myscript.sh -x --log-level=warn
-    `,
-    heredoc`
-      Run a command declared for the worker process type in a Procfile
-      heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app
-    `,
-  ]
+  static strict = false
 
   async run() {
     const {args, argv, flags} = await this.parse(RunInside)

@@ -24,7 +24,7 @@ export default class DomainsAdd extends Command {
 
   static description = 'add a domain to an app'
 
-  static examples = ['heroku domains:add www.example.com']
+  static examples = [`${color.command('heroku domains:add www.example.com')}`]
 
   static flags = {
     app: flags.app({required: true}),

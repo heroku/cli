@@ -6,7 +6,7 @@ import {ux} from '@oclif/core'
 export default class Leave extends Command {
   static aliases = ['leave']
   static description = 'remove yourself from a team app'
-  static example = 'heroku apps:leave -a APP'
+  static example = `${color.command('heroku apps:leave -a APP')}`
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

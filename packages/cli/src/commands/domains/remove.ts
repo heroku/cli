@@ -9,7 +9,7 @@ export default class DomainsRemove extends Command {
 
   static description = 'remove a domain from an app'
 
-  static examples = ['heroku domains:remove www.example.com']
+  static examples = [`${color.command('heroku domains:remove www.example.com')}`]
 
   static flags = {
     app: flags.app({required: true}),

@@ -1,15 +1,17 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+
 import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Set extends Command {
-  static description = 'set the current Heroku account from your cache'
-
   static args = {
     name: Args.string({description: 'name of account to set', required: true}),
   }
 
-  static example = 'heroku accounts:set my-account'
+  static description = 'set the current Heroku account from your cache'
+
+  static example = `${color.command('heroku accounts:set my-account')}`
 
   async run() {
     const {args} = await this.parse(Set)

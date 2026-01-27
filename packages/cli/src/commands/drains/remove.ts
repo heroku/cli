@@ -1,23 +1,24 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 
 export default class Remove extends Command {
+  static args = {
+    url: Args.string({description: 'URL of the log drain', required: true}),
+  }
+
   static description = 'removes a log drain from an app'
+
+  static example = `${color.command('drains:remove [URL|TOKEN]')}`
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static example = 'drains:remove [URL|TOKEN]'
-
-  static args = {
-    url: Args.string({required: true, description: 'URL of the log drain'}),
-  }
-
   async run() {
-    const {flags, args} = await this.parse(Remove)
+    const {args, flags} = await this.parse(Remove)
 
     const {body: drain} = await this.heroku.delete<Heroku.LogDrain>(`/apps/${flags.app}/log-drains/${encodeURIComponent(args.url)}`)
     ux.stdout(`Successfully removed drain ${color.cyan(drain.url || '')}`)
