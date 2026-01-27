@@ -11,7 +11,7 @@ import {nls} from '../../../nls.js'
 export default class Create extends Command {
   /* eslint-disable perfectionist/sort-objects */
   // the order of args is important for the command to work
-  // TODO: change database to be a flag, which would be consistent with apps:rename
+  // TODO: change database to be a flag
   static args = {
     remote: Args.string({description: nls('pg:database:arg:description'), required: true}),
     database: Args.string({description: nls('pg:database:arg:description'), required: true}),

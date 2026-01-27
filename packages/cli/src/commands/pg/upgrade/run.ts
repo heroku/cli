@@ -83,7 +83,7 @@ export default class Upgrade extends Command {
     } else {
       await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
-        You're upgrading the Postgres version on ${color.addon(db.name)}. This action also upgrades any followers on the database.
+        You're upgrading the Postgres version on ${color.datastore(db.name)}. This action also upgrades any followers on the database.
 
         You can't undo this action.
       `))

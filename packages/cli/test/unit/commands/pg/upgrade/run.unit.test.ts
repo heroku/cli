@@ -15,7 +15,7 @@ import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
-describe('pg:upgrade', function () {
+describe('pg:upgrade:run', function () {
   let hobbyAddon: Heroku.AddOn
   let addon: Heroku.AddOn
   let uxWarnStub: sinon.SinonStub
@@ -95,7 +95,7 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}... done
+      Starting upgrade on ⛁ ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
   })
@@ -129,7 +129,7 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}... done
+      Starting upgrade on ⛁ ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
   })
@@ -167,7 +167,7 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${essentialAddon.name}... done
+      Starting upgrade on ⛁ ${essentialAddon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
   })
@@ -244,7 +244,7 @@ describe('pg:upgrade', function () {
 
     const message = heredoc(`
       Destructive action
-      You're upgrading the Postgres version on ${addon.name}. This action also upgrades any followers on the database.
+      You're upgrading the Postgres version on ⛁ ${addon.name}. This action also upgrades any followers on the database.
 
       You can't undo this action.
     `)
@@ -258,7 +258,7 @@ describe('pg:upgrade', function () {
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
     expectOutput(stderr.output, heredoc(`
-      Starting upgrade on ${addon.name}... done
+      Starting upgrade on ⛁ ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
   })
