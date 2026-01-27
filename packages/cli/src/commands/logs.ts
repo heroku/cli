@@ -1,6 +1,7 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
+import {ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../lib/run/log-displayer.js'
@@ -14,11 +15,11 @@ export default class Logs extends Command {
   `
 
   static examples = [
-    'heroku logs --app=my-app',
-    'heroku logs --num=50 --app=my-app',
-    'heroku logs --dyno-name=web-123-456 --app=my-app',
-    'heroku logs --process-type=web --app=my-app',
-    'heroku logs --app=my-app --tail',
+    `${color.command('heroku logs --app=my-app')}`,
+    `${color.command('heroku logs --num=50 --app=my-app')}`,
+    `${color.command('heroku logs --dyno-name=web-123-456 --app=my-app')}`,
+    `${color.command('heroku logs --process-type=web --app=my-app')}`,
+    `${color.command('heroku logs --app=my-app --tail')}`,
   ]
 
   static flags = {
@@ -29,7 +30,7 @@ export default class Logs extends Command {
       description: 'only show output from this dyno (such as "web-123-456" or "worker.2")',
     }),
     'force-colors': flags.boolean({
-      description: 'force use of colors (even on non-tty output)',
+      deprecated: true,
     }),
     // supports-color NPM package will parse ARGV looking for flag `--no-color`, but
     // we need to define it here for OClif not to error out on an inexistent flag.
@@ -37,21 +38,29 @@ export default class Logs extends Command {
       default: false,
       hidden: true,
       relationships: [
-        {type: 'none', flags: ['force-colors']},
+        {flags: ['force-colors'], type: 'none'},
       ],
     }),
     num: flags.integer({
       char: 'n',
       description: 'number of lines to display (ignored for Fir generation apps)',
     }),
+    'process-type': flags.string({
+      char: 'p',
+      completion: ProcessTypeCompletion,
+      description: 'only show output from this process type (such as "web" or "worker")',
+      relationships: [
+        {flags: ['dyno-name', 'ps'], type: 'none'},
+      ],
+    }),
     ps: flags.string({
       char: 'p',
-      hidden: true,
-      description: 'hidden alias for type',
-      relationships: [
-        {type: 'none', flags: ['dyno-name']},
-      ],
       completion: ProcessTypeCompletion,
+      description: 'hidden alias for type',
+      hidden: true,
+      relationships: [
+        {flags: ['dyno-name'], type: 'none'},
+      ],
     }),
     remote: flags.remote(),
     source: flags.string({
@@ -63,22 +72,14 @@ export default class Logs extends Command {
       default: false,
       description: 'continually stream logs (always enabled for Fir-generation apps)',
     }),
-    'process-type': flags.string({
-      char: 'p',
-      description: 'only show output from this process type (such as "web" or "worker")',
-      relationships: [
-        {type: 'none', flags: ['dyno-name', 'ps']},
-      ],
-      completion: ProcessTypeCompletion,
-    }),
   }
 
   async run() {
     const {flags} = await this.parse(Logs)
-    const {app, 'dyno-name': dyno, 'force-colors': forceColors, num, ps, source, tail, 'process-type': type} = flags
+    const {app, 'dyno-name': dyno, 'force-colors': forceColors, num, 'process-type': type, ps, source, tail} = flags
 
     if (forceColors)
-      color.enabled = true
+      ux.warn('The --force-colors flag is deprecated. Use FORCE_COLORS=true to force colors.')
 
     const options = {
       app,
