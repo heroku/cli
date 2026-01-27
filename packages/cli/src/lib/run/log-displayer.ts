@@ -1,11 +1,12 @@
+import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {color} from '@heroku-cli/color'
-import colorize from './colorize.js'
-import {LogSession} from '../types/fir.js'
-import {getGenerationByAppId} from '../apps/generation.js'
 import {EventSource} from 'eventsource'
 import {HttpsProxyAgent} from 'https-proxy-agent'
+
+import {getGenerationByAppId} from '../apps/generation.js'
+import {LogSession} from '../types/fir.js'
+import colorize from './colorize.js'
 
 interface LogDisplayerOptions {
   app: string,
@@ -21,6 +22,10 @@ export class LogDisplayer {
 
   constructor(heroku: APIClient) {
     this.heroku = heroku
+  }
+
+  public createEventSourceInstance(url: string, options?: any): EventSource {
+    return new EventSource(url, options)
   }
 
   async display(options: LogDisplayerOptions): Promise<void> {
@@ -51,29 +56,13 @@ export class LogDisplayer {
     } while (recreateLogSession)
   }
 
-  private setupProcessHandlers(): void {
-    process.stdout.on('error', err => {
-      if (err.code === 'EPIPE') {
-        // eslint-disable-next-line n/no-process-exit
-        process.exit(0)
-      } else {
-        ux.error(err.stack, {exit: 1})
-      }
-    })
-  }
-
-  private async getGenerationByAppId(options: LogDisplayerOptions): Promise<string> {
-    const generation = await getGenerationByAppId(options.app, this.heroku)
-    return generation || ''
-  }
-
   private buildRequestBodyParameters(firApp: boolean, options: LogDisplayerOptions): Record<string, any> {
     const requestBodyParameters = {
       source: options.source,
     }
 
     if (firApp) {
-      process.stderr.write(color.cyan.bold('Fetching logs...\n\n'))
+      process.stderr.write(color.info('Fetching logs...\n\n'))
       Object.assign(requestBodyParameters, {
         dyno: options.dyno,
         type: options.type,
@@ -97,8 +86,9 @@ export class LogDisplayer {
     return logSession
   }
 
-  public createEventSourceInstance(url: string, options?: any): EventSource {
-    return new EventSource(url, options)
+  private async getGenerationByAppId(options: LogDisplayerOptions): Promise<string> {
+    const generation = await getGenerationByAppId(options.app, this.heroku)
+    return generation || ''
   }
 
   private readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number): Promise<void> {
@@ -159,6 +149,17 @@ export class LogDisplayer {
           reject(new Error('Fir log stream timeout'))
           es.close()
         }, recreateSessionTimeout)
+      }
+    })
+  }
+
+  private setupProcessHandlers(): void {
+    process.stdout.on('error', err => {
+      if (err.code === 'EPIPE') {
+        // eslint-disable-next-line n/no-process-exit
+        process.exit(0)
+      } else {
+        ux.error(err.stack, {exit: 1})
       }
     })
   }

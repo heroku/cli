@@ -64,10 +64,10 @@ export class BuildpackCommand {
 
   displayUpdate(app: string, remote: string, buildpacks: BuildpackResponse[], action: 'added' | 'removed' | 'set') {
     if (buildpacks.length === 1) {
-      ux.stdout(`Buildpack ${action}. Next release on ⬢ ${color.app(app)} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
+      ux.stdout(`Buildpack ${action}. Next release on ${color.app(app)} will use ${this.registryUrlToName(buildpacks[0].buildpack.url)}.`)
       ux.stdout(`Run ${color.code(push(remote))} to create a new release using this buildpack.`)
     } else {
-      ux.stdout(`Buildpack ${action}. Next release on ⬢ ${color.app(app)} will use:`)
+      ux.stdout(`Buildpack ${action}. Next release on ${color.app(app)} will use:`)
       this.display(buildpacks, '  ')
       ux.stdout(`Run ${color.code(push(remote))} to create a new release using these buildpacks.`)
     }

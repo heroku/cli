@@ -1,24 +1,17 @@
 
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
+import {HTTP, HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
+import {AddOnAttachment} from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve.js'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import {HTTP, HTTPError} from '@heroku/http-call'
-import {AddOnAttachment} from '@heroku-cli/schema'
 import open from 'open'
 
+import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve.js'
+
 export interface SsoParams {
-  /**
-   * user email address
-   */
-  email: string
-  /**
-   * user ID
-   */
-  user_id: string
   /**
    * billing app name
    */
@@ -28,21 +21,17 @@ export interface SsoParams {
    */
   context_app: string
   /**
-   * SSO request timestamp
+   * user email address
    */
-  timestamp: string
-  /**
-   * Navigation metadata (deprecated)
-   */
-  'nav-data': string
+  email: string
   /**
    * Provider ID (deprecated)
    */
   id: string
   /**
-   * SSO v1 token (deprecated)
+   * Navigation metadata (deprecated)
    */
-  token: string
+  'nav-data': string
   /**
    * Add-on resource ID
    */
@@ -51,9 +40,25 @@ export interface SsoParams {
    * SSO v3 token
    */
   resource_token: string
+  /**
+   * SSO request timestamp
+   */
+  timestamp: string
+  /**
+   * SSO v1 token (deprecated)
+   */
+  token: string
+  /**
+   * user ID
+   */
+  user_id: string
 }
 
 export interface AddonSso {
+  /**
+   * URL of the SSO request
+   */
+  action: string
   /**
    * SSO request method
    */
@@ -61,43 +66,41 @@ export interface AddonSso {
     | 'get'
     | 'post'
   /**
-   * URL of the SSO request
-   */
-  action: string
-  /**
    * SSO params for POST request
    */
   params?: SsoParams
 }
 
 export default class Open extends Command {
-  public static urlOpener: (url: string) => Promise<unknown> = open
-  public static topic = 'addons'
+  public static args = {
+    addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
+  }
+
   public static description = 'open an add-on\'s dashboard in your browser'
   public static flags = {
-    'show-url': flags.boolean({description: 'show URL, do not open browser'}),
     app: flags.app(),
     remote: flags.remote(),
+    'show-url': flags.boolean({description: 'show URL, do not open browser'}),
   }
 
-  public static args = {
-    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
-  }
+  public static topic = 'addons'
+
+  public static urlOpener: (url: string) => Promise<unknown> = open
 
   public static async openUrl(url: string): Promise<void> {
-    ux.stdout(`Opening ${color.cyan(url)}...`)
+    ux.stdout(`Opening ${color.info(url)}...`)
     await Open.urlOpener(url)
   }
 
   public async run(): Promise<void> {
-    const {flags, args: {addon}} = await this.parse(Open)
+    const {args: {addon}, flags} = await this.parse(Open)
     const {app} = flags
 
     if (process.env.HEROKU_SUDO) {
       return this.sudo(app, addon)
     }
 
-    let attachment: void | AddOnAttachment | null = null
+    let attachment: AddOnAttachment | null | void = null
     try {
       attachment = await attachmentResolver(this.heroku, app, addon)
     } catch (error) {
@@ -123,12 +126,12 @@ export default class Open extends Command {
 
   private async sudo(app: string, addon: string): Promise<void> {
     const sso: HTTP<AddonSso> = await this.heroku.request(`/apps/${app}/addons/${addon}/sso`, {
-      method: 'GET',
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
+      method: 'GET',
     })
-    const {method, action} = sso.body
+    const {action, method} = sso.body
     if (method === 'get') {
       await Open.openUrl(action)
     } else {
