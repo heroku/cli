@@ -1,3 +1,4 @@
+import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
@@ -8,11 +9,12 @@ import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 describe('pg:maintenance:run', function () {
-  const addon = fixtures.addons['dwh-db']
+  let addon: Heroku.AddOn
   let api: nock.Scope
   let dataApi: nock.Scope
 
   beforeEach(function () {
+    addon = fixtures.addons['dwh-db']
     api = nock('https://api.heroku.com')
     dataApi = nock('https://api.data.heroku.com')
   })
