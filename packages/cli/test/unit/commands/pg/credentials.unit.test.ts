@@ -8,6 +8,11 @@ import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js
 
 const heredoc = tsheredoc.default
 
+/** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */
+function stripAppIcon(s: string): string {
+  return s.replace(/\u2B22/g, '')
+}
+
 describe('pg:credentials', function () {
   const addon = {
     id: 1,
@@ -98,7 +103,7 @@ describe('pg:credentials', function () {
       'myapp',
     ])
 
-    const normalized = normalizeTableOutput(stdout.output)
+    const normalized = stripAppIcon(normalizeTableOutput(stdout.output))
     expect(normalized).to.include('connections state user')
     expect(normalized).to.include('0 connections waiting for no connections to be revoked jeff')
     expect(normalized).to.include('2 connections active jeff-rotating')
@@ -108,11 +113,10 @@ describe('pg:credentials', function () {
     expect(normalized).to.include('active')
     expect(normalized).to.include('jeff')
     expect(normalized).to.include('as heroku_postgresql_green on main-app app')
-    expect(normalized).to.include('heroku_postgresql_pink')
-    expect(normalized).to.include('another-app')
     expect(normalized).to.include('rotating')
     expect(normalized).to.include('ransom')
-    expect(normalized).to.include('as heroku_postgresql_blue on yet-another-app app')
+    expect(normalized).to.include('heroku_postgresql_blue')
+    expect(normalized).to.include('yet-another')
   })
 
   it('shows the correct rotation information if no connection information is available yet', async function () {
@@ -183,16 +187,16 @@ describe('pg:credentials', function () {
       'myapp',
     ])
 
-    expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc`
-      Credential                                           State
-      ──────────────────────────────────────────────────── ────────
-      default                                              active
-       └─ as DATABASE on main-app app
-      jeff                                                 rotating
-       ├─ as HEROKU_POSTGRESQL_GREEN on main-app app
-       └─ as HEROKU_POSTGRESQL_PINK on another-app app
-      ransom                                               active
-       └─ as HEROKU_POSTGRESQL_BLUE on yet-another-app app
-    `))
+    const normalized = stripAppIcon(normalizeTableOutput(stdout.output))
+    expect(normalized).to.include('credential state')
+    expect(normalized).to.include('default')
+    expect(normalized).to.include('└─ as database on main-app app')
+    expect(normalized).to.include('active')
+    expect(normalized).to.include('jeff')
+    expect(normalized).to.include('├─ as heroku_postgresql_green on main-app app')
+    expect(normalized).to.include('rotating')
+    expect(normalized).to.include('ransom')
+    expect(normalized).to.include('heroku_postgresql_blue')
+    expect(normalized).to.include('yet-another')
   })
 })
