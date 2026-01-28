@@ -23,7 +23,7 @@ export default class Index extends Command {
         return (aName > bName) ? 1 : ((bName > aName) ? -1 : 0)
       }), {
         name: {header: 'Team'},
-        role: {get: ({role}) => color.green(role || ''),  header: 'Role'},
+        role: {get: ({role}) => color.info(role || ''),  header: 'Role'},
       })
     }
   }
