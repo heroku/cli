@@ -25,7 +25,7 @@ export default class Index extends Command {
         Team: {get: space => color.team(space.team.name || '')},
         Region: {get: space => space.region.name},
         State: {
-          get: space => {
+          get(space) {
             if (space.state === 'allocated') return color.success(space.state)
             if (space.state === 'deleting') return color.failure(space.state)
             return color.warning(space.state)

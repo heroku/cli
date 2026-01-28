@@ -18,7 +18,7 @@ function displayDB(db: DBObject, app: string) {
     hux.styledHeader(db.addon.attachment_names.map((c: string) => color.attachment(c + '_URL'))
       .join(', '))
   } else {
-    hux.styledHeader(db.configVars?.map(c => color.green(c))
+    hux.styledHeader(db.configVars?.map(c => color.name(c))
       .join(', ') || '')
   }
 
