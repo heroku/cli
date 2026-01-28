@@ -55,6 +55,8 @@ export default class Credentials extends Command {
       State: {
         get: cred => cred.state,
       },
+    }, {
+      overflow: 'wrap',
     })
   }
 
