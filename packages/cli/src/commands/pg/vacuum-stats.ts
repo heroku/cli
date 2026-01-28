@@ -7,8 +7,8 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class VacuumStats extends Command {
-  static topic = 'pg';
-  static description = 'show dead rows and whether an automatic vacuum is expected to be triggered';
+  static topic = 'pg'
+  static description = 'show dead rows and whether an automatic vacuum is expected to be triggered'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

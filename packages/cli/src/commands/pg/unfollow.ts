@@ -12,8 +12,8 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Unfollow extends Command {
-  static topic = 'pg';
-  static description = 'stop a replica from following and make it a writeable database';
+  static topic = 'pg'
+  static description = 'stop a replica from following and make it a writeable database'
   static flags = {
     confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
