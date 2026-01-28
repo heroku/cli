@@ -103,7 +103,7 @@ describe('pg:credentials', function () {
       'myapp',
     ])
 
-    const normalized = stripAppIcon(normalizeTableOutput(stdout.output))
+    const normalized = normalizeTableOutput(stripAppIcon(stdout.output))
     expect(normalized).to.include('connections state user')
     expect(normalized).to.include('0 connections waiting for no connections to be revoked jeff')
     expect(normalized).to.include('2 connections active jeff-rotating')
@@ -187,7 +187,7 @@ describe('pg:credentials', function () {
       'myapp',
     ])
 
-    const normalized = stripAppIcon(normalizeTableOutput(stdout.output))
+    const normalized = normalizeTableOutput(stripAppIcon(stdout.output))
     expect(normalized).to.include('credential state')
     expect(normalized).to.include('default')
     expect(normalized).to.include('└─ as database on main-app app')
