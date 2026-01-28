@@ -1,19 +1,18 @@
-/*
 import {stderr, stdout} from 'stdout-stderr'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import Cmd from '../../../../src/commands/pg/push.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import * as proxyquire from 'proxyquire'
-import heredoc from 'tsheredoc'
-import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
+import tsheredoc from 'tsheredoc'
+import {pg, utils} from '@heroku/heroku-cli-util'
 import sinon = require('sinon')
-import * as childProcess from 'node:child_process'
+import childProcess from 'node:child_process'
+
+const heredoc = tsheredoc.default
 
 describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
-  let db: ConnectionDetails
-  let push_pull: unknown
+  let db: pg.ConnectionDetails
   const emptyResponse = '00'
-  let Cmd: GenericCmd
   let spawnStub: sinon.SinonStub
   let env: NodeJS.ProcessEnv
   let sshTunnelStub: sinon.SinonStub
@@ -26,50 +25,24 @@ describe('pg:push', function () {
     env = process.env
     process.env = {}
     db = {
-      user: 'jeff',
-      password: 'pass',
-      database: 'mydb',
-      port: '5432',
-      host: 'herokai.com',
       attachment: {
         addon: {
           name: 'postgres-1',
         },
-        config_vars: ['DATABASE_URL'],
         app: {name: 'myapp'},
+        config_vars: ['DATABASE_URL'],
       },
-    } as ConnectionDetails
-    sshTunnelStub = sinon.stub().resolves()
-    const mockUtils = {
-      pg: {
-        DatabaseResolver: class {
-          getDatabase = sinon.stub().callsFake(() => db)
-          static parsePostgresConnectionString(url: string) {
-            return utils.pg.DatabaseResolver.parsePostgresConnectionString(url)
-          }
-        },
-        PsqlService: class {
-          execQuery = sinon.stub().resolves(emptyResponse)
-        },
-        psql: {
-          getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetails) => {
-            return utils.pg.psql.getPsqlConfigs(db)
-          }),
-          sshTunnel: sshTunnelStub,
-        },
-      },
-    }
-    push_pull = proxyquire('../../../../src/lib/pg/push_pull', {
-      '@heroku/heroku-cli-util': {
-        utils: mockUtils,
-      },
-    })
-    Cmd = proxyquire('../../../../src/commands/pg/push', {
-      '@heroku/heroku-cli-util': {
-        utils: mockUtils,
-      },
-      '../../lib/pg/push_pull': push_pull,
-    }).default
+      database: 'mydb',
+      host: 'herokai.com',
+      password: 'pass',
+      port: '5432',
+      user: 'jeff',
+    } as pg.ConnectionDetails
+
+    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
+    sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+
     sinon.stub(Math, 'random').callsFake(() => 0)
     spawnStub = sinon.stub(childProcess, 'spawn')
   })
@@ -84,16 +57,16 @@ describe('pg:push', function () {
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
     spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
-      stdout: {
-        pipe: () => {},
-      },
       on: exitHandler,
+      stdout: {
+        pipe() {},
+      },
     })
     spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
-      stdin: {
-        end: () => {},
-      },
       on: exitHandler,
+      stdin: {
+        end() {},
+      },
     })
 
     await runCommand(Cmd, [
@@ -116,16 +89,16 @@ describe('pg:push', function () {
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
     spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
-      stdout: {
-        pipe: () => {},
-      },
       on: exitHandler,
+      stdout: {
+        pipe() {},
+      },
     })
     spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
-      stdin: {
-        end: () => {},
-      },
       on: exitHandler,
+      stdin: {
+        end() {},
+      },
     })
 
     await runCommand(Cmd, [
@@ -150,16 +123,16 @@ describe('pg:push', function () {
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
     spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
-      stdout: {
-        pipe: () => {},
-      },
       on: exitHandler,
+      stdout: {
+        pipe() {},
+      },
     })
     spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
-      stdin: {
-        end: () => {},
-      },
       on: exitHandler,
+      stdin: {
+        end() {},
+      },
     })
 
     await runCommand(Cmd, [
@@ -185,16 +158,16 @@ describe('pg:push', function () {
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
     spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
-      stdout: {
-        pipe: () => {},
-      },
       on: exitHandler,
+      stdout: {
+        pipe() {},
+      },
     })
     spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
-      stdin: {
-        end: () => {},
-      },
       on: exitHandler,
+      stdin: {
+        end() {},
+      },
     })
 
     await runCommand(Cmd, [
@@ -217,16 +190,16 @@ describe('pg:push', function () {
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
     spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
-      stdout: {
-        pipe: () => {},
+      on(key: string, func: CallableFunction) {
+        return func(1)
       },
-      on: (key: string, func: CallableFunction) => {
-        func(1)
+      stdout: {
+        pipe() {},
       },
     })
     spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
       stdin: {
-        end: () => {},
+        end() {},
       },
     })
 
@@ -247,5 +220,3 @@ describe('pg:push', function () {
     expect(stderr.output).to.eq('')
   })
 })
-
-*/
