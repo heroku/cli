@@ -1,9 +1,7 @@
-/*
 import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {nls} from '../../nls'
-import {execFile, interactive} from '../../lib/pg/psql'
+import {nls} from '../../nls.js'
 
 export default class Psql extends Command {
     static description = 'open a psql shell to the database';
@@ -44,11 +42,10 @@ export default class Psql extends Command {
         const output = await psqlService.execQuery(command)
         process.stdout.write(output)
       } else if (file) {
-        const output = await execFile(db, file)
+        const output = await psqlService.execFile(file)
         process.stdout.write(output)
       } else {
-        await interactive(db)
+        await psqlService.interactiveSession()
       }
     }
 }
-*/

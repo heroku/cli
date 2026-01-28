@@ -19,8 +19,6 @@ const FAKE_OUTPUT_TEXT = heredoc(`
  `)
 
 describe('pg:ps', function () {
-  let databaseResolverStub: sinon.SinonStub
-  let psqlServiceExecQuerySpy: sinon.SinonSpy
   let api: nock.Scope
   let queryString = ''
   const addon = fixtures.addons['www-db']

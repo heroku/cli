@@ -1,53 +1,32 @@
-/*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import * as proxyquire from 'proxyquire'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import {pg, utils} from '@heroku/heroku-cli-util'
+import Cmd from '../../../../src/commands/pg/psql.js'
+import runCommand from '../../../helpers/runCommand.js'
 
 const db = {
-  user: 'jeff', password: 'pass', database: 'mydb', port: 5432, host: 'localhost', attachment: {
+  user: 'jeff',
+  host: 'localhost',
+  password: 'pass',
+  pathname: '/babyface',
+  database: 'mydb',
+  url: 'postgres://jeff:pass@localhost:5432/babyface',
+  port: '5432',
+  attachment: {
     addon: {
       name: 'postgres-1',
-    }, config_vars: ['DATABASE_URL'], app: {name: 'myapp'},
+    },
+    config_vars: ['DATABASE_URL'],
+    app: {name: 'myapp'},
   },
-}
+} as unknown as pg.ConnectionDetails
 
 describe('psql', function () {
-  let databaseResolverStub: sinon.SinonStub
-  let psqlServiceExecQueryStub: sinon.SinonStub
-  let Cmd: GenericCmd
-  const psql = {
-    fetchVersion: () => {
-      return Promise.resolve('')
-    },
-    execFile: () => {
-      return Promise.resolve('')
-    },
-  }
-
   beforeEach(function () {
-    databaseResolverStub = sinon.stub().resolves(db)
-    psqlServiceExecQueryStub = sinon.stub().resolves('')
-
-    // Mock the utils.pg classes
-    const mockUtils = {
-      pg: {
-        DatabaseResolver: class {
-          getDatabase = databaseResolverStub
-        },
-        PsqlService: class {
-          execQuery = psqlServiceExecQueryStub
-        },
-      },
-    }
-
-    Cmd = proxyquire('../../../../src/commands/pg/psql', {
-      '../../lib/pg/psql': psql,
-      '@heroku/heroku-cli-util': {
-        utils: mockUtils,
-      },
-    }).default
+    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
+    sinon.stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
   })
 
   afterEach(function () {
@@ -62,7 +41,7 @@ describe('psql', function () {
       'SELECT 1',
     ])
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
+    expect(stderr.output).to.equal('--> Connecting to ⛁ postgres-1\n')
   })
 
   it('runs psql with file', async function () {
@@ -73,8 +52,6 @@ describe('psql', function () {
       'test.sql',
     ])
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
+    expect(stderr.output).to.equal('--> Connecting to ⛁ postgres-1\n')
   })
 })
-
-*/
