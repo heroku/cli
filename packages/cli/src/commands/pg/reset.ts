@@ -1,5 +1,4 @@
-import {utils} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'

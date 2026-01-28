@@ -1,8 +1,8 @@
-import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {utils, pg} from '@heroku/heroku-cli-util'
+import {color, utils, pg} from '@heroku/heroku-cli-util'
+// import {SpawnOptions, spawn} from 'node:child_process'
 import childProcess from 'node:child_process'
 import {nls} from '../../nls.js'
 import {
@@ -32,8 +32,8 @@ export default class Pull extends Command {
     * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
     * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
 
-    To delete a local database run ${color.cmd('dropdb TARGET')}.
-    To create an empty remote database, run ${color.cmd('createdb')} with connection command-line options (run ${color.cmd('createdb --help')} for details).
+    To delete a local database run ${color.command('dropdb TARGET')}.
+    To create an empty remote database, run ${color.command('createdb')} with connection command-line options (run ${color.command('createdb --help')} for details).
   `
 
   static examples = [heredoc`
