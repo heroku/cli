@@ -6,6 +6,7 @@
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
+    "ansis": "^4",
     "@heroku-cli/command": "^12.1.1",
     "@heroku-cli/notifications": "^1.2.4",
     "@heroku-cli/plugin-ps-exec": "2.6.4",
@@ -114,7 +115,6 @@
     "@types/uuid": "^8.3.0",
     "@types/write-json-file": "^3.2.1",
     "@types/ws": "^6.0.1",
-    "ansis": "^4",
     "bats": "^1.1.0",
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
