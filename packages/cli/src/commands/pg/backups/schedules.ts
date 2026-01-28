@@ -20,11 +20,11 @@ export default class Schedules extends Command {
     const db = await dbResolver.getArbitraryLegacyDB(app)
     const {body: schedules} = await this.heroku.get<TransferSchedule[]>(`/client/v11/databases/${db.id}/transfer-schedules`, {hostname: utils.pg.host()})
     if (schedules.length === 0) {
-      ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.cyan.bold('heroku pg:backups:schedule')} to set one up`)
+      ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.code('heroku pg:backups:schedule')} to set one up`)
     } else {
       hux.styledHeader('Backup Schedules')
       for (const s of schedules) {
-        ux.stdout(`${color.green(s.name)}: daily at ${s.hour}:00 ${s.timezone}\n`)
+        ux.stdout(`${color.name(s.name)}: daily at ${s.hour}:00 ${s.timezone}\n`)
       }
     }
   }
