@@ -9,9 +9,9 @@ const db = {
   user: 'jeff',
   host: 'localhost',
   password: 'pass',
-  pathname: '/babyface',
+  pathname: '/corn',
   database: 'mydb',
-  url: 'postgres://jeff:pass@localhost:5432/babyface',
+  url: 'postgres://jeff:pass@localhost:5432/corn',
   port: '5432',
   attachment: {
     addon: {
