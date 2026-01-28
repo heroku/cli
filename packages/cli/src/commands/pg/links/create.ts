@@ -1,35 +1,37 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
-import {addonResolver} from '../../../lib/addons/resolve.js'
-import {utils} from '@heroku/heroku-cli-util'
+
 import type {Link} from '../../../lib/pg/types.js'
+
+import {addonResolver} from '../../../lib/addons/resolve.js'
 import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 export default class Create extends Command {
-  static topic = 'pg'
-  static description = heredoc(`
-  create a link between data stores
-  Example:
-  heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
-  `)
+  /* eslint-disable perfectionist/sort-objects */
+  // the order of args is important for the command to work
+  // TODO: change database to be a flag
+  static args = {
+    remote: Args.string({description: nls('pg:database:arg:description'), required: true}),
+    database: Args.string({description: nls('pg:database:arg:description'), required: true}),
+  }
+  /* eslint-enable perfectionist/sort-objects */
+
+  static description = 'create a link between data stores'
+
+  static example = `${color.command('heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN')}`
 
   static flags = {
-    as: flags.string({description: 'name of link to create'}),
     app: flags.app({required: true}),
+    as: flags.string({description: 'name of link to create'}),
     remote: flags.remote(),
   }
 
-  static args = {
-    remote: Args.string({required: true, description: nls('pg:database:arg:description')}),
-    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Create)
+    const {args, flags} = await this.parse(Create)
     const {app} = flags
 
     const service = async (remoteId: string) => {
@@ -50,11 +52,11 @@ export default class Create extends Command {
     if (essentialPlan(target as any))
       throw new Error("pg:links isn't available for Essential-tier databases.")
 
-    ux.action.start(`Adding link from ${color.yellow(target.name)} to ${color.yellow(db.name)}`)
+    ux.action.start(`Adding link from ${color.datastore(target.name)} to ${color.datastore(db.name)}`)
     const {body: link} = await this.heroku.post<Link>(`/client/v11/databases/${db.id}/links`, {
       body: {
-        target: target.name,
         as: flags.as,
+        target: target.name,
       },
       hostname: utils.pg.host(),
     })
@@ -65,6 +67,6 @@ export default class Create extends Command {
     //   throw new Error(link.message)
     // }
 
-    ux.action.stop(`done, ${color.cyan(link.name)}`)
+    ux.action.stop(`done, ${color.name(link.name)}`)
   }
 }

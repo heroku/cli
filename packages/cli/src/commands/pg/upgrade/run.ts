@@ -21,7 +21,7 @@ export default class Upgrade extends Command {
 
     On Essential-tier databases, this command upgrades the database's Postgres version.
 
-    On Standard-tier and higher leader databases, this command runs a previously scheduled Postgres version upgrade. You must run ${color.command('pg:upgrade:prepare')} before this command to schedule a version upgrade.
+    On Standard-tier and higher leader databases, this command runs a previously scheduled Postgres version upgrade. You must run ${color.code('pg:upgrade:prepare')} before this command to schedule a version upgrade.
 
     On follower databases, this command unfollows the leader database before upgrading the follower's Postgres version.
     `)
@@ -83,7 +83,7 @@ export default class Upgrade extends Command {
     } else {
       await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
-        You're upgrading the Postgres version on ${color.addon(db.name)}. This action also upgrades any followers on the database.
+        You're upgrading the Postgres version on ${color.datastore(db.name)}. This action also upgrades any followers on the database.
 
         You can't undo this action.
       `))
@@ -91,8 +91,8 @@ export default class Upgrade extends Command {
 
     try {
       const data = {version}
-      ux.action.start(`Starting upgrade on ${color.addon(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {body: data, hostname: utils.pg.host()})
+      ux.action.start(`Starting upgrade on ${color.datastore(db.name)}`)
+      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {hostname: utils.pg.host(), body: data})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
       if (error instanceof Error && 'body' in error) {

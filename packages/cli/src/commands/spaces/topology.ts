@@ -1,46 +1,32 @@
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {color} from '@heroku-cli/color'
+
 import {SpaceTopology} from '../../lib/types/spaces.js'
 
 const heredoc = tsheredoc.default
 
 export default class Topology extends Command {
-  static topic = 'spaces'
-  static description = 'show space topology'
-  static flags = {
-    space: flags.string({char: 's', description: 'space to get topology of'}),
-    json: flags.boolean({description: 'output in json format'}),
-  }
-
   static args = {
     space: Args.string({hidden: true}),
   }
 
-  public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Topology)
-    const spaceName = flags.space || args.space
-    if (!spaceName) {
-      ux.error(heredoc(`
-        Error: Missing 1 required arg:
-        space
-        See more help with --help
-      `))
-    }
+  static description = 'show space topology'
+  static flags = {
+    json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space to get topology of'}),
+  }
 
-    const {body: topology} = await this.heroku.get<SpaceTopology>(`/spaces/${spaceName}/topology`)
-    let appInfo: Heroku.App[] = []
-    if (topology.apps) {
-      appInfo = await Promise.all(topology.apps.map(async topologyApp => {
-        const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${topologyApp.id}`)
-        return app
-      }))
-    }
+  static topic = 'spaces'
 
-    this.render(topology, appInfo, flags.json)
+  protected getProcessNum(s: string) {
+    return Number.parseInt(s.split('-', 2)[0].split('.', 2)[1], 10)
+  }
+
+  protected getProcessType(s: string) {
+    return s.split('-', 2)[0].split('.', 2)[0]
   }
 
   protected render(topology: SpaceTopology, appInfo: Heroku.App[], json: boolean) {
@@ -80,7 +66,7 @@ export default class Topology extends Command {
         const info = appInfo.find(info => info.id === app.id)
         let header = info?.name
         if (formations.length > 0) {
-          header += ` (${color.cyan(formations.join(', '))})`
+          header += ` (${color.info(formations.join(', '))})`
         }
 
         hux.styledHeader(header || '')
@@ -92,11 +78,26 @@ export default class Topology extends Command {
     }
   }
 
-  protected getProcessType(s: string) {
-    return s.split('-', 2)[0].split('.', 2)[0]
-  }
+  public async run(): Promise<void> {
+    const {args, flags} = await this.parse(Topology)
+    const spaceName = flags.space || args.space
+    if (!spaceName) {
+      ux.error(heredoc(`
+        Error: Missing 1 required arg:
+        space
+        See more help with --help
+      `))
+    }
 
-  protected getProcessNum(s: string) {
-    return Number.parseInt(s.split('-', 2)[0].split('.', 2)[1], 10)
+    const {body: topology} = await this.heroku.get<SpaceTopology>(`/spaces/${spaceName}/topology`)
+    let appInfo: Heroku.App[] = []
+    if (topology.apps) {
+      appInfo = await Promise.all(topology.apps.map(async topologyApp => {
+        const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${topologyApp.id}`)
+        return app
+      }))
+    }
+
+    this.render(topology, appInfo, flags.json)
   }
 }
