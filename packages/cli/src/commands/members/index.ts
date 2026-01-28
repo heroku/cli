@@ -14,7 +14,7 @@ const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
       get: ({email}: any): string => color.user(email),
     },
     role: {
-      get: ({role}: any): string => color.green(role),
+      get: ({role}: any): string => color.info(role),
     },
   }
 
@@ -22,7 +22,10 @@ const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
     return {
       ...baseColumns,
       status: {
-        get: ({status}: any): string => color.green(status),
+        get({status}: any): string {
+          if (status === 'pending') return color.warning(status)
+          return color.success(status)
+        },
       },
     }
   }
@@ -84,7 +87,7 @@ export default class MembersIndex extends Command {
     } else if (members.length === 0) {
       let msg = `No members in ${color.team(team || '')}`
       if (role)
-        msg += ` with role ${color.green(role)}`
+        msg += ` with role ${color.info(role)}`
       ux.stdout(msg)
     } else {
       const tableColumns = buildTableColumns(teamInvites)

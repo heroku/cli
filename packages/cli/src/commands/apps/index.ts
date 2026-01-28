@@ -23,7 +23,7 @@ function annotateAppName(app: App) {
 function regionizeAppName(app: App) {
   const name = annotateAppName(app)
   if (app.region && app.region.name !== 'us') {
-    return `${name} (${color.green(app.region.name)})`
+    return `${name} (${color.info(app.region.name)})`
   }
 
   return name

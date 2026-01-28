@@ -233,7 +233,7 @@ export default class Index extends Command {
       selectedDynos = selectedDynos.filter(dyno => types.find((t: string) => dyno.type === t))
       types.forEach(t => {
         if (!selectedDynos.some(d => d.type === t)) {
-          throw new Error(`No ${color.cyan(t)} dynos on ${color.app(app)}`)
+          throw new Error(`No ${color.info(t)} dynos on ${color.app(app)}`)
         }
       })
     }

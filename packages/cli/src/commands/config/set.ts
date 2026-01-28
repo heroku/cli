@@ -47,7 +47,7 @@ RACK_ENV:  staging`)]
     argv.forEach((v: string) => {
       const idx = v.indexOf('=')
       if (idx === -1) {
-        ux.error(`${color.cyan(v)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`, {exit: 1})
+        ux.error(`${color.name(v)} is invalid. Must be in the format ${color.code('FOO=bar')}.`, {exit: 1})
       }
 
       vars[v.slice(0, idx)] = v.slice(idx + 1)
