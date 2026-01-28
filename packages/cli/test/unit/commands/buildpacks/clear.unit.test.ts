@@ -25,7 +25,7 @@ describe('buildpacks:clear', function () {
 
     const {stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
 
-    expect(stdout).to.equal('Buildpacks cleared. Next release on example will detect buildpacks normally.\n')
+    expect(stdout).to.equal('Buildpacks cleared. Next release on ⬢ example will detect buildpacks normally.\n')
   })
 
   it('# clears and warns about buildpack URL config var', async function () {

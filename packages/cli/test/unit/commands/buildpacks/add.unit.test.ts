@@ -41,7 +41,7 @@ describe('buildpacks:add', function () {
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use hone/test.
+        `Buildpack added. Next release on ⬢ example will use hone/test.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -54,7 +54,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use https://github.com/heroku/heroku-buildpack-ruby.
+        `Buildpack added. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -70,7 +70,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use:
+        `Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-ruby
 Run git push heroku main to create a new release using these buildpacks.
@@ -92,7 +92,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use:
+        `Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
   3. https://github.com/heroku/heroku-buildpack-ruby
@@ -149,7 +149,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use https://github.com/heroku/heroku-buildpack-ruby.
+        `Buildpack added. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -165,7 +165,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use:
+        `Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-ruby
   2. https://github.com/heroku/heroku-buildpack-java
 Run git push heroku main to create a new release using these buildpacks.
@@ -187,7 +187,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack added. Next release on example will use:
+        `Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-ruby
   3. https://github.com/heroku/heroku-buildpack-nodejs

@@ -61,7 +61,7 @@ function colorizeRouter(body: string) {
     }
 
     case 'code': {
-      return [k, color.failure(color.bold(v))]
+      return [k, color.failure(color.label(v))]
     }
 
     case 'method': {

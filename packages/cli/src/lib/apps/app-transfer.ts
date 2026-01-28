@@ -26,7 +26,7 @@ const getRequestOpts = (options: Options) => {
       path: `/teams/apps/${appName}`,
       transferMsg: `Transferring ${color.app(appName)}`,
     }
-  if (!bulk) requestOpts.transferMsg += ` to ${color.magenta(recipient)}`
+  if (!bulk) requestOpts.transferMsg += ` to ${isPersonalToPersonal ? color.user(recipient) : color.team(recipient)}`
   return requestOpts
 }
 

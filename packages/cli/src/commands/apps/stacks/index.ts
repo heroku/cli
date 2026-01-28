@@ -1,8 +1,7 @@
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 
 function updateCedarName(stack: string) {
   if (stack === 'cedar') {
@@ -14,13 +13,14 @@ function updateCedarName(stack: string) {
 
 export default class StacksIndex extends Command {
   static description = 'show the list of available stacks'
-  static topic = 'apps'
-  static hiddenAliases = ['stack']
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static hiddenAliases = ['stack']
+
+  static topic = 'apps'
 
   async run() {
     const {flags} = await this.parse(StacksIndex)
@@ -37,7 +37,7 @@ export default class StacksIndex extends Command {
     hux.styledHeader(`${color.app(app.name!)} Available Stacks`)
     for (const stack of sortedStacks) {
       if (stack.name === app.stack!.name) {
-        ux.stdout(color.green('* ' + updateCedarName(stack.name!)))
+        ux.stdout(color.name('* ' + updateCedarName(stack.name!)))
       } else if (stack.name === app.build_stack!.name) {
         ux.stdout(`  ${updateCedarName(stack.name!)} (active on next deploy)`)
       } else {

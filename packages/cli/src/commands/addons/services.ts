@@ -1,15 +1,15 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 
 export default class Services extends Command {
-  static topic = 'addons'
   static description = 'list all available add-on services'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }
+
+  static topic = 'addons'
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Services)
@@ -17,6 +17,7 @@ export default class Services extends Command {
     if (flags.json) {
       hux.styledJSON(services)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(services, {
         name: {
           header: 'Slug',
@@ -28,7 +29,8 @@ export default class Services extends Command {
           header: 'State',
         },
       })
-      ux.stdout(`\nSee plans with ${color.blue('heroku addons:plans SERVICE')}`)
+      /* eslint-enable perfectionist/sort-objects */
+      ux.stdout(`\nSee plans with ${color.code('heroku addons:plans SERVICE')}`)
     }
   }
 }

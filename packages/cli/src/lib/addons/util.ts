@@ -1,5 +1,5 @@
+import {color} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
-import {color} from '@heroku-cli/color'
 import * as Heroku from '@heroku-cli/schema'
 import printf from 'printf'
 
@@ -44,9 +44,9 @@ export const formatPriceText = function (price: Heroku.AddOn['price']) {
   const priceHourly = formatPrice({hourly: true, price})
   const priceMonthly = formatPrice({hourly: false, price})
   if (!priceHourly) return ''
-  if (priceHourly === 'free' || priceHourly === 'contract' || priceHourly === 'metered') return `${color.green(priceHourly)}`
+  if (priceHourly === 'free' || priceHourly === 'contract' || priceHourly === 'metered') return `${color.info(priceHourly)}`
 
-  return `${color.green(priceHourly)} (max ${priceMonthly})`
+  return `${color.info(priceHourly)} (max ${priceMonthly})`
 }
 
 export const grandfatheredPrice = function (addon: Heroku.AddOn) {

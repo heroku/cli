@@ -27,7 +27,7 @@ describe('buildpacks:set', function () {
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use https://github.com/heroku/heroku-buildpack-ruby.
+        `Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -57,7 +57,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stdout} = await runCommand(['buildpacks:set', 'https://github.com/bar/bar', '-a', 'example'])
 
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use:
+        `Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/bar/bar
   2. https://github.com/baz/baz
   3. https://github.com/biz/biz
@@ -77,7 +77,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use https://github.com/heroku/heroku-buildpack-ruby.
+        `Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -94,7 +94,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use https://github.com/heroku/heroku-buildpack-ruby.
+        `Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -123,7 +123,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use:
+        `Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-ruby
   2. https://github.com/heroku/heroku-buildpack-nodejs
 Run git push heroku main to create a new release using these buildpacks.
@@ -145,7 +145,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use:
+        `Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
   3. https://github.com/heroku/heroku-buildpack-ruby
@@ -168,7 +168,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
-        `Buildpack set. Next release on example will use:
+        `Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
   3. https://github.com/heroku/heroku-buildpack-ruby

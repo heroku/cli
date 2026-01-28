@@ -112,7 +112,7 @@ export default class UsageAddons extends Command {
   }
 
   private async fetchAndDisplayTeamUsageData(team: string): Promise<void> {
-    ux.action.start(`Gathering usage data for ${color.magenta(team)}`)
+    ux.action.start(`Gathering usage data for ${color.team(team)}`)
     const [{body: usageData}, {body: teamAddons}] = await Promise.all([
       this.heroku.get<TeamUsage>(`/teams/${team}/usage`, {
         headers: {
@@ -126,7 +126,7 @@ export default class UsageAddons extends Command {
     ux.stdout()
 
     if (!usageData.apps || usageData.apps.length === 0) {
-      ux.stdout(`No usage found for team ${color.magenta(team)}`)
+      ux.stdout(`No usage found for team ${color.team(team)}`)
       return
     }
 
