@@ -99,7 +99,7 @@ function printAppSummary(context: Interfaces.ParserOutput, app: Heroku.App, remo
   if (context.flags.json) {
     hux.styledJSON(app)
   } else {
-    ux.stdout(`${color.cyan(app.web_url || '')} | ${color.green(remoteUrl)}`)
+    ux.stdout(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
   }
 }
 

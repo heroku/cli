@@ -39,7 +39,7 @@ export default class Index extends Command {
     const pgbackups = backupsFactory(app, this.heroku)
     hux.styledHeader('Backups')
     if (backups.length === 0) {
-      ux.stdout(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+      ux.stdout(`No backups. Capture one with ${color.code('heroku pg:backups:capture')}`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
       hux.table<BackupTransfer>(backups, {
@@ -70,7 +70,7 @@ export default class Index extends Command {
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
     hux.styledHeader('Copies')
     if (copies.length === 0) {
-      ux.stdout(`No copies found. Use ${color.cyan.bold('heroku pg:copy')} to copy a database to another`)
+      ux.stdout(`No copies found. Use ${color.code('heroku pg:copy')} to copy a database to another`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
       hux.table(copies, {
@@ -106,11 +106,11 @@ export default class Index extends Command {
     const pgbackups = backupsFactory(app, this.heroku)
     hux.styledHeader('Restores')
     if (restores.length === 0) {
-      ux.stdout(`No restores found. Use ${color.cyan.bold('heroku pg:backups:restore')} to restore a backup`)
+      ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
       hux.table(restores, {
         ID: {
-          get: (transfer: BackupTransfer) => color.cyan(pgbackups.name(transfer)),
+          get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
         },
         'Started at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
@@ -122,7 +122,7 @@ export default class Index extends Command {
           get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         Database: {
-          get: (transfer: BackupTransfer) => color.green(transfer.to_name) || 'UNKNOWN',
+          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
         },
       })
     }
