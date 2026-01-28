@@ -3,8 +3,6 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 import {utils, pg} from '@heroku/heroku-cli-util'
-import childProcess from 'node:child_process'
-import {nls} from '../../nls.js'
 import {
   connArgs,
   maybeTunnel,
@@ -13,35 +11,34 @@ import {
   spawnPipe,
   verifyExtensionsMatch,
 } from '../../lib/pg/push_pull.js'
+import childProcess from 'node:child_process'
+import {nls} from '../../nls.js'
 
-const {env} = process
 const heredoc = tsheredoc.default
+const {env} = process
 
-export default class Pull extends Command {
+export default class Push extends Command {
   static args = {
-    source: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    target: Args.string({required: true, description: 'PostgreSQL connection string for the target database'}),
+    source: Args.string({description: 'PostgreSQL connection string for the source database', required: true}),
+    target: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: true}),
   }
 
   static description = heredoc`
-    pull Heroku database into local or remote database
-    Pull from SOURCE into TARGET.
+    push local or remote into Heroku database
+    Push from SOURCE into TARGET. TARGET must be empty.
 
-    TARGET must be one of:
-    * a database name (i.e. on a local PostgreSQL server)  => TARGET must not exist and will be created
-    * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
-    * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
+    To empty a Heroku database for push run ${color.cmd('heroku pg:reset')}
 
-    To delete a local database run ${color.cmd('dropdb TARGET')}.
-    To create an empty remote database, run ${color.cmd('createdb')} with connection command-line options (run ${color.cmd('createdb --help')} for details).
+    SOURCE must be either the name of a database existing on your localhost or the
+    fully qualified URL of a remote database.
   `
 
   static examples = [heredoc`
-    # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
-    $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
-  `, heredoc`
-    # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
-    $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
+      # push mylocaldb into a Heroku DB named postgresql-swimmingly-100
+      $ heroku pg:push mylocaldb postgresql-swimmingly-100 --app sushi
+    `, heredoc`
+      # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
+      $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100 --app sushi
   `]
 
   static flags = {
@@ -52,7 +49,7 @@ export default class Pull extends Command {
 
   static topic = 'pg'
 
-  protected async pull(
+  protected async push(
     sourceIn: pg.ConnectionDetails,
     targetIn: pg.ConnectionDetails,
     exclusions: string[]) {
@@ -97,16 +94,16 @@ export default class Pull extends Command {
   }
 
   public async run(): Promise<void> {
-    const {args, flags} = await this.parse(Pull)
+    const {args, flags} = await this.parse(Push)
     const {app, 'exclude-table-data': excludeTableData} = flags
 
     const exclusions = parseExclusions(excludeTableData)
+    const source = utils.pg.DatabaseResolver.parsePostgresConnectionString(args.source)
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const source = await dbResolver.getDatabase(app, args.source)
-    const target = utils.pg.DatabaseResolver.parsePostgresConnectionString(args.target)
+    const target = await dbResolver.getDatabase(app, args.target)
 
-    ux.stdout(`Pulling ${color.cyan(source.attachment!.addon.name)} to ${color.addon(args.target)}`)
-    await this.pull(source, target, exclusions)
-    ux.stdout('Pulling complete.')
+    ux.stdout(`Pushing ${color.cyan(args.source)} to ${color.addon(target.attachment!.addon.name)}`)
+    await this.push(source, target, exclusions)
+    ux.stdout('Pushing complete.')
   }
 }
