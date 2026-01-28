@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import { utils } from '@heroku/heroku-cli-util'
+import {utils} from '@heroku/heroku-cli-util'
 import Cmd from '../../../../src/commands/pg/ps.js'
 import runCommand from '../../../helpers/runCommand.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
@@ -23,7 +23,7 @@ describe('pg:ps', function () {
   let queryString = ''
   const addon = fixtures.addons['www-db']
   const app = fixtures.apps.api
-  
+
   const mockConnectionDetails = {
     database: 'test-db',
     host: 'localhost',

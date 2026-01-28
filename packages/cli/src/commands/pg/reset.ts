@@ -1,40 +1,45 @@
-/*
-import color from '@heroku-cli/color'
+import {utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import confirmCommand from '../../lib/confirmCommand'
-import {utils} from '@heroku/heroku-cli-util'
-import heredoc from 'tsheredoc'
-import {nls} from '../../nls'
+import tsheredoc from 'tsheredoc'
+
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Reset extends Command {
-  static topic = 'pg';
-  static description = 'delete all data in DATABASE';
-  static flags = {
-    extensions: flags.string({char: 'e', description: 'comma-separated list of extensions to pre-install in the public schema'}),
-    confirm: flags.string({char: 'c'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  };
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  };
+  }
+
+  static description = 'delete all data in DATABASE'
+  static flags = {
+    app: flags.app({required: true}),
+    confirm: flags.string({char: 'c'}),
+    extensions: flags.string({char: 'e', description: 'comma-separated list of extensions to pre-install in the public schema'}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Reset)
+    const {args, flags} = await this.parse(Reset)
     const {app, confirm, extensions} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, args.database)
+
     let extensionsArray
     if (extensions) {
       extensionsArray = extensions.split(',')
-        .map(ext => ext.trim()
+        .map((ext: string) => ext.trim()
           .toLowerCase())
         .sort()
     }
 
-    await confirmCommand(app, confirm, heredoc(`
+    const confirmCommand = new ConfirmCommand()
+    await confirmCommand.confirm(app, confirm, heredoc(`
       Destructive action
       ${color.addon(db.name)} will lose all of its data
     `))
@@ -45,4 +50,3 @@ export default class Reset extends Command {
     ux.action.stop()
   }
 }
-*/
