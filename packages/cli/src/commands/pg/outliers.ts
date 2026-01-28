@@ -1,10 +1,11 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {fetchVersion} from '../../lib/pg/psql'
-import heredoc from 'tsheredoc'
-import {nls} from '../../nls'
+import {fetchVersion} from '../../lib/pg/psql.js'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Outliers extends Command {
   static topic = 'pg'
@@ -49,7 +50,7 @@ export default class Outliers extends Command {
 
     const query = this.outliersQuery(version, limit, truncate)
     const output = await this.psqlService.execQuery(query)
-    ux.log(output)
+    ux.stdout(output)
   }
 
   protected async ensurePGStatStatement() {
@@ -109,4 +110,3 @@ export default class Outliers extends Command {
       `
   }
 }
-*/

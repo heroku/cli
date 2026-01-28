@@ -1,18 +1,17 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {hux} from '@heroku/heroku-cli-util'
 
 export default class Regions extends Command {
-  static topic = 'regions'
-
   static description = 'list available regions for deployment'
 
   static flags = {
+    common: flags.boolean({description: 'show regions for common runtime'}),
     json: flags.boolean({description: 'output in json format'}),
     private: flags.boolean({description: 'show regions for private spaces'}),
-    common: flags.boolean({description: 'show regions for common runtime'}),
   }
+
+  static topic = 'regions'
 
   async run() {
     const {flags} = await this.parse(Regions)
@@ -34,10 +33,11 @@ export default class Regions extends Command {
     if (flags.json) {
       hux.styledJSON(regions)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(regions, {
         name: {
           header: 'ID',
-          get: ({name}: any) => color.green(name),
+          get: ({name}: any) => color.name(name),
         },
         description: {
           header: 'Location',
@@ -47,6 +47,7 @@ export default class Regions extends Command {
           get: ({private_capable}: any) => private_capable ? 'Private Spaces' : 'Common Runtime',
         },
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
   }
 }

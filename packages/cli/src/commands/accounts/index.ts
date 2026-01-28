@@ -1,11 +1,13 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
+
 import accountsModule from '../../lib/accounts/accounts.js'
 
 export default class AccountsIndex extends Command {
   static description = 'list the Heroku accounts in your cache'
 
-  static example = 'heroku accounts'
+  static example = `${color.command('heroku accounts')}`
 
   async run() {
     const accounts = accountsModule.list()

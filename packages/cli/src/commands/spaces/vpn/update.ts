@@ -21,9 +21,8 @@ export default class Update extends Command {
     The connection is established over the public Internet but all traffic is encrypted using IPSec.
   `
   static example = heredoc`
-    $ heroku spaces:vpn:update vpn-connection-name --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24
-    Updating VPN Connection in space my-space... done
-  `
+    ${color.command('heroku spaces:vpn:update vpn-connection-name --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24')}
+    Updating VPN Connection in space my-space... done`
 
   static flags = {
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),

@@ -1,11 +1,12 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
+
 import Cmd from '../../../../../src/commands/pg/links/create.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
-import {expect} from 'chai'
-import nock from 'nock'
+const heredoc = tsheredoc.default
 
 describe('pg:links:create', function () {
   let api: nock.Scope
@@ -29,12 +30,12 @@ describe('pg:links:create', function () {
 
     it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'heroku-postgres', addon_service: 'heroku-postgresql',
+        addon_attachment: 'heroku-postgres', addon_service: 'heroku-postgresql', app: 'myapp',
       }).reply(200, [{addon}])
 
       api.post('/actions/addons/resolve', {
-        app: 'myapp',
         addon: 'heroku-redis',
+        app: 'myapp',
       }).reply(200, [addon])
 
       try {
@@ -60,17 +61,17 @@ describe('pg:links:create', function () {
 
     it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'heroku-postgres',
         addon_service: 'heroku-postgresql',
+        app: 'myapp',
       }).reply(200, [{addon}])
 
       api.post('/actions/addons/resolve', {
-        app: 'myapp',
         addon: 'heroku-redis',
+        app: 'myapp',
       }).reply(200, [addon])
 
-      pg.post('/client/v11/databases/1/links', {target: 'postgres-1', as: 'foobar'})
+      pg.post('/client/v11/databases/1/links', {as: 'foobar', target: 'postgres-1'})
         .reply(200, {name: 'foobar'})
 
       await runCommand(Cmd, [
@@ -83,7 +84,7 @@ describe('pg:links:create', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.equal(heredoc(`
-      Adding link from postgres-1 to postgres-1... done, foobar
+      Adding link from ⛁ postgres-1 to ⛁ postgres-1... done, foobar
       `))
     })
   })

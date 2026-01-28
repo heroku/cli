@@ -1,14 +1,13 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
 
   static flags = {
-    json: flags.boolean({char: 'j', name: 'json', description: 'output in json format'}),
+    json: flags.boolean({char: 'j', description: 'output in json format', name: 'json'}),
   }
 
   async run() {
@@ -22,13 +21,15 @@ export default class ClientsIndex extends Command {
     } else if (clients.length === 0) {
       ux.stdout('No OAuth clients.')
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(clients, {
-        name: {get: (w: any) => color.green(w.name)},
+        name: {get: (w: any) => color.name(w.name)},
         id: {},
         redirect_uri: {},
       }, {
         sort: {name: 'asc'},
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
   }
 }

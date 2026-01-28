@@ -1,14 +1,21 @@
+import {hux, color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
+import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
 
 const heredoc = tsheredoc.default
 
 export default class Config extends Command {
-  static topic = 'spaces'
+  static args = {
+    name: Args.string({
+      description: 'name or id of the VPN connection to retrieve config from',
+      required: true,
+    }),
+  }
+
   static description = heredoc(`
     display the configuration information for VPN
 
@@ -20,34 +27,29 @@ export default class Config extends Command {
     - The VPN Gateway must use the IKE Version shown and the Pre-shared Keys as the authentication method
   `)
 
-  static example = heredoc(`
-    $ heroku spaces:vpn:config vpn-connection-name --space my-space
+  static example = heredoc`
+    ${color.command('heroku spaces:vpn:config vpn-connection-name --space my-space')}
     === vpn-connection-name VPN Tunnels
      VPN Tunnel Customer Gateway VPN Gateway    Pre-shared Key Routable Subnets IKE Version
      ────────── ──────────────── ────────────── ────────────── ──────────────── ───────────
      Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
      Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
-    `)
+    `
 
   static flags = {
+    json: flags.boolean({description: 'output in json format'}),
     space: flags.string({
-      required: true,
       char: 's',
       description: 'space the VPN connection belongs to',
+      required: true,
     }),
-    json: flags.boolean({description: 'output in json format'}),
   }
 
-  static args = {
-    name: Args.string({
-      required: true,
-      description: 'name or id of the VPN connection to retrieve config from',
-    }),
-  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Config)
-    const {space, json} = flags
+    const {args, flags} = await this.parse(Config)
+    const {json, space} = flags
     const {name} = args
 
     const {body: vpnConnection} = await this.heroku.get<Heroku.PrivateSpacesVpn>(`/spaces/${space}/vpn-connections/${name}`)

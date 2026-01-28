@@ -1,24 +1,27 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
-import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
-import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
-import * as Heroku from '@heroku-cli/schema'
+
 import ConfirmCommand from '../../../lib/confirmCommand.js'
+import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
+import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Upgrade extends Command {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+  }
+
   static description = heredoc(`
     starts a Postgres version upgrade
 
     On Essential-tier databases, this command upgrades the database's Postgres version.
 
-    On Standard-tier and higher leader databases, this command runs a previously scheduled Postgres version upgrade. You must run ${color.cmd('pg:upgrade:prepare')} before this command to schedule a version upgrade.
+    On Standard-tier and higher leader databases, this command runs a previously scheduled Postgres version upgrade. You must run ${color.code('pg:upgrade:prepare')} before this command to schedule a version upgrade.
 
     On follower databases, this command unfollows the leader database before upgrading the follower's Postgres version.
     `)
@@ -26,38 +29,36 @@ export default class Upgrade extends Command {
   static examples = [
     heredoc`
       # Upgrade an Essential-tier database to a specific version
-      $ heroku pg:upgrade:run postgresql-curved-12345 --version 14 --app myapp
+      ${color.command('heroku pg:upgrade:run postgresql-curved-12345 --version 14 --app myapp')}
     `,
     heredoc`
       # Upgrade a Standard-tier follower database to the latest supported version
-      $ heroku pg:upgrade:run HEROKU_POSTGRESQL_BLUE_URL --app myapp
+      ${color.command('heroku pg:upgrade:run HEROKU_POSTGRESQL_BLUE_URL --app myapp')}
     `,
     heredoc`
       # Run a previously scheduled upgrade on a Standard-tier leader database
-      $ heroku pg:upgrade:run DATABASE_URL --app myapp
+      ${color.command('heroku pg:upgrade:run DATABASE_URL --app myapp')}
     `,
   ]
 
   static flags = {
-    confirm: flags.string({char: 'c'}),
-    version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
     app: flags.app({required: true}),
+    confirm: flags.string({char: 'c'}),
     remote: flags.remote({char: 'r'}),
+    version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
   }
 
-  static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Upgrade)
-    const {app, version, confirm} = flags
+    const {args, flags} = await this.parse(Upgrade)
+    const {app, confirm, version} = flags
     const {database} = args
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     if (utils.pg.isLegacyEssentialDatabase(db))
-      ux.error(`You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.`)
+      ux.error(`You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
@@ -82,7 +83,7 @@ export default class Upgrade extends Command {
     } else {
       await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
-        You're upgrading the Postgres version on ${color.addon(db.name)}. This action also upgrades any followers on the database.
+        You're upgrading the Postgres version on ${color.datastore(db.name)}. This action also upgrades any followers on the database.
 
         You can't undo this action.
       `))
@@ -90,7 +91,7 @@ export default class Upgrade extends Command {
 
     try {
       const data = {version}
-      ux.action.start(`Starting upgrade on ${color.addon(db.name)}`)
+      ux.action.start(`Starting upgrade on ${color.datastore(db.name)}`)
       const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {hostname: utils.pg.host(), body: data})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {

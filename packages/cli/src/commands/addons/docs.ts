@@ -1,27 +1,29 @@
-import {color} from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {resolveAddon} from '../../lib/addons/resolve.js'
+import {Args, ux} from '@oclif/core'
 import open from 'open'
 
+import {resolveAddon} from '../../lib/addons/resolve.js'
+
 export default class Docs extends Command {
-  static topic = 'addons'
-  static description = "open an add-on's Dev Center documentation in your browser"
-  static flags = {
-    'show-url': flags.boolean({description: 'show URL, do not open browser'}),
-    app: flags.app(),
-    remote: flags.remote(),
+  static args = {
+    addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
 
-  static args = {
-    addon: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
+  static description = "open an add-on's Dev Center documentation in your browser"
+  static flags = {
+    app: flags.app(),
+    remote: flags.remote(),
+    'show-url': flags.boolean({description: 'show URL, do not open browser'}),
   }
+
+  static topic = 'addons'
 
   public static urlOpener: (url: string) => Promise<unknown> = open
 
   public async run(): Promise<void> {
-    const {flags,  args} = await this.parse(Docs)
+    const {args,  flags} = await this.parse(Docs)
     const {app} = flags
     const id = args.addon.split(':')[0]
     const addonResponse = await this.heroku.get<Heroku.AddOn>(`/addon-services/${encodeURIComponent(id)}`)
@@ -33,7 +35,7 @@ export default class Docs extends Command {
     if (flags['show-url']) {
       ux.stdout(url)
     } else {
-      ux.stdout(`Opening ${color.cyan(url)}...`)
+      ux.stdout(`Opening ${color.info(url)}...`)
       await Docs.urlOpener(url)
     }
   }

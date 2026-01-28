@@ -1,24 +1,27 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import tsheredoc from 'tsheredoc'
-import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {color} from '@heroku-cli/color'
-import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as sinon from 'sinon'
+import {stderr} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
 import ansis from 'ansis'
 
 describe('pg:upgrade:cancel', function () {
-  const addon = fixtures.addons['dwh-db']
+  let addon: Heroku.AddOn
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
+  let api: nock.Scope
+  let dataApi: nock.Scope
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -26,11 +29,16 @@ describe('pg:upgrade:cancel', function () {
   })
 
   beforeEach(async function () {
+    addon = fixtures.addons['dwh-db']
+    api = nock('https://api.heroku.com')
+    dataApi = nock('https://api.data.heroku.com')
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
   })
 
   afterEach(async function () {
+    api.done()
+    dataApi.done()
     nock.cleanAll()
   })
 
@@ -42,7 +50,7 @@ describe('pg:upgrade:cancel', function () {
   it('refuses to cancel upgrade on legacy essential dbs', async function () {
     const hobbyAddon = fixtures.addons['www-db']
 
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
     await runCommand(Cmd, [
@@ -52,7 +60,7 @@ describe('pg:upgrade:cancel', function () {
       'myapp',
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
-      You can only use ${color.cmd('pg:upgrade:*')} commands on Essential-* and higher plans.
+      You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.
     `))
     })
   })
@@ -62,7 +70,7 @@ describe('pg:upgrade:cancel', function () {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:essential-0'},
     }
 
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
 
@@ -72,15 +80,15 @@ describe('pg:upgrade:cancel', function () {
       '--confirm',
       'myapp',
     ]).catch(error => {
-      expect(error.message).to.equal(`You can't use ${color.cmd('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
+      expect(error.message).to.equal(`You can't use ${color.code('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
     })
   })
 
   it('refuses to cancel upgrade on follower dbs', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200, {
         following: 'postgres://xxx.com:5432/abcdefghijklmn',
@@ -96,28 +104,25 @@ describe('pg:upgrade:cancel', function () {
       'myapp',
     ]).catch(error => {
       expectOutput(error.message, heredoc(`
-      You can't use ${color.cmd('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.
+      You can't use ${color.code('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.
     `))
     })
   })
 
   it('cancels upgrade on a leader db', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/config-vars')
-      .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(200, {message: 'You canceled the upgrade.'})
 
     const message = heredoc(`
       Destructive action
-      You're canceling the scheduled version upgrade for ${addon.name}.
+      You're canceling the scheduled version upgrade for ⛁ ${addon.name}.
 
       You can't undo this action.
     `)
@@ -137,16 +142,13 @@ describe('pg:upgrade:cancel', function () {
   })
 
   it('errors when there is no upgrade prepared', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/config-vars')
-      .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
 
@@ -169,16 +171,13 @@ describe('pg:upgrade:cancel', function () {
   })
 
   it('errors when upgrade is not cancelable', async function () {
-    nock('https://api.heroku.com')
+    api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/config-vars')
-      .reply(200, {DATABASE_URL: 'postgres://db1'})
-    nock('https://api.data.heroku.com')
+    dataApi
       .get(`/client/v11/databases/${addon.id}`)
       .reply(200)
-    nock('https://api.data.heroku.com')
+    dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress."})
 

@@ -1,33 +1,35 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
-import {URL} from 'url'
-import type {CredentialInfo} from '../../../lib/pg/types.js'
 import tsheredoc from 'tsheredoc'
+import {URL} from 'url'
+
+import type {CredentialInfo} from '../../../lib/pg/types.js'
+
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Url extends Command {
-  static topic = 'pg'
-  static description = 'show information on a database credential'
-  static flags = {
-    name: flags.string({
-      char: 'n',
-      description: 'which credential to show (default credentials if not specified)',
-      default: 'default',
-    }),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'show information on a database credential'
+  static flags = {
+    app: flags.app({required: true}),
+    name: flags.string({
+      char: 'n',
+      default: 'default',
+      description: 'which credential to show (default credentials if not specified)',
+    }),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Url)
+    const {args, flags} = await this.parse(Url)
     const {app, name} = flags
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
@@ -39,10 +41,10 @@ export default class Url extends Command {
     const {body: credInfo} = await this.heroku.get<CredentialInfo>(
       `/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`,
       {
-        hostname: utils.pg.host(),
         headers: {
           Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
         },
+        hostname: utils.pg.host(),
       },
     )
     const activeCreds = credInfo.credentials.find(c => c.state === 'active')

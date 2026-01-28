@@ -1,28 +1,29 @@
-import {flags as Flags, Command} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import {Command, flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry.js'
 import tsheredoc from 'tsheredoc'
+
 import {displayTelemetryDrain, validateAndFormatSignals} from '../../lib/telemetry/util.js'
+import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry.js'
 
 const heredoc = tsheredoc.default
 
 export default class Update extends Command {
-  static topic = 'telemetry'
-  static description = 'updates a telemetry drain with provided attributes (attributes not provided remain unchanged)'
   static args = {
-    telemetry_drain_id: Args.string({required: true, description: 'ID of the drain to update'}),
+    telemetry_drain_id: Args.string({description: 'ID of the drain to update', required: true}),
   }
+
+  static description = 'updates a telemetry drain with provided attributes (attributes not provided remain unchanged)'
+  static example = `${color.command('heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com')}`
 
   static flags = {
     endpoint: Flags.string({description: 'drain url'}),
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     signals: Flags.string({description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
-    transport: Flags.string({options: ['http', 'grpc'], description: 'transport protocol for the drain'}),
+    transport: Flags.string({description: 'transport protocol for the drain', options: ['http', 'grpc']}),
   }
 
-  static example = heredoc(`
-    $ heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com
-  `)
+  static topic = 'telemetry'
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Update)
@@ -59,10 +60,10 @@ export default class Update extends Command {
 
     ux.action.start(`Updating telemetry drain ${telemetry_drain_id}`)
     const {body: telemetryDrain} = await this.heroku.patch<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
+      body: drainConfig,
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
-      body: drainConfig,
     })
     ux.action.stop()
 

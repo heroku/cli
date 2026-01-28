@@ -1,9 +1,8 @@
-/*
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
 import runCommand from '../../../helpers/runCommand.js'
-import Cmd from '../../../../src/commands/pg/info'
+import Cmd from '../../../../src/commands/pg/info.js'
 
 describe('pg:info', function () {
   let api: nock.Scope
@@ -15,9 +14,9 @@ describe('pg:info', function () {
   })
 
   afterEach(function () {
-    nock.cleanAll()
     api.done()
     pg.done()
+    nock.cleanAll()
   })
   context('with 0 dbs', function () {
     it('shows empty state', async function () {
@@ -29,7 +28,7 @@ describe('pg:info', function () {
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('myapp has no heroku-postgresql databases.\n')
+      expect(stdout.output).to.equal('⬢ myapp has no heroku-postgresql databases.\n')
       expect(stderr.output).to.equal('')
     })
   })
@@ -64,7 +63,7 @@ describe('pg:info', function () {
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_COBALT_URL, DATABASE_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
+      expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_COBALT_URL, DATABASE_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: ⬢ myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
       expect(stderr.output).to.equal('')
     })
     it('shows postgres info using attachment names', async function () {
@@ -94,7 +93,7 @@ describe('pg:info', function () {
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('=== DATABASE_URL, ATTACHMENT_NAME_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
+      expect(stdout.output).to.equal('=== DATABASE_URL, ATTACHMENT_NAME_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: ⬢ myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
     })
     it('shows postgres info for single database when arg sent in', async function () {
       const addon = addons[1]
@@ -137,5 +136,3 @@ describe('pg:info', function () {
     })
   })
 })
-
-*/
