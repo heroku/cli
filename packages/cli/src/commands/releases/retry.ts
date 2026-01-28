@@ -8,7 +8,7 @@ import {findByLatestOrId} from '../../lib/releases/releases.js'
 
 export default class Retry extends Command {
   static description = 'retry the latest release-phase command'
-  static examples = ['heroku releases:retry --app happy-samurai-42']
+  static examples = [`${color.command('heroku releases:retry --app happy-samurai-42')}`]
   static flags = {
     app: flags.app({required: true}),
   }

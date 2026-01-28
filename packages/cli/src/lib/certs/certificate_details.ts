@@ -1,8 +1,8 @@
-import formatDate from './format_date.js'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {color} from '@heroku-cli/color'
+
 import {SniEndpoint} from '../types/sni_endpoint.js'
+import formatDate from './format_date.js'
 
 export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, message = 'Certificate details:') {
   const now = new Date()
@@ -10,7 +10,7 @@ export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, mes
   autoRenewsAt.setMonth(autoRenewsAt.getMonth() - 1)
 
   if (sniEndpoint.app && sniEndpoint.ssl_cert.acm && autoRenewsAt > now) {
-    ux.stdout(`Renewal scheduled for ${color.green(formatDate(autoRenewsAt.toString()))}.\n`)
+    ux.stdout(`Renewal scheduled for ${color.info(formatDate(autoRenewsAt.toString()))}.\n`)
   }
 
   ux.stdout(message)

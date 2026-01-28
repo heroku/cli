@@ -340,7 +340,10 @@ syncer
 tablename
 tavi
 testapp
+testdb
+testpass
 testsource
+testuser
 texcl
 timedout
 tikki
@@ -368,6 +371,7 @@ userid
 usesysid
 urijs
 uxxxxxxxxx
+vcpu
 VERSINFO
 webfactory
 withfig

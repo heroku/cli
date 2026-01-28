@@ -1,16 +1,18 @@
+import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
+
 import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Add extends Command {
-  static description = 'add a Heroku account to your cache'
-
   static args = {
     name: Args.string({description: 'name of Heroku account to add', required: true}),
   }
 
-  static example = 'heroku accounts:add my-account'
+  static description = 'add a Heroku account to your cache'
+
+  static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {
     const {args} = await this.parse(Add)

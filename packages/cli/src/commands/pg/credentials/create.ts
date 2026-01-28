@@ -1,28 +1,30 @@
-import {color} from '@heroku-cli/color'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
+
 import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Create extends Command {
-  static topic = 'pg'
-  static description = 'create credential within database\nExample:\n\n    heroku pg:credentials:create postgresql-something-12345 --name new-cred-name\n'
-  static flags = {
-    name: flags.string({char: 'n', required: true, description: 'name of the new credential within the database'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'create credential within database'
+  static example = `${color.command('heroku pg:credentials:create postgresql-something-12345 --name new-cred-name')}`
+  static flags = {
+    app: flags.app({required: true}),
+    name: flags.string({char: 'n', description: 'name of the new credential within the database', required: true}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Create)
+    const {args, flags} = await this.parse(Create)
     const {app, name} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, args.database)

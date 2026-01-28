@@ -1,7 +1,6 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 import {OAuthSession} from '../../lib/sessions/sessions.js'
 
@@ -30,7 +29,7 @@ export default class SessionsIndex extends Command {
     } else {
       hux.table(sessions, {
         description: {
-          get: (v: any) => color.green(v.description),
+          get: (v: any) => color.info(v.description),
           header: 'Description',
         },
         id: {

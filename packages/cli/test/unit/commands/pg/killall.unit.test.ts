@@ -1,10 +1,11 @@
-/*
 import {stderr, stdout} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/pg/killall'
+import Cmd from '../../../../src/commands/pg/killall.js'
 import nock from 'nock'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 describe('pg:killall', function () {
   let pg: nock.Scope
@@ -17,8 +18,9 @@ describe('pg:killall', function () {
   })
 
   afterEach(function () {
-    nock.cleanAll()
+    api.done()
     pg.done()
+    nock.cleanAll()
   })
 
   it('waits for all databases to be available', async function () {
@@ -33,11 +35,6 @@ describe('pg:killall', function () {
     ])
 
     expect(stdout.output).to.eq('')
-    expect(stderr.output).to.eq(heredoc`
-      Terminating connections for all credentials...
-      Terminating connections for all credentials... done
-    `)
+    expect(stderr.output).to.eq('Terminating connections for all credentials... done\n')
   })
 })
-
-*/

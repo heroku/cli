@@ -13,10 +13,10 @@ export default class Destroy extends Command {
   }
 
   static description = 'destroys an active peering connection in a private space'
-  static example = heredoc(`
-    $ heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space
+  static example = heredoc`
+    ${color.command('heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space')}
     Tearing down peering connection pcx-4bd27022... done
-  `)
+  `
 
   static flags = {
     confirm: flags.string({description: 'set to PCX ID to bypass confirm prompt'}),

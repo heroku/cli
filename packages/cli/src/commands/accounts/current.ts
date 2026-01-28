@@ -7,12 +7,12 @@ import AccountsModule from '../../lib/accounts/accounts.js'
 export default class Current extends Command {
   static description = 'display the current Heroku account'
 
-  static example = 'heroku accounts:current'
+  static example = `${color.command('heroku accounts:current')}`
 
   async run() {
     const accountName = await AccountsModule.current()
     if (accountName) {
-      hux.styledHeader(`Current account is ${accountName}`)
+      hux.styledHeader(`Current account is ${color.user(accountName)}`)
     } else {
       ux.error(`You haven't set an account. Run ${color.code('heroku accounts:add <account-name>')} to add an account to your cache or ${color.code('heroku accounts:set <account-name>')} to set the current account.`)
     }

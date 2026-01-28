@@ -1,9 +1,8 @@
+import Cmd from '../../../../src/commands/pg/wait.js'
 import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
-import * as proxyquire from 'proxyquire'
-import heredoc from 'tsheredoc'
-// import {CLIError} from '@oclif/core/lib/errors'
+import {Errors} from '@oclif/core'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
@@ -11,15 +10,7 @@ const all = [
   {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
   {id: 2, name: 'postgres-2', plan: {name: 'heroku-postgresql:hobby-dev'}},
 ]
-const fetcher =  {
-  all: () => Promise.resolve(all),
-}
 
-// const {default: Cmd} = proxyquire('../../../../src/commands/pg/wait', {
-//   '../../lib/pg/fetcher': fetcher,
-// })
-
-/*
 describe('pg:wait', function () {
   let pg: nock.Scope
   let api: nock.Scope
@@ -30,6 +21,7 @@ describe('pg:wait', function () {
   })
 
   afterEach(function () {
+    api.done()
     pg.done()
     nock.cleanAll()
   })
@@ -50,13 +42,13 @@ describe('pg:wait', function () {
       'DATABASE_URL',
     ])
     expect(stdout.output).to.equal('')
-    expectOutput(stderr.output, heredoc(`
-      Waiting for database postgres-1... pending
-      Waiting for database postgres-1... available
-    `))
+    expectOutput(stderr.output, 'Waiting for database postgres-1... available')
   })
 
   it('waits for all databases to be available', async function () {
+    api
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, all.map(db => ({addon: db})))
     pg
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false})
       .get('/client/v11/databases/2/wait_status').reply(200, {'waiting?': false})
@@ -70,6 +62,9 @@ describe('pg:wait', function () {
   })
 
   it('displays errors', async function () {
+    api
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [{addon: all[0]}])
     pg
       .get('/client/v11/databases/1/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
 
@@ -77,7 +72,7 @@ describe('pg:wait', function () {
       '--app',
       'myapp',
     ]).catch(error => {
-      const {message, oclif} = error as CLIError
+      const {message, oclif} = error as Errors.CLIError
       expect(message).to.equal('this is an error message')
       expect(oclif.exit).to.equal(1)
     })
@@ -99,11 +94,6 @@ describe('pg:wait', function () {
       'DATABASE_URL',
     ])
     expect(stdout.output).to.equal('')
-    expectOutput(stderr.output, heredoc(`
-      Waiting for database postgres-1... upgrading
-      Waiting for database postgres-1... available
-    `))
+    expectOutput(stderr.output, 'Waiting for database postgres-1... available')
   })
 })
-
-*/

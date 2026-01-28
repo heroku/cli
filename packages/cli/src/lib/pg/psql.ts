@@ -1,12 +1,11 @@
-/*
 import {ux} from '@oclif/core'
 import {SpawnOptions} from 'child_process'
 import debug from 'debug'
 import * as fs from 'fs'
 import * as path from 'node:path'
-import {ConnectionDetails, utils} from '@heroku/heroku-cli-util'
+import {pg, utils} from '@heroku/heroku-cli-util'
 
-export async function fetchVersion(db: ConnectionDetails) {
+export async function fetchVersion(db: pg.ConnectionDetails) {
   const psqlService = new utils.pg.PsqlService(db)
   const output = await psqlService.execQuery('SHOW server_version', ['-X', '-q'])
   return output.match(/[0-9]{1,}\.[0-9]{1,}/)?.[0]
@@ -59,7 +58,7 @@ export function psqlInteractiveOptions(prompt: string, dbEnv: NodeJS.ProcessEnv)
   }
 }
 
-export async function execFile(db: ConnectionDetails, file: string) {
+export async function execFile(db: pg.ConnectionDetails, file: string) {
   const psqlService = new utils.pg.PsqlService(db)
   const configs = utils.pg.psql.getPsqlConfigs(db)
   const options = psqlFileOptions(file, configs.dbEnv)
@@ -67,7 +66,7 @@ export async function execFile(db: ConnectionDetails, file: string) {
   return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
 }
 
-export async function interactive(db: ConnectionDetails) {
+export async function interactive(db: pg.ConnectionDetails) {
   const psqlService = new utils.pg.PsqlService(db)
   const attachmentName = db.attachment!.name
   const prompt = `${db.attachment!.app.name}::${attachmentName}%R%# `
@@ -77,4 +76,3 @@ export async function interactive(db: ConnectionDetails) {
 
   return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
 }
-*/

@@ -1,46 +1,33 @@
-/*
+import {stdout} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
-import heredoc from 'tsheredoc'
+import Cmd from '../../../../src/commands/pg/kill.js'
 import * as sinon from 'sinon'
-import * as proxyquire from 'proxyquire'
-import {GenericCmd} from '../../../helpers/runCommand'
+import {pg, utils} from '@heroku/heroku-cli-util'
 
 describe('pg:kill', function () {
-  let databaseResolverStub: sinon.SinonStub
-  let psqlServiceExecQuerySpy: sinon.SinonSpy
-  let Cmd: GenericCmd
-  let queryString = ''
+  let sandbox: sinon.SinonSandbox
+  let getDatabaseStub: sinon.SinonStub
+  let execQueryStub: sinon.SinonStub
+
+  const mockDb: pg.ConnectionDetails = {
+    database: 'testdb',
+    host: 'localhost',
+    password: 'testpass',
+    pathname: '/testdb',
+    port: '5432',
+    url: 'postgres://localhost:5432/testdb',
+    user: 'testuser',
+  }
 
   beforeEach(function () {
-    databaseResolverStub = sinon.stub().resolves({})
-    psqlServiceExecQuerySpy = sinon.spy((query: string) => {
-      queryString = heredoc(query).trim()
-      return Promise.resolve('')
-    })
-
-    // Mock the utils.pg classes
-    const mockUtils = {
-      pg: {
-        DatabaseResolver: class {
-          getDatabase = databaseResolverStub
-        },
-        PsqlService: class {
-          execQuery = psqlServiceExecQuerySpy
-        },
-      },
-    }
-
-    Cmd = proxyquire('../../../../src/commands/pg/kill', {
-      '@heroku/heroku-cli-util': {
-        utils: mockUtils,
-      },
-    }).default
+    sandbox = sinon.createSandbox()
+    getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
+    execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
   })
 
   afterEach(function () {
-    queryString = ''
-    sinon.restore()
+    sandbox.restore()
   })
 
   it('kills pid 100', async function () {
@@ -50,7 +37,10 @@ describe('pg:kill', function () {
       'myapp',
     ])
 
-    expect(queryString).to.eq('SELECT pg_cancel_backend(100);')
+    expect(getDatabaseStub.calledOnce).to.be.true
+    expect(execQueryStub.calledOnce).to.be.true
+    const query = execQueryStub.getCall(0).args[0]
+    expect(query.trim()).to.eq('SELECT pg_cancel_backend(100);')
   })
 
   it('force kills pid 100', async function () {
@@ -61,8 +51,21 @@ describe('pg:kill', function () {
       '--force',
     ])
 
-    expect(queryString).to.eq('SELECT pg_terminate_backend(100);')
+    expect(getDatabaseStub.calledOnce).to.be.true
+    expect(execQueryStub.calledOnce).to.be.true
+    const query = execQueryStub.getCall(0).args[0]
+    expect(query.trim()).to.eq('SELECT pg_terminate_backend(100);')
+  })
+
+  it('outputs the query result', async function () {
+    execQueryStub.resolves('Query result output')
+
+    await runCommand(Cmd, [
+      '100',
+      '--app',
+      'myapp',
+    ])
+
+    expect(stdout.output.trim()).to.eq('Query result output')
   })
 })
-
-*/

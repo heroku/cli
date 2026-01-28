@@ -1,13 +1,14 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {expect} from 'chai'
+import {stderr, stdout} from 'stdout-stderr'
+import stripAnsi from 'strip-ansi'
+
+import Cmd from '../../../../src/commands/apps/transfer.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {apps, personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {teamAppTransfer} from '../../../helpers/stubs/patch.js'
 import {personalToPersonal} from '../../../helpers/stubs/post.js'
-import Cmd from '../../../../src/commands/apps/transfer.js'
-import stripAnsi from 'strip-ansi'
 
 describe('heroku apps:transfer', function () {
   let sandbox: sinon.SinonSandbox
@@ -127,7 +128,7 @@ describe('heroku apps:transfer', function () {
         'team',
       ])
       expect('').to.eq(stdout.output)
-      expect(stderr.output).to.eq('Transferring ⬢ myapp to team... done\nLocking myapp... done\n')
+      expect(stderr.output).to.eq('Transferring ⬢ myapp to team... done\nLocking ⬢ myapp... done\n')
       api.done()
       lockedAPI.done()
     })

@@ -1,8 +1,8 @@
-import {color} from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
+
 import {ago} from '../../lib/time.js'
 
 const getProcessNum = (s: string) => Number.parseInt(s.split('.', 2)[1], 10)
@@ -12,19 +12,20 @@ type SpaceDynosInfo = {
   dynos: Required<Heroku.Dyno>[]
 }
 export default class Ps extends Command {
-  static topic = 'spaces'
-  static description = 'list dynos for a space'
-  static flags = {
-    space: flags.string({char: 's', description: 'space to get dynos of'}),
-    json: flags.boolean({description: 'output in json format'}),
-  }
-
   static args = {
     space: Args.string({hidden: true}),
   }
 
+  static description = 'list dynos for a space'
+  static flags = {
+    json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space to get dynos of'}),
+  }
+
+  static topic = 'spaces'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Ps)
+    const {args, flags} = await this.parse(Ps)
     const spaceName = flags.space || args.space
     if (!spaceName) {
       throw new Error('Space name required.\nUSAGE: heroku spaces:ps my-space')
@@ -52,12 +53,6 @@ export default class Ps extends Command {
     }
   }
 
-  private render(spaceDynos?: SpaceDynosInfo[]) {
-    spaceDynos?.forEach(spaceDyno => {
-      this.printDynos(spaceDyno.app_name, spaceDyno.dynos)
-    })
-  }
-
   private printDynos(appName: string, dynos: Required<Heroku.Dyno>[]) {
     const dynosByCommand = new Map<string, string[]>()
     for (const dyno of dynos) {
@@ -69,9 +64,9 @@ export default class Ps extends Command {
         key = 'run: one-off processes'
         item = `${dyno.name} (${size}): ${dyno.state} ${since}: ${dyno.command}`
       } else {
-        key = `${color.green(dyno.type)} (${color.cyan(size)}): ${dyno.command}`
-        const state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
-        item = `${dyno.name}: ${color.green(state)} ${color.dim(since)}`
+        key = `${color.name(dyno.type)} (${color.info(size)}): ${dyno.command}`
+        const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
+        item = `${dyno.name}: ${color.info(state)} ${color.dim(since)}`
       }
 
       if (!dynosByCommand.has(key)) {
@@ -82,7 +77,7 @@ export default class Ps extends Command {
     }
 
     for (const [key, dynos] of dynosByCommand) {
-      hux.styledHeader(`${appName} ${key} (${color.yellow(dynos.length)})`)
+      hux.styledHeader(`${appName} ${key} (${color.info(dynos.length.toString())})`)
       dynos.sort((a, b) => getProcessNum(a) - getProcessNum(b))
       for (const dyno of dynos) {
         ux.stdout(dyno)
@@ -90,5 +85,11 @@ export default class Ps extends Command {
 
       ux.stdout()
     }
+  }
+
+  private render(spaceDynos?: SpaceDynosInfo[]) {
+    spaceDynos?.forEach(spaceDyno => {
+      this.printDynos(spaceDyno.app_name, spaceDyno.dynos)
+    })
   }
 }
