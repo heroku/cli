@@ -1,12 +1,10 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
+import {hux, utils} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {utils} from '@heroku/heroku-cli-util'
-import {CredentialInfo, CredentialsInfo} from '../../lib/pg/types'
-import {presentCredentialAttachments} from '../../lib/pg/util'
-import {nls} from '../../nls'
+import type {CredentialInfo, CredentialsInfo} from '../../lib/pg/types.js'
+import {presentCredentialAttachments} from '../../lib/pg/util.js'
+import {nls} from '../../nls.js'
 
 export default class Credentials extends Command {
   static topic = 'pg'
@@ -57,11 +55,13 @@ export default class Credentials extends Command {
       State: {
         get: cred => cred.state,
       },
+    }, {
+      overflow: 'wrap',
     })
   }
 
   protected sortByDefaultAndName(credentials: CredentialsInfo) {
-    return credentials.sort((a, b) => {
+    return credentials.sort((a: CredentialInfo, b: CredentialInfo) => {
       const isDefaultA = this.isDefaultCredential(a)
       const isDefaultB = this.isDefaultCredential(b)
 
@@ -73,4 +73,3 @@ export default class Credentials extends Command {
     return cred.name === 'default'
   }
 }
-*/

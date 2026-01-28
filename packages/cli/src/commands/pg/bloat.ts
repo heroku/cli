@@ -1,8 +1,8 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
+import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {nls} from '../../nls'
+
+import {nls} from '../../nls.js'
 
 const query = `
 WITH constants AS (
@@ -68,16 +68,16 @@ ORDER BY raw_waste DESC, bloat DESC
 `
 
 export default class Bloat extends Command {
-  static topic = 'pg';
-  static description = 'show table and index bloat in your database ordered by most wasteful';
+  static description = 'show table and index bloat in your database ordered by most wasteful'
+  static topic = 'pg'
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+  }
+
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
-
-  static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-  };
+  }
 
   public async run(): Promise<void> {
     const {flags, args} = await this.parse(Bloat)
@@ -86,7 +86,6 @@ export default class Bloat extends Command {
     const db = await dbResolver.getDatabase(app, args.database)
     const psqlService = new utils.pg.PsqlService(db)
     const output = await psqlService.execQuery(query)
-    process.stdout.write(output)
+    ux.stdout(output)
   }
 }
-*/

@@ -1,19 +1,21 @@
-/*
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import nock from 'nock'
 import {randomUUID} from 'node:crypto'
 import {stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
-import type {ExtendedAddonAttachment} from '@heroku/heroku-cli-util'
-import Cmd  from '../../../../src/commands/pg/diagnose'
+import tsheredoc from 'tsheredoc'
+import type {pg} from '@heroku/heroku-cli-util'
+import Cmd from '../../../../src/commands/pg/diagnose.js'
 import runCommand from '../../../helpers/runCommand.js'
+import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+
+const heredoc = tsheredoc.default
 
 describe('pg:diagnose', function () {
   let api: nock.Scope
   let pg: nock.Scope
   let diagnose: nock.Scope
-  let db: Pick<ExtendedAddonAttachment, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
+  let db: Pick<pg.ExtendedAddonAttachment, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
   let dbName: string | undefined
   let app: { name: string; id?: string; }
   let addon: AddOn
@@ -91,7 +93,7 @@ describe('pg:diagnose', function () {
         '--app',
         app.name,
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
       Report ${reportID} for ${app.name}::${report.database}
       available for one month after creation on 101
 
@@ -101,7 +103,7 @@ describe('pg:diagnose', function () {
        1
       RED: Load
       Load 100
-      `))
+      `)))
     })
   })
 
@@ -124,7 +126,7 @@ describe('pg:diagnose', function () {
           app.name,
           reportID,
         ])
-        expect(stdout.output).to.equal(heredoc(`
+        expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
         Report ${reportID} for ${app.name}::${report.database}
         available for one month after creation on 101
 
@@ -134,7 +136,7 @@ describe('pg:diagnose', function () {
          1
         RED: Load
         Load 100
-        `))
+        `)))
       })
     })
     context('and this argument is a HEROKU_POSTGRESQL_SILVER_URL', function () {
@@ -166,7 +168,7 @@ describe('pg:diagnose', function () {
           '--app',
           'myapp',
         ])
-        expect(stdout.output).to.equal(heredoc(`
+        expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
         Report ${reportID} for ${app.name}::${report.database}
         available for one month after creation on 101
 
@@ -176,7 +178,7 @@ describe('pg:diagnose', function () {
          1
         RED: Load
         Load 100
-        `))
+        `)))
       })
 
       context('with the --json flag set', function () {
@@ -231,13 +233,13 @@ describe('pg:diagnose', function () {
         'myapp',
         id,
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
       Report ${id} for myapp::postgres-1
       available for one month after creation on 101
 
       RED: Connection count
       RED: Load
-      `))
+      `)))
     })
 
     it('roughly conforms with Ruby output', async function () {
@@ -259,7 +261,7 @@ describe('pg:diagnose', function () {
         'myapp',
         id,
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
       Report abc123 for appname::dbcolor
       available for one month after creation on 2014-06-24 01:26:11.941197+00
 
@@ -275,7 +277,7 @@ describe('pg:diagnose', function () {
       GREEN: Hit Rate
       SKIPPED: Load
       Error Load check not supported on this plan
-      `))
+      `)))
     })
 
     it('converts underscores to spaces', async function () {
@@ -295,15 +297,13 @@ describe('pg:diagnose', function () {
         'myapp',
         id,
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
       Report abc123 for appname::dbcolor
       available for one month after creation on 2014-06-24 01:26:11.941197+00
 
       SKIPPED: Load
       Error Thing Load check not supported on this plan
-      `))
+      `)))
     })
   })
 })
-
-*/

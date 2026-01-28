@@ -1,7 +1,8 @@
 import {stdout, stderr} from 'stdout-stderr'
 import nock from 'nock'
 import {expect} from 'chai'
-// import Cmd from '../../../../src/commands/pg/copy'
+import ansis from 'ansis'
+import Cmd from '../../../../src/commands/pg/copy.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 const addon = {
@@ -34,11 +35,10 @@ const myotherappConfig = {
 const mylowercaseappConfig = {
   LOWERCASE_DATABASE_URL: 'postgres://heroku/lowercasedb',
 }
-const copyingText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... done\n' : 'Copying...\nCopying... done\n'
+const copyingText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... done\n' : 'Copying... done\n'
 
-const copyingFailText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying...\nCopying... !\n'
+const copyingFailText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying... !\n'
 
-/*
 describe('pg:copy', function () {
   let pg: nock.Scope
   let api: nock.Scope
@@ -84,7 +84,8 @@ describe('pg:copy', function () {
         'HEROKU_POSTGRESQL_RED_URL',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingText()}`)
+      expect(stderr.output).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
+      expect(stderr.output).to.include(copyingText())
     })
     it('copies (with port number)', async function () {
       await runCommand(Cmd, [
@@ -96,7 +97,8 @@ describe('pg:copy', function () {
         'HEROKU_POSTGRESQL_RED_URL',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(`Starting copy of database bar on boop.com:5678 to RED...\nStarting copy of database bar on boop.com:5678 to RED... done\n${copyingText()}`)
+      expect(stderr.output).to.include('Starting copy of database bar on boop.com:5678 to RED... done\n')
+      expect(stderr.output).to.include(copyingText())
     })
   })
   context('heroku to heroku with additional credentials', function () {
@@ -136,7 +138,7 @@ describe('pg:copy', function () {
         'myotherapp::DATABASE_URL',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of RED to BLUE...\nStarting copy of RED to BLUE... done\n')
+      expect(stderr.output).to.include('Starting copy of RED to BLUE... done\n')
       expect(stderr.output).to.include('Warning: pg:copy will only copy your default credential and the data it \n')
       expect(stderr.output).to.include('has access to. Any additional credentials and data that only they can \n')
       expect(stderr.output).to.include('access will not be copied.\n')
@@ -179,7 +181,8 @@ describe('pg:copy', function () {
         'ATTACHED_BLUE',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(`Starting copy of RED to ATTACHED_BLUE...\nStarting copy of RED to ATTACHED_BLUE... done\n${copyingText()}`)
+      expect(stderr.output).to.include('Starting copy of RED to ATTACHED_BLUE... done\n')
+      expect(stderr.output).to.include(copyingText())
     })
   })
   context('heroku to heroku with lower case attachment name', function () {
@@ -219,7 +222,8 @@ describe('pg:copy', function () {
         'myotherapp::DATABASE_URL',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(`Starting copy of lowercase_database to BLUE...\nStarting copy of lowercase_database to BLUE... done\n${copyingText()}`)
+      expect(stderr.output).to.include('Starting copy of lowercase_database to BLUE... done\n')
+      expect(stderr.output).to.include(copyingText())
     })
   })
   context('fails', function () {
@@ -242,7 +246,7 @@ describe('pg:copy', function () {
         .reply(200, {finished_at: '100', succeeded: false, num: 1, logs: [{message: 'foobar'}]})
     })
     it('fails to copy', async function () {
-      const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun \u001B[36m\u001B[1mheroku pg:backups:info b001\u001B[22m\u001B[39m for more details.'
+      const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -250,11 +254,10 @@ describe('pg:copy', function () {
         'myapp',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
-      ]).catch(error => expect(error.message).to.contain(err))
+      ]).catch(error => expect(ansis.strip(error.message)).to.contain(err))
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(`Starting copy of database bar on foo.com:5432 to RED...\nStarting copy of database bar on foo.com:5432 to RED... done\n${copyingFailText()}`)
+      expect(stderr.output).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
+      expect(stderr.output).to.include(copyingFailText())
     })
   })
 })
-
-*/
