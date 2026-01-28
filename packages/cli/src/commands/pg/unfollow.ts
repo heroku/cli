@@ -1,14 +1,15 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
 import {utils} from '@heroku/heroku-cli-util'
-import {databaseNameFromUrl} from '../../lib/pg/util'
-import confirmCommand from '../../lib/confirmCommand'
-import {PgDatabase} from '../../lib/pg/types'
-import heredoc from 'tsheredoc'
-import {nls} from '../../nls'
+import {databaseNameFromUrl} from '../../lib/pg/util.js'
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import {PgDatabase} from '../../lib/pg/types.js'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Unfollow extends Command {
   static topic = 'pg';
@@ -33,7 +34,7 @@ export default class Unfollow extends Command {
       ux.error(`${color.addon(db.name)} is not a follower`)
     const {body: configVars} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/config-vars`)
     const origin = databaseNameFromUrl(replica.following as string, configVars)
-    await confirmCommand(app, confirm, heredoc(`
+    await new ConfirmCommand().confirm(app, confirm, heredoc(`
       Destructive action
       ${color.addon(db.name)} will become writeable and no longer follow ${origin}. This cannot be undone.
     `))
@@ -42,4 +43,3 @@ export default class Unfollow extends Command {
     ux.action.stop()
   }
 }
-*/

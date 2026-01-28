@@ -1,13 +1,12 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku-cli/color'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
-import {ExtendedAddonAttachment, utils} from '@heroku/heroku-cli-util'
-import notify from '../../lib/notify'
-import {PgStatus} from '../../lib/pg/types'
+import {utils, pg} from '@heroku/heroku-cli-util'
+import notify from '../../lib/notify.js'
+import {PgStatus} from '../../lib/pg/types.js'
 import {HTTPError} from '@heroku/http-call'
-import {nls} from '../../nls'
+import {nls} from '../../nls.js'
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)
@@ -33,7 +32,7 @@ export default class Wait extends Command {
     const dbName = args.database
     const pgDebug = debug('pg')
 
-    const waitFor = async (db: ExtendedAddonAttachment['addon']) => {
+    const waitFor = async (db: pg.ExtendedAddonAttachment['addon']) => {
       let interval = waitInterval && Number.parseInt(waitInterval, 10)
       if (!interval || interval < 0) interval = 5
       let status
@@ -79,7 +78,7 @@ export default class Wait extends Command {
       }
     }
 
-    let dbs: ExtendedAddonAttachment['addon'][]
+    let dbs: pg.ExtendedAddonAttachment['addon'][]
     if (dbName) {
       const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
       const {addon} = await dbResolver.getAttachment(app, dbName)
@@ -94,4 +93,3 @@ export default class Wait extends Command {
     }
   }
 }
-*/
