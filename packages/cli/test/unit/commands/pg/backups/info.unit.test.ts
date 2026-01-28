@@ -1,7 +1,7 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/info.js'
@@ -24,7 +24,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     it('shows error message', async function () {
       await cmdRun(['--app', 'myapp'])
         .catch((error: Error) => {
-          expect(stripAnsi(error.message)).to.equal('No backups. Capture one with heroku pg:backups:capture')
+          expect(ansis.strip(error.message)).to.equal('No backups. Capture one with heroku pg:backups:capture')
         })
     })
   })

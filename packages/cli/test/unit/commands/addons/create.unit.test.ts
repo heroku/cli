@@ -1,12 +1,12 @@
 import {HTTPError} from '@heroku/http-call'
 import * as Heroku from '@heroku-cli/schema'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import _ from 'lodash'
-import * as lolex from 'lolex'
+import lolex from 'lolex'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/addons/create.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -324,7 +324,7 @@ describe('addons:create', function () {
         '--foo',
       ])
         .catch(error => {
-          expect(stripAnsi(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
+          expect(ansis.strip(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
         })
     })
 
