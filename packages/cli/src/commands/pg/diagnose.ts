@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux, pg, utils} from '@heroku/heroku-cli-util'
+import {color, hux, pg, utils} from '@heroku/heroku-cli-util'
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 import tsheredoc from 'tsheredoc'
@@ -10,7 +10,6 @@ import type {
   PGDiagnoseResult,
 } from '../../lib/pg/types.js'
 import {essentialPlan} from '../../lib/pg/util.js'
-import {color} from '@heroku-cli/color'
 import {uuidValidate} from '../../lib/utils/uuid-validate.js'
 
 const heredoc = tsheredoc.default
