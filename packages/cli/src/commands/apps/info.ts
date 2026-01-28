@@ -72,7 +72,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   if (info.pipeline_coupling) data.Pipeline = `${color.pipeline(info.pipeline_coupling.pipeline.name)} - ${info.pipeline_coupling.stage}`
 
   data['Auto Cert Mgmt'] = info.app.acm
-  data['Git URL'] = color.info(info.app.git_url)
+  data['Git URL'] = info.app.git_url
   data['Web URL'] = color.info(info.app.web_url)
   data['Repo Size'] = filesize(info.app.repo_size, {round: 0, standard: 'jedec'})
   if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {round: 0, standard: 'jedec'})
