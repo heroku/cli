@@ -24,7 +24,13 @@ export default class Index extends Command {
         Name: {get: space => color.space(space.name)},
         Team: {get: space => color.team(space.team.name || '')},
         Region: {get: space => space.region.name},
-        State: {get: space => space.state},
+        State: {
+          get: space => {
+            if (space.state === 'allocated') return color.success(space.state)
+            if (space.state === 'deleting') return color.failure(space.state)
+            return color.warning(space.state)
+          },
+        },
         Generation: {get: space => getGeneration(space)},
         createdAt: {
           header: 'Created At',
@@ -56,7 +62,7 @@ export default class Index extends Command {
       this.displayJSON(spaces)
     else if (spaces.length === 0) {
       if (team)
-        ux.error(`No spaces in ${color.cyan(team)}.`)
+        ux.error(`No spaces in ${color.team(team)}.`)
       else
         ux.error('You do not have access to any spaces.')
     } else {
