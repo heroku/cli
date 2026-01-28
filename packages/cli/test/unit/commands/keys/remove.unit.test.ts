@@ -1,7 +1,7 @@
 import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import stripAnsi from 'strip-ansi'
 
 describe('keys:remove', function () {
   let api: nock.Scope
@@ -46,6 +46,6 @@ describe('keys:remove', function () {
     const {error} = await runCommand(['keys:remove', 'different@machine'])
 
     expect(error).to.exist
-    expect(stripAnsi(error!.message)).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
+    expect(ansis.strip(error!.message)).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')
   })
 })

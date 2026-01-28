@@ -1,7 +1,7 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/remove.js'
@@ -52,7 +52,7 @@ describe('heroku certs:remove', function () {
       ])
     } catch (error) {
       const {message} = error as Error
-      expect(stripAnsi(message)).to.equal('Confirmation notexample did not match example. Aborted.')
+      expect(ansis.strip(message)).to.equal('Confirmation notexample did not match example. Aborted.')
     }
 
     api.done()

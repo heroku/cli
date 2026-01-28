@@ -2,7 +2,6 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connect.js'

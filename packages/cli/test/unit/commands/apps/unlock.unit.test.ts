@@ -1,20 +1,28 @@
-import {stdout, stderr} from 'stdout-stderr'
-import nock from 'nock'
-import {expect} from 'chai'
 import {Errors} from '@oclif/core'
+import ansis from 'ansis'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/apps/unlock.js'
 import runCommand from '../../../helpers/runCommand.js'
-import stripAnsi from 'strip-ansi'
 
 describe('heroku apps:unlock', function () {
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+  })
+
   afterEach(function () {
+    api.done()
     return nock.cleanAll()
   })
 
   it('unlocks the app', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/teams/apps/myapp')
-      .reply(200, {name: 'myapp', locked: true})
+      .reply(200, {locked: true, name: 'myapp'})
       .patch('/teams/apps/myapp', {locked: false})
       .reply(200)
     await runCommand(Cmd, [
@@ -23,22 +31,20 @@ describe('heroku apps:unlock', function () {
     ])
     expect('').to.eq(stdout.output)
     expect(stderr.output).to.eq('Unlocking ⬢ myapp... done\n')
-    api.done()
   })
 
   it('returns an error if the app is already unlocked', async function () {
-    const api = nock('https://api.heroku.com:443')
+    api
       .get('/teams/apps/myapp')
-      .reply(200, {name: 'myapp', locked: false})
+      .reply(200, {locked: false, name: 'myapp'})
     await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
       .catch((error: unknown) => {
         const {message, oclif} = error as Errors.CLIError
-        expect(stripAnsi(message)).to.eq('cannot unlock ⬢ myapp\nThis app is not locked.')
+        expect(ansis.strip(message)).to.eq('cannot unlock ⬢ myapp\nThis app is not locked.')
         expect(oclif.exit).to.equal(1) // You can add testing for the correct exit status if you're using `ux.error` to throw.
       })
-    api.done()
   })
 })

@@ -1,3 +1,4 @@
+import ansis from 'ansis'
 import {stderr, stdout} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/pg/credentials/destroy.js'
 import runCommand from '../../../../helpers/runCommand.js'
@@ -5,7 +6,6 @@ import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import tsheredoc from 'tsheredoc'
-import stripAnsi from 'strip-ansi'
 
 const heredoc = tsheredoc.default
 
@@ -109,7 +109,7 @@ describe('pg:credentials:destroy', function () {
       '--name',
       'gandalf',
     ]).catch((error: Error) => {
-      expect(stripAnsi(error.message)).to.equal(err)
+      expect(ansis.strip(error.message)).to.equal(err)
     })
   })
 
@@ -138,7 +138,7 @@ describe('pg:credentials:destroy', function () {
       '--name',
       'gandalf',
     ]).catch((error: Error) => {
-      expect(stripAnsi(error.message)).to.equal(err)
+      expect(ansis.strip(error.message)).to.equal(err)
     })
   })
 })
