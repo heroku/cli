@@ -1,18 +1,18 @@
 /* eslint-disable complexity */
-/*
-import color from '@heroku/heroku-cli-util'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import heredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
-import {getRelease} from '../../lib/pg/fetcher'
-import {PgStatus, PgDatabase} from '../../lib/pg/types'
-import {nls} from '../../nls'
+import tsheredoc from 'tsheredoc'
+import {getRelease} from '../../lib/pg/fetcher.js'
+import {PgStatus, PgDatabase} from '../../lib/pg/types.js'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Promote extends Command {
-  static topic = 'pg';
-  static description = 'sets DATABASE as your DATABASE_URL';
+  static topic = 'pg'
+  static description = 'sets DATABASE as your DATABASE_URL'
   static flags = {
     force: flags.boolean({char: 'f'}),
     app: flags.app({required: true}),
@@ -29,7 +29,7 @@ export default class Promote extends Command {
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const attachment = await dbResolver.getAttachment(app, database)
-    ux.action.start(`Ensuring an alternate alias for existing ${color.green('DATABASE_URL')}`)
+    ux.action.start(`Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`)
     const {body: attachments} = await this.heroku.get<Heroku.AddOnAttachment[]>(`/apps/${app}/addon-attachments`)
     const current = attachments.find(a => a.name === 'DATABASE')
     if (current) {
@@ -79,9 +79,9 @@ export default class Promote extends Command {
 
     let promotionMessage
     if (attachment.namespace) {
-      promotionMessage = `Promoting ${color.attachment(attachment.name)} to ${color.green('DATABASE_URL')} on ${color.app(app)}`
+      promotionMessage = `Promoting ${color.attachment(attachment.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
     } else {
-      promotionMessage = `Promoting ${color.datastore(attachment.addon.name)} to ${color.green('DATABASE_URL')} on ${color.app(app)}`
+      promotionMessage = `Promoting ${color.datastore(attachment.addon.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
     }
 
     ux.action.start(promotionMessage)
@@ -118,9 +118,9 @@ export default class Promote extends Command {
       ux.warn(heredoc(`
         Your database has been promoted but it is currently a follower database in read-only mode.
 
-        Promoting a database with ${color.cmd('heroku pg:promote')} doesn't automatically unfollow its leader.
+        Promoting a database with ${color.code('heroku pg:promote')} doesn't automatically unfollow its leader.
 
-        Use ${color.cmd(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.yellow(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
+        Use ${color.code(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.datastore(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
       `))
     }
 
@@ -180,4 +180,3 @@ export default class Promote extends Command {
     }
   }
 }
-*/

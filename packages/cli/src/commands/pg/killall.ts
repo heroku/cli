@@ -1,8 +1,7 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import {nls} from '../../nls'
+import {nls} from '../../nls.js'
 
 export default class Killall extends Command {
   static topic = 'pg'
@@ -27,4 +26,3 @@ export default class Killall extends Command {
     ux.action.stop()
   }
 }
-*/
