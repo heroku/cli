@@ -89,7 +89,7 @@ export default class Info extends Command {
         .catch(error => {
           if (error.statusCode !== 404)
             throw error
-          ux.warn(`${color.addon(addon.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`)
+          ux.warn(`${color.datastore(addon.name)} is not yet provisioned.\nRun ${color.code('heroku addons:wait')} to wait until the db is provisioned.`)
         })
       const {body: dbInfo} = pgResponse || {body: null}
       return {
