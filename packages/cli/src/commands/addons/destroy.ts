@@ -1,11 +1,10 @@
-import {color} from '@heroku/heroku-cli-util'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
 import _ from 'lodash'
 
 import destroyAddon from '../../lib/addons/destroy_addon.js'
-import {resolveAddon} from '../../lib/addons/resolve.js'
 import ConfirmCommand from '../../lib/confirmCommand.js'
 import notify from '../../lib/notify.js'
 
@@ -36,8 +35,9 @@ export default class Destroy extends Command {
     const {argv, flags} = await this.parse(Destroy)
     const {app, confirm, wait} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
+    const addonResolver = new utils.AddonResolver(this.heroku)
 
-    const addons = await Promise.all(argv.map((name: string) => resolveAddon(this.heroku, app, name as string)))
+    const addons = await Promise.all(argv.map((name: string) => addonResolver.resolve(name as string, app)))
     for (const addon of addons) {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
       const addonApp = addon.app?.name
