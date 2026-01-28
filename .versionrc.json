@@ -1,0 +1,14 @@
+{
+  "packageFiles": [
+    "packages/cli/package.json"
+  ],
+  "bumpFiles": [
+    "packages/cli/package.json"
+  ],
+  "infile": "packages/cli/CHANGELOG.md",
+  "header": "# Change Log\n\nAll notable changes to this project will be documented in this file.\nSee [Conventional Commits](https://conventionalcommits.org) for commit guidelines.\n\n",
+  "skip": {
+    "tag": true,
+    "commit": true
+  }
+}
