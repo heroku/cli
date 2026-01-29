@@ -1,9 +1,8 @@
-/*
+import {hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
-import BaseCommand from '../../../lib/webhooks/base'
+import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class EventsIndex extends BaseCommand {
   static description = 'list webhook events on an app'
@@ -14,13 +13,13 @@ export default class EventsIndex extends BaseCommand {
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
+    remote: flags.remote(),
   }
 
   async run() {
     const {flags} = await this.parse(EventsIndex)
-    const {path, display} = this.webhookType(flags)
+    const {display, path} = this.webhookType(flags)
 
     ux.warn('heroku webhooks:event is deprecated, please use heroku webhooks:deliveries')
 
@@ -34,22 +33,21 @@ export default class EventsIndex extends BaseCommand {
       const printLine: typeof this.log = (...args) => this.log(...args)
 
       hux.table(events, {
-        id: {
-          header: 'Event ID',
-        },
-        resource: {
-          get: (w: any) => w.payload.resource,
-        },
         action: {
           get: (w: any) => w.payload.action,
+        },
+        id: {
+          header: 'Event ID',
         },
         published_at: {
           header: 'Published At', get: (w: any) => w.payload.published_at,
         },
+        resource: {
+          get: (w: any) => w.payload.resource,
+        },
       }, {
-        'no-header': false, printLine,
+        printLine,
       })
     }
   }
 }
-*/

@@ -20,7 +20,7 @@ describe('webhooks:events', function () {
   describe('app webhooks', function () {
     const appWebhookEventsPath = '/apps/example-app/webhook-events'
 
-    it.skip('lists app webhook events', async function () {
+    it('lists app webhook events', async function () {
       api
         .get(appWebhookEventsPath)
         .reply(200, [{
@@ -40,7 +40,7 @@ describe('webhooks:events', function () {
       expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z')
     })
 
-    it.skip('displays an empty events message', async function () {
+    it('displays an empty events message', async function () {
       api
         .get(appWebhookEventsPath)
         .reply(200, [])
@@ -56,7 +56,7 @@ describe('webhooks:events', function () {
   describe('pipeline webhooks', function () {
     const pipelineWebhookEventsPath = '/pipelines/example-pipeline/webhook-events'
 
-    it.skip('lists pipeline webhook events', async function () {
+    it('lists pipeline webhook events', async function () {
       api
         .get(pipelineWebhookEventsPath)
         .reply(200, [{
@@ -76,7 +76,7 @@ describe('webhooks:events', function () {
       expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z')
     })
 
-    it.skip('displays an empty events message', async function () {
+    it('displays an empty events message', async function () {
       api
         .get(pipelineWebhookEventsPath)
         .reply(200, [])
@@ -94,7 +94,7 @@ describe('webhooks:events', function () {
     const secondDate = addDays(new Date(firstDate), 1)
     const thirdDate = addDays(new Date(firstDate), 2)
 
-    it.skip('displays webhooks sorted by "created_at"', async function () {
+    it('displays webhooks sorted by "created_at"', async function () {
       api
         .get('/apps/example-app/webhook-events')
         .reply(200, [
