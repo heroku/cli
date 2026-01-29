@@ -195,24 +195,6 @@ export type Link = {
     attachment_name: string,
   },
 }
-type CredentialState = 'enabling' | 'active' | 'revoking' | 'revoked' | 'archived'
-export type Credential = {
-  user: string
-  password: string
-  state: CredentialState
-  connections?: number | null
-}
-type CredentialStoreState = 'provisioning' | 'wait_for_provisioning' | 'active' | 'rotating' | 'rotation_completed' | 'revoking' | 'archived'
-export type CredentialInfo = {
-  uuid: string
-  name: string
-  state: CredentialStoreState
-  database: string
-  host: string
-  port: number
-  credentials: Array<Credential>
-}
-export type CredentialsInfo = Array<CredentialInfo>
 export type MaintenanceApiResponse = {
   message: string,
 }
