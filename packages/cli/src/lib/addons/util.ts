@@ -1,7 +1,9 @@
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
 import * as Heroku from '@heroku-cli/schema'
 import printf from 'printf'
+
+import ConfirmCommand from '../confirmCommand.js'
 
 export const trapConfirmationRequired = async <T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) => {
   try {
@@ -11,7 +13,7 @@ export const trapConfirmationRequired = async <T> (app: string, confirm: string 
       throw error
     }
 
-    await hux.confirmCommand({comparison: app, confirmation: confirm, warningMessage: error.body.message})
+    await new ConfirmCommand().confirm(app, confirm, error.body.message)
     return fn(app)
   }
 }
