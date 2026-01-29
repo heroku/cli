@@ -16,7 +16,8 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
       headers: {'Accept-Expansion': 'plan'},
     }).catch(error => {
       const errorMessage = error.body?.message || error
-      if (utils.pg.isAdvancedDatabase(addon)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (utils.pg.isAdvancedDatabase(addon as any)) {
         throw new Error(`We can't destroy your database due to an error: ${errorMessage}. Try again or open a ticket with Heroku Support: https://help.heroku.com/`)
       } else {
         throw new Error(`The add-on was unable to be destroyed: ${errorMessage}.`)
@@ -45,7 +46,8 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
       ux.stdout(`Run ${color.code('heroku addons:info ' + addonName)} to check destruction progress`)
     }
   } else if (addonResponse.state !== 'deprovisioned') {
-    if (utils.pg.isAdvancedDatabase(addonResponse)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (utils.pg.isAdvancedDatabase(addonResponse as any)) {
       throw new Error(`You can't destroy a database with a ${addonResponse.state} status.`)
     } else {
       throw new Error(`The add-on was unable to be destroyed, with status ${addonResponse.state}.`)
