@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+## [11.0.0-alpha.13](https://github.com/heroku/cli/compare/v10.16.0...v11.0.0-alpha.13) (2026-01-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* convert to esm (#3301)
+
+* convert to esm ([#3301](https://github.com/heroku/cli/issues/3301)) ([c1ef201](https://github.com/heroku/cli/commit/c1ef2010a11240bcd54317ba691973565776fd00))
+
+
+### Features
+
+* adding conditional logic for receiving applied state of trusted ips ([#3424](https://github.com/heroku/cli/issues/3424)) ([217271b](https://github.com/heroku/cli/commit/217271b6b735480b0c0b79cc342504b3b9f2a654))
+* migrate color.cmd() to color.command() - part 1 ([#3485](https://github.com/heroku/cli/issues/3485)) ([96ee048](https://github.com/heroku/cli/commit/96ee04821b359460fcb5abbc5beeb9ec904601f8))
+* migrate pg commands (bloat, blocking, copy, credentials, diagnose) to oclif v4 ([#3495](https://github.com/heroku/cli/issues/3495)) ([1254896](https://github.com/heroku/cli/commit/125489600d636fb75def6971030132607dabb612))
+* migrate static examples to use color.command() - part 1 ([#3488](https://github.com/heroku/cli/issues/3488)) ([3f52d03](https://github.com/heroku/cli/commit/3f52d03a4e253564e3bdc4dd77d085807a2966b8))
+* migrate static examples to use color.command() - part 2 ([#3490](https://github.com/heroku/cli/issues/3490)) ([8fbdfa7](https://github.com/heroku/cli/commit/8fbdfa77f8a9a9f949834ffb2a0453bea85b0f9a))
+* migrate static examples to use color.command() - part 3 ([#3491](https://github.com/heroku/cli/issues/3491)) ([ad5cb97](https://github.com/heroku/cli/commit/ad5cb97b3e5192b67c5438bb9af7985cefa66488))
+* migrate static examples to use color.command() - part 4 (final) ([#3493](https://github.com/heroku/cli/issues/3493)) ([cde20ed](https://github.com/heroku/cli/commit/cde20ede146cf6a98e9680572becd92cf6c03411))
+* migrate to color.addon from @heroku/heroku-cli-util ([#3470](https://github.com/heroku/cli/issues/3470)) ([5d09c05](https://github.com/heroku/cli/commit/5d09c05cd04cbe1e5d005e0ed9c9d2d9e76ccd72))
+* migrate to color.app from @heroku/heroku-cli-util ([#3468](https://github.com/heroku/cli/issues/3468)) ([dca7d56](https://github.com/heroku/cli/commit/dca7d566fe835e30d27074ad4c32b93b8693939e))
+* migrate to color.attachment from @heroku/heroku-cli-util ([#3471](https://github.com/heroku/cli/issues/3471)) ([ac00bfe](https://github.com/heroku/cli/commit/ac00bfecc44e5fc5446a47229822c15a170a3411))
+* migrate to color.datastore from @heroku/heroku-cli-util ([#3473](https://github.com/heroku/cli/issues/3473)) ([0c2ac53](https://github.com/heroku/cli/commit/0c2ac53a8bf5deca11fd56ae9f69ae6edf2bb1ef))
+* migrate to color.failure from @heroku/heroku-cli-util ([#3483](https://github.com/heroku/cli/issues/3483)) ([697d02d](https://github.com/heroku/cli/commit/697d02d1b0e6545b8279a68d25496e1d8e2ef141))
+* migrate to color.pipeline from @heroku/heroku-cli-util ([#3474](https://github.com/heroku/cli/issues/3474)) ([55a3a86](https://github.com/heroku/cli/commit/55a3a866515baddb43abee1d5e364370e977e5cc))
+* migrate to color.space from @heroku/heroku-cli-util ([#3469](https://github.com/heroku/cli/issues/3469)) ([5f86e9e](https://github.com/heroku/cli/commit/5f86e9ef9e1317c85b45dd0cf75e591f5032da22))
+* migrate to color.success from @heroku/heroku-cli-util ([#3481](https://github.com/heroku/cli/issues/3481)) ([a176a0a](https://github.com/heroku/cli/commit/a176a0a4a4c6aa7bfced87365eb03ff61472f9c7))
+* migrate to color.team from @heroku/heroku-cli-util ([#3476](https://github.com/heroku/cli/issues/3476)) ([b579ef9](https://github.com/heroku/cli/commit/b579ef9fe8828928531d6a7914db7b99cb87176f))
+* migrate to color.user from @heroku/heroku-cli-util ([#3478](https://github.com/heroku/cli/issues/3478)) ([d92aa72](https://github.com/heroku/cli/commit/d92aa725382ec73a25e02439b4657e1fc0e8d50d))
+* migrate to color.warning and color.info from @heroku/heroku-cli-util ([#3484](https://github.com/heroku/cli/issues/3484)) ([ac0000d](https://github.com/heroku/cli/commit/ac0000dae0d2fbe4770cf65bc4f461c896ec86ff))
+* NGPG types and command utils (W-20610475) ([#3487](https://github.com/heroku/cli/issues/3487)) ([4debfed](https://github.com/heroku/cli/commit/4debfedadf446266cf84c7ffd58902ef468e83c0))
+* update local commands to oclif/core v4 ([#3376](https://github.com/heroku/cli/issues/3376)) ([debfc39](https://github.com/heroku/cli/commit/debfc391c001bd70af973936b9a55f3e528e7998))
+* update member commands to oclif/core v4 ([#3377](https://github.com/heroku/cli/issues/3377)) ([eb56c4d](https://github.com/heroku/cli/commit/eb56c4dca1e114e2019bdc5e440aee972d0b2ec6))
+* update misc CLI output with semantic colors and remove strip-ansi ([#3499](https://github.com/heroku/cli/issues/3499)) ([e2cd850](https://github.com/heroku/cli/commit/e2cd85088f88b667a21a0782383fdd55341d9a85))
+* update to node 22 ([#3337](https://github.com/heroku/cli/issues/3337)) ([bac2d56](https://github.com/heroku/cli/commit/bac2d563e98669606582cff06012aa3d17a455d7)), closes [#3301](https://github.com/heroku/cli/issues/3301)
+
+
+### Bug Fixes
+
+* ensures authentications:revoke documentation is generated ([#3428](https://github.com/heroku/cli/issues/3428)) ([fdfec26](https://github.com/heroku/cli/commit/fdfec26bbb44109706eaaa2d292070d4e06b4337))
+
 # [10.16.0](https://github.com/heroku/cli/compare/v10.15.1...v10.16.0) (2025-12-04)
 
 
