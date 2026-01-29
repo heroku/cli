@@ -1,9 +1,9 @@
+import ansis from 'ansis'
 import {stdout, stderr} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/certs/auto/disable.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
-import stripAnsi from 'strip-ansi'
 import {expect} from 'chai'
 import tsheredoc from 'tsheredoc'
 
@@ -38,7 +38,7 @@ describe('heroku certs:auto:disable', function () {
       'notexample',
     ])
       .catch(error => {
-        expect(stripAnsi(error.message)).to.equal('Confirmation notexample did not match example. Aborted.')
+        expect(ansis.strip(error.message)).to.equal('Confirmation notexample did not match example. Aborted.')
       })
   })
 })

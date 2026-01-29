@@ -1,9 +1,9 @@
+import ansis from 'ansis'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import _ from 'lodash'
-import stripAnsi from 'strip-ansi'
 
 import * as statusHelper from '../../lib/releases/status_helper.js'
 import * as time from '../../lib/time.js'
@@ -52,7 +52,7 @@ const getDescriptionTruncation = function (releases: Heroku.Release[], columns: 
         if (key !== optimizeKey) {
           optimizationWidthMap[key] = Math.max(
             optimizationWidthMap[key],
-            stripAnsi(String(formattedValue)).length,
+            ansis.strip(String(formattedValue)).length,
           )
         }
       }

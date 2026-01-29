@@ -2,7 +2,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
 import ConfirmCommand from '../../../src/lib/confirmCommand.js'
 
@@ -32,7 +32,7 @@ describe('confirmApp', function () {
       await new ConfirmCommand().confirm('app', 'nope')
       expect.fail('Expected confirm to throw error')
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.equal('Confirmation nope did not match app. Aborted.')
+      expect(ansis.strip(error.message)).to.equal('Confirmation nope did not match app. Aborted.')
     } finally {
       stdout.stop()
       stderr.stop()
@@ -75,7 +75,7 @@ describe('confirmApp', function () {
       await new ConfirmCommand().confirm('app')
       expect.fail('Expected confirm to throw error')
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.equal('Confirmation did not match app. Aborted.')
+      expect(ansis.strip(error.message)).to.equal('Confirmation did not match app. Aborted.')
     }
   })
 })

@@ -1,12 +1,11 @@
+import ansis from 'ansis'
+import {expect} from 'chai'
+import nock from 'nock'
 import {stderr} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/ps/stop.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {expect} from 'chai'
-import stripAnsi from 'strip-ansi'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
 
 describe('ps:stop', function () {
   it('requires a dyno name or type', async function () {
@@ -56,7 +55,7 @@ describe('ps:stop', function () {
       'myapp',
       'web.1',
     ])
-    expect(stripAnsi(stderr.output)).to.include('Warning: DYNO is a deprecated argument.')
+    expect(ansis.strip(stderr.output)).to.include('Warning: DYNO is a deprecated argument.')
     expect(stderr.output).to.include('Stopping dyno web.1 on ⬢ myapp... done')
   })
 })

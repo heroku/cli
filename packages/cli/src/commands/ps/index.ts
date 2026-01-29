@@ -120,7 +120,7 @@ async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account
     ux.stdout(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
     ux.stdout(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
     ux.stdout('For more information on Eco dyno hours, see:')
-    ux.stdout('https://devcenter.heroku.com/articles/eco-dyno-hours')
+    ux.stdout(color.info('https://devcenter.heroku.com/articles/eco-dyno-hours'))
     ux.stdout()
   }
 
@@ -128,7 +128,7 @@ async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account
     ux.stdout(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
     ux.stdout(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
     ux.stdout('For more information on dyno sleeping and how to upgrade, see:')
-    ux.stdout('https://devcenter.heroku.com/articles/dyno-sleeping')
+    ux.stdout(color.info('https://devcenter.heroku.com/articles/dyno-sleeping'))
     ux.stdout()
   }
 }
@@ -137,14 +137,14 @@ function decorateOneOffDyno(dyno: DynoExtended) : string {
   const since = ago(new Date(dyno.updated_at))
   // eslint-disable-next-line unicorn/explicit-length-check
   const size = dyno.size || '1X'
-  const state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
+  const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
 
-  return `${dyno.name} (${color.cyan(size)}): ${state} ${color.dim(since)}: ${dyno.command}`
+  return `${dyno.name} (${color.info(size)}): ${state} ${color.dim(since)}: ${dyno.command}`
 }
 
 function decorateCommandDyno(dyno: DynoExtended) : string {
   const since = ago(new Date(dyno.updated_at))
-  const state = dyno.state === 'up' ? color.green(dyno.state) : color.yellow(dyno.state)
+  const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
 
   return `${dyno.name}: ${state} ${color.dim(since)}`
 }
@@ -158,7 +158,7 @@ function printDynos(dynos: DynoExtended[]) : void {
 
   // Print one-off dynos
   if (oneOffs.length > 0) {
-    hux.styledHeader(`${color.green('run')}: one-off processes (${color.yellow(oneOffs.length.toString())})`)
+    hux.styledHeader(`${color.label('run')}: one-off processes (${oneOffs.length})`)
     oneOffs.forEach(dyno => ux.stdout(decorateOneOffDyno(dyno)))
     ux.stdout()
   }
@@ -168,7 +168,7 @@ function printDynos(dynos: DynoExtended[]) : void {
     const commandDynos = dynos.filter(d => d.command === command).sort(byProcessNumber)
     const {size = '1X', type} = commandDynos[0]
 
-    hux.styledHeader(`${color.green(type)} (${color.cyan(size)}): ${command} (${color.yellow(commandDynos.length.toString())})`)
+    hux.styledHeader(`${color.label(type)} (${color.info(size)}): ${command} (${commandDynos.length})`)
     for (const dyno of commandDynos)
       ux.stdout(decorateCommandDyno(dyno))
     ux.stdout()
@@ -233,7 +233,7 @@ export default class Index extends Command {
       selectedDynos = selectedDynos.filter(dyno => types.find((t: string) => dyno.type === t))
       types.forEach(t => {
         if (!selectedDynos.some(d => d.type === t)) {
-          throw new Error(`No ${color.cyan(t)} dynos on ${color.app(app)}`)
+          throw new Error(`No ${color.info(t)} dynos on ${color.app(app)}`)
         }
       })
     }

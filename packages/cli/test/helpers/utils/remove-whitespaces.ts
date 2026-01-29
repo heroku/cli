@@ -1,5 +1,5 @@
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
-const removeAllWhitespace = (str: string): string => stripAnsi(str).replace(/\s+/g, '')
+const removeAllWhitespace = (str: string): string => ansis.strip(str).replaceAll(/\s+/g, '')
 
 export default removeAllWhitespace

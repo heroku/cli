@@ -40,29 +40,29 @@ export default class Info extends Command {
         let colorFn: (s: string) => string
         switch (statusColor) {
         case 'red': {
-          colorFn = color.red
+          colorFn = color.failure
           break
         }
 
         case 'yellow': {
-          colorFn = color.yellow
+          colorFn = color.warning
           break
         }
 
         case 'gray': {
-          colorFn = color.gray
+          colorFn = color.inactive
           break
         }
 
         default: {
-          colorFn = color.cyan
+          colorFn = color.info
         }
         }
 
         releaseChange += ' (' + colorFn(status) + ')'
       }
 
-      hux.styledHeader(`Release ${color.cyan('v' + release.version)}`)
+      hux.styledHeader(`Release ${color.name('v' + release.version)}`)
       /* eslint-disable perfectionist/sort-objects */
       hux.styledObject({
         'Add-ons': release.addon_plan_names,
@@ -73,7 +73,7 @@ export default class Info extends Command {
       })
       /* eslint-enable perfectionist/sort-objects */
       ux.stdout()
-      hux.styledHeader(`${color.cyan('v' + release.version)} Config vars`)
+      hux.styledHeader(`${color.name('v' + release.version)} Config vars`)
       if (shell) {
         Object.entries(config).forEach(([k, v]) => {
           ux.stdout(`${k}=${quote(v)}`)

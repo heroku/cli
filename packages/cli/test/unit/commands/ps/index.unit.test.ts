@@ -1,8 +1,8 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 import strftime from 'strftime'
-import stripAnsi from 'strip-ansi'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/ps/index.js'
@@ -166,7 +166,7 @@ describe('ps', function () {
         'myapp',
       ])
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.include('No foo dynos on ⬢ myapp')
+      expect(ansis.strip(error.message)).to.include('No foo dynos on ⬢ myapp')
     }
 
     api.done()

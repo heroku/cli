@@ -40,8 +40,8 @@ export default class ClientsCreate extends Command {
     if (flags.json) {
       hux.styledJSON(client)
     } else {
-      ux.stdout(`HEROKU_OAUTH_ID=${client.id}`)
-      ux.stdout(`HEROKU_OAUTH_SECRET=${client.secret}`)
+      ux.stdout(`${color.label('HEROKU_OAUTH_ID')}=${color.name(client.id!)}`)
+      ux.stdout(`${color.label('HEROKU_OAUTH_SECRET')}=${color.info(client.secret!)}`)
     }
   }
 }

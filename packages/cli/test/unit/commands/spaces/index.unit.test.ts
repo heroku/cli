@@ -1,8 +1,8 @@
 import {Errors} from '@oclif/core'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/spaces/index.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -79,7 +79,7 @@ describe('spaces', function () {
       await runCommand(Cmd, ['--team', 'other-team'])
     } catch (error) {
       const {message} = error as Errors.CLIError
-      expect(stripAnsi(message)).to.eq('No spaces in other-team.')
+      expect(ansis.strip(message)).to.eq('No spaces in other-team.')
     }
   })
 

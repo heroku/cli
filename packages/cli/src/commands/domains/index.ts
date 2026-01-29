@@ -199,7 +199,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
       hux.styledJSON(domains)
     } else {
       hux.styledHeader(`${color.app(flags.app)} Heroku Domain`)
-      ux.stdout(herokuDomain && herokuDomain.hostname)
+      ux.stdout(herokuDomain && color.info(herokuDomain.hostname!))
       if (customDomains && customDomains.length > 0) {
         ux.stdout()
 

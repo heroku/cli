@@ -1,9 +1,9 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import lolex from 'lolex'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/addons/destroy.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -71,7 +71,7 @@ describe('addons:destroy', function () {
         'heroku-db4',
       ])
       expect(stdout.output).to.equal('db4-swiftly-123 is being destroyed in the background. The app will restart when complete...\nUse heroku addons:info db4-swiftly-123 to check destruction progress\n')
-      expect(stripAnsi(stderr.output)).to.contain(stripAnsi('Destroying db4-swiftly-123 on ⬢ myapp... pending'))
+      expect(ansis.strip(stderr.output)).to.contain('Destroying db4-swiftly-123 on ⬢ myapp... pending')
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
@@ -112,7 +112,7 @@ describe('addons:destroy', function () {
         ])
         expect(notifySpy.called).to.equal(true)
         expect(notifySpy.calledOnce).to.equal(true)
-        expect(stripAnsi(stderr.output)).to.contain('Destroying db5-swiftly-123 on ⬢ myapp... pending')
+        expect(ansis.strip(stderr.output)).to.contain('Destroying db5-swiftly-123 on ⬢ myapp... pending')
         expect(stderr.output).to.contain('Destroying db5-swiftly-123... done\n')
         expect(stdout.output).to.equal('Waiting for db5-swiftly-123...\n')
       })
@@ -136,7 +136,7 @@ describe('addons:destroy', function () {
       ])
       throw new Error('unreachable')
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.equal('db6-swiftly-123 is on ⬢ myotherapp not ⬢ myapp')
+      expect(ansis.strip(error.message)).to.equal('db6-swiftly-123 is on ⬢ myotherapp not ⬢ myapp')
     }
   })
 
@@ -233,7 +233,7 @@ describe('addons:destroy', function () {
         ])
         throw new Error('unreachable')
       } catch (error: any) {
-        expect(stripAnsi(error.message)).to.equal('db14-swiftly-123 is on ⬢ myapp2 not ⬢ myapp')
+        expect(ansis.strip(error.message)).to.equal('db14-swiftly-123 is on ⬢ myapp2 not ⬢ myapp')
       }
     })
   })

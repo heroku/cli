@@ -73,7 +73,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
 
   data['Auto Cert Mgmt'] = info.app.acm
   data['Git URL'] = info.app.git_url
-  data['Web URL'] = info.app.web_url
+  data['Web URL'] = color.info(info.app.web_url)
   data['Repo Size'] = filesize(info.app.repo_size, {round: 0, standard: 'jedec'})
   if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {round: 0, standard: 'jedec'})
   data.Owner = color.user(info.app.owner.email)

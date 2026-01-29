@@ -1,19 +1,20 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/create.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {HTTPError} from '@heroku/http-call'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import _ from 'lodash'
-import sinon from 'sinon'
-import nock from 'nock'
-import {unwrap} from '../../../helpers/utils/unwrap.js'
-import {HTTPError} from '@heroku/http-call'
-import stripAnsi from 'strip-ansi'
 import lolex from 'lolex'
+import nock from 'nock'
+import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/addons/create.js'
+import runCommand from '../../../helpers/runCommand.js'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('addons:create', function () {
   let api: ReturnType<typeof nock>
   const addon = {
-    id: 201, name: 'db3-swiftly-123', addon_service: {name: 'heroku-db3'}, app: {name: 'myapp', id: 101}, config_vars: ['DATABASE_URL'], plan: {price: {cents: 10000, unit: 'month'}}, state: 'provisioned', provision_message: 'provision message',
+    addon_service: {name: 'heroku-db3'}, app: {id: 101, name: 'myapp'}, config_vars: ['DATABASE_URL'], id: 201, name: 'db3-swiftly-123', plan: {price: {cents: 10000, unit: 'month'}}, provision_message: 'provision message', state: 'provisioned',
   }
 
   beforeEach(async function () {
@@ -27,7 +28,7 @@ describe('addons:create', function () {
   context('creating a db with a name', function () {
     beforeEach(function () {
       api.post('/apps/myapp/addons', {
-        plan: {name: 'heroku-postgresql:standard-0'}, name: 'foobar', attachment: {}, config: {},
+        attachment: {}, config: {}, name: 'foobar', plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
     })
@@ -60,7 +61,7 @@ describe('addons:create', function () {
     beforeEach(function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'},
-        config: {follow: 'otherdb', rollback: true, foo: true},
+        config: {follow: 'otherdb', foo: true, rollback: true},
         plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
@@ -148,7 +149,7 @@ describe('addons:create', function () {
     })
     context('and no provision message supplied', function () {
       beforeEach(function () {
-        const asyncAddon = {..._.clone(addon), state: 'provisioning', provision_message: undefined}
+        const asyncAddon = {..._.clone(addon), provision_message: undefined, state: 'provisioning'}
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
@@ -168,7 +169,7 @@ describe('addons:create', function () {
     })
     context('and no config vars supplied by add-on provider', function () {
       beforeEach(function () {
-        const asyncAddon = {..._.clone(addon), state: 'provisioning', config_vars: undefined}
+        const asyncAddon = {..._.clone(addon), config_vars: undefined, state: 'provisioning'}
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
@@ -267,7 +268,7 @@ describe('addons:create', function () {
         const deprovisionedAddon = _.clone(addon)
         deprovisionedAddon.state = 'deprovisioned'
         api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, plan: {name: 'heroku-postgresql:standard-0'}, config: {},
+          attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
           .reply(200, deprovisionedAddon)
         const cmdPromise = runCommand(Cmd, [
@@ -289,7 +290,7 @@ describe('addons:create', function () {
   context('creating a db requiring confirmation', function () {
     it('aborts if confirmation does not match', function () {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {follow: 'otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'}, confirm: 'not-my-app',
+        attachment: {name: 'mydb'}, config: {follow: 'otherdb', foo: true, rollback: true}, confirm: 'not-my-app', plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(423, {id: 'confirmation_required', message: 'This add-on is not automatically networked with this Private Space. '}, {'X-Confirmation-Required': 'myapp-confirm'})
 
@@ -308,13 +309,13 @@ describe('addons:create', function () {
         '--foo',
       ])
         .catch(error => {
-          expect(stripAnsi(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
+          expect(ansis.strip(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
         })
     })
 
     it('succeeds if confirmation does match', async function () {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {follow: 'otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'}, confirm: 'myapp',
+        attachment: {name: 'mydb'}, config: {follow: 'otherdb', foo: true, rollback: true}, confirm: 'myapp', plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
       await runCommand(Cmd, [
@@ -338,7 +339,7 @@ describe('addons:create', function () {
   context('--follow=--otherdb', function () {
     beforeEach(function () {
       api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {follow: '--otherdb', rollback: true, foo: true}, plan: {name: 'heroku-postgresql:standard-0'},
+        attachment: {name: 'mydb'}, config: {follow: '--otherdb', foo: true, rollback: true}, plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
     })

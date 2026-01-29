@@ -1,10 +1,11 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
-import runCommand from '../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
+import {stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/accounts/current.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import {stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
+import runCommand from '../../../helpers/runCommand.js'
 
 describe('accounts:current', function () {
   let currentStub: sinon.SinonStub
@@ -27,7 +28,7 @@ describe('accounts:current', function () {
     currentStub.returns(null)
     await runCommand(Cmd, [])
       .catch((error: Error) => {
-        expect(stripAnsi(error.message)).to.equal('You haven\'t set an account. Run heroku accounts:add <account-name> to add an account to your cache or heroku accounts:set <account-name> to set the current account.')
+        expect(ansis.strip(error.message)).to.equal('You haven\'t set an account. Run heroku accounts:add <account-name> to add an account to your cache or heroku accounts:set <account-name> to set the current account.')
       })
   })
 })

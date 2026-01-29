@@ -47,13 +47,13 @@ RACK_ENV:  staging`)]
     argv.forEach((v: string) => {
       const idx = v.indexOf('=')
       if (idx === -1) {
-        ux.error(`${color.cyan(v)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`, {exit: 1})
+        ux.error(`${color.name(v)} is invalid. Must be in the format ${color.code('FOO=bar')}.`, {exit: 1})
       }
 
       vars[v.slice(0, idx)] = v.slice(idx + 1)
     })
 
-    const varsCopy = argv.map((v: string) => color.green(v.split('=')[0])).join(', ')
+    const varsCopy = argv.map((v: string) => color.name(v.split('=')[0])).join(', ')
     ux.action.start(`Setting ${varsCopy} and restarting ${color.app(flags.app)}`)
 
     let {body: config} = await this.heroku.patch<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`, {
@@ -65,7 +65,7 @@ RACK_ENV:  staging`)]
     config = Object.fromEntries(
       Object.entries(config)
         .filter(([k]) => vars[k])
-        .map(([k, v]) => [color.green(k), v]),
+        .map(([k, v]) => [color.name(k), v]),
     )
     hux.styledObject(config)
     await this.config.runHook('recache', {app: flags.app, type: 'config'})
