@@ -32,18 +32,22 @@ export default class EventsIndex extends BaseCommand {
 
       const printLine: typeof this.log = (...args) => this.log(...args)
 
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(events, {
-        action: {
-          get: (w: any) => w.payload.action,
-        },
         id: {
           header: 'Event ID',
         },
-        published_at: {
-          header: 'Published At', get: (w: any) => w.payload.published_at,
-        },
         resource: {
+          header: 'Resource',
           get: (w: any) => w.payload.resource,
+        },
+        action: {
+          header: 'Action',
+          get: (w: any) => w.payload.action,
+        },
+        published_at: {
+          header: 'Published At',
+          get: (w: any) => w.payload.published_at,
         },
       }, {
         printLine,

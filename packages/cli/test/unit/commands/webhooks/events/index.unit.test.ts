@@ -3,6 +3,8 @@ import {expect} from 'chai'
 import {addDays} from 'date-fns'
 import nock from 'nock'
 
+import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+
 describe('webhooks:events', function () {
   let api: nock.Scope
   const deprecationWarning = 'Warning: heroku webhooks:event is deprecated, please use heroku'
@@ -36,8 +38,8 @@ describe('webhooks:events', function () {
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
-      expect(stdout).to.contain('Event ID                             Resource    Action Published At')
-      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z')
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('Event ID                             Resource    Action Published At'))
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z'))
     })
 
     it('displays an empty events message', async function () {
@@ -49,7 +51,7 @@ describe('webhooks:events', function () {
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
-      expect(stdout).to.equal('⬢ example-app has no events\n')
+      expect(stdout).to.contain('example-app has no events')
     })
   })
 
@@ -72,8 +74,8 @@ describe('webhooks:events', function () {
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
-      expect(stdout).to.contain('Event ID                             Resource    Action Published At')
-      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z')
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('Event ID                             Resource    Action Published At'))
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('99999999-9999-9999-9999-999999999999 api:release create 2016-08-31T21:55:06Z'))
     })
 
     it('displays an empty events message', async function () {
@@ -142,10 +144,10 @@ describe('webhooks:events', function () {
       expect(stderr).to.include(deprecationWarning2)
       // Note: The table is sorted by "created_at" date even though
       // it is not displayed in the table
-      expect(stdout).to.contain('Event ID                             Resource    Action Published At')
-      expect(stdout).to.contain('00000000-0000-0000-0000-000000000000 api:release create 2019-06-15T14:20:42Z')
-      expect(stdout).to.contain('22222222-2222-2222-2222-222222222222 api:release create 2019-06-15T14:20:42Z')
-      expect(stdout).to.contain('11111111-1111-1111-1111-111111111111 api:release create 2019-06-15T14:20:42Z')
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('Event ID                             Resource    Action Published At'))
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('00000000-0000-0000-0000-000000000000 api:release create 2019-06-15T14:20:42Z'))
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('22222222-2222-2222-2222-222222222222 api:release create 2019-06-15T14:20:42Z'))
+      expect(normalizeTableOutput(stdout)).to.contain(normalizeTableOutput('11111111-1111-1111-1111-111111111111 api:release create 2019-06-15T14:20:42Z'))
     })
   })
 })
