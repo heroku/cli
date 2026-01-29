@@ -30,7 +30,7 @@ DESCRIPTION
   list SSL certificates for an app
 ```
 
-_See code: [src/commands/certs/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/index.ts)_
+_See code: [src/commands/certs/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/index.ts)_
 
 ## `heroku certs:add CRT KEY`
 
@@ -55,12 +55,12 @@ DESCRIPTION
 
 
 EXAMPLES
-  $ heroku certs:add example.com.crt example.com.key
-      If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
-      https://help.salesforce.com/s/articleView?id=000333504&type=1
+   $ heroku certs:add example.com.crt example.com.key 
+  If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
+  https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [src/commands/certs/add.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/add.ts)_
+_See code: [src/commands/certs/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/add.ts)_
 
 ## `heroku certs:auto`
 
@@ -68,7 +68,7 @@ show ACM status for an app
 
 ```
 USAGE
-  $ heroku certs:auto -a <value> [--wait] [-r <value>]
+  $ heroku certs:auto -a <value> [-r <value>] [--wait]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -79,7 +79,7 @@ DESCRIPTION
   show ACM status for an app
 ```
 
-_See code: [src/commands/certs/auto/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/auto/index.ts)_
+_See code: [src/commands/certs/auto/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/auto/index.ts)_
 
 ## `heroku certs:auto:disable`
 
@@ -97,7 +97,7 @@ DESCRIPTION
   disable ACM for an app
 ```
 
-_See code: [src/commands/certs/auto/disable.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/auto/disable.ts)_
+_See code: [src/commands/certs/auto/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/auto/disable.ts)_
 
 ## `heroku certs:auto:enable`
 
@@ -105,7 +105,7 @@ enable ACM status for an app
 
 ```
 USAGE
-  $ heroku certs:auto:enable -a <value> [--wait] [-r <value>]
+  $ heroku certs:auto:enable -a <value> [-r <value>] [--wait]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -116,7 +116,7 @@ DESCRIPTION
   enable ACM status for an app
 ```
 
-_See code: [src/commands/certs/auto/enable.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/auto/enable.ts)_
+_See code: [src/commands/certs/auto/enable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/auto/enable.ts)_
 
 ## `heroku certs:auto:refresh`
 
@@ -134,7 +134,7 @@ DESCRIPTION
   refresh ACM for an app
 ```
 
-_See code: [src/commands/certs/auto/refresh.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/auto/refresh.ts)_
+_See code: [src/commands/certs/auto/refresh.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/auto/refresh.ts)_
 
 ## `heroku certs:generate DOMAIN`
 
@@ -164,7 +164,7 @@ DESCRIPTION
   generate a key and a CSR or self-signed certificate
 ```
 
-_See code: [src/commands/certs/generate.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/generate.ts)_
+_See code: [src/commands/certs/generate.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/generate.ts)_
 
 ## `heroku certs:info`
 
@@ -172,7 +172,7 @@ show certificate information for an SSL certificate
 
 ```
 USAGE
-  $ heroku certs:info -a <value> [--name <value>] [--endpoint <value>] [--show-domains] [-r <value>]
+  $ heroku certs:info -a <value> [--endpoint <value>] [--name <value>] [-r <value>] [--show-domains]
 
 FLAGS
   -a, --app=<value>       (required) app to run command against
@@ -185,7 +185,7 @@ DESCRIPTION
   show certificate information for an SSL certificate
 ```
 
-_See code: [src/commands/certs/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/info.ts)_
+_See code: [src/commands/certs/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/info.ts)_
 
 ## `heroku certs:remove`
 
@@ -193,7 +193,7 @@ remove an SSL certificate from an app
 
 ```
 USAGE
-  $ heroku certs:remove -a <value> [--name <value>] [--endpoint <value>] [-r <value>]
+  $ heroku certs:remove -a <value> [--endpoint <value>] [--name <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       (required) app to run command against
@@ -205,7 +205,7 @@ DESCRIPTION
   remove an SSL certificate from an app
 ```
 
-_See code: [src/commands/certs/remove.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/remove.ts)_
+_See code: [src/commands/certs/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/remove.ts)_
 
 ## `heroku certs:update CRT KEY`
 
@@ -213,7 +213,7 @@ update an SSL certificate on an app
 
 ```
 USAGE
-  $ heroku certs:update CRT KEY -a <value> [--name <value>] [--endpoint <value>] [-r <value>]
+  $ heroku certs:update CRT KEY -a <value> [--endpoint <value>] [--name <value>] [-r <value>]
 
 ARGUMENTS
   CRT  absolute path of the certificate file on disk
@@ -231,9 +231,9 @@ DESCRIPTION
 
 
 EXAMPLES
-  $ heroku certs:update example.com.crt example.com.key
+   $ heroku certs:update example.com.crt example.com.key 
       If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
       https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [src/commands/certs/update.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/certs/update.ts)_
+_See code: [src/commands/certs/update.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/certs/update.ts)_

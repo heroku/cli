@@ -26,7 +26,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/auth/2fa/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/auth/2fa/index.ts)_
+_See code: [src/commands/auth/2fa/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 
@@ -44,10 +44,10 @@ ALIASES
   $ heroku 2fa:disable
 
 EXAMPLES
-  $ heroku auth:2fa:disable
+   $ heroku auth:2fa:disable
 ```
 
-_See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/auth/2fa/disable.ts)_
+_See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/auth/2fa/disable.ts)_
 
 ## `heroku auth:login`
 
@@ -55,7 +55,7 @@ login with your Heroku credentials
 
 ```
 USAGE
-  $ heroku auth:login [--browser <value>] [-i] [-e <value>]
+  $ heroku auth:login [--browser <value>] [-e <value>] [-i]
 
 FLAGS
   -e, --expires-in=<value>  duration of token in seconds (default 30 days)
@@ -69,7 +69,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -86,7 +86,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [src/commands/auth/logout.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/auth/logout.ts)_
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -102,7 +102,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -119,4 +119,4 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/auth/whoami.ts)_

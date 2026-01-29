@@ -16,7 +16,7 @@ display the config vars for an app
 
 ```
 USAGE
-  $ heroku config -a <value> [-r <value>] [-s] [-j]
+  $ heroku config -a <value> [-j] [-r <value>] [-s]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -28,7 +28,7 @@ DESCRIPTION
   display the config vars for an app
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -39,7 +39,7 @@ USAGE
   $ heroku config:edit [KEY] -a <value> [-r <value>]
 
 ARGUMENTS
-  KEY  edit a single key
+  [KEY]  edit a single key
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -52,19 +52,19 @@ DESCRIPTION
 
 EXAMPLES
   # edit with vim
-  $ EDITOR="vim" heroku config:edit
+   $ EDITOR="vim" heroku config:edit 
 
   # edit with emacs
-  $ EDITOR="emacs" heroku config:edit
+   $ EDITOR="emacs" heroku config:edit 
 
   # edit with pico
-  $ EDITOR="pico" heroku config:edit
+   $ EDITOR="pico" heroku config:edit 
 
   # edit with atom editor
-  $ VISUAL="atom --wait" heroku config:edit
+   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -79,6 +79,7 @@ ARGUMENTS
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
+  -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
 
@@ -86,11 +87,11 @@ DESCRIPTION
   display a single config value for an app
 
 EXAMPLES
-  $ heroku config:get RAILS_ENV
+   $ heroku config:get RAILS_ENV
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/config/get.ts)_
 
 ## `heroku config:remove`
 
@@ -111,10 +112,10 @@ ALIASES
   $ heroku config:remove
 
 EXAMPLES
-  $ heroku config:unset RAILS_ENV
+       $ heroku config:unset RAILS_ENV 
   Unsetting RAILS_ENV and restarting example... done, v10
 
-  $ heroku config:unset RAILS_ENV RACK_ENV
+       $ heroku config:unset RAILS_ENV RACK_ENV 
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
@@ -134,16 +135,17 @@ DESCRIPTION
   set one or more config vars
 
 EXAMPLES
-  $ heroku config:set RAILS_ENV=staging
+   $ heroku config:set RAILS_ENV=staging 
   Setting config vars and restarting example... done, v10
-  RAILS_ENV: staging
-  $ heroku config:set RAILS_ENV=staging RACK_ENV=staging
+  RAILS_ENV: staging)
+
+   $ heroku config:set RAILS_ENV=staging RACK_ENV=staging 
   Setting config vars and restarting example... done, v11
   RAILS_ENV: staging
   RACK_ENV:  staging
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/config/set.ts)_
 
 ## `heroku config:unset`
 
@@ -164,11 +166,11 @@ ALIASES
   $ heroku config:remove
 
 EXAMPLES
-  $ heroku config:unset RAILS_ENV
+       $ heroku config:unset RAILS_ENV 
   Unsetting RAILS_ENV and restarting example... done, v10
 
-  $ heroku config:unset RAILS_ENV RACK_ENV
+       $ heroku config:unset RAILS_ENV RACK_ENV 
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/unset.ts)_
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.12/packages/cli/src/commands/config/unset.ts)_
