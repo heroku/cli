@@ -26,7 +26,7 @@ export default class Push extends Command {
     push local or remote into Heroku database
     Push from SOURCE into TARGET. TARGET must be empty.
 
-    To empty a Heroku database for push run ${color.command('heroku pg:reset')}
+    To empty a Heroku database for push run ${color.code('heroku pg:reset')}
 
     SOURCE must be either the name of a database existing on your localhost or the
     fully qualified URL of a remote database.

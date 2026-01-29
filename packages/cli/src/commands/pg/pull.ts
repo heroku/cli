@@ -32,16 +32,16 @@ export default class Pull extends Command {
     * a fully qualified URL to a local PostgreSQL server   => TARGET must not exist and will be created
     * a fully qualified URL to a remote PostgreSQL server  => TARGET must exist and be empty
 
-    To delete a local database run ${color.command('dropdb TARGET')}.
-    To create an empty remote database, run ${color.command('createdb')} with connection command-line options (run ${color.command('createdb --help')} for details).
+    To delete a local database run ${color.code('dropdb TARGET')}.
+    To create an empty remote database, run ${color.code('createdb')} with connection command-line options (run ${color.code('createdb --help')} for details).
   `
 
   static examples = [heredoc`
     # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
-    $ heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi
+    ${color.command('heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi')}
   `, heredoc`
     # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
-    $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
+    ${color.command('heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi')}
   `]
 
   static flags = {
