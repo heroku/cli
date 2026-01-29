@@ -1,37 +1,48 @@
-/*
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import * as Heroku from '@heroku-cli/schema'
-import * as readline from 'readline'
-import {Client} from 'ssh2'
-import Parser = require('redis-parser')
-import type {Writable} from 'node:stream'
-import portfinder = require('portfinder')
-import confirmCommand from '../../lib/confirmCommand'
-import * as tls from 'tls'
 import type {Socket} from 'node:net'
+import type {Writable} from 'node:stream'
 import type {Duplex} from 'stream'
-import {promisify} from 'node:util'
+
+import {APIClient, Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
+import {Args, ux} from '@oclif/core'
 import * as net from 'net'
-import type {RedisFormationResponse} from '../../lib/redis/api'
-import apiFactory from '../../lib/redis/api'
+import {promisify} from 'node:util'
+import portfinder from 'portfinder'
+import * as readline from 'readline'
+import Parser from 'redis-parser'
+import {Client} from 'ssh2'
+import * as tls from 'tls'
+
+import type {RedisFormationResponse} from '../../lib/redis/api.js'
+
+import ConfirmCommand from '../../lib/confirmCommand.js'
+import apiFactory from '../../lib/redis/api.js'
 
 const REPLY_OK = 'OK'
 
 async function redisCLI(uri: URL, client: Writable): Promise<void> {
   const io = readline.createInterface(process.stdin, process.stdout)
+  let state = 'connect'
   const reply = new Parser({
-    returnReply(reply) {
+    returnError(err: Error) {
+      console.log(err.message)
+      io.prompt()
+    }, returnFatalError(err: Error) {
+      client.emit('error', err)
+      console.dir(err)
+    }, returnReply(reply: unknown) {
       switch (state) {
-      case 'monitoring':
+      case 'monitoring': {
         if (reply !== REPLY_OK) {
           console.log(reply)
         }
 
         break
-      case 'subscriber':
+      }
+
+      case 'subscriber': {
         if (Array.isArray(reply)) {
-          reply.forEach(function (value, i) {
+          reply.forEach((value, i) => {
             console.log(`${i + 1}) ${value}`)
           })
         } else {
@@ -39,7 +50,9 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
         }
 
         break
-      case 'connect':
+      }
+
+      case 'connect': {
         if (reply !== REPLY_OK) {
           console.log(reply)
         }
@@ -47,15 +60,19 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
         state = 'normal'
         io.prompt()
         break
-      case 'closing':
+      }
+
+      case 'closing': {
         if (reply !== REPLY_OK) {
           console.log(reply)
         }
 
         break
-      default:
+      }
+
+      default: {
         if (Array.isArray(reply)) {
-          reply.forEach(function (value, i) {
+          reply.forEach((value, i) => {
             console.log(`${i + 1}) ${value}`)
           })
         } else {
@@ -65,40 +82,37 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
         io.prompt()
         break
       }
-    }, returnError(err) {
-      console.log(err.message)
-      io.prompt()
-    }, returnFatalError(err) {
-      client.emit('error', err)
-      console.dir(err)
+      }
     },
   })
-  let state = 'connect'
   client.write(`AUTH ${uri.password}\n`)
   io.setPrompt(uri.host + '> ')
-  io.on('line', function (line) {
+  io.on('line', line => {
     switch (line.split(' ')[0]) {
-    case 'MONITOR':
+    case 'MONITOR': {
       state = 'monitoring'
       break
+    }
+
     case 'PSUBSCRIBE':
-    case 'SUBSCRIBE':
+    case 'SUBSCRIBE': {
       state = 'subscriber'
       break
+    }
     }
 
     client.write(`${line}\n`)
   })
-  io.on('close', function () {
+  io.on('close', () => {
     state = 'closing'
     client.write('QUIT\n')
   })
-  client.on('data', function (data) {
+  client.on('data', (data: Buffer) => {
     reply.execute(data)
   })
   return new Promise((resolve, reject) => {
     client.on('error', reject)
-    client.on('end', function () {
+    client.on('end', () => {
       console.log('\nDisconnected from instance.')
       io.close()
       resolve()
@@ -112,8 +126,8 @@ async function bastionConnect(uri: URL, bastions: string, config: Record<string,
     ssh2.once('ready', () => resolve(ssh2))
     ssh2.connect({
       host: bastions.split(',')[0],
-      username: 'bastion',
       privateKey: match(config, /_BASTION_KEY/) ?? '',
+      username: 'bastion',
     })
   })
   const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
@@ -122,10 +136,10 @@ async function bastionConnect(uri: URL, bastions: string, config: Record<string,
   let client: Duplex = stream
   if (preferNativeTls) {
     client = tls.connect({
-      socket: stream as Socket,
-      port: Number.parseInt(uri.port, 10),
       host: uri.hostname,
+      port: Number.parseInt(uri.port, 10),
       rejectUnauthorized: false,
+      socket: stream as Socket,
     })
   }
 
@@ -135,7 +149,7 @@ async function bastionConnect(uri: URL, bastions: string, config: Record<string,
   return redisCLI(uri, client)
 }
 
-function match(config: Record<string, unknown>, lookup: RegExp): string | null {
+function match(config: Record<string, unknown>, lookup: RegExp): null | string {
   for (const key in config) {
     if (lookup.test(key)) {
       return config[key] as string
@@ -155,16 +169,16 @@ async function maybeTunnel(redis: RedisFormationResponse, config: Record<string,
     return bastionConnect(uri, bastions, config, preferNativeTls)
   }
 
-  let client
+  let client: net.Socket | tls.TLSSocket
   if (preferNativeTls) {
     client = tls.connect({
-      port: Number.parseInt(uri.port, 10), host: uri.hostname, rejectUnauthorized: false,
+      host: uri.hostname, port: Number.parseInt(uri.port, 10), rejectUnauthorized: false,
     })
   } else if (hobby) {
-    client = net.connect({port: Number.parseInt(uri.port, 10), host: uri.hostname})
+    client = net.connect({host: uri.hostname, port: Number.parseInt(uri.port, 10)})
   } else {
     client = tls.connect({
-      port: Number.parseInt(uri.port, 10) + 1, host: uri.hostname, rejectUnauthorized: false,
+      host: uri.hostname, port: Number.parseInt(uri.port, 10) + 1, rejectUnauthorized: false,
     })
   }
 
@@ -172,25 +186,26 @@ async function maybeTunnel(redis: RedisFormationResponse, config: Record<string,
 }
 
 export default class Cli extends Command {
-  static topic = 'redis'
-  static description = 'opens a redis prompt'
-  static flags = {
-    confirm: flags.string({char: 'c'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', ignoreStdin: true}),
   }
 
+  static description = 'opens a redis prompt'
   static examples = [
     '$ heroku redis:cli --app=my-app my-database',
     '$ heroku redis:cli --app=my-app --confirm my-database',
   ]
 
+  static flags = {
+    app: flags.app({required: true}),
+    confirm: flags.string({char: 'c'}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'redis'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Cli)
+    const {args, flags} = await this.parse(Cli)
     const api = apiFactory(flags.app, args.database, false, this.heroku)
     const addon = await api.getRedisAddon()
     const configVars = await getRedisConfigVars(addon, this.heroku)
@@ -200,17 +215,15 @@ export default class Cli extends Command {
     }
 
     const hobby = redis.plan.indexOf('hobby') === 0
-    const prefer_native_tls = redis.prefer_native_tls
+    const {prefer_native_tls} = redis
     if (!prefer_native_tls && hobby) {
-      await confirmCommand(flags.app, flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
+      await new ConfirmCommand().confirm(flags.app, flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
     }
 
     const nonBastionVars = Object.keys(configVars)
-      .filter(function (configVar) {
-        return !(/(?:BASTIONS|BASTION_KEY|BASTION_REKEYS_AFTER)$/.test(configVar))
-      })
+      .filter(configVar => !(/(?:BASTIONS|BASTION_KEY|BASTION_REKEYS_AFTER)$/.test(configVar)))
       .join(', ')
-    ux.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
+    this.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
     return maybeTunnel(redis, configVars)
   }
 }
@@ -223,4 +236,3 @@ async function getRedisConfigVars(addon: Required<Heroku.AddOn>, heroku: APIClie
   })
   return redisConfigVars
 }
-*/

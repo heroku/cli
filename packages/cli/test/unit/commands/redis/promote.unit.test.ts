@@ -1,6 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
+
 // import Cmd from '../../../../src/commands/redis/promote'
 import runCommand from '../../../helpers/runCommand.js'
 

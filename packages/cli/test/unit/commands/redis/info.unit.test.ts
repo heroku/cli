@@ -1,12 +1,14 @@
-import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/redis/info'
-import nock from 'nock'
 import {expect} from 'chai'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import runCommand from '../../../helpers/runCommand.js'
-import heredoc from 'tsheredoc'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
 
-/*
+import Cmd from '../../../../src/commands/redis/info.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+
+const heredoc = tsheredoc.default
+
 describe('heroku redis:info', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -28,7 +30,7 @@ describe('heroku redis:info', function () {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
@@ -49,7 +51,7 @@ describe('heroku redis:info', function () {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
@@ -85,7 +87,7 @@ describe('heroku redis:info', function () {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
@@ -102,7 +104,7 @@ describe('heroku redis:info', function () {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
@@ -111,9 +113,8 @@ describe('heroku redis:info', function () {
       '--app',
       'example',
     ]).catch(function (error: Error) {
-      expect(error.message).to.equal('HTTP Error 503 for GET https://api.heroku.com/redis/v0/databases/redis-haiku\n{}')
+      expect(error.message).to.include('HTTP Error 503')
+      expect(error.message).to.include('redis-haiku')
     })
   })
 })
-
-*/

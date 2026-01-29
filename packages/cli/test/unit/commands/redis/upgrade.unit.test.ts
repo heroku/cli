@@ -1,12 +1,13 @@
-import {stdout, stderr} from 'stdout-stderr'
+import ansis from 'ansis'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+import heredoc from 'tsheredoc'
+
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 // import Cmd from '../../../../src/commands/redis/upgrade'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import heredoc from 'tsheredoc'
-import ansis from 'ansis'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
 /*
 describe('heroku redis:upgrade', function () {

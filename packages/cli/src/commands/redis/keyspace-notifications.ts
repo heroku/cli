@@ -1,12 +1,16 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import redisApi, {RedisFormationConfigResponse} from '../../lib/redis/api'
-import heredoc from 'tsheredoc'
-import {ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
+import redisApi, {RedisFormationConfigResponse} from '../../lib/redis/api.js'
+
+const heredoc = tsheredoc.default
 
 export default class KeyspaceNotifications extends Command {
-  static topic = 'redis'
+  static args = {
+    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
+  }
+
   static description = heredoc`
     set the keyspace notifications configuration
     Set the configuration to enable keyspace notification events:
@@ -29,16 +33,14 @@ export default class KeyspaceNotifications extends Command {
 
   static flags = {
     app: flags.app({required: true}),
+    config: flags.string({char: 'c', description: 'set keyspace notifications configuration', required: true}),
     remote: flags.remote(),
-    config: flags.string({char: 'c', description: 'set keyspace notifications configuration', hasValue: true, required: true}),
   }
 
-  static args = {
-    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
-  }
+  static topic = 'redis'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(KeyspaceNotifications)
+    const {args, flags} = await this.parse(KeyspaceNotifications)
     const {app, config} = flags
     const {database} = args
     const api = redisApi(app, database, false, this.heroku)
@@ -48,7 +50,6 @@ export default class KeyspaceNotifications extends Command {
     const {body: updated_config} = await api.request<RedisFormationConfigResponse>(
       `/redis/v0/databases/${addon.name}/config`, 'PATCH', {notify_keyspace_events: config},
     )
-    ux.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${updated_config.notify_keyspace_events.value}'.`)
+    this.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${updated_config.notify_keyspace_events.value}'.`)
   }
 }
-*/
