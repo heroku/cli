@@ -1,4 +1,5 @@
-import {stderr, stdout} from 'stdout-stderr'
+import ansis from 'ansis'
+import {stderr} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/pg/promote.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
@@ -6,7 +7,6 @@ import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import stripAnsi from 'strip-ansi'
 
 const heredoc = tsheredoc.default
 
@@ -243,7 +243,7 @@ describe('pg:promote when argument is database', function () {
       'myapp',
       'DATABASE',
     ]).catch((error: Error) => {
-      expect(stripAnsi(error.message)).to.equal(err)
+      expect(ansis.strip(error.message)).to.equal(err)
     })
   })
 
@@ -524,7 +524,7 @@ describe('pg:promote when argument is a credential attachment', function () {
       'DATABASE',
     ])
       .catch((error: Error) => {
-        expect(stripAnsi(error.message)).to.equal(err)
+        expect(ansis.strip(error.message)).to.equal(err)
       })
   })
 })
@@ -725,7 +725,7 @@ describe('pg:promote when database is not available or force flag is present', f
       'myapp',
       'DATABASE',
     ]).catch((error: Error) => {
-      expect(stripAnsi(error.message)).to.equal(err)
+      expect(ansis.strip(error.message)).to.equal(err)
     })
   })
 

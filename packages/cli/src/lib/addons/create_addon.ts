@@ -66,7 +66,8 @@ export default async function (
       ux.stdout(formatConfigVarsMessage(addon))
     } else {
       ux.stdout(`${color.addon(addon.name || '')} is being created in the background. The app will restart when complete...`)
-      if (utils.pg.isAdvancedDatabase(addon))
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (utils.pg.isAdvancedDatabase(addon as any))
         ux.stdout(`Run ${color.code('heroku data:pg:info ' + addon.name + ' -a ' + addon.app!.name)} to check creation progress.`)
       else
         ux.stdout(`Run ${color.code('heroku addons:info ' + addon.name)} to check creation progress.`)

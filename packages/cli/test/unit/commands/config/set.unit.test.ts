@@ -1,7 +1,7 @@
 import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import stripAnsi from 'strip-ansi'
 
 describe('config:set', function () {
   let api: nock.Scope
@@ -53,7 +53,7 @@ describe('config:set', function () {
   it('errors with invalid args', async function () {
     const {error} = await runCommand(['config:set', '--app', 'myapp', 'WRONG'])
 
-    expect(stripAnsi(error?.message || '')).to.equal('WRONG is invalid. Must be in the format FOO=bar.')
+    expect(ansis.strip(error?.message || '')).to.equal('WRONG is invalid. Must be in the format FOO=bar.')
     expect(error?.oclif?.exit).to.equal(1)
   })
 })

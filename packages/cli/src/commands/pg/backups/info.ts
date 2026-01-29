@@ -48,7 +48,7 @@ export default class Info extends Command {
 
   displayBackup = (backup: BackupTransfer, app: string) => {
     const pgbackups = pgBackupsApi(app, this.heroku)
-    hux.styledHeader(`Backup ${color.cyan(pgbackups.name(backup))}`)
+    hux.styledHeader(`Backup ${color.name(pgbackups.name(backup))}`)
     /* eslint-disable perfectionist/sort-objects */
     hux.styledObject({
       Database: color.datastore(backup.from_name),
@@ -82,7 +82,7 @@ export default class Info extends Command {
       const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
       const lastBackup = backups.pop()
       if (!lastBackup)
-        throw new Error(`No backups. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+        throw new Error(`No backups. Capture one with ${color.code('heroku pg:backups:capture')}`)
       backupID = lastBackup.num
     }
 

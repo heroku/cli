@@ -45,11 +45,11 @@ async function createApp(context: Interfaces.ParserOutput, heroku: APIClient, na
 
   let status = name ? 'done' : `done, ${color.app(app.name || '')}`
   if (flags.region) {
-    status += `, region is ${color.yellow(app.region?.name || '')}`
+    status += `, region is ${color.info(app.region?.name || '')}`
   }
 
   if (stack) {
-    status += `, stack is ${color.yellow(app.stack?.name || '')}`
+    status += `, stack is ${color.info(app.stack?.name || '')}`
   }
 
   ux.action.stop(status)
@@ -99,7 +99,7 @@ function printAppSummary(context: Interfaces.ParserOutput, app: Heroku.App, remo
   if (context.flags.json) {
     hux.styledJSON(app)
   } else {
-    ux.stdout(`${color.cyan(app.web_url || '')} | ${color.green(remoteUrl)}`)
+    ux.stdout(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
   }
 }
 
@@ -112,7 +112,7 @@ async function runFromFlags(context: Interfaces.ParserOutput, heroku: APIClient,
   const name = flags.app || args.app || process.env.HEROKU_APP
 
   async function addBuildpack(app: Heroku.App, buildpack: string) {
-    ux.action.start(`Setting buildpack to ${color.cyan(buildpack)}`)
+    ux.action.start(`Setting buildpack to ${color.info(buildpack)}`)
     await heroku.put(`/apps/${app.name}/buildpack-installations`, {
       body: {updates: [{buildpack}]},
       headers: {Range: ''},

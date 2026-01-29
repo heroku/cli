@@ -1,3 +1,4 @@
+import ansis from 'ansis'
 import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -6,7 +7,6 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import * as sinon from 'sinon'
-import stripAnsi from 'strip-ansi'
 import {hux} from '@heroku/heroku-cli-util'
 
 const heredoc = tsheredoc.default
@@ -144,8 +144,8 @@ describe('pg:credentials:rotate', function () {
         '--all',
       ])
 
-      expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-      expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+      expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+      expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
     })
 
     it('requires app confirmation for rotating all roles with --all and --force', async function () {
@@ -163,8 +163,8 @@ describe('pg:credentials:rotate', function () {
         '--all',
         '--force',
       ])
-      expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-      expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+      expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+      expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
     })
 
     it('requires app confirmation for rotating a specific role with --name', async function () {
@@ -181,8 +181,8 @@ describe('pg:credentials:rotate', function () {
         '--name',
         'my_role',
       ])
-      expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-      expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+      expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+      expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
     })
 
     it('requires app confirmation for force rotating a specific role with --name and --force', async function () {
@@ -202,8 +202,8 @@ describe('pg:credentials:rotate', function () {
         'my_role',
         '--force',
       ])
-      expect(stripAnsi(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
-      expect(stripAnsi(uxWarnStub.args[0].toString())).to.eq(message)
+      expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
+      expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
     })
   })
 

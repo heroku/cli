@@ -1,7 +1,7 @@
 import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import stripAnsi from 'strip-ansi'
 
 describe('features:disable',  function () {
   let api: nock.Scope
@@ -37,6 +37,6 @@ describe('features:disable',  function () {
 
     const {error} = await runCommand(['features:disable', '-a', 'myapp', 'feature-a'])
 
-    expect(stripAnsi(error?.message || '')).to.equal('feature-a is already disabled.')
+    expect(ansis.strip(error?.message || '')).to.equal('feature-a is already disabled.')
   })
 })
