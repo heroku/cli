@@ -7,9 +7,8 @@ import {
   utils,
 } from '@heroku/heroku-cli-util'
 
-import type {CredentialsInfo} from './types.js'
-
 import {renderAttachment} from '../../commands/addons/index.js'
+import {type CredentialInfo, type NonAdvancedCredentialInfo, isAdvancedCredentialInfo} from '../../lib/data/types.js'
 import {multiSortCompareFn} from '../utils/multisort.js'
 
 export function essentialPlan(addon: pg.ExtendedAddon | pg.ExtendedAddonAttachment['addon']) {
@@ -20,7 +19,7 @@ export function formatResponseWithCommands(response: string): string {
   return response.replaceAll(/`(.*?)`/g, (_, word) => color.code(word))
 }
 
-export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialsInfo, cred: string) {
+export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialInfo[], cred: string) {
   const isForeignApp = (attOrAddon: Required<AddOnAttachment>) => attOrAddon.app.name === app ? 0 : 1
   const comparators = [
     (a: Required<AddOnAttachment>, b: Required<AddOnAttachment>) => {
@@ -38,8 +37,13 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
     return renderAttachment(attachment, app, isLast)
   })
 
+  // We would use utils.pg.isAdvancedDatabase from @heroku/heroku-cli-util, but we're not passing the add-on as a parameter.
+  if (credentials.length > 0 && isAdvancedCredentialInfo(credentials[0])) {
+    return [cred, ...attLines].join('\n')
+  }
+
   const rotationLines = []
-  const credentialStore = credentials.find(a => a.name === cred)
+  const credentialStore = credentials.find(a => a.name === cred) as NonAdvancedCredentialInfo | undefined
   if (credentialStore?.state === 'rotating') {
     const formatted = credentialStore?.credentials.map(credential => ({
       connections: credential.connections,

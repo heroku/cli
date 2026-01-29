@@ -5,8 +5,6 @@ import printf from 'printf'
 
 import ConfirmCommand from '../confirmCommand.js'
 
-const confirmCommand = new ConfirmCommand()
-
 export const trapConfirmationRequired = async <T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) => {
   try {
     return await fn(confirm)
@@ -15,7 +13,7 @@ export const trapConfirmationRequired = async <T> (app: string, confirm: string 
       throw error
     }
 
-    await confirmCommand.confirm(app, confirm, error.body.message)
+    await new ConfirmCommand().confirm(app, confirm, error.body.message)
     return fn(app)
   }
 }

@@ -4,7 +4,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 import {URL} from 'url'
 
-import type {CredentialInfo} from '../../../lib/pg/types.js'
+import type {NonAdvancedCredentialInfo} from '../../../lib/data/types.js'
 
 import {nls} from '../../../nls.js'
 
@@ -38,7 +38,7 @@ export default class Url extends Command {
       ux.error('Legacy Essential-tier databases do not support named credentials.')
     }
 
-    const {body: credInfo} = await this.heroku.get<CredentialInfo>(
+    const {body: credInfo} = await this.heroku.get<NonAdvancedCredentialInfo>(
       `/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`,
       {
         headers: {
@@ -52,11 +52,9 @@ export default class Url extends Command {
       ux.error(`Could not find any active credentials for ${name}`, {exit: 1})
     }
 
-    const creds = Object.assign({}, db, {
-      database: credInfo.database, host: credInfo.host, port: credInfo.port,
-    }, {
-      user: activeCreds?.user, password: activeCreds?.password,
-    })
+    const creds = {
+      ...db, database: credInfo.database, host: credInfo.host, password: activeCreds?.password, port: credInfo.port, user: activeCreds?.user,
+    }
     const connUrl = new URL(`postgres://${creds.host}/${creds.database}`)
     connUrl.port = creds.port.toString()
     if (creds.user && creds.password) {
