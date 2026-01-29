@@ -1,12 +1,10 @@
-/* eslint-disable no-bitwise */
-export type Comparator = Parameters<typeof Array.prototype.sort>[0]
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Comparator = (a: any, b: any) => number
+
 /**
- * The multiSortCompareFn function is used to
- * build a single comparator function for use
- * in Array.sort when multiple sort criteria
- * is needed on an object type. The indices of
- * specified array of SortCriteria indicate the
- * precedence of each comparator.
+ * The multiSortCompareFn function is used to build a single comparator function for use
+ * in Array.sort when multiple sort criteria is needed on an object type. The indices of
+ * specified array of SortCriteria indicates the precedence of each comparator.
  *
  * @example
  * ```ts
@@ -30,39 +28,16 @@ export type Comparator = Parameters<typeof Array.prototype.sort>[0]
  * @param comparators The array of Comparators whose indices indicate sort precedence
  * @returns Comparator
  */
+
 export function multiSortCompareFn(comparators: Comparator[]): Comparator {
-  // Typical bitmask strategy whereas the most
-  // significant bit represents the comparator
-  // result in the zero index and thus has the
-  // highest precedence. The bit length
-  // is determined by the number of comparators
-  // and the positional notation mirrors the
-  // comparator indices.
-  // There is a 32 bit limit in total. 2 bits
-  // are used for 1. the bitLength and 2. the two's
-  // compliment signed bit. This means we have a
-  // limit of 30 comparators max.
-  return (a: unknown, b: unknown): -1 | 0 | 1 => {
-    const bitLen = comparators.length - 1
-    let bitA = 0
-    let bitB = 0
-    for (const [i, comparator] of comparators.entries()) {
-      const priority = 1 << (bitLen - i)
-      const score = comparator?.(a, b)
-      if (score === -1) {
-        bitA |= priority
-      }
-
-      if (score === 1) {
-        bitB |= priority
-      }
-
-      if (bitA !== bitB) {
-        break
+  return (a, b): number => {
+    for (const comparator of comparators) {
+      const comparison = comparator(a, b)
+      if (comparison !== 0) {
+        return comparison
       }
     }
 
-    return bitA > bitB ? -1 : (bitA < bitB ? 1 : 0)
+    return 0
   }
 }
-
