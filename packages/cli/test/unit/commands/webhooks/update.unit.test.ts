@@ -16,7 +16,7 @@ describe('webhooks:update', function () {
     nock.cleanAll()
   })
 
-  it.skip('updates app webhooks', async function () {
+  it('updates app webhooks', async function () {
     api
       .patch('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999', {
         include: ['foo', 'bar'],
@@ -45,7 +45,7 @@ describe('webhooks:update', function () {
     expect(unwrap(stderr)).to.contain('Updating webhook 99999999-9999-9999-9999-999999999999 for ⬢ example-app... done\n')
   })
 
-  it.skip('updates pipelines webhooks', async function () {
+  it('updates pipelines webhooks', async function () {
     api
       .patch('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999', {
         include: ['foo', 'bar'],

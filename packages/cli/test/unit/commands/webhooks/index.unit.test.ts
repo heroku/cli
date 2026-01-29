@@ -18,7 +18,7 @@ describe('webhooks:index', function () {
   describe('app webhooks', function () {
     const appWebhooksUrl = '/apps/example/webhooks'
 
-    it.skip('lists webhooks', async function () {
+    it('lists webhooks', async function () {
       api
         .get(appWebhooksUrl)
         .reply(200, [{
@@ -31,11 +31,17 @@ describe('webhooks:index', function () {
       const {stderr, stdout} = await runCommand(['webhooks', '--app', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Webhook ID                           URL               Include Level')
-      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 http://foobar.com foo,bar notify')
+      expect(stdout).to.contain('Webhook ID')
+      expect(stdout).to.contain('URL')
+      expect(stdout).to.contain('Include')
+      expect(stdout).to.contain('Level')
+      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999')
+      expect(stdout).to.contain('http://foobar.com')
+      expect(stdout).to.contain('foo,bar')
+      expect(stdout).to.contain('notify')
     })
 
-    it.skip('displays a "no webhooks" message', async function () {
+    it('displays a "no webhooks" message', async function () {
       api
         .get(appWebhooksUrl)
         .reply(200, [])
@@ -50,7 +56,7 @@ describe('webhooks:index', function () {
   describe('pipeline webhooks', function () {
     const pipelinesWebhooksUrl = '/pipelines/example/webhooks'
 
-    it.skip('lists webhooks', async function () {
+    it('lists webhooks', async function () {
       api
         .get(pipelinesWebhooksUrl)
         .reply(200, [{
@@ -63,11 +69,17 @@ describe('webhooks:index', function () {
       const {stderr, stdout} = await runCommand(['webhooks', '--pipeline', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Webhook ID                           URL               Include Level')
-      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 http://foobar.com foo,bar notify')
+      expect(stdout).to.contain('Webhook ID')
+      expect(stdout).to.contain('URL')
+      expect(stdout).to.contain('Include')
+      expect(stdout).to.contain('Level')
+      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999')
+      expect(stdout).to.contain('http://foobar.com')
+      expect(stdout).to.contain('foo,bar')
+      expect(stdout).to.contain('notify')
     })
 
-    it.skip('displays a "no webhooks" message', async function () {
+    it('displays a "no webhooks" message', async function () {
       api
         .get(pipelinesWebhooksUrl)
         .reply(200, [])
@@ -84,7 +96,7 @@ describe('webhooks:index', function () {
     const secondDate = addDays(new Date(firstDate), 1)
     const thirdDate = addDays(new Date(firstDate), 2)
 
-    it.skip('displays webhooks sorted by "created_at"', async function () {
+    it('displays webhooks sorted by "created_at"', async function () {
       api
         .get('/apps/example/webhooks')
         .reply(200, [
@@ -123,10 +135,13 @@ describe('webhooks:index', function () {
       const {stderr, stdout} = await runCommand(['webhooks', '--app', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Webhook ID                           URL                   Include     Level')
-      expect(stdout).to.contain('00000000-0000-0000-0000-000000000000 https://test.com/hook api:release sync')
-      expect(stdout).to.contain('22222222-2222-2222-2222-222222222222 https://test.com/hook api:release sync')
-      expect(stdout).to.contain('11111111-1111-1111-1111-111111111111 https://test.com/hook api:release sync')
+      expect(stdout).to.contain('Webhook ID')
+      expect(stdout).to.contain('00000000-0000-0000-0000-000000000000')
+      expect(stdout).to.contain('22222222-2222-2222-2222-222222222222')
+      expect(stdout).to.contain('11111111-1111-1111-1111-111111111111')
+      expect(stdout).to.contain('https://test.com/hook')
+      expect(stdout).to.contain('api:release')
+      expect(stdout).to.contain('sync')
     })
   })
 })

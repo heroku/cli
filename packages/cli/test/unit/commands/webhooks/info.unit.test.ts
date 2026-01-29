@@ -14,7 +14,7 @@ describe('webhooks:info', function () {
     nock.cleanAll()
   })
 
-  it.skip('displays info for a given app webhook', async function () {
+  it('displays info for a given app webhook', async function () {
     api
       .get('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {
@@ -34,7 +34,7 @@ describe('webhooks:info', function () {
     expect(stdout).to.contain('Webhook ID: 99999999-9999-9999-9999-999999999999')
   })
 
-  it.skip('displays info for a given pipeline webhook', async function () {
+  it('displays info for a given pipeline webhook', async function () {
     api
       .get('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {

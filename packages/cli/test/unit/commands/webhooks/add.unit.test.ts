@@ -16,7 +16,7 @@ describe('webhooks:add', function () {
     nock.cleanAll()
   })
 
-  it.skip('adds a specific app webhook', async function () {
+  it('adds a specific app webhook', async function () {
     api
       .post('/apps/example-app/webhooks', {
         include: ['foo', 'bar'],
@@ -44,7 +44,7 @@ describe('webhooks:add', function () {
     expect(unwrap(stderr)).to.include('Adding webhook to ⬢ example-app... done')
   })
 
-  it.skip('adds a specific pipeline webhook', async function () {
+  it('adds a specific pipeline webhook', async function () {
     api
       .post('/pipelines/example-pipeline/webhooks', {
         include: ['foo', 'bar'],
@@ -72,7 +72,7 @@ describe('webhooks:add', function () {
     expect(unwrap(stderr)).to.contain('Adding webhook to example-pipeline... done\n')
   })
 
-  it.skip('adds a specific pipeline webhook with secret in header', async function () {
+  it('adds a specific pipeline webhook with secret in header', async function () {
     api
       .post('/pipelines/example-pipeline/webhooks', {
         include: ['foo', 'bar'],

@@ -16,7 +16,7 @@ describe('webhooks:remove', function () {
     nock.cleanAll()
   })
 
-  it.skip('removes the specified app webhook', async function () {
+  it('removes the specified app webhook', async function () {
     api
       .delete('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {})
@@ -27,7 +27,7 @@ describe('webhooks:remove', function () {
     expect(unwrap(stderr)).to.contain('Removing webhook 99999999-9999-9999-9999-999999999999 from ⬢ example-app... done\n')
   })
 
-  it.skip('removes the specified pipeline webhook', async function () {
+  it('removes the specified pipeline webhook', async function () {
     api
       .delete('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {})
