@@ -10,7 +10,7 @@ import {
   presentCredentialAttachments,
 } from '../../../../src/lib/pg/util.js'
 
-describe.only('util', function () {
+describe('util', function () {
   describe('formatResponseWithCommands', function () {
     it('formats commands in backticks', function () {
       const input = 'Run `heroku pg:info` to see details'

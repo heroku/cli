@@ -1,13 +1,14 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
-import heredoc from 'tsheredoc'
-import {nls} from '../../nls'
+import tsheredoc from 'tsheredoc'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class VacuumStats extends Command {
-  static topic = 'pg';
-  static description = 'show dead rows and whether an automatic vacuum is expected to be triggered';
+  static topic = 'pg'
+  static description = 'show dead rows and whether an automatic vacuum is expected to be triggered'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -63,7 +64,6 @@ export default class VacuumStats extends Command {
       ORDER BY 1
     `)
     const output = await psqlService.execQuery(query)
-    ux.log(output)
+    ux.stdout(output)
   }
 }
-*/
