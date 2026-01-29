@@ -1,10 +1,12 @@
+import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {color, utils} from '@heroku/heroku-cli-util'
+
+import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
+import type {BackupTransfer} from '../../lib/pg/types.js'
 
 import ConfirmCommand from '../../lib/confirmCommand.js'
-import type {BackupTransfer, CredentialsInfo} from '../../lib/pg/types.js'
 import backupsFactory from '../../lib/pg/backups.js'
 
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
@@ -14,9 +16,9 @@ const getAttachmentInfo = async function (heroku: APIClient, db: string, app: st
     const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(db)
     const host = `${conn.host}:${conn.port}`
     return {
+      confirm: conn.database || conn.host,
       name: conn.database ? `database ${conn.database} on ${host}` : `database on ${host}`,
       url: db,
-      confirm: conn.database || conn.host,
     }
   }
 
@@ -29,37 +31,39 @@ const getAttachmentInfo = async function (heroku: APIClient, db: string, app: st
   const formattedConfig = Object.fromEntries(Object.entries(config).map(([k, v]) => [k.toUpperCase(), v]))
 
   return {
-    name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '')
-      .replace(/_URL$/, ''),
-    url: formattedConfig[attachment.name.toUpperCase() + '_URL'],
     attachment: {
       ...attachment,
       addon,
     },
     confirm: app,
+    name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '')
+      .replace(/_URL$/, ''),
+    url: formattedConfig[attachment.name.toUpperCase() + '_URL'],
   }
 }
 
 export default class Copy extends Command {
-  static description = 'copy all data from source db to target'
-  static help = 'at least one of the databases must be a Heroku PostgreSQL DB'
-  static topic = 'pg'
   static args = {
-    source: Args.string({required: true, description: 'config var exposed to the owning app containing the source database URL'}),
-    target: Args.string({required: true, description: 'config var exposed to the owning app containing the target database URL'}),
+    source: Args.string({description: 'config var exposed to the owning app containing the source database URL', required: true}),
+    target: Args.string({description: 'config var exposed to the owning app containing the target database URL', required: true}),
   }
 
+  static description = 'copy all data from source db to target'
   static flags = {
-    'wait-interval': flags.string(),
-    verbose: flags.boolean(),
-    confirm: flags.string(),
     app: flags.app({required: true}),
+    confirm: flags.string(),
     remote: flags.remote(),
+    verbose: flags.boolean(),
+    'wait-interval': flags.string(),
   }
+
+  static help = 'at least one of the databases must be a Heroku PostgreSQL DB'
+
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Copy)
-    const {'wait-interval': waitInterval, verbose, confirm, app} = flags
+    const {args, flags} = await this.parse(Copy)
+    const {app, confirm, verbose, 'wait-interval': waitInterval} = flags
     const pgbackups = backupsFactory(app, this.heroku)
     const interval = Math.max(3, Number.parseInt(waitInterval || '0', 10)) || 3
 
@@ -83,13 +87,13 @@ export default class Copy extends Command {
     ux.action.stop()
 
     if (source.attachment) {
-      const {body: credentials} = await this.heroku.get<CredentialsInfo>(
+      const {body: credentials} = await this.heroku.get<NonAdvancedCredentialInfo[]>(
         `/postgres/v0/databases/${source.attachment.addon.name}/credentials`,
         {
-          hostname: utils.pg.host(),
           headers: {
             Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
           },
+          hostname: utils.pg.host(),
         })
       if (credentials.length > 1) {
         ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
