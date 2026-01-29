@@ -120,35 +120,6 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
   })
 }
 
-async function bastionConnect(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean) {
-  const tunnel: Client = await new Promise(resolve => {
-    const ssh2 = new Client()
-    ssh2.once('ready', () => resolve(ssh2))
-    ssh2.connect({
-      host: bastions.split(',')[0],
-      privateKey: match(config, /_BASTION_KEY/) ?? '',
-      username: 'bastion',
-    })
-  })
-  const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
-  const stream: Duplex = await promisify(tunnel.forwardOut.bind(tunnel))('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
-
-  let client: Duplex = stream
-  if (preferNativeTls) {
-    client = tls.connect({
-      host: uri.hostname,
-      port: Number.parseInt(uri.port, 10),
-      rejectUnauthorized: false,
-      socket: stream as Socket,
-    })
-  }
-
-  stream.on('close', () => tunnel.end())
-  stream.on('end', () => client.end())
-
-  return redisCLI(uri, client)
-}
-
 function match(config: Record<string, unknown>, lookup: RegExp): null | string {
   for (const key in config) {
     if (lookup.test(key)) {
@@ -157,32 +128,6 @@ function match(config: Record<string, unknown>, lookup: RegExp): null | string {
   }
 
   return null
-}
-
-async function maybeTunnel(redis: RedisFormationResponse, config: Record<string, unknown>) {
-  const bastions = match(config, /_BASTIONS/)
-  const hobby = redis.plan.indexOf('hobby') === 0
-  const preferNativeTls = redis.prefer_native_tls
-  const uri = preferNativeTls && hobby ? new URL(match(config, /_TLS_URL/) ?? '') : new URL(redis.resource_url)
-
-  if (bastions !== null) {
-    return bastionConnect(uri, bastions, config, preferNativeTls)
-  }
-
-  let client: net.Socket | tls.TLSSocket
-  if (preferNativeTls) {
-    client = tls.connect({
-      host: uri.hostname, port: Number.parseInt(uri.port, 10), rejectUnauthorized: false,
-    })
-  } else if (hobby) {
-    client = net.connect({host: uri.hostname, port: Number.parseInt(uri.port, 10)})
-  } else {
-    client = tls.connect({
-      host: uri.hostname, port: Number.parseInt(uri.port, 10) + 1, rejectUnauthorized: false,
-    })
-  }
-
-  return redisCLI(uri, client)
 }
 
 export default class Cli extends Command {
@@ -204,6 +149,46 @@ export default class Cli extends Command {
 
   static topic = 'redis'
 
+  protected async createBastionConnection(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean): Promise<Duplex> {
+    const tunnel: Client = await new Promise(resolve => {
+      const ssh2 = new Client()
+      ssh2.once('ready', () => resolve(ssh2))
+      ssh2.connect({
+        host: bastions.split(',')[0],
+        privateKey: match(config, /_BASTION_KEY/) ?? '',
+        username: 'bastion',
+      })
+    })
+    const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
+    const stream: Duplex = await promisify(tunnel.forwardOut.bind(tunnel))('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
+
+    let client: Duplex = stream
+    if (preferNativeTls) {
+      client = tls.connect({
+        host: uri.hostname,
+        port: Number.parseInt(uri.port, 10),
+        rejectUnauthorized: false,
+        socket: stream as Socket,
+      })
+    }
+
+    stream.on('close', () => tunnel.end())
+    stream.on('end', () => client.end())
+
+    return client
+  }
+
+  protected createDirectConnection(uri: URL, options: {portOffset?: number, useTls: boolean}): net.Socket | tls.TLSSocket {
+    const port = Number.parseInt(uri.port, 10) + (options.portOffset ?? 0)
+    if (options.useTls) {
+      return tls.connect({
+        host: uri.hostname, port, rejectUnauthorized: false,
+      })
+    }
+
+    return net.connect({host: uri.hostname, port})
+  }
+
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Cli)
     const api = apiFactory(flags.app, args.database, false, this.heroku)
@@ -224,7 +209,24 @@ export default class Cli extends Command {
       .filter(configVar => !(/(?:BASTIONS|BASTION_KEY|BASTION_REKEYS_AFTER)$/.test(configVar)))
       .join(', ')
     this.log(`Connecting to ${addon.name} (${nonBastionVars}):`)
-    return maybeTunnel(redis, configVars)
+    return this.maybeTunnel(redis, configVars)
+  }
+
+  private async maybeTunnel(redis: RedisFormationResponse, config: Record<string, unknown>) {
+    const bastions = match(config, /_BASTIONS/)
+    const hobby = redis.plan.indexOf('hobby') === 0
+    const preferNativeTls = redis.prefer_native_tls
+    const uri = preferNativeTls && hobby ? new URL(match(config, /_TLS_URL/) ?? '') : new URL(redis.resource_url)
+
+    if (bastions !== null) {
+      const client = await this.createBastionConnection(uri, bastions, config, preferNativeTls)
+      return redisCLI(uri, client)
+    }
+
+    const useTls = preferNativeTls || !hobby
+    const portOffset = hobby ? undefined : 1
+    const client = this.createDirectConnection(uri, {portOffset, useTls})
+    return redisCLI(uri, client)
   }
 }
 
