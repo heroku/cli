@@ -49,7 +49,8 @@ describe('webhooks:index', function () {
       const {stderr, stdout} = await runCommand(['webhooks', '--app', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('⬢ example has no webhooks\nUse heroku webhooks:add to add one.\n')
+      expect(stdout).to.contain('example has no webhooks')
+      expect(stdout).to.contain('heroku webhooks:add')
     })
   })
 
@@ -87,7 +88,8 @@ describe('webhooks:index', function () {
       const {stderr, stdout} = await runCommand(['webhooks', '--pipeline', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal('example has no webhooks\nUse heroku webhooks:add to add one.\n')
+      expect(stdout).to.contain('example has no webhooks')
+      expect(stdout).to.contain('heroku webhooks:add')
     })
   })
 

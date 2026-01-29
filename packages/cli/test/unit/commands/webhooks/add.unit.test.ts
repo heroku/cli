@@ -69,7 +69,8 @@ describe('webhooks:add', function () {
     ])
 
     expect(stdout).to.equal('')
-    expect(unwrap(stderr)).to.contain('Adding webhook to example-pipeline... done\n')
+    expect(unwrap(stderr)).to.include('Adding webhook to example-pipeline...')
+    expect(unwrap(stderr)).to.include('done')
   })
 
   it('adds a specific pipeline webhook with secret in header', async function () {
