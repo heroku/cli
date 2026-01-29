@@ -10,5 +10,8 @@
   "skip": {
     "tag": true,
     "commit": true
+  },
+  "scripts": {
+    "postbump": "npm install --package-lock-only && cd packages/cli && npx oclif readme --multi && cd ../.. && git add package-lock.json packages/cli/README.md docs"
   }
 }

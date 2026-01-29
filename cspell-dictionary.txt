@@ -266,6 +266,7 @@ portfinder
 postdeploy
 postgis
 postpublish
+postbump
 postrelease
 postrun
 preauth
