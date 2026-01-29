@@ -1,15 +1,13 @@
+import * as Heroku from '@heroku-cli/schema'
+import ansis from 'ansis'
 import {expect} from 'chai'
-import lolex from 'lolex'
+import * as lolex from 'lolex'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/addons/destroy.js'
 import runCommand from '../../../helpers/runCommand.js'
-
-/* WARNING!!!! this file is a minefield because packages/cli/src/lib/addons/resolve.ts resolveAddon uses memoization
-* You MUST change requests to have different params, or they won't be made and nock will not be satisfied */
 
 describe('addons:destroy', function () {
   let api: nock.Scope
@@ -25,17 +23,25 @@ describe('addons:destroy', function () {
 
   context('when an add-on implements sync deprovisioning', function () {
     it('destroys the add-on synchronously', async function () {
-      const addon = {
-        addon_service: {name: 'heroku-db3'},
-        app: {id: 101, name: 'myapp'},
-        id: 201,
-        name: 'db3-swiftly-123',
+      const addon: Heroku.AddOn = {
+        addon_service: {name: 'heroku-postgresql'},
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp',
+        },
+        config_vars: ['DATABASE_URL'],
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'postgresql-swiftly-123',
+        plan: {
+          name: 'heroku-postgresql:standard-0',
+          price: {cents: 10000, unit: 'month'},
+        },
         state: 'provisioned',
       }
       api
-        .post('/actions/addons/resolve', {addon: 'heroku-db3', app: 'myapp'})
+        .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
         .reply(200, [addon])
-        .delete('/apps/101/addons/201', {force: false})
+        .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
         .reply(200, {...addon, state: 'deprovisioned'})
 
       await runCommand(Cmd, [
@@ -43,35 +49,43 @@ describe('addons:destroy', function () {
         'myapp',
         '--confirm',
         'myapp',
-        'heroku-db3',
+        'postgresql-swiftly-123',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.contain('Destroying db3-swiftly-123 on ⬢ myapp... done\n')
+      expect(stderr.output).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... done\n')
     })
   })
   context('when an add-on implements async deprovisioning', function () {
     it('destroys the add-on asynchronously', async function () {
-      const addon = {
-        addon_service: {name: 'heroku-db4'},
-        app: {id: 101, name: 'myapp'},
-        id: 201,
-        name: 'db4-swiftly-123',
+      const addon: Heroku.AddOn = {
+        addon_service: {name: 'heroku-postgresql'},
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp',
+        },
+        config_vars: ['DATABASE_URL'],
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'postgresql-swiftly-123',
+        plan: {
+          name: 'heroku-postgresql:standard-0',
+          price: {cents: 10000, unit: 'month'},
+        },
         state: 'provisioned',
       }
       api
-        .post('/actions/addons/resolve', {addon: 'heroku-db4', app: 'myapp'})
+        .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
         .reply(200, [addon])
-        .delete('/apps/101/addons/201', {force: false})
+        .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
         .reply(202, {...addon, state: 'deprovisioning'})
       await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
-        'heroku-db4',
+        'postgresql-swiftly-123',
       ])
-      expect(stdout.output).to.equal('db4-swiftly-123 is being destroyed in the background. The app will restart when complete...\nUse heroku addons:info db4-swiftly-123 to check destruction progress\n')
-      expect(stripAnsi(stderr.output)).to.contain(stripAnsi('Destroying db4-swiftly-123 on ⬢ myapp... pending'))
+      expect(stdout.output).to.equal('postgresql-swiftly-123 is being destroyed in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check destruction progress\n')
+      expect(ansis.strip(stderr.output)).to.contain(ansis.strip('Destroying postgresql-swiftly-123 on ⬢ myapp... pending'))
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
@@ -89,18 +103,30 @@ describe('addons:destroy', function () {
         sandbox.restore()
       })
       it('waits for response and notifies', async function () {
-        const addon = {
-          addon_service: {name: 'heroku-db5'}, app: {id: 101, name: 'myapp'}, id: 201, name: 'db5-swiftly-123', state: 'provisioned',
+        const addon: Heroku.AddOn = {
+          addon_service: {name: 'heroku-postgresql'},
+          app: {
+            id: '01234567-89ab-cdef-0123-456789abcdef',
+            name: 'myapp',
+          },
+          config_vars: ['DATABASE_URL'],
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'postgresql-swiftly-123',
+          plan: {
+            name: 'heroku-postgresql:standard-0',
+            price: {cents: 10000, unit: 'month'},
+          },
+          state: 'provisioned',
         }
         const notifySpy = sandbox.spy(Cmd, 'notifier')
         api
-          .post('/actions/addons/resolve', {addon: 'heroku-db5', app: 'myapp'})
+          .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
           .reply(200, [addon])
-          .delete('/apps/101/addons/201', {force: false})
+          .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
           .reply(202, {...addon, state: 'deprovisioning'})
-          .get('/apps/myapp/addons/db5-swiftly-123')
+          .get('/apps/myapp/addons/postgresql-swiftly-123')
           .reply(200, {...addon, state: 'deprovisioning'})
-          .get('/apps/myapp/addons/db5-swiftly-123')
+          .get('/apps/myapp/addons/postgresql-swiftly-123')
           .reply(404, {id: 'not_found', message: 'Not found'})
         await runCommand(Cmd, [
           '--app',
@@ -108,50 +134,70 @@ describe('addons:destroy', function () {
           '--confirm',
           'myapp',
           '--wait',
-          'heroku-db5',
+          'postgresql-swiftly-123',
         ])
         expect(notifySpy.called).to.equal(true)
         expect(notifySpy.calledOnce).to.equal(true)
-        expect(stripAnsi(stderr.output)).to.contain('Destroying db5-swiftly-123 on ⬢ myapp... pending')
-        expect(stderr.output).to.contain('Destroying db5-swiftly-123... done\n')
-        expect(stdout.output).to.equal('Waiting for db5-swiftly-123...\n')
+        expect(ansis.strip(stderr.output)).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... pending')
+        expect(stderr.output).to.contain('Destroying postgresql-swiftly-123... done\n')
+        expect(stdout.output).to.equal('Waiting for postgresql-swiftly-123...\n')
       })
     })
   })
 
   it('fails when addon app is not the app specified', async function () {
-    const addon_in_other_app = {
-      addon_service: {name: 'heroku-db6'}, app: {id: 102, name: 'myotherapp'}, id: 201, name: 'db6-swiftly-123', state: 'provisioned',
+    const addonInOtherApp: Heroku.AddOn = {
+      addon_service: {name: 'heroku-postgresql'},
+      app: {
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'myotherapp',
+      },
+      config_vars: ['DATABASE_URL'],
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'postgresql-swiftly-123',
+      plan: {
+        name: 'heroku-postgresql:standard-0',
+        price: {cents: 10000, unit: 'month'},
+      },
+      state: 'provisioned',
     }
     api
-      .post('/actions/addons/resolve', {addon: 'heroku-db6', app: 'myapp'})
-      .reply(200, [addon_in_other_app])
+      .post('/actions/addons/resolve', {addon: 'DATABASE', app: 'myapp'})
+      .reply(200, [addonInOtherApp])
     try {
       await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
-        'heroku-db6',
+        'DATABASE',
       ])
       throw new Error('unreachable')
-    } catch (error: any) {
-      expect(stripAnsi(error.message)).to.equal('db6-swiftly-123 is on ⬢ myotherapp not ⬢ myapp')
+    } catch (error: unknown) {
+      expect(ansis.strip((error as Error).message)).to.equal('postgresql-swiftly-123 is on ⬢ myotherapp not ⬢ myapp')
     }
   })
 
   it('shows that it failed to deprovision when there are errors returned', async function () {
-    const addon = {
-      addon_service: {name: 'heroku-db7'},
-      app: {id: 101, name: 'myapp'},
-      id: 201,
-      name: 'db7-swiftly-123',
+    const addon: {state: 'suspended'} & Omit<Heroku.AddOn, 'state'> = {
+      addon_service: {name: 'heroku-postgresql'},
+      app: {
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'myapp',
+      },
+      config_vars: ['DATABASE_URL'],
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'postgresql-swiftly-123',
+      plan: {
+        name: 'heroku-postgresql:standard-0',
+        price: {cents: 10000, unit: 'month'},
+      },
       state: 'suspended',
     }
     api
-      .post('/actions/addons/resolve', {addon: 'heroku-db7', app: 'myapp'})
+      .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
       .reply(200, [addon])
-      .delete('/apps/101/addons/201', {force: false})
+      .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
       .reply(403, {id: 'forbidden', message: 'Cannot delete a suspended addon'})
     try {
       await runCommand(Cmd, [
@@ -159,35 +205,51 @@ describe('addons:destroy', function () {
         'myapp',
         '--confirm',
         'myapp',
-        'heroku-db7',
+        'postgresql-swiftly-123',
       ])
       throw new Error('unreachable')
-    } catch (error: any) {
-      expect(error.message).to.equal('The add-on was unable to be destroyed: Cannot delete a suspended addon.')
+    } catch (error: unknown) {
+      expect((error as Error).message).to.equal('The add-on was unable to be destroyed: Cannot delete a suspended addon.')
     }
   })
-  context('when an multiple add-ons provided', function () {
+  context('when multiple add-ons are provided', function () {
     it('destroys them all', async function () {
-      const addon = {
-        addon_service: {name: 'heroku-db23'},
-        app: {id: 101, name: 'myapp'},
-        id: 201,
-        name: 'db23-swiftly-123',
+      const addon: Heroku.AddOn = {
+        addon_service: {name: 'heroku-postgresql'},
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp',
+        },
+        config_vars: ['DATABASE_URL'],
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'postgresql-swiftly-123',
+        plan: {
+          name: 'heroku-postgresql:standard-0',
+          price: {cents: 10000, unit: 'month'},
+        },
         state: 'provisioned',
       }
-      const addon1 = {
-        addon_service: {name: 'heroku-db24'},
-        app: {id: 101, name: 'myapp'},
-        id: 301,
-        name: 'db24-swiftly-123',
+      const addon1: Heroku.AddOn = {
+        addon_service: {name: 'heroku-postgresql'},
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp',
+        },
+        config_vars: ['DATABASE_URL'],
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'postgresql-swiftly-124',
+        plan: {
+          name: 'heroku-postgresql:standard-0',
+          price: {cents: 10000, unit: 'month'},
+        },
         state: 'provisioned',
       }
       api
-        .post('/actions/addons/resolve', {addon: 'heroku-db23', app: 'myapp'}).reply(200, [addon])
-        .delete('/apps/101/addons/201', {force: false})
+        .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'}).reply(200, [addon])
+        .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
         .reply(200, {...addon, state: 'deprovisioned'})
-        .post('/actions/addons/resolve', {addon: 'heroku-db24', app: 'myapp'}).reply(200, [addon1])
-        .delete('/apps/101/addons/301', {force: false})
+        .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-124', app: 'myapp'}).reply(200, [addon1])
+        .delete(`/apps/${addon1.app?.id}/addons/${addon1.id}`, {force: false})
         .reply(200, {...addon, state: 'deprovisioned'})
 
       await runCommand(Cmd, [
@@ -195,32 +257,48 @@ describe('addons:destroy', function () {
         'myapp',
         '--confirm',
         'myapp',
-        'heroku-db23',
-        'heroku-db24',
+        'postgresql-swiftly-123',
+        'postgresql-swiftly-124',
       ])
       expect(stdout.output).to.equal('')
-      expect(stderr.output).to.contain('Destroying db23-swiftly-123 on ⬢ myapp... done\n')
-      expect(stderr.output).to.contain('Destroying db24-swiftly-123 on ⬢ myapp... done\n')
+      expect(stderr.output).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... done\n')
+      expect(stderr.output).to.contain('Destroying postgresql-swiftly-124 on ⬢ myapp... done\n')
     })
 
     it('fails when additional addon app is not the app specified', async function () {
-      const addon = {
-        addon_service: {name: 'heroku-db13'},
-        app: {id: 101, name: 'myapp'},
-        id: 201,
-        name: 'db13-swiftly-123',
+      const addon: Heroku.AddOn = {
+        addon_service: {name: 'heroku-postgresql'},
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp',
+        },
+        config_vars: ['DATABASE_URL'],
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'postgresql-swiftly-123',
+        plan: {
+          name: 'heroku-postgresql:standard-0',
+          price: {cents: 10000, unit: 'month'},
+        },
         state: 'provisioned',
       }
-      const addon1 = {
-        addon_service: {name: 'heroku-db14'},
-        app: {id: 444, name: 'myapp2'},
-        id: 301,
-        name: 'db14-swiftly-123',
+      const addon1: Heroku.AddOn = {
+        addon_service: {name: 'heroku-postgresql'},
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp2',
+        },
+        config_vars: ['FOREIGN_DATABASE_URL'],
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'postgresql-swiftly-124',
+        plan: {
+          name: 'heroku-postgresql:standard-0',
+          price: {cents: 10000, unit: 'month'},
+        },
         state: 'provisioned',
       }
       api
-        .post('/actions/addons/resolve', {addon: 'heroku-db13', app: 'myapp'}).reply(200, [addon])
-        .post('/actions/addons/resolve', {addon: 'heroku-db14', app: 'myapp'}).reply(200, [addon1])
+        .post('/actions/addons/resolve', {addon: 'DATABASE', app: 'myapp'}).reply(200, [addon])
+        .post('/actions/addons/resolve', {addon: 'FOREIGN_DATABASE', app: 'myapp'}).reply(200, [addon1])
 
       try {
         await runCommand(Cmd, [
@@ -228,12 +306,12 @@ describe('addons:destroy', function () {
           'myapp',
           '--confirm',
           'myapp',
-          'heroku-db13',
-          'heroku-db14',
+          'DATABASE',
+          'FOREIGN_DATABASE',
         ])
         throw new Error('unreachable')
-      } catch (error: any) {
-        expect(stripAnsi(error.message)).to.equal('db14-swiftly-123 is on ⬢ myapp2 not ⬢ myapp')
+      } catch (error: unknown) {
+        expect(ansis.strip((error as Error).message)).to.equal('postgresql-swiftly-124 is on ⬢ myapp2 not ⬢ myapp')
       }
     })
   })

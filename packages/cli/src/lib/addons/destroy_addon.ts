@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
@@ -15,10 +15,11 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
       body: {force},
       headers: {'Accept-Expansion': 'plan'},
     }).catch(error => {
-      if (error.body && error.body.message) {
-        throw new Error(`The add-on was unable to be destroyed: ${error.body.message}.`)
+      const errorMessage = error.body?.message || error
+      if (utils.pg.isAdvancedDatabase(addon)) {
+        throw new Error(`We can't destroy your database due to an error: ${errorMessage}. Try again or open a ticket with Heroku Support: https://help.heroku.com/`)
       } else {
-        throw new Error(`The add-on was unable to be destroyed: ${error}.`)
+        throw new Error(`The add-on was unable to be destroyed: ${errorMessage}.`)
       }
     })
 
@@ -41,10 +42,14 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
       addonResponse = await waitForAddonDeprovisioning(heroku, addonResponse, 5)
     } else {
       ux.stdout(`${color.addon(addonName)} is being destroyed in the background. The app will restart when complete...`)
-      ux.stdout(`Use ${color.code('heroku addons:info ' + addonName)} to check destruction progress`)
+      ux.stdout(`Run ${color.code('heroku addons:info ' + addonName)} to check destruction progress`)
     }
   } else if (addonResponse.state !== 'deprovisioned') {
-    throw new Error(`The add-on was unable to be destroyed, with status ${addonResponse.state}.`)
+    if (utils.pg.isAdvancedDatabase(addonResponse)) {
+      throw new Error(`You can't destroy a database with a ${addonResponse.state} status.`)
+    } else {
+      throw new Error(`The add-on was unable to be destroyed, with status ${addonResponse.state}.`)
+    }
   }
 
   return addonResponse

@@ -1,21 +1,18 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {ExtendedAddonAttachment, hux} from '@heroku/heroku-cli-util'
-import {table} from '@oclif/core/lib/cli-ux/styled/table'
-import {capitalize} from '@oclif/core/lib/util'
-import heredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
-import host from '@heroku/heroku-cli-util/dist/utils/pg/host'
+import {color, hux, pg, utils} from '@heroku/heroku-cli-util'
+
+const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+import tsheredoc from 'tsheredoc'
 import type {
   PGDiagnoseCheck, PGDiagnoseRequest,
   PGDiagnoseResponse,
   PGDiagnoseResult,
-} from '../../lib/pg/types'
-import {essentialPlan} from '../../lib/pg/util'
-import color from '@heroku-cli/color'
-import {uuidValidate} from '../../lib/utils/uuid-validate'
+} from '../../lib/pg/types.js'
+import {essentialPlan} from '../../lib/pg/util.js'
+import {uuidValidate} from '../../lib/utils/uuid-validate.js'
 
+const heredoc = tsheredoc.default
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'pgdiagnose.herokai.com'
 
 export default class Diagnose extends Command {
@@ -57,18 +54,18 @@ export default class Diagnose extends Command {
       return
     }
 
-    ux.log(`Report ${report.id} for ${report.app}::${report.database}\navailable for one month after creation on ${report.created_at}\n`)
+    ux.stdout(`Report ${report.id} for ${report.app}::${report.database}\navailable for one month after creation on ${report.created_at}\n`)
 
-    this.display(report.checks.filter(c => c.status === 'red'))
-    this.display(report.checks.filter(c => c.status === 'yellow'))
-    this.display(report.checks.filter(c => c.status === 'green'))
-    this.display(report.checks.filter(c => !['red', 'yellow', 'green'].includes(c.status)))
+    this.display(report.checks.filter((c: PGDiagnoseCheck) => c.status === 'red'))
+    this.display(report.checks.filter((c: PGDiagnoseCheck) => c.status === 'yellow'))
+    this.display(report.checks.filter((c: PGDiagnoseCheck) => c.status === 'green'))
+    this.display(report.checks.filter((c: PGDiagnoseCheck) => !['green', 'red', 'yellow'].includes(c.status)))
   }
 
   private display(checks: PGDiagnoseCheck[]) {
-    checks.forEach(check => {
+    checks.forEach((check: PGDiagnoseCheck) => {
       const colorFn = color[check.status] || ((txt: string) => txt)
-      ux.log(colorFn(`${check.status.toUpperCase()}: ${check.name}`))
+      ux.stdout(colorFn(`${check.status.toUpperCase()}: ${check.name}`))
       const isNonEmptyArray = Array.isArray(check.results) && check.results.length > 0
       const resultsKeys = Object.keys(check.results ?? {})
       if (check.status === 'green' || (!isNonEmptyArray && resultsKeys.length === 0)) {
@@ -77,23 +74,24 @@ export default class Diagnose extends Command {
 
       if (isNonEmptyArray) {
         const keys = Object.keys(check.results[0]) as (keyof PGDiagnoseResult)[]
-        const cols = {} as Record<string, Partial<table.Column<PGDiagnoseResult>>>
-        keys.forEach(key => {
-          cols[capitalize(key)] = {
-            get: (row: PGDiagnoseResult): string => row[key],
+        const cols = {} as Record<string, {get: (row: PGDiagnoseResult) => string}>
+        keys.forEach((key: string | number | symbol) => {
+          const keyStr = String(key)
+          cols[capitalize(keyStr)] = {
+            get: (row: PGDiagnoseResult): string => String(row[key as keyof PGDiagnoseResult]),
           }
         })
         hux.table(check.results, cols)
       } else {
         const [key] = resultsKeys
-        ux.log(`${key.split('_')
+        ux.stdout(`${key.split('_')
           .map(s => capitalize(s))
           .join(' ')} ${check.results[key as keyof PGDiagnoseResult]}`)
       }
     })
   }
 
-  private async generateParams(url: string, db: ExtendedAddonAttachment['addon'], dbName: string): Promise<PGDiagnoseRequest> {
+  private async generateParams(url: string, db: pg.ExtendedAddonAttachment['addon'], dbName: string): Promise<PGDiagnoseRequest> {
     const base_params: PGDiagnoseRequest = {
       url,
       plan: db.plan.name.split(':')[1],
@@ -101,11 +99,11 @@ export default class Diagnose extends Command {
       database: dbName,
     }
     if (!essentialPlan(db)) {
-      const {body: metrics} = await this.heroku.get<unknown[]>(`/client/v11/databases/${db.id}/metrics`, {hostname: host()})
+      const {body: metrics} = await this.heroku.get<unknown[]>(`/client/v11/databases/${db.id}/metrics`, {hostname: utils.pg.host()})
       base_params.metrics = metrics
       const {body: burstData} = await this.heroku.get<{
         burst_status: string
-      }>(`/client/v11/databases/${db.id}/burst_status`, {hostname: host()})
+      }>(`/client/v11/databases/${db.id}/burst_status`, {hostname: utils.pg.host()})
       if (burstData && Object.keys(burstData).length > 0) {
         base_params.burst_data_present = true
         base_params.burst_status = burstData.burst_status
@@ -128,4 +126,3 @@ export default class Diagnose extends Command {
     return report
   }
 }
-*/
