@@ -1,7 +1,7 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/ps/scale.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -63,7 +63,7 @@ describe('ps:scale', function () {
         'myapp',
       ])
     } catch (error: any) {
-      expect(stripAnsi(error.message)).to.include('No process types on ⬢ myapp.')
+      expect(ansis.strip(error.message)).to.include('No process types on ⬢ myapp.')
     }
 
     expect(stdout.output).to.equal('')

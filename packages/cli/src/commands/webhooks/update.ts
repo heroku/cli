@@ -1,9 +1,7 @@
-/*
 import {flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
-import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
+import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../lib/webhooks/base'
+import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class WebhooksUpdate extends BaseCommand {
   static description = 'updates a webhook in an app'
@@ -30,20 +28,18 @@ export default class WebhooksUpdate extends BaseCommand {
   async run() {
     const {flags, args} = await this.parse(WebhooksUpdate)
     const {path, display} = this.webhookType(flags)
-    const action = new Spinner()
 
-    action.start(`Updating webhook ${args.id} for ${display}`)
+    ux.action.start(`Updating webhook ${args.id} for ${display}`)
 
     await this.webhooksClient.patch(`${path}/webhooks/${args.id}`, {
       body: {
-        include: flags.include && flags.include.split(',').map(s => s.trim()),
+        include: flags.include && flags.include.split(',').map((s: string) => s.trim()),
         level: flags.level,
         secret: flags.secret,
         url: flags.url,
       },
     })
 
-    action.stop()
+    ux.action.stop()
   }
 }
-*/

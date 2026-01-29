@@ -1,8 +1,7 @@
-/*
 import {flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 
-import BaseCommand from '../../../lib/webhooks/base'
+import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class Deliveries extends BaseCommand {
   static description = 'list webhook deliveries on an app'
@@ -40,9 +39,7 @@ export default class Deliveries extends BaseCommand {
     if (deliveries.length === 0) {
       this.log(`${display} has no deliveries`)
     } else {
-      const code = (w: any) => {
-        return (w.last_attempt && w.last_attempt.code && String(w.last_attempt.code)) || ''
-      }
+      const code = (w: any) => (w.last_attempt && w.last_attempt.code && String(w.last_attempt.code)) || ''
 
       deliveries.reverse()
 
@@ -60,13 +57,13 @@ export default class Deliveries extends BaseCommand {
           header: 'Created', get: (w: any) => w.created_at,
         },
         status: {
-          get: (w: any) => w.status,
+          header: 'Status', get: (w: any) => w.status,
         },
         include: {
-          get: (w: any) => w.event.include,
+          header: 'Include', get: (w: any) => w.event.include,
         },
         level: {
-          get: (w: any) => w.webhook.level,
+          header: 'Level', get: (w: any) => w.webhook.level,
         },
         num_attempts: {
           header: 'Attempts', get: (w: any) => String(w.num_attempts),
@@ -81,9 +78,8 @@ export default class Deliveries extends BaseCommand {
           header: 'Next Attempt', get: (w: any) => w.next_attempt_at || '',
         },
       }, {
-        'no-header': false, printLine,
+        printLine,
       })
     }
   }
 }
-*/

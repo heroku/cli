@@ -5,7 +5,7 @@ import {ux} from '@oclif/core'
 
 function formatKey(key: string) {
   const [name, pub, email] = key.trim().split(/\s/)
-  return `${name} ${pub.slice(0, 10)}...${pub.slice(-10)} ${color.green(email)}`
+  return `${name} ${pub.slice(0, 10)}...${pub.slice(-10)} ${color.user(email)}`
 }
 
 export default class Keys extends Command {

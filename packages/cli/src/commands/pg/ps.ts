@@ -1,18 +1,20 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
-import {nls} from '../../nls'
+import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Ps extends Command {
-  static topic = 'pg'
   static description = 'view active queries with execution time'
   static flags = {
     verbose: flags.boolean({char: 'v'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static topic = 'pg'
 
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
@@ -45,7 +47,7 @@ export default class Ps extends Command {
            age(now(), xact_start) AS running_for,
            xact_start AS transaction_start, ${waiting}, query
     FROM pg_stat_activity
-    WHERE query <> '<insufficient privilege>' ${verbose ? '' : "AND state <> 'idle'"}
+    WHERE query <> '<insufficient privilege>'${verbose ? '' : " AND state <> 'idle'"}
       AND pid <> pg_backend_pid()
     ORDER BY query_start DESC
     `)
@@ -53,4 +55,3 @@ export default class Ps extends Command {
     process.stdout.write(output)
   }
 }
-*/

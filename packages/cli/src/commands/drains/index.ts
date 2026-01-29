@@ -47,7 +47,7 @@ export default class Drains extends Command {
       if (drainsWithoutAddons.length > 0) {
         hux.styledHeader('Drains')
         drainsWithoutAddons.forEach((drain: Heroku.LogDrain) => {
-          styledDrain(drain.url || '', color.green(drain.token || ''), drain)
+          styledDrain(drain.url || '', color.name(drain.token || ''), drain)
         })
       }
 

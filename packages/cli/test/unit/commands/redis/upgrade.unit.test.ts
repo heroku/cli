@@ -5,7 +5,7 @@ import nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
 /*
@@ -47,7 +47,7 @@ describe('heroku redis:upgrade', function () {
     ])
       .catch((error: Error) => {
         expect(stdout.output).to.equal('')
-        expect(stripAnsi(error.message)).to.equal(heredoc(`
+        expect(ansis.strip(error.message)).to.equal(heredoc(`
           The following error occurred:
             Missing required flag version
           See more help with --help`))

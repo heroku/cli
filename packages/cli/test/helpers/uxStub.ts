@@ -1,15 +1,15 @@
 import {ux} from '@oclif/core'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 
 export function stubUxActionStart() {
   const originalStart = ux.action.start
   ux.action.start = (message: string) => {
-    process.stderr.write(`${stripAnsi(message)}... `)
+    process.stderr.write(`${ansis.strip(message)}... `)
   }
 
   const originalStop = ux.action.stop
   ux.action.stop = (messageToWrite = 'done') => {
-    process.stderr.write(`${stripAnsi(messageToWrite)}\n`)
+    process.stderr.write(`${ansis.strip(messageToWrite)}\n`)
   }
 
   return {

@@ -5,7 +5,7 @@ import nock from 'nock'
 import {expect} from 'chai'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import heredoc from 'tsheredoc'
-import stripAnsi from 'strip-ansi'
+import ansis from 'ansis'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 /*
@@ -47,7 +47,7 @@ describe('heroku redis:maxmemory', function () {
       '--app',
       'example',
     ]).catch(function (error: Error) {
-      expect(stripAnsi(error.message)).to.equal(heredoc(`
+      expect(ansis.strip(error.message)).to.equal(heredoc(`
         The following error occurred:
           Missing required flag policy
         See more help with --help`))

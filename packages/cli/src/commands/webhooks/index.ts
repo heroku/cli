@@ -1,9 +1,8 @@
-/*
-import color from '@heroku-cli/color'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core'
 
-import BaseCommand from '../../lib/webhooks/base'
+import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class Webhooks extends BaseCommand {
   static description = 'list webhooks on an app'
@@ -28,13 +27,12 @@ export default class Webhooks extends BaseCommand {
     const {body: webhooks}: {body: any} = await this.webhooksClient.get(`${path}/webhooks`)
 
     if (webhooks.length === 0) {
-      this.log(`${display} has no webhooks\nUse ${color.cmd('heroku webhooks:add')} to add one.`)
+      ux.stdout(`${display} has no webhooks\nUse ${color.command('heroku webhooks:add')} to add one.`)
       return
     }
 
     webhooks.sort((a: any, b: any) => Date.parse(a.created_at) - Date.parse(b.created_at))
 
-    const printLine: typeof this.log = (...args) => this.log(...args)
     hux.table(webhooks, {
       id: {
         header: 'Webhook ID',
@@ -43,12 +41,12 @@ export default class Webhooks extends BaseCommand {
         header: 'URL',
       },
       include: {
+        header: 'Include',
         get: (row: any) => row.include.join(','),
       },
-      level: {},
-    }, {
-      'no-header': false, printLine,
+      level: {
+        header: 'Level',
+      },
     })
   }
 }
-*/

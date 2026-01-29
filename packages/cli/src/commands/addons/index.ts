@@ -156,8 +156,8 @@ function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
   return output.join(' ')
 }
 
-export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isFirst = false): string {
-  const line = isFirst ? '\u2514\u2500' : '\u251C\u2500'
+export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isLast = false): string {
+  const line = isLast ? '\u2514\u2500' : '\u251C\u2500'
   const attName = formatAttachment(attachment, attachment.app?.name !== app)
   return printf(' %s %s', color.dim(line), attName)
 }
@@ -180,8 +180,8 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
     const atts = _.sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
     // render each attachment under the add-on
     const attLines = atts.map((attachment, idx) => {
-      const isFirst = (idx === addon.attachments.length - 1)
-      return renderAttachment(attachment, app, isFirst)
+      const isLast = (idx === addon.attachments.length - 1)
+      return renderAttachment(attachment, app, isLast)
     })
     return [addonLine].concat(attLines)
       .join('\n') + '\n' // Separate each add-on row by a blank line

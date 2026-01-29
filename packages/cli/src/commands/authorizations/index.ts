@@ -25,7 +25,7 @@ export default class AuthorizationsIndex extends Command {
       ux.stdout('No OAuth authorizations.')
     } else {
       hux.table(authorizations, {
-        Description: {get: (v: any) => color.green(v.description)},
+        Description: {get: (v: any) => color.name(v.description)},
         ID: {get: (v: any) => v.id},
         Scope: {get: (v: any) => v.scope.join(',')},
       }, {sort: {Description: 'asc'}})

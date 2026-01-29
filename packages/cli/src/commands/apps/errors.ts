@@ -20,7 +20,7 @@ const colorize = (level: string, s: string) => {
   }
 
   case 'info': {
-    return color.cyan(s)
+    return color.info(s)
   }
 
   default: {

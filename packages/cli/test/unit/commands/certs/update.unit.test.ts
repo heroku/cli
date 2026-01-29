@@ -1,10 +1,10 @@
+import ansis from 'ansis'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 import {SinonStub} from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/update.js'
@@ -48,7 +48,7 @@ describe('heroku certs:update', function () {
       ])
     } catch (error) {
       const {message} = error as Error
-      expect(stripAnsi(message)).to.equal('Confirmation notexample did not match example. Aborted.')
+      expect(ansis.strip(message)).to.equal('Confirmation notexample did not match example. Aborted.')
     }
 
     api.done()
@@ -64,7 +64,7 @@ describe('heroku certs:update', function () {
       ])
     } catch (error) {
       const {message, oclif} = error as Errors.CLIError
-      expect(stripAnsi(message)).to.equal('Missing 1 required arg:\nKEY  absolute path of the key file on disk\nSee more help with --help')
+      expect(ansis.strip(message)).to.equal('Missing 1 required arg:\nKEY  absolute path of the key file on disk\nSee more help with --help')
       expect(oclif.exit).to.equal(2)
     }
 
@@ -107,7 +107,7 @@ describe('heroku certs:update', function () {
       ])
     } catch (error) {
       const {message, oclif} = error as Errors.CLIError
-      expect(stripAnsi(message)).to.equal('Unexpected argument: key_file\nSee more help with --help')
+      expect(ansis.strip(message)).to.equal('Unexpected argument: key_file\nSee more help with --help')
       expect(oclif.exit).to.equal(2)
     }
 

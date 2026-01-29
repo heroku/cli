@@ -187,17 +187,23 @@ export type TierPricingInfo = Record<string, PricingInfo>
 
 export type PricingInfoResponse = Record<string, TierPricingInfo>
 
+type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
+type NonAdvancedCredential = {
+  connections?: null | number
+  password: string
+  state: NonAdvancedCredentialState
+  user: string
+}
+
+type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
+
 export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
-  credentials: Array<{
-    password: string
-    state: string
-    user: string
-  }>
+  credentials: Array<NonAdvancedCredential>
   database: string
   host: string
   name: string
   port: string
-  state: string
+  state: NonAdvancedCredentialStoreState
   uuid: string
 }
 

@@ -1,12 +1,14 @@
+import nock from 'nock'
 import {stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/pg/reset'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/pg/reset.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import nock from 'nock'
-import heredoc from 'tsheredoc'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('pg:reset', function () {
   const addon = fixtures.addons['dwh-db']
 
@@ -28,7 +30,6 @@ describe('pg:reset', function () {
       'myapp',
     ])
     expectOutput(stderr.output, heredoc(`
-      Resetting ${addon.name}...
       Resetting ${addon.name}... done
     `))
   })
@@ -55,11 +56,8 @@ describe('pg:reset', function () {
         'uuid-ossp, Postgis',
       ])
       expectOutput(stderr.output, heredoc(`
-        Resetting ${addon.name}...
         Resetting ${addon.name}... done
       `))
     })
   })
 })
-
-*/

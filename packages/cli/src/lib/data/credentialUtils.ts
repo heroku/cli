@@ -1,7 +1,7 @@
 import type {CredentialInfo} from './types.js'
 
 // NEW This is new. something similar exists in core: packages/cli/src/commands/pg/credentials.ts:61
-// protected sortByDefaultAndName(credentials: CredentialsInfo) {
+// protected sortByDefaultAndName(credentials: CredentialInfo[]) {
 //  return credentials.sort((a, b) => {
 //    const isDefaultA = this.isDefaultCredential(a)
 //    const isDefaultB = this.isDefaultCredential(b)
