@@ -14,7 +14,7 @@ describe('webhooks:deliveries:info', function () {
     nock.cleanAll()
   })
 
-  it.skip('shows an app webhook delivery', async function () {
+  it('shows an app webhook delivery', async function () {
     api
       .get('/apps/example-app/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
@@ -60,7 +60,7 @@ describe('webhooks:deliveries:info', function () {
     expect(stdout).to.contain('"foo": "bar"')
   })
 
-  it.skip('shows a pipeline webhook delivery ', async function () {
+  it('shows a pipeline webhook delivery ', async function () {
     api
       .get('/pipelines/example-pipeline/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {

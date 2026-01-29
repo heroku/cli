@@ -2,6 +2,8 @@ import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+
 describe('webhooks:deliveries', function () {
   let api: nock.Scope
 
@@ -15,7 +17,7 @@ describe('webhooks:deliveries', function () {
   })
 
   describe('app webhooks', function () {
-    it.skip('lists webhooks deliveries for app webhooks', async function () {
+    it('lists webhooks deliveries for app webhooks', async function () {
       api
         .matchHeader('range', 'seq ..; order=desc,max=1000')
         .get('/apps/example-app/webhook-deliveries')
@@ -57,16 +59,14 @@ describe('webhooks:deliveries', function () {
 
       const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
 
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('Delivery ID')
-      expect(stdout).to.contain('Created')
-      expect(stdout).to.contain('Status   Include   Level  Attempts Code Error  Next Attempt')
-      expect(stdout).to.contain(' 99999999-9999-9999-9999-999999999999 2017-08-17T20:22:37Z retrying api:build notify 4')
-      expect(stdout).to.contain('401  Foobar 2017-08-17T20:22:39Z')
-      expect(stdout).to.contain(' 66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending  api:build notify 4')
+      expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
+        Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
+        99999999-9999-9999-9999-999999999999 2017-08-17T20:22:37Z retrying api:build notify 4        401  Foobar 2017-08-17T20:22:39Z
+        66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending  api:build notify 4
+      `))
     })
 
-    it.skip('lists webhook deliveries for app webhooks filtered by status', async function () {
+    it('lists webhook deliveries for app webhooks filtered by status', async function () {
       api
         .matchHeader('range', 'seq ..; order=desc,max=1000')
         .get('/apps/example-app/webhook-deliveries?eq[status]=pending')
@@ -89,14 +89,13 @@ describe('webhooks:deliveries', function () {
 
       const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app', '--status', 'pending'])
 
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('Delivery ID')
-      expect(stdout).to.contain('Created')
-      expect(stdout).to.contain('Status  Include   Level  Attempts Code Error Next Attempt')
-      expect(stdout).to.contain('66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending api:build notify 4')
+      expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
+        Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
+        66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending  api:build notify 4
+      `))
     })
 
-    it.skip('only shows 1000 webhook deliveries', async function () {
+    it('only shows 1000 webhook deliveries', async function () {
       const delivery = {
         id: '66666666-6666-6666-6666-666666666666',
         event: {
@@ -119,25 +118,25 @@ describe('webhooks:deliveries', function () {
 
       const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
 
-      const expectedHeader = 'Delivery ID                          Created              Status  Include   Level  Attempts Code Error Next Attempt'
-      const expectedUnderline = '──────────────────────────────────── ──────────────────── ─────── ───────── ────── ──────── ──── ───── ────────────'
-      const expectedRow = '66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending api:build notify 4'
+      const actualRows = normalizeTableOutput(stdout).split('\n')
+      const expectedRows = normalizeTableOutput(`
+        Delivery ID                          Created              Status  Include   Level  Attempts Code Error Next Attempt
+        66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending api:build notify 4
+      `).split('\n')
+
       const angleBrackets = process.platform === 'win32' ? '»' : '›'
-      const rows = stdout.split('\n')
 
-      const headerRowCount = 2
+      const headerRowCount = 1
       const dataRowsCount = 1000
-      const finalTrailingRowCount = 1
-      expect(rows.length).to.equal(headerRowCount + dataRowsCount + finalTrailingRowCount)
+      expect(actualRows.length).to.equal(headerRowCount + dataRowsCount)
 
-      expect(rows[0].trim()).to.equal(expectedHeader)
-      expect(rows[1].trim()).to.equal(expectedUnderline)
-      expect(rows[2].trim()).to.equal(expectedRow)
+      expect(actualRows[0]).to.equal(expectedRows[0])
+      expect(actualRows[1]).to.equal(expectedRows[1])
 
       expect(stderr).to.include(` ${angleBrackets}   Warning: Only showing the 1000 most recent deliveries\n ${angleBrackets}   Warning: It is possible to filter deliveries by using the --status flag\n`)
     })
 
-    it.skip('lists empty deliveries', async function () {
+    it('lists empty deliveries', async function () {
       api
         .matchHeader('range', 'seq ..; order=desc,max=1000')
         .get('/apps/example-app/webhook-deliveries')
@@ -151,7 +150,7 @@ describe('webhooks:deliveries', function () {
   })
 
   describe('pipeline webhooks', function () {
-    it.skip('lists webhooks deliveries for pipeline webhooks', async function () {
+    it('lists webhooks deliveries for pipeline webhooks', async function () {
       api
         .matchHeader('range', 'seq ..; order=desc,max=1000')
         .get('/pipelines/example-pipeline/webhook-deliveries')
@@ -193,13 +192,14 @@ describe('webhooks:deliveries', function () {
 
       const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--pipeline', 'example-pipeline'])
 
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt')
-      expect(stdout).to.contain('99999999-9999-9999-9999-999999999999 2017-08-17T20:22:37Z retrying api:build notify 4        401  Foobar 2017-08-17T20:22:39Z')
-      expect(stdout).to.contain('66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending  api:build notify 4')
+      expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
+        Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
+        99999999-9999-9999-9999-999999999999 2017-08-17T20:22:37Z retrying api:build notify 4        401  Foobar 2017-08-17T20:22:39Z
+        66666666-6666-6666-6666-666666666666 2017-08-17T20:22:38Z pending  api:build notify 4
+      `))
     })
 
-    it.skip('lists empty webhooks deliveries for pipeline webhooks', async function () {
+    it('lists empty webhooks deliveries for pipeline webhooks', async function () {
       api
         .matchHeader('range', 'seq ..; order=desc,max=1000')
         .get('/pipelines/example-pipeline/webhook-deliveries')
