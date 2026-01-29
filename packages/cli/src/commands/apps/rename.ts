@@ -37,7 +37,7 @@ export default class AppsRename extends Command {
     ux.action.stop()
 
     const gitUrl = git.gitUrl(app.name)
-    ux.stdout(`${app.web_url} | ${gitUrl}`)
+    ux.stdout(`${color.info(app.web_url!)} | ${color.info(gitUrl)}`)
 
     if (!app.web_url!.includes('https')) {
       ux.stdout('Please note that it may take a few minutes for Heroku to provision a SSL certificate for your application.')
@@ -60,7 +60,7 @@ export default class AppsRename extends Command {
           const {name} = remote
           await git.rmRemote(name)
           await git.createRemote(name, url.replace(oldApp, newApp))
-          ux.stdout(`Git remote ${name} updated`)
+          ux.stdout(`Git remote ${color.name(name)} updated`)
         }
       }
 

@@ -1,7 +1,8 @@
-import stripAnsi from 'strip-ansi'
+
+import ansis from 'ansis'
 
 export default function normalizeTableOutput(output: string): string {
-  return stripAnsi(output)
+  return ansis.strip(output)
     .normalize('NFKC')
     .toLowerCase()
     .split('\n')

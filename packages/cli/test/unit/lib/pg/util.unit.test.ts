@@ -1,7 +1,8 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
 
-import type {CredentialsInfo} from '../../../../src/lib/pg/types.js'
+import type {NonAdvancedCredentialInfo} from '../../../../src/lib/data/types.js'
+
 import {
   configVarNamesFromValue,
   databaseNameFromUrl,
@@ -25,19 +26,19 @@ describe('util', function () {
       const cred = 'default'
       const credAttachments: Required<Heroku.AddOnAttachment>[] = [
         {
-          id: '1',
-          name: 'DATABASE',
-          app: {id: 'app-id', name: app},
           addon: {id: 'addon-id', name: 'postgres-1'} as Required<Heroku.AddOn>,
-          namespace: null,
+          app: {id: 'app-id', name: app},
           config_vars: ['DATABASE_URL'],
           created_at: '2024-01-01T00:00:00Z',
+          id: '1',
+          log_input_url: 'https://example.com/logs',
+          name: 'DATABASE',
+          namespace: null,
           updated_at: '2024-01-01T00:00:00Z',
           web_url: 'https://example.com',
-          log_input_url: 'https://example.com/logs',
         },
       ]
-      const credentials: CredentialsInfo = []
+      const credentials: NonAdvancedCredentialInfo[] = []
 
       const result = presentCredentialAttachments(app, credAttachments, credentials, cred)
 
@@ -89,8 +90,8 @@ describe('util', function () {
   describe('databaseNameFromUrl', function () {
     it('returns config var name without _URL suffix', function () {
       const config = {
-        MY_DATABASE_URL: 'postgres://user:pass@host:5432/db',
         DATABASE_URL: 'postgres://user:pass@host:5432/db',
+        MY_DATABASE_URL: 'postgres://user:pass@host:5432/db',
       }
       const uri = 'postgres://user:pass@host:5432/db'
 

@@ -1,51 +1,48 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {color} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
-import {APIClient} from '@heroku-cli/command'
-import {Notification, notify} from '@heroku-cli/notifications'
+import {HTTP, HTTPError} from '@heroku/http-call'
+import {APIClient, type IOptions} from '@heroku-cli/command'
+import {type Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
-import {spawn} from 'child_process'
 import debugFactory from 'debug'
 import * as https from 'https'
 import * as net from 'net'
+import {spawn} from 'node:child_process'
 import {Duplex, Transform} from 'stream'
 import * as tls from 'tls'
 import * as tty from 'tty'
-import {URL, parse} from 'url'
+import {URL} from 'url'
 
 import {buildEnvFromFlag} from './helpers.js'
 
 const debug = debugFactory('heroku:run')
-const wait = (ms: number) => new Promise<void>(resolve => setTimeout(() => resolve(), ms))
+const wait = (ms: number) => new Promise<void>(resolve => {
+  setTimeout(() => resolve(), ms)
+})
 
 interface HerokuApiClientRun extends APIClient {
   options: {
-    rejectUnauthorized?: boolean;
-  } & IOptions;
+    rejectUnauthorized?: boolean
+  } & IOptions
 }
 
-interface DynoOpts {
-  app: string;
-  attach?: boolean;
-  command: string;
-  dyno?: string;
-  env?: string;
-  'exit-code'?: boolean;
-  heroku: APIClient;
-  listen?: boolean;
-  'no-tty'?: boolean;
-  notify?: boolean;
-  showStatus?: boolean;
-  size?: string;
-  type?: string;
-}
-
-interface IOptions {
-  debug?: boolean
-  debugHeaders?: boolean
-  preauth?: boolean
-  required?: boolean
+export interface DynoOpts {
+  app: string
+  attach?: boolean
+  command: string
+  dyno?: string
+  env?: string
+  'exit-code'?: boolean
+  heroku: APIClient
+  listen?: boolean
+  'no-tty'?: boolean
+  notificationSubtitle?: string
+  notify?: boolean
+  showStatus?: boolean
+  size?: string
+  type?: string
 }
 
 export default class Dyno extends Duplex {
@@ -89,7 +86,7 @@ export default class Dyno extends Duplex {
     this.pipe(process.stdout)
     if (this.dyno && this.dyno.attach_url) {
       this.uri = new URL(this.dyno.attach_url)
-      this.legacyUri = parse(this.dyno.attach_url)
+      this.legacyUri = new URL(this.dyno.attach_url)
     }
 
     if (this._useSSH) {
@@ -103,9 +100,7 @@ export default class Dyno extends Duplex {
     })
   }
 
-  /**
-   * Starts the dyno
-   */
+  // Starts the dyno
   async start() {
     this._startedAt = Date.now()
     if (this.opts.showStatus) {
@@ -231,7 +226,7 @@ export default class Dyno extends Duplex {
     // does not actually uncork but allows error to be displayed when attempting to read
     this.uncork()
     if (this.opts.listen) {
-      ux.stderr(`listening on port ${host}:${port} for ssh client`)
+      ux.stdout(`listening on port ${host}:${port} for ssh client`)
     } else {
       const params = [host, '-p', port.toString(), '-oStrictHostKeyChecking=no', '-oUserKnownHostsFile=/dev/null', '-oServerAliveInterval=20']
 
@@ -319,17 +314,15 @@ export default class Dyno extends Duplex {
       // @ts-ignore
       if (Date.now() - this._startedAt < 1000 * 20) return
 
-      const notification: { subtitle?: string } & Notification = {
-        // @ts-ignore
+      const notification = {
         message: 'dyno is up',
-        subtitle: `heroku run ${this.opts.command}`,
+        subtitle: this.opts.notificationSubtitle || `heroku run ${this.opts.command}`,
         title: this.opts.app,
-        // sound: true
-      }
+      } as Notification
 
       notify(notification)
-    } catch (error: any) {
-      ux.warn(error)
+    } catch (error: unknown) {
+      ux.warn(error as Error)
     }
   }
 
@@ -356,8 +349,7 @@ export default class Dyno extends Duplex {
 
       // carriage returns break json parsing of output
       if (!process.stdout.isTTY) {
-        // eslint-disable-next-line no-control-regex, prefer-regex-literals
-        data = data.replace(new RegExp('\r\n', 'g'), '\n')
+        data = data.replaceAll('\r\n', '\n')
       }
 
       const exitCode = data.match(/\uFFFF heroku-command-exit-status: (\d+)/m)
@@ -411,8 +403,7 @@ export default class Dyno extends Duplex {
       })
     } else {
       stdin.pipe(new Transform({
-        // eslint-disable-next-line unicorn/no-hex-escape
-        flush: done => c.write('\x04', done),
+        flush: done => c.write('\u0004', done),
         objectMode: true,
         transform: (chunk, _, next) => c.write(chunk, next),
       }))
@@ -437,7 +428,7 @@ export default class Dyno extends Duplex {
       c.setTimeout(1000 * 60 * 60)
       c.setEncoding('utf8')
       c.on('connect', () => {
-        debug('connect')
+        debug('dyno connect')
         // @ts-ignore eslint-disable-next-line no-unsafe-optional-chaining
         const pathnameWithSearchParams = this.uri.pathname + this.uri.search
         c.write(pathnameWithSearchParams.slice(1) + '\r\n', () => {
@@ -448,7 +439,7 @@ export default class Dyno extends Duplex {
       })
       c.on('data', this._readData(c))
       c.on('close', () => {
-        debug('close')
+        debug('dyno connection close')
         // @ts-ignore
         this.opts['exit-code'] ? this.reject('No exit code returned') : this.resolve()
         if (this.unpipeStdin) {
@@ -457,7 +448,7 @@ export default class Dyno extends Duplex {
       })
       c.on('error', this.reject)
       c.on('timeout', () => {
-        debug('timeout')
+        debug('dyno timeout')
         c.end()
         // @ts-ignore
         this.reject(new Error('timed out'))
@@ -483,9 +474,9 @@ export default class Dyno extends Duplex {
 
       await wait(interval)
       return this._ssh()
-    } catch (error: any) {
+    } catch (error: unknown) {
       // the API sometimes responds with a 404 when the dyno is not yet ready
-      if (error.http.statusCode === 404 && retries > 0) {
+      if ((error as HTTPError).http.statusCode === 404 && retries > 0) {
         return this._ssh(retries - 1)
       }
 

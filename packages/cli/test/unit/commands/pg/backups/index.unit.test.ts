@@ -162,7 +162,7 @@ No backups. Capture one with heroku pg:backups:capture
 
  Id   Started at                Status                              Size   Database
  ──── ───────────────────────── ─────────────────────────────────── ────── ────────
- r003 2016-10-08 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB IVORY
+ r003 2016-10-08 00:42:54 +0000 Completed 2016-10-08 00:43:00 +0000 1.40KB ⛁ IVORY
 
 === Copies
 

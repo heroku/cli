@@ -3,7 +3,7 @@ import type {pg} from '@heroku/heroku-cli-util'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 import debugFactory from 'debug'
-import {ChildProcess, SpawnSyncReturns, execSync} from 'node:child_process'
+import childProcess, {ChildProcess, SpawnSyncReturns} from 'node:child_process'
 import {Readable, Writable} from 'node:stream'
 import tsheredoc from 'tsheredoc'
 
@@ -71,7 +71,7 @@ const exec = (cmd: string, opts = {}) => {
   opts = {...opts, stdio: 'inherit'}
 
   try {
-    return execSync(cmd, opts)
+    return childProcess.execSync(cmd, opts)
   } catch (error) {
     const {status} = error as SpawnSyncReturns<Buffer | string>
     if (status) ux.exit(status)

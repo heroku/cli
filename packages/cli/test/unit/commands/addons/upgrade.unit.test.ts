@@ -1,8 +1,8 @@
 import {AddOn} from '@heroku-cli/schema'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/addons/upgrade.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -178,7 +178,7 @@ describe('addons:upgrade', function () {
       ])
     } catch (error) {
       if (error instanceof Error) {
-        expect(stripAnsi(error.message)).to.equal('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".\n\nHere are the available plans for heroku-db1:\nheroku-db1:free\nheroku-db1:basic\nheroku-db1:premium-0\n\nSee more plan information with heroku addons:plans heroku-db1\n\nhttps://devcenter.heroku.com/articles/managing-add-ons')
+        expect(ansis.strip(error.message)).to.equal('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".\n\nHere are the available plans for heroku-db1:\nheroku-db1:free\nheroku-db1:basic\nheroku-db1:premium-0\n\nSee more plan information with heroku addons:plans heroku-db1\n\nhttps://devcenter.heroku.com/articles/managing-add-ons')
       }
     }
   })

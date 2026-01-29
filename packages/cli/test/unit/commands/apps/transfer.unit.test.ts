@@ -1,8 +1,8 @@
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import stripAnsi from 'strip-ansi'
 
 import Cmd from '../../../../src/commands/apps/transfer.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -34,8 +34,8 @@ describe('heroku apps:transfer', function () {
         'team',
       ])
       api.done()
-      expect(stripAnsi(stderr.output)).to.include('Warning: Transferring applications to team...')
-      expect(stripAnsi(stderr.output)).to.include('Transferring ⬢ myapp... done')
+      expect(ansis.strip(stderr.output)).to.include('Warning: Transferring applications to team...')
+      expect(ansis.strip(stderr.output)).to.include('Transferring ⬢ myapp... done')
     })
 
     it('transfers selected apps to a personal account', async function () {
@@ -48,8 +48,8 @@ describe('heroku apps:transfer', function () {
         'gandalf@heroku.com',
       ])
       api.done()
-      expect(stripAnsi(stderr.output)).to.include('Warning: Transferring applications to gandalf@heroku.com...')
-      expect(stripAnsi(stderr.output)).to.include('Initiating transfer of ⬢ myapp... email sent')
+      expect(ansis.strip(stderr.output)).to.include('Warning: Transferring applications to gandalf@heroku.com...')
+      expect(ansis.strip(stderr.output)).to.include('Initiating transfer of ⬢ myapp... email sent')
     })
   })
 
@@ -66,7 +66,7 @@ describe('heroku apps:transfer', function () {
         'gandalf@heroku.com',
       ])
       expect('').to.eq(stdout.output)
-      expect(stripAnsi(stderr.output)).to.include('Initiating transfer of ⬢ myapp to gandalf@heroku.com... email sent')
+      expect(ansis.strip(stderr.output)).to.include('Initiating transfer of ⬢ myapp to gandalf@heroku.com... email sent')
       api.done()
     })
 

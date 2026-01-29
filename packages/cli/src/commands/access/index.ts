@@ -27,7 +27,7 @@ function buildTableColumns(showPermissions: boolean) {
       get: ({email}: any): string => color.user(email),
     },
     role: {
-      get: ({role}: any) => color.green(role),
+      get: ({role}: any) => color.info(role),
     },
   }
 
