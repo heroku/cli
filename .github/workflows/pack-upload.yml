@@ -18,8 +18,6 @@ jobs:
       - run: sudo mkdir -p /build
       - name: Install package deps
         run: npm ci
-      - name: Build and generate manifest
-        run: cd packages/cli && npm run build && npm run manifest
       - name: Create npm-shrinkwrap.json for oclif pack:deb
         run: cd packages/cli && npm run create-shrinkwrap
       - name: Building deb
