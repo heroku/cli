@@ -1,14 +1,13 @@
-/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import BaseCommand from '../../lib/webhooks/base'
+import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class WebhooksInfo extends BaseCommand {
   static description = 'info for a webhook on an app'
 
-  static example = ['$ heroku webhooks:info 99999999-9999-9999-9999-999999999999']
+  static examples = ['$ heroku webhooks:info 99999999-9999-9999-9999-999999999999']
 
   static flags = {
     app: flags.app(),
@@ -37,4 +36,3 @@ export default class WebhooksInfo extends BaseCommand {
     hux.styledObject(obj)
   }
 }
-*/

@@ -1,9 +1,8 @@
-/*
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
 
-import BaseCommand from '../../../lib/webhooks/base'
+import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class DeliveriesInfo extends BaseCommand {
   static description = 'info for a webhook event on an app'
@@ -50,4 +49,3 @@ export default class DeliveriesInfo extends BaseCommand {
     hux.styledJSON(event.payload)
   }
 }
-*/

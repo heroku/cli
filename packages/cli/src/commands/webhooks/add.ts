@@ -1,10 +1,8 @@
-/*
-import {flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
-import Spinner from '@oclif/core/lib/cli-ux/action/spinner'
+import {ux} from '@oclif/core'
 
-import BaseCommand from '../../lib/webhooks/base'
+import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class WebhooksAdd extends BaseCommand {
   static description = 'add a webhook to an app'
@@ -27,13 +25,12 @@ export default class WebhooksAdd extends BaseCommand {
   async run() {
     const {flags} = await this.parse(WebhooksAdd)
     const {path, display} = this.webhookType(flags)
-    const action = new Spinner()
 
-    action.start(`Adding webhook to ${display}`)
+    ux.action.start(`Adding webhook to ${display}`)
 
     const response = await this.webhooksClient.post(`${path}/webhooks`, {
       body: {
-        include: flags.include.split(',').map(s => s.trim()),
+        include: flags.include.split(',').map((s: string) => s.trim()),
         level: flags.level,
         secret: flags.secret,
         url: flags.url,
@@ -41,15 +38,14 @@ export default class WebhooksAdd extends BaseCommand {
       },
     })
 
+    ux.action.stop()
+
     const secret = response.headers && response.headers['heroku-webhook-secret'] as string
     if (secret) {
       hux.styledHeader('Webhooks Signing Secret')
-      this.log(secret)
+      ux.stdout(secret)
     } else {
       ux.warn('no secret found')
     }
-
-    action.stop()
   }
 }
-*/
