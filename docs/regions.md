@@ -11,7 +11,7 @@ list available regions for deployment
 
 ```
 USAGE
-  $ heroku regions [--json] [--private] [--common]
+  $ heroku regions [--common] [--json] [--private]
 
 FLAGS
   --common   show regions for common runtime
@@ -22,4 +22,4 @@ DESCRIPTION
   list available regions for deployment
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.15/packages/cli/src/commands/regions.ts)_

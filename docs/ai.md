@@ -26,7 +26,7 @@ USAGE
     <value> | --messages <value>] [-r <value>]
 
 ARGUMENTS
-  MODEL_RESOURCE  [default: heroku-inference] resource ID or alias of model (--app flag required if alias is used)
+  [MODEL_RESOURCE]  [default: heroku-inference] resource ID or alias of model (--app flag required if alias is used)
 
 FLAGS
   -a, --app=<value>       name or ID of app (required if alias is used)
@@ -75,7 +75,7 @@ USAGE
   $ heroku ai:mcp [ADDON] [--json] [-a <value>]
 
 ARGUMENTS
-  ADDON  [default: heroku-inference] unique identifier or globally unique name of add-on
+  [ADDON]  [default: heroku-inference] unique identifier or globally unique name of add-on
 
 FLAGS
   -a, --app=<value>  app to list the MCP server URL for
@@ -254,7 +254,7 @@ USAGE
   $ heroku ai:models:info [MODEL_RESOURCE] -a <value> [-r <value>]
 
 ARGUMENTS
-  MODEL_RESOURCE  resource ID or alias of model resource
+  [MODEL_RESOURCE]  resource ID or alias of model resource
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -300,7 +300,7 @@ USAGE
   $ heroku ai:tools:list [ADDON] [--json] [-a <value>]
 
 ARGUMENTS
-  ADDON  [default: heroku-inference] unique identifier or globally unique name of add-on
+  [ADDON]  [default: heroku-inference] unique identifier or globally unique name of add-on
 
 FLAGS
   -a, --app=<value>  app to list tools for

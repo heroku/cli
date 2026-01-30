@@ -21,10 +21,10 @@ DESCRIPTION
   list the Heroku accounts in your cache
 
 EXAMPLES
-  $ heroku accounts
+   $ heroku accounts
 ```
 
-_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/accounts/index.ts)_
+_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.15/packages/cli/src/commands/accounts/index.ts)_
 
 ## `heroku accounts:add NAME`
 
@@ -41,10 +41,10 @@ DESCRIPTION
   add a Heroku account to your cache
 
 EXAMPLES
-  $ heroku accounts:add my-account
+   $ heroku accounts:add my-account
 ```
 
-_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/accounts/add.ts)_
+_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.15/packages/cli/src/commands/accounts/add.ts)_
 
 ## `heroku accounts:current`
 
@@ -58,10 +58,10 @@ DESCRIPTION
   display the current Heroku account
 
 EXAMPLES
-  $ heroku accounts:current
+   $ heroku accounts:current
 ```
 
-_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/accounts/current.ts)_
+_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.15/packages/cli/src/commands/accounts/current.ts)_
 
 ## `heroku accounts:remove NAME`
 
@@ -78,10 +78,10 @@ DESCRIPTION
   remove a Heroku account from your cache
 
 EXAMPLES
-  $ heroku accounts:remove my-account
+   $ heroku accounts:remove my-account
 ```
 
-_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/accounts/remove.ts)_
+_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.15/packages/cli/src/commands/accounts/remove.ts)_
 
 ## `heroku accounts:set NAME`
 
@@ -98,7 +98,7 @@ DESCRIPTION
   set the current Heroku account from your cache
 
 EXAMPLES
-  $ heroku accounts:set my-account
+   $ heroku accounts:set my-account
 ```
 
-_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/accounts/set.ts)_
+_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.15/packages/cli/src/commands/accounts/set.ts)_
