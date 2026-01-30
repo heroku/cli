@@ -7,8 +7,6 @@ list webhooks on an app
 * [`heroku webhooks:add`](#heroku-webhooksadd)
 * [`heroku webhooks:deliveries`](#heroku-webhooksdeliveries)
 * [`heroku webhooks:deliveries:info ID`](#heroku-webhooksdeliveriesinfo-id)
-* [`heroku webhooks:events`](#heroku-webhooksevents)
-* [`heroku webhooks:events:info ID`](#heroku-webhookseventsinfo-id)
 * [`heroku webhooks:info ID`](#heroku-webhooksinfo-id)
 * [`heroku webhooks:remove ID`](#heroku-webhooksremove-id)
 * [`heroku webhooks:update ID`](#heroku-webhooksupdate-id)
@@ -32,7 +30,7 @@ EXAMPLES
   $ heroku webhooks
 ```
 
-_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/index.ts)_
+_See code: [src/commands/webhooks/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/index.ts)_
 
 ## `heroku webhooks:add`
 
@@ -58,7 +56,7 @@ EXAMPLES
   $ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks
 ```
 
-_See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/add.ts)_
+_See code: [src/commands/webhooks/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/add.ts)_
 
 ## `heroku webhooks:deliveries`
 
@@ -80,7 +78,7 @@ EXAMPLES
   $ heroku webhooks:deliveries
 ```
 
-_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/deliveries/index.ts)_
+_See code: [src/commands/webhooks/deliveries/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/deliveries/index.ts)_
 
 ## `heroku webhooks:deliveries:info ID`
 
@@ -104,52 +102,7 @@ EXAMPLES
   $ heroku webhooks:deliveries:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/deliveries/info.ts)_
-
-## `heroku webhooks:events`
-
-list webhook events on an app
-
-```
-USAGE
-  $ heroku webhooks:events [-a <value>] [-r <value>]
-
-FLAGS
-  -a, --app=<value>     app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  list webhook events on an app
-
-EXAMPLES
-  $ heroku webhooks:events
-```
-
-_See code: [src/commands/webhooks/events/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/events/index.ts)_
-
-## `heroku webhooks:events:info ID`
-
-info for a webhook event on an app
-
-```
-USAGE
-  $ heroku webhooks:events:info ID [-a <value>] [-r <value>]
-
-ARGUMENTS
-  ID  ID of the webhook event
-
-FLAGS
-  -a, --app=<value>     app to run command against
-  -r, --remote=<value>  git remote of app to use
-
-DESCRIPTION
-  info for a webhook event on an app
-
-EXAMPLES
-  $ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999
-```
-
-_See code: [src/commands/webhooks/events/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/events/info.ts)_
+_See code: [src/commands/webhooks/deliveries/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/deliveries/info.ts)_
 
 ## `heroku webhooks:info ID`
 
@@ -173,7 +126,7 @@ EXAMPLES
   $ heroku webhooks:info 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/info.ts)_
+_See code: [src/commands/webhooks/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/info.ts)_
 
 ## `heroku webhooks:remove ID`
 
@@ -197,7 +150,7 @@ EXAMPLES
   $ heroku webhooks:remove 99999999-9999-9999-9999-999999999999
 ```
 
-_See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/remove.ts)_
+_See code: [src/commands/webhooks/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/remove.ts)_
 
 ## `heroku webhooks:update ID`
 
@@ -226,4 +179,4 @@ EXAMPLES
   $ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks
 ```
 
-_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/webhooks/update.ts)_
+_See code: [src/commands/webhooks/update.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/webhooks/update.ts)_

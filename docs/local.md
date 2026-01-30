@@ -14,10 +14,10 @@ run heroku app locally
 
 ```
 USAGE
-  $ heroku local [PROCESSNAME] [-f <value>] [-e <value>] [-p <value>]
+  $ heroku local [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>]
 
 ARGUMENTS
-  PROCESSNAME  name of the process
+  [PROCESSNAME]  name of the process
 
 FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
@@ -32,13 +32,16 @@ ALIASES
   $ heroku local:start
 
 EXAMPLES
-  $ heroku local
-  $ heroku local web
-  $ heroku local web=2
-  $ heroku local web=1,worker=2
+   $ heroku local 
+
+   $ heroku local web 
+
+   $ heroku local web=2 
+
+   $ heroku local web=1,worker=2
 ```
 
-_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/local/index.ts)_
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -49,17 +52,17 @@ USAGE
   $ heroku local:run [-e <value>] [-p <value>]
 
 FLAGS
-  -e, --env=<value>
-  -p, --port=<value>
+  -e, --env=<value>   location of env file (defaults to .env)
+  -p, --port=<value>  port to listen on
 
 DESCRIPTION
   run a one-off command
 
 EXAMPLES
-  $ heroku local:run bin/migrate
+   $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/local/run.ts)_
 
 ## `heroku local:start [PROCESSNAME]`
 
@@ -67,10 +70,10 @@ run heroku app locally
 
 ```
 USAGE
-  $ heroku local:start [PROCESSNAME] [-f <value>] [-e <value>] [-p <value>]
+  $ heroku local:start [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>]
 
 ARGUMENTS
-  PROCESSNAME  name of the process
+  [PROCESSNAME]  name of the process
 
 FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
@@ -85,10 +88,13 @@ ALIASES
   $ heroku local:start
 
 EXAMPLES
-  $ heroku local
-  $ heroku local web
-  $ heroku local web=2
-  $ heroku local web=1,worker=2
+   $ heroku local 
+
+   $ heroku local web 
+
+   $ heroku local web=2 
+
+   $ heroku local web=1,worker=2
 ```
 
 ## `heroku local:version`
@@ -103,4 +109,4 @@ DESCRIPTION
   display node-foreman version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.16/packages/cli/src/commands/local/version.ts)_
