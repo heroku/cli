@@ -1,11 +1,14 @@
-/*
+import {hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
-import BaseCommand from '../../../lib/webhooks/base'
+import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class Info extends BaseCommand {
+  static args = {
+    id: Args.string({description: 'ID of the webhook event', required: true}),
+  }
+
   static description = 'info for a webhook event on an app'
 
   static examples = [
@@ -14,16 +17,12 @@ export default class Info extends BaseCommand {
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
-  }
-
-  static args = {
-    id: Args.string({required: true, description: 'ID of the webhook event'}),
+    remote: flags.remote(),
   }
 
   async run() {
-    const {flags, args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const {path} = this.webhookType(flags)
 
     ux.warn('heroku webhooks:event:info is deprecated, please use heroku webhooks:deliveries:info')
@@ -38,4 +37,3 @@ export default class Info extends BaseCommand {
     hux.styledObject(obj)
   }
 }
-*/
