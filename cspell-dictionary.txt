@@ -117,6 +117,7 @@ HRKU
 howmany
 hstore
 htcat
+infile
 iname
 indexrelid
 indrelid
@@ -265,6 +266,7 @@ portfinder
 postdeploy
 postgis
 postpublish
+postbump
 postrelease
 postrun
 preauth
