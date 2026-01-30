@@ -175,17 +175,5 @@
     "version": "oclif readme --multi && git add README.md ../../docs"
   },
   "type": "module",
-  "types": "lib/index.d.ts",
-  "oclif": {
-    "update": {
-      "node": {
-        "version": "22.22.0"
-      },
-      "s3": {
-        "bucket": "heroku-cli-assets",
-        "host": "https://cli-assets.heroku.com",
-        "xz": true
-      }
-    }
-  }
+  "types": "lib/index.d.ts"
 }

@@ -23,7 +23,7 @@ jobs:
       - name: Create npm-shrinkwrap.json for oclif pack:deb
         run: cd packages/cli && npm run create-shrinkwrap
       - name: Building deb
-        run: npm run pack:deb
+        run: cd packages/cli && npx oclif pack:deb --root=.
       - uses: actions/upload-artifact@v6
         with:
           name: packed-deb
@@ -45,7 +45,7 @@ jobs:
       - name: Create npm-shrinkwrap.json for oclif pack:tarballs
         run: cd packages/cli && npm run create-shrinkwrap
       - name: Building tarballs
-        run: npm run pack:tarballs
+        run: cd packages/cli && npx oclif pack:tarballs --root=. --xz --parallel
       - uses: actions/upload-artifact@v6
         with:
           name: packed-tarballs
