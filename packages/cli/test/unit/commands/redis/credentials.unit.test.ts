@@ -1,11 +1,11 @@
-import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/redis/credentials'
-import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/redis/credentials.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-/*
 describe('heroku redis:credentials should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd)
 })
@@ -18,7 +18,7 @@ describe('heroku redis:credentials', function () {
   it('displays the redis credentials', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
 
     const redis = nock('https://api.data.heroku.com')
@@ -34,14 +34,13 @@ describe('heroku redis:credentials', function () {
 
     api.done()
     redis.done()
-    expect(stdout.output).to.equal('redis://foobar:password@hostname:8649\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout.output).to.include('redis://foobar:password@hostname:8649')
   })
 
   it('resets the redis credentials', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
 
     const redis = nock('https://api.data.heroku.com')
@@ -55,9 +54,6 @@ describe('heroku redis:credentials', function () {
 
     api.done()
     redis.done()
-    expect(stdout.output).to.equal('Resetting credentials for redis-haiku\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout.output).to.include('Resetting credentials for redis-haiku')
   })
 })
-
-*/

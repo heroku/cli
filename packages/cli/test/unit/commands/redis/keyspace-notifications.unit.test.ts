@@ -1,11 +1,11 @@
-import {stdout, stderr} from 'stdout-stderr'
-// import Cmd from '../../../../src/commands/redis/keyspace-notifications'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/redis/keyspace-notifications.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-/*
 describe('heroku redis:keyspace-notifications should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd, {config: 'A'})
 })
@@ -18,12 +18,12 @@ describe('heroku redis:keyspace-notifications', function () {
   it('# sets the keyspace notify events', async function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons').reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
       ])
 
     const redis = nock('https://api.data.heroku.com')
       .patch('/redis/v0/databases/redis-haiku/config', {notify_keyspace_events: 'AKE'}).reply(200, {
-        notify_keyspace_events: {value: 'AKE', desc: 'Enables keyspace notifications.', default: ''},
+        notify_keyspace_events: {default: '', desc: 'Enables keyspace notifications.', value: 'AKE'},
       })
 
     await runCommand(Cmd, [
@@ -39,5 +39,3 @@ describe('heroku redis:keyspace-notifications', function () {
     expect(stderr.output).to.equal('')
   })
 })
-
-*/
