@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": "./lib",
+    "outDir": "./dist",
     "rootDirs": [
       "./src"
     ],

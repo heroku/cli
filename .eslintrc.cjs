@@ -6,7 +6,7 @@ module.exports = {
     'oclif-typescript',
     'plugin:mocha/recommended',
   ],
-  ignorePatterns: ['**/test/**/*.js', '**/oldCommands/**/*', 'packages/*/lib/**'],
+  ignorePatterns: ['**/test/**/*.js', '**/oldCommands/**/*', 'dist/**'],
 
   // TypeScript settings
   overrides: [
@@ -18,7 +18,7 @@ module.exports = {
         },
         'import/resolver': {
           typescript: {
-            project: 'packages/*/tsconfig.json',
+            project: 'tsconfig.json',
           },
         },
       },
