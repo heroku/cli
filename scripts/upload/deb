@@ -8,5 +8,5 @@ qq.run(async () => {
   await qq.x('./node_modules/.bin/oclif upload:deb')
   const HEROKU_S3_BUCKET = await getHerokuS3Bucket()
 
-  await qq.x(`aws s3 cp --content-type text/plain --cache-control "max-age: 604800" /home/runner/work/cli/cli/packages/cli/dist/apt/release.key "s3://${HEROKU_S3_BUCKET}/channels/stable/apt/release.key"`)
+  await qq.x(`aws s3 cp --content-type text/plain --cache-control "max-age: 604800" /home/runner/work/cli/cli/dist/apt/release.key "s3://${HEROKU_S3_BUCKET}/channels/stable/apt/release.key"`)
 })
