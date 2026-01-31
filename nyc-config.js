@@ -6,6 +6,7 @@ module.exports = {
     '**/*.test.ts',
     '**/*.spec.ts',
     'test/**/*',
+    'dist/**/*',
     'lib/**/*',
     'coverage/**',
     '.nyc_output/**',

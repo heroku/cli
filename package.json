@@ -155,7 +155,7 @@
   "files": [
     "/autocomplete-scripts",
     "/bin",
-    "/lib",
+    "/dist",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
@@ -165,11 +165,11 @@
     "heroku-cli-plugin"
   ],
   "license": "ISC",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "repository": "heroku/cli",
   "scripts": {
-    "build": "rm -rf lib && tsc",
-    "build:dev": "rm -rf lib && tsc --sourcemap",
+    "build": "rm -rf dist && tsc",
+    "build:dev": "rm -rf dist && tsc --sourcemap",
     "lint": "eslint . --ext .ts --config .eslintrc.cjs",
     "lint:fix": "eslint . --ext .ts --config .eslintrc.cjs --fix",
     "coverage": "nyc --reporter=lcov --reporter=text-summary npm run test",
@@ -203,6 +203,6 @@
     "postinstall": "husky install"
   },
   "type": "module",
-  "types": "lib/index.d.ts",
+  "types": "dist/index.d.ts",
   "private": true
 }

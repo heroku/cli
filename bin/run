@@ -2,7 +2,7 @@
 /* eslint-disable node/shebang */
 
 import {execute} from '@oclif/core'
-import * as globalTelemetry from '../lib/global_telemetry.js'
+import * as globalTelemetry from '../dist/global_telemetry.js'
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
