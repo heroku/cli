@@ -48,7 +48,7 @@ rm -rf ./packages/*/oclif.manifest.json
 
 echo "Creating new CLI version and changelog with commit-and-tag-version..."
 npx commit-and-tag-version
-PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+PACKAGE_VERSION=`node -e "console.log(require('./package.json').version)"`
 echo "Done creating new CLI version and changelog"
 
 echo "Updating package-lock.json with new package versions"

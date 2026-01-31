@@ -15,7 +15,7 @@ fi
 
 output=$1
 node_ext=""
-NODE_VERSION=$(node -p "require('./packages/cli/package.json').oclif.update.node.version || process.versions.node")
+NODE_VERSION=$(node -p "require('./package.json').oclif.update.node.version || process.versions.node")
 
 mkdir -p "$output"
 mkdir -p "$TMP_DIR/node"
