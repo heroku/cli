@@ -1,11 +1,11 @@
 {
   "packageFiles": [
-    "packages/cli/package.json"
+    "package.json"
   ],
   "bumpFiles": [
-    "packages/cli/package.json"
+    "package.json"
   ],
-  "infile": "packages/cli/CHANGELOG.md",
+  "infile": "CHANGELOG.md",
   "header": "# Change Log\n\nAll notable changes to this project will be documented in this file.\nSee [Conventional Commits](https://conventionalcommits.org) for commit guidelines.\n\n",
   "types": [
     { "type": "feat", "section": "Features" },
@@ -26,6 +26,6 @@
     "commit": true
   },
   "scripts": {
-    "postbump": "npm install --package-lock-only && cd packages/cli && npx oclif readme --multi && cd ../.. && git add package-lock.json packages/cli/README.md docs"
+    "postbump": "npm install --package-lock-only && npx oclif readme --multi && git add package-lock.json README.md docs"
   }
 }

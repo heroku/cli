@@ -9,9 +9,8 @@
       }
     ],
     "ignorePaths": [
-      "./cspell-dictionary.txt", 
-      "./packages/cli/CHANGELOG.md", 
-      "./CHANGELOG.md", 
+      "./cspell-dictionary.txt",
+      "./CHANGELOG.md",
       "**/package-lock.json",
       "**/node_modules/**",
       "**/coverage/**"

@@ -42,9 +42,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run cli package integration tests
-        run: |
-          cd packages/cli
-          npm run test:integration
+        run: npm run test:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
@@ -67,11 +65,11 @@ jobs:
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.ref_name, 'release-')
-        run: cd packages/cli && npm run test:smoke
+        run: npm run test:smoke
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
-        run: cd packages/cli && npm run test:acceptance
+        run: npm run test:acceptance
 
   spell-check:
     runs-on: ${{ matrix.os }}

@@ -30,7 +30,7 @@ fi
 
 # Update the Node.js version in oclif.config.mjs
 # Using sed to update the version field in the oclif config
-config_file="packages/cli/oclif.config.mjs"
+config_file="./oclif.config.mjs"
 if [ -f "$config_file" ]; then
     sed -i '' "s/version: '[^']*',/version: '$version',/" "$config_file"
     echo "Updated nodejs version to $version in .tool-versions and oclif.config.mjs"

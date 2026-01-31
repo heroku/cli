@@ -1,7 +1,6 @@
 *-debug.log
 *-error.log
-.oclif.manifest.json
-/packages/**/oclif.manifest.json
+oclif.manifest.json
 /cli
 /.nyc_output
 /coverage
@@ -9,14 +8,10 @@
 /lib
 node_modules
 /tmp
-/packages/cli/docs/*
 
 **/.DS_Store
 .idea
 .vscode
-**/.nyc_output
-**/coverage/
-.pnp.*
 npm-shrinkwrap.json
 
 # Ignore .yarn directory from previous yarn setup
@@ -24,6 +19,5 @@ npm-shrinkwrap.json
 yarn.lock
 
 # TEMP
-/packages/**/converted/*
 tpsGetLock_response.txt
 tpsRecordRelease_response.txt
