@@ -26,6 +26,12 @@ export default class Window extends Command {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   };
 
+  static status = 'deprecated'
+
+  static deprecationOptions = {
+    message: 'The pg:maintenance:window command has been deprecated and will be removed in version 11. Use data:maintenances:window:update from the data-maintenance plugin instead.',
+  }
+
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Window)
     const {database, window} = args
