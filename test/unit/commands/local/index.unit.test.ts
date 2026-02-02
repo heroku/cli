@@ -60,9 +60,15 @@ describe('local', function () {
 
   describe('argument construction', function () {
     let runForemanStub: sinon.SinonStub
+    let originalCwd: string
 
     beforeEach(function () {
       runForemanStub = sandbox.stub(Cmd.prototype, 'runForeman').resolves()
+      originalCwd = process.cwd()
+    })
+
+    afterEach(function () {
+      process.chdir(originalCwd)
     })
 
     it('builds correct arguments with multiple flags', async function () {
@@ -99,6 +105,9 @@ describe('local', function () {
     })
 
     it('uses default procfile when none specified', async function () {
+      // Change to fixtures directory so the test can find the default Procfile
+      process.chdir('test/fixtures/local')
+
       // This test verifies that when no procfile is specified, it defaults to 'Procfile'
       // and calls loadProc with the default path
       await Cmd.run([])
@@ -190,17 +199,23 @@ describe('local', function () {
   describe('environment file integration', function () {
     let sandbox: ReturnType<typeof sinon.createSandbox>
     let runForemanStub: sinon.SinonStub
+    let originalCwd: string
 
     beforeEach(function () {
       sandbox = sinon.createSandbox()
       runForemanStub = sandbox.stub(Cmd.prototype, 'runForeman').resolves()
+      originalCwd = process.cwd()
     })
 
     afterEach(function () {
       sandbox.restore()
+      process.chdir(originalCwd)
     })
 
     it('defaults to .env when no env file specified', async function () {
+      // Change to fixtures directory so the test can find the default Procfile
+      process.chdir('test/fixtures/local')
+
       await Cmd.run([])
 
       expect(runForemanStub.calledOnce).to.be.true
