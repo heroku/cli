@@ -3,6 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
+import {execSync} from 'node:child_process'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
 import runCommandHelper from '../../../helpers/runCommand.js'
@@ -17,6 +18,15 @@ describe('apps:create', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    // Clean up any heroku git remotes created by the tests
+    try {
+      const remotes = execSync('git remote', {encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore']})
+      if (remotes.includes('heroku')) {
+        execSync('git remote remove heroku', {stdio: 'ignore'})
+      }
+    } catch {
+      // Ignore errors
+    }
   })
 
   it('creates an app', async function () {
