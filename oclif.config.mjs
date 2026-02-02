@@ -66,7 +66,7 @@ export default {
     '@oclif/plugin-which',
     '@heroku/plugin-ai',
   ],
-  repositoryPrefix: '<%- repo %>/blob/v<%- version %>/packages/cli/<%- commandPath %>',
+  repositoryPrefix: '<%- repo %>/blob/v<%- version %>/<%- commandPath %>',
   scope: 'heroku-cli',
   topics: {
     '2fa': {
