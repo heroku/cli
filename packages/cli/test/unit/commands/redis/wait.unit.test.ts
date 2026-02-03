@@ -2,12 +2,12 @@ import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
-// import Cmd from '../../../../src/commands/redis/wait'
+import Cmd from '../../../../src/commands/redis/wait.js'
 import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-/*
-describe('heroku redis:credentials', function () {
+describe('heroku redis:wait', function () {
   shouldHandleArgs(Cmd)
 })
 
@@ -20,7 +20,7 @@ describe('heroku redis:wait ', function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL'], name: 'redis-haiku'},
       ])
     const redis = nock('https://api.data.heroku.com')
       .get('/redis/v0/databases/redis-haiku/wait')
@@ -42,13 +42,13 @@ describe('heroku redis:wait ', function () {
     const api = nock('https://api.heroku.com')
       .get('/apps/example/addons')
       .reply(200, [
-        {name: 'redis-haiku', addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL']},
+        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_URL'], name: 'redis-haiku'},
       ])
     const redis = nock('https://api.data.heroku.com')
       .get('/redis/v0/databases/redis-haiku/wait')
-      .reply(200, {'waiting?': true, message: 'upgrading version'})
+      .reply(200, {message: 'upgrading version', 'waiting?': true})
       .get('/redis/v0/databases/redis-haiku/wait')
-      .reply(200, {'waiting?': false, message: 'available'})
+      .reply(200, {message: 'available', 'waiting?': false})
 
     await runCommand(Cmd, [
       '--app',
@@ -59,8 +59,6 @@ describe('heroku redis:wait ', function () {
     redis.done()
 
     expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('Waiting for database redis-haiku... upgrading version\nWaiting for database redis-haiku... available\n')
+    expectOutput(stderr.output, 'Waiting for database ⛁ redis-haiku... available')
   })
 })
-
-*/
