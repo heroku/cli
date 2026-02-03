@@ -12,9 +12,6 @@ manage heroku redis instances
 * [`heroku redis:maxmemory [DATABASE]`](#heroku-redismaxmemory-database)
 * [`heroku redis:promote [DATABASE]`](#heroku-redispromote-database)
 * [`heroku redis:stats-reset [DATABASE]`](#heroku-redisstats-reset-database)
-* [`heroku redis:timeout [DATABASE]`](#heroku-redistimeout-database)
-* [`heroku redis:upgrade [DATABASE]`](#heroku-redisupgrade-database)
-* [`heroku redis:wait [DATABASE]`](#heroku-rediswait-database)
 
 ## `heroku redis [DATABASE]`
 
@@ -22,11 +19,11 @@ gets information about redis
 
 ```
 USAGE
-  $ heroku redis [DATABASE] -a <value> [-r <value>] [-j]
+  $ heroku redis [DATABASE] -a <value> [-j] [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -49,8 +46,8 @@ USAGE
   $ heroku redis:cli [DATABASE] -a <value> [-c <value>] [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -66,7 +63,7 @@ EXAMPLES
   $ heroku redis:cli --app=my-app --confirm my-database
 ```
 
-_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/cli.ts)_
+_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/cli.ts)_
 
 ## `heroku redis:credentials [DATABASE]`
 
@@ -77,8 +74,8 @@ USAGE
   $ heroku redis:credentials [DATABASE] -a <value> [-r <value>] [--reset]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -89,7 +86,7 @@ DESCRIPTION
   display credentials information
 ```
 
-_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/credentials.ts)_
+_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/credentials.ts)_
 
 ## `heroku redis:info [DATABASE]`
 
@@ -97,11 +94,11 @@ gets information about redis
 
 ```
 USAGE
-  $ heroku redis:info [DATABASE] -a <value> [-r <value>] [-j]
+  $ heroku redis:info [DATABASE] -a <value> [-j] [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -115,7 +112,7 @@ ALIASES
   $ heroku redis
 ```
 
-_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/info.ts)_
+_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/info.ts)_
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
 
@@ -126,8 +123,8 @@ USAGE
   $ heroku redis:keyspace-notifications [DATABASE] -a <value> -c <value> [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -154,7 +151,7 @@ DESCRIPTION
   pass an empty string ('') to disable keyspace notifications
 ```
 
-_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/keyspace-notifications.ts)_
+_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/keyspace-notifications.ts)_
 
 ## `heroku redis:maintenance [DATABASE]`
 
@@ -162,11 +159,11 @@ manage maintenance windows
 
 ```
 USAGE
-  $ heroku redis:maintenance [DATABASE] -a <value> [-r <value>] [-w <value>] [--run] [-f]
+  $ heroku redis:maintenance [DATABASE] -a <value> [-f] [-r <value>] [--run] [-w <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -180,7 +177,7 @@ DESCRIPTION
   Set or change the maintenance window for your Redis instance
 ```
 
-_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/maintenance.ts)_
+_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/maintenance.ts)_
 
 ## `heroku redis:maxmemory [DATABASE]`
 
@@ -191,8 +188,8 @@ USAGE
   $ heroku redis:maxmemory [DATABASE] -a <value> -p <value> [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -213,7 +210,7 @@ DESCRIPTION
   volatile-ttl    # only evicts keys with an expiry set and a short TTL
 ```
 
-_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/maxmemory.ts)_
+_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/maxmemory.ts)_
 
 ## `heroku redis:promote [DATABASE]`
 
@@ -224,8 +221,8 @@ USAGE
   $ heroku redis:promote [DATABASE] -a <value> [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -235,7 +232,7 @@ DESCRIPTION
   sets DATABASE as your REDIS_URL
 ```
 
-_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/promote.ts)_
+_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/promote.ts)_
 
 ## `heroku redis:stats-reset [DATABASE]`
 
@@ -243,11 +240,11 @@ reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat
 
 ```
 USAGE
-  $ heroku redis:stats-reset [DATABASE] -a <value> [-r <value>] [-c <value>]
+  $ heroku redis:stats-reset [DATABASE] -a <value> [-c <value>] [-r <value>]
 
 ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
+  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
+              app.
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
@@ -258,75 +255,4 @@ DESCRIPTION
   reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)
 ```
 
-_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/stats-reset.ts)_
-
-## `heroku redis:timeout [DATABASE]`
-
-set the number of seconds to wait before killing idle connections
-
-```
-USAGE
-  $ heroku redis:timeout [DATABASE] -a <value> -s <value> [-r <value>]
-
-ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
-
-FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -r, --remote=<value>   git remote of app to use
-  -s, --seconds=<value>  (required) set timeout value
-
-DESCRIPTION
-  set the number of seconds to wait before killing idle connections
-  A value of zero means that connections will not be closed.
-```
-
-_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/timeout.ts)_
-
-## `heroku redis:upgrade [DATABASE]`
-
-perform in-place version upgrade
-
-```
-USAGE
-  $ heroku redis:upgrade [DATABASE] -a <value> -v <value> [-r <value>] [-c <value>]
-
-ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
-
-FLAGS
-  -a, --app=<value>      (required) app to run command against
-  -c, --confirm=<value>
-  -r, --remote=<value>   git remote of app to use
-  -v, --version=<value>  (required)
-
-DESCRIPTION
-  perform in-place version upgrade
-```
-
-_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/upgrade.ts)_
-
-## `heroku redis:wait [DATABASE]`
-
-wait for Redis instance to be available
-
-```
-USAGE
-  $ heroku redis:wait [DATABASE] -a <value> [--wait-interval <value>] [-r <value>]
-
-ARGUMENTS
-  DATABASE  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-            app.
-
-FLAGS
-  -a, --app=<value>            (required) app to run command against
-  -r, --remote=<value>         git remote of app to use
-      --wait-interval=<value>  how frequently to poll in seconds
-
-DESCRIPTION
-  wait for Redis instance to be available
-```
-
-_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/redis/wait.ts)_
+_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.20/src/commands/redis/stats-reset.ts)_
