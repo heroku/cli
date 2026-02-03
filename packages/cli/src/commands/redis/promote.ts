@@ -1,22 +1,24 @@
-/*
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import apiFactory from '../../lib/redis/api'
+import {Args, ux} from '@oclif/core'
+
+import apiFactory from '../../lib/redis/api.js'
+
 export default class Promote extends Command {
-  static topic = 'redis'
+  static args = {
+    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
+  }
+
   static description = 'sets DATABASE as your REDIS_URL'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
-  static args = {
-    database: Args.string({required: false, description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
-  }
+  static topic = 'redis'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Promote)
+    const {args, flags} = await this.parse(Promote)
     const api = apiFactory(flags.app, args.database, false, this.heroku)
     const {body: addonsList} = await this.heroku.get<Required<Heroku.AddOn>[]>(`/apps/${flags.app}/addons`)
     const addon = await api.getRedisAddon(addonsList)
@@ -26,17 +28,17 @@ export default class Promote extends Command {
       const attachment = redis[0]
       await this.heroku.post('/addon-attachments', {
         body: {
-          app: {name: flags.app}, addon: {name: attachment.name}, confirm: flags.app,
+          addon: {name: attachment.name}, app: {name: flags.app}, confirm: flags.app,
         },
       })
     }
 
-    ux.log(`Promoting ${addon.name} to REDIS_URL on ${flags.app}`)
+    ux.stdout(`Promoting ${addon.name} to REDIS_URL on ${flags.app}`)
     await this.heroku.post('/addon-attachments', {
       body: {
-        app: {name: flags.app}, addon: {name: addon.name}, confirm: flags.app, name: 'REDIS',
+        addon: {name: addon.name}, app: {name: flags.app}, confirm: flags.app, name: 'REDIS',
       },
     })
   }
 }
-*/
+

@@ -2,12 +2,12 @@ import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
-// import Cmd from '../../../../src/commands/redis/promote'
+import Cmd from '../../../../src/commands/redis/promote.js'
 import runCommand from '../../../helpers/runCommand.js'
+import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-/*
 describe('heroku redis:promote should handle standard arg behavior', function () {
-  require('../../lib/redis/shared.unit.test.ts').shouldHandleArgs(Cmd)
+  shouldHandleArgs(Cmd)
 })
 
 describe('heroku redis:promote', function () {
@@ -20,19 +20,22 @@ describe('heroku redis:promote', function () {
       .get('/apps/example/addons')
       .reply(200, [
         {
-          name: 'redis-silver-haiku',
           addon_service: {name: 'heroku-redis'},
           config_vars: ['REDIS_URL', 'HEROKU_REDIS_SILVER_URL'],
+          name: 'redis-silver-haiku',
         }, {
-          name: 'redis-gold-haiku',
           addon_service: {name: 'heroku-redis'},
           config_vars: ['HEROKU_REDIS_GOLD_URL'],
+          name: 'redis-gold-haiku',
         },
       ])
 
     const attach = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
-        app: {name: 'example'}, addon: {name: 'redis-gold-haiku'}, confirm: 'example', name: 'REDIS',
+        addon: {name: 'redis-gold-haiku'},
+        app: {name: 'example'},
+        confirm: 'example',
+        name: 'REDIS',
       })
       .reply(200, {})
 
@@ -52,26 +55,33 @@ describe('heroku redis:promote', function () {
       .get('/apps/example/addons')
       .reply(200, [
         {
-          name: 'redis-silver-haiku', addon_service: {name: 'heroku-redis'}, config_vars: [
+          addon_service: {name: 'heroku-redis'},
+          config_vars: [
             'REDIS_URL',
             'REDIS_BASTIONS',
             'REDIS_BASTION_KEY',
             'REDIS_BASTION_REKEYS_AFTER',
           ],
+          name: 'redis-silver-haiku',
         }, {
-          name: 'redis-gold-haiku',
           addon_service: {name: 'heroku-redis'},
           config_vars: ['HEROKU_REDIS_GOLD_URL'],
+          name: 'redis-gold-haiku',
         },
       ])
     const attachRedisUrl = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
-        app: {name: 'example'}, addon: {name: 'redis-silver-haiku'}, confirm: 'example',
+        addon: {name: 'redis-silver-haiku'},
+        app: {name: 'example'},
+        confirm: 'example',
       })
       .reply(200, {})
     const attach = nock('https://api.heroku.com:443')
       .post('/addon-attachments', {
-        app: {name: 'example'}, addon: {name: 'redis-gold-haiku'}, confirm: 'example', name: 'REDIS',
+        addon: {name: 'redis-gold-haiku'},
+        app: {name: 'example'},
+        confirm: 'example',
+        name: 'REDIS',
       })
       .reply(200, {})
     await runCommand(Cmd, [
@@ -86,5 +96,3 @@ describe('heroku redis:promote', function () {
     expect(stderr.output).to.equal('')
   })
 })
-
-*/
