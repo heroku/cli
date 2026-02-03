@@ -84,7 +84,6 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 Developing
 ==========
 
-This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). 
 
 After cloning the repo
 1. Run `npm install` to install dependencies

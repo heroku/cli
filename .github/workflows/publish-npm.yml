@@ -43,10 +43,18 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: Publish to NPM
         run: |
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+          PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
+
+          if npm view $PACKAGE_NAME@$PACKAGE_VERSION version &>/dev/null; then
+            echo "Version $PACKAGE_VERSION already published to npm, skipping"
+            exit 0
+          fi
+
           if ${{ fromJSON(inputs.isStableRelease) }}
           then
-            npx lerna publish --yes from-package
+            npm publish
           else
-            npx lerna publish --dist-tag ${{ inputs.channel || 'beta' }} --yes from-package
+            npm publish --tag ${{ inputs.channel || 'beta' }}
           fi
         shell: bash
