@@ -2,14 +2,15 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
-import heredoc from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
+import Cmd from '../../../../src/commands/redis/upgrade.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-// import Cmd from '../../../../src/commands/redis/upgrade'
 import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
-/*
+const heredoc = tsheredoc.default
+
 describe('heroku redis:upgrade', function () {
   beforeEach(function () {
     nock.cleanAll()
@@ -36,7 +37,6 @@ describe('heroku redis:upgrade', function () {
       '6.2',
     ])
     expectOutput(stderr.output, heredoc(`
-      Requesting upgrade of ${redisAddon.name} to 6.2...
       Requesting upgrade of ${redisAddon.name} to 6.2... Upgrading version now!
     `))
   })
@@ -55,5 +55,3 @@ describe('heroku redis:upgrade', function () {
       })
   })
 })
-
-*/
