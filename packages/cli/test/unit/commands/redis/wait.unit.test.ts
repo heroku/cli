@@ -7,7 +7,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-describe('heroku redis:credentials', function () {
+describe('heroku redis:wait', function () {
   shouldHandleArgs(Cmd)
 })
 
