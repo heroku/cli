@@ -21,6 +21,9 @@ process.env.IS_HEROKU_TEST_ENV = 'true'
 
 process.env.HEROKU_SKIP_NEW_VERSION_CHECK = 'true'
 
+process.env.HEROKU_DATA_HOST = 'test.data.heroku.com'
+process.env.HEROKU_DATA_CONTROL_PLANE = 'test-control-plane'
+
 nock.disableNetConnect()
 if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()

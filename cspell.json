@@ -13,7 +13,7 @@
       "./CHANGELOG.md",
       "**/package-lock.json",
       "**/node_modules/**",
-      "**/coverage/**"
+      "**/coverage/**",
+      "**/fixtures/**"
     ]
   }
-  

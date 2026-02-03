@@ -217,6 +217,7 @@ netrc
 newkey
 newname
 newpassword
+NGPG
 nodir
 noeviction
 notaninteger

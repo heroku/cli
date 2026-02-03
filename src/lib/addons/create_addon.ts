@@ -16,6 +16,7 @@ function formatConfigVarsMessage(addon: Heroku.AddOn) {
   return `Created ${color.addon(addon.name || '')}`
 }
 
+// eslint-disable-next-line max-params
 export default async function (
   heroku: APIClient,
   app: string,
@@ -26,7 +27,7 @@ export default async function (
     actionStartMessage?: string,
     actionStopMessage?: string,
     as?: string,
-    config: Record<string, boolean | string>,
+    config: Record<string, boolean | string | undefined>,
     name?: string,
   },
 ) {
