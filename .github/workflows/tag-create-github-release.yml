@@ -34,7 +34,7 @@ jobs:
       - name: Release to GitHub
         # the script below will fail if run from a separate shell file
         run: |
-          PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
           FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-' | grep -v $TAG_NAME)
