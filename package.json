@@ -203,6 +203,5 @@
     "postinstall": "husky install"
   },
   "type": "module",
-  "types": "dist/index.d.ts",
-  "private": true
+  "types": "dist/index.d.ts"
 }
