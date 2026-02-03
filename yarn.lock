@@ -2958,42 +2958,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^2.1.7":
-  version: 2.3.2
-  resolution: "@oclif/core@npm:2.3.2"
-  dependencies:
-    "@types/cli-progress": ^3.11.0
-    ansi-escapes: ^4.3.2
-    ansi-styles: ^4.3.0
-    cardinal: ^2.1.1
-    chalk: ^4.1.2
-    clean-stack: ^3.0.1
-    cli-progress: ^3.12.0
-    debug: ^4.3.4
-    ejs: ^3.1.8
-    fs-extra: ^9.1.0
-    get-package-type: ^0.1.0
-    globby: ^11.1.0
-    hyperlinker: ^1.0.0
-    indent-string: ^4.0.0
-    is-wsl: ^2.2.0
-    js-yaml: ^3.14.1
-    natural-orderby: ^2.0.3
-    object-treeify: ^1.1.33
-    password-prompt: ^1.1.2
-    semver: ^7.3.7
-    string-width: ^4.2.3
-    strip-ansi: ^6.0.1
-    supports-color: ^8.1.1
-    supports-hyperlinks: ^2.2.0
-    tslib: ^2.5.0
-    widest-line: ^3.1.0
-    wordwrap: ^1.0.0
-    wrap-ansi: ^7.0.0
-  checksum: f95b339b9c79c778cad9f6e737cebb1b8279b17a9183f463e83a2077ede3e22a04979e202de03be8581d6a2be1513c67a5d2593089b3d68148eea76a1fce8ab9
-  languageName: node
-  linkType: hard
-
 "@oclif/core@npm:^2.11.8":
   version: 2.15.0
   resolution: "@oclif/core@npm:2.15.0"
@@ -3293,18 +3257,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/plugin-warn-if-update-available@npm:2.0.29":
-  version: 2.0.29
-  resolution: "@oclif/plugin-warn-if-update-available@npm:2.0.29"
+"@oclif/plugin-warn-if-update-available@npm:3.1.50":
+  version: 3.1.50
+  resolution: "@oclif/plugin-warn-if-update-available@npm:3.1.50"
   dependencies:
-    "@oclif/core": ^2.1.7
-    chalk: ^4.1.0
-    debug: ^4.1.0
-    fs-extra: ^9.0.1
+    "@oclif/core": ^4
+    ansis: ^3.17.0
+    debug: ^4.4.3
     http-call: ^5.2.2
     lodash: ^4.17.21
-    semver: ^7.3.8
-  checksum: 15b73d60d4bad4842474e382e5fdf8abba085ac4ee91b319e3909e3235234650e71f92874b84909ec83b199d451bfaf6a047e7b224bf5cc23b4ae6f269cd0692
+    registry-auth-token: ^5.1.0
+  checksum: 100497fd556030dfefbe4526d31ea5f87285a3a6fc866dc4b1c8579ed8ff475775fd9914951f18745613ef8d06a7082a6975aa4dbf920851808ea8103deaedb5
   languageName: node
   linkType: hard
 
@@ -6103,6 +6066,13 @@ __metadata:
   version: 0.3.2
   resolution: "ansicolors@npm:0.3.2"
   checksum: e84fae7ebc27ac96d9dbb57f35f078cd6dde1b7046b0f03f73dcefc9fbb1f2e82e3685d083466aded8faf038f9fa9ebb408d215282bcd7aaa301d5ac3c486815
+  languageName: node
+  linkType: hard
+
+"ansis@npm:^3.17.0":
+  version: 3.17.0
+  resolution: "ansis@npm:3.17.0"
+  checksum: 6fd6bc4d1187b894d9706f4c141c81b788e90766426617385486dae38f8b2f5a1726d8cc754939e44265f92a9db4647d5136cb1425435c39ac42b35e3acf4f3d
   languageName: node
   linkType: hard
 
@@ -10947,7 +10917,7 @@ __metadata:
     "@oclif/plugin-plugins": 2.4.3
     "@oclif/plugin-update": 3.2.4
     "@oclif/plugin-version": ^1.2.1
-    "@oclif/plugin-warn-if-update-available": 2.0.29
+    "@oclif/plugin-warn-if-update-available": 3.1.50
     "@oclif/plugin-which": 2.2.8
     "@oclif/test": ^2.3.28
     "@opentelemetry/api": ^1.4.1
@@ -15818,6 +15788,15 @@ __metadata:
   dependencies:
     "@pnpm/npm-conf": ^2.1.0
   checksum: 0d7683b71ee418993e7872b389024b13645c4295eb7bb850d10728eaf46065db24ea4d47dc6cbb71a60d1aa4bef077b0d8b7363c9ac9d355fdba47bebdfb01dd
+  languageName: node
+  linkType: hard
+
+"registry-auth-token@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "registry-auth-token@npm:5.1.0"
+  dependencies:
+    "@pnpm/npm-conf": ^2.1.0
+  checksum: 620c897167e2e0e9308b9cdd0288f70d651d9ec554348c39a96d398bb91d444e8cb4b3c0dc1e19d4a8f1c10ade85163baf606e5c09959baa31179bdfb1f7434e
   languageName: node
   linkType: hard
 
