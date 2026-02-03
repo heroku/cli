@@ -200,7 +200,7 @@
     "upload:tarballs": "oclif upload:tarballs --xz",
     "upload:win": "oclif upload:win",
     "cleanNodeModules": "rm -rf ./node_modules",
-    "prepare": "husky install"
+    "prepare": "test -d .git && husky install || true"
   },
   "type": "module",
   "types": "dist/index.d.ts"
