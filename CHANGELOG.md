@@ -3,6 +3,141 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+## [11.0.0-alpha.22](https://github.com/heroku/cli/compare/v10.16.0...v11.0.0-alpha.22) (2026-02-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* convert to esm (#3301)
+
+### Features
+
+* adding conditional logic for receiving applied state of trusted ips ([#3424](https://github.com/heroku/cli/issues/3424)) ([217271b](https://github.com/heroku/cli/commit/217271b6b735480b0c0b79cc342504b3b9f2a654))
+* migrate color.cmd() to color.command() - part 1 ([#3485](https://github.com/heroku/cli/issues/3485)) ([96ee048](https://github.com/heroku/cli/commit/96ee04821b359460fcb5abbc5beeb9ec904601f8))
+* migrate pg commands (bloat, blocking, copy, credentials, diagnose) to oclif v4 ([#3495](https://github.com/heroku/cli/issues/3495)) ([1254896](https://github.com/heroku/cli/commit/125489600d636fb75def6971030132607dabb612))
+* migrate static examples to use color.command() - part 1 ([#3488](https://github.com/heroku/cli/issues/3488)) ([3f52d03](https://github.com/heroku/cli/commit/3f52d03a4e253564e3bdc4dd77d085807a2966b8))
+* migrate static examples to use color.command() - part 2 ([#3490](https://github.com/heroku/cli/issues/3490)) ([8fbdfa7](https://github.com/heroku/cli/commit/8fbdfa77f8a9a9f949834ffb2a0453bea85b0f9a))
+* migrate static examples to use color.command() - part 3 ([#3491](https://github.com/heroku/cli/issues/3491)) ([ad5cb97](https://github.com/heroku/cli/commit/ad5cb97b3e5192b67c5438bb9af7985cefa66488))
+* migrate static examples to use color.command() - part 4 (final) ([#3493](https://github.com/heroku/cli/issues/3493)) ([cde20ed](https://github.com/heroku/cli/commit/cde20ede146cf6a98e9680572becd92cf6c03411))
+* migrate to color.addon from @heroku/heroku-cli-util ([#3470](https://github.com/heroku/cli/issues/3470)) ([5d09c05](https://github.com/heroku/cli/commit/5d09c05cd04cbe1e5d005e0ed9c9d2d9e76ccd72))
+* migrate to color.app from @heroku/heroku-cli-util ([#3468](https://github.com/heroku/cli/issues/3468)) ([dca7d56](https://github.com/heroku/cli/commit/dca7d566fe835e30d27074ad4c32b93b8693939e))
+* migrate to color.attachment from @heroku/heroku-cli-util ([#3471](https://github.com/heroku/cli/issues/3471)) ([ac00bfe](https://github.com/heroku/cli/commit/ac00bfecc44e5fc5446a47229822c15a170a3411))
+* migrate to color.datastore from @heroku/heroku-cli-util ([#3473](https://github.com/heroku/cli/issues/3473)) ([0c2ac53](https://github.com/heroku/cli/commit/0c2ac53a8bf5deca11fd56ae9f69ae6edf2bb1ef))
+* migrate to color.failure from @heroku/heroku-cli-util ([#3483](https://github.com/heroku/cli/issues/3483)) ([697d02d](https://github.com/heroku/cli/commit/697d02d1b0e6545b8279a68d25496e1d8e2ef141))
+* migrate to color.pipeline from @heroku/heroku-cli-util ([#3474](https://github.com/heroku/cli/issues/3474)) ([55a3a86](https://github.com/heroku/cli/commit/55a3a866515baddb43abee1d5e364370e977e5cc))
+* migrate to color.space from @heroku/heroku-cli-util ([#3469](https://github.com/heroku/cli/issues/3469)) ([5f86e9e](https://github.com/heroku/cli/commit/5f86e9ef9e1317c85b45dd0cf75e591f5032da22))
+* migrate to color.success from @heroku/heroku-cli-util ([#3481](https://github.com/heroku/cli/issues/3481)) ([a176a0a](https://github.com/heroku/cli/commit/a176a0a4a4c6aa7bfced87365eb03ff61472f9c7))
+* migrate to color.team from @heroku/heroku-cli-util ([#3476](https://github.com/heroku/cli/issues/3476)) ([b579ef9](https://github.com/heroku/cli/commit/b579ef9fe8828928531d6a7914db7b99cb87176f))
+* migrate to color.user from @heroku/heroku-cli-util ([#3478](https://github.com/heroku/cli/issues/3478)) ([d92aa72](https://github.com/heroku/cli/commit/d92aa725382ec73a25e02439b4657e1fc0e8d50d))
+* migrate to color.warning and color.info from @heroku/heroku-cli-util ([#3484](https://github.com/heroku/cli/issues/3484)) ([ac0000d](https://github.com/heroku/cli/commit/ac0000dae0d2fbe4770cf65bc4f461c896ec86ff))
+* migration of redis commands pt 1 to esm ([#3504](https://github.com/heroku/cli/issues/3504)) ([0b38811](https://github.com/heroku/cli/commit/0b38811ad21c051ee473d0e2961353abc41fa27c))
+* NGPG types and command utils (W-20610475) ([#3487](https://github.com/heroku/cli/issues/3487)) ([4debfed](https://github.com/heroku/cli/commit/4debfedadf446266cf84c7ffd58902ef468e83c0))
+* update local commands to oclif/core v4 ([#3376](https://github.com/heroku/cli/issues/3376)) ([debfc39](https://github.com/heroku/cli/commit/debfc391c001bd70af973936b9a55f3e528e7998))
+* update member commands to oclif/core v4 ([#3377](https://github.com/heroku/cli/issues/3377)) ([eb56c4d](https://github.com/heroku/cli/commit/eb56c4dca1e114e2019bdc5e440aee972d0b2ec6))
+* update misc CLI output with semantic colors and remove strip-ansi ([#3499](https://github.com/heroku/cli/issues/3499)) ([e2cd850](https://github.com/heroku/cli/commit/e2cd85088f88b667a21a0782383fdd55341d9a85))
+* update to node 22 ([#3337](https://github.com/heroku/cli/issues/3337)) ([bac2d56](https://github.com/heroku/cli/commit/bac2d563e98669606582cff06012aa3d17a455d7)), closes [#3301](https://github.com/heroku/cli/issues/3301)
+
+
+### Bug Fixes
+
+* clean up git remotes created by apps:create tests ([0931cda](https://github.com/heroku/cli/commit/0931cdaf9d115731f9f7ae59a0d75c2422dc4622))
+* ensures authentications:revoke documentation is generated ([#3428](https://github.com/heroku/cli/issues/3428)) ([fdfec26](https://github.com/heroku/cli/commit/fdfec26bbb44109706eaaa2d292070d4e06b4337))
+* regenerate package-lock.json after monorepo removal ([bd9fe65](https://github.com/heroku/cli/commit/bd9fe65959a7a8cf3f9d2dd64c1291cdc590597a))
+* **test:** add Procfile fixture for local command tests ([d15b699](https://github.com/heroku/cli/commit/d15b699818db3c8eafffd9740d882bca35698d07))
+* update oclif config to use dist directory and set test root ([7876c48](https://github.com/heroku/cli/commit/7876c48f741f11dfb536cef412f8640ac79d52b8))
+* update paths after monorepo removal ([00feb8a](https://github.com/heroku/cli/commit/00feb8a1efd975b1948015cb12880220fec5b0f1))
+
+
+### Miscellaneous Chores
+
+* Adds .git2gus configuration ([#3435](https://github.com/heroku/cli/issues/3435)) ([20fbfea](https://github.com/heroku/cli/commit/20fbfeaf09c8098e5345f2c33efb3417482dc1d1))
+* cleanup of run commands following migration ([#3434](https://github.com/heroku/cli/issues/3434)) ([aaa1794](https://github.com/heroku/cli/commit/aaa1794b53cb04ccbcee457f4c2e5686cb36b977))
+* **deps:** bump actions/download-artifact from 6 to 7 ([#3437](https://github.com/heroku/cli/issues/3437)) ([6a5869c](https://github.com/heroku/cli/commit/6a5869c3b01824c0826c36c2d12d0f00901ef8fc))
+* **deps:** bump actions/upload-artifact from 5 to 6 ([#3438](https://github.com/heroku/cli/issues/3438)) ([b4be8b8](https://github.com/heroku/cli/commit/b4be8b8895afe0b8646266ace5e6df8b69377f26))
+* fix @heroku/http-call module resolution ([#3380](https://github.com/heroku/cli/issues/3380)) ([2278754](https://github.com/heroku/cli/commit/227875435bb954455e26ed2e8351baa10ae6647c))
+* Fix linting issues ([be63dc8](https://github.com/heroku/cli/commit/be63dc8a720e5fb3fb8bfbaff51bac8ae681f52b))
+* merge 'main' branch updates ([#3372](https://github.com/heroku/cli/issues/3372)) ([15821f7](https://github.com/heroku/cli/commit/15821f7bc1fb43350d1f7b57a7ffcf632a9b0e8c))
+* merge 'main' branch updates 10-22-25 ([#3399](https://github.com/heroku/cli/issues/3399)) ([7d9d49b](https://github.com/heroku/cli/commit/7d9d49bd79e3243f3e6429eb95813a0748e36081))
+* merge main ([#3432](https://github.com/heroku/cli/issues/3432)) ([59e9686](https://github.com/heroku/cli/commit/59e9686d9173b82fc93baca6aeb1afa90cd659e8))
+* merge main into v11 ([#3466](https://github.com/heroku/cli/issues/3466)) ([1008260](https://github.com/heroku/cli/commit/1008260fc2df9b1a30b02637374cae11d2a44a4a)), closes [#3444](https://github.com/heroku/cli/issues/3444)
+* merges main into v11 ([#3443](https://github.com/heroku/cli/issues/3443)) ([cd36e10](https://github.com/heroku/cli/commit/cd36e103047f94aff060e69a1f8f0a93a5dd4dc4))
+* migrate run commands esm ([#3431](https://github.com/heroku/cli/issues/3431)) ([caa00bf](https://github.com/heroku/cli/commit/caa00bf6f726e2ecf7ab4204d05bae7f0a6a6de1))
+* migrates PG push/pull functions to v11 ([#3440](https://github.com/heroku/cli/issues/3440)) ([0ed465a](https://github.com/heroku/cli/commit/0ed465af17a7d9ca9673042a63dd34b72f463050))
+* move oclif config and misc cleanup ([#3467](https://github.com/heroku/cli/issues/3467)) ([d6ae9db](https://github.com/heroku/cli/commit/d6ae9dbd81fb7971ef44b21e433a2948a348c552))
+* replace pg/fetcher functions with those provided by heroku-cli-utils ([#3442](https://github.com/heroku/cli/issues/3442)) ([1aa78b5](https://github.com/heroku/cli/commit/1aa78b511d7b891d7488e971f82a2d3a68242d68))
+* update package-lock.json ([25ac26b](https://github.com/heroku/cli/commit/25ac26bb38706dc1f7d46398ddf32dc8fb06794d))
+* update pg backups for v11 ([#3441](https://github.com/heroku/cli/issues/3441)) ([492b111](https://github.com/heroku/cli/commit/492b1116359820bd4d43141c92c467e1d9aa5470))
+* update ps commands for v11 ([#3439](https://github.com/heroku/cli/issues/3439)) ([b423fd0](https://github.com/heroku/cli/commit/b423fd0a9ca8646a8ac33d96de3c0bbd6fa4b11b))
+* W-19730551 switch from yarn to npm ([#3365](https://github.com/heroku/cli/issues/3365)) ([61bdcbe](https://github.com/heroku/cli/commit/61bdcbeac5446f6863f78b43b1d2d04556a03f9f))
+
+
+### Code Refactoring
+
+* add back access and 2fa commands ([#3304](https://github.com/heroku/cli/issues/3304)) ([751f700](https://github.com/heroku/cli/commit/751f70065c95c0724297a6a211a5623d0f7b82ce)), closes [#3301](https://github.com/heroku/cli/issues/3301)
+* convert & add pg commands' tests to esm part 2 ([a03e368](https://github.com/heroku/cli/commit/a03e3682383865914f286d24ec0ed8ba22ef9316))
+* convert accounts commands to esm ([#3309](https://github.com/heroku/cli/issues/3309)) ([cc5d6ca](https://github.com/heroku/cli/commit/cc5d6ca54080bfd537167e04a309f6dc85f87475)), closes [#3301](https://github.com/heroku/cli/issues/3301) [#3304](https://github.com/heroku/cli/issues/3304) [#3301](https://github.com/heroku/cli/issues/3301)
+* convert addons esm ([#3313](https://github.com/heroku/cli/issues/3313)) ([44df020](https://github.com/heroku/cli/commit/44df0207a894b321cbb1420b6e2d1a49e7c729f5))
+* convert apps esm ([#3317](https://github.com/heroku/cli/issues/3317)) ([d518cde](https://github.com/heroku/cli/commit/d518cde46f3fef8f796c7ecd982df34887c4886e))
+* convert authorizations esm ([#3316](https://github.com/heroku/cli/issues/3316)) ([270cf34](https://github.com/heroku/cli/commit/270cf346a643d5629b883c700a425757c7e6bb53))
+* convert buildpacks to esm ([#3326](https://github.com/heroku/cli/issues/3326)) ([f009c02](https://github.com/heroku/cli/commit/f009c0265bb29dfc11e983fa2d8b828049e6aa6f)), closes [#3301](https://github.com/heroku/cli/issues/3301)
+* convert certs to esm ([#3327](https://github.com/heroku/cli/issues/3327)) ([5d59ae9](https://github.com/heroku/cli/commit/5d59ae9be0fa1a8c2e8da6f04469ec48e83b4b4f))
+* convert ci to esm ([#3334](https://github.com/heroku/cli/issues/3334)) ([7726f6b](https://github.com/heroku/cli/commit/7726f6b9c3673db82d0a9c9d6bb4d10a5d6eb21b))
+* convert clients to esm ([#3329](https://github.com/heroku/cli/issues/3329)) ([2c1dee7](https://github.com/heroku/cli/commit/2c1dee742da4e3b538c626c53180cafe885adae4))
+* convert commands and tests to esm ([c4fdc70](https://github.com/heroku/cli/commit/c4fdc70277d9cb0b3e412badec8f45af15db5b9d))
+* convert domains commands to esm ([#3333](https://github.com/heroku/cli/issues/3333)) ([009a63f](https://github.com/heroku/cli/commit/009a63f64e04da798dc33d186d8a4ff9143bd2f1))
+* convert drains commands to esm ([#3373](https://github.com/heroku/cli/issues/3373)) ([4e1760f](https://github.com/heroku/cli/commit/4e1760f5481511ac9588c2d01e8f1b977d9aa879))
+* convert features, git, and notifications to esm ([#3340](https://github.com/heroku/cli/issues/3340)) ([d0ffa7d](https://github.com/heroku/cli/commit/d0ffa7d7ab7f0ec831bc628d27b7947fe919fa07))
+* convert keys, telemetry, labs to esm ([#3344](https://github.com/heroku/cli/issues/3344)) ([61d7ade](https://github.com/heroku/cli/commit/61d7ade5f3e1973669f42b432d084c42abf18ef5))
+* convert logs, dashboard to esm and uncomment lib tests ([#3346](https://github.com/heroku/cli/issues/3346)) ([7b01b94](https://github.com/heroku/cli/commit/7b01b94d942dc5b7f4eeb39ab612842a9b896d00))
+* convert misc commands to esm ([#3343](https://github.com/heroku/cli/issues/3343)) ([e04adc7](https://github.com/heroku/cli/commit/e04adc70e95882482eb75989dfc7dcf2b580c982))
+* convert pg commands & libs to esm ([a08f3ce](https://github.com/heroku/cli/commit/a08f3ce47ed8c4568fe662ed91c9906f0d9a686b))
+* convert pg commands & libs to esm - part 15 ([#3492](https://github.com/heroku/cli/issues/3492)) ([6f6b198](https://github.com/heroku/cli/commit/6f6b198cd5c1ff2a4f0ad6eae7f8b23675c34f16))
+* convert pg commands to esm part 10 ([#3475](https://github.com/heroku/cli/issues/3475)) ([b6a8c81](https://github.com/heroku/cli/commit/b6a8c8186a2baec83a8ae2cf3ce5ae1f39fa753e))
+* convert pg commands to esm part 11 ([#3479](https://github.com/heroku/cli/issues/3479)) ([e3cf37d](https://github.com/heroku/cli/commit/e3cf37d6fa80dc6e77d28bed23163662dd003e3d))
+* convert pg commands to esm part 12 ([#3482](https://github.com/heroku/cli/issues/3482)) ([4861e40](https://github.com/heroku/cli/commit/4861e40cc505d0ae4318786bf6dcb0ccab894a3e))
+* convert pg commands to esm part 13 ([#3489](https://github.com/heroku/cli/issues/3489)) ([9d62d6b](https://github.com/heroku/cli/commit/9d62d6bcbff63f8a4228cbf0bdd9fa28fd83819d))
+* convert pg commands to esm part 17 ([#3498](https://github.com/heroku/cli/issues/3498)) ([e52168b](https://github.com/heroku/cli/commit/e52168b44279fbffba246b1ef580372d6b6f2ac5))
+* convert pg commands to esm part 6 ([#3453](https://github.com/heroku/cli/issues/3453)) ([0900cff](https://github.com/heroku/cli/commit/0900cfff5cf158b0dcd52daab14b32ba8330cd62))
+* convert pg commands to esm part 8 ([#3463](https://github.com/heroku/cli/issues/3463)) ([93b1324](https://github.com/heroku/cli/commit/93b13244f1d35445a80f3a56ba181b8fe5b7d507))
+* convert pg commands' tests to esm ([847537c](https://github.com/heroku/cli/commit/847537cbf2595e277904c6fdcd41b4f3825ebd37))
+* convert pg:settings commands to esm part 1 ([68f73f8](https://github.com/heroku/cli/commit/68f73f8e9c2beed9b16e606e68ab0fefda57fc64))
+* convert pg:settings commands' tests to esm ([593a929](https://github.com/heroku/cli/commit/593a929e7d697eaad5e568de61558284d251befe))
+* convert pg:settings to esm part 1 ([4c6dc38](https://github.com/heroku/cli/commit/4c6dc387496a58dc47d51cc0a75ac9ddbecd1e56))
+* convert pg:settings to esm part 2 ([a756f21](https://github.com/heroku/cli/commit/a756f214b82ff82aa5e4333a8336d4be6dbe083e))
+* convert pipelines commands to esm part 1 ([#3379](https://github.com/heroku/cli/issues/3379)) ([62d4687](https://github.com/heroku/cli/commit/62d468769689f0e99daed904ecf48a1734e2a5f6))
+* convert pipelines commands to esm part 2 ([#3394](https://github.com/heroku/cli/issues/3394)) ([1dcd4ee](https://github.com/heroku/cli/commit/1dcd4ee3cfc881f966b147393b03f1cc2e8c5f09))
+* convert spaces commands to esm part 1 ([#3400](https://github.com/heroku/cli/issues/3400)) ([4f2de9b](https://github.com/heroku/cli/commit/4f2de9bb8c36d1c0e7350c94c3ff279b0b78f522))
+* convert spaces commands to esm part 2 ([#3403](https://github.com/heroku/cli/issues/3403)) ([029e0c4](https://github.com/heroku/cli/commit/029e0c48299f98f52a53f69f081afaa4e13e00d2))
+* convert spaces commands to esm part 3 ([#3406](https://github.com/heroku/cli/issues/3406)) ([678954d](https://github.com/heroku/cli/commit/678954ddf9b5771a8312db379b0042c8627bd2dd))
+* convert spaces commands to esm part 4 ([#3408](https://github.com/heroku/cli/issues/3408)) ([9364515](https://github.com/heroku/cli/commit/9364515abc4cc7f926325a792031e9aa5dd32a40))
+* convert to esm ([#3301](https://github.com/heroku/cli/issues/3301)) ([c1ef201](https://github.com/heroku/cli/commit/c1ef2010a11240bcd54317ba691973565776fd00))
+* convert webhooks commands to esm - part 1 ([#3503](https://github.com/heroku/cli/issues/3503)) ([ce9e79c](https://github.com/heroku/cli/commit/ce9e79ce8ad91778842aeeff471edd39543a7ea8))
+* convert webhooks commands to esm part 2 ([#3505](https://github.com/heroku/cli/issues/3505)) ([882fbe5](https://github.com/heroku/cli/commit/882fbe51ee5b9ecf998bd195afb339efb7c36cda))
+* migrate autocomplete commands esm ([#3433](https://github.com/heroku/cli/issues/3433)) ([d16b162](https://github.com/heroku/cli/commit/d16b162de0eb7f669b51aab2b192a2d1baa37e79))
+* migrate pg backups pt 7 to esm ([#3462](https://github.com/heroku/cli/issues/3462)) ([fef07cd](https://github.com/heroku/cli/commit/fef07cda94e551520d86d68caa5918757798dfcf))
+* migrate pg utils to esm ([#3445](https://github.com/heroku/cli/issues/3445)) ([6927b32](https://github.com/heroku/cli/commit/6927b32d4d214f736927cab94809f1147e254253))
+* migrate releases commands esm ([#3429](https://github.com/heroku/cli/issues/3429)) ([9117245](https://github.com/heroku/cli/commit/9117245951dc2ee68343fa6fbfc76a42e75603ce))
+* migrate to semantic color functions for labels and names, misc cleanup ([#3494](https://github.com/heroku/cli/issues/3494)) ([a343907](https://github.com/heroku/cli/commit/a3439075b071b88596a46507334c306d6a454c94)), closes [#15](https://github.com/heroku/cli/issues/15) [#16](https://github.com/heroku/cli/issues/16)
+* migration of pg links and maintenance commands to esm ([#3480](https://github.com/heroku/cli/issues/3480)) ([161e743](https://github.com/heroku/cli/commit/161e743f5f89455296095ce6a4b985e0e2d4fc08))
+* PG util functions reconciliation (W-20610889) ([#3502](https://github.com/heroku/cli/issues/3502)) ([99bbb82](https://github.com/heroku/cli/commit/99bbb82adbf00938f03097dde6095d7cefeb63cb))
+* Reconciliation for 'create_addon' and 'destroy_addon' (W-20610672) ([#3497](https://github.com/heroku/cli/issues/3497)) ([d9d7292](https://github.com/heroku/cli/commit/d9d72924fa6f88809ee71defbc7b6d808b72acdb))
+* reimplement csv option for domains ([#3388](https://github.com/heroku/cli/issues/3388)) ([d651286](https://github.com/heroku/cli/commit/d6512863fd7e47ed4ab367eb83ee82044f21e2e4))
+* update index cmd, update tests & remove old cmds ([23aab42](https://github.com/heroku/cli/commit/23aab42dacdf05cb00a536b7054d3cc9ab182565))
+* Update nock imports per PR feedback ([2c68782](https://github.com/heroku/cli/commit/2c687825793873af82972673eb77495c032dd3ae))
+* webhooks:events commands to ESM ([#3506](https://github.com/heroku/cli/issues/3506)) ([436f014](https://github.com/heroku/cli/commit/436f0147d8fdd9f36affda744b996aaa3abb4981))
+
+
+### Tests
+
+* add unit tests for spaces lib files ([#3409](https://github.com/heroku/cli/issues/3409)) ([bdb06a5](https://github.com/heroku/cli/commit/bdb06a50e15464f47b043185bfe4478a5f30ca8d))
+* upgrade @oclif/test to v4 ([#3447](https://github.com/heroku/cli/issues/3447)) ([c60ac27](https://github.com/heroku/cli/commit/c60ac270ca2144fbbeee21d86c1eb2dcc649936a)), closes [#3446](https://github.com/heroku/cli/issues/3446) [#3448](https://github.com/heroku/cli/issues/3448) [#3449](https://github.com/heroku/cli/issues/3449) [#5](https://github.com/heroku/cli/issues/5) [#3454](https://github.com/heroku/cli/issues/3454) [#3455](https://github.com/heroku/cli/issues/3455) [#3452](https://github.com/heroku/cli/issues/3452) [#7](https://github.com/heroku/cli/issues/7) [#3457](https://github.com/heroku/cli/issues/3457) [#3458](https://github.com/heroku/cli/issues/3458) [#11](https://github.com/heroku/cli/issues/11) [#3461](https://github.com/heroku/cli/issues/3461) [#3459](https://github.com/heroku/cli/issues/3459) [#3460](https://github.com/heroku/cli/issues/3460) [#3465](https://github.com/heroku/cli/issues/3465)
+
+
+### Build System
+
+* switch to commit-and-tag-version and update test config ([#3496](https://github.com/heroku/cli/issues/3496)) ([bbb1949](https://github.com/heroku/cli/commit/bbb1949df756539753bfb7d28563aa56e8d9a6bf))
+
 # [10.16.0](https://github.com/heroku/cli/compare/v10.15.1...v10.16.0) (2025-12-04)
 
 

@@ -26,7 +26,7 @@ DESCRIPTION
   log in to Heroku Container Registry
 ```
 
-_See code: [src/commands/container/login.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/login.ts)_
+_See code: [src/commands/container/login.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/login.ts)_
 
 ## `heroku container:logout`
 
@@ -43,7 +43,7 @@ DESCRIPTION
   log out from Heroku Container Registry
 ```
 
-_See code: [src/commands/container/logout.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/logout.ts)_
+_See code: [src/commands/container/logout.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/logout.ts)_
 
 ## `heroku container:pull -a APP [-v] PROCESS_TYPE...`
 
@@ -62,12 +62,14 @@ DESCRIPTION
   pulls an image from an app's process type
 
 EXAMPLES
-    $ heroku container:pull web        # Pulls the web image from the app
-    $ heroku container:pull web worker # Pulls both the web and worker images from the app
-    $ heroku container:pull web:latest # Pulls the latest tag from the web image
+   $ heroku container:pull web         # Pulls the web image from the app
+
+   $ heroku container:pull web worker  # Pulls both the web and worker images from the app
+
+   $ heroku container:pull web:latest  # Pulls the latest tag from the web image
 ```
 
-_See code: [src/commands/container/pull.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/pull.ts)_
+_See code: [src/commands/container/pull.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/pull.ts)_
 
 ## `heroku container:push`
 
@@ -75,7 +77,7 @@ builds, then pushes Docker images to deploy your Heroku app
 
 ```
 USAGE
-  $ heroku container:push -a <value> [-v] [-R] [--arg <value>] [--context-path <value>] [-r <value>]
+  $ heroku container:push -a <value> [--arg <value>] [--context-path <value>] [-R] [-r <value>] [-v]
 
 FLAGS
   -R, --recursive             pushes Dockerfile.<process> found in current and subdirectories
@@ -89,20 +91,20 @@ DESCRIPTION
   builds, then pushes Docker images to deploy your Heroku app
 
 EXAMPLES
-  $ heroku container:push web                          # Pushes Dockerfile to web process type
+   $ heroku container:push web                           # Pushes Dockerfile to web process type
 
-  $ heroku container:push worker                       # Pushes Dockerfile to worker process type
+   $ heroku container:push worker                        # Pushes Dockerfile to worker process type
 
-  $ heroku container:push web worker --recursive       # Pushes Dockerfile.web and Dockerfile.worker
+   $ heroku container:push web worker --recursive        # Pushes Dockerfile.web and Dockerfile.worker
 
-  $ heroku container:push --recursive                  # Pushes Dockerfile.*
+   $ heroku container:push --recursive                   # Pushes Dockerfile.*
 
-  $ heroku container:push web --arg ENV=live,HTTPS=on  # Build-time variables
+   $ heroku container:push web --arg ENV=live,HTTPS=on   # Build-time variables
 
-  $ heroku container:push --recursive --context-path . # Pushes Dockerfile.* using current dir as build context
+   $ heroku container:push --recursive --context-path .  # Pushes Dockerfile.* using current dir as build context
 ```
 
-_See code: [src/commands/container/push.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/push.ts)_
+_See code: [src/commands/container/push.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/push.ts)_
 
 ## `heroku container:release`
 
@@ -121,11 +123,12 @@ DESCRIPTION
   Releases previously pushed Docker images to your Heroku app
 
 EXAMPLES
-    heroku container:release web        # Releases the previously pushed web process type
-    heroku container:release web worker # Releases the previously pushed web and worker process types
+   $ heroku container:release web         # Releases the previously pushed web process type
+
+   $ heroku container:release web worker  # Releases the previously pushed web and worker process types
 ```
 
-_See code: [src/commands/container/release.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/release.ts)_
+_See code: [src/commands/container/release.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/release.ts)_
 
 ## `heroku container:rm -a APP [-v] PROCESS_TYPE...`
 
@@ -143,11 +146,12 @@ DESCRIPTION
   remove the process type from your app
 
 EXAMPLES
-    heroku container:rm web        # Destroys the web container
-    heroku container:rm web worker # Destroys the web and worker containers
+   $ heroku container:rm web         # Destroys the web container
+
+   $ heroku container:rm web worker  # Destroys the web and worker containers
 ```
 
-_See code: [src/commands/container/rm.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/rm.ts)_
+_See code: [src/commands/container/rm.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/rm.ts)_
 
 ## `heroku container:run -a APP [-v] PROCESS_TYPE...`
 
@@ -167,9 +171,11 @@ DESCRIPTION
   builds, then runs the docker image locally
 
 EXAMPLES
-    $ heroku container:pull web        # Pulls the web image from the app
-    $ heroku container:pull web worker # Pulls both the web and worker images from the app
-    $ heroku container:pull web:latest # Pulls the latest tag from the web image
+   $ heroku container:pull web         # Pulls the web image from the app
+
+   $ heroku container:pull web worker  # Pulls both the web and worker images from the app
+
+   $ heroku container:pull web:latest  # Pulls the latest tag from the web image
 ```
 
-_See code: [src/commands/container/run.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/container/run.ts)_
+_See code: [src/commands/container/run.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/container/run.ts)_

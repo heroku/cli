@@ -14,7 +14,7 @@ list experimental features
 
 ```
 USAGE
-  $ heroku labs [-a <value>] [-r <value>] [--json]
+  $ heroku labs [-a <value>] [--json] [-r <value>]
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -25,7 +25,7 @@ DESCRIPTION
   list experimental features
 ```
 
-_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/labs/index.ts)_
+_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/labs/index.ts)_
 
 ## `heroku labs:disable FEATURE`
 
@@ -33,7 +33,7 @@ disables an experimental feature
 
 ```
 USAGE
-  $ heroku labs:disable FEATURE [-a <value>] [-r <value>] [--confirm <value>]
+  $ heroku labs:disable FEATURE [-a <value>] [--confirm <value>] [-r <value>]
 
 ARGUMENTS
   FEATURE  unique identifier or name of the account feature
@@ -47,7 +47,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -68,7 +68,7 @@ DESCRIPTION
   enables an experimental feature
 ```
 
-_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/labs/enable.ts)_
+_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/labs/enable.ts)_
 
 ## `heroku labs:info FEATURE`
 
@@ -76,7 +76,7 @@ show feature info
 
 ```
 USAGE
-  $ heroku labs:info FEATURE [-a <value>] [-r <value>] [--json]
+  $ heroku labs:info FEATURE [-a <value>] [--json] [-r <value>]
 
 ARGUMENTS
   FEATURE  unique identifier or name of the account feature
@@ -90,4 +90,4 @@ DESCRIPTION
   show feature info
 ```
 
-_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/labs/info.ts)_
+_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/labs/info.ts)_

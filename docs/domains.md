@@ -17,10 +17,12 @@ list domains for an app
 
 ```
 USAGE
-  $ heroku domains -a <value> [--columns <value>] [-x] [--filter <value>] [-j] [-r <value>] [--sort <value>]
+  $ heroku domains -a <value> [--columns <value>] [-c] [-x] [--filter <value>] [-j] [-r <value>] [--sort
+    <value>]
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
+  -c, --csv              output in csv format
   -j, --json             output in json format
   -r, --remote=<value>   git remote of app to use
   -x, --extended         show extra columns
@@ -32,17 +34,20 @@ DESCRIPTION
   list domains for an app
 
 EXAMPLES
-  $ heroku domains
+   $ heroku domains 
   === example Heroku Domain
   example-xxxxxxxxxxxx.herokuapp.com
   === example Custom Domains
   Domain Name      DNS Record Type  DNS Target
   www.example.com  CNAME            www.example.herokudns.com
 
-  $ heroku domains --filter 'Domain Name=www.example.com'
+   $ heroku domains --filter 'Domain Name=www.example.com' 
+  === example Custom Domains
+  Domain Name      DNS Record Type  DNS Target
+  www.example.com  CNAME            www.example.herokudns.com
 ```
 
-_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/index.ts)_
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -50,7 +55,7 @@ add a domain to an app
 
 ```
 USAGE
-  $ heroku domains:add HOSTNAME -a <value> [-c <value>] [-j] [--wait] [-r <value>]
+  $ heroku domains:add HOSTNAME -a <value> [-c <value>] [-j] [-r <value>] [--wait]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
@@ -66,10 +71,10 @@ DESCRIPTION
   add a domain to an app
 
 EXAMPLES
-  $ heroku domains:add www.example.com
+   $ heroku domains:add www.example.com
 ```
 
-_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/add.ts)_
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -87,10 +92,10 @@ DESCRIPTION
   remove all domains from an app
 
 EXAMPLES
-  $ heroku domains:clear
+   $ heroku domains:clear
 ```
 
-_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/clear.ts)_
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -111,10 +116,10 @@ DESCRIPTION
   show detailed information for a domain on an app
 
 EXAMPLES
-  $ heroku domains:info www.example.com
+   $ heroku domains:info www.example.com
 ```
 
-_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/info.ts)_
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -135,10 +140,10 @@ DESCRIPTION
   remove a domain from an app
 
 EXAMPLES
-  $ heroku domains:remove www.example.com
+   $ heroku domains:remove www.example.com
 ```
 
-_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/remove.ts)_
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/remove.ts)_
 
 ## `heroku domains:update HOSTNAME`
 
@@ -160,10 +165,10 @@ DESCRIPTION
   update a domain to use a different SSL certificate on an app
 
 EXAMPLES
-  $ heroku domains:update www.example.com --cert mycert
+   $ heroku domains:update www.example.com --cert mycert
 ```
 
-_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/update.ts)_
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -174,7 +179,7 @@ USAGE
   $ heroku domains:wait [HOSTNAME] -a <value> [-r <value>]
 
 ARGUMENTS
-  HOSTNAME  unique identifier of the domain or full hostname
+  [HOSTNAME]  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -184,4 +189,4 @@ DESCRIPTION
   wait for domain to be active for an app
 ```
 
-_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/domains/wait.ts)_
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.22/src/commands/domains/wait.ts)_
