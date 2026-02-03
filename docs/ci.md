@@ -22,7 +22,7 @@ display the most recent CI runs for the given pipeline
 
 ```
 USAGE
-  $ heroku ci [-a <value>] [-r <value>] [--watch] [-p <value>] [--json]
+  $ heroku ci [-a <value>] [--json] [-p <value>] [-r <value>] [--watch]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -35,10 +35,10 @@ DESCRIPTION
   display the most recent CI runs for the given pipeline
 
 EXAMPLES
-  $ heroku ci --app murmuring-headland-14719
+   $ heroku ci --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/index.ts)_
+_See code: [src/commands/ci/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/index.ts)_
 
 ## `heroku ci:config`
 
@@ -46,7 +46,7 @@ display CI config vars
 
 ```
 USAGE
-  $ heroku ci:config [-a <value>] [-r <value>] [-s] [--json] [-p <value>]
+  $ heroku ci:config [-a <value>] [--json] [-p <value>] [-r <value>] [-s]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -59,10 +59,10 @@ DESCRIPTION
   display CI config vars
 
 EXAMPLES
-  $ heroku ci:config --app murmuring-headland-14719 --json
+   $ heroku ci:config --app murmuring-headland-14719 --json
 ```
 
-_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/config/index.ts)_
+_See code: [src/commands/ci/config/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/config/index.ts)_
 
 ## `heroku ci:config:get KEY`
 
@@ -70,7 +70,7 @@ get a CI config var
 
 ```
 USAGE
-  $ heroku ci:config:get KEY [-a <value>] [-r <value>] [-p <value>] [-s]
+  $ heroku ci:config:get KEY [-a <value>] [-p <value>] [-r <value>] [-s]
 
 ARGUMENTS
   KEY  name of the config var key
@@ -85,11 +85,10 @@ DESCRIPTION
   get a CI config var
 
 EXAMPLES
-  $ heroku ci:config:get --pipeline=PIPELINE RAILS_ENV
-      test
+   $ heroku ci:config:get --pipeline=PIPELINE RAILS_ENV test
 ```
 
-_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/config/get.ts)_
+_See code: [src/commands/ci/config/get.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/config/get.ts)_
 
 ## `heroku ci:config:set`
 
@@ -97,7 +96,7 @@ set CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:set [-a <value>] [-r <value>] [-p <value>]
+  $ heroku ci:config:set [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -108,12 +107,12 @@ DESCRIPTION
   set CI config vars
 
 EXAMPLES
-  $ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test
-      Setting test config vars... done
-      RAILS_ENV: test
+   $ heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test 
+  Setting test config vars... done
+  RAILS_ENV: test
 ```
 
-_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/config/set.ts)_
+_See code: [src/commands/ci/config/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/config/set.ts)_
 
 ## `heroku ci:config:unset`
 
@@ -121,7 +120,7 @@ unset CI config vars
 
 ```
 USAGE
-  $ heroku ci:config:unset [-a <value>] [-r <value>] [-p <value>]
+  $ heroku ci:config:unset [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -132,10 +131,10 @@ DESCRIPTION
   unset CI config vars
 
 EXAMPLES
-  $ heroku ci:config:unset RAILS_ENV
+   $ heroku ci:config:unset RAILS_ENV
 ```
 
-_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/config/unset.ts)_
+_See code: [src/commands/ci/config/unset.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/config/unset.ts)_
 
 ## `heroku ci:debug`
 
@@ -155,7 +154,7 @@ DESCRIPTION
   opens an interactive test debugging session with the contents of the current directory
 ```
 
-_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/debug.ts)_
+_See code: [src/commands/ci/debug.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/debug.ts)_
 
 ## `heroku ci:info TEST-RUN`
 
@@ -178,10 +177,10 @@ DESCRIPTION
   show the status of a specific test run
 
 EXAMPLES
-  $ heroku ci:info 1288 --app murmuring-headland-14719
+   $ heroku ci:info 1288 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/info.ts)_
+_See code: [src/commands/ci/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/info.ts)_
 
 ## `heroku ci:last`
 
@@ -189,7 +188,7 @@ looks for the most recent run and returns the output of that run
 
 ```
 USAGE
-  $ heroku ci:last [-a <value>] [-r <value>] [--node <value>] [-p <value>]
+  $ heroku ci:last [-a <value>] [--node <value>] [-p <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -201,10 +200,10 @@ DESCRIPTION
   looks for the most recent run and returns the output of that run
 
 EXAMPLES
-  $ heroku ci:last --pipeline=my-pipeline --node 100
+   $ heroku ci:last --pipeline=my-pipeline --node 100
 ```
 
-_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/last.ts)_
+_See code: [src/commands/ci/last.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/last.ts)_
 
 ## `heroku ci:migrate-manifest`
 
@@ -218,10 +217,10 @@ DESCRIPTION
   app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.
 
 EXAMPLES
-  $ heroku ci:migrate-manifest
+   $ heroku ci:migrate-manifest
 ```
 
-_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/migrate-manifest.ts)_
+_See code: [src/commands/ci/migrate-manifest.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/migrate-manifest.ts)_
 
 ## `heroku ci:open`
 
@@ -229,7 +228,7 @@ open the Dashboard version of Heroku CI
 
 ```
 USAGE
-  $ heroku ci:open [-a <value>] [-r <value>] [-p <value>]
+  $ heroku ci:open [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -240,10 +239,10 @@ DESCRIPTION
   open the Dashboard version of Heroku CI
 
 EXAMPLES
-  $ heroku ci:open --app murmuring-headland-14719
+   $ heroku ci:open --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/open.ts)_
+_See code: [src/commands/ci/open.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/open.ts)_
 
 ## `heroku ci:rerun [NUMBER]`
 
@@ -251,10 +250,10 @@ rerun tests against current directory
 
 ```
 USAGE
-  $ heroku ci:rerun [NUMBER] [-a <value>] [-r <value>] [-p <value>]
+  $ heroku ci:rerun [NUMBER] [-a <value>] [-p <value>] [-r <value>]
 
 ARGUMENTS
-  NUMBER  auto-incremented test run number
+  [NUMBER]  auto-incremented test run number
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -265,10 +264,10 @@ DESCRIPTION
   rerun tests against current directory
 
 EXAMPLES
-  $ heroku ci:rerun 985 --app murmuring-headland-14719
+   $ heroku ci:rerun 985 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/rerun.ts)_
+_See code: [src/commands/ci/rerun.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/rerun.ts)_
 
 ## `heroku ci:run`
 
@@ -276,7 +275,7 @@ run tests against current directory
 
 ```
 USAGE
-  $ heroku ci:run [-a <value>] [-r <value>] [-p <value>]
+  $ heroku ci:run [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       app to run command against
@@ -287,7 +286,7 @@ DESCRIPTION
   run tests against current directory
 
 EXAMPLES
-  $ heroku ci:run --app murmuring-headland-14719
+   $ heroku ci:run --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/ci/run.ts)_
+_See code: [src/commands/ci/run.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.23/src/commands/ci/run.ts)_
