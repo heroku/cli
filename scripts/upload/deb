@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const qq = require('qqjs')
-const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
+import qq from 'qqjs'
+import getHerokuS3Bucket from '../utils/getHerokuS3Bucket.js'
 
 qq.config.silent = false
 qq.run(async () => {
