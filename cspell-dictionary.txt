@@ -134,6 +134,7 @@ killall
 Klass
 kolkrabbi
 libexec
+libpq
 localdb
 localspace
 logfile
@@ -248,6 +249,7 @@ pgappname
 pgbackups
 pgbouncer
 pgbouncers
+PGCHANNELBINDING
 pgdatabase
 pgdiagnose
 pgdg
