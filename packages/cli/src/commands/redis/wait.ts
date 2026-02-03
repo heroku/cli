@@ -1,29 +1,31 @@
-/*
-import color from '@heroku-cli/color'
+import {color} from '@heroku/heroku-cli-util'
+import {HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import redisApi, {RedisFormationWaitResponse} from '../../lib/redis/api'
-import {HTTPError} from '@heroku/http-call'
+
+import redisApi, {RedisFormationWaitResponse} from '../../lib/redis/api.js'
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)
 })
 
 export default class Wait extends Command {
-  static topic = 'redis';
-  static description = 'wait for Redis instance to be available';
+  static args = {
+    database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
+  }
+
+  static description = 'wait for Redis instance to be available'
+
   static flags = {
-    'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
     app: flags.app({required: true}),
     remote: flags.remote(),
-  };
+    'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
+  }
 
-  static args = {
-    database: Args.string({required: false, description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
-  };
+  static topic = 'redis'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Wait)
+    const {args, flags} = await this.parse(Wait)
     const {app, 'wait-interval': waitInterval} = flags
     const {database} = args
     const api = redisApi(app, database, false, this.heroku)
@@ -55,7 +57,7 @@ export default class Wait extends Command {
 
         if (!waiting) {
           waiting = true
-          ux.action.start(`Waiting for database ${color.yellow(addon.name)}`, status.message)
+          ux.action.start(`Waiting for database ${color.datastore(addon.name)}`, status.message)
         }
 
         ux.action.status = status.message
@@ -67,4 +69,3 @@ export default class Wait extends Command {
     await waitFor()
   }
 }
-*/
