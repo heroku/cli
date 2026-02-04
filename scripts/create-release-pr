@@ -44,7 +44,7 @@ npm install
 echo "Done installing dependencies with npm"
 
 # remove any oclif manifests. They interfere with doc generation
-rm -rf ./packages/*/oclif.manifest.json
+rm -rf ./oclif.manifest.json
 
 echo "Creating new CLI version and changelog with commit-and-tag-version..."
 npx commit-and-tag-version
