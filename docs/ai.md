@@ -26,7 +26,7 @@ USAGE
     <value> | --messages <value>] [-r <value>]
 
 ARGUMENTS
-  MODEL_RESOURCE  [default: heroku-inference] resource ID or alias of model (--app flag required if alias is used)
+  [MODEL_RESOURCE]  [default: heroku-inference] resource ID or alias of model (--app flag required if alias is used)
 
 FLAGS
   -a, --app=<value>       name or ID of app (required if alias is used)
@@ -47,7 +47,7 @@ EXAMPLES
   $ heroku ai:agents:call my_llm --app my-app --messages '[{"role":"user","content":"What is the current time?"}]'
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/agents/call.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/agents/call.ts)_
 
 ## `heroku ai:docs`
 
@@ -64,7 +64,7 @@ DESCRIPTION
   open Heroku Managed Inference and Agent's Dev Center documentation in your browser
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/docs.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/docs.ts)_
 
 ## `heroku ai:mcp [ADDON]`
 
@@ -75,7 +75,7 @@ USAGE
   $ heroku ai:mcp [ADDON] [--json] [-a <value>]
 
 ARGUMENTS
-  ADDON  [default: heroku-inference] unique identifier or globally unique name of add-on
+  [ADDON]  [default: heroku-inference] unique identifier or globally unique name of add-on
 
 FLAGS
   -a, --app=<value>  app to list the MCP server URL for
@@ -85,7 +85,7 @@ DESCRIPTION
   list the MCP server URL
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/mcp/index.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/mcp/index.ts)_
 
 ## `heroku ai:models`
 
@@ -132,7 +132,7 @@ EXAMPLES
   $ heroku ai:models:attach claude-3-5-sonnet-acute-41518 --source-app example-source-app --target-app example-target-app --as MY_CS35
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/attach.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/attach.ts)_
 
 ## `heroku ai:models:call MODEL_RESOURCE`
 
@@ -164,7 +164,7 @@ EXAMPLES
   $ heroku ai:models:call diffusion --app my-app --prompt "Generate an image of a sunset" --opts '{"quality":"hd"}' -o sunset.png
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/call.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/call.ts)_
 
 ## `heroku ai:models:create MODEL_NAME`
 
@@ -193,7 +193,7 @@ EXAMPLES
   $ heroku ai:models:create stable-image-ultra --app example-app --as diffusion
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/create.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/create.ts)_
 
 ## `heroku ai:models:destroy MODEL_RESOURCE`
 
@@ -219,7 +219,7 @@ EXAMPLES
   $ heroku ai:models:destroy claude-3-5-sonnet-acute-43973
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/destroy.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/destroy.ts)_
 
 ## `heroku ai:models:detach MODEL_RESOURCE`
 
@@ -243,7 +243,7 @@ EXAMPLES
   $ heroku ai:models:detach EXAMPLE_MODEL_ALIAS --app example-app
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/detach.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/detach.ts)_
 
 ## `heroku ai:models:info [MODEL_RESOURCE]`
 
@@ -254,7 +254,7 @@ USAGE
   $ heroku ai:models:info [MODEL_RESOURCE] -a <value> [-r <value>]
 
 ARGUMENTS
-  MODEL_RESOURCE  resource ID or alias of model resource
+  [MODEL_RESOURCE]  resource ID or alias of model resource
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -269,7 +269,7 @@ EXAMPLES
   $ heroku ai:models:info --app example-app
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/info.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/info.ts)_
 
 ## `heroku ai:models:list`
 
@@ -289,7 +289,7 @@ EXAMPLES
   $ heroku ai:models:list
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/models/list.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/models/list.ts)_
 
 ## `heroku ai:tools:list [ADDON]`
 
@@ -300,7 +300,7 @@ USAGE
   $ heroku ai:tools:list [ADDON] [--json] [-a <value>]
 
 ARGUMENTS
-  ADDON  [default: heroku-inference] unique identifier or globally unique name of add-on
+  [ADDON]  [default: heroku-inference] unique identifier or globally unique name of add-on
 
 FLAGS
   -a, --app=<value>  app to list tools for
@@ -310,4 +310,4 @@ DESCRIPTION
   list all available AI tools
 ```
 
-_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.1/src/commands/ai/tools/list.ts)_
+_See code: [@heroku/plugin-ai](https://github.com/heroku/heroku-cli-plugin-ai/blob/v1.0.2/src/commands/ai/tools/list.ts)_
