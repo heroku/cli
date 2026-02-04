@@ -26,10 +26,10 @@ DESCRIPTION
   list OAuth authorizations
 
 EXAMPLES
-  $ heroku authorizations
+   $ heroku authorizations
 ```
 
-_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/authorizations/index.ts)_
+_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.27/src/commands/authorizations/index.ts)_
 
 ## `heroku authorizations:create`
 
@@ -50,10 +50,10 @@ DESCRIPTION
   create a new OAuth authorization
 
 EXAMPLES
-  $ heroku authorizations:create --description "For use with Anvil"
+   $ heroku authorizations:create --description "For use with Anvil"
 ```
 
-_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/authorizations/create.ts)_
+_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.27/src/commands/authorizations/create.ts)_
 
 ## `heroku authorizations:destroy ID`
 
@@ -70,11 +70,10 @@ DESCRIPTION
   revoke OAuth authorization
 
 ALIASES
-  $ heroku authorizations:revoke
   $ heroku authorizations:destroy
 
 EXAMPLES
-  $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
+   $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
 ## `heroku authorizations:info ID`
@@ -95,7 +94,7 @@ DESCRIPTION
   show an existing OAuth authorization
 ```
 
-_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/authorizations/info.ts)_
+_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.27/src/commands/authorizations/info.ts)_
 
 ## `heroku authorizations:revoke ID`
 
@@ -112,14 +111,13 @@ DESCRIPTION
   revoke OAuth authorization
 
 ALIASES
-  $ heroku authorizations:revoke
   $ heroku authorizations:destroy
 
 EXAMPLES
-  $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
+   $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
-_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/authorizations/revoke.ts)_
+_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.27/src/commands/authorizations/revoke.ts)_
 
 ## `heroku authorizations:rotate ID`
 
@@ -136,7 +134,7 @@ DESCRIPTION
   updates an OAuth authorization token
 ```
 
-_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/authorizations/rotate.ts)_
+_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.27/src/commands/authorizations/rotate.ts)_
 
 ## `heroku authorizations:update ID`
 
@@ -158,4 +156,4 @@ DESCRIPTION
   updates an OAuth authorization
 ```
 
-_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/authorizations/update.ts)_
+_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.27/src/commands/authorizations/update.ts)_
