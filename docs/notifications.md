@@ -11,7 +11,7 @@ display notifications
 
 ```
 USAGE
-  $ heroku notifications [-a <value>] [-r <value>] [--all] [--json] [--read]
+  $ heroku notifications [--all] [-a <value>] [--json] [--read] [-r <value>]
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -24,4 +24,4 @@ DESCRIPTION
   display notifications
 ```
 
-_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/notifications/index.ts)_
+_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.24/src/commands/notifications/index.ts)_
