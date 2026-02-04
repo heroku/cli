@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { execa } from 'execa'
+import execa from 'execa'
 import qq from 'qqjs'
 import path from 'path'
 import { fileURLToPath } from 'url'

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { execa } from 'execa'
+import execa from 'execa'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { rimrafSync } from 'rimraf'
