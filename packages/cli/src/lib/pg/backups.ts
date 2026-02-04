@@ -53,7 +53,7 @@ class Backups {
       decimalPlaces: 2,
       fixedDecimals: true,
     })
-    return bytes(size, opts)
+    return bytes(size, opts) ?? ''
   }
 
   public name(transfer: BackupTransfer): string {

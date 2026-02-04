@@ -4,6 +4,7 @@ import nock from 'nock'
 
 import {unwrap} from '../helpers/utils/unwrap.js'
 
+const skipWithoutAuth = process.env.HEROKU_API_KEY ? it : it.skip
 function setupRunNocks(command: string, skipAppCheck = false) {
   const api = nock('https://api.heroku.com')
     .get('/account')
@@ -72,16 +73,16 @@ describe('run', function () {
     expect(error).to.exist
   })
 
-  it.skip('runs a command with spaces', async function () {
-    const {stdout} = await runCommand(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
-
-    expect(unwrap(stdout)).to.contain('{foo: bar}')
+  skipWithoutAuth('runs a command with spaces', async function () {
+    const {stdout, stderr} = await runCommand(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo": "bar"} " '])
+    const out = unwrap(stdout + stderr)
+    expect(out).to.contain('{foo: bar}')
   })
 
-  it.skip('runs a command with quotes', async function () {
-    const {stdout} = await runCommand(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo":"bar"}"'])
-
-    expect(stdout).to.contain('{foo:bar}')
+  skipWithoutAuth('runs a command with quotes', async function () {
+    const {stdout, stderr} = await runCommand(['run', '--app=heroku-cli-ci-smoke-test-app', 'ruby -e "puts ARGV[0]" "{"foo":"bar"}"'])
+    const out = stdout + stderr
+    expect(out).to.contain('{foo:bar}')
   })
 
   it('runs a command with env vars', async function () {
@@ -94,10 +95,9 @@ describe('run', function () {
     expect(error).to.exist
   })
 
-  it.skip('gets 127 status for invalid command', async function () {
-    // Exit code handling is better tested in unit tests
-    const {stdout} = await runCommand(['run', '--app=heroku-cli-ci-smoke-test-app', '--exit-code', 'invalid-command'])
-
-    expect(unwrap(stdout)).to.include('invalid-command: command not found')
+  skipWithoutAuth('gets 127 status for invalid command', async function () {
+    const {stdout, stderr} = await runCommand(['run', '--app=heroku-cli-ci-smoke-test-app', '--exit-code', 'invalid-command'])
+    const out = unwrap(stdout + stderr)
+    expect(out).to.include('invalid-command: command not found')
   })
 })

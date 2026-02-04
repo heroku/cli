@@ -1,4 +1,4 @@
-export default `Command                                        Summary
+export default ` Id                                              Summary
 ────────────────────────────────────────────── ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 2fa                                            check 2fa status
 2fa:disable                                    disables 2fa on account
@@ -87,14 +87,13 @@ clients:destroy                                delete client by ID
 clients:info                                   show details of an oauth client
 clients:rotate                                 rotate OAuth client secret
 clients:update                                 update OAuth client
-commands                                       list all the commands
+commands                                       list all heroku commands.
 config                                         display the config vars for an app
 config:edit                                    interactively edit config vars
 config:get                                     display a single config value for an app
 config:remove                                  unset one or more config vars
 config:set                                     set one or more config vars
 config:unset                                   unset one or more config vars
-container                                      Use containers to build and deploy Heroku apps
 container:login                                log in to Heroku Container Registry
 container:logout                               log out from Heroku Container Registry
 container:pull                                 pulls an image from an app's process type
@@ -224,9 +223,9 @@ pipelines:setup                                bootstrap a new pipeline with com
 pipelines:transfer                             transfer ownership of a pipeline
 pipelines:update                               update the app's stage in a pipeline
 plugins                                        List installed plugins.
-plugins:add                                    Installs a plugin into the CLI.
+plugins:add                                    Installs a plugin into heroku.
 plugins:inspect                                Displays installation properties of a plugin.
-plugins:install                                Installs a plugin into the CLI.
+plugins:install                                Installs a plugin into heroku.
 plugins:link                                   Links a plugin into the CLI for development.
 plugins:remove                                 Removes a plugin from the CLI.
 plugins:uninstall                              Removes a plugin from the CLI.
@@ -235,14 +234,10 @@ plugins:update                                 Update installed plugins.
 ps                                             list dynos for an app
 ps:autoscale:disable                           disable web dyno autoscaling
 ps:autoscale:enable                            enable web dyno autoscaling
-ps:copy                                        Copy a file from a dyno to the local filesystem
-ps:exec                                        Create an SSH session to a dyno
-ps:forward                                     Forward traffic on a local port to a dyno
 ps:kill                                        stop an app dyno or process type
 ps:resize                                      manage dyno sizes
 ps:restart                                     restart an app dyno or process type
 ps:scale                                       scale dyno quantity up or down
-ps:socks                                       Launch a SOCKS proxy into a dyno
 ps:stop                                        stop an app dyno or process type
 ps:type                                        manage dyno sizes
 ps:wait                                        wait for all dynos to be running latest version after a release
