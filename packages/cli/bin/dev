@@ -1,9 +1,0 @@
-#!/usr/bin/env -S node --loader ts-node/esm --disable-warning=ExperimentalWarning
-/* eslint-disable node/shebang */
-
-import {execute} from '@oclif/core'
-
-// In dev mode -> use ts-node and dev plugins
-process.env.NODE_ENV = 'development'
-
-await execute({development: true, dir: import.meta.url})
