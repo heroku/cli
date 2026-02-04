@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable node/shebang */
+/* eslint-disable n/no-unpublished-bin */
 
 import {execute} from '@oclif/core'
 import * as globalTelemetry from '../dist/global_telemetry.js'
@@ -11,15 +11,17 @@ const cliStartTime = now.getTime()
 
 process.once('beforeExit', async code => {
   // capture as successful exit
-  if (global.cliTelemetry.isVersionOrHelp) {
-    const cmdStartTime = global.cliTelemetry.commandRunDuration
-    global.cliTelemetry.commandRunDuration = globalTelemetry.computeDuration(cmdStartTime)
-  }
+  if (global.cliTelemetry) {
+    if (global.cliTelemetry.isVersionOrHelp) {
+      const cmdStartTime = global.cliTelemetry.commandRunDuration
+      global.cliTelemetry.commandRunDuration = globalTelemetry.computeDuration(cmdStartTime)
+    }
 
-  global.cliTelemetry.exitCode = code
-  global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  const telemetryData = global.cliTelemetry
-  await globalTelemetry.sendTelemetry(telemetryData)
+    global.cliTelemetry.exitCode = code
+    global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+    const telemetryData = global.cliTelemetry
+    await globalTelemetry.sendTelemetry(telemetryData)
+  }
 })
 
 process.on('SIGINT', async () => {
