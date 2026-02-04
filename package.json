@@ -157,6 +157,7 @@
     "/bin",
     "/dist",
     "/npm-shrinkwrap.json",
+    "/oclif.config.mjs",
     "/oclif.manifest.json"
   ],
   "homepage": "https://cli.heroku.com",
