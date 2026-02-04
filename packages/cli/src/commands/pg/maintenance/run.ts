@@ -12,13 +12,19 @@ export default class Run extends Command {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static deprecationOptions = {
+    message: 'The pg:maintenance:run command has been deprecated and will be removed in version 11. Use data:maintenances:run from the data-maintenance plugin instead.',
+  }
+
   static description = 'start maintenance'
+
   static flags = {
     app: flags.app({required: true}),
     force: flags.boolean({char: 'f'}),
     remote: flags.remote(),
   }
 
+  static status = 'deprecated'
   static topic = 'pg'
 
   public async run(): Promise<void> {
