@@ -16,7 +16,7 @@ import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js
 
 const heredoc = tsheredoc.default
 
-describe.only('data:pg:settings', function () {
+describe('data:pg:settings', function () {
   it('exits with error if it isn\'t a Advanced-tier database', async function () {
     const herokuApi = nock('https://api.heroku.com')
       .post('/actions/addons/resolve')

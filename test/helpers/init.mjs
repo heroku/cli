@@ -22,6 +22,14 @@ process.env.HEROKU_SKIP_NEW_VERSION_CHECK = 'true'
 
 process.env.HEROKU_DATA_CONTROL_PLANE = 'test-control-plane'
 
+// Set terminal size for tests to 200x50
+process.env.COLUMNS = '200'
+process.env.LINES = '50'
+process.stdout.columns = 200
+process.stdout.rows = 50
+process.stderr.columns = 200
+process.stderr.rows = 50
+
 nock.disableNetConnect()
 if (process.env.ENABLE_NET_CONNECT === 'true') {
   nock.enableNetConnect()
