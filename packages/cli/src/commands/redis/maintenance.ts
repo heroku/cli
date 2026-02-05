@@ -12,6 +12,10 @@ export default class Maintenance extends Command {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
   }
 
+  static deprecationOptions = {
+    message: 'The redis:maintenance command has been deprecated and will be removed in version 11. Use commands from the data-maintenance plugin instead.',
+  }
+
   static description = heredoc`
   manage maintenance windows
   Set or change the maintenance window for your Redis instance
@@ -33,6 +37,7 @@ export default class Maintenance extends Command {
     }),
   }
 
+  static state = 'deprecated'
   static topic = 'redis'
 
   async run() {
