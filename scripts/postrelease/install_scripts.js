@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
-const execa = require('execa')
-const qq = require('qqjs')
-const path = require('path')
-const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
-const isStableRelease = require('../utils/isStableRelease')
+import execa from 'execa'
+import qq from 'qqjs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import getHerokuS3Bucket from '../utils/getHerokuS3Bucket.js'
+import isStableRelease from '../utils/isStableRelease.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const opts = {
   cwd: path.join(__dirname, '..', '..'),

@@ -29,7 +29,7 @@ jobs:
       - id: getVersion
         uses: ./.github/actions/get-version-and-channel/
         with:
-          path: './packages/cli/package.json'
+          path: './package.json'
 
   publish-npm:
     needs: [get-version-channel]

@@ -1,6 +1,0 @@
-/lib
-/node_modules
-/oclif.manifest.json
-/tmp
-/dist
-/.env

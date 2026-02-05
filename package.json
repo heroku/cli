@@ -1,9 +1,127 @@
 {
+  "name": "heroku",
+  "description": "CLI to interact with Heroku",
+  "version": "10.16.0",
+  "author": "Heroku",
+  "bin": "./bin/run",
+  "bugs": "https://github.com/heroku/cli/issues",
+  "dependencies": {
+    "@heroku-cli/command": "^12.1.1",
+    "@heroku-cli/notifications": "^1.2.4",
+    "@heroku-cli/plugin-ps-exec": "2.6.4",
+    "@heroku-cli/schema": "^1.0.25",
+    "@heroku/buildpack-registry": "^1.0.1",
+    "@heroku/eventsource": "^1.0.7",
+    "@heroku/heroku-cli-util": "10.4.0",
+    "@heroku/http-call": "^5.5.0",
+    "@heroku/mcp-server": "1.0.7-alpha.1",
+    "@heroku/plugin-ai": "^1.0.1",
+    "@inquirer/prompts": "^5.0.5",
+    "@oclif/core": "^4",
+    "@oclif/plugin-commands": "4.1.25",
+    "@oclif/plugin-help": "^6.2.28",
+    "@oclif/plugin-legacy": "^2.0.24",
+    "@oclif/plugin-not-found": "3.2.52",
+    "@oclif/plugin-plugins": "^5.4.38",
+    "@oclif/plugin-update": "^4.6.41",
+    "@oclif/plugin-version": "^2.2.28",
+    "@oclif/plugin-warn-if-update-available": "^3.1.40",
+    "@oclif/plugin-which": "^3.2.35",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
+    "@opentelemetry/instrumentation": "^0.52.1",
+    "@opentelemetry/resources": "^1.25.1",
+    "@opentelemetry/sdk-trace-base": "^1.25.1",
+    "@opentelemetry/sdk-trace-node": "^1.25.1",
+    "@opentelemetry/semantic-conventions": "^1.25.1",
+    "@sentry/node": "^10.27.0",
+    "@sentry/opentelemetry": "^10.27.0",
+    "@types/js-yaml": "^3.12.5",
+    "ansi-escapes": "^4.3.2",
+    "ansis": "^4",
+    "bytes": "^3.1.2",
+    "cli-progress": "^3.12.0",
+    "commander": "^2.15.1",
+    "date-fns": "^2.30.0",
+    "debug": "4.3.4",
+    "eventsource": "^4.0.0",
+    "execa": "5.1.1",
+    "filesize": "^10.1.2",
+    "foreman": "^3.0.1",
+    "fs-extra": "^11.3.0",
+    "github-url-to-object": "^4.0.6",
+    "glob": "^10.3.10",
+    "got": "^13.0.0",
+    "https-proxy-agent": "^7.0.6",
+    "inquirer": "^8.2.6",
+    "lodash": "^4.17.21",
+    "natural-orderby": "^5.0.0",
+    "netrc-parser": "3.1.6",
+    "node-fetch": "^2.6.7",
+    "open": "^10.1.2",
+    "parse-procfile": "^0.0.2",
+    "phoenix": "^1.6.14",
+    "portfinder": "^1.0.32",
+    "printf": "0.6.1",
+    "psl": "^1.9.0",
+    "redis-parser": "^3.0.0",
+    "semver": "^7.7.3",
+    "shell-escape": "^0.2.0",
+    "shell-quote": "^1.8.1",
+    "ssh2": "^1.16.0",
+    "stdout-stderr": "^0.1.13",
+    "strftime": "^0.10.0",
+    "term-img": "^4.1.0",
+    "tmp": "^0.2.5",
+    "true-myth": "4.1.1",
+    "tsheredoc": "^1.0.1",
+    "tslib": "1.14.1",
+    "urijs": "^1.19.11",
+    "word-wrap": "^1.2.5",
+    "ws": "^6.2.2",
+    "yaml": "^2.0.1",
+    "yargs-parser": "18.1.3"
+  },
   "devDependencies": {
     "@actions/core": "^1.10.0",
+    "@heroku-cli/schema": "^1.0.25",
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@oclif/test": "^4.1.15",
+    "@types/ansi-styles": "^3.2.1",
+    "@types/bytes": "^3.1.4",
+    "@types/chai": "^4.3.14",
+    "@types/chai-as-promised": "^7.1.8",
+    "@types/debug": "^4.1.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/github-url-to-object": "^4.0.4",
+    "@types/glob": "^7.1.1",
+    "@types/inquirer": "^8.2.10",
+    "@types/lodash": "^4.14.123",
+    "@types/lolex": "^5.1.6",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.16.5",
+    "@types/node-fetch": "^2.6.11",
+    "@types/phoenix": "^1.4.0",
+    "@types/proxyquire": "^1.3.28",
     "@types/psl": "^1.1.3",
+    "@types/redis-parser": "^3.0.3",
+    "@types/shell-quote": "^1.7.5",
+    "@types/sinon": "^17.0.3",
+    "@types/ssh2": "^1.15.4",
+    "@types/std-mocks": "^1.0.4",
+    "@types/strftime": "^0.9.8",
+    "@types/supports-color": "^8.1.3",
+    "@types/tmp": "^0.2.6",
+    "@types/urijs": "^1.19.4",
+    "@types/uuid": "^8.3.0",
+    "@types/write-json-file": "^3.2.1",
+    "@types/ws": "^6.0.1",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
+    "bats": "^1.1.0",
+    "chai": "^4.4.1",
+    "chai-as-promised": "^7.1.1",
+    "commit-and-tag-version": "^12.5.0",
     "cspell": "9.6.0",
     "eslint": "8.57.0",
     "eslint-config-oclif": "^5.2.2",
@@ -12,14 +130,221 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-mocha": "^10.4.3",
     "eslint-plugin-n": "^17.23.2",
-    "execa": "5.1.1",
+    "globby": "^10.0.2",
     "husky": "8.0.3",
-    "lerna": "^6.4.1",
-    "commit-and-tag-version": "^12.5.0",
-    "oclif": "^4.22.27",
+    "lolex": "^5.1.2",
+    "mocha": "^10.8.2",
+    "nock": "^13.5.1",
+    "nyc": "^15.1.0",
+    "oclif": "^4.22.65",
+    "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
-    "tmp": "^0.2.5",
-    "ts-node": "^10.9.2"
+    "rimraf": "5.0.5",
+    "sinon": "^19.0.2",
+    "source-map-support": "^0.5.21",
+    "std-mocks": "^2.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "4.8.4"
+  },
+  "oclif": {
+    "additionalHelpFlags": ["-h"],
+    "additionalVersionFlags": ["-v", "version"],
+    "aliases": {
+      "@heroku/plugin-sudo": "@heroku/sudo",
+      "@heroku-cli/config-edit": null,
+      "@heroku-cli/plugin-sudo": "@heroku/sudo",
+      "heroku-api-plugin": "api",
+      "heroku-certs-acm": null,
+      "heroku-cli-api": "api",
+      "heroku-cli-autocomplete": null,
+      "heroku-cli-buildpacks": "buildpack-registry",
+      "heroku-cli-config-edit": null,
+      "heroku-cli-deploy": "java",
+      "heroku-cli-java": "java",
+      "heroku-cli-plugin-generator": null,
+      "heroku-container-registry": null,
+      "heroku-event-log": "@heroku/event-log",
+      "heroku-pg-extras": "@heroku-cli/heroku-pg-extras",
+      "heroku-pipelines": null,
+      "heroku-ps-wait": null,
+      "heroku-redis": null,
+      "heroku-repo": "@heroku-cli/plugin-heroku-repo",
+      "heroku-skynet-cli": "@heroku/skynet",
+      "heroku-splunk": "@heroku/splunk",
+      "heroku-sudo": "@heroku/sudo",
+      "heroku-webhooks": null,
+      "sudo": "@heroku/sudo"
+    },
+    "bin": "heroku",
+    "commands": "./dist/commands",
+    "dirname": "heroku",
+    "hooks": {
+      "command_not_found": ["./dist/hooks/command_not_found/performance_analytics"],
+      "init": [
+        "./dist/hooks/init/version",
+        "./dist/hooks/init/terms-of-service",
+        "./dist/hooks/init/performance_analytics"
+      ],
+      "postrun": ["./dist/hooks/postrun/performance_analytics"],
+      "prerun": ["./dist/hooks/prerun/analytics"],
+      "recache": "./dist/hooks/recache",
+      "update": [
+        "./dist/hooks/update/plugin-migrate",
+        "./dist/hooks/update/brew",
+        "./dist/hooks/update/completions",
+        "./dist/hooks/update/tidy",
+        "./dist/hooks/recache"
+      ]
+    },
+    "macos": {
+      "identifier": "com.heroku.cli",
+      "sign": "Developer ID Installer: Heroku INC"
+    },
+    "npmRegistry": "https://registry.npmjs.org",
+    "plugins": [
+      "@oclif/plugin-legacy",
+      "@heroku-cli/plugin-ps-exec",
+      "@oclif/plugin-commands",
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-plugins",
+      "@oclif/plugin-update",
+      "@oclif/plugin-version",
+      "@oclif/plugin-warn-if-update-available",
+      "@oclif/plugin-which",
+      "@heroku/plugin-ai"
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/v<%- version %>/<%- commandPath %>",
+    "scope": "heroku-cli",
+    "topics": {
+      "2fa": {
+        "description": "two-factor authentication",
+        "hidden": true
+      },
+      "access": {
+        "description": "manage user access to apps"
+      },
+      "addons": {
+        "description": "tools and services for developing, extending, and operating your app"
+      },
+      "apps": {
+        "description": "manage apps on Heroku"
+      },
+      "auth": {
+        "description": "manage authentication for your Heroku account"
+      },
+      "authorizations": {
+        "description": "OAuth authorizations"
+      },
+      "buildpacks": {
+        "description": "scripts used to compile apps"
+      },
+      "certs": {
+        "description": "SSL certificates"
+      },
+      "ci": {
+        "description": "test runner for Heroku Pipelines"
+      },
+      "clients": {
+        "description": "OAuth clients on the platform"
+      },
+      "commands": {
+        "hidden": true
+      },
+      "config": {
+        "description": "environment variables of apps"
+      },
+      "container": {
+        "description": "deploy your Docker-based app to Heroku"
+      },
+      "domains": {
+        "description": "custom domains for apps"
+      },
+      "drains": {
+        "description": "forward logs to syslog or HTTPS"
+      },
+      "dyno": {
+        "hidden": true
+      },
+      "features": {
+        "description": "add/remove app features"
+      },
+      "git": {
+        "description": "set git remote and clone Heroku repository"
+      },
+      "keys": {
+        "description": "add/remove account ssh keys"
+      },
+      "labs": {
+        "description": "add/remove experimental features"
+      },
+      "local": {
+        "description": "run Heroku app locally"
+      },
+      "logs": {
+        "description": "display recent log output"
+      },
+      "maintenance": {
+        "description": "enable/disable access to app"
+      },
+      "members": {
+        "description": "manage organization members"
+      },
+      "orgs": {
+        "description": "manage organizations"
+      },
+      "pg": {
+        "description": "manage postgresql databases"
+      },
+      "pipelines": {
+        "description": "manage pipelines"
+      },
+      "ps": {
+        "description": "manage app dynos"
+      },
+      "redis": {
+        "description": "manage heroku redis instances"
+      },
+      "reviewapps": {
+        "description": "manage reviewapps in pipelines"
+      },
+      "run": {
+        "description": "run a one-off process inside a Heroku dyno"
+      },
+      "sessions": {
+        "description": "OAuth sessions"
+      },
+      "stack": {
+        "description": "list available stacks",
+        "hidden": true
+      },
+      "teams": {
+        "description": "manage teams"
+      },
+      "twofactor": {
+        "description": "two-factor authentication",
+        "hidden": true
+      },
+      "update": {
+        "description": "update the Heroku CLI"
+      },
+      "which": {
+        "hidden": true
+      }
+    },
+    "update": {
+      "node": {
+        "version": "22.22.0"
+      },
+      "s3": {
+        "bucket": "heroku-cli-assets",
+        "host": "https://cli-assets.heroku.com",
+        "xz": true
+      }
+    },
+    "windows": {
+      "name": "Heroku CLI"
+    }
   },
   "overrides": {
     "ansi-regex": "4.1.1"
@@ -27,28 +352,56 @@
   "engines": {
     "node": ">=20"
   },
-  "private": true,
+  "files": [
+    "/autocomplete-scripts",
+    "/bin",
+    "/dist",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://cli.heroku.com",
+  "keywords": [
+    "heroku",
+    "heroku-cli-plugin"
+  ],
+  "license": "ISC",
+  "main": "dist/index.js",
+  "repository": "heroku/cli",
   "scripts": {
-    "build": "cd packages/cli && npm run prepack",
-    "test": "npm run test --workspace=packages/cli",
-    "lint": "cd packages/cli && npm run lint",
-    "lint:fix": "cd packages/cli && npm run lint:fix",
+    "build": "rm -rf dist && tsc && npm run manifest",
+    "build:dev": "rm -rf dist && tsc --sourcemap && npm run manifest",
+    "lint": "eslint . --ext .ts --config .eslintrc.cjs",
+    "lint:fix": "eslint . --ext .ts --config .eslintrc.cjs --fix",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary npm run test",
+    "coverage:html": "nyc --reporter=html --reporter=text-summary npm run test",
+    "coverage:check": "nyc --check-coverage --branches 80 --statements 80 --functions 80 --lines 80 npm run test",
+    "create-shrinkwrap": "npm shrinkwrap",
+    "prepublishOnly": "npm run create-shrinkwrap",
+    "postpublish": "rm -f oclif.manifest.json",
+    "manifest": "oclif manifest",
+    "prepack": "npm run build",
+    "pretest": "tsc -p test --noEmit && npm run build",
+    "test:acceptance": "npm run pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
+    "test:integration": "npm run pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
+    "test:smoke": "npm run pretest && mocha --forbid-only \"test/**/smoke.acceptance.test.ts\"",
+    "test:unit:justTest:local": "mocha \"test/**/*.unit.test.ts\"",
+    "test:unit:justTest:ci": "nyc --reporter=lcov --reporter=text-summary mocha --forbid-only \"test/**/*.unit.test.ts\"",
+    "test": "npm run pretest && npm run test:unit:justTest:ci",
+    "test:local": "npm run pretest && npm run test:unit:justTest:local",
+    "version": "oclif readme --multi && git add README.md docs",
     "cspell:ci": "cspell --no-progress --gitignore --no-must-find-files --file-list stdin",
     "cspell:commit": "cspell --no-progress --gitignore --no-must-find-files --no-show-suggestions --config ./cspell.json --quiet",
-    "pack:deb": "oclif pack:deb --root=\"./packages/cli\"",
-    "pack:tarballs": "oclif pack:tarballs --root=\"./packages/cli\" --xz --parallel",
-    "pack:win": "oclif pack:win --root=\"./packages/cli\" --defender-exclusion hidden",
-    "promote:deb": "oclif promote --root=\"./packages/cli\" --deb --xz --indexes",
-    "promote:win": "oclif promote --root=\"./packages/cli\" --win --indexes",
-    "upload:deb": "oclif upload:deb --root=\"./packages/cli\"",
-    "upload:tarballs": "oclif upload:tarballs --root=\"./packages/cli\" --xz",
-    "upload:win": "oclif upload:win --root=\"./packages/cli\"",
-    "cleanNodeModules": "rm -rf ./packages/*/node_modules && rm -rf ./node_modules",
-    "postinstall": "husky install"
+    "pack:deb": "oclif pack:deb",
+    "pack:tarballs": "oclif pack:tarballs --xz --parallel",
+    "pack:win": "oclif pack:win --defender-exclusion hidden",
+    "promote:deb": "oclif promote --deb --xz --indexes",
+    "promote:win": "oclif promote --win --indexes",
+    "upload:deb": "oclif upload:deb",
+    "upload:tarballs": "oclif upload:tarballs --xz",
+    "upload:win": "oclif upload:win",
+    "cleanNodeModules": "rm -rf ./node_modules",
+    "prepare": "test -d .git && husky install || true"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  }
+  "type": "module",
+  "types": "dist/index.d.ts"
 }
