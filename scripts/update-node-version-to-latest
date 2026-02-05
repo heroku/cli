@@ -25,16 +25,27 @@ if asdf install nodejs "$version"; then
     echo "Successfully installed Node.js version $version"
 else
     echo "Warning: Failed to install Node.js version $version via asdf" >&2
-    echo "Continuing with oclif.config.mjs update..." >&2
+    echo "Continuing with package.json update..." >&2
 fi
 
-# Update the Node.js version in oclif.config.mjs
-# Using sed to update the version field in the oclif config
-config_file="./oclif.config.mjs"
-if [ -f "$config_file" ]; then
-    sed -i '' "s/version: '[^']*',/version: '$version',/" "$config_file"
-    echo "Updated nodejs version to $version in .tool-versions and oclif.config.mjs"
+# Update the Node.js version in package.json oclif config
+# Using node to update the JSON file
+package_file="./package.json"
+if [ -f "$package_file" ]; then
+    node -e "
+        const fs = require('fs');
+        const pkg = JSON.parse(fs.readFileSync('$package_file', 'utf-8'));
+        if (pkg.oclif && pkg.oclif.update && pkg.oclif.update.node) {
+            pkg.oclif.update.node.version = '$version';
+            fs.writeFileSync('$package_file', JSON.stringify(pkg, null, 2) + '\n');
+            console.log('Updated nodejs version to $version in package.json');
+        } else {
+            console.error('Error: Could not find oclif.update.node in package.json');
+            process.exit(1);
+        }
+    "
+    echo "Updated nodejs version to $version in .tool-versions and package.json"
 else
-    echo "Error: Could not find $config_file" >&2
+    echo "Error: Could not find $package_file" >&2
     exit 1
 fi
