@@ -40,7 +40,7 @@ describe('data:pg:settings', function () {
   context('put', function () {
     it('shows no changes applied when no changes received', async function () {
       const herokuApi = nock('https://api.heroku.com').post('/actions/addons/resolve').reply(200, [addon])
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .put(`/data/postgres/v1/${addon.id}/settings`)
         .reply(200, emptySettingsChangeResponse)
 
@@ -58,7 +58,7 @@ describe('data:pg:settings', function () {
 
     it('shows received changes', async function () {
       const herokuApi = nock('https://api.heroku.com').post('/actions/addons/resolve').reply(200, [addon])
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .put(
           `/data/postgres/v1/${addon.id}/settings`,
           {settings: 'log_min_duration_statement:500,idle_in_transaction_session_timeout:864000'},
@@ -92,7 +92,7 @@ describe('data:pg:settings', function () {
   context('get', function () {
     it('shows settings', async function () {
       const herokuApi = nock('https://api.heroku.com').post('/actions/addons/resolve').reply(200, [addon])
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/settings`)
         .reply(200, settingsGetResponse)
 

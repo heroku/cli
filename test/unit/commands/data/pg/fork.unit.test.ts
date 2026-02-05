@@ -49,7 +49,7 @@ describe('data:pg:fork', function () {
         })
         .reply(200, createForkResponse)
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
 
@@ -87,7 +87,7 @@ describe('data:pg:fork', function () {
         })
         .reply(200, createForkResponse)
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
 
@@ -157,7 +157,7 @@ describe('data:pg:fork', function () {
             && body.config.key === 'value:with:colons')
         .reply(200, createForkResponse)
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
 
@@ -193,7 +193,7 @@ describe('data:pg:fork', function () {
         })
         .reply(200, createForkResponse)
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, {
           ...pgInfo,
@@ -238,7 +238,7 @@ describe('data:pg:fork', function () {
         })
         .reply(200, createForkResponse)
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, {
           ...pgInfo,
@@ -280,7 +280,7 @@ describe('data:pg:fork', function () {
             && body.config.baz === 'true')
         .reply(200, createForkResponse)
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, {
           ...pgInfo,

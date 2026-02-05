@@ -104,7 +104,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -149,7 +149,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -204,7 +204,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -256,7 +256,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -322,7 +322,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -377,7 +377,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -432,7 +432,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')
@@ -488,7 +488,7 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
         .get('/data/postgres/v1/pricing')

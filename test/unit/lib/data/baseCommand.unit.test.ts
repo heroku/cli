@@ -16,7 +16,7 @@ describe('BaseCommand', function () {
 
   beforeEach(function () {
     originalEnv = {...process.env}
-    process.env.HEROKU_DATA_HOST = 'test.data.heroku.com'
+    process.env.HEROKU_DATA_HOST = 'api.data.heroku.com'
     process.env.HEROKU_DATA_CONTROL_PLANE = 'test-control-plane'
   })
 
@@ -26,7 +26,7 @@ describe('BaseCommand', function () {
 
   context('get dataApi', function () {
     it('respects the value of HEROKU_DATA_HOST', async function () {
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, [])
 
@@ -38,7 +38,7 @@ describe('BaseCommand', function () {
     })
 
     it('respects the value of HEROKU_DATA_CONTROL_PLANE', async function () {
-      const dataApi = nock('https://test.data.heroku.com')
+      const dataApi = nock('https://api.data.heroku.com')
         .get('/data/postgres/v1/levels/advanced')
         .matchHeader('X-Data-Control-Plane', 'test-control-plane')
         .reply(200, [])
