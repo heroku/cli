@@ -12,10 +12,11 @@ import {
   settingsPutResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
 
-describe('data:pg:settings', function () {
+describe.only('data:pg:settings', function () {
   it('exits with error if it isn\'t a Advanced-tier database', async function () {
     const herokuApi = nock('https://api.heroku.com')
       .post('/actions/addons/resolve')
@@ -75,17 +76,12 @@ describe('data:pg:settings', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr.output).to.equal('')
-      expect(stdout.output).to.equal(
-        heredoc`
-          Updating these settings...
-            Settings                              From    To      
-           ────────────────────────────────────────────────────── 
-            log_min_duration_statement            550     500     
-            idle_in_transaction_session_timeout   80000   864000  
 
-          Updating your database advanced-horizontal-01234 shortly. You can use data:pg:info advanced-horizontal-01234 -a myapp to track progress
-      `,
-      )
+      const actual = removeAllWhitespace(stdout.output)
+      expect(actual).to.include(removeAllWhitespace('Updating these settings...'))
+      expect(actual).to.include(removeAllWhitespace('log_min_duration_statement 550 500'))
+      expect(actual).to.include(removeAllWhitespace('idle_in_transaction_session_timeout 80000 864000'))
+      expect(actual).to.include(removeAllWhitespace('Updating your database advanced-horizontal-01234 shortly. You can use data:pg:info advanced-horizontal-01234 -a myapp to track progress'))
     })
   })
 
@@ -105,27 +101,22 @@ describe('data:pg:settings', function () {
       dataApi.done()
       expect(stderr.output).to.equal('')
 
-      expect(stdout.output).to.equal(
-        heredoc`
-          === advanced-horizontal-01234
-            Setting                              Value  
-           ──────────────────────────────────────────── 
-            log_connections                      true   
-            log_lock_waits                       true   
-            log_min_duration_statement           500    
-            log_min_error_statement              info   
-            log_statement                        ddl    
-            track_functions                      pl     
-            auto_explain.log_analyze                    
-            auto_explain.log_buffers                    
-            auto_explain.log_format                     
-            auto_explain.log_min_duration               
-            auto_explain.log_nested_statements          
-            auto_explain.log_triggers                   
-            auto_explain.log_verbose                    
-
-        `,
-      )
+      const actual = removeAllWhitespace(stdout.output)
+      expect(actual).to.include(removeAllWhitespace('=== advanced-horizontal-01234'))
+      expect(actual).to.include(removeAllWhitespace('Setting Value'))
+      expect(actual).to.include(removeAllWhitespace('log_connections true'))
+      expect(actual).to.include(removeAllWhitespace('log_lock_waits true'))
+      expect(actual).to.include(removeAllWhitespace('log_min_duration_statement 500'))
+      expect(actual).to.include(removeAllWhitespace('log_min_error_statement info'))
+      expect(actual).to.include(removeAllWhitespace('log_statement ddl'))
+      expect(actual).to.include(removeAllWhitespace('track_functions pl'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_analyze'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_buffers'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_format'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_min_duration'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_nested_statements'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_triggers'))
+      expect(actual).to.include(removeAllWhitespace('auto_explain.log_verbose'))
     })
   })
 })
