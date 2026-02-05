@@ -42,6 +42,7 @@ buildpath
 cachecompl
 CEDARPRIVATESPACES
 CERTFILE
+chrono
 ckey
 clearsign
 clientsecret
