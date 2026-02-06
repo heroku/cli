@@ -142,15 +142,20 @@
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
     "rimraf": "5.0.5",
-    "sinon": "^19.0.2",
+    "sinon": "^21.0.1",
     "source-map-support": "^0.5.21",
     "std-mocks": "^2.0.0",
     "ts-node": "^10.9.2",
     "typescript": "4.8.4"
   },
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v", "version"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v",
+      "version"
+    ],
     "aliases": {
       "@heroku/plugin-sudo": "@heroku/sudo",
       "@heroku-cli/config-edit": null,
@@ -181,14 +186,20 @@
     "commands": "./dist/commands",
     "dirname": "heroku",
     "hooks": {
-      "command_not_found": ["./dist/hooks/command_not_found/performance_analytics"],
+      "command_not_found": [
+        "./dist/hooks/command_not_found/performance_analytics"
+      ],
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
         "./dist/hooks/init/performance_analytics"
       ],
-      "postrun": ["./dist/hooks/postrun/performance_analytics"],
-      "prerun": ["./dist/hooks/prerun/analytics"],
+      "postrun": [
+        "./dist/hooks/postrun/performance_analytics"
+      ],
+      "prerun": [
+        "./dist/hooks/prerun/analytics"
+      ],
       "recache": "./dist/hooks/recache",
       "update": [
         "./dist/hooks/update/plugin-migrate",
