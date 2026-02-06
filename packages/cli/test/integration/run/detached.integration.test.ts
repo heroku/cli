@@ -1,11 +1,19 @@
-import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 
-const skipWithoutAuth = process.env.HEROKU_API_KEY ? it : it.skip
+import {runCliSubprocess} from '../../helpers/runCliSubprocess.js'
+
 describe('run:detached', function () {
-  skipWithoutAuth('runs a command', async function () {
-    const {stdout, stderr} = await runCommand(['run:detached', '--app=heroku-cli-ci-smoke-test-app', 'echo', '1', '2', '3'])
-    const out = stdout + stderr
+  it('runs a command', function () {
+    const {stderr, stdout} = runCliSubprocess([
+      'run:detached',
+      '--app=heroku-cli-ci-smoke-test-app',
+      'echo',
+      '1',
+      '2',
+      '3',
+    ])
+    const out = ansis.strip(stdout + stderr)
     expect(out).to.include('Run heroku logs --app heroku-cli-ci-smoke-test-app --dyno')
   })
 })

@@ -1,12 +1,15 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 
-const skipWithoutAuth = process.env.HEROKU_API_KEY ? it : it.skip
+import {runCliSubprocess} from '../helpers/runCliSubprocess.js'
+
 describe('access', function () {
-  skipWithoutAuth('shows a table with access status', async function () {
-    const {stdout, stderr} = await runCommand(['access', '--app=heroku-cli-ci-smoke-test-app'])
+  it('shows a table with access status', function () {
+    const {stdout, stderr} = runCliSubprocess([
+      'access',
+      '--app=heroku-cli-ci-smoke-test-app',
+    ])
     const out = stdout + stderr
-    expect(out.includes('admin')).to.be.true
-    expect(out.includes('deploy, manage, operate, view')).to.be.true
+    expect(out).to.include('admin')
+    expect(out).to.include('deploy, manage, operate, view')
   })
 })
