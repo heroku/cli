@@ -12,6 +12,7 @@ aname
 APAC
 apikey
 appname
+applink
 apresharedkey
 armel
 armhf

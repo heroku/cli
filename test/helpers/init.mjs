@@ -1,5 +1,4 @@
 import path from 'path'
-import {fileURLToPath} from 'url'
 import nock from 'nock'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
@@ -10,10 +9,6 @@ globalThis.setTimeout = cb => {
   return tm(cb)
 }
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const root = path.resolve(__dirname, '../..')
-
-process.env.OCLIF_TEST_ROOT = root
 process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
 // Env var used to prevent some expensive
 // prerun and postrun hooks from initializing
