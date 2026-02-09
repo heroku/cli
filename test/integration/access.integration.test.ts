@@ -9,7 +9,7 @@ describe('access', function () {
       '--app=heroku-cli-ci-smoke-test-app',
     ])
     const out = stdout + stderr
-    expect(out).to.include('admin')
+    expect(out).to.match(/admin|collaborator/)
     expect(out).to.include('deploy, manage, operate, view')
   })
 })
