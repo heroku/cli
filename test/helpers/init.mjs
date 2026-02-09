@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-as-default-member */
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import nock from 'nock'
@@ -9,10 +8,6 @@ globalThis.setInterval = () => ({unref() {}})
 const tm = globalThis.setTimeout
 globalThis.setTimeout = cb => tm(cb)
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const root = path.resolve(__dirname, '../..')
-
-process.env.OCLIF_TEST_ROOT = root
 process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
 // Env var used to prevent some expensive
 // prerun and postrun hooks from initializing
