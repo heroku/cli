@@ -201,6 +201,7 @@ mworks
 myapp
 mybillingapp
 mycert
+mycredential
 mydb
 myfeature
 myhost
@@ -209,6 +210,7 @@ mylowercaseapp
 myotherapp
 mypath
 myplugin
+mypool
 myschema
 myscript
 myteam
