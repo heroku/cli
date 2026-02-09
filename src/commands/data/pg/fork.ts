@@ -1,7 +1,6 @@
 import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-// eslint-disable-next-line import/no-unresolved -- chrono-node is a dependency
 import * as chrono from 'chrono-node'
 import tsheredoc from 'tsheredoc'
 

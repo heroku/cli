@@ -2,7 +2,6 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
-// eslint-disable-next-line import/no-unresolved -- mock-stdin is a dev dependency
 import mockStdin from 'mock-stdin'
 import nock from 'nock'
 import sinon from 'sinon'
