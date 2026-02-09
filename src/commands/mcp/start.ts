@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import {spawn as cpSpawn} from 'node:child_process'
-import {join} from 'path'
+import {join, dirname} from 'path'
 import {fileURLToPath} from 'node:url'
 
 export default class MCPStart extends Command {
@@ -10,7 +10,8 @@ export default class MCPStart extends Command {
   static spawn: typeof cpSpawn = cpSpawn
 
   public async run() {
-    const serverPath = join(fileURLToPath(await import.meta.resolve('@heroku/mcp-server')), '../../bin/heroku-mcp-server.mjs')
+    const currentDir = dirname(fileURLToPath(import.meta.url))
+    const serverPath = join(currentDir, '../../../node_modules/@heroku/mcp-server/bin/heroku-mcp-server.mjs')
     const server = MCPStart.spawn('node', [serverPath], {
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: true,
