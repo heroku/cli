@@ -22,7 +22,7 @@ function run(args = '') {
 
 // Smoke tests expect the CI account: heroku-cli@salesforce.com, app heroku-cli-ci-smoke-test-app,
 // and account state (e.g. no apps, no OAuth clients/sessions) as asserted. Run in CI or with that account.
-it('@acceptance smoke tests', function () {
+describe('@acceptance smoke tests', function () {
   describe('commands', function () {
     it('heroku access', async function () {
       const {stdout} = await run(`access ${appFlag}`)
@@ -48,7 +48,7 @@ it('@acceptance smoke tests', function () {
     it('heroku auth:whoami', async function () {
       const {stdout} = await run('auth:whoami')
       const out = ansis.strip(stdout).trim()
-      expect(out).to.match(/^.+\@.+\..+$/)
+      expect(out).to.match(/^.+@.+\..+$/)
     })
 
     it('heroku authorizations', async function () {
