@@ -241,6 +241,7 @@ osslsigncode
 ossp
 otherapp
 otherdb
+otherquota
 otta
 otlpgrpc
 otlphttp
