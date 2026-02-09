@@ -24,7 +24,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
   static flags = {
     app: Flags.app({required: true}),
     as: Flags.string({description: 'name for Postgres database attachment'}),
-    confirm: Flags.string({hidden: true}),
+    confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
     credential: Flags.string({
       description: 'credential to use for database',
       exclusive: ['pool'],

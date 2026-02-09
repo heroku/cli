@@ -17,7 +17,7 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
 
   static flags = {
     app: Flags.app({required: true}),
-    confirm: Flags.string({hidden: true}),
+    confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
     remote: Flags.remote(),
   }
 

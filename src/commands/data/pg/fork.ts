@@ -40,7 +40,7 @@ export default class Fork extends BaseCommand {
   static flags = {
     app: Flags.app({required: true}),
     as: Flags.string({description: 'name for the initial database attachment'}),
-    confirm: Flags.string({hidden: true}),
+    confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
     level: Flags.string({description: 'set compute scale'}),
     name: Flags.string({char: 'n', description: 'name for the database'}),
     'provision-option': Flags.string({
