@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import * as child_process from 'node:child_process'
 import {EventEmitter} from 'node:events'
 import {fileURLToPath} from 'node:url'
-import {join} from 'path'
+import {join, dirname} from 'path'
 import * as sinon from 'sinon'
 import MCPStart from '../../../../src/commands/mcp/start.js'
 
@@ -52,7 +52,8 @@ describe('mcp:start', function () {
   })
 
   it('spawns the server with correct arguments and pipes stdio', async function () {
-    const serverPath = join(fileURLToPath(await import.meta.resolve('@heroku/mcp-server')), '../../bin/heroku-mcp-server.mjs')
+    const currentDir = dirname(fileURLToPath(import.meta.url))
+    const serverPath = join(currentDir, '../../../../node_modules/@heroku/mcp-server/bin/heroku-mcp-server.mjs')
 
     await runCommand(MCPStart, [])
     expect(spawnStub.calledOnce).to.be.true

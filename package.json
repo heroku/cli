@@ -6,27 +6,26 @@
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^12.1.1",
+    "@heroku-cli/command": "^12.1.2",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/plugin-ps-exec": "2.6.4",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/eventsource": "^1.0.7",
     "@heroku/heroku-cli-util": "10.4.0",
     "@heroku/http-call": "^5.5.0",
-    "@heroku/mcp-server": "1.0.7-alpha.1",
+    "@heroku/mcp-server": "1.1.0",
     "@heroku/plugin-ai": "^1.0.1",
     "@inquirer/prompts": "^5.0.5",
     "@oclif/core": "^4",
-    "@oclif/plugin-commands": "4.1.25",
-    "@oclif/plugin-help": "^6.2.28",
-    "@oclif/plugin-legacy": "^2.0.24",
-    "@oclif/plugin-not-found": "3.2.52",
-    "@oclif/plugin-plugins": "^5.4.38",
-    "@oclif/plugin-update": "^4.6.41",
-    "@oclif/plugin-version": "^2.2.28",
-    "@oclif/plugin-warn-if-update-available": "^3.1.40",
-    "@oclif/plugin-which": "^3.2.35",
+    "@oclif/plugin-commands": "4.1.40",
+    "@oclif/plugin-help": "^6.2.37",
+    "@oclif/plugin-legacy": "^2.0.28",
+    "@oclif/plugin-not-found": "3.2.74",
+    "@oclif/plugin-plugins": "^5.4.56",
+    "@oclif/plugin-update": "^4.7.19",
+    "@oclif/plugin-version": "^2.2.36",
+    "@oclif/plugin-warn-if-update-available": "^3.1.55",
+    "@oclif/plugin-which": "^3.2.43",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
     "@opentelemetry/instrumentation": "^0.52.1",
@@ -142,15 +141,20 @@
     "proxyquire": "^2.1.0",
     "qqjs": "0.3.11",
     "rimraf": "5.0.5",
-    "sinon": "^19.0.2",
+    "sinon": "^21.0.1",
     "source-map-support": "^0.5.21",
     "std-mocks": "^2.0.0",
     "ts-node": "^10.9.2",
     "typescript": "4.8.4"
   },
   "oclif": {
-    "additionalHelpFlags": ["-h"],
-    "additionalVersionFlags": ["-v", "version"],
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-v",
+      "version"
+    ],
     "aliases": {
       "@heroku/plugin-sudo": "@heroku/sudo",
       "@heroku-cli/config-edit": null,
@@ -181,14 +185,20 @@
     "commands": "./dist/commands",
     "dirname": "heroku",
     "hooks": {
-      "command_not_found": ["./dist/hooks/command_not_found/performance_analytics"],
+      "command_not_found": [
+        "./dist/hooks/command_not_found/performance_analytics"
+      ],
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
         "./dist/hooks/init/performance_analytics"
       ],
-      "postrun": ["./dist/hooks/postrun/performance_analytics"],
-      "prerun": ["./dist/hooks/prerun/analytics"],
+      "postrun": [
+        "./dist/hooks/postrun/performance_analytics"
+      ],
+      "prerun": [
+        "./dist/hooks/prerun/analytics"
+      ],
       "recache": "./dist/hooks/recache",
       "update": [
         "./dist/hooks/update/plugin-migrate",
