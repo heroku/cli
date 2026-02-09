@@ -50,7 +50,7 @@ declare -a COMMANDS=(
   "$CMD_BIN pg:backups --app particleboard-staging"
   "$CMD_BIN pipelines"
   "$CMD_BIN plugins:install api"
-  "$CMD_BIN plugins:install sudo"
+  # "$CMD_BIN plugins:install sudo"
   "$CMD_BIN plugins"
   "$CMD_BIN redis:info --app particleboard-staging"
   "$CMD_BIN regions"
