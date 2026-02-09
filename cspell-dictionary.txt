@@ -43,6 +43,7 @@ buildpath
 cachecompl
 CEDARPRIVATESPACES
 CERTFILE
+chrono
 ckey
 clearsign
 clientsecret
@@ -135,6 +136,7 @@ killall
 Klass
 kolkrabbi
 libexec
+libpq
 localdb
 localspace
 logfile
@@ -218,6 +220,7 @@ netrc
 newkey
 newname
 newpassword
+NGPG
 nodir
 noeviction
 notaninteger
@@ -248,6 +251,7 @@ pgappname
 pgbackups
 pgbouncer
 pgbouncers
+PGCHANNELBINDING
 pgdatabase
 pgdiagnose
 pgdg
