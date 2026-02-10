@@ -39,7 +39,7 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
 
   // We would use utils.pg.isAdvancedDatabase from @heroku/heroku-cli-util, but we're not passing the add-on as a parameter.
   if (credentials.length > 0 && isAdvancedCredentialInfo(credentials[0])) {
-    return [cred, ...attLines].join('\n')
+    return [color.name(cred), ...attLines].join('\n') + '\n'
   }
 
   const rotationLines = []
@@ -81,7 +81,7 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
     }
   }
 
-  return [cred, ...attLines, ...rotationLines].join('\n')
+  return [color.name(cred), ...attLines, ...rotationLines].join('\n') + '\n'
 }
 
 export const configVarNamesFromValue = (config: Record<string, string>, value: string) => {

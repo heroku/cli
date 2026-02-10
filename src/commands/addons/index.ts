@@ -3,7 +3,6 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import _ from 'lodash'
-import printf from 'printf'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
 
@@ -159,7 +158,7 @@ function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
 export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isLast = false): string {
   const line = isLast ? '\u2514\u2500' : '\u251C\u2500'
   const attName = formatAttachment(attachment, attachment.app?.name !== app)
-  return printf(' %s %s', color.dim(line), attName)
+  return ` ${color.dim(line)} ${attName}`
 }
 
 function displayForApp(app: string, addons: Heroku.AddOn[]) {
@@ -204,7 +203,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
             return formatPrice({hourly: true, price: addon.plan?.price})
           }
 
-          return color.dim(printf('(billed to %s app)', color.app(addon.app?.name || '')))
+          return color.dim(`(billed to ${color.app(addon.app?.name || '')} app)`)
         },
       },
       // eslint-disable-next-line perfectionist/sort-objects
@@ -214,7 +213,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
             return formatPrice({hourly: false, price: addon.plan?.price})
           }
 
-          return color.dim(printf('(billed to %s app)', color.app(addon.app?.name || '')))
+          return color.dim(`(billed to ${color.app(addon.app?.name || '')} app)`)
         },
       },
       State: {

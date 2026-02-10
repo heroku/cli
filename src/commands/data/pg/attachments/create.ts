@@ -91,7 +91,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       )
       if (credentialConfig.length === 0) {
         ux.error(heredoc`
-          The credential ${color.yellow(credential)} doesn't exist on the database ${color.addon(addon.name)}.
+          The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(addon.name)}.
           Use ${color.code(`heroku data:pg:credentials ${addon.name} -a ${app}`)} to list the credentials on the database.`,
         {exit: 1},
         )
@@ -102,7 +102,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       )
       if (poolConfig.length === 0) {
         ux.error(heredoc`
-          The pool ${color.yellow(pool)} doesn't exist on the database ${color.addon(addon.name)}.
+          The pool ${color.name(pool)} doesn't exist on the database ${color.datastore(addon.name)}.
           Use ${color.code(`heroku data:pg:info ${addon.name} -a ${app}`)} to list the pools on the database.`,
         {exit: 1},
         )
