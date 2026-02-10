@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [10.17.0-beta.0](https://github.com/heroku/cli/compare/v10.15.1...v10.17.0-beta.0) (2026-02-10)
+
+
+### Bug Fixes
+
+* ensure IP restriction error handling for run:inside and logs commands ([#3389](https://github.com/heroku/cli/issues/3389)) ([42b3a2a](https://github.com/heroku/cli/commit/42b3a2aadebb25aa86ff5861fcaa16e0e9d07d74))
+* ensures authentications:revoke documentation is generated ([#3428](https://github.com/heroku/cli/issues/3428)) ([fdfec26](https://github.com/heroku/cli/commit/fdfec26bbb44109706eaaa2d292070d4e06b4337))
+* update ps-exec to 2.6.4 ([#3425](https://github.com/heroku/cli/issues/3425)) ([85c70ef](https://github.com/heroku/cli/commit/85c70ef9dfb6e34b485318c85dafd5a474a21481))
+* using setImmediate for error handle in log displayer unit test ([#3417](https://github.com/heroku/cli/issues/3417)) ([8f8b1d6](https://github.com/heroku/cli/commit/8f8b1d65f4468393471fb9929d5fd332cb00e4e8))
+* **W-20270674:** bump heroku-cli-util and fix resulting errors ([#3426](https://github.com/heroku/cli/issues/3426)) ([19ed38c](https://github.com/heroku/cli/commit/19ed38cf608dd098a6148660c90c6ca684d796d0))
+
+
+### Features
+
+* adding conditional logic for receiving applied state of trusted ips ([#3424](https://github.com/heroku/cli/issues/3424)) ([217271b](https://github.com/heroku/cli/commit/217271b6b735480b0c0b79cc342504b3b9f2a654))
+* adding json flag to config:get command ([#3464](https://github.com/heroku/cli/issues/3464)) ([424fc14](https://github.com/heroku/cli/commit/424fc14f7957e7da654e90f71666aa33c24406ee))
+* **W-15238547:** add deprecation notices for the redis:maintenance and pg:maintenance commands ([#3509](https://github.com/heroku/cli/issues/3509)) ([dccc74e](https://github.com/heroku/cli/commit/dccc74e3a0478ece85fd01b1bd4d336f4ceb9e3f))
+* **W-19894449:** add Sentry error reporting ([#3413](https://github.com/heroku/cli/issues/3413)) ([15fe316](https://github.com/heroku/cli/commit/15fe3163bcc95633a1100c1ef6dc52559551de1f))
+
+
+
+
+
 # [10.16.0](https://github.com/heroku/cli/compare/v10.15.1...v10.16.0) (2025-12-04)
 
 

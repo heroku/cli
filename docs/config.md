@@ -28,7 +28,7 @@ DESCRIPTION
   display the config vars for an app
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v10.17.0-beta.0/packages/cli/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -64,7 +64,7 @@ EXAMPLES
   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v10.17.0-beta.0/packages/cli/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -79,6 +79,7 @@ ARGUMENTS
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
+  -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
 
@@ -90,7 +91,7 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v10.17.0-beta.0/packages/cli/src/commands/config/get.ts)_
 
 ## `heroku config:remove`
 
@@ -143,7 +144,7 @@ EXAMPLES
   RACK_ENV:  staging
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v10.17.0-beta.0/packages/cli/src/commands/config/set.ts)_
 
 ## `heroku config:unset`
 
@@ -171,4 +172,4 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v10.16.0/packages/cli/src/commands/config/unset.ts)_
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v10.17.0-beta.0/packages/cli/src/commands/config/unset.ts)_
