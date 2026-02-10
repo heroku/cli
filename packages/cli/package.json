@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "10.16.0",
+  "version": "10.17.0",
   "author": "Heroku",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -343,7 +343,7 @@
     },
     "update": {
       "node": {
-        "version": "20.19.6"
+        "version": "20.20.0"
       },
       "s3": {
         "xz": true,
