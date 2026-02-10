@@ -271,7 +271,7 @@ describe('data:pg:attachments:create', function () {
         const err = error as Error
 
         expect(ansis.strip(err.message)).to.equal(
-          'The credential nonexistent doesn\'t exist on the database advanced-horizontal-01234.\n'
+          'The credential nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
           + 'Use heroku data:pg:credentials advanced-horizontal-01234 -a myapp '
           + 'to list the credentials on the database.',
         )
@@ -331,7 +331,7 @@ describe('data:pg:attachments:create', function () {
         const err = error as Error
 
         expect(ansis.strip(err.message)).to.equal(
-          'The pool nonexistent doesn\'t exist on the database advanced-horizontal-01234.\n'
+          'The pool nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
           + 'Use heroku data:pg:info advanced-horizontal-01234 -a myapp '
           + 'to list the pools on the database.',
         )

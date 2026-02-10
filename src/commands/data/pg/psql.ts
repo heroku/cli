@@ -60,7 +60,9 @@ export default class DataPgPsql extends Command {
         const addonResolver = new utils.AddonResolver(this.heroku)
         const addon = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())
         const credCommand = utils.pg.isAdvancedDatabase(addon) ? 'data:pg:credentials' : 'pg:credentials'
-        throw new Error(`The credential ${credential} doesn't exist on the database ${databaseArg}. Run ${color.code(`heroku ${credCommand} ${addon.name}`)} to list the credentials on the database.`)
+        throw new Error(
+          `The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(databaseArg)}. `
+          + `Run ${color.code(`heroku ${credCommand} ${addon.name}`)} to list the credentials on the database.`)
       }
 
       throw error
