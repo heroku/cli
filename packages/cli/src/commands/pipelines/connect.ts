@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import {getPipeline} from '../../lib/api'
 import GitHubAPI from '../../lib/pipelines/github-api'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api'
+import {createPipelineRepository} from '../../lib/pipelines/repos-api'
 import getGitHubToken from '../../lib/pipelines/setup/get-github-token'
 import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo'
 import getRepo from '../../lib/pipelines/setup/get-repo'
@@ -47,20 +48,25 @@ export default class Connect extends Command {
       return
     }
 
-    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
-    const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
-
     const {
       name: pipelineName,
       repo: repoName,
     } = await getNameAndRepo(combinedInputs)
-
-    const repo = await getRepo(github, repoName)
-
     const pipeline = await getPipeline(this.heroku, pipelineName)
 
     ux.action.start('Linking to repo')
-    await kolkrabbi.createPipelineRepository(pipeline.body.id, repo.id)
+    // Attempt repos-api connection first
+    try {
+      const repoUrl = repoName.includes('.') ? repoName : `https://github.com/${repoName}`
+      await createPipelineRepository(this.heroku, pipeline.body.id!, repoUrl)
+    // Fallback to kolkrabbi
+    } catch {
+      const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
+      const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
+      const repo = await getRepo(github, repoName)
+      await kolkrabbi.createPipelineRepository(pipeline.body.id, repo.id)
+    }
+
     ux.action.stop()
   }
 }
