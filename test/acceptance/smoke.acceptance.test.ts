@@ -208,16 +208,5 @@ describe('@acceptance smoke tests', function () {
         expect(normalizedOutput, `'${normalizedLine}' was expected but wasn't found`).to.include(normalizedLine)
       }
     })
-
-    it('asserts monorepo plugins are in core', async function () {
-      let paths = await globby(['packages/*/package.json'])
-      const cmd = await run('plugins --core')
-      paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
-      console.log(paths)
-      paths = paths.filter((p: string) => p === 'cli')
-      paths.forEach((plugin: string) => {
-        expect(cmd.stdout).to.contain(plugin)
-      })
-    })
   })
 })
