@@ -1,6 +1,5 @@
 import {vars} from '@heroku-cli/command'
 import fs from 'fs-extra'
-import gh from 'github-url-to-object'
 import {spawn} from 'node:child_process'
 import tmp from 'tmp'
 
@@ -62,9 +61,28 @@ async function createArchive(ref: string): Promise<any> {
   })
 }
 
+function parseGitHubUrl(url: string): {user: string; repo: string} | null {
+  // Remove git+ prefix if present
+  url = url.replace(/^git\+/, '')
+
+  // Handle SSH format: git@github.com:user/repo.git
+  const sshMatch = url.match(/^git@github\.com:([^/]+)\/([^/.]+)(?:\.git)?$/)
+  if (sshMatch) {
+    return {user: sshMatch[1], repo: sshMatch[2]}
+  }
+
+  // Handle HTTPS format: https://github.com/user/repo.git
+  const httpsMatch = url.match(/^https?:\/\/github\.com\/([^/]+)\/([^/.]+)(?:\.git)?$/)
+  if (httpsMatch) {
+    return {user: httpsMatch[1], repo: httpsMatch[2]}
+  }
+
+  return null
+}
+
 async function githubRepository() {
   const remote = await runGit('remote', 'get-url', 'origin')
-  const repository = gh(remote)
+  const repository = parseGitHubUrl(remote)
 
   if (repository === null) {
     throw new Error('Not a GitHub repository')
