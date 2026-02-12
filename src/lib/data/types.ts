@@ -49,7 +49,7 @@ export type InfoResponse = {
   pools: Array<PoolInfoResponse>
   quotas: Array<Quota>
   region: CommonRuntimeRegion | PrivateSpaceRegion
-  status: 'available' | 'modifying' | 'provisioning' | 'unavailable'
+  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable'
   tier: 'advanced'
   version: string
 }
@@ -146,12 +146,23 @@ export type ConnectionEndpoint = {
 
 export type PoolInfoResponse = {
   compute_instances: Array<ComputeInstance>
+  connections_used: null | number
   endpoints: Array<ConnectionEndpoint>
+  expected_connection_limit: number
   expected_count: number
   expected_level: string
   id: string
+  metrics_sources: {
+    cluster: null | string
+    database: null | string
+    leader: null | string
+  }
   name: string
-  status: 'available' | 'modifying'
+  status: 'available' | 'modifying' | 'provisioning' | 'unknown'
+  wait_status: {
+    message: null | string
+    waiting: boolean
+  }
 }
 
 export type CredentialsInfo = { items: Array<AdvancedCredentialInfo> }
