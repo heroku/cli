@@ -7,6 +7,7 @@ function parseProcfile(content: string): Record<string, string> {
         throw new Error('line ' + (i + 1) + ' parse error: ' + line)
       }
     }
+
     return line.match(/\w/)
   })
 
