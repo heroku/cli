@@ -316,7 +316,7 @@ export const pgInfo: InfoResponse = {
           level: '4G-Performance',
           name: 'i3r507gt6dbscn',
           role: 'leader',
-          status: 'available',
+          status: 'up',
           updated_at: '2025-01-01T12:00:00+00:00',
         },
         {
@@ -324,10 +324,11 @@ export const pgInfo: InfoResponse = {
           level: '4G-Performance',
           name: 'i7fquhvs4efu74',
           role: 'standby',
-          status: 'available',
+          status: 'up',
           updated_at: '2025-01-01T06:00:00+00:00',
         },
       ],
+      connections_used: 10,
       endpoints: [
         {
           host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
@@ -335,11 +336,21 @@ export const pgInfo: InfoResponse = {
           status: 'available',
         },
       ],
+      expected_connection_limit: 400,
       expected_count: 2,
       expected_level: '4G-Performance',
       id: '199cc055-ad6b-48dd-8344-ef1a7688659e',
+      metrics_sources: {
+        cluster: null,
+        database: null,
+        leader: null,
+      },
       name: 'leader',
       status: 'available',
+      wait_status: {
+        message: null,
+        waiting: false,
+      },
     },
     {
       compute_instances: [
@@ -348,7 +359,7 @@ export const pgInfo: InfoResponse = {
           level: '4G-Performance',
           name: 'ic7mb4lq0rkurk',
           role: 'follower',
-          status: 'available',
+          status: 'up',
           updated_at: '2025-01-01T12:00:00+00:00',
         },
         {
@@ -356,10 +367,11 @@ export const pgInfo: InfoResponse = {
           level: '4G-Performance',
           name: 'i7q78mp2fg4v15',
           role: 'follower',
-          status: 'available',
+          status: 'up',
           updated_at: '2025-01-01T06:00:00+00:00',
         },
       ],
+      connections_used: 50,
       endpoints: [
         {
           host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
@@ -367,11 +379,21 @@ export const pgInfo: InfoResponse = {
           status: 'available',
         },
       ],
+      expected_connection_limit: 800,
       expected_count: 2,
       expected_level: '4G-Performance',
       id: 'b2492c07-c2d4-4956-b739-c15e9a6d6485',
+      metrics_sources: {
+        cluster: null,
+        database: null,
+        leader: null,
+      },
       name: 'analytics',
       status: 'available',
+      wait_status: {
+        message: null,
+        waiting: false,
+      },
     },
   ],
   quotas: [
@@ -423,10 +445,11 @@ export const pgInfoWithDisabledFeatures: InfoResponse = {
           level: '4G-Performance',
           name: 'i3r507gt6dbscn',
           role: 'leader',
-          status: 'available',
+          status: 'up',
           updated_at: '2025-01-01T12:00:00+00:00',
         },
       ],
+      connections_used: 10,
       endpoints: [
         {
           host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
@@ -434,13 +457,31 @@ export const pgInfoWithDisabledFeatures: InfoResponse = {
           status: 'available',
         },
       ],
+      expected_connection_limit: 400,
       expected_count: 1,
       expected_level: '4G-Performance',
       id: '199cc055-ad6b-48dd-8344-ef1a7688659e',
+      metrics_sources: {
+        cluster: null,
+        database: null,
+        leader: null,
+      },
       name: 'leader',
       status: 'available',
+      wait_status: {
+        message: null,
+        waiting: false,
+      },
     },
   ],
+}
+
+export const pgInfoWithForkedDatabase: InfoResponse = {
+  ...pgInfo,
+  forked_from: {
+    id: '6ddd0626-e8b0-463c-a405-4df431c89fa7',
+    name: 'advanced-oblique-01234',
+  },
 }
 
 export const pgInfoWithUncompliantPlanLimits: InfoResponse = {
@@ -686,12 +727,23 @@ export const releasesResponse = [
 
 export const createPoolResponse: PoolInfoResponse = {
   compute_instances: [],
+  connections_used: 0,
   endpoints: [],
+  expected_connection_limit: 800,
   expected_count: 2,
   expected_level: '4G-Performance',
   id: '12345678-90ab-cdef-0123-456789abcdef',
+  metrics_sources: {
+    cluster: null,
+    database: null,
+    leader: null,
+  },
   name: 'readers',
   status: 'modifying',
+  wait_status: {
+    message: 'Waiting for instances to become available',
+    waiting: true,
+  },
 }
 
 export const advancedCredentialsResponse: CredentialsInfo = {
