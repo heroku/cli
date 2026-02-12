@@ -1,14 +1,13 @@
 // tslint:disable no-console
 import ansis from 'ansis'
-import fs from 'fs-extra'
 import {expect} from 'chai'
+import fs from 'fs-extra'
 import * as path from 'path'
 import * as qq from 'qqjs'
-import globby from 'globby'
 import {fileURLToPath} from 'url'
 
-import commandsOutput from './commands-output.js'
 import normalizeTableOutput from '../helpers/utils/normalizeTableOutput.js'
+import commandsOutput from './commands-output.js'
 
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
