@@ -3,21 +3,23 @@ import * as inquirer from '@inquirer/prompts'
 import {unwrap} from '../../../helpers/utils/unwrap'
 
 describe('domains', function () {
-  const herokuOnlyDomainsResponse = [{
-    acm_status: null,
-    acm_status_reason: null,
-    app: {
-      name: 'myapp',
+  const herokuOnlyDomainsResponse = [
+    {
+      acm_status: null,
+      acm_status_reason: null,
+      app: {
+        name: 'myapp',
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+      },
+      cname: null,
+      created_at: '2012-01-01T12:00:00Z',
+      hostname: 'myapp.herokuapp.com',
       id: '01234567-89ab-cdef-0123-456789abcdef',
+      kind: 'heroku',
+      updated_at: '2012-01-01T12:00:00Z',
+      status: 'pending',
     },
-    cname: null,
-    created_at: '2012-01-01T12:00:00Z',
-    hostname: 'myapp.herokuapp.com',
-    id: '01234567-89ab-cdef-0123-456789abcdef',
-    kind: 'heroku',
-    updated_at: '2012-01-01T12:00:00Z',
-    status: 'pending',
-  }]
+  ]
 
   const herokuAndCustomDomainsResponse = [
     ...herokuOnlyDomainsResponse,
@@ -91,10 +93,7 @@ describe('domains', function () {
   ]
 
   test
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/domains')
-      .reply(200, herokuOnlyDomainsResponse),
-    )
+    .nock('https://api.heroku.com', api => api.get('/apps/myapp/domains').reply(200, herokuOnlyDomainsResponse))
     .stdout()
     .command(['domains', '--app', 'myapp'])
     .it('does not show the custom domain header if there are no custom domains', ctx => {
@@ -104,10 +103,7 @@ describe('domains', function () {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/domains')
-      .reply(200, herokuAndCustomDomainsResponse),
-    )
+    .nock('https://api.heroku.com', api => api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse))
     .stdout()
     .command(['domains', '--app', 'myapp'])
     .it('shows a list of domains and their DNS targets when there are custom domains', ctx => {
@@ -121,10 +117,7 @@ describe('domains', function () {
     })
 
   test
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/domains')
-      .reply(200, herokuDomainWithSniEndpoint),
-    )
+    .nock('https://api.heroku.com', api => api.get('/apps/myapp/domains').reply(200, herokuDomainWithSniEndpoint))
     .stdout()
     .command(['domains', '--app', 'myapp'])
     .it('shows the SNI endpoint column when multiple sni endpoints are enabled', ctx => {
@@ -135,10 +128,9 @@ describe('domains', function () {
   test
     .stdout()
     .stderr()
-    .stub(inquirer, 'confirm', () => async () => process.stdin.write('\n'))
-    .nock('https://api.heroku.com', api => api
-      .get('/apps/myapp/domains')
-      .reply(200, () => {
+    .stub(inquirer, 'confirm', () => async () => true)
+    .nock('https://api.heroku.com', api =>
+      api.get('/apps/myapp/domains').reply(200, () => {
         const domainData = {
           acm_status: null,
           acm_status_reason: null,
@@ -161,6 +153,8 @@ describe('domains', function () {
     .command(['domains', '--app', 'myapp'])
     .it('shows warning message for over 100 domains', ctx => {
       expect(ctx.stdout).to.contain('=== myapp Heroku Domain')
-      expect(unwrap(ctx.stderr)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
+      expect(unwrap(ctx.stderr)).to.contain(
+        'Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.',
+      )
     })
 })
