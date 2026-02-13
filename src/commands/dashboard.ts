@@ -6,11 +6,15 @@ import {execSync} from 'child_process'
 import _ from 'lodash'
 import * as path from 'path'
 import * as process from 'process'
+import {fileURLToPath} from 'url'
 import img from 'term-img'
 
 import {ago} from '../lib/time.js'
 import {AppErrors} from '../lib/types/app_errors.js'
 import {sparkline} from '../lib/utils/sparkline.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 type AppsWithMoreInfo = {
   app: Heroku.App
@@ -162,8 +166,20 @@ export default class Dashboard extends Command {
     }
 
     try {
-      img(path.join(__dirname, '..', '..', 'assets', 'heroku.png'), {fallback() {}})
-    } catch {}
+      const imagePath = path.join(__dirname, '..', '..', 'assets', 'heroku.png')
+      let image = img(imagePath, {fallback() {}})
+      if (image) {
+        // Add filename to iTerm2 inline image protocol for better permission prompts
+        // Format: ]1337;File=name=<base64>;inline=1;size=...
+        const filename = 'heroku.png'
+        const nameBase64 = Buffer.from(filename).toString('base64')
+        image = image.replace('File=inline=1;', `File=name=${nameBase64};inline=1;`)
+        ux.stdout(image)
+        ux.stdout('\n')
+      }
+    } catch {
+      // Image display not supported in this terminal
+    }
 
     ux.action.start('Loading')
     const apps = await favoriteApps()

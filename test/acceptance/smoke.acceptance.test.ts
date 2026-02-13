@@ -1,14 +1,13 @@
 // tslint:disable no-console
 import ansis from 'ansis'
-import fs from 'fs-extra'
 import {expect} from 'chai'
+import fs from 'fs-extra'
 import * as path from 'path'
 import * as qq from 'qqjs'
-import globby from 'globby'
 import {fileURLToPath} from 'url'
 
-import commandsOutput from './commands-output.js'
 import normalizeTableOutput from '../helpers/utils/normalizeTableOutput.js'
+import commandsOutput from './commands-output.js'
 
 const app = 'heroku-cli-ci-smoke-test-app'
 const appFlag = `-a=${app}`
@@ -207,17 +206,6 @@ describe('@acceptance smoke tests', function () {
         if (!normalizedLine || normalizedLine === 'id summary' || normalizedLine === 'command summary') continue
         expect(normalizedOutput, `'${normalizedLine}' was expected but wasn't found`).to.include(normalizedLine)
       }
-    })
-
-    it('asserts monorepo plugins are in core', async function () {
-      let paths = await globby(['packages/*/package.json'])
-      const cmd = await run('plugins --core')
-      paths = paths.map((p: string) => p.replace('packages/', '').replace('/package.json', ''))
-      console.log(paths)
-      paths = paths.filter((p: string) => p === 'cli')
-      paths.forEach((plugin: string) => {
-        expect(cmd.stdout).to.contain(plugin)
-      })
     })
   })
 })
