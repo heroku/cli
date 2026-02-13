@@ -3,8 +3,12 @@
   "npmClient": "yarn",
   "command": {
     "publish": {
-      "allowBranch": ["main", "release-*"],
+      "allowBranch": [
+        "main",
+        "release-*"
+      ],
       "conventionalCommits": true
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
