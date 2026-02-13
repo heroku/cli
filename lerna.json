@@ -1,13 +1,9 @@
 {
   "version": "10.17.0",
-  "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
     "publish": {
-      "allowBranch": [
-        "main",
-        "release-*"
-      ],
+      "allowBranch": ["main", "release-*"],
       "conventionalCommits": true
     }
   }
