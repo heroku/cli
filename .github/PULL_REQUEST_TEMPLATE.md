@@ -1,10 +1,13 @@
 <!--
 When creating a PR, be sure to prepend the PR title with the Conventional Commit type (`feat`, `fix`, or `chore`). This is how we manage package versioning and generating CHANGELOG notes.
+
 Examples:
 - "feat: add growl notification to spaces:wait"
 - "fix: handle special characters in app names"
 - "chore: add dist directory to .gitignore"
+
 The expected Conventional Commit types are listed below.
+
 Learn more about [Conventional Commits](https://www.conventionalcommits.org/).
 -->
 
@@ -20,19 +23,14 @@ Learn more about [Conventional Commits](https://www.conventionalcommits.org/).
 
 ### Patch Updates (patch semver update)
 - [ ] **fix**: Bug fix
-- [ ] **perf**: Performance improvement
 - [ ] **deps**: Dependency upgrade
 - [ ] **revert**: Revert a previous commit
-- [ ] **docs**: Documentation change
-- [ ] **style**: Styling update
 - [ ] **chore**: Change that does not affect production code
 - [ ] **refactor**: Refactoring existing code without changing behavior
-- [ ] **tests**: Add/update/remove tests
-- [ ] **build**: Change to the build system
-- [ ] **ci**: Continuous integration workflow update
+- [ ] **test**: Add/update/remove tests
 
 ## Testing
-**Notes**: 
+**Notes**:
 <!-- Add any context/setup necessary for testing. -->
 
 **Steps**:

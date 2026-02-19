@@ -14,7 +14,9 @@ describe('domains', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    confirmStub = sinon.stub(DomainsIndex.prototype, 'confirmDisplayAllDomains').resolves(true)
+    confirmStub = sinon
+      .stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
+      .resolves(true)
   })
 
   afterEach(function () {
@@ -25,21 +27,23 @@ describe('domains', function () {
     stderr.stop()
   })
 
-  const herokuOnlyDomainsResponse = [{
-    acm_status: null,
-    acm_status_reason: null,
-    app: {
+  const herokuOnlyDomainsResponse = [
+    {
+      acm_status: null,
+      acm_status_reason: null,
+      app: {
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'myapp',
+      },
+      cname: null,
+      created_at: '2012-01-01T12:00:00Z',
+      hostname: 'myapp.herokuapp.com',
       id: '01234567-89ab-cdef-0123-456789abcdef',
-      name: 'myapp',
+      kind: 'heroku',
+      status: 'pending',
+      updated_at: '2012-01-01T12:00:00Z',
     },
-    cname: null,
-    created_at: '2012-01-01T12:00:00Z',
-    hostname: 'myapp.herokuapp.com',
-    id: '01234567-89ab-cdef-0123-456789abcdef',
-    kind: 'heroku',
-    status: 'pending',
-    updated_at: '2012-01-01T12:00:00Z',
-  }]
+  ]
 
   const herokuAndCustomDomainsResponse = [
     ...herokuOnlyDomainsResponse,
@@ -113,72 +117,86 @@ describe('domains', function () {
   ]
 
   it('does not show the custom domain header if there are no custom domains', async function () {
-    api
-      .get('/apps/myapp/domains')
-      .reply(200, herokuOnlyDomainsResponse)
+    api.get('/apps/myapp/domains').reply(200, herokuOnlyDomainsResponse)
 
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
-    expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
+    expect(stdout.output).to.contain(
+      '=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com',
+    )
     expect(stdout.output).to.contain('myapp.herokuapp.com')
     expect(stdout.output).to.not.contain('=== ⬢ myapp Custom Domains')
   })
 
   it('shows a list of domains and their DNS targets when there are custom domains', async function () {
-    api
-      .get('/apps/myapp/domains')
-      .reply(200, herokuAndCustomDomainsResponse)
+    api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
 
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
+    expect(stdout.output).to.contain(
+      '=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com',
+    )
     expect(stdout.output).to.contain('myapp.herokuapp.com')
     expect(stdout.output).to.contain('=== ⬢ myapp Custom Domains')
-    expect(actual).to.contain(removeAllWhitespace('Domain Name     DNS Record Type DNS Target'))
-    expect(actual).to.contain(removeAllWhitespace('example.com     ALIAS or ANAME  foo.herokudns.com'))
-    expect(actual).to.contain(removeAllWhitespace('www.example.com CNAME           bar.herokudns.com'))
-    expect(actual).to.contain(removeAllWhitespace('*.example.com   CNAME           buzz.herokudns.com'))
+    expect(actual).to.contain(
+      removeAllWhitespace('Domain Name     DNS Record Type DNS Target'),
+    )
+    expect(actual).to.contain(
+      removeAllWhitespace('example.com     ALIAS or ANAME  foo.herokudns.com'),
+    )
+    expect(actual).to.contain(
+      removeAllWhitespace('www.example.com CNAME           bar.herokudns.com'),
+    )
+    expect(actual).to.contain(
+      removeAllWhitespace('*.example.com   CNAME           buzz.herokudns.com'),
+    )
   })
 
   it('shows the SNI endpoint column when multiple sni endpoints are enabled', async function () {
-    api
-      .get('/apps/myapp/domains')
-      .reply(200, herokuDomainWithSniEndpoint)
+    api.get('/apps/myapp/domains').reply(200, herokuDomainWithSniEndpoint)
 
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
     const actual = removeAllWhitespace(stdout.output)
-    expect(actual).to.contain(removeAllWhitespace('Domain Name   DNS Record Type DNS Target         SNI Endpoint'))
-    expect(actual).to.contain(removeAllWhitespace('*.example.com CNAME           buzz.herokudns.com some haiku'))
+    expect(actual).to.contain(
+      removeAllWhitespace(
+        'Domain Name   DNS Record Type DNS Target         SNI Endpoint',
+      ),
+    )
+    expect(actual).to.contain(
+      removeAllWhitespace(
+        '*.example.com CNAME           buzz.herokudns.com some haiku',
+      ),
+    )
   })
 
   it('shows warning message for over 100 domains', async function () {
-    api
-      .get('/apps/myapp/domains')
-      .reply(200, () => {
-        const domainData = {
-          acm_status: null,
-          acm_status_reason: null,
-          app: {
-            id: '01234567-89ab-cdef-0123-456789abcdef',
-            name: 'myapp',
-          },
-          cname: null,
-          created_at: '2012-01-01T12:00:00Z',
-          hostname: 'example.com',
-          id: '11434567-89ab-cdef-0123-456789abcdef',
-          kind: 'custom',
-          status: 'succeeded',
-          updated_at: '2012-01-01T12:00:00Z',
-        }
+    api.get('/apps/myapp/domains').reply(200, () => {
+      const domainData = {
+        acm_status: null,
+        acm_status_reason: null,
+        app: {
+          id: '01234567-89ab-cdef-0123-456789abcdef',
+          name: 'myapp',
+        },
+        cname: null,
+        created_at: '2012-01-01T12:00:00Z',
+        hostname: 'example.com',
+        id: '11434567-89ab-cdef-0123-456789abcdef',
+        kind: 'custom',
+        status: 'succeeded',
+        updated_at: '2012-01-01T12:00:00Z',
+      }
 
-        return new Array(1000).fill(domainData) // eslint-disable-line unicorn/no-new-array
-      })
+      return new Array(1000).fill(domainData) // eslint-disable-line unicorn/no-new-array
+    })
 
     await runCommand(DomainsIndex, ['--app', 'myapp'])
 
     expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain')
-    expect(unwrap(stderr.output)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
+    expect(unwrap(stderr.output)).to.contain(
+      'Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.',
+    )
   })
 })
