@@ -1,4 +1,4 @@
-import {Maintenance, MaintenanceStatus} from '../../../../src/lib/data/types.js'
+import {Maintenance, MaintenanceStatus, Window} from '../../../../src/lib/data/types.js'
 import {addon} from '../pg/fixtures.js'
 
 export const maintenance: Maintenance = {
@@ -30,4 +30,11 @@ export const maintenancesResponse = {
   required_by: maintenance.required_by,
   scheduled_for: maintenance.scheduled_for,
   window: maintenance.window,
+}
+
+export const maintenanceWindow: Window = {
+  previous_window: 'Fridays 17:30 to 21:30 UTC',
+  previously_scheduled_at: null,
+  scheduled_at: null,
+  window: 'Tuesdays 17:30 to 21:30 UTC',
 }
