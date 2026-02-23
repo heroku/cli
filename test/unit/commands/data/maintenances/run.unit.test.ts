@@ -110,7 +110,7 @@ describe('data:maintenances:run', function () {
 
     const {error} = await runCommand(['data:maintenances:run', `--app=${appInMaintenance.name}`, legacyEssentialAddon.name])
 
-    expect(error?.message).to.equal('maintenance is only available for production databases')
+    expect(error?.message).to.equal('You can\'t trigger maintenance on an Essential tier database.')
   })
 
   it('waits until maintenance is complete when using wait flag', async function () {
