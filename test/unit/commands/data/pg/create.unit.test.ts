@@ -73,7 +73,7 @@ describe('data:pg:create', function () {
         .post('/apps/myapp/addons', {
           attachment: {},
           config: {level: '4G-Performance'},
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
       const dataApi = nock('https://api.data.heroku.com')
@@ -107,7 +107,7 @@ describe('data:pg:create', function () {
         .post('/apps/myapp/addons', {
           attachment: {},
           config: {level: '4G-Performance'},
-          plan: {name: 'heroku-postgresql:advanced-private-beta'},
+          plan: {name: 'heroku-postgresql:advanced-private'},
         })
         .reply(200, createAddonResponse)
 
@@ -135,7 +135,7 @@ describe('data:pg:create', function () {
         .post('/apps/myapp/addons', {
           attachment: {},
           config: {level: '4G-Performance'},
-          plan: {name: 'heroku-postgresql:advanced-shield-beta'},
+          plan: {name: 'heroku-postgresql:advanced-shield'},
         })
         .reply(200, createAddonResponse)
 
@@ -156,99 +156,6 @@ describe('data:pg:create', function () {
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
-    })
-
-    describe('with HEROKU_PROD_NGPG env var set', function () {
-      let originalEnv: NodeJS.ProcessEnv
-
-      beforeEach(function () {
-        originalEnv = {...process.env}
-        process.env.HEROKU_PROD_NGPG = 'true'
-      })
-
-      afterEach(function () {
-        process.env = originalEnv
-      })
-
-      it('creates database with non-beta plan', async function () {
-        const herokuApi = nock('https://api.heroku.com')
-          .post('/apps/myapp/addons', {
-            attachment: {},
-            config: {level: '4G-Performance'},
-            plan: {name: 'heroku-postgresql:advanced'},
-          })
-          .reply(200, createAddonResponse)
-
-        await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance'])
-
-        herokuApi.done()
-      })
-
-      it('creates database in private network with non-beta plan', async function () {
-        const herokuApi = nock('https://api.heroku.com')
-          .post('/apps/myapp/addons', {
-            attachment: {},
-            config: {level: '4G-Performance'},
-            plan: {name: 'heroku-postgresql:advanced-private'},
-          })
-          .reply(200, createAddonResponse)
-
-        await runCommand(DataPgCreate, [
-          '--app=myapp',
-          '--network=private',
-          '--level=4G-Performance',
-        ])
-
-        herokuApi.done()
-      })
-
-      it('creates database in shield network with non-beta plan', async function () {
-        const herokuApi = nock('https://api.heroku.com')
-          .post('/apps/myapp/addons', {
-            attachment: {},
-            config: {level: '4G-Performance'},
-            plan: {name: 'heroku-postgresql:advanced-shield'},
-          })
-          .reply(200, createAddonResponse)
-
-        await runCommand(DataPgCreate, [
-          '--app=myapp',
-          '--network=shield',
-          '--level=4G-Performance',
-        ])
-
-        herokuApi.done()
-      })
-
-      it('uses non-beta pricing in interactive mode', async function () {
-        const herokuApi = nock('https://api.heroku.com')
-          .post('/apps/myapp/addons', {
-            attachment: {},
-            config: {
-              'high-availability': true,
-              level: levelsResponse.items[0].name,
-            },
-            plan: {name: 'heroku-postgresql:advanced'},
-          })
-          .reply(200, createAddonResponse)
-
-        const dataApi = nock('https://api.data.heroku.com')
-          .get('/data/postgres/v1/levels/advanced')
-          .reply(200, levelsResponse)
-          .get('/data/postgres/v1/pricing')
-          .reply(200, pricingResponse)
-
-        poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Level selection
-        promptStub
-          .onCall(0).resolves({action: 'keep'}) // High availability selection
-          .onCall(1).resolves({action: 'confirm'}) // Confirmation
-          .onCall(2).resolves({action: 'exit'}) // Exit at follower pool configuration
-
-        await runCommand(DataPgCreate, ['--app=myapp'])
-
-        herokuApi.done()
-        dataApi.done()
-      })
     })
 
     it('creates database with provision options', async function () {
@@ -286,7 +193,7 @@ describe('data:pg:create', function () {
             level: '4G-Performance',
           },
           confirm: 'myapp',
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -313,7 +220,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -387,7 +294,7 @@ describe('data:pg:create', function () {
             'high-availability': false,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -428,7 +335,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[1].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -472,7 +379,7 @@ describe('data:pg:create', function () {
             'high-availability': false,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -515,7 +422,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -571,7 +478,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
@@ -649,7 +556,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createAddonResponse)
 
