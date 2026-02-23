@@ -73,9 +73,7 @@ export default class DataPgCreate extends BaseCommand {
     const {followers, 'high-availability': highAvailability, level} = flags
     const service = utils.pg.addonService()
 
-    const useProd = process.env.HEROKU_PROD_NGPG === 'true'
-    const planSuffix = useProd ? '' : '-beta'
-    const plan = `advanced${network ? `-${network}` : ''}${planSuffix}`
+    const plan = `advanced${network ? `-${network}` : ''}`
     const servicePlan = `${service}:${plan}`
 
     // Parse provision options

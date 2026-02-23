@@ -54,7 +54,7 @@ export const addon: DeepRequired<Heroku.AddOn> = {
     id: 'ab0490b3-b7cd-4bf6-b840-9db509f3d075',
     installable_inside_private_network: false,
     installable_outside_private_network: true,
-    name: 'heroku-postgresql:advanced-beta',
+    name: 'heroku-postgresql:advanced',
     price: {
       cents: 0,
       contract: false,
@@ -135,27 +135,6 @@ export const pricingResponse: PricingInfoResponse = {
       rate: 20,
     },
   },
-  'advanced-beta': {
-    'instance-4G': {
-      billing_period: 'month',
-      billing_unit: 'compute',
-      product_description: '4G-Performance',
-      rate: 6000,
-    },
-    'instance-8G': {
-      billing_period: 'month',
-      billing_unit: 'compute',
-      product_description: '8G-Performance',
-      rate: 20000,
-    },
-    'storage-optimized': {
-      billing_period: 'month',
-      billing_unit: 'gigabyte',
-      included_units: 100,
-      product_description: 'Optimized Storage',
-      rate: 20,
-    },
-  },
   'advanced-private': {
     'instance-4G': {
       billing_period: 'month',
@@ -177,49 +156,7 @@ export const pricingResponse: PricingInfoResponse = {
       rate: 24,
     },
   },
-  'advanced-private-beta': {
-    'instance-4G': {
-      billing_period: 'month',
-      billing_unit: 'compute',
-      product_description: '4G-Performance',
-      rate: 7200,
-    },
-    'instance-8G': {
-      billing_period: 'month',
-      billing_unit: 'compute',
-      product_description: '8G-Performance',
-      rate: 24000,
-    },
-    'storage-optimized': {
-      billing_period: 'month',
-      billing_unit: 'gigabyte',
-      included_units: 100,
-      product_description: 'Optimized Storage',
-      rate: 24,
-    },
-  },
   'advanced-shield': {
-    'instance-4G': {
-      billing_period: 'month',
-      billing_unit: 'compute',
-      product_description: '4G-Performance',
-      rate: 8400,
-    },
-    'instance-8G': {
-      billing_period: 'month',
-      billing_unit: 'compute',
-      product_description: '8G-Performance',
-      rate: 28000,
-    },
-    'storage-optimized': {
-      billing_period: 'month',
-      billing_unit: 'gigabyte',
-      included_units: 100,
-      product_description: 'Optimized Storage',
-      rate: 28,
-    },
-  },
-  'advanced-shield-beta': {
     'instance-4G': {
       billing_period: 'month',
       billing_unit: 'compute',

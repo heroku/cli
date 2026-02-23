@@ -45,7 +45,7 @@ describe('data:pg:fork', function () {
             fork: 'advanced-horizontal-01234',
             level: '4G-Performance',
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createForkResponse)
 
@@ -83,7 +83,7 @@ describe('data:pg:fork', function () {
             level: '4G-Performance',
           },
           name: 'my-forked-db',
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createForkResponse)
 
@@ -122,7 +122,7 @@ describe('data:pg:fork', function () {
             fork: 'advanced-horizontal-01234',
             level: '8G-Performance',
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createForkResponse)
 
@@ -189,7 +189,7 @@ describe('data:pg:fork', function () {
             'recovery-time': '2025-01-11T12:35:00',
             rollback: 'advanced-horizontal-01234',
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createForkResponse)
 
@@ -234,7 +234,7 @@ describe('data:pg:fork', function () {
             'recovery-time': '2025-01-30T00:00:00',
             rollback: 'advanced-horizontal-01234',
           },
-          plan: {name: 'heroku-postgresql:advanced-beta'},
+          plan: {name: 'heroku-postgresql:advanced'},
         })
         .reply(200, createForkResponse)
 
