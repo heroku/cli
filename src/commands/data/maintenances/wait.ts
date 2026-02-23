@@ -30,7 +30,7 @@ export default class DataMaintenancesWait extends BaseCommand {
 
     const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
     if (isEssentialTier) {
-      this.error('maintenance is only available for production databases')
+      this.error('You can\'t await maintenance on an Essential tier database.')
     }
 
     const {body: maintenance} = await this.dataApi.get<Maintenance>(

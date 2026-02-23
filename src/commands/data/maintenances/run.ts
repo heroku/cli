@@ -60,7 +60,7 @@ export default class DataMaintenancesRun extends BaseCommand {
 
     const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
     if (isEssentialTier) {
-      this.error('maintenance is only available for production databases')
+      this.error('You can\'t trigger maintenance on an Essential tier database.')
     }
 
     await this.confirmMaintenanceMode(addon, confirm, force || false)
