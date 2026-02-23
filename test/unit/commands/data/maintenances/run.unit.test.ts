@@ -4,7 +4,7 @@ import nock from 'nock'
 
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {cedarApp} from '../../../../fixtures/apps/fixtures.js'
-import {maintenance, maintenancesRunResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
+import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, legacyEssentialAddon} from '../../../../fixtures/data/pg/fixtures.js'
 
 const appInMaintenance = {
@@ -38,7 +38,7 @@ describe('data:maintenances:run', function () {
 
     dataApi
       .post(`/data/maintenances/v1/${addon.id}/run`)
-      .reply(200, maintenancesRunResponse)
+      .reply(200, maintenancesResponse)
 
     const {stderr, stdout} = await runCommand(['data:maintenances:run', `--app=${appInMaintenance.name}`, addon.name])
 
@@ -57,7 +57,7 @@ describe('data:maintenances:run', function () {
 
     dataApi
       .post(`/data/maintenances/v1/${addon.id}/run`)
-      .reply(200, maintenancesRunResponse)
+      .reply(200, maintenancesResponse)
 
     const {stderr, stdout} = await runCommand(['data:maintenances:run', addon.name])
 
@@ -76,7 +76,7 @@ describe('data:maintenances:run', function () {
 
     dataApi
       .post(`/data/maintenances/v1/${addon.id}/run`)
-      .reply(200, maintenancesRunResponse)
+      .reply(200, maintenancesResponse)
 
     const {stderr, stdout} = await runCommand([
       'data:maintenances:run',
@@ -125,7 +125,7 @@ describe('data:maintenances:run', function () {
     // call maintenance
     dataApi
       .post(`/data/maintenances/v1/${addon.id}/run`)
-      .reply(200, maintenancesRunResponse)
+      .reply(200, maintenancesResponse)
 
     // polling for maintenance status 3 times
     let pollingCalls = 0

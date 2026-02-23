@@ -25,7 +25,7 @@ export const maintenance: Maintenance = {
   window: 'Thursdays 22:00 to Fridays 02:00 UTC',
 }
 
-export const maintenancesRunResponse = {
+export const maintenancesResponse = {
   previously_scheduled_for: maintenance.previously_scheduled_for,
   required_by: maintenance.required_by,
   scheduled_for: maintenance.scheduled_for,

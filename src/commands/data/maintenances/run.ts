@@ -74,7 +74,7 @@ export default class DataMaintenancesRun extends BaseCommand {
 
     if (wait) {
       ux.action.start('Waiting for maintenance to complete')
-      await waitUntilMaintenanceComplete(addon.id!)
+      await waitUntilMaintenanceComplete(addon.id!, this.dataApi)
       ux.action.stop('maintenance completed')
     }
   }
