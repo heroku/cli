@@ -140,9 +140,10 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41'))
-    expect(actual).to.include(removeAllWhitespace('releas…'))
-    expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
-    expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
+    // cspell:ignore releasecomman
+    expect(actual).to.include(removeAllWhitespace('releasecomman…'))
+    expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars   rdagg@heroku.com'))
+    expect(actual).to.include(removeAllWhitespace('v37   first commit   rdagg@heroku.com'))
   })
 
   it('shows successful releases', async function () {
@@ -160,9 +161,9 @@ describe('releases', function () {
     const actual = removeAllWhitespace(stdout.output)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
-    expect(actual).to.include(removeAllWhitespace('v41   third comm…   rdagg@heroku.com'))
-    expect(actual).to.include(removeAllWhitespace('v40   Set foo co…   rdagg@heroku.com'))
-    expect(actual).to.include(removeAllWhitespace('v37   first comm…   rdagg@heroku.com'))
+    expect(actual).to.include(removeAllWhitespace('v41   third commit   rdagg@heroku.com'))
+    expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars   rdagg@heroku.com'))
+    expect(actual).to.include(removeAllWhitespace('v37   first commit   rdagg@heroku.com'))
   })
 
   it('shows releases in wider terminal', async function () {
@@ -180,9 +181,7 @@ describe('releases', function () {
     const actual = removeAllWhitespace(stdout.output)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
-    // cspell:ignore releas
-    expect(actual).to.include(removeAllWhitespace('v41'))
-    expect(actual).to.include(removeAllWhitespace('releas…'))
+    expect(actual).to.include(removeAllWhitespace('v41   third commit   release command executing'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars     rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit            rdagg@heroku.com'))
   })
