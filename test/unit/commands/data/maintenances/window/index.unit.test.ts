@@ -35,7 +35,7 @@ describe('data:maintenances:window', function () {
     const {stderr, stdout} = await runCommand(['data:maintenances:window', addon.name])
 
     expect(stderr).to.contain(`Fetching maintenance window for ${addon.name}... done\n`)
-    expect(stdout).to.contain('window:                  Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 
   it('can fetch a window for an addon scoped by an app', async function () {
@@ -49,6 +49,6 @@ describe('data:maintenances:window', function () {
     const {stderr, stdout} = await runCommand(['data:maintenances:window', addon.name, `--app=${app.name}`])
 
     expect(stderr).to.contain(`Fetching maintenance window for ${addon.name}... done\n`)
-    expect(stdout).to.contain('window:                  Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 })

@@ -1,4 +1,4 @@
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
@@ -12,7 +12,7 @@ export default class Info extends BaseCommand {
   static description = 'info for a webhook event on an app'
 
   static examples = [
-    '$ heroku webhooks:events:info 99999999-9999-9999-9999-999999999999',
+    `${color.command('heroku webhooks:events:info')} 99999999-9999-9999-9999-999999999999`,
   ]
 
   static flags = {

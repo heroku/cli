@@ -26,13 +26,11 @@ export default class Info extends Command {
       hux.styledJSON(feature)
     } else {
       hux.styledHeader(feature.name || '')
-      /* eslint-disable perfectionist/sort-objects */
       hux.styledObject({
         Description: feature.description,
-        Enabled: feature.enabled ? color.success('true') : color.failure('false'),
         Docs: feature.doc_url,
+        Enabled: feature.enabled ? color.success('true') : color.failure('false'),
       })
-      /* eslint-enable perfectionist/sort-objects */
     }
   }
 }

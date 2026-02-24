@@ -151,7 +151,7 @@ export default class Errors extends Command {
           Level: {get: ({level}) => colorize(level, level)},
           title: {header: 'Desc'},
           Count: {get: ({count}) => count},
-        }, {title: `Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}})
+        }, {title: `=== Errors on ${color.app(flags.app)} in the last ${hours} hours\n`, titleOptions: {bold: true}})
         /* eslint-enable perfectionist/sort-objects */
       }
     }

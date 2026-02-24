@@ -63,15 +63,13 @@ export default class Info extends Command {
       }
 
       hux.styledHeader(`Release ${color.name('v' + release.version)}`)
-      /* eslint-disable perfectionist/sort-objects */
       hux.styledObject({
         'Add-ons': release.addon_plan_names,
-        Change: releaseChange,
         By: userEmail,
+        Change: releaseChange,
         'Eligible for Rollback?': release.eligible_for_rollback ? 'Yes' : 'No',
         When: release.created_at,
       })
-      /* eslint-enable perfectionist/sort-objects */
       ux.stdout()
       hux.styledHeader(`${color.name('v' + release.version)} Config vars`)
       if (shell) {

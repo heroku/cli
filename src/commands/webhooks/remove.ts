@@ -1,4 +1,5 @@
 import {flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base.js'
@@ -7,7 +8,7 @@ export default class WebhooksRemove extends BaseCommand {
   static description = 'removes a webhook from an app'
 
   static examples = [
-    '$ heroku webhooks:remove 99999999-9999-9999-9999-999999999999',
+    `${color.command('heroku webhooks:remove')} 99999999-9999-9999-9999-999999999999`,
   ]
 
   static flags = {

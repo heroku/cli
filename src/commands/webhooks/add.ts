@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base.js'
@@ -8,7 +8,7 @@ export default class WebhooksAdd extends BaseCommand {
   static description = 'add a webhook to an app'
 
   static examples = [
-    '$ heroku webhooks:add -i api:dyno -l notify -u https://example.com/hooks',
+    `${color.command('heroku webhooks:add')} -i api:dyno -l notify -u https://example.com/hooks`,
   ]
 
   static flags = {

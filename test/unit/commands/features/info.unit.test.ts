@@ -30,8 +30,8 @@ describe('features:info', function () {
     expect(stdout).to.eq(`=== myfeature
 
 Description: the description
-Enabled:     true
 Docs:        https://devcenter.heroku.com
+Enabled:     true
 `)
     expect(stderr).to.equal('')
   })

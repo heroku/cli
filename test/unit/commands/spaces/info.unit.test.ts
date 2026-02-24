@@ -38,15 +38,15 @@ describe('spaces:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === ⬡ ${space.name}
-      ID:           ${space.id}
-      Team:         ${space.team.name}
-      Region:       ${space.region.description}
-      CIDR:         ${space.cidr}
-      Data CIDR:    ${space.data_cidr}
-      State:        ${space.state}
-      Shield:       off
-      Generation:   ${getGeneration(space)}
-      Created at:   ${space.created_at}
+      ID:         ${space.id}
+      Team:       ${space.team.name}
+      Region:     ${space.region.description}
+      CIDR:       ${space.cidr}
+      Data CIDR:  ${space.data_cidr}
+      State:      ${space.state}
+      Shield:     off
+      Generation: ${getGeneration(space)}
+      Created at: ${space.created_at}
     `))
   })
 
@@ -128,15 +128,15 @@ describe('spaces:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === ⬡ ${space.name}
-      ID:           ${space.id}
-      Team:         ${space.team.name}
-      Region:       ${space.region.description}
-      CIDR:         ${space.cidr}
-      Data CIDR:    ${space.data_cidr}
-      State:        ${space.state}
-      Shield:       off
-      Generation:   ${getGeneration(space)}
-      Created at:   ${space.created_at}
+      ID:         ${space.id}
+      Team:       ${space.team.name}
+      Region:     ${space.region.description}
+      CIDR:       ${space.cidr}
+      Data CIDR:  ${space.data_cidr}
+      State:      ${space.state}
+      Shield:     off
+      Generation: ${getGeneration(space)}
+      Created at: ${space.created_at}
     `))
   })
 
@@ -151,15 +151,15 @@ describe('spaces:info', function () {
 
     expectOutput(stdout.output, heredoc(`
       === ⬡ ${shieldSpace.name}
-      ID:           ${shieldSpace.id}
-      Team:         ${shieldSpace.team.name}
-      Region:       ${shieldSpace.region.description}
-      CIDR:         ${shieldSpace.cidr}
-      Data CIDR:    ${shieldSpace.data_cidr}
-      State:        ${shieldSpace.state}
-      Shield:       on
-      Generation:   ${getGeneration(space)}
-      Created at:   ${shieldSpace.created_at}
+      ID:         ${shieldSpace.id}
+      Team:       ${shieldSpace.team.name}
+      Region:     ${shieldSpace.region.description}
+      CIDR:       ${shieldSpace.cidr}
+      Data CIDR:  ${shieldSpace.data_cidr}
+      State:      ${shieldSpace.state}
+      Shield:     on
+      Generation: ${getGeneration(space)}
+      Created at: ${shieldSpace.created_at}
     `))
   })
 
@@ -173,15 +173,15 @@ describe('spaces:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === ⬡ ${space.name}
-      ID:           ${space.id}
-      Team:         ${space.team.name}
-      Region:       ${space.region.description}
-      CIDR:         ${space.cidr}
-      Data CIDR:    ${space.data_cidr}
-      State:        ${space.state}
-      Shield:       off
-      Generation:   ${getGeneration(space)}
-      Created at:   ${space.created_at}
+      ID:         ${space.id}
+      Team:       ${space.team.name}
+      Region:     ${space.region.description}
+      CIDR:       ${space.cidr}
+      Data CIDR:  ${space.data_cidr}
+      State:      ${space.state}
+      Shield:     off
+      Generation: ${getGeneration(space)}
+      Created at: ${space.created_at}
     `))
   })
 })
