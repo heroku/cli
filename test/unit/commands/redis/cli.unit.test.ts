@@ -20,6 +20,7 @@ const addonId = '1dcb269b-8be5-4132-8aeb-e3f3c7364958'
 const appId = '7b0ae612-8775-4502-a5b5-2b45a4d18b2d'
 
 const connectionTypes: string[] = []
+const portOffsets: (number | undefined)[] = []
 
 class TestCli extends Cmd {
   protected override async createBastionConnection() {
@@ -29,6 +30,7 @@ class TestCli extends Cmd {
 
   protected override createDirectConnection(_uri: URL, options: {portOffset?: number, useTls: boolean}) {
     connectionTypes.push(options.useTls ? 'tls' : 'net')
+    portOffsets.push(options.portOffset)
     return new Client() as unknown as ReturnType<Cmd['createDirectConnection']>
   }
 }
@@ -43,6 +45,7 @@ describe('heroku redis:cli', function () {
   describe('connection tests', function () {
     beforeEach(function () {
       connectionTypes.length = 0
+      portOffsets.length = 0
     })
 
     it('# for hobby it uses net.connect', async function () {
@@ -81,6 +84,8 @@ describe('heroku redis:cli', function () {
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
       expect(connectionTypes).to.include('net')
+      expect(portOffsets).to.have.lengthOf(1)
+      expect(portOffsets[0]).to.equal(undefined)
     })
 
     it('# for hobby it uses TLS if prefer_native_tls', async function () {
@@ -119,6 +124,8 @@ describe('heroku redis:cli', function () {
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
       expect(connectionTypes).to.include('tls')
+      expect(portOffsets).to.have.lengthOf(1)
+      expect(portOffsets[0]).to.equal(undefined)
     })
 
     it('# for premium it uses tls.connect', async function () {
@@ -157,6 +164,8 @@ describe('heroku redis:cli', function () {
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
       expect(connectionTypes).to.include('tls')
+      expect(portOffsets).to.have.lengthOf(1)
+      expect(portOffsets[0]).to.equal(1)
     })
 
     it('# for bastion it uses tunnel', async function () {
