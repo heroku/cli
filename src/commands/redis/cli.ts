@@ -224,7 +224,7 @@ export default class Cli extends Command {
     }
 
     const useTls = preferNativeTls || !hobby
-    const portOffset = hobby ? undefined : 1
+    const portOffset = preferNativeTls || hobby ? undefined : 1
     const client = this.createDirectConnection(uri, {portOffset, useTls})
     return redisCLI(uri, client)
   }
