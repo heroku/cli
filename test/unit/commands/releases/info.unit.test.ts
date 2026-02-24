@@ -43,8 +43,8 @@ describe('releases:info', function () {
       === Release v10
       Add-ons:                addon1
                               addon2
-      Change:                 something changed
       By:                     foo@foo.com
+      Change:                 something changed
       Eligible for Rollback?: Yes
       When:                   ${d.toISOString()}
 
@@ -70,8 +70,8 @@ describe('releases:info', function () {
       === Release v10
       Add-ons:                addon1
                               addon2
-      Change:                 something changed
       By:                     foo@foo.com
+      Change:                 something changed
       Eligible for Rollback?: Yes
       When:                   ${d.toISOString()}
 
@@ -97,8 +97,8 @@ describe('releases:info', function () {
       === Release v10
       Add-ons:                addon1
                               addon2
-      Change:                 something changed
       By:                     foo@foo.com
+      Change:                 something changed
       Eligible for Rollback?: Yes
       When:                   ${d.toISOString()}
 
@@ -141,8 +141,8 @@ describe('releases:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === Release v10
-      Change:                 something changed (release command failed)
       By:                     foo@foo.com
+      Change:                 something changed (release command failed)
       Eligible for Rollback?: No
       When:                   ${d.toISOString()}
 
@@ -175,8 +175,8 @@ describe('releases:info', function () {
       === Release v10
       Add-ons:                addon1
                               addon2
-      Change:                 something changed (release command executing)
       By:                     foo@foo.com
+      Change:                 something changed (release command executing)
       Eligible for Rollback?: No
       When:                   ${d.toISOString()}
 
@@ -206,8 +206,8 @@ describe('releases:info', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === Release v10
-      Change:                 something changed (release expired)
       By:                     foo@foo.com
+      Change:                 something changed (release expired)
       Eligible for Rollback?: No
       When:                   ${d.toISOString()}
 

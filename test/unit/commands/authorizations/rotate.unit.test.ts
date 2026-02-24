@@ -22,9 +22,9 @@ describe('authorizations:rotate', function () {
 
     const {stderr, stdout} = await runCommand(['authorizations:rotate', authorizationID])
 
-    expect(stdout).to.contain('Client:      <none>\n')
-    expect(stdout).to.contain('Scope:       global,app\n')
-    expect(stdout).to.contain('Token:       secrettoken\n')
+    expect(stdout).to.contain('Client: <none>\n')
+    expect(stdout).to.contain('Scope:  global,app\n')
+    expect(stdout).to.contain('Token:  secrettoken\n')
     expect(stderr).to.contain('Rotating OAuth Authorization... done')
   })
 })

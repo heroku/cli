@@ -113,15 +113,15 @@ describe('spaces:wait', function () {
     ])
     expectOutput(stdout.output, heredoc(`
       === ⬡ ${allocatedSpace.name}
-      ID:           ${allocatedSpace.id}
-      Team:         ${allocatedSpace.team.name}
-      Region:       ${allocatedSpace.region.description}
-      CIDR:         ${allocatedSpace.cidr}
-      Data CIDR:    ${allocatedSpace.data_cidr}
-      State:        ${allocatedSpace.state}
-      Shield:       off
-      Generation:   ${getGeneration(allocatedSpace)}
-      Created at:   ${allocatedSpace.created_at}
+      ID:         ${allocatedSpace.id}
+      Team:       ${allocatedSpace.team.name}
+      Region:     ${allocatedSpace.region.description}
+      CIDR:       ${allocatedSpace.cidr}
+      Data CIDR:  ${allocatedSpace.data_cidr}
+      State:      ${allocatedSpace.state}
+      Shield:     off
+      Generation: ${getGeneration(allocatedSpace)}
+      Created at: ${allocatedSpace.created_at}
     `))
     expect(notifyStub.called).to.be.true
     expect(notifyStub.calledOnce).to.be.true

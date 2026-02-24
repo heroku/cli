@@ -21,9 +21,9 @@ describe('authorizations:create', function () {
 
     const {stdout} = await runCommand(['authorizations:create', '--description', 'awesome'])
 
-    expect(stdout).to.contain('Client:      <none>\n')
-    expect(stdout).to.contain('Scope:       global\n')
-    expect(stdout).to.contain('Token:       secrettoken\n')
+    expect(stdout).to.contain('Client: <none>\n')
+    expect(stdout).to.contain('Scope:  global\n')
+    expect(stdout).to.contain('Token:  secrettoken\n')
   })
 
   context('with short flag', function () {

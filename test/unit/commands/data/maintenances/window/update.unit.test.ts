@@ -38,8 +38,8 @@ describe('data:maintenances:window:update', function () {
     const {stderr, stdout} = await runCommand(['data:maintenances:window:update', addon.name, 'tuesday', '5:30PM'])
 
     expect(stderr).to.contain(`Setting maintenance window for ${addon.name} to tuesday 5:30PM... done`)
-    expect(stdout).to.contain('previous_window:         Fridays 17:30 to 21:30 UTC\n')
-    expect(stdout).to.contain('window:                  Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stdout).to.contain('previous_window: Fridays 17:30 to 21:30 UTC\n')
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 
   it('can change a window for an addon scoped by an app', async function () {
@@ -56,7 +56,7 @@ describe('data:maintenances:window:update', function () {
     const {stderr, stdout} = await runCommand(['data:maintenances:window:update', addon.name, 'tuesday', '5:30PM', `--app=${app.name}`])
 
     expect(stderr).to.contain(`Setting maintenance window for ${addon.name} to tuesday 5:30PM... done`)
-    expect(stdout).to.contain('previous_window:         Fridays 17:30 to 21:30 UTC\n')
-    expect(stdout).to.contain('window:                  Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stdout).to.contain('previous_window: Fridays 17:30 to 21:30 UTC\n')
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 })
