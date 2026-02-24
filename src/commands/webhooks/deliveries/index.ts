@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 
 import BaseCommand from '../../../lib/webhooks/base.js'
 
@@ -7,7 +7,7 @@ export default class Deliveries extends BaseCommand {
   static description = 'list webhook deliveries on an app'
 
   static examples = [
-    '$ heroku webhooks:deliveries',
+    `${color.command('heroku webhooks:deliveries')}`,
   ]
 
   static flags = {

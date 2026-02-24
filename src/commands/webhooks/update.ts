@@ -1,4 +1,5 @@
 import {flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base.js'
@@ -7,7 +8,7 @@ export default class WebhooksUpdate extends BaseCommand {
   static description = 'updates a webhook in an app'
 
   static examples = [
-    '$ heroku webhooks:update 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks',
+    `${color.command('heroku webhooks:update')} 99999999-9999-9999-9999-999999999999 -i dyno -l notify -s 09928c40bf1b191b645174a19f7053d16a180da37332e719ef0998f4c0a2 -u https://example.com/hooks`,
   ]
 
   static flags = {
