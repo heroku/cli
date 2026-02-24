@@ -12,6 +12,7 @@ node_modules
 **/.DS_Store
 .idea
 .vscode
+.zed
 npm-shrinkwrap.json
 
 # Ignore .yarn directory from previous yarn setup
