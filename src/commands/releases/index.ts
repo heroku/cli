@@ -163,8 +163,12 @@ export default class Index extends Command {
       description: {get: descriptionWithStatus},
       user: {get: ({user}) => color.user(user?.email || '')},
       created_at: {get: ({created_at}) => time.ago(new Date(created_at || ''))},
-      slug_id: {extended: true, get: ({extended}) => extended?.slug_id},
-      slug_uuid: {extended: true, get: ({extended}) => extended?.slug_uuid},
+    }
+
+    // Only add slug_id and slug_uuid columns if extended flag is passed
+    if (extended) {
+      columns.slug_id = {extended: true, get: ({extended}) => extended?.slug_id}
+      columns.slug_uuid = {extended: true, get: ({extended}) => extended?.slug_uuid}
     }
     /* eslint-enable perfectionist/sort-objects */
 
