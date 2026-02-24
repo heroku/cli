@@ -221,3 +221,45 @@ export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
 export type ExtendedPostgresLevelInfo = {
   pricing: PricingInfo | undefined
 } & PostgresLevelInfo
+
+export type Maintenance = {
+  'addon': {
+    'attachments': string[];
+    'kind': string;
+    'name': string;
+    'plan': string;
+    'uuid'?: string;
+    'window': string | null;
+  };
+  'app': {
+    'name': string;
+    'uuid'?: string;
+  };
+  'completed_at': string | null;
+  'duration_seconds': string | null;
+  'method': string;
+  'previously_scheduled_for': string | null;
+  'reason': string;
+  'required_by': string | null;
+  'scheduled_for': string | null;
+  'server_created_at': string;
+  'started_at': string | null;
+  'status': MaintenanceStatus;
+  'window': string | null;
+}
+
+export type Window = {
+  previous_window: string | null;
+  previously_scheduled_at: string | null;
+  scheduled_at: string | null;
+  window: string | null;
+}
+
+export enum MaintenanceStatus {
+  completed = 'completed',
+  none = 'none',
+  pending = 'pending',
+  preparing = 'preparing',
+  ready = 'ready',
+  running = 'running',
+}
