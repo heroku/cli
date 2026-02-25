@@ -46,33 +46,33 @@ describe('pg:settings', function () {
       log-statement: none
     `)
   })
-  
+
   it('lists settings in ascending alphabetical order', async function () {
     const unorderedSettings = {
-      "log_lock_waits":                     {"value": true},
-      "log_connections":                    {"value": true},
-      "log_min_duration_statement":         {"value": 2000},
-      "log_statement":                      {"value": "ddl"},
-      "track_functions":                    {"value": "none"},
-      "log_min_error_statement":            {"value": "error"},
-      "pgbouncer_max_client_conn":          {"value": 10000},
-      "pgbouncer_max_db_connections":       {"value": 150},
-      "pgbouncer_default_pool_size":        {"value": 150},
-      "data_connector_details_logs":        {"value": false},
-      "auto_explain":                       {"value": false},
-      "auto_explain.log_format":            {"value": "text"},
-      "auto_explain.log_min_duration":      {"value": -1},
-      "auto_explain.log_analyze":           {"value": false},
-      "auto_explain.log_triggers":          {"value": false},
-      "auto_explain.log_buffers":           {"value": false},
-      "auto_explain.log_verbose":           {"value": false},
-      "auto_explain.log_nested_statements": {"value": false},
+      log_lock_waits: {value: true},
+      log_connections: {value: true},
+      log_min_duration_statement: {value: 2000},
+      log_statement: {value: 'ddl'},
+      track_functions: {value: 'none'},
+      log_min_error_statement: {value: 'error'},
+      pgbouncer_max_client_conn: {value: 10000},
+      pgbouncer_max_db_connections: {value: 150},
+      pgbouncer_default_pool_size: {value: 150},
+      data_connector_details_logs: {value: false},
+      auto_explain: {value: false},
+      'auto_explain.log_format': {value: 'text'},
+      'auto_explain.log_min_duration': {value: -1},
+      'auto_explain.log_analyze': {value: false},
+      'auto_explain.log_triggers': {value: false},
+      'auto_explain.log_buffers': {value: false},
+      'auto_explain.log_verbose': {value: false},
+      'auto_explain.log_nested_statements': {value: false},
     }
-    
+
     pg.get('/postgres/v0/databases/1/config').reply(200, unorderedSettings)
-    
+
     await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
-    
+
     expect(stdout.output).to.eq(heredoc`
       === postgres-1
 
