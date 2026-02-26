@@ -6,6 +6,7 @@ export const V3_HEADER = 'application/vnd.heroku+json; version=3'
 export const SDK_HEADER = 'application/vnd.heroku+json; version=3.sdk'
 export const FILTERS_HEADER = `${V3_HEADER}.filters`
 export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
+export const REPOSITORIES_HEADER = `${V3_HEADER}.repositories-api`
 const CI_HEADER = `${V3_HEADER}.ci`
 
 export type Owner = Pick<Heroku.Account, 'id' | 'type'> | Pick<Heroku.Team, 'id' | 'type'>
