@@ -5,9 +5,10 @@ import {ux} from '@oclif/core'
 import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Current extends Command {
+  static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'display the current Heroku account'
-
   static example = `${color.command('heroku accounts:current')}`
+  static promptFlagActive = false
 
   async run() {
     const accountName = await AccountsModule.current()

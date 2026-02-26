@@ -1,8 +1,8 @@
 import {Command} from '@oclif/core'
-import fs from 'fs-extra'
-import * as path from 'path'
-import {fileURLToPath} from 'node:url'
 import debug from 'debug'
+import fs from 'fs-extra'
+import {fileURLToPath} from 'node:url'
+import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 

@@ -5,9 +5,10 @@ import {ux} from '@oclif/core'
 import accountsModule from '../../lib/accounts/accounts.js'
 
 export default class AccountsIndex extends Command {
+  static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'list the Heroku accounts in your cache'
-
   static example = `${color.command('heroku accounts')}`
+  static promptFlagActive = false
 
   async run() {
     const accounts = accountsModule.list()
