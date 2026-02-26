@@ -16,7 +16,10 @@ check 2fa status
 
 ```
 USAGE
-  $ heroku auth:2fa
+  $ heroku auth:2fa [--prompt]
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   check 2fa status
@@ -26,7 +29,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/auth/2fa/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/auth/2fa/index.ts)_
+_See code: [src/commands/auth/2fa/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 
@@ -34,7 +37,10 @@ disables 2fa on account
 
 ```
 USAGE
-  $ heroku auth:2fa:disable
+  $ heroku auth:2fa:disable [--prompt]
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   disables 2fa on account
@@ -44,10 +50,10 @@ ALIASES
   $ heroku 2fa:disable
 
 EXAMPLES
-  $ heroku auth:2fa:disable
+   $ heroku auth:2fa:disable
 ```
 
-_See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/auth/2fa/disable.ts)_
+_See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/auth/2fa/disable.ts)_
 
 ## `heroku auth:login`
 
@@ -55,12 +61,15 @@ login with your Heroku credentials
 
 ```
 USAGE
-  $ heroku auth:login [--browser <value>] [-i] [-e <value>]
+  $ heroku auth:login [--prompt] [--browser <value>] [-e <value>] [-i]
 
 FLAGS
   -e, --expires-in=<value>  duration of token in seconds (default 30 days)
   -i, --interactive         login with username/password
       --browser=<value>     browser to open SSO with (example: "firefox", "safari")
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   login with your Heroku credentials
@@ -69,7 +78,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -86,7 +95,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [src/commands/auth/logout.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/auth/logout.ts)_
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -102,7 +111,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -119,4 +128,4 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/auth/whoami.ts)_

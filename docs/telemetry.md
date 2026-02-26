@@ -15,20 +15,23 @@ list telemetry drains
 
 ```
 USAGE
-  $ heroku telemetry [-s <value>] [-a <value>]
+  $ heroku telemetry [--prompt] [-a <value>] [-s <value>]
 
 FLAGS
   -a, --app=<value>    filter by app name
   -s, --space=<value>  filter by space name
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   list telemetry drains
 
 EXAMPLES
-  $ heroku telemetry
+   $ heroku telemetry
 ```
 
-_See code: [src/commands/telemetry/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/telemetry/index.ts)_
+_See code: [src/commands/telemetry/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/telemetry/index.ts)_
 
 ## `heroku telemetry:add ENDPOINT`
 
@@ -36,8 +39,8 @@ Add and configure a new telemetry drain. Defaults to collecting all telemetry un
 
 ```
 USAGE
-  $ heroku telemetry:add ENDPOINT [-a <value>] [--headers <value>] [-s <value>] [--signals <value>] [--transport
-    <value>]
+  $ heroku telemetry:add ENDPOINT [--prompt] [-a <value>] [--headers <value>] [--signals <value>] [-s <value>]
+    [--transport <value>]
 
 ARGUMENTS
   ENDPOINT  drain url
@@ -50,17 +53,18 @@ FLAGS
                            to collect all signals.
       --transport=<value>  [default: http] transport protocol for the drain
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.
 
 EXAMPLES
   Add a telemetry drain to an app to collect logs and traces:
-
-    $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers \
-      '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
+   $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
 ```
 
-_See code: [src/commands/telemetry/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/telemetry/add.ts)_
+_See code: [src/commands/telemetry/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/telemetry/add.ts)_
 
 ## `heroku telemetry:info TELEMETRY_DRAIN_ID`
 
@@ -68,19 +72,22 @@ show a telemetry drain's info
 
 ```
 USAGE
-  $ heroku telemetry:info TELEMETRY_DRAIN_ID
+  $ heroku telemetry:info TELEMETRY_DRAIN_ID [--prompt]
 
 ARGUMENTS
   TELEMETRY_DRAIN_ID  ID of the drain to show info for
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   show a telemetry drain's info
 
 EXAMPLES
-  $ heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e
+   $ heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e
 ```
 
-_See code: [src/commands/telemetry/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/telemetry/info.ts)_
+_See code: [src/commands/telemetry/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/telemetry/info.ts)_
 
 ## `heroku telemetry:remove [TELEMETRY_DRAIN_ID]`
 
@@ -88,20 +95,23 @@ remove a telemetry drain
 
 ```
 USAGE
-  $ heroku telemetry:remove [TELEMETRY_DRAIN_ID] [-a <value>] [-s <value>]
+  $ heroku telemetry:remove [TELEMETRY_DRAIN_ID] [--prompt] [-a <value>] [-s <value>]
 
 ARGUMENTS
-  TELEMETRY_DRAIN_ID  ID of the drain to remove
+  [TELEMETRY_DRAIN_ID]  ID of the drain to remove
 
 FLAGS
   -a, --app=<value>    name of the app to remove all drains from
   -s, --space=<value>  name of the space to remove all drains from
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   remove a telemetry drain
 ```
 
-_See code: [src/commands/telemetry/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/telemetry/remove.ts)_
+_See code: [src/commands/telemetry/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/telemetry/remove.ts)_
 
 ## `heroku telemetry:update TELEMETRY_DRAIN_ID`
 
@@ -109,7 +119,7 @@ updates a telemetry drain with provided attributes (attributes not provided rema
 
 ```
 USAGE
-  $ heroku telemetry:update TELEMETRY_DRAIN_ID [--endpoint <value>] [--headers <value>] [--signals <value>]
+  $ heroku telemetry:update TELEMETRY_DRAIN_ID [--prompt] [--endpoint <value>] [--headers <value>] [--signals <value>]
     [--transport http|grpc]
 
 ARGUMENTS
@@ -123,11 +133,14 @@ FLAGS
   --transport=<option>  transport protocol for the drain
                         <options: http|grpc>
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   updates a telemetry drain with provided attributes (attributes not provided remain unchanged)
 
 EXAMPLES
-  $ heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com
+   $ heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com
 ```
 
-_See code: [src/commands/telemetry/update.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/telemetry/update.ts)_
+_See code: [src/commands/telemetry/update.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/telemetry/update.ts)_

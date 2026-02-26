@@ -27,7 +27,7 @@ list your apps
 
 ```
 USAGE
-  $ heroku apps [-A] [-j] [-s <value>] [-p] [-t <value>]
+  $ heroku apps [--prompt] [-A] [-j] [-p] [-s <value>] [-t <value>]
 
 FLAGS
   -A, --all            include apps in all teams
@@ -36,14 +36,17 @@ FLAGS
   -s, --space=<value>  filter by space
   -t, --team=<value>   team to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   list your apps
 
 EXAMPLES
-  $ heroku apps
+   $ heroku apps
 ```
 
-_See code: [src/commands/apps/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/index.ts)_
+_See code: [src/commands/apps/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/index.ts)_
 
 ## `heroku apps:create [APP]`
 
@@ -51,11 +54,11 @@ creates a new app
 
 ```
 USAGE
-  $ heroku apps:create [APP] [--addons <value>] [-b <value>] [-n] [-r <value>] [-s <value>] [--space <value>]
-    [--region <value>] [--json] [-t <value>]
+  $ heroku apps:create [APP] [--prompt] [--addons <value>] [-b <value>] [--json] [-n] [--region <value>] [-r
+    <value>] [--space <value>] [-s <value>] [-t <value>]
 
 ARGUMENTS
-  APP  name of app to create
+  [APP]  name of app to create
 
 FLAGS
   -b, --buildpack=<value>  buildpack url to use for this app
@@ -68,28 +71,37 @@ FLAGS
       --region=<value>     specify region for the app to run in
       --space=<value>      the private space to create the app in
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   creates a new app
 
 EXAMPLES
-  $ heroku apps:create
+   $ heroku apps:create 
   Creating app... done, stack is heroku-24
   https://floating-dragon-42.heroku.com/ | https://git.heroku.com/floating-dragon-42.git
+
   # or just
-  $ heroku create
+   $ heroku create 
+
   # use a heroku.yml manifest file
-  $ heroku apps:create --manifest
+   $ heroku apps:create --manifest 
+
   # specify a buildpack
-  $ heroku apps:create --buildpack https://github.com/some/buildpack.git
+   $ heroku apps:create --buildpack https://github.com/some/buildpack.git 
+
   # specify a name
-  $ heroku apps:create example
+   $ heroku apps:create example 
+
   # create a staging app
-  $ heroku apps:create example-staging --remote staging
+   $ heroku apps:create example-staging --remote staging 
+
   # create an app in the eu region
-  $ heroku apps:create --region eu
+   $ heroku apps:create --region eu
 ```
 
-_See code: [src/commands/apps/create.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/create.ts)_
+_See code: [src/commands/apps/create.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/create.ts)_
 
 ## `heroku apps:destroy`
 
@@ -97,18 +109,21 @@ permanently destroy an app
 
 ```
 USAGE
-  $ heroku apps:destroy [-a <value>] [-r <value>] [-c <value>]
+  $ heroku apps:destroy [--prompt] [-a <value>] [-c <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>      app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   permanently destroy an app
 ```
 
-_See code: [src/commands/apps/destroy.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/destroy.ts)_
+_See code: [src/commands/apps/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/destroy.ts)_
 
 ## `heroku apps:errors`
 
@@ -116,7 +131,7 @@ view app errors
 
 ```
 USAGE
-  $ heroku apps:errors -a <value> [-r <value>] [--json] [--hours <value>] [--router] [--dyno]
+  $ heroku apps:errors -a <value> [--prompt] [--dyno] [--hours <value>] [--json] [-r <value>] [--router]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -126,11 +141,14 @@ FLAGS
       --json            output in json format
       --router          show only router errors
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   view app errors
 ```
 
-_See code: [src/commands/apps/errors.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/errors.ts)_
+_See code: [src/commands/apps/errors.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/errors.ts)_
 
 ## `heroku apps:favorites`
 
@@ -138,16 +156,19 @@ list favorited apps
 
 ```
 USAGE
-  $ heroku apps:favorites [-j]
+  $ heroku apps:favorites [--prompt] [-j]
 
 FLAGS
   -j, --json  output in json format
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   list favorited apps
 ```
 
-_See code: [src/commands/apps/favorites/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/favorites/index.ts)_
+_See code: [src/commands/apps/favorites/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/favorites/index.ts)_
 
 ## `heroku apps:favorites:add`
 
@@ -155,17 +176,20 @@ favorites an app
 
 ```
 USAGE
-  $ heroku apps:favorites:add -a <value> [-r <value>]
+  $ heroku apps:favorites:add -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   favorites an app
 ```
 
-_See code: [src/commands/apps/favorites/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/favorites/add.ts)_
+_See code: [src/commands/apps/favorites/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/favorites/add.ts)_
 
 ## `heroku apps:favorites:remove`
 
@@ -173,17 +197,20 @@ unfavorites an app
 
 ```
 USAGE
-  $ heroku apps:favorites:remove -a <value> [-r <value>]
+  $ heroku apps:favorites:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   unfavorites an app
 ```
 
-_See code: [src/commands/apps/favorites/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/favorites/remove.ts)_
+_See code: [src/commands/apps/favorites/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/favorites/remove.ts)_
 
 ## `heroku apps:info`
 
@@ -191,7 +218,7 @@ show detailed app information
 
 ```
 USAGE
-  $ heroku apps:info [-a <value>] [-r <value>] [-s] [-j]
+  $ heroku apps:info [--prompt] [-a <value>] [-j] [-r <value>] [-s]
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -199,16 +226,19 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output more shell friendly key/value pairs
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   show detailed app information
 
 EXAMPLES
-  $ heroku apps:info
+   $ heroku apps:info 
 
-  $ heroku apps:info --shell
+   $ heroku apps:info --shell
 ```
 
-_See code: [src/commands/apps/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/info.ts)_
+_See code: [src/commands/apps/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/info.ts)_
 
 ## `heroku apps:join`
 
@@ -216,11 +246,14 @@ add yourself to a team app
 
 ```
 USAGE
-  $ heroku apps:join -a <value> [-r <value>]
+  $ heroku apps:join -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   add yourself to a team app
@@ -229,7 +262,7 @@ ALIASES
   $ heroku join
 ```
 
-_See code: [src/commands/apps/join.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/join.ts)_
+_See code: [src/commands/apps/join.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/join.ts)_
 
 ## `heroku apps:leave`
 
@@ -237,11 +270,14 @@ remove yourself from a team app
 
 ```
 USAGE
-  $ heroku apps:leave -a <value> [-r <value>]
+  $ heroku apps:leave -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   remove yourself from a team app
@@ -250,10 +286,10 @@ ALIASES
   $ heroku leave
 
 EXAMPLES
-  $ heroku apps:leave -a APP
+   $ heroku apps:leave -a APP
 ```
 
-_See code: [src/commands/apps/leave.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/leave.ts)_
+_See code: [src/commands/apps/leave.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/leave.ts)_
 
 ## `heroku apps:lock`
 
@@ -261,11 +297,14 @@ prevent team members from joining an app
 
 ```
 USAGE
-  $ heroku apps:lock -a <value> [-r <value>]
+  $ heroku apps:lock -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   prevent team members from joining an app
@@ -274,7 +313,7 @@ ALIASES
   $ heroku lock
 ```
 
-_See code: [src/commands/apps/lock.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/lock.ts)_
+_See code: [src/commands/apps/lock.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/lock.ts)_
 
 ## `heroku apps:open [PATH]`
 
@@ -282,25 +321,28 @@ open the app in a web browser
 
 ```
 USAGE
-  $ heroku apps:open [PATH] -a <value> [-r <value>]
+  $ heroku apps:open [PATH] -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
-  PATH  base URL path of app
+  [PATH]  base URL path of app
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   open the app in a web browser
 
 EXAMPLES
-  $ heroku open -a myapp
+   $ heroku open -a myapp 
 
-  $ heroku open -a myapp /foo
+   $ heroku open -a myapp /foo
 ```
 
-_See code: [src/commands/apps/open.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/open.ts)_
+_See code: [src/commands/apps/open.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/open.ts)_
 
 ## `heroku apps:rename NEWNAME`
 
@@ -308,7 +350,7 @@ rename an app
 
 ```
 USAGE
-  $ heroku apps:rename NEWNAME -a <value> [-r <value>]
+  $ heroku apps:rename NEWNAME -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
   NEWNAME  new unique name of the app
@@ -317,14 +359,17 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   rename an app
 
 EXAMPLES
-  $ heroku apps:rename --app oldname newname
+   $ heroku apps:rename --app oldname newname
 ```
 
-_See code: [src/commands/apps/rename.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/rename.ts)_
+_See code: [src/commands/apps/rename.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/rename.ts)_
 
 ## `heroku apps:stacks`
 
@@ -332,17 +377,20 @@ show the list of available stacks
 
 ```
 USAGE
-  $ heroku apps:stacks -a <value> [-r <value>]
+  $ heroku apps:stacks -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   show the list of available stacks
 ```
 
-_See code: [src/commands/apps/stacks/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/stacks/index.ts)_
+_See code: [src/commands/apps/stacks/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/stacks/index.ts)_
 
 ## `heroku apps:stacks:set STACK`
 
@@ -350,7 +398,7 @@ set the stack of an app
 
 ```
 USAGE
-  $ heroku apps:stacks:set STACK -a <value> [-r <value>]
+  $ heroku apps:stacks:set STACK -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
   STACK  unique name or identifier of the stack
@@ -359,17 +407,20 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   set the stack of an app
 
 EXAMPLES
-  $ heroku stack:set heroku-24 -a myapp
+   $ heroku stack:set heroku-24 -a myapp 
   Setting stack to heroku-24... done
   You will need to redeploy myapp for the change to take effect.
   Run git push heroku main to trigger a new build on myapp.
 ```
 
-_See code: [src/commands/apps/stacks/set.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/stacks/set.ts)_
+_See code: [src/commands/apps/stacks/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/stacks/set.ts)_
 
 ## `heroku apps:transfer RECIPIENT`
 
@@ -377,7 +428,7 @@ transfer applications to another user or team
 
 ```
 USAGE
-  $ heroku apps:transfer RECIPIENT [-l] [--bulk] [-a <value>] [-r <value>]
+  $ heroku apps:transfer RECIPIENT [--prompt] [-a <value>] [--bulk] [-l] [-r <value>]
 
 ARGUMENTS
   RECIPIENT  user or team to transfer applications to
@@ -388,19 +439,24 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
       --bulk            transfer applications in bulk
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   transfer applications to another user or team
 
 EXAMPLES
-  $ heroku apps:transfer collaborator@example.com
+   $ heroku apps:transfer collaborator@example.com 
   Transferring example to collaborator@example.com... done
-  $ heroku apps:transfer acme-widgets
+
+   $ heroku apps:transfer acme-widgets 
   Transferring example to acme-widgets... done
-  $ heroku apps:transfer --bulk acme-widgets
+
+   $ heroku apps:transfer --bulk acme-widgets 
   ...
 ```
 
-_See code: [src/commands/apps/transfer.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/transfer.ts)_
+_See code: [src/commands/apps/transfer.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/transfer.ts)_
 
 ## `heroku apps:unlock`
 
@@ -408,11 +464,14 @@ unlock an app so any team member can join
 
 ```
 USAGE
-  $ heroku apps:unlock -a <value> [-r <value>]
+  $ heroku apps:unlock -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   unlock an app so any team member can join
@@ -421,4 +480,4 @@ ALIASES
   $ heroku unlock
 ```
 
-_See code: [src/commands/apps/unlock.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/apps/unlock.ts)_
+_See code: [src/commands/apps/unlock.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/apps/unlock.ts)_

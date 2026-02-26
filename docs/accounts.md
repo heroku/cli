@@ -21,10 +21,10 @@ DESCRIPTION
   list the Heroku accounts in your cache
 
 EXAMPLES
-  $ heroku accounts
+   $ heroku accounts
 ```
 
-_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/accounts/index.ts)_
+_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/accounts/index.ts)_
 
 ## `heroku accounts:add NAME`
 
@@ -32,19 +32,22 @@ add a Heroku account to your cache
 
 ```
 USAGE
-  $ heroku accounts:add NAME
+  $ heroku accounts:add NAME [--prompt]
 
 ARGUMENTS
   NAME  name of Heroku account to add
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   add a Heroku account to your cache
 
 EXAMPLES
-  $ heroku accounts:add my-account
+   $ heroku accounts:add my-account
 ```
 
-_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/accounts/add.ts)_
+_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/accounts/add.ts)_
 
 ## `heroku accounts:current`
 
@@ -58,10 +61,10 @@ DESCRIPTION
   display the current Heroku account
 
 EXAMPLES
-  $ heroku accounts:current
+   $ heroku accounts:current
 ```
 
-_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/accounts/current.ts)_
+_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/accounts/current.ts)_
 
 ## `heroku accounts:remove NAME`
 
@@ -69,19 +72,22 @@ remove a Heroku account from your cache
 
 ```
 USAGE
-  $ heroku accounts:remove NAME
+  $ heroku accounts:remove NAME [--prompt]
 
 ARGUMENTS
   NAME  name of Heroku account to remove
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   remove a Heroku account from your cache
 
 EXAMPLES
-  $ heroku accounts:remove my-account
+   $ heroku accounts:remove my-account
 ```
 
-_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/accounts/remove.ts)_
+_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/accounts/remove.ts)_
 
 ## `heroku accounts:set NAME`
 
@@ -89,16 +95,19 @@ set the current Heroku account from your cache
 
 ```
 USAGE
-  $ heroku accounts:set NAME
+  $ heroku accounts:set NAME [--prompt]
 
 ARGUMENTS
   NAME  name of account to set
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   set the current Heroku account from your cache
 
 EXAMPLES
-  $ heroku accounts:set my-account
+   $ heroku accounts:set my-account
 ```
 
-_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/accounts/set.ts)_
+_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/accounts/set.ts)_

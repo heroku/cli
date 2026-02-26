@@ -18,17 +18,20 @@ list the buildpacks on an app
 
 ```
 USAGE
-  $ heroku buildpacks -a <value> [-r <value>]
+  $ heroku buildpacks -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   list the buildpacks on an app
 ```
 
-_See code: [src/commands/buildpacks/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/index.ts)_
+_See code: [src/commands/buildpacks/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/index.ts)_
 
 ## `heroku buildpacks:add BUILDPACK`
 
@@ -36,7 +39,7 @@ add new app buildpack, inserting into list of buildpacks if necessary
 
 ```
 USAGE
-  $ heroku buildpacks:add BUILDPACK -a <value> [-r <value>] [-i <value>]
+  $ heroku buildpacks:add BUILDPACK -a <value> [--prompt] [-r <value>] [-i <value>]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
@@ -46,11 +49,14 @@ FLAGS
   -i, --index=<value>   the 1-based index of the URL in the list of URLs
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   add new app buildpack, inserting into list of buildpacks if necessary
 ```
 
-_See code: [src/commands/buildpacks/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/add.ts)_
+_See code: [src/commands/buildpacks/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/add.ts)_
 
 ## `heroku buildpacks:clear`
 
@@ -58,17 +64,20 @@ clear all buildpacks set on the app
 
 ```
 USAGE
-  $ heroku buildpacks:clear -a <value> [-r <value>]
+  $ heroku buildpacks:clear -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   clear all buildpacks set on the app
 ```
 
-_See code: [src/commands/buildpacks/clear.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/clear.ts)_
+_See code: [src/commands/buildpacks/clear.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/clear.ts)_
 
 ## `heroku buildpacks:info BUILDPACK`
 
@@ -76,16 +85,19 @@ fetch info about a buildpack
 
 ```
 USAGE
-  $ heroku buildpacks:info BUILDPACK
+  $ heroku buildpacks:info BUILDPACK [--prompt]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   fetch info about a buildpack
 ```
 
-_See code: [src/commands/buildpacks/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/info.ts)_
+_See code: [src/commands/buildpacks/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/info.ts)_
 
 ## `heroku buildpacks:remove [BUILDPACK]`
 
@@ -93,21 +105,24 @@ remove a buildpack set on the app
 
 ```
 USAGE
-  $ heroku buildpacks:remove [BUILDPACK] -a <value> [-r <value>] [-i <value>]
+  $ heroku buildpacks:remove [BUILDPACK] -a <value> [--prompt] [-i <value>] [-r <value>]
 
 ARGUMENTS
-  BUILDPACK  namespace/name of the buildpack
+  [BUILDPACK]  namespace/name of the buildpack
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -i, --index=<value>   the 1-based index of the URL to remove from the list of URLs
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   remove a buildpack set on the app
 ```
 
-_See code: [src/commands/buildpacks/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/remove.ts)_
+_See code: [src/commands/buildpacks/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/remove.ts)_
 
 ## `heroku buildpacks:search [TERM]`
 
@@ -115,27 +130,30 @@ search for buildpacks
 
 ```
 USAGE
-  $ heroku buildpacks:search [TERM] [--namespace <value>] [--name <value>] [--description <value>]
+  $ heroku buildpacks:search [TERM] [--prompt] [--namespace <value>] [--name <value>] [--description <value>]
 
 ARGUMENTS
-  TERM  search term that searches across name, namespace, and description
+  [TERM]  search term that searches across name, namespace, and description
 
 FLAGS
   --description=<value>  buildpack description to filter on
   --name=<value>         buildpack names to filter on using a comma separated list
   --namespace=<value>    buildpack namespaces to filter on using a comma separated list
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   search for buildpacks
 ```
 
-_See code: [src/commands/buildpacks/search.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/search.ts)_
+_See code: [src/commands/buildpacks/search.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/search.ts)_
 
 ## `heroku buildpacks:set BUILDPACK`
 
 ```
 USAGE
-  $ heroku buildpacks:set BUILDPACK -a <value> [-r <value>] [-i <value>]
+  $ heroku buildpacks:set BUILDPACK -a <value> [--prompt] [-r <value>] [-i <value>]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
@@ -144,9 +162,12 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -i, --index=<value>   the 1-based index of the URL in the list of URLs
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 ```
 
-_See code: [src/commands/buildpacks/set.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/set.ts)_
+_See code: [src/commands/buildpacks/set.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/set.ts)_
 
 ## `heroku buildpacks:versions BUILDPACK`
 
@@ -154,13 +175,16 @@ list versions of a buildpack
 
 ```
 USAGE
-  $ heroku buildpacks:versions BUILDPACK
+  $ heroku buildpacks:versions BUILDPACK [--prompt]
 
 ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   list versions of a buildpack
 ```
 
-_See code: [src/commands/buildpacks/versions.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/buildpacks/versions.ts)_
+_See code: [src/commands/buildpacks/versions.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/buildpacks/versions.ts)_

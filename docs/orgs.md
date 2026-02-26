@@ -12,17 +12,20 @@ list the teams that you are a member of
 
 ```
 USAGE
-  $ heroku orgs [--json] [--enterprise]
+  $ heroku orgs [--prompt] [--json] [--enterprise]
 
 FLAGS
   --enterprise  filter by enterprise teams
   --json        output in json format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   list the teams that you are a member of
 ```
 
-_See code: [src/commands/orgs/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/orgs/index.ts)_
+_See code: [src/commands/orgs/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/orgs/index.ts)_
 
 ## `heroku orgs:open`
 
@@ -30,13 +33,16 @@ open the team interface in a browser window
 
 ```
 USAGE
-  $ heroku orgs:open -t <value>
+  $ heroku orgs:open -t <value> [--prompt]
 
 FLAGS
   -t, --team=<value>  (required) team to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   open the team interface in a browser window
 ```
 
-_See code: [src/commands/orgs/open.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/orgs/open.ts)_
+_See code: [src/commands/orgs/open.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/orgs/open.ts)_

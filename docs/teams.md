@@ -11,10 +11,13 @@ list the teams that you are a member of
 
 ```
 USAGE
-  $ heroku teams [--json]
+  $ heroku teams [--prompt] [--json]
 
 FLAGS
   --json  output in json format
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   list the teams that you are a member of
@@ -22,4 +25,4 @@ DESCRIPTION
   Use heroku members:* to manage team members.
 ```
 
-_See code: [src/commands/teams/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/teams/index.ts)_
+_See code: [src/commands/teams/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/teams/index.ts)_

@@ -11,7 +11,7 @@ display notifications
 
 ```
 USAGE
-  $ heroku notifications [-a <value>] [-r <value>] [--all] [--json] [--read]
+  $ heroku notifications [--prompt] [--all] [-a <value>] [--json] [--read] [-r <value>]
 
 FLAGS
   -a, --app=<value>     app to run command against
@@ -20,8 +20,11 @@ FLAGS
       --json            output in json format
       --read            show notifications already read
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   display notifications
 ```
 
-_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/notifications/index.ts)_
+_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/notifications/index.ts)_

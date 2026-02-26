@@ -24,19 +24,22 @@ list pipelines you have access to
 
 ```
 USAGE
-  $ heroku pipelines [--json]
+  $ heroku pipelines [--prompt] [--json]
 
 FLAGS
   --json  output in json format
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   list pipelines you have access to
 
 EXAMPLES
-  $ heroku pipelines
+   $ heroku pipelines
 ```
 
-_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/index.ts)_
+_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/index.ts)_
 
 ## `heroku pipelines:add PIPELINE`
 
@@ -44,7 +47,7 @@ add this app to a pipeline
 
 ```
 USAGE
-  $ heroku pipelines:add PIPELINE -a <value> [-r <value>] [-s <value>]
+  $ heroku pipelines:add PIPELINE -a <value> [--prompt] [-r <value>] [-s <value>]
 
 ARGUMENTS
   PIPELINE  name of pipeline
@@ -54,16 +57,19 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   add this app to a pipeline
   The app and pipeline names must be specified.
   The stage of the app will be guessed based on its name if not specified.
 
 EXAMPLES
-  $ heroku pipelines:add my-pipeline -a my-app -s production
+   $ heroku pipelines:add my-pipeline -a my-app -s production
 ```
 
-_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/add.ts)_
+_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/add.ts)_
 
 ## `heroku pipelines:connect NAME`
 
@@ -71,7 +77,7 @@ connect a GitHub repo to an existing pipeline
 
 ```
 USAGE
-  $ heroku pipelines:connect NAME -r <value>
+  $ heroku pipelines:connect NAME -r <value> [--prompt]
 
 ARGUMENTS
   NAME  name of pipeline
@@ -79,14 +85,17 @@ ARGUMENTS
 FLAGS
   -r, --repo=<value>  (required) the GitHub repository to connect to
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   connect a GitHub repo to an existing pipeline
 
 EXAMPLES
-  $ heroku pipelines:connect my-pipeline -r githuborg/reponame
+   $ heroku pipelines:connect my-pipeline -r githuborg/reponame
 ```
 
-_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/connect.ts)_
+_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/connect.ts)_
 
 ## `heroku pipelines:create [NAME]`
 
@@ -94,16 +103,19 @@ create a new pipeline
 
 ```
 USAGE
-  $ heroku pipelines:create [NAME] -a <value> [-r <value>] [-s <value>] [-t <value>]
+  $ heroku pipelines:create [NAME] -a <value> [--prompt] [-r <value>] [-s <value>] [-t <value>]
 
 ARGUMENTS
-  NAME  name of pipeline (defaults to basename of the app)
+  [NAME]  name of pipeline (defaults to basename of the app)
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
   -t, --team=<value>    the team which will own the apps
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   create a new pipeline
@@ -113,12 +125,12 @@ DESCRIPTION
   The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.
 
 EXAMPLES
-  $ heroku pipelines:create -a my-app-staging
+   $ heroku pipelines:create -a my-app-staging 
 
-  $ heroku pipelines:create my-pipeline -a my-app-staging
+   $ heroku pipelines:create my-pipeline -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/create.ts)_
+_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/create.ts)_
 
 ## `heroku pipelines:destroy PIPELINE`
 
@@ -126,19 +138,22 @@ destroy a pipeline
 
 ```
 USAGE
-  $ heroku pipelines:destroy PIPELINE
+  $ heroku pipelines:destroy PIPELINE [--prompt]
 
 ARGUMENTS
   PIPELINE  name of pipeline
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   destroy a pipeline
 
 EXAMPLES
-  $ heroku pipelines:destroy my-pipeline
+   $ heroku pipelines:destroy my-pipeline
 ```
 
-_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/destroy.ts)_
+_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/destroy.ts)_
 
 ## `heroku pipelines:diff`
 
@@ -146,20 +161,23 @@ compares the latest release of this app to its downstream app(s)
 
 ```
 USAGE
-  $ heroku pipelines:diff -a <value> [-r <value>]
+  $ heroku pipelines:diff -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   compares the latest release of this app to its downstream app(s)
 
 EXAMPLES
-  $ heroku pipelines:diff -a my-app-staging
+   $ heroku pipelines:diff -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/diff.ts)_
+_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/diff.ts)_
 
 ## `heroku pipelines:info PIPELINE`
 
@@ -167,7 +185,7 @@ show list of apps in a pipeline
 
 ```
 USAGE
-  $ heroku pipelines:info PIPELINE [--json]
+  $ heroku pipelines:info PIPELINE [--prompt] [--json]
 
 ARGUMENTS
   PIPELINE  pipeline to show list of apps for
@@ -175,14 +193,17 @@ ARGUMENTS
 FLAGS
   --json  output in json format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   show list of apps in a pipeline
 
 EXAMPLES
-  $ heroku pipelines:info my-pipeline
+   $ heroku pipelines:info my-pipeline
 ```
 
-_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/info.ts)_
+_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/info.ts)_
 
 ## `heroku pipelines:open PIPELINE`
 
@@ -190,19 +211,22 @@ open a pipeline in dashboard
 
 ```
 USAGE
-  $ heroku pipelines:open PIPELINE
+  $ heroku pipelines:open PIPELINE [--prompt]
 
 ARGUMENTS
   PIPELINE  name of pipeline
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   open a pipeline in dashboard
 
 EXAMPLES
-  $ heroku pipelines:open my-pipeline
+   $ heroku pipelines:open my-pipeline
 ```
 
-_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/open.ts)_
+_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/open.ts)_
 
 ## `heroku pipelines:promote`
 
@@ -210,21 +234,24 @@ promote the latest release of this app to its downstream app(s)
 
 ```
 USAGE
-  $ heroku pipelines:promote -a <value> [-r <value>] [-t <value>]
+  $ heroku pipelines:promote -a <value> [--prompt] [-r <value>] [-t <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
   -t, --to=<value>      comma separated list of apps to promote to
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   promote the latest release of this app to its downstream app(s)
 
 EXAMPLES
-  $ heroku pipelines:promote -a my-app-staging
+   $ heroku pipelines:promote -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/promote.ts)_
+_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/promote.ts)_
 
 ## `heroku pipelines:remove`
 
@@ -232,20 +259,23 @@ remove this app from its pipeline
 
 ```
 USAGE
-  $ heroku pipelines:remove -a <value> [-r <value>]
+  $ heroku pipelines:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   remove this app from its pipeline
 
 EXAMPLES
-  $ heroku pipelines:remove -a my-app
+   $ heroku pipelines:remove -a my-app
 ```
 
-_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/remove.ts)_
+_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/remove.ts)_
 
 ## `heroku pipelines:rename PIPELINE NAME`
 
@@ -253,20 +283,23 @@ rename a pipeline
 
 ```
 USAGE
-  $ heroku pipelines:rename PIPELINE NAME
+  $ heroku pipelines:rename PIPELINE NAME [--prompt]
 
 ARGUMENTS
-  PIPELINE  current name of pipeline
+  PIPELINE  name of pipeline to rename
   NAME      new name of pipeline
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   rename a pipeline
 
 EXAMPLES
-  $ heroku pipelines:rename my-pipeline new-pipeline-name
+   $ heroku pipelines:rename my-pipeline new-pipeline-name
 ```
 
-_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/rename.ts)_
+_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/rename.ts)_
 
 ## `heroku pipelines:setup [NAME] [REPO]`
 
@@ -274,25 +307,28 @@ bootstrap a new pipeline with common settings and create a production and stagin
 
 ```
 USAGE
-  $ heroku pipelines:setup [NAME] [REPO] [-t <value>] [-y]
+  $ heroku pipelines:setup [NAME] [REPO] [--prompt] [-t <value>] [-y]
 
 ARGUMENTS
-  NAME  name of pipeline
-  REPO  a GitHub repository to connect the pipeline to
+  [NAME]  name of pipeline
+  [REPO]  a GitHub repository to connect the pipeline to
 
 FLAGS
   -t, --team=<value>  the team to assign pipeline ownership to (defaults to current user)
   -y, --yes           accept all default settings without prompting
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed
   app.json in the repo)
 
 EXAMPLES
-  $ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team
+   $ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team
 ```
 
-_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/setup.ts)_
+_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/setup.ts)_
 
 ## `heroku pipelines:transfer OWNER`
 
@@ -300,7 +336,7 @@ transfer ownership of a pipeline
 
 ```
 USAGE
-  $ heroku pipelines:transfer OWNER -p <value> [-c <value>]
+  $ heroku pipelines:transfer OWNER -p <value> [--prompt] [-c <value>]
 
 ARGUMENTS
   OWNER  the owner to transfer the pipeline to
@@ -309,16 +345,19 @@ FLAGS
   -c, --confirm=<value>
   -p, --pipeline=<value>  (required) name of pipeline
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   transfer ownership of a pipeline
 
 EXAMPLES
-  $ heroku pipelines:transfer admin@example.com -p my-pipeline
+   $ heroku pipelines:transfer admin@example.com -p my-pipeline 
 
-  $ heroku pipelines:transfer admin-team -p my-pipeline
+   $ heroku pipelines:transfer admin-team -p my-pipeline
 ```
 
-_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/transfer.ts)_
+_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/transfer.ts)_
 
 ## `heroku pipelines:update`
 
@@ -326,18 +365,21 @@ update the app's stage in a pipeline
 
 ```
 USAGE
-  $ heroku pipelines:update -a <value> -s <value> [-r <value>]
+  $ heroku pipelines:update -a <value> -s <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   (required) new stage of app
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   update the app's stage in a pipeline
 
 EXAMPLES
-  $ heroku pipelines:update -s staging -a my-app
+   $ heroku pipelines:update -s staging -a my-app
 ```
 
-_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/pipelines/update.ts)_
+_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/pipelines/update.ts)_

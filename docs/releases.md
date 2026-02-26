@@ -15,7 +15,7 @@ display the releases for an app
 
 ```
 USAGE
-  $ heroku releases -a <value> [-n <value>] [--json] [-r <value>]
+  $ heroku releases -a <value> [--prompt] [--json] [-n <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -23,18 +23,21 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
       --json            output releases in json format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   display the releases for an app
 
 EXAMPLES
-  v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+   $ v1 Config add FOO_BAR email@example.com 2015/11/17 17:37:41 (~ 1h ago) 
 
-  v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+   $ v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago) 
 
-  v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
+   $ v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)
 ```
 
-_See code: [src/commands/releases/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/releases/index.ts)_
+_See code: [src/commands/releases/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/releases/index.ts)_
 
 ## `heroku releases:info [RELEASE]`
 
@@ -42,10 +45,10 @@ view detailed information for a release
 
 ```
 USAGE
-  $ heroku releases:info [RELEASE] -a <value> [--json] [-s] [-r <value>]
+  $ heroku releases:info [RELEASE] -a <value> [--prompt] [--json] [-r <value>] [-s]
 
 ARGUMENTS
-  RELEASE  ID of the release. If omitted, we use the last release ID.
+  [RELEASE]  ID of the release. If omitted, we use the last release ID.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -53,11 +56,14 @@ FLAGS
   -s, --shell           output in shell format
       --json            output in json format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   view detailed information for a release
 ```
 
-_See code: [src/commands/releases/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/releases/info.ts)_
+_See code: [src/commands/releases/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/releases/info.ts)_
 
 ## `heroku releases:output [RELEASE]`
 
@@ -65,20 +71,23 @@ View the release command output
 
 ```
 USAGE
-  $ heroku releases:output [RELEASE] -a <value> [-r <value>]
+  $ heroku releases:output [RELEASE] -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
-  RELEASE  ID of the release. If omitted, we use the last release ID.
+  [RELEASE]  ID of the release. If omitted, we use the last release ID.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   View the release command output
 ```
 
-_See code: [src/commands/releases/output.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/releases/output.ts)_
+_See code: [src/commands/releases/output.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/releases/output.ts)_
 
 ## `heroku releases:retry`
 
@@ -86,19 +95,22 @@ retry the latest release-phase command
 
 ```
 USAGE
-  $ heroku releases:retry -a <value>
+  $ heroku releases:retry -a <value> [--prompt]
 
 FLAGS
   -a, --app=<value>  (required) app to run command against
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   retry the latest release-phase command
 
 EXAMPLES
-  $ heroku releases:retry --app happy-samurai-42
+   $ heroku releases:retry --app happy-samurai-42
 ```
 
-_See code: [src/commands/releases/retry.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/releases/retry.ts)_
+_See code: [src/commands/releases/retry.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/releases/retry.ts)_
 
 ## `heroku releases:rollback [RELEASE]`
 
@@ -106,14 +118,17 @@ Roll back to a previous release.
 
 ```
 USAGE
-  $ heroku releases:rollback [RELEASE] -a <value> [-r <value>]
+  $ heroku releases:rollback [RELEASE] -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
-  RELEASE  ID of the release. If omitted, we use the last eligible release.
+  [RELEASE]  ID of the release. If omitted, we use the last eligible release.
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   Roll back to a previous release.
@@ -121,4 +136,4 @@ DESCRIPTION
   If RELEASE is not specified, it will roll back to the last eligible release.
 ```
 
-_See code: [src/commands/releases/rollback.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/releases/rollback.ts)_
+_See code: [src/commands/releases/rollback.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.31/src/commands/releases/rollback.ts)_
