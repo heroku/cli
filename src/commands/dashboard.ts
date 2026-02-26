@@ -149,9 +149,12 @@ function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse
 }
 
 export default class Dashboard extends Command {
+  static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'display information about favorite apps'
   static hidden = true
+  static promptFlagActive = false
   static topic = 'dashboard'
+
   public async run(): Promise<void> {
     if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
       execSync('heroku help', {stdio: 'inherit'})

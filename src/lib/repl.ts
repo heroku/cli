@@ -1,12 +1,14 @@
-import {run, ux} from '@oclif/core'
+/* eslint-disable n/no-process-exit */
+import {hux} from '@heroku/heroku-cli-util'
+import {Config, run} from '@oclif/core'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 // do not use the older node:readline module
 // else things will break
-import readline from 'node:readline/promises'
+import * as readline from 'node:readline/promises'
 import util from 'node:util'
-import shellQuote from 'shell-quote'
+import * as shellQuote from 'shell-quote'
 import yargs from 'yargs-parser'
 
 const historyFile = path.join(process.env.HOME || process.env.USERPROFILE || os.homedir(), '.heroku_repl_history')
@@ -49,23 +51,23 @@ const completionCommandByName = new Map([
  */
 const completionResultsByName = new Map()
 
-class HerokuRepl {
+export class HerokuRepl {
   /**
    * The OClif config object containing
    * the command metadata and the means
    * to execute commands
    */
-  #config
+  private config: Config
 
   /**
    * The history of the REPL commands used
    */
-  #history = []
+  private history: string[] = []
 
   /**
    * The write stream for the history file
    */
-  #historyStream
+  private historyStream: fs.WriteStream | undefined
 
   /**
    * Processes the line received from the terminal stdin
@@ -73,17 +75,17 @@ class HerokuRepl {
    * @param {string} input the line to process
    * @returns {Promise<void>} a promise that resolves when the command has been executed
    */
-  #processLine = async input => {
+  private processLine = async (input: string): Promise<void> => {
     if (input.trim() === '') {
-      this.#rl.prompt()
+      this.rl.prompt()
       return
     }
 
-    this.#history.push(input)
-    this.#historyStream?.write(input + '\n')
+    this.history.push(input)
+    this.historyStream?.write(input + '\n')
 
     const tokens = shellQuote.parse(input)
-    const stringTokens = tokens.filter(t => typeof t === 'string')
+    const stringTokens = tokens.filter((t): t is string => typeof t === 'string')
     // flag/arg extraction
     const {_: [command, ...positionalArgs], ...flags} = yargs(stringTokens, {
       configuration: {
@@ -91,13 +93,13 @@ class HerokuRepl {
         'camel-case-expansion': false,
       },
     })
-    const args = Object.entries(flags).flatMap(([key, value]) => {
+    const args: string[] = Object.entries(flags).flatMap(([key, value]) => {
       if (typeof value === 'string') {
         return [`--${key}`, value]
       }
 
       return [`--${key}`]
-    }).concat(positionalArgs)
+    }).concat(positionalArgs.map(String))
 
     if (command === 'exit') {
       // eslint-disable-next-line n/no-process-exit
@@ -105,28 +107,28 @@ class HerokuRepl {
     }
 
     if (command === 'history') {
-      process.stdout.write(this.#history.join('\n'))
-      this.#rl.prompt()
+      process.stdout.write(this.history.join('\n'))
+      this.rl.prompt()
       return
     }
 
     if (command === 'set' || command === 'unset') {
-      this.#updateFlagsByName(command, args)
-      this.#rl.prompt()
+      this.updateFlagsByName(command, args, false)
+      this.rl.prompt()
       return
     }
 
-    const cmd = this.#config.findCommand(command)
+    const cmd = this.config.findCommand(String(command))
 
     if (!cmd) {
       console.error(`"${command}" is not a valid command`)
-      this.#rl.prompt()
+      this.rl.prompt()
       return
     }
 
     try {
       const {flags} = cmd
-      for (const [key, value] of this.#setValues) {
+      for (const [key, value] of this.setValues) {
         if (Reflect.has(flags, key)) {
           args.push(`--${key}`, value)
         }
@@ -140,20 +142,21 @@ class HerokuRepl {
         process.stdin.setRawMode(false)
       }
 
-      this.#rl.close()
-      this.#rl.off('line', this.#processLine)
+      this.rl.close()
+      this.rl.off('line', this.processLine)
       if (mcpMode) {
         process.stdout.write('<<<BEGIN RESULTS>>>\n')
       }
 
       process.argv.length = 2
-      process.argv.push(command, ...args.filter(Boolean))
-      await run([command, ...args.filter(Boolean)], this.#config)
-    } catch (error) {
+      process.argv.push(String(command), ...args.filter(Boolean))
+      await run([String(command), ...args.filter(Boolean)], this.config)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       if (mcpMode) {
-        process.stderr.write(`<<<ERROR>>>\n${error.message}\n<<<END ERROR>>>\n`)
+        process.stderr.write(`<<<ERROR>>>\n${errorMessage}\n<<<END ERROR>>>\n`)
       } else {
-        console.error(error.message)
+        console.error(errorMessage)
       }
     } finally {
       if (process.stdin.isTTY) {
@@ -164,32 +167,32 @@ class HerokuRepl {
         process.stdout.write('<<<END RESULTS>>>\n')
       }
 
-      this.#createInterface()
+      this.createInterface()
       this.start()
       // Force readline to refresh the current line
-      this.#rl.write(null, {ctrl: true, name: 'u'})
+      this.rl.write(null, {ctrl: true, name: 'u'})
     }
   }
 
   /**
    * The readline interface used for the REPL
    */
-  #rl
+  private rl!: readline.Interface
 
   /**
    * A map of key/value pairs used for
    * the 'set' and 'unset' command
    */
-  #setValues = new Map()
+  private setValues = new Map<string, string>()
 
   /**
    * Constructs a new instance of the HerokuRepl class.
    *
    * @param {Config} config The oclif core config object
    */
-  constructor(config) {
-    this.#createInterface()
-    this.#config = config
+  constructor(config: Config) {
+    this.createInterface()
+    this.config = config
   }
 
   /**
@@ -198,7 +201,26 @@ class HerokuRepl {
    * @returns {void}
    */
   start() {
-    this.#rl.prompt()
+    this.rl.prompt()
+  }
+
+  /**
+   * Wrapper methods for file system operations to enable testing
+   */
+  protected fsExistsSync(path: string): boolean {
+    return fs.existsSync(path)
+  }
+
+  protected fsReadFileSync(path: string, encoding: BufferEncoding): string {
+    return fs.readFileSync(path, encoding)
+  }
+
+  protected fsWriteFileSync(path: string, data: string): void {
+    fs.writeFileSync(path, data, 'utf8')
+  }
+
+  protected fsCreateWriteStream(path: string, options: any): fs.WriteStream {
+    return fs.createWriteStream(path, options)
   }
 
   /**
@@ -212,10 +234,10 @@ class HerokuRepl {
    * @param {string} line the current line
    * @returns {Promise<[string[], string]>} the completions and the current input
    */
-  async #buildCompletions(commandMeta, flagsOrArgs = [], line = '') {
+  private async buildCompletions(commandMeta: any, flagsOrArgs: string[] = [], line = ''): Promise<[string[], string]> {
     const {args, flags} = commandMeta
-    const {optionalInputs: optionalFlags, requiredInputs: requiredFlags} = this.#collectInputsFromManifest(flags)
-    const {optionalInputs: optionalArgs, requiredInputs: requiredArgs} = this.#collectInputsFromManifest(args)
+    const {optionalInputs: optionalFlags, requiredInputs: requiredFlags} = this.collectInputsFromManifest(flags)
+    const {optionalInputs: optionalArgs, requiredInputs: requiredArgs} = this.collectInputsFromManifest(args)
 
     const {_: userArgs, ...userFlags} = yargs(flagsOrArgs, {
       configuration: {
@@ -223,6 +245,7 @@ class HerokuRepl {
         'camel-case-expansion': false,
       },
     })
+    const userArgsStrings = Array.isArray(userArgs) ? userArgs.map(String) : []
     // eslint-disable-next-line unicorn/prefer-at
     const current = flagsOrArgs[flagsOrArgs.length - 1] ?? ''
 
@@ -234,11 +257,11 @@ class HerokuRepl {
     // 5. End of line
     // Flags *must* occur first since they may influence
     // the completions for args.
-    return await this.#getCompletionsForFlag(line, current, requiredFlags, userFlags, commandMeta)
-      || await this.#getCompletionsForArg(current, requiredArgs, userArgs)
-      || await this.#getCompletionsForFlag(line, current, optionalFlags, userFlags, commandMeta)
-      || await this.#getCompletionsForArg(current, optionalArgs, userArgs)
-      || this.#getCompletionsForEndOfLine(line, flags, userFlags)
+    return await this.getCompletionsForFlag(line, current, requiredFlags, userFlags, commandMeta)
+      || await this.getCompletionsForArg(current, requiredArgs, userArgsStrings)
+      || await this.getCompletionsForFlag(line, current, optionalFlags, userFlags, commandMeta)
+      || await this.getCompletionsForArg(current, optionalArgs, userArgsStrings)
+      || this.getCompletionsForEndOfLine(line, flags, userFlags)
   }
 
   /**
@@ -250,10 +273,10 @@ class HerokuRepl {
    * @param {[string, string]} parts the parts for a line to get completions for
    * @returns {[string[], string]} the completions and the current input
    */
-  async #buildSetCompletions(parts) {
+  private async buildSetCompletions(parts: string[]): Promise<[string[], string]> {
     const [name, current] = parts
     if (parts.length > 0 && completionCommandByName.has(name)) {
-      return [await this.#getCompletion(name, current), current]
+      return [await this.getCompletion(name, current), current]
     }
 
     // Critical to completions operating as expected;
@@ -275,8 +298,8 @@ class HerokuRepl {
    * @param {CallableFunction} fn the function to capture stdout for
    * @returns {Promise<string>} the output from stdout
    */
-  async #captureStdout(fn) {
-    const output = []
+  private async captureStdout(fn: () => Promise<void>): Promise<string> {
+    const output: string[] = []
     const originalWrite = process.stdout.write
     // Replace stdout.write temporarily
     process.stdout.write = chunk => {
@@ -300,9 +323,9 @@ class HerokuRepl {
    * @param {Record<string, unknown>} commandMeta the metadata from the command manifest
    * @returns {{requiredInputs: {long: string, short: string}[], optionalInputs: {long: string, short: string}[]}} the inputs from the command manifest
    */
-  #collectInputsFromManifest(commandMeta) {
-    const requiredInputs = []
-    const optionalInputs = []
+  private collectInputsFromManifest(commandMeta: any): {requiredInputs: Array<{long: string; short: string}>; optionalInputs: Array<{long: string; short: string}>} {
+    const requiredInputs: Array<{long: string; short: string}> = []
+    const optionalInputs: Array<{long: string; short: string}> = []
 
     // Prioritize options over booleans
     const keysByType = Object.keys(commandMeta).sort((a, b) => {
@@ -365,28 +388,28 @@ class HerokuRepl {
    *
    * @returns {readline.Interface} the readline interface
    */
-  #createInterface() {
-    this.#rl = readline.createInterface({
-      completer: async line => {
+  private createInterface() {
+    this.rl = readline.createInterface({
+      completer: async (line: string): Promise<[string[], string]> => {
         if (mcpMode) {
           return [[], line]
         }
 
         // Use shell-quote to tokenize the line for robust parsing
         const tokens = shellQuote.parse(line)
-        const stringTokens = tokens.filter(t => typeof t === 'string')
+        const stringTokens = tokens.filter((t): t is string => typeof t === 'string')
         const [command = '', ...parts] = stringTokens
         if (command === 'set') {
-          return this.#buildSetCompletions(parts)
+          return this.buildSetCompletions(parts)
         }
 
-        const commandMeta = this.#config.findCommand(command)
+        const commandMeta = this.config.findCommand(command)
         if (!commandMeta) {
-          const matches = this.#config.commands.filter(({id}) => id.startsWith(command))
-          return [matches.map(({id}) => id).sort(), line]
+          const matches = this.config.commands.filter(({id}: any) => id.startsWith(command))
+          return [matches.map(({id}: any) => id).sort(), line]
         }
 
-        return this.#buildCompletions(commandMeta, parts, line)
+        return this.buildCompletions(commandMeta, parts, line)
       },
       historySize: maxHistory,
       input: process.stdin,
@@ -394,16 +417,17 @@ class HerokuRepl {
       prompt: 'heroku > ',
       removeHistoryDuplicates: true,
     })
-    this.#prepareHistory()
-    this.#loadState()
+    this.prepareHistory()
+    this.loadState()
 
-    this.#rl.history.push(...this.#history)
-    this.#rl.on('line', this.#processLine)
-    this.#rl.once('close', () => {
-      this.#historyStream?.close()
-      fs.writeFileSync(stateFile, JSON.stringify(Object.fromEntries(this.#setValues)), 'utf8')
+    // @ts-expect-error history exists at runtime but not in types
+    this.rl.history.push(...this.history)
+    this.rl.on('line', this.processLine)
+    this.rl.once('close', () => {
+      this.historyStream?.close()
+      this.fsWriteFileSync(stateFile, JSON.stringify(Object.fromEntries(this.setValues)))
     })
-    this.#rl.prompt()
+    this.rl.prompt()
   }
 
   /**
@@ -413,30 +437,34 @@ class HerokuRepl {
    * @param {string} startsWith the string to match against
    * @returns {Promise<[string[]]>} the completions
    */
-  async #getCompletion(flag, startsWith) {
+  private async getCompletion(flag: string, startsWith: string): Promise<string[]> {
     // attempt to retrieve the options from the
     // Heroku API. If the options have already
     // been retrieved, they will be cached.
     if (completionCommandByName.has(flag)) {
-      let result
+      let result: any[] = []
       if (completionResultsByName.has(flag)) {
         result = completionResultsByName.get(flag)
       }
 
       if (!result || result.length === 0) {
-        const [command, args] = completionCommandByName.get(flag)
-        const completionsStr = await this.#captureStdout(() => this.#config.runCommand(command, args)) ?? '[]'
+        const [command, args] = completionCommandByName.get(flag)!
+        const commandStr = Array.isArray(command) ? command[0] : command
+        const argsArray = Array.isArray(args) ? args : [args]
+        const completionsStr = await this.captureStdout(() => this.config.runCommand(commandStr, argsArray as any)) ?? '[]'
         result = JSON.parse(util.stripVTControlCharacters(completionsStr))
         completionResultsByName.set(flag, result)
       }
 
       const matched = result
-        .map(obj => obj.name ?? obj.id)
-        .filter(name => !startsWith || name.startsWith(startsWith))
+        .map((obj: any) => obj.name ?? obj.id)
+        .filter((name: string) => !startsWith || name.startsWith(startsWith))
         .sort()
 
       return matched
     }
+
+    return []
   }
 
   /**
@@ -447,13 +475,13 @@ class HerokuRepl {
    * @param {string[]} userArgs the args that have already been used
    * @returns {Promise<[string[], string] | null>} the completions and the current input
    */
-  async #getCompletionsForArg(current, args = [], userArgs = []) {
+  private async getCompletionsForArg(current: string, args: Array<{long: string}> = [], userArgs: string[] = []): Promise<[string[], string] | null> {
     if (userArgs.length <= args.length) {
       const arg = args[userArgs.length]
       if (arg) {
         const {long} = arg
         if (completionCommandByName.has(long)) {
-          const completions = await this.#getCompletion(long, current)
+          const completions = await this.getCompletion(long, current)
           if (completions.length > 0) {
             return [completions, current]
           }
@@ -474,7 +502,7 @@ class HerokuRepl {
    * @param {Record<string, unknown>} userFlags the flags that have already been used
    * @returns {[string[], string]} the completions and the current input
    */
-  #getCompletionsForEndOfLine(line, flags, userFlags) {
+  private getCompletionsForEndOfLine(line: string, flags: any, userFlags: any): [string[], string] {
     const flagKeys = Object.keys(userFlags)
     // If there are no more flags to complete,
     // return an empty array.
@@ -491,7 +519,7 @@ class HerokuRepl {
    * @param {Record<string, unknown>} commandMeta the metadata for the command
    * @return {Promise<[string[], string]>} the completions and the current input
    */
-  async #getCompletionsForFlag(line, current, flags, userFlags, commandMeta) {
+  private async getCompletionsForFlag(line: string, current: string, flags: any, userFlags: any, commandMeta: any): Promise<[string[], string] | null> {
     const commandMetaWithCharKeys = {...commandMeta}
     // make sure the commandMeta also contains keys for char fields
     Object.keys(commandMeta.flags).forEach(key => {
@@ -509,9 +537,9 @@ class HerokuRepl {
       const rawFlag = isLongFlag ? current.slice(2) : current.slice(1)
       const prop = isLongFlag ? 'long' : 'short'
       const matched = flags
-        .filter(flag => !Reflect.has(userFlags, flag.short) && !Reflect.has(userFlags, flag.long)
+        .filter((flag: any) => !Reflect.has(userFlags, flag.short) && !Reflect.has(userFlags, flag.long)
           && (!rawFlag || flag[prop]?.startsWith(rawFlag)))
-        .map(f => isLongFlag ? f.long : f.short)
+        .map((f: any) => isLongFlag ? f.long : f.short)
         .filter(Boolean)
 
       if (matched?.length > 0) {
@@ -525,7 +553,7 @@ class HerokuRepl {
     // eslint-disable-next-line unicorn/prefer-at
     const flag = flagKeys[flagKeys.length - 1]
     const isBooleanFlag = commandMetaWithCharKeys.flags[flag]?.type === 'boolean'
-    if (this.#isFlagValueComplete(line) || isBooleanFlag || current === '--' || current === '-') {
+    if (this.isFlagValueComplete(line) || isBooleanFlag || current === '--' || current === '-') {
       return null
     }
 
@@ -537,18 +565,20 @@ class HerokuRepl {
     if (type === 'option') {
       if (options?.length > 0) {
         const optionComplete = options.includes(current)
-        const matched = options.filter(o => o.startsWith(current))
+        const matched = options.filter((o: string) => o.startsWith(current))
 
         if (!optionComplete) {
           return matched.length > 0 ? [matched, current] : [options, current]
         }
       }
 
-      return [await this.#getCompletion(name, isFlag ? '' : current), current]
+      return [await this.getCompletion(name, isFlag ? '' : current), current]
     }
+
+    return null
   }
 
-  #isFlagValueComplete(input) {
+  private isFlagValueComplete(input: string): boolean {
     const tokens = shellQuote.parse(input.trim())
     const len = tokens.length
     if (len === 0) {
@@ -565,7 +595,8 @@ class HerokuRepl {
     // back up to the last flag and store the index
     let lastFlagIndex = -1
     for (let i = len - 1; i >= 0; i--) {
-      if (typeof tokens[i] === 'string' && tokens[i].startsWith('-')) {
+      const token = tokens[i]
+      if (typeof token === 'string' && token.startsWith('-')) {
         lastFlagIndex = i
         break
       }
@@ -598,12 +629,12 @@ class HerokuRepl {
    * Loads the previous session state from the state file.
    * @returns {void}
    */
-  #loadState() {
-    if (fs.existsSync(stateFile)) {
+  private loadState() {
+    if (this.fsExistsSync(stateFile)) {
       try {
-        const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'))
-        for (const entry of Object.entries(state)) {
-          this.#updateFlagsByName('set', entry, true)
+        const state = JSON.parse(this.fsReadFileSync(stateFile, 'utf8'))
+        for (const [key, value] of Object.entries(state)) {
+          this.updateFlagsByName('set', [key, String(value)], true)
         }
 
         process.stdout.write('session restored')
@@ -620,19 +651,19 @@ class HerokuRepl {
    *
    * @returns {Promise<void>} a promise that resolves when the history has been loaded
    */
-  #prepareHistory() {
-    this.#historyStream = fs.createWriteStream(historyFile, {
+  private prepareHistory(): void {
+    this.historyStream = this.fsCreateWriteStream(historyFile, {
       encoding: 'utf8',
       flags: 'a',
     })
 
     // Load existing history first
-    if (fs.existsSync(historyFile)) {
-      this.#history = fs.readFileSync(historyFile, 'utf8')
+    if (this.fsExistsSync(historyFile)) {
+      const lines = this.fsReadFileSync(historyFile, 'utf8')
         .split('\n')
         .filter(line => line.trim())
         .reverse()
-        .splice(0, maxHistory)
+      this.history = lines.slice(0, maxHistory)
     }
   }
 
@@ -644,22 +675,22 @@ class HerokuRepl {
    * @param {boolean} omitConfirmation when false. no confirmation is printed to stdout
    * @returns {void}
    */
-  #updateFlagsByName(command, args, omitConfirmation) {
+  private updateFlagsByName(command: 'set' | 'unset', args: string[], omitConfirmation: boolean): void {
     if (command === 'set') {
       const [key, value] = args
       if (key && value) {
-        this.#setValues.set(key, value)
+        this.setValues.set(key, value)
 
         if (!omitConfirmation) {
           process.stdout.write(`setting --${key} to ${value}\n`)
         }
 
         if (key === 'app') {
-          this.#rl.setPrompt(`${value} > `)
+          this.rl.setPrompt(`${value} > `)
         }
       } else {
         const values = []
-        for (const [flag, value] of this.#setValues) {
+        for (const [flag, value] of this.setValues) {
           values.push({flag, value})
         }
 
@@ -667,7 +698,7 @@ class HerokuRepl {
           return console.info('no flags set')
         }
 
-        ux.table(values, {
+        hux.table(values, {
           flag: {header: 'Flag'},
           value: {header: 'Value'},
         })
@@ -681,14 +712,10 @@ class HerokuRepl {
         process.stdout.write(`unsetting --${key}\n`)
       }
 
-      this.#setValues.delete(key)
+      this.setValues.delete(key)
       if (key === 'app') {
-        this.#rl.setPrompt('heroku > ')
+        this.rl.setPrompt('heroku > ')
       }
     }
   }
-}
-
-export async function herokuRepl(config) {
-  return new HerokuRepl(config)
 }

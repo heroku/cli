@@ -2,13 +2,9 @@
 /* eslint-disable n/no-process-exit */
 /* eslint-disable n/no-unpublished-bin */
 
-import {Config, execute} from '@oclif/core'
-import {dirname} from 'node:path'
-import {fileURLToPath} from 'node:url'
-import yargs from 'yargs-parser'
+import {execute} from '@oclif/core'
 
 import * as globalTelemetry from '../dist/global_telemetry.js'
-import {herokuRepl} from './heroku-repl.js'
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
@@ -48,14 +44,4 @@ process.on('SIGTERM', async () => {
 
 globalTelemetry.initializeInstrumentation()
 
-// Check for --repl flag before executing
-const parsedArgs = yargs(process.argv.slice(2))
-const {_: [commandName, ...args], ...flags} = parsedArgs
-if (flags.repl && args.length === 0 && Object.keys(flags).length === 1) {
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = dirname(__filename)
-  const config = await Config.load({root: dirname(__dirname)})
-  await herokuRepl(config)
-} else {
-  await execute({dir: import.meta.url})
-}
+await execute({dir: import.meta.url})

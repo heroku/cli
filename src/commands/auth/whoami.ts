@@ -2,9 +2,14 @@ import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
 export default class AuthWhoami extends Command {
-  static description = 'display the current logged in user'
-
   static aliases = ['whoami']
+  static baseFlags = Command.baseFlagsWithoutPrompt()
+  static description = 'display the current logged in user'
+  static promptFlagActive = false
+
+  notloggedin() {
+    this.error('not logged in', {exit: 100})
+  }
 
   async run() {
     if (process.env.HEROKU_API_KEY) this.warn('HEROKU_API_KEY is set')
@@ -16,10 +21,6 @@ export default class AuthWhoami extends Command {
       if (error.statusCode === 401) this.notloggedin()
       throw error
     }
-  }
-
-  notloggedin() {
-    this.error('not logged in', {exit: 100})
   }
 }
 

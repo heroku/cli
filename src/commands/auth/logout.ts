@@ -3,9 +3,10 @@ import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 
 export default class Logout extends Command {
-  static description = 'clears local login credentials and invalidates API session'
-
   static aliases = ['logout']
+  static baseFlags = Command.baseFlagsWithoutPrompt()
+  static description = 'clears local login credentials and invalidates API session'
+  static promptFlagActive = false
 
   async run() {
     this.parse(Logout)

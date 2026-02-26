@@ -5,8 +5,10 @@ import {ux} from '@oclif/core'
 import {formatRelative}  from 'date-fns'
 
 export default class AuthToken extends Command {
+  static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = `outputs current CLI authentication token.
 By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create`
+  static promptFlagActive = false
 
   async run() {
     this.parse(AuthToken)
