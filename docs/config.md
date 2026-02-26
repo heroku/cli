@@ -16,7 +16,7 @@ display the config vars for an app
 
 ```
 USAGE
-  $ heroku config -a <value> [-r <value>] [-s] [-j]
+  $ heroku config -a <value> [--prompt] [-j] [-r <value>] [-s]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
@@ -24,11 +24,14 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   display the config vars for an app
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -36,14 +39,17 @@ interactively edit config vars
 
 ```
 USAGE
-  $ heroku config:edit [KEY] -a <value> [-r <value>]
+  $ heroku config:edit [KEY] -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
-  KEY  edit a single key
+  [KEY]  edit a single key
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   interactively edit config vars
@@ -52,19 +58,19 @@ DESCRIPTION
 
 EXAMPLES
   # edit with vim
-  $ EDITOR="vim" heroku config:edit
+   $ EDITOR="vim" heroku config:edit 
 
   # edit with emacs
-  $ EDITOR="emacs" heroku config:edit
+   $ EDITOR="emacs" heroku config:edit 
 
   # edit with pico
-  $ EDITOR="pico" heroku config:edit
+   $ EDITOR="pico" heroku config:edit 
 
   # edit with atom editor
-  $ VISUAL="atom --wait" heroku config:edit
+   $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -83,15 +89,18 @@ FLAGS
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   display a single config value for an app
 
 EXAMPLES
-  $ heroku config:get RAILS_ENV
+   $ heroku config:get RAILS_ENV
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/config/get.ts)_
 
 ## `heroku config:remove`
 
@@ -99,11 +108,14 @@ unset one or more config vars
 
 ```
 USAGE
-  $ heroku config:remove -a <value> [-r <value>]
+  $ heroku config:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   unset one or more config vars
@@ -112,10 +124,10 @@ ALIASES
   $ heroku config:remove
 
 EXAMPLES
-  $ heroku config:unset RAILS_ENV
+       $ heroku config:unset RAILS_ENV 
   Unsetting RAILS_ENV and restarting example... done, v10
 
-  $ heroku config:unset RAILS_ENV RACK_ENV
+       $ heroku config:unset RAILS_ENV RACK_ENV 
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
@@ -125,26 +137,30 @@ set one or more config vars
 
 ```
 USAGE
-  $ heroku config:set -a <value> [-r <value>]
+  $ heroku config:set -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   set one or more config vars
 
 EXAMPLES
-  $ heroku config:set RAILS_ENV=staging
+   $ heroku config:set RAILS_ENV=staging 
   Setting config vars and restarting example... done, v10
-  RAILS_ENV: staging
-  $ heroku config:set RAILS_ENV=staging RACK_ENV=staging
+  RAILS_ENV: staging)
+
+   $ heroku config:set RAILS_ENV=staging RACK_ENV=staging 
   Setting config vars and restarting example... done, v11
   RAILS_ENV: staging
   RACK_ENV:  staging
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/config/set.ts)_
 
 ## `heroku config:unset`
 
@@ -152,11 +168,14 @@ unset one or more config vars
 
 ```
 USAGE
-  $ heroku config:unset -a <value> [-r <value>]
+  $ heroku config:unset -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   unset one or more config vars
@@ -165,11 +184,11 @@ ALIASES
   $ heroku config:remove
 
 EXAMPLES
-  $ heroku config:unset RAILS_ENV
+       $ heroku config:unset RAILS_ENV 
   Unsetting RAILS_ENV and restarting example... done, v10
 
-  $ heroku config:unset RAILS_ENV RACK_ENV
+       $ heroku config:unset RAILS_ENV RACK_ENV 
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/config/unset.ts)_
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/config/unset.ts)_

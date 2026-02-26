@@ -14,17 +14,20 @@ display your SSH keys
 
 ```
 USAGE
-  $ heroku keys [--json] [-l]
+  $ heroku keys [--prompt] [--json] [-l]
 
 FLAGS
   -l, --long  display full SSH keys
       --json  output in json format
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   display your SSH keys
 ```
 
-_See code: [src/commands/keys/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/keys/index.ts)_
+_See code: [src/commands/keys/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/keys/index.ts)_
 
 ## `heroku keys:add [KEY]`
 
@@ -32,28 +35,34 @@ add an SSH key for a user
 
 ```
 USAGE
-  $ heroku keys:add [KEY] [-y]
+  $ heroku keys:add [KEY] [--prompt] [-y]
 
 ARGUMENTS
-  KEY  absolute path to the key located on disk. If omitted, we use the default rsa key.
+  [KEY]  absolute path to the key located on disk. If omitted, we use the default rsa key.
 
 FLAGS
   -y, --yes  automatically answer yes for all prompts
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
+
   add an SSH key for a user
+  if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
+
 
 EXAMPLES
-  $ heroku keys:add
+   $ heroku keys:add 
   Could not find an existing public key.
   Would you like to generate one? [Yn] y
   Generating new SSH public key.
   Uploading SSH public key /.ssh/id_rsa.pub... done
-  $ heroku keys:add /my/key.pub
+   $ heroku keys:add /my/key.pub 
   Uploading SSH public key /my/key.pub... done
 ```
 
-_See code: [src/commands/keys/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/keys/add.ts)_
+_See code: [src/commands/keys/add.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/keys/add.ts)_
 
 ## `heroku keys:clear`
 
@@ -67,7 +76,7 @@ DESCRIPTION
   remove all SSH keys for current user
 ```
 
-_See code: [src/commands/keys/clear.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/keys/clear.ts)_
+_See code: [src/commands/keys/clear.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/keys/clear.ts)_
 
 ## `heroku keys:remove KEY`
 
@@ -75,17 +84,20 @@ remove an SSH key from the user
 
 ```
 USAGE
-  $ heroku keys:remove KEY
+  $ heroku keys:remove KEY [--prompt]
 
 ARGUMENTS
   KEY  email address of the user
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   remove an SSH key from the user
 
 EXAMPLES
-  $ heroku keys:remove email@example.com
+   $ heroku keys:remove email@example.com 
   Removing email@example.com SSH key... done
 ```
 
-_See code: [src/commands/keys/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/keys/remove.ts)_
+_See code: [src/commands/keys/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/keys/remove.ts)_
