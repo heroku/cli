@@ -1,8 +1,7 @@
 /* eslint-env mocha */
 import {expect} from 'chai'
 import nock from 'nock'
-import * as stream from 'stream'
-import lolex from 'lolex'
+import stream from 'stream'
 import {streamer} from '../../../../src/lib/container/streamer.js'
 
 function MockOut(this: any) {
@@ -20,22 +19,8 @@ MockOut.prototype._write = function (d: any) {
   this.data.push(d)
 }
 
-/*
 describe('streaming', function () {
-  let clock: ReturnType<typeof lolex.install>
-
-  beforeEach(function () {
-    clock = lolex.install()
-    clock.setTimeout = function (fn: any) {
-      fn()
-    }
-  })
-
-  afterEach(function () {
-    clock.uninstall()
-  })
-
-  it('streams data', function () {
+  it('streams data', async function () {
     const ws = new (MockOut as any)()
     const api = nock('https://streamer.test:443')
       .get('/streams/data.log')
@@ -46,7 +31,7 @@ describe('streaming', function () {
       .then(() => api.done())
   })
 
-  it('retries a missing stream', function () {
+  it('retries a missing stream', async function () {
     const ws = new (MockOut as any)()
     let attempts = 0
 
@@ -89,5 +74,3 @@ describe('streaming', function () {
     api.done()
   })
 })
-
-*/
