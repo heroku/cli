@@ -8,20 +8,20 @@ import {EventEmitter} from 'events'
 
 describe('DockerHelper', function () {
   let helper: DockerHelper
-  
+
   const eventMock = () => {
     const eventEmitter = new EventEmitter() as any
     eventEmitter.stdin = null
     eventEmitter.stdout = null
     eventEmitter.stderr = null
-    
+
     process.nextTick(function () {
       eventEmitter.emit('exit', 0)
     })
     return eventEmitter
   }
-  
-  this.beforeEach(function() {
+
+  this.beforeEach(function () {
     helper = new DockerHelper()
   })
 
@@ -258,7 +258,7 @@ describe('DockerHelper', function () {
       return sandbox.restore()
     })
 
-    it('does not include the platform flag when the arch is not arm64', async function () {
+    it('does not include the platform flag when the arch is not arm64 with dockerfile', async function () {
       const argsArray = [
         'build',
         '-f',
