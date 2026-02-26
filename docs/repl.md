@@ -16,7 +16,7 @@ Use it when running multiple commands in sequence or exploring the CLI.
 
 Start a REPL interactive environment with this command:
 ```term
-$ heroku --repl
+$ heroku repl
 ```
 ## Exit a REPL
 
@@ -27,7 +27,7 @@ To exit the REPL, type `exit` or press `Ctrl`+`D`.
 You can set flags that persist across commands. For example, to persist an app's name in your commands:
 
 ```term
-$ heroku --repl
+$ heroku repl
 heroku> set app example-app
 setting --app to example-app
 example-app> ps

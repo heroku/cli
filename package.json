@@ -6,7 +6,7 @@
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^12.1.3",
+    "@heroku-cli/command": "12.2.0-beta.0",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/plugin-ps-exec": "^2.6.4",
     "@heroku-cli/schema": "^1.0.25",
@@ -70,7 +70,7 @@
     "tmp": "^0.2.5",
     "true-myth": "4.1.1",
     "tsheredoc": "^1.0.1",
-    "tslib": "1.14.1",
+    "tslib": "^2.8.1",
     "urijs": "^1.19.11",
     "word-wrap": "^1.2.5",
     "ws": "^6.2.2",
@@ -108,6 +108,7 @@
     "@types/uuid": "^8.3.0",
     "@types/write-json-file": "^3.2.1",
     "@types/ws": "^6.0.1",
+    "@types/yargs-parser": "^21.0.3",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
     "bats": "^1.1.0",
@@ -350,7 +351,8 @@
     }
   },
   "overrides": {
-    "ansi-regex": "4.1.1"
+    "ansi-regex": "4.1.1",
+    "@heroku-cli/command": "12.2.0-beta.0"
   },
   "engines": {
     "node": ">=20"
