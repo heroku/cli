@@ -14,7 +14,7 @@ list members of a team
 
 ```
 USAGE
-  $ heroku members -t <value> [-r <value>] [--pending] [--json]
+  $ heroku members -t <value> [--prompt] [--json] [--pending] [-r <value>]
 
 FLAGS
   -r, --role=<value>  filter by role
@@ -22,11 +22,14 @@ FLAGS
       --json          output in json format
       --pending       filter by pending team invitations
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   list members of a team
 ```
 
-_See code: [src/commands/members/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/members/index.ts)_
+_See code: [src/commands/members/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/members/index.ts)_
 
 ## `heroku members:add EMAIL`
 
@@ -34,7 +37,7 @@ adds a user to a team
 
 ```
 USAGE
-  $ heroku members:add EMAIL -r <value> -t <value>
+  $ heroku members:add EMAIL -r <value> -t <value> [--prompt]
 
 ARGUMENTS
   EMAIL  email address of the team member
@@ -43,11 +46,14 @@ FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
   -t, --team=<value>  (required) team to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   adds a user to a team
 ```
 
-_See code: [src/commands/members/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/members/add.ts)_
+_See code: [src/commands/members/add.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/members/add.ts)_
 
 ## `heroku members:remove`
 
@@ -55,16 +61,19 @@ removes a user from a team
 
 ```
 USAGE
-  $ heroku members:remove -t <value>
+  $ heroku members:remove -t <value> [--prompt]
 
 FLAGS
   -t, --team=<value>  (required) team to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   removes a user from a team
 ```
 
-_See code: [src/commands/members/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/members/remove.ts)_
+_See code: [src/commands/members/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/members/remove.ts)_
 
 ## `heroku members:set`
 
@@ -72,14 +81,17 @@ sets a members role in a team
 
 ```
 USAGE
-  $ heroku members:set -r <value> -t <value>
+  $ heroku members:set -r <value> -t <value> [--prompt]
 
 FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
   -t, --team=<value>  (required) team to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   sets a members role in a team
 ```
 
-_See code: [src/commands/members/set.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/members/set.ts)_
+_See code: [src/commands/members/set.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/members/set.ts)_

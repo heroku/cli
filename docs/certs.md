@@ -20,17 +20,20 @@ list SSL certificates for an app
 
 ```
 USAGE
-  $ heroku certs -a <value> [-r <value>]
+  $ heroku certs -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   list SSL certificates for an app
 ```
 
-_See code: [src/commands/certs/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/index.ts)_
+_See code: [src/commands/certs/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/index.ts)_
 
 ## `heroku certs:add CRT KEY`
 
@@ -38,7 +41,7 @@ Add an SSL certificate to an app.
 
 ```
 USAGE
-  $ heroku certs:add CRT KEY -a <value> [-r <value>]
+  $ heroku certs:add CRT KEY -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
   CRT  absolute path of the certificate file on disk
@@ -48,6 +51,9 @@ FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   Add an SSL certificate to an app.
 
@@ -55,12 +61,12 @@ DESCRIPTION
 
 
 EXAMPLES
-  $ heroku certs:add example.com.crt example.com.key
-      If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
-      https://help.salesforce.com/s/articleView?id=000333504&type=1
+   $ heroku certs:add example.com.crt example.com.key 
+  If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
+  https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [src/commands/certs/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/add.ts)_
+_See code: [src/commands/certs/add.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/add.ts)_
 
 ## `heroku certs:auto`
 
@@ -68,18 +74,21 @@ show ACM status for an app
 
 ```
 USAGE
-  $ heroku certs:auto -a <value> [--wait] [-r <value>]
+  $ heroku certs:auto -a <value> [--prompt] [-r <value>] [--wait]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
       --wait            watch ACM status and display the status when complete
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   show ACM status for an app
 ```
 
-_See code: [src/commands/certs/auto/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/auto/index.ts)_
+_See code: [src/commands/certs/auto/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/auto/index.ts)_
 
 ## `heroku certs:auto:disable`
 
@@ -87,17 +96,20 @@ disable ACM for an app
 
 ```
 USAGE
-  $ heroku certs:auto:disable -a <value> [-r <value>]
+  $ heroku certs:auto:disable -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   disable ACM for an app
 ```
 
-_See code: [src/commands/certs/auto/disable.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/auto/disable.ts)_
+_See code: [src/commands/certs/auto/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/auto/disable.ts)_
 
 ## `heroku certs:auto:enable`
 
@@ -105,18 +117,21 @@ enable ACM status for an app
 
 ```
 USAGE
-  $ heroku certs:auto:enable -a <value> [--wait] [-r <value>]
+  $ heroku certs:auto:enable -a <value> [--prompt] [-r <value>] [--wait]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
       --wait            watch ACM status and exit when complete
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   enable ACM status for an app
 ```
 
-_See code: [src/commands/certs/auto/enable.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/auto/enable.ts)_
+_See code: [src/commands/certs/auto/enable.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/auto/enable.ts)_
 
 ## `heroku certs:auto:refresh`
 
@@ -124,17 +139,20 @@ refresh ACM for an app
 
 ```
 USAGE
-  $ heroku certs:auto:refresh -a <value> [-r <value>]
+  $ heroku certs:auto:refresh -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -r, --remote=<value>  git remote of app to use
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   refresh ACM for an app
 ```
 
-_See code: [src/commands/certs/auto/refresh.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/auto/refresh.ts)_
+_See code: [src/commands/certs/auto/refresh.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/auto/refresh.ts)_
 
 ## `heroku certs:generate DOMAIN`
 
@@ -142,8 +160,8 @@ generate a key and a CSR or self-signed certificate
 
 ```
 USAGE
-  $ heroku certs:generate DOMAIN -a <value> [--selfsigned] [--keysize <value>] [--owner <value>] [--country <value>]
-    [--area <value>] [--city <value>] [--subject <value>] [--now] [-r <value>]
+  $ heroku certs:generate DOMAIN -a <value> [--prompt] [--selfsigned] [--keysize <value>] [--owner <value>]
+    [--country <value>] [--area <value>] [--city <value>] [--subject <value>] [--now] [-r <value>]
 
 ARGUMENTS
   DOMAIN  domain name to generate
@@ -160,11 +178,14 @@ FLAGS
       --selfsigned       generate a self-signed certificate instead of a CSR
       --subject=<value>  specify entire certificate subject
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   generate a key and a CSR or self-signed certificate
 ```
 
-_See code: [src/commands/certs/generate.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/generate.ts)_
+_See code: [src/commands/certs/generate.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/generate.ts)_
 
 ## `heroku certs:info`
 
@@ -172,7 +193,7 @@ show certificate information for an SSL certificate
 
 ```
 USAGE
-  $ heroku certs:info -a <value> [--name <value>] [--endpoint <value>] [--show-domains] [-r <value>]
+  $ heroku certs:info -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>] [--show-domains]
 
 FLAGS
   -a, --app=<value>       (required) app to run command against
@@ -181,11 +202,14 @@ FLAGS
       --name=<value>      name to check info on
       --show-domains      show associated domains
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   show certificate information for an SSL certificate
 ```
 
-_See code: [src/commands/certs/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/info.ts)_
+_See code: [src/commands/certs/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/info.ts)_
 
 ## `heroku certs:remove`
 
@@ -193,7 +217,7 @@ remove an SSL certificate from an app
 
 ```
 USAGE
-  $ heroku certs:remove -a <value> [--name <value>] [--endpoint <value>] [-r <value>]
+  $ heroku certs:remove -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>]
 
 FLAGS
   -a, --app=<value>       (required) app to run command against
@@ -201,11 +225,14 @@ FLAGS
       --endpoint=<value>  endpoint to remove
       --name=<value>      name to remove
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   remove an SSL certificate from an app
 ```
 
-_See code: [src/commands/certs/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/remove.ts)_
+_See code: [src/commands/certs/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/remove.ts)_
 
 ## `heroku certs:update CRT KEY`
 
@@ -213,7 +240,7 @@ update an SSL certificate on an app
 
 ```
 USAGE
-  $ heroku certs:update CRT KEY -a <value> [--name <value>] [--endpoint <value>] [-r <value>]
+  $ heroku certs:update CRT KEY -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>]
 
 ARGUMENTS
   CRT  absolute path of the certificate file on disk
@@ -225,15 +252,18 @@ FLAGS
       --endpoint=<value>  endpoint to update
       --name=<value>      name to update
 
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
 DESCRIPTION
   update an SSL certificate on an app
   Note: certificates with PEM encoding are also valid
 
 
 EXAMPLES
-  $ heroku certs:update example.com.crt example.com.key
+   $ heroku certs:update example.com.crt example.com.key 
       If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
       https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [src/commands/certs/update.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/certs/update.ts)_
+_See code: [src/commands/certs/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/certs/update.ts)_
