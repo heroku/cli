@@ -1,20 +1,29 @@
-import * as DockerHelper from '../../../../src/lib/container/docker_helper.js'
+import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as path from 'path'
-import * as childProcess from 'child_process'
-import * as inquirer from 'inquirer'
+import childProcess from 'node:child_process'
+import inquirer from 'inquirer'
 import {EventEmitter} from 'events'
 
-/*
 describe('DockerHelper', function () {
+  let helper: DockerHelper
+  
   const eventMock = () => {
-    const eventEmitter = new EventEmitter()
+    const eventEmitter = new EventEmitter() as any
+    eventEmitter.stdin = null
+    eventEmitter.stdout = null
+    eventEmitter.stderr = null
+    
     process.nextTick(function () {
       eventEmitter.emit('exit', 0)
     })
     return eventEmitter
   }
+  
+  this.beforeEach(function() {
+    helper = new DockerHelper()
+  })
 
   describe('.version', function () {
     let sandbox: sinon.SinonSandbox
@@ -28,21 +37,21 @@ describe('DockerHelper', function () {
     })
 
     it('returns a the major and minor version', async function () {
-      sandbox.stub(DockerHelper, 'cmd')
+      sandbox.stub(helper, 'cmd')
         .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('18.02.0-ce-rc2')
 
-      const version = await DockerHelper.version()
+      const version = await helper.version()
 
       expect(version).to.deep.equal([18, 2])
     })
 
     it('has an error', async function () {
-      sandbox.stub(DockerHelper, 'cmd')
+      sandbox.stub(helper, 'cmd')
         .withArgs('docker', ['version', '-f', '{{.Client.Version}}'], {output: true})
         .resolves('an error occurred')
 
-      const version = await DockerHelper.version()
+      const version = await helper.version()
 
       expect(version).to.deep.equal([0, 0])
     })
@@ -61,7 +70,7 @@ describe('DockerHelper', function () {
     })
 
     it('successfully pulls image to execute with DockerHelper cmd', async function () {
-      await DockerHelper.pullImage('registry.heroku.com/testapp/web')
+      await helper.pullImage('registry.heroku.com/testapp/web')
       expect(eventStub.calledOnce).to.equal(true)
     })
   })
@@ -69,19 +78,19 @@ describe('DockerHelper', function () {
   describe('.getDockerfiles', function () {
     it('can recurse the directory', function () {
       const searchpath = path.join(process.cwd(), './test/fixtures/container')
-      const results = DockerHelper.getDockerfiles(searchpath, true)
+      const results = helper.getDockerfiles(searchpath, true)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile.web'), path.join(`${searchpath}`, 'Nested', 'Dockerfile.web')])
     })
 
     it('when recursing, rejects dockerfiles that have no postfix in the name', function () {
       const searchpath = path.join(process.cwd(), './test/fixtures/container')
-      const results = DockerHelper.getDockerfiles(searchpath, true)
+      const results = helper.getDockerfiles(searchpath, true)
       expect(results).to.not.have.members([`${searchpath}/Dockerfile`])
     })
 
     it('returns only regular Dockerfiles when not recursing', function () {
       const searchpath = path.join(process.cwd(), './test/fixtures/container/Nested')
-      const results = DockerHelper.getDockerfiles(searchpath, false)
+      const results = helper.getDockerfiles(searchpath, false)
       expect(results).to.have.members([path.join(`${searchpath}`, 'Dockerfile')])
     })
   })
@@ -92,7 +101,7 @@ describe('DockerHelper', function () {
         path.join('.', 'Dockerfile.web'), path.join('.', 'Nested', 'Dockerfile.web'),
       ]
       const resourceRoot = 'rootfulroot'
-      const results = DockerHelper.getJobs(resourceRoot, dockerfiles)
+      const results = helper.getJobs(resourceRoot, dockerfiles)
       expect(results.web).to.have.property('length', 2)
       expect(results.web[0]).to.have.property('depth', 1, 'dockerfile')
       expect(results.web[0]).to.have.property('dockerfile', 'Dockerfile.web')
@@ -107,7 +116,7 @@ describe('DockerHelper', function () {
         path.join('.', 'Nested', 'Dockerfile.worker'), path.join('.', 'Dockerfile.web'), path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
-      const results = DockerHelper.getJobs(resourceRoot, dockerfiles)
+      const results = helper.getJobs(resourceRoot, dockerfiles)
       expect(results.web).to.have.property('length', 1)
       expect(results.web[0]).to.have.property('dockerfile', 'Dockerfile.web')
       expect(results.standard[0]).to.have.property('dockerfile', path.join('Nested', 'Dockerfile'))
@@ -119,7 +128,7 @@ describe('DockerHelper', function () {
         path.join('.', 'Nested', 'Dockerfile.worker'), path.join('.', 'Dockerfile.web'), path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
-      const results = DockerHelper.getJobs(resourceRoot, dockerfiles)
+      const results = helper.getJobs(resourceRoot, dockerfiles)
       expect(results).to.have.keys('worker', 'web', 'standard')
       expect(results.worker.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile.worker')])
       expect(results.web.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Dockerfile.web')])
@@ -140,8 +149,8 @@ describe('DockerHelper', function () {
     })
 
     it('successfully runs image to execute with and without shell command', async function () {
-      await DockerHelper.runImage('registry.heroku.com/testapp/web', '', 1234)
-      await DockerHelper.runImage('registry.heroku.com/testapp/web', 'not empty', 1234)
+      await helper.runImage('registry.heroku.com/testapp/web', '', 1234)
+      await helper.runImage('registry.heroku.com/testapp/web', 'not empty', 1234)
       expect(eventStub.calledTwice).to.equal(true)
     })
   })
@@ -154,8 +163,8 @@ describe('DockerHelper', function () {
         path.join('.', 'Nested', 'Dockerfile'),
       ]
       const resourceRoot = 'rootfulroot'
-      const jobs = DockerHelper.getJobs(resourceRoot, dockerfiles)
-      const filteredJobs = DockerHelper.filterByProcessType(jobs, ['web'])
+      const jobs = helper.getJobs(resourceRoot, dockerfiles)
+      const filteredJobs = helper.filterByProcessType(jobs, ['web'])
 
       expect(filteredJobs).to.have.property('web')
       expect(filteredJobs.web[0].name).to.equal('web')
@@ -169,8 +178,8 @@ describe('DockerHelper', function () {
 
     it('returns the entry when only one exists', async function () {
       const dockerfiles = [path.join('.', 'Nested', 'Dockerfile.web')]
-      const jobs = DockerHelper.getJobs('rootfulroot', dockerfiles)
-      const chosenJob = await DockerHelper.chooseJobs(jobs)
+      const jobs = helper.getJobs('rootfulroot', dockerfiles)
+      const chosenJob = await helper.chooseJobs(jobs)
 
       expect(chosenJob[0]).to.have.property('dockerfile', dockerfiles[0])
       expect(chosenJob).to.have.property('length', 1)
@@ -192,8 +201,8 @@ describe('DockerHelper', function () {
 
     it('prompts user when multiple entries exists', async function () {
       const dockerfiles = [path.join('.', 'Nested', 'Dockerfile.web'), path.join('.', 'Dockerfile.web')]
-      const jobs = DockerHelper.getJobs('rootfulroot', dockerfiles)
-      const chosenJob = await DockerHelper.chooseJobs(jobs)
+      const jobs = helper.getJobs('rootfulroot', dockerfiles)
+      const chosenJob = await helper.chooseJobs(jobs)
 
       expect(chosenJob[0]).to.have.property('dockerfile', dockerfiles[0])
       expect(chosenJob).to.have.property('length', 1)
@@ -211,7 +220,7 @@ describe('DockerHelper', function () {
       const argsArray = ['push', 'registry.heroku.com/testapp/web', '--platform', 'linux/amd64']
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.pushImage('registry.heroku.com/testapp/web', 'arm64')
+      await helper.pushImage('registry.heroku.com/testapp/web', 'arm64')
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
     })
@@ -220,7 +229,7 @@ describe('DockerHelper', function () {
       const argsArray = ['push', 'registry.heroku.com/testapp/web', '--platform', 'linux/amd64']
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.pushImage('registry.heroku.com/testapp/web', 'aarch64')
+      await helper.pushImage('registry.heroku.com/testapp/web', 'aarch64')
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
     })
@@ -229,7 +238,7 @@ describe('DockerHelper', function () {
       const argsArray = ['push', 'registry.heroku.com/testapp/web']
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.pushImage('registry.heroku.com/testapp/web', 'amd64')
+      await helper.pushImage('registry.heroku.com/testapp/web', 'amd64')
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
     })
@@ -241,7 +250,7 @@ describe('DockerHelper', function () {
     let versionStub: sinon.SinonStub
 
     beforeEach(function () {
-      versionStub = sandbox.stub(DockerHelper, 'version')
+      versionStub = sandbox.stub(helper, 'version')
       versionStub.resolves([23, 99, 99])
     })
 
@@ -261,7 +270,7 @@ describe('DockerHelper', function () {
 
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.buildImage({
+      await helper.buildImage({
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
         buildArgs: [],
@@ -289,7 +298,7 @@ describe('DockerHelper', function () {
       ]
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.buildImage({
+      await helper.buildImage({
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
         buildArgs: [],
@@ -311,7 +320,7 @@ describe('DockerHelper', function () {
 
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.buildImage({
+      await helper.buildImage({
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
         buildArgs: [],
@@ -333,7 +342,7 @@ describe('DockerHelper', function () {
       ]
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.buildImage({
+      await helper.buildImage({
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
         buildArgs: [],
@@ -356,7 +365,7 @@ describe('DockerHelper', function () {
       ]
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
-      await DockerHelper.buildImage({
+      await helper.buildImage({
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
         buildArgs: [],
@@ -367,5 +376,3 @@ describe('DockerHelper', function () {
     })
   })
 })
-
-*/
