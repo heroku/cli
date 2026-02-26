@@ -19,8 +19,8 @@ const heredoc = tsheredoc.default
 const {Separator, prompt} = inquirer
 
 export default class DataPgCreate extends BaseCommand {
+  static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'create a Postgres Advanced database'
-
   static examples = ['<%= config.bin %> <%= command.id %> --level 4G-Performance -a example-app']
 
   static flags = {
@@ -56,6 +56,8 @@ export default class DataPgCreate extends BaseCommand {
       description: 'watch database creation status and exit when complete',
     }),
   }
+
+  static promptFlagActive = false
 
   private addon: Heroku.AddOn | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined

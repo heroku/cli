@@ -31,6 +31,7 @@ export default class DataPgUpdate extends BaseCommand {
     }),
   }
 
+  static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'update a Postgres Advanced database through interactive prompts'
 
   static flags = {
@@ -39,6 +40,8 @@ export default class DataPgUpdate extends BaseCommand {
     }),
     remote: Flags.remote(),
   }
+
+  static promptFlagActive = false
 
   private database: DeepRequired<Heroku.AddOn> | pg.ExtendedAddonAttachment['addon'] | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
