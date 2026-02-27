@@ -194,14 +194,17 @@
       "prerun": [
         "./dist/hooks/prerun/analytics"
       ],
+      "preupdate": [
+        "./dist/hooks/update/check-npm-auth"
+      ],
       "recache": "./dist/hooks/recache",
       "update": [
-        "./dist/hooks/update/plugin-migrate",
         "./dist/hooks/update/brew",
         "./dist/hooks/update/completions",
         "./dist/hooks/update/tidy",
         "./dist/hooks/recache",
-        "./dist/hooks/update/show-version-info"
+        "./dist/hooks/update/show-version-info",
+        "./dist/hooks/update/check-plugin-health"
       ]
     },
     "macos": {
