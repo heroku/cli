@@ -103,10 +103,6 @@ export default class Dyno extends Duplex {
   // Starts the dyno
   async start() {
     this._startedAt = Date.now()
-    if (this.opts.showStatus) {
-      ux.action.start(`Running ${color.code(this.opts.command)} on ${color.app(this.opts.app)}`)
-    }
-
     await this._doStart()
   }
 
@@ -178,6 +174,12 @@ export default class Dyno extends Duplex {
       })
       // @ts-ignore
       this.dyno = dyno.body
+
+      // Show status after dyno is created (after any 2FA prompt)
+      if (this.opts.showStatus) {
+        ux.action.start(`Running ${color.code(this.opts.command)} on ${color.app(this.opts.app)}`)
+      }
+
       if (this.opts.attach || this.opts.dyno) {
         // @ts-ignore
         if (this.dyno.name && this.opts.dyno === undefined) {
