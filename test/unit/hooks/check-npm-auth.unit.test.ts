@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 
-import {expect} from 'chai'
 import fs from 'fs-extra'
-import * as path from 'node:path'
 import * as os from 'node:os'
+import * as path from 'node:path'
+
 import checkNpmAuth from '../../../src/hooks/update/check-npm-auth.js'
 
 describe('check-npm-auth hook', function () {
@@ -19,8 +19,8 @@ describe('check-npm-auth hook', function () {
       config: {
         dataDir: testDataDir,
       },
-      debug: () => {},
-      error: (msg: string, opts: any) => {
+      debug() {},
+      error(msg: string, opts: any) {
         const error: any = new Error(msg)
         error.oclif = {exit: opts.exit}
         throw error
@@ -36,7 +36,12 @@ describe('check-npm-auth hook', function () {
   describe('when no plugins are installed', function () {
     it('should return early', async function () {
       // Don't create package.json - no plugins installed
-      await checkNpmAuth.call(hookContext, {channel: 'stable', version: '11.0.0', config: hookContext.config, context: {} as any})
+      await checkNpmAuth.call(hookContext, {
+        channel: 'stable',
+        config: hookContext.config,
+        context: {} as any,
+        version: '11.0.0',
+      })
 
       // Should complete without error
     })
@@ -53,7 +58,12 @@ describe('check-npm-auth hook', function () {
       })
 
       // Should complete without prompting
-      await checkNpmAuth.call(hookContext, {channel: 'stable', version: '11.0.0', config: hookContext.config, context: {} as any})
+      await checkNpmAuth.call(hookContext, {
+        channel: 'stable',
+        config: hookContext.config,
+        context: {} as any,
+        version: '11.0.0',
+      })
     })
   })
 
@@ -66,7 +76,12 @@ describe('check-npm-auth hook', function () {
       })
 
       // Should complete without prompting
-      await checkNpmAuth.call(hookContext, {channel: 'stable', version: '11.0.0', config: hookContext.config, context: {} as any})
+      await checkNpmAuth.call(hookContext, {
+        channel: 'stable',
+        config: hookContext.config,
+        context: {} as any,
+        version: '11.0.0',
+      })
     })
   })
 })
