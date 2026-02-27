@@ -263,3 +263,39 @@ export enum MaintenanceStatus {
   ready = 'ready',
   running = 'running',
 }
+
+type PreassessmentCheck = {
+  checked_at: null | string
+  description: null | string
+  name: string
+  result: 'cancelled' | 'error' | 'failed' | 'passed' | 'pending' | 'running' | 'skipped' | 'warning'
+}
+
+type PreassessmentResults = Array<PreassessmentCheck>
+
+export enum MigrationStatus {
+  CANCELLED = 'cancelled',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  MIGRATING = 'migrating',
+  PREPARING = 'preparing',
+  PROMOTING = 'promoting',
+  READY = 'ready',
+  UNKNOWN = 'unknown',
+}
+
+export type MigrationResponse = {
+  auto_promote: boolean
+  cdc_lag: null | number
+  completed: boolean
+  full_load_progress: null | number
+  id: string
+  last_error_message: null | string
+  preassessment_results: PreassessmentResults
+  source_id: string
+  status: MigrationStatus
+  stop_reason: null | string
+  successful: boolean
+  tables_errored: null | number
+  target_id: string
+}
