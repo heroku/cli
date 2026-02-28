@@ -97,17 +97,32 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
     }
 
     // Check which plugins are actually private
+    // Process in batches of 5 to parallelize npm API calls
     this.debug('Checking if any installed plugins require authentication...')
     const privatePlugins: string[] = []
+    const batchSize = 5
 
-    for (const plugin of plugins) {
-      this.debug(`Checking ${plugin}...`)
-      const isPrivate = await isPrivatePackage(plugin)
-      if (isPrivate) {
-        this.debug(`${plugin} appears to be private`)
-        privatePlugins.push(plugin)
-      } else {
-        this.debug(`${plugin} is public`)
+    for (let i = 0; i < plugins.length; i += batchSize) {
+      const batch = plugins.slice(i, i + batchSize)
+      const results = await Promise.all(
+        batch.map(async plugin => {
+          this.debug(`Checking ${plugin}...`)
+          const isPrivate = await isPrivatePackage(plugin)
+          if (isPrivate) {
+            this.debug(`${plugin} appears to be private`)
+          } else {
+            this.debug(`${plugin} is public`)
+          }
+
+          return {plugin, isPrivate}
+        }),
+      )
+
+      // Collect private plugins from this batch
+      for (const {plugin, isPrivate} of results) {
+        if (isPrivate) {
+          privatePlugins.push(plugin)
+        }
       }
     }
 
