@@ -1,0 +1,47 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title follows Conventional Commits
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Configure which types are allowed
+          types: |
+            feat
+            fix
+            chore
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            revert
+            deps
+          # Require a scope (optional - set to false if scope is not required)
+          requireScope: false
+          # Configure which scopes are allowed (optional)
+          # scopes: |
+          #   core
+          #   api
+          #   cli
+          # If the PR title should have a subject (default: true)
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            doesn't start with an uppercase character.
+          # Validate the entire PR title against a regex
+          # This ensures format is: type(scope)?: description
+          # Or with breaking change: type(scope)!: description
+          headerPattern: '^(\w+)(\(\w+\))?!?: .+$'
+          headerPatternCorrespondence: type, scope, subject
