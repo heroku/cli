@@ -1,16 +1,15 @@
 import {color} from '@heroku/heroku-cli-util'
 import {Args, Command, ux} from '@oclif/core'
-import {marked} from 'marked'
-import TerminalRenderer from 'marked-terminal'
+import {marked, type MarkedExtension} from 'marked'
+import {markedTerminal} from 'marked-terminal'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
 import {fileURLToPath} from 'node:url'
 
 // Configure marked to use terminal renderer
-marked.setOptions({
-  // @ts-expect-error - marked-terminal types don't match latest marked types
-  renderer: new TerminalRenderer({emoji: false}),
-})
+// Note: @types/marked-terminal has incorrect return type, but the actual implementation
+// returns a proper MarkedExtension object
+marked.use(markedTerminal({emoji: false}) as MarkedExtension)
 
 export default class VersionInfo extends Command {
   static args = {
