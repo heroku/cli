@@ -1,8 +1,16 @@
-import {Args, Command, ux} from '@oclif/core'
 import {color} from '@heroku/heroku-cli-util'
+import {Args, Command, ux} from '@oclif/core'
+import {marked} from 'marked'
+import TerminalRenderer from 'marked-terminal'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
 import {fileURLToPath} from 'node:url'
+
+// Configure marked to use terminal renderer
+marked.setOptions({
+  // @ts-expect-error - marked-terminal types don't match latest marked types
+  renderer: new TerminalRenderer({emoji: false}),
+})
 
 export default class VersionInfo extends Command {
   static args = {
@@ -42,20 +50,19 @@ export default class VersionInfo extends Command {
       // Display content based on what's available
       const summary = this.extractSection(entry, 'Summary')
       if (summary) {
-        ux.stdout(this.stripMarkdown(summary))
+        ux.stdout(await marked(summary))
       } else {
         const bugsAndFeatures = this.extractSections(entry, ['Bug Fixes', 'Features'])
         if (bugsAndFeatures) {
-          ux.stdout(this.stripMarkdown(bugsAndFeatures))
+          ux.stdout(await marked(bugsAndFeatures))
         } else {
-          ux.stdout(this.stripMarkdown(this.extractHeader(entry)))
-          ux.stdout('')
-          ux.stdout('- Miscellaneous improvements')
+          ux.stdout(await marked(this.extractHeader(entry)))
+          ux.stdout(await marked('- Miscellaneous improvements'))
         }
       }
 
       ux.stdout('')
-      ux.stdout('* For the full changelog, visit: https://github.com/heroku/cli/blob/main/CHANGELOG.md')
+      ux.stdout(await marked('* For the full changelog, visit: https://github.com/heroku/cli/blob/main/CHANGELOG.md'))
     } catch (error: any) {
       if (error.code === 'ENOENT') {
         ux.error('CHANGELOG.md not found', {exit: 1})
@@ -132,15 +139,5 @@ export default class VersionInfo extends Command {
   private extractVersionEntry(changelog: string, version: string): null | string {
     const versionWithoutV = version.startsWith('v') ? version.slice(1) : version
     return this.extractEntry(changelog, v => v === versionWithoutV || v === `v${versionWithoutV}`)
-  }
-
-  private stripMarkdown(text: string): string {
-    return text
-      .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Links: [text](url) -> text
-      .replaceAll(/\*\*([^*]+)\*\*/g, '$1')       // Bold: **text** -> text
-      .replaceAll(/\*([^*]+)\*/g, '$1')           // Italic: *text* -> text
-      .replaceAll(/`([^`]+)`/g, '$1')             // Code: `code` -> code
-      .replaceAll(/^#+\s+/gm, '=== ')             // Headers: ### -> ===
-      .replaceAll(/\*/g, '')                      // Remaining asterisks
   }
 }
