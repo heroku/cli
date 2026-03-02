@@ -30,7 +30,7 @@ export default class VersionInfo extends Command {
 
       const changelogContent = await readFile(changelogPath, 'utf8')
 
-      let entry: string | null
+      let entry: null | string
 
       if (version) {
         // Extract the entry for the specified version
@@ -51,16 +51,16 @@ export default class VersionInfo extends Command {
       // Try to extract summary first
       const summary = this.extractSummary(entry)
       if (summary) {
-        ux.stdout(summary)
+        ux.stdout(this.stripMarkdown(summary))
       } else {
         // No summary, try to extract bugs and features
         const bugsAndFeatures = this.extractBugsAndFeatures(entry)
         if (bugsAndFeatures) {
-          ux.stdout(bugsAndFeatures)
+          ux.stdout(this.stripMarkdown(bugsAndFeatures))
         } else {
           // No bugs, features, or summary found
           const header = this.extractHeader(entry)
-          ux.stdout(header)
+          ux.stdout(this.stripMarkdown(header))
           ux.stdout('')
           ux.stdout('Miscellaneous improvements')
         }
@@ -77,60 +77,12 @@ export default class VersionInfo extends Command {
     }
   }
 
-  private extractHeader(entry: string): string {
-    const lines = entry.split('\n')
-    // Return the first non-empty line (the version header)
-    for (const line of lines) {
-      if (line.trim()) {
-        return line.trim()
-      }
-    }
-
-    return entry.split('\n')[0]
-  }
-
-  private extractSummary(entry: string): string | null {
-    const lines = entry.split('\n')
-    const header = this.extractHeader(entry)
-    let summaryStartIndex = -1
-    let summaryEndIndex = -1
-
-    // Find if "### Summary" appears early in the entry (within first few lines after header)
-    for (let i = 0; i < Math.min(10, lines.length); i++) {
-      if (lines[i].trim() === '### Summary') {
-        summaryStartIndex = i
-        break
-      }
-    }
-
-    if (summaryStartIndex === -1) {
-      return null
-    }
-
-    // Find the end of the summary section (next ### header or end of entry)
-    for (let i = summaryStartIndex + 1; i < lines.length; i++) {
-      if (lines[i].match(/^###\s+/)) {
-        summaryEndIndex = i
-        break
-      }
-    }
-
-    if (summaryEndIndex === -1) {
-      summaryEndIndex = lines.length
-    }
-
-    // Extract summary content
-    const summaryContent = lines.slice(summaryStartIndex, summaryEndIndex).join('\n').trim()
-
-    return header + '\n\n' + summaryContent
-  }
-
-  private extractBugsAndFeatures(entry: string): string | null {
+  private extractBugsAndFeatures(entry: string): null | string {
     const lines = entry.split('\n')
     const header = this.extractHeader(entry)
     const sections: string[] = []
 
-    let currentSection: string | null = null
+    let currentSection: null | string = null
     let currentContent: string[] = []
 
     for (const line of lines) {
@@ -163,7 +115,19 @@ export default class VersionInfo extends Command {
     return header + '\n\n' + sections.join('\n\n').trim()
   }
 
-  private extractMostRecentEntry(changelog: string): string | null {
+  private extractHeader(entry: string): string {
+    const lines = entry.split('\n')
+    // Return the first non-empty line (the version header)
+    for (const line of lines) {
+      if (line.trim()) {
+        return line.trim()
+      }
+    }
+
+    return entry.split('\n')[0]
+  }
+
+  private extractMostRecentEntry(changelog: string): null | string {
     const lines = changelog.split('\n')
     let startIndex = -1
     let endIndex = -1
@@ -199,7 +163,43 @@ export default class VersionInfo extends Command {
     return entry
   }
 
-  private extractVersionEntry(changelog: string, version: string): string | null {
+  private extractSummary(entry: string): null | string {
+    const lines = entry.split('\n')
+    const header = this.extractHeader(entry)
+    let summaryStartIndex = -1
+    let summaryEndIndex = -1
+
+    // Find if "### Summary" appears early in the entry (within first few lines after header)
+    for (let i = 0; i < Math.min(10, lines.length); i++) {
+      if (lines[i].trim() === '### Summary') {
+        summaryStartIndex = i
+        break
+      }
+    }
+
+    if (summaryStartIndex === -1) {
+      return null
+    }
+
+    // Find the end of the summary section (next ### header or end of entry)
+    for (let i = summaryStartIndex + 1; i < lines.length; i++) {
+      if (lines[i].match(/^###\s+/)) {
+        summaryEndIndex = i
+        break
+      }
+    }
+
+    if (summaryEndIndex === -1) {
+      summaryEndIndex = lines.length
+    }
+
+    // Extract summary content
+    const summaryContent = lines.slice(summaryStartIndex, summaryEndIndex).join('\n').trim()
+
+    return header + '\n\n' + summaryContent
+  }
+
+  private extractVersionEntry(changelog: string, version: string): null | string {
     // Handle different version formats (with or without 'v' prefix)
     const versionPattern = version.startsWith('v') ? version : `v${version}`
     const versionWithoutV = version.startsWith('v') ? version.slice(1) : version
@@ -248,5 +248,20 @@ export default class VersionInfo extends Command {
     const entry = lines.slice(startIndex, endIndex).join('\n').trim()
 
     return entry
+  }
+
+  private stripMarkdown(text: string): string {
+    return text
+      // Remove links but keep the text: [text](url) -> text
+      .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      // Remove bold/italic: **text** or *text* -> text
+      .replaceAll(/\*\*([^*]+)\*\*/g, '$1')
+      .replaceAll(/\*([^*]+)\*/g, '$1')
+      // Remove code blocks: `code` -> code
+      .replaceAll(/`([^`]+)`/g, '$1')
+      // Remove headers: ### Header -> Header (keep the text)
+      .replaceAll(/^#+\s+/gm, '')
+      // Clean up any remaining asterisks
+      .replaceAll(/\*/g, '')
   }
 }
