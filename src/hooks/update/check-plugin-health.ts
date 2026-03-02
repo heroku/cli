@@ -60,12 +60,6 @@ const checkPluginHealth: Hook<'update'> = async function (opts) {
         ${missingPlugins.length} plugin(s) failed to install during the update:
         ${pluginList}
 
-        This usually happens when:
-          • Network issues during installation
-          • The plugin has been removed from the npm registry
-          • A version conflict or dependency issue
-          • Insufficient disk space
-
         To fix this:
 
         1. Manually reinstall each plugin:
@@ -74,7 +68,7 @@ const checkPluginHealth: Hook<'update'> = async function (opts) {
         2. Or remove plugins you no longer need:
         ${uninstallCommands}
 
-        ${'═'.repeat(70)}
+        ===================================================================
 
       `)
     }

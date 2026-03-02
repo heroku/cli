@@ -102,6 +102,7 @@ export class HerokuRepl {
     }).concat(positionalArgs.map(String))
 
     if (command === 'exit') {
+      this.historyStream?.close()
       // eslint-disable-next-line n/no-process-exit
       process.exit(0)
     }
