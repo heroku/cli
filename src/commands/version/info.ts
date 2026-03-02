@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Args, Command, ux} from '@oclif/core'
+import {color} from '@heroku/heroku-cli-util'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
 import {fileURLToPath} from 'node:url'
@@ -15,8 +15,8 @@ export default class VersionInfo extends Command {
   static description = 'display changelog information for a specific CLI version'
 
   static examples = [
-    `${color.command('heroku version:info')} # display the changelog for the latest version`,
-    `${color.command('heroku version:info 11.0.0')} # display the changelog for version 11.0.0`,
+    `${color.command('<%= config.bin %> <%= command.id %>')}`,
+    `${color.command('<%= config.bin %> <%= command.id %> 11.0.0')}`,
   ]
 
   async run() {
@@ -27,47 +27,35 @@ export default class VersionInfo extends Command {
       // Find the CHANGELOG.md file relative to the CLI installation
       const __dirname = fileURLToPath(new URL('.', import.meta.url))
       const changelogPath = join(__dirname, '..', '..', '..', 'CHANGELOG.md')
-
       const changelogContent = await readFile(changelogPath, 'utf8')
 
-      let entry: null | string
+      // Get the version entry
+      const entry = version
+        ? this.extractVersionEntry(changelogContent, version)
+        : this.extractMostRecentEntry(changelogContent)
 
-      if (version) {
-        // Extract the entry for the specified version
-        entry = this.extractVersionEntry(changelogContent, version)
-
-        if (!entry) {
-          ux.error(`Version ${version} not found in CHANGELOG.md`, {exit: 1})
-        }
-      } else {
-        // If no version specified, get the most recent entry
-        entry = this.extractMostRecentEntry(changelogContent)
-
-        if (!entry) {
-          ux.error('No version entries found in CHANGELOG.md', {exit: 1})
-        }
+      if (!entry) {
+        const msg = version ? `Version ${version} not found in CHANGELOG.md` : 'No version entries found in CHANGELOG.md'
+        ux.error(msg, {exit: 1})
       }
 
-      // Try to extract summary first
-      const summary = this.extractSummary(entry)
+      // Display content based on what's available
+      const summary = this.extractSection(entry, 'Summary')
       if (summary) {
         ux.stdout(this.stripMarkdown(summary))
       } else {
-        // No summary, try to extract bugs and features
-        const bugsAndFeatures = this.extractBugsAndFeatures(entry)
+        const bugsAndFeatures = this.extractSections(entry, ['Bug Fixes', 'Features'])
         if (bugsAndFeatures) {
           ux.stdout(this.stripMarkdown(bugsAndFeatures))
         } else {
-          // No bugs, features, or summary found
-          const header = this.extractHeader(entry)
-          ux.stdout(this.stripMarkdown(header))
+          ux.stdout(this.stripMarkdown(this.extractHeader(entry)))
           ux.stdout('')
-          ux.stdout('Miscellaneous improvements')
+          ux.stdout('- Miscellaneous improvements')
         }
       }
 
       ux.stdout('')
-      ux.stdout('For the full changelog, visit: https://github.com/heroku/cli/blob/main/CHANGELOG.md')
+      ux.stdout('* For the full changelog, visit: https://github.com/heroku/cli/blob/main/CHANGELOG.md')
     } catch (error: any) {
       if (error.code === 'ENOENT') {
         ux.error('CHANGELOG.md not found', {exit: 1})
@@ -77,191 +65,82 @@ export default class VersionInfo extends Command {
     }
   }
 
-  private extractBugsAndFeatures(entry: string): null | string {
-    const lines = entry.split('\n')
-    const header = this.extractHeader(entry)
-    const sections: string[] = []
-
-    let currentSection: null | string = null
-    let currentContent: string[] = []
-
-    for (const line of lines) {
-      // Check if this is a ### header
-      const headerMatch = line.match(/^###\s+(.+)$/)
-      if (headerMatch) {
-        // Save previous section if it was Bug Fixes or Features
-        if (currentSection && (currentSection === 'Bug Fixes' || currentSection === 'Features')) {
-          sections.push(`### ${currentSection}\n${currentContent.join('\n')}`)
-        }
-
-        // Start new section
-        currentSection = headerMatch[1]
-        currentContent = []
-      } else if (currentSection) {
-        // Add content to current section
-        currentContent.push(line)
-      }
-    }
-
-    // Save last section if it was Bug Fixes or Features
-    if (currentSection && (currentSection === 'Bug Fixes' || currentSection === 'Features')) {
-      sections.push(`### ${currentSection}\n${currentContent.join('\n')}`)
-    }
-
-    if (sections.length === 0) {
-      return null
-    }
-
-    return header + '\n\n' + sections.join('\n\n').trim()
-  }
-
-  private extractHeader(entry: string): string {
-    const lines = entry.split('\n')
-    // Return the first non-empty line (the version header)
-    for (const line of lines) {
-      if (line.trim()) {
-        return line.trim()
-      }
-    }
-
-    return entry.split('\n')[0]
-  }
-
-  private extractMostRecentEntry(changelog: string): null | string {
+  private extractEntry(changelog: string, predicate: (versionInHeader: string) => boolean): null | string {
     const lines = changelog.split('\n')
     let startIndex = -1
-    let endIndex = -1
 
-    // Find the first version header (most recent)
+    // Find the start of the entry
     for (const [i, line] of lines.entries()) {
       const match = line.match(/^##? \[([^\]]+)\]/)
-      if (match) {
+      if (match && predicate(match[1])) {
         startIndex = i
         break
       }
     }
 
-    if (startIndex === -1) {
-      return null
-    }
+    if (startIndex === -1) return null
 
-    // Find the end of the version entry (start of next version or end of file)
-    for (let i = startIndex + 1; i < lines.length; i++) {
-      if (lines[i].match(/^##? \[/)) {
-        endIndex = i
-        break
-      }
-    }
+    // Find the end of the entry (next version or end of file)
+    const endIndex = lines.slice(startIndex + 1).findIndex(line => line.match(/^##? \[/))
+    const end = endIndex === -1 ? lines.length : startIndex + 1 + endIndex
 
-    if (endIndex === -1) {
-      endIndex = lines.length
-    }
-
-    // Extract the entry
-    const entry = lines.slice(startIndex, endIndex).join('\n').trim()
-
-    return entry
+    return lines.slice(startIndex, end).join('\n').trim()
   }
 
-  private extractSummary(entry: string): null | string {
+  private extractHeader(entry: string): string {
+    return entry.split('\n').find(line => line.trim()) || entry.split('\n')[0]
+  }
+
+  private extractMostRecentEntry(changelog: string): null | string {
+    return this.extractEntry(changelog, () => true) // First match is most recent
+  }
+
+  private extractSection(entry: string, sectionName: string): null | string {
+    return this.extractSections(entry, [sectionName])
+  }
+
+  private extractSections(entry: string, sectionNames: string[]): null | string {
     const lines = entry.split('\n')
     const header = this.extractHeader(entry)
-    let summaryStartIndex = -1
-    let summaryEndIndex = -1
+    const sections: string[] = []
+    let currentSection: null | string = null
+    let currentContent: string[] = []
 
-    // Find if "### Summary" appears early in the entry (within first few lines after header)
-    for (let i = 0; i < Math.min(10, lines.length); i++) {
-      if (lines[i].trim() === '### Summary') {
-        summaryStartIndex = i
-        break
+    for (const line of lines) {
+      const headerMatch = line.match(/^###\s+(.+)$/)
+      if (headerMatch) {
+        // Save previous section if it matches our target sections
+        if (currentSection && sectionNames.includes(currentSection)) {
+          sections.push(`### ${currentSection}\n${currentContent.join('\n')}`)
+        }
+
+        currentSection = headerMatch[1]
+        currentContent = []
+      } else if (currentSection) {
+        currentContent.push(line)
       }
     }
 
-    if (summaryStartIndex === -1) {
-      return null
+    // Save last section if it matches
+    if (currentSection && sectionNames.includes(currentSection)) {
+      sections.push(`### ${currentSection}\n${currentContent.join('\n')}`)
     }
 
-    // Find the end of the summary section (next ### header or end of entry)
-    for (let i = summaryStartIndex + 1; i < lines.length; i++) {
-      if (lines[i].match(/^###\s+/)) {
-        summaryEndIndex = i
-        break
-      }
-    }
-
-    if (summaryEndIndex === -1) {
-      summaryEndIndex = lines.length
-    }
-
-    // Extract summary content
-    const summaryContent = lines.slice(summaryStartIndex, summaryEndIndex).join('\n').trim()
-
-    return header + '\n\n' + summaryContent
+    return sections.length > 0 ? `${header}\n\n${sections.join('\n\n').trim()}` : null
   }
 
   private extractVersionEntry(changelog: string, version: string): null | string {
-    // Handle different version formats (with or without 'v' prefix)
-    const versionPattern = version.startsWith('v') ? version : `v${version}`
     const versionWithoutV = version.startsWith('v') ? version.slice(1) : version
-
-    // Split the changelog by version headers
-    // Headers can be like:
-    // ## [11.0.0-beta.0](link) (date)
-    // # [10.17.0](link) (date)
-    const versionHeaderRegex = /^##? \[([^\]]+)\]/gm
-
-    const lines = changelog.split('\n')
-    let startIndex = -1
-    let endIndex = -1
-    let foundVersion = ''
-
-    // Find the start of the version entry
-    for (const [i, line] of lines.entries()) {
-      const match = line.match(/^##? \[([^\]]+)\]/)
-      if (match) {
-        const versionInHeader = match[1]
-        if (versionInHeader === versionWithoutV || versionInHeader === versionPattern) {
-          startIndex = i
-          foundVersion = versionInHeader
-          break
-        }
-      }
-    }
-
-    if (startIndex === -1) {
-      return null
-    }
-
-    // Find the end of the version entry (start of next version or end of file)
-    for (let i = startIndex + 1; i < lines.length; i++) {
-      if (lines[i].match(/^##? \[/)) {
-        endIndex = i
-        break
-      }
-    }
-
-    if (endIndex === -1) {
-      endIndex = lines.length
-    }
-
-    // Extract the entry
-    const entry = lines.slice(startIndex, endIndex).join('\n').trim()
-
-    return entry
+    return this.extractEntry(changelog, v => v === versionWithoutV || v === `v${versionWithoutV}`)
   }
 
   private stripMarkdown(text: string): string {
     return text
-      // Remove links but keep the text: [text](url) -> text
-      .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      // Remove bold/italic: **text** or *text* -> text
-      .replaceAll(/\*\*([^*]+)\*\*/g, '$1')
-      .replaceAll(/\*([^*]+)\*/g, '$1')
-      // Remove code blocks: `code` -> code
-      .replaceAll(/`([^`]+)`/g, '$1')
-      // Remove headers: ### Header -> Header (keep the text)
-      .replaceAll(/^#+\s+/gm, '')
-      // Clean up any remaining asterisks
-      .replaceAll(/\*/g, '')
+      .replaceAll(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Links: [text](url) -> text
+      .replaceAll(/\*\*([^*]+)\*\*/g, '$1')       // Bold: **text** -> text
+      .replaceAll(/\*([^*]+)\*/g, '$1')           // Italic: *text* -> text
+      .replaceAll(/`([^`]+)`/g, '$1')             // Code: `code` -> code
+      .replaceAll(/^#+\s+/gm, '=== ')             // Headers: ### -> ===
+      .replaceAll(/\*/g, '')                      // Remaining asterisks
   }
 }
