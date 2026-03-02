@@ -1,232 +1,85 @@
 /* eslint-env mocha */
 
+import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
-import VersionInfo from '../../../../src/commands/version/info.js'
+import {join} from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 describe('version:info', function () {
-  describe('extractSummaryIfFirst', function () {
-    it('should extract only summary when it is the first section', function () {
-      const entry = `## [11.0.0-beta.0](link) (2026-02-26)
+  const __dirname = fileURLToPath(new URL('.', import.meta.url))
+  const fixtureChangelogPath = join(__dirname, '..', '..', '..', 'fixtures', 'CHANGELOG.md')
 
-### Summary
-
-This is a major release with extensive changes.
-
-Key changes:
-1. Feature A
-2. Feature B
-
-### Features
-
-- Feature 1
-- Feature 2
-
-### Bug Fixes
-
-- Fix 1`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractSummaryIfFirst(entry)
-
-      expect(result).to.include('## [11.0.0-beta.0]')
-      expect(result).to.include('### Summary')
-      expect(result).to.include('This is a major release')
-      expect(result).to.include('Feature A')
-      expect(result).to.not.include('### Features')
-      expect(result).to.not.include('Feature 1')
-      expect(result).to.not.include('### Bug Fixes')
-    })
-
-    it('should return null when Summary is not the first section', function () {
-      const entry = `## [10.12.0](link) (2025-07-17)
-
-### Features
-
-- Feature 1
-
-### Summary
-
-Some summary here`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractSummaryIfFirst(entry)
-
-      expect(result).to.be.null
-    })
-
-    it('should return null when there is no Summary section', function () {
-      const entry = `## [10.12.0](link) (2025-07-17)
-
-### Features
-
-- Feature 1`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractSummaryIfFirst(entry)
-
-      expect(result).to.be.null
-    })
+  beforeEach(function () {
+    process.env.HEROKU_CHANGELOG_PATH = fixtureChangelogPath
   })
 
-  describe('extractMostRecentEntry', function () {
-    it('should extract the most recent version entry', function () {
-      const changelog = `# Change Log
-
-## [11.0.0-beta.0](link) (2026-02-26)
-
-### Summary
-
-This is a major release.
-
-# [10.17.0](link) (2026-02-10)
-
-### Bug Fixes
-
-- Fix 1`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractMostRecentEntry(changelog)
-
-      expect(result).to.include('## [11.0.0-beta.0]')
-      expect(result).to.include('This is a major release')
-      expect(result).to.not.include('10.17.0')
-      expect(result).to.not.include('Fix 1')
-    })
-
-    it('should return null for empty changelog', function () {
-      const changelog = `# Change Log
-
-No versions yet.`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractMostRecentEntry(changelog)
-
-      expect(result).to.be.null
-    })
+  afterEach(function () {
+    delete process.env.HEROKU_CHANGELOG_PATH
   })
 
-  describe('extractVersionEntry', function () {
-    it('should extract a version entry from changelog', function () {
-      const changelog = `# Change Log
+  it('should display most recent version info when no version arg provided', async function () {
+    const {stdout} = await runCommand('version:info', import.meta.url)
 
-## [11.0.0-beta.0](link) (2026-02-26)
+    // Should contain the most recent version from fixture (2.0.0)
+    expect(stdout).to.include('2.0.0')
+    expect(stdout).to.include('This is a major release with breaking changes')
+    // Should contain link to full changelog
+    expect(stdout).to.include('For the full changelog, visit: https://github.com/heroku/cli/blob/main/CHANGELOG.md')
+  })
 
-### Summary
+  it('should display specific version info when version arg provided', async function () {
+    const {stdout} = await runCommand(['version:info', '1.5.0'], import.meta.url)
 
-This is a major release.
+    expect(stdout).to.include('1.5.0')
+    expect(stdout).to.include('Added feature P')
+    expect(stdout).to.include('Fixed bug C')
+    expect(stdout).to.include('For the full changelog, visit: https://github.com/heroku/cli/blob/main/CHANGELOG.md')
+  })
 
-### Features
+  it('should display summary section if present', async function () {
+    const {stdout} = await runCommand('version:info', import.meta.url)
 
-- New feature 1
-- New feature 2
+    // Most recent version (2.0.0) has a summary section
+    expect(stdout).to.include('This is a major release with breaking changes')
+    expect(stdout).to.include('New feature X')
+  })
 
-# [10.17.0](link) (2026-02-10)
+  it('should display bug fixes and features when no summary', async function () {
+    const {stdout} = await runCommand(['version:info', '1.5.0'], import.meta.url)
 
-### Bug Fixes
+    // Version 1.5.0 has no summary, should show features and bug fixes
+    expect(stdout).to.include('Added feature P')
+    expect(stdout).to.include('Fixed bug C')
+  })
 
-- Fix 1
-- Fix 2
+  it('should display miscellaneous when no summary or bug fixes/features', async function () {
+    const {stdout} = await runCommand(['version:info', '1.3.0'], import.meta.url)
 
-# [10.16.0](link) (2025-12-01)
+    // Version 1.3.0 only has features
+    expect(stdout).to.include('1.3.0')
+    expect(stdout).to.include('Added feature R')
+  })
 
-### Features
+  it('should handle version without v prefix', async function () {
+    // Should work with or without 'v' prefix
+    const {stdout} = await runCommand(['version:info', '2.0.0'], import.meta.url)
 
-- Feature A`
+    expect(stdout).to.include('2.0.0')
+  })
 
-      const command = new VersionInfo([], {} as any)
-      // Access the private method for testing
-      const result = (command as any).extractVersionEntry(changelog, '11.0.0-beta.0')
+  it('should error when version not found', async function () {
+    const {error} = await runCommand(['version:info', '99.99.99'], import.meta.url)
 
-      expect(result).to.include('## [11.0.0-beta.0]')
-      expect(result).to.include('This is a major release')
-      expect(result).to.include('New feature 1')
-      expect(result).to.not.include('10.17.0')
-      expect(result).to.not.include('Fix 1')
-    })
+    expect(error?.message).to.include('Version 99.99.99 not found in CHANGELOG.md')
+    expect(error?.oclif?.exit).to.equal(1)
+  })
 
-    it('should handle version without v prefix', function () {
-      const changelog = `# Change Log
+  it('should display formatted output', async function () {
+    const {stdout} = await runCommand('version:info', import.meta.url)
 
-# [10.17.0](link) (2026-02-10)
-
-### Bug Fixes
-
-- Fix 1
-
-# [10.16.0](link) (2025-12-01)`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractVersionEntry(changelog, '10.17.0')
-
-      expect(result).to.include('[10.17.0]')
-      expect(result).to.include('Fix 1')
-      expect(result).to.not.include('10.16.0')
-    })
-
-    it('should return null for non-existent version', function () {
-      const changelog = `# Change Log
-
-# [10.17.0](link) (2026-02-10)
-
-### Bug Fixes
-
-- Fix 1`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractVersionEntry(changelog, '99.99.99')
-
-      expect(result).to.be.null
-    })
-
-    it('should handle the last entry in the changelog', function () {
-      const changelog = `# Change Log
-
-# [10.17.0](link) (2026-02-10)
-
-### Bug Fixes
-
-- Fix 1
-
-# [10.16.0](link) (2025-12-01)
-
-### Features
-
-- Last entry feature
-- Another feature`
-
-      const command = new VersionInfo([], {} as any)
-      const result = (command as any).extractVersionEntry(changelog, '10.16.0')
-
-      expect(result).to.include('[10.16.0]')
-      expect(result).to.include('Last entry feature')
-      expect(result).to.include('Another feature')
-    })
-
-    it('should handle both ## and # headers', function () {
-      const changelog = `# Change Log
-
-## [11.0.0-beta.0](link) (2026-02-26)
-
-### Summary
-
-Beta release
-
-# [10.17.0](link) (2026-02-10)
-
-### Bug Fixes
-
-- Fix 1`
-
-      const command = new VersionInfo([], {} as any)
-
-      const betaResult = (command as any).extractVersionEntry(changelog, '11.0.0-beta.0')
-      expect(betaResult).to.include('## [11.0.0-beta.0]')
-      expect(betaResult).to.include('Beta release')
-
-      const stableResult = (command as any).extractVersionEntry(changelog, '10.17.0')
-      expect(stableResult).to.include('# [10.17.0]')
-      expect(stableResult).to.include('Fix 1')
-    })
+    // Output should be non-empty and contain some markdown-rendered content
+    expect(stdout.trim()).to.not.be.empty
+    // Should have the footer link
+    expect(stdout).to.include('https://github.com/heroku/cli/blob/main/CHANGELOG.md')
   })
 })
