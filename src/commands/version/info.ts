@@ -1,6 +1,6 @@
 import {color} from '@heroku/heroku-cli-util'
 import {Args, Command, ux} from '@oclif/core'
-import {marked, type MarkedExtension} from 'marked'
+import {type MarkedExtension, marked} from 'marked'
 import {markedTerminal} from 'marked-terminal'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
