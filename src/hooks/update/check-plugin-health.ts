@@ -1,5 +1,6 @@
+/* eslint-disable valid-jsdoc */
 import {color} from '@heroku/heroku-cli-util'
-import {Hook} from '@oclif/core'
+import {Hook, ux} from '@oclif/core'
 import {existsSync} from 'node:fs'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
@@ -7,7 +8,23 @@ import tsheredocLib from 'tsheredoc'
 
 const tsheredoc = tsheredocLib.default
 
-// eslint-disable-next-line valid-jsdoc
+interface PluginsPackageJson {
+  dependencies?: Record<string, string>
+}
+
+/**
+ * Read and parse the plugins package.json file
+ * Exported for testing purposes
+ */
+async function readPluginsPackageJson(packageJsonPath: string): Promise<PluginsPackageJson | null> {
+  try {
+    const content = await readFile(packageJsonPath, 'utf8')
+    return JSON.parse(content)
+  } catch {
+    return null
+  }
+}
+
 /**
  * Check if plugins are properly installed after an update
  * and provide recovery instructions if they're not
@@ -17,16 +34,9 @@ const checkPluginHealth: Hook<'update'> = async function (opts) {
     // Read the plugins package.json to see what plugins should be installed
     const pluginsPjsonPath = join(this.config.dataDir, 'package.json')
 
-    if (!existsSync(pluginsPjsonPath)) {
-      // No plugins configured, nothing to check
-      return
-    }
-
-    let pluginsPjson: any
-    try {
-      const content = await readFile(pluginsPjsonPath, 'utf8')
-      pluginsPjson = JSON.parse(content)
-    } catch {
+    const pluginsPjson = await readPluginsPackageJson(pluginsPjsonPath)
+    if (!pluginsPjson) {
+      // No plugins configured or invalid JSON, nothing to check
       return
     }
 
@@ -51,7 +61,7 @@ const checkPluginHealth: Hook<'update'> = async function (opts) {
       const installCommands = missingPlugins.map(p => `   ${color.code('heroku plugins:install')} ${p}`).join('\n')
       const uninstallCommands = missingPlugins.map(p => `   ${color.code('heroku plugins:uninstall')} ${p}`).join('\n')
 
-      this.warn(tsheredoc`
+      ux.warn(tsheredoc`
 
         ===================================================================
           PLUGIN INSTALLATION INCOMPLETE
