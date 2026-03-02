@@ -195,7 +195,7 @@
         "./dist/hooks/prerun/analytics"
       ],
       "preupdate": [
-        "./dist/hooks/update/check-npm-auth"
+        "./dist/hooks/preupdate/check-npm-auth"
       ],
       "recache": "./dist/hooks/recache",
       "update": [

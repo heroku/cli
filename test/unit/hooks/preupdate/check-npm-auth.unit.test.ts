@@ -8,8 +8,8 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 import * as sinon from 'sinon'
 
-import checkNpmAuth from '../../../src/hooks/update/check-npm-auth.js'
-import {NpmAuth} from '../../../src/lib/npm-auth.js'
+import checkNpmAuth from '../../../../src/hooks/preupdate/check-npm-auth.js'
+import {NpmAuth} from '../../../../src/lib/npm-auth.js'
 
 describe('check-npm-auth hook', function () {
   let hookContext: any
