@@ -124,18 +124,23 @@ jobs:
                 FUNCS_INDICATOR=$(awk "BEGIN {if ($FUNCS_DIFF > 0) print \"🟢 +\"; else if ($FUNCS_DIFF < 0) print \"🔴 \"; else print \"\"}")
                 BRANCHES_INDICATOR=$(awk "BEGIN {if ($BRANCHES_DIFF > 0) print \"🟢 +\"; else if ($BRANCHES_DIFF < 0) print \"🔴 \"; else print \"\"}")
 
-                BASE_COVERAGE="
-### Compared to base branch (\`${BASE_REF}\`)
-| Metric | Base | Current | Change |
-|--------|------|---------|--------|
-| Lines | ${BASE_LINES_PCT}% | ${LINES_PCT}% | ${LINES_INDICATOR}${LINES_DIFF}% |
-| Functions | ${BASE_FUNCS_PCT}% | ${FUNCS_PCT}% | ${FUNCS_INDICATOR}${FUNCS_DIFF}% |
-| Branches | ${BASE_BRANCHES_PCT}% | ${BRANCHES_PCT}% | ${BRANCHES_INDICATOR}${BRANCHES_DIFF}% |"
+                BASE_COVERAGE=$(cat <<EOFTABLE
+
+          ### Compared to base branch (\`${BASE_REF}\`)
+
+          | Metric | Base | Current | Change |
+          |--------|------|---------|--------|
+          | Lines | ${BASE_LINES_PCT}% | ${LINES_PCT}% | ${LINES_INDICATOR}${LINES_DIFF}% |
+          | Functions | ${BASE_FUNCS_PCT}% | ${FUNCS_PCT}% | ${FUNCS_INDICATOR}${FUNCS_DIFF}% |
+          | Branches | ${BASE_BRANCHES_PCT}% | ${BRANCHES_PCT}% | ${BRANCHES_INDICATOR}${BRANCHES_DIFF}% |
+          EOFTABLE
+          )
               fi
             fi
 
             # Create comment body
-            COMMENT_BODY="## 📊 Coverage Report
+            COMMENT_BODY=$(cat <<EOFCOMMENT
+## 📊 Coverage Report
 
 | Metric | Coverage |
 |--------|----------|
@@ -147,7 +152,9 @@ jobs:
 <summary>View full coverage report</summary>
 
 Download the coverage artifact from the [workflow run](${{ github.event.workflow_run.html_url }}) to see the full HTML report.
-</details>"
+</details>
+EOFCOMMENT
+)
 
             # Delete old coverage comments
             gh pr view ${PR_NUMBER} --json comments --jq '.comments[] | select(.body | startswith("## 📊 Coverage Report")) | .id' | \
