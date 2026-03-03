@@ -138,23 +138,21 @@ jobs:
               fi
             fi
 
-            # Create comment body
-            COMMENT_BODY=$(cat <<EOFCOMMENT
-## 📊 Coverage Report
-
-| Metric | Coverage |
-|--------|----------|
-| Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |
-| Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |
-| Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |${BASE_COVERAGE}
-
-<details>
-<summary>View full coverage report</summary>
-
-Download the coverage artifact from the [workflow run](${{ github.event.workflow_run.html_url }}) to see the full HTML report.
-</details>
-EOFCOMMENT
-)
+            # Create comment body using printf to avoid YAML pipe issues
+            printf -v COMMENT_BODY '%s\n' \
+              "## 📊 Coverage Report" \
+              "" \
+              "| Metric | Coverage |" \
+              "|--------|----------|" \
+              "| Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |" \
+              "| Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |" \
+              "| Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |${BASE_COVERAGE}" \
+              "" \
+              "<details>" \
+              "<summary>View full coverage report</summary>" \
+              "" \
+              "Download the coverage artifact from the [workflow run](${{ github.event.workflow_run.html_url }}) to see the full HTML report." \
+              "</details>"
 
             # Delete old coverage comments
             gh pr view ${PR_NUMBER} --json comments --jq '.comments[] | select(.body | startswith("## 📊 Coverage Report")) | .id' | \
