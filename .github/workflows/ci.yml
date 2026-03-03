@@ -2,6 +2,12 @@ name: Tests
 
 on:
   push:
+    # Only run on pushes to main branches and long-lived feature branches
+    # PRs will trigger via pull_request event to avoid duplicate runs
+    branches:
+      - main
+      - v11.0.0
+      # Add any long-lived feature branches here
   pull_request:
   workflow_dispatch:
 
