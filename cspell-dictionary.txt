@@ -279,6 +279,7 @@ postrelease
 postrun
 preauth
 prerun
+preupdate
 processname
 processtype
 procfile
