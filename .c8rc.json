@@ -1,0 +1,25 @@
+{
+  "extension": [".ts"],
+  "exclude": [
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "test/**/*",
+    "dist/**/*",
+    "lib/**/*",
+    "coverage/**",
+    ".nyc_output/**"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "reporter": [
+    "text-summary",
+    "html",
+    "lcov"
+  ],
+  "statements": 80,
+  "branches": 80,
+  "functions": 80,
+  "lines": 80
+}

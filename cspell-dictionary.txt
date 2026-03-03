@@ -315,6 +315,7 @@ resetstat
 reviewapps
 rikki
 rollbar
+romeovs
 rootdir
 rootfulroot
 routable
