@@ -73,7 +73,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -f coverage/lcov.info ]; then
-            # Parse coverage from lcov.info
+            # Parse current coverage from lcov.info
             LINES_FOUND=$(grep -o "LF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
             LINES_HIT=$(grep -o "LH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
             FUNCS_FOUND=$(grep -o "FNF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
@@ -85,6 +85,47 @@ jobs:
             FUNCS_PCT=$(awk "BEGIN {printf \"%.2f\", ($FUNCS_HIT/$FUNCS_FOUND)*100}")
             BRANCHES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BRANCHES_HIT/$BRANCHES_FOUND)*100}")
 
+            # Save current coverage for later
+            mv coverage/lcov.info coverage/lcov-pr.info
+
+            # Try to get base branch coverage for comparison
+            BASE_COVERAGE=""
+            git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1 2>/dev/null || true
+            if git checkout FETCH_HEAD 2>/dev/null; then
+              echo "Calculating base branch coverage..."
+              if npm run test:unit:justTest:ci 2>/dev/null && [ -f coverage/lcov.info ]; then
+                BASE_LINES_FOUND=$(grep -o "LF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+                BASE_LINES_HIT=$(grep -o "LH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+                BASE_FUNCS_FOUND=$(grep -o "FNF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+                BASE_FUNCS_HIT=$(grep -o "FNH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+                BASE_BRANCHES_FOUND=$(grep -o "BRF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+                BASE_BRANCHES_HIT=$(grep -o "BRH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+
+                BASE_LINES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_LINES_HIT/$BASE_LINES_FOUND)*100}")
+                BASE_FUNCS_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_FUNCS_HIT/$BASE_FUNCS_FOUND)*100}")
+                BASE_BRANCHES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_BRANCHES_HIT/$BASE_BRANCHES_FOUND)*100}")
+
+                LINES_DIFF=$(awk "BEGIN {printf \"%.2f\", $LINES_PCT - $BASE_LINES_PCT}")
+                FUNCS_DIFF=$(awk "BEGIN {printf \"%.2f\", $FUNCS_PCT - $BASE_FUNCS_PCT}")
+                BRANCHES_DIFF=$(awk "BEGIN {printf \"%.2f\", $BRANCHES_PCT - $BASE_BRANCHES_PCT}")
+
+                # Add emoji indicators
+                LINES_INDICATOR=$(awk "BEGIN {if ($LINES_DIFF > 0) print \"🟢 +\"; else if ($LINES_DIFF < 0) print \"🔴 \"; else print \"\"}")
+                FUNCS_INDICATOR=$(awk "BEGIN {if ($FUNCS_DIFF > 0) print \"🟢 +\"; else if ($FUNCS_DIFF < 0) print \"🔴 \"; else print \"\"}")
+                BRANCHES_INDICATOR=$(awk "BEGIN {if ($BRANCHES_DIFF > 0) print \"🟢 +\"; else if ($BRANCHES_DIFF < 0) print \"🔴 \"; else print \"\"}")
+
+                BASE_COVERAGE="
+
+### Compared to base branch (\`${{ github.event.pull_request.base.ref }}\`)
+
+| Metric | Base | Current | Change |
+|--------|------|---------|--------|
+| Lines | ${BASE_LINES_PCT}% | ${LINES_PCT}% | ${LINES_INDICATOR}${LINES_DIFF}% |
+| Functions | ${BASE_FUNCS_PCT}% | ${FUNCS_PCT}% | ${FUNCS_INDICATOR}${FUNCS_DIFF}% |
+| Branches | ${BASE_BRANCHES_PCT}% | ${BRANCHES_PCT}% | ${BRANCHES_INDICATOR}${BRANCHES_DIFF}% |"
+              fi
+            fi
+
             # Create comment body
             COMMENT_BODY="## 📊 Coverage Report
 
@@ -92,7 +133,7 @@ jobs:
 |--------|----------|
 | Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |
 | Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |
-| Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |
+| Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |${BASE_COVERAGE}
 
 <details>
 <summary>View full coverage report</summary>
