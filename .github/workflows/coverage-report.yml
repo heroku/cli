@@ -125,9 +125,7 @@ jobs:
                 BRANCHES_INDICATOR=$(awk "BEGIN {if ($BRANCHES_DIFF > 0) print \"🟢 +\"; else if ($BRANCHES_DIFF < 0) print \"🔴 \"; else print \"\"}")
 
                 BASE_COVERAGE="
-
 ### Compared to base branch (\`${BASE_REF}\`)
-
 | Metric | Base | Current | Change |
 |--------|------|---------|--------|
 | Lines | ${BASE_LINES_PCT}% | ${LINES_PCT}% | ${LINES_INDICATOR}${LINES_DIFF}% |
