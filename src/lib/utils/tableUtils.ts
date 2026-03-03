@@ -44,10 +44,10 @@ const getValue = (row: Record<string, any>, key: string, tableColumns: Record<st
 export const outputCSV = (tableData: Record<string, any>[], tableColumns: Record<string, any>) => {
   const columns = Object.entries(tableColumns)
   const columnHeaders = columns.map(([key, config]) => config.header || key)
-  ux.stdout(columnHeaders.join('.'))
+  ux.stdout(columnHeaders.join(','))
 
   for (const row of tableData) {
     const formattedRow = columns.map(([key, config]) => escapeCSV(getValue(row, key, tableColumns, config)))
-    ux.stdout(formattedRow.join('.'))
+    ux.stdout(formattedRow.join(','))
   }
 }
