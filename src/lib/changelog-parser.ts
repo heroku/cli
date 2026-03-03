@@ -5,6 +5,11 @@ import {fileURLToPath} from 'node:url'
 export class ChangelogParser {
   private constructor(private readonly changelog: string) {}
 
+  private normalizeLineEndings(text: string): string {
+    // Normalize CRLF (\r\n) to LF (\n) for consistent parsing across platforms
+    return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+  }
+
   static async create(changelogPath?: string): Promise<ChangelogParser> {
     // Allow overriding path via environment variable (useful for testing)
     const path = changelogPath ?? process.env.HEROKU_CHANGELOG_PATH ?? ChangelogParser.getDefaultChangelogPath()
@@ -23,7 +28,8 @@ export class ChangelogParser {
   }
 
   extractHeader(entry: string): string {
-    return entry.split('\n').find(line => line.trim()) || entry.split('\n')[0]
+    const normalized = this.normalizeLineEndings(entry)
+    return normalized.split('\n').find(line => line.trim()) || normalized.split('\n')[0]
   }
 
   extractMostRecentEntry(): null | string {
@@ -35,7 +41,8 @@ export class ChangelogParser {
   }
 
   extractSections(entry: string, sectionNames: string[]): null | string {
-    const lines = entry.split('\n')
+    const normalized = this.normalizeLineEndings(entry)
+    const lines = normalized.split('\n')
     const header = this.extractHeader(entry)
     const sections: string[] = []
     let currentSection: null | string = null
@@ -70,7 +77,8 @@ export class ChangelogParser {
   }
 
   private extractEntry(predicate: (versionInHeader: string) => boolean): null | string {
-    const lines = this.changelog.split('\n')
+    const normalized = this.normalizeLineEndings(this.changelog)
+    const lines = normalized.split('\n')
     let startIndex = -1
 
     // Find the start of the entry
