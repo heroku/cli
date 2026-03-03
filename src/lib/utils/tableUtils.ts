@@ -4,28 +4,30 @@ import parseKeyValue from './keyValueParser.js'
 
 export const constructSortFilterTableOptions = (flags: Record<string, string>, tableColumns: Record<string, any>) => {
   const {filter, sort} = flags
-  const columnNames = Object.keys(tableColumns)
+  const columnNames = new Set(Object.keys(tableColumns).map(key => key.toLowerCase()))
   const tableOptions: Record<string, any> = {}
 
   if (filter) {
     const {key, value} = parseKeyValue(filter)
+    const lowerCaseKey = key.toLowerCase()
     if (!value) {
       throw new Error('Filter flag has an invalid value.')
     }
 
-    if (!columnNames.includes(key)) {
+    if (!columnNames.has(lowerCaseKey)) {
       throw new Error(`Invalid filter key: ${key}.`)
     }
 
-    tableOptions.filter = (row: Record<string, any>) => row[key] === value
+    tableOptions.filter = (row: Record<string, any>) => row[lowerCaseKey] === value
   }
 
   if (sort) {
-    if (!columnNames.includes(sort)) {
+    const lowerCaseSort = sort.toLowerCase()
+    if (!columnNames.has(lowerCaseSort)) {
       throw new Error(`Invalid sort key: ${sort}.`)
     }
 
-    tableOptions.sort = {sort: 'asc'}
+    tableOptions.sort = {[lowerCaseSort]: 'asc'}
   }
 
   return tableOptions

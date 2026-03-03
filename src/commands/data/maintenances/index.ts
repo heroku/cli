@@ -53,12 +53,21 @@ export default class DataMaintenancesIndex extends BaseCommand {
     const tableColumns = {
       addon: {
         get: (row: Maintenance) => row.addon && row.addon.name,
+        header: 'Addon',
       },
       attachments: {
         get(row: Maintenance) {
           const attachments = (row && row.addon && row.addon.attachments) || []
           return attachments.join(', ')
         },
+        header: 'Attachments',
+      },
+      window: {
+        get: (row: Maintenance) => row && row.addon && row.addon.window,
+        header: 'Scheduling Window',
+      },
+      status: {
+        header: 'Status',
       },
       required_by: {
         get(row: Maintenance) {
@@ -68,6 +77,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
 
           return row.required_by ?? '-'
         },
+        header: 'Required by',
       },
       scheduled_for: {
         get(row: Maintenance) {
@@ -77,11 +87,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
 
           return row.scheduled_for ?? '-'
         },
-      },
-      status: {},
-      window: {
-        get: (row: Maintenance) => row && row.addon && row.addon.window,
-        header: 'Scheduling Window',
+        header: 'Scheduled for',
       },
     }
 
@@ -89,9 +95,11 @@ export default class DataMaintenancesIndex extends BaseCommand {
       const extendedColumns = {
         kind: {
           get: (row: Maintenance) => row.addon.kind,
+          header: 'Kind',
         },
         plan: {
           get: (row: Maintenance) => row.addon.plan,
+          header: 'Plan',
         },
       }
       Object.assign(tableColumns, extendedColumns)
