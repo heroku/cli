@@ -106,7 +106,7 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
     // Run npm login
     await NpmAuth.login()
   } catch (error: any) {
-    // If it's an intentional exit (user chose not to authenticate), let it propagate
+    // If user interrupted with Ctrl+C or other exit signal, respect that and exit
     if (error.oclif?.exit !== undefined) {
       throw error
     }
