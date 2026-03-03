@@ -9,39 +9,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR title follows Conventional Commits
-        uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # Configure which types are allowed
-          types: |
-            feat
-            fix
-            chore
-            docs
-            style
-            refactor
-            perf
-            test
-            build
-            ci
-            revert
-            deps
-          # Require a scope (optional - set to false if scope is not required)
-          requireScope: false
-          # Configure which scopes are allowed (optional)
-          # scopes: |
-          #   core
-          #   api
-          #   cli
-          # If the PR title should have a subject (default: true)
-          subjectPattern: ^(?![A-Z]).+$
-          subjectPatternError: |
-            The subject "{subject}" found in the pull request title "{title}"
-            didn't match the configured pattern. Please ensure that the subject
-            doesn't start with an uppercase character.
-          # Validate the entire PR title against a regex
-          # This ensures format is: type(scope)?: description
-          # Or with breaking change: type(scope)!: description
-          headerPattern: '^(\w+)(\(\w+\))?!?: .+$'
-          headerPatternCorrespondence: type, scope, subject
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "Checking PR title: $PR_TITLE"
+
+          # Define allowed types
+          ALLOWED_TYPES="feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|deps"
+
+          # Check if title matches conventional commit format
+          # Format: type(scope)?: description or type(scope)!: description
+          if echo "$PR_TITLE" | grep -qE "^($ALLOWED_TYPES)(\(.+\))?!?: .+$"; then
+            echo "✅ PR title follows Conventional Commits format"
+
+            # Check that subject doesn't start with uppercase
+            SUBJECT=$(echo "$PR_TITLE" | sed -E "s/^($ALLOWED_TYPES)(\(.+\))?!?: //")
+            if echo "$SUBJECT" | grep -qE "^[A-Z]"; then
+              echo "❌ Error: Subject should not start with an uppercase character"
+              echo "Subject: $SUBJECT"
+              exit 1
+            fi
+
+            echo "✅ All checks passed"
+          else
+            echo "❌ Error: PR title does not follow Conventional Commits format"
+            echo "Expected format: type(scope)?: description"
+            echo "Examples:"
+            echo "  - feat: add new feature"
+            echo "  - fix(api): resolve bug in endpoint"
+            echo "  - chore!: breaking change"
+            echo ""
+            echo "Allowed types: feat, fix, chore, docs, style, refactor, perf, test, build, ci, revert, deps"
+            exit 1
+          fi
