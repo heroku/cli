@@ -34,7 +34,7 @@ jobs:
       - name: unit tests
         run: npm test
       - name: Upload coverage reports
-        if: always() && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/v11.0.0')) && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -70,38 +70,11 @@ jobs:
 
   base-coverage:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/v11.0.0')
+    if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v6
-      - name: Get PR base branch
-        id: pr-info
-        uses: actions/github-script@v7
         with:
-          script: |
-            let baseBranch = 'main'; // default
-
-            if (context.eventName === 'pull_request') {
-              baseBranch = context.payload.pull_request.base.ref;
-            } else if (context.eventName === 'push') {
-              // Look up PR by branch name
-              const branch = context.ref.replace('refs/heads/', '');
-              const { data: pulls } = await github.rest.pulls.list({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                state: 'open',
-                head: `${context.repo.owner}:${branch}`
-              });
-
-              if (pulls.length > 0) {
-                baseBranch = pulls[0].base.ref;
-              }
-            }
-
-            core.setOutput('base_ref', baseBranch);
-            console.log(`Base branch: ${baseBranch}`);
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ steps.pr-info.outputs.base_ref }}
+          ref: ${{ github.event.pull_request.base.ref }}
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
@@ -120,66 +93,9 @@ jobs:
   coverage-comment:
     runs-on: ubuntu-latest
     needs: [test, base-coverage]
-    if: (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/v11.0.0')) && needs.test.result == 'success' && needs.base-coverage.result == 'success'
+    if: github.event_name == 'pull_request' && needs.test.result == 'success' && needs.base-coverage.result == 'success'
     steps:
       - uses: actions/checkout@v6
-      - name: Get PR number
-        id: pr-number
-        uses: actions/github-script@v7
-        with:
-          script: |
-            let prNumber = null;
-
-            if (context.eventName === 'pull_request') {
-              prNumber = context.payload.pull_request.number;
-            } else if (context.eventName === 'push') {
-              // Look up PR by branch name
-              const branch = context.ref.replace('refs/heads/', '');
-              const { data: pulls } = await github.rest.pulls.list({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                state: 'open',
-                head: `${context.repo.owner}:${branch}`
-              });
-
-              if (pulls.length > 0) {
-                prNumber = pulls[0].number;
-              }
-            }
-
-            if (!prNumber) {
-              core.setFailed('Could not determine PR number');
-              return;
-            }
-
-            core.setOutput('number', prNumber);
-            console.log(`PR number: ${prNumber}`);
-      - name: Get PR base branch
-        id: pr-info
-        uses: actions/github-script@v7
-        with:
-          script: |
-            let baseBranch = 'main'; // default
-
-            if (context.eventName === 'pull_request') {
-              baseBranch = context.payload.pull_request.base.ref;
-            } else if (context.eventName === 'push') {
-              // Look up PR by branch name
-              const branch = context.ref.replace('refs/heads/', '');
-              const { data: pulls } = await github.rest.pulls.list({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                state: 'open',
-                head: `${context.repo.owner}:${branch}`
-              });
-
-              if (pulls.length > 0) {
-                baseBranch = pulls[0].base.ref;
-              }
-            }
-
-            core.setOutput('base_ref', baseBranch);
-            console.log(`Base branch: ${baseBranch}`);
       - name: Download PR coverage
         uses: actions/download-artifact@v4
         with:
@@ -236,7 +152,7 @@ jobs:
           | Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |
           | Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |
 
-          ### Compared to base branch (\`${{ steps.pr-info.outputs.base_ref }}\`)
+          ### Compared to base branch (\`${{ github.event.pull_request.base.ref }}\`)
 
           | Metric | Base | Current | Change |
           |--------|------|---------|--------|
@@ -251,11 +167,11 @@ jobs:
           </details>"
 
           # Delete old coverage comments
-          gh pr view ${{ steps.pr-number.outputs.number }} --json comments --jq '.comments[] | select(.body | startswith("## 📊 Coverage Report")) | .id' | \
+          gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.body | startswith("## 📊 Coverage Report")) | .id' | \
             xargs -I {} gh api -X DELETE /repos/${{ github.repository }}/issues/comments/{} || true
 
           # Post new comment
-          gh pr comment ${{ steps.pr-number.outputs.number }} --body "$COMMENT_BODY"
+          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT_BODY"
 
   integration:
     runs-on: ${{ matrix.os }}
