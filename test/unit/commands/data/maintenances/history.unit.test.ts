@@ -79,7 +79,7 @@ describe('data:maintenances:history', function () {
       .post('/actions/addons/resolve')
       .reply(200, [addonFixture])
     dataApi
-      .get(`/data/v0/maintenances/addons/${addonFixture.id}/history/5`)
+      .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: maintenancesFixture})
 
     const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name])
@@ -97,7 +97,7 @@ describe('data:maintenances:history', function () {
     // Note: The URL ends in /1 denoting a history request of 1 element
     // based on the --num=1 flag
     dataApi
-      .get(`/data/v0/maintenances/addons/${addonFixture.id}/history/1`)
+      .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=1`)
       .reply(200, {maintenances: [maintenancesFixture[0]]})
 
     const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--num=1'])
@@ -112,7 +112,7 @@ describe('data:maintenances:history', function () {
       .post('/actions/addons/resolve')
       .reply(200, [addonFixture])
     dataApi
-      .get(`/data/v0/maintenances/addons/${addonFixture.id}/history/5`)
+      .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: maintenancesFixture})
 
     const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--json'])
@@ -126,7 +126,7 @@ describe('data:maintenances:history', function () {
       .post('/actions/addons/resolve')
       .reply(200, [addonFixture])
     dataApi
-      .get(`/data/v0/maintenances/addons/${addonFixture.id}/history/5`)
+      .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: []})
 
     const {stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--json'])

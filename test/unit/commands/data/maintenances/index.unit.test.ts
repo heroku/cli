@@ -81,7 +81,7 @@ describe('data:maintenances', function () {
       .get('/apps/test-app')
       .reply(200, app)
     dataApi
-      .get(`/data/v0/maintenances/apps/${appId}`)
+      .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
     const {stderr, stdout} = await runCommand(['data:maintenances', '--app=test-app'])
@@ -97,7 +97,7 @@ describe('data:maintenances', function () {
       .get('/apps/test-app')
       .reply(200, app)
     dataApi
-      .get(`/data/v0/maintenances/apps/${appId}`)
+      .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
     const {stdout} = await runCommand(['data:maintenances', '--app=test-app', '--extended', '--sort=Addon'])
@@ -111,7 +111,7 @@ describe('data:maintenances', function () {
       .get('/apps/test-app')
       .reply(200, app)
     dataApi
-      .get(`/data/v0/maintenances/apps/${appId}`)
+      .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
     const {stderr, stdout} = await runCommand(['data:maintenances', '--app=test-app', '--json'])
@@ -138,7 +138,7 @@ describe('data:maintenances', function () {
       .get('/apps/test-app')
       .reply(200, app)
     dataApi
-      .get(`/data/v0/maintenances/apps/${appId}`)
+      .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances: []})
 
     const {error} = await runCommand(['data:maintenances', '--app=test-app'])

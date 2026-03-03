@@ -112,7 +112,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
     ux.action.start('Fetching maintenances')
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
-      `/data/v0/maintenances/apps/${app.id}`,
+      `/data/maintenances/v1/apps/${app.id}`,
       this.dataApi.defaults,
     )
     ux.action.stop()

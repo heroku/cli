@@ -40,12 +40,14 @@ export default class DataMaintenancesHistory extends BaseCommand {
 
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesHistory)
+    const queryParams = new URLSearchParams({limit: flags.num})
+
     const addonResolver = new utils.AddonResolver(this.heroku)
     const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
 
     ux.action.start(`Fetching maintenance history for ${color.addon(addon.name!)}`)
     const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
-      `/data/v0/maintenances/addons/${addon.id}/history/${flags.num}`,
+      `/data/maintenances/v1/${addon.id}/history/?${queryParams.toString()}`,
       this.dataApi.defaults,
     )
     ux.action.stop()
