@@ -1,19 +1,16 @@
 name: Coverage Report
 
 on:
-  workflow_run:
-    workflows: ["Tests"]
-    types:
-      - completed
+  pull_request:
+    branches:
+      - main
+      - v11.0.0
 
 jobs:
   coverage-report:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -23,64 +20,86 @@ jobs:
 
       - run: npm ci
 
-      - name: Download coverage artifact
+      - name: Wait for test workflow and download coverage artifact
+        id: wait-tests
         uses: actions/github-script@v7
         with:
           script: |
-            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: ${{ github.event.workflow_run.id }},
-            });
+            const maxWaitTime = 30 * 60 * 1000; // 30 minutes
+            const pollInterval = 30 * 1000; // 30 seconds
+            const startTime = Date.now();
 
-            const coverageArtifact = artifacts.data.artifacts.find(
-              artifact => artifact.name === 'coverage-report'
-            );
+            // Find the Tests workflow run for this PR
+            while (Date.now() - startTime < maxWaitTime) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'ci.yml',
+                event: 'pull_request',
+                head_sha: context.sha,
+              });
 
-            if (!coverageArtifact) {
-              core.setFailed('Coverage artifact not found');
-              return;
+              const testRun = runs.data.workflow_runs[0];
+
+              if (testRun) {
+                console.log(`Test workflow status: ${testRun.status}, conclusion: ${testRun.conclusion}`);
+
+                if (testRun.status === 'completed') {
+                  if (testRun.conclusion === 'success' || testRun.conclusion === 'failure') {
+                    // Tests completed, now download artifact
+                    const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      run_id: testRun.id,
+                    });
+
+                    const coverageArtifact = artifacts.data.artifacts.find(
+                      artifact => artifact.name === 'coverage-report'
+                    );
+
+                    if (!coverageArtifact) {
+                      core.setFailed('Coverage artifact not found');
+                      return;
+                    }
+
+                    const download = await github.rest.actions.downloadArtifact({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      artifact_id: coverageArtifact.id,
+                      archive_format: 'zip',
+                    });
+
+                    const fs = require('fs');
+                    fs.writeFileSync('coverage-report.zip', Buffer.from(download.data));
+
+                    core.setOutput('tests_completed', 'true');
+                    return;
+                  } else {
+                    core.setFailed(`Test workflow completed with conclusion: ${testRun.conclusion}`);
+                    return;
+                  }
+                }
+              }
+
+              // Wait before polling again
+              console.log('Waiting for test workflow to complete...');
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
             }
 
-            const download = await github.rest.actions.downloadArtifact({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              artifact_id: coverageArtifact.id,
-              archive_format: 'zip',
-            });
-
-            const fs = require('fs');
-            fs.writeFileSync('coverage-report.zip', Buffer.from(download.data));
+            core.setFailed('Timeout waiting for test workflow to complete');
 
       - name: Extract coverage artifact
+        if: steps.wait-tests.outputs.tests_completed == 'true'
         run: |
           unzip coverage-report.zip -d coverage
           ls -la coverage/
 
-      - name: Get PR number
-        id: pr
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pulls = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              head: `${context.repo.owner}:${{ github.event.workflow_run.head_branch }}`,
-            });
-
-            if (pulls.data.length > 0) {
-              core.setOutput('number', pulls.data[0].number);
-              core.setOutput('base', pulls.data[0].base.ref);
-            } else {
-              core.setFailed('No open PR found for this branch');
-            }
-
       - name: Generate coverage comparison and comment
+        if: steps.wait-tests.outputs.tests_completed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ steps.pr.outputs.number }}
-          BASE_REF: ${{ steps.pr.outputs.base }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           if [ -f coverage/lcov.info ]; then
             # Parse current coverage from lcov.info
