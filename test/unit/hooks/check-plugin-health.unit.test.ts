@@ -45,7 +45,7 @@ describe('check-plugin-health hook', function () {
   })
 
   describe('when no plugins package.json exists', function () {
-    it('should return early without warning', async function () {
+    it('should not emit a warning message', async function () {
       // Don't create package.json - it doesn't exist
       await checkPluginHealth.call(hookContext, createHookOptions(hookContext.config))
 
@@ -55,7 +55,7 @@ describe('check-plugin-health hook', function () {
   })
 
   describe('when plugins package.json is invalid', function () {
-    it('should return early without warning', async function () {
+    it('should not emit a warning message', async function () {
       // Create invalid JSON file
       const packageJsonPath = path.join(testDataDir, 'package.json')
       await fs.outputFile(packageJsonPath, '{invalid json}')
@@ -68,7 +68,7 @@ describe('check-plugin-health hook', function () {
   })
 
   describe('when dependencies field is missing', function () {
-    it('should return early without warning', async function () {
+    it('should not emit a warning message', async function () {
       // Create package.json without dependencies field
       const packageJsonPath = path.join(testDataDir, 'package.json')
       await fs.outputJson(packageJsonPath, {name: 'test'})
@@ -81,7 +81,7 @@ describe('check-plugin-health hook', function () {
   })
 
   describe('when no dependencies are configured', function () {
-    it('should return early without warning', async function () {
+    it('should not emit a warning message', async function () {
       // Create package.json with empty dependencies
       const packageJsonPath = path.join(testDataDir, 'package.json')
       await fs.outputJson(packageJsonPath, {dependencies: {}})
@@ -94,7 +94,7 @@ describe('check-plugin-health hook', function () {
   })
 
   describe('when all plugins are installed', function () {
-    it('should not warn', async function () {
+    it('should not emit a warning message', async function () {
       // Create package.json with dependencies
       const packageJsonPath = path.join(testDataDir, 'package.json')
       await fs.outputJson(packageJsonPath, {
