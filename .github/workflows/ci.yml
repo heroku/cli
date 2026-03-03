@@ -34,7 +34,7 @@ jobs:
       - name: unit tests
         run: npm test
       - name: Upload coverage reports
-        if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        if: always() && github.event.pull_request != null && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -70,7 +70,7 @@ jobs:
 
   base-coverage:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: github.event.pull_request != null
     steps:
       - uses: actions/checkout@v6
         with:
@@ -93,7 +93,7 @@ jobs:
   coverage-comment:
     runs-on: ubuntu-latest
     needs: [test, base-coverage]
-    if: github.event_name == 'pull_request' && needs.test.result == 'success' && needs.base-coverage.result == 'success'
+    if: github.event.pull_request != null && needs.test.result == 'success' && needs.base-coverage.result == 'success'
     steps:
       - uses: actions/checkout@v6
       - name: Download PR coverage
