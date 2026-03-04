@@ -3,12 +3,13 @@
   "exclude": [
     "**/*.d.ts",
     "**/*.test.ts",
-    "**/*.spec.ts",
     "test/**/*",
     "dist/**/*",
-    "lib/**/*",
     "coverage/**",
-    ".nyc_output/**"
+    "bin/**/*",
+    "scripts/**/*",
+    "tmp/**/*",
+    "**/*.mjs"
   ],
   "include": [
     "src/**/*.ts"
