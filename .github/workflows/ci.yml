@@ -95,8 +95,8 @@ jobs:
           node-version: 22.x
           cache: npm
       - run: npm ci
-      - name: Run tests on base branch
-        run: npm run test:unit:justTest:ci
+      - name: Run tests on base branch with full coverage
+        run: npm run pretest && npm run test:unit:justTest:ci:coverage
       - name: Upload base coverage
         uses: actions/upload-artifact@v4
         with:
