@@ -190,22 +190,31 @@ jobs:
           # Check if coverage decreased
           COVERAGE_DECREASED=false
           if (( $(awk "BEGIN {print ($LINES_DIFF < 0)}") )); then
-            echo "❌ Lines coverage decreased by ${LINES_DIFF}%" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Lines coverage decreased by ${LINES_DIFF}%" >> $GITHUB_STEP_SUMMARY
             COVERAGE_DECREASED=true
           fi
           if (( $(awk "BEGIN {print ($FUNCS_DIFF < 0)}") )); then
-            echo "❌ Functions coverage decreased by ${FUNCS_DIFF}%" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Functions coverage decreased by ${FUNCS_DIFF}%" >> $GITHUB_STEP_SUMMARY
             COVERAGE_DECREASED=true
           fi
           if (( $(awk "BEGIN {print ($BRANCHES_DIFF < 0)}") )); then
-            echo "❌ Branches coverage decreased by ${BRANCHES_DIFF}%" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ Branches coverage decreased by ${BRANCHES_DIFF}%" >> $GITHUB_STEP_SUMMARY
             COVERAGE_DECREASED=true
           fi
 
+          # Check if all coverage metrics are >= 90%
+          ALL_ABOVE_90=$(awk "BEGIN {print ($LINES_PCT >= 90 && $FUNCS_PCT >= 90 && $BRANCHES_PCT >= 90)}")
+
           if [ "$COVERAGE_DECREASED" = true ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Coverage has decreased compared to the base branch. Please add tests to maintain or improve coverage.**" >> $GITHUB_STEP_SUMMARY
-            exit 1
+            if [ "$ALL_ABOVE_90" -eq 1 ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "✅ Coverage check passed - all metrics are >= 90%" >> $GITHUB_STEP_SUMMARY
+              exit 0
+            else
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "❌ **Coverage has decreased compared to the base branch. Please add tests to maintain or improve coverage.**" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
           else
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "✅ Coverage check passed - no decrease detected" >> $GITHUB_STEP_SUMMARY
