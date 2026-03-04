@@ -98,7 +98,7 @@ jobs:
           path: coverage/
           retention-days: 1
 
-  coverage-comment:
+  coverage-check:
     runs-on: ubuntu-latest
     needs: [test, base-coverage]
     if: github.event_name == 'pull_request' && needs.test.result == 'success' && needs.base-coverage.result == 'success'
@@ -114,9 +114,7 @@ jobs:
         with:
           name: coverage-base
           path: coverage-base/
-      - name: Generate comparison and comment
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compare coverage and fail if decreased
         run: |
           # Parse PR coverage
           LINES_FOUND=$(grep -o "LF:[0-9]*" coverage-pr/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
@@ -131,76 +129,88 @@ jobs:
           BRANCHES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BRANCHES_HIT/$BRANCHES_FOUND)*100}")
 
           # Parse base coverage (may be empty if base branch doesn't have c8 configured)
-          BASE_LINES_FOUND=$(grep -o "LF:[0-9]*" coverage-base/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}' || echo "0")
-          BASE_LINES_HIT=$(grep -o "LH:[0-9]*" coverage-base/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}' || echo "0")
-          BASE_FUNCS_FOUND=$(grep -o "FNF:[0-9]*" coverage-base/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}' || echo "0")
-          BASE_FUNCS_HIT=$(grep -o "FNH:[0-9]*" coverage-base/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}' || echo "0")
-          BASE_BRANCHES_FOUND=$(grep -o "BRF:[0-9]*" coverage-base/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}' || echo "0")
-          BASE_BRANCHES_HIT=$(grep -o "BRH:[0-9]*" coverage-base/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}' || echo "0")
+          BASE_LINES_FOUND=$(grep -o "LF:[0-9]*" coverage-base/lcov.info 2>/dev/null | cut -d: -f2 | awk '{s+=$1} END {print s}')
+          BASE_LINES_HIT=$(grep -o "LH:[0-9]*" coverage-base/lcov.info 2>/dev/null | cut -d: -f2 | awk '{s+=$1} END {print s}')
+          BASE_FUNCS_FOUND=$(grep -o "FNF:[0-9]*" coverage-base/lcov.info 2>/dev/null | cut -d: -f2 | awk '{s+=$1} END {print s}')
+          BASE_FUNCS_HIT=$(grep -o "FNH:[0-9]*" coverage-base/lcov.info 2>/dev/null | cut -d: -f2 | awk '{s+=$1} END {print s}')
+          BASE_BRANCHES_FOUND=$(grep -o "BRF:[0-9]*" coverage-base/lcov.info 2>/dev/null | cut -d: -f2 | awk '{s+=$1} END {print s}')
+          BASE_BRANCHES_HIT=$(grep -o "BRH:[0-9]*" coverage-base/lcov.info 2>/dev/null | cut -d: -f2 | awk '{s+=$1} END {print s}')
+
+          # Default to 0 if empty
+          BASE_LINES_FOUND=${BASE_LINES_FOUND:-0}
+          BASE_LINES_HIT=${BASE_LINES_HIT:-0}
+          BASE_FUNCS_FOUND=${BASE_FUNCS_FOUND:-0}
+          BASE_FUNCS_HIT=${BASE_FUNCS_HIT:-0}
+          BASE_BRANCHES_FOUND=${BASE_BRANCHES_FOUND:-0}
+          BASE_BRANCHES_HIT=${BASE_BRANCHES_HIT:-0}
+
+          echo "## 📊 Coverage Comparison" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Current Coverage (PR)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Coverage |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
           # Check if base coverage exists
-          if [ "$BASE_LINES_FOUND" -eq 0 ] || [ -z "$BASE_LINES_FOUND" ]; then
-            # No base coverage available - just show current coverage
-            COMMENT_BODY="## 📊 Coverage Report
-
-          | Metric | Coverage |
-          |--------|----------|
-          | Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |
-          | Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |
-          | Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |
-
-          _Note: Base branch (\`${{ github.event.pull_request.base.ref }}\`) does not have coverage reporting configured yet._
-
-          <details>
-          <summary>View full coverage report</summary>
-
-          Download the coverage artifact from this workflow run to see the full HTML report.
-          </details>"
-          else
-            # Calculate diffs
-            BASE_LINES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_LINES_HIT/$BASE_LINES_FOUND)*100}")
-            BASE_FUNCS_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_FUNCS_HIT/$BASE_FUNCS_FOUND)*100}")
-            BASE_BRANCHES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_BRANCHES_HIT/$BASE_BRANCHES_FOUND)*100}")
-
-            LINES_DIFF=$(awk "BEGIN {printf \"%.2f\", $LINES_PCT - $BASE_LINES_PCT}")
-            FUNCS_DIFF=$(awk "BEGIN {printf \"%.2f\", $FUNCS_PCT - $BASE_FUNCS_PCT}")
-            BRANCHES_DIFF=$(awk "BEGIN {printf \"%.2f\", $BRANCHES_PCT - $BASE_BRANCHES_PCT}")
-
-            # Add emoji indicators
-            LINES_INDICATOR=$(awk "BEGIN {if ($LINES_DIFF > 0) print \"🟢 +\"; else if ($LINES_DIFF < 0) print \"🔴 \"; else print \"\"}")
-            FUNCS_INDICATOR=$(awk "BEGIN {if ($FUNCS_DIFF > 0) print \"🟢 +\"; else if ($FUNCS_DIFF < 0) print \"🔴 \"; else print \"\"}")
-            BRANCHES_INDICATOR=$(awk "BEGIN {if ($BRANCHES_DIFF > 0) print \"🟢 +\"; else if ($BRANCHES_DIFF < 0) print \"🔴 \"; else print \"\"}")
-
-            # Create comment body with comparison
-            COMMENT_BODY="## 📊 Coverage Report
-
-          | Metric | Coverage |
-          |--------|----------|
-          | Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |
-          | Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |
-          | Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |
-
-          ### Compared to base branch (\`${{ github.event.pull_request.base.ref }}\`)
-
-          | Metric | Base | Current | Change |
-          |--------|------|---------|--------|
-          | Lines | ${BASE_LINES_PCT}% | ${LINES_PCT}% | ${LINES_INDICATOR}${LINES_DIFF}% |
-          | Functions | ${BASE_FUNCS_PCT}% | ${FUNCS_PCT}% | ${FUNCS_INDICATOR}${FUNCS_DIFF}% |
-          | Branches | ${BASE_BRANCHES_PCT}% | ${BRANCHES_PCT}% | ${BRANCHES_INDICATOR}${BRANCHES_DIFF}% |
-
-          <details>
-          <summary>View full coverage report</summary>
-
-          Download the coverage artifact from this workflow run to see the full HTML report.
-          </details>"
+          if [ "$BASE_LINES_FOUND" -eq 0 ]; then
+            echo "_Note: Base branch (\`${{ github.event.pull_request.base.ref }}\`) does not have coverage reporting configured yet._" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Coverage check passed (no baseline to compare)" >> $GITHUB_STEP_SUMMARY
+            exit 0
           fi
 
-          # Delete old coverage comments
-          gh pr view ${{ github.event.pull_request.number }} --json comments --jq '.comments[] | select(.body | startswith("## 📊 Coverage Report")) | .id' | \
-            xargs -I {} gh api -X DELETE /repos/${{ github.repository }}/issues/comments/{} || true
+          # Calculate base coverage percentages
+          BASE_LINES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_LINES_HIT/$BASE_LINES_FOUND)*100}")
+          BASE_FUNCS_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_FUNCS_HIT/$BASE_FUNCS_FOUND)*100}")
+          BASE_BRANCHES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BASE_BRANCHES_HIT/$BASE_BRANCHES_FOUND)*100}")
 
-          # Post new comment
-          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT_BODY"
+          # Calculate diffs
+          LINES_DIFF=$(awk "BEGIN {printf \"%.2f\", $LINES_PCT - $BASE_LINES_PCT}")
+          FUNCS_DIFF=$(awk "BEGIN {printf \"%.2f\", $FUNCS_PCT - $BASE_FUNCS_PCT}")
+          BRANCHES_DIFF=$(awk "BEGIN {printf \"%.2f\", $BRANCHES_PCT - $BASE_BRANCHES_PCT}")
+
+          # Add indicators
+          LINES_INDICATOR=$(awk "BEGIN {if ($LINES_DIFF > 0) print \"🟢\"; else if ($LINES_DIFF < 0) print \"🔴\"; else print \"⚪\"}")
+          FUNCS_INDICATOR=$(awk "BEGIN {if ($FUNCS_DIFF > 0) print \"🟢\"; else if ($FUNCS_DIFF < 0) print \"🔴\"; else print \"⚪\"}")
+          BRANCHES_INDICATOR=$(awk "BEGIN {if ($BRANCHES_DIFF > 0) print \"🟢\"; else if ($BRANCHES_DIFF < 0) print \"🔴\"; else print \"⚪\"}")
+
+          echo "### Compared to base branch (\`${{ github.event.pull_request.base.ref }}\`)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Base | Current | Change |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|------|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lines | ${BASE_LINES_PCT}% | ${LINES_PCT}% | ${LINES_INDICATOR} ${LINES_DIFF}% |" >> $GITHUB_STEP_SUMMARY
+          echo "| Functions | ${BASE_FUNCS_PCT}% | ${FUNCS_PCT}% | ${FUNCS_INDICATOR} ${FUNCS_DIFF}% |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branches | ${BASE_BRANCHES_PCT}% | ${BRANCHES_PCT}% | ${BRANCHES_INDICATOR} ${BRANCHES_DIFF}% |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check if coverage decreased
+          COVERAGE_DECREASED=false
+          if (( $(awk "BEGIN {print ($LINES_DIFF < 0)}") )); then
+            echo "❌ Lines coverage decreased by ${LINES_DIFF}%" >> $GITHUB_STEP_SUMMARY
+            COVERAGE_DECREASED=true
+          fi
+          if (( $(awk "BEGIN {print ($FUNCS_DIFF < 0)}") )); then
+            echo "❌ Functions coverage decreased by ${FUNCS_DIFF}%" >> $GITHUB_STEP_SUMMARY
+            COVERAGE_DECREASED=true
+          fi
+          if (( $(awk "BEGIN {print ($BRANCHES_DIFF < 0)}") )); then
+            echo "❌ Branches coverage decreased by ${BRANCHES_DIFF}%" >> $GITHUB_STEP_SUMMARY
+            COVERAGE_DECREASED=true
+          fi
+
+          if [ "$COVERAGE_DECREASED" = true ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Coverage has decreased compared to the base branch. Please add tests to maintain or improve coverage.**" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Coverage check passed - no decrease detected" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
 
   integration:
     runs-on: ${{ matrix.os }}
