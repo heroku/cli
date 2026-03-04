@@ -56,7 +56,7 @@ describe('addons:plans', function () {
       const [header, body] = stdout.output.split(/\s[-─]+\s/gm)
       const actualHeader  = normalizeTableOutput(header)
       const actualBody    = normalizeTableOutput(body)
-      
+
       const expectedHeader = normalizeTableOutput(`
                 Slug                    Name   Price   Max Price`)
       expect(actualHeader).to.eq(expectedHeader)
