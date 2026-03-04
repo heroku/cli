@@ -53,15 +53,18 @@ describe('addons:plans', function () {
 
     it('formats price for metered usage plans', async function () {
       await runCommand(Cmd, ['metered-service'])
-      const actual = normalizeTableOutput(stdout.output)
+      const [header, body] = stdout.output.split(/\s[-─]+\s/gm)
+      const actualHeader  = normalizeTableOutput(header)
+      const actualBody    = normalizeTableOutput(body)
+      
       const expectedHeader = normalizeTableOutput(`
                 Slug                    Name   Price   Max Price`)
-      expect(actual).to.include(expectedHeader)
-      const expected = normalizeTableOutput(`
+      expect(actualHeader).to.eq(expectedHeader)
+      const expectedBody = normalizeTableOutput(`
         default heroku-inference:plan-1 Plan 1 metered https://elements.heroku.com/addons/metered-service#pricing
                 heroku-inference:plan-2 Plan 2 metered https://elements.heroku.com/addons/metered-service#pricing
                 heroku-inference:plan-3 Plan 3 metered https://elements.heroku.com/addons/metered-service#pricing`)
-      expect(actual).to.include(expected)
+      expect(actualBody).to.eq(expectedBody)
     })
   })
 })
