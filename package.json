@@ -54,6 +54,8 @@
     "https-proxy-agent": "^7.0.6",
     "inquirer": "^8.2.6",
     "lodash": "^4.17.21",
+    "marked": "^15.0.12",
+    "marked-terminal": "^7.3.0",
     "natural-orderby": "^5.0.0",
     "netrc-parser": "3.1.6",
     "node-fetch": "^2.6.7",
@@ -91,6 +93,7 @@
     "@types/inquirer": "^8.2.10",
     "@types/lodash": "^4.14.123",
     "@types/lolex": "^5.1.6",
+    "@types/marked-terminal": "^6.1.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.16.5",
     "@types/node-fetch": "^2.6.11",
@@ -191,13 +194,17 @@
       "prerun": [
         "./dist/hooks/prerun/analytics"
       ],
+      "preupdate": [
+        "./dist/hooks/preupdate/check-npm-auth"
+      ],
       "recache": "./dist/hooks/recache",
       "update": [
-        "./dist/hooks/update/plugin-migrate",
         "./dist/hooks/update/brew",
         "./dist/hooks/update/completions",
         "./dist/hooks/update/tidy",
-        "./dist/hooks/recache"
+        "./dist/hooks/recache",
+        "./dist/hooks/update/show-version-info",
+        "./dist/hooks/update/check-plugin-health"
       ]
     },
     "macos": {
