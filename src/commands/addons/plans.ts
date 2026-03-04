@@ -44,7 +44,7 @@ export default class Plans extends Command {
     } else {
       hux.table(plans, {
         default: {
-          header: '',
+          header: ' ', // <- This space is necessary to prevent the table header from rendering as "default"
           get: (plan: any) => plan.default ? 'default' : '',
         },
         name: {
