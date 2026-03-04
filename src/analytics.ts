@@ -2,6 +2,7 @@ import {vars} from '@heroku-cli/command'
 import {Command, Interfaces} from '@oclif/core'
 import * as path from 'path'
 import deps from './deps.js'
+import * as fs from 'fs-extra'
 import debug from 'debug'
 
 const analyticsDebug = debug('heroku:analytics')
@@ -115,15 +116,15 @@ export default class AnalyticsCommand {
     if (id === 'autocomplete:options') return 0
     const root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
     const meta = {
-      cmd: deps.file.exists(path.join(root, 'command')),
-      flag: deps.file.exists(path.join(root, 'flag')),
-      value: deps.file.exists(path.join(root, 'value')),
+      cmd: fs.pathExists(path.join(root, 'command')),
+      flag: fs.pathExists(path.join(root, 'flag')),
+      value: fs.pathExists(path.join(root, 'value')),
     }
     let score = 0
     if (await meta.cmd) score += 1
     if (await meta.flag) score += 2
     if (await meta.value) score += 4
-    if (await deps.file.exists(root)) await deps.file.remove(root)
+    if (await fs.pathExists(root)) await fs.remove(root)
     return score
   }
 

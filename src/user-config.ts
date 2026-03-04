@@ -1,8 +1,7 @@
 import {Interfaces} from '@oclif/core'
 import {randomUUID} from 'node:crypto'
 import * as path from 'path'
-
-import deps from './deps.js'
+import * as fs from 'fs-extra'
 
 import debug from 'debug'
 const userConfigDebug = debug('heroku:user_config')
@@ -82,7 +81,7 @@ export default class UserConfig {
         throw new Error('file modified, cannot save')
       }
 
-      await deps.file.outputJSON(this.file, this.body)
+      await fs.outputJSON(this.file, this.body, {spaces: 2})
     })()
   }
 
@@ -90,7 +89,7 @@ export default class UserConfig {
     await this.migrate()
     try {
       this.mtime = await this.getLastUpdated()
-      const body = await deps.file.readJSON(this.file)
+      const body = await fs.readJSON(this.file)
       return body
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
@@ -99,11 +98,11 @@ export default class UserConfig {
   }
 
   private async migrate() {
-    if (await deps.file.exists(this.file)) return
+    if (await fs.pathExists(this.file)) return
     const old = path.join(this.config.configDir, 'config.json')
-    if (!await deps.file.exists(old)) return
+    if (!await fs.pathExists(old)) return
     userConfigDebug('moving config into new place')
-    await deps.file.rename(old, this.file)
+    await fs.rename(old, this.file)
   }
 
   private async canWrite() {
@@ -113,7 +112,7 @@ export default class UserConfig {
 
   private async getLastUpdated(): Promise<number | undefined> {
     try {
-      const stat = await deps.file.stat(this.file)
+      const stat = await fs.stat(this.file)
       return stat.mtime.getTime()
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
