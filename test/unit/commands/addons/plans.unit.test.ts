@@ -22,7 +22,7 @@ describe('addons:plans', function () {
 
     it('shows add-on plans', async function () {
       await runCommand(Cmd, ['daservice'])
-      const [header, body] = stdout.output.split(/\s─+\s/gm)
+      const [header, body] = stdout.output.split(/\s[-─]+\s/gm)
       const actualHeader  = normalizeTableOutput(header)
       const actualBody    = normalizeTableOutput(body)
 
