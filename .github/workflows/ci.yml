@@ -98,7 +98,7 @@ jobs:
       - name: Run tests on base branch with full coverage
         run: npm run pretest && npm run test:unit:justTest:ci:coverage
       - name: Upload base coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-base
           path: coverage/
@@ -111,12 +111,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Download PR coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: coverage-report
           path: coverage-pr/
       - name: Download base coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: coverage-base
           path: coverage-base/
