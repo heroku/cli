@@ -1,0 +1,27 @@
+{
+  "src": ["src"],
+  "extension": [".ts"],
+  "exclude": [
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "test/**/*",
+    "dist/**/*",
+    "coverage/**",
+    "bin/**/*",
+    "scripts/**/*",
+    "tmp/**/*",
+    "**/*.mjs"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "reporter": [
+    "text-summary",
+    "html",
+    "lcov"
+  ],
+  "statements": 60,
+  "branches": 60,
+  "functions": 60,
+  "lines": 60
+}
