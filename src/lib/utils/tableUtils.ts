@@ -11,11 +11,11 @@ export const constructSortFilterTableOptions = (flags: Record<string, string>, t
     const {key, value} = parseKeyValue(filter)
     const lowerCaseKey = key.toLowerCase()
     if (!value) {
-      throw new Error('Filter flag has an invalid value.')
+      throw new Error('Filter flag has an invalid value')
     }
 
     if (!columnNames.has(lowerCaseKey)) {
-      throw new Error(`Invalid filter key: ${key}.`)
+      throw new Error(`Invalid filter key: ${key}`)
     }
 
     tableOptions.filter = (row: Record<string, any>) => row[lowerCaseKey] === value
@@ -24,7 +24,7 @@ export const constructSortFilterTableOptions = (flags: Record<string, string>, t
   if (sort) {
     const lowerCaseSort = sort.toLowerCase()
     if (!columnNames.has(lowerCaseSort)) {
-      throw new Error(`Invalid sort key: ${sort}.`)
+      throw new Error(`Invalid sort key: ${sort}`)
     }
 
     tableOptions.sort = {[lowerCaseSort]: 'asc'}
@@ -52,4 +52,32 @@ export const outputCSV = (tableData: Record<string, any>[], tableColumns: Record
     const formattedRow = columns.map(([key, config]) => escapeCSV(getValue(row, key, tableColumns, config)))
     ux.stdout(formattedRow.join(','))
   }
+}
+
+export const constructTableColumns = (allTableColumns: Record<string, any>, baseColumnNames: string[], extended: boolean, columns?: string[]) => {
+  const tableColumns: Record<string, any> = {}
+  if (columns) {
+    if (columns.length === 0) {
+      throw new Error('Column flag has no column names')
+    }
+
+    columns.forEach(column => {
+      if (!allTableColumns[column]) {
+        throw new Error(`Column flag has an invalid column name: ${column}`)
+      }
+
+      tableColumns[column] = allTableColumns[column]
+    })
+
+    return tableColumns
+  }
+
+  if (extended) {
+    return allTableColumns
+  }
+
+  baseColumnNames.forEach(column => {
+    tableColumns[column] = allTableColumns[column]
+  })
+  return tableColumns
 }
