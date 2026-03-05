@@ -1,8 +1,10 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 
+import DataMaintenancesInfo from '../../../../../src/commands/data/maintenances/info.js'
 import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 
 describe('data:maintenances:info', function () {
@@ -49,10 +51,10 @@ describe('data:maintenances:info', function () {
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, maintenance)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:info', addon.name])
+    await runCommand(DataMaintenancesInfo, [addon.name])
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(stdout).to.equal(`addon_attachments:        DATABASE_URL
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(stdout.output).to.equal(`addon_attachments:        DATABASE_URL
 addon_kind:               heroku-postgresql
 addon_name:               postgresql-sinuous-83720
 addon_plan:               standard-0
@@ -77,10 +79,10 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, {...maintenance, duration_seconds: 872.976767})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:info', addon.name])
+    await runCommand(DataMaintenancesInfo, [addon.name])
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(stdout).to.equal(`addon_attachments:        DATABASE_URL
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(stdout.output).to.equal(`addon_attachments:        DATABASE_URL
 addon_kind:               heroku-postgresql
 addon_name:               postgresql-sinuous-83720
 addon_plan:               standard-0
@@ -107,10 +109,10 @@ duration_approximate:     ~ 15 minutes
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, maintenance)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:info', addon.name, `--app=${app.name}`])
+    await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(stdout).to.equal(`addon_attachments:        DATABASE_URL
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(stdout.output).to.equal(`addon_attachments:        DATABASE_URL
 addon_kind:               heroku-postgresql
 addon_name:               postgresql-sinuous-83720
 addon_plan:               standard-0
@@ -135,10 +137,10 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, maintenance)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:info', addon.name, '--json'])
+    await runCommand(DataMaintenancesInfo, [addon.name, '--json'])
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(JSON.parse(stdout)).to.deep.equal(maintenance)
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(JSON.parse(stdout.output)).to.deep.equal(maintenance)
   })
 
   it('shows 404 error when maintenance is not found', async function () {
@@ -149,8 +151,11 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(404, {message: 'not found'})
 
-    const {error} = await runCommand(['data:maintenances:info', addon.name, `--app=${app.name}`])
-
-    expect(error?.message).to.equal('not found')
+    try {
+      await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
+    } catch (error) {
+      const {message} = error as {message: string}
+      expect(message).to.equal('not found')
+    }
   })
 })

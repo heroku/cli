@@ -1,10 +1,13 @@
-import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr} from 'stdout-stderr'
 
+import DataMaintenancesWait from '../../../../../src/commands/data/maintenances/wait.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {maintenance} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 const completedMaintenance: Maintenance = {
   ...maintenance,
@@ -51,10 +54,10 @@ describe('data:maintenances:wait', function () {
           : [200, runningMaintenance]
       })
 
-    const {stderr} = await runCommand(['data:maintenances:wait', addon.name])
+    await runCommand(DataMaintenancesWait, [addon.name])
 
-    expect(stderr).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
-    expect(stderr).to.contain('maintenance completed')
+    expect(stderr.output).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
+    expect(stderr.output).to.contain('maintenance completed')
   })
 
   it('waits until maintenance is complete scoped by optional app flag', async function () {
@@ -77,10 +80,10 @@ describe('data:maintenances:wait', function () {
           : [200, runningMaintenance]
       })
 
-    const {stderr} = await runCommand(['data:maintenances:wait', addon.name, `--app=${addon.app.name}`])
+    await runCommand(DataMaintenancesWait, [addon.name, `--app=${addon.app.name}`])
 
-    expect(stderr).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
-    expect(stderr).to.contain('maintenance completed')
+    expect(stderr.output).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
+    expect(stderr.output).to.contain('maintenance completed')
   })
 
   it('shows error if initial maintenance state is not running', async function () {
@@ -92,8 +95,11 @@ describe('data:maintenances:wait', function () {
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, completedMaintenance)
 
-    const {error} = await runCommand(['data:maintenances:wait', addon.name])
-
-    expect(error?.message).to.equal(`There currently isn't any maintenance in progress for ${addon.name}`)
+    try {
+      await runCommand(DataMaintenancesWait, [addon.name])
+    } catch (error) {
+      const {message} = error as {message: string}
+      expect(ansis.strip(message)).to.equal(`There currently isn't any maintenance in progress for ${addon.name}`)
+    }
   })
 })

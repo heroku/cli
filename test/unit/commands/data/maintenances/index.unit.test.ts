@@ -1,8 +1,10 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 
+import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
+import runCommand from '../../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const appId = '30f93b8f-c592-4004-8d8a-3efb20395484'
@@ -85,10 +87,10 @@ describe('data:maintenances', function () {
       .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances', '--app=test-app'])
-    const actualStdout = removeAllWhitespace(stdout)
+    await runCommand(DataMaintenancesIndex, ['--app=test-app'])
+    const actualStdout = removeAllWhitespace(stdout.output)
 
-    expect(stderr).to.contain('Fetching maintenances... done')
+    expect(stderr.output).to.contain('Fetching maintenances... done')
     expect(actualStdout).to.contain(removeAllWhitespace('Addon                      Attachments    Scheduling Window                      Status    Required by                 Scheduled for'))
     expect(actualStdout).to.contain(removeAllWhitespace('redis-contoured-23719      REDIS_URL      Thursdays 22:00 to Fridays 02:00 UTC   pending   -                           -'))
     expect(actualStdout).to.contain(removeAllWhitespace('postgresql-sinuous-83720   DATABASE_URL   Thursdays 22:00 to Fridays 02:00 UTC   none      2019-11-12 17:57:01 +0000   2019-11-07 22:00:00 +0000'))
@@ -102,8 +104,8 @@ describe('data:maintenances', function () {
       .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
-    const {stdout} = await runCommand(['data:maintenances', '--app=test-app', '--extended', '--sort=Addon'])
-    const actualStdout = removeAllWhitespace(stdout)
+    await runCommand(DataMaintenancesIndex, ['--app=test-app', '--extended', '--sort=Addon'])
+    const actualStdout = removeAllWhitespace(stdout.output)
 
     expect(actualStdout).to.contain(removeAllWhitespace('Addon                      Attachments    Scheduling Window                      Status    Required by                 Scheduled for               Kind                Plan'))
     expect(actualStdout).to.contain(removeAllWhitespace('postgresql-sinuous-83720   DATABASE_URL   Thursdays 22:00 to Fridays 02:00 UTC   none      2019-11-12 17:57:01 +0000   2019-11-07 22:00:00 +0000   heroku-postgresql   standard-0'))
@@ -117,8 +119,8 @@ describe('data:maintenances', function () {
       .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
-    const {stdout} = await runCommand(['data:maintenances', '--app=test-app', '--extended', '--columns=addon,attachments'])
-    const actualStdout = removeAllWhitespace(stdout)
+    await runCommand(DataMaintenancesIndex, ['--app=test-app', '--extended', '--columns=addon,attachments'])
+    const actualStdout = removeAllWhitespace(stdout.output)
 
     expect(actualStdout).to.contain(removeAllWhitespace('Addon                      Attachments'))
     expect(actualStdout).to.contain(removeAllWhitespace('postgresql-sinuous-83720   DATABASE_URL'))
@@ -132,10 +134,10 @@ describe('data:maintenances', function () {
       .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances', '--app=test-app', '--json'])
+    await runCommand(DataMaintenancesIndex, ['--app=test-app', '--json'])
 
-    expect(stderr).to.contain('Fetching maintenances... done')
-    expect(JSON.parse(stdout)).to.deep.equal(maintenances)
+    expect(stderr.output).to.contain('Fetching maintenances... done')
+    expect(JSON.parse(stdout.output)).to.deep.equal(maintenances)
   })
 
   it('shows an error if the app is not found', async function () {
@@ -146,9 +148,12 @@ describe('data:maintenances', function () {
         message: "Couldn't find that app.",
       })
 
-    const {error} = await runCommand(['data:maintenances', '--app=test-app'])
-
-    expect(error?.message).to.contain("Couldn't find that app.\n\nError ID: not_found")
+    try {
+      await runCommand(DataMaintenancesIndex, ['--app=test-app'])
+    } catch (error) {
+      const {message} = error as {message: string}
+      expect(message).to.contain("Couldn't find that app.\n\nError ID: not_found")
+    }
   })
 
   it('shows an error message if there are no maintenances', async function () {
@@ -159,8 +164,11 @@ describe('data:maintenances', function () {
       .get(`/data/maintenances/v1/apps/${appId}`)
       .reply(200, {maintenances: []})
 
-    const {error} = await runCommand(['data:maintenances', '--app=test-app'])
-
-    expect(error?.message).to.equal('No maintenances found for app test-app')
+    try {
+      await runCommand(DataMaintenancesIndex, ['--app=test-app'])
+    } catch (error) {
+      const {message} = error as {message: string}
+      expect(message).to.equal('No maintenances found for app test-app')
+    }
   })
 })

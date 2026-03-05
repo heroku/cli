@@ -1,11 +1,15 @@
-import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 
+import DataMaintenancesRun from '../../../../../src/commands/data/maintenances/run.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {cedarApp} from '../../../../fixtures/apps/fixtures.js'
 import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, legacyEssentialAddon} from '../../../../fixtures/data/pg/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
+
 
 const appInMaintenance = {
   ...cedarApp,
@@ -40,10 +44,10 @@ describe('data:maintenances:run', function () {
       .post(`/data/maintenances/v1/${addon.id}/run`)
       .reply(200, maintenancesResponse)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:run', `--app=${appInMaintenance.name}`, addon.name])
+    await runCommand(DataMaintenancesRun, [`--app=${appInMaintenance.name}`, addon.name])
 
-    expect(stderr).to.contain('maintenance triggered')
-    expect(stdout).to.contain('')
+    expect(stderr.output).to.contain('maintenance triggered')
+    expect(stdout.output).to.contain('')
   })
 
   it('runs maintenance in window without app flag', async function () {
@@ -59,10 +63,10 @@ describe('data:maintenances:run', function () {
       .post(`/data/maintenances/v1/${addon.id}/run`)
       .reply(200, maintenancesResponse)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:run', addon.name])
+    await runCommand(DataMaintenancesRun, [addon.name])
 
-    expect(stderr).to.contain('maintenance triggered')
-    expect(stdout).to.contain('')
+    expect(stderr.output).to.contain('maintenance triggered')
+    expect(stdout.output).to.contain('')
   })
 
   it('runs maintenance out of window with --confirm', async function () {
@@ -78,15 +82,14 @@ describe('data:maintenances:run', function () {
       .post(`/data/maintenances/v1/${addon.id}/run`)
       .reply(200, maintenancesResponse)
 
-    const {stderr, stdout} = await runCommand([
-      'data:maintenances:run',
+    await runCommand(DataMaintenancesRun, [
       `--confirm=${cedarApp.name}`,
       `--app=${cedarApp.name}`,
       addon.name,
     ])
 
-    expect(stderr).to.contain('maintenance triggered')
-    expect(stdout).to.contain('')
+    expect(stderr.output).to.contain('maintenance triggered')
+    expect(stdout.output).to.contain('')
   })
 
   it('shows an error trying to run maintenance out of window without --force', async function () {
@@ -98,9 +101,12 @@ describe('data:maintenances:run', function () {
       .get(`/apps/${addon.app.id}`)
       .reply(200, cedarApp)
 
-    const {error} = await runCommand(['data:maintenances:run', `--app=${cedarApp.name}`, addon.name])
-
-    expect(error?.message).to.equal('To proceed, put the application into maintenance mode or re-run the command with --confirm my-cedar-app')
+    try {
+      await runCommand(DataMaintenancesRun, [`--app=${cedarApp.name}`, addon.name])
+    } catch (error) {
+      const {message} = error as {message: string}
+      expect(ansis.strip(message)).to.equal('To proceed, put the application into maintenance mode or re-run the command with --confirm my-cedar-app')
+    }
   })
 
   it('shows an error trying to run maintenance on an essential tier', async function () {
@@ -108,9 +114,12 @@ describe('data:maintenances:run', function () {
       .post('/actions/addons/resolve')
       .reply(200, [legacyEssentialAddon])
 
-    const {error} = await runCommand(['data:maintenances:run', `--app=${appInMaintenance.name}`, legacyEssentialAddon.name])
-
-    expect(error?.message).to.equal('You can\'t trigger maintenance on an Essential tier database.')
+    try {
+      await runCommand(DataMaintenancesRun, [`--app=${appInMaintenance.name}`, legacyEssentialAddon.name])
+    } catch (error) {
+      const {message} = error as {message: string}
+      expect(message).to.equal('You can\'t trigger maintenance on an Essential tier database.')
+    }
   })
 
   it('waits until maintenance is complete when using wait flag', async function () {
@@ -150,10 +159,10 @@ describe('data:maintenances:run', function () {
           : [200, runningMaintenance]
       })
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:run', `--app=${appInMaintenance.name}`, '--wait', addon.name])
+    await runCommand(DataMaintenancesRun, [`--app=${appInMaintenance.name}`, '--wait', addon.name])
 
-    expect(stderr).to.contain('maintenance triggered')
-    expect(stderr).to.contain('maintenance completed')
-    expect(stdout).to.equal('')
+    expect(stderr.output).to.contain('maintenance triggered')
+    expect(stderr.output).to.contain('maintenance completed')
+    expect(stdout.output).to.equal('')
   })
 })

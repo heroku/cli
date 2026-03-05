@@ -1,10 +1,13 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 
+import DataMaintenancesHistory from '../../../../../src/commands/data/maintenances/history.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
+import runCommand from '../../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
+import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
 
 const addonFixture = {
   id: 'b8966596-d1af-4f39-8c72-a8b4d6a5d3e1',
@@ -83,10 +86,10 @@ describe('data:maintenances:history', function () {
       .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: maintenancesFixture})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name])
-    const actualStdout = removeAllWhitespace(stdout)
+    await runCommand(DataMaintenancesHistory, [addonFixture.name])
+    const actualStdout = removeAllWhitespace(stdout.output)
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
     expect(actualStdout).to.contain(removeAllWhitespace('Scheduled for               Started at   Completed at   Duration (seconds)   Reason                Status    Window'))
     expect(actualStdout).to.contain(removeAllWhitespace('-                           -            -              -                    hardware_issue        pending   Thursdays 22:00 to Fridays 02:00 UTC'))
     expect(actualStdout).to.contain(removeAllWhitespace('2019-11-07 22:00:00 +0000   -            -              -                    routine_maintenance   none      Thursdays 22:00 to Fridays 02:00 UTC'))
@@ -100,10 +103,10 @@ describe('data:maintenances:history', function () {
       .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: maintenancesFixture})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--columns=scheduled_for,started_at'])
-    const actualStdout = removeAllWhitespace(stdout)
+    await runCommand(DataMaintenancesHistory, [addonFixture.name, '--columns=scheduled_for,started_at'])
+    const actualStdout = removeAllWhitespace(stdout.output)
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
     expect(actualStdout).to.contain(removeAllWhitespace('Scheduled for               Started at'))
     expect(actualStdout).to.contain(removeAllWhitespace('-                           -'))
     expect(actualStdout).to.contain(removeAllWhitespace('2019-11-07 22:00:00 +0000   -'))
@@ -120,10 +123,10 @@ describe('data:maintenances:history', function () {
       .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=1`)
       .reply(200, {maintenances: [maintenancesFixture[0]]})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--num=1'])
-    const actualStdout = removeAllWhitespace(stdout)
+    await runCommand(DataMaintenancesHistory, [addonFixture.name, '--num=1'])
+    const actualStdout = removeAllWhitespace(stdout.output)
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
     expect(actualStdout).to.contain(removeAllWhitespace('Scheduled for   Started at   Completed at   Duration (seconds)   Reason           Status    Window'))
     expect(actualStdout).to.contain(removeAllWhitespace('-               -            -              -                    hardware_issue   pending   Thursdays 22:00 to Fridays 02:00 UTC'))
   })
@@ -136,10 +139,10 @@ describe('data:maintenances:history', function () {
       .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: maintenancesFixture})
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--json'])
+    await runCommand(DataMaintenancesHistory, [addonFixture.name, '--json'])
 
-    expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
-    expect(JSON.parse(stdout)).to.deep.equal(maintenancesFixture)
+    expect(unwrap(stderr.output)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
+    expect(JSON.parse(stdout.output)).to.deep.equal(maintenancesFixture)
   })
 
   it('shows a message when there are no maintenances for an addon', async function () {
@@ -150,8 +153,8 @@ describe('data:maintenances:history', function () {
       .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
       .reply(200, {maintenances: []})
 
-    const {stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--json'])
+    await runCommand(DataMaintenancesHistory, [addonFixture.name, '--json'])
 
-    expect(stdout).to.equal('postgresql-sinuous-83720 does not have any maintenance history\n')
+    expect(stdout.output).to.equal('postgresql-sinuous-83720 does not have any maintenance history\n')
   })
 })
