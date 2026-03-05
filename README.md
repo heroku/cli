@@ -89,7 +89,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
 * [`heroku usage`](docs/usage.md) - list usage for metered add-ons attached to an app or apps within a team
-* [`heroku version`](docs/version.md)
+* [`heroku version`](docs/version.md) - display changelog information for a specific CLI version
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->

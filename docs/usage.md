@@ -24,4 +24,4 @@ DESCRIPTION
   list usage for metered add-ons attached to an app or apps within a team
 ```
 
-_See code: [src/commands/usage/addons.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/usage/addons.ts)_
+_See code: [src/commands/usage/addons.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.35/src/commands/usage/addons.ts)_
