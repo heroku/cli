@@ -365,10 +365,10 @@
   "files": [
     "/autocomplete-scripts",
     "/bin",
+    "/CHANGELOG.md",
     "/dist",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json",
-    "CHANGELOG.md"
+    "/oclif.manifest.json"
   ],
   "homepage": "https://cli.heroku.com",
   "keywords": [
