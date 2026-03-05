@@ -1,75 +1,78 @@
 /* eslint-disable valid-jsdoc */
-import {color} from '@heroku/heroku-cli-util'
-import {Hook, ux} from '@oclif/core'
-import inquirer from 'inquirer'
-import {readFile} from 'node:fs/promises'
-import {join} from 'node:path'
-import tsheredocLib from 'tsheredoc'
+import { color } from "@heroku/heroku-cli-util";
+import { Hook, ux } from "@oclif/core";
+import inquirer from "inquirer";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import tsheredocLib from "tsheredoc";
 
-import {NpmAuth} from '../../lib/npm-auth.js'
+import { NpmAuth } from "../../lib/npm-auth.js";
 
-const tsheredoc = tsheredocLib.default
+const tsheredoc = tsheredocLib.default;
 
 /**
  * Check if user has private plugins that may require npm authentication
  */
-const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
+const checkNpmAuth: Hook<"preupdate"> = async function (opts) {
   try {
     // Check if npm is available on the system
-    const npmAvailable = await NpmAuth.isNpmAvailable()
+    const npmAvailable = await NpmAuth.isNpmAvailable();
     if (!npmAvailable) {
-      return
+      return;
     }
 
     // Read the plugins package.json to see what plugins are installed
-    const pluginsPjsonPath = join(this.config.dataDir, 'package.json')
-    let pluginsPjson: any
+    const pluginsPjsonPath = join(this.config.dataDir, "package.json");
+    let pluginsPjson: any;
 
     try {
-      const content = await readFile(pluginsPjsonPath, 'utf8')
-      pluginsPjson = JSON.parse(content)
+      const content = await readFile(pluginsPjsonPath, "utf8");
+      pluginsPjson = JSON.parse(content);
     } catch {
       // No plugins installed yet, nothing to check
-      return
+      return;
     }
 
-    const dependencies = pluginsPjson.dependencies || {}
-    const plugins = Object.keys(dependencies)
+    const dependencies = pluginsPjson.dependencies || {};
+    const plugins = Object.keys(dependencies);
 
     if (plugins.length === 0) {
-      return
+      return;
     }
 
     // Check which plugins are actually private
     // Process in batches of 5 to parallelize npm API calls
-    const batchSize = 5
-    const privatePlugins: string[] = []
+    const batchSize = 5;
+    const privatePlugins: string[] = [];
 
     for (let i = 0; i < plugins.length; i += batchSize) {
-      const batch = plugins.slice(i, i + batchSize)
+      const batch = plugins.slice(i, i + batchSize);
       const results = await Promise.all(
-        batch.map(async plugin => {
-          const isPrivate = await NpmAuth.isPrivatePackage(plugin)
-          this.debug(`${plugin} is ${isPrivate ? 'private' : 'public'}`)
-          return isPrivate ? plugin : null
+        batch.map(async (plugin) => {
+          const isPrivate = await NpmAuth.isPrivatePackage(plugin);
+          this.debug(`${plugin} is ${isPrivate ? "private" : "public"}`);
+          return isPrivate ? plugin : null;
         }),
-      )
+      );
 
-      privatePlugins.push(...results.filter((p): p is string => p !== null))
+      privatePlugins.push(...results.filter((p): p is string => p !== null));
     }
 
     if (privatePlugins.length === 0) {
-      return
+      return;
     }
 
     // Check if npm is authenticated
-    const isAuthenticated = await NpmAuth.isAuthenticated()
+    const isAuthenticated = await NpmAuth.isAuthenticated();
     if (isAuthenticated) {
-      return
+      return;
     }
 
     // User is not authenticated, prompt them
-    const pluginList = privatePlugins.map(p => `  • ${p}`).join('\n')
+    const pluginList = privatePlugins.map((p) => `  • ${p}`).join("\n");
+
+    // Stop any running spinner to avoid interfering with the interactive prompt
+    ux.action.stop();
 
     ux.warn(tsheredoc`
 
@@ -83,37 +86,39 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
       These plugins require npm authentication to update.
 
       ==================================================================
-    `)
+    `);
 
-    const {shouldLogin} = await inquirer.prompt([{
-      default: true,
-      message: 'Would you like to authenticate with npm now?',
-      name: 'shouldLogin',
-      type: 'confirm',
-    }])
+    const { shouldLogin } = await inquirer.prompt([
+      {
+        default: true,
+        message: "Would you like to authenticate with npm now?",
+        name: "shouldLogin",
+        type: "confirm",
+      },
+    ]);
 
     if (!shouldLogin) {
       ux.warn(tsheredoc`
         Skipping npm authentication.
 
-        Run ${color.code('npm login')} before your next update to update private plugins.
+        Run ${color.code("npm login")} before your next update to update private plugins.
 
         Continuing with update, but private plugins may fail to update.
-      `)
-      return
+      `);
+      return;
     }
 
     // Run npm login
-    await NpmAuth.login()
+    await NpmAuth.login();
   } catch (error: any) {
     // If user interrupted with Ctrl+C or other exit signal, respect that and exit
     if (error.oclif?.exit !== undefined) {
-      throw error
+      throw error;
     }
 
     // For other errors, don't block the update
-    this.debug(`npm auth check failed: ${error.message}`)
+    this.debug(`npm auth check failed: ${error.message}`);
   }
-}
+};
 
-export default checkNpmAuth
+export default checkNpmAuth;

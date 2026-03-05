@@ -367,7 +367,8 @@
     "/bin",
     "/dist",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/oclif.manifest.json",
+    "CHANGELOG.md"
   ],
   "homepage": "https://cli.heroku.com",
   "keywords": [
