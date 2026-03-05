@@ -20,6 +20,7 @@ describe('HerokuRepl', function () {
   })
 
   afterEach(function () {
+    repl?.close()
     sinon.restore()
   })
 
@@ -172,6 +173,12 @@ describe('HerokuRepl', function () {
 
   describe('readline interface creation', function () {
     it('should create readline interface with correct configuration', function () {
+      sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
+      sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
+        write: sinon.stub(),
+        close: sinon.stub(),
+      })
+
       repl = new HerokuRepl(config)
       // Verify that the REPL was created without errors
       expect(repl).to.be.instanceOf(HerokuRepl)

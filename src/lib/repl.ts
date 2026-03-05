@@ -197,6 +197,16 @@ export class HerokuRepl {
   }
 
   /**
+   * Closes the REPL by closing the readline interface and history stream.
+   *
+   * @returns {void}
+   */
+  close() {
+    this.rl.close()
+    this.historyStream?.close()
+  }
+
+  /**
    * Starts the REPL by showing the prompt.
    *
    * @returns {void}
