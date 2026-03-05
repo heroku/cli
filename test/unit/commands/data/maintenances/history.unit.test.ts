@@ -3,6 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
+import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 
 const addonFixture = {
@@ -83,11 +84,12 @@ describe('data:maintenances:history', function () {
       .reply(200, {maintenances: maintenancesFixture})
 
     const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name])
+    const actualStdout = removeAllWhitespace(stdout)
 
     expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
-    expect(stdout).to.contain('Scheduled for               Started at   Completed at   Duration (seconds)   Reason                Status    Window')
-    expect(stdout).to.contain('-                           -            -              -                    hardware_issue        pending   Thursdays 22:00 to Fridays 02:00 UTC')
-    expect(stdout).to.contain('2019-11-07 22:00:00 +0000   -            -              -                    routine_maintenance   none      Thursdays 22:00 to Fridays 02:00 UTC')
+    expect(actualStdout).to.contain(removeAllWhitespace('Scheduled for               Started at   Completed at   Duration (seconds)   Reason                Status    Window'))
+    expect(actualStdout).to.contain(removeAllWhitespace('-                           -            -              -                    hardware_issue        pending   Thursdays 22:00 to Fridays 02:00 UTC'))
+    expect(actualStdout).to.contain(removeAllWhitespace('2019-11-07 22:00:00 +0000   -            -              -                    routine_maintenance   none      Thursdays 22:00 to Fridays 02:00 UTC'))
   })
 
   it('shows a list of maintenances for addons with only the specified columns', async function () {
@@ -99,12 +101,13 @@ describe('data:maintenances:history', function () {
       .reply(200, {maintenances: maintenancesFixture})
 
     const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--columns=scheduled_for,started_at'])
+    const actualStdout = removeAllWhitespace(stdout)
 
     expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
-    expect(stdout).to.contain('Scheduled for               Started at')
-    expect(stdout).to.contain('-                           -')
-    expect(stdout).to.contain('2019-11-07 22:00:00 +0000   -')
-    expect(stdout).to.not.contain('Completed at')
+    expect(actualStdout).to.contain(removeAllWhitespace('Scheduled for               Started at'))
+    expect(actualStdout).to.contain(removeAllWhitespace('-                           -'))
+    expect(actualStdout).to.contain(removeAllWhitespace('2019-11-07 22:00:00 +0000   -'))
+    expect(actualStdout).to.not.contain(removeAllWhitespace('Completed at'))
   })
 
   it('shows a list of maintenances for addon capped at the number specified by the num flag', async function () {
@@ -118,10 +121,11 @@ describe('data:maintenances:history', function () {
       .reply(200, {maintenances: [maintenancesFixture[0]]})
 
     const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--num=1'])
+    const actualStdout = removeAllWhitespace(stdout)
 
     expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
-    expect(stdout).to.contain('Scheduled for   Started at   Completed at   Duration (seconds)   Reason           Status    Window')
-    expect(stdout).to.contain('-               -            -              -                    hardware_issue   pending   Thursdays 22:00 to Fridays 02:00 UTC')
+    expect(actualStdout).to.contain(removeAllWhitespace('Scheduled for   Started at   Completed at   Duration (seconds)   Reason           Status    Window'))
+    expect(actualStdout).to.contain(removeAllWhitespace('-               -            -              -                    hardware_issue   pending   Thursdays 22:00 to Fridays 02:00 UTC'))
   })
 
   it('shows maintenances for addon formatted in json', async function () {
