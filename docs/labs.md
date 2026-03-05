@@ -28,7 +28,7 @@ DESCRIPTION
   list experimental features
 ```
 
-_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/labs/index.ts)_
+_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.32/src/commands/labs/index.ts)_
 
 ## `heroku labs:disable FEATURE`
 
@@ -53,7 +53,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.32/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -77,7 +77,7 @@ DESCRIPTION
   enables an experimental feature
 ```
 
-_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/labs/enable.ts)_
+_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.32/src/commands/labs/enable.ts)_
 
 ## `heroku labs:info FEATURE`
 
@@ -102,4 +102,4 @@ DESCRIPTION
   show feature info
 ```
 
-_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/labs/info.ts)_
+_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.32/src/commands/labs/info.ts)_
