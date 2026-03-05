@@ -1,9 +1,10 @@
 `heroku version`
 ================
 
-
+display changelog information for a specific CLI version
 
 * [`heroku version`](#heroku-version)
+* [`heroku version:info [VERSION]`](#heroku-versioninfo-version)
 
 ## `heroku version`
 
@@ -24,3 +25,25 @@ FLAG DESCRIPTIONS
 ```
 
 _See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/v2.2.36/src/commands/version.ts)_
+
+## `heroku version:info [VERSION]`
+
+display changelog information for a specific CLI version
+
+```
+USAGE
+  $ heroku version:info [VERSION]
+
+ARGUMENTS
+  [VERSION]  version number to look up (e.g., 11.0.0, 10.17.0)
+
+DESCRIPTION
+  display changelog information for a specific CLI version
+
+EXAMPLES
+   $ heroku version:info 
+
+   $ heroku version:info 11.0.0
+```
+
+_See code: [src/commands/version/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.34/src/commands/version/info.ts)_
