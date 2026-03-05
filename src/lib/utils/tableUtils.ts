@@ -54,14 +54,16 @@ export const outputCSV = (tableData: Record<string, any>[], tableColumns: Record
   }
 }
 
-export const constructTableColumns = (allTableColumns: Record<string, any>, baseColumnNames: string[], extended: boolean, columns?: string[]) => {
+export const constructTableColumns = (allTableColumns: Record<string, any>, baseColumnNames: string[], extended: boolean, columns?: string) => {
   const tableColumns: Record<string, any> = {}
+
   if (columns) {
-    if (columns.length === 0) {
+    const columnsArray = columns.split(',')
+    if (columnsArray.length === 0) {
       throw new Error('Column flag has no column names')
     }
 
-    columns.forEach(column => {
+    columnsArray.forEach(column => {
       const lowerCaseColumn = column.toLowerCase()
       if (!allTableColumns[lowerCaseColumn]) {
         throw new Error(`Column flag has an invalid column name: ${column}`)

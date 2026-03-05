@@ -4,7 +4,7 @@ import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
 import {Maintenance} from '../../../lib/data/types.js'
-import {constructSortFilterTableOptions, outputCSV} from '../../../lib/utils/tableUtils.js'
+import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/tableUtils.js'
 
 export default class DataMaintenancesHistory extends BaseCommand {
   static args = {
@@ -57,7 +57,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
       return
     }
 
-    const tableColumns = {
+    const allTableColumns = {
       scheduled_for: {
         get: (row: Maintenance) => row && row.scheduled_for ? row.scheduled_for : '-',
         header: 'Scheduled for',
@@ -85,6 +85,8 @@ export default class DataMaintenancesHistory extends BaseCommand {
         header: 'Window',
       },
     }
+
+    const tableColumns = constructTableColumns(allTableColumns, Object.keys(allTableColumns), false, flags.columns)
 
     if (flags.json) {
       hux.styledJSON(maintenances)

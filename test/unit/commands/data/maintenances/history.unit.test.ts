@@ -90,6 +90,23 @@ describe('data:maintenances:history', function () {
     expect(stdout).to.contain('2019-11-07 22:00:00 +0000   -            -              -                    routine_maintenance   none      Thursdays 22:00 to Fridays 02:00 UTC')
   })
 
+  it('shows a list of maintenances for addons with only the specified columns', async function () {
+    herokuApi
+      .post('/actions/addons/resolve')
+      .reply(200, [addonFixture])
+    dataApi
+      .get(`/data/maintenances/v1/${addonFixture.id}/history/?limit=5`)
+      .reply(200, {maintenances: maintenancesFixture})
+
+    const {stderr, stdout} = await runCommand(['data:maintenances:history', addonFixture.name, '--columns=scheduled_for,started_at'])
+
+    expect(unwrap(stderr)).to.contain('Fetching maintenance history for postgresql-sinuous-83720... done')
+    expect(stdout).to.contain('Scheduled for               Started at')
+    expect(stdout).to.contain('-                           -')
+    expect(stdout).to.contain('2019-11-07 22:00:00 +0000   -')
+    expect(stdout).to.not.contain('Completed at')
+  })
+
   it('shows a list of maintenances for addon capped at the number specified by the num flag', async function () {
     herokuApi
       .post('/actions/addons/resolve')

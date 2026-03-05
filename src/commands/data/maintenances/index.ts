@@ -113,7 +113,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
 
     const baseColumnNames = ['addon', 'attachments', 'window', 'status', 'required_by', 'scheduled_for']
 
-    return constructTableColumns(allTableColumns, baseColumnNames, extended, columns?.split(','))
+    return constructTableColumns(allTableColumns, baseColumnNames, extended, columns)
   }
 
   private renderTable(maintenances: Maintenance[], tableColumns: Record<string, any>, flags: Record<string, any>) {

@@ -83,7 +83,7 @@ describe('tableUtils', function () {
     context('columns flag provided', function () {
       it('throws when the columns array is empty', function () {
         try {
-          constructTableColumns(allTableColumns, baseColumnNames, false, [])
+          constructTableColumns(allTableColumns, baseColumnNames, false, '')
         } catch (error: any) {
           expect(error.message).to.equal('Column flag has no column names')
         }
@@ -91,14 +91,14 @@ describe('tableUtils', function () {
 
       it('throws when none of the provided columns match any valid column', function () {
         try {
-          constructTableColumns(allTableColumns, baseColumnNames, false, ['unknown'])
+          constructTableColumns(allTableColumns, baseColumnNames, false, 'unknown')
         } catch (error: any) {
           expect(error.message).to.equal('Column flag has an invalid column name: unknown')
         }
       })
 
       it('returns only the specified columns', function () {
-        const result = constructTableColumns(allTableColumns, baseColumnNames, false, ['name', 'region'])
+        const result = constructTableColumns(allTableColumns, baseColumnNames, false, 'name,region')
         expect(result).to.deep.equal({
           name: allTableColumns.name,
           region: allTableColumns.region,
@@ -106,7 +106,7 @@ describe('tableUtils', function () {
       })
 
       it('returns only the specified columns regardless of capitalization of the column name', function () {
-        const result = constructTableColumns(allTableColumns, baseColumnNames, false, ['Name', 'Region'])
+        const result = constructTableColumns(allTableColumns, baseColumnNames, false, 'Name,Region')
         expect(result).to.deep.equal({
           name: allTableColumns.name,
           region: allTableColumns.region,
@@ -115,14 +115,14 @@ describe('tableUtils', function () {
 
       it('throws when any of the provided columns do not match any valid column', function () {
         try {
-          constructTableColumns(allTableColumns, baseColumnNames, false, ['name', 'unknown'])
+          constructTableColumns(allTableColumns, baseColumnNames, false, 'name,unknown')
         } catch (error: any) {
           expect(error.message).to.equal('Column flag has an invalid column name: unknown')
         }
       })
 
       it('ignores extended flag when columns are provided', function () {
-        const result = constructTableColumns(allTableColumns, baseColumnNames, true, ['status'])
+        const result = constructTableColumns(allTableColumns, baseColumnNames, true, 'status')
         expect(result).to.deep.equal({status: allTableColumns.status})
       })
     })
