@@ -2,7 +2,7 @@ import {Interfaces} from '@oclif/core'
 import {randomUUID} from 'node:crypto'
 import {stat} from 'node:fs/promises'
 import * as path from 'path'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 
 import debug from 'debug'
 const userConfigDebug = debug('heroku:user_config')
