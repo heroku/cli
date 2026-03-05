@@ -62,11 +62,12 @@ export const constructTableColumns = (allTableColumns: Record<string, any>, base
     }
 
     columns.forEach(column => {
-      if (!allTableColumns[column]) {
+      const lowerCaseColumn = column.toLowerCase()
+      if (!allTableColumns[lowerCaseColumn]) {
         throw new Error(`Column flag has an invalid column name: ${column}`)
       }
 
-      tableColumns[column] = allTableColumns[column]
+      tableColumns[lowerCaseColumn] = allTableColumns[lowerCaseColumn]
     })
 
     return tableColumns

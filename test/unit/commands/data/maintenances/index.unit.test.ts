@@ -106,6 +106,19 @@ describe('data:maintenances', function () {
     expect(stdout).to.contain('postgresql-sinuous-83720   DATABASE_URL   Thursdays 22:00 to Fridays 02:00 UTC   none      2019-11-12 17:57:01 +0000   2019-11-07 22:00:00 +0000   heroku-postgresql   standard-0')
   })
 
+  it('only includes specified columns', async function () {
+    herokuApi
+      .get('/apps/test-app')
+      .reply(200, app)
+    dataApi
+      .get(`/data/maintenances/v1/apps/${appId}`)
+      .reply(200, {maintenances})
+
+    const {stdout} = await runCommand(['data:maintenances', '--app=test-app', '--extended', '--columns=addon,attachments'])
+    expect(stdout).to.contain('Addon                      Attachments')
+    expect(stdout).to.contain('postgresql-sinuous-83720   DATABASE_URL')
+  })
+
   it('shows a list of maintenances for a given app with the json flag', async function () {
     herokuApi
       .get('/apps/test-app')

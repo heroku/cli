@@ -105,6 +105,14 @@ describe('tableUtils', function () {
         })
       })
 
+      it('returns only the specified columns regardless of capitalization of the column name', function () {
+        const result = constructTableColumns(allTableColumns, baseColumnNames, false, ['Name', 'Region'])
+        expect(result).to.deep.equal({
+          name: allTableColumns.name,
+          region: allTableColumns.region,
+        })
+      })
+
       it('throws when any of the provided columns do not match any valid column', function () {
         try {
           constructTableColumns(allTableColumns, baseColumnNames, false, ['name', 'unknown'])

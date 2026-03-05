@@ -5,7 +5,7 @@ import {ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
-import {constructSortFilterTableOptions, outputCSV} from '../../../lib/utils/tableUtils.js'
+import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/tableUtils.js'
 
 export default class DataMaintenancesIndex extends BaseCommand {
   static description = 'list maintenances for an app\'s data addons'
@@ -38,7 +38,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
       this.error(`No maintenances found for app ${flags.app}`)
     }
 
-    const tableColumns = this.constructTableColumns(flags.extended)
+    const tableColumns = this.getTableColumns(flags.extended, flags.columns)
 
     if (flags.json) {
       hux.styledJSON(maintenances)
@@ -49,8 +49,20 @@ export default class DataMaintenancesIndex extends BaseCommand {
     }
   }
 
-  private constructTableColumns(extended: boolean) {
-    const tableColumns = {
+  private async fetchMaintenances(appName: string) {
+    ux.action.start('Fetching maintenances')
+    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
+    const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
+      `/data/maintenances/v1/apps/${app.id}`,
+      this.dataApi.defaults,
+    )
+    ux.action.stop()
+
+    return maintenances
+  }
+
+  private getTableColumns(extended: boolean, columns: string | undefined) {
+    const allTableColumns = {
       addon: {
         get: (row: Maintenance) => row.addon && row.addon.name,
         header: 'Addon',
@@ -89,35 +101,19 @@ export default class DataMaintenancesIndex extends BaseCommand {
         },
         header: 'Scheduled for',
       },
+      kind: {
+        get: (row: Maintenance) => row.addon.kind,
+        header: 'Kind',
+      },
+      plan: {
+        get: (row: Maintenance) => row.addon.plan,
+        header: 'Plan',
+      },
     }
 
-    if (extended) {
-      const extendedColumns = {
-        kind: {
-          get: (row: Maintenance) => row.addon.kind,
-          header: 'Kind',
-        },
-        plan: {
-          get: (row: Maintenance) => row.addon.plan,
-          header: 'Plan',
-        },
-      }
-      Object.assign(tableColumns, extendedColumns)
-    }
+    const baseColumnNames = ['addon', 'attachments', 'window', 'status', 'required_by', 'scheduled_for']
 
-    return tableColumns
-  }
-
-  private async fetchMaintenances(appName: string) {
-    ux.action.start('Fetching maintenances')
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
-      `/data/maintenances/v1/apps/${app.id}`,
-      this.dataApi.defaults,
-    )
-    ux.action.stop()
-
-    return maintenances
+    return constructTableColumns(allTableColumns, baseColumnNames, extended, columns?.split(','))
   }
 
   private renderTable(maintenances: Maintenance[], tableColumns: Record<string, any>, flags: Record<string, any>) {
