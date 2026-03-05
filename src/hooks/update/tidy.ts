@@ -1,7 +1,7 @@
 import {Hook} from '@oclif/core'
 import {stat} from 'node:fs/promises'
 import * as path from 'path'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 
 async function removeEmptyDirs(dir: string): Promise<void> {
   let files

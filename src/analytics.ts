@@ -2,7 +2,7 @@ import {vars} from '@heroku-cli/command'
 import {Command, Interfaces} from '@oclif/core'
 import * as path from 'path'
 import deps from './deps.js'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 import debug from 'debug'
 
 const analyticsDebug = debug('heroku:analytics')
