@@ -10,7 +10,6 @@ import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maint
 import {addon, legacyEssentialAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
-
 const appInMaintenance = {
   ...cedarApp,
   maintenance: true,
