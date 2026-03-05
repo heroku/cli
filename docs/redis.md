@@ -72,7 +72,7 @@ EXAMPLES
   $ heroku redis:cli --app=my-app --confirm my-database
 ```
 
-_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/cli.ts)_
+_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/cli.ts)_
 
 ## `heroku redis:credentials [DATABASE]`
 
@@ -98,7 +98,7 @@ DESCRIPTION
   display credentials information
 ```
 
-_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/credentials.ts)_
+_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/credentials.ts)_
 
 ## `heroku redis:info [DATABASE]`
 
@@ -127,7 +127,7 @@ ALIASES
   $ heroku redis
 ```
 
-_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/info.ts)_
+_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/info.ts)_
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
 
@@ -169,7 +169,7 @@ DESCRIPTION
   pass an empty string ('') to disable keyspace notifications
 ```
 
-_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/keyspace-notifications.ts)_
+_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/keyspace-notifications.ts)_
 
 ## `heroku redis:maintenance [DATABASE]`
 
@@ -198,7 +198,7 @@ DESCRIPTION
   Set or change the maintenance window for your Redis instance
 ```
 
-_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/maintenance.ts)_
+_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/maintenance.ts)_
 
 ## `heroku redis:maxmemory [DATABASE]`
 
@@ -234,7 +234,7 @@ DESCRIPTION
   volatile-ttl    # only evicts keys with an expiry set and a short TTL
 ```
 
-_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/maxmemory.ts)_
+_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/maxmemory.ts)_
 
 ## `heroku redis:promote [DATABASE]`
 
@@ -259,7 +259,7 @@ DESCRIPTION
   sets DATABASE as your REDIS_URL
 ```
 
-_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/promote.ts)_
+_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/promote.ts)_
 
 ## `heroku redis:stats-reset [DATABASE]`
 
@@ -285,7 +285,7 @@ DESCRIPTION
   reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)
 ```
 
-_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/stats-reset.ts)_
+_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/stats-reset.ts)_
 
 ## `heroku redis:timeout [DATABASE]`
 
@@ -312,7 +312,7 @@ DESCRIPTION
   A value of zero means that connections will not be closed.
 ```
 
-_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/timeout.ts)_
+_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/timeout.ts)_
 
 ## `heroku redis:upgrade [DATABASE]`
 
@@ -339,7 +339,7 @@ DESCRIPTION
   perform in-place version upgrade
 ```
 
-_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/upgrade.ts)_
+_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/upgrade.ts)_
 
 ## `heroku redis:wait [DATABASE]`
 
@@ -365,4 +365,4 @@ DESCRIPTION
   wait for Redis instance to be available
 ```
 
-_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/wait.ts)_
+_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-alpha.33/src/commands/redis/wait.ts)_

@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.0.0-beta.0",
+  "version": "11.0.0-alpha.33",
   "author": "Heroku",
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -365,6 +365,7 @@
   "files": [
     "/autocomplete-scripts",
     "/bin",
+    "/CHANGELOG.md",
     "/dist",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"

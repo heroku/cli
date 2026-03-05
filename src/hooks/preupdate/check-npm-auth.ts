@@ -71,6 +71,9 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
     // User is not authenticated, prompt them
     const pluginList = privatePlugins.map(p => `  • ${p}`).join('\n')
 
+    // Stop any running spinner to avoid interfering with the interactive prompt
+    ux.action.stop()
+
     ux.warn(tsheredoc`
 
       ==================================================================
