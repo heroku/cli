@@ -1,6 +1,5 @@
 import {Interfaces} from '@oclif/core'
 import {randomUUID} from 'node:crypto'
-import {stat} from 'node:fs/promises'
 import * as path from 'path'
 import fs from 'fs-extra'
 
@@ -113,7 +112,7 @@ export default class UserConfig {
 
   private async getLastUpdated(): Promise<number | undefined> {
     try {
-      const statResult = await stat(this.file)
+      const statResult = await fs.stat(this.file)
       return statResult.mtime.getTime()
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error

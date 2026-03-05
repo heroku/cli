@@ -1,4 +1,3 @@
-import {stat} from 'node:fs/promises'
 import fs from 'fs-extra'
 
 export async function updateCache(cachePath: string, cache: any) {
@@ -7,7 +6,7 @@ export async function updateCache(cachePath: string, cache: any) {
 }
 
 async function _mtime(f: string): Promise<Date> {
-  const statResult = await stat(f)
+  const statResult = await fs.stat(f)
   return statResult.mtime
 }
 

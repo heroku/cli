@@ -1,5 +1,4 @@
 import {Hook} from '@oclif/core'
-import {stat} from 'node:fs/promises'
 import * as path from 'path'
 import fs from 'fs-extra'
 
@@ -8,7 +7,7 @@ async function removeEmptyDirs(dir: string): Promise<void> {
   try {
     const filenames = await fs.readdir(dir)
     const paths = filenames.map(f => path.join(dir, f))
-    files = await Promise.all(paths.map(async p => ({path: p, stat: await stat(p)})))
+    files = await Promise.all(paths.map(async p => ({path: p, stat: await fs.stat(p)})))
   } catch (error: any) {
     if (error.code === 'ENOENT') return
     throw error
@@ -18,7 +17,7 @@ async function removeEmptyDirs(dir: string): Promise<void> {
   for (const p of dirs.map(removeEmptyDirs)) await p
   files = await fs.readdir(dir).then(async filenames => {
     const paths = filenames.map(f => path.join(dir, f))
-    return Promise.all(paths.map(async p => ({path: p, stat: await stat(p)})))
+    return Promise.all(paths.map(async p => ({path: p, stat: await fs.stat(p)})))
   })
   if (files.length === 0) await fs.remove(dir)
 }
