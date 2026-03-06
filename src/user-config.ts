@@ -24,7 +24,6 @@ export default class UserConfig {
 
   private _init!: Promise<void>
 
-  // eslint-disable-next-line no-useless-constructor
   constructor(private readonly config: Interfaces.Config) {}
 
   public get install() {

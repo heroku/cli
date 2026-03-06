@@ -1,4 +1,3 @@
-/* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
 import nock from 'nock'

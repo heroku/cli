@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-as-default-member */
 import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'

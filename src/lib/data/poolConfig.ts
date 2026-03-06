@@ -8,7 +8,6 @@ import {ExtendedPostgresLevelInfo, PoolInfoResponse} from './types.js'
 import {renderLevelChoices, renderPricingInfo} from './utils.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
 const {Separator, prompt} = inquirer
 
 export default class PoolConfig {

@@ -15,7 +15,6 @@ import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.
 import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
 const {Separator, prompt} = inquirer
 
 export default class DataPgCreate extends BaseCommand {

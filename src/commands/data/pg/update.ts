@@ -21,7 +21,6 @@ import {
 import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
 const {Separator, prompt} = inquirer
 
 export default class DataPgUpdate extends BaseCommand {

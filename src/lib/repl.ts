@@ -1,4 +1,3 @@
-/* eslint-disable n/no-process-exit */
 import {hux} from '@heroku/heroku-cli-util'
 import {Config, run} from '@oclif/core'
 import fs from 'node:fs'
@@ -103,7 +102,6 @@ export class HerokuRepl {
 
     if (command === 'exit') {
       this.historyStream?.close()
-      // eslint-disable-next-line n/no-process-exit
       process.exit(0)
     }
 

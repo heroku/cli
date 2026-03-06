@@ -4,9 +4,7 @@ import {join} from 'node:path'
 import {fileURLToPath} from 'node:url'
 
 describe('version:info', function () {
-  // eslint-disable-next-line mocha/no-setup-in-describe
   const __dirname = fileURLToPath(new URL('.', import.meta.url))
-  // eslint-disable-next-line mocha/no-setup-in-describe
   const fixtureChangelogPath = join(__dirname, '..', '..', '..', 'fixtures', 'CHANGELOG.md')
 
   beforeEach(function () {

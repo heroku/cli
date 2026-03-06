@@ -9,7 +9,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 class Webhooks extends webhooksAbstractClass {
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(argv: string[], config: Config) {
     super(argv, config)
   }

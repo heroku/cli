@@ -1,4 +1,3 @@
-/* eslint-disable valid-jsdoc */
 import {color} from '@heroku/heroku-cli-util'
 import {Hook, ux} from '@oclif/core'
 import {existsSync} from 'node:fs'

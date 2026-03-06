@@ -1,4 +1,3 @@
-/* eslint-disable valid-jsdoc */
 import {ux} from '@oclif/core'
 import {exec, spawn} from 'node:child_process'
 import {promisify} from 'node:util'

@@ -16,10 +16,9 @@ export default class Add extends Command {
 
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
 
-  /* eslint-disable quotes */
   static example = heredoc`
     Add a telemetry drain to an app to collect logs and traces:
-    
+
     ${color.command(`heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'`)}
   `
 
@@ -31,7 +30,6 @@ export default class Add extends Command {
     // If splunk transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunk']
     transport: Flags.string({default: 'http', description: 'transport protocol for the drain'}),
   }
-  /* eslint-enable quotes */
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Add)

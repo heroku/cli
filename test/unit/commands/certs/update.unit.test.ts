@@ -145,7 +145,6 @@ describe('shared', function () {
     `
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stdout = function (certificateDetails: string, _endpoint: Partial<SniEndpoint>) {
     return `Updated certificate details:\n${heredoc(certificateDetails)}\n`
   }

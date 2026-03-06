@@ -104,12 +104,12 @@ export async function fetchLevelsAndPricing(
       const extendedLevelsInfo = levels.items.map(level => ({
         ...level,
         pricing: Object.entries(pricing[tier]).find(
-          ([_, value]) => value.product_description === level.name, // eslint-disable-line @typescript-eslint/no-unused-vars
+          ([_, value]) => value.product_description === level.name,
         )?.[1],
       }))
 
       const optimizedStoragePricing = Object.entries(pricing[tier]).find(
-        ([key, _]) => key === 'storage-optimized', // eslint-disable-line @typescript-eslint/no-unused-vars
+        ([key, _]) => key === 'storage-optimized',
       )?.[1]
 
       return {extendedLevelsInfo, optimizedStoragePricing}

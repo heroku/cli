@@ -1,4 +1,3 @@
-/* eslint-disable max-nested-callbacks */
 import {color, hux} from '@heroku/heroku-cli-util'
 import {runCommand} from '@oclif/test'
 import {expect} from 'chai'

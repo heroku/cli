@@ -254,7 +254,6 @@ export class Scrubber {
       // Fallback for objects with circular references
       const seen = new WeakMap()
 
-      // eslint-disable-next-line no-inner-declarations
       function clone(value: any): any {
         if (value === null || typeof value !== 'object') {
           return value

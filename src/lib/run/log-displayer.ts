@@ -156,7 +156,6 @@ export class LogDisplayer {
   private setupProcessHandlers(): void {
     process.stdout.on('error', err => {
       if (err.code === 'EPIPE') {
-        // eslint-disable-next-line n/no-process-exit
         process.exit(0)
       } else {
         ux.error(err.stack, {exit: 1})
