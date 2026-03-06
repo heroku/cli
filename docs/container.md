@@ -29,7 +29,7 @@ DESCRIPTION
   log in to Heroku Container Registry
 ```
 
-_See code: [src/commands/container/login.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/login.ts)_
+_See code: [src/commands/container/login.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/login.ts)_
 
 ## `heroku container:logout`
 
@@ -49,7 +49,7 @@ DESCRIPTION
   log out from Heroku Container Registry
 ```
 
-_See code: [src/commands/container/logout.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/logout.ts)_
+_See code: [src/commands/container/logout.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/logout.ts)_
 
 ## `heroku container:pull -a APP [-v] PROCESS_TYPE...`
 
@@ -78,7 +78,7 @@ EXAMPLES
    $ heroku container:pull web:latest  # Pulls the latest tag from the web image
 ```
 
-_See code: [src/commands/container/pull.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/pull.ts)_
+_See code: [src/commands/container/pull.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/pull.ts)_
 
 ## `heroku container:push`
 
@@ -116,7 +116,7 @@ EXAMPLES
    $ heroku container:push --recursive --context-path .  # Pushes Dockerfile.* using current dir as build context
 ```
 
-_See code: [src/commands/container/push.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/push.ts)_
+_See code: [src/commands/container/push.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/push.ts)_
 
 ## `heroku container:release`
 
@@ -143,7 +143,7 @@ EXAMPLES
    $ heroku container:release web worker  # Releases the previously pushed web and worker process types
 ```
 
-_See code: [src/commands/container/release.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/release.ts)_
+_See code: [src/commands/container/release.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/release.ts)_
 
 ## `heroku container:rm -a APP [-v] PROCESS_TYPE...`
 
@@ -169,7 +169,7 @@ EXAMPLES
    $ heroku container:rm web worker  # Destroys the web and worker containers
 ```
 
-_See code: [src/commands/container/rm.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/rm.ts)_
+_See code: [src/commands/container/rm.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/rm.ts)_
 
 ## `heroku container:run -a APP [-v] PROCESS_TYPE...`
 
@@ -199,4 +199,4 @@ EXAMPLES
    $ heroku container:pull web:latest  # Pulls the latest tag from the web image
 ```
 
-_See code: [src/commands/container/run.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/container/run.ts)_
+_See code: [src/commands/container/run.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.1/src/commands/container/run.ts)_

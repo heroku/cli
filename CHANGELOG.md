@@ -3,7 +3,8 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [11.0.0-beta.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0-beta.0) (2026-02-26)
+
+## [11.0.0-beta.1](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0-beta.1) (2026-03-06)
 
 ### Summary
 
@@ -15,7 +16,7 @@ This is a **major** release with extensive changes. The primary changes are:
 4. **Migration from yarn to npm** for package management and workflows
 5. **Introduction of a new semantic color system** with the ansis library replacing chalk
 6. **Ships with Node.js 22** (maintains Node 20 compatibility)
-7. **New Commands** - `data:pg:*` (NGPG), `data:maintenance:*`, `heroku search`
+7. **New Commands** - `data:pg:*` (NGPG), `data:maintenance:*`, `search`, `version:info`
 8. **Repl and Prompt changes** interface changes to how repl and prompt mode work
 
 ### **Breaking Changes / Code Refactoring**
@@ -41,6 +42,7 @@ This is a **major** release with extensive changes. The primary changes are:
 - **Node.js support**: Ships with Node 22, continued support for Node 20
 - **--prompt now a GLOBAL flag** --prompt will now be included in documentation and help text for commands that utilize it
 - **New search command**: Can’t remember the command you’re thinking of? Use `heroku search` to find it
+- **New version:info command**: Display detailed version information about a version of the CLI. This will run on update, and can be suppressed by setting HIDE_HEROKU_RELEASE_NOTES=true
 - **Next-Gen PostgreSQL (NGPG) commands**:
   - New `data:pg:*` command namespace for NGPG support
   - `data:pg:attachments:create`, `data:pg:attachments:destroy`, `data:pg:attachments:index`
