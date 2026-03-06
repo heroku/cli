@@ -71,6 +71,9 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
     // User is not authenticated, prompt them
     const pluginList = privatePlugins.map(p => `  • ${p}`).join('\n')
 
+    // Stop any running spinner to avoid interfering with the interactive prompt
+    ux.action.stop()
+
     ux.warn(tsheredoc`
 
       ==================================================================
@@ -85,12 +88,14 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
       ==================================================================
     `)
 
-    const {shouldLogin} = await inquirer.prompt([{
-      default: true,
-      message: 'Would you like to authenticate with npm now?',
-      name: 'shouldLogin',
-      type: 'confirm',
-    }])
+    const {shouldLogin} = await inquirer.prompt([
+      {
+        default: true,
+        message: 'Would you like to authenticate with npm now?',
+        name: 'shouldLogin',
+        type: 'confirm',
+      },
+    ])
 
     if (!shouldLogin) {
       ux.warn(tsheredoc`

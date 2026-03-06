@@ -365,6 +365,7 @@
   "files": [
     "/autocomplete-scripts",
     "/bin",
+    "/CHANGELOG.md",
     "/dist",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
@@ -383,9 +384,8 @@
     "lint": "eslint . --ext .ts --config .eslintrc.cjs",
     "lint:fix": "eslint . --ext .ts --config .eslintrc.cjs --fix --quiet",
     "lint:fix:all": "eslint . --ext .ts --config .eslintrc.cjs --fix",
-    "coverage": "nyc --reporter=lcov --reporter=text-summary npm run test",
-    "coverage:html": "nyc --reporter=html --reporter=text-summary npm run test",
-    "coverage:check": "nyc --check-coverage --branches 80 --statements 80 --functions 80 --lines 80 npm run test",
+    "coverage": "c8 --reporter=lcov --reporter=text-summary npm run test",
+    "coverage:html": "c8 --reporter=html --reporter=text-summary npm run test",
     "create-shrinkwrap": "npm shrinkwrap",
     "prepublishOnly": "npm run create-shrinkwrap",
     "postpublish": "rm -f oclif.manifest.json",

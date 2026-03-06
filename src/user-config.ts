@@ -1,7 +1,8 @@
 import {Interfaces} from '@oclif/core'
 import {randomUUID} from 'node:crypto'
+import {stat} from 'node:fs/promises'
 import * as path from 'path'
-import * as fs from 'fs-extra'
+import fs from 'fs-extra'
 
 import debug from 'debug'
 const userConfigDebug = debug('heroku:user_config')
@@ -112,8 +113,8 @@ export default class UserConfig {
 
   private async getLastUpdated(): Promise<number | undefined> {
     try {
-      const stat = await fs.stat(this.file)
-      return stat.mtime.getTime()
+      const statResult = await stat(this.file)
+      return statResult.mtime.getTime()
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
     }
