@@ -56,7 +56,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku clients`](docs/clients.md) - OAuth clients on the platform
 * [`heroku config`](docs/config.md) - environment variables of apps
 * [`heroku container`](docs/container.md) - deploy your Docker-based app to Heroku
-* [`heroku data`](docs/data.md) - display details of the most recent maintenance for an addon
+* [`heroku data`](docs/data.md) - list maintenances for an app's data addons
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
@@ -89,7 +89,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
 * [`heroku usage`](docs/usage.md) - list usage for metered add-ons attached to an app or apps within a team
-* [`heroku version`](docs/version.md)
+* [`heroku version`](docs/version.md) - display changelog information for a specific CLI version
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
