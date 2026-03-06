@@ -36,7 +36,7 @@ type CaptureResult<T> = {
 function withCapturedOutput<T>(
   fn: () => Promise<T>,
   options: {print?: boolean; stripAnsi?: boolean} = {},
-): Promise<{result: T; stderr: string; stdout: string}> {
+): Promise<{error?: Error; result: T; stderr: string; stdout: string}> {
   const {print = false, stripAnsi: shouldStripAnsi = true} = options
 
   const originals = {
@@ -76,7 +76,14 @@ function withCapturedOutput<T>(
 
   return fn()
     .then(result => ({
+      error: undefined,
       result,
+      stderr: getStderr(),
+      stdout: getStdout(),
+    }))
+    .catch(error => ({
+      error,
+      result: undefined as T,
       stderr: getStderr(),
       stdout: getStdout(),
     }))
@@ -105,34 +112,25 @@ export async function runCommand<T = unknown>(
 ): Promise<CaptureResult<T>> {
   const argsArray = typeof args === 'string' ? args.split(' ') : args
 
-  try {
-    const conf = loadOpts ? await getConfig(loadOpts) : await getConfig()
-    // Cast to constructor type to handle protected constructors
-    const Ctor = CommandClass as {new(argv: string[], config: Interfaces.Config): CommandInstance}
-    const instance = new Ctor(argsArray, conf)
+  const conf = loadOpts ? await getConfig(loadOpts) : await getConfig()
+  // Cast to constructor type to handle protected constructors
+  const Ctor = CommandClass as {new(argv: string[], config: Interfaces.Config): CommandInstance}
+  const instance = new Ctor(argsArray, conf)
 
-    const {result, stderr, stdout} = await withCapturedOutput(
-      () => instance.run() as Promise<T>,
-      captureOpts,
-    )
+  const {error, result, stderr, stdout} = await withCapturedOutput(
+    () => instance.run() as Promise<T>,
+    captureOpts,
+  )
 
-    return {result, stderr, stdout}
-  } catch (error) {
-    // If error occurs during command execution (not during setup),
-    // we need to capture output separately
-    const {stderr, stdout} = await withCapturedOutput(
-      async () => {
-        throw error
-      },
-      captureOpts,
-    ).catch(() => ({stderr: '', stdout: ''}))
-
+  if (error) {
     return {
       error: error as Error,
       stderr,
       stdout,
     }
   }
+
+  return {result, stderr, stdout}
 }
 
 /**
