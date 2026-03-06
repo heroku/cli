@@ -2,8 +2,8 @@ import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
-import {runCommand} from '../../../../helpers/run-command.js'
 import Remove from '../../../../../src/commands/spaces/trusted-ips/remove.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 

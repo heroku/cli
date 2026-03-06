@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {runCommand} from '../../../../helpers/run-command.js'
 import Set from '../../../../../src/commands/spaces/drains/set.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:drains:set', function () {
   let api: nock.Scope

@@ -35,7 +35,7 @@ describe('reviewapps:disable', function () {
         .delete(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      const {stderr} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`])
+      const {stderr} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`])
 
       expect(stderr).to.include('done\n')
     })
@@ -51,7 +51,7 @@ describe('reviewapps:disable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-autodeploy'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-autodeploy'])
 
       expect(stdout).to.include('Disabling auto deployment')
       expect(stderr).to.include('Configuring pipeline')
@@ -68,7 +68,7 @@ describe('reviewapps:disable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-autodestroy'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-autodestroy'])
 
       expect(stdout).to.include('Disabling auto destroy')
       expect(stderr).to.include('Configuring pipeline')
@@ -85,7 +85,7 @@ describe('reviewapps:disable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-wait-for-ci'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-wait-for-ci'])
 
       expect(stdout).to.include('Disabling wait for CI')
       expect(stderr).to.include('Configuring pipeline')
@@ -102,7 +102,7 @@ describe('reviewapps:disable', function () {
         .patch(`/pipelines/${pipeline.id}/review-app-config`)
         .reply(200, {})
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-autodeploy', '--no-autodestroy', '--no-wait-for-ci'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-autodeploy', '--no-autodestroy', '--no-wait-for-ci'])
 
       expect(stdout).to.include('Disabling auto deployment')
       expect(stdout).to.include('Disabling auto destroy')
@@ -136,7 +136,7 @@ describe('reviewapps:disable', function () {
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
-      const {stderr} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`])
+      const {stderr} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`])
 
       expect(stderr).to.include('Configuring pipeline')
     })
@@ -154,7 +154,7 @@ describe('reviewapps:disable', function () {
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-autodeploy'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-autodeploy'])
 
       expect(stdout).to.include('Disabling auto deployment')
       expect(stderr).to.include('Configuring pipeline')
@@ -173,7 +173,7 @@ describe('reviewapps:disable', function () {
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-autodestroy'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-autodestroy'])
 
       expect(stdout).to.include('Disabling auto destroy')
       expect(stderr).to.include('Configuring pipeline')
@@ -192,7 +192,7 @@ describe('reviewapps:disable', function () {
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-wait-for-ci'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-wait-for-ci'])
 
       expect(stdout).to.include('Disabling wait for CI')
       expect(stderr).to.include('Configuring pipeline')
@@ -211,7 +211,7 @@ describe('reviewapps:disable', function () {
         .get(`/pipelines/${pipeline.id}/repository`)
         .reply(200, repo)
 
-      const {stderr, stdout} = await runCommand(ReviewappsDisable, [ `--pipeline=${pipeline.name}`, '--no-autodeploy', '--no-autodestroy', '--no-wait-for-ci'])
+      const {stderr, stdout} = await runCommand(ReviewappsDisable, [`--pipeline=${pipeline.name}`, '--no-autodeploy', '--no-autodestroy', '--no-wait-for-ci'])
 
       expect(stdout).to.include('Disabling auto deployment')
       expect(stdout).to.include('Disabling auto destroy')

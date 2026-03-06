@@ -28,7 +28,7 @@ describe('pipelines:connect', function () {
         .get('/account/github/token')
         .reply(401, {})
 
-      const {error} = await runCommand(PipelinesConnect, [ 'my-pipeline', '--repo=my-org/my-repo'])
+      const {error} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
 
       expect(error?.message).to.equal('Account not connected to GitHub.')
     })
@@ -69,7 +69,7 @@ describe('pipelines:connect', function () {
           name: pipeline.name,
         })
 
-      const {stderr, stdout} = await runCommand(PipelinesConnect, [ 'my-pipeline', '--repo=my-org/my-repo'])
+      const {stderr, stdout} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
 
       expect(stderr).to.include('Linking to repo...')
       expect(stdout).to.equal('')
@@ -98,7 +98,7 @@ describe('pipelines:connect', function () {
         .get(`/repos/${repo.name}`)
         .reply(401, {})
 
-      const {error} = await runCommand(PipelinesConnect, [ 'my-pipeline', '--repo=my-org/my-repo'])
+      const {error} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
 
       expect(error?.message).to.contain('Could not access the my-org/my-repo repo')
     })

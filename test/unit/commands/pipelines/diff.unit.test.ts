@@ -138,7 +138,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(404, {message: 'Not found.'})
 
-      const {error} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(error?.message).to.contain('to be a part of any pipeline')
     })
@@ -156,7 +156,7 @@ describe('pipelines:diff', function () {
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
 
-      const {error} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(error?.message).to.contain('no downstream apps')
     })
@@ -182,7 +182,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamApp2.id}/github`)
         .reply(200, downstreamApp2Github)
 
-      const {error} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(error?.message).to.contain('connected to GitHub')
     })
@@ -206,7 +206,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamApp2.id}/github`)
         .reply(200, downstreamApp2Github)
 
-      const {error} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(error?.message).to.contain('No release was found')
     })
@@ -232,7 +232,7 @@ describe('pipelines:diff', function () {
         .get(`/apps/${downstreamApp2.id}/github`)
         .reply(200, downstreamApp2Github)
 
-      const {error} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(error?.message).to.contain('No release was found')
     })
@@ -274,7 +274,7 @@ describe('pipelines:diff', function () {
         .get('/account/github/token')
         .reply(200, {github: {token: 'github-token'}})
 
-      const {stdout} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(stdout).to.contain(`⬢ ${targetApp.name} is up to date with ⬢ ${downstreamApp1.name}`)
       expect(stdout).to.contain(`⬢ ${targetApp.name} was not compared to ⬢ ${downstreamApp2.name}`)
@@ -318,7 +318,7 @@ describe('pipelines:diff', function () {
         .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
         .reply(404)
 
-      const {stdout} = await runCommand(PipelinesDiff, [ `--app=${targetApp.name}`])
+      const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
       expect(stdout).to.contain('unable to perform a diff')
     })
@@ -360,7 +360,7 @@ describe('pipelines:diff', function () {
         .get('/account/github/token')
         .reply(200, {github: {token: 'github-token'}})
 
-      const {stdout} = await runCommand(PipelinesDiff, [ `--app=${targetFirApp.name}`])
+      const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetFirApp.name}`])
 
       expect(stdout).to.contain(`⬢ ${targetApp.name} is up to date with ⬢ ${downstreamApp1.name}`)
       expect(stdout).to.contain(`⬢ ${targetApp.name} was not compared to ⬢ ${downstreamApp2.name}`)
@@ -404,7 +404,7 @@ describe('pipelines:diff', function () {
         .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
         .reply(404)
 
-      const {stdout} = await runCommand(PipelinesDiff, [ `--app=${targetFirApp.name}`])
+      const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetFirApp.name}`])
 
       expect(stdout).to.contain('unable to perform a diff')
     })

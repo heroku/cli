@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
 import {execSync} from 'node:child_process'
+import sinon from 'sinon'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
 import {runCommand} from '../../../helpers/run-command.js'
@@ -160,7 +160,7 @@ describe('apps:create', function () {
       // Override channel using environment variable for this test
       process.env.HEROKU_UPDATE_CHANNEL = 'beta'
 
-      const {stdout, stderr} = await runCommand(CreateCommand, ['--app', appName, '--manifest'])
+      const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--manifest'])
 
       expect(stderr).to.contain('Reading heroku.yml manifest... done')
       expect(stderr).to.contain('Creating ⬢ foo... done')
@@ -189,7 +189,7 @@ describe('apps:create', function () {
         .post(`/apps/${appName}/addons`, {plan: 'secondPlan'})
         .reply(200, [])
 
-      const {stdout, stderr} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon])
+      const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon])
 
       expect(stderr).to.contain('Creating ⬢ foo... done')
       expect(stderr).to.contain('Adding foobar... done')
@@ -214,7 +214,7 @@ describe('apps:create', function () {
         .put(`/apps/${appName}/buildpack-installations`, {updates: [{buildpack: 'https://github.com/some/buildpack.git'}]})
         .reply(200, [])
 
-      const {stdout, stderr} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon, '--buildpack', exampleBuildpack])
+      const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon, '--buildpack', exampleBuildpack])
 
       expect(stderr).to.contain('Creating ⬢ foo... done')
       expect(stderr).to.contain('Adding foobar... done')

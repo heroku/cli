@@ -2,9 +2,9 @@ import {expect} from 'chai'
 import {addDays} from 'date-fns'
 import nock from 'nock'
 
-import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 import Index from '../../../../../src/commands/webhooks/events/index.js'
+import {runCommand} from '../../../../helpers/run-command.js'
+import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
 
 describe('webhooks:events', function () {
   let api: nock.Scope
@@ -29,9 +29,9 @@ describe('webhooks:events', function () {
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
           payload: {
+            action: 'create',
             published_at: '2016-08-31T21:55:06Z',
             resource: 'api:release',
-            action: 'create',
           },
         }])
 
@@ -65,9 +65,9 @@ describe('webhooks:events', function () {
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
           payload: {
+            action: 'create',
             published_at: '2016-08-31T21:55:06Z',
             resource: 'api:release',
-            action: 'create',
           },
         }])
 
@@ -107,34 +107,34 @@ describe('webhooks:events', function () {
 
           // first date
           {
-            id: '00000000-0000-0000-0000-000000000000',
             created_at: firstDate.toISOString(),
+            id: '00000000-0000-0000-0000-000000000000',
             payload: {
+              action: 'create',
               published_at: '2019-06-15T14:20:42Z',
               resource: 'api:release',
-              action: 'create',
             },
           },
 
           // third date
           {
-            id: '11111111-1111-1111-1111-111111111111',
             created_at: thirdDate.toISOString(),
+            id: '11111111-1111-1111-1111-111111111111',
             payload: {
+              action: 'create',
               published_at: '2019-06-15T14:20:42Z',
               resource: 'api:release',
-              action: 'create',
             },
           },
 
           // second date
           {
-            id: '22222222-2222-2222-2222-222222222222',
             created_at: secondDate.toISOString(),
+            id: '22222222-2222-2222-2222-222222222222',
             payload: {
+              action: 'create',
               published_at: '2019-06-15T14:20:42Z',
               resource: 'api:release',
-              action: 'create',
             },
           },
         ])

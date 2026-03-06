@@ -125,7 +125,7 @@ describe('pipelines:info', function () {
     it('doesn\'t display the owner', async function () {
       setupNock()
 
-      const {stdout} = await runCommand(PipelinesInfo, [ 'example'])
+      const {stdout} = await runCommand(PipelinesInfo, ['example'])
 
       expect(stdout).to.not.contain('owner: foo@user.com')
     })
@@ -133,7 +133,7 @@ describe('pipelines:info', function () {
     it('displays json format', async function () {
       setupNock()
 
-      const {stdout} = await runCommand(PipelinesInfo, [ 'example', '--json'])
+      const {stdout} = await runCommand(PipelinesInfo, ['example', '--json'])
 
       expect(stdout).to.not.contain('owner: foo@user.com')
       const parsedOutput = JSON.parse(stdout)
@@ -150,7 +150,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '5678', type: 'user'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(PipelinesInfo, [ 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           const warningMessage = 'Some apps in this pipeline do not belong'
           expect(stdout).to.not.contain(warningMessage)
@@ -165,7 +165,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '1234', type: 'user'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(PipelinesInfo, [ 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           expect(stdout).to.contain('owner: foo@user.com')
           itDoesNotShowMixedOwnershipWarning(stderr)
@@ -180,7 +180,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '5678', type: 'team'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(PipelinesInfo, [ 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           expect(stdout).to.contain('owner: my-team (team)')
           itShowsPipelineApps(stdout)
@@ -193,7 +193,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '1234', type: 'team'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(PipelinesInfo, [ 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           expect(stdout).to.contain('owner: my-team (team)')
           itShowsPipelineApps(stdout)

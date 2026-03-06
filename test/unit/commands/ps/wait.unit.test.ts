@@ -34,7 +34,7 @@ describe('heroku ps:wait', function () {
       .get(`/apps/${APP_NAME}/releases`)
       .reply(200, [])
 
-    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.include(`Warning: App ⬢ ${APP_NAME} has no releases`)
   })
@@ -50,7 +50,7 @@ describe('heroku ps:wait', function () {
         {release: CURRENT, state: 'up', type: 'web'},
       ])
 
-    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
@@ -83,7 +83,7 @@ describe('heroku ps:wait', function () {
         {release: CURRENT, state: 'up', type: 'web'},
       ])
 
-    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
   })
@@ -100,7 +100,7 @@ describe('heroku ps:wait', function () {
         {release: PREVIOUS, state: 'up', type: 'release'},
       ])
 
-    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
@@ -117,7 +117,7 @@ describe('heroku ps:wait', function () {
         {release: PREVIOUS, state: 'up', type: 'run'},
       ])
 
-    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
@@ -143,7 +143,7 @@ describe('heroku ps:wait', function () {
         {release: CURRENT, state: 'up', type: 'run'},
       ])
 
-    const {stderr} = await runCommand(PsWait, [ '--with-run', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--with-run', '--app', APP_NAME])
 
     expect(stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
   })
@@ -160,7 +160,7 @@ describe('heroku ps:wait', function () {
         {release: PREVIOUS, state: 'up', type: 'web'},
       ])
 
-    const {stderr} = await runCommand(PsWait, [ '--type=worker', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, ['--type=worker', '--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })

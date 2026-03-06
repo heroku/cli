@@ -69,7 +69,7 @@ describe('pipelines:transfer', function () {
       })
       .reply(200, {})
 
-    const {stderr} = await runCommand(TransferCommand, [ `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
+    const {stderr} = await runCommand(TransferCommand, [`--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
 
     expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
   })
@@ -86,7 +86,7 @@ describe('pipelines:transfer', function () {
       })
       .reply(200, {})
 
-    const {stderr} = await runCommand(TransferCommand, [ `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
+    const {stderr} = await runCommand(TransferCommand, [`--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
 
     expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
   })

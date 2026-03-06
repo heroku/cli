@@ -2,9 +2,9 @@ import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
+import Ps from '../../../../src/commands/spaces/ps.js'
 import {ago} from '../../../../src/lib/time.js'
 import {runCommand} from '../../../helpers/run-command.js'
-import Ps from '../../../../src/commands/spaces/ps.js'
 
 const heredoc = tsheredoc.default
 

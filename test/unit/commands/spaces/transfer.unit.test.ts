@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {runCommand} from '../../../helpers/run-command.js'
 import Transfer from '../../../../src/commands/spaces/transfer.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('spaces:transfer', function () {
   let api: nock.Scope

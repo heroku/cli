@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {runCommand} from '../../../../helpers/run-command.js'
 import Info from '../../../../../src/commands/webhooks/events/info.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('webhooks:events:info', function () {
   let api: nock.Scope

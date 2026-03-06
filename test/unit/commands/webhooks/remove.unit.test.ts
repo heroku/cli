@@ -1,9 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {unwrap} from '../../../helpers/utils/unwrap.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import Remove from '../../../../src/commands/webhooks/remove.js'
+import {runCommand} from '../../../helpers/run-command.js'
+import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('webhooks:remove', function () {
   let api: nock.Scope

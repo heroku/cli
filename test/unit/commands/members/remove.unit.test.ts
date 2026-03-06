@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {runCommand} from '../../../helpers/run-command.js'
 import MembersRemove from '../../../../src/commands/members/remove.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku members:remove', function () {
   let api: nock.Scope
@@ -24,7 +24,7 @@ describe('heroku members:remove', function () {
         .delete('/teams/myteam/members/foo%40foo.com')
         .reply(200)
 
-      const {stderr} = await runCommand(MembersRemove, [ '--team', 'myteam', 'foo@foo.com'])
+      const {stderr} = await runCommand(MembersRemove, ['--team', 'myteam', 'foo@foo.com'])
 
       expect(stderr).to.contain('Removing foo@foo.com from myteam')
     })
@@ -41,7 +41,7 @@ describe('heroku members:remove', function () {
           .delete('/teams/myteam/members/foo%40foo.com')
           .reply(200)
 
-        const {stderr} = await runCommand(MembersRemove, [ '--team', 'myteam', 'foo@foo.com'])
+        const {stderr} = await runCommand(MembersRemove, ['--team', 'myteam', 'foo@foo.com'])
 
         expect(stderr).to.contain('Removing foo@foo.com from myteam')
       })
@@ -60,7 +60,7 @@ describe('heroku members:remove', function () {
             .delete('/teams/myteam/members/foo%40foo.com')
             .reply(200)
 
-          const {stderr} = await runCommand(MembersRemove, [ '--team', 'myteam', 'foo@foo.com'])
+          const {stderr} = await runCommand(MembersRemove, ['--team', 'myteam', 'foo@foo.com'])
 
           expect(stderr).to.contain('Removing foo@foo.com from myteam')
         })
@@ -82,7 +82,7 @@ describe('heroku members:remove', function () {
             .delete('/teams/myteam/invitations/foo@foo.com')
             .reply(200, {})
 
-          const {stderr} = await runCommand(MembersRemove, [ '--team', 'myteam', 'foo@foo.com'])
+          const {stderr} = await runCommand(MembersRemove, ['--team', 'myteam', 'foo@foo.com'])
 
           expect(stderr).to.contain('Revoking invite for foo@foo.com in myteam')
         })

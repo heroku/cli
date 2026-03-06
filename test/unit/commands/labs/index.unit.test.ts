@@ -1,7 +1,8 @@
-import {runCommand} from '../../../helpers/run-command.js'
 import {expect} from 'chai'
 import nock from 'nock'
+
 import LabsIndex from '../../../../src/commands/labs/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('labs', function () {
   let api: nock.Scope

@@ -1,9 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
+import NotificationsIndex from '../../../../src/commands/notifications/index.js'
 import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
-import NotificationsIndex from '../../../../src/commands/notifications/index.js'
 
 describe('notifications', function () {
   const d = new Date()
@@ -55,7 +55,7 @@ describe('notifications', function () {
           .get('/user/notifications')
           .reply(200, [])
 
-        const {stderr, stdout} = await runCommand(NotificationsIndex, [ '-a', 'myapp', '--read'])
+        const {stderr, stdout} = await runCommand(NotificationsIndex, ['-a', 'myapp', '--read'])
 
         expect(stdout).to.contain('You have no notifications on ⬢ myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
         expect(unwrap(stderr)).to.be.empty
@@ -69,7 +69,7 @@ describe('notifications', function () {
           .get('/user/notifications')
           .reply(200, [])
 
-        const {stderr, stdout} = await runCommand(NotificationsIndex, [ '-a', 'myapp'])
+        const {stderr, stdout} = await runCommand(NotificationsIndex, ['-a', 'myapp'])
 
         expect(stdout).to.contain('No unread notifications on ⬢ myapp.\nRun heroku notifications --all to view notifications for all apps.\n')
         expect(unwrap(stderr)).to.be.empty
@@ -82,7 +82,7 @@ describe('notifications', function () {
           .get('/user/notifications')
           .reply(200, [])
 
-        const {stderr, stdout} = await runCommand(NotificationsIndex, [ '--read'])
+        const {stderr, stdout} = await runCommand(NotificationsIndex, ['--read'])
 
         expect(stdout).to.contain('You have no notifications.\n')
         expect(unwrap(stderr)).to.be.empty
@@ -109,7 +109,7 @@ describe('notifications', function () {
           .get('/user/notifications')
           .reply(200, notifications)
 
-        const {stderr, stdout} = await runCommand(NotificationsIndex, [ '-a', 'myapp', '--read'])
+        const {stderr, stdout} = await runCommand(NotificationsIndex, ['-a', 'myapp', '--read'])
 
         expect(stdout).to.contain('=== Read Notifications for ⬢ myapp')
         expect(stdout).to.contain('ago')
@@ -143,7 +143,7 @@ describe('notifications', function () {
           .get('/user/notifications')
           .reply(200, notifications)
 
-        const {stderr, stdout} = await runCommand(NotificationsIndex, [ '--read', '--json'])
+        const {stderr, stdout} = await runCommand(NotificationsIndex, ['--read', '--json'])
 
         expect(JSON.parse(stdout)[0].id).to.equal(101)
         expect(unwrap(stderr)).to.be.empty

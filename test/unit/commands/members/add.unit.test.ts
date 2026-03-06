@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {runCommand} from '../../../helpers/run-command.js'
 import MembersAdd from '../../../../src/commands/members/add.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku members:add', function () {
   let api: nock.Scope
@@ -23,7 +23,7 @@ describe('heroku members:add', function () {
       .put('/teams/myteam/members')
       .reply(200, {})
 
-    const {stderr} = await runCommand(MembersAdd, [ '--team', 'myteam', '--role', 'admin', 'foo@foo.com'])
+    const {stderr} = await runCommand(MembersAdd, ['--team', 'myteam', '--role', 'admin', 'foo@foo.com'])
 
     expect(stderr).to.contain('Adding foo@foo.com to myteam as admin')
   })
@@ -37,7 +37,7 @@ describe('heroku members:add', function () {
       .put('/teams/myteam/invitations')
       .reply(200, {})
 
-    const {stderr} = await runCommand(MembersAdd, [ '--role', 'admin', '--team', 'myteam', 'foo@foo.com'])
+    const {stderr} = await runCommand(MembersAdd, ['--role', 'admin', '--team', 'myteam', 'foo@foo.com'])
 
     expect(stderr).to.contain('Inviting foo@foo.com to myteam as admin')
   })

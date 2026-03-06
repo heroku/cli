@@ -1,8 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {runCommand} from '../../../helpers/run-command.js'
 import MembersSet from '../../../../src/commands/members/set.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku members:set', function () {
   let api: nock.Scope
@@ -22,7 +22,7 @@ describe('heroku members:set', function () {
         .patch('/teams/myteam/members')
         .reply(200)
 
-      const {stderr} = await runCommand(MembersSet, [ '--role', 'admin', '--team', 'myteam', 'foo@foo.com'])
+      const {stderr} = await runCommand(MembersSet, ['--role', 'admin', '--team', 'myteam', 'foo@foo.com'])
 
       expect(stderr).to.contain('Adding foo@foo.com to myteam as admin')
     })
@@ -32,7 +32,7 @@ describe('heroku members:set', function () {
         .patch('/teams/myteam/members')
         .reply(200)
 
-      const {stderr} = await runCommand(MembersSet, [ '--role', 'admin', '--team', 'myteam', 'foo@foo.com'])
+      const {stderr} = await runCommand(MembersSet, ['--role', 'admin', '--team', 'myteam', 'foo@foo.com'])
 
       expect(stderr).to.contain('Adding foo@foo.com to myteam as admin')
     })
@@ -43,7 +43,7 @@ describe('heroku members:set', function () {
         .patch('/teams/myteam/members')
         .reply(200)
 
-      const {stderr} = await runCommand(MembersSet, [ '--team', 'myteam', '--role', 'admin', 'foo@foo.com'])
+      const {stderr} = await runCommand(MembersSet, ['--team', 'myteam', '--role', 'admin', 'foo@foo.com'])
 
       expect(stderr).to.contain('Adding foo@foo.com to myteam as admin')
     })

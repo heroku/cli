@@ -32,7 +32,7 @@ describe('ps:autoscale:disable', function () {
         .get(`/apps/${APP_ID}/formation/web/monitors`)
         .reply(200, [])
 
-      const {error} = await runCommand(PsAutoscaleDisable, [ '--app', APP_NAME])
+      const {error} = await runCommand(PsAutoscaleDisable, ['--app', APP_NAME])
 
       expect(error?.message).to.contain(`${APP_NAME} does not have autoscale enabled`)
     })
@@ -52,7 +52,7 @@ describe('ps:autoscale:disable', function () {
         .patch(`/apps/${APP_ID}/formation/web/monitors/${MONITOR_ID}`)
         .reply(202, {})
 
-      const {stderr} = await runCommand(PsAutoscaleDisable, [ '--app', APP_NAME])
+      const {stderr} = await runCommand(PsAutoscaleDisable, ['--app', APP_NAME])
 
       expect(stderr).to.contain('Disabling dyno autoscaling... done')
     })

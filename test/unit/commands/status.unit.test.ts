@@ -2,6 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
+import Status from '../../../src/commands/status.js'
 import {
   fixtureNow,
   fixtureNowISO,
@@ -12,7 +13,6 @@ import {
   trustLocalizationsResponse,
 } from '../../fixtures/status/fixtures.js'
 import {runCommand} from '../../helpers/run-command.js'
-import Status from '../../../src/commands/status.js'
 
 describe('status - Heroku Status API', function () {
   let herokuStatusApi: nock.Scope

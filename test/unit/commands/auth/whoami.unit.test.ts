@@ -1,7 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {runCommand} from '../../../helpers/run-command.js'
+
 import Whoami from '../../../../src/commands/auth/whoami.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('auth:whoami', function () {
   let api: nock.Scope

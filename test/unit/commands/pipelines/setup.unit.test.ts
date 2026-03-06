@@ -278,12 +278,10 @@ describe('pipelines:setup', function () {
             .post(`/pipelines/${pipeline.id}/repository`)
             .reply(201, {})
 
-          try {
-            await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
-            expect.fail('Expected command to throw error')
-          } catch (error: any) {
-            expect(error.message).to.contain(`Couldn't create application ${color.app('my-pipeline')}: status failed`)
-          }
+          const {error} = await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
+
+          expect(error).to.exist
+          expect(error?.message).to.contain(`Couldn't create application ${color.app('my-pipeline')}: status failed`)
         })
       })
 
@@ -335,12 +333,10 @@ describe('pipelines:setup', function () {
             .post(`/pipelines/${pipeline.id}/repository`)
             .reply(201, {})
 
-          try {
-            await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
-            expect.fail('Expected command to throw error')
-          } catch (error: any) {
-            expect(error.message).to.contain('timedout')
-          }
+          const {error} = await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
+
+          expect(error).to.exist
+          expect(error?.message).to.contain('timedout')
         })
       })
     })
