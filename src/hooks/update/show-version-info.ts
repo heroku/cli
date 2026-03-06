@@ -3,14 +3,19 @@ import {Hook, ux} from '@oclif/core'
 
 const showVersionInfo: Hook<'update'> = async function ({config}) {
   try {
-    if (process.env.HIDE_HEROKU_RELEASE_NOTES !== 'true') {
-      ux.stdout('')
-      ux.stdout(`${color.bold("=== What's New ===")}`)
-      ux.stdout('')
-
-      // Run the version:info command to show what's new
-      return await config.runCommand('version:info')
+    if (process.env.HIDE_HEROKU_RELEASE_NOTES === 'true') {
+      return
     }
+
+    ux.stdout('')
+    ux.stdout(`${color.bold("=== What's New ===")}`)
+    ux.stdout('')
+
+    // Run the version:info command to show what's new
+    await config.runCommand('version:info')
+
+    // Ensure output is fully flushed
+    ux.stdout('')
   } catch (error: any) {
     // Don't block the update if this fails
     ux.stdout('NOTE: This error can be ignored')
