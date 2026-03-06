@@ -31,25 +31,13 @@ type CaptureResult<T> = {
 }
 
 /**
- * Run a command directly with an interface matching @oclif/test's runCommand.
- * This version runs the command class directly (from src/) instead of using
- * dynamic loading, which ensures c8 coverage tracking works properly.
- *
- * @param CommandClass - The command class to run
- * @param args - Command arguments as a string or array
- * @param loadOpts - Options for loading oclif Config
- * @param captureOpts - Options for capturing output
- * @returns Captured output including stdout, stderr, result, and any error
+ * Internal helper to capture stdout/stderr during function execution
  */
-export async function runCommand<T = unknown>(
-  CommandClass: GenericCmd,
-  args: string | string[] = [],
-  loadOpts?: Interfaces.LoadOptions,
-  captureOpts?: CaptureOptions,
-): Promise<CaptureResult<T>> {
-  const argsArray = typeof args === 'string' ? args.split(' ') : args
-  const print = captureOpts?.print ?? false
-  const shouldStripAnsi = captureOpts?.stripAnsi ?? true
+function withCapturedOutput<T>(
+  fn: () => Promise<T>,
+  options: {print?: boolean; stripAnsi?: boolean} = {},
+): Promise<{result: T; stderr: string; stdout: string}> {
+  const {print = false, stripAnsi: shouldStripAnsi = true} = options
 
   const originals = {
     stderr: process.stderr.write,
@@ -86,29 +74,77 @@ export async function runCommand<T = unknown>(
   process.stdout.write = mock('stdout') as typeof process.stdout.write
   process.stderr.write = mock('stderr') as typeof process.stderr.write
 
+  return fn()
+    .then(result => ({
+      result,
+      stderr: getStderr(),
+      stdout: getStdout(),
+    }))
+    .finally(() => {
+      process.stdout.write = originals.stdout
+      process.stderr.write = originals.stderr
+    })
+}
+
+/**
+ * Run a command directly with an interface matching @oclif/test's runCommand.
+ * This version runs the command class directly (from src/) instead of using
+ * dynamic loading, which ensures c8 coverage tracking works properly.
+ *
+ * @param CommandClass - The command class to run
+ * @param args - Command arguments as a string or array
+ * @param loadOpts - Options for loading oclif Config
+ * @param captureOpts - Options for capturing output
+ * @returns Captured output including stdout, stderr, result, and any error
+ */
+export async function runCommand<T = unknown>(
+  CommandClass: GenericCmd,
+  args: string | string[] = [],
+  loadOpts?: Interfaces.LoadOptions,
+  captureOpts?: CaptureOptions,
+): Promise<CaptureResult<T>> {
+  const argsArray = typeof args === 'string' ? args.split(' ') : args
+
   try {
     const conf = loadOpts ? await getConfig(loadOpts) : await getConfig()
     // Cast to constructor type to handle protected constructors
     const Ctor = CommandClass as {new(argv: string[], config: Interfaces.Config): CommandInstance}
     const instance = new Ctor(argsArray, conf)
-    const result = await instance.run() as T
 
-    process.stdout.write = originals.stdout
-    process.stderr.write = originals.stderr
+    const {result, stderr, stdout} = await withCapturedOutput(
+      () => instance.run() as Promise<T>,
+      captureOpts,
+    )
 
-    return {
-      result,
-      stderr: getStderr(),
-      stdout: getStdout(),
-    }
+    return {result, stderr, stdout}
   } catch (error) {
-    process.stdout.write = originals.stdout
-    process.stderr.write = originals.stderr
+    // If error occurs during command execution (not during setup),
+    // we need to capture output separately
+    const {stderr, stdout} = await withCapturedOutput(
+      async () => {
+        throw error
+      },
+      captureOpts,
+    ).catch(() => ({stderr: '', stdout: ''}))
 
     return {
       error: error as Error,
-      stderr: getStderr(),
-      stdout: getStdout(),
+      stderr,
+      stdout,
     }
   }
+}
+
+/**
+ * Capture stdout/stderr from a function call (for testing library functions, not commands)
+ *
+ * @param fn - The function to execute while capturing output
+ * @returns Object with stdout and stderr strings (ANSI codes stripped)
+ */
+export async function captureOutput(fn: () => Promise<void> | void): Promise<{stderr: string; stdout: string}> {
+  const {stderr, stdout} = await withCapturedOutput(async () => {
+    await fn()
+  }, {stripAnsi: true})
+
+  return {stderr, stdout}
 }

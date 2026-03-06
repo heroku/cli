@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Errors from '../../../../src/commands/apps/errors.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const formation = [
@@ -63,7 +64,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(200, {data: {}})
 
-    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP])
+    const {stderr, stdout} = await runCommand(Errors, ['--app', APP])
 
     expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
@@ -85,7 +86,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
 
-    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP])
+    const {stderr, stdout} = await runCommand(Errors, ['--app', APP])
 
     expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
@@ -109,7 +110,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(400, {id: 'bad_request', message: ERROR_MESSAGE})
 
-    const {error} = await runCommand(['apps:errors', '--app', APP])
+    const {error} = await runCommand(Errors, ['--app', APP])
 
     expect(error?.message).to.include(ERROR_MESSAGE)
   })
@@ -130,7 +131,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(200, {data: {R14: [1]}})
 
-    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP])
+    const {stderr, stdout} = await runCommand(Errors, ['--app', APP])
 
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('Errors on ⬢ myapp in the last 24 hours'))
@@ -158,7 +159,7 @@ describe('apps:errors', function () {
       .query(params => params.step === '1h')
       .reply(200, {data: {}})
 
-    const {stderr, stdout} = await runCommand(['apps:errors', '--app', APP, '--json'])
+    const {stderr, stdout} = await runCommand(Errors, ['--app', APP, '--json'])
 
     expect(JSON.parse(stdout).router.H12).to.equal(2)
     expect(stderr).to.be.equal('')
