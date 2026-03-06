@@ -30,7 +30,6 @@ type CaptureResult<T> = {
   stdout: string
 }
 
-
 /**
  * Run a command directly with an interface matching @oclif/test's runCommand.
  * This version runs the command class directly (from src/) instead of using
