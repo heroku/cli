@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import AuthorizationsCreate from '../../../../src/commands/authorizations/create.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:create', function () {
   let api: nock.Scope
@@ -19,7 +21,7 @@ describe('authorizations:create', function () {
       .post('/oauth/authorizations', {description: 'awesome'})
       .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
-    const {stdout} = await runCommand(['authorizations:create', '--description', 'awesome'])
+    const {stdout} = await runCommand(AuthorizationsCreate, ['--description', 'awesome'])
 
     expect(stdout).to.contain('Client: <none>\n')
     expect(stdout).to.contain('Scope:  global\n')
@@ -32,7 +34,7 @@ describe('authorizations:create', function () {
         .post('/oauth/authorizations', {expires_in: '10000'})
         .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
-      const {stdout} = await runCommand(['authorizations:create', '--expires-in', '10000', '--short'])
+      const {stdout} = await runCommand(AuthorizationsCreate, ['--expires-in', '10000', '--short'])
 
       expect(stdout).to.equal('secrettoken\n')
     })
@@ -44,7 +46,7 @@ describe('authorizations:create', function () {
         .post('/oauth/authorizations', {})
         .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
-      const {stdout} = await runCommand(['authorizations:create', '--json'])
+      const {stdout} = await runCommand(AuthorizationsCreate, ['--json'])
 
       const json = JSON.parse(stdout)
       expect(json.access_token).to.contain({token: 'secrettoken'})

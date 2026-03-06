@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import Buildpacks from '../../../../src/commands/buildpacks/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 const heredoc = tsheredoc.default
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
@@ -136,7 +138,7 @@ describe('buildpacks', function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -150,7 +152,7 @@ describe('buildpacks', function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, [{name: 'heroku/ruby', url: 'urn:buildpack:heroku/ruby'}])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -164,7 +166,7 @@ describe('buildpacks', function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, ['https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/ruby.tgz'])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -179,7 +181,7 @@ describe('buildpacks', function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api)
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -195,7 +197,7 @@ describe('buildpacks', function () {
       'https://github.com/heroku/heroku-buildpack-ruby',
     ])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -213,7 +215,7 @@ describe('buildpacks', function () {
       'https://buildpack-registry.s3.amazonaws.com/buildpacks/rust-lang/rust.tgz',
     ])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -228,7 +230,7 @@ describe('buildpacks', function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -246,7 +248,7 @@ describe('buildpacks', function () {
       .get(`/apps/${firApp.name}/releases`).reply(200, releases)
       .get(`/apps/${firApp.name}/oci-images/${releases[0].id}`).reply(200, ociImages)
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', firApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', firApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -263,7 +265,7 @@ describe('buildpacks', function () {
       'https://github.com/heroku/heroku-buildpack-ruby',
     ])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(heredoc(`
@@ -278,7 +280,7 @@ describe('buildpacks', function () {
     api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
     Stubber.get(api)
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', cedarApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`⬢ ${cedarApp.name} has no Buildpacks.\n`)
@@ -291,7 +293,7 @@ describe('buildpacks', function () {
       .get(`/apps/${firApp.name}`).reply(200, firApp)
       .get(`/apps/${firApp.name}/releases`).reply(200, [])
 
-    const {stderr, stdout} = await runCommand(['buildpacks', '-a', firApp.name])
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', firApp.name])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`⬢ ${firApp.name} has no Buildpacks.\n`)

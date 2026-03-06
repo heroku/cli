@@ -1,7 +1,9 @@
 import {Fixture} from '@heroku/buildpack-registry'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import BuildpacksInfo from '../../../../src/commands/buildpacks/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:info', function () {
   let registryApi: nock.Scope
@@ -31,7 +33,7 @@ describe('buildpacks:info', function () {
       .get('/buildpacks/heroku%2Fruby/readme')
       .reply(200, Fixture.readme())
 
-    const {stdout} = await runCommand(['buildpacks:info', 'heroku/ruby'])
+    const {stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby'])
 
     expect(stdout).to.contain('=== heroku/ruby')
     expect(stdout).to.contain('languages')
@@ -43,7 +45,7 @@ describe('buildpacks:info', function () {
       .get('/buildpacks/hone%2Ftest')
       .reply(404, {})
 
-    const {error} = await runCommand(['buildpacks:info', 'hone/test'])
+    const {error} = await runCommand(BuildpacksInfo, ['hone/test'])
 
     expect(error?.message).to.include("Could not find the buildpack 'hone/test'")
   })
@@ -53,7 +55,7 @@ describe('buildpacks:info', function () {
       .get('/buildpacks/hone%2Ftest')
       .reply(500, 'some error')
 
-    const {error} = await runCommand(['buildpacks:info', 'hone/test'])
+    const {error} = await runCommand(BuildpacksInfo, ['hone/test'])
 
     expect(error?.message).to.include('Problems finding buildpack info: some error')
   })
