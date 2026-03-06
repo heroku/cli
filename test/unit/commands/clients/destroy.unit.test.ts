@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import ClientsDestroy from '../../../../src/commands/clients/destroy.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:destroy', function () {
   let api: nock.Scope
@@ -19,7 +21,7 @@ describe('clients:destroy', function () {
       .delete('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
       .reply(200)
 
-    const {stderr} = await runCommand(['clients:destroy', 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'])
+    const {stderr} = await runCommand(ClientsDestroy, ['f6e8d969-129f-42d2-854b-c2eca9d5a42e'])
 
     expect(stderr).to.contain('Destroying f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
   })

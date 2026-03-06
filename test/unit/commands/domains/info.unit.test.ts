@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import DomainsInfo from '../../../../src/commands/domains/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:info', function () {
   let api: nock.Scope
@@ -35,7 +37,7 @@ describe('domains:info', function () {
       .get('/apps/myapp/domains/www.example.com')
       .reply(200, domainInfoResponse)
 
-    const {stdout} = await runCommand(['domains:info', 'www.example.com', '--app', 'myapp'])
+    const {stdout} = await runCommand(DomainsInfo, ['www.example.com', '--app', 'myapp'])
 
     expect(stdout).to.contain('acm_status:        pending')
     expect(stdout).to.contain('acm_status_reason: Failing CCA check')

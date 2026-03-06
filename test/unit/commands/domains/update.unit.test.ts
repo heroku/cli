@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import DomainsUpdate from '../../../../src/commands/domains/update.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:update', function () {
   let api: nock.Scope
@@ -34,7 +36,7 @@ describe('domains:update', function () {
       .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
       .reply(200, responseBody)
 
-    const {stderr} = await runCommand(['domains:update', 'example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
+    const {stderr} = await runCommand(DomainsUpdate, ['example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
 
     expect(stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
   })

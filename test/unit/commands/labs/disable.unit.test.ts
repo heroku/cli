@@ -1,8 +1,10 @@
 import {hux} from '@heroku/heroku-cli-util'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
+
+import LabsDisable from '../../../../src/commands/labs/disable.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('labs:disable', function () {
   let api: nock.Scope
@@ -33,7 +35,7 @@ describe('labs:disable', function () {
       .patch('/account/features/feature-a', {enabled: false})
       .reply(200)
 
-    const {stderr} = await runCommand(['labs:disable', 'feature-a'])
+    const {stderr} = await runCommand(LabsDisable, ['feature-a'])
 
     expect(stderr).to.contain('Disabling feature-a for gandalf@heroku.com...')
   })
@@ -54,7 +56,7 @@ describe('labs:disable', function () {
       .patch('/apps/myapp/features/spaces-strict-tls', {enabled: false})
       .reply(200)
 
-    const {stderr} = await runCommand(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
+    const {stderr} = await runCommand(LabsDisable, ['spaces-strict-tls', '--app=myapp'])
 
     expect(stderr).to.contain('Insecure Action\nDisabling spaces-strict-tls for ⬢ myapp...')
   })
@@ -64,7 +66,7 @@ describe('labs:disable', function () {
     promptStub.onSecondCall().resolves('notMyApp')
     sinon.stub(hux, 'prompt').returns(promptStub as any)
 
-    const {error} = await runCommand(['labs:disable', 'spaces-strict-tls', '--app=myapp'])
+    const {error} = await runCommand(LabsDisable, ['spaces-strict-tls', '--app=myapp'])
 
     expect(error?.message).to.equal('Confirmation name did not match app name. Try again.')
   })
@@ -83,7 +85,7 @@ describe('labs:disable', function () {
       .patch('/apps/myapp/features/feature-a', {enabled: false})
       .reply(200)
 
-    const {stderr} = await runCommand(['labs:disable', 'feature-a', '--app=myapp'])
+    const {stderr} = await runCommand(LabsDisable, ['feature-a', '--app=myapp'])
 
     expect(stderr).to.contain('Disabling feature-a for ⬢ myapp...')
   })
