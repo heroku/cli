@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import PipelinesUpdate from '../../../../src/commands/pipelines/update.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:update', function () {
   const app = 'example'
@@ -25,7 +27,7 @@ describe('pipelines:update', function () {
       .patch(`/pipeline-couplings/${id}`)
       .reply(200, coupling)
 
-    const {stderr} = await runCommand(['pipelines:update', `--app=${app}`, `--stage=${stage}`])
+    const {stderr} = await runCommand(PipelinesUpdate, [`--app=${app}`, `--stage=${stage}`])
 
     expect(stderr).to.include(`Changing ⬢ ${app} to ${stage}... done`)
   })

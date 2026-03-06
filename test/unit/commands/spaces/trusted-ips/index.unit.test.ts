@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import {runCommand} from '../../../../helpers/run-command.js'
+import Index from '../../../../../src/commands/spaces/trusted-ips/index.js'
 
 const heredoc = tsheredoc.default
 
@@ -33,7 +35,7 @@ describe('trusted-ips', function () {
         version: '1',
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+    const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
     expect(stdout).to.equal(heredoc(`
     === Trusted IP Ranges
@@ -55,7 +57,7 @@ describe('trusted-ips', function () {
         version: '1',
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+    const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
     expect(stdout).to.equal('=== my-space has no trusted IP ranges. All inbound web requests to dynos are blocked.\n\nTrusted IP rules are applied to this space.\n')
   })
@@ -76,7 +78,7 @@ describe('trusted-ips', function () {
       .get('/spaces/my-space/inbound-ruleset')
       .reply(200, ruleSet)
 
-    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space', '--json', 'true'])
+    const {stdout} = await runCommand(Index, ['--space', 'my-space', '--json', 'true'])
 
     expect(JSON.parse(stdout)).to.eql(ruleSet)
   })
@@ -95,7 +97,7 @@ describe('trusted-ips', function () {
         version: '1',
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+    const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
     expect(stdout).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
   })
@@ -113,7 +115,7 @@ describe('trusted-ips', function () {
         version: '1',
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips', '--space', 'my-space'])
+    const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
     expect(stdout).to.equal(heredoc(`
     === Trusted IP Ranges

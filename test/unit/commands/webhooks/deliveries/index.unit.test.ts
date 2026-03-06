@@ -1,8 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+import {runCommand} from '../../../../helpers/run-command.js'
+import Index from '../../../../../src/commands/webhooks/deliveries/index.js'
 
 describe('webhooks:deliveries', function () {
   let api: nock.Scope
@@ -57,7 +58,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -87,7 +88,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app', '--status', 'pending'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app', '--status', 'pending'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -116,7 +117,7 @@ describe('webhooks:deliveries', function () {
         .get('/apps/example-app/webhook-deliveries')
         .reply(206, new Array(1000).fill(delivery)) // eslint-disable-line unicorn/no-new-array
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       const actualRows = normalizeTableOutput(stdout).split('\n')
       const expectedRows = normalizeTableOutput(`
@@ -142,7 +143,7 @@ describe('webhooks:deliveries', function () {
         .get('/apps/example-app/webhook-deliveries')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.equal('')
       expect(stdout.trim()).to.equal('⬢ example-app has no deliveries')
@@ -190,7 +191,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -205,7 +206,7 @@ describe('webhooks:deliveries', function () {
         .get('/pipelines/example-pipeline/webhook-deliveries')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(stderr).to.equal('')
       expect(stdout.trim()).to.equal('example-pipeline has no deliveries')

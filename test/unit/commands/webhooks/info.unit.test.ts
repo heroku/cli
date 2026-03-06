@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import {runCommand} from '../../../helpers/run-command.js'
+import Info from '../../../../src/commands/webhooks/info.js'
 
 describe('webhooks:info', function () {
   let api: nock.Scope
@@ -24,7 +26,7 @@ describe('webhooks:info', function () {
         url: 'http://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['webhooks:info', '--app', 'example-app', '99999999-9999-9999-9999-999999999999'])
+    const {stderr, stdout} = await runCommand(Info, ['--app', 'example-app', '99999999-9999-9999-9999-999999999999'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')
@@ -44,7 +46,7 @@ describe('webhooks:info', function () {
         url: 'http://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['webhooks:info', '--pipeline', 'example-pipeline', '99999999-9999-9999-9999-999999999999'])
+    const {stderr, stdout} = await runCommand(Info, ['--pipeline', 'example-pipeline', '99999999-9999-9999-9999-999999999999'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.contain('=== 99999999-9999-9999-9999-999999999999')

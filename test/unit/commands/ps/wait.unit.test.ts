@@ -1,8 +1,10 @@
 import {hux} from '@heroku/heroku-cli-util'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
+
+import PsWait from '../../../../src/commands/ps/wait.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku ps:wait', function () {
   const APP_NAME = 'wubalubadubdub'
@@ -32,7 +34,7 @@ describe('heroku ps:wait', function () {
       .get(`/apps/${APP_NAME}/releases`)
       .reply(200, [])
 
-    const {stderr} = await runCommand(['ps:wait', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
 
     expect(stderr).to.include(`Warning: App ⬢ ${APP_NAME} has no releases`)
   })
@@ -48,7 +50,7 @@ describe('heroku ps:wait', function () {
         {release: CURRENT, state: 'up', type: 'web'},
       ])
 
-    const {stderr} = await runCommand(['ps:wait', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
@@ -81,7 +83,7 @@ describe('heroku ps:wait', function () {
         {release: CURRENT, state: 'up', type: 'web'},
       ])
 
-    const {stderr} = await runCommand(['ps:wait', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
 
     expect(stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
   })
@@ -98,7 +100,7 @@ describe('heroku ps:wait', function () {
         {release: PREVIOUS, state: 'up', type: 'release'},
       ])
 
-    const {stderr} = await runCommand(['ps:wait', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
@@ -115,7 +117,7 @@ describe('heroku ps:wait', function () {
         {release: PREVIOUS, state: 'up', type: 'run'},
       ])
 
-    const {stderr} = await runCommand(['ps:wait', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
@@ -141,7 +143,7 @@ describe('heroku ps:wait', function () {
         {release: CURRENT, state: 'up', type: 'run'},
       ])
 
-    const {stderr} = await runCommand(['ps:wait', '--with-run', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--with-run', '--app', APP_NAME])
 
     expect(stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
   })
@@ -158,7 +160,7 @@ describe('heroku ps:wait', function () {
         {release: PREVIOUS, state: 'up', type: 'web'},
       ])
 
-    const {stderr} = await runCommand(['ps:wait', '--type=worker', '--app', APP_NAME])
+    const {stderr} = await runCommand(PsWait, [ '--type=worker', '--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })

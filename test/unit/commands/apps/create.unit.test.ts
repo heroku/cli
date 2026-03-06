@@ -1,12 +1,10 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import {execSync} from 'node:child_process'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('apps:create', function () {
   let api: nock.Scope
@@ -38,7 +36,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['apps:create'])
+    const {stderr, stdout} = await runCommand(CreateCommand, [])
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -53,7 +51,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['apps:create', '--features', 'feature-1,feature-2'])
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--features', 'feature-1,feature-2'])
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -70,7 +68,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['apps:create', '--space', 'my-space-name'])
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--space', 'my-space-name'])
 
     expect(stderr).to.contain('Creating app in space my-space-name... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -89,14 +87,14 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['apps:create', '--space', 'my-space-name', '--internal-routing'])
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--space', 'my-space-name', '--internal-routing'])
 
     expect(stderr).to.contain('Creating app in space my-space-name... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
   })
 
   it('does not create an Internal Web App outside of a space', async function () {
-    const {error} = await runCommand(['apps:create', '--internal-routing'])
+    const {error} = await runCommand(CreateCommand, ['--internal-routing'])
 
     expect(error).to.be.an.instanceof(Error)
     expect(error?.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
@@ -113,7 +111,7 @@ describe('apps:create', function () {
       .post('/apps', {})
       .reply(200, json)
 
-    const {stderr, stdout} = await runCommand(['apps:create', '--json'])
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--json'])
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar')
     expect(JSON.parse(stdout)).to.deep.equal(json)
@@ -162,13 +160,13 @@ describe('apps:create', function () {
       // Override channel using environment variable for this test
       process.env.HEROKU_UPDATE_CHANNEL = 'beta'
 
-      await runCommandHelper(CreateCommand, ['--app', appName, '--manifest'])
+      const {stdout, stderr} = await runCommand(CreateCommand, ['--app', appName, '--manifest'])
 
-      expect(stderr.output).to.contain('Reading heroku.yml manifest... done')
-      expect(stderr.output).to.contain('Creating ⬢ foo... done')
-      expect(stderr.output).to.contain('Adding heroku-postgresql... done')
-      expect(stderr.output).to.contain('Setting config vars... done')
-      expect(stdout.output).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
+      expect(stderr).to.contain('Reading heroku.yml manifest... done')
+      expect(stderr).to.contain('Creating ⬢ foo... done')
+      expect(stderr).to.contain('Adding heroku-postgresql... done')
+      expect(stderr).to.contain('Setting config vars... done')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
 
       delete process.env.HEROKU_UPDATE_CHANNEL
     })
@@ -191,12 +189,12 @@ describe('apps:create', function () {
         .post(`/apps/${appName}/addons`, {plan: 'secondPlan'})
         .reply(200, [])
 
-      await runCommandHelper(CreateCommand, ['--app', appName, '--addons', addon])
+      const {stdout, stderr} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon])
 
-      expect(stderr.output).to.contain('Creating ⬢ foo... done')
-      expect(stderr.output).to.contain('Adding foobar... done')
-      expect(stderr.output).to.contain('Adding secondPlan... done')
-      expect(stdout.output).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
+      expect(stderr).to.contain('Creating ⬢ foo... done')
+      expect(stderr).to.contain('Adding foobar... done')
+      expect(stderr).to.contain('Adding secondPlan... done')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
     })
 
     it('sets buildpack if buildpack flag is present', async function () {
@@ -216,13 +214,13 @@ describe('apps:create', function () {
         .put(`/apps/${appName}/buildpack-installations`, {updates: [{buildpack: 'https://github.com/some/buildpack.git'}]})
         .reply(200, [])
 
-      await runCommandHelper(CreateCommand, ['--app', appName, '--addons', addon, '--buildpack', exampleBuildpack])
+      const {stdout, stderr} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon, '--buildpack', exampleBuildpack])
 
-      expect(stderr.output).to.contain('Creating ⬢ foo... done')
-      expect(stderr.output).to.contain('Adding foobar... done')
-      expect(stderr.output).to.contain('Adding secondPlan... done')
-      expect(stderr.output).to.contain('Setting buildpack to https://github.com/some/buildpack.git')
-      expect(stdout.output).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
+      expect(stderr).to.contain('Creating ⬢ foo... done')
+      expect(stderr).to.contain('Adding foobar... done')
+      expect(stderr).to.contain('Adding secondPlan... done')
+      expect(stderr).to.contain('Setting buildpack to https://github.com/some/buildpack.git')
+      expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
     })
   })
 
@@ -236,7 +234,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['apps:create', '--region', 'eu'])
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--region', 'eu'])
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, region is eu')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
@@ -251,7 +249,7 @@ describe('apps:create', function () {
         web_url: 'https://foobar.com',
       })
 
-    const {stderr, stdout} = await runCommand(['apps:create', '--stack', 'test'])
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--stack', 'test'])
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, stack is test')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')

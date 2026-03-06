@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import {runCommand} from '../../../../helpers/run-command.js'
+import Add from '../../../../../src/commands/spaces/trusted-ips/add.js'
 
 describe('trusted-ips:add', function () {
   let api: nock.Scope
@@ -41,7 +43,7 @@ describe('trusted-ips:add', function () {
         ],
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips:add', '127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
+    const {stdout} = await runCommand(Add, ['127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
 
     expect(stdout).to.eq('Added 127.0.0.1/20 to trusted IP ranges on ⬡ my-space\nTrusted IP rules are applied to this space.\n')
   })
@@ -73,7 +75,7 @@ describe('trusted-ips:add', function () {
         ],
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips:add', '127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
+    const {stdout} = await runCommand(Add, ['127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
 
     expect(stdout).to.include('Added 127.0.0.1/20 to trusted IP ranges on ⬡ my-space')
     expect(stdout).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
@@ -105,7 +107,7 @@ describe('trusted-ips:add', function () {
         ],
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips:add', '127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
+    const {stdout} = await runCommand(Add, ['127.0.0.1/20', '--space', 'my-space', '--confirm', 'my-space'])
 
     expect(stdout).to.eq('Added 127.0.0.1/20 to trusted IP ranges on ⬡ my-space\n')
   })

@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import {addDays} from 'date-fns'
 import nock from 'nock'
+
+import {runCommand} from '../../../helpers/run-command.js'
+import Index from '../../../../src/commands/webhooks/index.js'
 
 describe('webhooks:index', function () {
   let api: nock.Scope
@@ -28,7 +30,7 @@ describe('webhooks:index', function () {
           url: 'http://foobar.com',
         }])
 
-      const {stderr, stdout} = await runCommand(['webhooks', '--app', 'example'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Webhook ID')
@@ -46,7 +48,7 @@ describe('webhooks:index', function () {
         .get(appWebhooksUrl)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks', '--app', 'example'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.contain('example has no webhooks')
@@ -67,7 +69,7 @@ describe('webhooks:index', function () {
           url: 'http://foobar.com',
         }])
 
-      const {stderr, stdout} = await runCommand(['webhooks', '--pipeline', 'example'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Webhook ID')
@@ -85,7 +87,7 @@ describe('webhooks:index', function () {
         .get(pipelinesWebhooksUrl)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks', '--pipeline', 'example'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.contain('example has no webhooks')
@@ -134,7 +136,7 @@ describe('webhooks:index', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks', '--app', 'example'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Webhook ID')

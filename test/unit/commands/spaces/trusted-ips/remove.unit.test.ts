@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import {runCommand} from '../../../../helpers/run-command.js'
+import Remove from '../../../../../src/commands/spaces/trusted-ips/remove.js'
 
 const heredoc = tsheredoc.default
 
@@ -44,7 +46,7 @@ describe('trusted-ips:remove', function () {
         ],
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips:remove', '127.0.0.1/20', '--space', 'my-space'])
+    const {stdout} = await runCommand(Remove, ['127.0.0.1/20', '--space', 'my-space'])
 
     expect(stdout).to.eq(heredoc(`
     Removed 127.0.0.1/20 from trusted IP ranges on ⬡ my-space
@@ -79,7 +81,7 @@ describe('trusted-ips:remove', function () {
         ],
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips:remove', '127.0.0.1/20', '--space', 'my-space'])
+    const {stdout} = await runCommand(Remove, ['127.0.0.1/20', '--space', 'my-space'])
 
     expect(stdout).to.include('Removed 127.0.0.1/20 from trusted IP ranges on ⬡ my-space')
     expect(stdout).to.include('Trusted IP rules are not applied to this space. Update your Trusted IP list to trigger a re-application of the rules.')
@@ -111,7 +113,7 @@ describe('trusted-ips:remove', function () {
         ],
       })
 
-    const {stdout} = await runCommand(['spaces:trusted-ips:remove', '127.0.0.1/20', '--space', 'my-space'])
+    const {stdout} = await runCommand(Remove, ['127.0.0.1/20', '--space', 'my-space'])
 
     expect(stdout).to.eq(heredoc(`
     Removed 127.0.0.1/20 from trusted IP ranges on ⬡ my-space

@@ -1,9 +1,10 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import {ago} from '../../../../src/lib/time.js'
+import {runCommand} from '../../../helpers/run-command.js'
+import Ps from '../../../../src/commands/spaces/ps.js'
 
 const heredoc = tsheredoc.default
 
@@ -91,7 +92,7 @@ describe('spaces:ps', function () {
       .get('/spaces/my-space')
       .reply(200, {shield: false})
 
-    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space'])
+    const {stdout} = await runCommand(Ps, ['--space', 'my-space'])
 
     expect(stdout).to.equal(heredoc(`
     === app_name1 web (Free): npm start (1)
@@ -121,7 +122,7 @@ describe('spaces:ps', function () {
       .get('/spaces/my-space')
       .reply(200, {shield: true})
 
-    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space'])
+    const {stdout} = await runCommand(Ps, ['--space', 'my-space'])
 
     expect(stdout).to.equal(heredoc(`
     === app_name1 web (Shield-M): npm start (1)
@@ -139,7 +140,7 @@ describe('spaces:ps', function () {
       .get('/spaces/my-space')
       .reply(200, {shield: false})
 
-    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space'])
+    const {stdout} = await runCommand(Ps, ['--space', 'my-space'])
 
     expect(stdout).to.equal(heredoc(`
     === app_name1 web (Private-M): npm start (1)
@@ -157,7 +158,7 @@ describe('spaces:ps', function () {
       .get('/spaces/my-space')
       .reply(200, {shield: false})
 
-    const {stdout} = await runCommand(['spaces:ps', '--space', 'my-space', '--json'])
+    const {stdout} = await runCommand(Ps, ['--space', 'my-space', '--json'])
 
     const parsed = JSON.parse(stdout)
     // Convert Date objects to ISO strings for comparison

@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import {runCommand} from '../../../helpers/run-command.js'
+import Transfer from '../../../../src/commands/spaces/transfer.js'
 
 describe('spaces:transfer', function () {
   let api: nock.Scope
@@ -35,7 +37,7 @@ describe('spaces:transfer', function () {
         updated_at: '2019-07-16T10:19:10Z',
       })
 
-    const {stderr} = await runCommand(['spaces:transfer', '--team', team, '--space', space])
+    const {stderr} = await runCommand(Transfer, ['--team', team, '--space', space])
 
     expect(stderr).to.contain('done')
   })
@@ -49,7 +51,7 @@ describe('spaces:transfer', function () {
       .post(`/spaces/${space}/transfer`, {new_owner: team})
       .reply(500, {id, message})
 
-    const {error} = await runCommand(['spaces:transfer', '--team', team, '--space', space])
+    const {error} = await runCommand(Transfer, ['--team', team, '--space', space])
 
     expect(error?.message).to.eq(message)
   })

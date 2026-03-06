@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import {runCommand} from '../../../../helpers/run-command.js'
+import Set from '../../../../../src/commands/spaces/drains/set.js'
 
 describe('spaces:drains:set', function () {
   let api: nock.Scope
@@ -28,7 +30,7 @@ describe('spaces:drains:set', function () {
         url: 'https://example.com',
       })
 
-    const {stdout} = await runCommand(['spaces:drains:set', 'https://example.com', '--space', 'my-space'])
+    const {stdout} = await runCommand(Set, ['https://example.com', '--space', 'my-space'])
 
     expect(stdout).to.equal('Successfully set drain https://example.com for ⬡ my-space.\n')
   })

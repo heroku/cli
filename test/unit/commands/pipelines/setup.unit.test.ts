@@ -1,12 +1,11 @@
 /* eslint-disable max-nested-callbacks */
 import {color, hux} from '@heroku/heroku-cli-util'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import SetupCommand from '../../../../src/commands/pipelines/setup.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:setup', function () {
   let api: nock.Scope
@@ -32,7 +31,7 @@ describe('pipelines:setup', function () {
       .get('/account/github/token')
       .replyWithError('')
 
-    const {error} = await runCommand(['pipelines:setup'])
+    const {error} = await runCommand(SetupCommand, [])
 
     expect(error?.message).to.equal('Account not connected to GitHub.')
   })
@@ -85,7 +84,7 @@ describe('pipelines:setup', function () {
 
     context('when pipeline name is too long', function () {
       it('shows a warning', async function () {
-        const {error} = await runCommand(['pipelines:setup', 'super-cali-fragilistic-expialidocious'])
+        const {error} = await runCommand(SetupCommand, ['super-cali-fragilistic-expialidocious'])
 
         expect(error?.message).to.equal('Please choose a pipeline name between 2 and 22 characters long')
       })
@@ -120,7 +119,7 @@ describe('pipelines:setup', function () {
             })
             .reply(200)
 
-          await runCommandHelper(SetupCommand, [])
+          await runCommand(SetupCommand, [])
 
           expect(promptStub.calledTwice).to.be.true
           expect(confirmStub.called).to.be.true
@@ -145,7 +144,7 @@ describe('pipelines:setup', function () {
             })
             .reply(200)
 
-          await runCommandHelper(SetupCommand, [pipeline.name.toUpperCase()])
+          await runCommand(SetupCommand, [pipeline.name.toUpperCase()])
 
           expect(promptStub.calledOnce).to.be.true
           expect(confirmStub.called).to.be.true
@@ -167,7 +166,7 @@ describe('pipelines:setup', function () {
             })
             .reply(200)
 
-          await runCommandHelper(SetupCommand, ['--yes', pipeline.name, repo.name])
+          await runCommand(SetupCommand, ['--yes', pipeline.name, repo.name])
 
           // Since we're passing the `yes` flag here, we should always return default settings and
           // thus never actually call cli.prompt
@@ -225,7 +224,7 @@ describe('pipelines:setup', function () {
             })
             .reply(200)
 
-          await runCommandHelper(SetupCommand, ['--team', team])
+          await runCommand(SetupCommand, ['--team', team])
 
           expect(promptStub.calledTwice).to.be.true
           expect(confirmStub.called).to.be.true
@@ -280,7 +279,7 @@ describe('pipelines:setup', function () {
             .reply(201, {})
 
           try {
-            await runCommandHelper(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
+            await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
             expect.fail('Expected command to throw error')
           } catch (error: any) {
             expect(error.message).to.contain(`Couldn't create application ${color.app('my-pipeline')}: status failed`)
@@ -337,7 +336,7 @@ describe('pipelines:setup', function () {
             .reply(201, {})
 
           try {
-            await runCommandHelper(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
+            await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
             expect.fail('Expected command to throw error')
           } catch (error: any) {
             expect(error.message).to.contain('timedout')

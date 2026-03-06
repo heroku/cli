@@ -1,12 +1,10 @@
 import {hux} from '@heroku/heroku-cli-util'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
 
 import TransferCommand from '../../../../src/commands/pipelines/transfer.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:transfer', function () {
   const pipeline = {
@@ -71,7 +69,7 @@ describe('pipelines:transfer', function () {
       })
       .reply(200, {})
 
-    const {stderr} = await runCommand(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
+    const {stderr} = await runCommand(TransferCommand, [ `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, team.name])
 
     expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${team.name} team... done`)
   })
@@ -88,7 +86,7 @@ describe('pipelines:transfer', function () {
       })
       .reply(200, {})
 
-    const {stderr} = await runCommand(['pipelines:transfer', `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
+    const {stderr} = await runCommand(TransferCommand, [ `--pipeline=${pipeline.id}`, `--confirm=${pipeline.name}`, account.email])
 
     expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
   })
@@ -107,9 +105,9 @@ describe('pipelines:transfer', function () {
       })
       .reply(200, {})
 
-    await runCommandHelper(TransferCommand, [`--pipeline=${pipeline.id}`, account.email])
+    const {stderr} = await runCommand(TransferCommand, [`--pipeline=${pipeline.id}`, account.email])
 
-    expect(stderr.output).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
+    expect(stderr).to.include(`Transferring ${pipeline.name} pipeline to the ${account.email} account... done`)
     expect(promptStub.calledOnce).to.be.true
   })
 })

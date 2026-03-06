@@ -1,9 +1,10 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import {addDays} from 'date-fns'
 import nock from 'nock'
 
 import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+import {runCommand} from '../../../../helpers/run-command.js'
+import Index from '../../../../../src/commands/webhooks/events/index.js'
 
 describe('webhooks:events', function () {
   let api: nock.Scope
@@ -34,7 +35,7 @@ describe('webhooks:events', function () {
           },
         }])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -47,7 +48,7 @@ describe('webhooks:events', function () {
         .get(appWebhookEventsPath)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -70,7 +71,7 @@ describe('webhooks:events', function () {
           },
         }])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -83,7 +84,7 @@ describe('webhooks:events', function () {
         .get(pipelineWebhookEventsPath)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -138,7 +139,7 @@ describe('webhooks:events', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)

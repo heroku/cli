@@ -1,4 +1,3 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
@@ -12,6 +11,8 @@ import {
   nonHerokuIncidentResponse,
   trustLocalizationsResponse,
 } from '../../fixtures/status/fixtures.js'
+import {runCommand} from '../../helpers/run-command.js'
+import Status from '../../../src/commands/status.js'
 
 describe('status - Heroku Status API', function () {
   let herokuStatusApi: nock.Scope
@@ -42,7 +43,7 @@ describe('status - Heroku Status API', function () {
           ],
         })
 
-      const {stdout} = await runCommand(['status'])
+      const {stdout} = await runCommand(Status, [])
 
       expect(stdout).to.equal(`Apps:      No known issues at this time.
 Data:      No known issues at this time.
@@ -62,7 +63,7 @@ Tools:     No known issues at this time.\n`)
           ],
         })
 
-      const {stdout} = await runCommand(['status', '--json'])
+      const {stdout} = await runCommand(Status, ['--json'])
 
       expect(JSON.parse(stdout).status[0]).to.deep.include({status: 'green'})
     })
@@ -100,7 +101,7 @@ Tools:     No known issues at this time.\n`)
           ],
         })
 
-      const {stdout} = await runCommand(['status'])
+      const {stdout} = await runCommand(Status, [])
 
       expect(stdout).to.equal(`Apps:      Red
 Data:      No known issues at this time.
@@ -147,7 +148,7 @@ describe('status - SF Trust API', function () {
         .get('/localizations?locale=en')
         .reply(200, trustLocalizationsResponse)
 
-      const {stdout} = await runCommand(['status'])
+      const {stdout} = await runCommand(Status, [])
 
       expect(stdout).to.equal(`Apps:      No known issues at this time.
 Data:      No known issues at this time.
@@ -169,7 +170,7 @@ Tools:     No known issues at this time.\n`)
         .get('/localizations?locale=en')
         .reply(200, trustLocalizationsResponse)
 
-      const {stdout} = await runCommand(['status', '--json'])
+      const {stdout} = await runCommand(Status, ['--json'])
 
       expect(JSON.parse(stdout).status[0]).to.deep.include({status: 'green'})
     })
@@ -189,7 +190,7 @@ Tools:     No known issues at this time.\n`)
         .get('/localizations?locale=en')
         .reply(200, trustLocalizationsResponse)
 
-      const {stdout} = await runCommand(['status', '--json'])
+      const {stdout} = await runCommand(Status, ['--json'])
 
       expect(JSON.parse(stdout).scheduled).to.deep.equal(herokuMaintenanceResponse)
     })
@@ -219,7 +220,7 @@ Tools:     No known issues at this time.\n`)
         .get('/localizations?locale=en')
         .reply(200, trustLocalizationsResponse)
 
-      const {stdout} = await runCommand(['status'])
+      const {stdout} = await runCommand(Status, [])
 
       expect(stdout).to.equal(`Apps:      Yellow
 Data:      Red
@@ -280,7 +281,7 @@ Incident update 3
         .get('/localizations?locale=en')
         .reply(200, trustLocalizationsResponse)
 
-      const {error} = await runCommand(['status'])
+      const {error} = await runCommand(Status, [])
 
       expect(error?.message).to.include('Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.')
     })

@@ -1,8 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import {unwrap} from '../../../helpers/utils/unwrap.js'
+import {runCommand} from '../../../helpers/run-command.js'
+import Update from '../../../../src/commands/webhooks/update.js'
 
 describe('webhooks:update', function () {
   let api: nock.Scope
@@ -26,8 +27,7 @@ describe('webhooks:update', function () {
       })
       .reply(200, {})
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:update',
+    const {stderr, stdout} = await runCommand(Update, [
       '--app',
       'example-app',
       '--include',
@@ -57,8 +57,7 @@ describe('webhooks:update', function () {
       })
       .reply(200, {})
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:update',
+    const {stderr, stdout} = await runCommand(Update, [
       '--pipeline',
       'example-pipeline',
       '--include',
