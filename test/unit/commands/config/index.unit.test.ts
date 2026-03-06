@@ -1,7 +1,8 @@
-import {runCommand} from '../../../helpers/run-command.js'
-import {ConfigIndex} from '../../../../src/commands/config/index.js'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import {ConfigIndex} from '../../../../src/commands/config/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config', function () {
   let api: nock.Scope
