@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Token from '../../../../src/commands/auth/token.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('auth:token', function () {
   let api: nock.Scope
@@ -25,7 +27,7 @@ describe('auth:token', function () {
         {},
       ])
 
-    const {stderr, stdout} = await runCommand(['auth:token'])
+    const {stderr, stdout} = await runCommand(Token, [])
 
     expect(stdout).to.equal('foobar\n')
     expect(stderr).to.contain('Warning: token will expire today')
@@ -40,7 +42,7 @@ describe('auth:token', function () {
         {},
       ])
 
-    const {stderr, stdout} = await runCommand(['auth:token'])
+    const {stderr, stdout} = await runCommand(Token, [])
 
     expect(stdout).to.equal('foobar\n')
     expect(stderr).to.contain('To generate a token that expires in one year, use heroku')
@@ -57,7 +59,7 @@ describe('auth:token', function () {
         {},
       ])
 
-    const {stderr, stdout} = await runCommand(['auth:token'])
+    const {stderr, stdout} = await runCommand(Token, [])
 
     expect(stdout).to.equal('foobar\n')
     expect(stderr).to.contain('All tokens expire one year after we generate it.')

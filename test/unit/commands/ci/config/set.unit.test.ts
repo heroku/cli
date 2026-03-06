@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Set from '../../../../../src/commands/ci/config/set.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('heroku ci:config:set', function () {
   const key = 'FOO'
@@ -27,19 +29,19 @@ describe('heroku ci:config:set', function () {
       .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, {[key]: value})
 
-    const {stdout} = await runCommand(['ci:config:set', `--pipeline=${pipeline.id}`, '--', `${key}=${value}`])
+    const {stdout} = await runCommand(Set, [`--pipeline=${pipeline.id}`, '--', `${key}=${value}`])
 
     expect(stdout).to.include(key)
     expect(stdout).to.include(value)
   })
 
   it('errors with example of valid args', async function () {
-    const {error} = await runCommand(['ci:config:set', `--pipeline=${pipeline.id}`])
+    const {error} = await runCommand(Set, [`--pipeline=${pipeline.id}`])
     expect(error?.message).to.equal('Usage: heroku ci:config:set KEY1 [KEY2 ...]\nMust specify KEY to set.')
   })
 
   it('errors with explanation of required flags', async function () {
-    const {error} = await runCommand(['ci:config:set', '--', `${key}=${value}`])
+    const {error} = await runCommand(Set, ['--', `${key}=${value}`])
     expect(error?.message).to.include('Exactly one of the following must be provided: --app, --pipeline')
   })
 })

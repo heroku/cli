@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Get from '../../../../../src/commands/ci/config/get.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const key = 'FOO'
 const value = 'bar'
@@ -28,7 +30,7 @@ describe('heroku ci:config:get', function () {
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, {[key]: value})
 
-    const {stdout} = await runCommand(['ci:config:get', `--pipeline=${pipeline.id}`, key])
+    const {stdout} = await runCommand(Get, [`--pipeline=${pipeline.id}`, key])
 
     expect(stdout).to.equal(`${value}\n`)
   })
@@ -40,7 +42,7 @@ describe('heroku ci:config:get', function () {
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, {[key]: value})
 
-    const {stdout} = await runCommand(['ci:config:get', `--pipeline=${pipeline.id}`, '--shell',  key])
+    const {stdout} = await runCommand(Get, [`--pipeline=${pipeline.id}`, '--shell',  key])
 
     expect(stdout).to.equal(`${key}=${value}\n`)
   })

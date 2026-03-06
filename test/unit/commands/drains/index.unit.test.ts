@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Drains from '../../../../src/commands/drains/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('drains', function () {
   let api: nock.Scope
@@ -39,7 +41,7 @@ describe('drains', function () {
       .get('/apps/myapp/log-drains')
       .reply(200, [DRAIN])
 
-    const {stderr, stdout} = await runCommand(['drains', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(Drains, ['-a', 'myapp'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`=== Drains
@@ -55,7 +57,7 @@ https://forker.herokuapp.com (d.8bf587e9-29d1-43c8-bd0e-36cdfaf35259)
       .get('/apps/myapp/addons/add-on-123')
       .reply(200, {name: 'add-on-123', plan: {name: 'add-on:test'}})
 
-    const {stderr, stdout} = await runCommand(['drains', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(Drains, ['-a', 'myapp'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`=== Add-on Drains
@@ -71,7 +73,7 @@ add-on:test (add-on-123)
       .get('/apps/myapp/addons/add-on-123')
       .reply(200, {name: 'add-on-123', plan: {name: 'add-on:test'}})
 
-    const {stderr, stdout} = await runCommand(['drains', '-a', 'myapp', '--extended'])
+    const {stderr, stdout} = await runCommand(Drains, ['-a', 'myapp', '--extended'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`=== Drains
@@ -88,7 +90,7 @@ add-on:test (add-on-123) drain_id=12345
       .get('/apps/myapp/log-drains?extended=true')
       .reply(200, EXTENDED_DRAINS)
 
-    const {stderr, stdout} = await runCommand(['drains', '-a', 'myapp', '--extended', '--json'])
+    const {stderr, stdout} = await runCommand(Drains, ['-a', 'myapp', '--extended', '--json'])
 
     expect(stderr).to.equal('')
     expect(JSON.parse(stdout)).to.deep.equal(EXTENDED_DRAINS)
