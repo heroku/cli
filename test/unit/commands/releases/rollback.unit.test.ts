@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/releases/rollback.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('releases:rollback', function () {
@@ -77,20 +76,19 @@ describe('releases:rollback', function () {
       .post('/apps/myapp/releases', {release: '5efa3510-e8df-4db0-a176-83ff8ad91eb5'})
       .reply(200, {output_stream_url: 'https://busl.test/streams/release.log', version: 40})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'v10',
     ])
-
     busl.done()
     api.done()
 
-    const stderr_output = unwrap(stderr.output)
+    const stderr_output = unwrap(stderr)
     expect(stderr_output).to.contain('Rolling back ⬢ myapp to v40... done, v40')
     expect(stderr_output).to.contain("Rollback affects code and config vars; it doesn't add or remove addons.")
     expect(stderr_output).to.contain('To undo, run: heroku rollback v39')
-    expect(stdout.output).to.equal('Running release command...\nRelease Output Content')
+    expect(stdout).to.equal('Running release command...\nRelease Output Content')
   })
 
   it('has a missing output', async function () {
@@ -103,16 +101,15 @@ describe('releases:rollback', function () {
       .post('/apps/myapp/releases', {release: '5efa3510-e8df-4db0-a176-83ff8ad91eb5'})
       .reply(200, {output_stream_url: 'https://busl.test/streams/release.log', version: 40})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'v10',
     ])
-
     busl.done()
     api.done()
 
-    expect(stdout.output).to.equal('Running release command...\n')
-    expect(unwrap(stderr.output)).to.contain('Release command starting. Use `heroku releases:output` to view the log.')
+    expect(stdout).to.equal('Running release command...\n')
+    expect(unwrap(stderr)).to.contain('Release command starting. Use `heroku releases:output` to view the log.')
   })
 })

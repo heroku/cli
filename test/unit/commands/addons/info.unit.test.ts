@@ -1,10 +1,9 @@
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/addons/info.js'
 import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const {cache} = resolveAddon
@@ -38,11 +37,10 @@ describe('addons:info', function () {
       api.get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`).reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
     it('prints add-ons in a table', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         'www-db',
       ])
-
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === www-db
 Plan:         heroku-postgresql:mini
 Price:        ~$0.007/hour
@@ -73,13 +71,12 @@ State:        created\n
     })
 
     it('prints add-ons in a table', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'www-db',
       ])
-
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === www-db
 Plan:         heroku-postgresql:mini
 Price:        ~$0.007/hour
@@ -111,12 +108,12 @@ State:        created\n
     })
 
     it('prints add-ons in a table', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'www-db',
       ])
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === www-db
 Plan:         heroku-postgresql:mini
 Price:        ~$0.007/hour
@@ -149,10 +146,10 @@ State:        created\n
     })
 
     it('prints add-ons in a table with grandfathered price', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         'dwh-db',
       ])
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === dwh-db
 Plan:         heroku-postgresql:standard-2
 Price:        ~$0.139/hour
@@ -185,10 +182,10 @@ State:        created\n
     })
 
     it('prints add-ons in a table with contract', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         'dwh-db',
       ])
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === dwh-db
 Plan:         heroku-postgresql:standard-2
 Price:        contract
@@ -216,10 +213,10 @@ State:        created\n
     })
 
     it('prints add-ons in a table with humanized state', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         'www-redis',
       ])
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === www-redis
 Plan:         heroku-redis:premium-2
 Price:        ~$0.083/hour
@@ -247,10 +244,10 @@ State:        creating\n
     })
 
     it('prints add-ons in a table with humanized state', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         'www-redis-2',
       ])
-      expectOutput(stdout.output, `
+      expectOutput(stdout, `
 === www-redis-2
 Plan:         heroku-redis:premium-2
 Price:        ~$0.083/hour

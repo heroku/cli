@@ -1,11 +1,10 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/maxmemory.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
@@ -31,14 +30,14 @@ describe('heroku redis:maxmemory', function () {
       .reply(200, {
         maxmemory_policy: {value: 'noeviction', values: {noeviction: 'return errors when memory limit is reached'}},
       })
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--policy',
       'noeviction',
     ])
-    expectOutput(stderr.output, '')
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stderr, '')
+    expectOutput(stdout, heredoc(`
       Maxmemory policy for redis-haiku (REDIS_FOO, REDIS_BAR) set to noeviction.
       noeviction return errors when memory limit is reached.
     `))

@@ -1,10 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/releases/info.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -35,11 +34,11 @@ describe('releases:info', function () {
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === Release v10
       Add-ons:                addon1
                               addon2
@@ -61,12 +60,12 @@ describe('releases:info', function () {
       .reply(200, [release])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--shell',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === Release v10
       Add-ons:                addon1
                               addon2
@@ -88,12 +87,12 @@ describe('releases:info', function () {
       .reply(200, release)
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'v10',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === Release v10
       Add-ons:                addon1
                               addon2
@@ -113,13 +112,13 @@ describe('releases:info', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/releases/10')
       .reply(200, release)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--json',
       'v10',
     ])
-    expect(stdout.output).to.contain('"version": 10')
+    expect(stdout).to.contain('"version": 10')
   })
 
   it('shows a failed release info', async function () {
@@ -135,11 +134,11 @@ describe('releases:info', function () {
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === Release v10
       By:                     foo@foo.com
       Change:                 something changed (release command failed)
@@ -167,11 +166,11 @@ describe('releases:info', function () {
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === Release v10
       Add-ons:                addon1
                               addon2
@@ -200,11 +199,11 @@ describe('releases:info', function () {
       }])
       .get('/apps/myapp/releases/10/config-vars')
       .reply(200, configVars)
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === Release v10
       By:                     foo@foo.com
       Change:                 something changed (release expired)

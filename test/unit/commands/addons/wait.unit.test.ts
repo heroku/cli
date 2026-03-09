@@ -1,13 +1,13 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/addons/wait.js'
-import runCommand from '../../../helpers/runCommand.js'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import nock from 'nock'
-import _ from 'lodash'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import _ from 'lodash'
 import lolex from 'lolex'
+import nock from 'nock'
+import sinon from 'sinon'
+
+import Cmd from '../../../../src/commands/addons/wait.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {runCommand} from '../../../helpers/run-command.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
@@ -31,21 +31,21 @@ describe('addons:wait', function () {
     context('when the add-on is provisioned', function () {
       beforeEach(function () {
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .post('/actions/addons/resolve', {app: null, addon: 'www-db'})
+          .post('/actions/addons/resolve', {addon: 'www-db', app: null})
           .reply(200, [fixtures.addons['www-db']])
       })
       it('prints output indicating that it is done', async function () {
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           'www-db',
         ])
-        expectOutput(stdout.output, '')
-        expectOutput(stderr.output, '')
+        expectOutput(stdout, '')
+        expectOutput(stderr, '')
       })
     })
     context('for an add-on that is still provisioning', function () {
       it('waits until the add-on is provisioned, then shows config vars', async function () {
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
+          .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
@@ -56,22 +56,22 @@ describe('addons:wait', function () {
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, provisionedAddon)
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
           'www-redis',
         ])
-        expectOutput(stderr.output, `
+        expectOutput(stderr, `
 Creating www-redis... done
 `)
-        expectOutput(stdout.output, `
+        expectOutput(stdout, `
 Created www-redis as REDIS_URL
 `)
       })
       it('does NOT notify the user when provisioning takes less than 5 seconds', async function () {
         const notifySpy = sandbox.spy(Cmd, 'notifier')
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
+          .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
@@ -91,7 +91,7 @@ Created www-redis as REDIS_URL
         const notifySpy = sandbox.spy(Cmd, 'notifier')
 
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
+          .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
@@ -116,7 +116,7 @@ Created www-redis as REDIS_URL
         const notifySpy = sandbox.spy(Cmd, 'notifier')
 
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
+          .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
         nock('https://api.heroku.com')
           .get('/addons/www-redis')
@@ -133,9 +133,9 @@ Created www-redis as REDIS_URL
             expect(notifySpy.calledOnce).to.be.true
           })
       })
-      it('shows that it failed to provision', function () {
+      it('shows that it failed to provision', async function () {
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis'})
+          .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
           .get('/addons/www-redis')
           .reply(200, fixtures.addons['www-redis'])
@@ -144,13 +144,10 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
-        return runCommand(Cmd, [
+        const {error} = await runCommand(Cmd, [
           'www-redis',
         ])
-          .then(() => {
-            throw new Error('unreachable')
-          })
-          .catch(error => expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned'))
+        expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
       })
     })
   })
@@ -158,21 +155,21 @@ Created www-redis as REDIS_URL
     context('for an add-on that is still deprovisioning', function () {
       it('waits until the add-on is deprovisioned', async function () {
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis-2'})
+          .post('/actions/addons/resolve', {addon: 'www-redis-2', app: null})
           .reply(200, [fixtures.addons['www-redis-2']])
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(200, fixtures.addons['www-redis-2'])
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(404, {id: 'not_found', message: 'Not found.'})
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
           'www-redis-2',
         ])
-        expectOutput(stderr.output, `
+        expectOutput(stderr, `
 Destroying www-redis-2... done
 `)
-        expectOutput(stdout.output, '')
+        expectOutput(stdout, '')
       })
       it('does NOT notify the user when deprovisioning takes less than 5 seconds', async function () {
         const notifySpy = sandbox.spy(Cmd, 'notifier')
@@ -181,7 +178,7 @@ Destroying www-redis-2... done
         deprovisioningAddon.id = '37f27548-db4a-4ae0-bb48-57125df0ddc2'
         deprovisioningAddon.name = 'www-redis-3'
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis-3'})
+          .post('/actions/addons/resolve', {addon: 'www-redis-3', app: null})
           .reply(200, [deprovisioningAddon])
           .get('/apps/acme-inc-www/addons/www-redis-3')
           .reply(404, {id: 'not_found', message: 'Not found.'})
@@ -200,7 +197,7 @@ Destroying www-redis-2... done
         deprovisioningAddon.id = '967dff74-99b4-4fd2-a0f0-79b523d5c0e1'
         deprovisioningAddon.name = 'www-redis-4'
         nock('https://api.heroku.com')
-          .post('/actions/addons/resolve', {app: null, addon: 'www-redis-4'})
+          .post('/actions/addons/resolve', {addon: 'www-redis-4', app: null})
           .reply(200, [deprovisioningAddon])
           .get('/apps/acme-inc-www/addons/www-redis-4')
           .reply(200, () => {
@@ -259,18 +256,18 @@ Destroying www-redis-2... done
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(404, {id: 'not_found', message: 'Not found.'})
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
           '--app',
           'acme-inc-www',
         ])
-        expectOutput(stderr.output, `
+        expectOutput(stderr, `
 Creating www-db... done
 Creating www-redis... done
 Destroying www-redis-2... done
 `)
-        expectOutput(stdout.output, `
+        expectOutput(stdout, `
 Created www-db as WWW_URL
 Created www-redis as REDIS_URL
 `)
@@ -315,16 +312,16 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(404, {id: 'not_found', message: 'Not found.'})
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
         ])
-        expectOutput(stderr.output, `
+        expectOutput(stderr, `
 Creating www-db... done
 Creating www-redis... done
 Destroying www-redis-2... done
 `)
-        expectOutput(stdout.output, `
+        expectOutput(stdout, `
 Created www-db as WWW_URL
 Created www-redis as REDIS_URL
 `)

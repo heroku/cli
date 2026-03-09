@@ -1,13 +1,14 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/spaces/topology.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {App} from '@heroku-cli/schema'
+import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import {expect} from 'chai'
+
 import type {SpaceTopology} from '../../../../src/lib/types/spaces.js'
-import {App} from '@heroku-cli/schema'
+
+import Cmd from '../../../../src/commands/spaces/topology.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import {runCommand} from '../../../helpers/run-command.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -31,11 +32,11 @@ describe('spaces:topology', function () {
       .get(`/apps/${app.id}`)
       .reply(200, app)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${app.name} (web)
       Domains: example.com
                example.net
@@ -51,11 +52,11 @@ describe('spaces:topology', function () {
       .get(`/apps/${app.id}`)
       .reply(200, app)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${app.name} (web)
       Domains: example.com
                example.net
@@ -71,11 +72,11 @@ describe('spaces:topology', function () {
       .get(`/apps/${app.id}`)
       .reply(200, app)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${app.name} (web)
       Domains: example.com
                example.net
@@ -91,11 +92,11 @@ describe('spaces:topology', function () {
       .get(`/apps/${app.id}`)
       .reply(200, app)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',
     ])
-    expect(JSON.parse(stdout.output)).to.eql(topo1)
+    expect(JSON.parse(stdout)).to.eql(topo1)
   })
 })

@@ -5,7 +5,7 @@ import sinon from 'sinon'
 
 import Cmd, {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {EditorFactory} from '../../../../src/lib/config/util.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config:edit', function () {
   let updated: Record<string, unknown> | string

@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
@@ -119,26 +119,24 @@ describe('domains', function () {
   it('does not show the custom domain header if there are no custom domains', async function () {
     api.get('/apps/myapp/domains').reply(200, herokuOnlyDomainsResponse)
 
-    await runCommand(DomainsIndex, ['--app', 'myapp'])
-
-    expect(stdout.output).to.contain(
+    const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
+    expect(stdout).to.contain(
       '=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com',
     )
-    expect(stdout.output).to.contain('myapp.herokuapp.com')
-    expect(stdout.output).to.not.contain('=== ⬢ myapp Custom Domains')
+    expect(stdout).to.contain('myapp.herokuapp.com')
+    expect(stdout).to.not.contain('=== ⬢ myapp Custom Domains')
   })
 
   it('shows a list of domains and their DNS targets when there are custom domains', async function () {
     api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
 
-    await runCommand(DomainsIndex, ['--app', 'myapp'])
-
-    const actual = removeAllWhitespace(stdout.output)
-    expect(stdout.output).to.contain(
+    const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
+    const actual = removeAllWhitespace(stdout)
+    expect(stdout).to.contain(
       '=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com',
     )
-    expect(stdout.output).to.contain('myapp.herokuapp.com')
-    expect(stdout.output).to.contain('=== ⬢ myapp Custom Domains')
+    expect(stdout).to.contain('myapp.herokuapp.com')
+    expect(stdout).to.contain('=== ⬢ myapp Custom Domains')
     expect(actual).to.contain(
       removeAllWhitespace('Domain Name     DNS Record Type DNS Target'),
     )
@@ -156,9 +154,8 @@ describe('domains', function () {
   it('shows the SNI endpoint column when multiple sni endpoints are enabled', async function () {
     api.get('/apps/myapp/domains').reply(200, herokuDomainWithSniEndpoint)
 
-    await runCommand(DomainsIndex, ['--app', 'myapp'])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.contain(
       removeAllWhitespace(
         'Domain Name   DNS Record Type DNS Target         SNI Endpoint',
@@ -192,10 +189,9 @@ describe('domains', function () {
       return new Array(1000).fill(domainData) // eslint-disable-line unicorn/no-new-array
     })
 
-    await runCommand(DomainsIndex, ['--app', 'myapp'])
-
-    expect(stdout.output).to.contain('=== ⬢ myapp Heroku Domain')
-    expect(unwrap(stderr.output)).to.contain(
+    const {stderr, stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
+    expect(stdout).to.contain('=== ⬢ myapp Heroku Domain')
+    expect(unwrap(stderr)).to.contain(
       'Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.',
     )
   })

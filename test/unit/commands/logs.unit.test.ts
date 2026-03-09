@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import Cmd from '../../../src/commands/logs.js'
 import {LogDisplayer} from '../../../src/lib/run/log-displayer.js'
-import runCommand from '../../helpers/runCommand.js'
+import {runCommand} from '../../helpers/run-command.js'
 
 describe('logs', function () {
   let logDisplayerStub: sinon.SinonStub

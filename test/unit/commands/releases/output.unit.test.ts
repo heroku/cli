@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/releases/output.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('releases:output', function () {
@@ -12,14 +11,13 @@ describe('releases:output', function () {
       .get('/apps/myapp/releases/10')
       .reply(200, {version: 40})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'v10',
     ])
-
-    expect(stdout.output).to.equal('')
-    expect(unwrap(stderr.output)).to.contain('Release v40 has no release output available.\n')
+    expect(stdout).to.equal('')
+    expect(unwrap(stderr)).to.contain('Release v40 has no release output available.\n')
     api.done()
   })
 
@@ -31,16 +29,15 @@ describe('releases:output', function () {
       .get('/apps/myapp/releases/10')
       .reply(200, {output_stream_url: 'https://busl.test/streams/release.log', version: 40})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'v10',
     ])
-
     busl.done()
     api.done()
-    expect(stdout.output).to.equal('Release Output Content')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Release Output Content')
+    expect(stderr).to.equal('')
   })
 
   it('shows the output from the latest release', async function () {
@@ -52,15 +49,14 @@ describe('releases:output', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', version: 40}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
     busl.done()
     api.done()
-    expect(stdout.output).to.equal('Release Output Content')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Release Output Content')
+    expect(stderr).to.equal('')
   })
 
   it('has a missing output', async function () {
@@ -72,14 +68,13 @@ describe('releases:output', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', version: 40}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
     api.done()
     busl.done()
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Warning: Release command not started yet. Please try again in a few')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Warning: Release command not started yet. Please try again in a few')
   })
 })

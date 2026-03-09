@@ -2,11 +2,10 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/addons/index.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
@@ -44,8 +43,8 @@ describe('addons', function () {
       })
 
       it('prints add-ons in a table', async function () {
-        await runCommand(Cmd, [])
-        const actual = removeAllWhitespace(stdout.output)
+        const {stdout} = await runCommand(Cmd, [])
+        const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
           Owning App   Add-on    Plan                   Price        Max Price State`)
         const expected = removeAllWhitespace(`
@@ -56,16 +55,16 @@ describe('addons', function () {
         expect(actual).to.include(expected)
       })
       it('orders by app, then by add-on name', async function () {
-        await runCommand(Cmd, [])
-        expect(stdout.output.indexOf('acme-inc-api')).to.be.lt(stdout.output.indexOf('acme-inc-www'))
-        expect(stdout.output.indexOf('www-db')).to.be.lt(stdout.output.indexOf('www-redis'))
+        const {stdout} = await runCommand(Cmd, [])
+        expect(stdout.indexOf('acme-inc-api')).to.be.lt(stdout.indexOf('acme-inc-www'))
+        expect(stdout.indexOf('www-db')).to.be.lt(stdout.indexOf('www-redis'))
       })
       context('--json', function () {
         it('prints the output in json format', async function () {
-          await runCommand(Cmd, [
+          const {stdout} = await runCommand(Cmd, [
             '--json',
           ])
-          expect(JSON.parse(stdout.output)[0].name).to.eq('www-db')
+          expect(JSON.parse(stdout)[0].name).to.eq('www-db')
         })
       })
     })
@@ -78,8 +77,8 @@ describe('addons', function () {
           .reply(200, [addon])
       })
       it('prints add-ons in a table with the grandfathered price', async function () {
-        await runCommand(Cmd, [])
-        const actual = removeAllWhitespace(stdout.output)
+        const {stdout} = await runCommand(Cmd, [])
+        const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
           Owning App   Add-on    Plan                   Price        Max Price State`)
         const expected = removeAllWhitespace(`
@@ -97,8 +96,8 @@ describe('addons', function () {
           .reply(200, [addon])
       })
       it('prints add-ons in a table with contract', async function () {
-        await runCommand(Cmd, [])
-        const actual = removeAllWhitespace(stdout.output)
+        const {stdout} = await runCommand(Cmd, [])
+        const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
           Owning App   Add-on Plan                         Price    Max Price State`)
         const expected = removeAllWhitespace(`
@@ -112,8 +111,8 @@ describe('addons', function () {
       nock('https://api.heroku.com')
         .get('/addons')
         .reply(200, [])
-      await runCommand(Cmd, [])
-      expectOutput(stdout.output, 'No add-ons.')
+      const {stdout} = await runCommand(Cmd, [])
+      expectOutput(stdout, 'No add-ons.')
     })
   })
 
@@ -127,19 +126,19 @@ describe('addons', function () {
         .reply(200, attachments)
     }
 
-    function run(app: string, cb: () => any) {
-      return runCommand(Cmd, [
+    async function run(app: string, cb: (result: {stderr: string, stdout: string}) => any) {
+      const result = await runCommand(Cmd, [
         '--app',
         app,
       ])
-        .then(cb)
+      return cb(result)
     }
 
     it('prints message when there are no add-ons', function () {
       const appName = 'acme-inc-www'
       mockAPI(appName)
-      return run(appName, function () {
-        expectOutput(stdout.output, 'No add-ons for app acme-inc-www.')
+      return run(appName, function ({stdout}) {
+        expectOutput(stdout, 'No add-ons for app acme-inc-www.')
       })
     })
     context('with add-ons', function () {
@@ -149,8 +148,8 @@ describe('addons', function () {
         ], [
           fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-www::REDIS'],
         ])
-        return run('acme-inc-www', function () {
-          const actual = removeAllWhitespace(stdout.output)
+        return run('acme-inc-www', function ({stdout}) {
+          const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
             Add-on    Plan                   Price        Max Price State`)
           expect(actual).to.include(expectedHeader)
@@ -166,8 +165,8 @@ describe('addons', function () {
         mockAPI('acme-inc-www', [fixtures.addons['www-db']], [
           fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
         ])
-        return run('acme-inc-www', function () {
-          const actual = removeAllWhitespace(stdout.output)
+        return run('acme-inc-www', function ({stdout}) {
+          const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
             Add-on    Plan                   Price        Max Price State`)
           expect(actual).to.include(expectedHeader)
@@ -182,8 +181,8 @@ describe('addons', function () {
         mockAPI('acme-inc-dwh', [fixtures.addons['www-db']], [
           fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
         ])
-        return run('acme-inc-dwh', function () {
-          const actual = removeAllWhitespace(stdout.output)
+        return run('acme-inc-dwh', function ({stdout}) {
+          const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
             Add-on    Plan                   Price        Max Price State`)
           expect(actual).to.include(expectedHeader)
@@ -196,8 +195,8 @@ describe('addons', function () {
       })
       it("doesn't show attachments that are not related to the targeted app", function () {
         mockAPI('acme-inc-dwh', [], [fixtures.attachments['acme-inc-www::DATABASE']])
-        return run('acme-inc-dwh', function () {
-          expectOutput(stdout.output, 'No add-ons for app acme-inc-dwh.')
+        return run('acme-inc-dwh', function ({stdout}) {
+          expectOutput(stdout, 'No add-ons for app acme-inc-dwh.')
         })
       })
       describe('attachment app info', function () {
@@ -208,14 +207,14 @@ describe('addons', function () {
         })
 
         it('omits attachment app for local attachments', function () {
-          return run('acme-inc-dwh', function () {
-            expect(stdout.output).to.match(/├─ as WWW_DB\s*$/m)
+          return run('acme-inc-dwh', function ({stdout}) {
+            expect(stdout).to.match(/├─ as WWW_DB\s*$/m)
           })
         })
 
         it('includes app name for foreign attachments', function () {
-          return run('acme-inc-dwh', function () {
-            expect(stdout.output).to.match(/└─ as DATABASE on ⬢ acme-inc-www app\s*$/m)
+          return run('acme-inc-dwh', function ({stdout}) {
+            expect(stdout).to.match(/└─ as DATABASE on ⬢ acme-inc-www app\s*$/m)
           })
         })
       })
@@ -227,8 +226,8 @@ describe('addons', function () {
             ], [
               fixtures.attachments['acme-inc-dwh::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
             ])
-            return run('acme-inc-dwh', function () {
-              expect(stdout.output.indexOf('dwh-db')).to.be.lt(stdout.output.indexOf('www-db'))
+            return run('acme-inc-dwh', function ({stdout}) {
+              expect(stdout.indexOf('dwh-db')).to.be.lt(stdout.indexOf('www-db'))
             })
           })
           it('sorts add-ons of same ownership by service', function () {
@@ -237,8 +236,8 @@ describe('addons', function () {
             ], [
               fixtures.attachments['acme-inc-www::REDIS'], fixtures.attachments['acme-inc-www::DATABASE'],
             ])
-            return run('acme-inc-www', function () {
-              expect(stdout.output.indexOf('heroku-postgresql')).to.be.lt(stdout.output.indexOf('heroku-redis'))
+            return run('acme-inc-www', function ({stdout}) {
+              expect(stdout.indexOf('heroku-postgresql')).to.be.lt(stdout.indexOf('heroku-redis'))
             })
           })
           it('sorts add-ons of same ownership and service by plan', function () {
@@ -247,8 +246,8 @@ describe('addons', function () {
             ], [
               fixtures.attachments['acme-inc-dwh::DATABASE'], fixtures.attachments['acme-inc-dwh::TEST'],
             ])
-            return run('acme-inc-dwh', function () {
-              expect(stdout.output.indexOf('mini')).to.be.lt(stdout.output.indexOf('standard-2'))
+            return run('acme-inc-dwh', function ({stdout}) {
+              expect(stdout.indexOf('mini')).to.be.lt(stdout.indexOf('standard-2'))
             })
           })
           it('sorts add-ons of same ownership and service and plan by name', function () {
@@ -257,8 +256,8 @@ describe('addons', function () {
             ], [
               fixtures.attachments['acme-inc-dwh::DATABASE'], fixtures.attachments['acme-inc-dwh::DATABASE_FOLLOWER'],
             ])
-            return run('acme-inc-dwh', function () {
-              expect(stdout.output.indexOf('(dwh-db)')).to.be.lt(stdout.output.indexOf('(dwh-db-2)'))
+            return run('acme-inc-dwh', function ({stdout}) {
+              expect(stdout.indexOf('(dwh-db)')).to.be.lt(stdout.indexOf('(dwh-db-2)'))
             })
           })
         })
@@ -269,32 +268,32 @@ describe('addons', function () {
             ], [
               fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
             ])
-            return run('acme-inc-dwh', function () {
-              expect(stdout.output.indexOf('as WWW_DB')).to.be.lt(stdout.output.indexOf('as DATABASE on ⬢ acme-inc-www app'))
+            return run('acme-inc-dwh', function ({stdout}) {
+              expect(stdout.indexOf('as WWW_DB')).to.be.lt(stdout.indexOf('as DATABASE on ⬢ acme-inc-www app'))
             })
           })
           it('sorts local attachments by name', function () {
             mockAPI('acme-inc-www', [fixtures.addons['www-db']], [
               fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'], fixtures.attachments['acme-inc-www::DATABASE'],
             ])
-            return run('acme-inc-www', function () {
-              expect(stdout.output.indexOf('DATABASE')).to.be.lt(stdout.output.indexOf('HEROKU_POSTGRESQL_RED'))
+            return run('acme-inc-www', function ({stdout}) {
+              expect(stdout.indexOf('DATABASE')).to.be.lt(stdout.indexOf('HEROKU_POSTGRESQL_RED'))
             })
           })
           it('sorts foreign attachments by app', function () {
             mockAPI('acme-inc-api', [fixtures.addons['www-db']], [
               fixtures.attachments['acme-inc-api::WWW_DB'], fixtures.attachments['acme-inc-dwh::WWW_DB'], fixtures.attachments['acme-inc-www::DATABASE'],
             ])
-            return run('acme-inc-api', function () {
-              expect(stdout.output.indexOf('as WWW_DB on ⬢ acme-inc-dwh')).to.be.lt(stdout.output.indexOf('as DATABASE on ⬢ acme-inc-www'))
+            return run('acme-inc-api', function ({stdout}) {
+              expect(stdout.indexOf('as WWW_DB on ⬢ acme-inc-dwh')).to.be.lt(stdout.indexOf('as DATABASE on ⬢ acme-inc-www'))
             })
           })
           it('sorts foreign attachments for same app by name', function () {
             mockAPI('acme-inc-api', [fixtures.addons['www-db']], [
               fixtures.attachments['acme-inc-api::WWW_DB'], fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'],
             ])
-            return run('acme-inc-api', function () {
-              expect(stdout.output.indexOf('as DATABASE on ⬢ acme-inc-www')).to.be.lt(stdout.output.indexOf('as HEROKU_POSTGRESQL_RED on ⬢ acme-inc-www'))
+            return run('acme-inc-api', function ({stdout}) {
+              expect(stdout.indexOf('as DATABASE on ⬢ acme-inc-www')).to.be.lt(stdout.indexOf('as HEROKU_POSTGRESQL_RED on ⬢ acme-inc-www'))
             })
           })
         })
@@ -311,8 +310,8 @@ describe('addons', function () {
         ])
       })
       it('prints add-ons in a table with the grandfathered price', function () {
-        return run('acme-inc-dwh', function () {
-          const actual = removeAllWhitespace(stdout.output)
+        return run('acme-inc-dwh', function ({stdout}) {
+          const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
             Add-on    Plan                   Price        Max Price State`)
           expect(actual).to.include(expectedHeader)
@@ -334,8 +333,8 @@ describe('addons', function () {
         ])
       })
       it('prints add-ons in a table with contract', function () {
-        return run('acme-inc-dwh', function () {
-          const actual = removeAllWhitespace(stdout.output)
+        return run('acme-inc-dwh', function ({stdout}) {
+          const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
             Add-on    Plan                   Price        Max Price State`)
           expect(actual).to.include(expectedHeader)
@@ -349,8 +348,8 @@ describe('addons', function () {
 
     it('prints add-on line for attachment when add-on info is missing from API (e.g. no permissions on billing app)', function () {
       mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
-      return run('acme-inc-api', function () {
-        const actual = removeAllWhitespace(stdout.output)
+      return run('acme-inc-api', function ({stdout}) {
+        const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
           Add-on    Plan                   Price        Max Price State`)
         expect(actual).to.include(expectedHeader)

@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import DomainsAdd from '../../../../src/commands/domains/add.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:add', function () {
   afterEach(function () {
@@ -46,9 +46,8 @@ describe('domains:add', function () {
           })
           .reply(200, domainsResponseWithEndpoint)
 
-        await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
-
-        expect(stderr.output).to.contain('Adding example.com to ⬢ myapp... done')
+        const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
       })
     })
 
@@ -95,9 +94,8 @@ describe('domains:add', function () {
           .get('/apps/myapp/sni-endpoints')
           .reply(200, certsResponse)
 
-        await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
-
-        expect(stderr.output).to.contain('Adding example.com to ⬢ myapp... done')
+        const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
       })
     })
   })

@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/access/remove.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
@@ -20,14 +19,14 @@ describe('heroku access:remove', function () {
     })
 
     it('removes the user from an app', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'gandalf@heroku.com',
       ])
       apiDelete.done()
-      expect('').to.eq(stdout.output)
-      expectOutput(stderr.output, 'Removing gandalf@heroku.com access from the app ⬢ myapp... done\n')
+      expect('').to.eq(stdout)
+      expectOutput(stderr, 'Removing gandalf@heroku.com access from the app ⬢ myapp... done\n')
     })
   })
 })

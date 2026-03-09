@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import BaseCommand from '../../../../src/lib/data/baseCommand.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 class BaseCommandTest extends BaseCommand {
   async run() {
@@ -30,11 +29,10 @@ describe('BaseCommand', function () {
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, [])
 
-      await runCommand(BaseCommandTest, [], false)
-
+      const {stderr, stdout} = await runCommand(BaseCommandTest, [])
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      expect(stdout.output).to.equal('')
+      expect(stderr).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('respects the value of HEROKU_DATA_CONTROL_PLANE', async function () {
@@ -43,11 +41,10 @@ describe('BaseCommand', function () {
         .matchHeader('X-Data-Control-Plane', 'test-control-plane')
         .reply(200, [])
 
-      await runCommand(BaseCommandTest)
-
+      const {stderr, stdout} = await runCommand(BaseCommandTest)
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      expect(stdout.output).to.equal('')
+      expect(stderr).to.equal('')
+      expect(stdout).to.equal('')
     })
   })
 })

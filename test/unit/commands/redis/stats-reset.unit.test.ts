@@ -1,10 +1,9 @@
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/stats-reset.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -27,14 +26,14 @@ describe('heroku redis:stats-reset', function () {
       .reply(200, {
         message: 'Stats reset successful.',
       })
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
       'example',
     ])
-    expectOutput(stdout.output, '')
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stdout, '')
+    expectOutput(stderr, heredoc(`
       Resetting stats on ${redisAddon.name}... Stats reset successful.
     `))
   })

@@ -1,9 +1,9 @@
-import {stdout} from 'stdout-stderr'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/addons/plans.js'
-import runCommand from '../../../helpers/runCommand.js'
 import nock from 'nock'
+
+import Cmd from '../../../../src/commands/addons/plans.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
 
 describe('addons:plans', function () {
@@ -21,8 +21,8 @@ describe('addons:plans', function () {
     })
 
     it('shows add-on plans', async function () {
-      await runCommand(Cmd, ['daservice'])
-      const [header, body] = stdout.output.split(/\s[-─]+\s/gm)
+      const {stdout} = await runCommand(Cmd, ['daservice'])
+      const [header, body] = stdout.split(/\s[-─]+\s/gm)
       const actualHeader  = normalizeTableOutput(header)
       const actualBody    = normalizeTableOutput(body)
 
@@ -52,8 +52,8 @@ describe('addons:plans', function () {
     })
 
     it('formats price for metered usage plans', async function () {
-      await runCommand(Cmd, ['metered-service'])
-      const [header, body] = stdout.output.split(/\s[-─]+\s/gm)
+      const {stdout} = await runCommand(Cmd, ['metered-service'])
+      const [header, body] = stdout.split(/\s[-─]+\s/gm)
       const actualHeader  = normalizeTableOutput(header)
       const actualBody    = normalizeTableOutput(body)
 

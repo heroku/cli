@@ -1,9 +1,8 @@
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
-import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import {type GenericCmd, runCommand} from '../../../helpers/run-command.js'
 
 /* eslint-disable mocha/no-exports */
 export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unknown> = {}) {
@@ -16,19 +15,16 @@ export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unkn
       const api = nock('https://api.heroku.com')
         .get('/apps/example/addons').reply(200, [])
 
-      try {
-        await runCommand(command, [
-          '--app',
-          'example',
-        ].concat(Object.entries(flags).map(([k, v]) => `--${k}=${v}`)))
-      } catch (error: unknown) {
-        const {message, oclif} = error as Errors.CLIError
-        expect(message).to.contain('No Redis instances found.')
-        expect(oclif.exit).to.equal(1)
-      }
+      const {error, stdout} = await runCommand(command, [
+        '--app',
+        'example',
+      ].concat(Object.entries(flags).map(([k, v]) => `--${k}=${v}`)))
+
+      expect(error?.message).to.contain('No Redis instances found.')
+      expect((error as any)?.oclif?.exit).to.equal(1)
 
       api.done()
-      expect(stdout.output).to.eq('')
+      expect(stdout).to.eq('')
     })
 
     it('shows an error if the addon is ambiguous', async function () {
@@ -38,19 +34,16 @@ export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unkn
           {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_BAR'], name: 'redis-haiku-b'},
         ])
 
-      try {
-        await runCommand(command, [
-          '--app',
-          'example',
-        ].concat(Object.entries(flags).map(([k, v]) => `--${k}=${v}`)))
-      } catch (error: unknown) {
-        const {message, oclif} = error as Errors.CLIError
-        expect(message).to.contain('Please specify a single instance. Found: redis-haiku-a, redis-haiku-b')
-        expect(oclif.exit).to.equal(1)
-      }
+      const {error, stdout} = await runCommand(command, [
+        '--app',
+        'example',
+      ].concat(Object.entries(flags).map(([k, v]) => `--${k}=${v}`)))
+
+      expect(error?.message).to.contain('Please specify a single instance. Found: redis-haiku-a, redis-haiku-b')
+      expect((error as any)?.oclif?.exit).to.equal(1)
 
       api.done()
-      expect(stdout.output).to.eq('')
+      expect(stdout).to.eq('')
     })
   })
 }

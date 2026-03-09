@@ -3,12 +3,11 @@ import {got} from 'got'
 import nock from 'nock'
 import {PassThrough} from 'node:stream'
 import sinon from 'sinon'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ci/rerun.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
 import {fileService} from '../../../../src/lib/ci/source.js'
-import customRunCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:rerun', function () {
   let api: nock.Scope
@@ -24,7 +23,7 @@ describe('ci:rerun', function () {
 
   it('errors when not specifying a pipeline or an app', async function () {
     try {
-      await customRunCommand(Cmd, [])
+      await runCommand(Cmd, [])
     } catch (error: any) {
       expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
     }
@@ -143,9 +142,9 @@ describe('ci:rerun', function () {
             },
           })
 
-        await customRunCommand(Cmd, [`--pipeline=${pipeline.name}`])
+        const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
 
-        expect(stdout.output).to.equal('Rerunning test run #10...\nNew Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
+        expect(stdout).to.equal('Rerunning test run #10...\nNew Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
       })
     })
 
@@ -206,9 +205,9 @@ describe('ci:rerun', function () {
             },
           })
 
-        await customRunCommand(Cmd, [`${oldTestRun.number}`, `--pipeline=${pipeline.name}`])
+        const {stdout} = await runCommand(Cmd, [`${oldTestRun.number}`, `--pipeline=${pipeline.name}`])
 
-        expect(stdout.output).to.equal('Rerunning test run #10...\nNew Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
+        expect(stdout).to.equal('Rerunning test run #10...\nNew Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
       })
     })
   })

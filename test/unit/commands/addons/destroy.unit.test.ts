@@ -4,10 +4,9 @@ import {expect} from 'chai'
 import * as lolex from 'lolex'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/addons/destroy.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('addons:destroy', function () {
   let api: nock.Scope
@@ -44,15 +43,15 @@ describe('addons:destroy', function () {
         .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
         .reply(200, {...addon, state: 'deprovisioned'})
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'postgresql-swiftly-123',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... done\n')
+      expect(stdout).to.equal('')
+      expect(stderr).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... done\n')
     })
   })
   context('when an add-on implements async deprovisioning', function () {
@@ -77,15 +76,15 @@ describe('addons:destroy', function () {
         .reply(200, [addon])
         .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
         .reply(202, {...addon, state: 'deprovisioning'})
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'postgresql-swiftly-123',
       ])
-      expect(stdout.output).to.equal('postgresql-swiftly-123 is being destroyed in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check destruction progress\n')
-      expect(ansis.strip(stderr.output)).to.contain(ansis.strip('Destroying postgresql-swiftly-123 on ⬢ myapp... pending'))
+      expect(stdout).to.equal('postgresql-swiftly-123 is being destroyed in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check destruction progress\n')
+      expect(ansis.strip(stderr)).to.contain(ansis.strip('Destroying postgresql-swiftly-123 on ⬢ myapp... pending'))
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
@@ -128,7 +127,7 @@ describe('addons:destroy', function () {
           .reply(200, {...addon, state: 'deprovisioning'})
           .get('/apps/myapp/addons/postgresql-swiftly-123')
           .reply(404, {id: 'not_found', message: 'Not found'})
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
           '--confirm',
@@ -138,9 +137,9 @@ describe('addons:destroy', function () {
         ])
         expect(notifySpy.called).to.equal(true)
         expect(notifySpy.calledOnce).to.equal(true)
-        expect(ansis.strip(stderr.output)).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... pending')
-        expect(stderr.output).to.contain('Destroying postgresql-swiftly-123... done\n')
-        expect(stdout.output).to.equal('Waiting for postgresql-swiftly-123...\n')
+        expect(ansis.strip(stderr)).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... pending')
+        expect(stderr).to.contain('Destroying postgresql-swiftly-123... done\n')
+        expect(stdout).to.equal('Waiting for postgresql-swiftly-123...\n')
       })
     })
   })
@@ -164,18 +163,14 @@ describe('addons:destroy', function () {
     api
       .post('/actions/addons/resolve', {addon: 'DATABASE', app: 'myapp'})
       .reply(200, [addonInOtherApp])
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'myapp',
-        'DATABASE',
-      ])
-      throw new Error('unreachable')
-    } catch (error: unknown) {
-      expect(ansis.strip((error as Error).message)).to.equal('postgresql-swiftly-123 is on ⬢ myotherapp not ⬢ myapp')
-    }
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--confirm',
+      'myapp',
+      'DATABASE',
+    ])
+    expect(ansis.strip(error?.message || '')).to.equal('postgresql-swiftly-123 is on ⬢ myotherapp not ⬢ myapp')
   })
 
   it('shows that it failed to deprovision when there are errors returned', async function () {
@@ -199,18 +194,14 @@ describe('addons:destroy', function () {
       .reply(200, [addon])
       .delete(`/apps/${addon.app?.id}/addons/${addon.id}`, {force: false})
       .reply(403, {id: 'forbidden', message: 'Cannot delete a suspended addon'})
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        '--confirm',
-        'myapp',
-        'postgresql-swiftly-123',
-      ])
-      throw new Error('unreachable')
-    } catch (error: unknown) {
-      expect((error as Error).message).to.equal('The add-on was unable to be destroyed: Cannot delete a suspended addon.')
-    }
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--confirm',
+      'myapp',
+      'postgresql-swiftly-123',
+    ])
+    expect(error?.message).to.equal('The add-on was unable to be destroyed: Cannot delete a suspended addon.')
   })
   context('when multiple add-ons are provided', function () {
     it('destroys them all', async function () {
@@ -252,7 +243,7 @@ describe('addons:destroy', function () {
         .delete(`/apps/${addon1.app?.id}/addons/${addon1.id}`, {force: false})
         .reply(200, {...addon, state: 'deprovisioned'})
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -260,9 +251,9 @@ describe('addons:destroy', function () {
         'postgresql-swiftly-123',
         'postgresql-swiftly-124',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... done\n')
-      expect(stderr.output).to.contain('Destroying postgresql-swiftly-124 on ⬢ myapp... done\n')
+      expect(stdout).to.equal('')
+      expect(stderr).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... done\n')
+      expect(stderr).to.contain('Destroying postgresql-swiftly-124 on ⬢ myapp... done\n')
     })
 
     it('fails when additional addon app is not the app specified', async function () {
@@ -300,19 +291,15 @@ describe('addons:destroy', function () {
         .post('/actions/addons/resolve', {addon: 'DATABASE', app: 'myapp'}).reply(200, [addon])
         .post('/actions/addons/resolve', {addon: 'FOREIGN_DATABASE', app: 'myapp'}).reply(200, [addon1])
 
-      try {
-        await runCommand(Cmd, [
-          '--app',
-          'myapp',
-          '--confirm',
-          'myapp',
-          'DATABASE',
-          'FOREIGN_DATABASE',
-        ])
-        throw new Error('unreachable')
-      } catch (error: unknown) {
-        expect(ansis.strip((error as Error).message)).to.equal('postgresql-swiftly-124 is on ⬢ myapp2 not ⬢ myapp')
-      }
+      const {error} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--confirm',
+        'myapp',
+        'DATABASE',
+        'FOREIGN_DATABASE',
+      ])
+      expect(ansis.strip(error?.message || '')).to.equal('postgresql-swiftly-124 is on ⬢ myapp2 not ⬢ myapp')
     })
   })
 })
