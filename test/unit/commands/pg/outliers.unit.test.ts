@@ -1,5 +1,4 @@
-import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/pg/outliers.js'
 import * as sinon from 'sinon'
@@ -60,7 +59,7 @@ describe('pg:outliers', function () {
   it('returns query outliers for version 11', async function () {
     setupVersionStub('11.16')
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -70,13 +69,13 @@ describe('pg:outliers', function () {
     const query = execQueryStub.getCall(2).args[0]
     expect(query).to.contain('total_time AS total_exec_time')
     expect(query).to.contain('FROM pg_stat_statements')
-    expect(stdout.output.trim()).to.eq(expectedOutputText)
+    expect(stdout.trim()).to.eq(expectedOutputText)
   })
 
   it('uses an updated query for version 13+', async function () {
     setupVersionStub('13.7')
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -85,7 +84,7 @@ describe('pg:outliers', function () {
     const query = execQueryStub.getCall(2).args[0]
     expect(query).to.contain('total_exec_time AS total_exec_time')
     expect(query).to.contain('FROM pg_stat_statements')
-    expect(stdout.output.trim()).to.eq(expectedOutputText)
+    expect(stdout.trim()).to.eq(expectedOutputText)
   })
 
   it('uses updated block time fields for version 17+', async function () {

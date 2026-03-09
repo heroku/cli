@@ -1,6 +1,5 @@
-import {stdout} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/spaces/vpn/config.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
@@ -45,13 +44,13 @@ describe('spaces:vpn:config', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
       .reply(200, vpnConnection)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       'vpn-connection-name-config',
     ])
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== vpn-connection-name-config VPN Tunnels'))
     expect(actual).to.include(removeAllWhitespace('VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version'))
     expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1'))
@@ -63,12 +62,12 @@ describe('spaces:vpn:config', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
       .reply(200, vpnConnection)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       'vpn-connection-name-config',
       '--json',
     ])
-    expect(JSON.parse(stdout.output)).to.eql(vpnConnection)
+    expect(JSON.parse(stdout)).to.eql(vpnConnection)
   })
 })

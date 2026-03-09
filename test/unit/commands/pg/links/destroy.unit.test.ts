@@ -1,6 +1,5 @@
-import {stdout, stderr} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/pg/links/destroy.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
@@ -21,7 +20,7 @@ describe('pg:links:destroy', function () {
       nock('https://api.heroku.com')
         .post('/actions/addon-attachments/resolve')
         .reply(200, [{addon}])
-      await runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -29,9 +28,7 @@ describe('pg:links:destroy', function () {
         addon.name || '',
         'postgres-link',
       ])
-        .catch(error => {
-          expect(error.message).to.equal('pg:links isn\'t available for Essential-tier databases.')
-        })
+      expect(error?.message).to.equal('pg:links isn\'t available for Essential-tier databases.')
     })
   })
 
@@ -45,7 +42,7 @@ describe('pg:links:destroy', function () {
       nock('https://api.data.heroku.com')
         .delete(`/client/v11/databases/${addon.id}/links/postgres-link`)
         .reply(200)
-      await runCommand(Cmd, [
+      const {stdout, stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -54,8 +51,8 @@ describe('pg:links:destroy', function () {
         'postgres-link',
       ])
 
-      expectOutput(stdout.output, '')
-      expectOutput(stderr.output, heredoc(`
+      expectOutput(stdout, '')
+      expectOutput(stderr, heredoc(`
         Destroying link postgres-link from ${addon.name}... done
       `))
     })

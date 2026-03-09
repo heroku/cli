@@ -1,10 +1,9 @@
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/reset.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -23,13 +22,13 @@ describe('pg:reset', function () {
     nock('https://api.data.heroku.com')
       .put(`/client/v11/databases/${addon.id}/reset`)
       .reply(200)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Resetting ${addon.name}... done
     `))
   })
@@ -47,7 +46,7 @@ describe('pg:reset', function () {
     })
 
     it('resets a db with pre-installed extensions', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -55,7 +54,7 @@ describe('pg:reset', function () {
         '--extensions',
         'uuid-ossp, Postgis',
       ])
-      expectOutput(stderr.output, heredoc(`
+      expectOutput(stderr, heredoc(`
         Resetting ${addon.name}... done
       `))
     })

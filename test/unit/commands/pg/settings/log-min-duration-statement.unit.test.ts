@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import Cmd from '../../../../../src/commands/pg/settings/log-min-duration-statement.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -32,8 +31,8 @@ describe('pg:settings:log-min-duration-statement', function () {
   it('shows settings for auto_explain with value', async function () {
     pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_min_duration_statement: {value: 'test_value'}})
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       log-min-duration-statement is set to test_value for ${addon.name}.
       The duration of each completed statement will be logged if the statement ran for at least test_value milliseconds.
     `))
@@ -42,8 +41,8 @@ describe('pg:settings:log-min-duration-statement', function () {
   it('shows settings for auto_explain with value of -1', async function () {
     pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_min_duration_statement: {value: -1}})
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       log-min-duration-statement is set to -1 for ${addon.name}.
       The duration of each completed statement will not be logged.
     `))
@@ -52,8 +51,8 @@ describe('pg:settings:log-min-duration-statement', function () {
   it('shows settings for auto_explain with value of 0', async function () {
     pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_min_duration_statement: {value: 0}})
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       log-min-duration-statement is set to 0 for ${addon.name}.
       The duration of each completed statement will be logged.
     `))

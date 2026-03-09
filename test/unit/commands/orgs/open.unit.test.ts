@@ -1,5 +1,5 @@
 import Cmd from '../../../../src/commands/orgs/open.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import sinon from 'sinon'
 import {expect} from 'chai'
 import nock from 'nock'

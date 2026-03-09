@@ -1,5 +1,4 @@
-import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/pg/locks.js'
 import * as sinon from 'sinon'
@@ -32,7 +31,7 @@ describe('pg:locks', function () {
   })
 
   it('displays queries with active locks', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -43,11 +42,11 @@ describe('pg:locks', function () {
     expect(query).to.contain('pg_stat_activity')
     expect(query).to.contain('pg_locks')
     expect(query).to.contain("pg_locks.mode = 'ExclusiveLock'")
-    expect(stdout.output.trim()).to.eq(expectedOutput)
+    expect(stdout.trim()).to.eq(expectedOutput)
   })
 
   it('includes full query without truncation by default', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -58,7 +57,7 @@ describe('pg:locks', function () {
   })
 
   it('truncates queries with --truncate flag', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--truncate',
@@ -71,7 +70,7 @@ describe('pg:locks', function () {
   })
 
   it('accepts a database argument', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'postgres-123',

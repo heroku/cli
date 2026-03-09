@@ -6,7 +6,7 @@ import {join, dirname} from 'path'
 import * as sinon from 'sinon'
 import MCPStart from '../../../../src/commands/mcp/start.js'
 
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 class MockStream extends EventEmitter {
   pipe() {
@@ -68,15 +68,15 @@ describe('mcp:start', function () {
   })
 
   it('handles SIGINT and SIGTERM signals', async function () {
-    const server = await runCommand(MCPStart, [])
+    const {result: server} = await runCommand(MCPStart, [])
     process.emit('SIGINT')
     process.emit('SIGTERM')
     expect(spawnStub.calledOnce).to.be.true
-    expect(server.kill.calledTwice).to.be.true
+    expect((server as MockServerProcess).kill.calledTwice).to.be.true
   })
 
   it('returns the server process', async function () {
-    const result = await runCommand(MCPStart, [])
+    const {result} = await runCommand(MCPStart, [])
     expect(result instanceof MockServerProcess).to.be.true
   })
 })

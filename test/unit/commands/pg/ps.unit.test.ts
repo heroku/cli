@@ -1,10 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 import {utils} from '@heroku/heroku-cli-util'
 import Cmd from '../../../../src/commands/pg/ps.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import * as sinon from 'sinon'
 
@@ -55,7 +54,7 @@ describe('pg:ps', function () {
   })
 
   it('runs query', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -72,11 +71,11 @@ SELECT pid,
       AND pid <> pg_backend_pid()
     ORDER BY query_start DESC
 `))
-    expect(stdout.output).to.equal(FAKE_OUTPUT_TEXT)
+    expect(stdout).to.equal(FAKE_OUTPUT_TEXT)
   })
 
   it('runs verbose query', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--verbose',
@@ -93,6 +92,6 @@ SELECT pid,
       AND pid <> pg_backend_pid()
     ORDER BY query_start DESC
 `))
-    expect(stdout.output).to.equal(FAKE_OUTPUT_TEXT)
+    expect(stdout).to.equal(FAKE_OUTPUT_TEXT)
   })
 })

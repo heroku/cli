@@ -43,9 +43,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ] && [ "${{ matrix.node-version }}" = "22.x" ]; then
-            npm run pretest && npm run test:unit:justTest:ci:coverage
+            npm run test:ci:unit:coverage
           else
-            npm test
+            npm run test:ci:unit
           fi
       - name: Upload coverage reports
         if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
@@ -96,7 +96,16 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run tests on base branch with full coverage
-        run: npm run pretest && npm run test:unit:justTest:ci:coverage
+        run: |
+          if npm run | grep -q 'test:ci:unit:coverage$'; then
+            npm run test:ci:unit:coverage
+          elif npm run | grep -q 'test:unit:justTest:ci:coverage$'; then
+            npm run pretest && npm run test:unit:justTest:ci:coverage
+          else
+            echo "Coverage script not found in base branch, skipping coverage check"
+            mkdir -p coverage
+            echo "No coverage data available for base branch" > coverage/README.md
+          fi
       - name: Upload base coverage
         uses: actions/upload-artifact@v6
         with:
@@ -121,7 +130,13 @@ jobs:
           name: coverage-base
           path: coverage-base/
       - name: Compare coverage and fail if decreased
-        run: ./scripts/ci/compare-coverage.sh coverage-pr coverage-base --fail-on-decrease
+        run: |
+          if [ -f coverage-base/lcov.info ]; then
+            ./scripts/ci/compare-coverage.sh coverage-pr coverage-base --fail-on-decrease
+          else
+            echo "Base coverage not available, skipping comparison"
+            echo "⚠️ Coverage comparison skipped - base branch does not have compatible test scripts" >> $GITHUB_STEP_SUMMARY
+          fi
 
   integration:
     runs-on: ${{ matrix.os }}
@@ -142,7 +157,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run cli package integration tests
-        run: npm run test:integration
+        run: npm run test:ci:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
@@ -165,11 +180,11 @@ jobs:
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.ref_name, 'release-')
-        run: npm run test:smoke
+        run: npm run test:ci:smoke
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
-        run: npm run test:acceptance
+        run: npm run test:ci:acceptance
 
   spell-check:
     runs-on: ${{ matrix.os }}
@@ -179,7 +194,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
-        with: 
+        with:
           fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v6
