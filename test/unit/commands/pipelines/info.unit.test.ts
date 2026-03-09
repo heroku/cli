@@ -103,7 +103,7 @@ describe('pipelines:info', function () {
       `Warning: Some apps in this pipeline do not belong to ${owner}.`,
       'All apps in a pipeline must have the same owner as the pipeline owner.',
       'Transfer these apps or change the pipeline owner in pipeline settings.',
-      'See https://devcenter.heroku.com/articles/pipeline-ownership-transition',
+      'See https://devcenter.heroku.com/articles/pipelines#pipelines-ownership-and-transfer',
       'for more info.',
     ]
 
