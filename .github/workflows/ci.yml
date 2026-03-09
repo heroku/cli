@@ -43,9 +43,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ] && [ "${{ matrix.node-version }}" = "22.x" ]; then
-            npm run pretest && npm run test:ci
+            npm run test:ci:unit:coverage
           else
-            npm test
+            npm run test:ci:unit
           fi
       - name: Upload coverage reports
         if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
@@ -97,10 +97,12 @@ jobs:
       - run: npm ci
       - name: Run tests on base branch with full coverage
         run: |
-          if npm run | grep -q 'test:ci$'; then
-            npm run pretest && npm run test:ci
+          if npm run | grep -q 'test:ci:unit:coverage$'; then
+            npm run test:ci:unit:coverage
+          elif npm run | grep -q 'test:unit:justTest:ci:coverage$'; then
+            npm run pretest && npm run test:unit:justTest:ci:coverage
           else
-            echo "test:ci script not found in base branch, skipping coverage check"
+            echo "Coverage script not found in base branch, skipping coverage check"
             mkdir -p coverage
             echo "No coverage data available for base branch" > coverage/README.md
           fi
