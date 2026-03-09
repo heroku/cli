@@ -1,10 +1,10 @@
-import nock from 'nock'
-import {expect} from 'chai'
-import {stderr, stdout} from 'stdout-stderr'
-import tsheredoc from 'tsheredoc'
 import {Errors} from '@oclif/core'
+import {expect} from 'chai'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/spaces/vpn/wait.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
@@ -25,26 +25,26 @@ describe('spaces:vpn:wait', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200, {
         id: '123456789012',
+        ike_version: 1,
         name: 'vpn-connection-name-wait',
         public_ip: '35.161.69.30',
         routable_cidrs: ['172.16.0.0/16'],
-        ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
         status: 'pending',
         status_message: 'supplied CIDR block already in use',
         tunnels: [
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.196', // The one needed right now
             customer_ip: '52.44.146.197',
+            ip: '52.44.146.196', // The one needed right now
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey1',
             status: 'UP',
             status_message: 'status message',
           },
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.198',
             customer_ip: '52.44.146.199',
+            ip: '52.44.146.198',
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey2',
             status: 'UP',
             status_message: 'status message',
@@ -54,26 +54,26 @@ describe('spaces:vpn:wait', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200, {
         id: '123456789012',
+        ike_version: 1,
         name: 'vpn-connection-name-wait',
         public_ip: '35.161.69.30',
         routable_cidrs: ['172.16.0.0/16'],
-        ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
         status: 'failed',
         status_message: 'supplied CIDR block already in use',
         tunnels: [
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.196', // The one needed right now
             customer_ip: '52.44.146.197',
+            ip: '52.44.146.196', // The one needed right now
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey1',
             status: 'UP',
             status_message: 'status message',
           },
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.198',
             customer_ip: '52.44.146.199',
+            ip: '52.44.146.198',
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey2',
             status: 'UP',
             status_message: 'status message',
@@ -81,18 +81,14 @@ describe('spaces:vpn:wait', function () {
         ],
       })
 
-    try {
-      await runCommand(Cmd, [
-        'vpn-connection-name-wait',
-        '--space',
-        'my-space',
-        '--interval',
-        '0',
-      ])
-    } catch (error: any) {
-      const {message} = error as CLIError
-      errorMessage = message
-    }
+    const {error} = await runCommand(Cmd, [
+      'vpn-connection-name-wait',
+      '--space',
+      'my-space',
+      '--interval',
+      '0',
+    ])
+    errorMessage = (error as CLIError)?.message || ''
 
     expect(errorMessage).to.equal('supplied CIDR block already in use')
   })
@@ -102,26 +98,26 @@ describe('spaces:vpn:wait', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200, {
         id: '123456789012',
+        ike_version: 1,
         name: 'vpn-connection-name-wait',
         public_ip: '35.161.69.30',
         routable_cidrs: ['172.16.0.0/16'],
-        ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
         status: 'pending',
         status_message: 'supplied CIDR block already in use',
         tunnels: [
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.196', // The one needed right now
             customer_ip: '52.44.146.197',
+            ip: '52.44.146.196', // The one needed right now
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey1',
             status: 'UP',
             status_message: 'status message',
           },
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.198',
             customer_ip: '52.44.146.199',
+            ip: '52.44.146.198',
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey2',
             status: 'UP',
             status_message: 'status message',
@@ -131,26 +127,26 @@ describe('spaces:vpn:wait', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200, {
         id: '123456789012',
+        ike_version: 1,
         name: 'vpn-connection-name-wait',
         public_ip: '35.161.69.30',
         routable_cidrs: ['172.16.0.0/16'],
-        ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
         status: 'active',
         status_message: '',
         tunnels: [
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.196', // The one needed right now
             customer_ip: '52.44.146.197',
+            ip: '52.44.146.196', // The one needed right now
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey1',
             status: 'UP',
             status_message: 'status message',
           },
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.198',
             customer_ip: '52.44.146.199',
+            ip: '52.44.146.198',
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey2',
             status: 'UP',
             status_message: 'status message',
@@ -160,43 +156,42 @@ describe('spaces:vpn:wait', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-wait')
       .reply(200, {
         id: '123456789012',
+        ike_version: 1,
         name: 'vpn-connection-name-wait',
         public_ip: '35.161.69.30',
         routable_cidrs: ['172.16.0.0/16'],
-        ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
         status: 'active',
         status_message: '',
         tunnels: [
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.196', // The one needed right now
             customer_ip: '52.44.146.197',
+            ip: '52.44.146.196', // The one needed right now
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey1',
             status: 'UP',
             status_message: 'status message',
           },
           {
-            last_status_change: '2016-10-25T22:09:05Z',
-            ip: '52.44.146.198',
             customer_ip: '52.44.146.199',
+            ip: '52.44.146.198',
+            last_status_change: '2016-10-25T22:09:05Z',
             pre_shared_key: 'apresharedkey2',
             status: 'UP',
             status_message: 'status message',
           },
         ],
       })
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'vpn-connection-name-wait',
       '--space',
       'my-space',
       '--interval',
       '0',
     ])
+    expect(stderr).to.equal('Waiting for VPN Connection vpn-connection-name-wait to allocate...... done\n')
 
-    expect(stderr.output).to.equal('Waiting for VPN Connection vpn-connection-name-wait to allocate...... done\n')
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== vpn-connection-name-wait VPN Tunnels'))
     expect(actual).to.include(removeAllWhitespace('VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version'))
     expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1'))
@@ -208,23 +203,23 @@ describe('spaces:vpn:wait', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-allocated')
       .reply(200, {
         id: '123456789012',
+        ike_version: 1,
         name: 'vpn-connection-name-config',
         public_ip: '35.161.69.30',
         routable_cidrs: ['172.16.0.0/16'],
-        ike_version: 1,
         space_cidr_block: '10.0.0.0/16',
         status: 'active',
         status_message: '',
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'vpn-connection-allocated',
       '--space',
       'my-space',
       '--interval',
       '0',
     ])
-    expectOutput(stderr.output, '')
-    expectOutput(stdout.output, 'VPN has been allocated.\n')
+    expectOutput(stderr, '')
+    expectOutput(stdout, 'VPN has been allocated.\n')
   })
 })

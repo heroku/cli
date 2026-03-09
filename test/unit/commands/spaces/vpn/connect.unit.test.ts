@@ -1,11 +1,10 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connect.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -30,7 +29,7 @@ describe('spaces:vpn:connect', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       'office',
       '--space',
       'my-space',
@@ -39,10 +38,9 @@ describe('spaces:vpn:connect', function () {
       '--cidrs',
       '192.168.0.1/16,192.168.0.2/16',
     ])
-
     api.done()
-    expect(stderr.output).to.contain('Creating VPN Connection in space ⬡ my-space... done\n')
-    expect(ansis.strip(stderr.output)).to.contain(heredoc`
+    expect(stderr).to.contain('Creating VPN Connection in space ⬡ my-space... done\n')
+    expect(ansis.strip(stderr)).to.contain(heredoc`
       Use heroku spaces:vpn:wait to track allocation.
     `)
 

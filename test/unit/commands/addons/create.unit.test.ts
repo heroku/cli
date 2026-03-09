@@ -6,10 +6,9 @@ import _ from 'lodash'
 import lolex from 'lolex'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/addons/create.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('addons:create', function () {
@@ -82,7 +81,7 @@ describe('addons:create', function () {
         .reply(200, addon)
     })
     it('creates an add-on with proper output', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -94,11 +93,11 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-      expect(stdout.output).to.equal('provision message\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+      expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+      expect(stdout).to.equal('provision message\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
     })
     it('creates an add-on with proper output using old syntax with deprecation message', async function () {
-      await runCommand(Cmd, [
+      const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -109,10 +108,10 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-      expect(unwrap(stderr.output)).to.contain("Warning: You're using a deprecated syntax with the [--rollback,--follow,--foo] flag")
-      expect(unwrap(stderr.output)).to.contain("Add a '--' (end of options) separator before the flags you're passing through.")
-      expect(unwrap(stderr.output)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
-      expect(unwrap(stderr.output)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
+      expect(unwrap(stderr)).to.contain("Warning: You're using a deprecated syntax with the [--rollback,--follow,--foo] flag")
+      expect(unwrap(stderr)).to.contain("Add a '--' (end of options) separator before the flags you're passing through.")
+      expect(unwrap(stderr)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
+      expect(unwrap(stderr)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
     })
     it('creates an addon with = args', async function () {
       await runCommand(Cmd, [
@@ -151,35 +150,37 @@ describe('addons:create', function () {
           .reply(200, asyncAddon)
       })
       it('creates an add-on with output about async provisioning', async function () {
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
           '--as',
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-        expect(stdout.output).to.equal('provision message\npostgresql-swiftly-123 is being created in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check creation progress.\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+        expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+        expect(stdout).to.equal('provision message\npostgresql-swiftly-123 is being created in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check creation progress.\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
       })
     })
     context('and no provision message supplied', function () {
       beforeEach(function () {
-        const asyncAddon = {..._.clone(addon), config_vars: [], provision_message: undefined, state: 'provisioning'}
+        const asyncAddon = {
+          ..._.clone(addon), config_vars: [], provision_message: undefined, state: 'provisioning',
+        }
         api.post('/apps/myapp/addons', {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
           .reply(200, asyncAddon)
       })
       it('creates an add-on with output about async provisioning', async function () {
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
           '--as',
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-        expect(stdout.output).to.equal('postgresql-swiftly-123 is being created in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check creation progress.\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+        expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+        expect(stdout).to.equal('postgresql-swiftly-123 is being created in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check creation progress.\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
       })
     })
     context('and no config vars supplied by add-on provider', function () {
@@ -191,15 +192,15 @@ describe('addons:create', function () {
           .reply(200, asyncAddon)
       })
       it('creates an add-on with output about async provisioning', async function () {
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
           '--as',
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-        expect(stdout.output).to.equal('provision message\npostgresql-swiftly-123 is being created in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check creation progress.\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+        expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+        expect(stdout).to.equal('provision message\npostgresql-swiftly-123 is being created in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check creation progress.\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
       })
     })
     context('--wait', function () {
@@ -228,7 +229,7 @@ describe('addons:create', function () {
           .reply(200, asyncAddon)
         const provisionedResponse = api.get('/apps/myapp/addons/postgresql-swiftly-123')
           .reply(200, addon)
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
           '--as',
@@ -240,9 +241,9 @@ describe('addons:create', function () {
         ])
         expect(notifySpy.called).to.equal(true)
         expect(notifySpy.calledOnce).to.equal(true)
-        expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-        expect(stderr.output).to.contain('Creating postgresql-swiftly-123... done')
-        expect(stdout.output).to.equal('provision message\nWaiting for postgresql-swiftly-123...\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+        expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+        expect(stderr).to.contain('Creating postgresql-swiftly-123... done')
+        expect(stdout).to.equal('provision message\nWaiting for postgresql-swiftly-123...\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
         post.done()
         provisioningResponse.done()
         provisionedResponse.done()
@@ -286,19 +287,14 @@ describe('addons:create', function () {
           attachment: {name: 'mydb'}, config: {}, plan: {name: 'heroku-postgresql:standard-0'},
         })
           .reply(200, deprovisionedAddon)
-        const cmdPromise = runCommand(Cmd, [
+        const {error} = await runCommand(Cmd, [
           '--app',
           'myapp',
           '--as',
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        try {
-          await cmdPromise
-          throw new Error('unreachable')
-        } catch (error) {
-          expect((error as HTTPError).message).to.equal('The add-on was unable to be created, with status deprovisioned')
-        }
+        expect((error as HTTPError)?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
       })
     })
   })
@@ -333,7 +329,7 @@ describe('addons:create', function () {
         attachment: {name: 'mydb'}, config: {follow: 'otherdb', foo: true, rollback: true}, confirm: 'myapp', plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(200, addon)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -347,8 +343,8 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-      expect(stdout.output).to.equal('provision message\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+      expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+      expect(stdout).to.equal('provision message\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
     })
   })
   context('--follow=--otherdb', function () {
@@ -382,15 +378,15 @@ describe('addons:create', function () {
         .reply(200, noConfigAddon)
     })
     it('creates an add-on without the config vars listed', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
         'mydb',
         'heroku-postgresql:standard-0',
       ])
-      expect(stderr.output).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
-      expect(stdout.output).to.equal('provision message\nCreated postgresql-swiftly-123\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+      expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
+      expect(stdout).to.equal('provision message\nCreated postgresql-swiftly-123\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
     })
   })
 })

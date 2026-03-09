@@ -1,10 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/info.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -18,12 +17,12 @@ describe('heroku redis:info', function () {
     nock('https://api.heroku.com:443')
       .get('/apps/example/addons')
       .reply(200, [])
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('')
   })
 
   it('# prints out redis info', async function () {
@@ -35,12 +34,12 @@ describe('heroku redis:info', function () {
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
       .reply(200, {info: [{name: 'Foo', values: ['Bar', 'Biz']}]})
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-    expectOutput(stderr.output, '')
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stderr, '')
+    expectOutput(stdout, heredoc(`
       === redis-haiku (REDIS_FOO, REDIS_BAR)
       Foo: Bar
            Biz
@@ -56,13 +55,13 @@ describe('heroku redis:info', function () {
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
       .reply(200, {info: [{name: 'Foo', values: ['Bar', 'Biz']}]})
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--json',
     ])
-    expectOutput(stderr.output, '')
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stderr, '')
+    expectOutput(stdout, heredoc(`
       [
         {
           "info": [
@@ -92,12 +91,12 @@ describe('heroku redis:info', function () {
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
       .reply(404)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('')
   })
 
   it('# raises an appropriate error when API call fails', async function () {

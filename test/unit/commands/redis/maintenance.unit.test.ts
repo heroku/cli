@@ -1,10 +1,9 @@
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/redis/maintenance.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 describe('heroku redis:maintenance should handle standard arg behavior', function () {
@@ -30,16 +29,15 @@ describe('heroku redis:maintenance', function () {
     const redis = nock('https://api.data.heroku.com')
       .get('/redis/v0/databases/redis-haiku/maintenance').reply(200, {message: 'Message'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-
     api.done()
     redis.done()
 
-    expect(stdout.output).to.equal('Message\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Message\n')
+    expect(stderr).to.equal('')
   })
 
   it('# sets the maintenance window', async function () {
@@ -58,18 +56,17 @@ describe('heroku redis:maintenance', function () {
         description: 'Mon 10:00',
       }).reply(200, {window: 'Mon 10:00'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--window',
       'Mon 10:00',
     ])
-
     api.done()
     redis.done()
 
-    expect(stdout.output).to.equal('Maintenance window for redis-haiku (REDIS_FOO, REDIS_BAR) set to Mon 10:00.\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Maintenance window for redis-haiku (REDIS_FOO, REDIS_BAR) set to Mon 10:00.\n')
+    expect(stderr).to.equal('')
   })
 
   it('# runs the maintenance', async function () {
@@ -87,17 +84,16 @@ describe('heroku redis:maintenance', function () {
     const redis = nock('https://api.data.heroku.com')
       .post('/redis/v0/databases/redis-haiku/maintenance').reply(200, {message: 'Message'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--run',
     ])
-
     api.done()
     redis.done()
 
-    expect(stdout.output).to.equal('Message\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Message\n')
+    expect(stderr).to.equal('')
   })
 
   it('# run errors out when not in maintenance', async function () {
@@ -112,12 +108,14 @@ describe('heroku redis:maintenance', function () {
       ])
       .get('/apps/example').reply(200, {maintenance: false})
 
+    let stdout = ''
     try {
-      await runCommand(Cmd, [
+      const result = await runCommand(Cmd, [
         '--app',
         'example',
         '--run',
       ])
+      stdout = result.stdout
     } catch (error: unknown) {
       const {message, oclif} = error as Errors.CLIError
       expect(message).to.equal('Application must be in maintenance mode or --force flag must be used')
@@ -125,7 +123,7 @@ describe('heroku redis:maintenance', function () {
     }
 
     api.done()
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 
   it('# errors out on hobby dynos', async function () {
@@ -139,11 +137,13 @@ describe('heroku redis:maintenance', function () {
         },
       ])
 
+    let stdout = ''
     try {
-      await runCommand(Cmd, [
+      const result = await runCommand(Cmd, [
         '--app',
         'example',
       ])
+      stdout = result.stdout
     } catch (error: unknown) {
       const {message, oclif} = error as Errors.CLIError
       expect(message).to.equal('redis:maintenance is not available for hobby-dev instances')
@@ -151,7 +151,7 @@ describe('heroku redis:maintenance', function () {
     }
 
     api.done()
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 
   it('# errors out on bad maintenance window', async function () {
@@ -165,13 +165,15 @@ describe('heroku redis:maintenance', function () {
         },
       ])
 
+    let stdout = ''
     try {
-      await runCommand(Cmd, [
+      const result = await runCommand(Cmd, [
         '--app',
         'example',
         '--window',
         'Mon 10:45',
       ])
+      stdout = result.stdout
     } catch (error: unknown) {
       const {message, oclif} = error as Errors.CLIError
       expect(message).to.equal('Maintenance windows must be "Day HH:MM", where MM is 00 or 30.')
@@ -179,6 +181,6 @@ describe('heroku redis:maintenance', function () {
     }
 
     api.done()
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 })

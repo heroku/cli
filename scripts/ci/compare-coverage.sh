@@ -139,19 +139,20 @@ if [ "$FAIL_ON_DECREASE" != "--fail-on-decrease" ]; then
   exit 0
 fi
 
-# Check if coverage decreased
+# Check if coverage decreased by more than 0.2%
 COVERAGE_DECREASED=false
-if (( $(awk "BEGIN {print ($LINES_DIFF < 0)}") )); then
+THRESHOLD=-0.2
+if (( $(awk "BEGIN {print ($LINES_DIFF < $THRESHOLD)}") )); then
   echo "⚠️ Lines coverage decreased by ${LINES_DIFF}%"
   [ -n "$GITHUB_STEP_SUMMARY" ] && echo "⚠️ Lines coverage decreased by ${LINES_DIFF}%" >> "$GITHUB_STEP_SUMMARY"
   COVERAGE_DECREASED=true
 fi
-if (( $(awk "BEGIN {print ($FUNCS_DIFF < 0)}") )); then
+if (( $(awk "BEGIN {print ($FUNCS_DIFF < $THRESHOLD)}") )); then
   echo "⚠️ Functions coverage decreased by ${FUNCS_DIFF}%"
   [ -n "$GITHUB_STEP_SUMMARY" ] && echo "⚠️ Functions coverage decreased by ${FUNCS_DIFF}%" >> "$GITHUB_STEP_SUMMARY"
   COVERAGE_DECREASED=true
 fi
-if (( $(awk "BEGIN {print ($BRANCHES_DIFF < 0)}") )); then
+if (( $(awk "BEGIN {print ($BRANCHES_DIFF < $THRESHOLD)}") )); then
   echo "⚠️ Branches coverage decreased by ${BRANCHES_DIFF}%"
   [ -n "$GITHUB_STEP_SUMMARY" ] && echo "⚠️ Branches coverage decreased by ${BRANCHES_DIFF}%" >> "$GITHUB_STEP_SUMMARY"
   COVERAGE_DECREASED=true

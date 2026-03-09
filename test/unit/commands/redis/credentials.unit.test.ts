@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/redis/credentials.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 describe('heroku redis:credentials should handle standard arg behavior', function () {
@@ -27,14 +26,13 @@ describe('heroku redis:credentials', function () {
         resource_url: 'redis://foobar:password@hostname:8649',
       })
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-
     api.done()
     redis.done()
-    expect(stdout.output).to.include('redis://foobar:password@hostname:8649')
+    expect(stdout).to.include('redis://foobar:password@hostname:8649')
   })
 
   it('resets the redis credentials', async function () {
@@ -46,14 +44,13 @@ describe('heroku redis:credentials', function () {
     const redis = nock('https://api.data.heroku.com')
       .post('/redis/v0/databases/redis-haiku/credentials_rotation').reply(200, {})
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--reset',
     ])
-
     api.done()
     redis.done()
-    expect(stdout.output).to.include('Resetting credentials for redis-haiku')
+    expect(stdout).to.include('Resetting credentials for redis-haiku')
   })
 })

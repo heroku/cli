@@ -1,10 +1,9 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/releases/retry.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('releases:retry', function () {
   let api: nock.Scope
@@ -85,15 +84,14 @@ describe('releases:retry', function () {
       .post('/apps/myapp/releases', releaseRetry)
       .reply(200, {output_stream_url: 'https://busl.test/streams/release.log'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
     busl.done()
-    expect(stderr.output).to.contain('Retrying v40 on')
-    expect(stderr.output).to.contain('myapp')
-    expect(stdout.output).to.contain('Release Output Content')
+    expect(stderr).to.contain('Retrying v40 on')
+    expect(stderr).to.contain('myapp')
+    expect(stdout).to.contain('Release Output Content')
   })
 
   it('errors if app does not use release-phase', async function () {
