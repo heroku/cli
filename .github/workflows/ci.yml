@@ -96,7 +96,14 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run tests on base branch with full coverage
-        run: npm run pretest && npm run test:ci
+        run: |
+          if npm run | grep -q 'test:ci$'; then
+            npm run pretest && npm run test:ci
+          else
+            echo "test:ci script not found in base branch, skipping coverage check"
+            mkdir -p coverage
+            echo "No coverage data available for base branch" > coverage/README.md
+          fi
       - name: Upload base coverage
         uses: actions/upload-artifact@v6
         with:
@@ -121,7 +128,13 @@ jobs:
           name: coverage-base
           path: coverage-base/
       - name: Compare coverage and fail if decreased
-        run: ./scripts/ci/compare-coverage.sh coverage-pr coverage-base --fail-on-decrease
+        run: |
+          if [ -f coverage-base/lcov.info ]; then
+            ./scripts/ci/compare-coverage.sh coverage-pr coverage-base --fail-on-decrease
+          else
+            echo "Base coverage not available, skipping comparison"
+            echo "⚠️ Coverage comparison skipped - base branch does not have compatible test scripts" >> $GITHUB_STEP_SUMMARY
+          fi
 
   integration:
     runs-on: ${{ matrix.os }}
