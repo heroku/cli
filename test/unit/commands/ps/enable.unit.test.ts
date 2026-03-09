@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import PsAutoscaleEnable from '../../../../src/commands/ps/autoscale/enable.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ps:autoscale:enable', function () {
   const APP_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-111111111111'
@@ -51,7 +53,7 @@ describe('ps:autoscale:enable', function () {
 
   describe('without specifying an app', function () {
     it('aborts the command', async function () {
-      const {error} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2'])
+      const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2'])
 
       expect(error?.message).to.contain('Missing required flag app')
     })
@@ -59,7 +61,7 @@ describe('ps:autoscale:enable', function () {
 
   describe('without specify a minimum', function () {
     it('aborts the command', async function () {
-      const {error} = await runCommand(['ps:autoscale:enable', '--max', '2', '--app', APP_NAME])
+      const {error} = await runCommand(PsAutoscaleEnable, ['--max', '2', '--app', APP_NAME])
 
       expect(error?.message).to.contain('Missing required flag min')
     })
@@ -67,7 +69,7 @@ describe('ps:autoscale:enable', function () {
 
   describe('without specify a maximum', function () {
     it('aborts the command', async function () {
-      const {error} = await runCommand(['ps:autoscale:enable', '--min', '1', '--app', APP_NAME])
+      const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--app', APP_NAME])
 
       expect(error?.message).to.contain('Missing required flag max')
     })
@@ -81,7 +83,7 @@ describe('ps:autoscale:enable', function () {
         .get(`/apps/${APP_NAME}/formation`)
         .reply(200, [])
 
-      const {error} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(error?.message).to.contain(`${APP_NAME} does not have any web dynos to scale`)
     })
@@ -103,7 +105,7 @@ describe('ps:autoscale:enable', function () {
         .get(`/apps/${APP_ID}/formation/web/monitors`)
         .reply(200)
 
-      await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
     })
   })
 
@@ -111,7 +113,7 @@ describe('ps:autoscale:enable', function () {
     it('runs successfully', async function () {
       dynoTestSetup('Performance-M')
 
-      const {stderr} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {stderr} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(stderr).to.contain('Enabling dyno autoscaling... done')
     })
@@ -121,7 +123,7 @@ describe('ps:autoscale:enable', function () {
     it('runs successfully', async function () {
       dynoTestSetup('Performance-L')
 
-      const {stderr} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {stderr} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(stderr).to.contain('Enabling dyno autoscaling... done')
     })
@@ -131,7 +133,7 @@ describe('ps:autoscale:enable', function () {
     it('runs successfully', async function () {
       dynoTestSetup('private-s')
 
-      const {stderr} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {stderr} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(stderr).to.contain('Enabling dyno autoscaling... done')
     })
@@ -141,7 +143,7 @@ describe('ps:autoscale:enable', function () {
     it('runs successfully', async function () {
       dynoTestSetup('shield-s')
 
-      const {stderr} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {stderr} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(stderr).to.contain('Enabling dyno autoscaling... done')
     })
@@ -155,7 +157,7 @@ describe('ps:autoscale:enable', function () {
         .get(`/apps/${APP_NAME}/formation`)
         .reply(200, [{id: FORMATION_ID, size: 'Hobby', type: 'web'}])
 
-      const {error} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(error?.message).to.contain('Autoscaling is only available with Performance or Private dynos')
     })
@@ -171,7 +173,7 @@ describe('ps:autoscale:enable', function () {
         .get(`/apps/${APP_NAME}/formation`)
         .reply(200, [{id: FORMATION_ID, size: 'Performance-L', type: 'web'}])
 
-      const {error} = await runCommand(['ps:autoscale:enable', '--min', '1', '--max', '2', '--app', APP_NAME])
+      const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(error?.message).to.contain('Autoscaling is unavailable for apps in this space. See https://devcenter.heroku.com/articles/generations.')
     })

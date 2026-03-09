@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import ClientsUpdate from '../../../../src/commands/clients/update.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:update', function () {
   let api: nock.Scope
@@ -25,7 +27,7 @@ describe('clients:update', function () {
           secret: 'clientsecret',
         })
 
-      const {stderr} = await runCommand(['clients:update', 'f6e8d969-129f-42d2-854b-c2eca9d5a42e', '--name', 'newname'])
+      const {stderr} = await runCommand(ClientsUpdate, ['f6e8d969-129f-42d2-854b-c2eca9d5a42e', '--name', 'newname'])
 
       expect(stderr).to.contain('Updating f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
     })
@@ -42,7 +44,7 @@ describe('clients:update', function () {
           secret: 'clientsecret',
         })
 
-      const {stderr} = await runCommand(['clients:update', 'f6e8d969-129f-42d2-854b-c2eca9d5a42e', '--url', 'https://heroku.com'])
+      const {stderr} = await runCommand(ClientsUpdate, ['f6e8d969-129f-42d2-854b-c2eca9d5a42e', '--url', 'https://heroku.com'])
 
       expect(stderr).to.contain('Updating f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
     })
@@ -50,7 +52,7 @@ describe('clients:update', function () {
 
   context('with no flags', function () {
     it('errors with no changes provided', async function () {
-      const {error} = await runCommand(['clients:update', 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'])
+      const {error} = await runCommand(ClientsUpdate, ['f6e8d969-129f-42d2-854b-c2eca9d5a42e'])
 
       expect(error?.message).to.equal('No changes provided.')
     })

@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Sessions from '../../../../src/commands/sessions/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('sessions:index', function () {
@@ -29,7 +30,7 @@ describe('sessions:index', function () {
       .get('/oauth/sessions')
       .reply(200, [exampleSession1, exampleSession2])
 
-    const {stdout} = await runCommand(['sessions'])
+    const {stdout} = await runCommand(Sessions, [])
 
     const actual = removeAllWhitespace(stdout)
     const expected = removeAllWhitespace(
@@ -45,7 +46,7 @@ describe('sessions:index', function () {
         .get('/oauth/sessions')
         .reply(200, [exampleSession1, exampleSession2])
 
-      const {stdout} = await runCommand(['sessions', '--json'])
+      const {stdout} = await runCommand(Sessions, ['--json'])
 
       const sessionJSON = JSON.parse(stdout)
 
@@ -60,7 +61,7 @@ describe('sessions:index', function () {
         .get('/oauth/sessions')
         .reply(200, [])
 
-      const {stdout} = await runCommand(['sessions'])
+      const {stdout} = await runCommand(Sessions, [])
 
       expect(stdout).to.equal('No OAuth sessions.\n')
     })

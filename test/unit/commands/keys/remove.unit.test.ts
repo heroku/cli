@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Remove from '../../../../src/commands/keys/remove.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('keys:remove', function () {
   let api: nock.Scope
@@ -22,7 +24,7 @@ describe('keys:remove', function () {
       .delete('/account/keys/1')
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(['keys:remove', 'user@machine'])
+    const {stderr, stdout} = await runCommand(Remove, ['user@machine'])
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Removing user@machine SSH key... done\n')
@@ -33,7 +35,7 @@ describe('keys:remove', function () {
       .get('/account/keys')
       .reply(200, [])
 
-    const {error} = await runCommand(['keys:remove', 'user@machine'])
+    const {error} = await runCommand(Remove, ['user@machine'])
 
     expect(error?.message).to.equal('No SSH keys on account')
   })
@@ -43,7 +45,7 @@ describe('keys:remove', function () {
       .get('/account/keys')
       .reply(200, [{comment: 'user@machine', id: 1}])
 
-    const {error} = await runCommand(['keys:remove', 'different@machine'])
+    const {error} = await runCommand(Remove, ['different@machine'])
 
     expect(error).to.exist
     expect(ansis.strip(error!.message)).to.equal('SSH Key different@machine not found.\nFound keys: user@machine.')

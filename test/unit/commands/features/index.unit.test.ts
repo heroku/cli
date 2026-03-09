@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Features from '../../../../src/commands/features/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('features', function () {
   let api: nock.Scope
@@ -26,7 +28,7 @@ describe('features', function () {
         },
       ])
 
-    const {stderr, stdout} = await runCommand(['features', '--app', 'myapp'])
+    const {stderr, stdout} = await runCommand(Features, ['--app', 'myapp'])
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`=== App Features ⬢ myapp

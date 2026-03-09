@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Keys from '../../../../src/commands/keys/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku keys', function () {
   const PUBLIC_KEY = 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine'
@@ -20,7 +22,7 @@ describe('heroku keys', function () {
       .get('/account/keys')
       .reply(200, [])
 
-    const {stderr, stdout} = await runCommand(['keys'])
+    const {stderr, stdout} = await runCommand(Keys, [])
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Warning: You have no SSH keys.\n')
@@ -33,7 +35,7 @@ describe('heroku keys', function () {
         {email: 'user@example.com', public_key: PUBLIC_KEY},
       ])
 
-    const {stderr, stdout} = await runCommand(['keys'])
+    const {stderr, stdout} = await runCommand(Keys, [])
 
     expect(stdout).to.equal(`=== user@example.com keys
 
@@ -49,7 +51,7 @@ ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine
         {email: 'user@example.com', public_key: PUBLIC_KEY},
       ])
 
-    const {stderr, stdout} = await runCommand(['keys', '--json'])
+    const {stderr, stdout} = await runCommand(Keys, ['--json'])
 
     expect(JSON.parse(stdout)).to.deep.equal([{email: 'user@example.com', public_key: PUBLIC_KEY}])
     expect(stderr).to.equal('')
@@ -62,7 +64,7 @@ ssh-rsa AAAAB3NzxC...V7iHuYrZxd user@machine
         {email: 'user@example.com', public_key: PUBLIC_KEY},
       ])
 
-    const {stderr, stdout} = await runCommand(['keys', '--long'])
+    const {stderr, stdout} = await runCommand(Keys, ['--long'])
 
     expect(stdout).to.equal(`=== user@example.com keys
 

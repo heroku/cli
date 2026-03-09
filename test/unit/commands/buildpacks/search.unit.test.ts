@@ -1,7 +1,9 @@
 import {Fixture} from '@heroku/buildpack-registry'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import BuildpacksSearch from '../../../../src/commands/buildpacks/search.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:search', function () {
   let registryApi: nock.Scope
@@ -25,7 +27,7 @@ describe('buildpacks:search', function () {
         }),
       ])
 
-    const {stdout} = await runCommand(['buildpacks:search', '--namespace', 'heroku'])
+    const {stdout} = await runCommand(BuildpacksSearch, ['--namespace', 'heroku'])
 
     expect(stdout).to.contain('heroku/ruby')
     expect(stdout).to.contain('1 buildpack found')
@@ -45,7 +47,7 @@ describe('buildpacks:search', function () {
       .get('/buildpacks?like[description]=ruby')
       .reply(200, [rubyBuildpack])
 
-    const {stdout} = await runCommand(['buildpacks:search', 'ruby'])
+    const {stdout} = await runCommand(BuildpacksSearch, ['ruby'])
 
     expect(stdout).to.contain('1 buildpack found')
   })

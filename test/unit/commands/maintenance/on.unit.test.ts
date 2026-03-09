@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import On from '../../../../src/commands/maintenance/on.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('maintenance:on', function () {
   let api: nock.Scope
@@ -19,7 +21,7 @@ describe('maintenance:on', function () {
       .patch('/apps/myapp', {maintenance: true})
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(['maintenance:on', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(On, ['-a', 'myapp'])
 
     expect(stdout).to.be.empty
     expect(stderr).to.contain('Enabling maintenance mode for ⬢ myapp... done')

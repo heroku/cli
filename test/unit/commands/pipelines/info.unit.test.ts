@@ -1,9 +1,10 @@
 /* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import PipelinesInfo from '../../../../src/commands/pipelines/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('pipelines:info', function () {
@@ -124,7 +125,7 @@ describe('pipelines:info', function () {
     it('doesn\'t display the owner', async function () {
       setupNock()
 
-      const {stdout} = await runCommand(['pipelines:info', 'example'])
+      const {stdout} = await runCommand(PipelinesInfo, ['example'])
 
       expect(stdout).to.not.contain('owner: foo@user.com')
     })
@@ -132,7 +133,7 @@ describe('pipelines:info', function () {
     it('displays json format', async function () {
       setupNock()
 
-      const {stdout} = await runCommand(['pipelines:info', 'example', '--json'])
+      const {stdout} = await runCommand(PipelinesInfo, ['example', '--json'])
 
       expect(stdout).to.not.contain('owner: foo@user.com')
       const parsedOutput = JSON.parse(stdout)
@@ -149,7 +150,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '5678', type: 'user'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           const warningMessage = 'Some apps in this pipeline do not belong'
           expect(stdout).to.not.contain(warningMessage)
@@ -164,7 +165,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '1234', type: 'user'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           expect(stdout).to.contain('owner: foo@user.com')
           itDoesNotShowMixedOwnershipWarning(stderr)
@@ -179,7 +180,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '5678', type: 'team'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           expect(stdout).to.contain('owner: my-team (team)')
           itShowsPipelineApps(stdout)
@@ -192,7 +193,7 @@ describe('pipelines:info', function () {
           const pipelineOwner = {id: '1234', type: 'team'}
           setupNock(pipelineOwner)
 
-          const {stderr, stdout} = await runCommand(['pipelines:info', 'example'])
+          const {stderr, stdout} = await runCommand(PipelinesInfo, ['example'])
 
           expect(stdout).to.contain('owner: my-team (team)')
           itShowsPipelineApps(stdout)

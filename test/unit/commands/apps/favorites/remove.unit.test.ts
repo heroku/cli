@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Remove from '../../../../../src/commands/apps/favorites/remove.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const MY_APP = 'myapp'
 
@@ -23,7 +25,7 @@ describe('apps:favorites:remove', function () {
       .delete('/favorites/favoriteid')
       .reply(201)
 
-    const {stderr, stdout} = await runCommand(['apps:favorites:remove', `--app=${MY_APP}`])
+    const {stderr, stdout} = await runCommand(Remove, [`--app=${MY_APP}`])
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Removing ⬢ myapp from favorites... done')
@@ -34,7 +36,7 @@ describe('apps:favorites:remove', function () {
       .get('/favorites?type=app')
       .reply(200, [])
 
-    const {error} = await runCommand(['apps:favorites:remove', `--app=${MY_APP}`])
+    const {error} = await runCommand(Remove, [`--app=${MY_APP}`])
 
     expect(error).to.be.an.instanceof(Error)
     expect(error?.message).to.contain('is not already a favorite app.')

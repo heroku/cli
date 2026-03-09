@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Config from '../../../../../src/commands/ci/config/index.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('ci:config', function () {
   const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline'}
@@ -21,7 +23,7 @@ describe('ci:config', function () {
   })
 
   it('errors when not specifying a pipeline or an app', async function () {
-    const {error} = await runCommand(['ci:config'])
+    const {error} = await runCommand(Config, [])
     expect(error?.message).to.contain('Exactly one of the following must be provided: --app, --pipeline')
   })
 
@@ -37,7 +39,7 @@ describe('ci:config', function () {
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, config)
 
-    const {stdout} = await runCommand(['ci:config', `--pipeline=${pipeline.name}`])
+    const {stdout} = await runCommand(Config, [`--pipeline=${pipeline.name}`])
 
     expect(stdout).to.include('=== my-pipeline test config vars')
     expect(stdout).to.include('KEY1:      VALUE1\nOTHER:     test\nRAILS_ENV: test\n')
@@ -55,7 +57,7 @@ describe('ci:config', function () {
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, config)
 
-    const {stdout} = await runCommand(['ci:config', `--pipeline=${pipeline.name}`, '--json'])
+    const {stdout} = await runCommand(Config, [`--pipeline=${pipeline.name}`, '--json'])
 
     expect(stdout).to.equal('{\n  "KEY1": "VALUE1",\n  "OTHER": "test",\n  "RAILS_ENV": "test"\n}\n')
   })
@@ -72,7 +74,7 @@ describe('ci:config', function () {
       .get(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, config)
 
-    const {stdout} = await runCommand(['ci:config', `--pipeline=${pipeline.name}`, '--shell'])
+    const {stdout} = await runCommand(Config, [`--pipeline=${pipeline.name}`, '--shell'])
 
     expect(stdout).to.equal('KEY1=VALUE1\nOTHER=test\nRAILS_ENV=test\n')
   })

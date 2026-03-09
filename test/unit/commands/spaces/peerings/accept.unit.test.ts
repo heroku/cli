@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Accept from '../../../../../src/commands/spaces/peerings/accept.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:peerings:accept', function () {
   let api: nock.Scope
@@ -21,7 +23,7 @@ describe('spaces:peerings:accept', function () {
       })
       .reply(202)
 
-    const {stdout} = await runCommand(['spaces:peerings:accept', '--pcxid', 'pcx-12345', '--space', 'my-space'])
+    const {stdout} = await runCommand(Accept, ['--pcxid', 'pcx-12345', '--space', 'my-space'])
 
     expect(stdout).to.equal('Accepting and configuring peering connection pcx-12345\n')
   })

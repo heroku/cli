@@ -1,8 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import BuildpacksSet from '../../../../src/commands/buildpacks/set.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:set', function () {
   let api: nock.Scope
@@ -23,7 +24,7 @@ describe('buildpacks:set', function () {
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -37,7 +38,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/foobar/foobar',
       ])
 
-      const {error} = await runCommand(['buildpacks:set', 'https://github.com/foobar/foobar', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksSet, ['https://github.com/foobar/foobar', '-a', 'example'])
 
       expect(error?.message).to.include('The buildpack https://github.com/foobar/foobar is already set on your app.')
     })
@@ -54,7 +55,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/biz/biz',
       ])
 
-      const {stdout} = await runCommand(['buildpacks:set', 'https://github.com/bar/bar', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksSet, ['https://github.com/bar/bar', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack set. Next release on ⬢ example will use:
@@ -73,7 +74,7 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -90,7 +91,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -104,7 +105,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {error} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(error?.message).to.include('The buildpack https://github.com/heroku/heroku-buildpack-ruby is already set on your app.')
     })
@@ -119,7 +120,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-nodejs',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -141,7 +142,7 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '3', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '3', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -164,7 +165,7 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '99', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '99', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -182,25 +183,25 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/heroku/heroku-buildpack-nodejs',
       ])
 
-      const {error} = await runCommand(['buildpacks:set', 'https://github.com/heroku/heroku-buildpack-java', '-i', '2', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-java', '-i', '2', '-a', 'example'])
 
       expect(error?.message).to.include('The buildpack https://github.com/heroku/heroku-buildpack-java is already set on your app.')
     })
 
     it('# returns an error message when i is not an integer', async function () {
-      const {error} = await runCommand(['buildpacks:set', 'https://github.com/bar/bar', '-i', 'notaninteger', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksSet, ['https://github.com/bar/bar', '-i', 'notaninteger', '-a', 'example'])
 
       expect(error?.message).to.include('Parsing --index \n\tExpected an integer but received: notaninteger\nSee more help with --help')
     })
 
     it('# returns an error message when i < 0', async function () {
-      const {error} = await runCommand(['buildpacks:set', 'https://github.com/bar/bar', '-i', '-1', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksSet, ['https://github.com/bar/bar', '-i', '-1', '-a', 'example'])
 
       expect(error?.message).to.include('Invalid index. Must be greater than 0.')
     })
 
     it('# handles a missing buildpack URL arg', async function () {
-      const {error} = await runCommand(['buildpacks:set', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksSet, ['-a', 'example'])
 
       expect(error?.message).to.include(`Missing 1 required arg:
 buildpack  namespace/name of the buildpack

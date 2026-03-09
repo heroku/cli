@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import DomainsClear from '../../../../src/commands/domains/clear.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:clear', function () {
   let api: nock.Scope
@@ -16,7 +18,7 @@ describe('domains:clear', function () {
       .delete('/apps/myapp/domains/example.com')
       .reply(200, {})
 
-    const {stderr} = await runCommand(['domains:clear', '--app', 'myapp'])
+    const {stderr} = await runCommand(DomainsClear, ['--app', 'myapp'])
 
     expect(stderr).to.contain('Removing all domains from ⬢ myapp... done')
   })

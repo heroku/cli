@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import FeaturesDisable from '../../../../src/commands/features/disable.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('features:disable',  function () {
   let api: nock.Scope
@@ -22,7 +24,7 @@ describe('features:disable',  function () {
       .patch('/apps/myapp/features/feature-a', {enabled: false})
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(['features:disable', '-a', 'myapp', 'feature-a'])
+    const {stderr, stdout} = await runCommand(FeaturesDisable, ['-a', 'myapp', 'feature-a'])
 
     expect(stderr).to.include('Disabling feature-a for')
     expect(stderr).to.include('myapp')
@@ -35,7 +37,7 @@ describe('features:disable',  function () {
       .get('/apps/myapp/features/feature-a')
       .reply(200, {enabled: false})
 
-    const {error} = await runCommand(['features:disable', '-a', 'myapp', 'feature-a'])
+    const {error} = await runCommand(FeaturesDisable, ['-a', 'myapp', 'feature-a'])
 
     expect(ansis.strip(error?.message || '')).to.equal('feature-a is already disabled.')
   })

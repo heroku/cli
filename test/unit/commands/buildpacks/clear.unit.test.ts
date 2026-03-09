@@ -1,8 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Clear from '../../../../src/commands/buildpacks/clear.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('buildpacks:clear', function () {
@@ -23,7 +24,7 @@ describe('buildpacks:clear', function () {
       .get('/apps/example/config-vars')
       .reply(200, {})
 
-    const {stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
+    const {stdout} = await runCommand(Clear, ['-a', 'example'])
 
     expect(stdout).to.equal('Buildpacks cleared. Next release on ⬢ example will detect buildpacks normally.\n')
   })
@@ -34,7 +35,7 @@ describe('buildpacks:clear', function () {
       .get('/apps/example/config-vars')
       .reply(200, {BUILDPACK_URL: 'https://github.com/foo/foo'})
 
-    const {stderr, stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
+    const {stderr, stdout} = await runCommand(Clear, ['-a', 'example'])
 
     expect(stdout).to.equal('Buildpacks cleared.\n')
     expect(unwrap(stderr)).to.equal('Warning: The BUILDPACK_URL config var is still set and will be used for the next release\n')
@@ -46,7 +47,7 @@ describe('buildpacks:clear', function () {
       .get('/apps/example/config-vars')
       .reply(200, {LANGUAGE_PACK_URL: 'https://github.com/foo/foo'})
 
-    const {stderr, stdout} = await runCommand(['buildpacks:clear', '-a', 'example'])
+    const {stderr, stdout} = await runCommand(Clear, ['-a', 'example'])
 
     expect(stdout).to.equal('Buildpacks cleared.\n')
     expect(unwrap(stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')

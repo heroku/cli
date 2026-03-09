@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import PipelinesCreate from '../../../../src/commands/pipelines/create.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:create', function () {
   let api: nock.Scope
@@ -37,8 +39,7 @@ describe('pipelines:create', function () {
           .get('/apps/example-app')
           .reply(200, {generation: 'fir', id: '0123', name: 'example-app'})
 
-        const {stderr, stdout} = await runCommand([
-          'pipelines:create',
+        const {stderr, stdout} = await runCommand(PipelinesCreate, [
           '--app',
           'example-app',
           '--stage',
@@ -74,8 +75,7 @@ describe('pipelines:create', function () {
           .get('/apps/example-app')
           .reply(200, {generation: 'fir', id: '0123', name: 'example-app'})
 
-        const {stderr, stdout} = await runCommand([
-          'pipelines:create',
+        const {stderr, stdout} = await runCommand(PipelinesCreate, [
           '--app',
           'example-app',
           '--stage',

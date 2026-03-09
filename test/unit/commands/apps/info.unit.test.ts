@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Info from '../../../../src/commands/apps/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('apps:info', function () {
@@ -33,7 +34,7 @@ describe('apps:info', function () {
     internal_routing: true,
     name: 'myapp',
     owner: {email: 'foo@foo.com', id: ''},
-    region: {name: 'eu', id: ''},
+    region: {id: '', name: 'eu'},
     repo_size: 1000,
     slug_size: null,
     space: {name: 'myspace'},
@@ -119,7 +120,7 @@ Stack:            cedar-14
       .get('/apps/myapp/dynos')
       .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp'])
 
     expect(stdout).to.equal(BASE_INFO)
     expect(unwrap(stderr)).to.contains('')
@@ -139,7 +140,7 @@ Stack:            cedar-14
       .get('/apps/myapp/dynos')
       .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp', '--extended'])
+    const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp', '--extended'])
 
     expect(stdout).to.equal(`${BASE_INFO}
 
@@ -161,7 +162,7 @@ Stack:            cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp', '--extended'])
+    const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp', '--extended'])
 
     expect(stdout).to.equal(`${BASE_INFO}
 
@@ -181,7 +182,7 @@ Stack:            cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp'])
 
     expect(stdout).to.equal(BASE_INFO)
     expect(unwrap(stderr)).to.contains('')
@@ -197,7 +198,7 @@ Stack:            cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp'])
 
     expect(stdout).to.equal(`=== ⬢ myapp
 
@@ -230,7 +231,7 @@ Stack:            cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--shell'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
 
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
@@ -258,7 +259,7 @@ stack=cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--shell'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
 
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
@@ -287,7 +288,7 @@ stack=cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--extended', '--json'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp', '--extended', '--json'])
 
     const json = JSON.parse(stdout)
     expect(json.appExtended).to.equal(undefined)
@@ -306,7 +307,7 @@ stack=cedar-14
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
       .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}})
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--json'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp', '--json'])
 
     const json = JSON.parse(stdout)
     expect(json.appExtended).to.equal(undefined)
@@ -327,7 +328,7 @@ stack=cedar-14
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp'])
 
     expect(stdout).to.equal(`=== ⬢ myapp
 
@@ -361,7 +362,7 @@ Stack:            cedar-14 (next build will use heroku-24)
       .get('/apps/myapp/dynos')
       .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp'])
 
     expect(stdout).to.equal(BASE_INFO_FIR)
     expect(unwrap(stderr)).to.contains('')
@@ -376,7 +377,7 @@ Stack:            cedar-14 (next build will use heroku-24)
       .get('/apps/myapp/collaborators').reply(200, collaborators)
       .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
 
-    const {stderr, stdout} = await runCommand(['apps:info', 'myapp', '--shell'])
+    const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
 
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
