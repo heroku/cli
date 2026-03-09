@@ -181,9 +181,6 @@ pg:links                                       lists all databases and informati
 pg:links:create                                create a link between data stores
 pg:links:destroy                               destroys a link between data stores
 pg:locks                                       display queries with active locks
-pg:maintenance                                 show current maintenance information
-pg:maintenance:run                             start maintenance
-pg:maintenance:window                          Set weekly maintenance window.
 pg:outliers                                    show 10 queries that have longest execution time in aggregate
 pg:promote                                     sets DATABASE as your DATABASE_URL
 pg:ps                                          view active queries with execution time
