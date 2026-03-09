@@ -1,10 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/links/create.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -74,7 +73,7 @@ describe('pg:links:create', function () {
       pg.post('/client/v11/databases/1/links', {as: 'foobar', target: 'postgres-1'})
         .reply(200, {name: 'foobar'})
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -82,8 +81,8 @@ describe('pg:links:create', function () {
         'heroku-redis',
         'heroku-postgres',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal(heredoc(`
       Adding link from ⛁ postgres-1 to ⛁ postgres-1... done, foobar
       `))
     })

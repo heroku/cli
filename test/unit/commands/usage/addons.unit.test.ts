@@ -1,8 +1,7 @@
-import {stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/usage/addons.js'
 import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import * as Heroku from '@heroku-cli/schema'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
@@ -41,12 +40,12 @@ describe('usage:addons', function () {
         .get(`/apps/${app}/addons`)
         .reply(200, [redisAddon])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         app,
       ])
 
-      const actual = removeAllWhitespace(stdout.output)
+      const actual = removeAllWhitespace(stdout)
       const expectedHeader = removeAllWhitespace(`=== Usage for ⬢ ${app}`)
       const expectedColumnHeader = removeAllWhitespace('Add-on    Meter        Quantity')
       const expected = removeAllWhitespace('redis-123 Data Storage 2.5\nredis-123 Connections  100')
@@ -70,12 +69,12 @@ describe('usage:addons', function () {
         .get(`/apps/${app}/addons`)
         .reply(200, [])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         app,
       ])
 
-      expectOutput(stdout.output, `No usage found for app ⬢ ${app}`)
+      expectOutput(stdout, `No usage found for app ⬢ ${app}`)
     })
   })
 
@@ -121,12 +120,12 @@ describe('usage:addons', function () {
         .get(`/teams/${team}/addons`)
         .reply(200, teamAddons)
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--team',
         team,
       ])
 
-      const actual = removeAllWhitespace(stdout.output)
+      const actual = removeAllWhitespace(stdout)
       const expectedHeaderOne = removeAllWhitespace('=== Usage for ⬢ App One')
       const expectedColumnHeader = removeAllWhitespace('Add-on    Meter        Quantity')
       const expectedOne = removeAllWhitespace('redis-123 Data Storage 2.5')
@@ -154,12 +153,12 @@ describe('usage:addons', function () {
         .get(`/teams/${team}/addons`)
         .reply(200, [])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--team',
         team,
       ])
 
-      expectOutput(stdout.output, `No usage found for team ${team}`)
+      expectOutput(stdout, `No usage found for team ${team}`)
     })
   })
 })

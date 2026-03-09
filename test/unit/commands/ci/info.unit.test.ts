@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import CiInfo from '../../../../src/commands/ci/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:info', function () {
   const testRunNumber = 10
@@ -17,12 +19,12 @@ describe('ci:info', function () {
   })
 
   it('errors when not specifying a test run', async function () {
-    const {error} = await runCommand(['ci:info'])
+    const {error} = await runCommand(CiInfo, [])
     expect(error?.message).to.equal('Missing 1 required arg:\ntest-run  auto-incremented test run number\nSee more help with --help')
   })
 
   it('errors when not specifying a pipeline or an app', async function () {
-    const {error} = await runCommand(['ci:info', `${testRun.number}`])
+    const {error} = await runCommand(CiInfo, [`${testRun.number}`])
     expect(error?.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
 
@@ -71,7 +73,7 @@ describe('ci:info', function () {
         .get(`/${testRun.id.slice(0, 3)}/test-runs/${testRun.id}`)
         .reply(200, 'Test output')
 
-      const {stdout} = await runCommand(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
+      const {stdout} = await runCommand(CiInfo, [`${testRun.number}`, `--pipeline=${pipeline.name}`])
 
       expect(stdout).to.equal('Test setup outputTest output\n✓ #10 main:b9e982a succeeded\n')
     })
@@ -121,7 +123,7 @@ describe('ci:info', function () {
           .get(`/${testRun.id.slice(0, 3)}/test-runs/${testRun.id}`)
           .reply(200, 'Test output')
 
-        const {error, stdout} = await runCommand(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
+        const {error, stdout} = await runCommand(CiInfo, [`${testRun.number}`, `--pipeline=${pipeline.name}`])
 
         expect(stdout).to.equal('Test setup outputTest output\n✗ #10 main:b9e982a failed\n')
         expect(error?.oclif?.exit).to.equal(testRunExitCode)
@@ -173,7 +175,7 @@ describe('ci:info', function () {
             },
           ])
 
-        const {stdout} = await runCommand(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`])
+        const {stdout} = await runCommand(CiInfo, [`${testRun.number}`, `--pipeline=${pipeline.name}`])
 
         expect(stdout).to.equal('✓ #10 main:b9e982a succeeded\n\n✓ #0 succeeded\n✓ #1 succeeded\n')
       })
@@ -233,7 +235,7 @@ describe('ci:info', function () {
             .get(`/${testRun.id.slice(0, 3)}/test-runs/${testRun.id}`)
             .reply(200, 'Test output')
 
-          const {stdout} = await runCommand(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
+          const {stdout} = await runCommand(CiInfo, [`${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
 
           expect(stdout).to.equal('Test setup outputTest output\n✓ #10 main:b9e982a succeeded\n')
         })
@@ -282,7 +284,7 @@ describe('ci:info', function () {
               .get(`/${testRun.id.slice(0, 3)}/test-runs/${testRun.id}`)
               .reply(200, 'Test output')
 
-            const {stderr, stdout} = await runCommand(['ci:info', `${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
+            const {stderr, stdout} = await runCommand(CiInfo, [`${testRun.number}`, `--pipeline=${pipeline.name}`, '--node=1'])
 
             expect(stdout).to.equal('Test setup outputTest output\n✓ #10 main:b9e982a succeeded\n\n')
             expect(stderr).to.contain('Warning: This pipeline doesn\'t have parallel test runs')

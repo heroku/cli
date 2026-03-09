@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/redis/keyspace-notifications.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 describe('heroku redis:keyspace-notifications should handle standard arg behavior', function () {
@@ -26,16 +25,15 @@ describe('heroku redis:keyspace-notifications', function () {
         notify_keyspace_events: {default: '', desc: 'Enables keyspace notifications.', value: 'AKE'},
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--config',
       'AKE',
     ])
-
     api.done()
     redis.done()
-    expect(stdout.output).to.equal("Keyspace notifications for redis-haiku (REDIS_FOO, REDIS_BAR) set to 'AKE'.\n")
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal("Keyspace notifications for redis-haiku (REDIS_FOO, REDIS_BAR) set to 'AKE'.\n")
+    expect(stderr).to.equal('')
   })
 })

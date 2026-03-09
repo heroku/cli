@@ -5,12 +5,11 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/prepare.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -50,16 +49,15 @@ describe('pg:upgrade:prepare', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.
     `))
-    })
   })
 
   it('refuses to prepare upgrade on essential tier dbs', async function () {
@@ -71,14 +69,13 @@ describe('pg:upgrade:prepare', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.equal(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
-    })
+    ])
+    expect(error?.message).to.equal(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
   })
 
   it('refuses to upgrade follower dbs', async function () {
@@ -94,16 +91,15 @@ describe('pg:upgrade:prepare', function () {
           name: 'postgresql-leader',
         },
       })
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.code('heroku pg:upgrade:run')} instead.
     `))
-    })
   })
 
   it('upgrades db with version flag', async function () {
@@ -125,7 +121,7 @@ describe('pg:upgrade:prepare', function () {
       This command prepares the upgrade for ⛁ ${addon.name} to Postgres version 15 and schedules to upgrade it during the next available maintenance window.
       `)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--version',
@@ -135,7 +131,7 @@ describe('pg:upgrade:prepare', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Preparing upgrade on ${addon.name}... done
       Your database is scheduled for upgrade during your next available maintenance window.
       Run heroku pg:upgrade:wait to track its status.
@@ -162,7 +158,7 @@ describe('pg:upgrade:prepare', function () {
       This command prepares the upgrade for ⛁ ${addon.name} to the latest supported Postgres version and schedules to upgrade it during the next available maintenance window.
       `)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -170,7 +166,7 @@ describe('pg:upgrade:prepare', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Preparing upgrade on ${addon.name}... done
       Your database is scheduled for upgrade during your next available maintenance window.
       Run heroku pg:upgrade:wait to track its status.
@@ -192,16 +188,15 @@ describe('pg:upgrade:prepare', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
       .reply(422, {id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.'})
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expect(ansis.strip(error.message)).to.equal(heredoc(`
+    ])
+    expect(ansis.strip(error?.message ?? '')).to.equal(heredoc(`
       database has an upgrade already scheduled, please check pg:upgrade:wait for more information on the status of your upgrade.
 
       Error ID: unprocessable_entity`))
-    })
   })
 })

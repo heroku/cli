@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/releases/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('releases', function () {
@@ -131,12 +130,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41'))
@@ -153,12 +151,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description   user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41   third commit   rdagg@heroku.com'))
@@ -173,12 +170,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41   third commit   release command executing'))
@@ -193,12 +189,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, onlySuccessfulReleases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v     description             user               created_at'))
     expect(actual).to.include(removeAllWhitespace('v41   third commit            rdagg@heroku.com'))
@@ -213,12 +208,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
@@ -235,12 +229,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases - Current: v37'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
@@ -257,12 +250,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releasesNoSlug)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
@@ -275,13 +267,12 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releases)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--json',
     ])
-
-    expect(JSON.parse(stdout.output)[0]).to.have.nested.include({version: 41})
+    expect(JSON.parse(stdout)[0]).to.have.nested.include({version: 41})
     // stderr may contain warnings from other plugins in test environment
   })
 
@@ -290,12 +281,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    expect(stdout.output).to.equal('⬢ myapp has no releases.\n')
+    expect(stdout).to.equal('⬢ myapp has no releases.\n')
     // stderr may contain warnings from other plugins in test environment
   })
 
@@ -304,13 +294,12 @@ describe('releases', function () {
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--extended',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
@@ -330,13 +319,12 @@ describe('releases', function () {
       .get('/apps/myapp/releases?extended=true')
       .reply(200, extended)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--extended',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))
@@ -360,12 +348,11 @@ describe('releases', function () {
       .get('/apps/myapp/releases')
       .reply(200, releasesCopy)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== ⬢ myapp Releases'))
     expect(actual).to.include(removeAllWhitespace('v'))
     expect(actual).to.include(removeAllWhitespace('description'))

@@ -2,10 +2,8 @@ import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
-
 import Cmd from '../../../../src/commands/spaces/destroy.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces:destroy', function () {
@@ -36,10 +34,10 @@ describe('spaces:destroy', function () {
       .delete('/spaces/my-space')
       .reply(200)
 
-    await runCommand(Cmd, ['--space', 'my-space'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
     const replacer = /([»›])/g
-    const actual = removeAllWhitespace(stderr.output.replaceAll(replacer, ''))
+    const actual = removeAllWhitespace(stderr.replaceAll(replacer, ''))
     expect(actual).to.include(removeAllWhitespace('Warning: Destructive Action'))
     expect(actual).to.include(removeAllWhitespace('This command will destroy the space ⬡ my-space'))
     expect(actual).to.include(removeAllWhitespace('=== WARNING: Outbound IPs Will Be Reused'))
@@ -70,10 +68,10 @@ describe('spaces:destroy', function () {
       .delete('/spaces/my-space')
       .reply(200)
 
-    await runCommand(Cmd, ['--space', 'my-space'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--space', 'my-space'])
     api.done()
     const replacer = /([»›])/g
-    const actual = removeAllWhitespace(stderr.output.replaceAll(replacer, ''))
+    const actual = removeAllWhitespace(stderr.replaceAll(replacer, ''))
     expect(actual).to.include(removeAllWhitespace('Warning: Destructive Action'))
     expect(actual).to.include(removeAllWhitespace('This command will destroy the space ⬡ my-space'))
     expect(actual).to.include(removeAllWhitespace('=== WARNING: Outbound IPs Will Be Reused'))

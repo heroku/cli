@@ -1,6 +1,5 @@
-import {stdout} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/spaces/vpn/info.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import * as Heroku from '@heroku-cli/schema'
@@ -46,13 +45,13 @@ describe('spaces:vpn:info', function () {
       .get(`/spaces/my-space/vpn-connections/${vpnConnection.name}`)
       .reply(200, vpnConnection)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       'vpn-connection-name',
     ])
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace(`=== ${vpnConnection.name} VPN Info`))
     expect(actual).to.include(removeAllWhitespace(`Name:           ${vpnConnection.name}`))
     expect(actual).to.include(removeAllWhitespace(`ID:             ${vpnConnection.id}`))
@@ -71,13 +70,13 @@ describe('spaces:vpn:info', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name')
       .reply(200, vpnConnection)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       vpnConnection.name as string,
       '--json',
     ])
-    expectOutput(stdout.output, JSON.stringify(vpnConnection, null, 2))
+    expectOutput(stdout, JSON.stringify(vpnConnection, null, 2))
   })
 
   it('gets VPN info with id', async function () {
@@ -85,13 +84,13 @@ describe('spaces:vpn:info', function () {
       .get(`/spaces/my-space/vpn-connections/${vpnConnection.id}`)
       .reply(200, vpnConnection)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       vpnConnection.id as string,
     ])
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace(`=== ${vpnConnection.name} VPN Info`))
     expect(actual).to.include(removeAllWhitespace(`Name:           ${vpnConnection.name}`))
     expect(actual).to.include(removeAllWhitespace(`ID:             ${vpnConnection.id}`))

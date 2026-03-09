@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import Cmd from '../../../../../src/commands/pg/settings/track-functions.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -37,8 +36,8 @@ describe('pg:settings:track-functions', function () {
           values: {test_value: 'No function calls will be tracked.'},
         },
       })
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       track-functions is set to test_value for ${addon.name}.
       No function calls will be tracked.
     `))

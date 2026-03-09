@@ -13,6 +13,7 @@ node_modules
 .idea
 .vscode
 .zed
+.claude
 npm-shrinkwrap.json
 
 # Ignore .yarn directory from previous yarn setup

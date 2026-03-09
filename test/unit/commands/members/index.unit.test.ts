@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import MembersIndex from '../../../../src/commands/members/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku members', function () {
   const adminTeamMember = {email: 'admin@heroku.com', role: 'admin', user: {email: 'admin@heroku.com'}}
@@ -25,7 +27,7 @@ describe('heroku members', function () {
         .get('/teams/myteam/members')
         .reply(200, [])
 
-      const {stdout} = await runCommand(['members', '--team', 'myteam'])
+      const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam'])
 
       expect(stdout).to.contain('No members in myteam')
     })
@@ -37,7 +39,7 @@ describe('heroku members', function () {
         .get('/teams/myteam/members')
         .reply(200, [adminTeamMember, collaboratorTeamMember])
 
-      const {stdout} = await runCommand(['members', '--team', 'myteam'])
+      const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam'])
 
       expect(stdout).to.contain('admin@heroku.com')
       expect(stdout).to.contain('admin')
@@ -52,7 +54,7 @@ describe('heroku members', function () {
         .get('/teams/myteam/members')
         .reply(200, [adminTeamMember, memberTeamMember])
 
-      const {stdout} = await runCommand(['members', '--team', 'myteam', '--role', 'member'])
+      const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam', '--role', 'member'])
 
       expect(stdout).to.contain('member@heroku.com')
       expect(stdout).to.contain('member')
@@ -65,7 +67,7 @@ describe('heroku members', function () {
         .get('/teams/myteam/members')
         .reply(200, [adminTeamMember, memberTeamMember])
 
-      const {stdout} = await runCommand(['members', '--team', 'myteam', '--role', 'collaborator'])
+      const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam', '--role', 'collaborator'])
 
       expect(stdout).to.contain('No members in myteam with role collaborator')
     })
@@ -82,7 +84,7 @@ describe('heroku members', function () {
           .get('/teams/myteam/members')
           .reply(200, [adminTeamMember, collaboratorTeamMember])
 
-        const {stdout} = await runCommand(['members', '--team', 'myteam'])
+        const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam'])
 
         expect(stdout).to.not.contain('Status')
       })
@@ -105,7 +107,7 @@ describe('heroku members', function () {
           .get('/teams/myteam/members')
           .reply(200, [adminTeamMember, collaboratorTeamMember])
 
-        const {stdout} = await runCommand(['members', '--team', 'myteam'])
+        const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam'])
 
         expect(stdout).to.contain('admin@heroku.com')
         expect(stdout).to.contain('admin')
@@ -126,7 +128,7 @@ describe('heroku members', function () {
           .get('/teams/myteam/members')
           .reply(200, [adminTeamMember, collaboratorTeamMember])
 
-        const {stdout} = await runCommand(['members', '--team', 'myteam'])
+        const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam'])
 
         expect(stdout).to.not.contain('Status')
       })
@@ -147,7 +149,7 @@ describe('heroku members', function () {
           .get('/teams/myteam/members')
           .reply(200, [adminTeamMember, collaboratorTeamMember])
 
-        const {stdout} = await runCommand(['members', '--team', 'myteam', '--pending'])
+        const {stdout} = await runCommand(MembersIndex, ['--team', 'myteam', '--pending'])
 
         expect(stdout).to.contain('invited-user@mail.com')
         expect(stdout).to.contain('admin')

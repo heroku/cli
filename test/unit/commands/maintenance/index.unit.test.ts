@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Maintenance from '../../../../src/commands/maintenance/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('maintenance', function () {
   let api: nock.Scope
@@ -19,7 +21,7 @@ describe('maintenance', function () {
       .get('/apps/myapp')
       .reply(200, {maintenance: true})
 
-    const {stderr, stdout} = await runCommand(['maintenance', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(Maintenance, ['-a', 'myapp'])
 
     expect(stdout).to.equal('on\n')
     expect(stderr).to.be.empty
@@ -30,7 +32,7 @@ describe('maintenance', function () {
       .get('/apps/myapp')
       .reply(200, {maintenance: false})
 
-    const {stderr, stdout} = await runCommand(['maintenance', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(Maintenance, ['-a', 'myapp'])
 
     expect(stdout).to.equal('off\n')
     expect(stderr).to.be.empty

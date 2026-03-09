@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import PipelinesRename from '../../../../src/commands/pipelines/rename.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:rename', function () {
   const oldName = 'polaris'
@@ -24,7 +26,7 @@ describe('pipelines:rename', function () {
       .patch(`/pipelines/${id}`)
       .reply(200, {id, name: newName})
 
-    const {stderr} = await runCommand(['pipelines:rename', oldName, newName])
+    const {stderr} = await runCommand(PipelinesRename, [oldName, newName])
 
     expect(stderr).to.include(`Renaming ${oldName} pipeline to ${newName}... done`)
   })

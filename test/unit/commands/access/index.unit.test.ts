@@ -1,15 +1,15 @@
-import {stdout, stderr} from 'stdout-stderr'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+
 import Cmd from '../../../../src/commands/access/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {
-  personalApp,
   appCollaborators,
-  teamApp,
-  teamMembers,
   appPermissions,
+  personalApp,
+  teamApp,
   teamAppCollaboratorsWithPermissions,
+  teamMembers,
 } from '../../../helpers/stubs/get.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
@@ -18,38 +18,38 @@ describe('heroku access', function () {
     afterEach(function () {
       return nock.cleanAll()
     })
-    it('shows the app collaborators', function () {
+    it('shows the app collaborators', async function () {
       const apiGetPersonalApp = personalApp()
       const apiGetAppCollaborators = appCollaborators()
-      return runCommand(Cmd, [
+      const {stdout, stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-        .then(() => expect(removeAllWhitespace(stdout.output)).to.contain(removeAllWhitespace('frodo@heroku.com  collaborator \n gandalf@heroku.com owner')))
-        .then(() => expect('').to.eq(stderr.output))
-        .then(() => apiGetPersonalApp.done())
-        .then(() => apiGetAppCollaborators.done())
+      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('frodo@heroku.com  collaborator \n gandalf@heroku.com owner'))
+      expect('').to.eq(stderr)
+      apiGetPersonalApp.done()
+      apiGetAppCollaborators.done()
     })
   })
   context('with team', function () {
     afterEach(function () {
       return nock.cleanAll()
     })
-    it('shows the app collaborators and hides the team collaborator record', function () {
+    it('shows the app collaborators and hides the team collaborator record', async function () {
       const apiGetTeamApp = teamApp()
       const apiGetOrgMembers = teamMembers()
       const apiGetAppPermissions = appPermissions()
       const apiGetTeamAppCollaboratorsWithPermissions = teamAppCollaboratorsWithPermissions()
-      return runCommand(Cmd, [
+      const {stdout, stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-        .then(() => expect(removeAllWhitespace(stdout.output)).to.contain(removeAllWhitespace('bob@heroku.com   member deploy, view                  \n gandalf@heroku.com admin  deploy, manage, operate, view \n')))
-        .then(() => expect('').to.eq(stderr.output))
-        .then(() => apiGetTeamApp.done())
-        .then(() => apiGetOrgMembers.done())
-        .then(() => apiGetAppPermissions.done())
-        .then(() => apiGetTeamAppCollaboratorsWithPermissions.done())
+      expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace('bob@heroku.com   member deploy, view                  \n gandalf@heroku.com admin  deploy, manage, operate, view \n'))
+      expect('').to.eq(stderr)
+      apiGetTeamApp.done()
+      apiGetOrgMembers.done()
+      apiGetAppPermissions.done()
+      apiGetTeamAppCollaboratorsWithPermissions.done()
     })
   })
 })

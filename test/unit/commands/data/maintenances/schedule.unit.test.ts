@@ -1,9 +1,11 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 
+import DataMaintenancesSchedule from '../../../../../src/commands/data/maintenances/schedule.js'
 import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 const unscheduledScheduleResponse = {
   ...maintenancesResponse,
@@ -37,10 +39,10 @@ describe('data:maintenances:schedule', function () {
       .post(`/data/maintenances/v1/${addon.id}/schedule`)
       .reply(200, maintenancesResponse)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:schedule', addon.name])
+    await runCommand(DataMaintenancesSchedule, [addon.name])
 
-    expect(stderr).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
-    expect(stdout).to.contain(`Scheduled maintenance for ${addon.name} changed from ${maintenance.previously_scheduled_for} to ${maintenance.scheduled_for}`)
+    expect(stderr.output).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
+    expect(stdout.output).to.contain(`Scheduled maintenance for ${addon.name} changed from ${maintenance.previously_scheduled_for} to ${maintenance.scheduled_for}`)
   })
 
   it('schedules a maintenance for an addon that does not have maintenance already scheduled', async function () {
@@ -51,10 +53,10 @@ describe('data:maintenances:schedule', function () {
       .post(`/data/maintenances/v1/${addon.id}/schedule`)
       .reply(200, unscheduledScheduleResponse)
 
-    const {stderr, stdout} = await runCommand(['data:maintenances:schedule', addon.name])
+    await runCommand(DataMaintenancesSchedule, [addon.name])
 
-    expect(stderr).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
-    expect(stdout).to.contain(`Maintenance for ${addon.name} scheduled for ${maintenance.scheduled_for}`)
+    expect(stderr.output).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
+    expect(stdout.output).to.contain(`Maintenance for ${addon.name} scheduled for ${maintenance.scheduled_for}`)
   })
 
   it('schedules a maintenance for an addon scoped to an app', async function () {
@@ -65,9 +67,9 @@ describe('data:maintenances:schedule', function () {
       .post(`/data/maintenances/v1/${addon.id}/schedule`)
       .reply(200, unscheduledScheduleResponse)
 
-    const {stderr} = await runCommand(['data:maintenances:schedule', addon.name, `--app=${app.name}`])
+    await runCommand(DataMaintenancesSchedule, [addon.name, `--app=${app.name}`])
 
-    expect(stderr).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
+    expect(stderr.output).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
   })
 
   it('schedules a maintenance for a specified number of weeks', async function () {
@@ -78,9 +80,9 @@ describe('data:maintenances:schedule', function () {
       .post(`/data/maintenances/v1/${addon.id}/schedule`)
       .reply(200, maintenancesResponse)
 
-    const {stderr} = await runCommand(['data:maintenances:schedule', addon.name, '--weeks=4'])
+    await runCommand(DataMaintenancesSchedule, [addon.name, '--weeks=4'])
 
-    expect(stderr).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
+    expect(stderr.output).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
   })
 
   it('schedules a maintenance for a specific week', async function () {
@@ -94,8 +96,8 @@ describe('data:maintenances:schedule', function () {
       .post(`/data/maintenances/v1/${addon.id}/schedule`)
       .reply(200, maintenancesResponse)
 
-    const {stderr} = await runCommand(['data:maintenances:schedule', addon.name, '--week=2019-11-01'])
+    await runCommand(DataMaintenancesSchedule, [addon.name, '--week=2019-11-01'])
 
-    expect(stderr).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
+    expect(stderr.output).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
   })
 })

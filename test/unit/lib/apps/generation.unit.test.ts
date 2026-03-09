@@ -1,8 +1,9 @@
-import {expect} from 'chai'
 import {APIClient} from '@heroku-cli/command'
-import nock from 'nock'
-import {getGeneration, getGenerationByAppId} from '../../../../src/lib/apps/generation.js'
 import {Config} from '@oclif/core'
+import {expect} from 'chai'
+import nock from 'nock'
+
+import {getGeneration, getGenerationByAppId} from '../../../../src/lib/apps/generation.js'
 
 describe('generation', function () {
   describe('getGeneration', function () {

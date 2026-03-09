@@ -1,10 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
-
 import Cmd from '../../../../../src/commands/pg/connection-pooling/attach.js'
 import {resolvedAttachments} from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('pg:connection-pooling:attach', function () {
   const addon = {
@@ -42,7 +40,7 @@ describe('pg:connection-pooling:attach', function () {
     })
 
     it('attaches pgbouncer with attachment name', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -50,9 +48,9 @@ describe('pg:connection-pooling:attach', function () {
         'postgres-1',
       ])
 
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.contain('Enabling Connection Pooling on')
-      expect(stderr.output).to.contain(`Setting ${attachmentName} config vars and restarting ⬢ myapp... done, v0`)
+      expect(stdout).to.equal('')
+      expect(stderr).to.contain('Enabling Connection Pooling on')
+      expect(stderr).to.contain(`Setting ${attachmentName} config vars and restarting ⬢ myapp... done, v0`)
     })
   })
 
@@ -64,15 +62,15 @@ describe('pg:connection-pooling:attach', function () {
     })
 
     it('attaches pgbouncer with default credential', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'postgres-1',
       ])
 
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.contain('Enabling Connection Pooling on')
-      expect(stderr.output).to.contain('Setting HEROKU_COLOR config vars and restarting ⬢ myapp... done, v0')
+      expect(stdout).to.equal('')
+      expect(stderr).to.contain('Enabling Connection Pooling on')
+      expect(stderr).to.contain('Setting HEROKU_COLOR config vars and restarting ⬢ myapp... done, v0')
     })
   })
 })

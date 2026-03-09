@@ -1,7 +1,7 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/spaces/peerings/destroy.js'
-import runCommand from '../../../../helpers/runCommand.js'
 import nock from 'nock'
+
+import Cmd from '../../../../../src/commands/spaces/peerings/destroy.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 describe('spaces:peering:destroy', function () {
@@ -10,7 +10,7 @@ describe('spaces:peering:destroy', function () {
       .delete('/spaces/my-space/peerings/pcx-12345')
       .reply(202)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--pcxid',
@@ -18,6 +18,6 @@ describe('spaces:peering:destroy', function () {
       '--confirm',
       'pcx-12345',
     ])
-    expectOutput(stderr.output, 'Tearing down peering connection pcx-12345... done\n')
+    expectOutput(stderr, 'Tearing down peering connection pcx-12345... done\n')
   })
 })

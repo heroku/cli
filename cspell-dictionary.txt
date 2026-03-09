@@ -83,6 +83,8 @@ ECCN
 echoerr
 Edmonds
 elif
+EOFCOMMENT
+EOFTABLE
 EMEA
 envfile
 envl
@@ -279,6 +281,7 @@ postrelease
 postrun
 preauth
 prerun
+preupdate
 processname
 processtype
 procfile
@@ -314,6 +317,7 @@ resetstat
 reviewapps
 rikki
 rollbar
+romeovs
 rootdir
 rootfulroot
 routable

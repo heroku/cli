@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/access/add.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {personalApp, teamApp, teamFeatures} from '../../../helpers/stubs/get.js'
 import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
@@ -24,7 +23,7 @@ describe('heroku access:add', function () {
     })
 
     it('adds user to the app with permissions, even specifying the view permission', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--permissions',
@@ -34,12 +33,12 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
+      expect('').to.eq(stdout)
+      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
     })
 
     it('adds user to the app with permissions, and view is implicit', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--permissions',
@@ -49,22 +48,17 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
+      expect('').to.eq(stdout)
+      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
     })
 
-    it('raises an error when permissions are not specified', function () {
-      return runCommand(Cmd, [
+    it('raises an error when permissions are not specified', async function () {
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'gandalf@heroku.com',
       ])
-        .then(() => {
-          apiGet.done()
-          apiGetOrgFeatures.done()
-          apiPost.done()
-        })
-        .catch((error: any) => expect(error.message).to.equal('Missing argument: permissions'))
+      expect(error?.message).to.equal('Missing argument: permissions')
     })
   })
 
@@ -80,7 +74,7 @@ describe('heroku access:add', function () {
     })
 
     it('adds user to the app', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'gandalf@heroku.com',
@@ -88,8 +82,8 @@ describe('heroku access:add', function () {
       apiGet.done()
       apiGetOrgFeatures.done()
       apiPost.done()
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
+      expect('').to.eq(stdout)
+      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
     })
   })
 
@@ -104,15 +98,15 @@ describe('heroku access:add', function () {
     })
 
     it('adds user to the app as a collaborator', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'gandalf@heroku.com',
       ])
       apiGet.done()
       apiPost.done()
-      expect('').to.eq(stdout.output)
-      expect(stderr.output).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
+      expect('').to.eq(stdout)
+      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
     })
   })
 })

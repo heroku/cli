@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/redis/wait.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
@@ -26,16 +25,15 @@ describe('heroku redis:wait ', function () {
       .get('/redis/v0/databases/redis-haiku/wait')
       .reply(200, {'waiting?': false})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-
     api.done()
     redis.done()
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('')
   })
 
   it('# waits for version upgrade', async function () {
@@ -50,15 +48,14 @@ describe('heroku redis:wait ', function () {
       .get('/redis/v0/databases/redis-haiku/wait')
       .reply(200, {message: 'available', 'waiting?': false})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-
     api.done()
     redis.done()
 
-    expect(stdout.output).to.equal('')
-    expectOutput(stderr.output, 'Waiting for database ⛁ redis-haiku... available')
+    expect(stdout).to.equal('')
+    expectOutput(stderr, 'Waiting for database ⛁ redis-haiku... available')
   })
 })

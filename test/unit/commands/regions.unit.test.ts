@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Regions from '../../../src/commands/regions.js'
+import {runCommand} from '../../helpers/run-command.js'
 import removeAllWhitespace from '../../helpers/utils/remove-whitespaces.js'
 
 describe('regions', function () {
@@ -26,7 +27,7 @@ describe('regions', function () {
       .get('/regions')
       .reply(200, regionData)
 
-    const {stdout} = await runCommand(['regions'])
+    const {stdout} = await runCommand(Regions, [])
 
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu       Europe                  Common Runtime'))
@@ -38,7 +39,7 @@ describe('regions', function () {
       .get('/regions')
       .reply(200, regionData)
 
-    const {stdout} = await runCommand(['regions', '--private'])
+    const {stdout} = await runCommand(Regions, ['--private'])
 
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('oregon   Oregon, United States   Private Spaces'))
@@ -49,7 +50,7 @@ describe('regions', function () {
       .get('/regions')
       .reply(200, regionData)
 
-    const {stdout} = await runCommand(['regions', '--common'])
+    const {stdout} = await runCommand(Regions, ['--common'])
 
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID   Location        Runtime'))
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu   Europe          Common Runtime'))
@@ -61,7 +62,7 @@ describe('regions', function () {
       .get('/regions')
       .reply(200, regionData)
 
-    const {stdout} = await runCommand(['regions', '--json'])
+    const {stdout} = await runCommand(Regions, ['--json'])
 
     expect(JSON.parse(stdout)[0].name).to.equal('eu')
   })

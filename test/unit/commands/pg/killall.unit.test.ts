@@ -1,5 +1,4 @@
-import {stderr, stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/pg/killall.js'
 import nock from 'nock'
@@ -29,12 +28,12 @@ describe('pg:killall', function () {
     pg.post('/client/v11/databases/1/connection_reset')
       .reply(200)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expect(stdout.output).to.eq('')
-    expect(stderr.output).to.eq('Terminating connections for all credentials... done\n')
+    expect(stdout).to.eq('')
+    expect(stderr).to.eq('Terminating connections for all credentials... done\n')
   })
 })

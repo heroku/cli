@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Pipelines from '../../../../src/commands/pipelines/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines', function () {
   let api: nock.Scope
@@ -22,7 +24,7 @@ describe('pipelines', function () {
         {id: '9876', name: 'Sirius'},
       ])
 
-    const {stderr, stdout} = await runCommand(['pipelines'])
+    const {stderr, stdout} = await runCommand(Pipelines, [])
 
     expect(stderr).to.contain('')
     expect(stdout).to.contain('My Pipelines')
@@ -38,7 +40,7 @@ describe('pipelines', function () {
         {id: '9876', name: 'Sirius'},
       ])
 
-    const {stderr, stdout} = await runCommand(['pipelines', '--json'])
+    const {stderr, stdout} = await runCommand(Pipelines, ['--json'])
 
     expect(stderr).to.contain('')
     expect(JSON.parse(stdout)).to.eql([

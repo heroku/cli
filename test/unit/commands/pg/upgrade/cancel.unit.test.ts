@@ -4,12 +4,11 @@ import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -53,16 +52,15 @@ describe('pg:upgrade:cancel', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.
     `))
-    })
   })
 
   it('refuses to cancel upgrade on essential tier dbs', async function () {
@@ -74,14 +72,13 @@ describe('pg:upgrade:cancel', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.equal(`You can't use ${color.code('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
-    })
+    ])
+    expect(error?.message).to.equal(`You can't use ${color.code('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
   })
 
   it('refuses to cancel upgrade on follower dbs', async function () {
@@ -97,16 +94,15 @@ describe('pg:upgrade:cancel', function () {
           name: 'postgresql-leader',
         },
       })
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can't use ${color.code('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.
     `))
-    })
   })
 
   it('cancels upgrade on a leader db', async function () {
@@ -127,7 +123,7 @@ describe('pg:upgrade:cancel', function () {
       You can't undo this action.
     `)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -135,7 +131,7 @@ describe('pg:upgrade:cancel', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Cancelling upgrade on ${addon.name}... done
       You canceled the upgrade.
     `))
@@ -152,22 +148,21 @@ describe('pg:upgrade:cancel', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
 
-    await runCommand(Cmd, [
+    const {error, stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(ansis.strip(error.message), heredoc(`
+    ])
+    expectOutput(ansis.strip(error?.message ?? ''), heredoc(`
       You haven't scheduled an upgrade on your database. Run pg:upgrade:prepare to schedule an upgrade.
 
       Error ID: bad_request
     `))
 
-      expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
         Cancelling upgrade on ${addon.name}...
       `))
-    })
   })
 
   it('errors when upgrade is not cancelable', async function () {
@@ -181,21 +176,20 @@ describe('pg:upgrade:cancel', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress."})
 
-    await runCommand(Cmd, [
+    const {error, stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can't cancel the upgrade because it's currently in progress.
 
       Error ID: bad_request
     `))
 
-      expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
         Cancelling upgrade on ${addon.name}...
       `))
-    })
   })
 })

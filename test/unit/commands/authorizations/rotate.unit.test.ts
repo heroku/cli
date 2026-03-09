@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import AuthorizationsRotate from '../../../../src/commands/authorizations/rotate.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:rotate', function () {
   let api: nock.Scope
@@ -20,7 +22,7 @@ describe('authorizations:rotate', function () {
       .post(`/oauth/authorizations/${authorizationID}/actions/regenerate-tokens`)
       .reply(200, {access_token: {token: 'secrettoken'}, scope: ['global', 'app']})
 
-    const {stderr, stdout} = await runCommand(['authorizations:rotate', authorizationID])
+    const {stderr, stdout} = await runCommand(AuthorizationsRotate, [authorizationID])
 
     expect(stdout).to.contain('Client: <none>\n')
     expect(stdout).to.contain('Scope:  global,app\n')

@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import Cmd from '../../../../../src/commands/pg/settings/data-connector-details-logs.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -27,8 +26,8 @@ describe('pg:data-connector-details-logs', function () {
   it('turns on data-connector-details-logs option', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {data_connector_details_logs: {value: 'on'}})
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       data-connector-details-logs is set to on for ${addon.name}.
       Data replication slot details will be logged.
     `))
@@ -37,8 +36,8 @@ describe('pg:data-connector-details-logs', function () {
   it('turns off data-connector-details-logs option', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {data_connector_details_logs: {value: ''}})
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       data-connector-details-logs is set to  for ${addon.name}.
       Data replication slot details will no longer be logged.
     `))

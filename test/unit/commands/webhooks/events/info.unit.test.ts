@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Info from '../../../../../src/commands/webhooks/events/info.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('webhooks:events:info', function () {
   let api: nock.Scope
@@ -31,8 +33,7 @@ describe('webhooks:events:info', function () {
         },
       })
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:events:info',
+    const {stderr, stdout} = await runCommand(Info, [
       '--app',
       'example-app',
       '99999999-9999-9999-9999-999999999999',
@@ -64,8 +65,7 @@ describe('webhooks:events:info', function () {
         },
       })
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:events:info',
+    const {stderr, stdout} = await runCommand(Info, [
       '--pipeline',
       'example-pipeline',
       '99999999-9999-9999-9999-999999999999',

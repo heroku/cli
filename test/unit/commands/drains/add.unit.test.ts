@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Add from '../../../../src/commands/drains/add.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('drains:add', function () {
   let api: nock.Scope
@@ -19,7 +21,7 @@ describe('drains:add', function () {
       .post('/apps/myapp/log-drains', {url: 'syslog://logs.example.com'})
       .reply(200, {url: 'syslog://logs.example.com'})
 
-    const {stderr, stdout} = await runCommand(['drains:add', '-a', 'myapp', 'syslog://logs.example.com'])
+    const {stderr, stdout} = await runCommand(Add, ['-a', 'myapp', 'syslog://logs.example.com'])
 
     expect(stdout).to.equal('Successfully added drain syslog://logs.example.com\n')
     expect(stderr).to.equal('')

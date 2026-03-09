@@ -102,6 +102,7 @@ export class HerokuRepl {
     }).concat(positionalArgs.map(String))
 
     if (command === 'exit') {
+      this.historyStream?.close()
       // eslint-disable-next-line n/no-process-exit
       process.exit(0)
     }
@@ -193,6 +194,16 @@ export class HerokuRepl {
   constructor(config: Config) {
     this.createInterface()
     this.config = config
+  }
+
+  /**
+   * Closes the REPL by closing the readline interface and history stream.
+   *
+   * @returns {void}
+   */
+  close() {
+    this.rl.close()
+    this.historyStream?.close()
   }
 
   /**

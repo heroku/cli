@@ -5,7 +5,7 @@ import sinon from 'sinon'
 
 import Cmd, {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {EditorFactory} from '../../../../src/lib/config/util.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config:edit', function () {
   let updated: Record<string, unknown> | string
@@ -85,7 +85,7 @@ describe('config:edit', function () {
           .patch('/apps/myapp/config-vars')
           .reply(function (_uri, requestBody) {
             updated = requestBody as Record<string, unknown>
-            return [200, {NOT_BLANK: 'not blank', BLANK: ''}]
+            return [200, {BLANK: '', NOT_BLANK: 'not blank'}]
           })
 
         await runCommand(Cmd, ['--app=myapp'])

@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import ClientsInfo from '../../../../src/commands/clients/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:info', function () {
   let api: nock.Scope
@@ -26,7 +28,7 @@ describe('clients:info', function () {
       .get('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
       .reply(200, client)
 
-    const {stdout} = await runCommand(['clients:info', id])
+    const {stdout} = await runCommand(ClientsInfo, [id])
 
     expect(stdout).to.contain('=== awesome\n')
     expect(stdout).to.contain('id:           f6e8d969-129f-42d2-854b-c2eca9d5a42e\n')
@@ -41,7 +43,7 @@ describe('clients:info', function () {
         .get('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
         .reply(200, client)
 
-      const {stdout} = await runCommand(['clients:info', id, '--json'])
+      const {stdout} = await runCommand(ClientsInfo, [id, '--json'])
 
       expect(JSON.parse(stdout)).to.contain(client)
     })
@@ -53,7 +55,7 @@ describe('clients:info', function () {
         .get('/oauth/clients/f6e8d969-129f-42d2-854b-c2eca9d5a42e')
         .reply(200, client)
 
-      const {stdout} = await runCommand(['clients:info', id, '--shell'])
+      const {stdout} = await runCommand(ClientsInfo, [id, '--shell'])
 
       expect(stdout).to.equal(
         'HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=supersecretkey\n',

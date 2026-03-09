@@ -1,7 +1,7 @@
 import {expect} from 'chai'
-import {multiSortCompareFn, type Comparator} from '../../../../src/lib/utils/multisort.js'
 
-/*
+import {type Comparator, multiSortCompareFn} from '../../../../src/lib/utils/multisort.js'
+
 describe('MultiSort', function () {
   it('sorts based on precedence', function () {
     type User = {
@@ -29,5 +29,3 @@ describe('MultiSort', function () {
     expect(users).to.deep.eq(shouldBe)
   })
 })
-
-*/

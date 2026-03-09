@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import LabsEnable from '../../../../src/commands/labs/enable.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('labs:enable', function () {
   let api: nock.Scope
@@ -28,7 +30,7 @@ describe('labs:enable', function () {
       .patch('/account/features/feature-a', {enabled: true})
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(['labs:enable', 'feature-a'])
+    const {stderr, stdout} = await runCommand(LabsEnable, ['feature-a'])
 
     expect(stdout).to.be.empty
     expect(stderr).to.equal('Enabling feature-a for gandalf@heroku.com... done\n')
@@ -48,7 +50,7 @@ describe('labs:enable', function () {
       .patch('/apps/myapp/features/feature-a', {enabled: true})
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(['labs:enable', 'feature-a', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(LabsEnable, ['feature-a', '-a', 'myapp'])
 
     expect(stdout).to.be.empty
     expect(stderr).to.contain('Enabling feature-a for ⬢ myapp... done\n')

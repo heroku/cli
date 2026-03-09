@@ -1,12 +1,11 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/upgrade.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -28,7 +27,7 @@ describe('heroku redis:upgrade', function () {
       .reply(200, {
         message: 'Upgrading version now!',
       })
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
@@ -36,22 +35,20 @@ describe('heroku redis:upgrade', function () {
       '--version',
       '6.2',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Requesting upgrade of ${redisAddon.name} to 6.2... Upgrading version now!
     `))
   })
 
   it('# errors on missing version', async function () {
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-      .catch((error: Error) => {
-        expect(stdout.output).to.equal('')
-        expect(ansis.strip(error.message)).to.equal(heredoc(`
-          The following error occurred:
-            Missing required flag version
-          See more help with --help`))
-      })
+    expect(stdout).to.equal('')
+    expect(ansis.strip(error?.message || '')).to.equal(heredoc(`
+      The following error occurred:
+        Missing required flag version
+      See more help with --help`))
   })
 })

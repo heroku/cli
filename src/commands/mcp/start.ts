@@ -24,11 +24,21 @@ export default class MCPStart extends Command {
     server.stderr.pipe(process.stderr)
 
     // Handle process termination
-    process.on('SIGINT', () => {
+    const onSigint = () => {
       server.kill('SIGINT')
-    })
-    process.on('SIGTERM', () => {
+    }
+
+    const onSigterm = () => {
       server.kill('SIGTERM')
+    }
+
+    process.on('SIGINT', onSigint)
+    process.on('SIGTERM', onSigterm)
+
+    server.once('exit', () => {
+      process.stdin.unpipe(server.stdin)
+      process.removeListener('SIGINT', onSigint)
+      process.removeListener('SIGTERM', onSigterm)
     })
 
     return server

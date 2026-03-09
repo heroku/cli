@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Stacks from '../../../../../src/commands/apps/stacks/index.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const MY_APP = 'myapp'
 
@@ -30,7 +32,7 @@ describe('apps:stacks', function () {
         {name: 'cedar-14'},
       ])
 
-    const {stderr, stdout} = await runCommand(['apps:stacks', '-a', MY_APP])
+    const {stderr, stdout} = await runCommand(Stacks, ['-a', MY_APP])
 
     expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar-10\n* cedar-14\n')
     expect(stderr).to.equal('')
@@ -50,7 +52,7 @@ describe('apps:stacks', function () {
         {name: 'cedar-14'},
       ])
 
-    const {stderr, stdout} = await runCommand(['apps:stacks', '-a', MY_APP])
+    const {stderr, stdout} = await runCommand(Stacks, ['-a', MY_APP])
 
     expect(stdout).to.equal('=== ⬢ myapp Available Stacks\n\n  cedar-10 (active on next deploy)\n* cedar-14\n')
     expect(stderr).to.equal('')

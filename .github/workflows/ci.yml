@@ -1,9 +1,30 @@
 name: Tests
 
 on:
-  [push, workflow_dispatch]
+  push:
+    # Only run on pushes to main branches and long-lived feature branches
+    # PRs will trigger via pull_request event to avoid duplicate runs
+    branches:
+      - main
+      - v11.0.0
+      # Add any long-lived feature branches here
+  pull_request:
+  workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - name: linting
+        run: npm run lint
+
   test:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -19,9 +40,103 @@ jobs:
           cache: npm
       - run: npm ci
       - name: unit tests
-        run: npm test
-      - name: linting
-        run: npm run lint
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" = "ubuntu-latest" ] && [ "${{ matrix.node-version }}" = "22.x" ]; then
+            npm run test:ci:unit:coverage
+          else
+            npm run test:ci:unit
+          fi
+      - name: Upload coverage reports
+        if: always() && github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+      - name: Coverage summary
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            echo "## 📊 Coverage Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Metric | Coverage |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|----------|" >> $GITHUB_STEP_SUMMARY
+
+            # Parse coverage from lcov.info
+            LINES_FOUND=$(grep -o "LF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+            LINES_HIT=$(grep -o "LH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+            FUNCS_FOUND=$(grep -o "FNF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+            FUNCS_HIT=$(grep -o "FNH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+            BRANCHES_FOUND=$(grep -o "BRF:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+            BRANCHES_HIT=$(grep -o "BRH:[0-9]*" coverage/lcov.info | cut -d: -f2 | awk '{s+=$1} END {print s}')
+
+            LINES_PCT=$(awk "BEGIN {printf \"%.2f\", ($LINES_HIT/$LINES_FOUND)*100}")
+            FUNCS_PCT=$(awk "BEGIN {printf \"%.2f\", ($FUNCS_HIT/$FUNCS_FOUND)*100}")
+            BRANCHES_PCT=$(awk "BEGIN {printf \"%.2f\", ($BRANCHES_HIT/$BRANCHES_FOUND)*100}")
+
+            echo "| Lines | ${LINES_PCT}% (${LINES_HIT}/${LINES_FOUND}) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Functions | ${FUNCS_PCT}% (${FUNCS_HIT}/${FUNCS_FOUND}) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Branches | ${BRANCHES_PCT}% (${BRANCHES_HIT}/${BRANCHES_FOUND}) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Coverage report not found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  base-coverage:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci
+      - name: Run tests on base branch with full coverage
+        run: |
+          if npm run | grep -q 'test:ci:unit:coverage$'; then
+            npm run test:ci:unit:coverage
+          elif npm run | grep -q 'test:unit:justTest:ci:coverage$'; then
+            npm run pretest && npm run test:unit:justTest:ci:coverage
+          else
+            echo "Coverage script not found in base branch, skipping coverage check"
+            mkdir -p coverage
+            echo "No coverage data available for base branch" > coverage/README.md
+          fi
+      - name: Upload base coverage
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-base
+          path: coverage/
+          retention-days: 1
+
+  coverage-check:
+    runs-on: ubuntu-latest
+    needs: [test, base-coverage]
+    if: github.event_name == 'pull_request' && needs.test.result == 'success' && needs.base-coverage.result == 'success'
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download PR coverage
+        uses: actions/download-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage-pr/
+      - name: Download base coverage
+        uses: actions/download-artifact@v7
+        with:
+          name: coverage-base
+          path: coverage-base/
+      - name: Compare coverage and fail if decreased
+        run: |
+          if [ -f coverage-base/lcov.info ]; then
+            ./scripts/ci/compare-coverage.sh coverage-pr coverage-base --fail-on-decrease
+          else
+            echo "Base coverage not available, skipping comparison"
+            echo "⚠️ Coverage comparison skipped - base branch does not have compatible test scripts" >> $GITHUB_STEP_SUMMARY
+          fi
 
   integration:
     runs-on: ${{ matrix.os }}
@@ -42,7 +157,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run cli package integration tests
-        run: npm run test:integration
+        run: npm run test:ci:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
@@ -65,11 +180,11 @@ jobs:
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.ref_name, 'release-')
-        run: npm run test:smoke
+        run: npm run test:ci:smoke
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
-        run: npm run test:acceptance
+        run: npm run test:ci:acceptance
 
   spell-check:
     runs-on: ${{ matrix.os }}
@@ -79,7 +194,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
-        with: 
+        with:
           fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v6
@@ -94,7 +209,7 @@ jobs:
   # dummy job needed to pass changeling compliance because it only watches one build
   done:
     runs-on: macos-latest
-    needs: [test, integration, acceptance]
+    needs: [lint, test, integration, acceptance]
     steps:
       - run: echo done
         working-directory: /

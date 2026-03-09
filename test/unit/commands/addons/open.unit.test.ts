@@ -1,12 +1,12 @@
-import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {AddOnAttachment} from '@heroku-cli/schema'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
 import fs from 'node:fs/promises'
-import {AddOnAttachment} from '@heroku-cli/schema'
-import Cmd from '../../../../src/commands/addons/open.js'
 import path from 'node:path'
+import sinon from 'sinon'
+
+import Cmd from '../../../../src/commands/addons/open.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('The addons:open command', function () {
   let urlOpenerStub: sinon.SinonStub
@@ -23,31 +23,30 @@ describe('The addons:open command', function () {
 
   it('should only print the url when --show-url is used', async function () {
     const api = nock('https://api.heroku.com:443')
-      .post('/actions/addon-attachments/resolve', {app: 'myApp', addon_attachment: 'db2'})
-      .reply(404, {app: 'myApp', addon_attachment: 'db2', addon_service: undefined})
-      .post('/actions/addons/resolve', {app: 'myApp', addon: 'db2'})
-      .reply(200, [{id: 'db2', web_url: 'http://db2', addon_service: undefined}])
+      .post('/actions/addon-attachments/resolve', {addon_attachment: 'db2', app: 'myApp'})
+      .reply(404, {addon_attachment: 'db2', addon_service: undefined, app: 'myApp'})
+      .post('/actions/addons/resolve', {addon: 'db2', app: 'myApp'})
+      .reply(200, [{addon_service: undefined, id: 'db2', web_url: 'http://db2'}])
       .get('/addons/db2/addon-attachments')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myApp',
       '--show-url',
       'db2',
     ])
-
-    expect(stdout.output).to.equal('http://db2\n')
+    expect(stdout).to.equal('http://db2\n')
     return api.done()
   })
 
   it('should open an attached addon, by slug, with the correct `context_app`.', async function () {
     const api = nock('https://api.heroku.com:443')
-      .post('/actions/addon-attachments/resolve', {app: 'myapp-2', addon_attachment: 'slowdb'})
+      .post('/actions/addon-attachments/resolve', {addon_attachment: 'slowdb', app: 'myapp-2'})
       .reply(404, {resource: 'add_on attachment'})
-      .post('/actions/addons/resolve', {app: 'myapp-2', addon: 'slowdb'})
+      .post('/actions/addons/resolve', {addon: 'slowdb', app: 'myapp-2'})
       .reply(404, {resource: 'add_on'})
-      .post('/actions/addons/resolve', {app: null, addon: 'slowdb'})
+      .post('/actions/addons/resolve', {addon: 'slowdb', app: null})
       .reply(200, [{id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-slowdb'}])
       .get('/addons/c7c9cf20-ec87-11e5-aea4-0002a5d5c51b/addon-attachments')
       .reply(200, [
@@ -56,13 +55,13 @@ describe('The addons:open command', function () {
           web_url: 'http://myapp-2-slowdb',
         },
       ])
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp-2',
       'slowdb',
     ])
     expect(urlOpenerStub.calledWith('http://myapp-2-slowdb')).to.be.true
-    expect(stdout.output).to.equal('Opening http://myapp-2-slowdb...\n')
+    expect(stdout).to.equal('Opening http://myapp-2-slowdb...\n')
     return api.done()
   })
 
@@ -74,32 +73,32 @@ describe('The addons:open command', function () {
     it('url via the standard happy path.', async function () {
       const responseBody: AddOnAttachment[] = [{name: 'REDIS', web_url: 'https://heroku.com'}]
       const api = nock('https://api.heroku.com:443')
-        .post('/actions/addon-attachments/resolve', {app: 'myApp', addon_attachment: 'redis-321'})
+        .post('/actions/addon-attachments/resolve', {addon_attachment: 'redis-321', app: 'myApp'})
         .reply(201, responseBody)
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myApp',
         'redis-321',
       ])
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
-      expect(stdout.output).to.equal('Opening https://heroku.com...\n')
+      expect(stdout).to.equal('Opening https://heroku.com...\n')
       return api.done()
     })
 
     it('url when "::" exists in the addon_attachment.', async function () {
       const responseBody: AddOnAttachment[] = [{name: 'REDIS', web_url: 'https://heroku.com'}]
       const api = nock('https://api.heroku.com:443')
-        .post('/actions/addon-attachments/resolve', {app: null, addon_attachment: 'redis::321'})
+        .post('/actions/addon-attachments/resolve', {addon_attachment: 'redis::321', app: null})
         .reply(201, responseBody)
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myApp',
         'redis::321',
       ])
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
-      expect(stdout.output).to.equal('Opening https://heroku.com...\n')
+      expect(stdout).to.equal('Opening https://heroku.com...\n')
       return api.done()
     })
 
@@ -109,14 +108,14 @@ describe('The addons:open command', function () {
         .get('/apps/myapp/addons/db2/sso')
         .reply(200, {action: 'exampleURL', method: 'get'})
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--show-url',
         'db2',
       ])
       expect(urlOpenerStub.calledWith('exampleURL')).to.be.true
-      expect(stdout.output).to.equal('Opening exampleURL...\n')
+      expect(stdout).to.equal('Opening exampleURL...\n')
       return api.done()
     })
 
@@ -126,16 +125,16 @@ describe('The addons:open command', function () {
         .get('/apps/myapp/addons/db2/sso')
         .reply(200, {action: 'exampleURL', method: 'post'})
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--show-url',
         'db2',
       ])
       const {lastArg} = urlOpenerStub.getCall(0)
-      const normalizedPath = String(lastArg).replace(/\//g, path.sep)
+      const normalizedPath = String(lastArg).replaceAll('/', path.sep)
       expect(lastArg.startsWith('file:')).to.be.true
-      expect(stdout.output).to.equal(`Opening ${lastArg}...\n`)
+      expect(stdout).to.equal(`Opening ${lastArg}...\n`)
 
       const file = await fs.readFile(normalizedPath.replace(`file:${path.sep}${path.sep}`, ''))
       expect(file.toString().includes('Opening db2 on myapp...')).to.be.true

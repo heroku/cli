@@ -1,6 +1,8 @@
+import {utils} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
@@ -16,6 +18,16 @@ import runCommand from '../../../../../helpers/runCommand.js'
 const heredoc = tsheredoc.default
 
 describe('data:pg:attachments:destroy', function () {
+  let resolveStub: sinon.SinonStub
+
+  beforeEach(function () {
+    resolveStub = sinon.stub(utils.AddonResolver.prototype, 'resolve')
+  })
+
+  afterEach(function () {
+    sinon.restore()
+  })
+
   it('shows error for non-advanced databases', async function () {
     const herokuApi = nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments/DATABASE_ANALYST')
@@ -30,8 +42,8 @@ describe('data:pg:attachments:destroy', function () {
           name: nonAdvancedAddon.name,
         },
       })
-      .post('/actions/addons/resolve')
-      .reply(200, [nonAdvancedAddon])
+    resolveStub.withArgs(nonAdvancedAddon.name, undefined, utils.pg.addonService())
+      .resolves(nonAdvancedAddon)
 
     try {
       await runCommand(DataPgAttachmentsDestroy, [
@@ -55,12 +67,12 @@ describe('data:pg:attachments:destroy', function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments/DATABASE_ANALYST')
         .reply(200, multipleAttachmentsResponse[1])
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
         .delete('/addon-attachments/9a301cce-e1f7-4f1e-a955-5a0ab1d62cb4')
         .reply(200, multipleAttachmentsResponse[1])
         .get('/apps/myapp/releases')
         .reply(200, releasesResponse)
+      resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
+        .resolves(addon)
 
       await runCommand(DataPgAttachmentsDestroy, [
         'DATABASE_ANALYST',
@@ -110,13 +122,13 @@ describe('data:pg:attachments:destroy', function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments/DATABASE_ANALYST')
         .reply(200, multipleAttachmentsResponse[1])
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
         .delete('/addon-attachments/9a301cce-e1f7-4f1e-a955-5a0ab1d62cb4')
         .reply(500, {
           id: 'internal_server_error',
           message: 'Internal server error.',
         })
+      resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
+        .resolves(addon)
 
       try {
         await runCommand(DataPgAttachmentsDestroy, [
@@ -143,8 +155,6 @@ describe('data:pg:attachments:destroy', function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments/DATABASE_ANALYST')
         .reply(200, multipleAttachmentsResponse[1])
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
         .delete('/addon-attachments/9a301cce-e1f7-4f1e-a955-5a0ab1d62cb4')
         .reply(200, multipleAttachmentsResponse[1])
         .get('/apps/myapp/releases')
@@ -152,6 +162,8 @@ describe('data:pg:attachments:destroy', function () {
           id: 'internal_server_error',
           message: 'Internal server error.',
         })
+      resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
+        .resolves(addon)
 
       try {
         await runCommand(DataPgAttachmentsDestroy, [
