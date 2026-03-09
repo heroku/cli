@@ -29,6 +29,7 @@ autoloaded
 autoscale
 autovacuum
 awscli
+barsize
 baseport
 bindkey
 binrun
@@ -339,6 +340,7 @@ snapcraft
 snapcraftctl
 sniendpoint
 snyk
+socksv
 someplugin
 somethingelse
 someuser
