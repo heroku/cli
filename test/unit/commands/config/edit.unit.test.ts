@@ -85,7 +85,7 @@ describe('config:edit', function () {
           .patch('/apps/myapp/config-vars')
           .reply(function (_uri, requestBody) {
             updated = requestBody as Record<string, unknown>
-            return [200, {NOT_BLANK: 'not blank', BLANK: ''}]
+            return [200, {BLANK: '', NOT_BLANK: 'not blank'}]
           })
 
         await runCommand(Cmd, ['--app=myapp'])

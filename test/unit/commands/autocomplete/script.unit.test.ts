@@ -1,13 +1,14 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 
+import AutocompleteScript from '../../../../src/commands/autocomplete/script.js'
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {getConfig} from '../../../helpers/testInstances.js'
 
 runtest('autocomplete:script', () => {
   it('outputs bash profile config', async function () {
     const config = await getConfig()
-    const {stdout} = await runCommand(['autocomplete:script', 'bash'])
+    const {stdout} = await runCommand(AutocompleteScript, ['bash'])
 
     expect(stdout).to.contain(`
 # heroku autocomplete setup
@@ -19,7 +20,7 @@ HEROKU_AC_BASH_SETUP_PATH=${
 
   it('outputs zsh profile config', async function () {
     const config = await getConfig()
-    const {stdout} = await runCommand(['autocomplete:script', 'zsh'])
+    const {stdout} = await runCommand(AutocompleteScript, ['zsh'])
 
     expect(stdout).to.contain(`
 # heroku autocomplete setup
@@ -30,7 +31,7 @@ HEROKU_AC_ZSH_SETUP_PATH=${
   })
 
   it('errors on unsupported shell', async function () {
-    const {error} = await runCommand(['autocomplete:script', 'fish'])
+    const {error} = await runCommand(AutocompleteScript, ['fish'])
 
     expect(error?.message).to.contain('fish is not a supported shell for autocomplete')
   })

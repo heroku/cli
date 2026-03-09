@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Rename from '../../../../src/commands/apps/rename.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('apps:rename', function () {
@@ -32,7 +33,7 @@ describe('apps:rename', function () {
       .patch(`/apps/${oldApp.name}`, {name: newApp.name})
       .reply(200, newApp)
 
-    const {stderr, stdout} = await runCommand(['apps:rename', '-a', oldApp.name, newApp.name])
+    const {stderr, stdout} = await runCommand(Rename, ['-a', oldApp.name, newApp.name])
 
     expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
     expect(unwrap(stderr)).to.contains('Renaming ⬢ myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
@@ -43,7 +44,7 @@ describe('apps:rename', function () {
       .patch(`/apps/${oldApp.name}`, {name: newApp.name})
       .reply(200, newAppSillUsingHttp)
 
-    const {stderr, stdout} = await runCommand(['apps:rename', '-a', oldApp.name, newApp.name])
+    const {stderr, stdout} = await runCommand(Rename, ['-a', oldApp.name, newApp.name])
 
     expect(stdout).to.equal('http://newname.com | https://git.heroku.com/newname.git\nPlease note that it may take a few minutes for Heroku to provision a SSL certificate for your application.\n')
     expect(unwrap(stderr)).to.contains('Renaming ⬢ myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')

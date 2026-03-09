@@ -1,7 +1,9 @@
 import {Fixture} from '@heroku/buildpack-registry'
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import BuildpacksVersions from '../../../../src/commands/buildpacks/versions.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:versions', function () {
   let originalApiKey: string | undefined
@@ -32,7 +34,7 @@ describe('buildpacks:versions', function () {
         }),
       ])
 
-    const {stdout} = await runCommand(['buildpacks:versions', 'heroku/ruby'])
+    const {stdout} = await runCommand(BuildpacksVersions, ['heroku/ruby'])
 
     expect(stdout).to.contain('138')
   })
@@ -42,7 +44,7 @@ describe('buildpacks:versions', function () {
       .get('/buildpacks/hone%2Ftest/revisions')
       .reply(404, '')
 
-    const {error} = await runCommand(['buildpacks:versions', 'hone/test'])
+    const {error} = await runCommand(BuildpacksVersions, ['hone/test'])
 
     expect(error?.message).to.include("Could not find 'hone/test'")
   })
@@ -52,7 +54,7 @@ describe('buildpacks:versions', function () {
       .get('/buildpacks/hone%2Ftest/revisions')
       .reply(500, 'some error')
 
-    const {error} = await runCommand(['buildpacks:versions', 'hone/test'])
+    const {error} = await runCommand(BuildpacksVersions, ['hone/test'])
 
     expect(error?.message).to.include('Problem fetching versions, 500: some error')
   })

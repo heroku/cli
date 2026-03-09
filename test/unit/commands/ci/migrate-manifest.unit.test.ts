@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import {promises as fs} from 'node:fs'
+
+import CiMigrateManifest from '../../../../src/commands/ci/migrate-manifest.js'
+import {runCommand} from '../../../helpers/run-command.js'
 const {readFile, unlink, writeFile} = fs
 const unlinkFile = unlink
 
@@ -142,7 +144,7 @@ describe('ci:migrate-manifest', function () {
   }
 
   it('creates an app.json file if none exists', async function () {
-    const {stdout} = await runCommand(['ci:migrate-manifest'])
+    const {stdout} = await runCommand(CiMigrateManifest, [])
 
     const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
     appJsonFileContents = JSON.parse(fileContents)
@@ -154,7 +156,7 @@ describe('ci:migrate-manifest', function () {
   it('creates converted app.json file when app-ci.json file is present', async function () {
     await writeFile('app-ci.json', `${JSON.stringify(mockOldAppCiJsonFileContents, null, '  ')}\n`)
 
-    const {stdout} = await runCommand(['ci:migrate-manifest'])
+    const {stdout} = await runCommand(CiMigrateManifest, [])
 
     const fileContents = await readFile(`${process.cwd()}/app.json`, 'utf8')
     appJsonFileContents = JSON.parse(fileContents)

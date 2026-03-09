@@ -13,7 +13,9 @@ const root = path.resolve(__dirname, '../../../package.json')
 const config = new Config({root})
 
 class TestCommand extends Command {
-  static topic = 'foo'
+  static args = {
+    app: Args.string({required: false}),
+  }
 
   static command = 'bar'
 
@@ -23,9 +25,7 @@ class TestCommand extends Command {
     app: flags.app(),
   }
 
-  static args = {
-    app: Args.string({required: false}),
-  }
+  static topic = 'foo'
 
   async run() {
     'do work!'

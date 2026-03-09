@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import DomainsWait from '../../../../src/commands/domains/wait.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:wait', function () {
   let api: nock.Scope
@@ -21,7 +23,7 @@ describe('domains:wait', function () {
       .get('/apps/myapp/domains/123')
       .reply(200, {hostname: 'example.com', id: 123, status: 'succeeded'})
 
-    const {stderr} = await runCommand(['domains:wait', 'example.com', '--app', 'myapp'])
+    const {stderr} = await runCommand(DomainsWait, ['example.com', '--app', 'myapp'])
 
     expect(stderr).to.contain('Waiting for example.com... done')
   })
@@ -33,7 +35,7 @@ describe('domains:wait', function () {
       .get('/apps/myapp/domains/123')
       .reply(200, {hostname: 'example.com', id: 123, status: 'succeeded'})
 
-    const {stderr} = await runCommand(['domains:wait', '--app', 'myapp'])
+    const {stderr} = await runCommand(DomainsWait, ['--app', 'myapp'])
 
     expect(stderr).to.contain('Waiting for example.com... done')
   })

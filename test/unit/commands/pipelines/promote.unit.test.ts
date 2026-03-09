@@ -1,10 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/pipelines/promote.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:promote', function () {
   const pipeline = {
@@ -126,7 +125,7 @@ describe('pipelines:promote', function () {
       })
       .reply(201, promotion)
 
-    const {stdout} = await runCommand(['pipelines:promote', `--app=${sourceApp.name}`])
+    const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
 
     expect(stdout).to.contain('failed')
     expect(stdout).to.contain('Because reasons')
@@ -147,7 +146,7 @@ describe('pipelines:promote', function () {
         })
         .reply(201, promotion)
 
-      const {stdout} = await runCommand(['pipelines:promote', `--app=${sourceApp.name}`, `--to=${targetApp1.name}`])
+      const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`, `--to=${targetApp1.name}`])
 
       expect(stdout).to.contain('failed')
       expect(stdout).to.contain('Because reasons')
@@ -167,7 +166,7 @@ describe('pipelines:promote', function () {
         })
         .reply(201, promotion)
 
-      const {stdout} = await runCommand(['pipelines:promote', `--app=${sourceApp.name}`, `--to=${targetApp1.id}`])
+      const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`, `--to=${targetApp1.id}`])
 
       expect(stdout).to.contain('failed')
       expect(stdout).to.contain('Because reasons')
@@ -209,7 +208,7 @@ describe('pipelines:promote', function () {
         .get('/release')
         .reply(200, 'Release Command Output')
 
-      const {stdout} = await runCommand(['pipelines:promote', `--app=${sourceApp.name}`])
+      const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
 
       expect(stdout).to.contain('Running release command')
       expect(stdout).to.contain('Release Command Output')
@@ -254,13 +253,10 @@ describe('pipelines:promote', function () {
         .times(100)
         .reply(404, 'Release Command Output')
 
-      try {
-        await runCommandHelper(Cmd, [`--app=${sourceApp.name}`])
-        expect.fail('Expected command to throw error')
-      } catch (error: any) {
-        expect(error.oclif?.exit).to.equal(2)
-        expect(error.message).to.equal('stream release output not available')
-      }
+      const {error} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
+
+      expect(error?.oclif?.exit).to.equal(2)
+      expect(error?.message).to.equal('stream release output not available')
     })
   })
 })

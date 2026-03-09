@@ -1,8 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import {addDays} from 'date-fns'
 import nock from 'nock'
 
+import Index from '../../../../../src/commands/webhooks/events/index.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
 
 describe('webhooks:events', function () {
@@ -28,13 +29,13 @@ describe('webhooks:events', function () {
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
           payload: {
+            action: 'create',
             published_at: '2016-08-31T21:55:06Z',
             resource: 'api:release',
-            action: 'create',
           },
         }])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -47,7 +48,7 @@ describe('webhooks:events', function () {
         .get(appWebhookEventsPath)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -64,13 +65,13 @@ describe('webhooks:events', function () {
         .reply(200, [{
           id: '99999999-9999-9999-9999-999999999999',
           payload: {
+            action: 'create',
             published_at: '2016-08-31T21:55:06Z',
             resource: 'api:release',
-            action: 'create',
           },
         }])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -83,7 +84,7 @@ describe('webhooks:events', function () {
         .get(pipelineWebhookEventsPath)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)
@@ -106,39 +107,39 @@ describe('webhooks:events', function () {
 
           // first date
           {
-            id: '00000000-0000-0000-0000-000000000000',
             created_at: firstDate.toISOString(),
+            id: '00000000-0000-0000-0000-000000000000',
             payload: {
+              action: 'create',
               published_at: '2019-06-15T14:20:42Z',
               resource: 'api:release',
-              action: 'create',
             },
           },
 
           // third date
           {
-            id: '11111111-1111-1111-1111-111111111111',
             created_at: thirdDate.toISOString(),
+            id: '11111111-1111-1111-1111-111111111111',
             payload: {
+              action: 'create',
               published_at: '2019-06-15T14:20:42Z',
               resource: 'api:release',
-              action: 'create',
             },
           },
 
           // second date
           {
-            id: '22222222-2222-2222-2222-222222222222',
             created_at: secondDate.toISOString(),
+            id: '22222222-2222-2222-2222-222222222222',
             payload: {
+              action: 'create',
               published_at: '2019-06-15T14:20:42Z',
               resource: 'api:release',
-              action: 'create',
             },
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:events', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.include(deprecationWarning)
       expect(stderr).to.include(deprecationWarning2)

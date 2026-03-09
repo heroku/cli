@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import ClientsCreate from '../../../../src/commands/clients/create.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:create', function () {
   let api: nock.Scope
@@ -29,7 +31,7 @@ describe('clients:create', function () {
       })
       .reply(201, createResponse)
 
-    const {stderr, stdout} = await runCommand(['clients:create', 'awesome', 'https://myapp.com'])
+    const {stderr, stdout} = await runCommand(ClientsCreate, ['awesome', 'https://myapp.com'])
 
     expect(stdout).to.equal(
       'HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=clientsecret\n',
@@ -45,7 +47,7 @@ describe('clients:create', function () {
       })
       .reply(201, createResponse)
 
-    const {stderr, stdout} = await runCommand(['clients:create', 'awesome', 'https://myapp.com', '--json'])
+    const {stderr, stdout} = await runCommand(ClientsCreate, ['awesome', 'https://myapp.com', '--json'])
 
     expect(JSON.parse(stdout)).to.contain(createResponse)
     expect(stderr).to.contain('Creating awesome... done\n')

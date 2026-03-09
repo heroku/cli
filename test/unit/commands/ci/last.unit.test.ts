@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import CiLast from '../../../../src/commands/ci/last.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:last', function () {
   const testRunNumber = 10
@@ -17,7 +19,7 @@ describe('ci:last', function () {
   })
 
   it('errors when not specifying a pipeline or an app', async function () {
-    const {error} = await runCommand(['ci:last'])
+    const {error} = await runCommand(CiLast, [])
     expect(error?.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
 
@@ -41,7 +43,7 @@ describe('ci:last', function () {
         .get(`/pipelines/${pipeline.id}/test-runs`)
         .reply(200, [])
 
-      const {stderr} = await runCommand(['ci:last', '--app', `${application.name}`])
+      const {stderr} = await runCommand(CiLast, ['--app', `${application.name}`])
 
       expect(stderr).to.contain('No Heroku CI runs found for the specified app and/or pipeline.')
     })
@@ -51,7 +53,7 @@ describe('ci:last', function () {
         .get(`/apps/${application.name}/pipeline-couplings`)
         .reply(200, {})
 
-      const {error} = await runCommand(['ci:last', '--app', `${application.name}`])
+      const {error} = await runCommand(CiLast, ['--app', `${application.name}`])
 
       expect(error?.message).to.contain(`No pipeline found with application ${application.name}`)
     })
@@ -122,7 +124,7 @@ describe('ci:last', function () {
         .get(`/${testRunId.slice(0, 3)}/test-runs/${testRunId}`)
         .reply(200, 'Test output')
 
-      const {stdout} = await runCommand(['ci:last', `--pipeline=${pipeline.name}`])
+      const {stdout} = await runCommand(CiLast, [`--pipeline=${pipeline.name}`])
 
       expect(stdout).to.equal('Test setup outputTest output\n✓ #10 main:b9e982a succeeded\n')
     })
@@ -164,7 +166,7 @@ describe('ci:last', function () {
         .get(`/test-runs/${testRunId}/test-nodes`)
         .reply(200, [])
 
-      const {error} = await runCommand(['ci:last', `--pipeline=${pipeline.name}`])
+      const {error} = await runCommand(CiLast, [`--pipeline=${pipeline.name}`])
 
       expect(error?.message).to.contain(`Test run ${testRunNumber} was cancelled. No Heroku CI runs found for this pipeline.`)
     })

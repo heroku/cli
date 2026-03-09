@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Authorizations from '../../../../src/commands/authorizations/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('authorizations', function () {
@@ -32,7 +33,7 @@ describe('authorizations', function () {
       .get('/oauth/authorizations')
       .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
-    const {stdout} = await runCommand(['authorizations'])
+    const {stdout} = await runCommand(Authorizations, [])
 
     const actual = removeAllWhitespace(stdout)
     const expected = removeAllWhitespace(`
@@ -47,7 +48,7 @@ describe('authorizations', function () {
         .get('/oauth/authorizations')
         .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
-      const {stdout} = await runCommand(['authorizations', '--json'])
+      const {stdout} = await runCommand(Authorizations, ['--json'])
 
       const authJSON = JSON.parse(stdout)
       expect(authJSON[0]).to.eql(exampleAuthorization2)
@@ -61,7 +62,7 @@ describe('authorizations', function () {
         .get('/oauth/authorizations')
         .reply(200, [])
 
-      const {stdout} = await runCommand(['authorizations'])
+      const {stdout} = await runCommand(Authorizations, [])
 
       expect(stdout).to.equal('No OAuth authorizations.\n')
     })

@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import LabsIndex from '../../../../src/commands/labs/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('labs', function () {
   let api: nock.Scope
@@ -24,7 +26,7 @@ describe('labs', function () {
         {description: 'a user lab feature', enabled: false, name: 'lab feature b'},
       ])
 
-    const {stderr, stdout} = await runCommand(['labs'])
+    const {stderr, stdout} = await runCommand(LabsIndex, [])
 
     expect(stdout).to.contain('=== User Features gandalf@heroku.com\n\n[+] lab feature a  a user lab feature\n[ ] lab feature b  a user lab feature\n')
     expect(stderr).to.be.empty
@@ -44,7 +46,7 @@ describe('labs', function () {
         {description: 'an app lab feature', enabled: true, name: 'lab feature c'},
       ])
 
-    const {stderr, stdout} = await runCommand(['labs', '-a', 'myapp'])
+    const {stderr, stdout} = await runCommand(LabsIndex, ['-a', 'myapp'])
     expect(stdout).to.equal(`=== User Features gandalf@heroku.com
 
 [+] lab feature a  a user lab feature
@@ -77,7 +79,7 @@ describe('labs', function () {
         {description: 'an app lab feature', enabled: true, name: 'lab feature c'},
       ])
 
-    const {stderr, stdout} = await runCommand(['labs', '-a', 'myapp', '--json'])
+    const {stderr, stdout} = await runCommand(LabsIndex, ['-a', 'myapp', '--json'])
 
     expect(stdout).to.equal(`{
   "app": [
