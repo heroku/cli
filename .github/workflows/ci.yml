@@ -165,7 +165,7 @@ jobs:
         # on 'main' and 'release-' branches, these tests will be run as part of the acceptance tests.
       - name: run smoke tests
         if: github.ref_name != 'main' || !startsWith(github.ref_name, 'release-')
-        run: npm run test:smoke
+        run: npm run test:ci:smoke
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
