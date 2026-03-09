@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import {ConfigIndex} from '../../../../src/commands/config/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config', function () {
   let api: nock.Scope
@@ -19,7 +21,7 @@ describe('config', function () {
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
-    const {stdout} = await runCommand(['config', '--app=myapp'])
+    const {stdout} = await runCommand(ConfigIndex, ['--app=myapp'])
 
     expect(stdout).to.equal('=== ⬢ myapp Config Vars\n\nLANG:     en_US.UTF-8\nRACK_ENV: production\n')
   })
@@ -29,7 +31,7 @@ describe('config', function () {
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
-    const {stdout} = await runCommand(['config', '--app=myapp', '-j'])
+    const {stdout} = await runCommand(ConfigIndex, ['--app=myapp', '-j'])
 
     expect(JSON.parse(stdout)).to.deep.equal({LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
   })
@@ -39,7 +41,7 @@ describe('config', function () {
       .get('/apps/myapp/config-vars')
       .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
-    const {stdout} = await runCommand(['config', '--app=myapp', '-s'])
+    const {stdout} = await runCommand(ConfigIndex, ['--app=myapp', '-s'])
 
     expect(stdout).to.equal(`LANG=en_US.UTF-8
 RACK_ENV=production

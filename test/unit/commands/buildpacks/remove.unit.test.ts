@@ -1,9 +1,11 @@
 import {Fixture} from '@heroku/buildpack-registry'
-import {runCommand} from '@oclif/test'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import BuildpacksRemove from '../../../../src/commands/buildpacks/remove.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('buildpacks:remove', function () {
@@ -26,7 +28,7 @@ describe('buildpacks:remove', function () {
         .get('/apps/example/config-vars')
         .reply(200, {})
 
-      const {stdout} = await runCommand(['buildpacks:remove', '-i', '1', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
@@ -42,7 +44,7 @@ describe('buildpacks:remove', function () {
         .get('/apps/example/config-vars')
         .reply(200, {LANGUAGE_PACK_URL: 'https://github.com/foo/foo'})
 
-      const {stderr, stdout} = await runCommand(['buildpacks:remove', '-i', '1', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed.
@@ -59,7 +61,7 @@ describe('buildpacks:remove', function () {
         .get('/apps/example/config-vars')
         .reply(200, {BUILDPACK_URL: 'https://github.com/foo/foo'})
 
-      const {stderr, stdout} = await runCommand(['buildpacks:remove', '-i', '1', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed.
@@ -76,7 +78,7 @@ describe('buildpacks:remove', function () {
         'https://github.com/heroku/heroku-buildpack-java',
       ])
 
-      const {stdout} = await runCommand(['buildpacks:remove', '-i', '2', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksRemove, ['-i', '2', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-java.
@@ -93,7 +95,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stdout} = await runCommand(['buildpacks:remove', '-i', '1', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
@@ -112,7 +114,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-ruby',
       ])
 
-      const {stdout} = await runCommand(['buildpacks:remove', '-i', '2', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksRemove, ['-i', '2', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed. Next release on ⬢ example will use:
@@ -123,7 +125,7 @@ Run git push heroku main to create a new release using these buildpacks.
     })
 
     it('# returns an error message when i is not an integer', async function () {
-      const {error} = await runCommand(['buildpacks:remove', '-i', 'notaninteger', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['-i', 'notaninteger', '-a', 'example'])
 
       expect(error?.message).to.include('Parsing --index \n\tExpected an integer but received: notaninteger\nSee more help with --help')
     })
@@ -131,9 +133,9 @@ Run git push heroku main to create a new release using these buildpacks.
     it('# with no buildpacks reports an error removing index', async function () {
       Stubber.get(api)
 
-      const {error} = await runCommand(['buildpacks:remove', '-i', '1', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
-      expect(error?.message).to.include('No buildpacks were found. Next release on ⬢ example will detect buildpack normally.')
+      expect(ansis.strip(error?.message || '')).to.include('No buildpacks were found. Next release on ⬢ example will detect buildpack normally.')
     })
 
     it('# returns an error when the index > 1 and the size is one', async function () {
@@ -141,7 +143,7 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/foo/foo',
       ])
 
-      const {error} = await runCommand(['buildpacks:remove', '-i', '2', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['-i', '2', '-a', 'example'])
 
       expect(error?.message).to.include('Invalid index. Only valid value is 1.')
     })
@@ -152,7 +154,7 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/bar/bar',
       ])
 
-      const {error} = await runCommand(['buildpacks:remove', '-i', '3', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['-i', '3', '-a', 'example'])
 
       expect(error?.message).to.include('Invalid index. Please choose a value between 1 and 2')
     })
@@ -168,7 +170,7 @@ Run git push heroku main to create a new release using these buildpacks.
         .get('/apps/example/config-vars')
         .reply(200, {})
 
-      const {stdout} = await runCommand(['buildpacks:remove', 'https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
@@ -184,7 +186,7 @@ Run git push heroku main to create a new release using these buildpacks.
         'https://github.com/heroku/heroku-buildpack-java',
       ])
 
-      const {stderr, stdout} = await runCommand(['buildpacks:remove', 'https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -209,7 +211,7 @@ Run git push heroku main to create a new release using this buildpack.
         .get('/buildpacks/heroku%2Fruby')
         .reply(200, buildpack)
 
-      const {stderr, stdout} = await runCommand(['buildpacks:remove', 'heroku/ruby', '-a', 'example'])
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['heroku/ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal(
@@ -220,9 +222,9 @@ Run git push heroku main to create a new release using this buildpack.
     it('# with no buildpacks reports an error removing buildpack_url', async function () {
       Stubber.get(api)
 
-      const {error} = await runCommand(['buildpacks:remove', 'https://github.com/bar/bar', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['https://github.com/bar/bar', '-a', 'example'])
 
-      expect(error?.message).to.include('No buildpacks were found. Next release on ⬢ example will detect buildpack normally.')
+      expect(ansis.strip(error?.message || '')).to.include('No buildpacks were found. Next release on ⬢ example will detect buildpack normally.')
     })
 
     it('# returns an error when the url is not found', async function () {
@@ -230,7 +232,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/foo/foo',
       ])
 
-      const {error} = await runCommand(['buildpacks:remove', 'https://github.com/bar/bar', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['https://github.com/bar/bar', '-a', 'example'])
 
       expect(error?.message).to.include('Buildpack not found. Nothing was removed.')
     })
@@ -246,7 +248,7 @@ Run git push heroku main to create a new release using this buildpack.
         'https://github.com/heroku/heroku-buildpack-nodejs',
       ])
 
-      const {stdout} = await runCommand(['buildpacks:remove', 'https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
+      const {stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stdout).to.equal(
         `Buildpack removed. Next release on ⬢ example will use:
@@ -259,13 +261,13 @@ Run git push heroku main to create a new release using these buildpacks.
 
   describe('-i INDEX URL', function () {
     it('# returns an error message when i and url are specified', async function () {
-      const {error} = await runCommand(['buildpacks:remove', 'https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(error?.message).to.include('Please choose either index or Buildpack, but not both.')
     })
 
     it('# returns an error message neither i or url are specified', async function () {
-      const {error} = await runCommand(['buildpacks:remove', '-a', 'example'])
+      const {error} = await runCommand(BuildpacksRemove, ['-a', 'example'])
 
       expect(error?.message).to.include('Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.')
     })

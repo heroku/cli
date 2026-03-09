@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/update.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:vpn:update', function () {
   it('updates VPN', async function () {
@@ -13,16 +12,15 @@ describe('spaces:vpn:update', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       'office',
       '--space',
       'my-space',
       '--cidrs',
       '192.168.0.1/16,192.168.0.2/16',
     ])
-
     api.done()
-    expect(stderr.output).to.eq('Updating VPN Connection in space ⬡ my-space... done\n')
+    expect(stderr).to.eq('Updating VPN Connection in space ⬡ my-space... done\n')
 
     nock.cleanAll()
   })

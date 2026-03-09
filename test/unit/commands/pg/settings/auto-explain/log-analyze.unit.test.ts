@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../../helpers/run-command.js'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-analyze.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
@@ -29,12 +28,12 @@ describe('pg:settings:auto-explain:log-analyze', function () {
     const pg = nock('https://api.data.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_analyze': {value: true}})
 
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
 
     api.done()
     pg.done()
 
-    expect(stdout.output).to.equal(heredoc(`
+    expect(stdout).to.equal(heredoc(`
       auto-explain.log-analyze has been set to true for ${addon.name}.
       EXPLAIN ANALYZE execution plans will be logged.
     `))
@@ -44,12 +43,12 @@ describe('pg:settings:auto-explain:log-analyze', function () {
     const pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_analyze': {value: false}})
 
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
 
     api.done()
     pg.done()
 
-    expect(stdout.output).to.equal(heredoc(`
+    expect(stdout).to.equal(heredoc(`
       auto-explain.log-analyze is set to false for ${addon.name}.
       EXPLAIN ANALYZE execution plans will not be logged.
     `))

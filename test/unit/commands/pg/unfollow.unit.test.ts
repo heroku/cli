@@ -1,7 +1,6 @@
-import {stderr} from 'stdout-stderr'
 import nock from 'nock'
 import Cmd from '../../../../src/commands/pg/unfollow.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
@@ -26,13 +25,13 @@ describe('pg:unfollow', function () {
       .put(`/client/v11/databases/${addon.id}/unfollow`)
       .reply(200)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       appName,
       '--confirm',
       appName,
       'DATABASE',
     ])
-    expectOutput(stderr.output, `${addon.name} unfollowing... done`)
+    expectOutput(stderr, `${addon.name} unfollowing... done`)
   })
 })

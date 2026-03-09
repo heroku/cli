@@ -1,0 +1,43 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  check-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title follows Conventional Commits
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "Checking PR title: $PR_TITLE"
+
+          # Define allowed types
+          ALLOWED_TYPES="feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert|deps"
+
+          # Check if title matches conventional commit format
+          # Format: type(scope)?: description or type(scope)!: description
+          if echo "$PR_TITLE" | grep -qE "^($ALLOWED_TYPES)(\(.+\))?!?: .+$"; then
+            echo "✅ PR title follows Conventional Commits format"
+
+            # Check that subject doesn't start with uppercase
+            SUBJECT=$(echo "$PR_TITLE" | sed -E "s/^($ALLOWED_TYPES)(\(.+\))?!?: //")
+            if echo "$SUBJECT" | grep -qE "^[A-Z]"; then
+              echo "❌ Error: Subject should not start with an uppercase character"
+              echo "Subject: $SUBJECT"
+              exit 1
+            fi
+
+            echo "✅ All checks passed"
+          else
+            echo "❌ Error: PR title does not follow Conventional Commits format"
+            echo "Expected format: type(scope)?: description"
+            echo "Examples:"
+            echo "  - feat: add new feature"
+            echo "  - fix(api): resolve bug in endpoint"
+            echo "  - chore!: breaking change"
+            echo ""
+            echo "Allowed types: feat, fix, chore, docs, style, refactor, perf, test, build, ci, revert, deps"
+            exit 1
+          fi

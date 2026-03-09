@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Info from '../../../../../src/commands/webhooks/deliveries/info.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('webhooks:deliveries:info', function () {
   let api: nock.Scope
@@ -18,30 +20,29 @@ describe('webhooks:deliveries:info', function () {
     api
       .get('/apps/example-app/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
-        id: '99999999-9999-9999-9999-999999999999',
         event: {
           id: '88888888-8888-8888-8888-888888888888',
         },
+        id: '99999999-9999-9999-9999-999999999999',
+        status: 'pending',
         webhook: {
           id: '77777777-7777-7777-7777-777777777777',
         },
-        status: 'pending',
       })
       .get('/apps/example-app/webhook-events/88888888-8888-8888-8888-888888888888')
       .reply(200, {
         id: '88888888-8888-8888-8888-888888888888',
         payload: {
-          published_at: '2016-08-31T21:55:06Z',
-          resource: 'api:release',
           action: 'create',
           data: {
             foo: 'bar',
           },
+          published_at: '2016-08-31T21:55:06Z',
+          resource: 'api:release',
         },
       })
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:deliveries:info',
+    const {stderr, stdout} = await runCommand(Info, [
       '--app',
       'example-app',
       '99999999-9999-9999-9999-999999999999',
@@ -54,7 +55,7 @@ describe('webhooks:deliveries:info', function () {
     expect(stdout).to.contain('Webhook: 77777777-7777-7777-7777-777777777777')
     expect(stdout).to.contain('=== Event Payload')
     expect(stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
-    expect(stdout).to.contain('"resource": "api:release",')
+    expect(stdout).to.contain('"resource": "api:release"')
     expect(stdout).to.contain('"action": "create",')
     expect(stdout).to.contain('"data": {')
     expect(stdout).to.contain('"foo": "bar"')
@@ -64,30 +65,29 @@ describe('webhooks:deliveries:info', function () {
     api
       .get('/pipelines/example-pipeline/webhook-deliveries/99999999-9999-9999-9999-999999999999')
       .reply(200, {
-        id: '99999999-9999-9999-9999-999999999999',
         event: {
           id: '88888888-8888-8888-8888-888888888888',
         },
+        id: '99999999-9999-9999-9999-999999999999',
+        status: 'pending',
         webhook: {
           id: '77777777-7777-7777-7777-777777777777',
         },
-        status: 'pending',
       })
       .get('/pipelines/example-pipeline/webhook-events/88888888-8888-8888-8888-888888888888')
       .reply(200, {
         id: '88888888-8888-8888-8888-888888888888',
         payload: {
-          published_at: '2016-08-31T21:55:06Z',
-          resource: 'api:release',
           action: 'create',
           data: {
             foo: 'bar',
           },
+          published_at: '2016-08-31T21:55:06Z',
+          resource: 'api:release',
         },
       })
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:deliveries:info',
+    const {stderr, stdout} = await runCommand(Info, [
       '--pipeline',
       'example-pipeline',
       '99999999-9999-9999-9999-999999999999',
@@ -100,7 +100,7 @@ describe('webhooks:deliveries:info', function () {
     expect(stdout).to.contain('Webhook: 77777777-7777-7777-7777-777777777777')
     expect(stdout).to.contain('=== Event Payload')
     expect(stdout).to.contain('"published_at": "2016-08-31T21:55:06Z",')
-    expect(stdout).to.contain('"resource": "api:release",')
+    expect(stdout).to.contain('"resource": "api:release"')
     expect(stdout).to.contain('"action": "create",')
     expect(stdout).to.contain('"data": {')
     expect(stdout).to.contain('"foo": "bar"')

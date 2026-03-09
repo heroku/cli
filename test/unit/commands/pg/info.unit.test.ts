@@ -1,7 +1,6 @@
-import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import Cmd from '../../../../src/commands/pg/info.js'
 
 describe('pg:info', function () {
@@ -24,12 +23,12 @@ describe('pg:info', function () {
         .reply(200, {})
         .get('/apps/myapp/addon-attachments')
         .reply(200, [])
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('⬢ myapp has no heroku-postgresql databases.\n')
-      expect(stderr.output).to.equal('')
+      expect(stdout).to.equal('⬢ myapp has no heroku-postgresql databases.\n')
+      expect(stderr).to.equal('')
     })
   })
   context('with 2 dbs', function () {
@@ -59,12 +58,12 @@ describe('pg:info', function () {
         .reply(200, dbA)
         .get('/client/v11/databases/2')
         .reply(200, dbB)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_COBALT_URL, DATABASE_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: ⬢ myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
-      expect(stderr.output).to.equal('')
+      expect(stdout).to.equal('=== HEROKU_POSTGRESQL_COBALT_URL, DATABASE_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: ⬢ myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
+      expect(stderr).to.equal('')
     })
     it('shows postgres info using attachment names', async function () {
       const all = [
@@ -89,11 +88,11 @@ describe('pg:info', function () {
         .get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('=== DATABASE_URL, ATTACHMENT_NAME_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: ⬢ myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
+      expect(stdout).to.equal('=== DATABASE_URL, ATTACHMENT_NAME_URL\n\nPlan:        Hobby-dev\nFollowing:   HEROKU_POSTGRESQL_COBALT\nBilling App: ⬢ myapp2\nAdd-on:      postgres-1\n\n=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
     })
     it('shows postgres info for single database when arg sent in', async function () {
       const addon = addons[1]
@@ -104,13 +103,13 @@ describe('pg:info', function () {
       pg.get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'postgres-2',
       ])
-      expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
-      expect(stderr.output).to.equal('')
+      expect(stdout).to.equal('=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
+      expect(stderr).to.equal('')
     })
     it('shows warning for 404', async function () {
       api.get('/apps/myapp/config-vars')
@@ -126,13 +125,13 @@ describe('pg:info', function () {
         .get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal('=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
-      expect(stderr.output).to.include('postgres-1 is not yet provisioned.')
-      expect(stderr.output).to.include('Run heroku addons:wait to wait until the db is provisioned.')
+      expect(stdout).to.equal('=== HEROKU_POSTGRESQL_PURPLE_URL\n\nPlan:      Hobby-dev\nFollowing: ec2-55-111-111-1.compute-1.amazonaws.com:5432/dxxxxxxxxxxxx\nAdd-on:    postgres-2\n\n')
+      expect(stderr).to.include('postgres-1 is not yet provisioned.')
+      expect(stderr).to.include('Run heroku addons:wait to wait until the db is provisioned.')
     })
   })
 })

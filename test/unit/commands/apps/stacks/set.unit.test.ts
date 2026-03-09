@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Set from '../../../../../src/commands/apps/stacks/set.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const APP = 'myapp'
 const TO_STACK = 'heroku-24'
@@ -44,7 +46,7 @@ describe('stack:set', function () {
       .patch(`/apps/${APP}`, {build_stack: TO_STACK})
       .reply(200, pendingUpgradeApp)
 
-    const {stderr, stdout} = await runCommand(['apps:stacks:set', `--app=${APP}`, TO_STACK])
+    const {stderr, stdout} = await runCommand(Set, [`--app=${APP}`, TO_STACK])
 
     expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
     expect(stderr).to.contain('... done')
@@ -56,7 +58,7 @@ describe('stack:set', function () {
       .patch(`/apps/${APP}`, {build_stack: TO_STACK})
       .reply(200, pendingUpgradeApp)
 
-    const {stderr, stdout} = await runCommand(['apps:stacks:set', `--app=${APP}`, '--remote=staging', TO_STACK])
+    const {stderr, stdout} = await runCommand(Set, [`--app=${APP}`, '--remote=staging', TO_STACK])
 
     expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
     expect(stderr).to.contain('... done')
@@ -68,7 +70,7 @@ describe('stack:set', function () {
       .patch(`/apps/${APP}`, {build_stack: TO_STACK})
       .reply(200, completedUpgradeApp)
 
-    const {stderr, stdout} = await runCommand(['apps:stacks:set', `--app=${APP}`, TO_STACK])
+    const {stderr, stdout} = await runCommand(Set, [`--app=${APP}`, TO_STACK])
 
     expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
     expect(stderr).to.contain('... done')

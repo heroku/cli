@@ -1,7 +1,9 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import {formatDistanceToNow} from 'date-fns'
 import nock from 'nock'
+
+import AuthorizationsInfo from '../../../../src/commands/authorizations/info.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:info', function () {
   let api: nock.Scope
@@ -33,7 +35,7 @@ describe('authorizations:info', function () {
       .get(`/oauth/authorizations/${authorizationID}`)
       .reply(200, authorization)
 
-    const {stdout} = await runCommand(['authorizations:info', authorizationID])
+    const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID])
 
     expect(stdout).to.eq(
       'Client:      <none>\n'
@@ -50,7 +52,7 @@ describe('authorizations:info', function () {
       .get(`/oauth/authorizations/${authorizationID}`)
       .reply(200, authorizationWithExpiration)
 
-    const {stdout} = await runCommand(['authorizations:info', authorizationID])
+    const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID])
 
     expect(stdout).to.contain('(in 1 day)')
   })
@@ -61,7 +63,7 @@ describe('authorizations:info', function () {
         .get(`/oauth/authorizations/${authorizationID}`)
         .reply(200, authorization)
 
-      const {stdout} = await runCommand(['authorizations:info', authorizationID, '--json'])
+      const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID, '--json'])
 
       const authJSON = JSON.parse(stdout)
       expect(authJSON.id).to.eql(authorization.id)

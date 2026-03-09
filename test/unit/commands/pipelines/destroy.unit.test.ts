@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import PipelinesDestroy from '../../../../src/commands/pipelines/destroy.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:destroy', function () {
   let api: nock.Scope
@@ -23,7 +25,7 @@ describe('pipelines:destroy', function () {
       .delete(`/pipelines/${pipeline.id}`)
       .reply(200, pipeline)
 
-    const {stderr} = await runCommand(['pipelines:destroy', 'example'])
+    const {stderr} = await runCommand(PipelinesDestroy, ['example'])
 
     expect(stderr).to.include('Destroying example pipeline... done')
   })

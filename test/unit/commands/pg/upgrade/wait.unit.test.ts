@@ -1,10 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
 import tsheredoc from 'tsheredoc'
 import {Errors} from '@oclif/core'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -36,15 +35,15 @@ describe('pg:upgrade:wait', function () {
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': true, message: 'preparing upgrade service'})
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'recreating followers', step: '7/7'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--wait-interval',
       '1',
       'DATABASE_URL',
     ])
-    expect(stdout.output).to.equal('')
-    expectOutput(stderr.output, heredoc(`
+    expect(stdout).to.equal('')
+    expectOutput(stderr, heredoc(`
       Waiting for database postgres-1... (7/7) recreating followers
     `))
   })
@@ -56,25 +55,24 @@ describe('pg:upgrade:wait', function () {
     pg
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--wait-interval',
       '1',
       'DATABASE_URL',
     ])
-    expect(stdout.output).to.equal('Waiting for database postgres-1... upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using heroku pg:upgrade:run.\n')
+    expect(stdout).to.equal('Waiting for database postgres-1... upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using heroku pg:upgrade:run.\n')
   })
 
   it('requires a database', async function () {
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You must provide a database. Run \`--help\` for more information on the command.
     `))
-    })
   })
 
   it('displays errors', async function () {
@@ -84,14 +82,13 @@ describe('pg:upgrade:wait', function () {
     pg
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE_URL',
-    ]).catch(error => {
-      const {message, oclif} = error as Errors.CLIError
-      expect(message).to.equal('this is an error message')
-      expect(oclif.exit).to.equal(1)
-    })
+    ])
+    const {message, oclif} = error as Errors.CLIError
+    expect(message).to.equal('this is an error message')
+    expect(oclif.exit).to.equal(1)
   })
 })

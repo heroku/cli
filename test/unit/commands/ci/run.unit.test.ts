@@ -3,12 +3,11 @@ import {got} from 'got'
 import nock from 'nock'
 import {PassThrough} from 'node:stream'
 import sinon from 'sinon'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ci/run.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
 import {fileService} from '../../../../src/lib/ci/source.js'
-import customRunCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:run', function () {
   let api: nock.Scope
@@ -24,7 +23,7 @@ describe('ci:run', function () {
 
   it('errors when not specifying a pipeline or an app', async function () {
     try {
-      await customRunCommand(Cmd, [])
+      await runCommand(Cmd, [])
     } catch (error: any) {
       expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
     }
@@ -136,9 +135,9 @@ describe('ci:run', function () {
           },
         })
 
-      await customRunCommand(Cmd, [`--pipeline=${pipeline.name}`])
+      const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
 
-      expect(stdout.output).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
+      expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
     })
 
     describe('when the commit is not in the remote repository', function () {
@@ -196,9 +195,9 @@ describe('ci:run', function () {
             },
           })
 
-        await customRunCommand(Cmd, [`--pipeline=${pipeline.name}`])
+        const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
 
-        expect(stdout.output).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
+        expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
       })
     })
   })

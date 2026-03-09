@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Remove from '../../../../src/commands/webhooks/remove.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('webhooks:remove', function () {
@@ -21,7 +22,7 @@ describe('webhooks:remove', function () {
       .delete('/apps/example-app/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {})
 
-    const {stderr, stdout} = await runCommand(['webhooks:remove', '--app', 'example-app', '99999999-9999-9999-9999-999999999999'])
+    const {stderr, stdout} = await runCommand(Remove, ['--app', 'example-app', '99999999-9999-9999-9999-999999999999'])
 
     expect(stdout).to.equal('')
     expect(unwrap(stderr)).to.include('Removing webhook 99999999-9999-9999-9999-999999999999 from')
@@ -34,7 +35,7 @@ describe('webhooks:remove', function () {
       .delete('/pipelines/example-pipeline/webhooks/99999999-9999-9999-9999-999999999999')
       .reply(200, {})
 
-    const {stderr, stdout} = await runCommand(['webhooks:remove', '--pipeline', 'example-pipeline', '99999999-9999-9999-9999-999999999999'])
+    const {stderr, stdout} = await runCommand(Remove, ['--pipeline', 'example-pipeline', '99999999-9999-9999-9999-999999999999'])
 
     expect(stdout).to.equal('')
     expect(unwrap(stderr)).to.include('Removing webhook 99999999-9999-9999-9999-999999999999 from')

@@ -1,9 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {expect} from 'chai'
+
 import Cmd from '../../../../src/commands/addons/docs.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('addons:docs', function () {
   let urlOpenerStub: sinon.SinonStub
@@ -23,10 +23,9 @@ describe('addons:docs', function () {
       .get('/addon-services/slowdb')
       .reply(200, {name: 'slowdb'})
 
-    await runCommand(Cmd, ['--show-url', 'slowdb'])
-
-    expect(stdout.output).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
-    expect(stderr.output).to.equal('')
+    const {stderr, stdout} = await runCommand(Cmd, ['--show-url', 'slowdb'])
+    expect(stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
+    expect(stderr).to.equal('')
     api.done()
   })
 
@@ -35,9 +34,8 @@ describe('addons:docs', function () {
       .get('/addon-services/slowdb')
       .reply(200, {name: 'slowdb'})
 
-    await runCommand(Cmd, ['slowdb'])
-
-    expect(stdout.output).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n')
+    const {stdout} = await runCommand(Cmd, ['slowdb'])
+    expect(stdout).to.equal('Opening https://devcenter.heroku.com/articles/slowdb...\n')
     expect(urlOpenerStub.calledWith('https://devcenter.heroku.com/articles/slowdb')).to.be.true
     api.done()
   })
@@ -49,10 +47,9 @@ describe('addons:docs', function () {
       .post('/actions/addons/resolve', {addon: 'my-attachment-1111', app: null})
       .reply(200, [{addon_service: {name: 'slowdb'}}])
 
-    await runCommand(Cmd, ['--show-url', 'my-attachment-1111'])
-
-    expect(stdout.output).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
-    expect(stderr.output).to.equal('')
+    const {stderr, stdout} = await runCommand(Cmd, ['--show-url', 'my-attachment-1111'])
+    expect(stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
+    expect(stderr).to.equal('')
     api.done()
   })
 
@@ -60,18 +57,17 @@ describe('addons:docs', function () {
     const api = nock('https://api.heroku.com:443')
       .get('/addon-services/my-attachment-1111')
       .reply(404)
-      .post('/actions/addons/resolve', {app: 'myapp', addon: 'my-attachment-1111'})
+      .post('/actions/addons/resolve', {addon: 'my-attachment-1111', app: 'myapp'})
       .reply(200, [{addon_service: {name: 'slowdb'}}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--show-url',
       'my-attachment-1111',
     ])
-
-    expect(stdout.output).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('https://devcenter.heroku.com/articles/slowdb\n')
+    expect(stderr).to.equal('')
     api.done()
   })
 })

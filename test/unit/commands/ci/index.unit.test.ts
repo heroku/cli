@@ -1,10 +1,10 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
-import Cmd from '../../../../src/commands/ci/index.js'
+import Ci from '../../../../src/commands/ci/index.js'
 import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import customRunCommand from '../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
@@ -21,7 +21,7 @@ describe('ci', function () {
   })
 
   it('errors when not specifying a pipeline or an app', async function () {
-    const {error} = await runCommand(['ci'])
+    const {error} = await runCommand(Ci, [])
     expect(error?.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
 
@@ -68,7 +68,7 @@ describe('ci', function () {
         .get(`/pipelines/${pipeline.id}/test-runs`)
         .reply(200, testRuns)
 
-      const {stdout} = await runCommand(['ci', `--pipeline=${pipeline.name}`])
+      const {stdout} = await runCommand(Ci, [`--pipeline=${pipeline.name}`])
 
       expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
 
@@ -99,7 +99,7 @@ describe('ci', function () {
         .get(`/pipelines/${pipeline.id}/test-runs`)
         .reply(200, testRuns)
 
-      const {stdout} = await runCommand(['ci', `--pipeline=${pipeline.id}`])
+      const {stdout} = await runCommand(Ci, [`--pipeline=${pipeline.id}`])
 
       expect(stdout).to.contain(`=== Showing latest test runs for the ${pipeline.id} pipeline`)
     })
@@ -109,7 +109,7 @@ describe('ci', function () {
         .get(`/pipelines?eq[name]=${pipeline.name}`)
         .reply(200, [])
 
-      const {error} = await runCommand(['ci', `--pipeline=${pipeline.name}`])
+      const {error} = await runCommand(Ci, [`--pipeline=${pipeline.name}`])
 
       expect(error?.message).to.equal('Pipeline not found')
     })
@@ -147,7 +147,7 @@ describe('ci', function () {
           .get(`/pipelines/${pipeline.id}/test-runs`)
           .reply(200, testRuns)
 
-        await customRunCommand(Cmd, [`--pipeline=${pipeline.name}`])
+        await customRunCommand(Ci, [`--pipeline=${pipeline.name}`])
 
         expect(promptStub.calledOnce).to.equal(true)
       })
@@ -165,7 +165,7 @@ describe('ci', function () {
         .get(`/pipelines/${pipeline.id}/test-runs`)
         .reply(200, testRuns)
 
-      const {stdout} = await runCommand(['ci', '--json', `--pipeline=${pipeline.name}`])
+      const {stdout} = await runCommand(Ci, ['--json', `--pipeline=${pipeline.name}`])
 
       expect(stdout).not.to.contain(`=== Showing latest test runs for the ${pipeline.name} pipeline`)
       const jsonOut = JSON.parse(stdout)

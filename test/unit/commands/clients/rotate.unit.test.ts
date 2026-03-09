@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import ClientsRotate from '../../../../src/commands/clients/rotate.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:rotate', function () {
   let api: nock.Scope
@@ -26,7 +28,7 @@ describe('clients:rotate', function () {
       .post(`/oauth/clients/${id}/actions/rotate-credentials`)
       .reply(200, client)
 
-    const {stderr, stdout} = await runCommand(['clients:rotate', id])
+    const {stderr, stdout} = await runCommand(ClientsRotate, [id])
 
     expect(stderr).to.contain('Updating f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
     expect(stdout).to.contain('=== awesome\n')
@@ -42,7 +44,7 @@ describe('clients:rotate', function () {
         .post(`/oauth/clients/${id}/actions/rotate-credentials`)
         .reply(200, client)
 
-      const {stderr, stdout} = await runCommand(['clients:rotate', id, '--json'])
+      const {stderr, stdout} = await runCommand(ClientsRotate, [id, '--json'])
 
       expect(stderr).to.contain('Updating f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
       expect(JSON.parse(stdout)).to.contain(client)
@@ -55,7 +57,7 @@ describe('clients:rotate', function () {
         .post(`/oauth/clients/${id}/actions/rotate-credentials`)
         .reply(200, client)
 
-      const {stderr, stdout} = await runCommand(['clients:rotate', id, '--shell'])
+      const {stderr, stdout} = await runCommand(ClientsRotate, [id, '--shell'])
 
       expect(stderr).to.contain('Updating f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
       expect(stdout).to.equal(

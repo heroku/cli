@@ -1,8 +1,9 @@
-import {getPipeline} from '../../../../src/lib/ci/pipelines.js'
-import nock from 'nock'
-import {expect} from 'chai'
-import {getHerokuAPI} from '../../../helpers/testInstances.js'
 import {APIClient} from '@heroku-cli/command'
+import {expect} from 'chai'
+import nock from 'nock'
+
+import {getPipeline} from '../../../../src/lib/ci/pipelines.js'
+import {getHerokuAPI} from '../../../helpers/testInstances.js'
 
 const PIPELINE = {
   id: '123e4567-e89b-12d3-a456-426655440000',

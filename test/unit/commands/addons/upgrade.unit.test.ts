@@ -2,10 +2,9 @@ import {AddOn} from '@heroku-cli/schema'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/addons/upgrade.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('addons:upgrade', function () {
   let api: ReturnType<typeof nock>
@@ -32,14 +31,14 @@ describe('addons:upgrade', function () {
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
       .reply(200, {plan: {price: {cents: 0}}, provision_message: 'provision msg'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'heroku-kafka',
       'heroku-kafka:hobby',
     ])
-    expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done, free')
+    expect(stdout).to.equal('provision msg\n')
+    expect(stderr).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done, free')
   })
 
   it('displays hourly and monthly price when upgrading an add-on', async function () {
@@ -56,14 +55,14 @@ describe('addons:upgrade', function () {
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:standard'}})
       .reply(200, {plan: {price: {cents: 2500, unit: 'month'}}, provision_message: 'provision msg'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'heroku-kafka',
       'heroku-kafka:standard',
     ])
-    expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)')
+    expect(stdout).to.equal('provision msg\n')
+    expect(stderr).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:standard... done, ~$0.035/hour (max $25/month)')
   })
 
   it('does not display a price when upgrading an add-on and no price is returned from the api', async function () {
@@ -80,14 +79,14 @@ describe('addons:upgrade', function () {
       .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
       .reply(200, {plan: {}, provision_message: 'provision msg'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'heroku-kafka',
       'heroku-kafka:hobby',
     ])
-    expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done')
+    expect(stdout).to.equal('provision msg\n')
+    expect(stderr).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done')
   })
 
   it('upgrades to a contract add-on', async function () {
@@ -104,14 +103,14 @@ describe('addons:upgrade', function () {
       .patch('/apps/myapp/addons/connect-swiftly-123', {plan: {name: 'heroku-connect:contract'}})
       .reply(200, {plan: {price: {cents: 0, contract: true}}, provision_message: 'provision msg'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'heroku-connect',
       'heroku-connect:contract',
     ])
-    expect(stdout.output).to.equal('provision msg\n')
-    expect(stderr.output).to.contain('Changing connect-swiftly-123 on ⬢ myapp from free to heroku-connect:contract... done, contract')
+    expect(stdout).to.equal('provision msg\n')
+    expect(stderr).to.contain('Changing connect-swiftly-123 on ⬢ myapp from free to heroku-connect:contract... done, contract')
   })
 
   it('upgrades an add-on with only one argument', async function () {
@@ -127,13 +126,13 @@ describe('addons:upgrade', function () {
       .patch('/apps/myapp/addons/postgresql-swiftly-123', {plan: {name: 'heroku-postgresql:hobby'}})
       .reply(200, {plan: {price: {cents: 0}}})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'heroku-postgresql:hobby',
     ])
-    expect(stdout.output, 'to be empty')
-    expect(stderr.output).to.contain('Changing postgresql-swiftly-123 on ⬢ myapp from premium-0 to heroku-postgresql:hobby... done, free')
+    expect(stdout, 'to be empty')
+    expect(stderr).to.contain('Changing postgresql-swiftly-123 on ⬢ myapp from premium-0 to heroku-postgresql:hobby... done, free')
   })
 
   it('errors with no plan', async function () {

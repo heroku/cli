@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/spaces/drains/get.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:drains:get', function () {
   const drain = {
@@ -28,21 +27,19 @@ describe('spaces:drains:get', function () {
   })
 
   it('shows the log drain', async function () {
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-
-    expect(stdout.output).to.eq('https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)\n')
+    expect(stdout).to.eq('https://example.com (d.a55ecbe1-5513-4d19-91e4-58a08b419d19)\n')
   })
 
   it('shows the log drain --json', async function () {
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',
     ])
-
-    expect(JSON.parse(stdout.output)).to.eql(drain)
+    expect(JSON.parse(stdout)).to.eql(drain)
   })
 })

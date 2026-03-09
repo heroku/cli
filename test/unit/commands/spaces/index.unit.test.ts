@@ -2,10 +2,9 @@ import {Errors} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/spaces/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces', function () {
@@ -34,9 +33,8 @@ describe('spaces', function () {
       .get('/spaces')
       .reply(200, spaces)
 
-    await runCommand(Cmd, [])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const {stdout} = await runCommand(Cmd, [])
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('Name     Team    Region    State     Generation Created At'))
     expect(actual).to.include(removeAllWhitespace(`⬡ my-space my-team my-region allocated cedar      ${now.toISOString()}`))
   })
@@ -46,9 +44,8 @@ describe('spaces', function () {
       .get('/spaces')
       .reply(200, spaces)
 
-    await runCommand(Cmd, ['--json'])
-
-    expect(JSON.parse(stdout.output)).to.deep.eq(spaces)
+    const {stdout} = await runCommand(Cmd, ['--json'])
+    expect(JSON.parse(stdout)).to.deep.eq(spaces)
   })
 
   it('shows spaces scoped by teams', async function () {
@@ -63,9 +60,8 @@ describe('spaces', function () {
         team: {name: 'other-team'},
       }]))
 
-    await runCommand(Cmd, ['--team', 'my-team'])
-
-    const actual = removeAllWhitespace(stdout.output)
+    const {stdout} = await runCommand(Cmd, ['--team', 'my-team'])
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('Name     Team    Region    State     Generation Created At'))
     expect(actual).to.include(removeAllWhitespace(`⬡ my-space my-team my-region allocated cedar      ${now.toISOString()}`))
   })

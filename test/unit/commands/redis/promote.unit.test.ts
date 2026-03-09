@@ -1,9 +1,8 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/redis/promote.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 describe('heroku redis:promote should handle standard arg behavior', function () {
@@ -39,15 +38,15 @@ describe('heroku redis:promote', function () {
       })
       .reply(200, {})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       'redis-gold-haiku',
     ])
     app.done()
     attach.done()
-    expect(stdout.output).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
+    expect(stderr).to.equal('')
   })
 
   it('# promotes and replaces attachment of existing REDIS_URL if necessary', async function () {
@@ -84,7 +83,7 @@ describe('heroku redis:promote', function () {
         name: 'REDIS',
       })
       .reply(200, {})
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       'redis-gold-haiku',
@@ -92,7 +91,7 @@ describe('heroku redis:promote', function () {
     app.done()
     attachRedisUrl.done()
     attach.done()
-    expect(stdout.output).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
+    expect(stderr).to.equal('')
   })
 })

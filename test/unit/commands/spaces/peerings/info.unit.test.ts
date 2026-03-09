@@ -1,11 +1,11 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/spaces/peerings/info.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import * as Heroku from '@heroku-cli/schema'
+import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/spaces/peerings/info.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
-import {expect} from 'chai'
-import * as Heroku from '@heroku-cli/schema'
 
 const heredoc = tsheredoc.default
 
@@ -16,10 +16,11 @@ describe('spaces:peering:info', function () {
     peeringInfo = {
       aws_account_id: '012345678900',
       aws_region: 'us-west-2',
-      vpc_id: 'vpc-1234568a',
-      vpc_cidr: '10.0.0.0/16',
       space_cidr_blocks: ['10.0.128.0/20', '10.0.144.0/20'],
-      unavailable_cidr_blocks: ['192.168.2.0/30']}
+      unavailable_cidr_blocks: ['192.168.2.0/30'],
+      vpc_cidr: '10.0.0.0/16',
+      vpc_id: 'vpc-1234568a',
+    }
   })
 
   it('shows space peering info', async function () {
@@ -27,11 +28,11 @@ describe('spaces:peering:info', function () {
       .get('/spaces/my-space/peering-info')
       .reply(200, peeringInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === my-space Peering Info
       AWS Account ID:    ${peeringInfo.aws_account_id}
       AWS Region:        ${peeringInfo.aws_region}
@@ -47,11 +48,11 @@ describe('spaces:peering:info', function () {
       .get('/spaces/my-space/peering-info')
       .reply(200, peeringInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',
     ])
-    expect(JSON.parse(stdout.output)).to.eql(peeringInfo)
+    expect(JSON.parse(stdout)).to.eql(peeringInfo)
   })
 })

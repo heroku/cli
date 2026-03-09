@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Index from '../../../../../src/commands/webhooks/deliveries/index.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
 
 describe('webhooks:deliveries', function () {
@@ -23,41 +24,41 @@ describe('webhooks:deliveries', function () {
         .get('/apps/example-app/webhook-deliveries')
         .reply(206, [
           {
-            id: '66666666-6666-6666-6666-666666666666',
+            created_at: '2017-08-17T20:22:38Z',
             event: {
               id: '55555555-5555-5555-5555-555555555555',
               include: 'api:build',
             },
+            id: '66666666-6666-6666-6666-666666666666',
+            num_attempts: 4,
+            status: 'pending',
             webhook: {
               id: '44444444-4444-4444-4444-444444444444',
               level: 'notify',
             },
-            status: 'pending',
-            num_attempts: 4,
-            created_at: '2017-08-17T20:22:38Z',
           },
           {
-            id: '99999999-9999-9999-9999-999999999999',
+            created_at: '2017-08-17T20:22:37Z',
             event: {
               id: '88888888-8888-8888-8888-888888888888',
               include: 'api:build',
             },
-            webhook: {
-              id: '77777777-7777-7777-7777-777777777777',
-              level: 'notify',
-            },
+            id: '99999999-9999-9999-9999-999999999999',
             last_attempt: {
               code: 401,
               error_class: 'Foobar',
             },
-            status: 'retrying',
-            num_attempts: 4,
-            created_at: '2017-08-17T20:22:37Z',
             next_attempt_at: '2017-08-17T20:22:39Z',
+            num_attempts: 4,
+            status: 'retrying',
+            webhook: {
+              id: '77777777-7777-7777-7777-777777777777',
+              level: 'notify',
+            },
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -72,22 +73,22 @@ describe('webhooks:deliveries', function () {
         .get('/apps/example-app/webhook-deliveries?eq[status]=pending')
         .reply(206, [
           {
-            id: '66666666-6666-6666-6666-666666666666',
+            created_at: '2017-08-17T20:22:38Z',
             event: {
               id: '55555555-5555-5555-5555-555555555555',
               include: 'api:build',
             },
+            id: '66666666-6666-6666-6666-666666666666',
+            num_attempts: 4,
+            status: 'pending',
             webhook: {
               id: '44444444-4444-4444-4444-444444444444',
               level: 'notify',
             },
-            status: 'pending',
-            num_attempts: 4,
-            created_at: '2017-08-17T20:22:38Z',
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app', '--status', 'pending'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app', '--status', 'pending'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -97,18 +98,18 @@ describe('webhooks:deliveries', function () {
 
     it('only shows 1000 webhook deliveries', async function () {
       const delivery = {
-        id: '66666666-6666-6666-6666-666666666666',
+        created_at: '2017-08-17T20:22:38Z',
         event: {
           id: '55555555-5555-5555-5555-555555555555',
           include: 'api:build',
         },
+        id: '66666666-6666-6666-6666-666666666666',
+        num_attempts: 4,
+        status: 'pending',
         webhook: {
           id: '44444444-4444-4444-4444-444444444444',
           level: 'notify',
         },
-        status: 'pending',
-        num_attempts: 4,
-        created_at: '2017-08-17T20:22:38Z',
       }
 
       api
@@ -116,7 +117,7 @@ describe('webhooks:deliveries', function () {
         .get('/apps/example-app/webhook-deliveries')
         .reply(206, new Array(1000).fill(delivery)) // eslint-disable-line unicorn/no-new-array
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       const actualRows = normalizeTableOutput(stdout).split('\n')
       const expectedRows = normalizeTableOutput(`
@@ -142,7 +143,7 @@ describe('webhooks:deliveries', function () {
         .get('/apps/example-app/webhook-deliveries')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--app', 'example-app'])
+      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(stderr).to.equal('')
       expect(stdout.trim()).to.equal('⬢ example-app has no deliveries')
@@ -156,41 +157,41 @@ describe('webhooks:deliveries', function () {
         .get('/pipelines/example-pipeline/webhook-deliveries')
         .reply(206, [
           {
-            id: '66666666-6666-6666-6666-666666666666',
+            created_at: '2017-08-17T20:22:38Z',
             event: {
               id: '55555555-5555-5555-5555-555555555555',
               include: 'api:build',
             },
+            id: '66666666-6666-6666-6666-666666666666',
+            num_attempts: 4,
+            status: 'pending',
             webhook: {
               id: '44444444-4444-4444-4444-444444444444',
               level: 'notify',
             },
-            status: 'pending',
-            num_attempts: 4,
-            created_at: '2017-08-17T20:22:38Z',
           },
           {
-            id: '99999999-9999-9999-9999-999999999999',
+            created_at: '2017-08-17T20:22:37Z',
             event: {
               id: '88888888-8888-8888-8888-888888888888',
               include: 'api:build',
             },
-            webhook: {
-              id: '77777777-7777-7777-7777-777777777777',
-              level: 'notify',
-            },
+            id: '99999999-9999-9999-9999-999999999999',
             last_attempt: {
               code: 401,
               error_class: 'Foobar',
             },
-            status: 'retrying',
-            num_attempts: 4,
-            created_at: '2017-08-17T20:22:37Z',
             next_attempt_at: '2017-08-17T20:22:39Z',
+            num_attempts: 4,
+            status: 'retrying',
+            webhook: {
+              id: '77777777-7777-7777-7777-777777777777',
+              level: 'notify',
+            },
           },
         ])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -205,7 +206,7 @@ describe('webhooks:deliveries', function () {
         .get('/pipelines/example-pipeline/webhook-deliveries')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['webhooks:deliveries', '--pipeline', 'example-pipeline'])
+      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(stderr).to.equal('')
       expect(stdout.trim()).to.equal('example-pipeline has no deliveries')

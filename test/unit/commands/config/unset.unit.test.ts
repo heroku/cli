@@ -1,5 +1,7 @@
-import {runCommand} from '@oclif/test'
 import nock from 'nock'
+
+import {ConfigUnset} from '../../../../src/commands/config/unset.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config', function () {
   let api: nock.Scope
@@ -23,6 +25,6 @@ describe('config', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 1}])
 
-    await runCommand(['config:unset', '-amyapp', 'FOO', 'RACK_ENV'])
+    await runCommand(ConfigUnset, ['-amyapp', 'FOO', 'RACK_ENV'])
   })
 })

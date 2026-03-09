@@ -1,17 +1,25 @@
 import {APIClient} from '@heroku-cli/command'
-import {Config} from '@oclif/core'
+import {Config, Interfaces} from '@oclif/core'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 
 let conf: Config
 
-export const getConfig = async () => {
+export const getConfig = async (loadOpts?: Interfaces.LoadOptions) => {
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+  const defaultRoot = path.resolve(__dirname, '../..')
+
+  // If loadOpts are provided, create a new Config instance
+  if (loadOpts) {
+    const newConf = await Config.load(loadOpts)
+    return newConf
+  }
+
+  // Otherwise use the cached config
   if (!conf) {
-    const __filename = fileURLToPath(import.meta.url)
-    const __dirname = path.dirname(__filename)
-    const root = path.resolve(__dirname, '../..')
     conf = new Config({
-      root,
+      root: defaultRoot,
     })
     await conf.load()
   }

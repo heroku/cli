@@ -2,10 +2,9 @@ import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import {Duplex} from 'node:stream'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/redis/cli.js'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import {runCommand, type GenericCmd} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 class Client extends Duplex {
@@ -70,7 +69,7 @@ describe('heroku redis:cli', function () {
         .reply(200, {
           plan: 'hobby', resource_url: 'redis://foobar:password@example.com:8649',
         })
-      await runCommand(TestCli as GenericCmd, [
+      const {stdout} = await runCommand(TestCli as GenericCmd, [
         '--app',
         'example',
         '--confirm',
@@ -79,7 +78,7 @@ describe('heroku redis:cli', function () {
       app.done()
       configVars.done()
       redis.done()
-      const outputParts = stdout.output.split('\n')
+      const outputParts = stdout.split('\n')
       expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):')
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
@@ -110,7 +109,7 @@ describe('heroku redis:cli', function () {
         .reply(200, {
           plan: 'hobby', prefer_native_tls: true, resource_url: 'redis://foobar:password@example.com:8649',
         })
-      await runCommand(TestCli as GenericCmd, [
+      const {stdout} = await runCommand(TestCli as GenericCmd, [
         '--app',
         'example',
         '--confirm',
@@ -119,7 +118,7 @@ describe('heroku redis:cli', function () {
       app.done()
       configVars.done()
       redis.done()
-      const outputParts = stdout.output.split('\n')
+      const outputParts = stdout.split('\n')
       expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR, REDIS_TLS_URL):')
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
@@ -150,7 +149,7 @@ describe('heroku redis:cli', function () {
         .reply(200, {
           plan: 'premium-0', resource_url: 'redis://foobar:password@example.com:8649',
         })
-      await runCommand(TestCli as GenericCmd, [
+      const {stdout} = await runCommand(TestCli as GenericCmd, [
         '--app',
         'example',
         '--confirm',
@@ -159,7 +158,7 @@ describe('heroku redis:cli', function () {
       app.done()
       configVars.done()
       redis.done()
-      const outputParts = stdout.output.split('\n')
+      const outputParts = stdout.split('\n')
       expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_FOO, REDIS_BAR):')
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
@@ -191,17 +190,16 @@ describe('heroku redis:cli', function () {
           plan: 'premium-0', resource_url: 'redis://foobar:password@example.com:8649',
         })
 
-      await runCommand(TestCli as GenericCmd, [
+      const {stdout} = await runCommand(TestCli as GenericCmd, [
         '--app',
         'example',
         '--confirm',
         'example',
       ])
-
       app.done()
       configVars.done()
       redis.done()
-      const outputParts = stdout.output.split('\n')
+      const outputParts = stdout.split('\n')
       expect(outputParts[0]).to.equal('Connecting to redis-haiku (REDIS_URL):')
       expect(outputParts[1]).to.equal('')
       expect(outputParts[2]).to.equal('Disconnected from instance.')
@@ -231,22 +229,19 @@ describe('heroku redis:cli', function () {
       .reply(200, {
         plan: 'shield-9', resource_url: 'redis://foobar:password@example.com:8649',
       })
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'example',
-        '--confirm',
-        'example',
-      ])
-      expect(true, 'cli command should fail!').to.equal(false)
-    } catch (error) {
-      expect(error).to.be.an.instanceof(Errors.CLIError)
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      '--confirm',
+      'example',
+    ])
+    expect(error, 'cli command should fail!').to.exist
+    expect(error).to.be.an.instanceof(Errors.CLIError)
 
-      if (error instanceof Errors.CLIError) {
-        const {message, oclif: {exit}} = error
-        expect(exit).to.equal(1)
-        expect(message).to.contain('Using redis:cli on Heroku Redis shield plans is not supported.')
-      }
+    if (error instanceof Errors.CLIError) {
+      const {message, oclif: {exit}} = error
+      expect(exit).to.equal(1)
+      expect(message).to.contain('Using redis:cli on Heroku Redis shield plans is not supported.')
     }
 
     app.done()

@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Clear from '../../../../src/commands/keys/clear.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('keys:clear', function () {
   let api: nock.Scope
@@ -23,7 +25,7 @@ describe('keys:clear', function () {
       .delete('/account/keys/2')
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(['keys:clear'])
+    const {stderr, stdout} = await runCommand(Clear, [])
 
     expect('').to.equal(stdout)
     expect(stderr).to.contain('Removing all SSH keys... done\n')

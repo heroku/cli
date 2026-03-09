@@ -1,6 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
+
+import Unset from '../../../../../src/commands/ci/config/unset.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('heroku ci:config:unset', function () {
   const key = 'FOO'
@@ -26,13 +28,13 @@ describe('heroku ci:config:unset', function () {
       .patch(`/pipelines/${pipeline.id}/stage/test/config-vars`)
       .reply(200, {[key]: null})
 
-    const {stderr} = await runCommand(['ci:config:unset', `--pipeline=${pipeline.id}`, key])
+    const {stderr} = await runCommand(Unset, [`--pipeline=${pipeline.id}`, key])
 
     expect(stderr).to.contain('Unsetting FOO... done')
   })
 
   it('errors with example of valid args', async function () {
-    const {error} = await runCommand(['ci:config:unset', `--pipeline=${pipeline.id}`])
+    const {error} = await runCommand(Unset, [`--pipeline=${pipeline.id}`])
     expect(error?.message).to.equal('Usage: heroku ci:config:unset KEY1 [KEY2 ...]\nMust specify KEY to unset.')
   })
 })

@@ -2,11 +2,10 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/addons/attach.js'
 import ConfirmCommand from '../../../../src/lib/confirmCommand.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 let confirmStub: sinon.SinonStub
 
@@ -34,18 +33,17 @@ describe('addons:attach', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'redis-123',
     ])
-
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Attaching ⛁ redis-123 to ⬢ myapp... done')
-    expect(stderr.output).to.contain('\nSetting REDIS config vars and restarting ⬢ myapp... done, v10')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Attaching ⛁ redis-123 to ⬢ myapp... done')
+    expect(stderr).to.contain('\nSetting REDIS config vars and restarting ⬢ myapp... done, v10')
   })
 
-  it('attaches an add-on as foo', function () {
+  it('attaches an add-on as foo', async function () {
     api
       .get('/addons/redis-123')
       .reply(200, {name: 'redis-123'})
@@ -54,21 +52,19 @@ describe('addons:attach', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
 
-    return runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--as',
       'foo',
       'redis-123',
     ])
-      .then(() => {
-        expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp... done')
-        expect(stderr.output).to.contain('\nSetting foo config vars and restarting ⬢ myapp... done, v10')
-      })
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp... done')
+    expect(stderr).to.contain('\nSetting foo config vars and restarting ⬢ myapp... done, v10')
   })
 
-  it('overwrites an add-on as foo when confirmation is set', function () {
+  it('overwrites an add-on as foo when confirmation is set', async function () {
     api
       .get('/addons/redis-123')
       .reply(200, {name: 'redis-123'})
@@ -81,22 +77,20 @@ describe('addons:attach', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
 
-    return runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--as',
       'foo',
       'redis-123',
     ])
-      .then(() => {
-        expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp...')
-        expect(stderr.output).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp... done')
-        expect(stderr.output).to.contain('Setting foo config vars and restarting ⬢ myapp... done, v10')
-      })
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp...')
+    expect(stderr).to.contain('Attaching ⛁ redis-123 as foo to ⬢ myapp... done')
+    expect(stderr).to.contain('Setting foo config vars and restarting ⬢ myapp... done, v10')
   })
 
-  it('attaches an addon without a namespace if the credential flag is set to default', function () {
+  it('attaches an addon without a namespace if the credential flag is set to default', async function () {
     api
       .get('/addons/postgres-123')
       .reply(200, {name: 'postgres-123'})
@@ -105,21 +99,19 @@ describe('addons:attach', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
 
-    return runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--credential',
       'default',
       'postgres-123',
     ])
-      .then(() => {
-        expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching default of ⛁ postgres-123 to ⬢ myapp... done')
-        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting ⬢ myapp... done, v10')
-      })
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Attaching default of ⛁ postgres-123 to ⬢ myapp... done')
+    expect(stderr).to.contain('Setting POSTGRES_HELLO config vars and restarting ⬢ myapp... done, v10')
   })
 
-  it('attaches in the credential namespace if the credential flag is specified', function () {
+  it('attaches in the credential namespace if the credential flag is specified', async function () {
     api
       .get('/addons/postgres-123')
       .reply(200, {name: 'postgres-123'})
@@ -130,38 +122,32 @@ describe('addons:attach', function () {
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
 
-    return runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--credential',
       'hello',
       'postgres-123',
     ])
-      .then(() => {
-        expect(stdout.output).to.equal('')
-        expect(stderr.output).to.contain('Attaching hello of ⛁ postgres-123 to ⬢ myapp... done')
-        expect(stderr.output).to.contain('Setting POSTGRES_HELLO config vars and restarting ⬢ myapp... done, v10')
-      })
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Attaching hello of ⛁ postgres-123 to ⬢ myapp... done')
+    expect(stderr).to.contain('Setting POSTGRES_HELLO config vars and restarting ⬢ myapp... done, v10')
   })
 
-  it('errors if the credential flag is specified but that credential does not exist for that addon', function () {
+  it('errors if the credential flag is specified but that credential does not exist for that addon', async function () {
     api
       .get('/addons/postgres-123')
       .reply(200, {name: 'postgres-123'})
       .get('/addons/postgres-123/config/credential:hello')
       .reply(200, [])
 
-    return runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--credential',
       'hello',
       'postgres-123',
     ])
-      .then(() => {
-        // this line should not be called if test works
-        throw new Error('unreachable')
-      })
-      .catch(error => expect(ansis.strip(error.message)).to.equal('Could not find credential hello for database ⛁ postgres-123'))
+    expect(ansis.strip(error?.message || '')).to.equal('Could not find credential hello for database ⛁ postgres-123')
   })
 })

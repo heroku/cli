@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Add from '../../../../src/commands/webhooks/add.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('webhooks:add', function () {
@@ -26,8 +27,7 @@ describe('webhooks:add', function () {
       })
       .reply(200, {})
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:add',
+    const {stderr, stdout} = await runCommand(Add, [
       '--app',
       'example-app',
       '--include',
@@ -54,8 +54,7 @@ describe('webhooks:add', function () {
       })
       .reply(200, {})
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:add',
+    const {stderr, stdout} = await runCommand(Add, [
       '--pipeline',
       'example-pipeline',
       '--include',
@@ -82,8 +81,7 @@ describe('webhooks:add', function () {
       })
       .reply(200, {}, {'heroku-webhook-secret': '1234'})
 
-    const {stderr, stdout} = await runCommand([
-      'webhooks:add',
+    const {stderr, stdout} = await runCommand(Add, [
       '--pipeline',
       'example-pipeline',
       '--include',

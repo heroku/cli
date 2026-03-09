@@ -1,7 +1,8 @@
-import {runCommand} from '@oclif/test'
 import {expect} from 'chai'
 import nock from 'nock'
 
+import Apps from '../../../../src/commands/apps/index.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('apps', function () {
@@ -97,7 +98,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('You have no apps.\n')
@@ -110,7 +111,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, collabApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       const actual = removeAllWhitespace(stdout)
@@ -131,7 +132,7 @@ describe('apps', function () {
         .get('/apps')
         .reply(200, [example, collabApp, teamApp1])
 
-      const {stderr, stdout} = await runCommand(['apps', '--all'])
+      const {stderr, stdout} = await runCommand(Apps, ['--all'])
 
       expect(stderr).to.equal('')
       const actual = removeAllWhitespace(stdout)
@@ -152,7 +153,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, collabApp])
 
-      const {stderr, stdout} = await runCommand(['apps', '--json'])
+      const {stderr, stdout} = await runCommand(Apps, ['--json'])
 
       expect(stderr).to.equal('')
       expect(JSON.parse(stdout)[0].name).to.equal('collab-app')
@@ -165,7 +166,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n')
@@ -178,7 +179,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp, lockedApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ locked-app [locked]\n')
@@ -193,7 +194,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp, euLockedApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ locked-app [locked] (eu)\n')
@@ -206,7 +207,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp, internalApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal]\n')
@@ -219,7 +220,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp, internalLockedApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal/locked]\n')
@@ -234,7 +235,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp, euInternalApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal] (eu)\n')
@@ -249,7 +250,7 @@ describe('apps', function () {
         .get('/users/~/apps')
         .reply(200, [example, euApp, euInternalLockedApp])
 
-      const {stderr, stdout} = await runCommand(['apps'])
+      const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== foo@bar.com Apps\n\n⬢ example\n⬢ example-eu (eu)\n⬢ internal-app [internal/locked] (eu)\n')
@@ -264,7 +265,7 @@ describe('apps', function () {
         .get('/teams/test-team/apps')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['apps', '--team', 'test-team'])
+      const {stderr, stdout} = await runCommand(Apps, ['--team', 'test-team'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('There are no apps in team test-team.\n')
@@ -277,7 +278,7 @@ describe('apps', function () {
         .get('/teams/test-team/apps')
         .reply(200, [teamApp1, teamApp2])
 
-      const {stderr, stdout} = await runCommand(['apps', '--team', 'test-team'])
+      const {stderr, stdout} = await runCommand(Apps, ['--team', 'test-team'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== Apps in team test-team\n\n⬢ team-app-1\n⬢ team-app-2\n')
@@ -294,7 +295,7 @@ describe('apps', function () {
         .get('/teams/test-team/apps')
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space'])
+      const {stderr, stdout} = await runCommand(Apps, ['--space', 'test-space'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('There are no apps in space ⬡ test-space.\n')
@@ -309,7 +310,7 @@ describe('apps', function () {
         .get('/teams/test-team/apps')
         .reply(200, [teamSpaceApp1, teamSpaceApp2, teamApp1])
 
-      const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space'])
+      const {stderr, stdout} = await runCommand(Apps, ['--space', 'test-space'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== Apps in space ⬡ test-space\n\n⬢ space-app-1\n⬢ space-app-2\n')
@@ -324,7 +325,7 @@ describe('apps', function () {
         .get('/teams/test-team/apps')
         .reply(200, [teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
 
-      const {stderr, stdout} = await runCommand(['apps', '--space', 'test-space', '--internal-routing'])
+      const {stderr, stdout} = await runCommand(Apps, ['--space', 'test-space', '--internal-routing'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('=== Apps in space ⬡ test-space\n\n⬢ space-internal-app [internal]\n')
