@@ -2,7 +2,7 @@ import type {DistinctChoice, ListChoiceMap} from 'inquirer'
 
 import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
-import * as inquirer from 'inquirer'
+import inquirer from 'inquirer'
 import printf from 'printf'
 
 import {
@@ -13,6 +13,7 @@ import {
   PricingInfoResponse,
 } from './types.js'
 
+// eslint-disable-next-line import/no-named-as-default-member
 const {Separator} = inquirer
 
 /**
