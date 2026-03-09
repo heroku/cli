@@ -1,6 +1,4 @@
 module.exports = {
-  // Global settings
-  plugins: ['import', 'mocha', '@typescript-eslint'],
   extends: [
     'oclif',
     'plugin:@typescript-eslint/eslint-recommended',
@@ -8,12 +6,10 @@ module.exports = {
     'plugin:n/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
-    'plugin:perfectionist/recommended-natural',
+    'plugin:perfectionist/recommended-natural-legacy',
     'plugin:mocha/recommended',
   ],
-  parser: '@typescript-eslint/parser',
   ignorePatterns: ['**/test/**/*.js', 'dist/**', '**/*.d.ts'],
-
   // TypeScript settings
   overrides: [
     {
@@ -24,15 +20,19 @@ module.exports = {
       },
     },
   ],
+  parser: '@typescript-eslint/parser',
+
+  // Global settings
+  plugins: ['import', 'mocha', '@typescript-eslint'],
 
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-empty-function': 'warn',
+    '@typescript-eslint/no-empty-interface': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-require-imports': 'off',
-    '@typescript-eslint/no-unused-expressions': 'off',
-    '@typescript-eslint/no-unused-vars': ['warn', {ignoreRestSiblings: true, argsIgnorePattern: '^_'}], // TODO: fix issues and turn this back on
+    '@typescript-eslint/no-require-imports': 'warn',
+    '@typescript-eslint/no-unused-expressions': 'warn',
+    '@typescript-eslint/no-unused-vars': ['warn', {argsIgnorePattern: '^_', ignoreRestSiblings: true}], // TODO: fix issues and turn this back on
     '@typescript-eslint/no-useless-constructor': 'error',
     '@typescript-eslint/no-var-requires': 'off',
     camelcase: 'off',
@@ -85,9 +85,11 @@ module.exports = {
     'perfectionist/sort-imports': 'warn',
     'perfectionist/sort-interfaces': 'warn',
     'perfectionist/sort-intersection-types': 'warn',
+    'perfectionist/sort-modules': 'warn',
     'perfectionist/sort-named-imports': 'warn',
     'perfectionist/sort-object-types': 'warn',
     'perfectionist/sort-objects': 'warn',
+    'perfectionist/sort-switch-case': 'off',
     'perfectionist/sort-union-types': 'warn',
     'prefer-object-spread': 'warn',
     radix: 'warn', // TODO: fix issues and turn this back on

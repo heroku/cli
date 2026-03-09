@@ -15,17 +15,17 @@
     "@heroku/http-call": "^5.5.0",
     "@heroku/mcp-server": "^1.2.0",
     "@inquirer/prompts": "^7.0",
-    "@oclif/core": "^4.8.1",
+    "@oclif/core": "^4.8.4",
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
     "@oclif/plugin-legacy": "^2.0.28",
     "@oclif/plugin-not-found": "^3.2.74",
-    "@oclif/plugin-plugins": "^5.4.56",
+    "@oclif/plugin-plugins": "^5.4.58",
     "@oclif/plugin-search": "1.2.38",
-    "@oclif/plugin-update": "^4.7.19",
-    "@oclif/plugin-version": "^2.2.36",
+    "@oclif/plugin-update": "^4.7.22",
+    "@oclif/plugin-version": "^2.2.37",
     "@oclif/plugin-warn-if-update-available": "^3.1.55",
-    "@oclif/plugin-which": "^3.2.43",
+    "@oclif/plugin-which": "^3.2.44",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
     "@opentelemetry/instrumentation": "^0.52.1",
@@ -118,13 +118,13 @@
     "chai-as-promised": "^7.1.1",
     "commit-and-tag-version": "^12.5.0",
     "cspell": "9.6.0",
-    "eslint": "8.57.0",
+    "eslint": "8.57.1",
     "eslint-config-oclif": "^5.2.2",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-mocha": "^10.4.3",
     "eslint-plugin-n": "^17.23.2",
-    "eslint-plugin-perfectionist": "^2.11.0",
+    "eslint-plugin-perfectionist": "4.15.1",
     "husky": "8.0.3",
     "lolex": "^5.1.2",
     "mocha": "^10.8.2",
@@ -354,9 +354,6 @@
     "windows": {
       "name": "Heroku CLI"
     }
-  },
-  "overrides": {
-    "ansi-regex": "4.1.1"
   },
   "engines": {
     "node": ">=20"
