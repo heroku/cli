@@ -13,7 +13,7 @@ export function warnMixedOwnership(pipelineApps: Array<AppWithPipelineCoupling>,
     let message = `Some apps in this pipeline do not belong to ${color.team(owner)}.`
     message += '\n\nAll apps in a pipeline must have the same owner as the pipeline owner.'
     message += '\nTransfer these apps or change the pipeline owner in pipeline settings.'
-    message += `\nSee ${color.info('https://devcenter.heroku.com/articles/pipelines#pipelines-ownership-and-transfer')} for more info.`
+    message += `\nSee ${color.info('https://devcenter.heroku.com/articles/pipelines')} for more info.`
     ux.warn(message)
   }
 }
