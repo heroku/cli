@@ -1,10 +1,8 @@
-import {color, utils} from '@heroku/heroku-cli-util'
-import {flags as Flags} from '@heroku-cli/command'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
+import {flags as Flags, HerokuAPIError} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import type {DeepRequired} from '../../../../lib/data/types.js'
 
 import {trapConfirmationRequired} from '../../../../lib/addons/util.js'
 import BaseCommand from '../../../../lib/data/baseCommand.js'
@@ -37,8 +35,23 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     const {args, flags} = await this.parse(DataPgAttachmentsCreate)
     const {database: databaseArg} = args
     const {app, as, confirm, credential, pool} = flags
+    const addonResolver = new utils.AddonResolver(this.heroku)
 
-    const {body: addon} = await this.heroku.get<DeepRequired<Heroku.AddOn>>(`/addons/${databaseArg}`)
+    // For attachment creation, app is always the target app where the attachment will be created.
+    // When attaching to the same app, both add-on name and attachment name will resolve without issues
+    // by passing the app name for resolution, but when attaching to a different app using the add-on name
+    // to specify the source add-on, we have to remove the app name from the resolution for the resolver to
+    // find the correct add-on.
+    let addon: pg.ExtendedAddon
+    try {
+      addon = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())
+    } catch (error: unknown) {
+      if (error instanceof HerokuAPIError && error.http.statusCode === 404) {
+        addon = await addonResolver.resolve(databaseArg, undefined, utils.pg.addonService())
+      } else {
+        throw error
+      }
+    }
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
       const cmd = `heroku addons:attach ${addon.name} -a ${app}${as ? ` --as ${as}` : ''}`
