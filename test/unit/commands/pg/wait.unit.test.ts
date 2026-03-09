@@ -1,9 +1,8 @@
 import Cmd from '../../../../src/commands/pg/wait.js'
-import {stdout, stderr} from 'stdout-stderr'
 import {expect} from 'chai'
 import nock from 'nock'
 import {Errors} from '@oclif/core'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const all = [
@@ -34,15 +33,15 @@ describe('pg:wait', function () {
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'pending'})
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--wait-interval',
       '1',
       'DATABASE_URL',
     ])
-    expect(stdout.output).to.equal('')
-    expectOutput(stderr.output, 'Waiting for database postgres-1... available')
+    expect(stdout).to.equal('')
+    expectOutput(stderr, 'Waiting for database postgres-1... available')
   })
 
   it('waits for all databases to be available', async function () {
@@ -53,12 +52,12 @@ describe('pg:wait', function () {
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false})
       .get('/client/v11/databases/2/wait_status').reply(200, {'waiting?': false})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('')
   })
 
   it('displays errors', async function () {
@@ -68,14 +67,13 @@ describe('pg:wait', function () {
     pg
       .get('/client/v11/databases/1/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch(error => {
-      const {message, oclif} = error as Errors.CLIError
-      expect(message).to.equal('this is an error message')
-      expect(oclif.exit).to.equal(1)
-    })
+    ])
+    const {message, oclif} = error as Errors.CLIError
+    expect(message).to.equal('this is an error message')
+    expect(oclif.exit).to.equal(1)
   })
 
   it('receives steps but does not display them', async function () {
@@ -86,14 +84,14 @@ describe('pg:wait', function () {
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'upgrading', step: '1/3'})
       .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--wait-interval',
       '1',
       'DATABASE_URL',
     ])
-    expect(stdout.output).to.equal('')
-    expectOutput(stderr.output, 'Waiting for database postgres-1... available')
+    expect(stdout).to.equal('')
+    expectOutput(stderr, 'Waiting for database postgres-1... available')
   })
 })

@@ -29,7 +29,7 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
       `/apps/${app}/addon-attachments/${attachmentName}`,
     )
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(attachment.addon.name, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(attachment.addon.name, undefined, utils.pg.addonService())
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
       ux.error(

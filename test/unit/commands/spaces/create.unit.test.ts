@@ -1,11 +1,10 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/spaces/create.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default
@@ -46,14 +45,14 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
       '--features=one, two',
     ])
 
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       === ⬡ my-space
 
       Team:       my-team
@@ -89,14 +88,14 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
       '--features=one, two',
     ])
 
-    expect(unwrap(stderr.output)).to.include('Warning: Spend Alert. Each Heroku Standard Private Space costs ~$1.39/hour (max $1000/month), pro-rated to the second.')
+    expect(unwrap(stderr)).to.include('Warning: Spend Alert. Each Heroku Standard Private Space costs ~$1.39/hour (max $1000/month), pro-rated to the second.')
   })
 
   it('creates a Shield space', async function () {
@@ -122,7 +121,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -130,7 +129,7 @@ describe('spaces:create', function () {
       '--shield',
     ])
 
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       === ⬡ my-space
 
       Team:       my-team
@@ -167,7 +166,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -175,7 +174,7 @@ describe('spaces:create', function () {
       '--shield',
     ])
 
-    expect(unwrap(stderr.output)).to.include('Warning: Spend Alert. Each Heroku Shield Private Space costs ~$4.17/hour (max $3000/month), pro-rated to the second.')
+    expect(unwrap(stderr)).to.include('Warning: Spend Alert. Each Heroku Shield Private Space costs ~$4.17/hour (max $3000/month), pro-rated to the second.')
   })
 
   it('creates a space with custom cidr and data cidr', async function () {
@@ -201,7 +200,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -210,7 +209,7 @@ describe('spaces:create', function () {
       '--data-cidr=172.23.0.0/28',
     ])
 
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       === ⬡ my-space
 
       Team:       my-team
@@ -246,7 +245,7 @@ describe('spaces:create', function () {
       })
       .reply(201, firSpace)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--team',
       firSpace.team.name,
       '--space',
@@ -258,7 +257,7 @@ describe('spaces:create', function () {
       '--generation',
       getGeneration(firSpace)!,
     ])
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       === ⬡ ${firSpace.name}
 
       Team:       ${firSpace.team.name}

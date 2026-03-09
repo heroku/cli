@@ -1,12 +1,11 @@
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/spaces/info.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -32,11 +31,11 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:         ${space.id}
       Team:       ${space.team.name}
@@ -55,12 +54,12 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
       '--json',
     ])
-    expectOutput(stdout.output, JSON.stringify(space, null, 2))
+    expectOutput(stdout, JSON.stringify(space, null, 2))
   })
 
   it('shows allocated space with enabled nat', async function () {
@@ -70,12 +69,12 @@ describe('spaces:info', function () {
     api
       .get(`/spaces/${space.name}/nat`)
       .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
 
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
@@ -98,11 +97,11 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}/nat`)
       .reply(200, {sources: ['123.456.789.123'], state: 'disabled'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}
@@ -122,11 +121,11 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:         ${space.id}
       Team:       ${space.team.name}
@@ -144,12 +143,12 @@ describe('spaces:info', function () {
     api
       .get(`/spaces/${shieldSpace.name}`)
       .reply(200, shieldSpace)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       shieldSpace.name,
     ])
 
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${shieldSpace.name}
       ID:         ${shieldSpace.id}
       Team:       ${shieldSpace.team.name}
@@ -167,11 +166,11 @@ describe('spaces:info', function () {
     api
       .get(`/spaces/${space.name}`)
       .reply(200, space)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:         ${space.id}
       Team:       ${space.team.name}

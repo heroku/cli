@@ -1,6 +1,5 @@
-import {stdout} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/spaces/vpn/connections.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
@@ -46,13 +45,13 @@ describe('spaces:vpn:connections', function () {
       .get('/spaces/my-space/vpn-connections')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
 
     api.done()
-    expect(stdout.output).to.eq('No VPN Connections have been created yet\n')
+    expect(stdout).to.eq('No VPN Connections have been created yet\n')
   })
 
   it('displays VPN Connections', async function () {
@@ -60,14 +59,14 @@ describe('spaces:vpn:connections', function () {
       .get('/spaces/my-space/vpn-connections')
       .reply(200, [space])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
 
     api.done()
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space VPN Connections'))
     expect(actual).to.include(removeAllWhitespace('Name   Status Tunnels'))
     expect(actual).to.include(removeAllWhitespace('office active UP/UP'))
@@ -79,14 +78,14 @@ describe('spaces:vpn:connections', function () {
       .get('/spaces/my-space/vpn-connections')
       .reply(200, [conn])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
 
     api.done()
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space VPN Connections'))
     expect(actual).to.include(removeAllWhitespace('Name   Status Tunnels'))
     expect(actual).to.include(removeAllWhitespace('123456789012 active UP/UP'))
@@ -97,13 +96,13 @@ describe('spaces:vpn:connections', function () {
       .get('/spaces/my-space/vpn-connections')
       .reply(200, [space])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',
     ])
 
     api.done()
-    expect(JSON.parse(stdout.output)).to.eql([space])
+    expect(JSON.parse(stdout)).to.eql([space])
   })
 })

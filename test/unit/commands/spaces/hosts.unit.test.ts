@@ -1,6 +1,5 @@
-import {stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/spaces/hosts.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import nock from 'nock'
 import {expect} from 'chai'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
@@ -30,12 +29,12 @@ describe('spaces:hosts', function () {
     })
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space Hosts'))
     expect(actual).to.include(removeAllWhitespace('Host ID             State     Available Capacity Allocated At         Released At'))
     expect(actual).to.include(removeAllWhitespace('h-0f927460a59aac18e available 72%                2020-05-28T04:15:59Z'))
@@ -51,11 +50,11 @@ describe('spaces:hosts', function () {
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',
     ])
-    expect(JSON.parse(stdout.output)).to.eql(hosts)
+    expect(JSON.parse(stdout)).to.eql(hosts)
   })
 })

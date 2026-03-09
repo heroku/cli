@@ -5,12 +5,11 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/run.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -51,16 +50,15 @@ describe('pg:upgrade:run', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.
     `))
-    })
   })
 
   it('upgrades follower db with version flag', async function () {
@@ -84,7 +82,7 @@ describe('pg:upgrade:run', function () {
       You can't undo this action.
     `)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--version',
@@ -94,7 +92,7 @@ describe('pg:upgrade:run', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Starting upgrade on ⛁ ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
@@ -120,7 +118,7 @@ describe('pg:upgrade:run', function () {
       You can't undo this action.
     `)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -128,7 +126,7 @@ describe('pg:upgrade:run', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Starting upgrade on ⛁ ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
@@ -158,7 +156,7 @@ describe('pg:upgrade:run', function () {
       You can't undo this action.
     `)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -166,7 +164,7 @@ describe('pg:upgrade:run', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Starting upgrade on ⛁ ${essentialAddon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))
@@ -186,18 +184,17 @@ describe('pg:upgrade:run', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(400, {id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade."})
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(ansis.strip(error.message), heredoc(`
+    ])
+    expectOutput(ansis.strip(error?.message ?? ''), heredoc(`
         You haven't scheduled a version upgrade on your database. Run heroku pg:upgrade:prepare to schedule an upgrade.
 
         Error ID: bad_request
       `))
-    })
   })
 
   it('errors when leader db is not yet ready for upgrade', async function () {
@@ -214,18 +211,17 @@ describe('pg:upgrade:run', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(400, {id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.'})
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(ansis.strip(error.message), heredoc(`
+    ])
+    expectOutput(ansis.strip(error?.message ?? ''), heredoc(`
         Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with heroku pg:upgrade:wait.
 
         Error ID: bad_request
       `))
-    })
   })
 
   it('runs a scheduled upgrade on a leader db', async function () {
@@ -249,7 +245,7 @@ describe('pg:upgrade:run', function () {
       You can't undo this action.
     `)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -257,7 +253,7 @@ describe('pg:upgrade:run', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Starting upgrade on ⛁ ${addon.name}... done
       Started the upgrade. You can monitor the progress with heroku pg:upgrade:wait.
     `))

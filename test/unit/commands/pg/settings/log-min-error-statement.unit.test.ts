@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import Cmd from '../../../../../src/commands/pg/settings/log-min-error-statement.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -46,8 +45,8 @@ describe('pg:settings:log-min-error-statement', function () {
         },
       })
 
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       log-min-error-statement is set to error for ${addon.name}.
       Logs all ERROR, LOG, FATAL, and PANIC level messages. (Default)
     `))

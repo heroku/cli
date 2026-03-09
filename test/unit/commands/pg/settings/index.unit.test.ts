@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import Cmd from '../../../../../src/commands/pg/settings/index.js'
 
 const heredoc = tsheredoc.default
@@ -38,9 +37,9 @@ describe('pg:settings', function () {
   it('shows settings', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_statement: {value: 'none'}})
 
-    await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
 
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       === postgres-1
 
       log-statement: none
@@ -71,9 +70,9 @@ describe('pg:settings', function () {
 
     pg.get('/postgres/v0/databases/1/config').reply(200, unorderedSettings)
 
-    await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
 
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       === postgres-1
 
       auto-explain:                       false
