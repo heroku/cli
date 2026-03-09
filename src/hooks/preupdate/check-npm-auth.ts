@@ -15,9 +15,14 @@ const tsheredoc = tsheredocLib.default
  */
 const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
   try {
-    // Check if npm is available on the system
-    const npmAvailable = await NpmAuth.isNpmAvailable()
-    if (!npmAvailable) {
+    // Skip during autoupdate (stdin not available for prompts) or if npm not available
+    if (process.argv.includes('--autoupdate')) {
+      this.debug('Skipping npm auth check during autoupdate (stdin not available for prompts)')
+      return
+    }
+
+    if (!await NpmAuth.isNpmAvailable()) {
+      this.debug('Skipping npm auth check: npm not available')
       return
     }
 
