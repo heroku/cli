@@ -2,11 +2,10 @@ import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import childProcess from 'node:child_process'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/pull.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -70,7 +69,7 @@ describe('pg:pull', function () {
   })
 
   skipOnWindows('pulls a db in', async () => {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'postgres-1',
       'localdb',
       '-a',
@@ -80,18 +79,18 @@ describe('pg:pull', function () {
     expect(createDbStub.called).to.eq(true)
     expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.eq(true)
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pulling postgres-1 to localdb
       Pulling complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
     db.bastionHost = 'bastion-host'
     db.bastionKey = 'super-private-key'
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'postgres-1',
       'localdb',
       '-a',
@@ -101,10 +100,10 @@ describe('pg:pull', function () {
     expect(createDbStub.called).to.eq(true)
     expect(createDbStub.calledWithExactly('createdb localdb', {stdio: 'inherit'})).to.eq(true)
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pulling postgres-1 to localdb
       Pulling complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 })

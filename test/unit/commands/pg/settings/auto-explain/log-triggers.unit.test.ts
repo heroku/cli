@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../../helpers/run-command.js'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-triggers.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
@@ -29,12 +28,12 @@ describe('pg:settings:auto-explain:log-triggers', function () {
     const pg = nock('https://api.data.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_triggers': {value: true}})
 
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
 
     api.done()
     pg.done()
 
-    expect(stdout.output).to.equal(heredoc(`
+    expect(stdout).to.equal(heredoc(`
       auto-explain.log-triggers has been set to true for ${addon.name}.
       Trigger execution statistics have been enabled for auto-explain.
     `))
@@ -44,12 +43,12 @@ describe('pg:settings:auto-explain:log-triggers', function () {
     const pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_triggers': {value: false}})
 
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
 
     api.done()
     pg.done()
 
-    expect(stdout.output).to.equal(heredoc(`
+    expect(stdout).to.equal(heredoc(`
       auto-explain.log-triggers is set to false for ${addon.name}.
       Trigger execution statistics have been disabled for auto-explain.
     `))

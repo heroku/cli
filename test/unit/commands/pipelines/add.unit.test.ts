@@ -2,10 +2,8 @@ import {expect} from 'chai'
 import inquirer from 'inquirer'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
-
 import AddCommand from '../../../../src/commands/pipelines/add.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:add', function () {
   let api: nock.Scope
@@ -31,7 +29,7 @@ describe('pipelines:add', function () {
       .query(true)
       .reply(200, pipelines)
 
-    await runCommandHelper(AddCommand, [
+    const {stdout, stderr} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       '--stage',
@@ -39,8 +37,8 @@ describe('pipelines:add', function () {
       'example-pipeline',
     ])
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Adding ⬢ example-app to example-pipeline pipeline as production... done')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as production... done')
   })
 
   it('adds a pipeline with stage specified from prompt', async function () {
@@ -67,14 +65,14 @@ describe('pipelines:add', function () {
       .query(true)
       .reply(200, pipelines)
 
-    await runCommandHelper(AddCommand, [
+    const {stdout, stderr} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       'example-pipeline',
     ])
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Adding ⬢ example-app to example-pipeline pipeline as development... done')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as development... done')
   })
 
   it('adds a pipeline by disambiguating by user choice of identically named pipelines', async function () {
@@ -117,7 +115,7 @@ describe('pipelines:add', function () {
       .query({eq: {name: 'pipeline-with-identical-name-to-another-pipeline'}})
       .reply(200, pipelinesWithIdenticalNames)
 
-    await runCommandHelper(AddCommand, [
+    const {stdout, stderr} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       '--stage',
@@ -125,7 +123,7 @@ describe('pipelines:add', function () {
       'pipeline-with-identical-name-to-another-pipeline',
     ])
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Adding ⬢ example-app to pipeline-with-identical-name-to-another-pipeline pipeline as staging... done')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Adding ⬢ example-app to pipeline-with-identical-name-to-another-pipeline pipeline as staging... done')
   })
 })

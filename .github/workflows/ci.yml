@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ] && [ "${{ matrix.node-version }}" = "22.x" ]; then
-            npm run pretest && npm run test:unit:justTest:ci:coverage
+            npm run pretest && npm run test:ci
           else
             npm test
           fi
@@ -96,7 +96,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run tests on base branch with full coverage
-        run: npm run pretest && npm run test:unit:justTest:ci:coverage
+        run: npm run pretest && npm run test:ci
       - name: Upload base coverage
         uses: actions/upload-artifact@v6
         with:
@@ -142,7 +142,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run cli package integration tests
-        run: npm run test:integration
+        run: npm run test:ci:integration
 
   acceptance:
     runs-on: ${{ matrix.os }}
@@ -169,7 +169,7 @@ jobs:
         # only run the full suite of acceptance tests on 'main' and 'release-' branches
       - name: run acceptance tests
         if: github.ref_name == 'main' || startsWith(github.ref_name, 'release-')
-        run: npm run test:acceptance
+        run: npm run test:ci:acceptance
 
   spell-check:
     runs-on: ${{ matrix.os }}
@@ -179,7 +179,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
-        with: 
+        with:
           fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v6

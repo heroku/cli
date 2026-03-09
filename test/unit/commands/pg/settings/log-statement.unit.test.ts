@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import Cmd from '../../../../../src/commands/pg/settings/log-statement.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -43,8 +42,8 @@ describe('pg:settings:log-statement', function () {
         },
       )
 
-    await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
-    expect(stdout.output).to.equal(heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    expect(stdout).to.equal(heredoc(`
       log-statement is set to ddl for ${addon.name}.
       All data definition statements, such as CREATE, ALTER and DROP, will be logged in your application's logs.
     `))

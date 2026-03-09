@@ -1,8 +1,6 @@
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
-
 import Cmd from '../../../../src/commands/spaces/rename.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('spaces:rename', function () {
@@ -11,12 +9,12 @@ describe('spaces:rename', function () {
       .patch('/spaces/old-space-name', {name: 'new-space-name'})
       .reply(200)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--from',
       'old-space-name',
       '--to',
       'new-space-name',
     ])
-    expectOutput(stderr.output, 'Renaming space from ⬡ old-space-name to new-space-name... done')
+    expectOutput(stderr, 'Renaming space from ⬡ old-space-name to new-space-name... done')
   })
 })

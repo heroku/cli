@@ -5,12 +5,11 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/dryrun.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -52,16 +51,15 @@ describe('pg:upgrade:dryrun', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.
     `))
-    })
   })
 
   it('refuses to start test upgrade on essential tier dbs', async function () {
@@ -73,14 +71,13 @@ describe('pg:upgrade:dryrun', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.equal(`You can't use ${color.code('pg:upgrade:dryrun')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
-    })
+    ])
+    expect(error?.message).to.equal(`You can't use ${color.code('pg:upgrade:dryrun')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
   })
 
   it('refuses to start test upgrade on follower dbs', async function () {
@@ -96,15 +93,14 @@ describe('pg:upgrade:dryrun', function () {
           name: 'postgresql-leader',
         },
       })
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expectOutput(error.message, heredoc(`
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
       You can't use ${color.code('pg:upgrade:dryrun')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`))
-    })
   })
 
   it('starts test upgrade on a db with version flag', async function () {
@@ -122,7 +118,7 @@ describe('pg:upgrade:dryrun', function () {
       This command starts a test upgrade for ⛁ ${addon.name} to Postgres version 15.
       `)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--version',
@@ -132,7 +128,7 @@ describe('pg:upgrade:dryrun', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Starting a test upgrade on ⛁ ${addon.name}... done
       Started test upgrade. We'll notify you via email when it's complete.
     `))
@@ -153,7 +149,7 @@ describe('pg:upgrade:dryrun', function () {
       This command starts a test upgrade for ⛁ ${addon.name} to the latest supported Postgres version.
       `)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -161,7 +157,7 @@ describe('pg:upgrade:dryrun', function () {
     expect(ansis.strip(uxPromptStub.args[0].toString())).contains('To proceed, type myapp')
     expect(ansis.strip(uxWarnStub.args[0].toString())).to.eq(message)
 
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Starting a test upgrade on ⛁ ${addon.name}... done
       Started test upgrade. We'll notify you via email when it's complete.
     `))
@@ -178,16 +174,15 @@ describe('pg:upgrade:dryrun', function () {
       .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
       .reply(422, {id: 'unprocessable_entity', message: 'database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.'})
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.equal(heredoc(`
+    ])
+    expect(error?.message).to.equal(heredoc(`
       database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.
 
       Error ID: unprocessable_entity`))
-    })
   })
 })

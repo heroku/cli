@@ -1,14 +1,13 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/spaces/wait.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
@@ -44,16 +43,16 @@ describe('spaces:wait', function () {
       .get(`/spaces/${allocatedSpace.name}/nat`)
       .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       allocatedSpace.name,
       '--interval',
       '0',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Waiting for space ⬡ ${allocatedSpace.name} to allocate... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${allocatedSpace.name}
       ID:           ${allocatedSpace.id}
       Team:         ${allocatedSpace.team.name}
@@ -80,7 +79,7 @@ describe('spaces:wait', function () {
       .get(`/spaces/${allocatedSpace.name}/nat`)
       .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       allocatedSpace.name,
       '--json',
@@ -91,10 +90,10 @@ describe('spaces:wait', function () {
       ...allocatedSpace,
       outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'},
     }
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Waiting for space ⬡ ${allocatedSpace.name} to allocate... done
     `))
-    expectOutput(stdout.output, JSON.stringify(allocatedSpaceWithOutboundIPs, null, 2))
+    expectOutput(stdout, JSON.stringify(allocatedSpaceWithOutboundIPs, null, 2))
   })
 
   it('not failing when nat is unavailable for space which is allocated', async function () {
@@ -105,13 +104,13 @@ describe('spaces:wait', function () {
       .get(`/spaces/${allocatedSpace.name}/nat`)
       .reply(503, {})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--space',
       allocatedSpace.name,
       '--interval',
       '0',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${allocatedSpace.name}
       ID:         ${allocatedSpace.id}
       Team:       ${allocatedSpace.team.name}
