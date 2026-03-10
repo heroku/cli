@@ -14,7 +14,7 @@ import tty from 'tty'
 const sshDebug = debug('cli:ps-exec:ssh')
 
 export class HerokuSsh {
-  connect(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: (() => void)) {
+  public connect(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: (() => void)) {
     return new Promise<void>((resolve, reject) => {
       const conn = new Client()
       sshDebug('[cli-ssh] created')
@@ -84,7 +84,7 @@ export class HerokuSsh {
     })
   }
 
-  ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
+  public ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
     sshDebug('[cli-ssh] native')
     return new Promise<void>(() => {
       tmp.setGracefulCleanup()
@@ -125,7 +125,7 @@ export class HerokuSsh {
     })
   }
 
-  scp(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, src: string, dest: string) {
+  public scp(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, src: string, dest: string) {
     return new Promise<void>((resolve, reject) => {
       const conn = new Client()
       conn.on('ready', () => {
@@ -172,7 +172,7 @@ export class HerokuSsh {
     })
   }
 
-  socksv5(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: ((port: number) => void)) {
+  public socksv5(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: ((port: number) => void)) {
     const socksPort = 1080
     socks.createServer((info, accept, deny) => {
       const conn = new Client()

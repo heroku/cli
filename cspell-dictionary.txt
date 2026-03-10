@@ -133,6 +133,7 @@ ituples
 jedec
 keyevent
 keyout
+keypair
 keysize
 keyspace
 killall
@@ -283,6 +284,7 @@ postrun
 preauth
 prerun
 preupdate
+privkeypem
 processname
 processtype
 procfile
@@ -291,6 +293,7 @@ psubscribe
 psut
 psql
 psqlrc
+pubkeypem
 pvpr
 pxxxxxxxx
 qqjs
