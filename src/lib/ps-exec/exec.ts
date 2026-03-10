@@ -9,7 +9,7 @@ import {generateKeyPairSync} from 'node:crypto'
 import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
-import {BuildpackInstallation} from '../types/fir.js'
+import {App, BuildpackInstallation} from '../types/fir.js'
 import {HerokuSsh} from './ssh.js'
 
 const heredoc = tsheredoc.default
@@ -17,7 +17,7 @@ const heredoc = tsheredoc.default
 interface ExecContext {
   app: string
   auth: {
-    password: string
+    password: string | undefined
   }
   flags: {
     dyno?: string
@@ -27,18 +27,20 @@ interface ExecContext {
 const execDebug = debug('cli:ps-exec:exec')
 
 export class HerokuExec {
-  * checkStatus(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars): Generator<any, any, any> {
-    const dynos: Heroku.Dyno[] = yield heroku.request(`/apps/${context.app}/dynos`)
+  async checkStatus(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars): Promise<void> {
+    const {body: dynos} = await heroku.request<Heroku.Dyno[]>(`/apps/${context.app}/dynos`)
 
     const execUrl = this._execUrl(context, configVars)
     const execApiPath = this._execApiPath(configVars)
 
-    return got(`https://${execUrl.host}${execApiPath}`, {
-      headers: this._execHeaders(),
-      method: 'GET',
-      password: execUrl.password,
-      username: execUrl.username,
-    }).then(response => {
+    try {
+      const response = await got(`https://${execUrl.host}${execApiPath}`, {
+        headers: this._execHeaders(),
+        method: 'GET',
+        password: execUrl.password,
+        username: execUrl.username,
+      })
+
       const reservations = JSON.parse(response.body)
 
       hux.styledHeader(`Heroku Exec ${color.app(context.app)}`)
@@ -65,9 +67,9 @@ export class HerokuExec {
           proxy_status: {header: 'Proxy Status'},
         })
       }
-    }).catch(error => {
-      ux.error(error)
-    })
+    } catch (error) {
+      ux.error(error as Error)
+    }
   }
 
   createSocksProxy(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars, callback?: (dynoIp: string, dyno: string, socksPort: number) => void) {
@@ -82,15 +84,10 @@ export class HerokuExec {
     })
   }
 
-  async * initFeature(context: ExecContext, heroku: APIClient, callback: (configVars: Heroku.ConfigVars) => unknown, command?: string): AsyncGenerator<any, any, any> {
+  async initFeature(context: ExecContext, heroku: APIClient, callback: (configVars: Heroku.ConfigVars) => unknown, command?: string): Promise<void> {
     const buildpackUrls = ['https://github.com/heroku/exec-buildpack', 'urn:buildpack:heroku/exec']
-    const promises = {
-      buildpacks: heroku.get(`/apps/${context.app}/buildpack-installations`),
-      config: heroku.get(`/apps/${context.app}/config-vars`),
-      feature: heroku.get(`/apps/${context.app}/features/runtime-heroku-exec`),
-    }
 
-    const app = yield heroku.get(`/apps/${context.app}`, {
+    const {body: app} = await heroku.get<App>(`/apps/${context.app}`, {
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.sdk',
       },
@@ -103,11 +100,13 @@ export class HerokuExec {
       ux.error(errorMessage)
     }
 
-    const buildpacks = yield promises.buildpacks
-    const configVars = yield promises.config
-    const feature = yield promises.feature
+    const [{body: buildpacks}, {body: configVars}, {body: feature}] = await Promise.all([
+      heroku.get<BuildpackInstallation[]>(`/apps/${context.app}/buildpack-installations`),
+      heroku.get<Heroku.ConfigVars>(`/apps/${context.app}/config-vars`),
+      heroku.get<{enabled: boolean}>(`/apps/${context.app}/features/runtime-heroku-exec`),
+    ])
 
-    if (app.space && app.space.shield === true) {
+    if (app.space && app.space.shield) {
       ux.error('This feature is restricted for Shield Private Spaces')
     } else if (app.space) {
       if (app.build_stack.name === 'container') {
@@ -115,7 +114,7 @@ export class HerokuExec {
       } else if (buildpacks.length === 0) {
         ux.error(`${context.app} has no Buildpack URL set. You must deploy your application first!`)
       } else if (!(this._hasExecBuildpack(buildpacks, buildpackUrls))) {
-        yield this._enableFeature(context, heroku)
+        await this._enableFeature(context, heroku)
         ux.stdout(`Adding the Heroku Exec buildpack to ${context.app}`)
         child.execSync(`heroku buildpacks:add -i 1 heroku/exec -a ${context.app}`)
         ux.stdout(heredoc`
@@ -150,26 +149,28 @@ export class HerokuExec {
       await this._enableFeature(context, heroku)
 
       ux.action.start('Restarting dynos')
-      setTimeout(async () => {
-        await heroku.delete(`/apps/${context.app}/dynos`)
-      }, 2000)
+      await new Promise<void>(resolve => {
+        setTimeout(() => resolve(), 2000)
+      })
+      await heroku.delete(`/apps/${context.app}/dynos`)
       ux.action.stop()
 
       const dynoName = this._dyno(context)
       let state: string | undefined = 'down'
       ux.action.start(`Waiting for ${color.name(dynoName)} to start`)
       while (state !== 'up') {
-        let dyno: Heroku.Dyno
-        setTimeout(async () => {
-          dyno = await heroku.request(`/apps/${context.app}/dynos/${dynoName}`)
+        await new Promise<void>(resolve => {
+          setTimeout(() => resolve(), 1000)
         })
-        state = dyno!.state
+        const {body: dyno} = await heroku.request<Heroku.Dyno>(`/apps/${context.app}/dynos/${dynoName}`)
+        state = dyno.state
         if (state === 'crashed') {
+          ux.action.stop()
           throw new Error('The dyno crashed')
         }
-
-        ux.action.stop()
       }
+
+      ux.action.stop()
     }
 
     await callback(configVars)
@@ -256,7 +257,7 @@ export class HerokuExec {
 
     const execUrl = new URL(urlString)
     execUrl.username = context.app
-    execUrl.password = process.env.HEROKU_API_KEY || context.auth.password
+    execUrl.password = process.env.HEROKU_API_KEY || context.auth.password || ''
     return execUrl
   }
 

@@ -24,33 +24,6 @@ describe('HerokuExec', function () {
   let huxStyledHeaderStub: sinon.SinonStub
   let huxTableStub: sinon.SinonStub
 
-  // Helper to execute async generators with proper handling of API responses
-  async function executeAsyncGenerator(gen: AsyncGenerator): Promise<void> {
-    let result = await gen.next()
-    while (!result.done) {
-      const value = await result.value
-      // Handle Heroku API responses which have a .body property
-      if (value && typeof value === 'object' && 'body' in value && !Array.isArray(value)) {
-        result = await gen.next((value as {body: any}).body)
-      } else if (value && typeof value === 'object' && !Array.isArray(value)) {
-        // Handle object of promises (like in initFeature)
-        const resolved: Record<string, any> = {}
-        for (const [key, promise] of Object.entries(value)) {
-          const response = await promise
-          if (response && typeof response === 'object' && 'body' in response) {
-            resolved[key] = (response as {body: any}).body
-          } else {
-            resolved[key] = response
-          }
-        }
-
-        result = await gen.next(resolved)
-      } else {
-        result = await gen.next(value)
-      }
-    }
-  }
-
   beforeEach(async function () {
     herokuAPI = await getHerokuAPI()
     herokuExec = new HerokuExec()
@@ -228,7 +201,7 @@ describe('HerokuExec', function () {
       flags: {},
     }
 
-    it('displays styled header with the app name', function (done) {
+    it('displays styled header with the app name', async function () {
       const configVars = {}
       const dynos: Heroku.Dyno[] = []
 
@@ -240,27 +213,13 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(200, [])
 
-      const gen = herokuExec.checkStatus(context, herokuAPI, configVars)
+      await herokuExec.checkStatus(context, herokuAPI, configVars)
 
-      // Execute the generator
-      const execute = async () => {
-        let result = gen.next()
-        while (!result.done) {
-          const value = await result.value
-          result = gen.next(value.body)
-        }
-
-        await result.value
-      }
-
-      execute().then(() => {
-        expect(huxStyledHeaderStub.calledOnce).to.be.true
-        expect(huxStyledHeaderStub.firstCall.args[0]).to.include('myapp')
-        done()
-      }).catch(done)
+      expect(huxStyledHeaderStub.calledOnce).to.be.true
+      expect(huxStyledHeaderStub.firstCall.args[0]).to.include('myapp')
     })
 
-    it('outputs error message when the reservations list is empty', function (done) {
+    it('outputs error message when the reservations list is empty', async function () {
       const configVars = {}
       const dynos: Heroku.Dyno[] = []
 
@@ -272,26 +231,13 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(200, [])
 
-      const gen = herokuExec.checkStatus(context, herokuAPI, configVars)
+      await herokuExec.checkStatus(context, herokuAPI, configVars)
 
-      const execute = async () => {
-        let result = gen.next()
-        while (!result.done) {
-          const value = await result.value
-          result = gen.next(value.body)
-        }
-
-        await result.value
-      }
-
-      execute().then(() => {
-        expect(uxErrorStub.calledOnce).to.be.true
-        expect(uxErrorStub.firstCall.args[0]).to.include('Heroku Exec is not running')
-        done()
-      }).catch(done)
+      expect(uxErrorStub.calledOnce).to.be.true
+      expect(uxErrorStub.firstCall.args[0]).to.include('Heroku Exec is not running')
     })
 
-    it('renders a table row per reservation with proxy_status: running', function (done) {
+    it('renders a table row per reservation with proxy_status: running', async function () {
       const configVars = {}
       const dynos: Heroku.Dyno[] = [{name: 'web.1', state: 'up'}]
       const reservations = [{dyno_name: 'web.1', proxy_status: 'running'}]
@@ -304,28 +250,14 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(200, JSON.stringify(reservations), {'Content-Type': 'application/json'})
 
-      const gen = herokuExec.checkStatus(context, herokuAPI, configVars)
+      await herokuExec.checkStatus(context, herokuAPI, configVars)
 
-      const execute = async () => {
-        let result = gen.next()
-        while (!result.done) {
-          const value = await result.value
-          // heroku.request() returns an object with a body property
-          result = gen.next(value.body)
-        }
-
-        await result.value
-      }
-
-      execute().then(() => {
-        expect(huxTableStub.calledOnce).to.be.true
-        const tableData = huxTableStub.firstCall.args[0]
-        expect(tableData[0]).to.have.property('proxy_status', 'running')
-        done()
-      }).catch(done)
+      expect(huxTableStub.calledOnce).to.be.true
+      const tableData = huxTableStub.firstCall.args[0]
+      expect(tableData[0]).to.have.property('proxy_status', 'running')
     })
 
-    it('calls ux.error and does not throw when the HTTP request rejects', function (done) {
+    it('calls ux.error and does not throw when the HTTP request rejects', async function () {
       const configVars = {}
       const dynos: Heroku.Dyno[] = []
 
@@ -337,22 +269,9 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(500, 'Internal Server Error')
 
-      const gen = herokuExec.checkStatus(context, herokuAPI, configVars)
+      await herokuExec.checkStatus(context, herokuAPI, configVars)
 
-      const execute = async () => {
-        let result = gen.next()
-        while (!result.done) {
-          const value = await result.value
-          result = gen.next(value.body)
-        }
-
-        await result.value
-      }
-
-      execute().then(() => {
-        expect(uxErrorStub.called).to.be.true
-        done()
-      }).catch(done)
+      expect(uxErrorStub.called).to.be.true
     })
   })
 
@@ -371,10 +290,8 @@ describe('HerokuExec', function () {
         .get('/apps/myapp')
         .reply(200, app)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback, 'exec')
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback, 'exec')
       } catch {
         // Expected to error
       }
@@ -391,10 +308,8 @@ describe('HerokuExec', function () {
         .get('/apps/myapp')
         .reply(200, app)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback, 'other')
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback, 'other')
       } catch {
         // Expected to error
       }
@@ -420,10 +335,8 @@ describe('HerokuExec', function () {
         .get('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, feature)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback)
       } catch {
         // Expected to error
       }
@@ -449,9 +362,7 @@ describe('HerokuExec', function () {
         .get('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, feature)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
-      await executeAsyncGenerator(gen)
+      await herokuExec.initFeature(context, herokuAPI, callback)
 
       expect(uxWarnStub.calledOnce).to.be.true
       expect(uxWarnStub.firstCall.args[0]).to.include('container stack')
@@ -474,10 +385,8 @@ describe('HerokuExec', function () {
         .get('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, feature)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback)
       } catch {
         // Expected to error
       }
@@ -507,10 +416,8 @@ describe('HerokuExec', function () {
 
       const childExecSyncStub = sinon.stub(child, 'execSync')
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback)
       } catch {
         // Expected to exit
       }
@@ -538,9 +445,7 @@ describe('HerokuExec', function () {
         .get('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, feature)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
-      await executeAsyncGenerator(gen)
+      await herokuExec.initFeature(context, herokuAPI, callback)
 
       expect(uxWarnStub.calledOnce).to.be.true
       expect(uxWarnStub.firstCall.args[0]).to.include('no longer required')
@@ -563,10 +468,8 @@ describe('HerokuExec', function () {
         .get('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, feature)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback)
       } catch {
         // Expected to error
       }
@@ -594,10 +497,8 @@ describe('HerokuExec', function () {
 
       huxPromptStub.resolves('n')
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
       try {
-        await executeAsyncGenerator(gen)
+        await herokuExec.initFeature(context, herokuAPI, callback)
       } catch {
         // Expected to exit
       }
@@ -623,9 +524,7 @@ describe('HerokuExec', function () {
         .get('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, feature)
 
-      const gen = herokuExec.initFeature(context, herokuAPI, callback)
-
-      await executeAsyncGenerator(gen)
+      await herokuExec.initFeature(context, herokuAPI, callback)
 
       expect(callback.calledOnce).to.be.true
       expect(callback.firstCall.args[0]).to.deep.equal(configVars)
