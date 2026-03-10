@@ -117,23 +117,23 @@
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
     "commit-and-tag-version": "^12.5.0",
-    "cspell": "9.6.0",
+    "cspell": "9.7.0",
     "eslint": "8.57.1",
     "eslint-config-oclif": "^5.2.2",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-mocha": "^10.4.3",
-    "eslint-plugin-n": "^17.23.2",
+    "eslint-plugin-n": "^17.24.0",
     "eslint-plugin-perfectionist": "4.15.1",
     "husky": "8.0.3",
     "lolex": "^5.1.2",
     "mocha": "^10.8.2",
     "mock-stdin": "^1",
     "nock": "^13.5.1",
-    "oclif": "^4.22.81",
+    "oclif": "^4.22.87",
     "qqjs": "0.3.11",
     "rimraf": "5.0.5",
-    "sinon": "^21.0.1",
+    "sinon": "^21.0.2",
     "source-map-support": "^0.5.21",
     "std-mocks": "^2.0.0",
     "stdout-stderr": "^0.1.13",
@@ -343,7 +343,7 @@
     },
     "update": {
       "node": {
-        "version": "22.22.0"
+        "version": "22.22.1"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
