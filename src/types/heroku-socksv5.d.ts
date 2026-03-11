@@ -29,6 +29,20 @@ declare module '@heroku/socksv5' {
   function createServer(listener: ConnectionListener): Server;
   function createServer(options: object, listener: ConnectionListener): Server;
 
+  interface ConnectOptions {
+    auths?: AuthHandler[];
+    host: string;
+    localAddress?: string;
+    localDNS?: boolean;
+    port: number;
+    proxyHost: string;
+    proxyPort: number;
+    strictLocalDNS?: boolean;
+  }
+
+  function connect(options: ConnectOptions, callback: (socket: net.Socket) => void): net.Socket;
+  function createConnection(options: ConnectOptions, callback: (socket: net.Socket) => void): net.Socket;
+
   const auth: {
     [key: string]: (...args: unknown[]) => AuthHandler;
     None: () => AuthHandler;
