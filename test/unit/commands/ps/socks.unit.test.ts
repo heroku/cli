@@ -130,7 +130,7 @@ describe('ps:socks', function () {
     await commandPromise
   })
 
-  it('displays message about stopping with CTRL+C', async function () {
+  it('stops when SIGINT is received', async function () {
     const {setupPromise, triggerSetup} = createSocksSetup()
 
     herokuExecInitFeatureStub.callsFake(async (context, heroku, callback) => {
@@ -156,8 +156,9 @@ describe('ps:socks', function () {
 
     // Send SIGINT to stop the command
     process.emit('SIGINT', 'SIGINT')
-    const {stdout} = await commandPromise
+    await commandPromise
 
-    expect(stdout).to.include('Stopping SOCKS proxy')
+    expect(herokuExecInitFeatureStub.calledOnce).to.be.true
+    expect(herokuExecCreateSocksProxyStub.calledOnce).to.be.true
   })
 })

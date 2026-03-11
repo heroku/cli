@@ -1,7 +1,6 @@
 import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
@@ -47,15 +46,8 @@ export default class Socks extends Command {
 
     // Keep the process running until interrupted
     await new Promise<void>(resolve => {
-      process.on('SIGINT', () => {
-        ux.stdout('Stopping SOCKS proxy...')
-        resolve()
-      })
-
-      process.on('SIGTERM', () => {
-        ux.stdout('Stopping SOCKS proxy...')
-        resolve()
-      })
+      process.once('SIGINT', resolve)
+      process.once('SIGTERM', resolve)
     })
   }
 }
