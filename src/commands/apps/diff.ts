@@ -29,14 +29,18 @@ async function checksum(heroku: APIClient, app: string): Promise<string | null> 
     }
 
     return null
-  } catch (err: unknown) {
-    const status = (err as {statusCode?: number; response?: {statusCode?: number}})?.statusCode
-      ?? (err as {response?: {statusCode?: number}})?.response?.statusCode
+  } catch (error: unknown) {
+    const e = error as {
+      http?: {statusCode?: number}
+      response?: {statusCode?: number}
+      statusCode?: number
+    }
+    const status = e?.http?.statusCode ?? e?.response?.statusCode ?? e?.statusCode
     if (status === 404) {
       throw new Error(`App not found: ${app}`)
     }
 
-    throw err
+    throw error
   }
 }
 
@@ -114,10 +118,10 @@ async function diffFeatures(heroku: APIClient, app1: string, app2: string): Prom
   const features1 = res1.body ?? []
   const features2 = res2.body ?? []
   const names1 = new Set(
-    features1.map(f => (f.enabled ? f.name : null)).filter((n): n is string => Boolean(n)),
+    features1.map(f => (f.enabled ? f.name : null)).filter(Boolean) as string[],
   )
   const names2 = new Set(
-    features2.map(f => (f.enabled ? f.name : null)).filter((n): n is string => Boolean(n)),
+    features2.map(f => (f.enabled ? f.name : null)).filter(Boolean) as string[],
   )
   const only1 = [...names1].filter(name => !names2.has(name)).map(name => ({prop: `feature (${name})`, app1: 'enabled', app2: 'disabled'}))
   const only2 = [...names2].filter(name => !names1.has(name)).map(name => ({prop: `feature (${name})`, app1: 'disabled', app2: 'enabled'}))
