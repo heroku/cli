@@ -3,15 +3,21 @@ import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import child from 'child_process'
 import cliProgress from 'cli-progress'
-import fs from 'fs'
 import sinon from 'sinon'
 import {Client} from 'ssh2'
-import tmp from 'tmp'
 
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
 
 function makeStream() {
   const handlers: Record<string, Array<(...args: unknown[]) => void>> = {}
+  const stderrHandlers: Record<string, Array<(...args: unknown[]) => void>> = {}
+  const stderr = {
+    on(event: string, handler: (...args: unknown[]) => void) {
+      stderrHandlers[event] = stderrHandlers[event] ?? []
+      stderrHandlers[event].push(handler)
+      return stderr
+    },
+  }
   const s = {
     emit(event: string, ...args: unknown[]) {
       for (const handler of handlers[event] ?? []) handler(...args)
@@ -23,6 +29,7 @@ function makeStream() {
       return s
     },
     pipe: sinon.stub().returnsThis() as sinon.SinonStub,
+    stderr,
   }
   return s
 }
@@ -128,7 +135,7 @@ describe('ssh lib', function () {
     describe('exec mode', function () {
       it('calls conn.exec with a single arg unchanged', async function () {
         const mockStream = makeStream()
-        clientExecStub.callsFake((_cmd: string, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+        clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
 
         const p = sshInstance.connect({args: ['rake test']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
         setImmediate(() => {
@@ -143,7 +150,7 @@ describe('ssh lib', function () {
 
       it('joins multiple args with spaces', async function () {
         const mockStream = makeStream()
-        clientExecStub.callsFake((_cmd: string, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+        clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
 
         const p = sshInstance.connect({args: ['rake', 'test']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
         setImmediate(() => {
@@ -157,7 +164,7 @@ describe('ssh lib', function () {
 
       it('wraps args containing spaces in double quotes', async function () {
         const mockStream = makeStream()
-        clientExecStub.callsFake((_cmd: string, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+        clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
 
         const p = sshInstance.connect({args: ['echo', 'hello world']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
         setImmediate(() => {
@@ -171,7 +178,7 @@ describe('ssh lib', function () {
 
       it('escapes double quotes within args', async function () {
         const mockStream = makeStream()
-        clientExecStub.callsFake((_cmd: string, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+        clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
 
         const p = sshInstance.connect({args: ['echo', '"hello"']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
         setImmediate(() => {
@@ -185,7 +192,7 @@ describe('ssh lib', function () {
 
       it('invokes callback after stream closes', async function () {
         const mockStream = makeStream()
-        clientExecStub.callsFake((_cmd: string, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+        clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
         const callbackStub = sinon.stub()
 
         const p = sshInstance.connect({args: ['echo', 'hi']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123', callbackStub)
@@ -200,7 +207,7 @@ describe('ssh lib', function () {
 
       it('ends the connection when the exec stream closes', async function () {
         const mockStream = makeStream()
-        clientExecStub.callsFake((_cmd: string, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+        clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
 
         const p = sshInstance.connect({args: ['echo', 'hi']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
         setImmediate(() => {
@@ -280,81 +287,58 @@ describe('ssh lib', function () {
   })
 
   describe('ssh() native', function () {
-    let tmpFileStub: sinon.SinonStub
-    let tmpGracefulStub: sinon.SinonStub
-    let fsWriteSyncStub: sinon.SinonStub
-    let fsChmodSyncStub: sinon.SinonStub
     let childExecSyncStub: sinon.SinonStub
 
     beforeEach(function () {
-      tmpGracefulStub = sinon.stub(tmp, 'setGracefulCleanup')
-      tmpFileStub = sinon.stub(tmp, 'file')
-        .onFirstCall().callsFake(((_opts: Record<string, unknown>, cb: (err: Error | null, path: string, fd: number, removeCallback: () => void) => void) => cb(null, '/tmp/heroku-exec-key-123', 5, () => {})) as any)
-        .onSecondCall().callsFake(((_opts: Record<string, unknown>, cb: (err: Error | null, path: string, fd: number, removeCallback: () => void) => void) => cb(null, '/tmp/heroku-exec-proxy-key-456', 6, () => {})) as any)
-      fsWriteSyncStub = sinon.stub(fs, 'writeSync')
-      sinon.stub(fs, 'close').callsFake((_fd: number, cb?: (err: NodeJS.ErrnoException | null) => void) => cb?.(null))
-      fsChmodSyncStub = sinon.stub(fs, 'chmodSync')
       childExecSyncStub = sinon.stub(child, 'execSync')
     })
 
-    it('calls setGracefulCleanup, creates two tmp files, and runs execSync', function () {
-      sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('private-key'), 'ssh-rsa abc123')
-
-      expect(tmpGracefulStub.calledOnce).to.be.true
-      expect(tmpFileStub.calledTwice).to.be.true
-      expect(fsWriteSyncStub.calledTwice).to.be.true
-      expect(fsChmodSyncStub.calledWith('/tmp/heroku-exec-key-123', '0700')).to.be.true
-      expect(childExecSyncStub.calledOnce).to.be.true
-    })
-
-    it('writes the private key buffer to the first tmp file', function () {
-      const privateKey = Buffer.from('my-private-key')
-      sshInstance.ssh({args: []}, 'addon.host', 'user', privateKey, 'ssh-rsa abc123')
-
-      const firstWriteArgs = fsWriteSyncStub.firstCall.args
-      expect(firstWriteArgs[0]).to.equal(5)
-      expect(Buffer.isBuffer(firstWriteArgs[1])).to.be.true
-    })
-
-    it('writes the proxy key entry to the second tmp file', function () {
-      sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-
-      const secondWriteArgs = fsWriteSyncStub.secondCall.args
-      expect(secondWriteArgs[0]).to.equal(6)
-      expect(secondWriteArgs[1]).to.include('[addon.host]:80 ssh-rsa abc123')
-    })
-
-    it('includes host, user, port, and key file paths in the ssh command', function () {
-      sshInstance.ssh({args: []}, 'addon.host', 'testuser', Buffer.from('key'), 'ssh-rsa abc123')
+    it('includes host, user, port in the ssh command', async function () {
+      await sshInstance.ssh({args: []}, 'addon.host', 'testuser', Buffer.from('key'), 'ssh-rsa abc123')
 
       const cmd = childExecSyncStub.firstCall.args[0] as string
       expect(cmd).to.include('testuser@addon.host')
       expect(cmd).to.include('-p 80')
-      expect(cmd).to.include('-i /tmp/heroku-exec-key-123')
-      expect(cmd).to.include('-o UserKnownHostsFile=/tmp/heroku-exec-proxy-key-456')
+      expect(cmd).to.include('-o ServerAliveInterval=10')
+      expect(cmd).to.include('-o ServerAliveCountMax=3')
     })
 
-    it('appends the built command when args do not include "bash"', function () {
-      sshInstance.ssh({args: ['rake', 'test']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+    it('appends the built command when args do not include "bash"', async function () {
+      await sshInstance.ssh({args: ['rake', 'test']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
       const cmd = childExecSyncStub.firstCall.args[0] as string
       expect(cmd).to.include('rake test')
     })
 
-    it('does not append a sub-command when args include "bash"', function () {
-      sshInstance.ssh({args: ['bash']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+    it('does not append a sub-command when args include "bash"', async function () {
+      await sshInstance.ssh({args: ['bash']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
       const cmd = childExecSyncStub.firstCall.args[0] as string
       const afterHost = cmd.split('user@addon.host')[1].trim()
       expect(afterHost).to.equal('')
     })
 
-    it('does not append a sub-command when no args are provided', function () {
-      sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+    it('does not append a sub-command when no args are provided', async function () {
+      await sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
       const cmd = childExecSyncStub.firstCall.args[0] as string
       const afterHost = cmd.split('user@addon.host')[1].trim()
       expect(afterHost).to.equal('')
+    })
+
+    it('does not throw when execSync succeeds', async function () {
+      await sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+
+      expect(childExecSyncStub.calledOnce).to.be.true
+    })
+
+    it('does not throw when execSync fails', async function () {
+      childExecSyncStub.throws(new Error('ssh failed'))
+
+      // Should not throw - errors are caught and logged
+      await sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+
+      expect(childExecSyncStub.calledOnce).to.be.true
     })
   })
 

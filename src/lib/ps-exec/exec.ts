@@ -3,9 +3,10 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import debug from 'debug'
+import forge from 'node-forge'
 import got, {Response} from 'got'
+import keypair from 'keypair'
 import child from 'node:child_process'
-import {generateKeyPairSync} from 'node:crypto'
 import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
@@ -176,24 +177,14 @@ export class HerokuExec {
     await callback(configVars)
   }
 
-  async updateClientKey(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars, callback: (privkeypem: string, dyno: string, response: Response<string>) => void) {
+  async updateClientKey(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars, callback: (privkeypem: string, dyno: string, response: Response<string>) => Promise<void> | void) {
     ux.action.start('Establishing credentials')
-    try {
-      const {privateKey, publicKey} = generateKeyPairSync('rsa', {
-        modulusLength: 2048,
-        privateKeyEncoding: {
-          format: 'pem',
-          type: 'pkcs8',
-        },
-        publicKeyEncoding: {
-          format: 'pem',
-          type: 'spki',
-        },
-      })
-      const privkeypem = privateKey
-      const pubkeypem = publicKey
-      execDebug(pubkeypem)
+    const key = (keypair as any)()
+    const privkeypem = key.private
+    const publicKey = forge.pki.publicKeyFromPem(key.public)
+    const pubkeypem = forge.ssh.publicKeyToOpenSSH(publicKey, '')
 
+    try {
       const execUrl = this._execUrl(context, configVars)
       const dyno = this._dyno(context)
 
@@ -206,7 +197,7 @@ export class HerokuExec {
       })
 
       ux.action.stop()
-      callback(privkeypem, dyno, response)
+      await callback(privkeypem, dyno, response)
     } catch (error) {
       ux.action.stop('error')
       execDebug(error)

@@ -54,11 +54,11 @@ export default class Copy extends Command {
     const ssh = new HerokuSsh()
 
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
-      await exec.updateClientKey(context, this.heroku, configVars, (privateKey, dyno, response) => {
+      await exec.updateClientKey(context, this.heroku, configVars, async (privateKey, dyno, response) => {
         const message = `Connecting to ${color.cyan.bold(dyno)} on ${color.app(app)}`
         ux.action.start(message)
         const json = JSON.parse(response.body)
-        ssh.scp(json.tunnel_host, json.client_user, privateKey, json.proxy_public_key, src, dest)
+        await ssh.scp(json.tunnel_host, json.client_user, privateKey, json.proxy_public_key, src, dest)
       })
     }, 'copy')
   }

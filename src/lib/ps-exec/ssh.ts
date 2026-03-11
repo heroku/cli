@@ -129,6 +129,7 @@ export class HerokuSsh {
     return new Promise<void>((resolve, reject) => {
       const conn = new Client()
       conn.on('ready', () => {
+        sshDebug('[scp] ready')
         ux.action.stop('up')
         conn.sftp((error, sftp) => {
           if (error) {
@@ -163,8 +164,12 @@ export class HerokuSsh {
             resolve()
           })
         })
-      }).on('error', reject).connect({
+      }).on('error', (err) => {
+        sshDebug('[scp] error:', err)
+        reject(err)
+      }).connect({
         ...this._connectionDefaults(proxyKey),
+        debug: sshDebug,
         host: addonHost,
         privateKey,
         username: dynoUser,

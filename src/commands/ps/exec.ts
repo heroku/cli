@@ -56,15 +56,15 @@ export default class Exec extends Command {
       if (status) {
         await exec.checkStatus(context, this.heroku, configVars)
       } else {
-        await exec.updateClientKey(context, this.heroku, configVars, (privateKey, dyno, response) => {
+        await exec.updateClientKey(context, this.heroku, configVars, async (privateKey, dyno, response) => {
           const message = `Connecting to ${color.cyan.bold(dyno)} on ${color.app(app)}`
           ux.action.start(message)
           psExecDebug(response.body)
           const json = JSON.parse(response.body)
           if (useNativeSsh) {
-            ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
+            await ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
           } else {
-            ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
+            await ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
           }
 
           ux.action.stop()
