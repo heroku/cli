@@ -151,4 +151,80 @@ describe('apps:diff', function () {
     expect(error!.message).to.include('App not found')
     expect(error!.message).to.include(app1Name)
   })
+
+  it('truncates long values to 56 chars with ellipsis', async function () {
+    const longChecksum = 'SHA256:' + 'a'.repeat(60)
+    api
+      .get(`/apps/${app1Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId1))
+      .get(`/apps/${app1Name}/slugs/${slugId1}`).reply(200, slugBody(longChecksum))
+      .get(`/apps/${app2Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId2))
+      .get(`/apps/${app2Name}/slugs/${slugId2}`).reply(200, slugBody(sameChecksum))
+      .get(`/apps/${app1Name}/config-vars`).reply(200, {})
+      .get(`/apps/${app2Name}/config-vars`).reply(200, {})
+      .get(`/apps/${app1Name}`).reply(200, appStack('heroku-22'))
+      .get(`/apps/${app2Name}`).reply(200, appStack('heroku-22'))
+      .get(`/apps/${app1Name}/buildpack-installations`).reply(200, emptyBuildpacks)
+      .get(`/apps/${app2Name}/buildpack-installations`).reply(200, emptyBuildpacks)
+      .get(`/apps/${app1Name}/addons`).reply(200, emptyAddons)
+      .get(`/apps/${app2Name}/addons`).reply(200, emptyAddons)
+      .get(`/apps/${app1Name}/features`).reply(200, emptyFeatures)
+      .get(`/apps/${app2Name}/features`).reply(200, emptyFeatures)
+
+    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+
+    expect(error).to.be.undefined
+    expect(stdout).to.include('slug (checksum)')
+    expect(stdout).to.match(/\.\.\./)
+    expect(stdout).to.include('SHA256:')
+  })
+
+  it('shows add-on only on second app', async function () {
+    const addons1 = emptyAddons
+    const addons2 = [{addon_service: {name: 'heroku-postgresql'}}]
+    api
+      .get(`/apps/${app1Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId1))
+      .get(`/apps/${app1Name}/slugs/${slugId1}`).reply(200, slugBody(sameChecksum))
+      .get(`/apps/${app2Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId2))
+      .get(`/apps/${app2Name}/slugs/${slugId2}`).reply(200, slugBody(sameChecksum))
+      .get(`/apps/${app1Name}/config-vars`).reply(200, {})
+      .get(`/apps/${app2Name}/config-vars`).reply(200, {})
+      .get(`/apps/${app1Name}`).reply(200, appStack('heroku-22'))
+      .get(`/apps/${app2Name}`).reply(200, appStack('heroku-22'))
+      .get(`/apps/${app1Name}/buildpack-installations`).reply(200, emptyBuildpacks)
+      .get(`/apps/${app2Name}/buildpack-installations`).reply(200, emptyBuildpacks)
+      .get(`/apps/${app1Name}/addons`).reply(200, addons1)
+      .get(`/apps/${app2Name}/addons`).reply(200, addons2)
+      .get(`/apps/${app1Name}/features`).reply(200, emptyFeatures)
+      .get(`/apps/${app2Name}/features`).reply(200, emptyFeatures)
+
+    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+
+    expect(error).to.be.undefined
+    expect(stdout).to.include('add-on (heroku-postgresql)')
+    expect(stdout).to.include('false')
+    expect(stdout).to.include('true')
+  })
+
+  it('shows no slug row when both apps have no release slug', async function () {
+    const releasesNoSlug = [{status: 'succeeded'}]
+    api
+      .get(`/apps/${app1Name}/releases`).matchHeader('range', /version/).reply(200, releasesNoSlug)
+      .get(`/apps/${app2Name}/releases`).matchHeader('range', /version/).reply(200, releasesNoSlug)
+      .get(`/apps/${app1Name}/config-vars`).reply(200, {})
+      .get(`/apps/${app2Name}/config-vars`).reply(200, {})
+      .get(`/apps/${app1Name}`).reply(200, appStack('heroku-22'))
+      .get(`/apps/${app2Name}`).reply(200, appStack('heroku-22'))
+      .get(`/apps/${app1Name}/buildpack-installations`).reply(200, emptyBuildpacks)
+      .get(`/apps/${app2Name}/buildpack-installations`).reply(200, emptyBuildpacks)
+      .get(`/apps/${app1Name}/addons`).reply(200, emptyAddons)
+      .get(`/apps/${app2Name}/addons`).reply(200, emptyAddons)
+      .get(`/apps/${app1Name}/features`).reply(200, emptyFeatures)
+      .get(`/apps/${app2Name}/features`).reply(200, emptyFeatures)
+
+    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+
+    expect(error).to.be.undefined
+    expect(stdout).to.include('property')
+    expect(stdout.trim()).to.not.include('slug (checksum)')
+  })
 })
