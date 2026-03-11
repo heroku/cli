@@ -1,23 +1,27 @@
+import {flags as Flags, HerokuAPIError} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {
   color, hux, pg, utils,
 } from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {flags as Flags, HerokuAPIError} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import inquirer, {DistinctChoice, ListChoiceMap} from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
 import createAddon from '../../../lib/addons/create_addon.js'
 import BaseCommand from '../../../lib/data/baseCommand.js'
-import PoolConfig from '../../../lib/data/poolConfig.js'
-import {ExtendedPostgresLevelInfo, MigrationResponse} from '../../../lib/data/types.js'
-import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
+// import PoolConfig from '../../../lib/data/poolConfig.js'
+import {
+  // ExtendedPostgresLevelInfo,
+  InfoResponse,
+  MigrationResponse,
+} from '../../../lib/data/types.js'
+// import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
 
 const heredoc = tsheredoc.default
 // eslint-disable-next-line import/no-named-as-default-member
-const {Separator, prompt} = inquirer
+const {prompt, Separator} = inquirer
 
 export default class DataPgMigrate extends BaseCommand {
   static description = 'migrate an existing classic Postgres database to an Advanced database'
@@ -27,9 +31,10 @@ export default class DataPgMigrate extends BaseCommand {
     remote: Flags.remote(),
   }
 
-  private advancedDatabases: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']> = []
-  private classicDatabases: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']> = []
-  private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
+  private advancedDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[], info?: InfoResponse}> = []
+  private appName: string | undefined
+  private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
+  // private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private migrationTargets: Array<MigrationResponse> = []
 
   public async createAddon(...args: Parameters<typeof createAddon>): Promise<Heroku.AddOn> {
@@ -43,6 +48,7 @@ export default class DataPgMigrate extends BaseCommand {
   public async run(): Promise<void> {
     const {flags} = await this.parse(DataPgMigrate)
     const {app} = flags
+    this.appName = app
 
     ux.stdout(heredoc`
 
@@ -149,7 +155,7 @@ export default class DataPgMigrate extends BaseCommand {
         if (action === '__go_back') {
           currentStep = '__select_migration'
         } else if (action === '__confirm') {
-          ux.stdout('\n')
+          ux.stdout()
           ux.action.start(`${migrationAction === 'start' ? 'Starting' : 'Cancelling'} migration of ${color.datastore(sourceDatabase.name)} to ${color.datastore(targetDatabase.name)}`)
           await this.dataApi.post(`/data/postgres/v1/${selectedMigration.target_id}/migrations/${migrationAction === 'start' ? 'run' : 'cancel'}`)
           ux.action.stop()
@@ -214,17 +220,33 @@ export default class DataPgMigrate extends BaseCommand {
               name: color.dim(name),
               value: database.id,
             })
-          } else {
+          } else if (database.info?.status === 'available') {
             choices.push({
               name,
+              value: database.id,
+            })
+          } else {
+            choices.push({
+              disabled: 'database isn\'t available yet',
+              name: color.dim(name),
               value: database.id,
             })
           }
         }
 
+        if (this.advancedDatabases.length === 0) {
+          choices.push({
+            disabled: true,
+            name: color.dim(`No Heroku Postgres Advanced databases available on ${color.app(this.appName!)}`),
+            value: '__no_advanced_databases',
+          })
+        }
+
         choices.push(
           new Separator(),
-          {name: 'Create a new Advanced database', value: '__create_database'},
+          // We're disabling the option to create a new Advanced database while configuring a migration until the backend is updated
+          // to support it.
+          // {name: 'Create a new Advanced database', value: '__create_database'},
           {name: 'Go back', value: '__go_back'},
         )
         targetDatabaseId = (await this.prompt<{database: string}>({
@@ -236,14 +258,14 @@ export default class DataPgMigrate extends BaseCommand {
 
         if (targetDatabaseId === '__go_back') {
           currentStep = '__select_source'
-        } else if (targetDatabaseId === '__create_database') {
-          const addon = await this.createTargetDatabase(sourceDatabaseId!)
-          if (addon) {
-            targetDatabaseId = addon.id
-            currentStep = '__confirm_migration'
-          } else {
-            currentStep = '__select_target'
-          }
+        // } else if (targetDatabaseId === '__create_database') {
+        //   const addon = await this.createTargetDatabase(sourceDatabaseId!)
+        //   if (addon) {
+        //     targetDatabaseId = addon.id
+        //     currentStep = '__confirm_migration'
+        //   } else {
+        //     currentStep = '__select_target'
+        //   }
         } else {
           currentStep = '__confirm_migration'
         }
@@ -273,7 +295,7 @@ export default class DataPgMigrate extends BaseCommand {
         if (action === '__go_back') {
           currentStep = '__select_target'
         } else if (action === '__confirm') {
-          ux.stdout('\n')
+          ux.stdout('')
           ux.action.start('Configuring migration')
           await this.dataApi.post<MigrationResponse>(`/data/postgres/v1/${targetDatabaseId}/migrations`, {
             body: {source_id: sourceDatabaseId},
@@ -288,54 +310,54 @@ export default class DataPgMigrate extends BaseCommand {
     }
   }
 
-  private async createTargetDatabase(sourceDatabaseId: string): Promise<Heroku.AddOn | undefined> {
-    let networking: string | undefined
-    const sourceDatabase = this.classicDatabases.find(db => db.id === sourceDatabaseId)!
-    if (sourceDatabase.plan.name.split(':')[1].startsWith('private')) {
-      networking = 'private'
-    } else if (sourceDatabase.plan.name.split(':')[1].startsWith('shield')) {
-      networking = 'shield'
-    }
+  // private async createTargetDatabase(sourceDatabaseId: string): Promise<Heroku.AddOn | undefined> {
+  //   let networking: string | undefined
+  //   const sourceDatabase = this.classicDatabases.find(db => db.id === sourceDatabaseId)!
+  //   if (sourceDatabase.plan.name.split(':')[1].startsWith('private')) {
+  //     networking = 'private'
+  //   } else if (sourceDatabase.plan.name.split(':')[1].startsWith('shield')) {
+  //     networking = 'shield'
+  //   }
 
-    const plan = `advanced${networking ? `-${networking}` : ''}`
-    const service = utils.pg.addonService()
-    const servicePlan = `${service}:${plan}`
-    const {extendedLevelsInfo} = await fetchLevelsAndPricing(plan, this.dataApi)
-    this.extendedLevelsInfo = extendedLevelsInfo
-    const poolConfig = new PoolConfig(this.extendedLevelsInfo!, 0)
+  //   const plan = `advanced${networking ? `-${networking}` : ''}`
+  //   const service = utils.pg.addonService()
+  //   const servicePlan = `${service}:${plan}`
+  //   const {extendedLevelsInfo} = await fetchLevelsAndPricing(plan, this.dataApi)
+  //   this.extendedLevelsInfo = extendedLevelsInfo
+  //   const poolConfig = new PoolConfig(this.extendedLevelsInfo!, 0)
 
-    ux.stdout(heredoc`
+  //   ux.stdout(heredoc`
 
-      → Configure Leader Pool
+  //     → Configure Leader Pool
 
-    `)
+  //   `)
 
-    const {action, highAvailability, level: leaderLevel} = await poolConfig.leaderInteractiveConfig(true)
+  //   const {action, highAvailability, level: leaderLevel} = await poolConfig.leaderInteractiveConfig(true)
 
-    if (action === '__go_back') {
-      return undefined
-    }
+  //   if (action === '__go_back') {
+  //     return undefined
+  //   }
 
-    // Database cluster provisioning (leader pool)
-    const config: Record<string, boolean | string | undefined> = {
-      'high-availability': highAvailability,
-      level: leaderLevel,
-    }
+  //   // Database cluster provisioning (leader pool)
+  //   const config: Record<string, boolean | string | undefined> = {
+  //     'high-availability': highAvailability,
+  //     level: leaderLevel,
+  //   }
 
-    let addon: Heroku.AddOn | undefined
-    try {
-      addon = await this.createAddon(this.heroku, sourceDatabase.app.name, servicePlan, undefined, false, {
-        actionStartMessage: `Creating a ${color.cyan(leaderLevel)} database on ${color.app(sourceDatabase.app.name)}`,
-        actionStopMessage: 'done',
-        config,
-      })
-    } catch (error) {
-      ux.action.stop()
-      throw error
-    }
+  //   let addon: Heroku.AddOn | undefined
+  //   try {
+  //     addon = await this.createAddon(this.heroku, sourceDatabase.app.name, servicePlan, undefined, false, {
+  //       actionStartMessage: `Creating a ${color.cyan(leaderLevel)} database on ${color.app(sourceDatabase.app.name)}`,
+  //       actionStopMessage: 'done',
+  //       config,
+  //     })
+  //   } catch (error) {
+  //     ux.action.stop()
+  //     throw error
+  //   }
 
-    return addon
-  }
+  //   return addon
+  // }
 
   private async getAppDatabases(app: string): Promise<void> {
     const {body: appAttachments} = await this.heroku.get<pg.ExtendedAddonAttachment[]>(
@@ -348,7 +370,7 @@ export default class DataPgMigrate extends BaseCommand {
       },
     )
     const ownedDatabaseAttachments = appAttachments.filter(a => utils.pg.isPostgresAddon(a.addon) && a.addon.app.name === app)
-    const ownedDatabaseAddons: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']> = []
+    const ownedDatabaseAddons: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
     for (const attachment of ownedDatabaseAttachments) {
       if (!ownedDatabaseAddons.some(a => a.id === attachment.addon.id)) {
         ownedDatabaseAddons.push(attachment.addon)
@@ -364,15 +386,20 @@ export default class DataPgMigrate extends BaseCommand {
     this.advancedDatabases = ownedDatabaseAddons.filter(db => utils.pg.isAdvancedDatabase(db))
   }
 
-  private async getMigrationTargets(): Promise<void> {
-    const migrationPromises = this.advancedDatabases.map(db => this.dataApi.get<MigrationResponse>(`/data/postgres/v1/${db.id}/migrations`))
-    const migrationResults = await Promise.allSettled(migrationPromises)
+  private async getMigrationTargetsAndInfo(): Promise<void> {
+    const migrationPromises = Promise.allSettled(
+      this.advancedDatabases.map(db => this.dataApi.get<MigrationResponse>(`/data/postgres/v1/${db.id}/migrations`)),
+    )
+    const infoPromises = Promise.allSettled(
+      this.advancedDatabases.map(db => this.dataApi.get<InfoResponse>(`/data/postgres/v1/${db.id}/info`)),
+    )
+    const [migrationResults, infoResults] = await Promise.all([migrationPromises, infoPromises])
 
     // 404 errors are expected for Advanced databases that are not a migration target (at least not yet)
-    const unexpectedError = migrationResults
-      .filter(migrationResult => migrationResult.status === 'rejected')
-      .find(migrationResult => {
-        const error = (migrationResult as PromiseRejectedResult).reason
+    const unexpectedError = [...migrationResults, ...infoResults]
+      .filter(queryResult => queryResult.status === 'rejected')
+      .find(queryResult => {
+        const error = (queryResult as PromiseRejectedResult).reason
         if (error instanceof HerokuAPIError) {
           return error.http.statusCode !== 404
         }
@@ -383,15 +410,21 @@ export default class DataPgMigrate extends BaseCommand {
       ux.error((unexpectedError as PromiseRejectedResult).reason)
     }
 
+    for (const infoResult of infoResults) {
+      if (infoResult.status === 'fulfilled') {
+        this.advancedDatabases.find(db => db.id === infoResult.value.body.addon.id)!.info = infoResult.value.body
+      }
+    }
+
     this.migrationTargets = migrationResults
-      .filter(migrationResult => migrationResult.status === 'fulfilled')
-      .map(migrationResult => (migrationResult as PromiseFulfilledResult<HTTP<MigrationResponse>>).value.body)
+      .filter(queryResult => queryResult.status === 'fulfilled')
+      .map(queryResult => (queryResult as PromiseFulfilledResult<HTTP<MigrationResponse>>).value.body)
   }
 
   private async loopMainMenu(app: string): Promise<string> {
     // Update our database lists
     await this.getAppDatabases(app)
-    await this.getMigrationTargets()
+    await this.getMigrationTargetsAndInfo()
 
     const pendingMigrations = this.classicDatabases.filter(
       db => !this.migrationTargets.some(migration => migration.source_id === db.id),
@@ -417,7 +450,7 @@ export default class DataPgMigrate extends BaseCommand {
       })
       /* eslint-enable perfectionist/sort-objects */
     } else {
-      ux.stdout(`\nThere are no migrations configured for ${color.app(app)} yet.\n`)
+      ux.stdout(`There are no migrations configured for ${color.app(app)} yet.\n`)
     }
 
     const choices: Array<DistinctChoice<{ action: string }, ListChoiceMap<{ action: string }>>> = []

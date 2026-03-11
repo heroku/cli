@@ -1,15 +1,17 @@
-import {pg} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {pg} from '@heroku/heroku-cli-util'
 
 import {
   CredentialInfo,
   CredentialsInfo,
+  DatabaseStatus,
   DeepRequired,
   InfoResponse,
   MigrationResponse,
   MigrationStatus,
   NonAdvancedCredentialInfo,
   PoolInfoResponse,
+  PoolStatus,
   PostgresLevelsResponse,
   PricingInfoResponse,
   Quota,
@@ -285,7 +287,7 @@ export const pgInfo: InfoResponse = {
         leader: null,
       },
       name: 'leader',
-      status: 'available',
+      status: PoolStatus.AVAILABLE,
       wait_status: {
         message: null,
         waiting: false,
@@ -328,7 +330,7 @@ export const pgInfo: InfoResponse = {
         leader: null,
       },
       name: 'analytics',
-      status: 'available',
+      status: PoolStatus.AVAILABLE,
       wait_status: {
         message: null,
         waiting: false,
@@ -346,7 +348,7 @@ export const pgInfo: InfoResponse = {
     },
   ],
   region: 'us',
-  status: 'available',
+  status: DatabaseStatus.AVAILABLE,
   tier: 'advanced',
   version: '17.5',
 }
@@ -406,7 +408,7 @@ export const pgInfoWithDisabledFeatures: InfoResponse = {
         leader: null,
       },
       name: 'leader',
-      status: 'available',
+      status: PoolStatus.AVAILABLE,
       wait_status: {
         message: null,
         waiting: false,
@@ -678,7 +680,7 @@ export const createPoolResponse: PoolInfoResponse = {
     leader: null,
   },
   name: 'readers',
-  status: 'modifying',
+  status: PoolStatus.MODIFYING,
   wait_status: {
     message: 'Waiting for instances to become available',
     waiting: true,
@@ -1389,6 +1391,28 @@ export const shieldDbAttachment = {
   name: 'SHIELD_DB',
 } as unknown as pg.ExtendedAddonAttachment
 
+export const unavailableAdvancedDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: 'e7f365c8-b83a-49dd-b816-22324d7a2670',
+    name: 'postgresql-adjacent-12345',
+    plan: {
+      id: '093d4682-9ca8-4cee-9c72-9b3a22dcd820',
+      name: 'heroku-postgresql:advanced',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['UNAVAILABLE_DB_URL'],
+  id: '25f9453f-0de9-4958-8a9f-a1e84b0a9d7a',
+  name: 'UNAVAILABLE_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
 export const existentMigrationResponse: MigrationResponse = {
   auto_promote: false,
   cdc_lag: null,
@@ -1419,4 +1443,43 @@ export const createdMigrationResponse: MigrationResponse = {
   successful: false,
   tables_errored: 0,
   target_id: 'cc1995da-f3c2-4f9f-a805-fb0500257818', // Non Target Advanced DB
+}
+
+export const targetAdvancedDbInfo: InfoResponse = {
+  ...pgInfo,
+  addon: {
+    id: targetAdvancedDbAttachment.addon.id,
+    name: targetAdvancedDbAttachment.addon.name,
+  },
+  app: {
+    id: targetAdvancedDbAttachment.app.id,
+    name: targetAdvancedDbAttachment.app.name,
+  },
+  status: DatabaseStatus.MIGRATING,
+}
+
+export const nonTargetAdvancedDbInfo: InfoResponse = {
+  ...pgInfo,
+  addon: {
+    id: nonTargetAdvancedDbAttachment.addon.id,
+    name: nonTargetAdvancedDbAttachment.addon.name,
+  },
+  app: {
+    id: nonTargetAdvancedDbAttachment.app.id,
+    name: nonTargetAdvancedDbAttachment.app.name,
+  },
+  status: DatabaseStatus.AVAILABLE,
+}
+
+export const unavailableAdvancedDbInfo: InfoResponse = {
+  ...pgInfo,
+  addon: {
+    id: unavailableAdvancedDbAttachment.addon.id,
+    name: unavailableAdvancedDbAttachment.addon.name,
+  },
+  app: {
+    id: unavailableAdvancedDbAttachment.app.id,
+    name: unavailableAdvancedDbAttachment.app.name,
+  },
+  status: DatabaseStatus.UNAVAILABLE,
 }

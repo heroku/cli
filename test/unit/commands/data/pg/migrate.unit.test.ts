@@ -1,6 +1,6 @@
 /* eslint-disable import/no-named-as-default-member */
+// import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
-import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import mockStdin from 'mock-stdin'
@@ -9,8 +9,8 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import DataPgMigrate from '../../../../../src/commands/data/pg/migrate.js'
-import PoolConfig from '../../../../../src/lib/data/poolConfig.js'
-import {MigrationStatus} from '../../../../../src/lib/data/types.js'
+// import PoolConfig from '../../../../../src/lib/data/poolConfig.js'
+import {DatabaseStatus, MigrationStatus} from '../../../../../src/lib/data/types.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
   createdMigrationResponse,
@@ -18,29 +18,33 @@ import {
   existentMigrationResponse,
   foreignAdvancedDbAttachment,
   foreignStandardDbAttachment,
-  levelsResponse,
+  // levelsResponse,
   nonPostgresAddonAttachment,
   nonTargetAdvancedDbAttachment,
+  nonTargetAdvancedDbInfo,
   premiumDbAttachment,
-  pricingResponse,
-  privateDbAttachment,
-  shieldDbAttachment,
+  // pricingResponse,
+  // privateDbAttachment,
+  // shieldDbAttachment,
   standardDbAttachment,
   targetAdvancedDbAttachment,
+  targetAdvancedDbInfo,
+  unavailableAdvancedDbAttachment,
+  unavailableAdvancedDbInfo,
 } from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
 const {prompt} = inquirer
 
 describe('data:pg:migrate', function () {
-  let createAddonStub: sinon.SinonStub
+  // let createAddonStub: sinon.SinonStub
   let mockedStdinInput: string[] = []
-  let poolConfigLeaderInteractiveConfigStub: sinon.SinonStub
+  // let poolConfigLeaderInteractiveConfigStub: sinon.SinonStub
   let stdin: mockStdin.MockSTDIN
 
   beforeEach(function () {
-    createAddonStub = sinon.stub(DataPgMigrate.prototype, 'createAddon')
-    poolConfigLeaderInteractiveConfigStub = sinon.stub(PoolConfig.prototype, 'leaderInteractiveConfig')
+    // createAddonStub = sinon.stub(DataPgMigrate.prototype, 'createAddon')
+    // poolConfigLeaderInteractiveConfigStub = sinon.stub(PoolConfig.prototype, 'leaderInteractiveConfig')
     stdin = mockStdin.stdin()
     sinon.stub(DataPgMigrate.prototype, 'prompt').callsFake(async (...args: Parameters<typeof prompt>) => {
       process.nextTick(() => {
@@ -117,15 +121,17 @@ describe('data:pg:migrate', function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
-          targetAdvancedDbAttachment,
+          nonTargetAdvancedDbAttachment,
           standardDbAttachment,
         ])
       const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(404, {
           id: 'not_found',
           message: 'Add-on not found',
         })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
 
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
@@ -151,6 +157,8 @@ describe('data:pg:migrate', function () {
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
 
       // Simulate the user selecting the 'Exit' option by pressing Enter
       mockedStdinInput = ['\n']
@@ -175,6 +183,8 @@ describe('data:pg:migrate', function () {
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
 
       // Simulate the user selecting the 'Exit' option by pressing Enter
       mockedStdinInput = ['\n']
@@ -198,6 +208,8 @@ describe('data:pg:migrate', function () {
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
 
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
@@ -231,6 +243,8 @@ describe('data:pg:migrate', function () {
             ...existentMigrationResponse,
             status,
           })
+          .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+          .reply(200, targetAdvancedDbInfo)
 
         await runCommand(DataPgMigrate, ['--app=myapp'])
 
@@ -259,6 +273,8 @@ describe('data:pg:migrate', function () {
           ...existentMigrationResponse,
           status: MigrationStatus.READY,
         })
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
 
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
@@ -292,6 +308,7 @@ describe('data:pg:migrate', function () {
           premiumDbAttachment,
           standardDbAttachment,
           targetAdvancedDbAttachment,
+          unavailableAdvancedDbAttachment,
         ])
       dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
@@ -301,6 +318,17 @@ describe('data:pg:migrate', function () {
           id: 'not_found',
           message: 'Add-on not found',
         })
+        .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, unavailableAdvancedDbInfo)
         .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
           source_id: premiumDbAttachment.addon.id,
         })
@@ -309,6 +337,17 @@ describe('data:pg:migrate', function () {
         .reply(200, existentMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, unavailableAdvancedDbInfo)
     })
 
     afterEach(function () {
@@ -386,6 +425,8 @@ describe('data:pg:migrate', function () {
       // Entry for the non-target Advanced database should be enabled
       expect(targetDatabaseList).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB`)
       expect(targetDatabaseList).not.to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB (already a migration destination)`)
+      // Entry for the unavailable database should be disabled
+      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} as UNAVAILABLE_DB (database isn't available yet)`)
       // There should be no entries for non-Advanced or foreign databases
       expect(targetDatabaseList).not.to.contain(essentialDbAttachment.addon.name)
       expect(targetDatabaseList).not.to.contain(foreignAdvancedDbAttachment.addon.name)
@@ -419,206 +460,209 @@ describe('data:pg:migrate', function () {
     })
   })
 
-  describe('configure a new migration with a new target database created for the migration', function () {
-    beforeEach(async function () {
-      poolConfigLeaderInteractiveConfigStub.resolves({
-        action: '__confirm',
-        highAvailability: true,
-        level: '4G-Performance',
-      })
-      createAddonStub.resolves(nonTargetAdvancedDbAttachment.addon as unknown as Heroku.AddOn)
-    })
+  // We're disabling the option to create a new Advanced database while configuring a migration until the backend is updated
+  // to support it.
+  //
+  // describe('configure a new migration with a new target database created for the migration', function () {
+  //   beforeEach(async function () {
+  //     poolConfigLeaderInteractiveConfigStub.resolves({
+  //       action: '__confirm',
+  //       highAvailability: true,
+  //       level: '4G-Performance',
+  //     })
+  //     createAddonStub.resolves(nonTargetAdvancedDbAttachment.addon as unknown as Heroku.AddOn)
+  //   })
 
-    afterEach(function () {
-      nock.cleanAll()
-    })
+  //   afterEach(function () {
+  //     nock.cleanAll()
+  //   })
 
-    it('creates a database without private or shield networking for a non-Private/Shield source database', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          premiumDbAttachment,
-          standardDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
-          standardDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          source_id: premiumDbAttachment.addon.id,
-        })
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
+  //   it('creates a database without private or shield networking for a non-Private/Shield source database', async function () {
+  //     const herokuApi = nock('https://api.heroku.com')
+  //       .get('/apps/myapp/addon-attachments')
+  //       .reply(200, [
+  //         premiumDbAttachment,
+  //         standardDbAttachment,
+  //         targetAdvancedDbAttachment,
+  //       ])
+  //       .get('/apps/myapp/addon-attachments')
+  //       .reply(200, [
+  //         nonTargetAdvancedDbAttachment,
+  //         premiumDbAttachment,
+  //         standardDbAttachment,
+  //         targetAdvancedDbAttachment,
+  //       ])
+  //     const dataApi = nock('https://api.data.heroku.com')
+  //       .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, existentMigrationResponse)
+  //       .get('/data/postgres/v1/levels/advanced')
+  //       .reply(200, levelsResponse)
+  //       .get('/data/postgres/v1/pricing')
+  //       .reply(200, pricingResponse)
+  //       .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+  //         source_id: premiumDbAttachment.addon.id,
+  //       })
+  //       .reply(200, createdMigrationResponse)
+  //       .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, existentMigrationResponse)
+  //       .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, createdMigrationResponse)
 
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
-      ]
+  //     // Simulate the user selections
+  //     mockedStdinInput = [
+  //       '\n', // Main menu: > Configure a new migration
+  //       '\n', // Select source database: > Premium database
+  //       '\n', // Select target database: > Create database
+  //       '\n', // Confirm migration configuration: > Confirm
+  //       '\n', // Main menu: > Exit
+  //     ]
 
-      await runCommand(DataPgMigrate, ['--app=myapp'])
+  //     await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr.output).to.equal('Configuring migration... done\n')
-      expect(stdout.output).to.contain('→ Configure Leader Pool')
-      expect(createAddonStub.calledOnce).to.be.true
-      expect(createAddonStub.args[0][1]).to.equal(premiumDbAttachment.addon.app.name)
-      // Verify the service plan is correct (no private or shield networking)
-      expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced')
-      expect(createAddonStub.args[0][5]).to.deep.include({
-        config: {
-          'high-availability': true,
-          level: '4G-Performance',
-        },
-      })
-    })
+  //     herokuApi.done()
+  //     dataApi.done()
+  //     expect(stderr.output).to.equal('Configuring migration... done\n')
+  //     expect(stdout.output).to.contain('→ Configure Leader Pool')
+  //     expect(createAddonStub.calledOnce)
+  //     expect(createAddonStub.args[0][1]).to.equal(premiumDbAttachment.addon.app.name)
+  //     // Verify the service plan is correct (no private or shield networking)
+  //     expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced')
+  //     expect(createAddonStub.args[0][5]).to.deep.include({
+  //       config: {
+  //         'high-availability': true,
+  //         level: '4G-Performance',
+  //       },
+  //     })
+  //   })
 
-    it('creates a database with private networking for a Private source database', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          privateDbAttachment,
-          standardDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          privateDbAttachment,
-          standardDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          source_id: privateDbAttachment.addon.id,
-        })
-        .reply(200, {
-          ...createdMigrationResponse,
-          source_id: privateDbAttachment.addon.id,
-        })
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...createdMigrationResponse,
-          source_id: privateDbAttachment.addon.id,
-        })
+  //   it('creates a database with private networking for a Private source database', async function () {
+  //     const herokuApi = nock('https://api.heroku.com')
+  //       .get('/apps/myapp/addon-attachments')
+  //       .reply(200, [
+  //         privateDbAttachment,
+  //         standardDbAttachment,
+  //         targetAdvancedDbAttachment,
+  //       ])
+  //       .get('/apps/myapp/addon-attachments')
+  //       .reply(200, [
+  //         nonTargetAdvancedDbAttachment,
+  //         privateDbAttachment,
+  //         standardDbAttachment,
+  //         targetAdvancedDbAttachment,
+  //       ])
+  //     const dataApi = nock('https://api.data.heroku.com')
+  //       .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, existentMigrationResponse)
+  //       .get('/data/postgres/v1/levels/advanced')
+  //       .reply(200, levelsResponse)
+  //       .get('/data/postgres/v1/pricing')
+  //       .reply(200, pricingResponse)
+  //       .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+  //         source_id: privateDbAttachment.addon.id,
+  //       })
+  //       .reply(200, {
+  //         ...createdMigrationResponse,
+  //         source_id: privateDbAttachment.addon.id,
+  //       })
+  //       .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, existentMigrationResponse)
+  //       .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, {
+  //         ...createdMigrationResponse,
+  //         source_id: privateDbAttachment.addon.id,
+  //       })
 
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
-        '\n', // Select source database: > Private database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
-      ]
+  //     // Simulate the user selections
+  //     mockedStdinInput = [
+  //       '\n', // Main menu: > Configure a new migration
+  //       '\n', // Select source database: > Private database
+  //       '\n', // Select target database: > Create database
+  //       '\n', // Confirm migration configuration: > Confirm
+  //       '\n', // Main menu: > Exit
+  //     ]
 
-      await runCommand(DataPgMigrate, ['--app=myapp'])
+  //     await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr.output).to.equal('Configuring migration... done\n')
-      expect(stdout.output).to.contain('→ Configure Leader Pool')
-      expect(createAddonStub.calledOnce).to.be.true
-      expect(createAddonStub.args[0][1]).to.equal(privateDbAttachment.addon.app.name)
-      // Verify the service plan is correct (private networking)
-      expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-private')
-      expect(createAddonStub.args[0][5]).to.deep.include({
-        config: {
-          'high-availability': true,
-          level: '4G-Performance',
-        },
-      })
-    })
+  //     herokuApi.done()
+  //     dataApi.done()
+  //     expect(stderr.output).to.equal('Configuring migration... done\n')
+  //     expect(stdout.output).to.contain('→ Configure Leader Pool')
+  //     expect(createAddonStub.calledOnce)
+  //     expect(createAddonStub.args[0][1]).to.equal(privateDbAttachment.addon.app.name)
+  //     // Verify the service plan is correct (private networking)
+  //     expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-private')
+  //     expect(createAddonStub.args[0][5]).to.deep.include({
+  //       config: {
+  //         'high-availability': true,
+  //         level: '4G-Performance',
+  //       },
+  //     })
+  //   })
 
-    it('creates a database with shield networking for a Shield source database', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          shieldDbAttachment,
-          standardDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          shieldDbAttachment,
-          standardDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          source_id: shieldDbAttachment.addon.id,
-        })
-        .reply(200, {
-          ...createdMigrationResponse,
-          source_id: shieldDbAttachment.addon.id,
-        })
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...createdMigrationResponse,
-          source_id: shieldDbAttachment.addon.id,
-        })
+  //   it('creates a database with shield networking for a Shield source database', async function () {
+  //     const herokuApi = nock('https://api.heroku.com')
+  //       .get('/apps/myapp/addon-attachments')
+  //       .reply(200, [
+  //         shieldDbAttachment,
+  //         standardDbAttachment,
+  //         targetAdvancedDbAttachment,
+  //       ])
+  //       .get('/apps/myapp/addon-attachments')
+  //       .reply(200, [
+  //         nonTargetAdvancedDbAttachment,
+  //         shieldDbAttachment,
+  //         standardDbAttachment,
+  //         targetAdvancedDbAttachment,
+  //       ])
+  //     const dataApi = nock('https://api.data.heroku.com')
+  //       .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, existentMigrationResponse)
+  //       .get('/data/postgres/v1/levels/advanced')
+  //       .reply(200, levelsResponse)
+  //       .get('/data/postgres/v1/pricing')
+  //       .reply(200, pricingResponse)
+  //       .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+  //         source_id: shieldDbAttachment.addon.id,
+  //       })
+  //       .reply(200, {
+  //         ...createdMigrationResponse,
+  //         source_id: shieldDbAttachment.addon.id,
+  //       })
+  //       .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, existentMigrationResponse)
+  //       .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+  //       .reply(200, {
+  //         ...createdMigrationResponse,
+  //         source_id: shieldDbAttachment.addon.id,
+  //       })
 
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
-        '\n', // Select source database: > Shield database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
-      ]
+  //     // Simulate the user selections
+  //     mockedStdinInput = [
+  //       '\n', // Main menu: > Configure a new migration
+  //       '\n', // Select source database: > Shield database
+  //       '\n', // Select target database: > Create database
+  //       '\n', // Confirm migration configuration: > Confirm
+  //       '\n', // Main menu: > Exit
+  //     ]
 
-      await runCommand(DataPgMigrate, ['--app=myapp'])
+  //     await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr.output).to.equal('Configuring migration... done\n')
-      expect(stdout.output).to.contain('→ Configure Leader Pool')
-      expect(createAddonStub.calledOnce).to.be.true
-      expect(createAddonStub.args[0][1]).to.equal(shieldDbAttachment.addon.app.name)
-      // Verify the service plan is correct (shield networking)
-      expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-shield')
-      expect(createAddonStub.args[0][5]).to.deep.include({
-        config: {
-          'high-availability': true,
-          level: '4G-Performance',
-        },
-      })
-    })
-  })
+  //     herokuApi.done()
+  //     dataApi.done()
+  //     expect(stderr.output).to.equal('Configuring migration... done\n')
+  //     expect(stdout.output).to.contain('→ Configure Leader Pool')
+  //     expect(createAddonStub.calledOnce)
+  //     expect(createAddonStub.args[0][1]).to.equal(shieldDbAttachment.addon.app.name)
+  //     // Verify the service plan is correct (shield networking)
+  //     expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-shield')
+  //     expect(createAddonStub.args[0][5]).to.deep.include({
+  //       config: {
+  //         'high-availability': true,
+  //         level: '4G-Performance',
+  //       },
+  //     })
+  //   })
+  // })
 
   describe('start a migration', function () {
     let herokuApi: nock.Scope
@@ -642,6 +686,10 @@ describe('data:pg:migrate', function () {
         })
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
         .reply(202, {})
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
@@ -651,6 +699,10 @@ describe('data:pg:migrate', function () {
         })
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
     })
 
     afterEach(function () {
@@ -733,6 +785,10 @@ describe('data:pg:migrate', function () {
         })
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
@@ -742,6 +798,10 @@ describe('data:pg:migrate', function () {
         })
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, {...targetAdvancedDbInfo, status: DatabaseStatus.AVAILABLE})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
     })
 
     afterEach(function () {
