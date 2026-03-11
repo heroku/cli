@@ -6,6 +6,9 @@ import cliProgress from 'cli-progress'
 import crypto from 'crypto'
 import debug from 'debug'
 import fs from 'fs'
+import * as fsp from 'fs/promises'
+import os from 'os'
+import path from 'path'
 import {Client, ConnectConfig} from 'ssh2'
 import stream from 'stream'
 import tmp from 'tmp'
@@ -24,7 +27,7 @@ export class HerokuSsh {
         if (context.args.length > 0 && !context.args.includes('bash')) {
           const cmd = this._buildCommand(context.args)
           sshDebug(`[cli-ssh] command: ${cmd}`)
-          conn.exec(cmd, (err, stream) => {
+          conn.exec(cmd, {pty: true}, (err, stream) => {
             sshDebug('[cli-ssh] exec')
             if (err) {
               sshDebug(`[cli-ssh] err: ${err}`)
@@ -38,7 +41,10 @@ export class HerokuSsh {
               if (callback) callback()
             })
               .on('data', this._readData(stream))
-              .on('error', reject)
+              .stderr.on('data', (data: Buffer) => {
+                process.stderr.write(data)
+              })
+            stream.on('error', reject)
             process.once('SIGINT', () => conn.end())
           })
         } else {
@@ -84,45 +90,39 @@ export class HerokuSsh {
     })
   }
 
-  public ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
+  public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
     sshDebug('[cli-ssh] native')
-    return new Promise<void>(() => {
-      tmp.setGracefulCleanup()
-      tmp.file({prefix: 'heroku-exec-key'}, (error: Error | null, infoPath: string, infoFd: number) => {
-        if (!error) {
-          fs.writeSync(infoFd, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey))
-          fs.close(infoFd, () => {
-            fs.chmodSync(infoPath, '0700')
-            tmp.file({prefix: 'heroku-exec-proxy-key'}, (error: Error | null, proxyKeyPath: string, proxyKeyFd: number) => {
-              if (!error) {
-                fs.writeSync(proxyKeyFd, `[${addonHost}]:80 ${proxyKey}`)
-                fs.close(proxyKeyFd, () => {
-                  let sshCommand = 'ssh '
-                    + `-o UserKnownHostsFile=${proxyKeyPath} `
-                    + '-o ServerAliveInterval=10 '
-                    + '-o ServerAliveCountMax=3 '
-                    + '-p 80 '
-                    + `-i ${infoPath} `
-                    + `${dynoUser}@${addonHost} `
 
-                  if (context.args.length > 0 && !context.args.includes('bash')) {
-                    sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
-                  }
+    const tmpDir = os.tmpdir()
+    const keyPath = path.join(tmpDir, `heroku-exec-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+    const proxyKeyPath = path.join(tmpDir, `heroku-exec-proxy-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
 
-                  try {
-                    child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']},
-                    )
-                  } catch (error: any) {
-                    if (error.stderr) sshDebug(error.stderr)
-                    sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
-                  }
-                })
-              }
-            })
-          })
-        }
-      })
-    })
+    try {
+      await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
+      await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
+
+      let sshCommand = 'ssh '
+        + `-o UserKnownHostsFile=${proxyKeyPath} `
+        + '-o ServerAliveInterval=10 '
+        + '-o ServerAliveCountMax=3 '
+        + '-p 80 '
+        + `-i ${keyPath} `
+        + `${dynoUser}@${addonHost} `
+
+      if (context.args.length > 0 && !context.args.includes('bash')) {
+        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
+      }
+
+      try {
+        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
+      } catch (error: any) {
+        if (error.stderr) sshDebug(error.stderr)
+        sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
+      }
+    } finally {
+      await fsp.unlink(keyPath).catch(() => {})
+      await fsp.unlink(proxyKeyPath).catch(() => {})
+    }
   }
 
   public scp(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, src: string, dest: string) {

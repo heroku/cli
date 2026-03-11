@@ -2,6 +2,7 @@ import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
+import debug from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
@@ -49,6 +50,7 @@ export default class Exec extends Command {
 
     const exec = new HerokuExec()
     const ssh = new HerokuSsh()
+    const psExecDebug = debug('cli:ps:exec')
 
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
       if (status) {
@@ -57,12 +59,15 @@ export default class Exec extends Command {
         await exec.updateClientKey(context, this.heroku, configVars, (privateKey, dyno, response) => {
           const message = `Connecting to ${color.cyan.bold(dyno)} on ${color.app(app)}`
           ux.action.start(message)
+          psExecDebug(response.body)
           const json = JSON.parse(response.body)
           if (useNativeSsh) {
             ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
           } else {
             ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
           }
+
+          ux.action.stop()
         })
       }
     }, 'exec')
