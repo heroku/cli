@@ -50,7 +50,9 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
       }
 
       credAttachments = attachments.filter(a => a.namespace === `role:${name}`)
-    } else if (isEssentialTier || name === 'default') {
+    } else if (isEssentialTier) {
+      ux.error('You can\'t destroy custom credentials on Essential-tier databases.')
+    } else if (name === 'default') {
       ux.error('You can\'t destroy the default credential.')
     } else {
       const {body: attachments} = await this.heroku.get<Required<AddOnAttachment>[]>(

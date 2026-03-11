@@ -38,7 +38,7 @@ describe('data:pg:credentials:destroy', function () {
 
       herokuApi.done()
       expect(ansis.strip(err.message)).to.equal(
-        'You can\'t destroy the default credential.',
+        'You can\'t destroy custom credentials on Essential-tier databases.',
       )
     }
   })
@@ -60,7 +60,29 @@ describe('data:pg:credentials:destroy', function () {
 
       herokuApi.done()
       expect(ansis.strip(err.message)).to.equal(
-        'You can\'t destroy the default credential.',
+        'You can\'t destroy custom credentials on Essential-tier databases.',
+      )
+    }
+  })
+
+  it('shows error for Essential-tier databases when destroying non-default credential', async function () {
+    const herokuApi = nock('https://api.heroku.com')
+      .post('/actions/addons/resolve')
+      .reply(200, [essentialAddon])
+
+    try {
+      await runCommand(DataPgCredentialsDestroy, [
+        addon.name!,
+        '--app=myapp',
+        '--name=my-credential',
+        '--confirm=myapp',
+      ])
+    } catch (error: unknown) {
+      const err = error as Error
+
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal(
+        'You can\'t destroy custom credentials on Essential-tier databases.',
       )
     }
   })
