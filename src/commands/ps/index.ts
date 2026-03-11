@@ -86,7 +86,7 @@ function printExtended(dynos: DynoExtended[]) {
 }
 
 async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account: Account) {
-  if (app.process_tier !== 'free' && app.process_tier !== 'eco') {
+  if (app.process_tier !== 'eco') {
     return
   }
 
@@ -116,21 +116,11 @@ async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account
   const appHours = Math.floor(appQuotaUsed / 60)
   const appMinutes = Math.floor(appQuotaUsed % 60)
 
-  if (app.process_tier === 'eco') {
-    ux.stdout(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
-    ux.stdout(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
-    ux.stdout('For more information on Eco dyno hours, see:')
-    ux.stdout(color.info('https://devcenter.heroku.com/articles/eco-dyno-hours'))
-    ux.stdout()
-  }
-
-  if (app.process_tier === 'free') {
-    ux.stdout(`Free dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
-    ux.stdout(`Free dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
-    ux.stdout('For more information on dyno sleeping and how to upgrade, see:')
-    ux.stdout(color.info('https://devcenter.heroku.com/articles/dyno-sleeping'))
-    ux.stdout()
-  }
+  ux.stdout(`Eco dyno hours quota remaining this month: ${hours}h ${minutes}m (${percentage}%)`)
+  ux.stdout(`Eco dyno usage for this app: ${appHours}h ${appMinutes}m (${appPercentage}%)`)
+  ux.stdout('For more information on Eco dyno hours, see:')
+  ux.stdout(color.info('https://devcenter.heroku.com/articles/eco-dyno-hours'))
+  ux.stdout()
 }
 
 function decorateOneOffDyno(dyno: DynoExtended) : string {
