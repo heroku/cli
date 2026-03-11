@@ -63,7 +63,7 @@ export default class Forward extends Command {
     })
 
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
-      exec.createSocksProxy(context, this.heroku, configVars, (dynoIp: string, dynoName: string, socksPort: number) => {
+      await exec.createSocksProxy(context, this.heroku, configVars, (dynoIp: string, dynoName: string, socksPort: number) => {
         for (const portMapping of portMappings) {
           const [localPortNum, remotePort] = portMapping
 
@@ -89,15 +89,8 @@ export default class Forward extends Command {
 
     // Keep the process running until interrupted
     await new Promise<void>(resolve => {
-      process.on('SIGINT', () => {
-        ux.stdout('Stopping port forwarding...')
-        resolve()
-      })
-
-      process.on('SIGTERM', () => {
-        ux.stdout('Stopping port forwarding...')
-        resolve()
-      })
+      process.once('SIGINT', resolve)
+      process.once('SIGTERM', resolve)
     })
   }
 }

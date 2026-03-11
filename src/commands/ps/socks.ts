@@ -41,7 +41,7 @@ export default class Socks extends Command {
     const exec = new HerokuExec()
 
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
-      exec.createSocksProxy(context, this.heroku, configVars)
+      await exec.createSocksProxy(context, this.heroku, configVars)
     }, 'socks')
 
     // Keep the process running until interrupted
