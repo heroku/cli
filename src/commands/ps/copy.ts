@@ -15,7 +15,7 @@ export default class Copy extends Command {
 
   static description = 'Copy a file from a dyno to the local filesystem'
 
-  static examples = ['heroku ps:copy FILENAME --app murmuring-headland-14719']
+  static examples = [`${color.command('heroku ps:copy FILENAME --app murmuring-headland-14719')}`]
 
   static flags = {
     app: flags.app({required: true}),

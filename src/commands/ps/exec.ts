@@ -3,20 +3,17 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core'
 import debug from 'debug'
-import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../lib/ps-exec/ssh.js'
 
-const heredoc = tsheredoc.default
-
 export default class Exec extends Command {
   static description = 'Create an SSH session to a dyno'
 
-  static examples = [heredoc`
-    $ heroku ps:exec' --app murmuring-headland-14719
-    $ heroku ps:exec --app murmuring-headland-14719 -- node -i
-  `]
+  static examples = [
+    `${color.command('heroku ps:exec --app murmuring-headland-14719')}`,
+    `${color.command('heroku ps:exec --app murmuring-headland-14719 -- node -i')}`,
+  ]
 
   static flags = {
     app: flags.app({required: true}),

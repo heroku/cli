@@ -23,7 +23,7 @@ export default class Forward extends Command {
     For example, "4000,9000:9001" will forward port 4000 to port 4000 and
     port 9000 to port 9001.
 
-    $ ${color.command('heroku ps:forward 8080 --app murmuring-headland-14719')}
+    ${color.command('heroku ps:forward 8080 --app murmuring-headland-14719')}
   `]
 
   static flags = {
