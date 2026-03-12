@@ -61,20 +61,20 @@ async function createArchive(ref: string): Promise<any> {
   })
 }
 
-function parseGitHubUrl(url: string): {user: string; repo: string} | null {
+function parseGitHubUrl(url: string): null | {repo: string; user: string;} {
   // Remove git+ prefix if present
   url = url.replace(/^git\+/, '')
 
   // Handle SSH format: git@github.com:user/repo.git
   const sshMatch = url.match(/^git@github\.com:([^/]+)\/([^/.]+)(?:\.git)?$/)
   if (sshMatch) {
-    return {user: sshMatch[1], repo: sshMatch[2]}
+    return {repo: sshMatch[2], user: sshMatch[1]}
   }
 
   // Handle HTTPS format: https://github.com/user/repo.git
   const httpsMatch = url.match(/^https?:\/\/github\.com\/([^/]+)\/([^/.]+)(?:\.git)?$/)
   if (httpsMatch) {
-    return {user: httpsMatch[1], repo: httpsMatch[2]}
+    return {repo: httpsMatch[2], user: httpsMatch[1]}
   }
 
   return null
@@ -119,11 +119,11 @@ function gitUrl(app?: string) {
  * and value is an array of objects containing
  * the 'name' (heroku, heroku-dev, etc.) and 'kind' (fetch, push, etc.)
  */
-async function listRemotes(): Promise<Map<string, {name: string, kind: string}[]>> {
+async function listRemotes(): Promise<Map<string, {kind: string; name: string,}[]>> {
   const gitRemotes = await runGit('remote', '-v')
   const lines = gitRemotes.trim().split('\n')
-  const remotes = lines.map(line => line.trim().split(/\s+/)).map(([name, url, kind]) => ({name, url, kind}))
-  const remotesByUrl = new Map<string, {name: string, kind: string}[]>()
+  const remotes = lines.map(line => line.trim().split(/\s+/)).map(([name, url, kind]) => ({kind, name, url}))
+  const remotesByUrl = new Map<string, {kind: string; name: string,}[]>()
 
   remotes.forEach(remote => {
     const {url, ...nameAndKind} = remote
@@ -182,8 +182,8 @@ export const gitService = new GitService()
 export {
   createArchive,
   createRemote,
-  gitUrl,
   githubRepository,
+  gitUrl,
   inGitRepo,
   listRemotes,
   readCommit,
