@@ -263,3 +263,7 @@ export enum MaintenanceStatus {
   ready = 'ready',
   running = 'running',
 }
+
+export type UpgradeResponse = {
+  message: string
+}
