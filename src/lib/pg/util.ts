@@ -1,3 +1,4 @@
+import type {APIClient} from '@heroku-cli/command'
 import type {AddOnAttachment} from '@heroku-cli/schema'
 
 import {
@@ -124,3 +125,64 @@ export const databaseNameFromUrl = (uri: string, config: Record<string, string>)
   const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(uri)
   return `${conn.host}:${conn.port}${conn.pathname}`
 }
+
+/**
+ * Helper function that attempts to find all Heroku Postgres Advanced-tier attachments on a given app.
+ *
+ * @param heroku - The API client to use
+ * @param app - The name of the app to get the attachments for
+ * @returns Promise resolving to an array of all Heroku Postgres Advanced-tier attachments on the app
+ */
+async function allAdvancedDatabaseAttachments(heroku: APIClient, app: string) {
+  const {body: attachments} = await heroku.get<pg.ExtendedAddonAttachment[]>(
+    `/apps/${app}/addon-attachments`,
+    {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+        'Accept-Inclusion': 'addon:plan,config_vars',
+      },
+    },
+  )
+  return attachments.filter(a => utils.pg.isAdvancedDatabase(a.addon))
+}
+
+/**
+ * Return all Heroku Postgres databases on the Advanced-tier for a given app.
+ *
+ * @param heroku - The API client to use
+ * @param app - The name of the app to get the databases for
+ * @returns Promise resolving to all Heroku Postgres databases
+ * @throws {Error} When no legacy database add-on exists on the app
+ */
+export async function getAllAdvancedDatabases(heroku: APIClient, app: string): Promise<Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']>> {
+  const allAttachments = await allAdvancedDatabaseAttachments(heroku, app)
+  const addons: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']> = []
+  for (const attachment of allAttachments) {
+    if (!addons.some(a => a.id === attachment.addon.id)) {
+      addons.push(attachment.addon)
+    }
+  }
+
+  const attachmentNamesByAddon = getAttachmentNamesByAddon(allAttachments)
+  for (const addon of addons) {
+    addon.attachment_names = attachmentNamesByAddon[addon.id]
+  }
+
+  return addons
+}
+
+/**
+ * Helper function that groups attachment names by addon.
+ *
+ * @param attachments - The attachments to group by addon
+ * @returns A record of addon IDs with their attachment names
+ */
+export function getAttachmentNamesByAddon(attachments: pg.ExtendedAddonAttachment[]): Record<string, string[]> {
+  const addons: Record<string, string[]> = {}
+  for (const attachment of attachments) {
+    addons[attachment.addon.id] = [...(addons[attachment.addon.id] || []), attachment.name]
+  }
+
+  return addons
+}
+
