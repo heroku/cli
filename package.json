@@ -204,8 +204,7 @@
         "./dist/hooks/update/completions",
         "./dist/hooks/update/tidy",
         "./dist/hooks/recache",
-        "./dist/hooks/update/show-version-info",
-        "./dist/hooks/update/check-plugin-health"
+        "./dist/hooks/update/show-version-info"
       ]
     },
     "macos": {
