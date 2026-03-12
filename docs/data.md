@@ -58,7 +58,7 @@ EXAMPLES
   $ heroku data:maintenances:info DATABASE --app test-app
 ```
 
-_See code: [src/commands/data/maintenances/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/maintenances/info.ts)_
+_See code: [src/commands/data/maintenances/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/maintenances/info.ts)_
 
 ## `heroku data:maintenances:run ADDON`
 
@@ -94,7 +94,7 @@ EXAMPLES
   $ heroku data:maintenances:run DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/run.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/maintenances/run.ts)_
+_See code: [src/commands/data/maintenances/run.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/maintenances/run.ts)_
 
 ## `heroku data:maintenances:schedule ADDON`
 
@@ -131,7 +131,7 @@ EXAMPLES
   $ heroku data:maintenances:schedule HEROKU_POSTGRESQL_RED --app test-app
 ```
 
-_See code: [src/commands/data/maintenances/schedule.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/maintenances/schedule.ts)_
+_See code: [src/commands/data/maintenances/schedule.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/maintenances/schedule.ts)_
 
 ## `heroku data:maintenances:wait ADDON`
 
@@ -160,7 +160,7 @@ EXAMPLES
   $ heroku data:maintenances:wait DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/maintenances/wait.ts)_
+_See code: [src/commands/data/maintenances/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/maintenances/wait.ts)_
 
 ## `heroku data:maintenances:window ADDON`
 
@@ -190,7 +190,7 @@ EXAMPLES
   $ heroku data:maintenances:window DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/window/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/maintenances/window/index.ts)_
+_See code: [src/commands/data/maintenances/window/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/maintenances/window/index.ts)_
 
 ## `heroku data:maintenances:window:update ADDON DAY_OF_WEEK TIME_OF_DAY`
 
@@ -224,7 +224,7 @@ EXAMPLES
   $ heroku data:maintenances:window DATABASE sunday 1:30PM --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/window/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/maintenances/window/update.ts)_
+_See code: [src/commands/data/maintenances/window/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/maintenances/window/update.ts)_
 
 ## `heroku data:pg:attachments DATABASE`
 
@@ -251,7 +251,7 @@ EXAMPLES
   $ heroku data:pg:attachments database_name -a example-app
 ```
 
-_See code: [src/commands/data/pg/attachments/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/attachments/index.ts)_
+_See code: [src/commands/data/pg/attachments/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/attachments/index.ts)_
 
 ## `heroku data:pg:attachments:create DATABASE`
 
@@ -280,7 +280,7 @@ DESCRIPTION
   attach an existing Postgres Advanced database to an app
 ```
 
-_See code: [src/commands/data/pg/attachments/create.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/attachments/create.ts)_
+_See code: [src/commands/data/pg/attachments/create.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/attachments/create.ts)_
 
 ## `heroku data:pg:attachments:destroy ATTACHMENT_NAME`
 
@@ -305,7 +305,7 @@ DESCRIPTION
   detach an existing database attachment from an app
 ```
 
-_See code: [src/commands/data/pg/attachments/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/attachments/destroy.ts)_
+_See code: [src/commands/data/pg/attachments/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/attachments/destroy.ts)_
 
 ## `heroku data:pg:create`
 
@@ -341,7 +341,7 @@ EXAMPLES
   $ heroku data:pg:create --level 4G-Performance -a example-app
 ```
 
-_See code: [src/commands/data/pg/create.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/create.ts)_
+_See code: [src/commands/data/pg/create.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/create.ts)_
 
 ## `heroku data:pg:credentials DATABASE`
 
@@ -368,7 +368,7 @@ EXAMPLES
   $ heroku data:pg:credentials database_name -a example-app
 ```
 
-_See code: [src/commands/data/pg/credentials/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/credentials/index.ts)_
+_See code: [src/commands/data/pg/credentials/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/credentials/index.ts)_
 
 ## `heroku data:pg:credentials:create DATABASE`
 
@@ -396,7 +396,7 @@ EXAMPLES
   $ heroku data:pg:credentials:create DATABASE --name my-credential --app example-app
 ```
 
-_See code: [src/commands/data/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/credentials/create.ts)_
+_See code: [src/commands/data/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/credentials/create.ts)_
 
 ## `heroku data:pg:credentials:destroy DATABASE`
 
@@ -425,7 +425,7 @@ EXAMPLES
   $ heroku data:pg:credentials:destroy DATABASE --name my-credential --app example-app
 ```
 
-_See code: [src/commands/data/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/credentials/destroy.ts)_
+_See code: [src/commands/data/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/credentials/destroy.ts)_
 
 ## `heroku data:pg:credentials:rotate DATABASE`
 
@@ -455,7 +455,7 @@ DESCRIPTION
   rotate credentials on a Postgres database
 ```
 
-_See code: [src/commands/data/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/credentials/rotate.ts)_
+_See code: [src/commands/data/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/credentials/rotate.ts)_
 
 ## `heroku data:pg:credentials:url DATABASE`
 
@@ -483,7 +483,7 @@ EXAMPLES
   $ heroku data:pg:credentials:url DATABASE --app myapp
 ```
 
-_See code: [src/commands/data/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/credentials/url.ts)_
+_See code: [src/commands/data/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/credentials/url.ts)_
 
 ## `heroku data:pg:destroy DATABASE`
 
@@ -512,7 +512,7 @@ EXAMPLES
   $ heroku data:pg:destroy database_name
 ```
 
-_See code: [src/commands/data/pg/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/destroy.ts)_
+_See code: [src/commands/data/pg/destroy.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/destroy.ts)_
 
 ## `heroku data:pg:docs`
 
@@ -532,7 +532,7 @@ DESCRIPTION
   open documentation for Heroku Postgres in your web browser
 ```
 
-_See code: [src/commands/data/pg/docs.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/docs.ts)_
+_See code: [src/commands/data/pg/docs.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/docs.ts)_
 
 ## `heroku data:pg:fork DATABASE`
 
@@ -580,7 +580,7 @@ EXAMPLES
     $ heroku data:pg:fork DATABASE --app my-app --as RESTORED --rollback-by '1 day 3 hours 20 minutes'
 ```
 
-_See code: [src/commands/data/pg/fork.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/fork.ts)_
+_See code: [src/commands/data/pg/fork.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/fork.ts)_
 
 ## `heroku data:pg:info DATABASE`
 
@@ -607,7 +607,7 @@ EXAMPLES
   $ heroku data:pg:info database_name
 ```
 
-_See code: [src/commands/data/pg/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/info.ts)_
+_See code: [src/commands/data/pg/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/info.ts)_
 
 ## `heroku data:pg:psql DATABASE`
 
@@ -638,7 +638,7 @@ EXAMPLES
   $ heroku data:pg:psql database_name -a example-app
 ```
 
-_See code: [src/commands/data/pg/psql.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/psql.ts)_
+_See code: [src/commands/data/pg/psql.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/psql.ts)_
 
 ## `heroku data:pg:quotas DATABASE`
 
@@ -667,7 +667,7 @@ EXAMPLES
   $ heroku data:pg:quotas database_name --app example-app
 ```
 
-_See code: [src/commands/data/pg/quotas/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/quotas/index.ts)_
+_See code: [src/commands/data/pg/quotas/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/quotas/index.ts)_
 
 ## `heroku data:pg:quotas:update DATABASE`
 
@@ -701,7 +701,7 @@ EXAMPLES
   $ heroku data:pg:quotas:update --app example-app --type storage --warning 12 --critical 15 --enforcement-action notify
 ```
 
-_See code: [src/commands/data/pg/quotas/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/quotas/update.ts)_
+_See code: [src/commands/data/pg/quotas/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/quotas/update.ts)_
 
 ## `heroku data:pg:settings DATABASE`
 
@@ -737,7 +737,7 @@ EXAMPLES
       app_name
 ```
 
-_See code: [src/commands/data/pg/settings.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/settings.ts)_
+_See code: [src/commands/data/pg/settings.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/settings.ts)_
 
 ## `heroku data:pg:update [DATABASE]`
 
@@ -758,4 +758,4 @@ DESCRIPTION
   update a Postgres Advanced database through interactive prompts
 ```
 
-_See code: [src/commands/data/pg/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/data/pg/update.ts)_
+_See code: [src/commands/data/pg/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.3/src/commands/data/pg/update.ts)_

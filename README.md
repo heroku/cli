@@ -74,7 +74,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
-* [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
+* [`heroku ps`](docs/ps.md) - manage app dynos
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
@@ -89,7 +89,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
 * [`heroku usage`](docs/usage.md) - list usage for metered add-ons attached to an app or apps within a team
-* [`heroku version`](docs/version.md)
+* [`heroku version`](docs/version.md) - display changelog information for a specific CLI version
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
