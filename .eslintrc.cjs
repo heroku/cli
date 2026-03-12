@@ -15,6 +15,7 @@ module.exports = {
     {
       files: ['**/test/**/*.ts', '**/test/**/*.js', 'test/**/*.ts', 'test/**/*.js'],
       rules: {
+        '@typescript-eslint/no-unused-expressions': 'off',
         'mocha/prefer-arrow-callback': 'off',
         'prefer-arrow-callback': 'off',
       },

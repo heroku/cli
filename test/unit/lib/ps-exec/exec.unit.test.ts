@@ -1,7 +1,7 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
+import {Errors, ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import child from 'node:child_process'
@@ -16,10 +16,8 @@ describe('HerokuExec', function () {
   let herokuExec: HerokuExec
   let uxActionStartStub: sinon.SinonStub
   let uxActionStopStub: sinon.SinonStub
-  let uxErrorStub: sinon.SinonStub
   let uxStdoutStub: sinon.SinonStub
   let uxWarnStub: sinon.SinonStub
-  let uxExitStub: sinon.SinonStub
   let huxPromptStub: sinon.SinonStub
   let huxStyledHeaderStub: sinon.SinonStub
   let huxTableStub: sinon.SinonStub
@@ -29,11 +27,9 @@ describe('HerokuExec', function () {
     herokuExec = new HerokuExec()
     uxActionStartStub = sinon.stub(ux.action, 'start')
     uxActionStopStub = sinon.stub(ux.action, 'stop')
-    uxErrorStub = sinon.stub(ux, 'error')
     uxStdoutStub = sinon.stub(ux, 'stdout')
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxExitStub = sinon.stub(ux, 'exit')
-    huxPromptStub = sinon.stub(hux, 'prompt')
+    huxPromptStub = sinon.stub(hux, 'prompt').resolves('n')
     huxStyledHeaderStub = sinon.stub(hux, 'styledHeader')
     huxTableStub = sinon.stub(hux, 'table')
   })
@@ -213,7 +209,11 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(200, [])
 
-      await herokuExec.checkStatus(context, herokuAPI, configVars)
+      try {
+        await herokuExec.checkStatus(context, herokuAPI, configVars)
+      } catch {
+        // Expected to throw after displaying header
+      }
 
       expect(huxStyledHeaderStub.calledOnce).to.be.true
       expect(huxStyledHeaderStub.firstCall.args[0]).to.include('myapp')
@@ -231,10 +231,13 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(200, [])
 
-      await herokuExec.checkStatus(context, herokuAPI, configVars)
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('Heroku Exec is not running')
+      try {
+        await herokuExec.checkStatus(context, herokuAPI, configVars)
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(message).to.include('Heroku Exec is not running')
+      }
     })
 
     it('renders a table row per reservation with proxy_status: running', async function () {
@@ -257,7 +260,7 @@ describe('HerokuExec', function () {
       expect(tableData[0]).to.have.property('proxy_status', 'running')
     })
 
-    it('calls ux.error and does not throw when the HTTP request rejects', async function () {
+    it('throws an error when the HTTP request rejects', async function () {
       const configVars = {}
       const dynos: Heroku.Dyno[] = []
 
@@ -269,9 +272,13 @@ describe('HerokuExec', function () {
         .get('/api/v2')
         .reply(500, 'Internal Server Error')
 
-      await herokuExec.checkStatus(context, herokuAPI, configVars)
-
-      expect(uxErrorStub.called).to.be.true
+      try {
+        await herokuExec.checkStatus(context, herokuAPI, configVars)
+        expect.fail('should have thrown')
+      } catch (error) {
+        // Error thrown as expected
+        expect(error).to.exist
+      }
     })
   })
 
@@ -292,12 +299,11 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback, 'exec')
-      } catch {
-        // Expected to error
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(message).to.include('heroku run:inside')
       }
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('heroku run:inside')
     })
 
     it('shows generic unavailable message and exits when app generation is fir and command is anything else', async function () {
@@ -310,12 +316,11 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback, 'other')
-      } catch {
-        // Expected to error
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(message).to.include('unavailable for this app')
       }
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('unavailable for this app')
     })
 
     it('errors and exits when app is in a Shield Private Space', async function () {
@@ -337,12 +342,11 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
-      } catch {
-        // Expected to error
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(message).to.include('Shield Private Spaces')
       }
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('Shield Private Spaces')
     })
 
     it('warns (does not exit) when app is in a non-shield space using the container stack', async function () {
@@ -387,12 +391,11 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
-      } catch {
-        // Expected to error
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(message).to.include('no Buildpack URL set')
       }
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('no Buildpack URL set')
     })
 
     it('enables feature, adds exec buildpack, and exits when app is in a space and exec buildpack is missing', async function () {
@@ -418,14 +421,14 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
-      } catch {
-        // Expected to exit
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {oclif} = error as Errors.ExitError
+        expect(uxActionStartStub.calledWith('Initializing feature')).to.be.true
+        expect(uxStdoutStub.called).to.be.true
+        expect(childExecSyncStub.calledOnce).to.be.true
+        expect(oclif.exit).to.equal(0)
       }
-
-      expect(uxActionStartStub.calledWith('Initializing feature')).to.be.true
-      expect(uxStdoutStub.called).to.be.true
-      expect(childExecSyncStub.calledOnce).to.be.true
-      expect(uxExitStub.calledWith(0)).to.be.true
     })
 
     it('warns to remove exec buildpack when app is NOT in a space but already has the exec buildpack installed', async function () {
@@ -470,12 +473,11 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
-      } catch {
-        // Expected to error
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(message).to.include('Heroku Exec addon')
       }
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('Heroku Exec addon')
     })
 
     it('exits without enabling feature when user answers n to the prompt', async function () {
@@ -499,12 +501,12 @@ describe('HerokuExec', function () {
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
-      } catch {
-        // Expected to exit
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {oclif} = error as Errors.ExitError
+        expect(huxPromptStub.calledOnce).to.be.true
+        expect(oclif.exit).to.equal(0)
       }
-
-      expect(huxPromptStub.calledOnce).to.be.true
-      expect(uxExitStub.calledOnce).to.be.true
     })
 
     it('calls callback(configVars) when feature is already enabled', async function () {
@@ -576,12 +578,15 @@ describe('HerokuExec', function () {
         .put('/api/v2/web.1')
         .reply(500, 'Internal Server Error')
 
-      await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
-
-      expect(uxActionStopStub.calledWith('error')).to.be.true
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[0]).to.include('Could not connect to dyno')
-      expect(callback.called).to.be.false
+      try {
+        await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
+        expect.fail('should have thrown')
+      } catch (error) {
+        const {message} = error as Errors.CLIError
+        expect(uxActionStopStub.calledWith('error')).to.be.true
+        expect(message).to.include('Could not connect to dyno')
+        expect(callback.called).to.be.false
+      }
     })
   })
 })
