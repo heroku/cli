@@ -1,31 +1,25 @@
 *-debug.log
 *-error.log
-.oclif.manifest.json
-/packages/**/oclif.manifest.json
+oclif.manifest.json
 /cli
 /.nyc_output
 /coverage
 /dist
 /lib
 node_modules
-/package-lock.json
 /tmp
-/packages/cli/docs/*
 
 **/.DS_Store
 .idea
 .vscode
-**/.nyc_output
-**/coverage/
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+.zed
+.claude
+npm-shrinkwrap.json
+
+# Ignore .yarn directory from previous yarn setup
+.yarn/
+yarn.lock
 
 # TEMP
-/packages/**/converted/*
 tpsGetLock_response.txt
 tpsRecordRelease_response.txt

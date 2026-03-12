@@ -1,0 +1,186 @@
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/spaces/info.js'
+import {getGeneration} from '../../../../src/lib/apps/generation.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import {runCommand} from '../../../helpers/run-command.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+
+const heredoc = tsheredoc.default
+
+describe('spaces:info', function () {
+  let space: SpaceWithOutboundIps
+  let shieldSpace: SpaceWithOutboundIps
+  let api: nock.Scope
+
+  beforeEach(function () {
+    space = fixtures.spaces['non-shield-space']
+    shieldSpace = fixtures.spaces['shield-space']
+    api = nock('https://api.heroku.com')
+  })
+
+  afterEach(function () {
+    api.done()
+    nock.cleanAll()
+  })
+
+  it('shows space info', async function () {
+    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
+      .get(`/spaces/${space.name}`)
+      .reply(200, space)
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      space.name,
+    ])
+    expectOutput(stdout, heredoc(`
+      === ⬡ ${space.name}
+      ID:         ${space.id}
+      Team:       ${space.team.name}
+      Region:     ${space.region.description}
+      CIDR:       ${space.cidr}
+      Data CIDR:  ${space.data_cidr}
+      State:      ${space.state}
+      Shield:     off
+      Generation: ${getGeneration(space)}
+      Created at: ${space.created_at}
+    `))
+  })
+
+  it('shows space info --json', async function () {
+    api
+      .get(`/spaces/${space.name}`)
+      .reply(200, space)
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      space.name,
+      '--json',
+    ])
+    expectOutput(stdout, JSON.stringify(space, null, 2))
+  })
+
+  it('shows allocated space with enabled nat', async function () {
+    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
+      .get(`/spaces/${space.name}`)
+      .reply(200, space)
+    api
+      .get(`/spaces/${space.name}/nat`)
+      .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      space.name,
+    ])
+
+    expectOutput(stdout, heredoc(`
+      === ⬡ ${space.name}
+      ID:           ${space.id}
+      Team:         ${space.team.name}
+      Region:       ${space.region.description}
+      CIDR:         ${space.cidr}
+      Data CIDR:    ${space.data_cidr}
+      State:        ${space.state}
+      Shield:       off
+      Outbound IPs: 123.456.789.123
+      Generation:   ${getGeneration(space)}
+      Created at:   ${space.created_at}
+    `))
+  })
+
+  it('shows allocated space with disabled nat', async function () {
+    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
+      .get(`/spaces/${space.name}`)
+      .reply(200, space)
+    api
+      .get(`/spaces/${space.name}/nat`)
+      .reply(200, {sources: ['123.456.789.123'], state: 'disabled'})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      space.name,
+    ])
+    expectOutput(stdout, heredoc(`
+      === ⬡ ${space.name}
+      ID:           ${space.id}
+      Team:         ${space.team.name}
+      Region:       ${space.region.description}
+      CIDR:         ${space.cidr}
+      Data CIDR:    ${space.data_cidr}
+      State:        ${space.state}
+      Shield:       off
+      Outbound IPs: disabled
+      Generation:   ${getGeneration(space)}
+      Created at:   ${space.created_at}
+    `))
+  })
+
+  it('shows a space with Shield turned off', async function () {
+    api
+      .get(`/spaces/${space.name}`)
+      .reply(200, space)
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      space.name,
+    ])
+    expectOutput(stdout, heredoc(`
+      === ⬡ ${space.name}
+      ID:         ${space.id}
+      Team:       ${space.team.name}
+      Region:     ${space.region.description}
+      CIDR:       ${space.cidr}
+      Data CIDR:  ${space.data_cidr}
+      State:      ${space.state}
+      Shield:     off
+      Generation: ${getGeneration(space)}
+      Created at: ${space.created_at}
+    `))
+  })
+
+  it('shows a space with Shield turned on', async function () {
+    api
+      .get(`/spaces/${shieldSpace.name}`)
+      .reply(200, shieldSpace)
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      shieldSpace.name,
+    ])
+
+    expectOutput(stdout, heredoc(`
+      === ⬡ ${shieldSpace.name}
+      ID:         ${shieldSpace.id}
+      Team:       ${shieldSpace.team.name}
+      Region:     ${shieldSpace.region.description}
+      CIDR:       ${shieldSpace.cidr}
+      Data CIDR:  ${shieldSpace.data_cidr}
+      State:      ${shieldSpace.state}
+      Shield:     on
+      Generation: ${getGeneration(space)}
+      Created at: ${shieldSpace.created_at}
+    `))
+  })
+
+  it('test if nat API call fails ', async function () {
+    api
+      .get(`/spaces/${space.name}`)
+      .reply(200, space)
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--space',
+      space.name,
+    ])
+    expectOutput(stdout, heredoc(`
+      === ⬡ ${space.name}
+      ID:         ${space.id}
+      Team:       ${space.team.name}
+      Region:     ${space.region.description}
+      CIDR:       ${space.cidr}
+      Data CIDR:  ${space.data_cidr}
+      State:      ${space.state}
+      Shield:     off
+      Generation: ${getGeneration(space)}
+      Created at: ${space.created_at}
+    `))
+  })
+})

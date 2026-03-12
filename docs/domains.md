@@ -17,38 +17,40 @@ list domains for an app
 
 ```
 USAGE
-  $ heroku domains -a <value> [-h] [-r <value>] [-j] [--columns <value> | -x] [--sort <value>] [--filter
-    <value>] [--output csv|json|yaml |  | [--csv | ]] [--no-header | ]
+  $ heroku domains -a <value> [--prompt] [--columns <value>] [-c] [-x] [--filter <value>] [-j] [-r <value>]
+    [--sort <value>]
 
 FLAGS
   -a, --app=<value>      (required) app to run command against
-  -h, --help             Show CLI help.
+  -c, --csv              output in csv format
   -j, --json             output in json format
   -r, --remote=<value>   git remote of app to use
   -x, --extended         show extra columns
       --columns=<value>  only show provided columns (comma-separated)
-      --csv              output is csv format [alias: --output=csv]
       --filter=<value>   filter property by partial string matching, ex: name=foo
-      --no-header        hide table header from output
-      --output=<option>  output in a more machine friendly format
-                         <options: csv|json|yaml>
-      --sort=<value>     property to sort by (prepend '-' for descending)
+      --sort=<value>     sort by property
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   list domains for an app
 
 EXAMPLES
-  $ heroku domains
+   $ heroku domains 
   === example Heroku Domain
   example-xxxxxxxxxxxx.herokuapp.com
   === example Custom Domains
   Domain Name      DNS Record Type  DNS Target
   www.example.com  CNAME            www.example.herokudns.com
 
-  $ heroku domains --filter 'Domain Name=www.example.com'
+   $ heroku domains --filter 'Domain Name=www.example.com' 
+  === example Custom Domains
+  Domain Name      DNS Record Type  DNS Target
+  www.example.com  CNAME            www.example.herokudns.com
 ```
 
-_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/index.ts)_
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -56,7 +58,7 @@ add a domain to an app
 
 ```
 USAGE
-  $ heroku domains:add HOSTNAME -a <value> [-h] [-c <value>] [-j] [--wait] [-r <value>]
+  $ heroku domains:add HOSTNAME -a <value> [--prompt] [-c <value>] [-j] [-r <value>] [--wait]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
@@ -64,19 +66,21 @@ ARGUMENTS
 FLAGS
   -a, --app=<value>     (required) app to run command against
   -c, --cert=<value>    the name of the SSL cert you want to use for this domain
-  -h, --help            Show CLI help.
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   --wait
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   add a domain to an app
 
 EXAMPLES
-  $ heroku domains:add www.example.com
+   $ heroku domains:add www.example.com
 ```
 
-_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/add.ts)_
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -84,21 +88,23 @@ remove all domains from an app
 
 ```
 USAGE
-  $ heroku domains:clear -a <value> [-h] [-r <value>]
+  $ heroku domains:clear -a <value> [--prompt] [-r <value>]
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   remove all domains from an app
 
 EXAMPLES
-  $ heroku domains:clear
+   $ heroku domains:clear
 ```
 
-_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/clear.ts)_
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -106,24 +112,26 @@ show detailed information for a domain on an app
 
 ```
 USAGE
-  $ heroku domains:info HOSTNAME -a <value> [-h] [-r <value>]
+  $ heroku domains:info HOSTNAME -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   show detailed information for a domain on an app
 
 EXAMPLES
-  $ heroku domains:info www.example.com
+   $ heroku domains:info www.example.com
 ```
 
-_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/info.ts)_
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -131,24 +139,26 @@ remove a domain from an app
 
 ```
 USAGE
-  $ heroku domains:remove HOSTNAME -a <value> [-h] [-r <value>]
+  $ heroku domains:remove HOSTNAME -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   remove a domain from an app
 
 EXAMPLES
-  $ heroku domains:remove www.example.com
+   $ heroku domains:remove www.example.com
 ```
 
-_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/remove.ts)_
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/remove.ts)_
 
 ## `heroku domains:update HOSTNAME`
 
@@ -156,25 +166,27 @@ update a domain to use a different SSL certificate on an app
 
 ```
 USAGE
-  $ heroku domains:update HOSTNAME -a <value> --cert <value> [-h] [-r <value>]
+  $ heroku domains:update HOSTNAME -a <value> --cert <value> [--prompt] [-r <value>]
 
 ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
       --cert=<value>    (required) the name or id of the certificate you want to use for this domain
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   update a domain to use a different SSL certificate on an app
 
 EXAMPLES
-  $ heroku domains:update www.example.com --cert mycert
+   $ heroku domains:update www.example.com --cert mycert
 ```
 
-_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/update.ts)_
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -182,18 +194,20 @@ wait for domain to be active for an app
 
 ```
 USAGE
-  $ heroku domains:wait [HOSTNAME] -a <value> [-h] [-r <value>]
+  $ heroku domains:wait [HOSTNAME] -a <value> [--prompt] [-r <value>]
 
 ARGUMENTS
-  HOSTNAME  unique identifier of the domain or full hostname
+  [HOSTNAME]  unique identifier of the domain or full hostname
 
 FLAGS
   -a, --app=<value>     (required) app to run command against
-  -h, --help            Show CLI help.
   -r, --remote=<value>  git remote of app to use
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
   wait for domain to be active for an app
 ```
 
-_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v10.17.0/packages/cli/src/commands/domains/wait.ts)_
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/domains/wait.ts)_

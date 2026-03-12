@@ -27,22 +27,20 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
+          cache: npm
       - name: Use Ruby 3.2.x
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
       - name: Install Devcenter CLI
         run: |
           gem install devcenter
           devcenter help
       - name: Build CLI
-        run: yarn build
+        run: npm run build
       - name: Compile documentation and push to devcenter
-        run: |
-          cd packages/cli
-          ./scripts/postrelease/dev_center_docs
+        run: ./scripts/postrelease/dev_center_docs
         env:
           HEROKU_DEVCENTER_API_KEY: ${{ secrets.HEROKU_DEVCENTER_API_KEY }}

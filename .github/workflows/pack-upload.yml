@@ -17,13 +17,15 @@ jobs:
           sudo apt-get install -y nsis p7zip-full
       - run: sudo mkdir -p /build
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
+      - name: Create npm-shrinkwrap.json for oclif pack:deb
+        run: npm run create-shrinkwrap
       - name: Building deb
-        run: yarn oclif pack:deb --root="./packages/cli"
+        run: npx oclif pack:deb
       - uses: actions/upload-artifact@v6
         with:
           name: packed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /home/runner/work/cli/cli/dist
 
   pack_tarballs:
     runs-on: pub-hk-ubuntu-22.04-2xlarge
@@ -35,13 +37,15 @@ jobs:
           sudo apt-get install -y nsis p7zip-full
       - run: sudo mkdir -p /build
       - name: Install package deps
-        run: yarn --immutable --network-timeout 1000000
+        run: npm ci
+      - name: Create npm-shrinkwrap.json for oclif pack:tarballs
+        run: npm run create-shrinkwrap
       - name: Building tarballs
-        run: yarn oclif pack tarballs --root="./packages/cli"
+        run: npx oclif pack:tarballs --xz --parallel
       - uses: actions/upload-artifact@v6
         with:
           name: packed-tarballs
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /home/runner/work/cli/cli/dist
 
   sign_deb:
     needs: [pack_deb]
@@ -58,14 +62,14 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: packed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /home/runner/work/cli/cli/dist
       - run: |
-          cd /home/runner/work/cli/cli/packages/cli/dist/deb
-          /home/runner/work/cli/cli/packages/cli/scripts/sign/deb
+          cd /home/runner/work/cli/cli/dist/deb
+          /home/runner/work/cli/cli/scripts/sign/deb
       - uses: actions/upload-artifact@v6
         with:
           name: signed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /home/runner/work/cli/cli/dist
 
 
   upload-deb-and-tarballs:
@@ -82,20 +86,19 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: signed-deb
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /home/runner/work/cli/cli/dist
 
       - uses: actions/download-artifact@v7
         with:
           name: packed-tarballs
-          path: /home/runner/work/cli/cli/packages/cli/dist
+          path: /home/runner/work/cli/cli/dist
       - name: List all the downloaded files (for debugging)
         run: ls -R
-        working-directory: /home/runner/work/cli/cli/packages/cli/dist
-      - name: yarn install
-        run: yarn --immutable --network-timeout 1000000
+        working-directory: /home/runner/work/cli/cli/dist
+      - name: Install dependencies
+        run: npm ci
       - name: Upload production artifacts
         run: |
-          cd packages/cli
           pwd
-          yarn oclif upload tarballs
+          npm run upload:tarballs
           ./scripts/upload/deb

@@ -5,7 +5,7 @@ set -e -o pipefail
 PRERELEASE_PREFIX="prerelease/"
 PRERELEASE_TAG_MARKER="beta"
 CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-PACKAGE_VERSION=`node -e "console.log(require('./packages/cli/package.json').version)"`
+PACKAGE_VERSION=`node -e "console.log(require('./package.json').version)"`
 TAG_NAME="v${PACKAGE_VERSION}"
 EXISTING_REMOTE_TAG=$(git ls-remote origin "refs/tags/${TAG_NAME}")
 

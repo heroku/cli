@@ -1,0 +1,94 @@
+import {expect} from 'chai'
+import nock from 'nock'
+import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
+import tsheredoc from 'tsheredoc'
+import {Errors} from '@oclif/core'
+import {runCommand} from '../../../../helpers/run-command.js'
+import expectOutput from '../../../../helpers/utils/expectOutput.js'
+
+const heredoc = tsheredoc.default
+
+const all = [
+  {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
+  {id: 2, name: 'postgres-2', plan: {name: 'heroku-postgresql:hobby-dev'}},
+]
+
+describe('pg:upgrade:wait', function () {
+  let api: nock.Scope
+  let pg: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+    pg = nock('https://api.data.heroku.com')
+  })
+
+  afterEach(function () {
+    pg.done()
+    nock.cleanAll()
+  })
+
+  it('waits till upgrade is finished', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
+    pg
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': true, message: 'preparing upgrade service'})
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'recreating followers', step: '7/7'})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--wait-interval',
+      '1',
+      'DATABASE_URL',
+    ])
+    expect(stdout).to.equal('')
+    expectOutput(stderr, heredoc(`
+      Waiting for database postgres-1... (7/7) recreating followers
+    `))
+  })
+
+  it('displays when the upgrade has been scheduled', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
+    pg
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.'})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--wait-interval',
+      '1',
+      'DATABASE_URL',
+    ])
+    expect(stdout).to.equal('Waiting for database postgres-1... upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using heroku pg:upgrade:run.\n')
+  })
+
+  it('requires a database', async function () {
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+    ])
+    expectOutput(error?.message ?? '', heredoc(`
+      You must provide a database. Run \`--help\` for more information on the command.
+    `))
+  })
+
+  it('displays errors', async function () {
+    api
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: all[0]}])
+    pg
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
+
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'DATABASE_URL',
+    ])
+    const {message, oclif} = error as Errors.CLIError
+    expect(message).to.equal('this is an error message')
+    expect(oclif.exit).to.equal(1)
+  })
+})

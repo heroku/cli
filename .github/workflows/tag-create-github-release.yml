@@ -19,11 +19,11 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_RELEASE_PRIVATE_KEY }}
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v6
         with:
-          node-version: 20.x
-          cache: yarn
+          node-version: 22.x
+          cache: npm
       - name: set git user
         run: |
           git config user.name "GitHub Actions Bot"
@@ -34,7 +34,7 @@ jobs:
       - name: Release to GitHub
         # the script below will fail if run from a separate shell file
         run: |
-          PACKAGE_VERSION=$(node -e "console.log(require('./lerna.json').version)")
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
           TAG_NAME="v${PACKAGE_VERSION}"
           SORTED_TAGS=$(git tag --sort="-version:refname" --list --format="%(refname:strip=2)")
           FILTERED_TAGS=$(echo "${SORTED_TAGS}" | grep 'v[0-9.]*' | grep -v '-' | grep -v $TAG_NAME)

@@ -1,0 +1,64 @@
+import {color, utils} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
+import {Args, ux} from '@oclif/core'
+import fs from 'fs-extra'
+
+import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
+
+import pgBackupsApi from '../../../lib/pg/backups.js'
+import download from '../../../lib/pg/download.js'
+
+function defaultFilename() {
+  let f = 'latest.dump'
+  if (!fs.existsSync(f))
+    return f
+  let i = 1
+  do
+    f = `latest.dump.${i++}`
+  while (fs.existsSync(f))
+  return f
+}
+
+export default class Download extends Command {
+  static args = {
+    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
+  }
+
+  static description = 'downloads database backup'
+
+  static flags = {
+    app: flags.app({required: true}),
+    output: flags.string({char: 'o', description: 'location to download to. Defaults to latest.dump'}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
+
+  public async run(): Promise<void> {
+    const {args, flags} = await this.parse(Download)
+    const {backup_id} = args
+    const {app} = flags
+    const output = flags.output || defaultFilename()
+    let num
+    ux.action.start(`Getting backup from ${color.app(app)}`)
+    if (backup_id) {
+      num = await pgBackupsApi(app, this.heroku).num(backup_id)
+      if (!num)
+        throw new Error(`Invalid Backup: ${backup_id}`)
+    } else {
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const lastBackup = transfers
+        .filter(t => t.succeeded && t.to_type === 'gof3r')
+        .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
+      if (!lastBackup)
+        throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+      num = lastBackup.num
+    }
+
+    ux.action.status = `fetching url of #${num}`
+    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: utils.pg.host()})
+
+    ux.action.stop(`done, #${num}`)
+    await download(info.url, output, {progress: true})
+  }
+}

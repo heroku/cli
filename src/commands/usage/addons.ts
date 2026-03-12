@@ -1,0 +1,156 @@
+import {color, hux} from '@heroku/heroku-cli-util'
+import {Command, flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
+import {ux} from '@oclif/core'
+
+interface AppUsage {
+  addons: Array<{
+    id: string;
+    meters: {
+      [meterLabel: string]: {
+        quantity: number
+      }
+    }
+  }>
+}
+
+interface TeamUsage {
+  apps: Array<{
+    addons: AppUsage['addons'];
+    id: string;
+  }>;
+}
+
+interface AppInfo extends Record<string, unknown> {
+  id: string
+  name: string
+}
+
+export default class UsageAddons extends Command {
+  static description = 'list usage for metered add-ons attached to an app or apps within a team'
+  static flags = {
+    app: flags.string({char: 'a', description: 'app to list metered add-ons usage for'}),
+    team: flags.team({description: 'team to list metered add-ons usage for'}),
+  }
+
+  static topic = 'usage'
+
+  public async run(): Promise<void> {
+    const {flags} = await this.parse(UsageAddons)
+    const {app, team} = flags
+    if (!app && !team) {
+      ux.error('Specify an app with --app or a team with --team')
+    }
+
+    if (app) {
+      await this.fetchAndDisplayAppUsageData(app, team)
+    } else if (team) {
+      await this.fetchAndDisplayTeamUsageData(team)
+    }
+  }
+
+  private displayAppUsage(app: string, usageAddons: AppUsage['addons'], appAddons: Heroku.AddOn[]): void {
+    const metersArray = usageAddons.flatMap(addon =>
+      Object.entries(addon.meters).map(([label, data]) => ({
+        label,
+        quantity: data.quantity,
+        addonId: addon.id,
+      })),
+    )
+
+    hux.styledHeader(`Usage for ${color.app(app)}`)
+    hux.table(metersArray, {
+      'Add-on': {
+        get(row) {
+          const matchingAddon = appAddons.find(a => a.id === row.addonId)
+          return matchingAddon?.name || row.addonId
+        },
+      },
+      Meter: {
+        get: row => row.label,
+      },
+      Quantity: {
+        get: row => row.quantity,
+      },
+    })
+  }
+
+  private async fetchAndDisplayAppUsageData(app: string, team?: string): Promise<void> {
+    let usageData
+    let appAddons
+    ux.action.start('Gathering usage data')
+    if (team) {
+      [{body: usageData}, {body: appAddons}] = await Promise.all([
+        this.heroku.get<AppUsage>(`/teams/${team}/apps/${app}/usage`, {
+          headers: {
+            Accept: 'application/vnd.heroku+json; version=3.sdk',
+          },
+        }),
+        this.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
+      ])
+    } else {
+      [{body: usageData}, {body: appAddons}] = await Promise.all([
+        this.heroku.get<AppUsage>(`/apps/${app}/usage`, {
+          headers: {
+            Accept: 'application/vnd.heroku+json; version=3.sdk',
+          },
+        }),
+        this.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
+      ])
+    }
+
+    ux.action.stop()
+    ux.stdout()
+    const usageAddons = usageData.addons
+
+    if (usageAddons.length === 0) {
+      ux.stdout(`No usage found for app ${color.app(app)}`)
+      return
+    }
+
+    this.displayAppUsage(app, usageAddons, appAddons)
+  }
+
+  private async fetchAndDisplayTeamUsageData(team: string): Promise<void> {
+    ux.action.start(`Gathering usage data for ${color.team(team)}`)
+    const [{body: usageData}, {body: teamAddons}] = await Promise.all([
+      this.heroku.get<TeamUsage>(`/teams/${team}/usage`, {
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+        },
+      }),
+      this.heroku.get<Heroku.AddOn[]>(`/teams/${team}/addons`),
+    ])
+
+    ux.action.stop()
+    ux.stdout()
+
+    if (!usageData.apps || usageData.apps.length === 0) {
+      ux.stdout(`No usage found for team ${color.team(team)}`)
+      return
+    }
+
+    const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
+
+    // Display usage for each app
+    usageData.apps.forEach((app: { addons: any[]; id: string }) => {
+      const appInfo = appInfoArray.find(info => info.id === app.id)
+      this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
+      ux.stdout()
+    })
+  }
+
+  private getAppInfoFromTeamAddons(teamAddons: Heroku.AddOn[]): AppInfo[] {
+    const appInfoMap = new Map<string, string>()
+    teamAddons.forEach(addon => {
+      if (addon.app && addon.app.id && addon.app.name) {
+        appInfoMap.set(addon.app.id, addon.app.name)
+      }
+    })
+
+    return Array.from(appInfoMap.entries()).map(([id, name]) => ({
+      id,
+      name,
+    }))
+  }
+}

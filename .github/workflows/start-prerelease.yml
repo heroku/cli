@@ -17,7 +17,7 @@ jobs:
       - id: getVersion
         uses: ./.github/actions/get-version-and-channel/
         with:
-          path: './packages/cli/package.json'
+          path: './package.json'
 
   validate-prerelease:
     # validate that the release is on a pre-release branch, that it is a beta or alpha release, and check if it is already on github
@@ -29,7 +29,7 @@ jobs:
         CURRENT_BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v6
-      - run: yarn --immutable --network-timeout 1000000
+      - run: npm ci
       - run: ./scripts/release/validate-prerelease
 
   publish-github-tag:
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: set git user
         run: |
           git config user.name "GitHub Actions Bot"

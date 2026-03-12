@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the last line of the version output
-last_line=$(npm show node@20 version | tail -n 1)
+last_line=$(npm show node@22 version | tail -n 1)
 
 # Extract the second token using awk and remove quotes
 version=$(echo "$last_line" | awk '{print $2}' | tr -d "'")
@@ -28,14 +28,24 @@ else
     echo "Continuing with package.json update..." >&2
 fi
 
-# Update the Node.js version in package.json's oclif update configuration
-# Using node to update the JSON file correctly
-node -e "
-const fs = require('fs');
-const path = 'packages/cli/package.json';
-const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
-pkg.oclif.update.node.version = '$version';
-fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
-"
-
-echo "Updated nodejs version to $version in .tool-versions and package.json"
+# Update the Node.js version in package.json oclif config
+# Using node to update the JSON file
+package_file="./package.json"
+if [ -f "$package_file" ]; then
+    node -e "
+        const fs = require('fs');
+        const pkg = JSON.parse(fs.readFileSync('$package_file', 'utf-8'));
+        if (pkg.oclif && pkg.oclif.update && pkg.oclif.update.node) {
+            pkg.oclif.update.node.version = '$version';
+            fs.writeFileSync('$package_file', JSON.stringify(pkg, null, 2) + '\n');
+            console.log('Updated nodejs version to $version in package.json');
+        } else {
+            console.error('Error: Could not find oclif.update.node in package.json');
+            process.exit(1);
+        }
+    "
+    echo "Updated nodejs version to $version in .tool-versions and package.json"
+else
+    echo "Error: Could not find $package_file" >&2
+    exit 1
+fi

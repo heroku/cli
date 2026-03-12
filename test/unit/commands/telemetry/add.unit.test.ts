@@ -1,0 +1,279 @@
+import {stdout} from 'stdout-stderr'
+import Cmd from '../../../../src/commands/telemetry/add.js'
+import runCommand from '../../../helpers/runCommand.js'
+import {expect} from 'chai'
+import nock from 'nock'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain, splunkAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures.js'
+import {firApp} from '../../../fixtures/apps/fixtures.js'
+import * as spaceFixtures from '../../../fixtures/spaces/fixtures.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+
+const appId = appTelemetryDrain1.owner.id
+const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
+const splunkDrainAppId = splunkAppTelemetryDrain.owner.id
+const spaceId = spaceTelemetryDrain1.owner.id
+const testEndpoint = appTelemetryDrain1.exporter.endpoint
+
+describe('telemetry:add', function () {
+  let space: SpaceWithOutboundIps
+
+  beforeEach(function () {
+    space = spaceFixtures.spaces['non-shield-space']
+  })
+
+  afterEach(function () {
+    return nock.cleanAll()
+  })
+
+  it('returns an error if an app, remote, or space is not set', async function () {
+    try {
+      await runCommand(Cmd, [
+        testEndpoint,
+        '--headers',
+        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('Exactly one of the following must be provided: --app, --space')
+    }
+  })
+
+  it('returns an error if values are provided for both the app and the space flags', async function () {
+    try {
+      await runCommand(Cmd, [
+        testEndpoint,
+        '--app',
+        firApp.name || '',
+        '--space',
+        'myspace',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('--space cannot also be provided when using --app')
+    }
+  })
+
+  it('successfully creates a telemetry drain for an app', async function () {
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appId}`)
+      .reply(200, firApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains')
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
+      '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+      '--app',
+      appId,
+      '--signals',
+      'logs',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('successfully creates a telemetry drain for a space', async function () {
+    nock('https://api.heroku.com')
+      .get(`/spaces/${spaceId}`)
+      .reply(200, space)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains')
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
+      '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+      '--space',
+      spaceId,
+      '--signals',
+      'logs',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('does not accept options other than logs, metrics, traces, or all for the --signal flag', async function () {
+    nock('https://api.heroku.com')
+      .get(`/spaces/${spaceId}`)
+      .reply(200, space)
+    try {
+      await runCommand(Cmd, [
+        testEndpoint,
+        '--headers',
+        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+        '--space',
+        spaceId,
+        '--signals',
+        'logs,foo',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
+    }
+  })
+
+  it('returns an error when the --signal flag is set to "all" in combination with other options', async function () {
+    nock('https://api.heroku.com')
+      .get(`/spaces/${spaceId}`)
+      .reply(200, space)
+    try {
+      await runCommand(Cmd, [
+        testEndpoint,
+        '--headers',
+        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+        '--space',
+        spaceId,
+        '--signals',
+        'logs,all',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('Invalid signal option: logs,all. Run heroku telemetry:add --help to see signal options.')
+    }
+  })
+
+  it('successfully creates a telemetry drain for an app with grpc', async function () {
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${grpcDrainAppId}`)
+      .reply(200, firApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: grpcDrainAppId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: testEndpoint,
+          type: 'otlp',
+          headers: {},
+        },
+      })
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      grpcDrainAppId,
+      '--transport',
+      'grpc',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('successfully creates a telemetry drain for an app with http transport (default)', async function () {
+    const httpApp = {...firApp, id: appId}
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appId}`)
+      .reply(200, httpApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: appId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: testEndpoint,
+          type: 'otlphttp',
+          headers: {},
+        },
+      })
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      appId,
+      '--transport',
+      'http',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('returns an error for invalid transport option', async function () {
+    try {
+      await runCommand(Cmd, [
+        testEndpoint,
+        '--app',
+        appId,
+        '--transport',
+        'invalid-transport',
+      ])
+    } catch (error) {
+      const {message} = error as { message: string }
+      expect(message).to.contain('Expected --transport=invalid-transport to be one of: http, grpc')
+    }
+  })
+
+  it('uses default http transport when no transport is specified', async function () {
+    const defaultApp = {...firApp, id: appId}
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${appId}`)
+      .reply(200, defaultApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: appId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: testEndpoint,
+          type: 'otlphttp',
+          headers: {},
+        },
+      })
+      .reply(200, spaceTelemetryDrain1)
+
+    await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      appId,
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+  })
+
+  it('successfully creates a telemetry drain splunk transport', async function () {
+    const splunkEndpoint = splunkAppTelemetryDrain.exporter.endpoint
+    const splunkApp = {...firApp, id: splunkDrainAppId}
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get(`/apps/${splunkDrainAppId}`)
+      .reply(200, splunkApp)
+    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .post('/telemetry-drains', {
+        owner: {
+          type: 'app',
+          id: splunkDrainAppId,
+        },
+        signals: ['traces', 'metrics', 'logs'],
+        exporter: {
+          endpoint: splunkEndpoint,
+          type: 'splunk',
+          headers: {
+            Authorization: 'Splunk your-hec-token',
+          },
+        },
+      })
+      .reply(200, splunkAppTelemetryDrain)
+
+    await runCommand(Cmd, [
+      splunkEndpoint,
+      '--app',
+      splunkDrainAppId,
+      '--transport',
+      'splunk',
+      '--headers',
+      '{"Authorization": "Splunk your-hec-token"}',
+    ])
+
+    expectOutput(stdout.output, `successfully added drain ${splunkEndpoint}`)
+  })
+})

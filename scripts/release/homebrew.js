@@ -1,22 +1,27 @@
-const fs = require('fs')
-const execa = require('execa')
-const path = require('path')
-const rm = require('rimraf')
-const mkdirp = require('mkdirp')
-const {promisify} = require('util')
-const {pipeline} = require('stream')
-const crypto = require('crypto')
-const getHerokuS3Bucket = require('../utils/getHerokuS3Bucket')
-const isStableRelease = require('../utils/isStableRelease')
+import fs from 'fs'
+import execa from 'execa'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { rimrafSync } from 'rimraf'
+import { promisify } from 'util'
+import { pipeline } from 'stream'
+import crypto from 'crypto'
+import getHerokuS3Bucket from '../utils/getHerokuS3Bucket.js'
+import isStableRelease from '../utils/isStableRelease.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const {GITHUB_SHA_SHORT, GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
-const HEROKU_S3_BUCKET = getHerokuS3Bucket()
-const VERSION = require(path.join(__dirname, '..', '..', 'packages', 'cli', 'package.json')).version
+const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'))
+const VERSION = packageJson.version
 
 if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release; skipping releasing homebrew')
   process.exit(0)
 }
+
+let HEROKU_S3_BUCKET
 
 async function calculateSHA256(fileName) {
   const hash = crypto.createHash('sha256')
@@ -91,10 +96,12 @@ async function setupGit() {
 }
 
 async function updateHomebrew() {
+  HEROKU_S3_BUCKET = await getHerokuS3Bucket()
+
   const tmp = path.join(__dirname, 'tmp')
   const homebrewDir = path.join(tmp, 'homebrew-brew')
-  mkdirp.sync(tmp)
-  rm.sync(homebrewDir)
+  fs.mkdirSync(tmp, {recursive: true})
+  rimrafSync(homebrewDir)
 
   await setupGit()
 

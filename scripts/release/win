@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-const qq = require('qqjs')
+import qq from 'qqjs'
+import getVersion from '../utils/_version.js'
 
 qq.config.silent = false
 qq.run(async () => {
-  const version = await require('../utils/_version')()
+  const version = await getVersion()
   await qq.x('./node_modules/.bin/oclif pack:win')
   await qq.x(`mv dist/win/heroku-v${version}-x86.exe dist/win/heroku-v${version}-x86-unsigned.exe`)
   await qq.x(`mv dist/win/heroku-v${version}-x64.exe dist/win/heroku-v${version}-x64-unsigned.exe`)

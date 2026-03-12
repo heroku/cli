@@ -1,0 +1,41 @@
+import {expect} from 'chai'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
+import {runCommand} from '../../../../../helpers/run-command.js'
+import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-format.js'
+import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
+
+const heredoc = tsheredoc.default
+
+describe('pg:settings:auto-explain:log-format', function () {
+  const addon = fixtures.addons['dwh-db']
+  let api: nock.Scope
+
+  beforeEach(function () {
+    api = nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve', {
+        app: 'myapp',
+        addon_attachment: 'test-database',
+        addon_service: 'heroku-postgresql',
+      }).reply(200, [{addon}])
+  })
+
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
+  it('updates settings for auto_explain.log_format with value', async function () {
+    const pg = nock('https://api.data.heroku.com')
+      .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_format': {value: 'json'}})
+
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'json'])
+
+    api.done()
+    pg.done()
+
+    expect(stdout).to.equal(heredoc(`
+      auto-explain.log-format has been set to json for ${addon.name}.
+      Auto explain log output will log in json format.
+    `))
+  })
+})

@@ -10,8 +10,8 @@ if [[ -z "$USE_BINRUN" ]]; then
   CMD_BIN="heroku"
 else
   CMD_BIN="./bin/run"
-  yarn
-  yarn build
+  npm install
+  npm run build
 fi
 
 declare -a COMMANDS=(
@@ -50,7 +50,7 @@ declare -a COMMANDS=(
   "$CMD_BIN pg:backups --app particleboard-staging"
   "$CMD_BIN pipelines"
   "$CMD_BIN plugins:install api"
-  "$CMD_BIN plugins:install sudo"
+  # "$CMD_BIN plugins:install sudo"
   "$CMD_BIN plugins"
   "$CMD_BIN redis:info --app particleboard-staging"
   "$CMD_BIN regions"

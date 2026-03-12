@@ -3,1394 +3,932 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [10.17.0](https://github.com/heroku/cli/compare/v10.15.1...v10.17.0) (2026-02-10)
+## [11.0.0-beta.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0-beta.0) (2026-02-26)
 
+### Summary
+
+This is a **major** release with extensive changes. The primary changes are:
+
+1. **Upgrade to oclif v4** from v2
+2. **Conversion to ECMAScript Modules (ESM)** throughout the entire codebase
+3. **Removal of the monorepo structure** - consolidated to single package
+4. **Migration from yarn to npm** for package management and workflows
+5. **Introduction of a new semantic color system** with the ansis library replacing chalk
+6. **Ships with Node.js 22** (maintains Node 20 compatibility)
+7. **New Commands** - `data:pg:*` (NGPG), `data:maintenance:*`, `heroku search`
+8. **Repl and Prompt changes** interface changes to how repl and prompt mode work
+
+### **Breaking Changes / Code Refactoring**
+
+- **BREAKING**: Conversion to ECMAScript Modules (ESM), adding `"type": "module"` to package.json
+- **BREAKING**: All commands, libraries, and tests converted from CommonJS to ESM syntax
+
+- **BREAKING**: The `ux` module was significantly slimmed down in @oclif/core v4, removing built-in prompts, progress bars, and table utilities. We've implemented custom output helpers using ink-based tables and our own formatting utilities which will change the output, particularly with tables.
+
+- **BREAKING**: Removal of heroku-cli-plugin-ai as a direct dependency. This plugin will now require separate installation
+
+- **BREAKING** data:maintenance commands changes
+  - data:maintenances commands have been migrated to the core CLI from the data-maintenance plugin
+  - pg:maintenance, pg:maintenance:info, pg:maintenance:window, and redis:maintenance commands have been deprecated and removed.
+- **BREAKING** Invoking repl has been changed from `heroku --repl` to `heroku repl`
+
+### **Features**
+
+- **New color scheme**: Migrated from chalk-based @heroku-cli/color to ansis-based @heroku/heroku-cli-util for semantic color functions
+  - If you prefer a simple ANSI8-based theme to the new default color theme, set HEROKU_THEME=simple. To turn off colors entirely, set NO_COLOR=true
+  - Removed strip-ansi dependency in favor of ansis built-in capabilities
+  - Updated all CLI output with semantic colors
+- **Node.js support**: Ships with Node 22, continued support for Node 20
+- **--prompt now a GLOBAL flag** --prompt will now be included in documentation and help text for commands that utilize it
+- **New search command**: Can’t remember the command you’re thinking of? Use `heroku search` to find it
+- **Next-Gen PostgreSQL (NGPG) commands**:
+  - New `data:pg:*` command namespace for NGPG support
+  - `data:pg:attachments:create`, `data:pg:attachments:destroy`, `data:pg:attachments:index`
+  - `data:pg:quotas:index`, `data:pg:quotas:update`
+  - `data:pg:create`, `data:pg:destroy`, `data:pg:docs`, `data:pg:fork`, `data:pg:psql`, `data:pg:settings`, `data:pg:update`
+  - NGPG types and command utilities (W-20610475)
+- **New diff command**: Adds `apps:diff` into the CLI
+
+#### **oclif v2 → v4 Upgrade**
+
+The Heroku CLI now uses @oclif/core v4, a major upgrade from v2. This brings significant improvements and modernizations:
+
+**oclif v3 improvements:**
+
+- **Performance**: Enhanced manifest caching for faster command loading
+- **ESM/CJS interoperability**: Better support for mixing CommonJS and ESM plugins
+- **Flag enhancements**: Added `charAliases` for single-character flag aliases and `Flags.option` for improved type inference
+- **Module system**: Updated bin scripts for better ESM/CJS compatibility
+
+**oclif v4 improvements:**
+
+- **Full ESM support**: Complete ECMAScript Module support with seamless interoperability between CommonJS and ESM plugins
+- **Modular architecture**: Changed to granular imports (e.g., `import run from '@oclif/core/run'`)
+- **Runtime auto-transpilation**: Linked ESM plugins auto-transpile with `tsx`
+- **New hooks**: Added `preparse` hook for pre-processing commands
+- **Enhanced TypeScript**: Enabled `exactOptionalPropertyTypes` for stricter type checking
+
+### **Build System**
+
+- **Move from yarn to npm** (W-19730551, #3365)
+  - Removed `.yarnrc.yml`, `.yarn/` directory
+  - Added `package-lock.json`
+  - Updated all CI/CD workflows to use npm
+  - Updated scripts to use npm commands
+- **Remove monorepo structure** (#3508)
+  - Removed lerna configuration
+  - Consolidated from `packages/cli/` to root-level structure
+  - Moved all source from `packages/cli/src` to `src/`
+  - Moved all tests from `packages/cli/test` to `test/`
+  - Flattened repository structure
+- **Switch to commit-and-tag-version** from standard-version (#3496)
+  - Added `.versionrc.json` configuration
+  - Updated release scripts
+- **Removed Snapcraft** configuration (removed `snap/` directory)
+- **Removed Dockerfile.devcenter**
+
+### **Tests**
+
+- Upgrade @oclif/test v2 to @oclif/test v4 (#3447)
+- Converted all tests to ESM
+- Added `.mocharc.json` for test configuration
+- Migrated from eslint 7 to eslint 8
+- Fixed an issue with git remote being created during test execution
+
+### **Continuous Integration**
+
+- Updated CI workflows to usefor npm instead of yarn
+- Updated release workflows for new monorepo-less structure
+- Added npm scripts for use with deployment workflows
+
+### **Code Refactoring**
+
+- Comprehensive ESM migration across all commands
+- The following commands have been moved into the CLI repository from the `ps-exec` plugin:
+  - `ps:copy`
+  - `ps:exec`
+  - `ps:forward`
+  - `ps:socks`
+
+### **Miscellaneous Chores**
+
+- Updated bundled oclif plugins to v4+ compatible versions for compatibility with @oclif/core v4
+  @oclif/plugin-commands, @oclif/plugin-help, @oclif/plugin-help, @oclif/plugin-not-found, @oclif/plugin-plugins, @oclif/plugin-update, @oclif/plugin-version, @oclif/plugin-warn-if-update-available, @oclif/plugin-which
+- Additional varkious package dependency updates
+- Removal of @heroku-cli/color (replaced with @heroku/heroku-cli-util)
+- Removal of @heroku/eventsource (replaced with eventsource)
+- Removal of sparkline as a dependencydepndency (added directly to codebase with TypeScriptTS support)
+- Updated Node.js update scripts to work with Nnode 22
+- Updated `.tool-versions` for Node 22
+- Updated Husky pre-commit hook to happen during prepare
+- Many linting errors and warnings fixed throughout codebase
+
+### **Documentation**
+
+- Updated README.md for new repository structure
+- Updated command documentation in docs/
+
+# [10.17.0](https://github.com/heroku/cli/compare/v10.15.1...v10.17.0) (2026-02-10)
 
 ### Bug Fixes
 
-* ensure IP restriction error handling for run:inside and logs commands ([#3389](https://github.com/heroku/cli/issues/3389)) ([42b3a2a](https://github.com/heroku/cli/commit/42b3a2aadebb25aa86ff5861fcaa16e0e9d07d74))
-* ensures authentications:revoke documentation is generated ([#3428](https://github.com/heroku/cli/issues/3428)) ([fdfec26](https://github.com/heroku/cli/commit/fdfec26bbb44109706eaaa2d292070d4e06b4337))
-* update ps-exec to 2.6.4 ([#3425](https://github.com/heroku/cli/issues/3425)) ([85c70ef](https://github.com/heroku/cli/commit/85c70ef9dfb6e34b485318c85dafd5a474a21481))
-* using setImmediate for error handle in log displayer unit test ([#3417](https://github.com/heroku/cli/issues/3417)) ([8f8b1d6](https://github.com/heroku/cli/commit/8f8b1d65f4468393471fb9929d5fd332cb00e4e8))
-* **W-20270674:** bump heroku-cli-util and fix resulting errors ([#3426](https://github.com/heroku/cli/issues/3426)) ([19ed38c](https://github.com/heroku/cli/commit/19ed38cf608dd098a6148660c90c6ca684d796d0))
-
+- ensure IP restriction error handling for run:inside and logs commands ([#3389](https://github.com/heroku/cli/issues/3389)) ([42b3a2a](https://github.com/heroku/cli/commit/42b3a2aadebb25aa86ff5861fcaa16e0e9d07d74))
+- ensures authentications:revoke documentation is generated ([#3428](https://github.com/heroku/cli/issues/3428)) ([fdfec26](https://github.com/heroku/cli/commit/fdfec26bbb44109706eaaa2d292070d4e06b4337))
+- update ps-exec to 2.6.4 ([#3425](https://github.com/heroku/cli/issues/3425)) ([85c70ef](https://github.com/heroku/cli/commit/85c70ef9dfb6e34b485318c85dafd5a474a21481))
+- using setImmediate for error handle in log displayer unit test ([#3417](https://github.com/heroku/cli/issues/3417)) ([8f8b1d6](https://github.com/heroku/cli/commit/8f8b1d65f4468393471fb9929d5fd332cb00e4e8))
+- **W-20270674:** bump heroku-cli-util and fix resulting errors ([#3426](https://github.com/heroku/cli/issues/3426)) ([19ed38c](https://github.com/heroku/cli/commit/19ed38cf608dd098a6148660c90c6ca684d796d0))
 
 ### Features
 
-* adding conditional logic for receiving applied state of trusted ips ([#3424](https://github.com/heroku/cli/issues/3424)) ([217271b](https://github.com/heroku/cli/commit/217271b6b735480b0c0b79cc342504b3b9f2a654))
-* adding json flag to config:get command ([#3464](https://github.com/heroku/cli/issues/3464)) ([424fc14](https://github.com/heroku/cli/commit/424fc14f7957e7da654e90f71666aa33c24406ee))
-* **W-15238547:** add deprecation notices for the redis:maintenance and pg:maintenance commands ([#3509](https://github.com/heroku/cli/issues/3509)) ([dccc74e](https://github.com/heroku/cli/commit/dccc74e3a0478ece85fd01b1bd4d336f4ceb9e3f))
-* **W-19894449:** add Sentry error reporting ([#3413](https://github.com/heroku/cli/issues/3413)) ([15fe316](https://github.com/heroku/cli/commit/15fe3163bcc95633a1100c1ef6dc52559551de1f))
-
-
-
-
+- adding conditional logic for receiving applied state of trusted ips ([#3424](https://github.com/heroku/cli/issues/3424)) ([217271b](https://github.com/heroku/cli/commit/217271b6b735480b0c0b79cc342504b3b9f2a654))
+- adding json flag to config:get command ([#3464](https://github.com/heroku/cli/issues/3464)) ([424fc14](https://github.com/heroku/cli/commit/424fc14f7957e7da654e90f71666aa33c24406ee))
+- **W-15238547:** add deprecation notices for the redis:maintenance and pg:maintenance commands ([#3509](https://github.com/heroku/cli/issues/3509)) ([dccc74e](https://github.com/heroku/cli/commit/dccc74e3a0478ece85fd01b1bd4d336f4ceb9e3f))
+- **W-19894449:** add Sentry error reporting ([#3413](https://github.com/heroku/cli/issues/3413)) ([15fe316](https://github.com/heroku/cli/commit/15fe3163bcc95633a1100c1ef6dc52559551de1f))
 
 # [10.16.0](https://github.com/heroku/cli/compare/v10.15.1...v10.16.0) (2025-12-04)
 
-
 ### Bug Fixes
 
-* ensure IP restriction error handling for run:inside and logs commands ([#3389](https://github.com/heroku/cli/issues/3389)) ([42b3a2a](https://github.com/heroku/cli/commit/42b3a2aadebb25aa86ff5861fcaa16e0e9d07d74))
-* update ps-exec to 2.6.4 ([#3425](https://github.com/heroku/cli/issues/3425)) ([85c70ef](https://github.com/heroku/cli/commit/85c70ef9dfb6e34b485318c85dafd5a474a21481))
-* using setImmediate for error handle in log displayer unit test ([#3417](https://github.com/heroku/cli/issues/3417)) ([8f8b1d6](https://github.com/heroku/cli/commit/8f8b1d65f4468393471fb9929d5fd332cb00e4e8))
-* **W-20270674:** bump heroku-cli-util and fix resulting errors ([#3426](https://github.com/heroku/cli/issues/3426)) ([19ed38c](https://github.com/heroku/cli/commit/19ed38cf608dd098a6148660c90c6ca684d796d0))
-
+- ensure IP restriction error handling for run:inside and logs commands ([#3389](https://github.com/heroku/cli/issues/3389)) ([42b3a2a](https://github.com/heroku/cli/commit/42b3a2aadebb25aa86ff5861fcaa16e0e9d07d74))
+- update ps-exec to 2.6.4 ([#3425](https://github.com/heroku/cli/issues/3425)) ([85c70ef](https://github.com/heroku/cli/commit/85c70ef9dfb6e34b485318c85dafd5a474a21481))
+- using setImmediate for error handle in log displayer unit test ([#3417](https://github.com/heroku/cli/issues/3417)) ([8f8b1d6](https://github.com/heroku/cli/commit/8f8b1d65f4468393471fb9929d5fd332cb00e4e8))
+- **W-20270674:** bump heroku-cli-util and fix resulting errors ([#3426](https://github.com/heroku/cli/issues/3426)) ([19ed38c](https://github.com/heroku/cli/commit/19ed38cf608dd098a6148660c90c6ca684d796d0))
 
 ### Features
 
-* **W-19894449:** add Sentry error reporting ([#3413](https://github.com/heroku/cli/issues/3413)) ([15fe316](https://github.com/heroku/cli/commit/15fe3163bcc95633a1100c1ef6dc52559551de1f))
-
-
-
-
+- **W-19894449:** add Sentry error reporting ([#3413](https://github.com/heroku/cli/issues/3413)) ([15fe316](https://github.com/heroku/cli/commit/15fe3163bcc95633a1100c1ef6dc52559551de1f))
 
 ## [10.15.1](https://github.com/heroku/cli/compare/v10.15.0...v10.15.1) (2025-11-20)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [10.15.0](https://github.com/heroku/cli/compare/v10.13.2...v10.15.0) (2025-10-29)
-
 
 ### Bug Fixes
 
-* Update tar-fs and rollbar ([#3383](https://github.com/heroku/cli/issues/3383)) ([eb9743f](https://github.com/heroku/cli/commit/eb9743fd37a22d37da78c80c84e9d005efd53ac8))
-
+- Update tar-fs and rollbar ([#3383](https://github.com/heroku/cli/issues/3383)) ([eb9743f](https://github.com/heroku/cli/commit/eb9743fd37a22d37da78c80c84e9d005efd53ac8))
 
 ### Features
 
-* **cli:** Introduce splunkhec drain type ([#3395](https://github.com/heroku/cli/issues/3395)) ([31e7341](https://github.com/heroku/cli/commit/31e7341b1a105b3aaebb8a550fcb90f49cf3e4d6))
-* Prepend launcher to `heroku run` commands for fir ([#3374](https://github.com/heroku/cli/issues/3374)) ([f3c4e6d](https://github.com/heroku/cli/commit/f3c4e6d5f67fb5e379a0e89d13991f7b779ac9c3))
-
-
-
-
+- **cli:** Introduce splunkhec drain type ([#3395](https://github.com/heroku/cli/issues/3395)) ([31e7341](https://github.com/heroku/cli/commit/31e7341b1a105b3aaebb8a550fcb90f49cf3e4d6))
+- Prepend launcher to `heroku run` commands for fir ([#3374](https://github.com/heroku/cli/issues/3374)) ([f3c4e6d](https://github.com/heroku/cli/commit/f3c4e6d5f67fb5e379a0e89d13991f7b779ac9c3))
 
 # [10.14.0](https://github.com/heroku/cli/compare/v10.13.2...v10.14.0) (2025-10-23)
 
-
 ### Bug Fixes
 
-* Update tar-fs and rollbar ([#3383](https://github.com/heroku/cli/issues/3383)) ([eb9743f](https://github.com/heroku/cli/commit/eb9743fd37a22d37da78c80c84e9d005efd53ac8))
-
+- Update tar-fs and rollbar ([#3383](https://github.com/heroku/cli/issues/3383)) ([eb9743f](https://github.com/heroku/cli/commit/eb9743fd37a22d37da78c80c84e9d005efd53ac8))
 
 ### Features
 
-* Prepend launcher to `heroku run` commands for fir ([#3374](https://github.com/heroku/cli/issues/3374)) ([f3c4e6d](https://github.com/heroku/cli/commit/f3c4e6d5f67fb5e379a0e89d13991f7b779ac9c3))
-
-
-
-
+- Prepend launcher to `heroku run` commands for fir ([#3374](https://github.com/heroku/cli/issues/3374)) ([f3c4e6d](https://github.com/heroku/cli/commit/f3c4e6d5f67fb5e379a0e89d13991f7b779ac9c3))
 
 ## [10.13.2](https://github.com/heroku/cli/compare/v10.13.1...v10.13.2) (2025-09-16)
 
-
 ### Bug Fixes
 
-* set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
-* Remove destructive copy ([#3370](https://github.com/heroku/cli/pull/3370))
-
-
-
+- set ignoreStdin to true for redis:cli database arg ([#3366](https://github.com/heroku/cli/issues/3366)) ([f6a4e3c](https://github.com/heroku/cli/commit/f6a4e3c89bcade19db43d8ad9a33aa2987fa1c0f))
+- Remove destructive copy ([#3370](https://github.com/heroku/cli/pull/3370))
 
 ## [10.13.1](https://github.com/heroku/cli/compare/v10.13.0...v10.13.1) (2025-09-04)
 
-
 ### Bug Fixes
 
-* **W-19527406:** update domain name validation for Heroku API requests ([#3361](https://github.com/heroku/cli/issues/3361)) ([3a8d7c1](https://github.com/heroku/cli/commit/3a8d7c193b8b03af78541badb7a47238f2a9f935))
-
-
-
-
+- **W-19527406:** update domain name validation for Heroku API requests ([#3361](https://github.com/heroku/cli/issues/3361)) ([3a8d7c1](https://github.com/heroku/cli/commit/3a8d7c193b8b03af78541badb7a47238f2a9f935))
 
 # [10.13.0](https://github.com/heroku/cli/compare/v10.12.0...v10.13.0) (2025-08-27)
 
-
 ### Bug Fixes
 
-* Disable attestations and SBOMs for Heroku's container registry ([#3350](https://github.com/heroku/cli/issues/3350)) ([cc64191](https://github.com/heroku/cli/commit/cc64191097b84e4bc2c389bb06719a1a496c5119))
-
+- Disable attestations and SBOMs for Heroku's container registry ([#3350](https://github.com/heroku/cli/issues/3350)) ([cc64191](https://github.com/heroku/cli/commit/cc64191097b84e4bc2c389bb06719a1a496c5119))
 
 ### Features
 
-* **W-19005486:** add support for SF Trust API to status command ([#3357](https://github.com/heroku/cli/issues/3357)) ([32eb409](https://github.com/heroku/cli/commit/32eb4093a8657a767e5d16c7cb5778cd931786b3))
-* **W-19386384:** add domain name validation for Heroku API requests ([#3358](https://github.com/heroku/cli/issues/3358)) ([b139bad](https://github.com/heroku/cli/commit/b139bad52ea64c93b348df49f658492391b6b11e))
-
-
-
-
+- **W-19005486:** add support for SF Trust API to status command ([#3357](https://github.com/heroku/cli/issues/3357)) ([32eb409](https://github.com/heroku/cli/commit/32eb4093a8657a767e5d16c7cb5778cd931786b3))
+- **W-19386384:** add domain name validation for Heroku API requests ([#3358](https://github.com/heroku/cli/issues/3358)) ([b139bad](https://github.com/heroku/cli/commit/b139bad52ea64c93b348df49f658492391b6b11e))
 
 # [10.12.0](https://github.com/heroku/cli/compare/v10.11.0...v10.12.0) (2025-07-17)
 
-
 ### Features
 
-* adding alias ([#3335](https://github.com/heroku/cli/issues/3335)) ([7b83b54](https://github.com/heroku/cli/commit/7b83b541a3261acb0b8dbfc5eb3a8b383f69c1ef))
-* verify ([#3319](https://github.com/heroku/cli/issues/3319)) ([798e3cb](https://github.com/heroku/cli/commit/798e3cb4f9eaf4f376e79d47918400646076d0d4))
-
-
-
-
+- adding alias ([#3335](https://github.com/heroku/cli/issues/3335)) ([7b83b54](https://github.com/heroku/cli/commit/7b83b541a3261acb0b8dbfc5eb3a8b383f69c1ef))
+- verify ([#3319](https://github.com/heroku/cli/issues/3319)) ([798e3cb](https://github.com/heroku/cli/commit/798e3cb4f9eaf4f376e79d47918400646076d0d4))
 
 # [10.11.0](https://github.com/heroku/cli/compare/v10.10.1...v10.11.0) (2025-06-23)
 
-
 ### Bug Fixes
 
-* add alias for heroku-pg-extras ([#3322](https://github.com/heroku/cli/issues/3322)) ([d5c2481](https://github.com/heroku/cli/commit/d5c24819effd536e903009b81def53787235ecc7))
-* allow for the use of the --prompt flag with a value outside of prompt mode ([#3321](https://github.com/heroku/cli/issues/3321)) ([608e299](https://github.com/heroku/cli/commit/608e299431911259f21cb0c9444bfaf63954d804))
-
+- add alias for heroku-pg-extras ([#3322](https://github.com/heroku/cli/issues/3322)) ([d5c2481](https://github.com/heroku/cli/commit/d5c24819effd536e903009b81def53787235ecc7))
+- allow for the use of the --prompt flag with a value outside of prompt mode ([#3321](https://github.com/heroku/cli/issues/3321)) ([608e299](https://github.com/heroku/cli/commit/608e299431911259f21cb0c9444bfaf63954d804))
 
 ### Features
 
-* add docs for repl and prompt modes ([#3311](https://github.com/heroku/cli/issues/3311)) ([c52a129](https://github.com/heroku/cli/commit/c52a12956a0c332d287301ba55a7d4ac22742afc))
-
-
-
-
+- add docs for repl and prompt modes ([#3311](https://github.com/heroku/cli/issues/3311)) ([c52a129](https://github.com/heroku/cli/commit/c52a12956a0c332d287301ba55a7d4ac22742afc))
 
 ## [10.10.1](https://github.com/heroku/cli/compare/v10.10.0...v10.10.1) (2025-06-18)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [10.10.0](https://github.com/heroku/cli/compare/v10.9.0...v10.10.0) (2025-06-04)
-
 
 ### Features
 
-* mcp start command ([#3305](https://github.com/heroku/cli/issues/3305)) ([8196b79](https://github.com/heroku/cli/commit/8196b79cee285b7f36d2ea4ba22d960b7326281f))
-
-
-
-
+- mcp start command ([#3305](https://github.com/heroku/cli/issues/3305)) ([8196b79](https://github.com/heroku/cli/commit/8196b79cee285b7f36d2ea4ba22d960b7326281f))
 
 # [10.9.0](https://github.com/heroku/cli/compare/v10.8.0...v10.9.0) (2025-06-03)
 
-
 ### Bug Fixes
 
-* speed up unit test execution ([#3306](https://github.com/heroku/cli/issues/3306)) ([abb9c90](https://github.com/heroku/cli/commit/abb9c90b213c2915595c9844e6f6bc82f53418ca))
-
+- speed up unit test execution ([#3306](https://github.com/heroku/cli/issues/3306)) ([abb9c90](https://github.com/heroku/cli/commit/abb9c90b213c2915595c9844e6f6bc82f53418ca))
 
 ### Features
 
-* Heroku REPL and prompt mode ([#3176](https://github.com/heroku/cli/issues/3176)) ([7d84dce](https://github.com/heroku/cli/commit/7d84dce87952d068eeed2b25343ba961086687f6))
-
-
-
-
+- Heroku REPL and prompt mode ([#3176](https://github.com/heroku/cli/issues/3176)) ([7d84dce](https://github.com/heroku/cli/commit/7d84dce87952d068eeed2b25343ba961086687f6))
 
 # [10.8.0](https://github.com/heroku/cli/compare/v10.7.0...v10.8.0) (2025-05-21)
 
-
 ### Features
 
-* 'pg:upgrade' command enhancements ([#3298](https://github.com/heroku/cli/issues/3298)) ([eab32d1](https://github.com/heroku/cli/commit/eab32d1a51dd4465c9c276339bf64035d3798390))
-
-
-
-
+- 'pg:upgrade' command enhancements ([#3298](https://github.com/heroku/cli/issues/3298)) ([eab32d1](https://github.com/heroku/cli/commit/eab32d1a51dd4465c9c276339bf64035d3798390))
 
 # [10.7.0](https://github.com/heroku/cli/compare/v10.6.1...v10.7.0) (2025-05-08)
 
-
 ### Features
 
-* Removing pilot messaging for MIA ([#3290](https://github.com/heroku/cli/issues/3290)) ([051de2f](https://github.com/heroku/cli/commit/051de2fe7a74b9ccc0c9411cd74e4d804b741b3c))
+- Removing pilot messaging for MIA ([#3290](https://github.com/heroku/cli/issues/3290)) ([051de2f](https://github.com/heroku/cli/commit/051de2fe7a74b9ccc0c9411cd74e4d804b741b3c))
 
-* remove fir pilot language, fix node engine definition ([#3287](https://github.com/heroku/cli/issues/3287)) ([4cd2217](https://github.com/heroku/cli/commit/4cd221785b5129919d195830fe32905a9b217ea6))
-
-
-
-
+- remove fir pilot language, fix node engine definition ([#3287](https://github.com/heroku/cli/issues/3287)) ([4cd2217](https://github.com/heroku/cli/commit/4cd221785b5129919d195830fe32905a9b217ea6))
 
 ## [10.6.1](https://github.com/heroku/cli/compare/v10.6.0...v10.6.1) (2025-04-17)
 
-
 ### Bug Fixes
 
-* show metered for metered addons in addons:info and addons:index ([#3284](https://github.com/heroku/cli/issues/3284)) ([84d36c7](https://github.com/heroku/cli/commit/84d36c75e8176abb7e2524c99793e5c841fbeea4))
-
-
-
-
+- show metered for metered addons in addons:info and addons:index ([#3284](https://github.com/heroku/cli/issues/3284)) ([84d36c7](https://github.com/heroku/cli/commit/84d36c75e8176abb7e2524c99793e5c841fbeea4))
 
 # [10.6.0](https://github.com/heroku/cli/compare/v10.5.0...v10.6.0) (2025-04-11)
 
-
 ### Bug Fixes
 
-* Add missing dyno sizes to command 'ps:type' ([#3282](https://github.com/heroku/cli/issues/3282)) ([d6ee5c0](https://github.com/heroku/cli/commit/d6ee5c0e43e0fbaf22c089d47ee2c0bad4db4110))
-* cx updates for pg:upgrade:* commands ([#3281](https://github.com/heroku/cli/pull/3281)) ([a87699b](https://github.com/heroku/cli/commit/a87699bd56d9c2e7a0306aec7dd7c137e2ff583c))
-* change addon text to add-on, add description to flags ([#3280](https://github.com/heroku/cli/issues/3280)) ([bcc84fd](https://github.com/heroku/cli/commit/bcc84fdd1c2472d5c09d53ceeb83a828082dc23a))
-
+- Add missing dyno sizes to command 'ps:type' ([#3282](https://github.com/heroku/cli/issues/3282)) ([d6ee5c0](https://github.com/heroku/cli/commit/d6ee5c0e43e0fbaf22c089d47ee2c0bad4db4110))
+- cx updates for pg:upgrade:\* commands ([#3281](https://github.com/heroku/cli/pull/3281)) ([a87699b](https://github.com/heroku/cli/commit/a87699bd56d9c2e7a0306aec7dd7c137e2ff583c))
+- change addon text to add-on, add description to flags ([#3280](https://github.com/heroku/cli/issues/3280)) ([bcc84fd](https://github.com/heroku/cli/commit/bcc84fdd1c2472d5c09d53ceeb83a828082dc23a))
 
 ### Features
 
-* add accounts commands ([#3257](https://github.com/heroku/cli/issues/3257)) ([fc5989b](https://github.com/heroku/cli/commit/fc5989b40575b42bee40ab55f27ff16f1216707d))
-
-
-
-
+- add accounts commands ([#3257](https://github.com/heroku/cli/issues/3257)) ([fc5989b](https://github.com/heroku/cli/commit/fc5989b40575b42bee40ab55f27ff16f1216707d))
 
 # [10.5.0](https://github.com/heroku/cli/compare/v10.4.1...v10.5.0) (2025-04-09)
 
 ### Bug Fixes
 
-* Fix display and update of grpc vs httpc transport protocol ([3275](https://github.com/heroku/cli/pull/3275)) ([e2eefaf](https://github.com/heroku/cli/commit/e2eefaf3ba8b806b9b7abe08a595291cc0f4c3df))
-
+- Fix display and update of grpc vs httpc transport protocol ([3275](https://github.com/heroku/cli/pull/3275)) ([e2eefaf](https://github.com/heroku/cli/commit/e2eefaf3ba8b806b9b7abe08a595291cc0f4c3df))
 
 ### Features
 
-* add team option to usage:addons command ([#3274](https://github.com/heroku/cli/issues/3274)) ([0c43989](https://github.com/heroku/cli/commit/0c4398986f156b69009ccf857bf267bfd4dd46f1))
-* Add new usage addons command ([#3263](https://github.com/heroku/cli/pull/3263)) ([48ae523](https://github.com/heroku/cli/commit/48ae523ae5986bd640019af798ed715f577b4cee))
-
-
-
+- add team option to usage:addons command ([#3274](https://github.com/heroku/cli/issues/3274)) ([0c43989](https://github.com/heroku/cli/commit/0c4398986f156b69009ccf857bf267bfd4dd46f1))
+- Add new usage addons command ([#3263](https://github.com/heroku/cli/pull/3263)) ([48ae523](https://github.com/heroku/cli/commit/48ae523ae5986bd640019af798ed715f577b4cee))
 
 ## [10.4.1](https://github.com/heroku/cli/compare/v10.4.0...v10.4.1) (2025-04-01)
 
-
 ### Bug Fixes
 
-* make heroku data env var override redis host too. ([#3239](https://github.com/heroku/cli/issues/3239)) ([7fee08f](https://github.com/heroku/cli/commit/7fee08f0292c077134e7523c5c0b48da698f2081))
-
-
-
-
+- make heroku data env var override redis host too. ([#3239](https://github.com/heroku/cli/issues/3239)) ([7fee08f](https://github.com/heroku/cli/commit/7fee08f0292c077134e7523c5c0b48da698f2081))
 
 # [10.4.0](https://github.com/heroku/cli/compare/v10.3.0...v10.4.0) (2025-03-20)
 
 ### Features
 
-* If addon is metered, print metered label and link to elements page ([#3258](https://github.com/heroku/cli/pull/3258)) ([72a4863](https://github.com/heroku/cli/commit/72a4863c8f4c139ea0d641576dc1ca361af30541))
-* chore: migrate retry command to oclif/core & move to cli core ([#3256](https://github.com/heroku/cli/pull/3256)) ([fb612fa](https://github.com/heroku/cli/commit/fb612fafa6c3b562ed015ea1d09fbff4589728fc))
-
+- If addon is metered, print metered label and link to elements page ([#3258](https://github.com/heroku/cli/pull/3258)) ([72a4863](https://github.com/heroku/cli/commit/72a4863c8f4c139ea0d641576dc1ca361af30541))
+- chore: migrate retry command to oclif/core & move to cli core ([#3256](https://github.com/heroku/cli/pull/3256)) ([fb612fa](https://github.com/heroku/cli/commit/fb612fafa6c3b562ed015ea1d09fbff4589728fc))
 
 # [10.3.0](https://github.com/heroku/cli/compare/v10.2.0...v10.3.0) (2025-03-12)
 
-
 ### Bug Fixes
 
-* add shortcode for --app flag in telemetry command ([#3246](https://github.com/heroku/cli/issues/3246)) ([8bf8a7e](https://github.com/heroku/cli/commit/8bf8a7e26ce2e7e37d08188c7f063937b3a02493))
-* **redis:** Remove empty object body from GET requests to Redis API ([#3251](https://github.com/heroku/cli/issues/3251)) ([0938ee7](https://github.com/heroku/cli/commit/0938ee787043562b26324a49af0b0e6f86c5876a))
-* remove limited GA phrasing from spaces:create ([#3245](https://github.com/heroku/cli/issues/3245)) ([369f736](https://github.com/heroku/cli/commit/369f73695786720a6d121b5551f2c5a50327672d))
-
+- add shortcode for --app flag in telemetry command ([#3246](https://github.com/heroku/cli/issues/3246)) ([8bf8a7e](https://github.com/heroku/cli/commit/8bf8a7e26ce2e7e37d08188c7f063937b3a02493))
+- **redis:** Remove empty object body from GET requests to Redis API ([#3251](https://github.com/heroku/cli/issues/3251)) ([0938ee7](https://github.com/heroku/cli/commit/0938ee787043562b26324a49af0b0e6f86c5876a))
+- remove limited GA phrasing from spaces:create ([#3245](https://github.com/heroku/cli/issues/3245)) ([369f736](https://github.com/heroku/cli/commit/369f73695786720a6d121b5551f2c5a50327672d))
 
 ### Features
 
-* add alias for heroku-sudo plugin ([#3250](https://github.com/heroku/cli/issues/3250)) ([810341b](https://github.com/heroku/cli/commit/810341bcace555568559655d0ad54e8763899329))
-* **W-17752806:** Pipeline creation must support the generation property ([#3221](https://github.com/heroku/cli/issues/3221)) ([779c8b4](https://github.com/heroku/cli/commit/779c8b4b5d29c8ef45ebc57622d35b67f40ea8e5))
-
-
-
-
+- add alias for heroku-sudo plugin ([#3250](https://github.com/heroku/cli/issues/3250)) ([810341b](https://github.com/heroku/cli/commit/810341bcace555568559655d0ad54e8763899329))
+- **W-17752806:** Pipeline creation must support the generation property ([#3221](https://github.com/heroku/cli/issues/3221)) ([779c8b4](https://github.com/heroku/cli/commit/779c8b4b5d29c8ef45ebc57622d35b67f40ea8e5))
 
 # [10.2.0](https://github.com/heroku/cli/compare/v10.1.0...v10.2.0) (2025-02-19)
 
-
 ### Bug Fixes
 
-* update pg:restore and pg:reset documentation for --extensions flag ([#3220](https://github.com/heroku/cli/issues/3220)) ([c5196eb](https://github.com/heroku/cli/commit/c5196eb6e1df9910f17c6134adbbe7b5dbe46e4a))
-* **W-17544077:** SSH key install via SSH happy path in docs didn't work ([#3210](https://github.com/heroku/cli/issues/3210)) ([5ad2958](https://github.com/heroku/cli/commit/5ad295812dec2a60f7cd129b7f8d97493ab34253))
-* **W-17544106:** pg:wait command addon not found warning ([#3216](https://github.com/heroku/cli/issues/3216)) ([abb6a13](https://github.com/heroku/cli/commit/abb6a13fad21a2d2d1cab1286c35686af3ccd038))
-* **W-17545010:** Error when trying to clone a redis instance ([#3215](https://github.com/heroku/cli/issues/3215)) ([be1e862](https://github.com/heroku/cli/commit/be1e86214873d32c437db9e67e9af8f4393a610e))
-* bump heroku-cli-command ([#3224](https://github.com/heroku/cli/pull/3224)) ([01c9b3](https://github.com/heroku/cli/commit/01c9b33d727ccb0ff07c0538b664448ed614ed9c))
+- update pg:restore and pg:reset documentation for --extensions flag ([#3220](https://github.com/heroku/cli/issues/3220)) ([c5196eb](https://github.com/heroku/cli/commit/c5196eb6e1df9910f17c6134adbbe7b5dbe46e4a))
+- **W-17544077:** SSH key install via SSH happy path in docs didn't work ([#3210](https://github.com/heroku/cli/issues/3210)) ([5ad2958](https://github.com/heroku/cli/commit/5ad295812dec2a60f7cd129b7f8d97493ab34253))
+- **W-17544106:** pg:wait command addon not found warning ([#3216](https://github.com/heroku/cli/issues/3216)) ([abb6a13](https://github.com/heroku/cli/commit/abb6a13fad21a2d2d1cab1286c35686af3ccd038))
+- **W-17545010:** Error when trying to clone a redis instance ([#3215](https://github.com/heroku/cli/issues/3215)) ([be1e862](https://github.com/heroku/cli/commit/be1e86214873d32c437db9e67e9af8f4393a610e))
+- bump heroku-cli-command ([#3224](https://github.com/heroku/cli/pull/3224)) ([01c9b3](https://github.com/heroku/cli/commit/01c9b33d727ccb0ff07c0538b664448ed614ed9c))
 
 ### Features
 
-* **utils:** add a getGeneration helper function and apply it across the CLI ([#3206](https://github.com/heroku/cli/issues/3206)) ([081fcd6](https://github.com/heroku/cli/commit/081fcd666dac3fdbfe31588759fbe4530a814132))
-* update help text for logs command ([#3225](https://github.com/heroku/cli/issues/3225)) ([e1475a2](https://github.com/heroku/cli/commit/e1475a20556d4d17fc1aabc03a04bc7632132e8e))
-
-
-
+- **utils:** add a getGeneration helper function and apply it across the CLI ([#3206](https://github.com/heroku/cli/issues/3206)) ([081fcd6](https://github.com/heroku/cli/commit/081fcd666dac3fdbfe31588759fbe4530a814132))
+- update help text for logs command ([#3225](https://github.com/heroku/cli/issues/3225)) ([e1475a2](https://github.com/heroku/cli/commit/e1475a20556d4d17fc1aabc03a04bc7632132e8e))
 
 # [10.1.0](https://github.com/heroku/cli/compare/v10.0.2...v10.1.0) (2025-02-06)
 
-
 ### Features
 
-* update command warning message for Fir spaces ([#3171](https://github.com/heroku/cli/issues/3171)) ([43d9164](https://github.com/heroku/cli/commit/43d9164f017967e6fceef025b45a65b24e095ecb))
-
-
-
+- update command warning message for Fir spaces ([#3171](https://github.com/heroku/cli/issues/3171)) ([43d9164](https://github.com/heroku/cli/commit/43d9164f017967e6fceef025b45a65b24e095ecb))
 
 ### Bug Fixes
 
-* send correct value to API for GRPC telemetry drains ([#3178](https://github.com/heroku/cli/issues/3178)) ([48b7f8a](https://github.com/heroku/cli/commit/48b7f8ad341f0bad7136c35ae840b1249aecd805))
-* unable to list drains for a space in Fir ([#3170](https://github.com/heroku/cli/issues/3170)) ([1ee8f62](https://github.com/heroku/cli/commit/1ee8f625acf586096f6f609926656a4cb046481a))
-* update install-standalone script ([#3179](https://github.com/heroku/cli/issues/3179)) ([f6b8ea6](https://github.com/heroku/cli/commit/f6b8ea6c67a33a4029018da6961ca0ff9293b786))
-
-
-
-
+- send correct value to API for GRPC telemetry drains ([#3178](https://github.com/heroku/cli/issues/3178)) ([48b7f8a](https://github.com/heroku/cli/commit/48b7f8ad341f0bad7136c35ae840b1249aecd805))
+- unable to list drains for a space in Fir ([#3170](https://github.com/heroku/cli/issues/3170)) ([1ee8f62](https://github.com/heroku/cli/commit/1ee8f625acf586096f6f609926656a4cb046481a))
+- update install-standalone script ([#3179](https://github.com/heroku/cli/issues/3179)) ([f6b8ea6](https://github.com/heroku/cli/commit/f6b8ea6c67a33a4029018da6961ca0ff9293b786))
 
 ## [10.0.2](https://github.com/heroku/cli/compare/v10.0.1...v10.0.2) (2025-01-09)
 
-
 ### Bug Fixes
 
-* pipeline diff fails on v10 ([#3154](https://github.com/heroku/cli/issues/3154)) ([acb4b76](https://github.com/heroku/cli/commit/acb4b765ac32a698d145cac20c2afbf2f187e7e0))
-* **W-17568149:** pg:settings:log-min-duration-statement command is submitting a string instead of number ([#3167](https://github.com/heroku/cli/issues/3167)) ([d645f0e](https://github.com/heroku/cli/commit/d645f0e65394ac9508490cc7ffae613681e120be))
-
-
-
-
+- pipeline diff fails on v10 ([#3154](https://github.com/heroku/cli/issues/3154)) ([acb4b76](https://github.com/heroku/cli/commit/acb4b765ac32a698d145cac20c2afbf2f187e7e0))
+- **W-17568149:** pg:settings:log-min-duration-statement command is submitting a string instead of number ([#3167](https://github.com/heroku/cli/issues/3167)) ([d645f0e](https://github.com/heroku/cli/commit/d645f0e65394ac9508490cc7ffae613681e120be))
 
 ## [10.0.1](https://github.com/heroku/cli/compare/v10.0.0...v10.0.1) (2025-01-07)
 
-
 ### Bug Fixes
 
-* apps:rename and apps:destroy incorrectly handles git remotes ([#3110](https://github.com/heroku/cli/issues/3110)) ([9290130](https://github.com/heroku/cli/commit/9290130143207c8ab7e14f5d96e05506f88d45fc))
-* update versions of http-call, heroku-cli/command, and ps-exec ([#3161](https://github.com/heroku/cli/issues/3161)) ([29b9580](https://github.com/heroku/cli/commit/29b9580fba59956e4818abe30cbc28516def0c8a))
-
-
-
+- apps:rename and apps:destroy incorrectly handles git remotes ([#3110](https://github.com/heroku/cli/issues/3110)) ([9290130](https://github.com/heroku/cli/commit/9290130143207c8ab7e14f5d96e05506f88d45fc))
+- update versions of http-call, heroku-cli/command, and ps-exec ([#3161](https://github.com/heroku/cli/issues/3161)) ([29b9580](https://github.com/heroku/cli/commit/29b9580fba59956e4818abe30cbc28516def0c8a))
 
 # [10.0.0](https://github.com/heroku/cli/compare/v9.5.1...v10.0.0) (2024-12-09)
 
-
 ### Features
 
-* **cli:** Add Fir support to 'pipelines:diff' ([#3093](https://github.com/heroku/cli/issues/3093)) ([60b509d](https://github.com/heroku/cli/commit/60b509dc062733699e891debb14a0d7c6b8f8621))
-* upgrade ps-exec to v2.6.0 ([e3670a0](https://github.com/heroku/cli/commit/e3670a07d855dea6800416a472aaad5aa90dc758))
-* add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
-* update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
-* add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
-* add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
-* add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
-* add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
-* Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
-* **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
-* **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
-* separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
-* update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
-* **cli:** Add Fir support to 'pipelines:diff' ([#3093](https://github.com/heroku/cli/issues/3093)) ([60b509d](https://github.com/heroku/cli/commit/60b509dc062733699e891debb14a0d7c6b8f8621))
-* upgrade ps-exec to v2.6.0 ([e3670a0](https://github.com/heroku/cli/commit/e3670a07d855dea6800416a472aaad5aa90dc758))
-* add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
-* update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
-* add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
-* add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
-* add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
-* add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
-* Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
-* **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
-* **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
-* separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
-* update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
-* **cli:** Adding disclaimer for plugin AI install ([#3065](https://github.com/heroku/cli/issues/3065)) ([80ab352](https://github.com/heroku/cli/commit/80ab352a5b68e96dba6d5a0ed900f6e1c166d98f))
-* add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
-* add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
-* add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
-* add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
-* Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
-* **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
-* **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
-* separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
-* update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
-
-
-
+- **cli:** Add Fir support to 'pipelines:diff' ([#3093](https://github.com/heroku/cli/issues/3093)) ([60b509d](https://github.com/heroku/cli/commit/60b509dc062733699e891debb14a0d7c6b8f8621))
+- upgrade ps-exec to v2.6.0 ([e3670a0](https://github.com/heroku/cli/commit/e3670a07d855dea6800416a472aaad5aa90dc758))
+- add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
+- update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
+- add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
+- add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
+- add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
+- add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
+- Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
+- **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
+- **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
+- separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
+- update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
+- **cli:** Add Fir support to 'pipelines:diff' ([#3093](https://github.com/heroku/cli/issues/3093)) ([60b509d](https://github.com/heroku/cli/commit/60b509dc062733699e891debb14a0d7c6b8f8621))
+- upgrade ps-exec to v2.6.0 ([e3670a0](https://github.com/heroku/cli/commit/e3670a07d855dea6800416a472aaad5aa90dc758))
+- add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
+- update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
+- add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
+- add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
+- add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
+- add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
+- Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
+- **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
+- **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
+- separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
+- update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
+- **cli:** Adding disclaimer for plugin AI install ([#3065](https://github.com/heroku/cli/issues/3065)) ([80ab352](https://github.com/heroku/cli/commit/80ab352a5b68e96dba6d5a0ed900f6e1c166d98f))
+- add basic flags, logic, and tests for telemetry:add ([adeb986](https://github.com/heroku/cli/commit/adeb98613886789a6b818e80f126da66ec43fbf8))
+- add endpoint and transport flags to telemetry:add ([a32765d](https://github.com/heroku/cli/commit/a32765d5481aa0a2d15eb2ac6aa72a08381253e8))
+- add generation column to spaces command ([#3029](https://github.com/heroku/cli/issues/3029)) ([79c17fa](https://github.com/heroku/cli/commit/79c17fa06fac52ac1f790e7851928233ff4ea937))
+- add generation column to spaces renderInfo command ([bec18a8](https://github.com/heroku/cli/commit/bec18a811df89a36420b2a83e46d83f16e1e715e))
+- Add telemetry index command to list telemetry drains ([#3031](https://github.com/heroku/cli/issues/3031)) ([e51affb](https://github.com/heroku/cli/commit/e51affbcca6ec6f5e7f628397f294126b0c4f03b))
+- **cli:** Update node version to 20 ([#2989](https://github.com/heroku/cli/issues/2989)) ([fece1bc](https://github.com/heroku/cli/commit/fece1bc105d46f3b3969bd524f74854112b17b99))
+- **cli:** Updates to `logs` command for Fir ([#3046](https://github.com/heroku/cli/issues/3046)) ([3f7d253](https://github.com/heroku/cli/commit/3f7d253ab525d79a12bf484fabcadc53e5b1fb29))
+- separate calls for app and space drains and update tests ([2005912](https://github.com/heroku/cli/commit/2005912516d69e59d9469a7578f7ab5b55f44090))
+- update spaces:info and spaces:wait to use fir API ([a087692](https://github.com/heroku/cli/commit/a087692894595522384773737f3a5d958e346ac5))
 
 ### Bug Fixes
 
-* bug with telemetry:add ([#3094](https://github.com/heroku/cli/issues/3094)) ([df31ab2](https://github.com/heroku/cli/commit/df31ab2d729fa1f9908f5098a78482d8d37f0bc4))
-* only print slug size for apps:info for non-fir apps ([#3129](https://github.com/heroku/cli/issues/3129)) ([91b48f2](https://github.com/heroku/cli/commit/91b48f2f5e01fa3cc58ac2c58ec0adae7ac1b480))
-* run:inside hangs (doesn't error) when no/invalid SSH key ([#3130](https://github.com/heroku/cli/issues/3130)) ([b44fcf8](https://github.com/heroku/cli/commit/b44fcf813ccd0f32d75bdaf9648670b1bb89c512))
-* show only generation name in spaces:info output ([#3128](https://github.com/heroku/cli/issues/3128)) ([48c5b8e](https://github.com/heroku/cli/commit/48c5b8ee7d9264109128ddbb08efac9164c08db9))
-* bug with telemetry:add ([#3094](https://github.com/heroku/cli/issues/3094)) ([df31ab2](https://github.com/heroku/cli/commit/df31ab2d729fa1f9908f5098a78482d8d37f0bc4))
-* only print slug size for apps:info for non-fir apps ([#3129](https://github.com/heroku/cli/issues/3129)) ([91b48f2](https://github.com/heroku/cli/commit/91b48f2f5e01fa3cc58ac2c58ec0adae7ac1b480))
-* run:inside hangs (doesn't error) when no/invalid SSH key ([#3130](https://github.com/heroku/cli/issues/3130)) ([b44fcf8](https://github.com/heroku/cli/commit/b44fcf813ccd0f32d75bdaf9648670b1bb89c512))
-* show only generation name in spaces:info output ([#3128](https://github.com/heroku/cli/issues/3128)) ([48c5b8e](https://github.com/heroku/cli/commit/48c5b8ee7d9264109128ddbb08efac9164c08db9))
-
-
-
+- bug with telemetry:add ([#3094](https://github.com/heroku/cli/issues/3094)) ([df31ab2](https://github.com/heroku/cli/commit/df31ab2d729fa1f9908f5098a78482d8d37f0bc4))
+- only print slug size for apps:info for non-fir apps ([#3129](https://github.com/heroku/cli/issues/3129)) ([91b48f2](https://github.com/heroku/cli/commit/91b48f2f5e01fa3cc58ac2c58ec0adae7ac1b480))
+- run:inside hangs (doesn't error) when no/invalid SSH key ([#3130](https://github.com/heroku/cli/issues/3130)) ([b44fcf8](https://github.com/heroku/cli/commit/b44fcf813ccd0f32d75bdaf9648670b1bb89c512))
+- show only generation name in spaces:info output ([#3128](https://github.com/heroku/cli/issues/3128)) ([48c5b8e](https://github.com/heroku/cli/commit/48c5b8ee7d9264109128ddbb08efac9164c08db9))
+- bug with telemetry:add ([#3094](https://github.com/heroku/cli/issues/3094)) ([df31ab2](https://github.com/heroku/cli/commit/df31ab2d729fa1f9908f5098a78482d8d37f0bc4))
+- only print slug size for apps:info for non-fir apps ([#3129](https://github.com/heroku/cli/issues/3129)) ([91b48f2](https://github.com/heroku/cli/commit/91b48f2f5e01fa3cc58ac2c58ec0adae7ac1b480))
+- run:inside hangs (doesn't error) when no/invalid SSH key ([#3130](https://github.com/heroku/cli/issues/3130)) ([b44fcf8](https://github.com/heroku/cli/commit/b44fcf813ccd0f32d75bdaf9648670b1bb89c512))
+- show only generation name in spaces:info output ([#3128](https://github.com/heroku/cli/issues/3128)) ([48c5b8e](https://github.com/heroku/cli/commit/48c5b8ee7d9264109128ddbb08efac9164c08db9))
 
 ## [9.5.1](https://github.com/heroku/cli/compare/v9.5.0...v9.5.1) (2024-12-05)
 
-
 ### Bug Fixes
 
-* **git:remote:** update example text to reflect staging app ([#3095](https://github.com/heroku/cli/issues/3095)) ([d4ce1ba](https://github.com/heroku/cli/commit/d4ce1ba422539a8a6a029eca4413700535327785))
-
-
-
-
+- **git:remote:** update example text to reflect staging app ([#3095](https://github.com/heroku/cli/issues/3095)) ([d4ce1ba](https://github.com/heroku/cli/commit/d4ce1ba422539a8a6a029eca4413700535327785))
 
 # [9.5.0](https://github.com/heroku/cli/compare/v9.4.0...v9.5.0) (2024-11-13)
 
-
 ### Features
 
-* **addons:** add inference disclaimer ([#3076](https://github.com/heroku/cli/issues/3076)) ([6d33a56](https://github.com/heroku/cli/commit/6d33a5653df971680826d7b6006932a5920a4b93))
-
-
-
-
+- **addons:** add inference disclaimer ([#3076](https://github.com/heroku/cli/issues/3076)) ([6d33a56](https://github.com/heroku/cli/commit/6d33a5653df971680826d7b6006932a5920a4b93))
 
 # [9.4.0](https://github.com/heroku/cli/compare/v9.3.2...v9.4.0) (2024-11-11)
 
-
 ### Bug Fixes
 
-* access command error handling ([#3077](https://github.com/heroku/cli/issues/3077)) ([79188e5](https://github.com/heroku/cli/commit/79188e571b3b7cdbca85ce9012be92a93938dee3))
-
+- access command error handling ([#3077](https://github.com/heroku/cli/issues/3077)) ([79188e5](https://github.com/heroku/cli/commit/79188e571b3b7cdbca85ce9012be92a93938dee3))
 
 ### Features
 
-* add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
-* update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
-
-
-
-
+- add fir-specific error message for autoscale:enable ([#3069](https://github.com/heroku/cli/issues/3069)) ([19a222f](https://github.com/heroku/cli/commit/19a222fe88fc9a489f1f35a2f4060fb0fc513420))
+- update plugin-ps-exec to latest beta ([#3087](https://github.com/heroku/cli/issues/3087)) ([6d4b2a4](https://github.com/heroku/cli/commit/6d4b2a4d29165fda015b527d2bf59069551e53cd))
 
 ## [9.3.2](https://github.com/heroku/cli/compare/v9.3.1...v9.3.2) (2024-10-23)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [9.3.1](https://github.com/heroku/cli/compare/v9.3.0...v9.3.1) (2024-10-14)
-
 
 ### Bug Fixes
 
-* **run:** update args parsing logic ([#3030](https://github.com/heroku/cli/issues/3030)) ([6850e65](https://github.com/heroku/cli/commit/6850e655626fe9ce18d2a6c074e3518186cbe794))
-
-
-
-
+- **run:** update args parsing logic ([#3030](https://github.com/heroku/cli/issues/3030)) ([6850e65](https://github.com/heroku/cli/commit/6850e655626fe9ce18d2a6c074e3518186cbe794))
 
 # [9.3.0](https://github.com/heroku/cli/compare/v9.2.1...v9.3.0) (2024-09-24)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [9.2.2](https://github.com/heroku/cli/compare/v9.2.1...v9.2.2) (2024-09-24)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [9.2.1](https://github.com/heroku/cli/compare/v9.2.0...v9.2.1) (2024-09-05)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [9.2.0](https://github.com/heroku/cli/compare/v9.1.0...v9.2.0) (2024-08-26)
-
 
 ### Bug Fixes
 
-* change type of value to string for log-min-duration ([#2977](https://github.com/heroku/cli/issues/2977)) ([3224705](https://github.com/heroku/cli/commit/322470531f0b806395c217d35c9524d6694387fb))
-* **cli:** fix missing dockerfile error ([#2988](https://github.com/heroku/cli/issues/2988)) ([1f880e8](https://github.com/heroku/cli/commit/1f880e85b6fe27c29672a959d93df0d1e3e8b05a))
-* **cli:** Update app and remote flags ([#2968](https://github.com/heroku/cli/issues/2968)) ([6b57765](https://github.com/heroku/cli/commit/6b577651e4f6b667f15e637cd080143b846c7eaf))
-* **pg:** Restoring behavior for backup scheduling ([#2981](https://github.com/heroku/cli/issues/2981)) ([bfac653](https://github.com/heroku/cli/commit/bfac6538617085d82e351227c68853d324b6b4a0))
-* **redis:cli:** remove call to resolve ssh2 in bastionConnect function ([#2980](https://github.com/heroku/cli/issues/2980)) ([d11c18f](https://github.com/heroku/cli/commit/d11c18fbd9f26208eb07713b53da716006e86a60))
-* **run:** reorder oclif sorted args ([#2976](https://github.com/heroku/cli/issues/2976)) ([aa560d3](https://github.com/heroku/cli/commit/aa560d33165b7c3085491a654cc16221b0274b58))
-* use linux/amd64 platform only for m1/m2 macs (arm64) ([#2986](https://github.com/heroku/cli/issues/2986)) ([1e0bf11](https://github.com/heroku/cli/commit/1e0bf1192bf18424cc85ec594248095b324e335b))
-* **W-16441506:** redis:cli command not working for private redis instances ([#2973](https://github.com/heroku/cli/issues/2973)) ([2d58422](https://github.com/heroku/cli/commit/2d58422cb4926a3d8bb909883fff9a8eeade098b))
-
-
-
-
+- change type of value to string for log-min-duration ([#2977](https://github.com/heroku/cli/issues/2977)) ([3224705](https://github.com/heroku/cli/commit/322470531f0b806395c217d35c9524d6694387fb))
+- **cli:** fix missing dockerfile error ([#2988](https://github.com/heroku/cli/issues/2988)) ([1f880e8](https://github.com/heroku/cli/commit/1f880e85b6fe27c29672a959d93df0d1e3e8b05a))
+- **cli:** Update app and remote flags ([#2968](https://github.com/heroku/cli/issues/2968)) ([6b57765](https://github.com/heroku/cli/commit/6b577651e4f6b667f15e637cd080143b846c7eaf))
+- **pg:** Restoring behavior for backup scheduling ([#2981](https://github.com/heroku/cli/issues/2981)) ([bfac653](https://github.com/heroku/cli/commit/bfac6538617085d82e351227c68853d324b6b4a0))
+- **redis:cli:** remove call to resolve ssh2 in bastionConnect function ([#2980](https://github.com/heroku/cli/issues/2980)) ([d11c18f](https://github.com/heroku/cli/commit/d11c18fbd9f26208eb07713b53da716006e86a60))
+- **run:** reorder oclif sorted args ([#2976](https://github.com/heroku/cli/issues/2976)) ([aa560d3](https://github.com/heroku/cli/commit/aa560d33165b7c3085491a654cc16221b0274b58))
+- use linux/amd64 platform only for m1/m2 macs (arm64) ([#2986](https://github.com/heroku/cli/issues/2986)) ([1e0bf11](https://github.com/heroku/cli/commit/1e0bf1192bf18424cc85ec594248095b324e335b))
+- **W-16441506:** redis:cli command not working for private redis instances ([#2973](https://github.com/heroku/cli/issues/2973)) ([2d58422](https://github.com/heroku/cli/commit/2d58422cb4926a3d8bb909883fff9a8eeade098b))
 
 # [9.1.0](https://github.com/heroku/cli/compare/v9.0.0...v9.1.0) (2024-07-30)
 
-
 ### Bug Fixes
 
-* **cli:** Fix recursive behavior so that it pushes all dockerfiles with process types not provided ([#2958](https://github.com/heroku/cli/pull/2958)) ([7363461](https://github.com/heroku/cli/commit/7363461d1c9b65433bc928b1de20adfe7ac0ff66))
-* **cli:** Allow app.build_stack to be container for ensureContainerStack ([#2952](https://github.com/heroku/cli/pull/2952)) ([3bba8e1](https://github.com/heroku/cli/commit/3bba8e178f2b1524c3866abcafccbb0d63ed2dc2))
+- **cli:** Fix recursive behavior so that it pushes all dockerfiles with process types not provided ([#2958](https://github.com/heroku/cli/pull/2958)) ([7363461](https://github.com/heroku/cli/commit/7363461d1c9b65433bc928b1de20adfe7ac0ff66))
+- **cli:** Allow app.build_stack to be container for ensureContainerStack ([#2952](https://github.com/heroku/cli/pull/2952)) ([3bba8e1](https://github.com/heroku/cli/commit/3bba8e178f2b1524c3866abcafccbb0d63ed2dc2))
 
 ### Features
 
-* **domains:** update custom domains functionality ([#2920](https://github.com/heroku/cli/issues/2920)) ([045eab4](https://github.com/heroku/cli/commit/045eab4f429870f5917f3ab24500dd159fccc7dc))
-
-
-
-
+- **domains:** update custom domains functionality ([#2920](https://github.com/heroku/cli/issues/2920)) ([045eab4](https://github.com/heroku/cli/commit/045eab4f429870f5917f3ab24500dd159fccc7dc))
 
 # [9.0.0](https://github.com/heroku/cli/compare/v8.11.5...v9.0.0) (2024-07-16)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.11.5](https://github.com/heroku/cli/compare/v8.11.4...v8.11.5) (2024-04-30)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [8.11.4](https://github.com/heroku/cli/compare/v8.11.3...v8.11.4) (2024-04-16)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.11.3](https://github.com/heroku/cli/compare/v8.11.2...v8.11.3) (2024-04-15)
-
 
 ### Bug Fixes
 
-* **authorizations:** surface api warnings in temporary fix ([#2804](https://github.com/heroku/cli/issues/2804)) ([33f8aac](https://github.com/heroku/cli/commit/33f8aac631e2b406f12a878bb1fd9a994df75025))
-
-
-
-
+- **authorizations:** surface api warnings in temporary fix ([#2804](https://github.com/heroku/cli/issues/2804)) ([33f8aac](https://github.com/heroku/cli/commit/33f8aac631e2b406f12a878bb1fd9a994df75025))
 
 ## [8.11.2](https://github.com/heroku/cli/compare/v8.11.1...v8.11.2) (2024-04-10)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.11.1](https://github.com/heroku/cli/compare/v8.11.0...v8.11.1) (2024-03-25)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.11.0](https://github.com/heroku/cli/compare/v8.10.0...v8.11.0) (2024-03-20)
-
 
 ### Bug Fixes
 
-* **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
-* **workflow:** remove fig command & update workflow ([#2686](https://github.com/heroku/cli/issues/2686)) ([748e71c](https://github.com/heroku/cli/commit/748e71c1026474bb75bf44ccd5c10720ff811f7b))
-* **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
-
+- **tests:** Increasing Mocha timeouts ([#2649](https://github.com/heroku/cli/issues/2649)) ([fe49fa0](https://github.com/heroku/cli/commit/fe49fa031d89193906cb86c4f793e0c69453c7d6))
+- **workflow:** remove fig command & update workflow ([#2686](https://github.com/heroku/cli/issues/2686)) ([748e71c](https://github.com/heroku/cli/commit/748e71c1026474bb75bf44ccd5c10720ff811f7b))
+- **workflow:** update fig autocomplete workflow ([#2679](https://github.com/heroku/cli/issues/2679)) ([536b2ec](https://github.com/heroku/cli/commit/536b2ecdf797d352bdcc994e439c909e5e09222e))
 
 ### Features
 
-* **pg:upgrade:** support essential dbs ([#2637](https://github.com/heroku/cli/issues/2637)) ([c062c59](https://github.com/heroku/cli/commit/c062c590956afe38c60ea57982ccc28b51b2c5b5))
-
-
-
-
+- **pg:upgrade:** support essential dbs ([#2637](https://github.com/heroku/cli/issues/2637)) ([c062c59](https://github.com/heroku/cli/commit/c062c590956afe38c60ea57982ccc28b51b2c5b5))
 
 # [8.10.0](https://github.com/heroku/cli/compare/v8.9.0...v8.10.0) (2024-02-19)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.9.0](https://github.com/heroku/cli/compare/v8.8.0...v8.9.0) (2024-02-09)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.8.0](https://github.com/heroku/cli/compare/v8.7.1...v8.8.0) (2024-02-07)
-
 
 ### Bug Fixes
 
-* bump @oclif/plugin-update to a version that doesn't delete the CLI ([#2585](https://github.com/heroku/cli/issues/2585)) ([30c3963](https://github.com/heroku/cli/commit/30c396344e0545008484489158b7b453fb1f9527))
-* set default port for heroku:local to 5006 ([#2618](https://github.com/heroku/cli/issues/2618)) ([9687e82](https://github.com/heroku/cli/commit/9687e82c152548ea593778b2caf2d0413ec7c75a))
-
-
-
-
+- bump @oclif/plugin-update to a version that doesn't delete the CLI ([#2585](https://github.com/heroku/cli/issues/2585)) ([30c3963](https://github.com/heroku/cli/commit/30c396344e0545008484489158b7b453fb1f9527))
+- set default port for heroku:local to 5006 ([#2618](https://github.com/heroku/cli/issues/2618)) ([9687e82](https://github.com/heroku/cli/commit/9687e82c152548ea593778b2caf2d0413ec7c75a))
 
 ## [8.7.1](https://github.com/heroku/cli/compare/v8.7.0...v8.7.1) (2023-11-06)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.7.0](https://github.com/heroku/cli/compare/v8.6.0...v8.7.0) (2023-10-24)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.6.0](https://github.com/heroku/cli/compare/v8.5.0...v8.6.0) (2023-10-16)
-
 
 ### Bug Fixes
 
-* remove dotenv as no longer necessary ([#2497](https://github.com/heroku/cli/issues/2497)) ([a5ae035](https://github.com/heroku/cli/commit/a5ae035a4d9bc3b5392b62c57c6a283c6e4bcea5))
-
-
-
-
+- remove dotenv as no longer necessary ([#2497](https://github.com/heroku/cli/issues/2497)) ([a5ae035](https://github.com/heroku/cli/commit/a5ae035a4d9bc3b5392b62c57c6a283c6e4bcea5))
 
 # [8.5.0](https://github.com/heroku/cli/compare/v8.4.3...v8.5.0) (2023-09-28)
 
-
 ### Bug Fixes
 
-* default to --port 5001 for heroku local ([#2475](https://github.com/heroku/cli/issues/2475)) ([4f7a7c3](https://github.com/heroku/cli/commit/4f7a7c3d87f6cb6010369460a30b272a39883223))
-
-
-
-
+- default to --port 5001 for heroku local ([#2475](https://github.com/heroku/cli/issues/2475)) ([4f7a7c3](https://github.com/heroku/cli/commit/4f7a7c3d87f6cb6010369460a30b272a39883223))
 
 ## [8.4.3](https://github.com/heroku/cli/compare/v8.4.2...v8.4.3) (2023-09-18)
 
-
 ### Bug Fixes
 
-* correctly handling CLI errors again. ([#2467](https://github.com/heroku/cli/issues/2467)) ([e8f3f5f](https://github.com/heroku/cli/commit/e8f3f5f5b9ae785389f10f88f84f72007a2a5782))
-
-
-
-
+- correctly handling CLI errors again. ([#2467](https://github.com/heroku/cli/issues/2467)) ([e8f3f5f](https://github.com/heroku/cli/commit/e8f3f5f5b9ae785389f10f88f84f72007a2a5782))
 
 ## [8.4.2](https://github.com/heroku/cli/compare/v8.4.1...v8.4.2) (2023-08-30)
 
-
 ### Bug Fixes
 
-* **run:** downgrade @heroku-cli/plugins-run to @oclif/core v1 ([#2460](https://github.com/heroku/cli/issues/2460)) ([7666459](https://github.com/heroku/cli/commit/76664592e108babd934e1d15c9481009f4fb422f))
-* **run:** move commands back into CLI & use @oclif/core v1 ([#2463](https://github.com/heroku/cli/issues/2463)) ([d072a64](https://github.com/heroku/cli/commit/d072a647d506026a541b16f8d311f9c7c59c582f)), closes [#2460](https://github.com/heroku/cli/issues/2460) [#2460](https://github.com/heroku/cli/issues/2460)
-
-
-
-
+- **run:** downgrade @heroku-cli/plugins-run to @oclif/core v1 ([#2460](https://github.com/heroku/cli/issues/2460)) ([7666459](https://github.com/heroku/cli/commit/76664592e108babd934e1d15c9481009f4fb422f))
+- **run:** move commands back into CLI & use @oclif/core v1 ([#2463](https://github.com/heroku/cli/issues/2463)) ([d072a64](https://github.com/heroku/cli/commit/d072a647d506026a541b16f8d311f9c7c59c582f)), closes [#2460](https://github.com/heroku/cli/issues/2460) [#2460](https://github.com/heroku/cli/issues/2460)
 
 ## [8.4.1](https://github.com/heroku/cli/compare/v8.4.0...v8.4.1) (2023-08-29)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.4.0](https://github.com/heroku/cli/compare/v8.3.1...v8.4.0) (2023-08-23)
-
 
 ### Bug Fixes
 
-* rollbar version segmentation and telemetry initialization ([#2451](https://github.com/heroku/cli/issues/2451)) ([46725e7](https://github.com/heroku/cli/commit/46725e712f6d8bc17ff3b34bc4dc7e296bbf08fe))
-
-
-
-
+- rollbar version segmentation and telemetry initialization ([#2451](https://github.com/heroku/cli/issues/2451)) ([46725e7](https://github.com/heroku/cli/commit/46725e712f6d8bc17ff3b34bc4dc7e296bbf08fe))
 
 ## [8.3.1](https://github.com/heroku/cli/compare/v8.3.0...v8.3.1) (2023-08-18)
 
-
 ### Bug Fixes
 
-* **cli:** update boolean logic and add package parser util ([#2449](https://github.com/heroku/cli/issues/2449)) ([9c7099c](https://github.com/heroku/cli/commit/9c7099c03fbfe85320cad7dad3776c758043b2ac))
-
-
-
-
+- **cli:** update boolean logic and add package parser util ([#2449](https://github.com/heroku/cli/issues/2449)) ([9c7099c](https://github.com/heroku/cli/commit/9c7099c03fbfe85320cad7dad3776c758043b2ac))
 
 # [8.3.0](https://github.com/heroku/cli/compare/v8.2.0...v8.3.0) (2023-08-16)
 
-
 ### Features
 
-* **cli:** add cli performance telemetry ([#2425](https://github.com/heroku/cli/issues/2425)) ([#2435](https://github.com/heroku/cli/issues/2435)) ([465c806](https://github.com/heroku/cli/commit/465c806e967e66ec94f9b5fd3a4fac4baea4af78)), closes [#2434](https://github.com/heroku/cli/issues/2434)
-
-
-
-
+- **cli:** add cli performance telemetry ([#2425](https://github.com/heroku/cli/issues/2425)) ([#2435](https://github.com/heroku/cli/issues/2435)) ([465c806](https://github.com/heroku/cli/commit/465c806e967e66ec94f9b5fd3a4fac4baea4af78)), closes [#2434](https://github.com/heroku/cli/issues/2434)
 
 # [8.2.0](https://github.com/heroku/cli/compare/v8.1.9...v8.2.0) (2023-08-14)
 
-
 ### Bug Fixes
 
-* build cli for all tests to save time. ([#2436](https://github.com/heroku/cli/issues/2436)) ([c81c801](https://github.com/heroku/cli/commit/c81c801e310738460f3d27d7241bfa2462426dcd))
-* monorepo dependency issues - upgrade to yarn 3 ([#2429](https://github.com/heroku/cli/issues/2429)) ([0d7e5ca](https://github.com/heroku/cli/commit/0d7e5ca519799af4352ec973f51b45748699f3a1))
-* turns out tslib is actually a runtime dependency, not just dev. ([#2427](https://github.com/heroku/cli/issues/2427)) ([76b3dc3](https://github.com/heroku/cli/commit/76b3dc3829a998c5235879f21b8b3795d1fd2044))
-* use correct path for update hooks ([#2426](https://github.com/heroku/cli/issues/2426)) ([e55e00f](https://github.com/heroku/cli/commit/e55e00f920a066af01f1febd697054f812183c92))
-
+- build cli for all tests to save time. ([#2436](https://github.com/heroku/cli/issues/2436)) ([c81c801](https://github.com/heroku/cli/commit/c81c801e310738460f3d27d7241bfa2462426dcd))
+- monorepo dependency issues - upgrade to yarn 3 ([#2429](https://github.com/heroku/cli/issues/2429)) ([0d7e5ca](https://github.com/heroku/cli/commit/0d7e5ca519799af4352ec973f51b45748699f3a1))
+- turns out tslib is actually a runtime dependency, not just dev. ([#2427](https://github.com/heroku/cli/issues/2427)) ([76b3dc3](https://github.com/heroku/cli/commit/76b3dc3829a998c5235879f21b8b3795d1fd2044))
+- use correct path for update hooks ([#2426](https://github.com/heroku/cli/issues/2426)) ([e55e00f](https://github.com/heroku/cli/commit/e55e00f920a066af01f1febd697054f812183c92))
 
 ### Features
 
-* **cli:** add rollbar ([#2424](https://github.com/heroku/cli/issues/2424)) ([9a52f2f](https://github.com/heroku/cli/commit/9a52f2f8e9c8bf27e0d5c5cf04ca592e61188359))
-
-
-
-
+- **cli:** add rollbar ([#2424](https://github.com/heroku/cli/issues/2424)) ([9a52f2f](https://github.com/heroku/cli/commit/9a52f2f8e9c8bf27e0d5c5cf04ca592e61188359))
 
 ## [8.1.9](https://github.com/heroku/cli/compare/v8.1.8...v8.1.9) (2023-06-21)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.1.8](https://github.com/heroku/cli/compare/v8.1.7...v8.1.8) (2023-06-14)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [8.1.7](https://github.com/heroku/cli/compare/v8.1.4...v8.1.7) (2023-06-01)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.1.6](https://github.com/heroku/cli/compare/v8.1.4...v8.1.6) (2023-05-31)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [8.1.5](https://github.com/heroku/cli/compare/v8.1.4...v8.1.5) (2023-05-30)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.1.4](https://github.com/heroku/cli/compare/v8.1.3...v8.1.4) (2023-05-24)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [8.1.3](https://github.com/heroku/cli/compare/v8.1.2...v8.1.3) (2023-05-01)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.1.2](https://github.com/heroku/cli/compare/v8.1.1...v8.1.2) (2023-05-01)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [8.1.1](https://github.com/heroku/cli/compare/v8.1.0...v8.1.1) (2023-04-27)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [8.1.0](https://github.com/heroku/cli/compare/v8.0.6...v8.1.0) (2023-04-27)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [8.0.6](https://github.com/heroku/cli/compare/v8.0.5...v8.0.6) (2023-04-24)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [8.0.5](https://github.com/heroku/cli/compare/v8.0.4...v8.0.5) (2023-04-18)
-
 
 ### Bug Fixes
 
-* oclif promote step ([#2301](https://github.com/heroku/cli/issues/2301)) ([4e94fb1](https://github.com/heroku/cli/commit/4e94fb1fdc1a591bd1b744e2da69c0e0df03ed6e))
-
-
-
-
+- oclif promote step ([#2301](https://github.com/heroku/cli/issues/2301)) ([4e94fb1](https://github.com/heroku/cli/commit/4e94fb1fdc1a591bd1b744e2da69c0e0df03ed6e))
 
 ## [8.0.4](https://github.com/heroku/cli/compare/v8.0.3...v8.0.4) (2023-04-11)
 
-
 ### Bug Fixes
 
-* update plugin-update bump for WSL fix. ([#2291](https://github.com/heroku/cli/issues/2291)) ([a939d6e](https://github.com/heroku/cli/commit/a939d6e32e8c7a0469fe430a38775b8faec4b11b))
-
-
-
-
+- update plugin-update bump for WSL fix. ([#2291](https://github.com/heroku/cli/issues/2291)) ([a939d6e](https://github.com/heroku/cli/commit/a939d6e32e8c7a0469fe430a38775b8faec4b11b))
 
 ## [8.0.3](https://github.com/heroku/cli/compare/v8.0.2...v8.0.3) (2023-04-04)
 
-
 ### Bug Fixes
 
-* update @oclif/plugin-plugins to bug fix to allow installing Legacy plugins ([#2281](https://github.com/heroku/cli/issues/2281)) ([1feb0b0](https://github.com/heroku/cli/commit/1feb0b0e2092378a6ef017d7123d9d8dce465471))
-* update to latest @oclif/plugin-plugins ([#2283](https://github.com/heroku/cli/issues/2283)) ([9176549](https://github.com/heroku/cli/commit/9176549f7047c64719f3000220d8643fdd1cdaf7))
-
-
-
-
+- update @oclif/plugin-plugins to bug fix to allow installing Legacy plugins ([#2281](https://github.com/heroku/cli/issues/2281)) ([1feb0b0](https://github.com/heroku/cli/commit/1feb0b0e2092378a6ef017d7123d9d8dce465471))
+- update to latest @oclif/plugin-plugins ([#2283](https://github.com/heroku/cli/issues/2283)) ([9176549](https://github.com/heroku/cli/commit/9176549f7047c64719f3000220d8643fdd1cdaf7))
 
 ## [8.0.2](https://github.com/heroku/cli/compare/v7.69.1...v8.0.2) (2023-03-16)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.69.2](https://github.com/heroku/cli/compare/v7.69.1...v7.69.2) (2023-03-16)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.69.1](https://github.com/heroku/cli/compare/v7.69.0...v7.69.1) (2023-03-09)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.69.0](https://github.com/heroku/cli/compare/v7.68.3...v7.69.0) (2023-03-07)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.68.3](https://github.com/heroku/cli/compare/v7.68.2...v7.68.3) (2023-03-06)
-
 
 ### Bug Fixes
 
-* add node 14 to unit tests in CI. ([#2254](https://github.com/heroku/cli/issues/2254)) ([2257add](https://github.com/heroku/cli/commit/2257adda8306d2391c60486559f46adba74a5f69))
-
-
-
-
+- add node 14 to unit tests in CI. ([#2254](https://github.com/heroku/cli/issues/2254)) ([2257add](https://github.com/heroku/cli/commit/2257adda8306d2391c60486559f46adba74a5f69))
 
 ## [7.68.2](https://github.com/heroku/cli/compare/v7.68.1...v7.68.2) (2023-02-21)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.68.1](https://github.com/heroku/cli/compare/v7.68.0...v7.68.1) (2023-02-14)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.68.0](https://github.com/heroku/cli/compare/v8.0.1...v7.68.0) (2023-02-06)
-
 
 ### Bug Fixes
 
-* revert to v7.67.2 ([#2235](https://github.com/heroku/cli/issues/2235)) ([0955a24](https://github.com/heroku/cli/commit/0955a24d6aeafdec7211ffd6179f772560f35098)), closes [#2231](https://github.com/heroku/cli/issues/2231) [#2230](https://github.com/heroku/cli/issues/2230) [#2229](https://github.com/heroku/cli/issues/2229) [#2228](https://github.com/heroku/cli/issues/2228) [#2227](https://github.com/heroku/cli/issues/2227) [#2225](https://github.com/heroku/cli/issues/2225) [#2144](https://github.com/heroku/cli/issues/2144) [#2216](https://github.com/heroku/cli/issues/2216) [#2207](https://github.com/heroku/cli/issues/2207) [#2212](https://github.com/heroku/cli/issues/2212) [#2212](https://github.com/heroku/cli/issues/2212)
-
-
-
-
+- revert to v7.67.2 ([#2235](https://github.com/heroku/cli/issues/2235)) ([0955a24](https://github.com/heroku/cli/commit/0955a24d6aeafdec7211ffd6179f772560f35098)), closes [#2231](https://github.com/heroku/cli/issues/2231) [#2230](https://github.com/heroku/cli/issues/2230) [#2229](https://github.com/heroku/cli/issues/2229) [#2228](https://github.com/heroku/cli/issues/2228) [#2227](https://github.com/heroku/cli/issues/2227) [#2225](https://github.com/heroku/cli/issues/2225) [#2144](https://github.com/heroku/cli/issues/2144) [#2216](https://github.com/heroku/cli/issues/2216) [#2207](https://github.com/heroku/cli/issues/2207) [#2212](https://github.com/heroku/cli/issues/2212) [#2212](https://github.com/heroku/cli/issues/2212)
 
 ## [7.67.2](https://github.com/heroku/cli/compare/v7.67.1...v7.67.2) (2023-01-23)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.67.1](https://github.com/heroku/cli/compare/v7.67.0...v7.67.1) (2022-11-30)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.67.0](https://github.com/heroku/cli/compare/v7.66.4...v7.67.0) (2022-11-29)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.66.4](https://github.com/heroku/cli/compare/v7.66.3...v7.66.4) (2022-11-16)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.66.3](https://github.com/heroku/cli/compare/v7.66.2...v7.66.3) (2022-11-14)
-
 
 ### Bug Fixes
 
-* debian builds to run in ci round 2 ([#2132](https://github.com/heroku/cli/issues/2132)) ([bd32cdc](https://github.com/heroku/cli/commit/bd32cdcee3a7a214b6aea6f309aae1a8ac2ae65e))
-
-
-
-
+- debian builds to run in ci round 2 ([#2132](https://github.com/heroku/cli/issues/2132)) ([bd32cdc](https://github.com/heroku/cli/commit/bd32cdcee3a7a214b6aea6f309aae1a8ac2ae65e))
 
 ## [7.66.2](https://github.com/heroku/cli/compare/v7.66.0...v7.66.2) (2022-11-10)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.66.1](https://github.com/heroku/cli/compare/v7.66.0...v7.66.1) (2022-11-09)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.66.0](https://github.com/heroku/cli/compare/v7.65.0...v7.66.0) (2022-11-07)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.65.0](https://github.com/heroku/cli/compare/v7.64.0...v7.65.0) (2022-10-10)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.64.0](https://github.com/heroku/cli/compare/v7.62.0...v7.64.0) (2022-10-03)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.63.4](https://github.com/heroku/cli/compare/v7.63.0...v7.63.4) (2022-09-14)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.63.3](https://github.com/heroku/cli/compare/v7.63.0...v7.63.3) (2022-09-13)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.63.2](https://github.com/heroku/cli/compare/v7.63.0...v7.63.2) (2022-09-12)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.63.1](https://github.com/heroku/cli/compare/v7.63.0...v7.63.1) (2022-09-09)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.63.0](https://github.com/heroku/cli/compare/v7.62.0...v7.63.0) (2022-08-31)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.62.0](https://github.com/heroku/cli/compare/v7.60.2...v7.62.0) (2022-08-04)
-
 
 ### Bug Fixes
 
-* **certs-v5:** Removing references to SSL endpoints in the CLI ([#1885](https://github.com/heroku/cli/issues/1885)) ([94c1d98](https://github.com/heroku/cli/commit/94c1d98dfb171824e7aea8c9377ad68dae79caca))
-* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
-* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
-* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
-* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
-
-
-
-
+- **certs-v5:** Removing references to SSL endpoints in the CLI ([#1885](https://github.com/heroku/cli/issues/1885)) ([94c1d98](https://github.com/heroku/cli/commit/94c1d98dfb171824e7aea8c9377ad68dae79caca))
+- upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+- upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+- upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+- upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
 
 ## [7.61.1](https://github.com/heroku/cli/compare/v7.60.2...v7.61.1) (2022-08-03)
 
-
 ### Bug Fixes
 
-* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
-* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
-* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
-* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
-
-
-
-
+- upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+- upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+- upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+- upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
 
 # [7.61.0](https://github.com/heroku/cli/compare/v7.60.2...v7.61.0) (2022-08-03)
 
-
 ### Bug Fixes
 
-* upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
-* upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
-* upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
-* upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
-
-
-
-
+- upgrade @oclif/command from 1.5.18 to 1.8.0 ([#1890](https://github.com/heroku/cli/issues/1890)) ([297531c](https://github.com/heroku/cli/commit/297531cabc2474ddb025f9b952d10bb5345cf11d))
+- upgrade @oclif/command from 1.8.0 to 1.8.16 ([#2026](https://github.com/heroku/cli/issues/2026)) ([cbfdb0c](https://github.com/heroku/cli/commit/cbfdb0c8303d6ed752681203b8f6491a55397b6c))
+- upgrade @oclif/plugin-plugins from 1.7.9 to 1.10.1 ([#1889](https://github.com/heroku/cli/issues/1889)) ([2a135cc](https://github.com/heroku/cli/commit/2a135cc931d714aa9d739b953d6ed056ce215ef2))
+- upgrade @oclif/plugin-update from 1.3.9 to 1.5.0 ([#1892](https://github.com/heroku/cli/issues/1892)) ([ad3c97c](https://github.com/heroku/cli/commit/ad3c97c0a7d16a14d8b50f3f2f3d4bf3a70a662b))
 
 ## [7.60.2](https://github.com/heroku/cli/compare/v7.60.1...v7.60.2) (2022-04-27)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.60.1](https://github.com/heroku/cli/compare/v7.60.0...v7.60.1) (2022-03-31)
-
 
 ### Bug Fixes
 
-* upgrade tslib from 1.9.3 to 1.14.1 ([#1891](https://github.com/heroku/cli/issues/1891)) ([ccfe505](https://github.com/heroku/cli/commit/ccfe5057a1476a126316662ae4f50b7ebe48d4eb))
-
-
-
-
+- upgrade tslib from 1.9.3 to 1.14.1 ([#1891](https://github.com/heroku/cli/issues/1891)) ([ccfe505](https://github.com/heroku/cli/commit/ccfe5057a1476a126316662ae4f50b7ebe48d4eb))
 
 # [7.60.0](https://github.com/heroku/cli/compare/v7.59.1...v7.60.0) (2022-03-23)
 
-
 ### Features
 
-* upgrade to node 14.19.0 ([#1953](https://github.com/heroku/cli/issues/1953)) ([f54bb24](https://github.com/heroku/cli/commit/f54bb24e343d20cf02fd72747be21e737680e81c))
-
-
-
-
+- upgrade to node 14.19.0 ([#1953](https://github.com/heroku/cli/issues/1953)) ([f54bb24](https://github.com/heroku/cli/commit/f54bb24e343d20cf02fd72747be21e737680e81c))
 
 ## [7.59.4](https://github.com/heroku/cli/compare/v7.59.3...v7.59.4) (2022-03-08)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.59.3](https://github.com/heroku/cli/compare/v7.59.2...v7.59.3) (2022-02-28)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.59.2](https://github.com/heroku/cli/compare/v7.59.1...v7.59.2) (2021-11-18)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.59.1](https://github.com/heroku/cli/compare/v7.59.0...v7.59.1) (2021-10-21)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.59.0](https://github.com/heroku/cli/compare/v7.58.0...v7.59.0) (2021-08-24)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.58.0](https://github.com/heroku/cli/compare/v7.57.0...v7.58.0) (2021-08-24)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.57.0](https://github.com/heroku/cli/compare/v7.56.1...v7.57.0) (2021-08-17)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.56.1](https://github.com/heroku/cli/compare/v7.56.0...v7.56.1) (2021-07-12)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.56.0](https://github.com/heroku/cli/compare/v7.55.0...v7.56.0) (2021-06-29)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.55.0](https://github.com/heroku/cli/compare/v7.54.1...v7.55.0) (2021-06-25)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.54.1](https://github.com/heroku/cli/compare/v7.54.0...v7.54.1) (2021-06-08)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.54.0](https://github.com/heroku/cli/compare/v7.47.10...v7.54.0) (2021-05-18)
-
 
 ### Features
 
-* upgrade node to 12.21.0 ([fb27477](https://github.com/heroku/cli/commit/fb274776ea5ed28d31cb8a53e6cfb6819e6ef4a9))
-
-
-
-
+- upgrade node to 12.21.0 ([fb27477](https://github.com/heroku/cli/commit/fb274776ea5ed28d31cb8a53e6cfb6819e6ef4a9))
 
 ## [7.53.1](https://github.com/heroku/cli/compare/v7.53.0...v7.53.1) (2021-05-05)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.53.0](https://github.com/heroku/cli/compare/v7.52.0...v7.53.0) (2021-04-27)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.52.0](https://github.com/heroku/cli/compare/v7.51.0...v7.52.0) (2021-04-07)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.51.0](https://github.com/heroku/cli/compare/v7.50.0...v7.51.0) (2021-03-17)
-
 
 ### Features
 
-* upgrade node to 12.21.0 ([fb27477](https://github.com/heroku/cli/commit/fb274776ea5ed28d31cb8a53e6cfb6819e6ef4a9))
-
-
-
-
+- upgrade node to 12.21.0 ([fb27477](https://github.com/heroku/cli/commit/fb274776ea5ed28d31cb8a53e6cfb6819e6ef4a9))
 
 # [7.50.0](https://github.com/heroku/cli/compare/v7.49.1...v7.50.0) (2021-03-02)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.49.1](https://github.com/heroku/cli/compare/v7.49.0...v7.49.1) (2021-02-26)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 # [7.49.0](https://github.com/heroku/cli/compare/v7.47.13...v7.49.0) (2021-02-24)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 # [7.48.0](https://github.com/heroku/cli/compare/v7.47.13...v7.48.0) (2021-02-22)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.47.13](https://github.com/heroku/cli/compare/v7.47.12...v7.47.13) (2021-02-18)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.47.12](https://github.com/heroku/cli/compare/v7.47.11...v7.47.12) (2021-02-03)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.47.11](https://github.com/heroku/cli/compare/v7.47.10...v7.47.11) (2021-01-22)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.47.10](https://github.com/heroku/cli/compare/v7.47.7...v7.47.10) (2021-01-21)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.47.9](https://github.com/heroku/cli/compare/v7.47.7...v7.47.9) (2021-01-21)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.47.8](https://github.com/heroku/cli/compare/v7.47.2...v7.47.8) (2021-01-19)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.47.7](https://github.com/heroku/cli/compare/v7.47.6...v7.47.7) (2021-01-05)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.47.6](https://github.com/heroku/cli/compare/v7.47.5...v7.47.6) (2020-12-16)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.47.5](https://github.com/heroku/cli/compare/v7.47.4...v7.47.5) (2020-12-10)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.47.4](https://github.com/heroku/cli/compare/v7.47.3...v7.47.4) (2020-12-01)
 
 **Note:** Version bump only for package heroku
 
-
-
-
-
 ## [7.47.3](https://github.com/heroku/cli/compare/v7.47.2...v7.47.3) (2020-11-18)
 
 **Note:** Version bump only for package heroku
-
-
-
-
 
 ## [7.47.2](https://github.com/heroku/cli/compare/v7.47.1...v7.47.2) (2020-11-11)
 

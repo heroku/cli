@@ -9,27 +9,27 @@ jobs:
     runs-on: pub-hk-ubuntu-22.04-small
     steps:
       - uses: actions/checkout@v6
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v6
         with:
-          node-version: 20.x
-          cache: yarn
+          node-version: 22.x
+          cache: npm
       - name: Install Fig Oclif Plugin
-        run: cd packages/cli && yarn add @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
-      - run: yarn --immutable --network-timeout 1000000
+        run: npm install @fig/complete-oclif && jq '.oclif.plugins += ["@fig/complete-oclif"]' package.json > temp.json && mv temp.json package.json
+      - run: npm ci
       - name: Build Heroku CLI
-        run: yarn build
+        run: npm run build
       - name: Get Heroku Version
         id: cli-version
         run: echo "version=$(./bin/run --version | sed -rn 's/^heroku\/([0-9\.]+).*$/\1/p')" >> $GITHUB_OUTPUT
       - name: Generate Fig Spec
-        run: cd packages/cli && ./bin/run generate-fig-spec > spec.ts
+        run: ./bin/run generate-fig-spec > spec.ts
       - name: Create Fig Autocomplete PR
         uses: withfig/push-to-fig-autocomplete-action@v2
         with:
           token: ${{ secrets.HEROKU_CLI_BOT_TOKEN }}
           autocomplete-spec-name: 'heroku'
-          spec-path: ./packages/cli/spec.ts
+          spec-path: ./spec.ts
           integration: oclif
           diff-based-versioning: true
           new-spec-version: ${{ steps.cli-version.outputs.version }}
