@@ -17,4 +17,4 @@ DESCRIPTION
   starts the Heroku platform MCP server in stdio mode
 ```
 
-_See code: [src/commands/mcp/start.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/mcp/start.ts)_
+_See code: [src/commands/mcp/start.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.4/src/commands/mcp/start.ts)_
