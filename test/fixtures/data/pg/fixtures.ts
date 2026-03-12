@@ -108,8 +108,18 @@ export const essentialAddon: DeepRequired<Heroku.AddOn> = {
 
 export const levelsResponse: PostgresLevelsResponse = {
   items: [
-    {memory_in_gb: 4, name: '4G-Performance', vcpu: 2},
-    {memory_in_gb: 8, name: '8G-Performance', vcpu: 4},
+    {
+      connection_limit: 400,
+      memory_in_gb: 4,
+      name: '4G-Performance',
+      vcpu: 2,
+    },
+    {
+      connection_limit: 800,
+      memory_in_gb: 8,
+      name: '8G-Performance',
+      vcpu: 4,
+    },
   ],
 }
 
