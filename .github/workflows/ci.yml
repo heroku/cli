@@ -94,8 +94,19 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
-      - run: npm ci
+      - name: Check if base branch uses npm
+        id: check_npm
+        run: |
+          if [ -f "package-lock.json" ]; then
+            echo "uses_npm=true" >> $GITHUB_OUTPUT
+          else
+            echo "uses_npm=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Install dependencies
+        if: steps.check_npm.outputs.uses_npm == 'true'
+        run: npm ci
       - name: Run tests on base branch with full coverage
+        if: steps.check_npm.outputs.uses_npm == 'true'
         run: |
           if npm run | grep -q 'test:ci:unit:coverage$'; then
             npm run test:ci:unit:coverage
@@ -106,6 +117,12 @@ jobs:
             mkdir -p coverage
             echo "No coverage data available for base branch" > coverage/README.md
           fi
+      - name: Create placeholder coverage for yarn-based base
+        if: steps.check_npm.outputs.uses_npm == 'false'
+        run: |
+          echo "Base branch uses yarn, skipping coverage generation"
+          mkdir -p coverage
+          echo "No coverage data available for base branch (uses yarn)" > coverage/README.md
       - name: Upload base coverage
         uses: actions/upload-artifact@v6
         with:
