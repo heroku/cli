@@ -29,6 +29,7 @@ autoloaded
 autoscale
 autovacuum
 awscli
+barsize
 baseport
 bindkey
 binrun
@@ -132,6 +133,7 @@ ituples
 jedec
 keyevent
 keyout
+keypair
 keysize
 keyspace
 killall
@@ -282,6 +284,7 @@ postrun
 preauth
 prerun
 preupdate
+privkeypem
 processname
 processtype
 procfile
@@ -290,6 +293,7 @@ psubscribe
 psut
 psql
 psqlrc
+pubkeypem
 pvpr
 pxxxxxxxx
 qqjs
@@ -339,6 +343,7 @@ snapcraft
 snapcraftctl
 sniendpoint
 snyk
+socksv
 someplugin
 somethingelse
 someuser
