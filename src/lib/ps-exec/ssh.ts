@@ -164,7 +164,7 @@ export class HerokuSsh {
             resolve()
           })
         })
-      }).on('error', (err) => {
+      }).on('error', err => {
         sshDebug('[scp] error:', err)
         reject(err)
       }).connect({
