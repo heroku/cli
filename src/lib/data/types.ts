@@ -85,6 +85,7 @@ type StorageLimitInGb = {
 export type PlanLimit = ConnectionLimit | StorageLimitInGb | TableLimit
 
 export type PostgresLevelInfo = {
+  connection_limit: number
   memory_in_gb: number
   name: string
   vcpu: number
