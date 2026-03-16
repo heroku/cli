@@ -1,6 +1,5 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
 import {printTable, TableOptions} from '@oclif/table'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
@@ -14,7 +13,6 @@ export default class DataPgLevels extends BaseCommand {
   async run(): Promise<void> {
     const {body: {items: levels}} = await this.dataApi.get<PostgresLevelsResponse>('/data/postgres/v1/levels/advanced')
 
-    ux.stdout()
     hux.styledHeader('Available levels for Heroku Postgres Advanced databases')
 
     const defaultStyle = {
@@ -29,9 +27,9 @@ export default class DataPgLevels extends BaseCommand {
     printTable<PostgresLevelInfo>({
       columns: [
         {key: 'name', name: 'Name'},
-        {key: 'vcpu', name: 'vCPU', horizontalAlignment: 'right'},
-        {key: 'memory_in_gb', name: 'Memory (GB)', horizontalAlignment: 'right'},
-        {key: 'connection_limit', name: 'Max Connections', horizontalAlignment: 'right'},
+        {horizontalAlignment: 'right', key: 'vcpu', name: 'vCPU'},
+        {horizontalAlignment: 'right', key: 'memory_in_gb', name: 'Memory (GB)'},
+        {horizontalAlignment: 'right', key: 'connection_limit', name: 'Max Connections'},
       ],
       data: levels,
       ...defaultStyle,
