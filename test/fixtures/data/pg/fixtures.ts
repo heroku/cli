@@ -15,6 +15,7 @@ import {
   ScaleResponse,
   SettingsChangeResponse,
   SettingsResponse,
+  WaitStatus,
 } from '../../../../src/lib/data/types.js'
 
 export const addon: DeepRequired<Heroku.AddOn> = {
@@ -1197,4 +1198,24 @@ export const nonPostgresAddonAttachment: pg.ExtendedAddonAttachment = {
   config_vars: ['REDIS_URL'],
   id: '0e8e72a3-7922-452e-a490-09cf45797f7e',
   name: 'REDIS',
+}
+
+export const waitStatusAvailable: WaitStatus = {
+  message: null,
+  waiting: false,
+}
+
+export const waitStatusProvisioning: WaitStatus = {
+  message: 'Provisioning',
+  waiting: true,
+}
+
+export const waitStatusMigrating: WaitStatus = {
+  message: 'Migrating',
+  waiting: true,
+}
+
+export const waitStatusUpdating: WaitStatus = {
+  message: 'Updating',
+  waiting: true,
 }
