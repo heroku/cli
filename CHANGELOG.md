@@ -47,6 +47,7 @@ This is a **major** release with extensive changes. The primary changes are:
   - `data:pg:quotas:index`, `data:pg:quotas:update`
   - `data:pg:create`, `data:pg:destroy`, `data:pg:docs`, `data:pg:fork`, `data:pg:psql`, `data:pg:settings`, `data:pg:update`
   - NGPG types and command utilities (W-20610475)
+- **New diff command**: Adds `apps:diff` into the CLI
 
 #### **oclif v2 → v4 Upgrade**
 
@@ -103,6 +104,11 @@ The Heroku CLI now uses @oclif/core v4, a major upgrade from v2. This brings sig
 ### **Code Refactoring**
 
 - Comprehensive ESM migration across all commands
+- The following commands have been moved into the CLI repository from the `ps-exec` plugin:
+  - `ps:copy`
+  - `ps:exec`
+  - `ps:forward`
+  - `ps:socks`
 
 ### **Miscellaneous Chores**
 
