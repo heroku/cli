@@ -26,7 +26,6 @@ describe('pg:credentials:create', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials')
@@ -50,7 +49,6 @@ describe('pg:credentials:create', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon: essentialAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
@@ -69,7 +67,6 @@ describe('pg:credentials:create', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."

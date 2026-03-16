@@ -98,7 +98,7 @@ describe('pg:info', function () {
       const addon = addons[1]
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
-        .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-2', addon_service: 'heroku-postgresql', app: 'myapp'})
+        .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-2', app: 'myapp'})
         .reply(200, [{addon}])
       pg.get('/client/v11/databases/2')
         .reply(200, dbB)

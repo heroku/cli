@@ -10,7 +10,7 @@
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/heroku-cli-util": "^10.6.0",
+    "@heroku/heroku-cli-util": "^10.6.1",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
     "@heroku/socksv5": "^0.0.9",

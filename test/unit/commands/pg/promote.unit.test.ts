@@ -295,7 +295,6 @@ describe('pg:promote when argument is a credential attachment', function () {
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'DATABASE',
-        addon_service: 'heroku-postgresql',
       })
       .reply(200, [{addon, name: 'PURPLE', namespace: 'credential:hello'}])
       .get('/apps/myapp/formation')
@@ -565,10 +564,10 @@ describe('pg:promote when release phase is present', function () {
       })
       .reply(201)
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'DATABASE', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'DATABASE',
       })
       .reply(201, [{
-        name: 'PURPLE', addon: {name: addon.name, id: addon.id}, namespace: 'credential:hello',
+        name: 'PURPLE', addon: {name: addon.name, id: addon.id, plan: {id: addon.plan!.id, name: addon.plan!.name}}, namespace: 'credential:hello',
       }])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)

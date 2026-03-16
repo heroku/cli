@@ -15,7 +15,6 @@ describe('pg:data-connector-details-logs', function () {
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'test-database',
-        addon_service: 'heroku-postgresql',
       }).reply(200, [{addon}])
   })
 

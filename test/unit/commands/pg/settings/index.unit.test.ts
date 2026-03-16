@@ -22,7 +22,6 @@ describe('pg:settings', function () {
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'postgres-1',
-        addon_service: 'heroku-postgresql',
       }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')
