@@ -229,30 +229,30 @@ export type Maintenance = {
     'name': string;
     'plan': string;
     'uuid'?: string;
-    'window': string | null;
+    'window': null | string;
   };
   'app': {
     'name': string;
     'uuid'?: string;
   };
-  'completed_at': string | null;
-  'duration_seconds': string | null;
+  'completed_at': null | string;
+  'duration_seconds': null | string;
   'method': string;
-  'previously_scheduled_for': string | null;
+  'previously_scheduled_for': null | string;
   'reason': string;
-  'required_by': string | null;
-  'scheduled_for': string | null;
+  'required_by': null | string;
+  'scheduled_for': null | string;
   'server_created_at': string;
-  'started_at': string | null;
+  'started_at': null | string;
   'status': MaintenanceStatus;
-  'window': string | null;
+  'window': null | string;
 }
 
 export type Window = {
-  previous_window: string | null;
-  previously_scheduled_at: string | null;
-  scheduled_at: string | null;
-  window: string | null;
+  previous_window: null | string;
+  previously_scheduled_at: null | string;
+  scheduled_at: null | string;
+  window: null | string;
 }
 
 export enum MaintenanceStatus {
@@ -262,4 +262,9 @@ export enum MaintenanceStatus {
   preparing = 'preparing',
   ready = 'ready',
   running = 'running',
+}
+
+export type WaitStatus = {
+  message: null | string
+  waiting: boolean
 }
