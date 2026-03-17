@@ -45,17 +45,17 @@ describe('data:pg:destroy', function () {
     }
   })
 
-  it('prevents destruction of add-ons other than Heroku Postgres', async function () {
+  it('doesn\'t destroy non-Postgres addons', async function () {
     const resolveApi = nock('https://api.heroku.com')
       .post('/actions/addons/resolve')
       .reply(200, [nonPostgresAddon])
 
     try {
-      await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
+      await runCommand(DataPgDestroy, [nonPostgresAddon.name!, '--app=myapp', '--confirm=myapp'])
     } catch (error: unknown) {
       resolveApi.done()
       expect(ansis.strip((error as Error).message)).to.equal(
-        'You can only use this command to delete Heroku Postgres databases. Run heroku addons:destroy redis-database instead.',
+        'Couldn\'t find that addon.',
       )
     }
   })

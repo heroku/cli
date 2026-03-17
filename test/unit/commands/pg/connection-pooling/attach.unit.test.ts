@@ -17,7 +17,7 @@ describe('pg:connection-pooling:attach', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-1', addon_service: 'heroku-postgresql', app: 'myapp'})
+      .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-1', app: 'myapp'})
       .reply(200, [resolvedAttachments['myapp::postgres-1']])
       .get('/addons/postgres-1')
       .reply(200, addon)

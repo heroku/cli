@@ -34,7 +34,7 @@ describe('pg:backups:capture', function () {
     }
     api
       .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp',
+        addon_attachment: 'DATABASE_URL', app: 'myapp',
       })
       .reply(200, [{addon}])
     pgApi
@@ -76,7 +76,7 @@ describe('pg:backups:capture', function () {
     }
     api
       .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp',
+        addon_attachment: 'DATABASE_URL', app: 'myapp',
       })
       .reply(200, [{addon}])
     pgApi
@@ -122,7 +122,7 @@ describe('pg:backups:capture', function () {
     }
     api
       .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp',
+        addon_attachment: 'DATABASE_URL', app: 'myapp',
       })
       .reply(200, [{addon}])
     pgApi

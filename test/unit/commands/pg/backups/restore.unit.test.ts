@@ -20,7 +20,7 @@ describe('pg:backups:restore', function () {
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
-      addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp',
+      addon_attachment: 'DATABASE_URL', app: 'myapp',
     }).reply(200, [{addon}])
     pg = nock('https://api.data.heroku.com')
   })
