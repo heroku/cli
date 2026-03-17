@@ -91,7 +91,7 @@ describe('pg:credentials', function () {
       },
     ]
 
-    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp'})
+    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
@@ -175,7 +175,7 @@ describe('pg:credentials', function () {
       },
     ]
 
-    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp'})
+    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)

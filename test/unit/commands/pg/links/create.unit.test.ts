@@ -29,7 +29,7 @@ describe('pg:links:create', function () {
 
     it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'heroku-postgres', addon_service: 'heroku-postgresql', app: 'myapp',
+        addon_attachment: 'heroku-postgres', app: 'myapp',
       }).reply(200, [{addon}])
 
       api.post('/actions/addons/resolve', {
@@ -61,7 +61,6 @@ describe('pg:links:create', function () {
     it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
         addon_attachment: 'heroku-postgres',
-        addon_service: 'heroku-postgresql',
         app: 'myapp',
       }).reply(200, [{addon}])
 

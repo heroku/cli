@@ -58,7 +58,7 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
       })
         .reply(200, [attachment])
       api.get('/apps/myapp/config-vars')
@@ -108,11 +108,11 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-2')
         .reply(200, otherAddon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
       })
         .reply(200, [attachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myotherapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myotherapp', addon_attachment: 'DATABASE_URL',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/myapp/config-vars')
@@ -152,11 +152,11 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-2')
         .reply(200, otherAddon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
       })
         .reply(200, [attachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'ATTACHED_BLUE', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'ATTACHED_BLUE',
       })
         .reply(200, [attachedBlueAttachment])
       api.get('/apps/myapp/config-vars')
@@ -192,11 +192,11 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-2')
         .reply(200, otherAddon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'mylowercaseapp', addon_attachment: 'lowercase_database_URL', addon_service: 'heroku-postgresql',
+        app: 'mylowercaseapp', addon_attachment: 'lowercase_database_URL',
       })
         .reply(200, [lowercaseAttachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myotherapp', addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql',
+        app: 'myotherapp', addon_attachment: 'DATABASE_URL',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/mylowercaseapp/config-vars')
@@ -231,7 +231,7 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', addon_service: 'heroku-postgresql',
+        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
       })
         .reply(200, [attachment])
       api.get('/apps/myapp/config-vars')

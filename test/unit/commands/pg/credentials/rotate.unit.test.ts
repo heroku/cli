@@ -60,7 +60,6 @@ describe('pg:credentials:rotate', function () {
       api.post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'DATABASE_URL',
-        addon_service: 'heroku-postgresql',
       }).reply(200, [{addon}])
     })
 
@@ -215,7 +214,6 @@ describe('pg:credentials:rotate', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = 'Legacy Essential-tier databases do not support named credentials.'
@@ -235,7 +233,6 @@ describe('pg:credentials:rotate', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon: essentialAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials/lucy/credentials_rotation')
@@ -263,7 +260,6 @@ describe('pg:credentials:rotate', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon: hobbyAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation')
@@ -288,7 +284,6 @@ describe('pg:credentials:rotate', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'DATABASE_URL',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon: hobbyAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')

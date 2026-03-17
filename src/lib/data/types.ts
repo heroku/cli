@@ -47,6 +47,7 @@ export interface AdvancedCredentialInfo extends Record<string, unknown> {
   state: string
   type: 'additional' | 'owner'
 }
+
 export type ComputeInstance = {
   id: string
   level: string
@@ -61,6 +62,7 @@ export type ConnectionEndpoint = {
   port: number
   status: 'available' | 'degraded' | 'deprovisioning' | 'modifying'
 }
+
 export type CreatePoolParameters = {
   count: number
   level: string
@@ -195,6 +197,7 @@ export type PoolInfoResponse = {
 }
 
 export type PostgresLevelInfo = {
+  connection_limit: number
   memory_in_gb: number
   name: string
   vcpu: number
@@ -243,12 +246,19 @@ export type SettingsResponse = {
 }
 
 export type TierPricingInfo = Record<string, PricingInfo>
+
+export type WaitStatus = {
+  message: null | string
+  waiting: boolean
+}
+
 export type Window = {
   previous_window: null | string;
   previously_scheduled_at: null | string;
   scheduled_at: null | string;
   window: null | string;
 }
+
 type AddonReference = ResourceReference
 
 type AppReference = ResourceReference
@@ -273,6 +283,7 @@ type NonAdvancedCredential = {
   state: NonAdvancedCredentialState
   user: string
 }
+
 type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
 
 type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'

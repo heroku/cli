@@ -24,7 +24,6 @@ describe('pg:backups:unschedule', function () {
         .reply(200, [addon])
         .post('/actions/addon-attachments/resolve', {
           addon_attachment: 'DATABASE_URL',
-          addon_service: 'heroku-postgresql',
           app: appName,
         })
         .reply(200, [attachment])
@@ -66,7 +65,6 @@ describe('pg:backups:unschedule error state', function () {
       .reply(200, [addon])
       .post('/actions/addon-attachments/resolve', {
         addon_attachment: 'DATABASE_URL',
-        addon_service: 'heroku-postgresql',
         app: appName,
       })
       .reply(200, [attachment])

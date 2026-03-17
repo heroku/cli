@@ -15,6 +15,7 @@ describe('PoolConfig', function () {
 
   beforeEach(function () {
     extendedLevelsInfo = levelsResponse.items.map(item => ({
+      connection_limit: item.connection_limit,
       memory_in_gb: item.memory_in_gb,
       name: item.name,
       pricing: Object.entries(pricingResponse.advanced).find(

@@ -17,7 +17,6 @@ describe('pg:settings:track-functions', function () {
       .post('/actions/addon-attachments/resolve', {
         app: 'myapp',
         addon_attachment: 'test-database',
-        addon_service: 'heroku-postgresql',
       })
       .reply(200, [{addon}])
   })
