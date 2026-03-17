@@ -29,7 +29,6 @@ describe('pg:backups:schedule', function () {
       api
         .post('/actions/addon-attachments/resolve', {
           addon_attachment: 'DATABASE_URL',
-          addon_service: 'heroku-postgresql',
           app: 'myapp',
         })
         .reply(200, [
@@ -136,7 +135,6 @@ describe('pg:backups:schedule', function () {
     api
       .post('/actions/addon-attachments/resolve', {
         addon_attachment: 'DATABASE_URL',
-        addon_service: 'heroku-postgresql',
         app: 'myapp',
       })
       .reply(200, [

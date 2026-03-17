@@ -23,7 +23,7 @@ describe('pg:killall', function () {
   })
 
   it('waits for all databases to be available', async function () {
-    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', addon_service: 'heroku-postgresql', app: 'myapp'})
+    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
       .reply(200, [{addon: db}])
     pg.post('/client/v11/databases/1/connection_reset')
       .reply(200)

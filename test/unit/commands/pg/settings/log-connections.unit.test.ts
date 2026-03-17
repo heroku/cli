@@ -23,7 +23,6 @@ describe('pg:settings:log-connections', function () {
     api.post('/actions/addon-attachments/resolve', {
       app: 'myapp',
       addon_attachment: 'test-database',
-      addon_service: 'heroku-postgresql',
     }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')
