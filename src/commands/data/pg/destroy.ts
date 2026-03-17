@@ -32,10 +32,6 @@ export default class DataPgDestroy extends BaseCommand {
     const addonResolver = new utils.AddonResolver(this.heroku)
     const addon = await addonResolver.resolve(databaseName, app, utils.pg.addonService())
 
-    if (!utils.pg.isPostgresAddon(addon)) {
-      ux.error(`You can only use this command to delete Heroku Postgres databases. Run ${color.code(`heroku addons:destroy ${addon.name}`)} instead.`)
-    }
-
     // prevent deletion of add-on when context.app is set but the addon is
     // attached to a different app
     const addonApp = addon.app!.name!
