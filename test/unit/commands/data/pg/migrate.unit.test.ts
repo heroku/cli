@@ -390,10 +390,10 @@ describe('data:pg:migrate', function () {
       const sourceDatabaseList = stdout.output.match(/(?<=Select the source database: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
       expect(stderr.output).to.equal('Configuring migration... done\n')
       // Entry for the source database that is already a migration source should be disabled
-      expect(sourceDatabaseList).to.contain(`⛁ ${standardDbAttachment.addon.name} as STANDARD_DB (already a migration source)`)
+      expect(sourceDatabaseList).to.contain(`⛁ ${standardDbAttachment.addon.name} as STANDARD_DB (already a source database for an active migration)`)
       // Entry for the Premium database should be enabled
       expect(sourceDatabaseList).to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB`)
-      expect(sourceDatabaseList).not.to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB (already a migration source)`)
+      expect(sourceDatabaseList).not.to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB (already a source database for an active migration)`)
       // There should be no entry for the Essential database
       expect(sourceDatabaseList).not.to.contain(essentialDbAttachment.addon.name)
       // There should be no entry for the Foreign standard database
@@ -421,12 +421,12 @@ describe('data:pg:migrate', function () {
       const targetDatabaseList = stdout.output.match(/(?<=Select the destination database: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
       expect(stderr.output).to.equal('Configuring migration... done\n')
       // Entry for the target database that is already a migration destination should be disabled
-      expect(targetDatabaseList).to.contain(`⛁ ${targetAdvancedDbAttachment.addon.name} as ADVANCED_DB (already a migration destination)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${targetAdvancedDbAttachment.addon.name} as ADVANCED_DB (already a destination database for an active migration)`)
       // Entry for the non-target Advanced database should be enabled
       expect(targetDatabaseList).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB`)
-      expect(targetDatabaseList).not.to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB (already a migration destination)`)
+      expect(targetDatabaseList).not.to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB (already a destination database for an active migration)`)
       // Entry for the unavailable database should be disabled
-      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} as UNAVAILABLE_DB (database isn't available yet)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} as UNAVAILABLE_DB (database isn't available)`)
       // There should be no entries for non-Advanced or foreign databases
       expect(targetDatabaseList).not.to.contain(essentialDbAttachment.addon.name)
       expect(targetDatabaseList).not.to.contain(foreignAdvancedDbAttachment.addon.name)
@@ -822,7 +822,7 @@ describe('data:pg:migrate', function () {
       await runCommand(DataPgMigrate, ['--app=myapp'])
 
       // Verify the confirmation message is displayed
-      expect(stdout.output).to.contain('After cancelling, you\'ll have to manually remove the destination database (⛁ postgresql-lively-12345)')
+      expect(stdout.output).to.contain('After cancelling, you\'ll have to create a new migration configuration')
       expect(stderr.output).to.equal('Cancelling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
