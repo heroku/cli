@@ -23,6 +23,7 @@ describe('data:pg:create', function () {
   let poolConfigStubs: {
     followerInteractiveConfig: sinon.SinonStub
     instanceCountStep: sinon.SinonStub
+    leaderInteractiveConfig: sinon.SinonStub
     levelStep: sinon.SinonStub
   }
 
@@ -33,11 +34,13 @@ describe('data:pg:create', function () {
     poolConfigStubs = {
       followerInteractiveConfig: sinon.stub(),
       instanceCountStep: sinon.stub(),
+      leaderInteractiveConfig: sinon.stub(),
       levelStep: sinon.stub(),
     }
 
     sinon.stub(PoolConfig.prototype, 'followerInteractiveConfig').callsFake(poolConfigStubs.followerInteractiveConfig)
     sinon.stub(PoolConfig.prototype, 'instanceCountStep').callsFake(poolConfigStubs.instanceCountStep)
+    sinon.stub(PoolConfig.prototype, 'leaderInteractiveConfig').callsFake(poolConfigStubs.leaderInteractiveConfig)
     sinon.stub(PoolConfig.prototype, 'levelStep').callsFake(poolConfigStubs.levelStep)
     sinon.stub(DataPgCreate.prototype, 'prompt').callsFake(promptStub)
     sinon.stub(DataPgCreate.prototype, 'runCommand').resolves()
@@ -230,11 +233,11 @@ describe('data:pg:create', function () {
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
 
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Level selection
-      promptStub
-        .onCall(0).resolves({action: 'keep'}) // High availability selection
-        .onCall(1).resolves({action: 'confirm'}) // Confirmation
-        .onCall(2).resolves({action: 'exit'}) // Exit at follower pool configuration
+      poolConfigStubs.leaderInteractiveConfig.resolves({
+        highAvailability: true,
+        level: levelsResponse.items[0].name,
+      }) // Leader pool config
+      promptStub.onCall(0).resolves({action: 'exit'}) // Exit at follower pool configuration
 
       await runCommand(DataPgCreate, ['--app=myapp'])
 
@@ -248,8 +251,6 @@ describe('data:pg:create', function () {
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
         `),
       )
-      expect(ansis.strip(stderr.output)).to.contain('4G-Performance 2 vCPU 4 GB MEM ~$0.083/hour ($60/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Standby (High Availability) ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
     })
 
@@ -269,11 +270,11 @@ describe('data:pg:create', function () {
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
 
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Level selection
-      promptStub
-        .onCall(0).resolves({action: 'keep'}) // High availability selection
-        .onCall(1).resolves({action: 'confirm'}) // Confirmation
-        .onCall(2).resolves({action: 'exit'}) // Exit at follower pool configuration
+      poolConfigStubs.leaderInteractiveConfig.resolves({
+        highAvailability: true,
+        level: levelsResponse.items[0].name,
+      }) // Leader pool config
+      promptStub.onCall(0).resolves({action: 'exit'}) // Exit at follower pool configuration
 
       await runCommand(DataPgCreate, [
         '--app=myapp',
@@ -304,11 +305,11 @@ describe('data:pg:create', function () {
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
 
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Level selection
-      promptStub
-        .onCall(0).resolves({action: 'remove'}) // High availability selection
-        .onCall(1).resolves({action: 'confirm'}) // Confirmation
-        .onCall(2).resolves({action: 'exit'}) // Exit at follower pool configuration
+      poolConfigStubs.leaderInteractiveConfig.resolves({
+        highAvailability: false,
+        level: levelsResponse.items[0].name,
+      }) // Leader pool config
+      promptStub.onCall(0).resolves({action: 'exit'}) // Exit at follower pool configuration
 
       await runCommand(DataPgCreate, ['--app=myapp'])
 
@@ -322,95 +323,6 @@ describe('data:pg:create', function () {
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
         `),
       )
-      expect(ansis.strip(stderr.output)).to.contain('4G-Performance 2 vCPU 4 GB MEM ~$0.083/hour ($60/month)')
-      expect(ansis.strip(stderr.output)).not.to.contain('Standby (High Availability) ~$0.083/hour ($60/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
-    })
-
-    it('allows the user to correct the leader level after initial selection', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': true,
-            level: levelsResponse.items[1].name,
-          },
-          plan: {name: 'heroku-postgresql:advanced'},
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-
-      poolConfigStubs.levelStep
-        .onCall(0).resolves(levelsResponse.items[0].name) // Level selection
-        .onCall(1).resolves(levelsResponse.items[1].name) // Level selection (selects a different level)
-      promptStub
-        .onCall(0).resolves({action: 'back'}) // High availability selection (go back to leader level selection)
-        .onCall(1).resolves({action: 'keep'}) // High availability selection (keep high availability)
-        .onCall(2).resolves({action: 'confirm'}) // Confirmation
-        .onCall(3).resolves({action: 'exit'}) // Exit at follower pool configuration
-
-      await runCommand(DataPgCreate, ['--app=myapp'])
-
-      herokuApi.done()
-      dataApi.done()
-
-      expect(stdout.output).to.equal(
-        heredoc(`
-          Your database is being provisioned
-          advanced-horizontal-01234 is being created in the background. The app will restart when complete...
-          Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
-      expect(ansis.strip(stderr.output)).to.contain('8G-Performance 4 vCPU 8 GB MEM ~$0.278/hour ($200/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Standby (High Availability) ~$0.278/hour ($200/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
-    })
-
-    it('allows the user to correct the high availability after initial selection', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            'high-availability': false,
-            level: levelsResponse.items[0].name,
-          },
-          plan: {name: 'heroku-postgresql:advanced'},
-        })
-        .reply(200, createAddonResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get('/data/postgres/v1/levels/advanced')
-        .reply(200, levelsResponse)
-        .get('/data/postgres/v1/pricing')
-        .reply(200, pricingResponse)
-
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Level selection
-      promptStub
-        .onCall(0).resolves({action: 'keep'}) // High availability selection (keep high availability)
-        .onCall(1).resolves({action: 'back'}) // Confirmation (go back to high availability selection)
-        .onCall(2).resolves({action: 'remove'}) // High availability selection (remove high availability)
-        .onCall(3).resolves({action: 'confirm'}) // Confirmation
-        .onCall(4).resolves({action: 'exit'}) // Exit at follower pool configuration
-
-      await runCommand(DataPgCreate, ['--app=myapp'])
-
-      herokuApi.done()
-      dataApi.done()
-
-      expect(stdout.output).to.equal(
-        heredoc(`
-          Your database is being provisioned
-          advanced-horizontal-01234 is being created in the background. The app will restart when complete...
-          Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
-      expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
     })
 
@@ -438,17 +350,18 @@ describe('data:pg:create', function () {
         })
         .reply(200, createPoolResponse)
 
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Leader level selection
+      poolConfigStubs.leaderInteractiveConfig.resolves({
+        highAvailability: true,
+        level: levelsResponse.items[0].name,
+      }) // Leader pool config
       poolConfigStubs.followerInteractiveConfig.resolves({
         count: 2,
         level: levelsResponse.items[0].name,
         name: 'readonly',
       }) // Follower pool configuration
       promptStub
-        .onCall(0).resolves({action: 'keep'}) // High availability selection (keep high availability)
-        .onCall(1).resolves({action: 'confirm'}) // Confirmation
-        .onCall(2).resolves({action: 'configure'}) // Configure a follower pool
-        .onCall(3).resolves({oneMore: false}) // One more? (no)
+        .onCall(0).resolves({action: 'configure'}) // Configure a follower pool
+        .onCall(1).resolves({oneMore: false}) // One more? (no)
 
       await runCommand(DataPgCreate, ['--app=myapp'])
 
@@ -465,8 +378,6 @@ describe('data:pg:create', function () {
 
         `),
       )
-      expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Configuring follower pool... done')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
     })
 
@@ -500,7 +411,10 @@ describe('data:pg:create', function () {
         })
         .reply(200, {...createPoolResponse, name: 'readonly2'})
 
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Leader level selection
+      poolConfigStubs.leaderInteractiveConfig.resolves({
+        highAvailability: true,
+        level: levelsResponse.items[0].name,
+      }) // Leader pool config
       poolConfigStubs.followerInteractiveConfig
         .onCall(0).resolves({
           count: 2,
@@ -513,12 +427,10 @@ describe('data:pg:create', function () {
           name: 'readonly2',
         }) // Second follower pool configuration
       promptStub
-        .onCall(0).resolves({action: 'keep'}) // High availability selection (keep high availability)
-        .onCall(1).resolves({action: 'confirm'}) // Confirmation
-        .onCall(2).resolves({action: 'configure'}) // Configure a follower pool
-        .onCall(3).resolves({oneMore: true}) // One more? (yes)
-        .onCall(4).resolves({action: 'configure'}) // Configure another follower pool
-        .onCall(5).resolves({oneMore: false}) // One more? (no)
+        .onCall(0).resolves({action: 'configure'}) // Configure a follower pool
+        .onCall(1).resolves({oneMore: true}) // One more? (yes)
+        .onCall(2).resolves({action: 'configure'}) // Configure another follower pool
+        .onCall(3).resolves({oneMore: false}) // One more? (no)
 
       await runCommand(DataPgCreate, ['--app=myapp'])
 
@@ -538,7 +450,6 @@ describe('data:pg:create', function () {
 
         `),
       )
-      expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
       expect(ansis.strip(stderr.output)).to.contain(heredoc`
         Configuring follower pool... done
         
@@ -572,17 +483,17 @@ describe('data:pg:create', function () {
         })
         .reply(200, {...createPoolResponse, name: 'readonly'})
 
-      poolConfigStubs.levelStep.resolves(levelsResponse.items[0].name) // Leader level selection
+      poolConfigStubs.leaderInteractiveConfig.resolves({
+        highAvailability: true,
+        level: levelsResponse.items[0].name,
+      }) // Leader pool config
       poolConfigStubs.followerInteractiveConfig
         .onCall(0).resolves({
           count: 13,
           level: levelsResponse.items[0].name,
           name: 'readonly',
         }) // Follower pool configuration
-      promptStub
-        .onCall(0).resolves({action: 'keep'}) // High availability selection (keep high availability)
-        .onCall(1).resolves({action: 'confirm'}) // Confirmation
-        .onCall(2).resolves({action: 'configure'}) // Configure a follower pool
+      promptStub.onCall(0).resolves({action: 'configure'}) // Configure a follower pool
 
       await runCommand(DataPgCreate, ['--app=myapp'])
 
@@ -599,7 +510,6 @@ describe('data:pg:create', function () {
 
         `),
       )
-      expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
       expect(ansis.strip(stderr.output)).to.contain(heredoc`
         Configuring follower pool... done
       `)
