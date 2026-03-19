@@ -1,3 +1,52 @@
+export enum MaintenanceStatus {
+  completed = 'completed',
+  none = 'none',
+  pending = 'pending',
+  preparing = 'preparing',
+  ready = 'ready',
+  running = 'running',
+}
+
+export interface AdvancedCredentialInfo extends Record<string, unknown> {
+  database: string
+  host: string
+  id: string
+  name: string
+  port: string
+  roles: Array<{
+    password: string
+    state: string
+    user: string
+  }>
+  state: string
+  type: 'additional' | 'owner'
+}
+
+export type ComputeInstance = {
+  id: string
+  level: string
+  name: string
+  role: string // will be good to have an enum for the valid roles
+  status: string // will be good to have an enum for the valid statuses
+  updated_at: string
+}
+
+export type ConnectionEndpoint = {
+  host: string
+  port: number
+  status: 'available' | 'degraded' | 'deprovisioning' | 'modifying'
+}
+
+export type CreatePoolParameters = {
+  count: number
+  level: string
+  name?: string
+}
+
+export type CredentialInfo = AdvancedCredentialInfo | NonAdvancedCredentialInfo
+
+export type CredentialsInfo = { items: Array<AdvancedCredentialInfo> }
+
 // This can be removed if at any point we get to generate a correct TypeScript schema from the Platform API
 // HyperSchema, but that's not easy due to API variants and some other header-selectable serialization expansion
 // options like `Accept-Inclusion` and `Accept-Expansion`.
@@ -5,17 +54,9 @@ export type DeepRequired<T> = T extends object
   ? { [K in keyof T]-?: DeepRequired<T[K]> }
   : T;
 
-type ResourceReference = {
-  id: string
-  name: string
+export type ExtendedPostgresLevelInfo = PostgresLevelInfo & {
+  pricing: PricingInfo | undefined
 }
-type AppReference = ResourceReference
-type AddonReference = ResourceReference
-
-type CommonRuntimeRegion = 'eu' | 'us'
-type PrivateSpaceRegion =
-  'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
-    | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
 
 export type InfoResponse = {
   addon: AddonReference
@@ -54,175 +95,6 @@ export type InfoResponse = {
   version: string
 }
 
-export type Quotas = { items: Array<Quota> }
-export type Quota = {
-  critical_gb: null | number
-  current_gb: null | number
-  enforcement_action: 'none' | 'notify' | 'restrict'
-  enforcement_active: boolean
-  type: string
-  warning_gb: null | number
-}
-
-type TableLimit = {
-  current: number
-  limit: number
-  name: 'table-limit'
-}
-
-type ConnectionLimit = {
-  current: number
-  limit: number
-  name: 'connection-limit'
-}
-
-type StorageLimitInGb = {
-  current: number
-  limit: number
-  name: 'storage-limit-in-gb'
-}
-
-export type PlanLimit = ConnectionLimit | StorageLimitInGb | TableLimit
-
-export type PostgresLevelInfo = {
-  connection_limit: number
-  memory_in_gb: number
-  name: string
-  vcpu: number
-}
-
-export type PostgresLevelsResponse = {
-  items: Array<PostgresLevelInfo>
-}
-
-type BaseChange = {
-  current: boolean | null | number | string
-  name: string
-  previous: boolean | null | number | string
-}
-
-type PoolChange = {
-  pool: string
-} & BaseChange
-
-export type ScaleResponse = {
-  changes: Array<PoolChange>
-}
-
-type SettingsChange = BaseChange
-
-export type SettingsChangeResponse = {
-  changes: Array<SettingsChange>
-}
-
-export type SettingsResponse = {
-  items: Array<{
-    current: boolean | null | number | string
-    default: boolean | null | number | string
-    name: string
-    reboot_required: boolean
-  }>
-}
-
-export type CreatePoolParameters = {
-  count: number
-  level: string
-  name?: string
-}
-
-export type ComputeInstance = {
-  id: string
-  level: string
-  name: string
-  role: string // will be good to have an enum for the valid roles
-  status: string // will be good to have an enum for the valid statuses
-  updated_at: string
-}
-
-export type ConnectionEndpoint = {
-  host: string
-  port: number
-  status: 'available' | 'degraded' | 'deprovisioning' | 'modifying'
-}
-
-export type PoolInfoResponse = {
-  compute_instances: Array<ComputeInstance>
-  connections_used: null | number
-  endpoints: Array<ConnectionEndpoint>
-  expected_connection_limit: number
-  expected_count: number
-  expected_level: string
-  id: string
-  metrics_sources: {
-    cluster: null | string
-    database: null | string
-    leader: null | string
-  }
-  name: string
-  status: 'available' | 'modifying' | 'provisioning' | 'unknown'
-  wait_status: {
-    message: null | string
-    waiting: boolean
-  }
-}
-
-export type CredentialsInfo = { items: Array<AdvancedCredentialInfo> }
-export type CredentialInfo = AdvancedCredentialInfo | NonAdvancedCredentialInfo
-export interface AdvancedCredentialInfo extends Record<string, unknown> {
-  database: string
-  host: string
-  id: string
-  name: string
-  port: string
-  roles: Array<{
-    password: string
-    state: string
-    user: string
-  }>
-  state: string
-  type: 'additional' | 'owner'
-}
-
-export function isAdvancedCredentialInfo(credential: CredentialInfo): credential is AdvancedCredentialInfo {
-  return 'type' in credential
-}
-
-export type PricingInfo = {
-  billing_period: 'month'
-  billing_unit: 'compute' | 'gigabyte'
-  included_units?: number
-  product_description: string
-  rate: number // in cents
-}
-
-export type TierPricingInfo = Record<string, PricingInfo>
-
-export type PricingInfoResponse = Record<string, TierPricingInfo>
-
-type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
-type NonAdvancedCredential = {
-  connections?: null | number
-  password: string
-  state: NonAdvancedCredentialState
-  user: string
-}
-
-type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
-
-export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
-  credentials: Array<NonAdvancedCredential>
-  database: string
-  host: string
-  name: string
-  port: string
-  state: NonAdvancedCredentialStoreState
-  uuid: string
-}
-
-export type ExtendedPostgresLevelInfo = {
-  pricing: PricingInfo | undefined
-} & PostgresLevelInfo
-
 export type Maintenance = {
   'addon': {
     'attachments': string[];
@@ -249,6 +121,99 @@ export type Maintenance = {
   'window': null | string;
 }
 
+export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
+  credentials: Array<NonAdvancedCredential>
+  database: string
+  host: string
+  name: string
+  port: string
+  state: NonAdvancedCredentialStoreState
+  uuid: string
+}
+
+export type PlanLimit = ConnectionLimit | StorageLimitInGb | TableLimit
+
+export type PoolInfoResponse = {
+  compute_instances: Array<ComputeInstance>
+  connections_used: null | number
+  endpoints: Array<ConnectionEndpoint>
+  expected_connection_limit: number
+  expected_count: number
+  expected_level: string
+  id: string
+  metrics_sources: {
+    cluster: null | string
+    database: null | string
+    leader: null | string
+  }
+  name: string
+  status: 'available' | 'modifying' | 'provisioning' | 'unknown'
+  wait_status: {
+    message: null | string
+    waiting: boolean
+  }
+}
+
+export type PostgresLevelInfo = {
+  connection_limit: number
+  memory_in_gb: number
+  name: string
+  vcpu: number
+}
+
+export type PostgresLevelsResponse = {
+  items: Array<PostgresLevelInfo>
+}
+
+export type PricingInfo = {
+  billing_period: 'month'
+  billing_unit: 'compute' | 'gigabyte'
+  included_units?: number
+  product_description: string
+  rate: number // in cents
+}
+
+export type PricingInfoResponse = Record<string, TierPricingInfo>
+
+export type Quota = {
+  critical_gb: null | number
+  current_gb: null | number
+  enforcement_action: 'none' | 'notify' | 'restrict'
+  enforcement_active: boolean
+  type: string
+  warning_gb: null | number
+}
+
+export type Quotas = { items: Array<Quota> }
+
+export type ScaleResponse = {
+  changes: Array<PoolChange>
+}
+
+export type SettingsChangeResponse = {
+  changes: Array<SettingsChange>
+}
+
+export type SettingsResponse = {
+  items: Array<{
+    current: boolean | null | number | string
+    default: boolean | null | number | string
+    name: string
+    reboot_required: boolean
+  }>
+}
+
+export type TierPricingInfo = Record<string, PricingInfo>
+
+export type UpgradeResponse = {
+  message: string
+}
+
+export type WaitStatus = {
+  message: null | string
+  waiting: boolean
+}
+
 export type Window = {
   previous_window: null | string;
   previously_scheduled_at: null | string;
@@ -256,16 +221,62 @@ export type Window = {
   window: null | string;
 }
 
-export enum MaintenanceStatus {
-  completed = 'completed',
-  none = 'none',
-  pending = 'pending',
-  preparing = 'preparing',
-  ready = 'ready',
-  running = 'running',
+type AddonReference = ResourceReference
+
+type AppReference = ResourceReference
+
+type BaseChange = {
+  current: boolean | null | number | string
+  name: string
+  previous: boolean | null | number | string
 }
 
-export type WaitStatus = {
-  message: null | string
-  waiting: boolean
+type CommonRuntimeRegion = 'eu' | 'us'
+
+type ConnectionLimit = {
+  current: number
+  limit: number
+  name: 'connection-limit'
+}
+
+type NonAdvancedCredential = {
+  connections?: null | number
+  password: string
+  state: NonAdvancedCredentialState
+  user: string
+}
+
+type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
+
+type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
+
+type PoolChange = BaseChange & {
+  pool: string
+}
+
+type PrivateSpaceRegion =
+  'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
+    | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
+
+type ResourceReference = {
+  id: string
+  name: string
+}
+
+type SettingsChange = BaseChange
+
+type StorageLimitInGb = {
+  current: number
+  limit: number
+  name: 'storage-limit-in-gb'
+}
+
+type TableLimit = {
+  current: number
+  limit: number
+  name: 'table-limit'
+}
+
+export function isAdvancedCredentialInfo(credential: CredentialInfo): credential is AdvancedCredentialInfo {
+  return 'type' in credential
 }
