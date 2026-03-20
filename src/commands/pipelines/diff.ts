@@ -1,17 +1,18 @@
-import {color, hux} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
+import {HTTP} from '@heroku/http-call'
 import {ux} from '@oclif/core'
 
 import type {OciImage, PipelineCoupling, Slug} from '../../lib/types/fir.js'
 import type {Commit, GitHubDiff} from '../../lib/types/github.js'
 
 import {
-  SDK_HEADER,
   getCoupling,
   getPipeline,
   getReleases,
   listPipelineApps,
+  SDK_HEADER,
 } from '../../lib/api.js'
 import {GenerationKind, getGeneration} from '../../lib/apps/generation.js'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
@@ -23,61 +24,6 @@ interface AppInfo {
 }
 
 const PROMOTION_ORDER = ['development', 'staging', 'production']
-
-async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: string, herokuUserAgent: string) {
-  if (!downstreamApp.repo) {
-    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
-  }
-
-  if (downstreamApp.repo !== targetApp.repo) {
-    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
-  }
-
-  if (!downstreamApp.hash) {
-    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
-  }
-
-  if (downstreamApp.hash === targetApp.hash) {
-    return ux.stdout(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
-  }
-
-  // Do the actual GitHub diff
-  try {
-    const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
-    const headers = {
-      'Content-Type': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      authorization: 'token ' + githubToken,
-    }
-
-    if (herokuUserAgent) {
-      Reflect.set(headers, 'user-agent', herokuUserAgent)
-    }
-
-    const {body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers})
-
-    ux.stdout('')
-    hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
-    const mapped = githubDiff.commits.map((commit: Commit) => ({
-      sha: commit.sha.slice(0, 7),
-      date: commit.commit.author.date,
-      author: commit.commit.author.name,
-      message: commit.commit.message.split('\n')[0],
-    })).reverse()
-    hux.table(mapped, {
-      sha: {
-        header: 'SHA',
-      },
-      date: {},
-      author: {},
-      message: {},
-    })
-    ux.stdout(`\n${color.info(`https://github.com/${path}`)}`)
-  } catch {
-    ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
-    ux.stdout('are you sure you have pushed your latest commits to GitHub?')
-  }
-}
 
 export default class PipelinesDiff extends Command {
   static description = 'compares the latest release of this app to its downstream app(s)'
@@ -197,5 +143,62 @@ export default class PipelinesDiff extends Command {
         targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent,
       )
     }
+  }
+}
+
+async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: string, herokuUserAgent: string) {
+  if (!downstreamApp.repo) {
+    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to GitHub`)
+  }
+
+  if (downstreamApp.repo !== targetApp.repo) {
+    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} is not connected to the same GitHub repo as ${color.app(targetApp.name)}`)
+  }
+
+  if (!downstreamApp.hash) {
+    return ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} as ${color.app(downstreamApp.name)} does not have any releases`)
+  }
+
+  if (downstreamApp.hash === targetApp.hash) {
+    return ux.stdout(`\n${color.app(targetApp.name)} is up to date with ${color.app(downstreamApp.name)}`)
+  }
+
+  // Do the actual GitHub diff
+  try {
+    const path = `${targetApp.repo}/compare/${downstreamApp.hash}...${targetApp.hash}`
+    const headers = {
+      authorization: 'token ' + githubToken,
+      'Content-Type': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    }
+
+    if (herokuUserAgent) {
+      Reflect.set(headers, 'user-agent', herokuUserAgent)
+    }
+
+    const {body: githubDiff} = await HTTP.get<GitHubDiff>(`https://api.github.com/repos/${path}`, {headers})
+
+    ux.stdout('')
+    hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
+    /* eslint-disable perfectionist/sort-objects */
+    const mapped = githubDiff.commits.map((commit: Commit) => ({
+      sha: commit.sha.slice(0, 7),
+      date: commit.commit.author.date,
+      author: commit.commit.author.name,
+      message: commit.commit.message.split('\n')[0],
+    })).reverse()
+    hux.table(mapped, {
+      sha: {
+        header: 'SHA',
+      },
+      date: {},
+      author: {},
+      message: {},
+    })
+    /* eslint-enable perfectionist/sort-objects */
+    ux.stdout(`\n${color.info(`https://github.com/${path}`)}`)
+  } catch {
+    ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
+    ux.stdout('are you sure you have pushed your latest commits to GitHub?')
   }
 }

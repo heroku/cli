@@ -1,20 +1,21 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 
 import {quote} from '../../lib/config/quote.js'
 import waitForDomain from '../../lib/domains/wait-for-domain.js'
 
-interface DomainCreatePayload {
-  hostname: string;
-  sni_endpoint: null | string;
-}
-
 type CertChoice = {
   name: string;
   value: null | string | undefined;
+}
+
+interface DomainCreatePayload {
+  hostname: string;
+  sni_endpoint: null | string;
 }
 
 export default class DomainsAdd extends Command {

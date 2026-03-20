@@ -1,4 +1,3 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {
   BuildpackCompletion,
@@ -7,6 +6,8 @@ import {
   StackCompletion,
 } from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args, Interfaces, ux} from '@oclif/core'
 import fs from 'fs-extra'
 import {parse} from 'yaml'
@@ -14,131 +15,6 @@ import {parse} from 'yaml'
 import Git from '../../lib/git/git.js'
 
 const git = new Git()
-
-function createText(name: string, space: string) {
-  let text = `Creating ${name ? color.app(name) : 'app'}`
-  if (space) {
-    text += ` in space ${space}`
-  }
-
-  return text
-}
-
-async function createApp(context: Interfaces.ParserOutput, heroku: APIClient, name: string, stack: string) {
-  const {flags} = context
-  const params = {
-    feature_flags: flags.features,
-    internal_routing: flags['internal-routing'],
-    kernel: flags.kernel,
-    locked: flags.locked,
-    name,
-    region: flags.region,
-    space: flags.space,
-    stack,
-    team: flags.team,
-  }
-
-  const requestPath = (params.space || params.team) ? '/teams/apps' : '/apps'
-  const {body: app} = await heroku.post<Heroku.App>(requestPath, {
-    body: params,
-  })
-
-  let status = name ? 'done' : `done, ${color.app(app.name || '')}`
-  if (flags.region) {
-    status += `, region is ${color.info(app.region?.name || '')}`
-  }
-
-  if (stack) {
-    status += `, stack is ${color.info(app.stack?.name || '')}`
-  }
-
-  ux.action.stop(status)
-
-  return app
-}
-
-async function addAddons(heroku: APIClient, app: Heroku.App, addons: { as?: string, plan: string }[]) {
-  for (const addon of addons) {
-    const body = {
-      attachment: addon.as ? {name: addon.as} : undefined,
-      plan: addon.plan,
-    }
-
-    ux.action.start(`Adding ${color.addon(addon.plan)}`)
-    await heroku.post(`/apps/${app.name}/addons`, {body})
-    ux.action.stop()
-  }
-}
-
-async function addConfigVars(heroku: APIClient, app: Heroku.App, configVars: Heroku.ConfigVars) {
-  if (Object.keys(configVars).length > 0) {
-    ux.action.start('Setting config vars')
-    await heroku.patch(`/apps/${app.name}/config-vars`, {
-      body: configVars,
-    })
-    ux.action.stop()
-  }
-}
-
-function addonsFromPlans(plans: string[]) {
-  return plans.map(plan => ({
-    plan: plan.trim(),
-  }))
-}
-
-async function configureGitRemote(context: Interfaces.ParserOutput, app: Heroku.App) {
-  const remoteUrl = git.httpGitUrl(app.name || '')
-  if (!context.flags['no-remote'] && git.inGitRepo()) {
-    await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
-  }
-
-  return remoteUrl
-}
-
-function printAppSummary(context: Interfaces.ParserOutput, app: Heroku.App, remoteUrl: string) {
-  if (context.flags.json) {
-    hux.styledJSON(app)
-  } else {
-    ux.stdout(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
-  }
-}
-
-async function runFromFlags(context: Interfaces.ParserOutput, heroku: APIClient, config: Interfaces.Config) {
-  const {args, flags} = context
-  if (flags['internal-routing'] && !flags.space) {
-    throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
-  }
-
-  const name = flags.app || args.app || process.env.HEROKU_APP
-
-  async function addBuildpack(app: Heroku.App, buildpack: string) {
-    ux.action.start(`Setting buildpack to ${color.info(buildpack)}`)
-    await heroku.put(`/apps/${app.name}/buildpack-installations`, {
-      body: {updates: [{buildpack}]},
-      headers: {Range: ''},
-    })
-    ux.action.stop()
-  }
-
-  ux.action.start(createText(name, flags.space))
-  const app = await createApp(context, heroku, name, flags.stack)
-  ux.action.stop()
-
-  if (flags.addons) {
-    const plans = flags.addons.split(',')
-    const addons = addonsFromPlans(plans)
-    await addAddons(heroku, app, addons)
-  }
-
-  if (flags.buildpack) {
-    await addBuildpack(app, flags.buildpack)
-  }
-
-  const remoteUrl = await configureGitRemote(context, app)
-
-  await config.runHook('recache', {app: app.name, type: 'app'})
-  printAppSummary(context, app, remoteUrl)
-}
 
 export default class Create extends Command {
   static args = {
@@ -230,4 +106,129 @@ ${color.command('heroku apps:create --region eu')}`]
 
     printAppSummary(context, app, remoteUrl)
   }
+}
+
+async function addAddons(heroku: APIClient, app: Heroku.App, addons: { as?: string, plan: string }[]) {
+  for (const addon of addons) {
+    const body = {
+      attachment: addon.as ? {name: addon.as} : undefined,
+      plan: addon.plan,
+    }
+
+    ux.action.start(`Adding ${color.addon(addon.plan)}`)
+    await heroku.post(`/apps/${app.name}/addons`, {body})
+    ux.action.stop()
+  }
+}
+
+async function addConfigVars(heroku: APIClient, app: Heroku.App, configVars: Heroku.ConfigVars) {
+  if (Object.keys(configVars).length > 0) {
+    ux.action.start('Setting config vars')
+    await heroku.patch(`/apps/${app.name}/config-vars`, {
+      body: configVars,
+    })
+    ux.action.stop()
+  }
+}
+
+function addonsFromPlans(plans: string[]) {
+  return plans.map(plan => ({
+    plan: plan.trim(),
+  }))
+}
+
+async function configureGitRemote(context: Interfaces.ParserOutput, app: Heroku.App) {
+  const remoteUrl = git.httpGitUrl(app.name || '')
+  if (!context.flags['no-remote'] && git.inGitRepo()) {
+    await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
+  }
+
+  return remoteUrl
+}
+
+async function createApp(context: Interfaces.ParserOutput, heroku: APIClient, name: string, stack: string) {
+  const {flags} = context
+  const params = {
+    feature_flags: flags.features,
+    internal_routing: flags['internal-routing'],
+    kernel: flags.kernel,
+    locked: flags.locked,
+    name,
+    region: flags.region,
+    space: flags.space,
+    stack,
+    team: flags.team,
+  }
+
+  const requestPath = (params.space || params.team) ? '/teams/apps' : '/apps'
+  const {body: app} = await heroku.post<Heroku.App>(requestPath, {
+    body: params,
+  })
+
+  let status = name ? 'done' : `done, ${color.app(app.name || '')}`
+  if (flags.region) {
+    status += `, region is ${color.info(app.region?.name || '')}`
+  }
+
+  if (stack) {
+    status += `, stack is ${color.info(app.stack?.name || '')}`
+  }
+
+  ux.action.stop(status)
+
+  return app
+}
+
+function createText(name: string, space: string) {
+  let text = `Creating ${name ? color.app(name) : 'app'}`
+  if (space) {
+    text += ` in space ${space}`
+  }
+
+  return text
+}
+
+function printAppSummary(context: Interfaces.ParserOutput, app: Heroku.App, remoteUrl: string) {
+  if (context.flags.json) {
+    hux.styledJSON(app)
+  } else {
+    ux.stdout(`${color.info(app.web_url || '')} | ${color.info(remoteUrl)}`)
+  }
+}
+
+async function runFromFlags(context: Interfaces.ParserOutput, heroku: APIClient, config: Interfaces.Config) {
+  const {args, flags} = context
+  if (flags['internal-routing'] && !flags.space) {
+    throw new Error('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
+  }
+
+  const name = flags.app || args.app || process.env.HEROKU_APP
+
+  async function addBuildpack(app: Heroku.App, buildpack: string) {
+    ux.action.start(`Setting buildpack to ${color.info(buildpack)}`)
+    await heroku.put(`/apps/${app.name}/buildpack-installations`, {
+      body: {updates: [{buildpack}]},
+      headers: {Range: ''},
+    })
+    ux.action.stop()
+  }
+
+  ux.action.start(createText(name, flags.space))
+  const app = await createApp(context, heroku, name, flags.stack)
+  ux.action.stop()
+
+  if (flags.addons) {
+    const plans = flags.addons.split(',')
+    const addons = addonsFromPlans(plans)
+    await addAddons(heroku, app, addons)
+  }
+
+  if (flags.buildpack) {
+    await addBuildpack(app, flags.buildpack)
+  }
+
+  const remoteUrl = await configureGitRemote(context, app)
+
+  await config.runHook('recache', {app: app.name, type: 'app'})
+  printAppSummary(context, app, remoteUrl)
 }

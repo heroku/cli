@@ -1,25 +1,25 @@
 'use strict'
 
 import * as Heroku from '@heroku-cli/schema'
-import {hux} from '@heroku/heroku-cli-util'
-import {formatDistanceToNow, addSeconds} from 'date-fns'
+import * as hux from '@heroku/heroku-cli-util/hux'
+import {addSeconds, formatDistanceToNow} from 'date-fns'
 
 export function display(auth: Heroku.OAuthAuthorization) {
   interface StyledObject {
-    ID: string | undefined;
-    Description: string | undefined;
-    Scope: string | undefined;
     Client?: string;
-    Token?: string;
-    'Redirect URI'?: string;
-    'Updated at'?: string;
+    Description: string | undefined;
     'Expires at'?: string;
+    ID: string | undefined;
+    'Redirect URI'?: string;
+    Scope: string | undefined;
+    Token?: string;
+    'Updated at'?: string;
   }
 
   const obj: StyledObject = {
     Client: '<none>',
-    ID: auth.id,
     Description: auth.description,
+    ID: auth.id,
     Scope: auth.scope ? auth.scope.join(',') : undefined,
   }
 

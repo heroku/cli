@@ -1,13 +1,13 @@
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 
 const DEFAULT_SETTINGS = {
   auto_deploy: true,
-  wait_for_ci: true,
   pull_requests: {
-    enabled: true,
     auto_deploy: true,
     auto_destroy: true,
+    enabled: true,
   },
+  wait_for_ci: true,
 }
 
 export default async function getSettings(yes: any, branch: any) {
@@ -17,12 +17,12 @@ export default async function getSettings(yes: any, branch: any) {
 
   const settings = {
     auto_deploy: true,
-    wait_for_ci: true,
     pull_requests: {
-      enabled: true,
       auto_deploy: true,
       auto_destroy: true,
+      enabled: true,
     },
+    wait_for_ci: true,
   }
 
   settings.auto_deploy = await hux.confirm(`Automatically deploy the ${branch} branch to staging?`)

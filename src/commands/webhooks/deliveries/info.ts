@@ -1,10 +1,15 @@
 import {flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args} from '@oclif/core'
-import {color, hux} from '@heroku/heroku-cli-util'
 
 import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class DeliveriesInfo extends BaseCommand {
+  static args = {
+    id: Args.string({description: 'ID of the webhook event', required: true}),
+  }
+
   static description = 'info for a webhook event on an app'
 
   static examples = [
@@ -13,22 +18,19 @@ export default class DeliveriesInfo extends BaseCommand {
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
-  }
-
-  static args = {
-    id: Args.string({required: true, description: 'ID of the webhook event'}),
+    remote: flags.remote(),
   }
 
   async run() {
-    const {flags, args} = await this.parse(DeliveriesInfo)
+    const {args, flags} = await this.parse(DeliveriesInfo)
     const {path} = this.webhookType(flags)
 
     const {body: delivery}: {body: any} = await this.webhooksClient.get(`${path}/webhook-deliveries/${args.id}`)
 
     const {body: event}: {body: any} = await this.webhooksClient.get(`${path}/webhook-events/${delivery.event.id}`)
 
+    /* eslint-disable perfectionist/sort-objects */
     const obj = {
       Created: delivery.created_at,
       Event: delivery.event.id,
@@ -41,6 +43,7 @@ export default class DeliveriesInfo extends BaseCommand {
       Error: delivery.last_attempt && delivery.last_attempt.error_class,
       'Next Attempt': delivery.next_attempt_at,
     }
+    /* eslint-enable perfectionist/sort-objects */
 
     hux.styledHeader(delivery.id)
     hux.styledObject(obj)

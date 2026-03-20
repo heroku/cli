@@ -1,6 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 
 export default class Index extends Command {
   static description = `list the teams that you are a member of\n\nUse ${color.code('heroku members:*')} to manage team members.`

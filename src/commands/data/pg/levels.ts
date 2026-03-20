@@ -1,5 +1,5 @@
 import {Command} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {printTable, TableOptions} from '@oclif/table'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'

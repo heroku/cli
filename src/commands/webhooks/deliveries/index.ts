@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {color, hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 
 import BaseCommand from '../../../lib/webhooks/base.js'
 
@@ -12,9 +13,9 @@ export default class Deliveries extends BaseCommand {
 
   static flags = {
     app: flags.app(),
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
     remote: flags.remote(),
     status: flags.string({char: 's', description: 'filter deliveries by status'}),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   async run() {
@@ -49,6 +50,7 @@ export default class Deliveries extends BaseCommand {
       }
 
       const printLine: typeof this.log = (...args) => this.log(...args)
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(deliveries, {
         id: {
           header: 'Delivery ID',
@@ -80,6 +82,7 @@ export default class Deliveries extends BaseCommand {
       }, {
         printLine,
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
   }
 }

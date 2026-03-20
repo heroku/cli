@@ -1,11 +1,16 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {ux} from '@oclif/core'
 import _ from 'lodash'
 
 import {getOwner, isTeamApp} from '../../lib/teamUtils.js'
+
+type AdminWithPermissions = Heroku.TeamMember & {
+  permissions?: Heroku.TeamAppPermission[],
+}
 
 type MemberData = {
   email: string,
@@ -13,12 +18,49 @@ type MemberData = {
   role: string,
 }
 
-type AdminWithPermissions = {
-  permissions?: Heroku.TeamAppPermission[],
-} & Heroku.TeamMember
+export default class AccessIndex extends Command {
+  static description = 'list who has access to an app'
+  static flags = {
+    app: flags.app({required: true}),
+    json: flags.boolean({description: 'output in json format'}),
+    remote: flags.remote({char: 'r'}),
+  }
 
-function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
-  ux.stdout(JSON.stringify(collaborators, null, 2))
+  static topic = 'access'
+
+  public async run(): Promise<void> {
+    const {flags} = await this.parse(AccessIndex)
+    const {app: appName, json} = flags
+    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
+    let {body: collaborators} = await this.heroku.get<Heroku.TeamAppCollaborator[]>(`/apps/${appName}/collaborators`)
+    if (isTeamApp(app.owner?.email)) {
+      const teamName = getOwner(app.owner?.email)
+      try {
+        const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
+        let admins: AdminWithPermissions[] = members.filter(member => member.role === 'admin')
+        const {body: adminPermissions} = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
+        admins = _.forEach(admins, admin => {
+          admin.user = {email: admin.email}
+          admin.permissions = adminPermissions
+          return admin
+        })
+        collaborators = buildCollaboratorsArray(collaborators, admins)
+      } catch (error: any) {
+        if (!(error instanceof HerokuAPIError && error.http.statusCode === 403))
+          throw error
+      }
+    }
+
+    if (json)
+      printJSON(collaborators)
+    else
+      printAccess(app, collaborators)
+  }
+}
+
+function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[], admins: Heroku.TeamMember[]) {
+  const collaboratorsNoAdmins = _.reject(collaboratorsRaw, {role: 'admin'})
+  return _.union(collaboratorsNoAdmins, admins)
 }
 
 function buildTableColumns(showPermissions: boolean) {
@@ -65,47 +107,6 @@ function printAccess(app: Heroku.App, collaborators: any[]) {
   )
 }
 
-function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[], admins: Heroku.TeamMember[]) {
-  const collaboratorsNoAdmins = _.reject(collaboratorsRaw, {role: 'admin'})
-  return _.union(collaboratorsNoAdmins, admins)
-}
-
-export default class AccessIndex extends Command {
-  static description = 'list who has access to an app'
-  static flags = {
-    app: flags.app({required: true}),
-    json: flags.boolean({description: 'output in json format'}),
-    remote: flags.remote({char: 'r'}),
-  }
-
-  static topic = 'access'
-
-  public async run(): Promise<void> {
-    const {flags} = await this.parse(AccessIndex)
-    const {app: appName, json} = flags
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    let {body: collaborators} = await this.heroku.get<Heroku.TeamAppCollaborator[]>(`/apps/${appName}/collaborators`)
-    if (isTeamApp(app.owner?.email)) {
-      const teamName = getOwner(app.owner?.email)
-      try {
-        const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
-        let admins: AdminWithPermissions[] = members.filter(member => member.role === 'admin')
-        const {body: adminPermissions} = await this.heroku.get<Heroku.TeamAppPermission[]>('/teams/permissions')
-        admins = _.forEach(admins, admin => {
-          admin.user = {email: admin.email}
-          admin.permissions = adminPermissions
-          return admin
-        })
-        collaborators = buildCollaboratorsArray(collaborators, admins)
-      } catch (error: any) {
-        if (!(error instanceof HerokuAPIError && error.http.statusCode === 403))
-          throw error
-      }
-    }
-
-    if (json)
-      printJSON(collaborators)
-    else
-      printAccess(app, collaborators)
-  }
+function printJSON(collaborators: Heroku.TeamAppCollaborator[]) {
+  ux.stdout(JSON.stringify(collaborators, null, 2))
 }

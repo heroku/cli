@@ -1,21 +1,11 @@
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 
 import {pipelineName, repoName} from './validate.js'
 
-function filter(obj: any) {
-  const ret: any = {}
-  Object.keys(obj)
-    .filter((key: any) => obj[key] !== undefined)
-    .forEach((key: string) => {
-      ret[key] = obj[key]
-    })
-  return ret
-}
-
 interface GetNameAndRepoAnswer {
-  name: string | boolean;
-  repo: string | boolean;
+  name: boolean | string;
+  repo: boolean | string;
 }
 
 export default async function getNameAndRepo(args: any) {
@@ -52,7 +42,17 @@ export default async function getNameAndRepo(args: any) {
   }
 
   const reply: any = Object.assign(filter(answer), filter(args))
-  reply.name = reply.name.toLowerCase().replace(/\s/g, '-')
+  reply.name = reply.name.toLowerCase().replaceAll(/\s/g, '-')
 
   return reply
+}
+
+function filter(obj: any) {
+  const ret: any = {}
+  Object.keys(obj)
+    .filter((key: any) => obj[key] !== undefined)
+    .forEach((key: string) => {
+      ret[key] = obj[key]
+    })
+  return ret
 }

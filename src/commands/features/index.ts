@@ -1,14 +1,15 @@
-import {color, hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {flags, Command} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
+import {ux} from '@oclif/core'
 
 export default class Features extends Command {
   static description = 'list available app features'
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
     json: flags.boolean({description: 'output in json format'}),
+    remote: flags.remote(),
   }
 
   async run() {

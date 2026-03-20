@@ -1,37 +1,35 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-import {formatPrice} from '../../lib/addons/util.js'
-import _ from 'lodash'
 import {Plan} from '@heroku-cli/schema'
+import * as hux from '@heroku/heroku-cli-util/hux'
+import {Args} from '@oclif/core'
+import _ from 'lodash'
 import printf from 'printf'
+
+import {formatPrice} from '../../lib/addons/util.js'
 
 type PlanWithMeteredPrice = Plan & {
   price: {
     cents?: number
     contract?: boolean
-    unit?: string
     metered?: boolean
+    unit?: string
   }
 }
 
 export default class Plans extends Command {
-  static topic = 'addons'
+  static args = {
+    service: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
+  }
+
   static description = 'list all available plans for an add-on service'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }
 
-  static args = {
-    service: Args.string({required: true, description: 'unique identifier or globally unique name of the add-on'}),
-  }
-
-  private printMeteredPricingURL(service: string): any {
-    return printf(`https://elements.heroku.com/addons/${service}#pricing`)
-  }
+  static topic = 'addons'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Plans)
+    const {args, flags} = await this.parse(Plans)
     const {service} = args
     let {body: plans} = await this.heroku.get<PlanWithMeteredPrice[]>(`/addon-services/${service}/plans`, {
       headers: {
@@ -44,24 +42,28 @@ export default class Plans extends Command {
     } else {
       hux.table(plans, {
         default: {
-          header: ' ', // <- This space is necessary to prevent the table header from rendering as "default"
           get: (plan: any) => plan.default ? 'default' : '',
-        },
-        name: {
-          header: 'Slug',
+          header: ' ', // <- This space is necessary to prevent the table header from rendering as "default"
         },
         human_name: {
           header: 'Name',
         },
-        price: {
-          header: 'Price',
-          get: (plan: any) => formatPrice({price: plan.price, hourly: true}),
-        },
         max_price: {
+          get: (plan: any) => plan.price.metered ? this.printMeteredPricingURL(service) : formatPrice({hourly: false, price: plan.price}),
           header: 'Max Price',
-          get: (plan: any) => plan.price.metered ? this.printMeteredPricingURL(service) : formatPrice({price: plan.price, hourly: false}),
+        },
+        name: {
+          header: 'Slug',
+        },
+        price: {
+          get: (plan: any) => formatPrice({hourly: true, price: plan.price}),
+          header: 'Price',
         },
       })
     }
+  }
+
+  private printMeteredPricingURL(service: string): any {
+    return printf(`https://elements.heroku.com/addons/${service}#pricing`)
   }
 }

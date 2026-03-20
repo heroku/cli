@@ -1,13 +1,14 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {ux} from '@oclif/core'
 import {execSync} from 'child_process'
 import _ from 'lodash'
 import * as path from 'path'
 import * as process from 'process'
-import {fileURLToPath} from 'url'
 import img from 'term-img'
+import {fileURLToPath} from 'url'
 
 import {ago} from '../lib/time.js'
 import {AppErrors} from '../lib/types/app_errors.js'
@@ -31,12 +32,6 @@ type FetchMetricsResponse =  {
 
 const empty = (o: Record<string, any>) => Object.keys(o).length === 0
 
-function displayFormation(formation: Heroku.Formation) {
-  formation = _.groupBy(formation, 'size')
-  formation = _.map(formation, (p, size) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
-  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
-}
-
 function displayErrors(metrics: FetchMetricsResponse[0]) {
   let errors: string[] = []
   if (metrics.routerErrors) {
@@ -54,6 +49,12 @@ function displayErrors(metrics: FetchMetricsResponse[0]) {
 
   if (errors.length > 0)
     ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.code('heroku apps:errors')})`)
+}
+
+function displayFormation(formation: Heroku.Formation) {
+  formation = _.groupBy(formation, 'size')
+  formation = _.map(formation, (p, size) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
+  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
 }
 
 function displayMetrics(metrics: FetchMetricsResponse[0]) {
@@ -128,26 +129,6 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
   }))
 }
 
-function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse) {
-  const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
-  const zipped = _.zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
-  for (const a of zipped) {
-    const app = a[0]
-    const metrics = a[1]
-    hux.styledHeader(color.app(app.app.name || ''))
-    ux.stdout(`  ${label('Owner:')} ${color.user(getOwner(app.app.owner) || '')}`)
-    if (app.pipeline) {
-      ux.stdout(`  ${label('Pipeline:')} ${color.pipeline(app.pipeline.pipeline?.name || '')}`)
-    }
-
-    displayFormation(app.formation)
-    ux.stdout(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
-    displayMetrics(metrics)
-    displayErrors(metrics)
-    ux.stdout()
-  }
-}
-
 export default class Dashboard extends Command {
   static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'display information about favorite apps'
@@ -216,5 +197,25 @@ export default class Dashboard extends Command {
     ux.stdout(`See all apps with ${color.code('heroku apps --all')}`)
     displayNotifications(notificationsResponse?.body)
     ux.stdout(`\nSee other CLI commands with ${color.code('heroku help')}\n`)
+  }
+}
+
+function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse) {
+  const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
+  const zipped = _.zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
+  for (const a of zipped) {
+    const app = a[0]
+    const metrics = a[1]
+    hux.styledHeader(color.app(app.app.name || ''))
+    ux.stdout(`  ${label('Owner:')} ${color.user(getOwner(app.app.owner) || '')}`)
+    if (app.pipeline) {
+      ux.stdout(`  ${label('Pipeline:')} ${color.pipeline(app.pipeline.pipeline?.name || '')}`)
+    }
+
+    displayFormation(app.formation)
+    ux.stdout(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
+    displayMetrics(metrics)
+    displayErrors(metrics)
+    ux.stdout()
   }
 }

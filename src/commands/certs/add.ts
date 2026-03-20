@@ -1,6 +1,7 @@
-import {hux, color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
@@ -88,10 +89,6 @@ export default class Add extends Command {
   }
 }
 
-function splitDomains(domains: string[]): [string, string][] {
-  return domains.map(domain => [domain.slice(0, 1), domain.slice(1)])
-}
-
 function createMatcherFromSplitDomain([firstChar, rest]: [string, string]) {
   const matcherContents = []
   if (firstChar === '*') {
@@ -123,4 +120,8 @@ function matchDomains(certDomains: string[], appDomains: string[]) {
   }
 
   return certDomains.filter(domain => appDomains.includes(domain))
+}
+
+function splitDomains(domains: string[]): [string, string][] {
+  return domains.map(domain => [domain.slice(0, 1), domain.slice(1)])
 }

@@ -1,6 +1,7 @@
-import {hux} from '@heroku/heroku-cli-util'
-import formatDate from './format_date.js'
+import * as hux from '@heroku/heroku-cli-util/hux'
+
 import {SniEndpoint} from '../types/sni_endpoint.js'
+import formatDate from './format_date.js'
 
 function type(endpoint: SniEndpoint) {
   if (endpoint.ssl_cert && endpoint.ssl_cert.acm) {
@@ -15,12 +16,12 @@ export default function (endpoints: SniEndpoint[]) {
     .filter(endpoint => endpoint.ssl_cert)
     .map(endpoint => {
       const tableContents: Record<string, unknown> = {
-        name: endpoint.name,
-        expires_at: endpoint.ssl_cert.expires_at,
         ca_signed: endpoint.ssl_cert['ca_signed?'],
-        type: type(endpoint),
         common_names: endpoint.ssl_cert.cert_domains.join(', '),
         display_name: endpoint.display_name,
+        expires_at: endpoint.ssl_cert.expires_at,
+        name: endpoint.name,
+        type: type(endpoint),
       }
 
       // If they're using ACM it's not really worth showing the number of associated domains since
@@ -42,12 +43,12 @@ export default function (endpoints: SniEndpoint[]) {
 
   columns.common_names = {header: 'Common Name(s)'}
   columns.expires_at = {
-    header: 'Expires',
     get: ({expires_at}: {expires_at: string | undefined}) => expires_at === undefined ? '' : formatDate(expires_at),
+    header: 'Expires',
   }
   columns.ca_signed = {
-    header: 'Trusted',
     get: ({ca_signed}: {ca_signed: boolean}) => ca_signed ? 'True' : 'False',
+    header: 'Trusted',
   }
   columns.type = {header: 'Type'}
 
