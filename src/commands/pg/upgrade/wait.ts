@@ -1,6 +1,9 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import tsheredoc from 'tsheredoc'
@@ -63,7 +66,7 @@ export default class Wait extends Command {
         try {
           ({body: status} = await this.heroku.get<PgUpgradeStatus>(
             `/client/v11/databases/${db.id}/upgrade/wait_status`,
-            {hostname: utils.pg.host()},
+            {hostname: pgUtils.getHost()},
           ))
         } catch (error) {
           if (error instanceof HTTPError && (!retries || error.statusCode !== 404)) {
@@ -112,7 +115,7 @@ export default class Wait extends Command {
     // Maybe it was initially thought to implement this in the future, but it was never implemented.
     let dbs: pg.ExtendedAddonAttachment['addon'][] = []
     if (dbName) {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
       const {addon} = await dbResolver.getAttachment(app, dbName)
       dbs = [addon]
     } else {

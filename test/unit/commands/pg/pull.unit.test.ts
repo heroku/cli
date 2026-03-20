@@ -1,10 +1,12 @@
-import {pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {expect} from 'chai'
 import childProcess from 'node:child_process'
 import sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/pull.js'
+import * as pushPull from '../../../../src/lib/pg/push_pull.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
@@ -40,9 +42,9 @@ describe('pg:pull', function () {
       user: 'jeff',
     } as pg.ConnectionDetails
 
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('00')
-    sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+    sinon.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    sinon.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves('00')
+    sinon.stub(pushPull.psqlHelpers, 'sshTunnel').resolves()
 
     sinon.stub(Math, 'random').callsFake(() => 0)
     createDbStub = sinon.stub(childProcess, 'execSync')

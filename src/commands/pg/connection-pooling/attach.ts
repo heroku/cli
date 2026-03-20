@@ -1,6 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -31,7 +32,7 @@ export default class Attach extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Attach)
     const {app} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, args.database)
 
     if (essentialPlan(db))
@@ -39,7 +40,7 @@ export default class Attach extends Command {
 
     ux.action.start(`Enabling Connection Pooling on ${color.datastore(db.name)} to ${color.app(app)}`)
     const {body: attachment} = await this.heroku.post<Required<Heroku.AddOnAttachment>>(`/client/v11/databases/${encodeURIComponent(db.name)}/connection-pooling`, {
-      body: {app, credential: 'default', name: flags.as}, hostname: utils.pg.host(),
+      body: {app, credential: 'default', name: flags.as}, hostname: pg.getHost(),
     })
     ux.action.stop()
 

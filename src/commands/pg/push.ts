@@ -1,7 +1,12 @@
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
+import childProcess from 'node:child_process'
 import tsheredoc from 'tsheredoc'
-import {color, pg, utils} from '@heroku/heroku-cli-util'
+
 import {
   connArgs,
   maybeTunnel,
@@ -10,7 +15,6 @@ import {
   spawnPipe,
   verifyExtensionsMatch,
 } from '../../lib/pg/push_pull.js'
-import childProcess from 'node:child_process'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
@@ -62,7 +66,7 @@ export default class Push extends Command {
 
     if (exclude !== '') dumpFlags.push(exclude)
 
-    const dumpOptions: { env: NodeJS.ProcessEnv } & childProcess.SpawnOptions = {
+    const dumpOptions: childProcess.SpawnOptions & { env: NodeJS.ProcessEnv } = {
       env: {
         PGSSLMODE: 'prefer',
         ...env,
@@ -74,7 +78,7 @@ export default class Push extends Command {
 
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
 
-    const restoreOptions: { env: NodeJS.ProcessEnv } & childProcess.SpawnOptions = {
+    const restoreOptions: childProcess.SpawnOptions & { env: NodeJS.ProcessEnv } = {
       env: {...env},
       shell: true,
       stdio: ['pipe', 'pipe', 2],
@@ -97,8 +101,8 @@ export default class Push extends Command {
     const {app, 'exclude-table-data': excludeTableData} = flags
 
     const exclusions = parseExclusions(excludeTableData)
-    const source = utils.pg.DatabaseResolver.parsePostgresConnectionString(args.source)
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const source = pgUtils.DatabaseResolver.parsePostgresConnectionString(args.source)
+    const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
     const target = await dbResolver.getDatabase(app, args.target)
 
     ux.stdout(`Pushing ${color.cyan(args.source)} to ${color.addon(target.attachment!.addon.name)}`)

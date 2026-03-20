@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import destroyAddon from '../../../lib/addons/destroy_addon.js'
@@ -30,7 +31,7 @@ export default class DataPgDestroy extends BaseCommand {
     const {database: databaseName} = args
     const force = flags.force || process.env.HEROKU_FORCE === '1'
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(databaseName, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(databaseName, app, utils.getAddonService())
 
     // prevent deletion of add-on when context.app is set but the addon is
     // attached to a different app

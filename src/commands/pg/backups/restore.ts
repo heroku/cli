@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -10,19 +11,6 @@ import backupsFactory from '../../../lib/pg/backups.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
-
-function dropboxURL(url: string) {
-  if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
-    if (url.endsWith('dl=0'))
-      url = url.replace('dl=0', 'dl=1')
-    else if (url.includes('?'))
-      url += '&dl=1'
-    else
-      url += '?dl=1'
-  }
-
-  return url
-}
 
 export default class Restore extends Command {
   static args = {
@@ -85,7 +73,7 @@ export default class Restore extends Command {
     const {args, flags} = await this.parse(Restore)
     const {app, confirm, extensions, verbose, 'wait-interval': waitInterval} = flags
     const interval = Math.max(3, waitInterval)
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app as string, args.database)
     const pgbackups = backupsFactory(app, this.heroku)
     let backupURL
@@ -101,7 +89,7 @@ export default class Restore extends Command {
         backupApp = app
       }
 
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${backupApp}/transfers`, {hostname: utils.pg.host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${backupApp}/transfers`, {hostname: pg.getHost()})
       const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
 
       let backup
@@ -142,7 +130,7 @@ export default class Restore extends Command {
     `))
 
     const {body: restore} = await this.heroku.post<{uuid: string}>(`/client/v11/databases/${db.id}/restores`, {
-      body: {backup_url: backupURL, extensions: this.getSortedExtensions(extensions as string)}, hostname: utils.pg.host(),
+      body: {backup_url: backupURL, extensions: this.getSortedExtensions(extensions as string)}, hostname: pg.getHost(),
     })
 
     ux.action.stop()
@@ -150,3 +138,15 @@ export default class Restore extends Command {
   }
 }
 
+function dropboxURL(url: string) {
+  if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
+    if (url.endsWith('dl=0'))
+      url = url.replace('dl=0', 'dl=1')
+    else if (url.includes('?'))
+      url += '&dl=1'
+    else
+      url += '?dl=1'
+  }
+
+  return url
+}

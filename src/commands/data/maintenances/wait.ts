@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
@@ -26,9 +27,9 @@ export default class DataMaintenancesWait extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWait)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app, utils.getAddonService())
 
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
+    const isEssentialTier = utils.isEssentialDatabase(addon) || utils.isLegacyEssentialDatabase(addon)
     if (isEssentialTier) {
       this.error('You can\'t await maintenance on an Essential tier database.')
     }

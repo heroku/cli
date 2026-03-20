@@ -1,5 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -32,16 +34,16 @@ export default class Upgrade extends Command {
     const {app, confirm, version} = flags
     const {database} = args
 
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isLegacyEssentialDatabase(db))
+    if (utils.isLegacyEssentialDatabase(db))
       ux.error(`You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
-    if (utils.pg.isEssentialDatabase(db))
+    if (utils.isEssentialDatabase(db))
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
-    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
+    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgUtils.getHost()})
 
     if (replica.following)
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
@@ -54,7 +56,7 @@ export default class Upgrade extends Command {
     try {
       const data = {version}
       ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/prepare`, {hostname: utils.pg.host(), body: data})
+      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/prepare`, {body: data, hostname: pgUtils.getHost()})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
       const response = error as PgUpgradeError

@@ -3,7 +3,9 @@ import Cmd from '../../../../src/commands/pg/push.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import tsheredoc from 'tsheredoc'
-import {pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
+import * as pushPull from '../../../../src/lib/pg/push_pull.js'
 import sinon = require('sinon')
 import childProcess from 'node:child_process'
 
@@ -39,9 +41,9 @@ describe('pg:push', function () {
       user: 'jeff',
     } as pg.ConnectionDetails
 
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
-    sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+    sinon.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    sinon.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
+    sinon.stub(pushPull.psqlHelpers, 'sshTunnel').resolves()
 
     sinon.stub(Math, 'random').callsFake(() => 0)
     spawnStub = sinon.stub(childProcess, 'spawn')

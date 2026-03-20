@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 import {URL} from 'url'
@@ -45,9 +46,9 @@ export default class Url extends BaseCommand {
     const {database} = args
 
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const isAdvancedTier = utils.pg.isAdvancedDatabase(addon)
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
+    const addon = await addonResolver.resolve(database, app, utils.getAddonService())
+    const isAdvancedTier = utils.isAdvancedDatabase(addon)
+    const isEssentialTier = utils.isEssentialDatabase(addon) || utils.isLegacyEssentialDatabase(addon)
 
     if (isEssentialTier && name && name !== 'default') {
       ux.error('Essential-tier databases don\'t support named credentials.', {exit: 1})

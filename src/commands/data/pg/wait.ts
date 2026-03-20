@@ -1,6 +1,9 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {flags as Flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -48,11 +51,11 @@ export default class DataPgWait extends BaseCommand {
     const {args, flags} = await this.parse(DataPgWait)
     const {database} = args
     const {app, 'no-notify': noNotify, 'wait-interval': waitInterval} = flags
-    const databaseResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const databaseResolver = new utils.DatabaseResolver(this.heroku)
     const db = await databaseResolver.getAttachment(app, database)
     const {addon} = db
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!utils.isAdvancedDatabase(addon)) {
       ux.error(heredoc`
         You can only use this command on Advanced-tier databases.
         Run ${color.code(`heroku pg:wait ${addon.name} -a ${app}`)} instead.`)

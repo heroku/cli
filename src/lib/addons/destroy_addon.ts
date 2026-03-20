@@ -1,6 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {ux} from '@oclif/core'
 
 import {waitForAddonDeprovisioning} from './addons_wait.js'
@@ -17,7 +18,7 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
     }).catch(error => {
       const errorMessage = error.body?.message || error
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (utils.pg.isAdvancedDatabase(addon as any)) {
+      if (utils.isAdvancedDatabase(addon as any)) {
         throw new Error(`We can't destroy your database due to an error: ${errorMessage}. Try again or open a ticket with Heroku Support: https://help.heroku.com/`)
       } else {
         throw new Error(`The add-on was unable to be destroyed: ${errorMessage}.`)
@@ -47,7 +48,7 @@ export default async function (heroku: APIClient, addon: Heroku.AddOn, force = f
     }
   } else if (addonResponse.state !== 'deprovisioned') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (utils.pg.isAdvancedDatabase(addonResponse as any)) {
+    if (utils.isAdvancedDatabase(addonResponse as any)) {
       throw new Error(`You can't destroy a database with a ${addonResponse.state} status.`)
     } else {
       throw new Error(`The add-on was unable to be destroyed, with status ${addonResponse.state}.`)

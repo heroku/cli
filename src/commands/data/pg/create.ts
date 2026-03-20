@@ -1,6 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
@@ -16,7 +17,7 @@ import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
 // eslint-disable-next-line import/no-named-as-default-member
-const {Separator, prompt} = inquirer
+const {prompt, Separator} = inquirer
 
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
@@ -73,7 +74,7 @@ export default class DataPgCreate extends BaseCommand {
     const {flags} = await this.parse(DataPgCreate)
     const {app, as, confirm, name, network, 'provision-option': provisionOpts, version, wait} = flags
     const {followers, 'high-availability': highAvailability, level} = flags
-    const service = utils.pg.addonService()
+    const service = utils.getAddonService()
 
     const plan = `advanced${network ? `-${network}` : ''}`
     const servicePlan = `${service}:${plan}`

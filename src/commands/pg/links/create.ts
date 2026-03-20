@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 
 import type {Link} from '../../../lib/pg/types.js'
@@ -41,7 +42,7 @@ export default class Create extends Command {
       return addon
     }
 
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const [{addon: db}, target] = await Promise.all([
       dbResolver.getAttachment(app, args.database),
       service(args.remote),
@@ -58,7 +59,7 @@ export default class Create extends Command {
         as: flags.as,
         target: target.name,
       },
-      hostname: utils.pg.host(),
+      hostname: pg.getHost(),
     })
 
     // This doesn't exist according to Shogun's link serializer. May it be that the original idea was to use to catch

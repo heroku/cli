@@ -1,37 +1,12 @@
 
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 
 import pgBackupsApi from '../../../lib/pg/backups.js'
-
-function status(backup: BackupTransfer) {
-  if (backup.succeeded) {
-    if (backup.warnings > 0)
-      return `Finished with ${backup.warnings} warnings`
-    return 'Completed'
-  }
-
-  if (backup.canceled_at)
-    return 'Canceled'
-  if (backup.finished_at)
-    return 'Failed'
-  if (backup.started_at)
-    return 'Running'
-  return 'Pending'
-}
-
-function compression(compressed: number, total: number) {
-  let pct = 0
-  if (compressed > 0) {
-    pct = Math.round((total - compressed) / total * 100)
-    pct = Math.max(0, pct)
-  }
-
-  return ` (${pct}% compression)`
-}
 
 export default class Info extends Command {
   static args = {
@@ -77,7 +52,7 @@ export default class Info extends Command {
       if (!backupID)
         throw new Error(`Invalid ID: ${id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pg.getHost()})
       transfers.sort((a, b) => a.created_at.localeCompare(b.created_at))
       const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
       const lastBackup = backups.pop()
@@ -86,7 +61,7 @@ export default class Info extends Command {
       backupID = lastBackup.num
     }
 
-    const {body: backup} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, {hostname: utils.pg.host()})
+    const {body: backup} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, {hostname: pg.getHost()})
     return backup
   }
 
@@ -101,3 +76,28 @@ export default class Info extends Command {
   }
 }
 
+function compression(compressed: number, total: number) {
+  let pct = 0
+  if (compressed > 0) {
+    pct = Math.round((total - compressed) / total * 100)
+    pct = Math.max(0, pct)
+  }
+
+  return ` (${pct}% compression)`
+}
+
+function status(backup: BackupTransfer) {
+  if (backup.succeeded) {
+    if (backup.warnings > 0)
+      return `Finished with ${backup.warnings} warnings`
+    return 'Completed'
+  }
+
+  if (backup.canceled_at)
+    return 'Canceled'
+  if (backup.finished_at)
+    return 'Failed'
+  if (backup.started_at)
+    return 'Running'
+  return 'Pending'
+}

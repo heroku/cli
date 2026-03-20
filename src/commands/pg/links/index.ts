@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args} from '@oclif/core'
 
 import type {Link} from '../../../lib/pg/types.js'
@@ -23,22 +24,22 @@ export default class Index extends Command {
     const {args, flags} = await this.parse(Index)
     const {app} = flags
     const {database} = args
-    type all = typeof utils.pg.DatabaseResolver.prototype.getAllLegacyDatabases
+    type all = typeof pg.DatabaseResolver.prototype.getAllLegacyDatabases
 
     let dbs: Array<(Awaited<ReturnType<all>>)[number] & {links?: Link[]}>
     if (database) {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const dbResolver = new pg.DatabaseResolver(this.heroku)
       const {addon} = await dbResolver.getAttachment(app, database)
       dbs = [addon]
     } else {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const dbResolver = new pg.DatabaseResolver(this.heroku)
       dbs = await dbResolver.getAllLegacyDatabases(app)
     }
 
     if (dbs.length === 0)
       throw new Error(`No databases on ${color.app(app)}`)
     dbs = await Promise.all(dbs.map(async db => {
-      const {body: links} = await this.heroku.get<Link[]>(`/client/v11/databases/${db.id}/links`, {hostname: utils.pg.host()})
+      const {body: links} = await this.heroku.get<Link[]>(`/client/v11/databases/${db.id}/links`, {hostname: pg.getHost()})
       db.links = links
       return db
     }))

@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
@@ -57,6 +58,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
       return
     }
 
+    /* eslint-disable perfectionist/sort-objects */
     const allTableColumns = {
       scheduled_for: {
         get: (row: Maintenance) => row && row.scheduled_for ? row.scheduled_for : '-',
@@ -85,6 +87,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
         header: 'Window',
       },
     }
+    /* eslint-enable perfectionist/sort-objects */
 
     const tableColumns = constructTableColumns(allTableColumns, Object.keys(allTableColumns), false, flags.columns)
 

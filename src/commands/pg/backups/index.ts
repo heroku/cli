@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {ux} from '@oclif/core'
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
@@ -25,7 +26,7 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags: {app}} = await this.parse(Index)
 
-    const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+    const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pg.getHost()})
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))
 
@@ -109,20 +110,20 @@ export default class Index extends Command {
       ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
       hux.table(restores, {
+        Database: {
+          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
+        },
         ID: {
           get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
+        },
+        Size: {
+          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         'Started at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
         },
         Status: {
           get: (transfer: BackupTransfer) => pgbackups.status(transfer),
-        },
-        Size: {
-          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
-        },
-        Database: {
-          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
         },
       })
     }

@@ -1,4 +1,5 @@
-import {pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {CLIError} from '@oclif/core/errors'
 import {expect} from 'chai'
 import sinon from 'sinon'
@@ -21,10 +22,10 @@ describe('data:pg:psql', function () {
 
   describe('non-advanced tiers', function () {
     beforeEach(function () {
-      sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-      psqlServiceExecQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
-      psqlServiceExecFileStub = sinon.stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
-      psqlServiceInteractiveStub = sinon.stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
+      sinon.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+      psqlServiceExecQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves('')
+      psqlServiceExecFileStub = sinon.stub(pgUtils.PsqlService.prototype, 'execFile').resolves('')
+      psqlServiceInteractiveStub = sinon.stub(pgUtils.PsqlService.prototype, 'interactiveSession').resolves('')
     })
 
     const db = {
@@ -134,10 +135,10 @@ describe('data:pg:psql', function () {
 
   describe('advanced tier (publicly networked)', function () {
     beforeEach(function () {
-      sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-      psqlServiceExecQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
-      psqlServiceExecFileStub = sinon.stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
-      psqlServiceInteractiveStub = sinon.stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
+      sinon.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+      psqlServiceExecQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves('')
+      psqlServiceExecFileStub = sinon.stub(pgUtils.PsqlService.prototype, 'execFile').resolves('')
+      psqlServiceInteractiveStub = sinon.stub(pgUtils.PsqlService.prototype, 'interactiveSession').resolves('')
     })
 
     const db = {
@@ -238,10 +239,10 @@ describe('data:pg:psql', function () {
 
   describe('advanced tier (privately networked)', function () {
     beforeEach(function () {
-      sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-      psqlServiceExecQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
-      psqlServiceExecFileStub = sinon.stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
-      psqlServiceInteractiveStub = sinon.stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
+      sinon.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+      psqlServiceExecQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves('')
+      psqlServiceExecFileStub = sinon.stub(pgUtils.PsqlService.prototype, 'execFile').resolves('')
+      psqlServiceInteractiveStub = sinon.stub(pgUtils.PsqlService.prototype, 'interactiveSession').resolves('')
       runThroughOneOffDynoSpy = sinon.stub(DataPgPsql.prototype, 'runThroughOneOffDyno').resolves()
     })
 

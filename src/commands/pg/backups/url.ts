@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 
 import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
@@ -31,7 +32,7 @@ export default class Url extends Command {
       if (!num)
         throw new Error(`Invalid Backup: ${backup_id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pg.getHost()})
       const succeededBackups = transfers.filter(t => t.succeeded && t.to_type === 'gof3r')
       succeededBackups.sort((a, b) => a.created_at.localeCompare(b.created_at))
       const lastBackup = succeededBackups.pop()
@@ -40,8 +41,7 @@ export default class Url extends Command {
       num = lastBackup.num
     }
 
-    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: utils.pg.host()})
+    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: pg.getHost()})
     ux.stdout(info.url + '\n')
   }
 }
-

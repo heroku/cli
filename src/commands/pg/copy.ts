@@ -1,6 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
@@ -10,10 +11,10 @@ import ConfirmCommand from '../../lib/confirmCommand.js'
 import backupsFactory from '../../lib/pg/backups.js'
 
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
-  const dbResolver = new utils.pg.DatabaseResolver(heroku)
+  const dbResolver = new pg.DatabaseResolver(heroku)
 
   if (db.match(/^postgres:\/\//)) {
-    const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(db)
+    const conn = pg.DatabaseResolver.parsePostgresConnectionString(db)
     const host = `${conn.host}:${conn.port}`
     return {
       confirm: conn.database || conn.host,
@@ -82,7 +83,7 @@ export default class Copy extends Command {
       body: {
         from_name: source.name, from_url: source.url, to_name: target.name, to_url: target.url,
       },
-      hostname: utils.pg.host(),
+      hostname: pg.getHost(),
     })
     ux.action.stop()
 
@@ -93,7 +94,7 @@ export default class Copy extends Command {
           headers: {
             Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
           },
-          hostname: utils.pg.host(),
+          hostname: pg.getHost(),
         })
       if (credentials.length > 1) {
         ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')

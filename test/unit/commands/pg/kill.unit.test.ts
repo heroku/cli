@@ -3,7 +3,8 @@ import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/pg/kill.js'
 import * as sinon from 'sinon'
-import {pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 
 describe('pg:kill', function () {
   let sandbox: sinon.SinonSandbox
@@ -22,8 +23,8 @@ describe('pg:kill', function () {
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
-    getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
-    execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
+    getDatabaseStub = sandbox.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
+    execQueryStub = sandbox.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves('')
   })
 
   afterEach(function () {

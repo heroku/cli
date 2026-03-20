@@ -5,7 +5,8 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as proxyquire from 'proxyquire'
 import {stderr} from 'stdout-stderr'
-import {ConnectionDetails, ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
+import {ConnectionDetails, ConnectionDetailsWithAttachment} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 import sinon = require('sinon')
 import * as tmp from 'tmp'
@@ -70,7 +71,7 @@ describe('psql', function () {
         },
         psql: {
           getPsqlConfigs: sinon.stub().callsFake((db: ConnectionDetails) => {
-            return utils.pg.psql.getPsqlConfigs(db)
+            return pg.psql.getPsqlConfigs(db)
           }),
         },
       },

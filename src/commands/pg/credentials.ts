@@ -1,6 +1,7 @@
-import {hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {hux} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
@@ -29,7 +30,7 @@ export default class Credentials extends Command {
     const {args, flags} = await this.parse(Credentials)
     const {app} = flags
     const {database} = args
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const {addon} = await dbResolver.getAttachment(app, database)
 
     const {body: credentials} = await this.heroku.get<NonAdvancedCredentialInfo[]>(
@@ -38,7 +39,7 @@ export default class Credentials extends Command {
         headers: {
           Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
         },
-        hostname: utils.pg.host(),
+        hostname: pg.getHost(),
       },
     )
     const sortedCredentials = this.sortByDefaultAndName(credentials)

@@ -1,6 +1,7 @@
 import type {pg} from '@heroku/heroku-cli-util'
 
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 import childProcess, {ChildProcess, SpawnSyncReturns} from 'node:child_process'
@@ -9,6 +10,14 @@ import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 const debug = debugFactory('pg:push-pull')
+
+// Helper class for psql utilities to enable stubbing in tests
+export class PsqlHelpers {
+  getPsqlConfigs = pgUtils.getPsqlConfigs
+  sshTunnel = pgUtils.sshTunnel
+}
+
+export const psqlHelpers = new PsqlHelpers()
 
 export const parseExclusions = (rawExcludeList: string | undefined): Array<string> => (
   (rawExcludeList || '')
@@ -19,7 +28,7 @@ export const parseExclusions = (rawExcludeList: string | undefined): Array<strin
 type ExecFn = typeof exec
 
 export const prepare = async (target: pg.ConnectionDetails, execFn: ExecFn = exec): Promise<void> => {
-  const psqlService = new utils.pg.PsqlService(target)
+  const psqlService = new pgUtils.PsqlService(target)
   if (target.host === 'localhost' || !target.host) {
     execFn(`createdb ${connArgs(target, true).join(' ')}`)
   } else {
@@ -38,8 +47,8 @@ export const maybeTunnel = async (
   herokuDb: pg.ConnectionDetails,
 ): Promise<pg.ConnectionDetails> => {
   let withTunnel: pg.ConnectionDetails = {...herokuDb}
-  const configs = utils.pg.psql.getPsqlConfigs(herokuDb)
-  const tunnel = await utils.pg.psql.sshTunnel(herokuDb, configs.dbTunnelConfig)
+  const configs = psqlHelpers.getPsqlConfigs(herokuDb)
+  const tunnel = await psqlHelpers.sshTunnel(herokuDb, configs.dbTunnelConfig)
 
   if (tunnel) {
     const tunnelHost = {
@@ -92,8 +101,8 @@ export const spawnPipe = async (pgDump: ChildProcess, pgRestore: ChildProcess): 
 )
 
 export const verifyExtensionsMatch = async function (source: pg.ConnectionDetails, target: pg.ConnectionDetails) {
-  const psqlSource = new utils.pg.PsqlService(source)
-  const psqlTarget = new utils.pg.PsqlService(target)
+  const psqlSource = new pgUtils.PsqlService(source)
+  const psqlTarget = new pgUtils.PsqlService(target)
   // It's pretty common for local DBs to not have extensions available that
   // are used by the remote app, so take the final precaution of warning if
   // the extensions available in the local database don't match. We don't

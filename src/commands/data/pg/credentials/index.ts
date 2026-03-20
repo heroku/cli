@@ -1,6 +1,7 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
@@ -34,12 +35,12 @@ export default class DataPgCredentialsIndex extends BaseCommand {
     const {database} = args
 
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(database, app, utils.getAddonService())
     const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(
       `/addons/${addon.id}/addon-attachments`,
     )
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!utils.isAdvancedDatabase(addon)) {
       const appAttachment = attachments.find(a => a.app.name === app)
       const suggestedDatabase = appAttachment?.name || database
       ux.error(

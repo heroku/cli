@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
@@ -7,17 +8,6 @@ import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
 
 import pgBackupsApi from '../../../lib/pg/backups.js'
 import download from '../../../lib/pg/download.js'
-
-function defaultFilename() {
-  let f = 'latest.dump'
-  if (!fs.existsSync(f))
-    return f
-  let i = 1
-  do
-    f = `latest.dump.${i++}`
-  while (fs.existsSync(f))
-  return f
-}
 
 export default class Download extends Command {
   static args = {
@@ -46,7 +36,7 @@ export default class Download extends Command {
       if (!num)
         throw new Error(`Invalid Backup: ${backup_id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pg.getHost()})
       const lastBackup = transfers
         .filter(t => t.succeeded && t.to_type === 'gof3r')
         .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
@@ -56,9 +46,20 @@ export default class Download extends Command {
     }
 
     ux.action.status = `fetching url of #${num}`
-    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: utils.pg.host()})
+    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: pg.getHost()})
 
     ux.action.stop(`done, #${num}`)
     await download(info.url, output, {progress: true})
   }
+}
+
+function defaultFilename() {
+  let f = 'latest.dump'
+  if (!fs.existsSync(f))
+    return f
+  let i = 1
+  do
+    f = `latest.dump.${i++}`
+  while (fs.existsSync(f))
+  return f
 }

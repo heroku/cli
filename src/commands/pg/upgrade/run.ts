@@ -1,6 +1,8 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -55,15 +57,15 @@ export default class Upgrade extends Command {
     const {app, confirm, version} = flags
     const {database} = args
 
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isLegacyEssentialDatabase(db))
+    if (utils.isLegacyEssentialDatabase(db))
       ux.error(`You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
-    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
+    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pgUtils.getHost()})
 
-    if (utils.pg.isEssentialDatabase(db)) {
+    if (utils.isEssentialDatabase(db)) {
       await new ConfirmCommand().confirm(app, confirm, heredoc(`
         Destructive action
         You're upgrading ${color.addon(db.name)} to ${versionPhrase}.
@@ -92,7 +94,7 @@ export default class Upgrade extends Command {
     try {
       const data = {version}
       ux.action.start(`Starting upgrade on ${color.datastore(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {hostname: utils.pg.host(), body: data})
+      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {body: data, hostname: pgUtils.getHost()})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
       if (error instanceof Error && 'body' in error) {
