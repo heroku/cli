@@ -1,6 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -31,12 +32,12 @@ export default class Capture extends Command {
     const {database} = args
 
     const interval = Math.max(3, Number.parseInt(waitInterval || '3', 10))
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     const pgBackupsApi = backupsApi(app, this.heroku)
 
     try {
-      const {body: dbInfo} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
+      const {body: dbInfo} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: pg.getHost()})
       const dbProtected = /On/.test(dbInfo.info.find(attribute => attribute.name === 'Continuous Protection')?.values[0] || '')
       if (dbProtected) {
         ux.warn('Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
@@ -56,7 +57,7 @@ export default class Capture extends Command {
     }
 
     ux.action.start(`Starting backup of ${color.datastore(db.name)}`)
-    const {body: backup} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${db.id}/backups`, {hostname: utils.pg.host()})
+    const {body: backup} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${db.id}/backups`, {hostname: pg.getHost()})
     ux.action.stop()
     ux.stdout(heredoc`
 

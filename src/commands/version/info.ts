@@ -1,6 +1,8 @@
-import {color} from '@heroku/heroku-cli-util'
-import {Args, Command, ux} from '@oclif/core'
-import {type MarkedExtension, marked} from 'marked'
+import * as color from '@heroku/heroku-cli-util/color'
+import {Args} from '@oclif/core'
+import {Command} from '@oclif/core/command'
+import {ux} from '@oclif/core/ux'
+import {marked, type MarkedExtension} from 'marked'
 import {markedTerminal} from 'marked-terminal'
 
 import {ChangelogParser} from '../../lib/changelog-parser.js'

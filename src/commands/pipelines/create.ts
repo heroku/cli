@@ -1,15 +1,15 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import inquirer, {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
 import {
-  Owner,
   createCoupling,
   createPipeline,
   getAccountInfo,
   getTeam,
+  Owner,
 } from '../../lib/api.js'
 import {getGenerationByAppId} from '../../lib/apps/generation.js'
 import infer from '../../lib/pipelines/infer.js'

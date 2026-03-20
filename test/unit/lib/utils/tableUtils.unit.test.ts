@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import sinon from 'sinon'
 

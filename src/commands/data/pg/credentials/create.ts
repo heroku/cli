@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -32,8 +33,8 @@ export default class DataPgCredentialsCreate extends BaseCommand {
     const {app, name} = flags
     const {database} = args
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
+    const addon = await addonResolver.resolve(database, app, utils.getAddonService())
+    const isEssentialTier = utils.isEssentialDatabase(addon) || utils.isLegacyEssentialDatabase(addon)
 
     if (isEssentialTier) {
       ux.error('You can\'t create custom credentials on Essential-tier databases.')
@@ -43,7 +44,7 @@ export default class DataPgCredentialsCreate extends BaseCommand {
     let attachCmd = ''
     try {
       ux.action.start(`Creating credential ${color.cyan.bold(name)}`)
-      if (utils.pg.isAdvancedDatabase(addon)) {
+      if (utils.isAdvancedDatabase(addon)) {
         await this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials`, {body: data})
         attachCmd = `heroku data:pg:attachments:create ${addon.name} --credential ${name} -a ${app}`
       } else {

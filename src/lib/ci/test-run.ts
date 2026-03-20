@@ -1,11 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import ansiEscapes from 'ansi-escapes'
 import debug from 'debug'
 import * as http from 'http'
-import {RequestOptions, get} from 'https'
+import {get, RequestOptions} from 'https'
 import {randomUUID} from 'node:crypto'
 import {Socket} from 'phoenix'
 import {inspect} from 'util'
@@ -16,23 +17,6 @@ const HEROKU_CI_WEBSOCKET_URL = process.env.HEROKU_CI_WEBSOCKET_URL || 'wss://pa
 
 function logStream(url: RequestOptions | string, fn: (res: http.IncomingMessage) => void) {
   return get(url, fn)
-}
-
-function stream(url: string) {
-  return new Promise<void>((resolve, reject) => {
-    const request = logStream(url, output => {
-      output.on('data', data => {
-        if (data.toString() === Buffer.from('').toString()) {
-          request.abort()
-          resolve()
-        }
-      })
-
-      output.on('end', () => resolve())
-      output.on('error', e => reject(e))
-      output.pipe(process.stdout)
-    })
-  })
 }
 
 function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
@@ -71,6 +55,23 @@ function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   }
 }
 
+function stream(url: string) {
+  return new Promise<void>((resolve, reject) => {
+    const request = logStream(url, output => {
+      output.on('data', data => {
+        if (data.toString() === Buffer.from('').toString()) {
+          request.abort()
+          resolve()
+        }
+      })
+
+      output.on('end', () => resolve())
+      output.on('error', e => reject(e))
+      output.pipe(process.stdout)
+    })
+  })
+}
+
 const BUILDING = 'building'
 const RUNNING = 'running'
 const ERRORED = 'errored'
@@ -82,80 +83,39 @@ const TERMINAL_STATES = [SUCCEEDED, FAILED, ERRORED, CANCELLED]
 const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
 const BUILDING_STATES = [BUILDING, RUNNING].concat(TERMINAL_STATES)
 
-function printLine(testRun: Heroku.TestRun) {
-  return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha!.slice(0, 7)} ${testRun.status}`
+export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
+  const testNode = await display(pipeline, number, command)
+
+  testNode ? processExitCode(command, testNode) : ux.exit(1)
 }
 
-function printLineTestNode(testNode: Heroku.TestNode) {
-  return `${statusIcon(testNode)} #${testNode.index} ${testNode.status}`
-}
+export async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined) {
+  let testNode: Heroku.TestNode
 
-function processExitCode(command: Command, testNode: Heroku.TestNode) {
-  if (testNode.exit_code && testNode.exit_code !== 0) {
-    command.exit(testNode.exit_code)
-  }
-}
+  if (nodeArg) {
+    const nodeIndex = Number.parseInt(nodeArg, 2)
+    testNode = testNodes.length > 1 ? testNodes[nodeIndex] : testNodes[0]
 
-function handleTestRunEvent(newTestRun: Heroku.TestRun, testRuns: Heroku.TestRun[]) {
-  const previousTestRun = testRuns.find(({id}) => id === newTestRun.id)
+    await renderNodeOutput(command, testRun, testNode)
 
-  if (previousTestRun) {
-    const previousTestRunIndex = testRuns.indexOf(previousTestRun)
-    testRuns.splice(previousTestRunIndex, 1)
-  }
+    if (testNodes.length === 1) {
+      command.log()
+      command.warn('This pipeline doesn\'t have parallel test runs, but you specified a node')
+      command.warn('See https://devcenter.heroku.com/articles/heroku-ci-parallel-test-runs for more info')
+    }
 
-  testRuns.push(newTestRun)
-  return testRuns
-}
+    processExitCode(command, testNode)
+  } else if (testNodes.length > 1) {
+    command.log(printLine(testRun))
+    command.log()
 
-function sort(testRuns: Heroku.TestRun[]) {
-  return testRuns.sort((a: Heroku.TestRun, b: Heroku.TestRun) => a.number! < b.number! ? 1 : -1)
-}
-
-function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = false, count = 15) {
-  const latestTestRuns = sort(testRuns).slice(0, count)
-
-  if (jsonOption) {
-    hux.styledJSON(latestTestRuns)
-    return
-  }
-
-  if (watchOption) {
-    process.stdout.write(ansiEscapes.eraseDown)
-  }
-
-  const data: any = []
-
-  latestTestRuns.forEach(testRun => {
-    /* eslint-disable perfectionist/sort-objects */
-    data.push(
-      {
-        iconStatus: `${statusIcon(testRun)}`,
-        number: testRun.number,
-        branch: testRun.commit_branch,
-        sha: testRun.commit_sha!.slice(0, 7),
-        status: testRun.status,
-      },
-    )
-    /* eslint-enable perfectionist/sort-objects */
-  })
-  /* eslint-disable perfectionist/sort-objects */
-  hux.table(
-    data,
-    {
-      iconStatus: {
-        header: ' ', // header '' is to make sure that width is 1 character
-      },
-      number: {
-        header: ' ', // header '' is to make sure that width is 1 character
-      },
-      branch: {},
-      sha: {},
-      status: {},
+    testNodes.forEach(testNode => {
+      command.log(printLineTestNode(testNode))
     })
-  /* eslint-enable perfectionist/sort-objects */
-  if (watchOption) {
-    process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
+  } else {
+    testNode = testNodes[0]
+    await renderNodeOutput(command, testRun, testNode)
+    processExitCode(command, testNode)
   }
 }
 
@@ -196,18 +156,6 @@ export async function renderList(command: Command, testRuns: Heroku.TestRun[], p
   })
   // eslint-disable-next-line unicorn/require-array-join-separator
   channel.join()
-}
-
-async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
-  if (!testNode) {
-    command.error(`Test run ${testRun.number} was ${testRun.status}. No Heroku CI runs found for this pipeline.`)
-  }
-
-  await stream(testNode.setup_stream_url!)
-  await stream(testNode.output_stream_url!)
-
-  command.log()
-  command.log(printLine(testRun))
 }
 
 export async function waitForStates(states: string[], testRun: Heroku.TestRun, command: Command) {
@@ -261,38 +209,91 @@ async function display(pipeline: Heroku.Pipeline, number: number, command: Comma
   }
 }
 
-export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
-  const testNode = await display(pipeline, number, command)
+function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = false, count = 15) {
+  const latestTestRuns = sort(testRuns).slice(0, count)
 
-  testNode ? processExitCode(command, testNode) : ux.exit(1)
+  if (jsonOption) {
+    hux.styledJSON(latestTestRuns)
+    return
+  }
+
+  if (watchOption) {
+    process.stdout.write(ansiEscapes.eraseDown)
+  }
+
+  const data: any = []
+
+  latestTestRuns.forEach(testRun => {
+    /* eslint-disable perfectionist/sort-objects */
+    data.push(
+      {
+        iconStatus: `${statusIcon(testRun)}`,
+        number: testRun.number,
+        branch: testRun.commit_branch,
+        sha: testRun.commit_sha!.slice(0, 7),
+        status: testRun.status,
+      },
+    )
+    /* eslint-enable perfectionist/sort-objects */
+  })
+  /* eslint-disable perfectionist/sort-objects */
+  hux.table(
+    data,
+    {
+      iconStatus: {
+        header: ' ', // header '' is to make sure that width is 1 character
+      },
+      number: {
+        header: ' ', // header '' is to make sure that width is 1 character
+      },
+      branch: {},
+      sha: {},
+      status: {},
+    })
+  /* eslint-enable perfectionist/sort-objects */
+  if (watchOption) {
+    process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))
+  }
 }
 
-export async function displayTestRunInfo(command: Command, testRun: Heroku.TestRun, testNodes: Heroku.TestNode[], nodeArg: string | undefined) {
-  let testNode: Heroku.TestNode
+function handleTestRunEvent(newTestRun: Heroku.TestRun, testRuns: Heroku.TestRun[]) {
+  const previousTestRun = testRuns.find(({id}) => id === newTestRun.id)
 
-  if (nodeArg) {
-    const nodeIndex = Number.parseInt(nodeArg, 2)
-    testNode = testNodes.length > 1 ? testNodes[nodeIndex] : testNodes[0]
-
-    await renderNodeOutput(command, testRun, testNode)
-
-    if (testNodes.length === 1) {
-      command.log()
-      command.warn('This pipeline doesn\'t have parallel test runs, but you specified a node')
-      command.warn('See https://devcenter.heroku.com/articles/heroku-ci-parallel-test-runs for more info')
-    }
-
-    processExitCode(command, testNode)
-  } else if (testNodes.length > 1) {
-    command.log(printLine(testRun))
-    command.log()
-
-    testNodes.forEach(testNode => {
-      command.log(printLineTestNode(testNode))
-    })
-  } else {
-    testNode = testNodes[0]
-    await renderNodeOutput(command, testRun, testNode)
-    processExitCode(command, testNode)
+  if (previousTestRun) {
+    const previousTestRunIndex = testRuns.indexOf(previousTestRun)
+    testRuns.splice(previousTestRunIndex, 1)
   }
+
+  testRuns.push(newTestRun)
+  return testRuns
+}
+
+function printLine(testRun: Heroku.TestRun) {
+  return `${statusIcon(testRun)} #${testRun.number} ${testRun.commit_branch}:${testRun.commit_sha!.slice(0, 7)} ${testRun.status}`
+}
+
+function printLineTestNode(testNode: Heroku.TestNode) {
+  return `${statusIcon(testNode)} #${testNode.index} ${testNode.status}`
+}
+
+function processExitCode(command: Command, testNode: Heroku.TestNode) {
+  if (testNode.exit_code && testNode.exit_code !== 0) {
+    command.exit(testNode.exit_code)
+  }
+}
+
+async function renderNodeOutput(command: Command, testRun: Heroku.TestRun, testNode: Heroku.TestNode) {
+  if (!testNode) {
+    command.error(`Test run ${testRun.number} was ${testRun.status}. No Heroku CI runs found for this pipeline.`)
+  }
+
+  await stream(testNode.setup_stream_url!)
+  await stream(testNode.output_stream_url!)
+
+  command.log()
+  command.log(printLine(testRun))
+}
+
+function sort(testRuns: Heroku.TestRun[]) {
+  return testRuns.sort((a: Heroku.TestRun, b: Heroku.TestRun) => a.number! < b.number! ? 1 : -1)
 }

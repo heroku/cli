@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -67,9 +68,9 @@ export default class DataPgSettings extends BaseCommand {
     const settings: string = set?.map((setting: string) => setting.trim()).join(',')
 
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const database = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())
+    const database = await addonResolver.resolve(databaseArg, app, utils.getAddonService())
 
-    if (!utils.pg.isAdvancedDatabase(database)) {
+    if (!utils.isAdvancedDatabase(database)) {
       ux.error(heredoc(`
         You can only use this command to configure settings on Advanced-tier databases.
         See https://devcenter.heroku.com/articles/heroku-postgres-settings to configure settings on non-Advanced-tier databases.

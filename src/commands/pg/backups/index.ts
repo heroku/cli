@@ -1,6 +1,7 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
+import {ux} from '@oclif/core/ux'
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 
@@ -25,7 +26,7 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags: {app}} = await this.parse(Index)
 
-    const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+    const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: pg.getHost()})
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))
 
@@ -108,6 +109,7 @@ export default class Index extends Command {
     if (restores.length === 0) {
       ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(restores, {
         ID: {
           get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
@@ -125,6 +127,7 @@ export default class Index extends Command {
           get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
         },
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
 
     ux.stdout()

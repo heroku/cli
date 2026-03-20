@@ -1,5 +1,5 @@
 import ansis from 'ansis'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout, stderr} from 'stdout-stderr'

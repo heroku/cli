@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/baseCommand.js'
@@ -29,7 +30,7 @@ export default class DataMaintenancesWindow extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWindow)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app, utils.getAddonService())
 
     ux.action.start(`Fetching maintenance window for ${color.addon(addon.name!)}`)
     const {body: window} = await this.dataApi.get<Window>(

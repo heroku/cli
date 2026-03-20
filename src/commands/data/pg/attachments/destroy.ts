@@ -1,6 +1,7 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/baseCommand.js'
@@ -29,9 +30,9 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
       `/apps/${app}/addon-attachments/${attachmentName}`,
     )
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(attachment.addon.name, undefined, utils.pg.addonService())
+    const addon = await addonResolver.resolve(attachment.addon.name, undefined, utils.getAddonService())
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!utils.isAdvancedDatabase(addon)) {
       ux.error(
         'You can only use this command on Advanced-tier databases.\n'
           + `Use ${color.code(`heroku addons:detach ${attachmentName} -a ${app}`)} instead.`,

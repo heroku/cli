@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/prefer-add-event-listener */
 import {APIClient} from '@heroku-cli/command'
-import {Config, Errors} from '@oclif/core'
+import {Config} from '@oclif/core/config'
+import * as Errors from '@oclif/core/errors'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'

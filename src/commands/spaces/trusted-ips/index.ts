@@ -1,14 +1,16 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {hux} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
 export default class Index extends Command {
-  static topic = 'spaces'
-  static hiddenAliases = ['trusted-ips']
+  static args = {
+    space: Args.string({hidden: true}),
+  }
+
   static description = heredoc(`
   list trusted IP ranges for a space
   Trusted IP ranges are only available on Private Spaces.
@@ -19,16 +21,16 @@ export default class Index extends Command {
   `)
 
   static flags = {
-    space: flags.string({char: 's', description: 'space to get inbound rules from'}),
     json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space to get inbound rules from'}),
   }
 
-  static args = {
-    space: Args.string({hidden: true}),
-  }
+  static hiddenAliases = ['trusted-ips']
+
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Index)
+    const {args, flags} = await this.parse(Index)
     const space = flags.space || args.space
     if (!space) {
       throw new Error('Space name required.\nUSAGE: heroku trusted-ips my-space')

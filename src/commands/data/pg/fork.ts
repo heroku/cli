@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import * as chrono from 'chrono-node'
 import tsheredoc from 'tsheredoc'
@@ -111,7 +112,7 @@ export default class Fork extends BaseCommand {
     }
 
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(database, app, utils.getAddonService())
 
     const renderLegacyCommand = (): string => `heroku addons:create ${addon.plan.name}`
         + ` -a ${app}`
@@ -122,7 +123,7 @@ export default class Fork extends BaseCommand {
         + `${rollbackTo ? ` --to '${rollbackTo}'` : ''}`
         + `${rollbackBy ? ` --by '${rollbackBy}'` : ''}`
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!utils.isAdvancedDatabase(addon)) {
       ux.error(
         'You can only use this command on Advanced-tier databases.\n'
           + `Use ${color.code(renderLegacyCommand())} instead.`,

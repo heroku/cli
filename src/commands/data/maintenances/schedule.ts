@@ -1,6 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import {differenceInCalendarWeeks} from 'date-fns'
 
@@ -62,7 +63,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, week, weeks} = flags
 
-    const addon = await addonResolver.resolve(args.addon, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, app, utils.getAddonService())
 
     const delayWeeks = week === undefined
       ? weeks

@@ -1,5 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 import {URL} from 'url'
@@ -32,9 +34,9 @@ export default class Url extends Command {
     const {args, flags} = await this.parse(Url)
     const {app, name} = flags
     const {database} = args
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
-    if (utils.pg.isLegacyEssentialDatabase(db) && name !== 'default') {
+    if (utils.isLegacyEssentialDatabase(db) && name !== 'default') {
       ux.error('Legacy Essential-tier databases do not support named credentials.')
     }
 
@@ -44,7 +46,7 @@ export default class Url extends Command {
         headers: {
           Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
         },
-        hostname: utils.pg.host(),
+        hostname: pgUtils.getHost(),
       },
     )
     const activeCreds = credInfo.credentials.find(c => c.state === 'active')

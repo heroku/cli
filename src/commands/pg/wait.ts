@@ -1,10 +1,14 @@
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
-import {utils, pg, color} from '@heroku/heroku-cli-util'
+
 import notify from '../../lib/notify.js'
 import {PgStatus} from '../../lib/pg/types.js'
-import {HTTPError} from '@heroku/http-call'
 import {nls} from '../../nls.js'
 
 const wait = (ms: number) => new Promise(resolve => {
@@ -12,21 +16,22 @@ const wait = (ms: number) => new Promise(resolve => {
 })
 
 export default class Wait extends Command {
-  static topic = 'pg'
-  static description = 'blocks until database is available'
-  static flags = {
-    'wait-interval': flags.string({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
-    'no-notify': flags.boolean({description: 'do not show OS notification'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
   }
 
+  static description = 'blocks until database is available'
+  static flags = {
+    app: flags.app({required: true}),
+    'no-notify': flags.boolean({description: 'do not show OS notification'}),
+    remote: flags.remote(),
+    'wait-interval': flags.string({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
+  }
+
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Wait)
+    const {args, flags} = await this.parse(Wait)
     const {app, 'wait-interval': waitInterval} = flags
     const dbName = args.database
     const pgDebug = debug('pg')
@@ -43,14 +48,14 @@ export default class Wait extends Command {
         try {
           ({body: status} = await this.heroku.get<PgStatus>(
             `/client/v11/databases/${db.id}/wait_status`,
-            {hostname: utils.pg.host()},
+            {hostname: pgUtils.getHost()},
           ))
         } catch (error) {
           const httpError = error as HTTPError
           pgDebug(httpError)
           if (!retries || httpError.statusCode !== 404) throw httpError
           retries--
-          status = {'waiting?': true, message: notFoundMessage}
+          status = {message: notFoundMessage, 'waiting?': true}
         }
 
         if (status['error?']) {
@@ -79,11 +84,11 @@ export default class Wait extends Command {
 
     let dbs: pg.ExtendedAddonAttachment['addon'][]
     if (dbName) {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
       const {addon} = await dbResolver.getAttachment(app, dbName)
       dbs = [addon]
     } else {
-      const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+      const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
       dbs = await dbResolver.getAllLegacyDatabases(app)
     }
 

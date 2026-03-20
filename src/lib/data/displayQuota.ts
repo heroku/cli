@@ -50,12 +50,13 @@ export const formatQuotaStatus = (quota: Quota): string => {
  */
 export const displayQuota = (quota: Quota): void => {
   hux.styledHeader(hux.toTitleCase(quota.type) || '')
+  /* eslint-disable perfectionist/sort-objects */
   hux.styledObject({
     Warning: quota.warning_gb ? hux.toHumanReadableDataSize(quota.warning_gb) : 'Not set',
-    // eslint-disable-next-line perfectionist/sort-objects
     Critical: quota.critical_gb ? hux.toHumanReadableDataSize(quota.critical_gb) : 'Not set',
     'Enforcement Action': hux.toTitleCase(quota.enforcement_action),
     Status: formatQuotaStatus(quota),
   }, ['Warning', 'Critical', 'Enforcement Action', 'Status'], // this order isn't being respected by the new implementation
   )
+  /* eslint-enable perfectionist/sort-objects */
 }

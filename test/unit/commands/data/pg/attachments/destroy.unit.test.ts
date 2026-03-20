@@ -1,4 +1,4 @@
-import {utils} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -42,7 +42,7 @@ describe('data:pg:attachments:destroy', function () {
           name: nonAdvancedAddon.name,
         },
       })
-    resolveStub.withArgs(nonAdvancedAddon.name, undefined, utils.pg.addonService())
+    resolveStub.withArgs(nonAdvancedAddon.name, undefined, utils.getAddonService())
       .resolves(nonAdvancedAddon)
 
     try {
@@ -71,7 +71,7 @@ describe('data:pg:attachments:destroy', function () {
         .reply(200, multipleAttachmentsResponse[1])
         .get('/apps/myapp/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
+      resolveStub.withArgs(addon.name, undefined, utils.getAddonService())
         .resolves(addon)
 
       await runCommand(DataPgAttachmentsDestroy, [
@@ -127,7 +127,7 @@ describe('data:pg:attachments:destroy', function () {
           id: 'internal_server_error',
           message: 'Internal server error.',
         })
-      resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
+      resolveStub.withArgs(addon.name, undefined, utils.getAddonService())
         .resolves(addon)
 
       try {
@@ -162,7 +162,7 @@ describe('data:pg:attachments:destroy', function () {
           id: 'internal_server_error',
           message: 'Internal server error.',
         })
-      resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
+      resolveStub.withArgs(addon.name, undefined, utils.getAddonService())
         .resolves(addon)
 
       try {

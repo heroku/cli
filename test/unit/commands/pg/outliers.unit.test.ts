@@ -2,7 +2,8 @@ import {runCommand} from '../../../helpers/run-command.js'
 import {expect} from 'chai'
 import Cmd from '../../../../src/commands/pg/outliers.js'
 import * as sinon from 'sinon'
-import {pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 
 describe('pg:outliers', function () {
   let sandbox: sinon.SinonSandbox
@@ -22,8 +23,8 @@ describe('pg:outliers', function () {
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
-    getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
-    execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery')
+    getDatabaseStub = sandbox.stub(pgUtils.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
+    execQueryStub = sandbox.stub(pgUtils.PsqlService.prototype, 'execQuery')
   })
 
   afterEach(function () {

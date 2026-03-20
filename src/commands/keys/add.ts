@@ -1,31 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'
 import {spawn} from 'node:child_process'
 import os from 'node:os'
 import path from 'node:path'
-
-function sshKeygen(file: string, quiet: boolean) {
-  return new Promise((resolve, reject) => {
-    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? 'ignore' : 'inherit'})
-      .on('close', (code: number) => code === 0 ? resolve(null) : reject(code))
-  })
-}
-
-async function confirmPrompt(message: string) {
-  if (process.stdin.isTTY) {
-    return inquirer.prompt([{
-      message,
-      name: 'yes',
-      type: 'confirm',
-    }])
-  }
-
-  const data = await hux.prompt(message + ' [Y/n]')
-  return {yes: /^y(es)?/i.test(data)}
-}
 
 export default class Add extends Command {
   static args = {
@@ -114,4 +95,24 @@ Uploading SSH public key /my/key.pub... done`
     })
     ux.action.stop()
   }
+}
+
+async function confirmPrompt(message: string) {
+  if (process.stdin.isTTY) {
+    return inquirer.prompt([{
+      message,
+      name: 'yes',
+      type: 'confirm',
+    }])
+  }
+
+  const data = await hux.prompt(message + ' [Y/n]')
+  return {yes: /^y(es)?/i.test(data)}
+}
+
+function sshKeygen(file: string, quiet: boolean) {
+  return new Promise((resolve, reject) => {
+    spawn('ssh-keygen', ['-o', '-t', 'rsa', '-N', '', '-f', file], {stdio: quiet ? 'ignore' : 'inherit'})
+      .on('close', (code: number) => code === 0 ? resolve(null) : reject(code))
+  })
 }

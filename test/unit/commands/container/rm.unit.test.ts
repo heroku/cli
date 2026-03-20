@@ -4,7 +4,7 @@ import runCommand from '../../../helpers/runCommand.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import nock from 'nock'
 import {expect} from 'chai'
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 
 describe('container removal', function () {
   let api: nock.Scope

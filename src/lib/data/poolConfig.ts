@@ -1,6 +1,6 @@
 import type {DistinctChoice, ListChoiceMap} from 'inquirer'
 
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 

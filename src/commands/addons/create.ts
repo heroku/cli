@@ -1,46 +1,13 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import createAddon from '../../lib/addons/create_addon.js'
-import * as util from '../../lib/addons/util.js'
 import notify from '../../lib/notify.js'
 
 const heredoc = tsheredoc.default
-
-function parseConfig(args: string[]) {
-  const config: Record<string, boolean | string> = {}
-  while (args.length > 0) {
-    let key = args.shift() as string
-    if (!key.startsWith('--'))
-      throw new Error(`Unexpected argument ${key}`)
-    key = key.replace(/^--/, '')
-    let val
-    if (key.includes('=')) {
-      [key, ...val] = key.split('=')
-      val = val.join('=')
-      if (val === 'true') {
-        val = true
-      }
-
-      config[key] = val
-    } else {
-      val = args.shift()
-      if (!val) {
-        config[key] = true
-      } else if (val.startsWith('--')) {
-        config[key] = true
-        args.unshift(val)
-      } else {
-        config[key] = val
-      }
-    }
-  }
-
-  return config
-}
 
 export default class Create extends Command {
   static args = {
@@ -111,4 +78,36 @@ export default class Create extends Command {
     // eslint-disable-next-line no-unsafe-optional-chaining
     ux.stdout(`Run ${color.code('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation.`)
   }
+}
+
+function parseConfig(args: string[]) {
+  const config: Record<string, boolean | string> = {}
+  while (args.length > 0) {
+    let key = args.shift() as string
+    if (!key.startsWith('--'))
+      throw new Error(`Unexpected argument ${key}`)
+    key = key.replace(/^--/, '')
+    let val
+    if (key.includes('=')) {
+      [key, ...val] = key.split('=')
+      val = val.join('=')
+      if (val === 'true') {
+        val = true
+      }
+
+      config[key] = val
+    } else {
+      val = args.shift()
+      if (!val) {
+        config[key] = true
+      } else if (val.startsWith('--')) {
+        config[key] = true
+        args.unshift(val)
+      } else {
+        config[key] = val
+      }
+    }
+  }
+
+  return config
 }

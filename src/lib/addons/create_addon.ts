@@ -1,7 +1,8 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import {ux} from '@oclif/core/ux'
 
 import {waitForAddonProvisioning} from './addons_wait.js'
 import * as util from './util.js'
@@ -72,7 +73,7 @@ export default async function (
     } else {
       ux.stdout(`${color.addon(addon.name || '')} is being created in the background. The app will restart when complete...`)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (utils.pg.isAdvancedDatabase(addon as any))
+      if (utils.isAdvancedDatabase(addon as any))
         ux.stdout(`Run ${color.code('heroku data:pg:info ' + addon.name + ' -a ' + addon.app!.name)} to check creation progress.`)
       else
         ux.stdout(`Run ${color.code('heroku addons:info ' + addon.name)} to check creation progress.`)

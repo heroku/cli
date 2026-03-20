@@ -1,7 +1,8 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import {formatDistanceToNow} from 'date-fns'
 import tsheredoc from 'tsheredoc'
 
@@ -11,32 +12,6 @@ import {Domain} from '../../../lib/types/domain.js'
 import {SniEndpoint} from '../../../lib/types/sni_endpoint.js'
 
 const heredoc = tsheredoc.default
-
-function humanize(value: null | string) {
-  if (!value) {
-    return color.info('Waiting')
-  }
-
-  if (value === 'ok') {
-    return color.success('OK')
-  }
-
-  if (value === 'failed') {
-    return color.failure('Failed')
-  }
-
-  if (value === 'verified') {
-    return color.info('In Progress')
-  }
-
-  if (value === 'dns-verified') {
-    return color.info('DNS Verified')
-  }
-
-  return value.split('-')
-    .map(word => word.replace(/(^[a-z])/, text => text.toUpperCase()))
-    .join(' ')
-}
 
 export default class Index extends Command {
   static command: 'auto'
@@ -119,4 +94,30 @@ export default class Index extends Command {
       hux.styledHeader(message)
     }
   }
+}
+
+function humanize(value: null | string) {
+  if (!value) {
+    return color.info('Waiting')
+  }
+
+  if (value === 'ok') {
+    return color.success('OK')
+  }
+
+  if (value === 'failed') {
+    return color.failure('Failed')
+  }
+
+  if (value === 'verified') {
+    return color.info('In Progress')
+  }
+
+  if (value === 'dns-verified') {
+    return color.info('DNS Verified')
+  }
+
+  return value.split('-')
+    .map(word => word.replace(/(^[a-z])/, text => text.toUpperCase()))
+    .join(' ')
 }

@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -28,7 +29,7 @@ export default class RepairDefault extends Command {
     const {args, flags} = await this.parse(RepairDefault)
     const {app, confirm} = flags
     const {database} = args
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
       throw new Error("You can't perform this operation on Essential-tier databases.")
@@ -38,7 +39,7 @@ export default class RepairDefault extends Command {
       This command will also grant the default credential admin option for all additional credentials.
     `))
     ux.action.start('Resetting permissions and object ownership for default role to factory settings')
-    await this.heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {hostname: utils.pg.host()})
+    await this.heroku.post(`/postgres/v0/databases/${db.name}/repair-default`, {hostname: pg.getHost()})
     ux.action.stop()
   }
 }

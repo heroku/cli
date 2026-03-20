@@ -1,6 +1,6 @@
-import {utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
 import {HerokuAPIError} from '@heroku-cli/command'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import {HTTPError} from '@heroku/http-call'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -36,7 +36,7 @@ describe('data:pg:attachments:create', function () {
   })
 
   it('shows error for non-advanced databases', async function () {
-    resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+    resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
       .resolves(nonAdvancedAddon)
 
     try {
@@ -66,7 +66,7 @@ describe('data:pg:attachments:create', function () {
         .reply(200, createAttachmentResponse)
         .get('/apps/myapp/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       await runCommand(DataPgAttachmentsCreate, [
@@ -92,11 +92,11 @@ describe('data:pg:attachments:create', function () {
         .reply(200, createForeignAttachmentResponse)
         .get('/apps/myapp2/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp2', utils.pg.addonService()).rejects(new HerokuAPIError({
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp2', utils.getAddonService()).rejects(new HerokuAPIError({
         body: {id: 'not_found', message: 'Couldn\'t find that add on.', resource: 'add_on'},
         statusCode: 404,
       } as unknown as HTTPError))
-      resolveStub.withArgs('advanced-horizontal-01234', undefined, utils.pg.addonService()).resolves(addon)
+      resolveStub.withArgs('advanced-horizontal-01234', undefined, utils.getAddonService()).resolves(addon)
 
       await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
@@ -121,7 +121,7 @@ describe('data:pg:attachments:create', function () {
         .reply(200, createForeignAttachmentResponse)
         .get('/apps/myapp2/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs('myapp::DATABASE', 'myapp2', utils.pg.addonService())
+      resolveStub.withArgs('myapp::DATABASE', 'myapp2', utils.getAddonService())
         .resolves(addon)
 
       await runCommand(DataPgAttachmentsCreate, [
@@ -149,7 +149,7 @@ describe('data:pg:attachments:create', function () {
         })
         .get('/apps/myapp/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       await runCommand(DataPgAttachmentsCreate, [
@@ -165,7 +165,7 @@ describe('data:pg:attachments:create', function () {
     })
 
     it('handles API errors gracefully on the add-on resolution', async function () {
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .rejects(new HerokuAPIError({
           body: {id: 'internal_server_error', message: 'Internal server error.', resource: 'add_on'},
           http: {statusCode: 500},
@@ -188,11 +188,11 @@ describe('data:pg:attachments:create', function () {
     })
 
     it('handles API errors gracefully if the add-on doesn\'t exist', async function () {
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService()).rejects(new HerokuAPIError({
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService()).rejects(new HerokuAPIError({
         body: {id: 'not_found', message: 'Couldn\'t find that add on.', resource: 'add_on'},
         statusCode: 404,
       } as unknown as HTTPError))
-      resolveStub.withArgs('advanced-horizontal-01234', undefined, utils.pg.addonService()).rejects(new HerokuAPIError({
+      resolveStub.withArgs('advanced-horizontal-01234', undefined, utils.getAddonService()).rejects(new HerokuAPIError({
         body: {id: 'not_found', message: 'Couldn\'t find that add on.', resource: 'add_on'},
         statusCode: 404,
       } as unknown as HTTPError))
@@ -224,7 +224,7 @@ describe('data:pg:attachments:create', function () {
           id: 'internal_server_error',
           message: 'Internal server error.',
         })
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       try {
@@ -262,7 +262,7 @@ describe('data:pg:attachments:create', function () {
           id: 'internal_server_error',
           message: 'Internal server error.',
         })
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       try {
@@ -303,7 +303,7 @@ describe('data:pg:attachments:create', function () {
         .reply(200, createCredentialAttachmentResponse)
         .get('/apps/myapp/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       await runCommand(DataPgAttachmentsCreate, [
@@ -324,7 +324,7 @@ describe('data:pg:attachments:create', function () {
       const herokuApi = nock('https://api.heroku.com')
         .get(`/addons/${addon.name}/config/role:nonexistent`)
         .reply(200, [])
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       try {
@@ -362,7 +362,7 @@ describe('data:pg:attachments:create', function () {
         .reply(200, createPoolAttachmentResponse)
         .get('/apps/myapp/releases')
         .reply(200, releasesResponse)
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       await runCommand(DataPgAttachmentsCreate, [
@@ -385,7 +385,7 @@ describe('data:pg:attachments:create', function () {
       const herokuApi = nock('https://api.heroku.com')
         .get(`/addons/${addon.name}/config/pool:nonexistent`)
         .reply(200, [])
-      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
+      resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.getAddonService())
         .resolves(addon)
 
       try {

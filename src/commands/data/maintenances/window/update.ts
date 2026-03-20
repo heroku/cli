@@ -1,5 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/baseCommand.js'
@@ -38,7 +39,7 @@ export default class DataMaintenancesWindowUpdate extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWindowUpdate)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app, utils.getAddonService())
 
     const combinedWindowLabel = `${args.day_of_week} ${args.time_of_day}`
     ux.action.start(

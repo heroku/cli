@@ -1,19 +1,14 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {confirm} from '@inquirer/prompts'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {orderBy} from 'natural-orderby'
 import Uri from 'urijs'
 
 import parseKeyValue from '../../lib/utils/keyValueParser.js'
 import {paginateRequest} from '../../lib/utils/paginator.js'
-
-function isApexDomain(hostname: string) {
-  if (hostname.includes('*')) return false
-  const a = new Uri({hostname, protocol: 'http'})
-  return a.subdomain() === ''
-}
 
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
@@ -228,4 +223,10 @@ www.example.com  CNAME            www.example.herokudns.com`]
       }
     }
   }
+}
+
+function isApexDomain(hostname: string) {
+  if (hostname.includes('*')) return false
+  const a = new Uri({hostname, protocol: 'http'})
+  return a.subdomain() === ''
 }

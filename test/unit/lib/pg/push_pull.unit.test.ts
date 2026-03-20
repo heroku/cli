@@ -1,12 +1,13 @@
-import {utils} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import {EventEmitter} from 'node:events'
 import {Server} from 'node:net'
 import {PassThrough} from 'node:stream'
 import sinon from 'sinon'
 
-import {connArgs, maybeTunnel, parseExclusions, prepare, spawnPipe, verifyExtensionsMatch} from '../../../../src/lib/pg/push_pull.js'
+import * as pushPull from '../../../../src/lib/pg/push_pull.js'
+const {connArgs, maybeTunnel, parseExclusions, prepare, psqlHelpers, spawnPipe, verifyExtensionsMatch} = pushPull
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -79,7 +80,7 @@ describe('push_pull', function () {
 
       it('prints an error message if the database is not empty', async function () {
         sinon
-          .stub(utils.pg.PsqlService.prototype, 'execQuery')
+          .stub(pgUtils.PsqlService.prototype, 'execQuery')
           .resolves('hello')
 
         await prepare(target as any)
@@ -89,7 +90,7 @@ describe('push_pull', function () {
 
       it('is silent when the remote database is empty', async function () {
         sinon
-          .stub(utils.pg.PsqlService.prototype, 'execQuery')
+          .stub(pgUtils.PsqlService.prototype, 'execQuery')
           .resolves(emptyMarker)
 
         await prepare(target as any)
@@ -117,8 +118,8 @@ describe('push_pull', function () {
 
     it('returns connection details containing tunnel config, when a tunnel is configured', async function () {
       const fakeTunnel = {close: sinon.stub()} as unknown as Server
-      sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
-      sinon.stub(utils.pg.psql, 'sshTunnel').resolves(fakeTunnel)
+      sinon.stub(psqlHelpers, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
+      sinon.stub(psqlHelpers, 'sshTunnel').resolves(fakeTunnel)
 
       const result = await maybeTunnel(target as any)
 
@@ -130,8 +131,8 @@ describe('push_pull', function () {
     })
 
     it('does not return tunnel config in the connection details, when a tunnel is not configured', async function () {
-      sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
-      sinon.stub(utils.pg.psql, 'sshTunnel').resolves(undefined)
+      sinon.stub(psqlHelpers, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
+      sinon.stub(psqlHelpers, 'sshTunnel').resolves(undefined)
 
       const result = await maybeTunnel(target as any)
 
@@ -201,8 +202,8 @@ describe('push_pull', function () {
 
   describe('spawnPipe', function () {
     it('resolves when both pgDump and pgRestore close successfully', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -215,8 +216,8 @@ describe('push_pull', function () {
     })
 
     it('rejects with pg_dump error when pgDump closes with non-zero code', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -228,8 +229,8 @@ describe('push_pull', function () {
     })
 
     it('rejects with pg_restore error when pgRestore closes with non-zero code', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -242,8 +243,8 @@ describe('push_pull', function () {
     })
 
     it('pipes pgDump stdout to pgRestore stdin', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -260,8 +261,8 @@ describe('push_pull', function () {
     })
 
     it('ends pgRestore stdin when pgDump closes successfully', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -305,7 +306,7 @@ describe('push_pull', function () {
 
     it('does not warn when extensions match', async function () {
       const extensions = 'plpgsql\nuuid-ossp\n'
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(extensions)
+      execQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery').resolves(extensions)
 
       await verifyExtensionsMatch(source as any, target as any)
 
@@ -313,7 +314,7 @@ describe('push_pull', function () {
     })
 
     it('warns when extensions differ between source and target', async function () {
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery')
       execQueryStub.onFirstCall().resolves('plpgsql\n')  // target
       execQueryStub.onSecondCall().resolves('plpgsql\nuuid-ossp\n')  // source
 
@@ -325,7 +326,7 @@ describe('push_pull', function () {
     it('includes both extension lists in the warning message', async function () {
       const targetExtensions = 'plpgsql\n'
       const sourceExtensions = 'plpgsql\nuuid-ossp\n'
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery')
       execQueryStub.onFirstCall().resolves(targetExtensions)
       execQueryStub.onSecondCall().resolves(sourceExtensions)
 
@@ -338,7 +339,7 @@ describe('push_pull', function () {
     })
 
     it('queries both databases for installed extensions', async function () {
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub = sinon.stub(pgUtils.PsqlService.prototype, 'execQuery')
 
       await verifyExtensionsMatch(source as any, target as any)
 
@@ -348,4 +349,3 @@ describe('push_pull', function () {
     })
   })
 })
-

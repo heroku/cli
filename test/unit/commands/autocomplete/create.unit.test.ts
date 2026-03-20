@@ -1,4 +1,4 @@
-import {Config, Plugin} from '@oclif/core'
+import {Config, Plugin} from '@oclif/core/config'
 import {expect} from 'chai'
 import fs from 'fs-extra'
 import * as path from 'path'

@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {flags} from '@heroku-cli/command'
 import {
   AppCompletion,
@@ -6,7 +6,9 @@ import {
   SpaceCompletion,
   TeamCompletion,
 } from '@heroku-cli/command/lib/completions.js'
-import {Args, Interfaces, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import * as Interfaces from '@oclif/core/interfaces'
+import {ux} from '@oclif/core/ux'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'

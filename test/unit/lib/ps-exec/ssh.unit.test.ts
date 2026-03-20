@@ -1,5 +1,5 @@
 import socks from '@heroku/socksv5'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import child from 'child_process'
 import cliProgress from 'cli-progress'

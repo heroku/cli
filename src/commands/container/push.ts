@@ -1,7 +1,8 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
 import {DockerHelper, DockerJob, GroupedDockerJobs} from '../../lib/container/docker_helper.js'

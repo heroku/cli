@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args} from '@oclif/core'
 
 import Git from '../../lib/git/git.js'
@@ -18,7 +18,9 @@ remote: Counting objects: 42, done.
 ...`
 
   static flags = {
-    app: flags.string({char: 'a', description: 'the Heroku app to use', env: 'HEROKU_APP', required: true}),
+    app: flags.string({
+      char: 'a', description: 'the Heroku app to use', env: 'HEROKU_APP', required: true,
+    }),
     remote: flags.string({char: 'r', description: 'the git remote to create, default "heroku"'}),
   }
 

@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import socks from '@heroku/socksv5'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import child from 'child_process'
 import cliProgress from 'cli-progress'
 import crypto from 'crypto'

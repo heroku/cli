@@ -1,7 +1,7 @@
 import Cmd from '../../../../src/commands/pg/wait.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 

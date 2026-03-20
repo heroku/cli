@@ -1,8 +1,9 @@
-import {color, hux} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {HTTP} from '@heroku/http-call'
+import {ux} from '@oclif/core/ux'
 
 import errorInfo from '../../lib/apps/error_info.js'
 import {AppErrors} from '../../lib/types/app_errors.js'

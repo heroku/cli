@@ -1,5 +1,8 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {Command, flags as Flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -50,7 +53,7 @@ export default class DataPgPsql extends Command {
     const {database: databaseArg} = args
     const {app, 'channel-binding': channelBinding, command, credential, file} = flags
     const namespace = credential ? `role:${credential}` : undefined
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new utils.DatabaseResolver(this.heroku)
     let db: pg.ConnectionDetails
 
     try {
@@ -58,8 +61,8 @@ export default class DataPgPsql extends Command {
     } catch (error) {
       if (namespace && error instanceof Error && error.message === "Couldn't find that addon.") {
         const addonResolver = new utils.AddonResolver(this.heroku)
-        const addon = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())
-        const credCommand = utils.pg.isAdvancedDatabase(addon) ? 'data:pg:credentials' : 'pg:credentials'
+        const addon = await addonResolver.resolve(databaseArg, app, utils.getAddonService())
+        const credCommand = utils.isAdvancedDatabase(addon) ? 'data:pg:credentials' : 'pg:credentials'
         throw new Error(
           `The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(databaseArg)}. `
           + `Run ${color.code(`heroku ${credCommand} ${addon.name}`)} to list the credentials on the database.`)
@@ -68,7 +71,7 @@ export default class DataPgPsql extends Command {
       throw error
     }
 
-    if (utils.pg.isAdvancedPrivateDatabase(db.attachment!.addon)) {
+    if (utils.isAdvancedPrivateDatabase(db.attachment!.addon)) {
       if (file)
         ux.error('You can\'t use the --file flag on private networked Advanced databases.', {exit: 1})
 
@@ -99,7 +102,7 @@ export default class DataPgPsql extends Command {
       return this.runThroughOneOffDyno(opts)
     }
 
-    const psqlService = new utils.pg.PsqlService(db)
+    const psqlService = new utils.PsqlService(db)
 
     console.error(`--> Connecting to ${color.yellow(db.attachment!.addon.name)}`)
 
@@ -123,7 +126,7 @@ export default class DataPgPsql extends Command {
     try {
       await dyno.start()
     } catch (error: unknown) {
-      const dynoError = error as {exitCode?: number} & Error
+      const dynoError = error as Error & {exitCode?: number}
       if (dynoError.exitCode) {
         ux.error(dynoError.message, {code: String(dynoError.exitCode), exit: dynoError.exitCode})
       } else {

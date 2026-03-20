@@ -1,6 +1,6 @@
 import * as path from 'path'
 import {notify, Notification} from '@heroku-cli/notifications'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {fileURLToPath} from 'url'
 
 const __filename = fileURLToPath(import.meta.url)

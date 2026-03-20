@@ -1,7 +1,7 @@
 
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion} from '@heroku-cli/command/lib/completions.js'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import Dyno from '../lib/run/dyno.js'
 import {buildCommand} from '../lib/run/helpers.js'

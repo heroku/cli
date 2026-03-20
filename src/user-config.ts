@@ -1,4 +1,4 @@
-import {Interfaces} from '@oclif/core'
+import * as Interfaces from '@oclif/core/interfaces'
 import {randomUUID} from 'node:crypto'
 import {stat} from 'node:fs/promises'
 import * as path from 'path'

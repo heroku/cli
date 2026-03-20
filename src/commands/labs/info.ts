@@ -1,18 +1,8 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
-
-function print(feature: Record<string, string>) {
-  hux.styledHeader(feature.name)
-  /* eslint-disable perfectionist/sort-objects */
-  hux.styledObject({
-    Description: feature.description,
-    Enabled: feature.enabled ? color.success('true') : color.failure('false'),
-    Docs: feature.doc_url,
-  })
-  /* eslint-enable perfectionist/sort-objects */
-}
 
 export default class LabsInfo extends Command {
   static args = {
@@ -50,4 +40,15 @@ export default class LabsInfo extends Command {
       print(feature)
     }
   }
+}
+
+function print(feature: Record<string, string>) {
+  hux.styledHeader(feature.name)
+  /* eslint-disable perfectionist/sort-objects */
+  hux.styledObject({
+    Description: feature.description,
+    Enabled: feature.enabled ? color.success('true') : color.failure('false'),
+    Docs: feature.doc_url,
+  })
+  /* eslint-enable perfectionist/sort-objects */
 }

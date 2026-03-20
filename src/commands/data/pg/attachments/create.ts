@@ -1,6 +1,9 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {flags as Flags, HerokuAPIError} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -44,16 +47,16 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     // find the correct add-on.
     let addon: pg.ExtendedAddon
     try {
-      addon = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())
+      addon = await addonResolver.resolve(databaseArg, app, utils.getAddonService())
     } catch (error: unknown) {
       if (error instanceof HerokuAPIError && error.http.statusCode === 404) {
-        addon = await addonResolver.resolve(databaseArg, undefined, utils.pg.addonService())
+        addon = await addonResolver.resolve(databaseArg, undefined, utils.getAddonService())
       } else {
         throw error
       }
     }
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!utils.isAdvancedDatabase(addon)) {
       const cmd = `heroku addons:attach ${addon.name} -a ${app}${as ? ` --as ${as}` : ''}`
         + `${credential ? ` --credential ${credential}` : ''}`
       ux.error(

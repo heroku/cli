@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 
 import ConfirmCommand from '../../../lib/confirmCommand.js'
@@ -38,7 +39,7 @@ export default class Delete extends Command {
       throw new Error(`Invalid Backup: ${backup_id}`)
     }
 
-    await this.heroku.delete(`/client/v11/apps/${app}/transfers/${num}`, {hostname: utils.pg.host()})
+    await this.heroku.delete(`/client/v11/apps/${app}/transfers/${num}`, {hostname: pg.getHost()})
     ux.action.stop()
   }
 }

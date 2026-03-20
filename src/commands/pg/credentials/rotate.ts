@@ -1,7 +1,9 @@
 import type {AddOnAttachment} from '@heroku-cli/schema'
 
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as utils from '@heroku/heroku-cli-util/utils'
+import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 
 import ConfirmCommand from '../../../lib/confirmCommand.js'
@@ -31,7 +33,7 @@ export default class Rotate extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Rotate)
     const {all, app, confirm, force, name} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pgUtils.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, args.database)
     const warnings: string[] = []
     const cred = name || 'default'
@@ -39,7 +41,7 @@ export default class Rotate extends Command {
       throw new Error('cannot pass both --all and --name')
     }
 
-    if (utils.pg.isLegacyEssentialDatabase(db) && cred !== 'default') {
+    if (utils.isLegacyEssentialDatabase(db) && cred !== 'default') {
       throw new Error('Legacy Essential-tier databases do not support named credentials.')
     }
 
@@ -80,7 +82,7 @@ export default class Rotate extends Command {
       headers: {
         Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
       },
-      hostname: utils.pg.host(),
+      hostname: pgUtils.getHost(),
     }
     if (all) {
       ux.action.start(`Rotating all credentials on ${color.datastore(db.name)}`)

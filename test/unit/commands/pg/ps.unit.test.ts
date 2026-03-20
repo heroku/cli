@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import Cmd from '../../../../src/commands/pg/ps.js'
 import {runCommand} from '../../../helpers/run-command.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
@@ -34,8 +34,8 @@ describe('pg:ps', function () {
   }
 
   beforeEach(function () {
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockConnectionDetails)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').callsFake((query: string) => {
+    sinon.stub(pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockConnectionDetails)
+    sinon.stub(pg.PsqlService.prototype, 'execQuery').callsFake((query: string) => {
       queryString = heredoc(query)
       return Promise.resolve(FAKE_OUTPUT_TEXT)
     })

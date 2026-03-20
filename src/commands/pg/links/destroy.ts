@@ -1,5 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -29,7 +30,7 @@ export default class Destroy extends Command {
     const {args, flags} = await this.parse(Destroy)
     const {app, confirm} = flags
     const {database, link} = args
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
     if (essentialPlan(db))
       throw new Error("pg:links isn't available for Essential-tier databases.")
@@ -43,7 +44,7 @@ export default class Destroy extends Command {
     ux.action.start(`Destroying link ${color.cyan(link)} from ${color.yellow(db.name)}`)
     await this.heroku.delete(
       `/client/v11/databases/${db.id}/links/${encodeURIComponent(link)}`,
-      {hostname: utils.pg.host()},
+      {hostname: pg.getHost()},
     )
     ux.action.stop()
   }

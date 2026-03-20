@@ -1,4 +1,4 @@
-import {utils} from '@heroku/heroku-cli-util'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -29,7 +29,7 @@ describe('data:pg:wait', function () {
   beforeEach(function () {
     dataApi = nock('https://api.data.heroku.com')
     notifyStub = sinon.stub(DataPgWait.prototype, 'notify')
-    resolverStub = sinon.stub(utils.pg.DatabaseResolver.prototype, 'getAttachment')
+    resolverStub = sinon.stub(pg.DatabaseResolver.prototype, 'getAttachment')
   })
 
   afterEach(function () {

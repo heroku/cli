@@ -1,6 +1,9 @@
-import {color, hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {Command, Flags, ux} from '@oclif/core'
+import {Command} from '@oclif/core/command'
+import * as Flags from '@oclif/core/flags'
+import {ux} from '@oclif/core/ux'
 import {formatDistanceToNow} from 'date-fns'
 
 import {getMaxUpdateTypeLength} from '../lib/status/util.js'

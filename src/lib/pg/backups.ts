@@ -1,31 +1,13 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
+import {ux} from '@oclif/core/ux'
+import bytes = require('bytes')
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from './types.js'
 
-import bytes = require('bytes')
-
 const heredoc = tsheredoc.default
-
-function prefix(transfer: BackupTransfer) {
-  if (transfer.from_type === 'pg_dump') {
-    if (transfer.to_type === 'pg_restore') {
-      return 'c'
-    }
-
-    return transfer.schedule ? 'a' : 'b'
-
-    // eslint-disable-next-line no-else-return
-  } else {
-    if (transfer.to_type === 'pg_restore') {
-      return 'r'
-    }
-
-    return 'b'
-  }
-}
 
 class Backups {
   protected app: string
@@ -67,7 +49,7 @@ class Backups {
     if (m) return Number.parseInt(m[1], 10)
     m = name.match(/^o[ab]\d+$/)
     if (m) {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: utils.pg.host()})
+      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${this.app}/transfers`, {hostname: pg.getHost()})
       const transfer = transfers.find(t => this.name(t) === name)
       if (transfer) return transfer.num
     }
@@ -85,7 +67,7 @@ class Backups {
 
     while (failures < 21) {
       try {
-        ({body: backup} = await this.heroku.get<BackupTransfer>(url, {hostname: utils.pg.host()}))
+        ({body: backup} = await this.heroku.get<BackupTransfer>(url, {hostname: pg.getHost()}))
       } catch (error) {
         if (failures++ > 20) {
           throw error
@@ -111,7 +93,7 @@ class Backups {
         }
 
         // logs is undefined unless verbose=true is passed
-        ({body: backup} = await this.heroku.get<BackupTransfer>(verboseUrl, {hostname: utils.pg.host()}))
+        ({body: backup} = await this.heroku.get<BackupTransfer>(verboseUrl, {hostname: pg.getHost()}))
 
         throw new Error(heredoc(`
           An error occurred and the backup did not finish.
@@ -170,6 +152,24 @@ class Backups {
 
 function factory(app: string, heroku: APIClient) {
   return new Backups(app, heroku)
+}
+
+function prefix(transfer: BackupTransfer) {
+  if (transfer.from_type === 'pg_dump') {
+    if (transfer.to_type === 'pg_restore') {
+      return 'c'
+    }
+
+    return transfer.schedule ? 'a' : 'b'
+
+    // eslint-disable-next-line no-else-return
+  } else {
+    if (transfer.to_type === 'pg_restore') {
+      return 'r'
+    }
+
+    return 'b'
+  }
 }
 
 export default factory

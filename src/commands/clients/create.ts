@@ -1,12 +1,17 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 
 import {validateURL} from '../../lib/clients/clients.js'
 
 export default class ClientsCreate extends Command {
+  static args = {
+    name: Args.string({description: 'name of the OAuth client', required: true}),
+    redirect_uri: Args.string({description: 'redirect URL of the OAuth client', required: true}),
+  }
+
   static description = 'create a new OAuth client'
 
   static examples = [
@@ -18,15 +23,10 @@ export default class ClientsCreate extends Command {
     shell: flags.boolean({char: 's', description: 'output in shell format'}),
   }
 
-  static args = {
-    name: Args.string({required: true, description: 'name of the OAuth client'}),
-    redirect_uri: Args.string({required: true, description: 'redirect URL of the OAuth client'}),
-  }
-
   async run() {
     const {args, flags} = await this.parse(ClientsCreate)
 
-    const {redirect_uri, name} = args
+    const {name, redirect_uri} = args
     validateURL(redirect_uri)
 
     ux.action.start(`Creating ${name}`)

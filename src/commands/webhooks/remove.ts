@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base.js'

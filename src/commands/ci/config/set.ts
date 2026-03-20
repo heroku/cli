@@ -1,7 +1,8 @@
 
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {setPipelineConfigVars} from '../../../lib/api.js'
@@ -9,14 +10,6 @@ import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {validateArgvPresent} from '../../../lib/ci/validate.js'
 
 const heredoc = tsheredoc.default
-
-function validateInput(str: string) {
-  if (!str.includes('=')) {
-    ux.error(`${color.cyan(str)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`, {exit: 1})
-  }
-
-  return true
-}
 
 export default class CiConfigSet extends Command {
   static description = 'set CI config vars'
@@ -62,4 +55,12 @@ export default class CiConfigSet extends Command {
       }, {}),
     )
   }
+}
+
+function validateInput(str: string) {
+  if (!str.includes('=')) {
+    ux.error(`${color.cyan(str)} is invalid. Must be in the format ${color.cyan('FOO=bar')}.`, {exit: 1})
+  }
+
+  return true
 }

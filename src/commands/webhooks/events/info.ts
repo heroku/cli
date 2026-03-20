@@ -1,5 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/webhooks/base.js'

@@ -1,7 +1,8 @@
 import type {DistinctChoice, ListChoiceMap} from 'inquirer'
 
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
 import inquirer from 'inquirer'
 import printf from 'printf'
 
@@ -22,7 +23,7 @@ const {Separator} = inquirer
  * @param count - The number of units to calculate the pricing for
  * @returns A formatted string with colored pricing information, or empty string if no pricing info provided
  */
-export function renderPricingInfo(pricingInfo?: PricingInfo | null, count: number = 1) {
+export function renderPricingInfo(pricingInfo?: null | PricingInfo, count: number = 1) {
   if (!pricingInfo) return ''
 
   const priceHourly = hux.formatPrice(pricingInfo.rate * count, true)
@@ -105,12 +106,12 @@ export async function fetchLevelsAndPricing(
       const extendedLevelsInfo = levels.items.map(level => ({
         ...level,
         pricing: Object.entries(pricing[tier]).find(
-          ([_, value]) => value.product_description === level.name, // eslint-disable-line @typescript-eslint/no-unused-vars
+          ([_, value]) => value.product_description === level.name,
         )?.[1],
       }))
 
       const optimizedStoragePricing = Object.entries(pricing[tier]).find(
-        ([key, _]) => key === 'storage-optimized', // eslint-disable-line @typescript-eslint/no-unused-vars
+        ([key, _]) => key === 'storage-optimized',
       )?.[1]
 
       return {extendedLevelsInfo, optimizedStoragePricing}

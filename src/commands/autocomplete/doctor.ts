@@ -1,9 +1,10 @@
 import {flags} from '@heroku-cli/command'
-import {Args, Interfaces} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
+import {Args} from '@oclif/core'
+import * as Interfaces from '@oclif/core/interfaces'
 import fs from 'fs-extra'
-import * as path from 'path'
 import {fileURLToPath} from 'node:url'
+import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 
@@ -11,17 +12,17 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export default class Doctor extends AutocompleteBase {
-  static hidden = true
-
-  static description = 'autocomplete diagnostic'
-
   static args = {
     shell: Args.string({description: 'shell type', required: false}),
   }
 
+  static description = 'autocomplete diagnostic'
+
   static flags: Interfaces.FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
+
+  static hidden = true
 
   async run() {
     const {args, flags} = await this.parse(Doctor)

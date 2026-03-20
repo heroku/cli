@@ -1,5 +1,6 @@
 import {vars} from '@heroku-cli/command'
-import {Command, Interfaces} from '@oclif/core'
+import {Command} from '@oclif/core/command'
+import * as Interfaces from '@oclif/core/interfaces'
 import * as path from 'path'
 import deps from './deps.js'
 import fs from 'fs-extra'

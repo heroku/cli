@@ -1,6 +1,7 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {AddOn, AddOnAttachment} from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
+import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo, NonAdvancedCredentialInfo} from '../../../../lib/data/types.js'
@@ -42,13 +43,13 @@ export default class Rotate extends BaseCommand {
     const {all, app, confirm, force, name} = flags
 
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(database, app, utils.getAddonService())
 
-    const isAdvancedTier = utils.pg.isAdvancedDatabase(addon)
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon)
+    const isAdvancedTier = utils.isAdvancedDatabase(addon)
+    const isEssentialTier = utils.isEssentialDatabase(addon)
 
     if (!isAdvancedTier && name && name !== 'default') {
-      if (utils.pg.isLegacyEssentialDatabase(addon)) {
+      if (utils.isLegacyEssentialDatabase(addon)) {
         ux.error('Legacy Essential-tier databases do not support named credentials.')
       }
 

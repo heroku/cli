@@ -1,24 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import wrap from 'word-wrap'
 
 import * as time from '../../lib/time.js'
 import {Notifications} from '../../lib/types/notifications.js'
-
-function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
-  const read = readNotification ? 'Read' : 'Unread'
-  hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
-  for (const n of notifications) {
-    ux.stdout(color.info(`\n${n.title}\n`))
-    ux.stdout(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
-    for (const followup of n.followup) {
-      ux.stdout()
-      ux.stdout(wrap(`${color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`, {width: 80}))
-    }
-  }
-}
 
 export default class NotificationsIndex extends Command {
   static description = 'display notifications'
@@ -42,7 +30,7 @@ export default class NotificationsIndex extends Command {
     if (app) notifications = notifications.filter(n => n.target.id === app.id)
     if (!flags.read) {
       notifications = notifications.filter(n => !n.read)
-      await Promise.all(notifications.map(n => this.heroku.patch(`/user/notifications/${n.id}`, {hostname: 'telex.heroku.com', body: {read: true}})))
+      await Promise.all(notifications.map(n => this.heroku.patch(`/user/notifications/${n.id}`, {body: {read: true}, hostname: 'telex.heroku.com'})))
     }
 
     if (flags.json) {
@@ -57,5 +45,18 @@ export default class NotificationsIndex extends Command {
       } else if (app) ux.stdout(`No unread notifications on ${color.app(app.name!)}.\nRun ${color.code('heroku notifications --all')} to view notifications for all apps.`)
       else ux.stdout(`No unread notifications.\nRun ${color.code('heroku notifications --read')} to view read notifications.`)
     } else displayNotifications(notifications, app!, flags.read)
+  }
+}
+
+function displayNotifications(notifications: Notifications, app: Heroku.App | null, readNotification: boolean) {
+  const read = readNotification ? 'Read' : 'Unread'
+  hux.styledHeader(app ? `${read} Notifications for ${color.app(app.name!)}` : `${read} Notifications`)
+  for (const n of notifications) {
+    ux.stdout(color.info(`\n${n.title}\n`))
+    ux.stdout(wrap(`\n${color.dim(time.ago(new Date(n.created_at)))}\n${n.body}`, {width: 80}))
+    for (const followup of n.followup) {
+      ux.stdout()
+      ux.stdout(wrap(`${color.gray.dim(time.ago(new Date(followup.created_at)))}\n${followup.body}`, {width: 80}))
+    }
   }
 }

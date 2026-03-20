@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Notification, notify} from '@heroku-cli/notifications'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import {IncomingHttpHeaders} from 'node:http'
@@ -39,9 +39,9 @@ export default class Wait extends Command {
 
   protected notify(spaceName: string) {
     try {
-      const notification: {
+      const notification: Notification & {
         message?: string, sound?: boolean, subtitle?: string, title?: string
-      } & Notification = {
+      } = {
         message: 'space was successfully created',
         sound: true,
         subtitle: `heroku spaces:wait ${spaceName}`,

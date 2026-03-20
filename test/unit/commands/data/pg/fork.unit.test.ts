@@ -1,6 +1,6 @@
 /* eslint-disable mocha/no-setup-in-describe */
 /* eslint-disable max-nested-callbacks */
-import {Config} from '@oclif/core'
+import {Config} from '@oclif/core/config'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'

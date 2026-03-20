@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
+import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
-import {utils} from '@heroku/heroku-cli-util'
 import tsheredoc from 'tsheredoc'
 
 import {nls} from '../../nls.js'
@@ -8,19 +8,20 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Blocking extends Command {
-  static description = 'display queries holding locks other queries are waiting to be released'
-  static topic = 'pg'
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
 
+  static description = 'display queries holding locks other queries are waiting to be released'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
 
+  static topic = 'pg'
+
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Blocking)
+    const {args, flags} = await this.parse(Blocking)
     const {app} = flags
     const query = heredoc`
       SELECT bl.pid AS blocked_pid,
@@ -39,9 +40,9 @@ export default class Blocking extends Command {
       WHERE NOT bl.granted
     `
 
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const dbResolver = new pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(app, args.database)
-    const psqlService = new utils.pg.PsqlService(db)
+    const psqlService = new pg.PsqlService(db)
     const output = await psqlService.execQuery(query)
 
     ux.stdout(output)

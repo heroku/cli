@@ -1,5 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
-import {Command, Flags} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {Command} from '@oclif/core/command'
+import * as Flags from '@oclif/core/flags'
 
 import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 import {fork as foreman} from '../../lib/local/fork-foreman.js'

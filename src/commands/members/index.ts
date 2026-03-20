@@ -1,12 +1,13 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'
 
-type MemberWithStatus = { status?: string } & Heroku.TeamMember
+type MemberWithStatus = Heroku.TeamMember & { status?: string }
 
 const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
   const baseColumns = {

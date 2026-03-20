@@ -1,4 +1,4 @@
-import {Command} from '@oclif/core'
+import {Command} from '@oclif/core/command'
 import debug from 'debug'
 import fs from 'fs-extra'
 import {fileURLToPath} from 'node:url'

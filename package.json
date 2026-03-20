@@ -10,7 +10,7 @@
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/heroku-cli-util": "^10.6.1",
+    "@heroku/heroku-cli-util": "10.7.0-beta.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
     "@heroku/socksv5": "^0.0.9",
@@ -375,6 +375,16 @@
   ],
   "license": "ISC",
   "main": "dist/index.js",
+  "sideEffects": [
+    "./src/global_telemetry.ts",
+    "./dist/global_telemetry.js",
+    "./src/lib/run/colorize.ts",
+    "./dist/lib/run/colorize.js",
+    "./src/lib/ci/source.ts",
+    "./dist/lib/ci/source.js",
+    "./src/commands/apps/create.ts",
+    "./dist/commands/apps/create.js"
+  ],
   "overrides": {
     "serialize-javascript": "^7.0.4"
   },

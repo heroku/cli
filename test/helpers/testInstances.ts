@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
-import {Config, Interfaces} from '@oclif/core'
+import {Config} from '@oclif/core/config'
+import * as Interfaces from '@oclif/core/interfaces'
 import {fileURLToPath} from 'node:url'
 import path from 'node:path'
 
