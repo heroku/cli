@@ -141,8 +141,8 @@ describe('pg:copy', function () {
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.include('Starting copy of RED to BLUE... done\n')
       // Check for warning content without exact formatting (text may wrap differently in CI)
-      // Strip ANSI codes and normalize whitespace to handle line wrapping
-      const normalizedOutput = ansis.strip(stderr.output).replace(/\s+/g, ' ')
+      // Strip ANSI codes, remove line continuation markers (›), and normalize whitespace
+      const normalizedOutput = ansis.strip(stderr.output).replace(/›/g, '').replace(/\s+/g, ' ')
       expect(normalizedOutput).to.include('Warning: pg:copy will only copy your default credential and the data it has access to.')
       expect(normalizedOutput).to.include('Any additional credentials and data that only they can access will not be copied.')
       expect(stderr.output).to.include(copyingText())
