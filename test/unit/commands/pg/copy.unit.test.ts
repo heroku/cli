@@ -35,9 +35,9 @@ const myotherappConfig = {
 const mylowercaseappConfig = {
   LOWERCASE_DATABASE_URL: 'postgres://heroku/lowercasedb',
 }
-const copyingText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... done\n' : 'Copying... done\n'
+const copyingText = () => 'Copying... done\n'
 
-const copyingFailText = () => process.stderr.isTTY ? 'Copying... pending\nCopying... !\n' : 'Copying... !\n'
+const copyingFailText = () => 'Copying... !\n'
 
 describe('pg:copy', function () {
   let pg: nock.Scope
@@ -139,9 +139,7 @@ describe('pg:copy', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.include('Starting copy of RED to BLUE... done\n')
-      expect(stderr.output).to.include('Warning: pg:copy will only copy your default credential and the data it \n')
-      expect(stderr.output).to.include('has access to. Any additional credentials and data that only they can \n')
-      expect(stderr.output).to.include('access will not be copied.\n')
+      expect(stderr.output).to.include(' ›   Warning: pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.\n')
       expect(stderr.output).to.include(copyingText())
     })
   })

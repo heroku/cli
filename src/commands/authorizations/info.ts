@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import {display} from '../../lib/authorizations/authorizations.js'

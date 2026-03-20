@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 type APIClient = InstanceType<typeof Command>['heroku']

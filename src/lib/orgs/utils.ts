@@ -1,6 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 export const printGroups = function (teams: Heroku.Team[], type: {label: string}) {

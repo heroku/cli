@@ -1,5 +1,5 @@
 /* eslint-disable n/no-process-exit */
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Config, run} from '@oclif/core'
 import fs from 'node:fs'
 import os from 'node:os'

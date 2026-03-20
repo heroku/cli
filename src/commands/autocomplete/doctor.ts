@@ -1,5 +1,5 @@
 import {flags} from '@heroku-cli/command'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args, Interfaces} from '@oclif/core'
 import fs from 'fs-extra'
 import {fileURLToPath} from 'node:url'

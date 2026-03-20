@@ -1,6 +1,6 @@
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'

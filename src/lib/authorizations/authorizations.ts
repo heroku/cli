@@ -1,7 +1,7 @@
 'use strict'
 
 import * as Heroku from '@heroku-cli/schema'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
 export function display(auth: Heroku.OAuthAuthorization) {

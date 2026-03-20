@@ -2,7 +2,7 @@ import type {DistinctChoice, ListChoiceMap} from 'inquirer'
 
 import {APIClient} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import inquirer from 'inquirer'
 import printf from 'printf'
 

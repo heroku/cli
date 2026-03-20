@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-objects */
 import * as color from '@heroku/heroku-cli-util/color'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core'
 

@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
 import {Command, Flags, ux} from '@oclif/core'
 import {formatDistanceToNow} from 'date-fns'

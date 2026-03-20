@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Plan} from '@heroku-cli/schema'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 import _ from 'lodash'
 import printf from 'printf'
@@ -40,26 +40,28 @@ export default class Plans extends Command {
     if (flags.json) {
       hux.styledJSON(plans)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(plans, {
         default: {
           get: (plan: any) => plan.default ? 'default' : '',
           header: ' ', // <- This space is necessary to prevent the table header from rendering as "default"
         },
-        human_name: {
-          header: 'Name',
-        },
-        max_price: {
-          get: (plan: any) => plan.price.metered ? this.printMeteredPricingURL(service) : formatPrice({hourly: false, price: plan.price}),
-          header: 'Max Price',
-        },
         name: {
           header: 'Slug',
+        },
+        human_name: {
+          header: 'Name',
         },
         price: {
           get: (plan: any) => formatPrice({hourly: true, price: plan.price}),
           header: 'Price',
         },
+        max_price: {
+          get: (plan: any) => plan.price.metered ? this.printMeteredPricingURL(service) : formatPrice({hourly: false, price: plan.price}),
+          header: 'Max Price',
+        },
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
   }
 

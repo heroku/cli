@@ -1,4 +1,4 @@
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 
 export default async function getCISettings(yes: any, organization: any) {
   const settings = {

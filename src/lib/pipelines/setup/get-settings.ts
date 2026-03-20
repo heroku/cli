@@ -1,4 +1,4 @@
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 
 const DEFAULT_SETTINGS = {
   auto_deploy: true,

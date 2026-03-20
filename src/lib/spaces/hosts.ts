@@ -1,5 +1,5 @@
 import {ux} from '@oclif/core'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {hostStatus} from './format.js'
 
 export type Host = {

@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import {Result} from 'true-myth'
 

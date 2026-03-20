@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {RoleCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'

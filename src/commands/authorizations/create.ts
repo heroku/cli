@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import * as hux from '@heroku/heroku-cli-util/hux'
+import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core'
 
 import {display} from '../../lib/authorizations/authorizations.js'
