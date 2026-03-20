@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {flags} from '@heroku-cli/command'
 import {
   AppCompletion,

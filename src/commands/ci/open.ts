@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import open from 'open'
 
 import {getPipeline} from '../../lib/ci/pipelines.js'

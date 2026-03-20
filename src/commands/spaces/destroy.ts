@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -11,7 +11,7 @@ import {Space} from '../../lib/types/fir.js'
 
 const heredoc = tsheredoc.default
 
-type RequiredSpaceWithNat = {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>} & Required<Space>
+type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
 export default class Destroy extends Command {
   static args = {

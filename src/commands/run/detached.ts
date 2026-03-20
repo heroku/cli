@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core'
 
 import Dyno from '../../lib/run/dyno.js'
@@ -62,4 +62,3 @@ export default class RunDetached extends Command {
     }
   }
 }
-

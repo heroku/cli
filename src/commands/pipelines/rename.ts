@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {updatePipeline} from '../../lib/api.js'

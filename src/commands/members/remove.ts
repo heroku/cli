@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core'
 
 import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'

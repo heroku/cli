@@ -1,7 +1,7 @@
-import {BuildpackRegistry} from '@heroku/buildpack-registry'
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {BuildpackRegistry} from '@heroku/buildpack-registry'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core'
 import _ from 'lodash'
 
@@ -14,16 +14,6 @@ export type BuildpackResponse = {
     url: string;
   };
   ordinal: number;
-}
-
-// Simple URL validation function that returns boolean
-function isValidURL(url: string): boolean {
-  try {
-    const urlObj = new URL(url)
-    return Boolean(urlObj)
-  } catch {
-    return false
-  }
 }
 
 export class BuildpackCommand {
@@ -92,8 +82,8 @@ export class BuildpackCommand {
       })
       buildpacks = ociImages[0].buildpacks.map((b, index) => ({
         buildpack: {
-          url: b.id || b.homepage,
           name: b.id,
+          url: b.id || b.homepage,
         },
         ordinal: index,
       }))
@@ -212,5 +202,15 @@ export class BuildpackCommand {
     if (await this.findUrl(buildpacks, buildpack) !== -1) {
       ux.error(`The buildpack ${buildpack} is already set on your app.`, {exit: 1})
     }
+  }
+}
+
+// Simple URL validation function that returns boolean
+function isValidURL(url: string): boolean {
+  try {
+    const urlObj = new URL(url)
+    return Boolean(urlObj)
+  } catch {
+    return false
   }
 }

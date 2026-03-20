@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core'
 
 export const waitForAddonProvisioning = async function (api: APIClient, addon: Heroku.AddOn, interval: number) {
@@ -59,4 +59,3 @@ export const waitForAddonDeprovisioning = async function (api: APIClient, addon:
   ux.action.stop()
   return addonResponse
 }
-

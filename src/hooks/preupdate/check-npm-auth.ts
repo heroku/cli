@@ -1,5 +1,5 @@
 /* eslint-disable valid-jsdoc */
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Hook, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import {readFile} from 'node:fs/promises'

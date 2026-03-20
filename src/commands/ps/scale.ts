@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core'
 import _ from 'lodash'
 import tsheredoc from 'tsheredoc'
@@ -49,7 +49,7 @@ export default class Scale extends Command {
         const quantity = change[2][0] === '=' ? change[2].slice(1) : change[2]
         if (change[3])
           change[3] = change[3].replace('Shield-', 'Private-')
-        return {type: change[1], quantity, size: change[3]}
+        return {quantity, size: change[3], type: change[1]}
       }))
     }
 

@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import openBrowser from 'open'
@@ -15,7 +15,7 @@ import getRepo from '../../lib/pipelines/setup/get-repo.js'
 import getSettings from '../../lib/pipelines/setup/get-settings.js'
 import pollAppSetups from '../../lib/pipelines/setup/poll-app-setups.js'
 import setupPipeline from '../../lib/pipelines/setup/setup-pipeline.js'
-import {STAGING_APP_INDICATOR, nameAndRepo} from '../../lib/pipelines/setup/validate.js'
+import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/validate.js'
 
 const pipelineDebug = debug('pipelines:setup')
 

@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Hook, ux} from '@oclif/core'
 
 const showVersionInfo: Hook<'update'> = async function ({config}) {

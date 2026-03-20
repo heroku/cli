@@ -1,8 +1,8 @@
 
-import {color} from '@heroku/heroku-cli-util'
-import {HTTP, HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import {AddOnAttachment} from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import {HTTP, HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import fs from 'node:fs/promises'
 import os from 'node:os'
@@ -10,6 +10,23 @@ import path from 'node:path'
 import open from 'open'
 
 import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve.js'
+
+export interface AddonSso {
+  /**
+   * URL of the SSO request
+   */
+  action: string
+  /**
+   * SSO request method
+   */
+  method:
+    | 'get'
+    | 'post'
+  /**
+   * SSO params for POST request
+   */
+  params?: SsoParams
+}
 
 export interface SsoParams {
   /**
@@ -52,23 +69,6 @@ export interface SsoParams {
    * user ID
    */
   user_id: string
-}
-
-export interface AddonSso {
-  /**
-   * URL of the SSO request
-   */
-  action: string
-  /**
-   * SSO request method
-   */
-  method:
-    | 'get'
-    | 'post'
-  /**
-   * SSO params for POST request
-   */
-  params?: SsoParams
 }
 
 export default class Open extends Command {

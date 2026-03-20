@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import tsheredoc from 'tsheredoc'
@@ -84,4 +84,3 @@ export default class RunInside extends Command {
     }
   }
 }
-

@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
-import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'

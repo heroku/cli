@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core'
 import debugFactory from 'debug'
 
@@ -75,4 +75,3 @@ export default class Run extends Command {
     }
   }
 }
-

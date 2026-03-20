@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
