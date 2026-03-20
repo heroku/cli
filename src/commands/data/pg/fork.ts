@@ -1,5 +1,5 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import * as chrono from 'chrono-node'

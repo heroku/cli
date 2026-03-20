@@ -1,7 +1,7 @@
 import type {AddOnAttachment} from '@heroku-cli/schema'
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import * as utils from '@heroku/heroku-cli-util/utils'
 import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'

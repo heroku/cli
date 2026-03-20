@@ -1,5 +1,5 @@
 // Test if we can import color from the main entry point
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 
 console.log('✅ Import from main entry point works!')
 console.log('Available color functions:', Object.keys(color).slice(0, 10).join(', '), '...')

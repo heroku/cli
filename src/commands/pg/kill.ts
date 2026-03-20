@@ -8,10 +8,12 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Kill extends Command {
+  /* eslint-disable perfectionist/sort-objects */
   static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     pid: Args.string({description: 'ID of the process', required: true}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+  /* eslint-enable perfectionist/sort-objects */
 
   static description = 'kill a query'
   static flags = {

@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {ux} from '@oclif/core'
 import bytes = require('bytes')

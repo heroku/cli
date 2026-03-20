@@ -1,7 +1,7 @@
 import type {pg} from '@heroku/heroku-cli-util'
 
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
 import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'

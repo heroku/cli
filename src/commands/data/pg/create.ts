@@ -1,6 +1,6 @@
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import * as utils from '@heroku/heroku-cli-util/utils'
 import {ux} from '@oclif/core'
 import inquirer from 'inquirer'

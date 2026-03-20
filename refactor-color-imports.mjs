@@ -1,49 +1,22 @@
-#!/usr/bin/env node
 
 /**
  * Script to refactor color-only imports from @heroku/heroku-cli-util
- * Changes: import {color} from '@heroku/heroku-cli-util'
+ * Changes: import * as color from '@heroku/heroku-cli-util/color'
  * To:      import * as color from '@heroku/heroku-cli-util/dist/ux/colors.js'
  */
 
-import { readFile, writeFile } from 'fs/promises'
-import { execSync } from 'child_process'
+import {execSync} from 'child_process'
+import {readFile, writeFile} from 'fs/promises'
 
-const OLD_IMPORT = "import {color} from '@heroku/heroku-cli-util'"
+const OLD_IMPORT = "import * as color from '@heroku/heroku-cli-util/color'"
 const NEW_IMPORT = "import * as color from '@heroku/heroku-cli-util/dist/ux/colors.js'"
 
 async function getFilesToRefactor() {
   const output = execSync(
-    `grep -rl "^import {color} from '@heroku/heroku-cli-util'$" src/`,
-    { encoding: 'utf-8' }
+    'grep -rl "^import * as color from \'@heroku/heroku-cli-util/color\'$" src/',
+    {encoding: 'utf-8'},
   )
   return output.trim().split('\n').filter(Boolean)
-}
-
-async function refactorFile(filePath) {
-  try {
-    const content = await readFile(filePath, 'utf-8')
-    const lines = content.split('\n')
-
-    // Find and replace the import line
-    let modified = false
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i] === OLD_IMPORT) {
-        lines[i] = NEW_IMPORT
-        modified = true
-        break
-      }
-    }
-
-    if (modified) {
-      await writeFile(filePath, lines.join('\n'), 'utf-8')
-      return true
-    }
-    return false
-  } catch (error) {
-    console.error(`Error processing ${filePath}:`, error.message)
-    return false
-  }
 }
 
 async function main() {
@@ -77,7 +50,35 @@ async function main() {
   if (failCount > 0) {
     console.log(`❌ Failed: ${failCount} files`)
   }
+
   console.log('─'.repeat(60))
+}
+
+async function refactorFile(filePath) {
+  try {
+    const content = await readFile(filePath, 'utf-8')
+    const lines = content.split('\n')
+
+    // Find and replace the import line
+    let modified = false
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i] === OLD_IMPORT) {
+        lines[i] = NEW_IMPORT
+        modified = true
+        break
+      }
+    }
+
+    if (modified) {
+      await writeFile(filePath, lines.join('\n'), 'utf-8')
+      return true
+    }
+
+    return false
+  } catch (error) {
+    console.error(`Error processing ${filePath}:`, error.message)
+    return false
+  }
 }
 
 main().catch(console.error)

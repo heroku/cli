@@ -109,15 +109,10 @@ export default class Index extends Command {
     if (restores.length === 0) {
       ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(restores, {
-        Database: {
-          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
-        },
         ID: {
           get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
-        },
-        Size: {
-          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
         },
         'Started at': {
           get: (transfer: BackupTransfer) => transfer.created_at,
@@ -125,7 +120,14 @@ export default class Index extends Command {
         Status: {
           get: (transfer: BackupTransfer) => pgbackups.status(transfer),
         },
+        Size: {
+          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
+        },
+        Database: {
+          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
+        },
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
 
     ux.stdout()
