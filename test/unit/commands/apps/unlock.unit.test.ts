@@ -1,4 +1,4 @@
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'

@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 import {ux} from '@oclif/core/ux'
 import fs from 'fs-extra'
 import path from 'node:path'

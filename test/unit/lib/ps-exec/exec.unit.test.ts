@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import nock from 'nock'

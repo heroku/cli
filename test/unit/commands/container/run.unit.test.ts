@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import {expect} from 'chai'
 import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 import nock from 'nock'
 
 describe('container run', function () {

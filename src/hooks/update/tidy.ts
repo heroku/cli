@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 import {stat} from 'node:fs/promises'
 import * as path from 'path'
 import fs from 'fs-extra'

@@ -1,6 +1,6 @@
 import {APIClient, Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {Config} from '@oclif/core'
+import {Config} from '@oclif/core/config'
 
 export default abstract class extends Command {
   webhooksClient: APIClient

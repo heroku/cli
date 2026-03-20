@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
-import {Config} from '@oclif/core'
+import {Config} from '@oclif/core/config'
 import {expect} from 'chai'
 import * as path from 'path'
 import {fileURLToPath} from 'url'

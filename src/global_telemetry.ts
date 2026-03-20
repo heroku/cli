@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import {Config} from '@oclif/core'
+import {Config} from '@oclif/core/config'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 import * as Sentry from '@sentry/node'
 import {

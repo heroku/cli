@@ -1,6 +1,6 @@
 import type {OclifError} from '@oclif/core/interfaces'
 
-import {Interfaces} from '@oclif/core'
+import * as Interfaces from '@oclif/core/interfaces'
 import ansis from 'ansis'
 
 import {getConfig} from './testInstances.js'

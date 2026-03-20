@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'

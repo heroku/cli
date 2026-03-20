@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {Command} from '@oclif/core'
+import {Command} from '@oclif/core/command'
 
 import {HerokuRepl} from '../lib/repl.js'
 

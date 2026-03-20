@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 import {getAllVersionFlags} from '../../lib/utils/packageParser.js'
 
 const allowlist = [

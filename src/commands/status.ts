@@ -1,8 +1,8 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {Command} from '@oclif/core'
-import {Flags} from '@oclif/core'
+import {Command} from '@oclif/core/command'
+import * as Flags from '@oclif/core/flags'
 import {ux} from '@oclif/core/ux'
 import {formatDistanceToNow} from 'date-fns'
 

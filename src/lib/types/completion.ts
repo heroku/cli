@@ -1,5 +1,5 @@
-import type {Config} from '@oclif/core'
-import type {Interfaces} from '@oclif/core'
+import type {Config} from '@oclif/core/config'
+import type * as Interfaces from '@oclif/core/interfaces'
 
 export interface CompletionContext {
   config: Config

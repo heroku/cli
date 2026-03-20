@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 
 import * as telemetry from '../../global_telemetry.js'
 

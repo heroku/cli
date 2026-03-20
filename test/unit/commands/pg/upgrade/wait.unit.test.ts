@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
 import tsheredoc from 'tsheredoc'
-import {Errors} from '@oclif/core'
+import * as Errors from '@oclif/core/errors'
 import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 

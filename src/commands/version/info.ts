@@ -1,6 +1,6 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args} from '@oclif/core'
-import {Command} from '@oclif/core'
+import {Command} from '@oclif/core/command'
 import {ux} from '@oclif/core/ux'
 import {marked, type MarkedExtension} from 'marked'
 import {markedTerminal} from 'marked-terminal'

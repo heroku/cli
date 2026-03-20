@@ -7,7 +7,7 @@ import {
   TeamCompletion,
 } from '@heroku-cli/command/lib/completions.js'
 import {Args} from '@oclif/core'
-import {Interfaces} from '@oclif/core'
+import * as Interfaces from '@oclif/core/interfaces'
 import {ux} from '@oclif/core/ux'
 import * as path from 'path'
 

@@ -1,4 +1,4 @@
-import {Config} from '@oclif/core'
+import {Config} from '@oclif/core/config'
 import {expect} from 'chai'
 import nock from 'nock'
 import netrc from 'netrc-parser'

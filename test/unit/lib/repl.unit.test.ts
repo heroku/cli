@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import {Config} from '@oclif/core'
+import {Config} from '@oclif/core/config'
 import sinon from 'sinon'
 import {HerokuRepl} from '../../../src/lib/repl.js'
 import * as os from 'node:os'

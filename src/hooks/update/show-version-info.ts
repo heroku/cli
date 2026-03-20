@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 import {ux} from '@oclif/core/ux'
 
 const showVersionInfo: Hook<'update'> = async function ({config}) {

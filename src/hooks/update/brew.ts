@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 import {spawnSync, SpawnSyncOptions} from 'child_process'
 import * as path from 'path'
 import debug from 'debug'
