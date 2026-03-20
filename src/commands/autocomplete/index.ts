@@ -6,7 +6,9 @@ import {
   SpaceCompletion,
   TeamCompletion,
 } from '@heroku-cli/command/lib/completions.js'
-import {Args, Interfaces, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {Interfaces} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'

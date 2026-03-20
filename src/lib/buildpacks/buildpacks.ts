@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import * as color from '@heroku/heroku-cli-util/color'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {OciImage} from '../../lib/types/fir.js'

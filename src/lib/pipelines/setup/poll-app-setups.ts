@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import * as api from '../../api.js'
 

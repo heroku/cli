@@ -1,5 +1,5 @@
 import {hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {pipelineName, repoName} from './validate.js'
 

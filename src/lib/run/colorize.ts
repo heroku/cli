@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 export const COLORS: Array<(s: string) => string> = [
   s => color.yellow(s),

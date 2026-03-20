@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {fork as forkChildProcess} from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'

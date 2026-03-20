@@ -1,5 +1,5 @@
 import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import {EventEmitter} from 'node:events'
 import {Server} from 'node:net'

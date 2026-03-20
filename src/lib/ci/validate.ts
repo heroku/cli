@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {Interfaces} from '@oclif/core'
 
 export const validateArgvPresent = (argv: Interfaces.ParserOutput['argv'], isUnset = false) => {

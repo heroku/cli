@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {hux} from '@heroku/heroku-cli-util'
 import {hostStatus} from './format.js'
 

@@ -3,7 +3,7 @@
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import {EventEmitter} from 'node:events'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {NpmAuth} from '../../../src/lib/npm-auth.js'
 

@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import * as pg from '@heroku/heroku-cli-util/utils/pg'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import type {TransferSchedule} from '../../../lib/pg/types.js'
 

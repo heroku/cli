@@ -2,7 +2,7 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {Space} from '../../lib/types/fir.js'

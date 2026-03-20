@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import * as utils from '@heroku/heroku-cli-util/utils'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {waitForAddonProvisioning} from './addons_wait.js'
 import * as util from './util.js'

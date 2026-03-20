@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {APIClient} from '@heroku-cli/command'
 
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import * as https from 'https'
 import {URL} from 'url'
 

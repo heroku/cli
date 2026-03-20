@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {EventSource} from 'eventsource'
 import {HttpsProxyAgent} from 'https-proxy-agent'
 

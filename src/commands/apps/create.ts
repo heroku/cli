@@ -8,7 +8,9 @@ import {
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
-import {Args, Interfaces, ux} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {Interfaces} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import fs from 'fs-extra'
 import {parse} from 'yaml'
 

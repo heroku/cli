@@ -1,5 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {Domain} from '../types/domain.js'
 
 async function * customDomainCreationComplete(app: string, heroku: APIClient): AsyncGenerator<Domain[] | null> {

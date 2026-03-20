@@ -2,7 +2,7 @@ import {flags as cmdFlags, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {getPipelineConfigVars} from '../../../lib/api.js'
 import {getPipeline} from '../../../lib/ci/pipelines.js'

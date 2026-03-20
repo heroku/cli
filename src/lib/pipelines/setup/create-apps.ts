@@ -1,6 +1,6 @@
 
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {createAppSetup} from '../../api.js'
 

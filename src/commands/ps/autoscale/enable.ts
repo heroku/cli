@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {App, Formation} from '../../../lib/types/fir.js'
 import {getGeneration} from '../../../lib/apps/generation.js'
 

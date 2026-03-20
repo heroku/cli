@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {Command, flags as cmdFlags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {createTestRun, getAppSetup, getTestNodes, updateTestRun} from '../../lib/api.js'

@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as pg from '@heroku/heroku-cli-util/utils/pg'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import type {Setting, SettingKey, SettingsResponse} from './types.js'
 

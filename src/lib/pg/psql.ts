@@ -1,7 +1,7 @@
 import type {pg} from '@heroku/heroku-cli-util'
 
 import * as pgUtils from '@heroku/heroku-cli-util/utils/pg'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {SpawnOptions} from 'child_process'
 import debug from 'debug'
 import * as fs from 'fs'

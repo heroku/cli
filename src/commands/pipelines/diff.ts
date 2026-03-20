@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import type {OciImage, PipelineCoupling, Slug} from '../../lib/types/fir.js'
 import type {Commit, GitHubDiff} from '../../lib/types/github.js'

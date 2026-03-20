@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import * as pg from '@heroku/heroku-cli-util/utils/pg'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import bytes = require('bytes')
 import tsheredoc from 'tsheredoc'
 

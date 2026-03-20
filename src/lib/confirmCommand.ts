@@ -1,6 +1,6 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 export default class ConfirmCommand {
   async confirm(app: string, confirm?: string, message?: string) {

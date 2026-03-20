@@ -1,33 +1,34 @@
-import {stdout, stderr} from 'stdout-stderr'
-import nock from 'nock'
-import {expect} from 'chai'
 import ansis from 'ansis'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/pg/copy.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 const addon = {
-  id: 1, name: 'postgres-1', app: {name: 'myapp'}, config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'], plan: {name: 'heroku-postgresql:standard-0'},
+  app: {name: 'myapp'}, config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'], id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
 }
 const otherAddon = {
-  id: 2, name: 'postgres-2', app: {name: 'myotherapp'}, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_BLUE_URL'], plan: {name: 'heroku-postgresql:standard-0'},
+  app: {name: 'myotherapp'}, config_vars: ['DATABASE_URL', 'HEROKU_POSTGRESQL_BLUE_URL'], id: 2, name: 'postgres-2', plan: {name: 'heroku-postgresql:standard-0'},
 }
 const lowercaseAddon = {
-  id: 2, name: 'postgres-3', app: {name: 'mylowercaseapp'}, config_vars: ['LOWERCASE_DATABASE_URL'], plan: {name: 'heroku-postgresql:standard-0'},
+  app: {name: 'mylowercaseapp'}, config_vars: ['LOWERCASE_DATABASE_URL'], id: 2, name: 'postgres-3', plan: {name: 'heroku-postgresql:standard-0'},
 }
 const attachment = {
-  name: 'HEROKU_POSTGRESQL_RED', app: {name: 'myapp'}, addon,
+  addon, app: {name: 'myapp'}, name: 'HEROKU_POSTGRESQL_RED',
 }
 const otherAttachment = {
-  name: 'HEROKU_POSTGRESQL_BLUE', app: {name: 'myotherapp'}, addon: otherAddon,
+  addon: otherAddon, app: {name: 'myotherapp'}, name: 'HEROKU_POSTGRESQL_BLUE',
 }
 const lowercaseAttachment = {
-  name: 'lowercase_database', app: {name: 'mylowercaseapp'}, addon: lowercaseAddon,
+  addon: lowercaseAddon, app: {name: 'mylowercaseapp'}, name: 'lowercase_database',
 }
 const attachedBlueAttachment = {
-  name: 'ATTACHED_BLUE', app: {name: 'myapp'}, addon: otherAddon,
+  addon: otherAddon, app: {name: 'myapp'}, name: 'ATTACHED_BLUE',
 }
 const myappConfig = {
-  READONLY_URL: 'postgres://readonly-heroku/db', DATABASE_URL: 'postgres://heroku/db', HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db', ATTACHED_BLUE_URL: 'postgres://heroku/otherdb',
+  ATTACHED_BLUE_URL: 'postgres://heroku/otherdb', DATABASE_URL: 'postgres://heroku/db', HEROKU_POSTGRESQL_RED_URL: 'postgres://heroku/db', READONLY_URL: 'postgres://readonly-heroku/db',
 }
 const myotherappConfig = {
   DATABASE_URL: 'postgres://heroku/otherdb', HEROKU_POSTGRESQL_BLUE_URL: 'postgres://heroku/otherdb',
@@ -58,7 +59,7 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
+        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
       })
         .reply(200, [attachment])
       api.get('/apps/myapp/config-vars')
@@ -108,11 +109,11 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-2')
         .reply(200, otherAddon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
+        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
       })
         .reply(200, [attachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myotherapp', addon_attachment: 'DATABASE_URL',
+        addon_attachment: 'DATABASE_URL', app: 'myotherapp',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/myapp/config-vars')
@@ -139,7 +140,9 @@ describe('pg:copy', function () {
       ])
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.include('Starting copy of RED to BLUE... done\n')
-      expect(stderr.output).to.include(' ›   Warning: pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.\n')
+      // Check for warning content without exact formatting (text may wrap differently in CI)
+      expect(ansis.strip(stderr.output)).to.include('Warning: pg:copy will only copy your default credential and the data it has access to.')
+      expect(ansis.strip(stderr.output)).to.include('Any additional credentials and data that only they can access will not be copied.')
       expect(stderr.output).to.include(copyingText())
     })
   })
@@ -150,11 +153,11 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-2')
         .reply(200, otherAddon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
+        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
       })
         .reply(200, [attachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'ATTACHED_BLUE',
+        addon_attachment: 'ATTACHED_BLUE', app: 'myapp',
       })
         .reply(200, [attachedBlueAttachment])
       api.get('/apps/myapp/config-vars')
@@ -190,11 +193,11 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-2')
         .reply(200, otherAddon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'mylowercaseapp', addon_attachment: 'lowercase_database_URL',
+        addon_attachment: 'lowercase_database_URL', app: 'mylowercaseapp',
       })
         .reply(200, [lowercaseAttachment])
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myotherapp', addon_attachment: 'DATABASE_URL',
+        addon_attachment: 'DATABASE_URL', app: 'myotherapp',
       })
         .reply(200, [otherAttachment])
       api.get('/apps/mylowercaseapp/config-vars')
@@ -229,7 +232,7 @@ describe('pg:copy', function () {
       api.get('/addons/postgres-1')
         .reply(200, addon)
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'HEROKU_POSTGRESQL_RED_URL',
+        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
       })
         .reply(200, [attachment])
       api.get('/apps/myapp/config-vars')
@@ -239,9 +242,11 @@ describe('pg:copy', function () {
       })
         .reply(200, {uuid: '100-001'})
       pg.get('/client/v11/apps/myapp/transfers/100-001')
-        .reply(200, {finished_at: '100', succeeded: false, num: 1})
+        .reply(200, {finished_at: '100', num: 1, succeeded: false})
       pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
-        .reply(200, {finished_at: '100', succeeded: false, num: 1, logs: [{message: 'foobar'}]})
+        .reply(200, {
+          finished_at: '100', logs: [{message: 'foobar'}], num: 1, succeeded: false,
+        })
     })
     it('fails to copy', async function () {
       const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'

@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {Args, Command} from '@oclif/core'
+import {Args} from '@oclif/core'
+import {Command} from '@oclif/core'
 import * as path from 'path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
