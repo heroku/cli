@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+## [11.0.1-alpha.0](https://github.com/heroku/cli/compare/v11.0.0...v11.0.1-alpha.0) (2026-03-23)
+
+
+### Bug Fixes
+
+* address linting errors in push_pull.unit.test.ts ([ff757f9](https://github.com/heroku/cli/commit/ff757f92e339ef8e41324519c20ec8af260883f3))
+* address UI issues with confirmation prompts on multiple commands (W-21649376) ([#3602](https://github.com/heroku/cli/issues/3602)) ([7e96152](https://github.com/heroku/cli/commit/7e96152f8789d4580cd30b0e501866d6f01c9079))
+* handle both Unix and Windows line continuation markers in test ([c769487](https://github.com/heroku/cli/commit/c7694877c7dea2a935a57afa4ffd96788c081683))
+* normalize whitespace in pg:copy test to handle line wrapping ([5dce0c0](https://github.com/heroku/cli/commit/5dce0c059c466424831d9a851e5bcd79e18dd4c8))
+* remove line continuation markers (›) from pg:copy test assertion ([60367f9](https://github.com/heroku/cli/commit/60367f9a87f465720d480ccc97f38398a2cffb70))
+* restore correct argument order in pg:kill and column order in pg:backups ([faf96a8](https://github.com/heroku/cli/commit/faf96a8c62ea0a703dc8684b672c2d010995e948))
+
+
+### Performance Improvements
+
+* implement lazy initialization in global_telemetry.ts ([90e9ed8](https://github.com/heroku/cli/commit/90e9ed8d6773269fa2c1a551594571d629bac911)), closes [#1](https://github.com/heroku/cli/issues/1)
+
+
+### Reverts
+
+* change hux imports back to original format ([fc4efcb](https://github.com/heroku/cli/commit/fc4efcb619f20fcbd53cdbec7fad9f720403e839))
+
+
+### Code Refactoring
+
+* migrate additional oclif/core imports to granular paths ([b00f611](https://github.com/heroku/cli/commit/b00f61171cb9842b2b3af175d5720b58656aa513))
+* migrate hux imports to granular module paths ([7b96538](https://github.com/heroku/cli/commit/7b965385324cb033363e74b9ef2e84af69834006))
+* migrate pg utility imports to granular module paths ([f8cb197](https://github.com/heroku/cli/commit/f8cb1971c14d02450027a8a33aaffae44bd1ad26))
+* migrate ux imports to granular @oclif/core/ux module ([ea91d6c](https://github.com/heroku/cli/commit/ea91d6c970486d893059d2c67d4b8afa9d4f9ce6))
+* use granular imports from heroku-cli-util beta ([22bb780](https://github.com/heroku/cli/commit/22bb78078b1bb44f59b6f2f64f60a43ff5c424e7))
+
 ## [11.0.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0) (2026-03-18)
 
 ### Summary
