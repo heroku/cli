@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'
 
 const revokeInvite = async (email: string, team: string, heroku: APIClient) => {

@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 export default class Get extends Command {
   static aliases = ['drains:get']
   static description = 'display the log drain for a space'

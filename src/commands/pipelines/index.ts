@@ -1,8 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'

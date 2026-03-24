@@ -1,15 +1,10 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 
 import {getGeneration} from '../apps/generation.js'
 import {SpaceNat} from '../types/fir.js'
 import {SpaceWithOutboundIps} from '../types/spaces.js'
-
-export function displayShieldState(space: Heroku.Space) {
-  return space.shield ? 'on' : 'off'
-}
 
 export function displayNat(nat?: Required<SpaceNat>) {
   if (!nat) return
@@ -17,11 +12,16 @@ export function displayNat(nat?: Required<SpaceNat>) {
   return nat.sources.join(', ')
 }
 
+export function displayShieldState(space: Heroku.Space) {
+  return space.shield ? 'on' : 'off'
+}
+
 export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
   if (json) {
     ux.stdout(JSON.stringify(space, null, 2))
   } else {
     hux.styledHeader(color.space(space.name || ''))
+    /* eslint-disable perfectionist/sort-objects */
     hux.styledObject(
       {
         ID: space.id,
@@ -35,6 +35,7 @@ export function renderInfo(space: SpaceWithOutboundIps, json: boolean) {
         Generation: getGeneration(space),
         'Created at': space.created_at,
       },
+      /* eslint-enable perfectionist/sort-objects */
       ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Outbound IPs', 'Generation', 'Created at'],
     )
   }

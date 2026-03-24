@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 import {gitService} from '../../lib/ci/git.js'
 import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'

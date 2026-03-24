@@ -1,8 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 
 import {TelemetryDrain} from '../types/telemetry.js'
 
@@ -13,18 +12,6 @@ interface TelemetryDisplayObject {
   Signals: string
   Space?: string
   Transport: string
-}
-
-export function validateAndFormatSignals(signalInput: string | undefined): string[] {
-  const signalOptions = ['traces', 'metrics', 'logs']
-  if (!signalInput || signalInput === 'all') return signalOptions
-  const signalArray = signalInput.split(',')
-  signalArray.forEach(signal => {
-    if (!signalOptions.includes(signal)) {
-      ux.error(`Invalid signal option: ${signalArray}. Run heroku telemetry:add --help to see signal options.`, {exit: 1})
-    }
-  })
-  return signalArray
 }
 
 export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, heroku: APIClient) {
@@ -60,4 +47,16 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, hero
   }
 
   hux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers'])
+}
+
+export function validateAndFormatSignals(signalInput: string | undefined): string[] {
+  const signalOptions = ['traces', 'metrics', 'logs']
+  if (!signalInput || signalInput === 'all') return signalOptions
+  const signalArray = signalInput.split(',')
+  signalArray.forEach(signal => {
+    if (!signalOptions.includes(signal)) {
+      ux.error(`Invalid signal option: ${signalArray}. Run heroku telemetry:add --help to see signal options.`, {exit: 1})
+    }
+  })
+  return signalArray
 }

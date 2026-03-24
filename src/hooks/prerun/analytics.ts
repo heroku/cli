@@ -13,9 +13,10 @@ const analytics: Hook<'prerun'> = async function (options) {
   }
 
   const telemetry = await import('../../global_telemetry.js')
-  ;(global as any).cliTelemetry = telemetry.setupTelemetry(this.config, options)
-  const analytics = new Analytics(this.config)
-  Reflect.set(globalThis, 'recordPromise', analytics.record(options))
+  const globalAny = global as any
+  globalAny.cliTelemetry = telemetry.setupTelemetry(this.config, options)
+  const analyticsInstance = new Analytics(this.config)
+  Reflect.set(globalThis, 'recordPromise', analyticsInstance.record(options))
 }
 
 export default analytics
