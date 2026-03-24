@@ -1,8 +1,9 @@
-import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Dyno, Release} from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
+
+import {HuxHelpers} from '../../lib/hux-helpers.js'
 
 export default class Wait extends Command {
   static description = 'wait for all dynos to be running latest version after a release'
@@ -85,7 +86,7 @@ export default class Wait extends Command {
 
       ux.action.status = releasedFraction
 
-      await hux.wait(interval * 1000)
+      await HuxHelpers.wait(interval * 1000)
     }
   }
 }

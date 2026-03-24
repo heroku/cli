@@ -1,4 +1,3 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
 import inquirer from 'inquirer'
@@ -8,6 +7,7 @@ import path from 'node:path'
 import sinon from 'sinon'
 
 import Add from '../../../../src/commands/keys/add.js'
+import {HuxHelpers} from '../../../../src/lib/hux-helpers.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 describe('keys:add', function () {
@@ -59,7 +59,7 @@ describe('keys:add', function () {
 
       sinon.stub(os, 'homedir').returns(home)
       sinon.stub(inquirer, 'prompt').resolves({yes: true})
-      sinon.stub(hux, 'prompt').resolves('yes')
+      sinon.stub(HuxHelpers, 'prompt').resolves('yes')
 
       const {stderr} = await runCommand(Add, ['--quiet'])
 

@@ -1,5 +1,5 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -8,6 +8,7 @@ import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/run.js'
+import {HuxHelpers} from '../../../../../src/lib/hux-helpers.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
@@ -24,7 +25,7 @@ describe('pg:upgrade:run', function () {
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
+    uxPromptStub = sinon.stub(HuxHelpers, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {

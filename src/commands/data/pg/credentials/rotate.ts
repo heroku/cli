@@ -1,6 +1,7 @@
 import {flags as Flags} from '@heroku-cli/command'
 import {AddOn, AddOnAttachment} from '@heroku-cli/schema'
-import {color, hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 

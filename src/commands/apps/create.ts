@@ -7,7 +7,7 @@ import {
 } from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args} from '@oclif/core'
 import * as Interfaces from '@oclif/core/interfaces'
 import {ux} from '@oclif/core/ux'

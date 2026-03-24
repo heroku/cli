@@ -1,12 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'
 import {spawn} from 'node:child_process'
 import os from 'node:os'
 import path from 'node:path'
+
+import {HuxHelpers} from '../../lib/hux-helpers.js'
 
 export default class Add extends Command {
   static args = {
@@ -106,7 +107,7 @@ async function confirmPrompt(message: string) {
     }])
   }
 
-  const data = await hux.prompt(message + ' [Y/n]')
+  const data = await HuxHelpers.prompt(message + ' [Y/n]')
   return {yes: /^y(es)?/i.test(data)}
 }
 

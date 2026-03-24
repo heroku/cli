@@ -1,10 +1,10 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd, {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {EditorFactory} from '../../../../src/lib/config/util.js'
+import {HuxHelpers} from '../../../../src/lib/hux-helpers.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config:edit', function () {
@@ -39,7 +39,7 @@ describe('config:edit', function () {
       createEditorStub = sinon.stub(EditorFactory, 'createEditor').callsFake(() => ({
         edit: editorEditStub,
       }) as any)
-      sinon.stub(hux, 'confirm').returns(Promise.resolve(true) as any)
+      sinon.stub(HuxHelpers, 'confirm').returns(Promise.resolve(true) as any)
     })
 
     afterEach(function () {

@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {HTTP} from '@heroku/http-call'
 import {Command} from '@oclif/core/command'
 import * as Flags from '@oclif/core/flags'

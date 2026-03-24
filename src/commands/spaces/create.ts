@@ -1,7 +1,7 @@
-import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 

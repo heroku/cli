@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import _ from 'lodash'
 
 import {parse, quote} from '../../lib/config/quote.js'
 import {EditorFactory} from '../../lib/config/util.js'
+import {HuxHelpers} from '../../lib/hux-helpers.js'
 
 interface Config {
   [key: string]: string;
@@ -78,7 +78,7 @@ ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
     ux.stdout('Config Diff:')
     showDiff(original, newConfig)
     ux.stdout()
-    return hux.confirm(`Update config on ${color.app(this.app)} with these values?`)
+    return HuxHelpers.confirm(`Update config on ${color.app(this.app)} with these values?`)
   }
 
   private async fetchLatestConfig() {

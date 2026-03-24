@@ -1,9 +1,9 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import TransferCommand from '../../../../src/commands/pipelines/transfer.js'
+import {HuxHelpers} from '../../../../src/lib/hux-helpers.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:transfer', function () {
@@ -92,7 +92,7 @@ describe('pipelines:transfer', function () {
   })
 
   it('does not pass confirm flag', async function () {
-    const promptStub = sinon.stub(hux, 'prompt').onFirstCall().resolves(pipeline.name)
+    const promptStub = sinon.stub(HuxHelpers, 'prompt').onFirstCall().resolves(pipeline.name)
 
     setupCommonMocks()
 

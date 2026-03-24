@@ -1,11 +1,13 @@
-import {ux} from '@oclif/core/ux'
-import {hux} from '@heroku/heroku-cli-util'
-import {displayCIDR, peeringStatus} from './format.js'
 import {Peering, PeeringInfo} from '@heroku-cli/schema'
+import {ux} from '@oclif/core/ux'
+
+import {HuxHelpers} from '../hux-helpers.js'
+import {displayCIDR, peeringStatus} from './format.js'
 
 export function displayPeeringInfo(space: string, info: PeeringInfo) {
-  hux.styledHeader(`${space} Peering Info`)
-  hux.styledObject({
+  HuxHelpers.styledHeader(`${space} Peering Info`)
+  /* eslint-disable perfectionist/sort-objects */
+  HuxHelpers.styledObject({
     'AWS Account ID': info.aws_account_id,
     'AWS Region': info.aws_region,
     'AWS VPC ID': info.vpc_id,
@@ -13,15 +15,13 @@ export function displayPeeringInfo(space: string, info: PeeringInfo) {
     'Space CIDRs': displayCIDR(info.space_cidr_blocks),
     'Unavailable CIDRs': displayCIDR(info.unavailable_cidr_blocks),
   }, ['AWS Account ID', 'AWS Region', 'AWS VPC ID', 'AWS VPC CIDR', 'Space CIDRs', 'Unavailable CIDRs'])
-}
-
-export function displayPeeringsAsJSON(peerings: Peering[]) {
-  ux.stdout(JSON.stringify(peerings, null, 2))
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 export function displayPeerings(space: string, peerings: Peering[]) {
-  hux.styledHeader(`${space} Peerings`)
-  hux.table<Peering>(peerings, {
+  HuxHelpers.styledHeader(`${space} Peerings`)
+  /* eslint-disable perfectionist/sort-objects */
+  HuxHelpers.table(peerings, {
     pcx_id: {
       header: 'PCX ID',
     },
@@ -49,4 +49,9 @@ export function displayPeerings(space: string, peerings: Peering[]) {
       header: 'Expires',
     },
   })
+  /* eslint-enable perfectionist/sort-objects */
+}
+
+export function displayPeeringsAsJSON(peerings: Peering[]) {
+  ux.stdout(JSON.stringify(peerings, null, 2))
 }

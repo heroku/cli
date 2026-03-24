@@ -1,6 +1,7 @@
 
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import * as pg from '@heroku/heroku-cli-util/utils/pg'
 import {Args, ux} from '@oclif/core'
 

@@ -1,8 +1,9 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
+
 import Cmd from '../../../../src/commands/spaces/destroy.js'
+import {HuxHelpers} from '../../../../src/lib/hux-helpers.js'
 import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
@@ -10,7 +11,7 @@ describe('spaces:destroy', function () {
   const now = new Date()
 
   beforeEach(function () {
-    sinon.stub(hux, 'prompt').resolves('my-space')
+    sinon.stub(HuxHelpers, 'prompt').resolves('my-space')
   })
 
   afterEach(function () {

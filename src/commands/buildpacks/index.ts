@@ -1,6 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'

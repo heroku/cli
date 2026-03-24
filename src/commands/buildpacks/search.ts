@@ -1,6 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Args, ux} from '@oclif/core'
 
 export default class Search extends Command {

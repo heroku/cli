@@ -1,10 +1,11 @@
 /* eslint-disable max-nested-callbacks */
-import {color, hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import SetupCommand from '../../../../src/commands/pipelines/setup.js'
+import {HuxHelpers} from '../../../../src/lib/hux-helpers.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:setup', function () {
@@ -105,8 +106,8 @@ describe('pipelines:setup', function () {
           promptStub.onSecondCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
+          sinon.stub(HuxHelpers, 'prompt').callsFake(promptStub)
+          sinon.stub(HuxHelpers, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
@@ -130,8 +131,8 @@ describe('pipelines:setup', function () {
           promptStub.onFirstCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
+          sinon.stub(HuxHelpers, 'prompt').callsFake(promptStub)
+          sinon.stub(HuxHelpers, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
@@ -153,7 +154,7 @@ describe('pipelines:setup', function () {
         it('does not prompt for options with the -y flag', async function () {
           confirmStub.resetHistory()
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
+          sinon.stub(HuxHelpers, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
@@ -189,8 +190,8 @@ describe('pipelines:setup', function () {
           promptStub.onSecondCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
+          sinon.stub(HuxHelpers, 'prompt').callsFake(promptStub)
+          sinon.stub(HuxHelpers, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
@@ -242,7 +243,7 @@ describe('pipelines:setup', function () {
         it('shows error if getAppSetup returns body with setup.status === failed', async function () {
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
+          sinon.stub(HuxHelpers, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
@@ -296,7 +297,7 @@ describe('pipelines:setup', function () {
         it('shows error if getAppSetup times out', async function () {
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
+          sinon.stub(HuxHelpers, 'confirm').callsFake(confirmStub)
           sinon.stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)

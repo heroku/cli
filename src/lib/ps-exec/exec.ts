@@ -1,7 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import debug from 'debug'
 import got, {Response} from 'got'
@@ -11,6 +10,7 @@ import child from 'node:child_process'
 import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
+import {HuxHelpers} from '../hux-helpers.js'
 import {App, BuildpackInstallation} from '../types/fir.js'
 import {HerokuSsh} from './ssh.js'
 
@@ -45,7 +45,7 @@ export class HerokuExec {
 
       const reservations = JSON.parse(response.body)
 
-      hux.styledHeader(`Heroku Exec ${color.app(context.app)}`)
+      HuxHelpers.styledHeader(`Heroku Exec ${color.app(context.app)}`)
 
       if (reservations.length === 0) {
         ux.error(`Heroku Exec is not running. Check dyno status with ${color.command('heroku ps')}.`)
@@ -63,7 +63,7 @@ export class HerokuExec {
           })
         }
 
-        hux.table(statuses, {
+        HuxHelpers.table(statuses, {
           dyno_name: {header: 'Dyno'},
           dyno_status: {header: 'Dyno Status'},
           proxy_status: {header: 'Proxy Status'},
@@ -142,7 +142,7 @@ export class HerokuExec {
         + color.command('  heroku addons:destroy heroku-exec'))
     } else if (!feature.enabled) {
       ux.stdout('Running this command for the first time requires a dyno restart.')
-      const answer = await hux.prompt('Do you want to continue? [y/n]')
+      const answer = await HuxHelpers.prompt('Do you want to continue? [y/n]')
 
       if (answer.trim().toLowerCase() !== 'y') {
         ux.exit()

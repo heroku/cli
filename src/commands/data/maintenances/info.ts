@@ -1,5 +1,6 @@
 import {flags} from '@heroku-cli/command'
-import {color, hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import * as utils from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import {addSeconds, formatDistance} from 'date-fns'

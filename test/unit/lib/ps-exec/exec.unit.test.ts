@@ -1,6 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Errors from '@oclif/core/errors'
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
@@ -8,6 +7,7 @@ import nock from 'nock'
 import child from 'node:child_process'
 import sinon from 'sinon'
 
+import {HuxHelpers} from '../../../../src/lib/hux-helpers.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {BuildpackInstallation} from '../../../../src/lib/types/fir.js'
 import {getHerokuAPI} from '../../../helpers/testInstances.js'
@@ -30,9 +30,9 @@ describe('HerokuExec', function () {
     uxActionStopStub = sinon.stub(ux.action, 'stop')
     uxStdoutStub = sinon.stub(ux, 'stdout')
     uxWarnStub = sinon.stub(ux, 'warn')
-    huxPromptStub = sinon.stub(hux, 'prompt').resolves('n')
-    huxStyledHeaderStub = sinon.stub(hux, 'styledHeader')
-    huxTableStub = sinon.stub(hux, 'table')
+    huxPromptStub = sinon.stub(HuxHelpers, 'prompt').resolves('n')
+    huxStyledHeaderStub = sinon.stub(HuxHelpers, 'styledHeader')
+    huxTableStub = sinon.stub(HuxHelpers, 'table')
   })
 
   afterEach(function () {

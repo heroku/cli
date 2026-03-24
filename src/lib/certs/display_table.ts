@@ -1,4 +1,4 @@
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 
 import {SniEndpoint} from '../types/sni_endpoint.js'
 import formatDate from './format_date.js'

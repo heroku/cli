@@ -1,5 +1,5 @@
 /* eslint-disable n/no-process-exit */
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {Config} from '@oclif/core/config'
 import {run} from '@oclif/core/run'
 import fs from 'node:fs'
@@ -104,7 +104,7 @@ export class HerokuRepl {
 
     if (command === 'exit') {
       this.historyStream?.close()
-      // eslint-disable-next-line n/no-process-exit
+
       process.exit(0)
     }
 
@@ -207,13 +207,8 @@ export class HerokuRepl {
     this.historyStream?.close()
   }
 
-  /**
-   * Starts the REPL by showing the prompt.
-   *
-   * @returns {void}
-   */
-  start() {
-    this.rl.prompt()
+  protected fsCreateWriteStream(path: string, options: any): fs.WriteStream {
+    return fs.createWriteStream(path, options)
   }
 
   /**
@@ -231,8 +226,13 @@ export class HerokuRepl {
     fs.writeFileSync(path, data, 'utf8')
   }
 
-  protected fsCreateWriteStream(path: string, options: any): fs.WriteStream {
-    return fs.createWriteStream(path, options)
+  /**
+   * Starts the REPL by showing the prompt.
+   *
+   * @returns {void}
+   */
+  start() {
+    this.rl.prompt()
   }
 
   /**
@@ -335,7 +335,7 @@ export class HerokuRepl {
    * @param {Record<string, unknown>} commandMeta the metadata from the command manifest
    * @returns {{requiredInputs: {long: string, short: string}[], optionalInputs: {long: string, short: string}[]}} the inputs from the command manifest
    */
-  private collectInputsFromManifest(commandMeta: any): {requiredInputs: Array<{long: string; short: string}>; optionalInputs: Array<{long: string; short: string}>} {
+  private collectInputsFromManifest(commandMeta: any): {optionalInputs: Array<{long: string; short: string}>; requiredInputs: Array<{long: string; short: string}>;} {
     const requiredInputs: Array<{long: string; short: string}> = []
     const optionalInputs: Array<{long: string; short: string}> = []
 

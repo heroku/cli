@@ -1,6 +1,5 @@
-import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {
@@ -9,26 +8,9 @@ import {
   getTeam,
   listPipelineApps,
 } from '../../lib/api.js'
+import {HuxHelpers} from '../../lib/hux-helpers.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import renderPipeline from '../../lib/pipelines/render-pipeline.js'
-
-async function getTeamOwner(heroku: APIClient, name: string) {
-  const {body: team} = await getTeam(heroku, name)
-  return {id: team.id, type: 'team'}
-}
-
-async function getAccountOwner(heroku: APIClient, name: string) {
-  const {body: account} = await getAccountInfo(heroku, name)
-  return {id: account.id, type: 'user'}
-}
-
-function getOwner(heroku: APIClient, name: string) {
-  return getTeamOwner(heroku, name)
-    .catch(() => getAccountOwner(heroku, name))
-    .catch(() => {
-      throw new Error(`Cannot find a team or account for "${name}"`)
-    })
-}
 
 export default class PipelinesTransfer extends Command {
   static args = {
@@ -63,7 +45,7 @@ export default class PipelinesTransfer extends Command {
       ux.stdout('')
       ux.warn(`This will transfer ${color.pipeline(pipeline.name!)} and all of the listed apps to the ${args.owner} ${displayType}`)
       ux.warn(`to proceed, type ${color.pipeline(pipeline.name!)} or re-run this command with ${color.info('--confirm')} ${pipeline.name}`)
-      confirmName = await hux.prompt('', {})
+      confirmName = await HuxHelpers.prompt('', {})
     }
 
     if (confirmName !== pipeline.name) {
@@ -75,4 +57,22 @@ export default class PipelinesTransfer extends Command {
     await createPipelineTransfer(this.heroku, {new_owner: newOwner, pipeline: {id: pipeline.id}})
     ux.action.stop()
   }
+}
+
+async function getAccountOwner(heroku: APIClient, name: string) {
+  const {body: account} = await getAccountInfo(heroku, name)
+  return {id: account.id, type: 'user'}
+}
+
+function getOwner(heroku: APIClient, name: string) {
+  return getTeamOwner(heroku, name)
+    .catch(() => getAccountOwner(heroku, name))
+    .catch(() => {
+      throw new Error(`Cannot find a team or account for "${name}"`)
+    })
+}
+
+async function getTeamOwner(heroku: APIClient, name: string) {
+  const {body: team} = await getTeam(heroku, name)
+  return {id: team.id, type: 'team'}
 }

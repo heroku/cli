@@ -1,6 +1,7 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
+
+import {HuxHelpers} from './hux-helpers.js'
 
 export default class ConfirmCommand {
   async confirm(app: string, confirm?: string, message?: string) {
@@ -16,7 +17,7 @@ This command will affect the app ${color.app(app)}`
 
     ux.warn(message)
     console.error()
-    const entered = await hux.prompt(
+    const entered = await HuxHelpers.prompt(
       `To proceed, type ${color.warning(app)} or re-run this command with ${color.code('--confirm ' + app)}`,
       {required: true},
     )

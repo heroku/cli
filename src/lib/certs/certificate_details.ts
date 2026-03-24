@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import {hux} from '@heroku/heroku-cli-util'
+import * as hux from '@heroku/heroku-cli-util/hux'
 import {ux} from '@oclif/core/ux'
 
 import {SniEndpoint} from '../types/sni_endpoint.js'
