@@ -40,27 +40,25 @@ process.once('beforeExit', async code => {
   }
 })
 
-process.on('SIGINT', async () => {
-  if (!enableTelemetry) {
-    process.exit(1)
+process.on('SIGINT', () => {
+  if (enableTelemetry) {
+    // Fire-and-forget: attempt to send telemetry but don't block exit
+    const error = new Error('Received SIGINT')
+    error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+    globalTelemetry.sendTelemetry(error).catch(() => {})
   }
 
-  // capture as unsuccessful exit
-  const error = new Error('Received SIGINT')
-  error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.sendTelemetry(error)
   process.exit(1)
 })
 
-process.on('SIGTERM', async () => {
-  if (!enableTelemetry) {
-    process.exit(1)
+process.on('SIGTERM', () => {
+  if (enableTelemetry) {
+    // Fire-and-forget: attempt to send telemetry but don't block exit
+    const error = new Error('Received SIGTERM')
+    error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
+    globalTelemetry.sendTelemetry(error).catch(() => {})
   }
 
-  // capture as unsuccessful exit
-  const error = new Error('Received SIGTERM')
-  error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-  await globalTelemetry.sendTelemetry(error)
   process.exit(1)
 })
 
