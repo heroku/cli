@@ -1,13 +1,9 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import push from '../../../lib/git/push.js'
-
-function map(stack: string): string {
-  return stack === 'cedar-10' ? 'cedar' : stack
-}
 
 export default class Set extends Command {
   static args = {
@@ -46,4 +42,8 @@ Run git push heroku main to trigger a new build on myapp.`
 
     ux.action.stop()
   }
+}
+
+function map(stack: string): string {
+  return stack === 'cedar-10' ? 'cedar' : stack
 }

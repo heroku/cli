@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'

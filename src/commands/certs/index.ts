@@ -1,6 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
+
 
 import displayTable from '../../lib/certs/display_table.js'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'

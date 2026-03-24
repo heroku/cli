@@ -1,6 +1,7 @@
 import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 

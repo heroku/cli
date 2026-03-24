@@ -1,6 +1,7 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 
 import {getGeneration} from '../apps/generation.js'
 import {SpaceNat} from '../types/fir.js'

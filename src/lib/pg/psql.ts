@@ -1,9 +1,9 @@
-import {ux} from '@oclif/core'
+import {pg, utils} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import {SpawnOptions} from 'child_process'
 import debug from 'debug'
 import * as fs from 'fs'
 import * as path from 'node:path'
-import {pg, utils} from '@heroku/heroku-cli-util'
 
 export async function fetchVersion(db: pg.ConnectionDetails) {
   const psqlService = new utils.pg.PsqlService(db)
@@ -12,6 +12,25 @@ export async function fetchVersion(db: pg.ConnectionDetails) {
 }
 
 const pgDebug = debug('pg')
+
+export async function execFile(db: pg.ConnectionDetails, file: string) {
+  const psqlService = new utils.pg.PsqlService(db)
+  const configs = utils.pg.psql.getPsqlConfigs(db)
+  const options = psqlFileOptions(file, configs.dbEnv)
+
+  return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
+}
+
+export async function interactive(db: pg.ConnectionDetails) {
+  const psqlService = new utils.pg.PsqlService(db)
+  const attachmentName = db.attachment!.name
+  const prompt = `${db.attachment!.app.name}::${attachmentName}%R%# `
+  const configs = utils.pg.psql.getPsqlConfigs(db)
+  configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
+  const options = psqlInteractiveOptions(prompt, configs.dbEnv)
+
+  return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
+}
 
 export function psqlFileOptions(file: string, dbEnv: NodeJS.ProcessEnv) {
   pgDebug('Running sql file: %s', file.trim())
@@ -23,9 +42,9 @@ export function psqlFileOptions(file: string, dbEnv: NodeJS.ProcessEnv) {
   const psqlArgs = ['-f', file, '--set', 'sslmode=require']
 
   return {
+    childProcessOptions,
     dbEnv,
     psqlArgs,
-    childProcessOptions,
   }
 }
 
@@ -52,27 +71,8 @@ export function psqlInteractiveOptions(prompt: string, dbEnv: NodeJS.ProcessEnv)
   }
 
   return {
+    childProcessOptions,
     dbEnv,
     psqlArgs,
-    childProcessOptions,
   }
-}
-
-export async function execFile(db: pg.ConnectionDetails, file: string) {
-  const psqlService = new utils.pg.PsqlService(db)
-  const configs = utils.pg.psql.getPsqlConfigs(db)
-  const options = psqlFileOptions(file, configs.dbEnv)
-
-  return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
-}
-
-export async function interactive(db: pg.ConnectionDetails) {
-  const psqlService = new utils.pg.PsqlService(db)
-  const attachmentName = db.attachment!.name
-  const prompt = `${db.attachment!.app.name}::${attachmentName}%R%# `
-  const configs = utils.pg.psql.getPsqlConfigs(db)
-  configs.dbEnv.PGAPPNAME = 'psql interactive' // default was 'psql non-interactive`
-  const options = psqlInteractiveOptions(prompt, configs.dbEnv)
-
-  return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
 }

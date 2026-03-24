@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import AccountsModule from '../../lib/accounts/accounts.js'

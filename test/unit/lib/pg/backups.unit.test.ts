@@ -1,7 +1,8 @@
 import {APIClient} from '@heroku-cli/command'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 
 import backupsFactory from '../../../../src/lib/pg/backups.js'
 import type {BackupTransfer} from '../../../../src/lib/pg/types.js'

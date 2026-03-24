@@ -1,6 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
+
 
 const stackLabelMap: { [key: string]: string} = {
   cnb: 'Cloud Native Buildpack',

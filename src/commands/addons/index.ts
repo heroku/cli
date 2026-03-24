@@ -1,7 +1,8 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'

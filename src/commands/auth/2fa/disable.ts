@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export default class Auth2faGenerate extends Command {
   static aliases = [
