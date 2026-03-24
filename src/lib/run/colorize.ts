@@ -14,19 +14,26 @@ export const COLORS: Array<(s: string) => string> = [
   s => color.bold.blue(s),
 ]
 const assignedColors: any = {}
+let isInitialized = false
+
+function ensureInitialized() {
+  if (isInitialized) return
+  isInitialized = true
+
+  // Pre-assign colors for common identifiers so they are the same every time
+  const commonIdentifiers = ['run', 'router', 'web', 'postgres', 'heroku-postgres']
+  for (const id of commonIdentifiers) {
+    assignedColors[id] = COLORS[Object.keys(assignedColors).length % COLORS.length]
+  }
+}
+
 function getColorForIdentifier(i: string) {
+  ensureInitialized()
   i = i.split('.')[0]
   if (assignedColors[i]) return assignedColors[i]
   assignedColors[i] = COLORS[Object.keys(assignedColors).length % COLORS.length]
   return assignedColors[i]
 }
-
-// get initial colors so they are the same every time
-getColorForIdentifier('run')
-getColorForIdentifier('router')
-getColorForIdentifier('web')
-getColorForIdentifier('postgres')
-getColorForIdentifier('heroku-postgres')
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
