@@ -25,4 +25,4 @@ DESCRIPTION
   list available regions for deployment
 ```
 
-_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/regions.ts)_
+_See code: [src/commands/regions.ts](https://github.com/heroku/cli/blob/v11.0.1-alpha.3/src/commands/regions.ts)_

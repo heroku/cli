@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+## [11.0.1-alpha.3](https://github.com/heroku/cli/compare/v11.0.0...v11.0.1-alpha.3) (2026-03-24)
+
+
+### Bug Fixes
+
+* address UI issues with confirmation prompts on multiple commands (W-21649376) ([#3602](https://github.com/heroku/cli/issues/3602)) ([7e96152](https://github.com/heroku/cli/commit/7e96152f8789d4580cd30b0e501866d6f01c9079))
+
+
+### Performance Improvements
+
+* avoid redundant package.json read in init/version hook ([6f2ab44](https://github.com/heroku/cli/commit/6f2ab444189e6cfcc080903f487471d91bda5780))
+* implement lazy initialization in colorize.ts ([991577b](https://github.com/heroku/cli/commit/991577b1f2cb9709f222264f82f678451e5d4156))
+* implement lazy initialization in global_telemetry.ts ([25d684f](https://github.com/heroku/cli/commit/25d684fd0baf668c89688e69688a10a54ef684cf))
+* make SIGINT/SIGTERM telemetry fire-and-forget ([652a369](https://github.com/heroku/cli/commit/652a36985fb00851dc6e6b46e8fddf4f97b045e4))
+* optimize Windows startup time by skipping telemetry by default ([b3e2279](https://github.com/heroku/cli/commit/b3e227992f0f00ab9be213564d574910e59e266b))
+
+
+### Miscellaneous Chores
+
+* remove unused packageParser.ts ([a561a1f](https://github.com/heroku/cli/commit/a561a1f065bd63fb5d84ecdbfd976e51ed3ac426))
+
 ## [11.0.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0) (2026-03-18)
 
 ### Summary
