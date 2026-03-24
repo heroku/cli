@@ -85,7 +85,7 @@ export default class DataMaintenancesInfo extends BaseCommand {
     const {args, flags} = await this.parse(DataMaintenancesInfo)
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, json} = flags
-    const addon = await addonResolver.resolve(args.addon, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, app)
 
     ux.action.start(`Fetching maintenance for ${color.addon(addon.name!)}`)
     const {body: maintenance} = await this.dataApi.get<Maintenance>(

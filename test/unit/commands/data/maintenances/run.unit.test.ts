@@ -7,7 +7,7 @@ import DataMaintenancesRun from '../../../../../src/commands/data/maintenances/r
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {cedarApp} from '../../../../fixtures/apps/fixtures.js'
 import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
-import {addon, legacyEssentialAddon} from '../../../../fixtures/data/pg/fixtures.js'
+import {addon, legacyEssentialAddon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
 const appInMaintenance = {
@@ -63,6 +63,25 @@ describe('data:maintenances:run', function () {
       .reply(200, maintenancesResponse)
 
     await runCommand(DataMaintenancesRun, [addon.name])
+
+    expect(stderr.output).to.contain('maintenance triggered')
+    expect(stdout.output).to.contain('')
+  })
+
+  it('runs maintenance for non-postgres add-ons', async function () {
+    herokuApi
+      .post('/actions/addons/resolve', body => body.addon_service === undefined)
+      .reply(200, [nonPostgresAddon])
+
+    herokuApi
+      .get(`/apps/${nonPostgresAddon.app.id}`)
+      .reply(200, appInMaintenance)
+
+    dataApi
+      .post(`/data/maintenances/v1/${nonPostgresAddon.id}/run`)
+      .reply(200, maintenancesResponse)
+
+    await runCommand(DataMaintenancesRun, [nonPostgresAddon.name])
 
     expect(stderr.output).to.contain('maintenance triggered')
     expect(stdout.output).to.contain('')
