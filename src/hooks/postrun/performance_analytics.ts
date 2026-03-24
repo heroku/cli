@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 
 const performance_analytics: Hook<'postrun'> = async function () {
   if (process.env.IS_HEROKU_TEST_ENV === 'true' || !(global as any).cliTelemetry) {
