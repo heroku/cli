@@ -24,7 +24,7 @@ FLAG DESCRIPTIONS
     Additionally shows the architecture, node version, operating system, and versions of plugins that the CLI is using.
 ```
 
-_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/2.2.37/src/commands/version.ts)_
+_See code: [@oclif/plugin-version](https://github.com/oclif/plugin-version/blob/2.2.38/src/commands/version.ts)_
 
 ## `heroku version:info [VERSION]`
 
@@ -46,4 +46,4 @@ EXAMPLES
    $ heroku version:info 11.0.0
 ```
 
-_See code: [src/commands/version/info.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/version/info.ts)_
+_See code: [src/commands/version/info.ts](https://github.com/heroku/cli/blob/v11.0.1-alpha.2/src/commands/version/info.ts)_
