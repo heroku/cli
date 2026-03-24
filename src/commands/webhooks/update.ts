@@ -1,10 +1,14 @@
 import {flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class WebhooksUpdate extends BaseCommand {
+  static args = {
+    id: Args.string({description: 'ID of the webhook', required: true}),
+  }
+
   static description = 'updates a webhook in an app'
 
   static examples = [
@@ -13,22 +17,18 @@ export default class WebhooksUpdate extends BaseCommand {
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
+    authorization: flags.string({char: 't', description: 'authorization header to send with webhooks'}),
     include: flags.string({char: 'i', description: 'comma delimited event types your server will receive ', required: true}),
     level: flags.string({char: 'l', description: 'notify does not retry, sync will retry until successful or timeout', required: true}),
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
+    remote: flags.remote(),
     secret: flags.string({char: 's', description: 'value to sign delivery with in Heroku-Webhook-Hmac-SHA256 header'}),
-    authorization: flags.string({char: 't', description: 'authorization header to send with webhooks'}),
     url: flags.string({char: 'u', description: 'URL for receiver', required: true}),
   }
 
-  static args = {
-    id: Args.string({required: true, description: 'ID of the webhook'}),
-  }
-
   async run() {
-    const {flags, args} = await this.parse(WebhooksUpdate)
-    const {path, display} = this.webhookType(flags)
+    const {args, flags} = await this.parse(WebhooksUpdate)
+    const {display, path} = this.webhookType(flags)
 
     ux.action.start(`Updating webhook ${args.id} for ${display}`)
 

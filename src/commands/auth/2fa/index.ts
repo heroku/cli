@@ -1,7 +1,8 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
+
 
 export default class TwoFactor extends Command {
   static aliases = ['2fa', 'twofactor']

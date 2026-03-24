@@ -1,7 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
+
+interface AppInfo extends Record<string, unknown> {
+  id: string
+  name: string
+}
 
 interface AppUsage {
   addons: Array<{
@@ -19,11 +24,6 @@ interface TeamUsage {
     addons: AppUsage['addons'];
     id: string;
   }>;
-}
-
-interface AppInfo extends Record<string, unknown> {
-  id: string
-  name: string
 }
 
 export default class UsageAddons extends Command {
@@ -52,9 +52,9 @@ export default class UsageAddons extends Command {
   private displayAppUsage(app: string, usageAddons: AppUsage['addons'], appAddons: Heroku.AddOn[]): void {
     const metersArray = usageAddons.flatMap(addon =>
       Object.entries(addon.meters).map(([label, data]) => ({
+        addonId: addon.id,
         label,
         quantity: data.quantity,
-        addonId: addon.id,
       })),
     )
 

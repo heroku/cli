@@ -1,15 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-
-function updateCedarName(stack: string) {
-  if (stack === 'cedar') {
-    return 'cedar-10'
-  }
-
-  return stack
-}
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 export default class StacksIndex extends Command {
   static description = 'show the list of available stacks'
@@ -45,4 +37,12 @@ export default class StacksIndex extends Command {
       }
     }
   }
+}
+
+function updateCedarName(stack: string) {
+  if (stack === 'cedar') {
+    return 'cedar-10'
+  }
+
+  return stack
 }

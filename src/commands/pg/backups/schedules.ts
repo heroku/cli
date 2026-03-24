@@ -1,6 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import type {TransferSchedule} from '../../../lib/pg/types.js'
 
@@ -29,4 +29,3 @@ export default class Schedules extends Command {
     }
   }
 }
-

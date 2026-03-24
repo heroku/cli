@@ -1,4 +1,3 @@
-import {color} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import {
   AppCompletion,
@@ -6,6 +5,7 @@ import {
   SpaceCompletion,
   TeamCompletion,
 } from '@heroku-cli/command/lib/completions.js'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, Interfaces, ux} from '@oclif/core'
 import * as path from 'path'
 
@@ -78,4 +78,3 @@ Enjoy!
     await updateCache(cachePath, options)
   }
 }
-

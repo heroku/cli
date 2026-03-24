@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 
 export default class Refresh extends Command {
   static topic = 'certs'

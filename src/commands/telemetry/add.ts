@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {App, Space} from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -19,7 +19,7 @@ export default class Add extends Command {
   /* eslint-disable quotes */
   static example = heredoc`
     Add a telemetry drain to an app to collect logs and traces:
-    
+
     ${color.command(`heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'`)}
   `
 

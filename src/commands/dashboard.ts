@@ -1,7 +1,8 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import {execSync} from 'child_process'
 import _ from 'lodash'
 import * as path from 'path'

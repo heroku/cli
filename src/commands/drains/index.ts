@@ -1,7 +1,8 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 
 function styledDrain(id: string, name: string, drain: Heroku.LogDrain) {
   let output = `${id} (${name})`

@@ -1,10 +1,14 @@
 import {flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class WebhooksRemove extends BaseCommand {
+  static args = {
+    id: Args.string({description: 'id of webhook to remove', required: true}),
+  }
+
   static description = 'removes a webhook from an app'
 
   static examples = [
@@ -13,17 +17,13 @@ export default class WebhooksRemove extends BaseCommand {
 
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
-  }
-
-  static args = {
-    id: Args.string({description: 'id of webhook to remove', required: true}),
+    remote: flags.remote(),
   }
 
   async run() {
-    const {flags, args} = await this.parse(WebhooksRemove)
-    const {path, display} = this.webhookType(flags)
+    const {args, flags} = await this.parse(WebhooksRemove)
+    const {display, path} = this.webhookType(flags)
 
     ux.action.start(`Removing webhook ${args.id} from ${display}`)
 

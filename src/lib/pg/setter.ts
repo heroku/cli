@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import {utils} from '@heroku/heroku-cli-util'
 import {essentialPlan} from './util.js'
 import type {SettingKey, Setting, SettingsResponse} from './types.js'

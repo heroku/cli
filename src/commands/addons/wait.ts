@@ -1,9 +1,9 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {waitForAddonProvisioning, waitForAddonDeprovisioning} from '../../lib/addons/addons_wait.js'
+import {waitForAddonDeprovisioning, waitForAddonProvisioning} from '../../lib/addons/addons_wait.js'
 import {resolveAddon} from '../../lib/addons/resolve.js'
 import notify from '../../lib/notify.js'
 import {ExtendedAddon} from '../../lib/pg/types.js'
@@ -27,7 +27,7 @@ export default class Wait extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Wait)
     // TODO: remove this type once the schema is fixed
-    type AddonWithDeprovisioningState  = {state?: 'deprovisioning' | ExtendedAddon['state']} & Omit<ExtendedAddon, 'state'>
+    type AddonWithDeprovisioningState  = Omit<ExtendedAddon, 'state'> & {state?: 'deprovisioning' | ExtendedAddon['state']}
     let addonsToWaitFor: AddonWithDeprovisioningState[]
     if (args.addon) {
       addonsToWaitFor = [await resolveAddon(this.heroku, flags.app, args.addon)]
