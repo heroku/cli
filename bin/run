@@ -2,7 +2,12 @@
 /* eslint-disable n/no-process-exit */
 /* eslint-disable n/no-unpublished-bin */
 
-import {execute} from '@oclif/core'
+import {execute, settings} from '@oclif/core'
+
+// Enable performance tracking when DEBUG=oclif:perf is set
+if (process.env.DEBUG?.includes('oclif:perf')) {
+  settings.performanceEnabled = true
+}
 
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
