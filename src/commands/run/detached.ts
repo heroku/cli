@@ -3,7 +3,6 @@ import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
 import {LogDisplayer} from '../../lib/run/log-displayer.js'

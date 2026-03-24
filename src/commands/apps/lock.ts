@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 export default class AppsLock extends Command {
   static aliases = ['lock']
   static description = 'prevent team members from joining an app'

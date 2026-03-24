@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 export const inviteMemberToTeam = async function (email: string, role: string, team: string, heroku: APIClient) {
   ux.action.start(`Inviting ${color.user(email)} to ${color.team(team)} as ${color.green(role)}`)
   await heroku.request<Heroku.TeamInvitation[]>(

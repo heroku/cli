@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 export default class AccessRemove extends Command {
   static description = 'remove users from a team app'
   static example = `${color.command('heroku access:remove user@email.com --app APP')}`

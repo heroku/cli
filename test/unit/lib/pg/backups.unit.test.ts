@@ -1,11 +1,11 @@
 import {APIClient} from '@heroku-cli/command'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {ux} from '@oclif/core/ux'
 
+import type {BackupTransfer} from '../../../../src/lib/pg/types.js'
 
 import backupsFactory from '../../../../src/lib/pg/backups.js'
-import type {BackupTransfer} from '../../../../src/lib/pg/types.js'
 
 describe('Backups', function () {
   describe('constructor', function () {
@@ -103,9 +103,9 @@ describe('Backups', function () {
       const backups = backupsFactory('my-app', mockHeroku)
 
       const transfer = {
-        started_at: '2025-01-01T00:00:00Z',
         finished_at: '',
         processed_bytes: 1536,
+        started_at: '2025-01-01T00:00:00Z',
       } as BackupTransfer
 
       const result = backups.status(transfer)
@@ -117,8 +117,8 @@ describe('Backups', function () {
       const backups = backupsFactory('my-app', mockHeroku)
 
       const transfer = {
-        started_at: '',
         finished_at: '',
+        started_at: '',
       } as BackupTransfer
 
       const result = backups.status(transfer)
@@ -181,8 +181,8 @@ describe('Backups', function () {
 
       const transfer = {
         from_type: 'pg_dump',
-        to_type: 'pg_restore',
         num: 5,
+        to_type: 'pg_restore',
       } as unknown as BackupTransfer
 
       const result = backups.name(transfer)
@@ -195,9 +195,9 @@ describe('Backups', function () {
 
       const transfer = {
         from_type: 'pg_dump',
-        to_type: 'xxxxxxxxxx',
-        schedule: {uuid: 'some-schedule-id'},
         num: 7,
+        schedule: {uuid: 'some-schedule-id'},
+        to_type: 'xxxxxxxxxx',
       } as unknown as BackupTransfer
 
       const result = backups.name(transfer)
@@ -210,8 +210,8 @@ describe('Backups', function () {
 
       const transfer = {
         from_type: 'pg_dump',
-        to_type: 'door_number_three',
         num: 3,
+        to_type: 'door_number_three',
       } as unknown as BackupTransfer
 
       const result = backups.name(transfer)
@@ -224,8 +224,8 @@ describe('Backups', function () {
 
       const transfer = {
         from_type: 'cow',
-        to_type: 'pg_restore',
         num: 12,
+        to_type: 'pg_restore',
       } as unknown as BackupTransfer
 
       const result = backups.name(transfer)
@@ -238,8 +238,8 @@ describe('Backups', function () {
 
       const transfer = {
         from_type: 'cats',
-        to_type: 'kittens',
         num: 8,
+        to_type: 'kittens',
       } as unknown as BackupTransfer
 
       const result = backups.name(transfer)
@@ -270,7 +270,7 @@ describe('Backups', function () {
     it('writes the action to stdout with trailing ellipsis when verbose is true', async function () {
       const mockHeroku = {
         get: sinon.stub().resolves({
-          body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+          body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
         }),
       } as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)
@@ -283,7 +283,7 @@ describe('Backups', function () {
     it('does not write to stdout when verbose is false', async function () {
       const mockHeroku = {
         get: sinon.stub().resolves({
-          body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+          body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
         }),
       } as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)
@@ -296,7 +296,7 @@ describe('Backups', function () {
     it('calls the start action with the provided action name', async function () {
       const mockHeroku = {
         get: sinon.stub().resolves({
-          body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+          body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
         }),
       } as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)
@@ -309,7 +309,7 @@ describe('Backups', function () {
     it('calls the stop action when the poll yields a successful backup', async function () {
       const mockHeroku = {
         get: sinon.stub().resolves({
-          body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+          body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
         }),
       } as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)
@@ -325,8 +325,8 @@ describe('Backups', function () {
         get: sinon.stub().resolves({
           body: {
             finished_at: '2025-01-01T00:00:00Z',
-            succeeded: false,
             logs: [{created_at: '2025-01-01', message: 'Backup failed'}],
+            succeeded: false,
           },
         }),
       } as unknown as APIClient
@@ -340,7 +340,7 @@ describe('Backups', function () {
 
     it('uses the provided app parameter when polling', async function () {
       const getStub = sinon.stub().resolves({
-        body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+        body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
       })
       const mockHeroku = {get: getStub} as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)
@@ -352,7 +352,7 @@ describe('Backups', function () {
 
     it('falls back to the instance app when the app parameter is falsy', async function () {
       const getStub = sinon.stub().resolves({
-        body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+        body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
       })
       const mockHeroku = {get: getStub} as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)
@@ -364,7 +364,7 @@ describe('Backups', function () {
 
     it('passes transferID, interval, and verbose to poll', async function () {
       const getStub = sinon.stub().resolves({
-        body: {finished_at: '2025-01-01T00:00:00Z', succeeded: true, logs: []},
+        body: {finished_at: '2025-01-01T00:00:00Z', logs: [], succeeded: true},
       })
       const mockHeroku = {get: getStub} as unknown as APIClient
       const backups = backupsFactory('my-app', mockHeroku)

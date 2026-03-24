@@ -2,7 +2,6 @@ import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-
 import {Favorites} from '../../../lib/types/favorites.js'
 
 export default class Add extends Command {

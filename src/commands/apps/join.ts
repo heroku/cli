@@ -1,9 +1,7 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
-
 
 export default class AppsJoin extends Command {
   static aliases = ['join']
