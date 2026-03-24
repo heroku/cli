@@ -4,14 +4,23 @@
 
 import {execute} from '@oclif/core'
 
-import * as globalTelemetry from '../dist/global_telemetry.js'
-
 process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS || 'update with: "npm update -g heroku"'
 
 const now = new Date()
 const cliStartTime = now.getTime()
 
+// Skip telemetry entirely on Windows for performance
+const enableTelemetry = process.platform !== 'win32'
+let globalTelemetry
+
+if (enableTelemetry) {
+  // Dynamically import telemetry only when needed
+  globalTelemetry = await import('../dist/global_telemetry.js')
+}
+
 process.once('beforeExit', async code => {
+  if (!enableTelemetry) return
+
   // capture as successful exit
   if (global.cliTelemetry) {
     if (global.cliTelemetry.isVersionOrHelp) {
@@ -27,6 +36,10 @@ process.once('beforeExit', async code => {
 })
 
 process.on('SIGINT', async () => {
+  if (!enableTelemetry) {
+    process.exit(1)
+  }
+
   // capture as unsuccessful exit
   const error = new Error('Received SIGINT')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
@@ -35,6 +48,10 @@ process.on('SIGINT', async () => {
 })
 
 process.on('SIGTERM', async () => {
+  if (!enableTelemetry) {
+    process.exit(1)
+  }
+
   // capture as unsuccessful exit
   const error = new Error('Received SIGTERM')
   error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
@@ -42,6 +59,8 @@ process.on('SIGTERM', async () => {
   process.exit(1)
 })
 
-globalTelemetry.initializeInstrumentation()
+if (enableTelemetry) {
+  globalTelemetry.initializeInstrumentation()
+}
 
 await execute({dir: import.meta.url})
