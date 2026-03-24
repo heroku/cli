@@ -376,14 +376,8 @@
   "license": "ISC",
   "main": "dist/index.js",
   "sideEffects": [
-    "./src/global_telemetry.ts",
-    "./dist/global_telemetry.js",
     "./src/lib/run/colorize.ts",
-    "./dist/lib/run/colorize.js",
-    "./src/lib/ci/source.ts",
-    "./dist/lib/ci/source.js",
-    "./src/commands/apps/create.ts",
-    "./dist/commands/apps/create.js"
+    "./dist/lib/run/colorize.js"
   ],
   "overrides": {
     "serialize-javascript": "^7.0.4"
