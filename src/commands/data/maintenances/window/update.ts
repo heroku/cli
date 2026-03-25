@@ -38,7 +38,7 @@ export default class DataMaintenancesWindowUpdate extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWindowUpdate)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app)
 
     const combinedWindowLabel = `${args.day_of_week} ${args.time_of_day}`
     ux.action.start(

@@ -29,7 +29,7 @@ export default class DataMaintenancesWindow extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWindow)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app)
 
     ux.action.start(`Fetching maintenance window for ${color.addon(addon.name!)}`)
     const {body: window} = await this.dataApi.get<Window>(
