@@ -3,7 +3,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesInfo from '../../../../../src/commands/data/maintenances/info.js'
-import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 
@@ -157,5 +157,19 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       const {message} = error as {message: string}
       expect(message).to.equal('not found')
     }
+  })
+
+  it('shows maintenance for non-postgres add-ons', async function () {
+    herokuApi
+      .post('/actions/addons/resolve', body => body.addon_service === undefined)
+      .reply(200, [nonPostgresAddon])
+    dataApi
+      .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
+      .reply(200, maintenance)
+
+    await runCommand(DataMaintenancesInfo, [nonPostgresAddon.name, '--json'])
+
+    expect(unwrap(stderr.output)).to.contain(`Fetching maintenance for ${nonPostgresAddon.name}... done\n`)
+    expect(JSON.parse(stdout.output)).to.deep.equal(maintenance)
   })
 })

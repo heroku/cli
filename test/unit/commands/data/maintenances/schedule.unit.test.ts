@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesSchedule from '../../../../../src/commands/data/maintenances/schedule.js'
 import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
-import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
 const unscheduledScheduleResponse = {
@@ -83,6 +83,19 @@ describe('data:maintenances:schedule', function () {
     await runCommand(DataMaintenancesSchedule, [addon.name, '--weeks=4'])
 
     expect(stderr.output).to.contain(`Scheduling maintenance for ${addon.name}... maintenance scheduled`)
+  })
+
+  it('schedules maintenance for non-postgres add-ons', async function () {
+    herokuApi
+      .post('/actions/addons/resolve', body => body.addon_service === undefined)
+      .reply(200, [nonPostgresAddon])
+    dataApi
+      .post(`/data/maintenances/v1/${nonPostgresAddon.id}/schedule`)
+      .reply(200, unscheduledScheduleResponse)
+
+    await runCommand(DataMaintenancesSchedule, [nonPostgresAddon.name])
+
+    expect(stderr.output).to.contain(`Scheduling maintenance for ${nonPostgresAddon.name}... maintenance scheduled`)
   })
 
   it('schedules a maintenance for a specific week', async function () {
