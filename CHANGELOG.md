@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+
+## [11.0.1-beta.0](https://github.com/heroku/cli/compare/v11.0.0...v11.0.1-beta.0) (2026-03-25)
+
+
+### Bug Fixes
+
+* address UI issues with confirmation prompts on multiple commands (W-21649376) ([#3602](https://github.com/heroku/cli/issues/3602)) ([7e96152](https://github.com/heroku/cli/commit/7e96152f8789d4580cd30b0e501866d6f01c9079))
+* resolve addons across data maintenances commands ([#3609](https://github.com/heroku/cli/issues/3609)) ([84eb648](https://github.com/heroku/cli/commit/84eb64866d1204cb393bae80ae8b4c58eabcb1cc))
+* show correct error message for Essential-tier (W-21653472) ([#3614](https://github.com/heroku/cli/issues/3614)) ([6fcb3a4](https://github.com/heroku/cli/commit/6fcb3a4ae28166c46b7412dec518afa275c54d6a))
+
+
+### Performance Improvements
+
+* improve Windows CLI performance ([#3610](https://github.com/heroku/cli/issues/3610)) ([85c2224](https://github.com/heroku/cli/commit/85c2224f4a7d1c8068aff0b7945f24a7353c4c49))
+
 ## [11.0.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0) (2026-03-18)
 
 ### Summary
