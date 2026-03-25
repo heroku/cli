@@ -179,20 +179,22 @@ async function diff(targetApp: AppInfo, downstreamApp: AppInfo, githubToken: str
 
     ux.stdout('')
     hux.styledHeader(`${color.app(targetApp.name)} is ahead of ${color.app(downstreamApp.name)} by ${githubDiff.ahead_by} commit${githubDiff.ahead_by === 1 ? '' : 's'}`)
+    /* eslint-disable perfectionist/sort-objects */
     const mapped = githubDiff.commits.map((commit: Commit) => ({
-      author: commit.commit.author.name,
-      date: commit.commit.author.date,
-      message: commit.commit.message.split('\n')[0],
       sha: commit.sha.slice(0, 7),
+      date: commit.commit.author.date,
+      author: commit.commit.author.name,
+      message: commit.commit.message.split('\n')[0],
     })).reverse()
     hux.table(mapped, {
-      author: {},
-      date: {},
-      message: {},
       sha: {
         header: 'SHA',
       },
+      date: {},
+      author: {},
+      message: {},
     })
+    /* eslint-enable perfectionist/sort-objects */
     ux.stdout(`\n${color.info(`https://github.com/${path}`)}`)
   } catch {
     ux.stdout(`\n${color.app(targetApp.name)} was not compared to ${color.app(downstreamApp.name)} because we were unable to perform a diff`)
