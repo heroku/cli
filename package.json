@@ -6,7 +6,7 @@
   "bin": "./bin/run",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^12.2.1",
+    "@heroku-cli/command": "^12.2.2",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
