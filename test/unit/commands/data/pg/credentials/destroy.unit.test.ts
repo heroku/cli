@@ -60,7 +60,7 @@ describe('data:pg:credentials:destroy', function () {
 
       herokuApi.done()
       expect(ansis.strip(err.message)).to.equal(
-        'You can\'t destroy the default credential.',
+        'You can\'t destroy custom credentials on Essential-tier databases.',
       )
     }
   })

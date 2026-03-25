@@ -1,6 +1,10 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {AddOnAttachment} from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import {confirmCommand} from '@heroku/heroku-cli-util/hux'
+import {
+  AddonResolver, getAddonService, isAdvancedDatabase, isEssentialDatabase, isLegacyEssentialDatabase,
+} from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
@@ -33,10 +37,11 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
     const {app, confirm, name} = flags
     const {database} = args
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
-    const isAdvancedTier = utils.pg.isAdvancedDatabase(addon)
+    const addonResolver = new AddonResolver(this.heroku)
+    const addon = await addonResolver.resolve(database, app, getAddonService())
+    const isEssentialTier = isEssentialDatabase(addon)
+    const isLegacyEssentialTier = isLegacyEssentialDatabase(addon)
+    const isAdvancedTier = isAdvancedDatabase(addon)
     let credAttachments: Required<AddOnAttachment>[] = []
 
     if (isAdvancedTier) {
@@ -50,7 +55,9 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
       }
 
       credAttachments = attachments.filter(a => a.namespace === `role:${name}`)
-    } else if (isEssentialTier || name === 'default') {
+    } else if (isEssentialTier) {
+      ux.error('You can\'t destroy custom credentials on Essential-tier databases.')
+    } else if (isLegacyEssentialTier || name === 'default') {
       ux.error('You can\'t destroy the default credential.')
     } else {
       const {body: attachments} = await this.heroku.get<Required<AddOnAttachment>[]>(
@@ -68,7 +75,7 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
       )
     }
 
-    await hux.confirmCommand({comparison: app, confirmation: confirm})
+    await confirmCommand({comparison: app, confirmation: confirm})
 
     try {
       ux.action.start(`Destroying credential ${color.name(name)}`)
