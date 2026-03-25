@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import {expect} from 'chai'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'

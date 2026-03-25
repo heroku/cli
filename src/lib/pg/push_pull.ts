@@ -1,7 +1,7 @@
 import type {pg} from '@heroku/heroku-cli-util'
 
 import {color, utils} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 import childProcess, {ChildProcess, SpawnSyncReturns} from 'node:child_process'
 import {Readable, Writable} from 'node:stream'

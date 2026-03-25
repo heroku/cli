@@ -1,7 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {Dyno, Release} from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 export default class Wait extends Command {
   static description = 'wait for all dynos to be running latest version after a release'

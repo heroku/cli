@@ -1,7 +1,6 @@
-/* eslint-disable perfectionist/sort-objects */
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {Space} from '../../lib/types/fir.js'
@@ -18,6 +17,7 @@ export default class Index extends Command {
   static topic = 'spaces'
 
   protected display(spaces: SpaceArray) {
+    /* eslint-disable perfectionist/sort-objects */
     hux.table(
       spaces,
       {
@@ -38,6 +38,7 @@ export default class Index extends Command {
         },
       },
     )
+    /* eslint-enable perfectionist/sort-objects */
   }
 
   protected displayJSON(spaces: SpaceArray) {

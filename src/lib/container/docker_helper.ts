@@ -1,4 +1,5 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import {glob} from 'glob'
 import inquirer from 'inquirer'
 import Child from 'node:child_process'

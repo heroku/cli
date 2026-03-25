@@ -1,6 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
+
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default

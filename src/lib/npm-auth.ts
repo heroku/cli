@@ -1,5 +1,5 @@
 /* eslint-disable valid-jsdoc */
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {exec, spawn} from 'node:child_process'
 import {promisify} from 'node:util'
 import tsheredocLib from 'tsheredoc'
@@ -7,28 +7,12 @@ import tsheredocLib from 'tsheredoc'
 const execAsync = promisify(exec)
 const tsheredoc = tsheredocLib.default
 
-/**
- * Check if output contains authentication-related errors
- * Note: npm returns 404 for private packages when not authenticated
- * to avoid leaking information about package existence
- */
-function hasAuthError(output: string): boolean {
-  return output.includes('401')
-    || output.includes('403')
-    || output.includes('404')
-    || output.includes('E404')
-    || output.includes('Unauthorized')
-    || output.includes('Forbidden')
-    || output.includes('authenticate')
-    || output.includes('Access token')
-}
-
 // eslint-disable-next-line unicorn/no-static-only-class
 export class NpmAuth {
   /**
    * Execute a command - extracted for testability
    */
-  static async exec(command: string, options?: any): Promise<{stdout: string | Buffer; stderr: string | Buffer}> {
+  static async exec(command: string, options?: any): Promise<{stderr: Buffer | string; stdout: Buffer | string;}> {
     return execAsync(command, options)
   }
 
@@ -131,4 +115,20 @@ export class NpmAuth {
   static spawn(command: string, args: string[], options?: any): ReturnType<typeof spawn> {
     return spawn(command, args, options)
   }
+}
+
+/**
+ * Check if output contains authentication-related errors
+ * Note: npm returns 404 for private packages when not authenticated
+ * to avoid leaking information about package existence
+ */
+function hasAuthError(output: string): boolean {
+  return output.includes('401')
+    || output.includes('403')
+    || output.includes('404')
+    || output.includes('E404')
+    || output.includes('Unauthorized')
+    || output.includes('Forbidden')
+    || output.includes('authenticate')
+    || output.includes('Access token')
 }

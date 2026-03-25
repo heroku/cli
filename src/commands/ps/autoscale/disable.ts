@@ -1,17 +1,17 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
 export default class Disable extends Command {
   static description = 'disable web dyno autoscaling'
-  static topic = 'ps:autoscale'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+
+  static topic = 'ps:autoscale'
 
   async run() {
     const {flags} = await this.parse(Disable)
@@ -28,12 +28,12 @@ export default class Disable extends Command {
     if (!scaleMonitor) throw new Error(`${flags.app} does not have autoscale enabled`)
 
     await this.heroku.patch(`/apps/${app.id}/formation/web/monitors/${scaleMonitor.id}`, {
-      hostname: METRICS_HOST,
       body: {
         is_active: false,
-        period: 1,
         op: 'GREATER_OR_EQUAL',
+        period: 1,
       },
+      hostname: METRICS_HOST,
     })
 
     ux.action.stop()

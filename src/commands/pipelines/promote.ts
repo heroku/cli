@@ -1,7 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import assert from 'assert'
 import fetch from 'node-fetch'
 import * as Stream from 'stream'
@@ -24,141 +24,6 @@ function findAppInPipeline(apps: Array<AppWithPipelineCoupling>, target: string)
 const PROMOTION_ORDER = ['development', 'staging', 'production']
 
 const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
-
-function isComplete(promotionTarget: Heroku.PipelinePromotionTarget) {
-  return promotionTarget.status !== 'pending'
-}
-
-function isSucceeded(promotionTarget: Heroku.PipelinePromotionTarget) {
-  return promotionTarget.status === 'succeeded'
-}
-
-function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
-  return promotionTarget.status === 'failed'
-}
-
-function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
-  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(({body: targets}) => {
-    if (targets.every(isComplete)) {
-      return targets
-    }
-
-    //
-    // With only one target, we can return as soon as the release is created.
-    // The command will then read the release phase output
-    //
-    // `needsReleaseCommand` allows us to keep polling, as it can take a few
-    // seconds to get the release to succeeded after the release command
-    // finished.
-    //
-    if (needsReleaseCommand && targets.length === 1 && targets[0].release !== null) {
-      return targets
-    }
-
-    return wait(1000).then(pollPromotionStatus.bind(null, heroku, id, needsReleaseCommand))
-  })
-}
-
-async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
-  ux.stdout('Fetching app info...')
-  const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
-  return coupling
-}
-
-async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<AppWithPipelineCoupling>, secondFactor?: string): Promise<Heroku.PipelinePromotion> {
-  const options = {
-    body: {
-      pipeline: {id},
-      source: {app: {id: sourceAppId}},
-      targets: targetApps.map(app => ({app: {id: app.id}})),
-    },
-    headers: {},
-  }
-
-  if (secondFactor) {
-    options.headers = {'Heroku-Two-Factor-Code': secondFactor}
-  }
-
-  try {
-    ux.stdout(`${label}...`)
-    const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
-    return promotions
-  } catch (error: any) {
-    if (!error.body || error.body.id !== 'two_factor') {
-      throw error
-    }
-
-    const secondFactor = await heroku.twoFactorPrompt()
-    return promote(heroku, label, id, sourceAppId, targetApps, secondFactor)
-  }
-}
-
-function assertValidPromotion(app: string, source: string, target?: string) {
-  if (!target || PROMOTION_ORDER.indexOf(source) < 0) { // eslint-disable-line unicorn/prefer-includes
-    throw new Error(`Cannot promote ${app} from '${source}' stage`)
-  }
-}
-
-function assertApps(app: string, targetApps: Array<AppWithPipelineCoupling>, targetStage: string) {
-  if (targetApps.length === 0) {
-    throw new Error(`Cannot promote from ${color.app(app)} as there are no downstream apps in ${targetStage} stage`)
-  }
-}
-
-async function getRelease(heroku: APIClient, app: string, releaseId: string): Promise<Heroku.Release> {
-  ux.stdout('Fetching release info...')
-  const {body: release} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${releaseId}`)
-  return release
-}
-
-async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
-  if (targets.length !== 1 || targets.every(isComplete)) {
-    return pollPromotionStatus(heroku, promotion.id, false)
-  }
-
-  const target = targets[0]
-  const release = await getRelease(heroku, target.app.id, target.release.id)
-
-  if (!release.output_stream_url) {
-    return pollPromotionStatus(heroku, promotion.id, false)
-  }
-
-  ux.stdout('Running release command...')
-
-  async function streamReleaseOutput(releaseStreamUrl: string) {
-    const finished = util.promisify(Stream.finished)
-    const fetchResponse = await fetch(releaseStreamUrl)
-
-    if (fetchResponse.status >= 400) {
-      throw new Error('stream release output not available')
-    }
-
-    fetchResponse.body.pipe(process.stdout)
-
-    await finished(fetchResponse.body)
-  }
-
-  async function retry(maxAttempts: number, fn: () => Promise<any>) {
-    let currentAttempt = 0
-
-    while (true) {
-      try {
-        await fn()
-        return
-      } catch (error) {
-        if (++currentAttempt === maxAttempts) {
-          throw error
-        }
-
-        await Promote.sleep(1000)
-      }
-    }
-  }
-
-  await retry(100, () => streamReleaseOutput(release.output_stream_url!))
-
-  return pollPromotionStatus(heroku, promotion.id, false)
-}
 
 export default class Promote extends Command {
   static description = 'promote the latest release of this app to its downstream app(s)'
@@ -260,4 +125,139 @@ export default class Promote extends Command {
 
     hux.styledObject(styledTargets)
   }
+}
+
+function assertApps(app: string, targetApps: Array<AppWithPipelineCoupling>, targetStage: string) {
+  if (targetApps.length === 0) {
+    throw new Error(`Cannot promote from ${color.app(app)} as there are no downstream apps in ${targetStage} stage`)
+  }
+}
+
+function assertValidPromotion(app: string, source: string, target?: string) {
+  if (!target || PROMOTION_ORDER.indexOf(source) < 0) { // eslint-disable-line unicorn/prefer-includes
+    throw new Error(`Cannot promote ${app} from '${source}' stage`)
+  }
+}
+
+async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.PipelineCoupling> {
+  ux.stdout('Fetching app info...')
+  const {body: coupling} = await heroku.get<Heroku.PipelineCoupling>(`/apps/${app}/pipeline-couplings`)
+  return coupling
+}
+
+async function getRelease(heroku: APIClient, app: string, releaseId: string): Promise<Heroku.Release> {
+  ux.stdout('Fetching release info...')
+  const {body: release} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${releaseId}`)
+  return release
+}
+
+function isComplete(promotionTarget: Heroku.PipelinePromotionTarget) {
+  return promotionTarget.status !== 'pending'
+}
+
+function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
+  return promotionTarget.status === 'failed'
+}
+
+function isSucceeded(promotionTarget: Heroku.PipelinePromotionTarget) {
+  return promotionTarget.status === 'succeeded'
+}
+
+function pollPromotionStatus(heroku: APIClient, id: string, needsReleaseCommand: boolean): Promise<Array<Heroku.PipelinePromotionTarget>> {
+  return heroku.get<Array<Heroku.PipelinePromotionTarget>>(`/pipeline-promotions/${id}/promotion-targets`).then(({body: targets}) => {
+    if (targets.every(isComplete)) {
+      return targets
+    }
+
+    //
+    // With only one target, we can return as soon as the release is created.
+    // The command will then read the release phase output
+    //
+    // `needsReleaseCommand` allows us to keep polling, as it can take a few
+    // seconds to get the release to succeeded after the release command
+    // finished.
+    //
+    if (needsReleaseCommand && targets.length === 1 && targets[0].release !== null) {
+      return targets
+    }
+
+    return wait(1000).then(pollPromotionStatus.bind(null, heroku, id, needsReleaseCommand))
+  })
+}
+
+async function promote(heroku: APIClient, label: string, id: string, sourceAppId: string, targetApps: Array<AppWithPipelineCoupling>, secondFactor?: string): Promise<Heroku.PipelinePromotion> {
+  const options = {
+    body: {
+      pipeline: {id},
+      source: {app: {id: sourceAppId}},
+      targets: targetApps.map(app => ({app: {id: app.id}})),
+    },
+    headers: {},
+  }
+
+  if (secondFactor) {
+    options.headers = {'Heroku-Two-Factor-Code': secondFactor}
+  }
+
+  try {
+    ux.stdout(`${label}...`)
+    const {body: promotions} = await heroku.post<Heroku.PipelinePromotion>('/pipeline-promotions', options)
+    return promotions
+  } catch (error: any) {
+    if (!error.body || error.body.id !== 'two_factor') {
+      throw error
+    }
+
+    const secondFactor = await heroku.twoFactorPrompt()
+    return promote(heroku, label, id, sourceAppId, targetApps, secondFactor)
+  }
+}
+
+async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App>, promotion: any) {
+  if (targets.length !== 1 || targets.every(isComplete)) {
+    return pollPromotionStatus(heroku, promotion.id, false)
+  }
+
+  const target = targets[0]
+  const release = await getRelease(heroku, target.app.id, target.release.id)
+
+  if (!release.output_stream_url) {
+    return pollPromotionStatus(heroku, promotion.id, false)
+  }
+
+  ux.stdout('Running release command...')
+
+  async function streamReleaseOutput(releaseStreamUrl: string) {
+    const finished = util.promisify(Stream.finished)
+    const fetchResponse = await fetch(releaseStreamUrl)
+
+    if (fetchResponse.status >= 400) {
+      throw new Error('stream release output not available')
+    }
+
+    fetchResponse.body.pipe(process.stdout)
+
+    await finished(fetchResponse.body)
+  }
+
+  async function retry(maxAttempts: number, fn: () => Promise<any>) {
+    let currentAttempt = 0
+
+    while (true) {
+      try {
+        await fn()
+        return
+      } catch (error) {
+        if (++currentAttempt === maxAttempts) {
+          throw error
+        }
+
+        await Promote.sleep(1000)
+      }
+    }
+  }
+
+  await retry(100, () => streamReleaseOutput(release.output_stream_url!))
+
+  return pollPromotionStatus(heroku, promotion.id, false)
 }

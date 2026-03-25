@@ -1,30 +1,7 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-
-export type RedisFormationResponse = {
-  addon_id: string
-  created_at: string
-  customer_encryption_key?: string
-  formation: {
-    id: string
-    primary: null | string
-  }
-  info: {
-    name: string,
-    values: string[]
-  }[]
-  metaas_source: string
-  name: string
-  plan: string
-  port: number,
-  prefer_native_tls: boolean
-  resource_url: string,
-  version: string
-}
-
-type RedisEvictionPolicies = 'allkeys-lfu' | 'allkeys-lru' | 'allkeys-random' | 'noeviction' | 'volatile-lfu' | 'volatile-lru' | 'volatile-random' | 'volatile-ttl'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 export type RedisApiResponse = {
   message: string
@@ -54,9 +31,25 @@ export type RedisFormationConfigResponse = {
   },
 }
 
-export type RedisMaintenanceWindowResponse = {
-  scheduled_at?: string
-  window: null | string
+export type RedisFormationResponse = {
+  addon_id: string
+  created_at: string
+  customer_encryption_key?: string
+  formation: {
+    id: string
+    primary: null | string
+  }
+  info: {
+    name: string,
+    values: string[]
+  }[]
+  metaas_source: string
+  name: string
+  plan: string
+  port: number,
+  prefer_native_tls: boolean
+  resource_url: string,
+  version: string
 }
 
 export type RedisFormationWaitResponse = {
@@ -64,7 +57,14 @@ export type RedisFormationWaitResponse = {
   'waiting?': boolean
 }
 
+export type RedisMaintenanceWindowResponse = {
+  scheduled_at?: string
+  window: null | string
+}
+
 type HttpVerb = 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
+
+type RedisEvictionPolicies = 'allkeys-lfu' | 'allkeys-lru' | 'allkeys-random' | 'noeviction' | 'volatile-lfu' | 'volatile-lru' | 'volatile-random' | 'volatile-ttl'
 
 export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
   const HOST = process.env.HEROKU_DATA_HOST || process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
@@ -113,7 +113,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
             continue
           }
 
-          const json_data: {app?: Heroku.AddOn['app'], config_vars?: string[]} & RedisFormationResponse = redis
+          const json_data: RedisFormationResponse & {app?: Heroku.AddOn['app'], config_vars?: string[]} = redis
           json_data.app = db.addon.app
           json_data.config_vars = db.addon.config_vars
           const {formation, metaas_source, port, ...filteredRedis} = json_data

@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 
 import redisApi, {RedisFormationWaitResponse} from '../../lib/redis/api.js'

@@ -1,17 +1,20 @@
-import {Hook} from '@oclif/core'
-
-import * as telemetry from '../../global_telemetry.js'
-
-declare const global: telemetry.TelemetryGlobal
+import {Hook} from '@oclif/core/hooks'
 
 const performance_analytics: Hook<'postrun'> = async function () {
-  if (process.env.IS_HEROKU_TEST_ENV === 'true' || !global.cliTelemetry) {
+  if (process.env.IS_HEROKU_TEST_ENV === 'true' || !(global as any).cliTelemetry) {
     return
   }
 
-  const cmdStartTime = global.cliTelemetry.commandRunDuration
-  global.cliTelemetry.commandRunDuration = telemetry.computeDuration(cmdStartTime)
-  global.cliTelemetry.lifecycleHookCompletion.postrun = true
+  // Skip analytics on Windows for performance (unless explicitly enabled)
+  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
+    return
+  }
+
+  const telemetry = await import('../../global_telemetry.js')
+  const globalAny = global as any
+  const cmdStartTime = globalAny.cliTelemetry.commandRunDuration
+  globalAny.cliTelemetry.commandRunDuration = telemetry.computeDuration(cmdStartTime)
+  globalAny.cliTelemetry.lifecycleHookCompletion.postrun = true
   await Reflect.get(globalThis, 'recordPromise')
 }
 

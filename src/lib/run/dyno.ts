@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {color} from '@heroku/heroku-cli-util'
-import {HTTP, HTTPError} from '@heroku/http-call'
 import {APIClient, type IOptions} from '@heroku-cli/command'
 import {type Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {HTTP, HTTPError} from '@heroku/http-call'
+import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 import * as https from 'https'
 import * as net from 'net'
@@ -22,12 +22,6 @@ const wait = (ms: number) => new Promise<void>(resolve => {
   setTimeout(() => resolve(), ms)
 })
 
-interface HerokuApiClientRun extends APIClient {
-  options: {
-    rejectUnauthorized?: boolean
-  } & IOptions
-}
-
 export interface DynoOpts {
   app: string
   attach?: boolean
@@ -43,6 +37,12 @@ export interface DynoOpts {
   showStatus?: boolean
   size?: string
   type?: string
+}
+
+interface HerokuApiClientRun extends APIClient {
+  options: IOptions & {
+    rejectUnauthorized?: boolean
+  }
 }
 
 export default class Dyno extends Duplex {
@@ -81,29 +81,12 @@ export default class Dyno extends Duplex {
     }
   }
 
-  // Attaches stdin/stdout to dyno
-  attach() {
-    this.pipe(process.stdout)
-    if (this.dyno && this.dyno.attach_url) {
-      this.uri = new URL(this.dyno.attach_url)
-      this.legacyUri = new URL(this.dyno.attach_url)
+  get _useSSH() {
+    if (this.uri) {
+      /* tslint:disable:no-http-string */
+      return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
+      /* tslint:enable:no-http-string */
     }
-
-    if (this._useSSH) {
-      this.p = this._ssh()
-    } else {
-      this.p = this._rendezvous()
-    }
-
-    return this.p.then(() => {
-      this.end()
-    })
-  }
-
-  // Starts the dyno
-  async start() {
-    this._startedAt = Date.now()
-    await this._doStart()
   }
 
   _connect() {
@@ -112,7 +95,7 @@ export default class Dyno extends Duplex {
       this.reject = reject
 
       // @ts-ignore
-      const options: { rejectUnauthorized?: boolean } & https.RequestOptions = this.legacyUri
+      const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.legacyUri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
       const r = https.request(options)
@@ -363,7 +346,7 @@ export default class Dyno extends Duplex {
           // @ts-ignore
           this.resolve()
         } else {
-          const err: { exitCode?: number } & Error = new Error(`Process exited with code ${color.failure(code.toString())}`)
+          const err: Error & { exitCode?: number } = new Error(`Process exited with code ${color.failure(code.toString())}`)
           err.exitCode = code
           // @ts-ignore
           this.reject(err)
@@ -493,14 +476,6 @@ export default class Dyno extends Duplex {
     return `${status}, ${this.dyno.name || this.opts.dyno}${size}`
   }
 
-  get _useSSH() {
-    if (this.uri) {
-      /* tslint:disable:no-http-string */
-      return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
-      /* tslint:enable:no-http-string */
-    }
-  }
-
   _write(chunk: any, encoding: any, callback: any) {
     if (this.useSSH) {
       throw new Error('Cannot write stream to ssh dyno')
@@ -508,5 +483,30 @@ export default class Dyno extends Duplex {
 
     if (!this.input) throw new Error('no input')
     this.input.write(chunk, encoding, callback)
+  }
+
+  // Attaches stdin/stdout to dyno
+  attach() {
+    this.pipe(process.stdout)
+    if (this.dyno && this.dyno.attach_url) {
+      this.uri = new URL(this.dyno.attach_url)
+      this.legacyUri = new URL(this.dyno.attach_url)
+    }
+
+    if (this._useSSH) {
+      this.p = this._ssh()
+    } else {
+      this.p = this._rendezvous()
+    }
+
+    return this.p.then(() => {
+      this.end()
+    })
+  }
+
+  // Starts the dyno
+  async start() {
+    this._startedAt = Date.now()
+    await this._doStart()
   }
 }

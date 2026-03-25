@@ -1,6 +1,6 @@
 import type {DistinctChoice, ListChoiceMap} from 'inquirer'
 
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
@@ -9,7 +9,7 @@ import {renderLevelChoices, renderPricingInfo} from './utils.js'
 
 const heredoc = tsheredoc.default
 // eslint-disable-next-line import/no-named-as-default-member
-const {Separator, prompt} = inquirer
+const {prompt, Separator} = inquirer
 
 export default class PoolConfig {
   private followerCount: number | undefined

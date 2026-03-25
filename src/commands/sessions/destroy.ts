@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {OAuthSession} from '../../lib/sessions/sessions.js'
@@ -23,4 +23,3 @@ export default class SessionsDestroy extends Command {
     ux.action.stop()
   }
 }
-

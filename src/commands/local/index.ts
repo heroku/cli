@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, Command, Flags} from '@oclif/core'
 
 import {validateEnvFile} from '../../lib/local/env-file-validator.js'

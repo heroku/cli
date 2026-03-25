@@ -1,6 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import socks from '@heroku/socksv5'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import child from 'child_process'
 import cliProgress from 'cli-progress'
 import crypto from 'crypto'
@@ -88,41 +89,6 @@ export class HerokuSsh {
         username: dynoUser,
       })
     })
-  }
-
-  public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
-    sshDebug('[cli-ssh] native')
-
-    const tmpDir = os.tmpdir()
-    const keyPath = path.join(tmpDir, `heroku-exec-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
-    const proxyKeyPath = path.join(tmpDir, `heroku-exec-proxy-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
-
-    try {
-      await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
-      await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
-
-      let sshCommand = 'ssh '
-        + `-o UserKnownHostsFile=${proxyKeyPath} `
-        + '-o ServerAliveInterval=10 '
-        + '-o ServerAliveCountMax=3 '
-        + '-p 80 '
-        + `-i ${keyPath} `
-        + `${dynoUser}@${addonHost} `
-
-      if (context.args.length > 0 && !context.args.includes('bash')) {
-        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
-      }
-
-      try {
-        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
-      } catch (error: any) {
-        if (error.stderr) sshDebug(error.stderr)
-        sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
-      }
-    } finally {
-      await fsp.unlink(keyPath).catch(() => {})
-      await fsp.unlink(proxyKeyPath).catch(() => {})
-    }
   }
 
   public scp(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, src: string, dest: string) {
@@ -214,6 +180,72 @@ export class HerokuSsh {
     }).useAuth(socks.auth.None()) // eslint-disable-line new-cap
   }
 
+  public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
+    sshDebug('[cli-ssh] native')
+
+    const tmpDir = os.tmpdir()
+    const keyPath = path.join(tmpDir, `heroku-exec-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+    const proxyKeyPath = path.join(tmpDir, `heroku-exec-proxy-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+
+    try {
+      await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
+      await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
+
+      let sshCommand = 'ssh '
+        + `-o UserKnownHostsFile=${proxyKeyPath} `
+        + '-o ServerAliveInterval=10 '
+        + '-o ServerAliveCountMax=3 '
+        + '-p 80 '
+        + `-i ${keyPath} `
+        + `${dynoUser}@${addonHost} `
+
+      if (context.args.length > 0 && !context.args.includes('bash')) {
+        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
+      }
+
+      try {
+        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
+      } catch (error: any) {
+        if (error.stderr) sshDebug(error.stderr)
+        sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
+      }
+    } finally {
+      await fsp.unlink(keyPath).catch(() => {})
+      await fsp.unlink(proxyKeyPath).catch(() => {})
+    }
+  }
+
+  private _buildCommand(args: string[]) {
+    if (args.length === 1) {
+      // do not add quotes around arguments if there is only one argument
+      // `heroku run "rake test"` should work like `heroku run rake test`
+      return args[0]
+    }
+
+    let cmd = ''
+    for (let arg of args) {
+      if (arg.includes(' ') || arg.includes('"')) {
+        arg = '"' + arg.replaceAll('"', '\\"') + '"'
+      }
+
+      cmd = cmd + ' ' + arg
+    }
+
+    return cmd.trim()
+  }
+
+  private _connectionDefaults(proxyKey: string): Partial<ConnectConfig> {
+    return {
+      hostHash: 'sha256',
+      hostVerifier(hashedKey: string) {
+        const hasher = crypto.createHash('sha256')
+        hasher.update(Buffer.from(proxyKey.split(' ')[1], 'base64'))
+        return hasher.digest('hex') === hashedKey
+      },
+      port: 80,
+    }
+  }
+
   private _logConnectionError() {
     ux.error(`Could not connect to the dyno. Check that the dyno is active by running ${color.command('heroku ps')}`)
   }
@@ -254,37 +286,6 @@ export class HerokuSsh {
         objectMode: true,
         transform: (chunk, _, next) => c.write(chunk, next),
       }))
-    }
-  }
-
-  private _buildCommand(args: string[]) {
-    if (args.length === 1) {
-      // do not add quotes around arguments if there is only one argument
-      // `heroku run "rake test"` should work like `heroku run rake test`
-      return args[0]
-    }
-
-    let cmd = ''
-    for (let arg of args) {
-      if (arg.includes(' ') || arg.includes('"')) {
-        arg = '"' + arg.replaceAll('"', '\\"') + '"'
-      }
-
-      cmd = cmd + ' ' + arg
-    }
-
-    return cmd.trim()
-  }
-
-  private _connectionDefaults(proxyKey: string): Partial<ConnectConfig> {
-    return {
-      hostHash: 'sha256',
-      hostVerifier(hashedKey: string) {
-        const hasher = crypto.createHash('sha256')
-        hasher.update(Buffer.from(proxyKey.split(' ')[1], 'base64'))
-        return hasher.digest('hex') === hashedKey
-      },
-      port: 80,
     }
   }
 }

@@ -1,7 +1,8 @@
 import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
