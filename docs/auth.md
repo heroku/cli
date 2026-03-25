@@ -29,7 +29,7 @@ ALIASES
   $ heroku twofactor
 ```
 
-_See code: [src/commands/auth/2fa/index.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/auth/2fa/index.ts)_
+_See code: [src/commands/auth/2fa/index.ts](https://github.com/heroku/cli/blob/v11.0.2-alpha.0/src/commands/auth/2fa/index.ts)_
 
 ## `heroku auth:2fa:disable`
 
@@ -53,7 +53,7 @@ EXAMPLES
    $ heroku auth:2fa:disable
 ```
 
-_See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/auth/2fa/disable.ts)_
+_See code: [src/commands/auth/2fa/disable.ts](https://github.com/heroku/cli/blob/v11.0.2-alpha.0/src/commands/auth/2fa/disable.ts)_
 
 ## `heroku auth:login`
 
@@ -78,7 +78,7 @@ ALIASES
   $ heroku login
 ```
 
-_See code: [src/commands/auth/login.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/auth/login.ts)_
+_See code: [src/commands/auth/login.ts](https://github.com/heroku/cli/blob/v11.0.2-alpha.0/src/commands/auth/login.ts)_
 
 ## `heroku auth:logout`
 
@@ -95,7 +95,7 @@ ALIASES
   $ heroku logout
 ```
 
-_See code: [src/commands/auth/logout.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/auth/logout.ts)_
+_See code: [src/commands/auth/logout.ts](https://github.com/heroku/cli/blob/v11.0.2-alpha.0/src/commands/auth/logout.ts)_
 
 ## `heroku auth:token`
 
@@ -111,7 +111,7 @@ DESCRIPTION
   authorizations:create
 ```
 
-_See code: [src/commands/auth/token.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/auth/token.ts)_
+_See code: [src/commands/auth/token.ts](https://github.com/heroku/cli/blob/v11.0.2-alpha.0/src/commands/auth/token.ts)_
 
 ## `heroku auth:whoami`
 
@@ -128,4 +128,4 @@ ALIASES
   $ heroku whoami
 ```
 
-_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/auth/whoami.ts)_
+_See code: [src/commands/auth/whoami.ts](https://github.com/heroku/cli/blob/v11.0.2-alpha.0/src/commands/auth/whoami.ts)_
