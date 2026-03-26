@@ -31,7 +31,7 @@ EXAMPLES
    $ heroku telemetry
 ```
 
-_See code: [src/commands/telemetry/index.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/telemetry/index.ts)_
+_See code: [src/commands/telemetry/index.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/telemetry/index.ts)_
 
 ## `heroku telemetry:add ENDPOINT`
 
@@ -64,7 +64,7 @@ EXAMPLES
    $ heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'
 ```
 
-_See code: [src/commands/telemetry/add.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/telemetry/add.ts)_
+_See code: [src/commands/telemetry/add.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/telemetry/add.ts)_
 
 ## `heroku telemetry:info TELEMETRY_DRAIN_ID`
 
@@ -87,7 +87,7 @@ EXAMPLES
    $ heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e
 ```
 
-_See code: [src/commands/telemetry/info.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/telemetry/info.ts)_
+_See code: [src/commands/telemetry/info.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/telemetry/info.ts)_
 
 ## `heroku telemetry:remove [TELEMETRY_DRAIN_ID]`
 
@@ -111,7 +111,7 @@ DESCRIPTION
   remove a telemetry drain
 ```
 
-_See code: [src/commands/telemetry/remove.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/telemetry/remove.ts)_
+_See code: [src/commands/telemetry/remove.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/telemetry/remove.ts)_
 
 ## `heroku telemetry:update TELEMETRY_DRAIN_ID`
 
@@ -143,4 +143,4 @@ EXAMPLES
    $ heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com
 ```
 
-_See code: [src/commands/telemetry/update.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/telemetry/update.ts)_
+_See code: [src/commands/telemetry/update.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/telemetry/update.ts)_
