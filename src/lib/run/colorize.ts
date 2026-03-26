@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export const COLORS: Array<(s: string) => string> = [
   s => color.yellow(s),
@@ -14,19 +14,26 @@ export const COLORS: Array<(s: string) => string> = [
   s => color.bold.blue(s),
 ]
 const assignedColors: any = {}
+let isInitialized = false
+
+function ensureInitialized() {
+  if (isInitialized) return
+  isInitialized = true
+
+  // Pre-assign colors for common identifiers so they are the same every time
+  const commonIdentifiers = ['run', 'router', 'web', 'postgres', 'heroku-postgres']
+  for (const id of commonIdentifiers) {
+    assignedColors[id] = COLORS[Object.keys(assignedColors).length % COLORS.length]
+  }
+}
+
 function getColorForIdentifier(i: string) {
+  ensureInitialized()
   i = i.split('.')[0]
   if (assignedColors[i]) return assignedColors[i]
   assignedColors[i] = COLORS[Object.keys(assignedColors).length % COLORS.length]
   return assignedColors[i]
 }
-
-// get initial colors so they are the same every time
-getColorForIdentifier('run')
-getColorForIdentifier('router')
-getColorForIdentifier('web')
-getColorForIdentifier('postgres')
-getColorForIdentifier('heroku-postgres')
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
@@ -145,6 +152,120 @@ const state = (s: string) => {
   }
 }
 
+export default function colorize(line: string) {
+  if (process.env.HEROKU_LOGS_COLOR === '0' || process.env.HEROKU_COLOR === '0')
+    return line
+
+  const parsed = line.match(lineRegex)
+  if (!parsed) return line
+  const header = parsed[1]
+  const identifier = parsed[2]
+  let body = (parsed[4] || '').trim()
+  switch (identifier) {
+  case 'api': {
+    body = colorizeAPI(body)
+    break
+  }
+
+  case 'router': {
+    body = colorizeRouter(body)
+    break
+  }
+
+  case 'run': {
+    body = colorizeRun(body)
+    break
+  }
+
+  case 'web': {
+    body = colorizeWeb(body)
+    break
+  }
+
+  case 'heroku-redis': {
+    body = colorizeRedis(body)
+    break
+  }
+
+  case 'heroku-postgres':
+  case 'postgres': {
+    body = colorizePG(body)
+    break
+  }
+  }
+
+  return getColorForIdentifier(identifier)(header) + ' ' + body
+}
+
+function colorizeAPI(body: string) {
+  if (body.match(/^Build succeeded$/)) return color.success(body)
+  if (body.match(/^Build failed/)) return color.failure(body)
+  const build = body.match(/^(Build started by user )(.+)$/)
+  if (build) {
+    return [
+      build[1],
+      color.green(build[2]),
+    ].join('')
+  }
+
+  const deploy = body.match(/^(Deploy )([\w]+)( by user )(.+)$/)
+  if (deploy) {
+    return [
+      deploy[1],
+      color.cyan(deploy[2]),
+      deploy[3],
+      color.green(deploy[4]),
+    ].join('')
+  }
+
+  const release = body.match(/^(Release )(v[\d]+)( created by user )(.+)$/)
+  if (release) {
+    return [
+      release[1],
+      color.magenta(release[2]),
+      release[3],
+      color.green(release[4]),
+    ].join('')
+  }
+
+  const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
+  if (starting) {
+    return [
+      (starting[1]),
+      color.code(starting[2]),
+      (starting[3] || ''),
+      color.green(starting[4] || ''),
+    ].join('')
+  }
+
+  return body
+}
+
+function colorizePG(body: string) {
+  const create = body.match(/^(\[DATABASE].*)(CREATE TABLE)(.*)$/)
+  if (create) {
+    return [
+      other(create[1]),
+      color.magenta(create[2]),
+      color.cyan(create[3]),
+    ].join('')
+  }
+
+  if (body.match(/source=\w+ sample#/)) {
+    body = dim(body)
+  }
+
+  return body
+}
+
+function colorizeRedis(body: string) {
+  if (body.match(/source=\w+ sample#/)) {
+    body = dim(body)
+  }
+
+  return body
+}
+
 function colorizeRun(body: string) {
   try {
     if (body.match(/^Stopping all processes with SIGTERM$/)) return color.failure(body)
@@ -243,118 +364,4 @@ function colorizeWeb(body: string) {
   }
 
   return body
-}
-
-function colorizeAPI(body: string) {
-  if (body.match(/^Build succeeded$/)) return color.success(body)
-  if (body.match(/^Build failed/)) return color.failure(body)
-  const build = body.match(/^(Build started by user )(.+)$/)
-  if (build) {
-    return [
-      build[1],
-      color.green(build[2]),
-    ].join('')
-  }
-
-  const deploy = body.match(/^(Deploy )([\w]+)( by user )(.+)$/)
-  if (deploy) {
-    return [
-      deploy[1],
-      color.cyan(deploy[2]),
-      deploy[3],
-      color.green(deploy[4]),
-    ].join('')
-  }
-
-  const release = body.match(/^(Release )(v[\d]+)( created by user )(.+)$/)
-  if (release) {
-    return [
-      release[1],
-      color.magenta(release[2]),
-      release[3],
-      color.green(release[4]),
-    ].join('')
-  }
-
-  const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
-  if (starting) {
-    return [
-      (starting[1]),
-      color.code(starting[2]),
-      (starting[3] || ''),
-      color.green(starting[4] || ''),
-    ].join('')
-  }
-
-  return body
-}
-
-function colorizeRedis(body: string) {
-  if (body.match(/source=\w+ sample#/)) {
-    body = dim(body)
-  }
-
-  return body
-}
-
-function colorizePG(body: string) {
-  const create = body.match(/^(\[DATABASE].*)(CREATE TABLE)(.*)$/)
-  if (create) {
-    return [
-      other(create[1]),
-      color.magenta(create[2]),
-      color.cyan(create[3]),
-    ].join('')
-  }
-
-  if (body.match(/source=\w+ sample#/)) {
-    body = dim(body)
-  }
-
-  return body
-}
-
-export default function colorize(line: string) {
-  if (process.env.HEROKU_LOGS_COLOR === '0' || process.env.HEROKU_COLOR === '0')
-    return line
-
-  const parsed = line.match(lineRegex)
-  if (!parsed) return line
-  const header = parsed[1]
-  const identifier = parsed[2]
-  let body = (parsed[4] || '').trim()
-  switch (identifier) {
-  case 'api': {
-    body = colorizeAPI(body)
-    break
-  }
-
-  case 'router': {
-    body = colorizeRouter(body)
-    break
-  }
-
-  case 'run': {
-    body = colorizeRun(body)
-    break
-  }
-
-  case 'web': {
-    body = colorizeWeb(body)
-    break
-  }
-
-  case 'heroku-redis': {
-    body = colorizeRedis(body)
-    break
-  }
-
-  case 'heroku-postgres':
-  case 'postgres': {
-    body = colorizePG(body)
-    break
-  }
-  }
-
-  return getColorForIdentifier(identifier)(header) + ' ' + body
 }

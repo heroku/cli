@@ -1,12 +1,14 @@
 import {utils} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import {EventEmitter} from 'node:events'
 import {Server} from 'node:net'
 import {PassThrough} from 'node:stream'
 import sinon from 'sinon'
 
-import {connArgs, maybeTunnel, parseExclusions, prepare, spawnPipe, verifyExtensionsMatch} from '../../../../src/lib/pg/push_pull.js'
+import {
+  connArgs, maybeTunnel, parseExclusions, prepare, spawnPipe, verifyExtensionsMatch,
+} from '../../../../src/lib/pg/push_pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {
@@ -131,7 +133,7 @@ describe('push_pull', function () {
 
     it('does not return tunnel config in the connection details, when a tunnel is not configured', async function () {
       sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
-      sinon.stub(utils.pg.psql, 'sshTunnel').resolves(undefined)
+      sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
 
       const result = await maybeTunnel(target as any)
 
@@ -201,8 +203,8 @@ describe('push_pull', function () {
 
   describe('spawnPipe', function () {
     it('resolves when both pgDump and pgRestore close successfully', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -215,8 +217,8 @@ describe('push_pull', function () {
     })
 
     it('rejects with pg_dump error when pgDump closes with non-zero code', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -228,8 +230,8 @@ describe('push_pull', function () {
     })
 
     it('rejects with pg_restore error when pgRestore closes with non-zero code', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -242,8 +244,8 @@ describe('push_pull', function () {
     })
 
     it('pipes pgDump stdout to pgRestore stdin', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -260,8 +262,8 @@ describe('push_pull', function () {
     })
 
     it('ends pgRestore stdin when pgDump closes successfully', async function () {
-      const pgDump = new EventEmitter() as {stdout: PassThrough} & EventEmitter
-      const pgRestore = new EventEmitter() as {stdin: PassThrough} & EventEmitter
+      const pgDump = new EventEmitter() as EventEmitter & {stdout: PassThrough}
+      const pgRestore = new EventEmitter() as EventEmitter & {stdin: PassThrough}
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
@@ -348,4 +350,3 @@ describe('push_pull', function () {
     })
   })
 })
-

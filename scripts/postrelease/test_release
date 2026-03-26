@@ -59,7 +59,6 @@ declare -a COMMANDS=(
   "$CMD_BIN run -x -a heroku-cli-test-staging -- 'bash -c \"exit 0\"'"
   "$CMD_BIN run:detached \"echo 'Hello World'\" -a heroku-cli-test-staging"
   "$CMD_BIN sessions"
-  "$CMD_BIN spaces"
   "$CMD_BIN status"
   "$CMD_BIN teams"
   "$CMD_BIN version"

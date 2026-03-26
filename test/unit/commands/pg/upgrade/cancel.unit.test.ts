@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'

@@ -1,6 +1,6 @@
 
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 import {createAppSetup} from '../../api.js'
 
@@ -10,25 +10,6 @@ interface CreateAppOptions {
   organization: string;
   pipeline: Heroku.Pipeline;
   stage: string;
-}
-
-function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage}: CreateAppOptions) {
-  const params: any = {
-    app: {name},
-    pipeline_coupling: {
-      pipeline: pipeline.id,
-      stage,
-    },
-    source_blob: {url: archiveURL},
-  }
-
-  if (organization) {
-    params.app.organization = organization
-  } else {
-    params.app.personal = true
-  }
-
-  return createAppSetup(heroku, params).then(setup => setup)
 }
 
 export default function createApps(heroku: any, archiveURL: any, pipeline: any, pipelineName: any, stagingAppName: any, organization: any) {
@@ -53,4 +34,23 @@ export default function createApps(heroku: any, archiveURL: any, pipeline: any, 
   return Promise.all(promises).then(appSetups => appSetups, error => {
     ux.error(error, {exit: 1})
   })
+}
+
+function createApp(heroku: any, {archiveURL, name, organization, pipeline, stage}: CreateAppOptions) {
+  const params: any = {
+    app: {name},
+    pipeline_coupling: {
+      pipeline: pipeline.id,
+      stage,
+    },
+    source_blob: {url: archiveURL},
+  }
+
+  if (organization) {
+    params.app.organization = organization
+  } else {
+    params.app.personal = true
+  }
+
+  return createAppSetup(heroku, params).then(setup => setup)
 }

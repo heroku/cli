@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 export default class Clear extends Command {
   static baseFlags = Command.baseFlagsWithoutPrompt()

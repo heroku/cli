@@ -1,4 +1,5 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import {hux} from '@heroku/heroku-cli-util'
 import {displayCIDR, peeringStatus} from './format.js'
 import {Peering, PeeringInfo} from '@heroku-cli/schema'

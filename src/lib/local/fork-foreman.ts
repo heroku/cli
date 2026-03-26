@@ -1,8 +1,20 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {fork as forkChildProcess} from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import {fileURLToPath} from 'url'
+
+export function fork(argv: string[]): Promise<void> {
+  const script = getForemanScriptPath()
+  const nf = forkChildProcess(script, argv, {stdio: 'inherit'})
+
+  return new Promise(resolve => {
+    nf.on('exit', (code: number) => {
+      if (code !== 0) ux.exit(code)
+      resolve()
+    })
+  })
+}
 
 // depending if this is being ran before or after compilation
 // we need to check for `.ts` and `.js` extensions and use
@@ -28,16 +40,4 @@ function getForemanScriptPath() {
   }
 
   throw new Error(`Path to ${file} not found`)
-}
-
-export function fork(argv: string[]): Promise<void> {
-  const script = getForemanScriptPath()
-  const nf = forkChildProcess(script, argv, {stdio: 'inherit'})
-
-  return new Promise(resolve => {
-    nf.on('exit', (code: number) => {
-      if (code !== 0) ux.exit(code)
-      resolve()
-    })
-  })
 }

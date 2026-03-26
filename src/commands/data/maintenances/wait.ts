@@ -26,7 +26,7 @@ export default class DataMaintenancesWait extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWait)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app)
 
     const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
     if (isEssentialTier) {

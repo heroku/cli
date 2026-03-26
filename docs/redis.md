@@ -8,7 +8,6 @@ manage heroku redis instances
 * [`heroku redis:credentials [DATABASE]`](#heroku-rediscredentials-database)
 * [`heroku redis:info [DATABASE]`](#heroku-redisinfo-database)
 * [`heroku redis:keyspace-notifications [DATABASE]`](#heroku-rediskeyspace-notifications-database)
-* [`heroku redis:maintenance [DATABASE]`](#heroku-redismaintenance-database)
 * [`heroku redis:maxmemory [DATABASE]`](#heroku-redismaxmemory-database)
 * [`heroku redis:promote [DATABASE]`](#heroku-redispromote-database)
 * [`heroku redis:stats-reset [DATABASE]`](#heroku-redisstats-reset-database)
@@ -72,7 +71,7 @@ EXAMPLES
   $ heroku redis:cli --app=my-app --confirm my-database
 ```
 
-_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/cli.ts)_
+_See code: [src/commands/redis/cli.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/cli.ts)_
 
 ## `heroku redis:credentials [DATABASE]`
 
@@ -98,7 +97,7 @@ DESCRIPTION
   display credentials information
 ```
 
-_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/credentials.ts)_
+_See code: [src/commands/redis/credentials.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/credentials.ts)_
 
 ## `heroku redis:info [DATABASE]`
 
@@ -127,7 +126,7 @@ ALIASES
   $ heroku redis
 ```
 
-_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/info.ts)_
+_See code: [src/commands/redis/info.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/info.ts)_
 
 ## `heroku redis:keyspace-notifications [DATABASE]`
 
@@ -169,36 +168,7 @@ DESCRIPTION
   pass an empty string ('') to disable keyspace notifications
 ```
 
-_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/keyspace-notifications.ts)_
-
-## `heroku redis:maintenance [DATABASE]`
-
-manage maintenance windows
-
-```
-USAGE
-  $ heroku redis:maintenance [DATABASE] -a <value> [--prompt] [-f] [-r <value>] [--run] [-w <value>]
-
-ARGUMENTS
-  [DATABASE]  name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the
-              app.
-
-FLAGS
-  -a, --app=<value>     (required) app to run command against
-  -f, --force           start maintenance without entering application maintenance mode
-  -r, --remote=<value>  git remote of app to use
-  -w, --window=<value>  set weekly UTC maintenance window (format: "Day HH:MM", where MM is 00 or 30)
-      --run             start maintenance
-
-GLOBAL FLAGS
-  --prompt  interactively prompt for command arguments and flags
-
-DESCRIPTION
-  manage maintenance windows
-  Set or change the maintenance window for your Redis instance
-```
-
-_See code: [src/commands/redis/maintenance.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/maintenance.ts)_
+_See code: [src/commands/redis/keyspace-notifications.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/keyspace-notifications.ts)_
 
 ## `heroku redis:maxmemory [DATABASE]`
 
@@ -234,7 +204,7 @@ DESCRIPTION
   volatile-ttl    # only evicts keys with an expiry set and a short TTL
 ```
 
-_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/maxmemory.ts)_
+_See code: [src/commands/redis/maxmemory.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/maxmemory.ts)_
 
 ## `heroku redis:promote [DATABASE]`
 
@@ -259,7 +229,7 @@ DESCRIPTION
   sets DATABASE as your REDIS_URL
 ```
 
-_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/promote.ts)_
+_See code: [src/commands/redis/promote.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/promote.ts)_
 
 ## `heroku redis:stats-reset [DATABASE]`
 
@@ -285,7 +255,7 @@ DESCRIPTION
   reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)
 ```
 
-_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/stats-reset.ts)_
+_See code: [src/commands/redis/stats-reset.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/stats-reset.ts)_
 
 ## `heroku redis:timeout [DATABASE]`
 
@@ -312,7 +282,7 @@ DESCRIPTION
   A value of zero means that connections will not be closed.
 ```
 
-_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/timeout.ts)_
+_See code: [src/commands/redis/timeout.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/timeout.ts)_
 
 ## `heroku redis:upgrade [DATABASE]`
 
@@ -339,7 +309,7 @@ DESCRIPTION
   perform in-place version upgrade
 ```
 
-_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/upgrade.ts)_
+_See code: [src/commands/redis/upgrade.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/upgrade.ts)_
 
 ## `heroku redis:wait [DATABASE]`
 
@@ -365,4 +335,4 @@ DESCRIPTION
   wait for Redis instance to be available
 ```
 
-_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v11.0.0-beta.0/src/commands/redis/wait.ts)_
+_See code: [src/commands/redis/wait.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/redis/wait.ts)_

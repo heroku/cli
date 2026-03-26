@@ -1,5 +1,5 @@
 import socks from '@heroku/socksv5'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import child from 'child_process'
 import cliProgress from 'cli-progress'
@@ -428,7 +428,7 @@ describe('ssh lib', function () {
     })
 
     it('initializes, starts, and updates the progress bar on step callbacks', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
+      const barStub = {start: sinon.stub(), stop: sinon.stub(), update: sinon.stub()}
       sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
@@ -451,7 +451,7 @@ describe('ssh lib', function () {
     })
 
     it('stops the progress bar after a successful transfer', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
+      const barStub = {start: sinon.stub(), stop: sinon.stub(), update: sinon.stub()}
       sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
@@ -470,7 +470,7 @@ describe('ssh lib', function () {
     })
 
     it('stops the progress bar after a failed transfer', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
+      const barStub = {start: sinon.stub(), stop: sinon.stub(), update: sinon.stub()}
       sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
@@ -489,7 +489,7 @@ describe('ssh lib', function () {
     })
 
     it('does not stop the progress bar when no step callbacks fired', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
+      const barStub = {start: sinon.stub(), stop: sinon.stub(), update: sinon.stub()}
       sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
@@ -508,7 +508,7 @@ describe('ssh lib', function () {
   describe('socksv5()', function () {
     let mockServer: {listen: sinon.SinonStub; useAuth: sinon.SinonStub}
     let createServerStub: sinon.SinonStub
-    let capturedSocksHandler: (info: {srcAddr: string; srcPort: number; dstAddr: string; dstPort: number}, accept: (autoAccept?: boolean) => ReturnType<typeof makeStream> | null, deny: () => void) => void
+    let capturedSocksHandler: (info: {dstAddr: string; dstPort: number; srcAddr: string; srcPort: number;}, accept: (autoAccept?: boolean) => null | ReturnType<typeof makeStream>, deny: () => void) => void
     let clientForwardOutStub: sinon.SinonStub
 
     beforeEach(function () {
@@ -547,7 +547,9 @@ describe('ssh lib', function () {
     })
 
     it('calls forwardOut with the SOCKS request info on ready', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
@@ -564,7 +566,9 @@ describe('ssh lib', function () {
     })
 
     it('denies and ends the connection when forwardOut errors', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const deny = sinon.stub()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: null) => void) => cb(new Error('forward failed'), null))
 
@@ -577,7 +581,9 @@ describe('ssh lib', function () {
     })
 
     it('pipes the forwarded stream to the accepted client socket', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       const clientSocket = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
@@ -590,7 +596,9 @@ describe('ssh lib', function () {
     })
 
     it('ends the connection when the piped stream closes', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
@@ -603,7 +611,9 @@ describe('ssh lib', function () {
     })
 
     it('ends the connection immediately when accept returns null', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
@@ -615,7 +625,9 @@ describe('ssh lib', function () {
     })
 
     it('denies the request on SSH client error', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const deny = sinon.stub()
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
@@ -626,7 +638,9 @@ describe('ssh lib', function () {
     })
 
     it('connects with the correct SSH config for each SOCKS request', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, makeStream()))
 
       sshInstance.socksv5('addon.host', 'testuser', Buffer.from('supersecretkey'), 'ssh-rsa abc123')

@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-import {App, Formation} from '../../../lib/types/fir.js'
+import {ux} from '@oclif/core/ux'
+
 import {getGeneration} from '../../../lib/apps/generation.js'
+import {App, Formation} from '../../../lib/types/fir.js'
 
 const METRICS_HOST = 'api.metrics.heroku.com'
 
@@ -13,16 +14,16 @@ const isPerfOrPrivateTier = (size: string) => {
 
 export default class Enable extends Command {
   static description = 'enable web dyno autoscaling'
-  static topic = 'ps:autoscale'
-
   static flags = {
     app: flags.app({required: true}),
-    remote: flags.remote(),
-    min: flags.integer({required: true, description: 'minimum number of dynos'}),
-    max: flags.integer({required: true, description: 'maximum number of dynos'}),
-    p95: flags.integer({description: 'desired p95 response time'}),
+    max: flags.integer({description: 'maximum number of dynos', required: true}),
+    min: flags.integer({description: 'minimum number of dynos', required: true}),
     notifications: flags.boolean({description: 'receive email notifications when the max dyno limit is reached'}),
+    p95: flags.integer({description: 'desired p95 response time'}),
+    remote: flags.remote(),
   }
+
+  static topic = 'ps:autoscale'
 
   async run() {
     const {flags} = await this.parse(Enable)
@@ -62,18 +63,19 @@ export default class Enable extends Command {
     const scaleMonitor = (body || []).find((m: any) => m.action_type === 'scale')
 
     let updatedValues: any = {
-      is_active: true,
       action_type: 'scale',
+      is_active: true,
+      notification_channels: flags.notifications ? ['app'] : [],
       notification_period: 1440,
       op: 'GREATER_OR_EQUAL',
       period: 1,
-      notification_channels: flags.notifications ? ['app'] : [],
     }
 
     if (scaleMonitor) {
-      updatedValues = {...updatedValues,
-        min_quantity: flags.min || scaleMonitor.min_quantity,
+      updatedValues = {
+        ...updatedValues,
         max_quantity: flags.max || scaleMonitor.max_quantity,
+        min_quantity: flags.min || scaleMonitor.min_quantity,
         value: flags.p95 || scaleMonitor.value,
       }
 
@@ -83,16 +85,17 @@ export default class Enable extends Command {
           hostname: METRICS_HOST,
         })
     } else {
-      updatedValues = {...updatedValues,
-        name: 'LATENCY_SCALE',
-        min_quantity: flags.min,
+      updatedValues = {
+        ...updatedValues,
         max_quantity: flags.max,
+        min_quantity: flags.min,
+        name: 'LATENCY_SCALE',
         value: flags.p95 || 1000,
       }
 
       await this.heroku.post(`/apps/${app.id}/formation/web/monitors`, {
-        hostname: METRICS_HOST,
         body: updatedValues,
+        hostname: METRICS_HOST,
       })
     }
 

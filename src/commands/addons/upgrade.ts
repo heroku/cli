@@ -1,9 +1,9 @@
 import type {AddOn, Plan} from '@heroku-cli/schema'
 
-import {color} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
+import * as color from '@heroku/heroku-cli-util/color'
+import {HTTP} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 
 import type {ExtendedAddon} from '../../lib/pg/types.js'
