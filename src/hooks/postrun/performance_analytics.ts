@@ -7,7 +7,7 @@ const performance_analytics: Hook<'postrun'> = async function () {
     return
   }
 
-  const telemetry = await import('../../global_telemetry.js')
+  const telemetry = await import('../../lib/analytics-telemetry/global-telemetry.js')
 
   // Use the consolidated telemetry check
   if (!telemetry.isTelemetryEnabled()) {

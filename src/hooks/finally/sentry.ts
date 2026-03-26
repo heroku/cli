@@ -62,7 +62,7 @@ function serializeTelemetryData(data: any): string {
 function spawnTelemetryWorker(data: any) {
   try {
     const __dirname = dirname(fileURLToPath(import.meta.url))
-    const workerPath = join(__dirname, '..', '..', 'dist', 'telemetry_worker.js')
+    const workerPath = join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
     const child = spawn(process.execPath, [workerPath], {
       detached: true,
       // Keep stderr attached to see DEBUG output, but ignore stdout
@@ -91,7 +91,7 @@ const finallyHook: Hook<'finally'> = async function (options) {
     return
   }
 
-  const telemetry = await import('../../global_telemetry.js')
+  const telemetry = await import('../../lib/analytics-telemetry/global-telemetry.js')
 
   // Use the consolidated telemetry check
   if (!telemetry.isTelemetryEnabled()) {

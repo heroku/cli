@@ -3,7 +3,7 @@ import {Hook} from '@oclif/core/hooks'
 import Analytics from '../../analytics.js'
 
 const analytics: Hook<'prerun'> = async function (options) {
-  const telemetry = await import('../../global_telemetry.js')
+  const telemetry = await import('../../lib/analytics-telemetry/global-telemetry.js')
 
   // Use the consolidated telemetry check
   if (!telemetry.isTelemetryEnabled()) {

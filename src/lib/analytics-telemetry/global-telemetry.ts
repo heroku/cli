@@ -12,13 +12,13 @@ import debug from 'debug'
 import path from 'path'
 import {fileURLToPath} from 'url'
 
-import {PII_PATTERNS} from './lib/data-scrubber/patterns.js'
-import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from './lib/data-scrubber/presets.js'
-import {Scrubber} from './lib/data-scrubber/scrubber.js'
+import {PII_PATTERNS} from '../data-scrubber/patterns.js'
+import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from '../data-scrubber/presets.js'
+import {Scrubber} from '../data-scrubber/scrubber.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const root = path.resolve(__dirname, '../package.json')
+const root = path.resolve(__dirname, '../../../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
 

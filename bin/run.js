@@ -2,10 +2,10 @@
 /* eslint-disable n/no-process-exit */
 /* eslint-disable n/no-unpublished-bin */
 
-import {spawn} from 'node:child_process'
-import {fileURLToPath} from 'node:url'
-import {dirname, join} from 'node:path'
 import {execute, settings} from '@oclif/core'
+import {spawn} from 'node:child_process'
+import {dirname, join} from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 // Enable performance tracking when DEBUG=oclif:perf or DEBUG=* is set
 if (process.env.DEBUG?.includes('oclif:perf') || process.env.DEBUG === '*') {
@@ -24,7 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 if (enableTelemetry) {
   // Dynamically import telemetry only for computeDuration helper
-  globalTelemetry = await import('../dist/global_telemetry.js')
+  globalTelemetry = await import('../dist/lib/analytics-telemetry/global-telemetry.js')
 }
 
 /**
@@ -34,11 +34,11 @@ function serializeTelemetryData(data) {
   // If it's an Error object, convert to plain object with all properties
   if (data instanceof Error) {
     return JSON.stringify({
+      cliRunDuration: data.cliRunDuration,
+      code: data.code,
       message: data.message,
       name: data.name,
       stack: data.stack,
-      code: data.code,
-      cliRunDuration: data.cliRunDuration,
       // Include any other enumerable properties
       ...data,
     })
@@ -53,7 +53,7 @@ function serializeTelemetryData(data) {
  */
 function spawnTelemetryWorker(data) {
   try {
-    const workerPath = join(__dirname, '..', 'dist', 'telemetry_worker.js')
+    const workerPath = join(__dirname, '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
     const child = spawn(process.execPath, [workerPath], {
       detached: true,
       // Keep stderr attached to see DEBUG output, but ignore stdout
@@ -111,8 +111,5 @@ process.on('SIGTERM', () => {
 
   process.exit(1)
 })
-
-// Note: Instrumentation initialization removed for performance
-// It will be lazy-loaded when telemetry is actually sent (if needed)
 
 await execute({dir: import.meta.url})

@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import * as telemetry from '../../src/global_telemetry.js'
+import * as telemetry from '../../src/lib/analytics-telemetry/global-telemetry.js'
 import {identity} from 'lodash'
 import * as os from 'os'
 import * as Sentry from '@sentry/node'
