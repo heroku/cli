@@ -1,4 +1,4 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Command} from '@oclif/core'
 
 import {HerokuRepl} from '../lib/repl.js'

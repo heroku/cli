@@ -1,13 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-
-function styledDrain(id: string, name: string, drain: Heroku.LogDrain) {
-  let output = `${id} (${name})`
-  if (drain.extended) output += ` drain_id=${drain.extended.drain_id}`
-  ux.stdout(output)
-}
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 export default class Drains extends Command {
   static description = 'display the log drains of an app'
@@ -62,4 +56,10 @@ export default class Drains extends Command {
       }
     }
   }
+}
+
+function styledDrain(id: string, name: string, drain: Heroku.LogDrain) {
+  let output = `${id} (${name})`
+  if (drain.extended) output += ` drain_id=${drain.extended.drain_id}`
+  ux.stdout(output)
 }

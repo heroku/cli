@@ -1,4 +1,4 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 export default function setupPipeline(kolkrabbi: any, app: any, settings: any, pipelineID: any, ciSettings: any = {}) {
   const promises = [kolkrabbi.updateAppLink(app, settings)]

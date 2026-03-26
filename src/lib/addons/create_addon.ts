@@ -1,7 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, utils} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {waitForAddonProvisioning} from './addons_wait.js'
 import * as util from './util.js'
@@ -40,18 +40,22 @@ export default async function (
       plan: {name: plan},
     }
 
-    ux.action.start(options.actionStartMessage || `Creating ${plan} on ${color.app(app)}`)
-    const {body: addon} = await heroku.post<Heroku.AddOn>(`/apps/${app}/addons`, {
-      body,
-      headers: {
-        'accept-expansion': 'plan',
-        'x-heroku-legacy-provider-messages': 'true',
-      },
-    })
+    try {
+      ux.action.start(options.actionStartMessage || `Creating ${plan} on ${color.app(app)}`)
+      const {body: addon} = await heroku.post<Heroku.AddOn>(`/apps/${app}/addons`, {
+        body,
+        headers: {
+          'accept-expansion': 'plan',
+          'x-heroku-legacy-provider-messages': 'true',
+        },
+      })
+      ux.action.stop(options.actionStopMessage || color.green(util.formatPriceText(addon.plan?.price || '')))
 
-    ux.action.stop(options.actionStopMessage || color.green(util.formatPriceText(addon.plan?.price || '')))
-
-    return addon
+      return addon
+    } catch (error: unknown) {
+      ux.action.stop(color.red('!'))
+      throw error
+    }
   }
 
   let addon = await util.trapConfirmationRequired<Heroku.AddOn>(app, confirm, confirm => (createAddonRequest(confirm)))

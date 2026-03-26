@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
 import {EventEmitter} from 'node:events'
-import {ux} from '@oclif/core'
+import * as sinon from 'sinon'
 
 import {NpmAuth} from '../../../src/lib/npm-auth.js'
 
@@ -26,7 +26,7 @@ describe('NpmAuth', function () {
 
   describe('isNpmAvailable', function () {
     it('should return true when npm is available', async function () {
-      execStub.resolves({stdout: '8.0.0', stderr: ''})
+      execStub.resolves({stderr: '', stdout: '8.0.0'})
 
       const result = await NpmAuth.isNpmAvailable()
 
@@ -45,7 +45,7 @@ describe('NpmAuth', function () {
 
   describe('isAuthenticated', function () {
     it('should return true when user is authenticated', async function () {
-      execStub.resolves({stdout: 'username', stderr: ''})
+      execStub.resolves({stderr: '', stdout: 'username'})
 
       const result = await NpmAuth.isAuthenticated()
 
@@ -64,7 +64,7 @@ describe('NpmAuth', function () {
 
   describe('isPrivatePackage', function () {
     it('should return false for public packages', async function () {
-      execStub.resolves({stdout: '@oclif/core', stderr: ''})
+      execStub.resolves({stderr: '', stdout: '@oclif/core'})
 
       const result = await NpmAuth.isPrivatePackage('@oclif/core')
 
@@ -124,7 +124,7 @@ describe('NpmAuth', function () {
       spawnStub.returns(mockProcess)
 
       // Mock exec for npm whoami
-      execStub.resolves({stdout: 'username', stderr: ''})
+      execStub.resolves({stderr: '', stdout: 'username'})
 
       const loginPromise = NpmAuth.login()
 

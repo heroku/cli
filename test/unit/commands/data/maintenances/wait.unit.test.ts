@@ -6,7 +6,7 @@ import {stderr} from 'stdout-stderr'
 import DataMaintenancesWait from '../../../../../src/commands/data/maintenances/wait.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {maintenance} from '../../../../fixtures/data/maintenances/fixtures.js'
-import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
 const completedMaintenance: Maintenance = {
@@ -101,5 +101,31 @@ describe('data:maintenances:wait', function () {
       const {message} = error as {message: string}
       expect(ansis.strip(message)).to.equal(`There currently isn't any maintenance in progress for ${addon.name}`)
     }
+  })
+
+  it('waits for non-postgres add-ons', async function () {
+    herokuApi
+      .post('/actions/addons/resolve', body => body.addon_service === undefined)
+      .reply(200, [nonPostgresAddon])
+
+    let pollingCalls = 0
+    dataApi
+      .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
+      .reply(200, runningMaintenance)
+    dataApi
+      .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
+      .thrice()
+      .reply(() => {
+        pollingCalls++
+
+        return pollingCalls === 3
+          ? [200, completedMaintenance]
+          : [200, runningMaintenance]
+      })
+
+    await runCommand(DataMaintenancesWait, [nonPostgresAddon.name])
+
+    expect(stderr.output).to.contain(`Waiting for maintenance on ${nonPostgresAddon.name} to complete`)
+    expect(stderr.output).to.contain('maintenance completed')
   })
 })

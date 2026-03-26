@@ -1,7 +1,9 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import debug from 'debug'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'

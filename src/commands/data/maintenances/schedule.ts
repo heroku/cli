@@ -62,7 +62,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, week, weeks} = flags
 
-    const addon = await addonResolver.resolve(args.addon, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, app)
 
     const delayWeeks = week === undefined
       ? weeks

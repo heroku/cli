@@ -1,6 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import inquirer from 'inquirer'
 
 import {uuidValidate} from '../utils/uuid-validate.js'

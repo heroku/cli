@@ -1,5 +1,4 @@
-import {Hook} from '@oclif/core'
-import {getAllVersionFlags} from '../../lib/utils/packageParser.js'
+import {Hook} from '@oclif/core/hooks'
 
 const allowlist = [
   'HEROKU_API_KEY',
@@ -13,7 +12,11 @@ const allowlist = [
 ]
 
 const version: Hook.Init = async function () {
-  if (getAllVersionFlags().includes(process.argv[2])) {
+  // Get version flags from already-loaded config instead of reading package.json again
+  const additionalVersionFlags = this.config.pjson?.oclif?.additionalVersionFlags || []
+  const allVersionFlags = [...additionalVersionFlags, '--version']
+
+  if (allVersionFlags.includes(process.argv[2])) {
     for (const env of allowlist) {
       if (process.env[env]) {
         const value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
@@ -24,4 +27,3 @@ const version: Hook.Init = async function () {
 }
 
 export default version
-

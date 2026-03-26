@@ -1,7 +1,7 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
@@ -62,6 +62,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
   }
 
   private getTableColumns(extended: boolean, columns: string | undefined) {
+    /* eslint-disable perfectionist/sort-objects */
     const allTableColumns = {
       addon: {
         get: (row: Maintenance) => row.addon && row.addon.name,
@@ -110,6 +111,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
         header: 'Plan',
       },
     }
+    /* eslint-enable perfectionist/sort-objects */
 
     const baseColumnNames = ['addon', 'attachments', 'window', 'status', 'required_by', 'scheduled_for']
 

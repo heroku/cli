@@ -1,7 +1,32 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 
 export function displayCIDR(cidr: string[] | undefined) {
   return cidr?.join(', ') ?? ''
+}
+
+export function displayVPNStatus(s: string | undefined) {
+  switch (s) {
+  case 'UP':
+  case 'available': {
+    return `${color.success(s)}`
+  }
+
+  case 'pending':
+  case 'provisioning':
+  case 'deprovisioning': {
+    return `${color.info(s)}`
+  }
+
+  case 'DOWN':
+  case 'deleting':
+  case 'deleted': {
+    return `${color.failure(s)}`
+  }
+
+  default: {
+    return s
+  }
+  }
 }
 
 export function hostStatus(s: string) {
@@ -44,31 +69,6 @@ export function peeringStatus(s: string) {
   case 'failed':
   case 'deleted':
   case 'rejected': {
-    return `${color.failure(s)}`
-  }
-
-  default: {
-    return s
-  }
-  }
-}
-
-export function displayVPNStatus(s: string | undefined) {
-  switch (s) {
-  case 'UP':
-  case 'available': {
-    return `${color.success(s)}`
-  }
-
-  case 'pending':
-  case 'provisioning':
-  case 'deprovisioning': {
-    return `${color.info(s)}`
-  }
-
-  case 'DOWN':
-  case 'deleting':
-  case 'deleted': {
     return `${color.failure(s)}`
   }
 

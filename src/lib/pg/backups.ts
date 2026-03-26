@@ -1,6 +1,7 @@
 import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from './types.js'

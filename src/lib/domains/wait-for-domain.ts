@@ -1,7 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 export default async function waitForDomain(app: string, heroku: APIClient, domain: Heroku.Domain) {
   ux.action.start(`Waiting for ${color.name(domain.hostname || 'domain')}`)

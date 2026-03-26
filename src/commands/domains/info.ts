@@ -1,10 +1,14 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import {Args} from '@oclif/core'
 
 export default class DomainsInfo extends Command {
+  static args = {
+    hostname: Args.string({description: 'unique identifier of the domain or full hostname', required: true}),
+  }
+
   static description = 'show detailed information for a domain on an app'
 
   static examples = [
@@ -14,10 +18,6 @@ export default class DomainsInfo extends Command {
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  }
-
-  static args = {
-    hostname: Args.string({required: true, description: 'unique identifier of the domain or full hostname'}),
   }
 
   async run() {
