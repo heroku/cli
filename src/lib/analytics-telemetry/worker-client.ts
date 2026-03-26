@@ -75,6 +75,8 @@ export function spawnTelemetryWorker(data: TelemetryData): void {
       detached: true,
       // Keep stderr attached to see DEBUG output, but ignore stdout
       stdio: ['pipe', 'ignore', 'inherit'],
+      // On Windows, prevent console window from appearing
+      windowsHide: true,
     })
 
     // Send data via stdin
