@@ -6,30 +6,27 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
-import DataPgWait from '../../../../../src/commands/data/pg/wait.js'
-import {WaitStatus} from '../../../../../src/lib/data/types.js'
+import DataPgUpgradeWait from '../../../../../../src/commands/data/pg/upgrade/wait.js'
+import {WaitStatus} from '../../../../../../src/lib/data/types.js'
 import {
   addon,
   advancedAddonAttachment,
   nonAdvancedAddonAttachment,
   waitStatusAvailable,
-  waitStatusMigrating,
-  waitStatusProvisioning,
-  waitStatusUpdating,
   waitStatusUpgrading,
-} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+} from '../../../../../fixtures/data/pg/fixtures.js'
+import runCommand from '../../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
-describe('data:pg:wait', function () {
+describe('data:pg:upgrade:wait', function () {
   let dataApi: nock.Scope
   let notifyStub: sinon.SinonStub
   let resolverStub: sinon.SinonStub
 
   beforeEach(function () {
     dataApi = nock('https://api.data.heroku.com')
-    notifyStub = sinon.stub(DataPgWait.prototype, 'notify')
+    notifyStub = sinon.stub(DataPgUpgradeWait.prototype, 'notify')
     resolverStub = sinon.stub(utils.pg.DatabaseResolver.prototype, 'getAttachment')
   })
 
@@ -45,7 +42,7 @@ describe('data:pg:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp'])
+      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
 
       expect(stdout.output).to.contain('advanced-horizontal-01234 is available')
       expect(stderr.output).to.not.contain('Waiting for database')
@@ -54,11 +51,11 @@ describe('data:pg:wait', function () {
 
     it('waits for database through multiple status transitions', async function () {
       const waitingStatus1: WaitStatus = {
-        message: 'Provisioning...',
+        message: 'Upgrading...',
         waiting: true,
       }
       const waitingStatus2: WaitStatus = {
-        message: 'Modifying...',
+        message: 'Promoting...',
         waiting: true,
       }
 
@@ -71,52 +68,7 @@ describe('data:pg:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
-
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
-
-    it('waits for database with migrating status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusMigrating)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
-
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
-
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
-
-    it('waits for database with provisioning status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusProvisioning)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
-
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
-
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
-
-    it('waits for database with updating status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusUpdating)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
-
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
+      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
 
       expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
       expect(stderr.output).to.contain('available')
@@ -131,7 +83,7 @@ describe('data:pg:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
+      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
 
       expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
       expect(stderr.output).to.contain('available')
@@ -144,13 +96,13 @@ describe('data:pg:wait', function () {
       resolverStub.resolves(nonAdvancedAddonAttachment)
 
       try {
-        await runCommand(DataPgWait, ['STANDARD_DATABASE', '--app=myapp'])
+        await runCommand(DataPgUpgradeWait, ['STANDARD_DATABASE', '--app=myapp'])
         expect.fail('Expected command to throw an error')
       } catch (error: unknown) {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Run heroku pg:wait standard-database -a myapp instead.`)
+          Run heroku pg:upgrade:wait standard-database -a myapp instead.`)
       }
     })
 
@@ -161,7 +113,7 @@ describe('data:pg:wait', function () {
       resolverStub.resolves(advancedAddonAttachment)
 
       try {
-        await runCommand(DataPgWait, ['DATABASE', '--app=myapp'])
+        await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
         expect.fail('Expected command to throw an error')
       } catch (error: unknown) {
         const err = error as Error
@@ -172,19 +124,14 @@ describe('data:pg:wait', function () {
 
   describe('flags', function () {
     it('respects --no-notify flag', async function () {
-      const waitingStatus: WaitStatus = {
-        message: 'Provisioning...',
-        waiting: true,
-      }
-
       dataApi
         .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitingStatus)
+        .reply(200, waitStatusUpgrading)
         .get(`/data/postgres/v1/${addon.id}/wait_status`)
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--no-notify', '--wait-interval=1'])
+      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--no-notify', '--wait-interval=1'])
 
       expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
       expect(stderr.output).to.contain('available')
@@ -192,19 +139,14 @@ describe('data:pg:wait', function () {
     })
 
     it('respects --wait-interval flag', async function () {
-      const waitingStatus: WaitStatus = {
-        message: 'Provisioning...',
-        waiting: true,
-      }
-
       dataApi
         .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitingStatus)
+        .reply(200, waitStatusUpgrading)
         .get(`/data/postgres/v1/${addon.id}/wait_status`)
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=2'])
+      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=2'])
 
       expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
       expect(stderr.output).to.contain('available')

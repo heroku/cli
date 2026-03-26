@@ -90,7 +90,7 @@ export type InfoResponse = {
   pools: Array<PoolInfoResponse>
   quotas: Array<Quota>
   region: CommonRuntimeRegion | PrivateSpaceRegion
-  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable'
+  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable' | 'upgrading'
   tier: 'advanced'
   version: string
 }
