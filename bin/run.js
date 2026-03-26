@@ -23,7 +23,7 @@ if (enableTelemetry) {
   globalTelemetry = await import('../dist/global_telemetry.js')
 }
 
-process.once('beforeExit', async code => {
+process.once('beforeExit', code => {
   if (!enableTelemetry) return
 
   // capture as successful exit
@@ -36,7 +36,10 @@ process.once('beforeExit', async code => {
     global.cliTelemetry.exitCode = code
     global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
     const telemetryData = global.cliTelemetry
-    await globalTelemetry.sendTelemetry(telemetryData)
+
+    // Fire-and-forget: Start sending telemetry but don't block exit
+    // The async HTTP request will keep the event loop alive naturally
+    globalTelemetry.sendTelemetry(telemetryData).catch(() => {})
   }
 })
 
@@ -62,8 +65,7 @@ process.on('SIGTERM', () => {
   process.exit(1)
 })
 
-if (enableTelemetry) {
-  globalTelemetry.initializeInstrumentation()
-}
+// Note: Instrumentation initialization removed for performance
+// It will be lazy-loaded when telemetry is actually sent (if needed)
 
 await execute({dir: import.meta.url})

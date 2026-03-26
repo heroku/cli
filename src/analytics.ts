@@ -1,42 +1,43 @@
 import {vars} from '@heroku-cli/command'
 import {Command, Interfaces} from '@oclif/core'
-import * as path from 'path'
-import deps from './deps.js'
-import fs from 'fs-extra'
 import debug from 'debug'
+import fs from 'fs-extra'
+import * as path from 'path'
+
+import deps from './deps.js'
 
 const analyticsDebug = debug('heroku:analytics')
-export interface RecordOpts {
-  Command: Command.Class;
-  argv: string[];
-}
-
 export interface AnalyticsInterface {
-  source: string;
   event: string;
   properties: {
     cli: string;
     command: string;
     completion: number;
-    version: string;
+    install_id: string;
+    language: string;
+    os: string;
     plugin: string;
     plugin_version: string;
-    os: string;
     shell: string;
     valid: boolean;
-    language: string;
-    install_id: string;
+    version: string;
   };
+  source: string;
+}
+
+export interface RecordOpts {
+  argv: string[];
+  Command: Command.Class;
 }
 
 export default class AnalyticsCommand {
   config: Interfaces.Config
 
-  userConfig!: typeof deps.UserConfig.prototype
-
   http: typeof deps.HTTP
 
   initialize: Promise<void>
+
+  userConfig!: typeof deps.UserConfig.prototype
 
   private netrc: any
 
@@ -46,6 +47,52 @@ export default class AnalyticsCommand {
       headers: {'user-agent': config.userAgent},
     })
     this.initialize = this.init()
+  }
+
+  get authorizationToken(): string | undefined {
+    return process.env.HEROKU_API_KEY || this.netrcToken
+  }
+
+  get netrcLogin(): string | undefined {
+    return this.netrc?.machines[vars.apiHost]?.login
+  }
+
+  get netrcToken(): string | undefined {
+    return this.netrc?.machines[vars.apiHost]?.password
+  }
+
+  get url(): string {
+    return process.env.HEROKU_ANALYTICS_URL || 'https://backboard.heroku.com/hamurai'
+  }
+
+  get user(): string | undefined {
+    if (this.usingHerokuAPIKey) return
+    return this.netrcLogin
+  }
+
+  get usingHerokuAPIKey(): boolean {
+    const k = process.env.HEROKU_API_KEY
+    return Boolean(k && k.length > 0)
+  }
+
+  async _acAnalytics(id: string): Promise<number> {
+    if (id === 'autocomplete:options') return 0
+    const root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
+
+    // Batch file existence checks for better performance
+    const [cmdExists, flagExists, valueExists, rootExists] = await Promise.all([
+      fs.pathExists(path.join(root, 'command')),
+      fs.pathExists(path.join(root, 'flag')),
+      fs.pathExists(path.join(root, 'value')),
+      fs.pathExists(root),
+    ])
+
+    let score = 0
+    if (cmdExists) score += 1
+    if (flagExists) score += 2
+    if (valueExists) score += 4
+    if (rootExists) await fs.remove(root)
+    return score
   }
 
   async record(opts: RecordOpts) {
@@ -66,14 +113,14 @@ export default class AnalyticsCommand {
         cli: this.config.name,
         command: id,
         completion: await this._acAnalytics(id),
-        version: `${this.config.version}${mcpMode ? ` (MCP ${mcpServerVersion})` : ''}`,
+        install_id: this.userConfig.install,
+        language: 'node',
+        os: this.config.platform,
         plugin: plugin.name,
         plugin_version: plugin.version,
-        os: this.config.platform,
         shell: this.config.shell,
         valid: true,
-        language: 'node',
-        install_id: this.userConfig.install,
+        version: `${this.config.version}${mcpMode ? ` (MCP ${mcpServerVersion})` : ''}`,
       },
       source: 'cli',
     }
@@ -84,48 +131,6 @@ export default class AnalyticsCommand {
     }
 
     return this.http.get(`${this.url}?data=${data}`).catch(error => analyticsDebug(error))
-  }
-
-  get url(): string {
-    return process.env.HEROKU_ANALYTICS_URL || 'https://backboard.heroku.com/hamurai'
-  }
-
-  get authorizationToken(): string | undefined {
-    return process.env.HEROKU_API_KEY || this.netrcToken
-  }
-
-  get netrcToken(): string | undefined {
-    return this.netrc?.machines[vars.apiHost]?.password
-  }
-
-  get usingHerokuAPIKey(): boolean {
-    const k = process.env.HEROKU_API_KEY
-    return Boolean(k && k.length > 0)
-  }
-
-  get netrcLogin(): string | undefined {
-    return this.netrc?.machines[vars.apiHost]?.login
-  }
-
-  get user(): string | undefined {
-    if (this.usingHerokuAPIKey) return
-    return this.netrcLogin
-  }
-
-  async _acAnalytics(id: string): Promise<number> {
-    if (id === 'autocomplete:options') return 0
-    const root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
-    const meta = {
-      cmd: fs.pathExists(path.join(root, 'command')),
-      flag: fs.pathExists(path.join(root, 'flag')),
-      value: fs.pathExists(path.join(root, 'value')),
-    }
-    let score = 0
-    if (await meta.cmd) score += 1
-    if (await meta.flag) score += 2
-    if (await meta.value) score += 4
-    if (await fs.pathExists(root)) await fs.remove(root)
-    return score
   }
 
   private async init() {

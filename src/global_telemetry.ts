@@ -2,16 +2,12 @@ import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core/config'
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http'
-import {registerInstrumentations} from '@opentelemetry/instrumentation'
 import {Resource} from '@opentelemetry/resources'
 import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-base'
 import {NodeTracerProvider} from '@opentelemetry/sdk-trace-node'
 import {SemanticResourceAttributes} from '@opentelemetry/semantic-conventions'
 import * as Sentry from '@sentry/node'
-import {
-  SentryPropagator,
-  SentrySampler,
-} from '@sentry/opentelemetry'
+import {SentryPropagator} from '@sentry/opentelemetry'
 import debug from 'debug'
 import path from 'path'
 import {fileURLToPath} from 'url'
@@ -26,12 +22,24 @@ const root = path.resolve(__dirname, '../package.json')
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
 
+// Debug instance for telemetry operations
+const telemetryDebug = debug('analytics-telemetry')
+
+// Utility function to check if telemetry is enabled
+export function isTelemetryEnabled(): boolean {
+  if (process.env.DISABLE_TELEMETRY === 'true') return false
+  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') return false
+  if (process.env.IS_HEROKU_TEST_ENV === 'true') return false
+  return true
+}
+
 // Lazy-loaded state
 let isInitialized = false
+let isSentryInitialized = false
 let version: string | undefined
+let cachedToken: string | undefined
 let provider: NodeTracerProvider
 let processor: BatchSpanProcessor
-let sentryClient: ReturnType<typeof Sentry.init> | undefined
 
 export interface TelemetryGlobal extends NodeJS.Global {
   cliTelemetry?: Telemetry
@@ -77,11 +85,14 @@ export function initializeInstrumentation() {
     return
   }
 
+  telemetryDebug('initializeInstrumentation() called - registering provider with Sentry context')
   ensureInitialized()
+  ensureSentryInitialized()
   provider.register({
     contextManager: new Sentry.SentryContextManager(),
     propagator: new SentryPropagator(),
   })
+  telemetryDebug('Provider registered with Sentry context manager')
   // provider.register()
 }
 
@@ -107,17 +118,20 @@ export function reportCmdNotFound(config: any) {
 export async function sendTelemetry(currentTelemetry: any) {
   // send telemetry to honeycomb
   if (isTelemetryDisabled) {
+    telemetryDebug('Telemetry disabled, skipping send')
     return
   }
 
   const telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
+    telemetryDebug('Sending error to Honeycomb and Sentry: %s', telemetry.message)
     await Promise.all([
       sendToHoneycomb(telemetry),
       sendToSentry(telemetry),
     ])
   } else {
+    telemetryDebug('Sending telemetry for command: %s', telemetry.command)
     await sendToHoneycomb(telemetry)
   }
 }
@@ -127,6 +141,7 @@ export async function sendToHoneycomb(data: CLIError | Telemetry) {
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli', getVersion())
     const span = tracer.startSpan('node_app_execution')
+    telemetryDebug('Created span: node_app_execution')
 
     if (data instanceof Error) {
       span.recordException(data)
@@ -134,6 +149,7 @@ export async function sendToHoneycomb(data: CLIError | Telemetry) {
         code: SpanStatusCode.ERROR,
         message: data.message,
       })
+      telemetryDebug('Recorded exception in span: %s', data.message)
     } else {
       span.setAttribute('heroku_client.command', data.command)
       span.setAttribute('heroku_client.os', data.os)
@@ -146,22 +162,30 @@ export async function sendToHoneycomb(data: CLIError | Telemetry) {
       span.setAttribute('heroku_client.lifecycle_hook.prerun', data.lifecycleHookCompletion.prerun)
       span.setAttribute('heroku_client.lifecycle_hook.postrun', data.lifecycleHookCompletion.postrun)
       span.setAttribute('heroku_client.lifecycle_hook.command_not_found', data.lifecycleHookCompletion.command_not_found)
+      telemetryDebug('Set span attributes for command: %s (duration: %dms)', data.command, data.cliRunDuration)
     }
 
     span.end()
+    telemetryDebug('Span ended, flushing to exporter...')
     await getProcessor().forceFlush()
-  } catch {
+    telemetryDebug('Successfully flushed telemetry to Honeycomb')
+  } catch (error) {
+    telemetryDebug('Error sending telemetry to Honeycomb: %O', error)
     debug('could not send telemetry')
   }
 }
 
 export async function sendToSentry(data: CLIError) {
-  ensureInitialized()
+  // Lazy-load Sentry only when we actually need to report an error
+  ensureSentryInitialized()
   try {
+    telemetryDebug('Capturing exception in Sentry: %s', data.message)
     Sentry.captureException(data)
     // ensures all events are sent to Sentry before exiting.
     await Sentry.flush()
-  } catch {
+    telemetryDebug('Successfully flushed error to Sentry')
+  } catch (error) {
+    telemetryDebug('Error sending to Sentry: %O', error)
     debug('Could not send error report')
   }
 }
@@ -215,11 +239,59 @@ function ensureInitialized() {
     return
   }
 
+  telemetryDebug('Initializing OpenTelemetry...')
   isInitialized = true
 
-  registerInstrumentations({
-    instrumentations: [],
+  // Skip empty instrumentation registration for performance
+  // If we need instrumentations in the future, add them to the array
+  // registerInstrumentations({
+  //   instrumentations: [],
+  // })
+
+  const resource = Resource
+    .default()
+    .merge(
+      new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
+        [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
+      }),
+    )
+
+  // Initialize without Sentry sampler initially (Sentry loaded lazily)
+  provider = new NodeTracerProvider({
+    resource,
   })
+  telemetryDebug('NodeTracerProvider created')
+
+  // eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
+  const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
+
+  const url = isDev ? 'https://backboard.staging.herokudev.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces'
+  telemetryDebug('OTLP exporter endpoint: %s', url)
+
+  const exporter = new OTLPTraceExporter({
+    compression: undefined,
+    headers,
+    url,
+  })
+
+  processor = new BatchSpanProcessor(exporter)
+  provider.addSpanProcessor(processor)
+  telemetryDebug('BatchSpanProcessor added to provider')
+
+  // Register the provider to make it the global tracer provider
+  // We don't use Sentry context manager here to avoid loading Sentry upfront
+  provider.register()
+  telemetryDebug('OpenTelemetry provider registered globally')
+}
+
+function ensureSentryInitialized() {
+  if (isSentryInitialized || isTelemetryDisabled) {
+    return
+  }
+
+  telemetryDebug('Initializing Sentry...')
+  isSentryInitialized = true
 
   const scrubber = new Scrubber({
     fields: [...HEROKU_FIELDS, ...GDPR_FIELDS, ...PCI_FIELDS],
@@ -236,38 +308,23 @@ function ensureInitialized() {
     skipOpenTelemetrySetup: true, // needed since we have our own OTEL setup
     tracesSampleRate: 1, // needed to ensure we send OTEL data to Honeycomb
   })
-
-  const resource = Resource
-    .default()
-    .merge(
-      new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
-        [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
-      }),
-    )
-
-  provider = new NodeTracerProvider({
-    resource,
-    sampler: sentryClient ? new SentrySampler(sentryClient) : undefined,
-  })
-
-  // eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
-  const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
-
-  const exporter = new OTLPTraceExporter({
-    compression: undefined,
-    headers,
-    url: isDev ? 'https://backboard.staging.herokudev.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces',
-  })
-
-  processor = new BatchSpanProcessor(exporter)
-  provider.addSpanProcessor(processor)
+  telemetryDebug('Sentry initialized (environment: %s, release: %s)', isDev ? 'development' : 'production', getVersion())
 }
 
 function getToken() {
-  const config = new Config({root})
-  const heroku = new APIClient(config)
-  return heroku.auth
+  // Cache token to avoid recreating Config/APIClient on every call
+  if (cachedToken !== undefined) return cachedToken
+
+  try {
+    const config = new Config({root})
+    const heroku = new APIClient(config)
+    cachedToken = heroku.auth
+    return cachedToken
+  } catch {
+    // If config initialization fails, return empty string
+    cachedToken = ''
+    return cachedToken
+  }
 }
 
 function getVersion() {

@@ -1,12 +1,13 @@
 import {Hook} from '@oclif/core/hooks'
 
 const performance_analytics: Hook<'init'> = async function (options) {
-  // Skip telemetry on Windows for performance (unless explicitly enabled)
-  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
+  const telemetry = await import('../../global_telemetry.js')
+
+  // Use the consolidated telemetry check
+  if (!telemetry.isTelemetryEnabled()) {
     return
   }
 
-  const telemetry = await import('../../global_telemetry.js');
   (global as any).cliTelemetry = telemetry.setupTelemetry(this.config, options)
 }
 
