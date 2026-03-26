@@ -93,10 +93,10 @@ const finallyHook: Hook<'finally'> = async function (options) {
     return
   }
 
-  const telemetry = await import('../../lib/analytics-telemetry/global-telemetry.js')
+  const {isTelemetryEnabled} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
-  if (!telemetry.isTelemetryEnabled()) {
+  if (!isTelemetryEnabled()) {
     return
   }
 

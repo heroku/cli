@@ -20,7 +20,7 @@ const enableTelemetry = process.platform !== 'win32' || process.env.ENABLE_WINDO
 if (enableTelemetry) {
   // Dynamically import telemetry modules
   const {setupTelemetryHandlers} = await import('../dist/lib/analytics-telemetry/worker-client.js')
-  const {computeDuration} = await import('../dist/lib/analytics-telemetry/global-telemetry.js')
+  const {computeDuration} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
 
   // Setup all telemetry handlers (beforeExit, SIGINT, SIGTERM)
   setupTelemetryHandlers({

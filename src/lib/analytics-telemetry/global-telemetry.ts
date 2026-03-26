@@ -5,21 +5,15 @@
 
 import type {Config} from '@oclif/core/interfaces'
 
-// Re-export Honeycomb client functions
-export {getProcessor, initializeInstrumentation} from './honeycomb-client.js'
-
-export {ensureSentryInitialized} from './sentry-client.js'
-
 // Import internal dependencies
 import {sendToHoneycomb} from './honeycomb-client.js'
 import {sendToSentry} from './sentry-client.js'
 import {
-  CLIError,
   isTelemetryDisabled,
   setVersion,
   Telemetry,
-  telemetryDebug,
   TelemetryData,
+  telemetryDebug,
 } from './telemetry-utils.js'
 
 /**
@@ -123,14 +117,3 @@ export function setupTelemetry(config: Config, opts: TelemetryOptions): Telemetr
 
   return irregularTelemetryObject
 }
-
-// Export ensureSentryInitialized for use by finally hook
-
-// Re-export utilities and types
-export {
-  type CLIError,
-  computeDuration,
-  isTelemetryEnabled,
-  type Telemetry,
-  type TelemetryGlobal,
-} from './telemetry-utils.js'

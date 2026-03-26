@@ -1,20 +1,12 @@
 import {expect} from 'chai'
 import nock from 'nock'
-import * as sinon from 'sinon'
 
 import * as globalTelemetry from '../../../src/lib/analytics-telemetry/global-telemetry.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 describe('global-telemetry', function () {
-  let sandbox: sinon.SinonSandbox
-
-  beforeEach(function () {
-    sandbox = sinon.createSandbox()
-  })
-
   afterEach(function () {
-    sandbox.restore()
     nock.cleanAll()
   })
 
@@ -163,29 +155,6 @@ describe('global-telemetry', function () {
 
       // Should not make any HTTP calls when telemetry is disabled
       await globalTelemetry.sendTelemetry(mockTelemetry)
-
-      process.env.DISABLE_TELEMETRY = originalDisableTelemetry
-    })
-  })
-
-  describe('computeDuration', function () {
-    it('computes time duration correctly', function () {
-      const now = new Date()
-      const startTime = now.getTime() - 1000 // 1 second ago
-
-      const duration = globalTelemetry.computeDuration(startTime)
-
-      expect(duration).to.be.greaterThan(900)
-      expect(duration).to.be.lessThan(1100)
-    })
-  })
-
-  describe('isTelemetryEnabled', function () {
-    it('returns false when DISABLE_TELEMETRY is true', function () {
-      const originalDisableTelemetry = process.env.DISABLE_TELEMETRY
-      process.env.DISABLE_TELEMETRY = 'true'
-
-      expect(globalTelemetry.isTelemetryEnabled()).to.be.false
 
       process.env.DISABLE_TELEMETRY = originalDisableTelemetry
     })
