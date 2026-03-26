@@ -3,7 +3,15 @@ import {spawn} from 'node:child_process'
 import {dirname, join} from 'node:path'
 import {fileURLToPath} from 'node:url'
 
+import {CLIError, TelemetryData, TelemetryGlobal} from './telemetry-utils.js'
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+// Extend global with telemetry property
+declare global {
+  // eslint-disable-next-line no-var
+  var cliTelemetry: TelemetryGlobal['cliTelemetry']
+}
 
 interface SetupTelemetryOptions {
   cliStartTime: number
@@ -22,15 +30,15 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
 
   process.once('beforeExit', code => {
     // capture as successful exit
-    if ((global as any).cliTelemetry) {
-      if ((global as any).cliTelemetry.isVersionOrHelp) {
-        const cmdStartTime = (global as any).cliTelemetry.commandRunDuration;
-        (global as any).cliTelemetry.commandRunDuration = computeDuration(cmdStartTime)
+    if (global.cliTelemetry) {
+      if (global.cliTelemetry.isVersionOrHelp) {
+        const cmdStartTime = global.cliTelemetry.commandRunDuration
+        global.cliTelemetry.commandRunDuration = computeDuration(cmdStartTime)
       }
 
-      (global as any).cliTelemetry.exitCode = code;
-      (global as any).cliTelemetry.cliRunDuration = computeDuration(cliStartTime)
-      const telemetryData = (global as any).cliTelemetry
+      global.cliTelemetry.exitCode = code
+      global.cliTelemetry.cliRunDuration = computeDuration(cliStartTime)
+      const telemetryData = global.cliTelemetry
 
       // Spawn background process to send telemetry without blocking exit
       spawnTelemetryWorker(telemetryData)
@@ -39,16 +47,18 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
 
   process.on('SIGINT', () => {
     // Spawn background process to send telemetry
-    const error = new Error('Received SIGINT') as any
-    error.cliRunDuration = computeDuration(cliStartTime)
+    const error: CLIError = Object.assign(new Error('Received SIGINT'), {
+      cliRunDuration: computeDuration(cliStartTime),
+    })
     spawnTelemetryWorker(error)
     process.exit(1)
   })
 
   process.on('SIGTERM', () => {
     // Spawn background process to send telemetry
-    const error = new Error('Received SIGTERM') as any
-    error.cliRunDuration = computeDuration(cliStartTime)
+    const error: CLIError = Object.assign(new Error('Received SIGTERM'), {
+      cliRunDuration: computeDuration(cliStartTime),
+    })
     spawnTelemetryWorker(error)
     process.exit(1)
   })
@@ -58,7 +68,7 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
  * Spawn telemetry worker process in background
  * This avoids blocking the main CLI process with telemetry overhead
  */
-export function spawnTelemetryWorker(data: any): void {
+export function spawnTelemetryWorker(data: TelemetryData): void {
   try {
     const workerPath = join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
     const child = spawn(process.execPath, [workerPath], {
@@ -81,18 +91,19 @@ export function spawnTelemetryWorker(data: any): void {
 /**
  * Serialize data for telemetry worker, handling Error objects specially
  */
-function serializeTelemetryData(data: any): string {
+function serializeTelemetryData(data: TelemetryData): string {
   // If it's an Error object, convert to plain object with all properties
   if (data instanceof Error) {
+    const errorData = data as CLIError
     return JSON.stringify({
       // Include any other enumerable properties first
       ...data,
       // Then override with important properties to ensure they're captured
-      cliRunDuration: (data as any).cliRunDuration,
-      code: (data as any).code,
-      message: data.message,
-      name: data.name,
-      stack: data.stack,
+      cliRunDuration: errorData.cliRunDuration,
+      code: errorData.code,
+      message: errorData.message,
+      name: errorData.name,
+      stack: errorData.stack,
     })
   }
 

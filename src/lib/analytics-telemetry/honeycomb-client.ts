@@ -15,6 +15,7 @@ import {
   isDev,
   isTelemetryDisabled,
   Telemetry,
+  TelemetryData,
   telemetryDebug,
 } from './telemetry-utils.js'
 
@@ -55,7 +56,7 @@ export function initializeInstrumentation(): void {
 /**
  * Send telemetry data to Honeycomb via OpenTelemetry
  */
-export async function sendToHoneycomb(data: CLIError | Telemetry): Promise<void> {
+export async function sendToHoneycomb(data: TelemetryData): Promise<void> {
   ensureInitialized()
   try {
     const tracer = opentelemetry.trace.getTracer('heroku-cli', getVersion())
@@ -63,12 +64,13 @@ export async function sendToHoneycomb(data: CLIError | Telemetry): Promise<void>
     telemetryDebug('Created span: node_app_execution')
 
     if (data instanceof Error) {
+      const errorData = data as CLIError
       telemetryDebug('Honeycomb payload (error): %O', {
-        cliRunDuration: (data as any).cliRunDuration,
-        code: (data as any).code,
-        message: data.message,
-        name: data.name,
-        stack: data.stack,
+        cliRunDuration: errorData.cliRunDuration,
+        code: errorData.code,
+        message: errorData.message,
+        name: errorData.name,
+        stack: errorData.stack,
       })
       span.recordException(data)
       span.setStatus({

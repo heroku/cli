@@ -22,7 +22,7 @@ describe('global-telemetry', function () {
     const mockConfig = {
       platform: 'darwin',
       version: '1.2.3',
-    }
+    } as any
 
     it('creates telemetry object for regular command', function () {
       const mockOpts = {
@@ -81,7 +81,7 @@ describe('global-telemetry', function () {
       const mockConfig = {
         platform: 'darwin',
         version: '1.2.3',
-      }
+      } as any
 
       const result = globalTelemetry.reportCmdNotFound(mockConfig)
 

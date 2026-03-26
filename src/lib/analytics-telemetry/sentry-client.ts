@@ -49,11 +49,11 @@ export async function sendToSentry(data: CLIError): Promise<void> {
   ensureSentryInitialized()
   try {
     telemetryDebug('Sentry payload: %O', {
-      code: (data as any).code,
+      code: data.code,
       message: data.message,
       name: data.name,
       stack: data.stack,
-      statusCode: (data as any).statusCode,
+      statusCode: data.statusCode,
     })
     telemetryDebug('Capturing exception in Sentry: %s', data.message)
     Sentry.captureException(data)

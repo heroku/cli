@@ -3,6 +3,8 @@
  * This module provides the main public API for telemetry and delegates to specialized modules
  */
 
+import type {Config} from '@oclif/core/interfaces'
+
 // Re-export Honeycomb client functions
 export {getProcessor, initializeInstrumentation} from './honeycomb-client.js'
 
@@ -17,12 +19,23 @@ import {
   setVersion,
   Telemetry,
   telemetryDebug,
+  TelemetryData,
 } from './telemetry-utils.js'
+
+/**
+ * Options passed to telemetry setup (from oclif hooks)
+ */
+interface TelemetryOptions {
+  Command?: {
+    id: string
+  }
+  id?: string
+}
 
 /**
  * Create telemetry object for command_not_found errors
  */
-export function reportCmdNotFound(config: any): Telemetry {
+export function reportCmdNotFound(config: Config): Telemetry {
   return {
     cliRunDuration: 0,
     command: 'invalid_command',
@@ -46,7 +59,7 @@ export function reportCmdNotFound(config: any): Telemetry {
  * - Errors go to both Honeycomb and Sentry
  * - Regular telemetry goes to Honeycomb only
  */
-export async function sendTelemetry(currentTelemetry: CLIError | Telemetry): Promise<void> {
+export async function sendTelemetry(currentTelemetry: TelemetryData): Promise<void> {
   if (isTelemetryDisabled) {
     telemetryDebug('Telemetry disabled, skipping send')
     return
@@ -69,7 +82,7 @@ export async function sendTelemetry(currentTelemetry: CLIError | Telemetry): Pro
 /**
  * Create telemetry object for regular commands or version/help
  */
-export function setupTelemetry(config: any, opts: any): Telemetry {
+export function setupTelemetry(config: Config, opts: TelemetryOptions): Telemetry {
   // Store version from config (eliminates need to read package.json)
   setVersion(config.version)
 
@@ -81,7 +94,7 @@ export function setupTelemetry(config: any, opts: any): Telemetry {
 
   const irregularTelemetryObject: Telemetry = {
     cliRunDuration: 0,
-    command: opts.id,
+    command: opts.id || 'unknown',
     commandRunDuration: cmdStartTime,
     exitCode: 0,
     exitState: 'successful',
@@ -96,7 +109,7 @@ export function setupTelemetry(config: any, opts: any): Telemetry {
     version: `${config.version}${mcpMode ? ` (MCP ${mcpServerVersion})` : ''}`,
   }
 
-  if (isRegularCmd) {
+  if (isRegularCmd && opts.Command) {
     return {
       ...irregularTelemetryObject,
       command: opts.Command.id,

@@ -20,7 +20,15 @@ let version: string | undefined
 let cachedToken: string | undefined
 
 export interface CLIError extends Error {
-  cliRunDuration?: string
+  cliRunDuration?: string | number
+  code?: string
+  statusCode?: number
+  http?: {
+    statusCode?: number
+  }
+  oclif?: {
+    exit?: number
+  }
 }
 
 export interface Telemetry {
@@ -40,10 +48,12 @@ export interface Telemetry {
   version: string
 }
 
-// Types
-export interface TelemetryGlobal extends NodeJS.Global {
+export interface TelemetryGlobal {
   cliTelemetry?: Telemetry
 }
+
+// Union type for data that can be sent to telemetry
+export type TelemetryData = Telemetry | CLIError
 
 /**
  * Compute duration from a start time to now
