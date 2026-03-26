@@ -144,6 +144,13 @@ export async function sendToHoneycomb(data: CLIError | Telemetry) {
     telemetryDebug('Created span: node_app_execution')
 
     if (data instanceof Error) {
+      telemetryDebug('Honeycomb payload (error): %O', {
+        message: data.message,
+        name: data.name,
+        stack: data.stack,
+        code: (data as any).code,
+        cliRunDuration: (data as any).cliRunDuration,
+      })
       span.recordException(data)
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -151,6 +158,16 @@ export async function sendToHoneycomb(data: CLIError | Telemetry) {
       })
       telemetryDebug('Recorded exception in span: %s', data.message)
     } else {
+      telemetryDebug('Honeycomb payload (telemetry): %O', {
+        command: data.command,
+        os: data.os,
+        version: data.version,
+        exitCode: data.exitCode,
+        exitState: data.exitState,
+        cliRunDuration: data.cliRunDuration,
+        commandRunDuration: data.commandRunDuration,
+        lifecycleHookCompletion: data.lifecycleHookCompletion,
+      })
       span.setAttribute('heroku_client.command', data.command)
       span.setAttribute('heroku_client.os', data.os)
       span.setAttribute('heroku_client.version', data.version)
@@ -179,6 +196,13 @@ export async function sendToSentry(data: CLIError) {
   // Lazy-load Sentry only when we actually need to report an error
   ensureSentryInitialized()
   try {
+    telemetryDebug('Sentry payload: %O', {
+      message: data.message,
+      name: data.name,
+      stack: data.stack,
+      code: (data as any).code,
+      statusCode: (data as any).statusCode,
+    })
     telemetryDebug('Capturing exception in Sentry: %s', data.message)
     Sentry.captureException(data)
     // ensures all events are sent to Sentry before exiting.
