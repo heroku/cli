@@ -4,8 +4,8 @@
 
 import {execute, settings} from '@oclif/core'
 
-// Enable performance tracking when DEBUG=oclif:perf or DEBUG=* is set
-if (process.env.DEBUG?.includes('oclif:perf') || process.env.DEBUG === '*') {
+// Enable performance tracking when oclif:perf is specified in DEBUG
+if (process.env.DEBUG?.includes('oclif:perf') || process.env.DEBUG === 'oclif:*' || process.env.DEBUG === '*') {
   settings.performanceEnabled = true
 }
 
