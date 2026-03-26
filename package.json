@@ -185,6 +185,9 @@
       "command_not_found": [
         "./dist/hooks/command_not_found/performance_analytics"
       ],
+      "finally": [
+        "./dist/hooks/finally/sentry"
+      ],
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",

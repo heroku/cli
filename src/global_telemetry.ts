@@ -40,6 +40,7 @@ let version: string | undefined
 let cachedToken: string | undefined
 let provider: NodeTracerProvider
 let processor: BatchSpanProcessor
+let sentryClient: ReturnType<typeof Sentry.init> | undefined
 
 export interface TelemetryGlobal extends NodeJS.Global {
   cliTelemetry?: Telemetry
@@ -93,7 +94,6 @@ export function initializeInstrumentation() {
     propagator: new SentryPropagator(),
   })
   telemetryDebug('Provider registered with Sentry context manager')
-  // provider.register()
 }
 
 export function reportCmdNotFound(config: any) {
