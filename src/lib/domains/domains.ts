@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import {getSubdomain} from 'tldts'
+import {parse} from 'tldts'
 
 const wait = function (ms: number) {
   return new Promise(resolve => {
@@ -112,10 +112,27 @@ export async function waitForDomains(heroku: APIClient, app: string) {
 }
 
 function type(domain: Required<Heroku.Domain>) {
-  // Get subdomain with allowPrivateDomains to match psl behavior
-  const subdomain = getSubdomain(domain.hostname, {allowPrivateDomains: true})
+  // Wildcard domains (*.example.com) are always treated as subdomains (CNAME)
+  // This must be checked before parsing since wildcards aren't valid hostnames
+  if (domain.hostname.includes('*')) {
+    return 'CNAME'
+  }
 
-  // If subdomain is null or empty string, it's a root domain (ALIAS/ANAME)
-  // Otherwise, it's a subdomain (CNAME)
-  return subdomain === null || subdomain === '' ? 'ALIAS/ANAME' : 'CNAME'
+  // Parse the domain with private domains enabled (for .herokuapp.com, etc.)
+  const result = parse(domain.hostname, {allowPrivateDomains: true})
+
+  // Check for explicitly invalid domains (e.g., "notadomain", "localhost")
+  if (result.isIcann === false && result.isPrivate === false) {
+    throw new Error(`Invalid hostname: ${domain.hostname}`)
+  }
+
+  // Check for unparsable inputs (e.g., IPs like "192.168.1.1", empty strings)
+  // These have domain === null and should also be rejected
+  if (result.domain === null) {
+    throw new Error(`Invalid hostname: ${domain.hostname}`)
+  }
+
+  // Empty string subdomain means root domain → ALIAS/ANAME
+  // Non-empty subdomain means has subdomain → CNAME
+  return result.subdomain ? 'CNAME' : 'ALIAS/ANAME'
 }

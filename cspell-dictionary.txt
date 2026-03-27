@@ -122,6 +122,7 @@ HRKU
 howmany
 hstore
 htcat
+Icann
 infile
 iname
 indexrelid
@@ -229,6 +230,7 @@ newpassword
 NGPG
 nodir
 noeviction
+notadomain
 notaninteger
 notexample
 notinteger
