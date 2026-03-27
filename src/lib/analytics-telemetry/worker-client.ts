@@ -1,11 +1,5 @@
 /* eslint-disable n/no-process-exit */
-import {spawn} from 'node:child_process'
-import {dirname, join} from 'node:path'
-import {fileURLToPath} from 'node:url'
-
-import {CLIError, TelemetryData, TelemetryGlobal} from './telemetry-utils.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
+import {CLIError, spawnTelemetryWorker, TelemetryGlobal} from './telemetry-utils.js'
 
 // Extend global with telemetry property
 declare global {
@@ -62,52 +56,4 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
     spawnTelemetryWorker(error)
     process.exit(1)
   })
-}
-
-/**
- * Spawn telemetry worker process in background
- * This avoids blocking the main CLI process with telemetry overhead
- */
-export function spawnTelemetryWorker(data: TelemetryData): void {
-  try {
-    const workerPath = join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
-    const child = spawn(process.execPath, [workerPath], {
-      detached: true,
-      // Keep stderr attached to see DEBUG output, but ignore stdout
-      stdio: ['pipe', 'ignore', 'inherit'],
-      // On Windows, prevent console window from appearing
-      windowsHide: true,
-    })
-
-    // Send data via stdin
-    child.stdin.write(serializeTelemetryData(data))
-    child.stdin.end()
-
-    // Detach from parent so it can exit immediately
-    child.unref()
-  } catch {
-    // Silently fail - don't let telemetry errors affect user experience
-  }
-}
-
-/**
- * Serialize data for telemetry worker, handling Error objects specially
- */
-function serializeTelemetryData(data: TelemetryData): string {
-  // If it's an Error object, convert to plain object with all properties
-  if (data instanceof Error) {
-    const errorData = data as CLIError
-    return JSON.stringify({
-      // Include any other enumerable properties first
-      ...data,
-      // Then override with important properties to ensure they're captured
-      cliRunDuration: errorData.cliRunDuration,
-      code: errorData.code,
-      message: errorData.message,
-      name: errorData.name,
-      stack: errorData.stack,
-    })
-  }
-
-  return JSON.stringify(data)
 }

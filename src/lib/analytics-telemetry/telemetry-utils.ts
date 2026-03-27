@@ -1,6 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import {Config} from '@oclif/core/config'
 import debug from 'debug'
+import {spawn} from 'node:child_process'
 import path from 'path'
 import {fileURLToPath} from 'url'
 
@@ -20,15 +21,15 @@ let version: string | undefined
 let cachedToken: string | undefined
 
 export interface CLIError extends Error {
-  cliRunDuration?: string | number
+  cliRunDuration?: number | string
   code?: string
-  statusCode?: number
   http?: {
     statusCode?: number
   }
   oclif?: {
     exit?: number
   }
+  statusCode?: number
 }
 
 export interface Telemetry {
@@ -48,12 +49,12 @@ export interface Telemetry {
   version: string
 }
 
+// Union type for data that can be sent to telemetry
+export type TelemetryData = CLIError | Telemetry
+
 export interface TelemetryGlobal {
   cliTelemetry?: Telemetry
 }
-
-// Union type for data that can be sent to telemetry
-export type TelemetryData = Telemetry | CLIError
 
 /**
  * Compute duration from a start time to now
@@ -102,8 +103,59 @@ export function isTelemetryEnabled(): boolean {
 }
 
 /**
+ * Serialize data for telemetry worker, handling Error objects specially
+ */
+export function serializeTelemetryData(data: TelemetryData): string {
+  // If it's an Error object, convert to plain object with all properties
+  if (data instanceof Error) {
+    const errorData = data as CLIError
+    return JSON.stringify({
+      // Include any other enumerable properties first
+      ...data,
+      // Then override with important properties to ensure they're captured
+      cliRunDuration: errorData.cliRunDuration,
+      code: errorData.code,
+      http: errorData.http,
+      message: errorData.message,
+      name: errorData.name,
+      oclif: errorData.oclif,
+      stack: errorData.stack,
+      statusCode: errorData.statusCode,
+    })
+  }
+
+  return JSON.stringify(data)
+}
+
+/**
  * Set CLI version (called once during setup)
  */
 export function setVersion(v: string): void {
   version = v
+}
+
+/**
+ * Spawn telemetry worker process in background
+ * This avoids blocking the main CLI process with telemetry overhead
+ */
+export function spawnTelemetryWorker(data: TelemetryData): void {
+  try {
+    const workerPath = path.join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
+    const child = spawn(process.execPath, [workerPath], {
+      detached: true,
+      // Keep stderr attached to see DEBUG output, but ignore stdout
+      stdio: ['pipe', 'ignore', 'inherit'],
+      // On Windows, prevent console window from appearing
+      windowsHide: true,
+    })
+
+    // Send data via stdin
+    child.stdin.write(serializeTelemetryData(data))
+    child.stdin.end()
+
+    // Detach from parent so it can exit immediately
+    child.unref()
+  } catch {
+    // Silently fail - don't let telemetry errors affect user experience
+  }
 }
