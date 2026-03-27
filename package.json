@@ -3,7 +3,7 @@
   "description": "CLI to interact with Heroku",
   "version": "11.0.1",
   "author": "Heroku",
-  "bin": "./bin/run",
+  "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^12.2.2",
