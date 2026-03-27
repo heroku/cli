@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.0.2](https://github.com/heroku/cli/compare/v11.0.1...v11.0.2) (2026-03-27)
+
+
+### Bug Fixes
+
+* point bin to run.js instead of symlink for npm compatibility ([#3624](https://github.com/heroku/cli/issues/3624)) ([dd3cfa3](https://github.com/heroku/cli/commit/dd3cfa3bcc711ded29ca99d9403fa516c2e55473))
+
 ## [11.0.1](https://github.com/heroku/cli/compare/v11.0.0...v11.0.1) (2026-03-26)
 
 

@@ -49,7 +49,7 @@ EXAMPLES
   run.1: up for 5m: bash
 ```
 
-_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/index.ts)_
+_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/index.ts)_
 
 ## `heroku ps:autoscale:disable`
 
@@ -70,7 +70,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -96,7 +96,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -125,7 +125,7 @@ EXAMPLES
    $ heroku ps:copy FILENAME --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ps/copy.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/copy.ts)_
+_See code: [src/commands/ps/copy.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/copy.ts)_
 
 ## `heroku ps:exec`
 
@@ -154,7 +154,7 @@ EXAMPLES
    $ heroku ps:exec --app murmuring-headland-14719 -- node -i
 ```
 
-_See code: [src/commands/ps/exec.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/exec.ts)_
+_See code: [src/commands/ps/exec.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/exec.ts)_
 
 ## `heroku ps:forward PORT`
 
@@ -185,7 +185,7 @@ EXAMPLES
    $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ps/forward.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/forward.ts)_
+_See code: [src/commands/ps/forward.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/forward.ts)_
 
 ## `heroku ps:kill [DYNO]`
 
@@ -287,7 +287,7 @@ EXAMPLES
    $ heroku ps:restart --app myapp
 ```
 
-_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/restart.ts)_
+_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/restart.ts)_
 
 ## `heroku ps:scale`
 
@@ -323,7 +323,7 @@ EXAMPLES
   web=3:Standard-2X worker=1:Standard-1X
 ```
 
-_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/scale.ts)_
+_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/scale.ts)_
 
 ## `heroku ps:socks`
 
@@ -351,7 +351,7 @@ EXAMPLES
   Use CTRL+C to stop the proxy
 ```
 
-_See code: [src/commands/ps/socks.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/socks.ts)_
+_See code: [src/commands/ps/socks.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/socks.ts)_
 
 ## `heroku ps:stop [DYNO]`
 
@@ -387,7 +387,7 @@ EXAMPLES
    $ heroku ps:stop --app myapp --process-type run
 ```
 
-_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/stop.ts)_
+_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/stop.ts)_
 
 ## `heroku ps:type`
 
@@ -419,7 +419,7 @@ ALIASES
   $ heroku dyno:resize
 ```
 
-_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/type.ts)_
+_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/type.ts)_
 
 ## `heroku ps:wait`
 
@@ -443,4 +443,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v11.0.1/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v11.0.2/src/commands/ps/wait.ts)_
