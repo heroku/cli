@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import {parse, ParsedDomain, ParseError} from 'psl'
+import {getSubdomain} from 'tldts'
 
 const wait = function (ms: number) {
   return new Promise(resolve => {
@@ -111,16 +111,11 @@ export async function waitForDomains(heroku: APIClient, app: string) {
   return apiDomains
 }
 
-function isParseError(parsed: ParsedDomain | ParseError): parsed is ParseError {
-  return (parsed as ParseError).error !== undefined
-}
-
 function type(domain: Required<Heroku.Domain>) {
-  const parsed = parse(domain.hostname)
+  // Get subdomain with allowPrivateDomains to match psl behavior
+  const subdomain = getSubdomain(domain.hostname, {allowPrivateDomains: true})
 
-  if (isParseError(parsed)) {
-    throw new Error(parsed.error.message)
-  }
-
-  return parsed.subdomain === null ? 'ALIAS/ANAME' : 'CNAME'
+  // If subdomain is null or empty string, it's a root domain (ALIAS/ANAME)
+  // Otherwise, it's a subdomain (CNAME)
+  return subdomain === null || subdomain === '' ? 'ALIAS/ANAME' : 'CNAME'
 }
