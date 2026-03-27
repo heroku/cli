@@ -121,13 +121,8 @@ function type(domain: Required<Heroku.Domain>) {
   // Parse the domain with private domains enabled (for .herokuapp.com, etc.)
   const result = parse(domain.hostname, {allowPrivateDomains: true})
 
-  // Check for explicitly invalid domains (e.g., "notadomain", "localhost")
-  if (result.isIcann === false && result.isPrivate === false) {
-    throw new Error(`Invalid hostname: ${domain.hostname}`)
-  }
-
-  // Check for unparsable inputs (e.g., IPs like "192.168.1.1", empty strings)
-  // These have domain === null and should also be rejected
+  // Reject invalid or unparsable hostnames (e.g., "notadomain", "localhost", IPs, empty strings)
+  // All of these result in domain === null
   if (result.domain === null) {
     throw new Error(`Invalid hostname: ${domain.hostname}`)
   }
