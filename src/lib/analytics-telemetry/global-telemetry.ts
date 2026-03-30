@@ -36,6 +36,7 @@ export function reportCmdNotFound(config: Config): Telemetry {
     commandRunDuration: 0,
     exitCode: 0,
     exitState: 'command_not_found',
+    isTTY: process.stdin.isTTY,
     isVersionOrHelp: false,
     lifecycleHookCompletion: {
       command_not_found: true,
@@ -92,6 +93,7 @@ export function setupTelemetry(config: Config, opts: TelemetryOptions): Telemetr
     commandRunDuration: cmdStartTime,
     exitCode: 0,
     exitState: 'successful',
+    isTTY: process.stdin.isTTY,
     isVersionOrHelp: true,
     lifecycleHookCompletion: {
       command_not_found: false,

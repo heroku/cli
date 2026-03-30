@@ -30,6 +30,13 @@ export function ensureSentryInitialized(): void {
 
   sentryClient = Sentry.init({
     beforeSend(event) {
+      // Filter out SIGINT errors - these are user cancellations (Ctrl+C), not actual errors
+      const errorMessage = event.exception?.values?.[0]?.value
+      if (errorMessage === 'Received SIGINT') {
+        telemetryDebug('Filtering out SIGINT error (user cancellation)')
+        return null // Drop the event
+      }
+
       return scrubber.scrub(event).data
     },
     dsn: 'https://76530569188e7ee2961373f37951d916@o4508609692368896.ingest.us.sentry.io/4508767754846208',
@@ -62,6 +69,5 @@ export async function sendToSentry(data: CLIError): Promise<void> {
     telemetryDebug('Successfully flushed error to Sentry')
   } catch (error) {
     telemetryDebug('Error sending to Sentry: %O', error)
-    debug('Could not send error report')
   }
 }

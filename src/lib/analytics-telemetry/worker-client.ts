@@ -43,6 +43,9 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
     // Spawn background process to send telemetry
     const error: CLIError = Object.assign(new Error('Received SIGINT'), {
       cliRunDuration: computeDuration(cliStartTime),
+      context: {
+        isTTY: process.stdin.isTTY,
+      },
     })
     spawnTelemetryWorker(error)
     process.exit(1)
