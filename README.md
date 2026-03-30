@@ -116,8 +116,7 @@ Using WebStorm (from JetBrains / IntelliJ), you can run/debug an individual test
 - Create a new run/debug configuration
 - Select the 'Mocha' type
 
-Releasing
+Contributing
 =========
-See the [Heroku CLI Release Steps](https://salesforce.quip.com/aPLDA1ZwjNlW).
 
-Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).
+Please review our [Contributing guidelines](./CONTRIBUTING.md) as well as our [PR template](./.github/PULL_REQUEST_TEMPLATE.md).
