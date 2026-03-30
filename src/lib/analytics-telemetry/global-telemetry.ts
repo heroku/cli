@@ -63,11 +63,20 @@ export async function sendTelemetry(currentTelemetry: TelemetryData): Promise<vo
   const telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
-    telemetryDebug('Sending error to Honeycomb and Sentry: %s', telemetry.message)
-    await Promise.all([
-      sendToHoneycomb(telemetry),
-      sendToSentry(telemetry),
-    ])
+    // Filter SIGINT errors from Sentry (user Ctrl+C is not an error to report)
+    // But still send to Honeycomb for analytics
+    const isSIGINT = telemetry.message === 'Received SIGINT'
+
+    if (isSIGINT) {
+      telemetryDebug('Sending error to Honeycomb: %s', telemetry.message)
+      await sendToHoneycomb(telemetry)
+    } else {
+      telemetryDebug('Sending error to Honeycomb and Sentry: %s', telemetry.message)
+      await Promise.all([
+        sendToHoneycomb(telemetry),
+        sendToSentry(telemetry),
+      ])
+    }
   } else {
     telemetryDebug('Sending telemetry for command: %s', telemetry.command)
     await sendToHoneycomb(telemetry)
