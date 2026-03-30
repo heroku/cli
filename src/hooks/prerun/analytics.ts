@@ -3,18 +3,26 @@ import {Hook} from '@oclif/core/hooks'
 import Analytics from '../../analytics.js'
 
 const analytics: Hook<'prerun'> = async function (options) {
-  if (process.env.IS_HEROKU_TEST_ENV === 'true') {
+  const {isTelemetryEnabled} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {setupTelemetry} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+
+  // Use the consolidated telemetry check
+  if (!isTelemetryEnabled()) {
     return
   }
 
-  // Skip analytics on Windows for performance (unless explicitly enabled)
-  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
-    return
-  }
-
-  const telemetry = await import('../../global_telemetry.js')
   const globalAny = global as any
-  globalAny.cliTelemetry = telemetry.setupTelemetry(this.config, options)
+
+  // Only setup telemetry if not already initialized (avoid overwriting init hook data)
+  if (globalAny.cliTelemetry) {
+    // Update existing telemetry for regular commands
+    globalAny.cliTelemetry.command = options.Command.id
+    globalAny.cliTelemetry.isVersionOrHelp = false
+    globalAny.cliTelemetry.lifecycleHookCompletion.prerun = true
+  } else {
+    globalAny.cliTelemetry = setupTelemetry(this.config, options)
+  }
+
   const analyticsInstance = new Analytics(this.config)
   Reflect.set(globalThis, 'recordPromise', analyticsInstance.record(options))
 }

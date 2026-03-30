@@ -1,13 +1,15 @@
 import {Hook} from '@oclif/core/hooks'
 
 const performance_analytics: Hook<'command_not_found'> = async function () {
-  // Skip telemetry on Windows for performance (unless explicitly enabled)
-  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
+  const {isTelemetryEnabled} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {reportCmdNotFound} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+
+  // Use the consolidated telemetry check
+  if (!isTelemetryEnabled()) {
     return
   }
 
-  const telemetry = await import('../../global_telemetry.js');
-  (global as any).cliTelemetry = telemetry.reportCmdNotFound(this.config)
+  (global as any).cliTelemetry = reportCmdNotFound(this.config)
 }
 
 export default performance_analytics
