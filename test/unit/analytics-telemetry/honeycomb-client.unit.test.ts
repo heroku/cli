@@ -26,6 +26,7 @@ describe('honeycomb-client', function () {
       commandRunDuration: 50,
       exitCode: 0,
       exitState: 'successful',
+      isTTY: true,
       isVersionOrHelp: false,
       lifecycleHookCompletion: {
         command_not_found: false,
