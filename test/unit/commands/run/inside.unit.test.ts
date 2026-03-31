@@ -5,6 +5,19 @@ import RunInside from '../../../../src/commands/run/inside.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 describe('run:inside', function () {
+  const originalProcessArgv = [...process.argv]
+
+  const runWithCliArgv = async (args: string[]) => {
+    process.argv = [
+      '/usr/local/bin/node',
+      '/usr/local/bin/heroku',
+      'run:inside',
+      ...args,
+    ]
+
+    return runCommand(RunInside, args)
+  }
+
   beforeEach(function () {
     nock.cleanAll()
     nock.disableNetConnect()
@@ -12,6 +25,7 @@ describe('run:inside', function () {
 
   afterEach(function () {
     nock.enableNetConnect()
+    process.argv = [...originalProcessArgv]
   })
 
   it('requires a dyno name and command', async function () {
@@ -19,7 +33,7 @@ describe('run:inside', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    await runCommand(RunInside, [
+    await runWithCliArgv([
       '--app',
       'myapp',
     ]).catch(error => {
@@ -48,7 +62,7 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(RunInside, [
+    await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
@@ -75,7 +89,7 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(RunInside, [
+    await runWithCliArgv([
       'web.1',
       'false',
       '--app',
@@ -107,7 +121,7 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(RunInside, [
+    await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
@@ -138,7 +152,7 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(RunInside, [
+    await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
