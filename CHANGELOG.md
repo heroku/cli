@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.0.3-beta.0](https://github.com/heroku/cli/compare/v11.0.2...v11.0.3-beta.0) (2026-03-31)
+
+
+### Features
+
+* add isTTY context to telemetry and filter SIGINT from Sentry ([#3632](https://github.com/heroku/cli/issues/3632)) ([74bbdfb](https://github.com/heroku/cli/commit/74bbdfbe45eef40b7232c9159e3cc4a541290296))
+
+
+### Performance Improvements
+
+* optimize telemetry initialization and reduce startup overhead ([#3620](https://github.com/heroku/cli/issues/3620)) ([65575a0](https://github.com/heroku/cli/commit/65575a01f7da69d602af52d1991f880be23bd3df))
+
+## [11.0.3-beta.0](https://github.com/heroku/cli/compare/v11.0.2...v11.0.3-beta.0) (2026-03-31)
+
+
+### Features
+
+* add isTTY context to telemetry and filter SIGINT from Sentry ([#3632](https://github.com/heroku/cli/issues/3632)) ([74bbdfb](https://github.com/heroku/cli/commit/74bbdfbe45eef40b7232c9159e3cc4a541290296))
+
+
+### Performance Improvements
+
+* optimize telemetry initialization and reduce startup overhead ([#3620](https://github.com/heroku/cli/issues/3620)) ([65575a0](https://github.com/heroku/cli/commit/65575a01f7da69d602af52d1991f880be23bd3df))
+
+## [11.0.3-beta.0](https://github.com/heroku/cli/compare/v11.0.2...v11.0.3-beta.0) (2026-03-31)
+
+
+### Features
+
+* add isTTY context to telemetry and filter SIGINT from Sentry ([#3632](https://github.com/heroku/cli/issues/3632)) ([74bbdfb](https://github.com/heroku/cli/commit/74bbdfbe45eef40b7232c9159e3cc4a541290296))
+
+
+### Performance Improvements
+
+* optimize telemetry initialization and reduce startup overhead ([#3620](https://github.com/heroku/cli/issues/3620)) ([65575a0](https://github.com/heroku/cli/commit/65575a01f7da69d602af52d1991f880be23bd3df))
+
 ## [11.0.2](https://github.com/heroku/cli/compare/v11.0.1...v11.0.2) (2026-03-27)
 
 
