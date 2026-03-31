@@ -23,6 +23,9 @@ let cachedToken: string | undefined
 export interface CLIError extends Error {
   cliRunDuration?: number | string
   code?: string
+  context?: {
+    isTTY?: boolean
+  }
   http?: {
     statusCode?: number
   }
@@ -38,6 +41,7 @@ export interface Telemetry {
   commandRunDuration: number
   exitCode: number
   exitState: string
+  isTTY: boolean | undefined
   isVersionOrHelp: boolean
   lifecycleHookCompletion: {
     command_not_found: boolean

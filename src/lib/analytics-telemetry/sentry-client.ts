@@ -50,6 +50,7 @@ export async function sendToSentry(data: CLIError): Promise<void> {
   try {
     telemetryDebug('Sentry payload: %O', {
       code: data.code,
+      context: data.context,
       message: data.message,
       name: data.name,
       stack: data.stack,
@@ -62,6 +63,5 @@ export async function sendToSentry(data: CLIError): Promise<void> {
     telemetryDebug('Successfully flushed error to Sentry')
   } catch (error) {
     telemetryDebug('Error sending to Sentry: %O', error)
-    debug('Could not send error report')
   }
 }
