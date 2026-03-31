@@ -7,8 +7,6 @@
   [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 </div>
 
-<br>
-
 Overview
 ========
 
