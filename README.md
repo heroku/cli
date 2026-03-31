@@ -1,12 +1,12 @@
 <div align="center">
-  <img src="assets/Heroku-Logo-Mark-Light-RGB.svg" alt="Heroku logo" width="100" style="padding-bottom: 20px;">
+  <img src="assets/Heroku-Logo-Mark-Light-RGB.svg" alt="Heroku logo" width="100">
+  <p>&nbsp;</p>
 
   [![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
   [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
   [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 </div>
 
-<br>
 <br>
 
 The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
