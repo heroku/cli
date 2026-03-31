@@ -32,7 +32,10 @@ describe('run:inside', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
-      .post('/apps/myapp/dynos/web.1')
+      .post('/apps/myapp/dynos/web.1', body => {
+        expect(body.command).to.equal('bash')
+        return true
+      })
       .reply(201, {
         attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
         command: 'bash',
@@ -88,7 +91,10 @@ describe('run:inside', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'cnb'}})
-      .post('/apps/myapp/dynos/web.1')
+      .post('/apps/myapp/dynos/web.1', body => {
+        expect(body.command).to.equal('bash')
+        return true
+      })
       .reply(201, {
         attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
         command: 'bash',
@@ -107,6 +113,36 @@ describe('run:inside', function () {
       '--app',
       'myapp',
       '--no-launcher',
+    ]).catch(() => {
+      // Expected to fail when trying to connect
+    })
+  })
+
+  it('prepends launcher by default on cnb apps', async function () {
+    nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp', stack: {name: 'cnb'}})
+      .post('/apps/myapp/dynos/web.1', body => {
+        expect(body.command).to.equal('launcher bash')
+        return true
+      })
+      .reply(201, {
+        attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
+        command: 'launcher bash',
+        created_at: '2020-01-01T00:00:00Z',
+        id: '12345678-1234-1234-1234-123456789012',
+        name: 'web.1',
+        size: 'basic',
+        state: 'starting',
+        type: 'web',
+        updated_at: '2020-01-01T00:00:00Z',
+      })
+
+    await runCommand(RunInside, [
+      'web.1',
+      'bash',
+      '--app',
+      'myapp',
     ]).catch(() => {
       // Expected to fail when trying to connect
     })
