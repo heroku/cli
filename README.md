@@ -9,18 +9,16 @@
 
 <br>
 
-The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
-
-For more about Heroku see <https://www.heroku.com/home>
-
-To get started see <https://devcenter.heroku.com/start>
-
 Overview
 ========
 
 The Heroku CLI is a command-line interface for managing Heroku applications and services. Built with Node.js and [oclif](https://oclif.io), it provides an extensible architecture for interacting with the Heroku platform.
 
-Key features include:
+For more about Heroku see <https://www.heroku.com/home>
+
+To get started see <https://devcenter.heroku.com/start>
+
+Key features of the CLI include:
 
 - **App management** - Deploy, scale, and monitor your applications
 - **Heroku Postgres database management** - Backup, restore, and manage Heroku Postgres databases
