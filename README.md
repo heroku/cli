@@ -1,11 +1,9 @@
 <div align="center">
-  <img src="assets/Heroku-Logo-Mark-Light-RGB.svg" alt="Heroku logo" width="100">
+  <img src="assets/Heroku-Logo-Mark-Light-RGB.svg" alt="Heroku logo" width="100" style="padding-bottom: 20px;">
 
-  <p style="margin-top: 20px;">
-    <a href="https://github.com/heroku/cli/actions/workflows/ci.yml"><img src="https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg" alt="Node CI Suite"></a>
-    <a href="https://www.npmjs.com/package/heroku"><img src="https://img.shields.io/npm/v/heroku.svg" alt="npm"></a>
-    <a href="https://github.com/heroku/cli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/heroku/cli.svg" alt="ISC License"></a>
-  </p>
+  [![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
+  [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
+  [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
 </div>
 
 <br>
