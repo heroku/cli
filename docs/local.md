@@ -23,7 +23,7 @@ FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
   -p, --port=<value>      port to listen on
-      --start-cmd=<value>  command to run as web when no Procfile is found
+      --start-cmd=<value>  command to run as web when no Procfile is present
 
 DESCRIPTION
   run heroku app locally
@@ -80,7 +80,7 @@ FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
   -p, --port=<value>      port to listen on
-      --start-cmd=<value>  command to run as web when no Procfile is found
+      --start-cmd=<value>  command to run as web when no Procfile is present
 
 DESCRIPTION
   run heroku app locally
