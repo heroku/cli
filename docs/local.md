@@ -14,7 +14,7 @@ run heroku app locally
 
 ```
 USAGE
-  $ heroku local [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>]
+  $ heroku local [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>] [--start-cmd <value>]
 
 ARGUMENTS
   [PROCESSNAME]  name of the process
@@ -23,6 +23,7 @@ FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
   -p, --port=<value>      port to listen on
+      --start-cmd=<value>  command to run as web when no Procfile is found
 
 DESCRIPTION
   run heroku app locally
@@ -70,7 +71,7 @@ run heroku app locally
 
 ```
 USAGE
-  $ heroku local:start [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>]
+  $ heroku local:start [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>] [--start-cmd <value>]
 
 ARGUMENTS
   [PROCESSNAME]  name of the process
@@ -79,6 +80,7 @@ FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
   -p, --port=<value>      port to listen on
+      --start-cmd=<value>  command to run as web when no Procfile is found
 
 DESCRIPTION
   run heroku app locally

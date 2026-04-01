@@ -1,8 +1,9 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, Command, Flags} from '@oclif/core'
+import fs from 'fs'
 
 import {validateEnvFile} from '../../lib/local/env-file-validator.js'
-import {fork as foreman} from '../../lib/local/fork-foreman.js'
+import {fork as foreman, isForemanExitError} from '../../lib/local/fork-foreman.js'
 import {loadProc} from '../../lib/local/load-foreman-procfile.js'
 
 export default class Index extends Command {
@@ -45,6 +46,13 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
       description: 'restart process if it dies',
       hidden: true,
     }),
+    'start-cmd': Flags.string({
+      description: 'command to run as web when no Procfile is found',
+    }),
+  }
+
+  public hasProcfile(procfilePath: string): boolean {
+    return fs.existsSync(procfilePath) && fs.statSync(procfilePath).isFile()
   }
 
   // Proxy method to make procfile loading testable
@@ -53,8 +61,13 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
   }
 
   async run() {
-    const execArgv = ['start']
     const {args, flags} = await this.parse(Index)
+    const processName = args.processname
+    const procfile = flags.procfile || 'Procfile'
+    const hasProcfile = this.hasProcfile(procfile)
+    const startCmd = flags['start-cmd']
+    const useStartCmd = !hasProcfile && !processName && Boolean(startCmd)
+    const execArgv = useStartCmd ? ['run'] : ['start']
 
     if (flags.restart) {
       this.error('--restart is no longer available\nUse forego instead: https://github.com/ddollar/forego')
@@ -66,20 +79,48 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
 
     const envFile = validateEnvFile(flags.env, this.warn.bind(this))
 
-    if (flags.procfile) execArgv.push('--procfile', flags.procfile)
     execArgv.push('--env', envFile)
-    if (flags.port) execArgv.push('--port', flags.port)
 
-    if (args.processname) {
-      execArgv.push(args.processname)
-    } else {
-      const procfile = flags.procfile || 'Procfile'
+    if (flags.port) {
+      if (useStartCmd) {
+        this.warn(`The specified port, ${color.label(flags.port)}, is being ignored when using --start-cmd.`)
+      } else {
+        execArgv.push('--port', flags.port)
+      }
+    }
+
+    if (flags.procfile && hasProcfile) execArgv.push('--procfile', flags.procfile)
+
+    if (processName) {
+      execArgv.push(processName)
+    } else if (hasProcfile) {
+      if (startCmd) {
+        this.warn(`The specified start command, ${color.label(startCmd)}, is being ignored.`)
+      }
+
       const procHash = this.loadProcfile(procfile)
       const processes = Object.keys(procHash).filter(x => x !== 'release')
       execArgv.push(processes.join(','))
+    } else {
+      if (!startCmd) {
+        this.error(
+          `No ${procfile} found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.`,
+        )
+      }
+
+      const resolvedStartCmd = startCmd ?? ''
+      execArgv.push('--', 'sh', '-c', resolvedStartCmd)
     }
 
-    await this.runForeman(execArgv)
+    try {
+      await this.runForeman(execArgv)
+    } catch (error: unknown) {
+      if (isForemanExitError(error)) {
+        this.exit(error.exitCode)
+      }
+
+      throw error
+    }
   }
 
   // Proxy method to make foreman calls testable
