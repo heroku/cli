@@ -23,7 +23,6 @@ let processor: BatchSpanProcessor
 let provider: NodeTracerProvider
 
 export default class BackboardOtelClient {
-
   /**
    * Get the BatchSpanProcessor (for backward compatibility)
    */
