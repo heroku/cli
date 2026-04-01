@@ -56,6 +56,21 @@ export interface Telemetry {
 // Union type for data that can be sent to telemetry
 export type TelemetryData = CLIError | Telemetry
 
+// Herokulytics data type
+export interface HerokulyticsData {
+  argv: string[]
+  Command: {
+    id: string
+    plugin?: {
+      name: string
+      version: string
+    }
+  }
+}
+
+// All data types that can be sent via worker
+export type WorkerData = TelemetryData | HerokulyticsData
+
 export interface TelemetryGlobal {
   cliTelemetry?: Telemetry
 }
@@ -109,7 +124,7 @@ export function isTelemetryEnabled(): boolean {
 /**
  * Serialize data for telemetry worker, handling Error objects specially
  */
-export function serializeTelemetryData(data: TelemetryData): string {
+export function serializeTelemetryData(data: WorkerData): string {
   // If it's an Error object, convert to plain object with all properties
   if (data instanceof Error) {
     const errorData = data as CLIError
@@ -142,7 +157,7 @@ export function setVersion(v: string): void {
  * Spawn telemetry worker process in background
  * This avoids blocking the main CLI process with telemetry overhead
  */
-export function spawnTelemetryWorker(data: TelemetryData): void {
+export function spawnTelemetryWorker(data: WorkerData): void {
   try {
     const workerPath = path.join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
     const child = spawn(process.execPath, [workerPath], {

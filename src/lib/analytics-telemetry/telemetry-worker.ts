@@ -19,6 +19,24 @@ process.stdin.on('end', async () => {
   try {
     const parsed = JSON.parse(inputData)
 
+    // Check if this is Herokulytics data (has Command and argv)
+    if (parsed.Command && parsed.argv !== undefined) {
+      // Handle Herokulytics data
+      const {default: BackboardHerokulyticsClient} = await import('./backboard-herokulytics-client.js')
+      const {Config} = await import('@oclif/core/config')
+
+      // Recreate Config from serialized data
+      const config = await Config.load()
+      const client = new BackboardHerokulyticsClient(config)
+
+      // Send herokulytics data
+      await client.send(parsed)
+
+      process.exit(0)
+      return
+    }
+
+    // Otherwise, handle OTEL/Sentry telemetry data
     // If the data looks like an error, reconstruct it as an Error instance
     let telemetryData = parsed
     if (parsed.message && parsed.stack && (parsed.name === 'Error' || parsed.name)) {

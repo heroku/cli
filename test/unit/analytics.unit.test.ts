@@ -4,7 +4,7 @@ import nock from 'nock'
 import netrc from 'netrc-parser'
 import {vars} from '@heroku-cli/command'
 
-import AnalyticsCommand, {AnalyticsInterface} from '../../src/analytics.js'
+import AnalyticsCommand, {AnalyticsInterface} from '../../src/lib/analytics-telemetry/backboard-herokulytics-client.js'
 import UserConfig from '../../src/user-config.js'
 
 const mockCommand = {
@@ -47,7 +47,7 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   const analytics = new AnalyticsCommand(config)
 
   const backboard = createBackboardMock(expectedCbk, actual)
-  await analytics.record({
+  await analytics.send({
     Command: mockCommand as any, argv: ['foo', 'bar'],
   })
   backboard.done()
@@ -77,7 +77,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
     const analytics = new AnalyticsCommand(config)
 
     try {
-      await analytics.record({
+      await analytics.send({
         Command: mockCommand as any, argv: ['foo', 'bar'],
       })
     } catch {
@@ -97,7 +97,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
     const analytics = new AnalyticsCommand(config)
 
     try {
-      await analytics.record({
+      await analytics.send({
         Command: mockInvalidCommand as any, argv: ['foo', 'bar'],
       })
     } catch {
@@ -131,7 +131,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
       const analytics = new AnalyticsCommand(config)
 
       try {
-        await analytics.record({
+        await analytics.send({
           Command: mockCommand as any, argv: ['foo', 'bar'],
         })
       } catch {

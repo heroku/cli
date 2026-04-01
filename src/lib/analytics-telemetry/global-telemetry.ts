@@ -6,8 +6,8 @@
 import type {Config} from '@oclif/core/interfaces'
 
 // Import internal dependencies
-import {sendToHoneycomb} from './honeycomb-client.js'
-import {sendToSentry} from './sentry-client.js'
+import BackboardOtelClient from './backboard-otel-client.js'
+import SentryClient from './sentry-client.js'
 import {
   isTelemetryDisabled,
   setVersion,
@@ -15,6 +15,10 @@ import {
   TelemetryData,
   telemetryDebug,
 } from './telemetry-utils.js'
+
+// Singleton client instances
+const backboardOtelClient = new BackboardOtelClient()
+const sentryClient = new SentryClient()
 
 /**
  * Options passed to telemetry setup (from oclif hooks)
@@ -69,17 +73,17 @@ export async function sendTelemetry(currentTelemetry: TelemetryData): Promise<vo
 
     if (isSIGINT) {
       telemetryDebug('Sending error to Honeycomb: %s', telemetry.message)
-      await sendToHoneycomb(telemetry)
+      await backboardOtelClient.send(telemetry)
     } else {
       telemetryDebug('Sending error to Honeycomb and Sentry: %s', telemetry.message)
       await Promise.all([
-        sendToHoneycomb(telemetry),
-        sendToSentry(telemetry),
+        backboardOtelClient.send(telemetry),
+        sentryClient.send(telemetry),
       ])
     }
   } else {
     telemetryDebug('Sending telemetry for command: %s', telemetry.command)
-    await sendToHoneycomb(telemetry)
+    await backboardOtelClient.send(telemetry)
   }
 }
 

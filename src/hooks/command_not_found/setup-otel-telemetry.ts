@@ -1,15 +1,16 @@
 import {Hook} from '@oclif/core/hooks'
 
-const performance_analytics: Hook<'init'> = async function (options) {
+const performance_analytics: Hook<'command_not_found'> = async function () {
   const {isTelemetryEnabled} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
-  const {setupTelemetry} = await import('../../lib/analytics-telemetry/global-telemetry.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {
     return
   }
 
-  (global as any).cliTelemetry = setupTelemetry(this.config, options)
+  const {reportCmdNotFound} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+  const globalAny = global as any
+  globalAny.cliTelemetry = reportCmdNotFound(this.config)
 }
 
 export default performance_analytics

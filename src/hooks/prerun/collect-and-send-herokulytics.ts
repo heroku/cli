@@ -1,16 +1,14 @@
 import {Hook} from '@oclif/core/hooks'
 
-import Analytics from '../../analytics.js'
-
 const analytics: Hook<'prerun'> = async function (options) {
-  const {isTelemetryEnabled} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
-  const {setupTelemetry} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+  const {isTelemetryEnabled, spawnTelemetryWorker} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {
     return
   }
 
+  const {setupTelemetry} = await import('../../lib/analytics-telemetry/global-telemetry.js')
   const globalAny = global as any
 
   // Only setup telemetry if not already initialized (avoid overwriting init hook data)
@@ -23,8 +21,20 @@ const analytics: Hook<'prerun'> = async function (options) {
     globalAny.cliTelemetry = setupTelemetry(this.config, options)
   }
 
-  const analyticsInstance = new Analytics(this.config)
-  Reflect.set(globalThis, 'recordPromise', analyticsInstance.record(options))
+  // Spawn background process to send herokulytics without blocking
+  // Serialize only the needed parts of Command (id and plugin info)
+  const herokulyticsData = {
+    argv: options.argv,
+    Command: {
+      id: options.Command.id,
+      plugin: options.Command.plugin ? {
+        name: options.Command.plugin.name,
+        version: options.Command.plugin.version,
+      } : undefined,
+    },
+  }
+
+  spawnTelemetryWorker(herokulyticsData)
 }
 
 export default analytics

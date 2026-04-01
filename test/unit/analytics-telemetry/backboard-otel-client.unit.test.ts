@@ -2,16 +2,18 @@ import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
-import * as honeycombClient from '../../../src/lib/analytics-telemetry/honeycomb-client.js'
+import BackboardOtelClient from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
 import {Telemetry} from '../../../src/lib/analytics-telemetry/telemetry-utils.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
-describe('honeycomb-client', function () {
+describe('backboard-otel-client', function () {
   let sandbox: sinon.SinonSandbox
+  let client: BackboardOtelClient
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
+    client = new BackboardOtelClient()
   })
 
   afterEach(function () {
@@ -19,7 +21,7 @@ describe('honeycomb-client', function () {
     nock.cleanAll()
   })
 
-  describe('sendToHoneycomb', function () {
+  describe('send', function () {
     const mockTelemetry: Telemetry = {
       cliRunDuration: 100,
       command: 'test:command',
@@ -45,7 +47,7 @@ describe('honeycomb-client', function () {
         .post('/otel/v1/traces')
         .reply(200)
 
-      await honeycombClient.sendToHoneycomb(mockTelemetry)
+      await client.send(mockTelemetry)
       honeycombAPI.done()
     })
 
@@ -59,7 +61,7 @@ describe('honeycomb-client', function () {
         .post('/otel/v1/traces')
         .reply(200)
 
-      await honeycombClient.sendToHoneycomb(mockError)
+      await client.send(mockError)
       honeycombAPI.done()
     })
 
@@ -71,28 +73,21 @@ describe('honeycomb-client', function () {
         .replyWithError('Network error')
 
       // Should not throw
-      await honeycombClient.sendToHoneycomb(mockTelemetry)
+      await client.send(mockTelemetry)
     })
   })
 
   describe('getProcessor', function () {
     it('returns a BatchSpanProcessor', function () {
-      const processor = honeycombClient.getProcessor()
+      const processor = client.getProcessor()
       expect(processor).to.exist
       expect(processor).to.have.property('forceFlush')
     })
 
     it('returns the same processor on multiple calls', function () {
-      const processor1 = honeycombClient.getProcessor()
-      const processor2 = honeycombClient.getProcessor()
+      const processor1 = client.getProcessor()
+      const processor2 = client.getProcessor()
       expect(processor1).to.equal(processor2)
-    })
-  })
-
-  describe('initializeInstrumentation', function () {
-    it('initializes instrumentation without errors', function () {
-      // Should not throw
-      expect(() => honeycombClient.initializeInstrumentation()).to.not.throw()
     })
   })
 })
