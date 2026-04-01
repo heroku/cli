@@ -23,6 +23,7 @@ describe('backboard-otel-client', function () {
 
   describe('send', function () {
     const mockTelemetry: Telemetry = {
+      _type: 'otel',
       cliRunDuration: 100,
       command: 'test:command',
       commandRunDuration: 50,

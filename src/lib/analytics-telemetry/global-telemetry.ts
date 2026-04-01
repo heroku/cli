@@ -35,6 +35,7 @@ interface TelemetryOptions {
  */
 export function reportCmdNotFound(config: Config): Telemetry {
   return {
+    _type: 'otel',
     cliRunDuration: 0,
     command: 'invalid_command',
     commandRunDuration: 0,
@@ -101,6 +102,7 @@ export function setupTelemetry(config: Config, opts: TelemetryOptions): Telemetr
   const mcpServerVersion = process.env.HEROKU_MCP_SERVER_VERSION || 'unknown'
 
   const irregularTelemetryObject: Telemetry = {
+    _type: 'otel',
     cliRunDuration: 0,
     command: opts.id || 'unknown',
     commandRunDuration: cmdStartTime,

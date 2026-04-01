@@ -16,17 +16,20 @@ import {
   telemetryDebug,
 } from './telemetry-utils.js'
 
+// Module-level singleton for OTEL provider and processor
+// This avoids conflicts with global OpenTelemetry registry
+let isInitialized = false
+let processor: BatchSpanProcessor
+let provider: NodeTracerProvider
+
 export default class BackboardOtelClient {
-  private isInitialized = false
-  private processor!: BatchSpanProcessor
-  private provider!: NodeTracerProvider
 
   /**
    * Get the BatchSpanProcessor (for backward compatibility)
    */
   getProcessor(): BatchSpanProcessor {
     this.ensureInitialized()
-    return this.processor
+    return processor
   }
 
   /**
@@ -94,12 +97,12 @@ export default class BackboardOtelClient {
    * Ensure OpenTelemetry is initialized (lazy initialization)
    */
   private ensureInitialized(): void {
-    if (this.isInitialized || isTelemetryDisabled) {
+    if (isInitialized || isTelemetryDisabled) {
       return
     }
 
     telemetryDebug('Initializing OpenTelemetry...')
-    this.isInitialized = true
+    isInitialized = true
 
     const resource = Resource
       .default()
@@ -111,7 +114,7 @@ export default class BackboardOtelClient {
       )
 
     // Initialize without Sentry sampler initially (Sentry loaded lazily)
-    this.provider = new NodeTracerProvider({
+    provider = new NodeTracerProvider({
       resource,
     })
     telemetryDebug('NodeTracerProvider created')
@@ -128,13 +131,13 @@ export default class BackboardOtelClient {
       url,
     })
 
-    this.processor = new BatchSpanProcessor(exporter)
-    this.provider.addSpanProcessor(this.processor)
+    processor = new BatchSpanProcessor(exporter)
+    provider.addSpanProcessor(processor)
     telemetryDebug('BatchSpanProcessor added to provider')
 
     // Register the provider to make it the global tracer provider
     // We don't use Sentry context manager here to avoid loading Sentry upfront
-    this.provider.register()
+    provider.register()
     telemetryDebug('OpenTelemetry provider registered globally')
   }
 }

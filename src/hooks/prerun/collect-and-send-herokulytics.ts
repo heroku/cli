@@ -24,6 +24,7 @@ const analytics: Hook<'prerun'> = async function (options) {
   // Spawn background process to send herokulytics without blocking
   // Serialize only the needed parts of Command (id and plugin info)
   const herokulyticsData = {
+    _type: 'herokulytics' as const,
     argv: options.argv,
     Command: {
       id: options.Command.id,

@@ -21,6 +21,7 @@ let version: string | undefined
 let cachedToken: string | undefined
 
 export interface CLIError extends Error {
+  _type?: 'error'
   cliRunDuration?: number | string
   code?: string
   context?: {
@@ -35,7 +36,21 @@ export interface CLIError extends Error {
   statusCode?: number
 }
 
+// Herokulytics data type
+export interface HerokulyticsData {
+  _type: 'herokulytics'
+  argv: string[]
+  Command: {
+    id: string
+    plugin?: {
+      name: string
+      version: string
+    }
+  }
+}
+
 export interface Telemetry {
+  _type: 'otel'
   cliRunDuration: number
   command: string
   commandRunDuration: number
@@ -56,24 +71,12 @@ export interface Telemetry {
 // Union type for data that can be sent to telemetry
 export type TelemetryData = CLIError | Telemetry
 
-// Herokulytics data type
-export interface HerokulyticsData {
-  argv: string[]
-  Command: {
-    id: string
-    plugin?: {
-      name: string
-      version: string
-    }
-  }
-}
-
-// All data types that can be sent via worker
-export type WorkerData = TelemetryData | HerokulyticsData
-
 export interface TelemetryGlobal {
   cliTelemetry?: Telemetry
 }
+
+// All data types that can be sent via worker
+export type WorkerData = HerokulyticsData | TelemetryData
 
 /**
  * Compute duration from a start time to now
@@ -132,6 +135,7 @@ export function serializeTelemetryData(data: WorkerData): string {
       // Include any other enumerable properties first
       ...data,
       // Then override with important properties to ensure they're captured
+      _type: 'error',
       cliRunDuration: errorData.cliRunDuration,
       code: errorData.code,
       http: errorData.http,

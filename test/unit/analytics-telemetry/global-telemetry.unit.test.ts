@@ -89,6 +89,7 @@ describe('global-telemetry', function () {
   describe('sendTelemetry', function () {
     it('sends regular telemetry without throwing', async function () {
       const mockTelemetry = {
+        _type: 'otel' as const,
         cliRunDuration: 100,
         command: 'test:command',
         commandRunDuration: 50,
@@ -138,6 +139,7 @@ describe('global-telemetry', function () {
       process.env.DISABLE_TELEMETRY = 'true'
 
       const mockTelemetry = {
+        _type: 'otel' as const,
         cliRunDuration: 100,
         command: 'test:command',
         commandRunDuration: 50,
