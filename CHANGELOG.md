@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.1.1-beta.0](https://github.com/heroku/cli/compare/v11.1.0...v11.1.1-beta.0) (2026-04-01)
+
+
+### Bug Fixes
+
+* run:inside argument parsing order ([#3633](https://github.com/heroku/cli/issues/3633)) ([d46b239](https://github.com/heroku/cli/commit/d46b239cac4b9d97b86e7189350baa9a2dca43be))
+
 ## [11.1.0](https://github.com/heroku/cli/compare/v11.0.2...v11.1.0) (2026-03-31)
 
 
