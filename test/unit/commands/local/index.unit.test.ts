@@ -250,7 +250,7 @@ describe('local', function () {
       const {error} = await runCommand(Local)
 
       expect(error?.message).to.equal(
-        'No Procfile found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.',
+        'Your app doesn’t have a ${procfile}.\nAdd a Procfile to add process types. \nSee https://devcenter.heroku.com/articles/procfile.\nOr specify a start command with --start-cmd.',
       )
       expect(runForemanStub.called).to.be.false
     })
