@@ -8,9 +8,9 @@ const performance_analytics: Hook<'init'> = async function (options) {
     return
   }
 
-  const {setupTelemetry} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+  const {telemetryManager} = await import('../../lib/analytics-telemetry/telemetry-manager.js')
   const globalAny = global as any
-  globalAny.cliTelemetry = setupTelemetry(this.config, options)
+  globalAny.cliTelemetry = telemetryManager.setupTelemetry(this.config, options)
 }
 
 export default performance_analytics

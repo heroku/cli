@@ -4,7 +4,7 @@
  * This runs as a separate process to avoid blocking the main CLI
  */
 
-import {sendTelemetry} from './global-telemetry.js'
+import {telemetryManager} from './telemetry-manager.js'
 
 // Read telemetry data from stdin
 let inputData = ''
@@ -49,7 +49,7 @@ process.stdin.on('end', async () => {
     }
 
     // Send telemetry (this will initialize OpenTelemetry and Sentry if needed)
-    await sendTelemetry(telemetryData)
+    await telemetryManager.sendTelemetry(telemetryData)
 
     process.exit(0)
   } catch {

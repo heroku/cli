@@ -8,9 +8,9 @@ const performance_analytics: Hook<'command_not_found'> = async function () {
     return
   }
 
-  const {reportCmdNotFound} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+  const {telemetryManager} = await import('../../lib/analytics-telemetry/telemetry-manager.js')
   const globalAny = global as any
-  globalAny.cliTelemetry = reportCmdNotFound(this.config)
+  globalAny.cliTelemetry = telemetryManager.reportCmdNotFound(this.config)
 }
 
 export default performance_analytics

@@ -1,11 +1,11 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import * as globalTelemetry from '../../../src/lib/analytics-telemetry/global-telemetry.js'
+import {telemetryManager} from '../../../src/lib/analytics-telemetry/telemetry-manager.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
-describe('global-telemetry', function () {
+describe('telemetry-manager', function () {
   afterEach(function () {
     nock.cleanAll()
   })
@@ -23,7 +23,7 @@ describe('global-telemetry', function () {
         },
       }
 
-      const result = globalTelemetry.setupTelemetry(mockConfig, mockOpts)
+      const result = telemetryManager.setupTelemetry(mockConfig, mockOpts)
 
       expect(result.command).to.equal('apps:info')
       expect(result.os).to.equal('darwin')
@@ -42,7 +42,7 @@ describe('global-telemetry', function () {
         id: 'version',
       }
 
-      const result = globalTelemetry.setupTelemetry(mockConfig, mockOpts)
+      const result = telemetryManager.setupTelemetry(mockConfig, mockOpts)
 
       expect(result.command).to.equal('version')
       expect(result.isVersionOrHelp).to.be.true
@@ -59,7 +59,7 @@ describe('global-telemetry', function () {
         id: 'version',
       }
 
-      const result = globalTelemetry.setupTelemetry(mockConfig, mockOpts)
+      const result = telemetryManager.setupTelemetry(mockConfig, mockOpts)
 
       expect(result.version).to.equal('1.2.3 (MCP 1.0.0)')
 
@@ -75,7 +75,7 @@ describe('global-telemetry', function () {
         version: '1.2.3',
       } as any
 
-      const result = globalTelemetry.reportCmdNotFound(mockConfig)
+      const result = telemetryManager.reportCmdNotFound(mockConfig)
 
       expect(result.command).to.equal('invalid_command')
       expect(result.exitState).to.equal('command_not_found')
@@ -114,7 +114,7 @@ describe('global-telemetry', function () {
         .post('/otel/v1/traces')
         .reply(200)
 
-      await globalTelemetry.sendTelemetry(mockTelemetry)
+      await telemetryManager.sendTelemetry(mockTelemetry)
 
       honeycombAPI.done()
     })
@@ -129,7 +129,7 @@ describe('global-telemetry', function () {
         .post('/otel/v1/traces')
         .reply(200)
 
-      await globalTelemetry.sendTelemetry(mockError)
+      await telemetryManager.sendTelemetry(mockError)
 
       honeycombAPI.done()
     })
@@ -158,7 +158,7 @@ describe('global-telemetry', function () {
       }
 
       // Should not make any HTTP calls when telemetry is disabled
-      await globalTelemetry.sendTelemetry(mockTelemetry)
+      await telemetryManager.sendTelemetry(mockTelemetry)
 
       process.env.DISABLE_TELEMETRY = originalDisableTelemetry
     })

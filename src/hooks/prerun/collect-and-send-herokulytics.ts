@@ -8,7 +8,7 @@ const analytics: Hook<'prerun'> = async function (options) {
     return
   }
 
-  const {setupTelemetry} = await import('../../lib/analytics-telemetry/global-telemetry.js')
+  const {telemetryManager} = await import('../../lib/analytics-telemetry/telemetry-manager.js')
   const globalAny = global as any
 
   // Only setup telemetry if not already initialized (avoid overwriting init hook data)
@@ -18,7 +18,7 @@ const analytics: Hook<'prerun'> = async function (options) {
     globalAny.cliTelemetry.isVersionOrHelp = false
     globalAny.cliTelemetry.lifecycleHookCompletion.prerun = true
   } else {
-    globalAny.cliTelemetry = setupTelemetry(this.config, options)
+    globalAny.cliTelemetry = telemetryManager.setupTelemetry(this.config, options)
   }
 
   // Spawn background process to send herokulytics without blocking
