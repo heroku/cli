@@ -4,8 +4,8 @@ import nock from 'nock'
 import netrc from 'netrc-parser'
 import {vars} from '@heroku-cli/command'
 
-import AnalyticsCommand, {AnalyticsInterface} from '../../src/analytics.js'
-import UserConfig from '../../src/user-config.js'
+import AnalyticsCommand, {AnalyticsInterface} from '../../src/lib/analytics-telemetry/backboard-herokulytics-client.js'
+import HerokulyticsConfig from '../../src/lib/analytics-telemetry/herokulytics-config.js'
 
 const mockCommand = {
   plugin: {
@@ -47,7 +47,7 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
   const analytics = new AnalyticsCommand(config)
 
   const backboard = createBackboardMock(expectedCbk, actual)
-  await analytics.record({
+  await analytics.send({
     Command: mockCommand as any, argv: ['foo', 'bar'],
   })
   backboard.done()
@@ -59,7 +59,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
 
   before(async function () {
     sandbox = sinon.createSandbox()
-    sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
+    sandbox.stub(HerokulyticsConfig.prototype, 'install').get(() => 'abcde')
   })
 
   it('does not show an error on console', async function () {
@@ -77,7 +77,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
     const analytics = new AnalyticsCommand(config)
 
     try {
-      await analytics.record({
+      await analytics.send({
         Command: mockCommand as any, argv: ['foo', 'bar'],
       })
     } catch {
@@ -97,7 +97,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
     const analytics = new AnalyticsCommand(config)
 
     try {
-      await analytics.record({
+      await analytics.send({
         Command: mockInvalidCommand as any, argv: ['foo', 'bar'],
       })
     } catch {
@@ -111,7 +111,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
 
     before(async function () {
       sandbox = sinon.createSandbox()
-      sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
+      sandbox.stub(HerokulyticsConfig.prototype, 'install').get(() => 'abcde')
       analyticsSandbox = sinon.createSandbox()
       analyticsSandbox.stub(AnalyticsCommand.prototype, 'netrcToken').get(() => '')
     })
@@ -131,7 +131,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
       const analytics = new AnalyticsCommand(config)
 
       try {
-        await analytics.record({
+        await analytics.send({
           Command: mockCommand as any, argv: ['foo', 'bar'],
         })
       } catch {
@@ -147,7 +147,7 @@ describe('analytics (backboard has an error) with authorizationToken', function 
 
     before(async function () {
       sandbox = sinon.createSandbox()
-      sandbox.stub(UserConfig.prototype, 'install').get(() => 'abcde')
+      sandbox.stub(HerokulyticsConfig.prototype, 'install').get(() => 'abcde')
     })
 
     it('emits source', async function () {

@@ -182,21 +182,21 @@
     "dirname": "heroku",
     "hooks": {
       "command_not_found": [
-        "./dist/hooks/command_not_found/performance_analytics"
+        "./dist/hooks/command_not_found/setup-otel-telemetry"
       ],
       "finally": [
-        "./dist/hooks/finally/sentry"
+        "./dist/hooks/finally/send-otel-and-sentry-errors"
       ],
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
-        "./dist/hooks/init/performance_analytics"
+        "./dist/hooks/init/setup-otel-telemetry"
       ],
       "postrun": [
-        "./dist/hooks/postrun/performance_analytics"
+        "./dist/hooks/postrun/send-otel-telemetry"
       ],
       "prerun": [
-        "./dist/hooks/prerun/analytics"
+        "./dist/hooks/prerun/collect-and-send-herokulytics"
       ],
       "preupdate": [
         "./dist/hooks/preupdate/check-npm-auth"

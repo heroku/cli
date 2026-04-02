@@ -1,16 +1,15 @@
-import {APIClient} from '@heroku-cli/command'
-import {Config} from '@oclif/core/config'
 import debug from 'debug'
 import {spawn} from 'node:child_process'
-import path from 'path'
-import {fileURLToPath} from 'url'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../../../package.json')
 
 // Debug instance for telemetry operations
-export const telemetryDebug = debug('analytics-telemetry')
+export const telemetryDebug = debug('heroku:analytics')
+telemetryDebug.color = '147'
 
 // Environment flags
 export const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
@@ -21,6 +20,7 @@ let version: string | undefined
 let cachedToken: string | undefined
 
 export interface CLIError extends Error {
+  _type?: 'error'
   cliRunDuration?: number | string
   code?: string
   context?: {
@@ -35,7 +35,21 @@ export interface CLIError extends Error {
   statusCode?: number
 }
 
+// Herokulytics data type
+export interface HerokulyticsData {
+  _type: 'herokulytics'
+  argv: string[]
+  Command: {
+    id: string
+    plugin?: {
+      name: string
+      version: string
+    }
+  }
+}
+
 export interface Telemetry {
+  _type: 'otel'
   cliRunDuration: number
   command: string
   commandRunDuration: number
@@ -60,6 +74,9 @@ export interface TelemetryGlobal {
   cliTelemetry?: Telemetry
 }
 
+// All data types that can be sent via worker
+export type WorkerData = HerokulyticsData | TelemetryData
+
 /**
  * Compute duration from a start time to now
  */
@@ -71,13 +88,18 @@ export function computeDuration(cmdStartTime: number): number {
 
 /**
  * Get authentication token, cached to avoid recreating Config/APIClient
+ * Lazy-loads @heroku-cli/command and @oclif/core/config to avoid loading them during CLI init
  */
-export function getToken(): string | undefined {
+export async function getToken(): Promise<string | undefined> {
   if (cachedToken !== undefined) {
     return cachedToken
   }
 
   try {
+    const [{APIClient}, {Config}] = await Promise.all([
+      import('@heroku-cli/command'),
+      import('@oclif/core/config'),
+    ])
     const config = new Config({root})
     const heroku = new APIClient(config)
     cachedToken = heroku.auth
@@ -109,7 +131,7 @@ export function isTelemetryEnabled(): boolean {
 /**
  * Serialize data for telemetry worker, handling Error objects specially
  */
-export function serializeTelemetryData(data: TelemetryData): string {
+export function serializeTelemetryData(data: WorkerData): string {
   // If it's an Error object, convert to plain object with all properties
   if (data instanceof Error) {
     const errorData = data as CLIError
@@ -117,6 +139,7 @@ export function serializeTelemetryData(data: TelemetryData): string {
       // Include any other enumerable properties first
       ...data,
       // Then override with important properties to ensure they're captured
+      _type: 'error',
       cliRunDuration: errorData.cliRunDuration,
       code: errorData.code,
       http: errorData.http,
@@ -142,7 +165,7 @@ export function setVersion(v: string): void {
  * Spawn telemetry worker process in background
  * This avoids blocking the main CLI process with telemetry overhead
  */
-export function spawnTelemetryWorker(data: TelemetryData): void {
+export function spawnTelemetryWorker(data: WorkerData): void {
   try {
     const workerPath = path.join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
     const child = spawn(process.execPath, [workerPath], {

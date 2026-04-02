@@ -2,12 +2,11 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core/ux'
-
-import {formatDistanceToNow} from 'date-fns'
 import tsheredoc from 'tsheredoc'
 
 import {displayCertificateDetails} from '../../../lib/certs/certificate_details.js'
 import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Domain} from '../../../lib/types/domain.js'
 import {SniEndpoint} from '../../../lib/types/sni_endpoint.js'
 
@@ -51,6 +50,8 @@ export default class Index extends Command {
   static topic = 'certs'
 
   public async run(): Promise<void> {
+    const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
+
     const {flags} = await this.parse(Index)
     const [{body: app}, {body: sniEndpoints}] = await Promise.all([
       this.heroku.get<Required<Heroku.App>>(`/apps/${flags.app}`),

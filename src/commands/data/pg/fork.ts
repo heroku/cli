@@ -1,11 +1,11 @@
 import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import * as chrono from 'chrono-node'
 import tsheredoc from 'tsheredoc'
 
 import createAddon from '../../../lib/addons/create_addon.js'
 import BaseCommand from '../../../lib/data/baseCommand.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {parseProvisionOpts} from '../../../lib/data/parseProvisionOpts.js'
 import {InfoResponse} from '../../../lib/data/types.js'
 import notify from '../../../lib/notify.js'
@@ -75,7 +75,7 @@ export default class Fork extends BaseCommand {
    * parseRollbackInterval('2 days 5 hours')   // 2 days 5 hours ago
    * parseRollbackInterval('1 day ago')        // 1 day ago (doesn't double-add)
    */
-  public parseRollbackInterval(interval: string): Date {
+  public parseRollbackInterval(interval: string, chrono: any): Date {
     const normalized = interval.trim().toLowerCase()
 
     const timeString = normalized.endsWith('ago')
@@ -95,6 +95,8 @@ export default class Fork extends BaseCommand {
   }
 
   public async run(): Promise<void> {
+    const chrono = await lazyModuleLoader.loadChrono()
+
     const {args, flags} = await this.parse(Fork)
     const {database} = args
     const {app, as, confirm, name, 'provision-option': provisionOpts, 'rollback-by': rollbackBy, 'rollback-to': rollbackTo, wait} = flags
@@ -139,7 +141,7 @@ export default class Fork extends BaseCommand {
     if (rollbackTo) {
       recoveryTime = rollbackTo
     } else if (rollbackBy) {
-      const parsedDate = this.parseRollbackInterval(rollbackBy)
+      const parsedDate = this.parseRollbackInterval(rollbackBy, chrono)
       recoveryTime = this.formatRecoveryTime(parsedDate)
     }
 
