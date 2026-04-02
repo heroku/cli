@@ -95,7 +95,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
       execArgv.push(processName)
     } else if (hasProcfile) {
       if (startCmd) {
-        this.warn(`The specified start command, ${color.label(startCmd)}, is being ignored.`)
+        this.warn(`Using the --procfile flag ignores the specified start command, ${color.label(startCmd)}.`)
       }
 
       const procHash = this.loadProcfile(procfile)
