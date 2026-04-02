@@ -79,15 +79,15 @@ describe('backboard-otel-client', function () {
   })
 
   describe('getProcessor', function () {
-    it('returns a BatchSpanProcessor', function () {
-      const processor = client.getProcessor()
+    it('returns a BatchSpanProcessor', async function () {
+      const processor = await client.getProcessor()
       expect(processor).to.exist
       expect(processor).to.have.property('forceFlush')
     })
 
-    it('returns the same processor on multiple calls', function () {
-      const processor1 = client.getProcessor()
-      const processor2 = client.getProcessor()
+    it('returns the same processor on multiple calls', async function () {
+      const processor1 = await client.getProcessor()
+      const processor2 = await client.getProcessor()
       expect(processor1).to.equal(processor2)
     })
   })

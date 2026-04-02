@@ -1,5 +1,3 @@
-import {APIClient} from '@heroku-cli/command'
-import {Config} from '@oclif/core/config'
 import debug from 'debug'
 import {spawn} from 'node:child_process'
 import path from 'path'
@@ -90,13 +88,19 @@ export function computeDuration(cmdStartTime: number): number {
 
 /**
  * Get authentication token, cached to avoid recreating Config/APIClient
+ * Lazy-loads @heroku-cli/command and @oclif/core/config to avoid loading them during CLI init
  */
-export function getToken(): string | undefined {
+export async function getToken(): Promise<string | undefined> {
   if (cachedToken !== undefined) {
     return cachedToken
   }
 
   try {
+    // Lazy-load heavy dependencies only when token is needed (in background worker)
+    const [{APIClient}, {Config}] = await Promise.all([
+      import('@heroku-cli/command'),
+      import('@oclif/core/config'),
+    ])
     const config = new Config({root})
     const heroku = new APIClient(config)
     cachedToken = heroku.auth

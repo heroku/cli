@@ -26,8 +26,8 @@ export default class BackboardOtelClient {
   /**
    * Get the BatchSpanProcessor (for backward compatibility)
    */
-  getProcessor(): BatchSpanProcessor {
-    this.ensureInitialized()
+  async getProcessor(): Promise<BatchSpanProcessor> {
+    await this.ensureInitialized()
     return processor
   }
 
@@ -35,7 +35,7 @@ export default class BackboardOtelClient {
    * Send telemetry data to Backboard (forwarded to Honeycomb) via OpenTelemetry
    */
   async send(data: TelemetryData): Promise<void> {
-    this.ensureInitialized()
+    await this.ensureInitialized()
     try {
       const tracer = opentelemetry.trace.getTracer('heroku-cli', getVersion())
       const span = tracer.startSpan('node_app_execution')
@@ -84,7 +84,8 @@ export default class BackboardOtelClient {
 
       span.end()
       telemetryDebug('Span ended, flushing to exporter...')
-      await this.getProcessor().forceFlush()
+      const processor = await this.getProcessor()
+      await processor.forceFlush()
       telemetryDebug('Successfully flushed telemetry to Honeycomb')
     } catch (error) {
       telemetryDebug('Error sending telemetry to Honeycomb: %O', error)
@@ -95,7 +96,7 @@ export default class BackboardOtelClient {
   /**
    * Ensure OpenTelemetry is initialized (lazy initialization)
    */
-  private ensureInitialized(): void {
+  private async ensureInitialized(): Promise<void> {
     if (isInitialized || isTelemetryDisabled) {
       return
     }
@@ -119,7 +120,8 @@ export default class BackboardOtelClient {
     telemetryDebug('NodeTracerProvider created')
 
     // eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
-    const headers = {Authorization: `Bearer ${process.env.IS_HEROKU_TEST_ENV !== 'true' ? getToken() : ''}`}
+    const token = process.env.IS_HEROKU_TEST_ENV !== 'true' ? await getToken() : ''
+    const headers = {Authorization: `Bearer ${token}`}
 
     const url = isDev ? 'https://backboard.staging.herokudev.com/otel/v1/traces' : 'https://backboard.heroku.com/otel/v1/traces'
     telemetryDebug('OTLP exporter endpoint: %s', url)
