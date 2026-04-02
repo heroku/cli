@@ -20,6 +20,7 @@ const performance_analytics: Hook<'postrun'> = async function () {
 
   // Spawn background process to send telemetry without blocking
   spawnTelemetryWorker(globalAny.cliTelemetry)
+
 }
 
 export default performance_analytics
