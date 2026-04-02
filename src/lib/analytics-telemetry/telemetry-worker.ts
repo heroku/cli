@@ -4,7 +4,17 @@
  * This runs as a separate process to avoid blocking the main CLI
  */
 
+import {telemetryDebug} from './telemetry-utils.js'
 import {telemetryManager} from './telemetry-manager.js'
+
+// Set maximum lifetime for worker process (10 seconds)
+// This ensures the worker never hangs indefinitely due to network issues or other failures
+const MAX_WORKER_LIFETIME_MS = 10000
+
+setTimeout(() => {
+  telemetryDebug('Worker timeout reached after %dms, force exiting', MAX_WORKER_LIFETIME_MS)
+  process.exit(0)
+}, MAX_WORKER_LIFETIME_MS)
 
 // Read telemetry data from stdin
 let inputData = ''
