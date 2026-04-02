@@ -83,7 +83,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
 
     if (flags.port) {
       if (useStartCmd) {
-        this.warn(`The specified port, ${color.label(flags.port)}, is being ignored when using --start-cmd.`)
+        this.warn(`Using the --start-cmd flag ignores the specified port, {color.label(flags.port)}.`)
       } else {
         execArgv.push('--port', flags.port)
       }
