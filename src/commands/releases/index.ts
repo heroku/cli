@@ -3,8 +3,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
-import _ from 'lodash'
 
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import * as statusHelper from '../../lib/releases/status_helper.js'
 import * as time from '../../lib/time.js'
 
@@ -87,6 +87,8 @@ export default class Index extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
+    const _ = await lazyModuleLoader.loadLodash()
+
     const {flags} = await this.parse(Index)
     const {app, extended, json, num} = flags
 

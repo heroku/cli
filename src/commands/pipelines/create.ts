@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
-import inquirer, {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
+import {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
 import {
   createCoupling,
@@ -12,6 +12,7 @@ import {
   Owner,
 } from '../../lib/api.js'
 import {getGenerationByAppId} from '../../lib/apps/generation.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
 
@@ -49,6 +50,8 @@ export default class Create extends Command {
   }
 
   async run() {
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {args, flags} = await this.parse(Create)
     const {app, stage: inputStage, team: teamName} = flags
 

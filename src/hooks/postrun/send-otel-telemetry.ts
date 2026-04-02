@@ -7,7 +7,7 @@ const performance_analytics: Hook<'postrun'> = async function () {
     return
   }
 
-  const {isTelemetryEnabled, computeDuration} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {computeDuration, isTelemetryEnabled, spawnTelemetryWorker} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {
@@ -17,7 +17,9 @@ const performance_analytics: Hook<'postrun'> = async function () {
   const cmdStartTime = globalAny.cliTelemetry.commandRunDuration
   globalAny.cliTelemetry.commandRunDuration = computeDuration(cmdStartTime)
   globalAny.cliTelemetry.lifecycleHookCompletion.postrun = true
-  await Reflect.get(globalThis, 'recordPromise')
+
+  // Spawn background process to send telemetry without blocking
+  spawnTelemetryWorker(globalAny.cliTelemetry)
 }
 
 export default performance_analytics

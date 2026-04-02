@@ -115,6 +115,7 @@ hamurai
 herokai
 herokuapp
 herokudns
+herokulytics
 herokumanager
 herokussl
 histfile

@@ -105,14 +105,14 @@ describe('telemetry-utils', function () {
   })
 
   describe('getToken', function () {
-    it('returns a string or undefined', function () {
-      const token = telemetryUtils.getToken()
+    it('returns a string or undefined', async function () {
+      const token = await telemetryUtils.getToken()
       expect(token === undefined || typeof token === 'string').to.be.true
     })
 
-    it('caches the token on subsequent calls', function () {
-      const token1 = telemetryUtils.getToken()
-      const token2 = telemetryUtils.getToken()
+    it('caches the token on subsequent calls', async function () {
+      const token1 = await telemetryUtils.getToken()
+      const token2 = await telemetryUtils.getToken()
       expect(token1).to.equal(token2)
     })
   })

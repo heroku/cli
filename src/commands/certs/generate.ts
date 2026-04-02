@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
-import inquirer from 'inquirer'
+
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 function getCommand(certs: SniEndpoint[], domain: string): 'update' | 'add' {
@@ -35,7 +36,7 @@ export default class Generate extends Command {
     domain: Args.string({required: true, description: 'domain name to generate'}),
   }
 
-  async promptForOwnerInfo() {
+  async promptForOwnerInfo(inquirer: any) {
     return inquirer.prompt([
       {type: 'input', message: 'Owner of this certificate', name: 'owner'},
       {type: 'input', message: 'Country of owner (two-letter ISO code)', name: 'country'},
@@ -45,10 +46,12 @@ export default class Generate extends Command {
   }
 
   public async run(): Promise<void> {
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {flags, args} = await this.parse(Generate)
     const {app, selfsigned} = flags
     if (this.requiresPrompt(flags)) {
-      const {owner, country, area, city} = await this.promptForOwnerInfo()
+      const {owner, country, area, city} = await this.promptForOwnerInfo(inquirer)
       Object.assign(flags, {owner, country, area, city})
     }
 

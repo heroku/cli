@@ -14,30 +14,17 @@ interface SetupTelemetryOptions {
 }
 
 /**
- * Setup telemetry handlers for beforeExit and signal handlers
- * This centralizes all telemetry worker spawning logic
+ * Setup telemetry handlers for signal handlers
+ * Note: Normal command completion telemetry is handled by the postrun hook.
+ * This only handles SIGINT/SIGTERM cases where hooks don't run.
  */
 export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
   const {cliStartTime, computeDuration, enableTelemetry} = options
 
   if (!enableTelemetry) return
 
-  process.once('beforeExit', code => {
-    // capture as successful exit
-    if (global.cliTelemetry) {
-      if (global.cliTelemetry.isVersionOrHelp) {
-        const cmdStartTime = global.cliTelemetry.commandRunDuration
-        global.cliTelemetry.commandRunDuration = computeDuration(cmdStartTime)
-      }
-
-      global.cliTelemetry.exitCode = code
-      global.cliTelemetry.cliRunDuration = computeDuration(cliStartTime)
-      const telemetryData = global.cliTelemetry
-
-      // Spawn background process to send telemetry without blocking exit
-      spawnTelemetryWorker(telemetryData)
-    }
-  })
+  // Note: beforeExit handler removed to avoid duplicate telemetry sends.
+  // The postrun hook now handles normal command completion telemetry.
 
   process.on('SIGINT', () => {
     // Spawn background process to send telemetry

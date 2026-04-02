@@ -4,7 +4,17 @@
  * This runs as a separate process to avoid blocking the main CLI
  */
 
-import {sendTelemetry} from './global-telemetry.js'
+import {telemetryDebug} from './telemetry-utils.js'
+import {telemetryManager} from './telemetry-manager.js'
+
+// Set maximum lifetime for worker process (10 seconds)
+// This ensures the worker never hangs indefinitely due to network issues or other failures
+const MAX_WORKER_LIFETIME_MS = 10000
+
+setTimeout(() => {
+  telemetryDebug('Worker timeout reached after %dms, force exiting', MAX_WORKER_LIFETIME_MS)
+  process.exit(0)
+}, MAX_WORKER_LIFETIME_MS)
 
 // Read telemetry data from stdin
 let inputData = ''
@@ -19,9 +29,27 @@ process.stdin.on('end', async () => {
   try {
     const parsed = JSON.parse(inputData)
 
-    // If the data looks like an error, reconstruct it as an Error instance
+    // Check if this is Herokulytics data using explicit type discriminator
+    if (parsed._type === 'herokulytics') {
+      // Handle Herokulytics data
+      const {default: BackboardHerokulyticsClient} = await import('./backboard-herokulytics-client.js')
+      const {Config} = await import('@oclif/core/config')
+
+      // Recreate Config from serialized data
+      const config = await Config.load()
+      const client = new BackboardHerokulyticsClient(config)
+
+      // Send herokulytics data
+      await client.send(parsed)
+
+      process.exit(0)
+      return
+    }
+
+    // Otherwise, handle OTEL/Sentry telemetry data
+    // If the data is an error, reconstruct it as an Error instance
     let telemetryData = parsed
-    if (parsed.message && parsed.stack && (parsed.name === 'Error' || parsed.name)) {
+    if (parsed._type === 'error') {
       const error = new Error(parsed.message)
       error.name = parsed.name
       error.stack = parsed.stack
@@ -31,7 +59,7 @@ process.stdin.on('end', async () => {
     }
 
     // Send telemetry (this will initialize OpenTelemetry and Sentry if needed)
-    await sendTelemetry(telemetryData)
+    await telemetryManager.sendTelemetry(telemetryData)
 
     process.exit(0)
   } catch {
