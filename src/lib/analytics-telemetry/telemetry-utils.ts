@@ -10,7 +10,8 @@ const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../../../package.json')
 
 // Debug instance for telemetry operations
-export const telemetryDebug = debug('analytics-telemetry')
+export const telemetryDebug = debug('heroku:analytics')
+telemetryDebug.color = '147'
 
 // Environment flags
 export const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
