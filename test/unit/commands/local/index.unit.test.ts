@@ -233,7 +233,7 @@ describe('local', function () {
 
       expect(loadProcfileStub.calledOnce).to.be.true
       expect(runForemanStub.calledOnce).to.be.true
-      expect(stderr).to.contain('is being ignored')
+      expect(stderr).to.contain('Using the --procfile flag ignores the specified start command')
     })
 
     it('uses --start-cmd when no procfile is found', async function () {
@@ -250,7 +250,7 @@ describe('local', function () {
       const {error} = await runCommand(Local)
 
       expect(error?.message).to.equal(
-        'Your app doesn’t have a ${procfile}.\nAdd a Procfile to add process types. \nSee https://devcenter.heroku.com/articles/procfile.\nOr specify a start command with --start-cmd.',
+        'Your app doesn’t have a Procfile.\nAdd a Procfile to add process types. \nSee https://devcenter.heroku.com/articles/procfile.\nOr specify a start command with --start-cmd.',
       )
       expect(runForemanStub.called).to.be.false
     })
