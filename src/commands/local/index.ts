@@ -47,7 +47,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
       hidden: true,
     }),
     'start-cmd': Flags.string({
-      description: 'command to run as a web process when there’s no Procfile',
+      description: 'command to run as web when no Procfile is present',
     }),
   }
 
@@ -83,7 +83,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
 
     if (flags.port) {
       if (useStartCmd) {
-        this.warn(`Using the --start-cmd flag ignores the specified port, {color.label(flags.port)}.`)
+        this.warn('The specified port, ' + color.label(flags.port) + ', is being ignored when using --start-cmd.')
       } else {
         execArgv.push('--port', flags.port)
       }
@@ -95,7 +95,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
       execArgv.push(processName)
     } else if (hasProcfile) {
       if (startCmd) {
-        this.warn(`Using the --procfile flag ignores the specified start command, ${color.label(startCmd)}.`)
+        this.warn(`The specified start command, ${color.label(startCmd)}, is being ignored.`)
       }
 
       const procHash = this.loadProcfile(procfile)
@@ -104,7 +104,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
     } else {
       if (!startCmd) {
         this.error(
-          `Your app doesn’t have a ${procfile}.\nAdd a Procfile to add process types. \nSee https://devcenter.heroku.com/articles/procfile.\nOr specify a start command with --start-cmd.`,
+          `No ${procfile} found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.`,
         )
       }
 
