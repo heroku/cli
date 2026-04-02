@@ -104,7 +104,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
     } else {
       if (!startCmd) {
         this.error(
-          `No ${procfile} found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.`,
+          `Your app doesn’t have a ${procfile}.\nAdd a Procfile to add process types. \nSee https://devcenter.heroku.com/articles/procfile.\nOr specify a start command with --start-cmd.`,
         )
       }
 
