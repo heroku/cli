@@ -7,7 +7,6 @@ import type * as chronoType from 'chrono-node'
 import type inquirerType from 'inquirer'
 import type lodashType from 'lodash'
 import type {MarkedExtension, marked as MarkedType} from 'marked'
-import type {markedTerminal as MarkedTerminalType} from 'marked-terminal'
 import type * as yamlType from 'yaml'
 
 /**

@@ -1,9 +1,10 @@
 import {vars} from '@heroku-cli/command'
+import {HTTP} from '@heroku/http-call'
 import {Command, Interfaces} from '@oclif/core'
 import fs from 'fs-extra'
-import * as path from 'path'
+import path from 'node:path'
 
-import deps from '../../deps.js'
+import HerokulyticsConfig from './herokulytics-config.js'
 import {telemetryDebug} from './telemetry-utils.js'
 
 export interface AnalyticsInterface {
@@ -32,16 +33,16 @@ export interface RecordOpts {
 export default class BackboardHerokulyticsClient {
   config: Interfaces.Config
 
-  http: typeof deps.HTTP
+  http: ReturnType<typeof HTTP.create>
 
-  userConfig!: typeof deps.UserConfig.prototype
+  userConfig!: HerokulyticsConfig
 
   private isInitialized = false
   private netrc: any
 
   constructor(config: Interfaces.Config) {
     this.config = config
-    this.http = deps.HTTP.create({
+    this.http = HTTP.create({
       headers: {'user-agent': config.userAgent},
     })
   }
@@ -154,7 +155,7 @@ export default class BackboardHerokulyticsClient {
     const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
     this.netrc = new NetrcClass()
     await this.netrc.load()
-    this.userConfig = new deps.UserConfig(this.config)
+    this.userConfig = new HerokulyticsConfig(this.config)
     await this.userConfig.init()
     telemetryDebug('Herokulytics client initialized (install_id: %s)', this.userConfig.install)
   }

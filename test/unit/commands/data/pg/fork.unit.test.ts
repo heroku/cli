@@ -3,6 +3,7 @@
 import {Config} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
+import * as chrono from 'chrono-node'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
@@ -409,7 +410,7 @@ describe('data:pg:fork', function () {
 
       testCases.forEach(({description, expected, input}) => {
         it(description, function () {
-          const result = fork.parseRollbackInterval(input)
+          const result = fork.parseRollbackInterval(input, chrono)
           expect(result.toISOString()).to.equal(expected)
         })
       })
@@ -426,7 +427,7 @@ describe('data:pg:fork', function () {
       errorCases.forEach(({description, input}) => {
         it(description, function () {
           try {
-            fork.parseRollbackInterval(input)
+            fork.parseRollbackInterval(input, chrono)
             expect.fail('Should have thrown an error')
           } catch (error) {
             const err = error as Error
