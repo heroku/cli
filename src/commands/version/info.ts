@@ -1,14 +1,8 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, Command, ux} from '@oclif/core'
-import {marked, type MarkedExtension} from 'marked'
-import {markedTerminal} from 'marked-terminal'
 
 import {ChangelogParser} from '../../lib/changelog-parser.js'
-
-// Configure marked to use terminal renderer
-// Note: @types/marked-terminal has incorrect return type, but the actual implementation
-// returns a proper MarkedExtension object
-marked.use(markedTerminal({emoji: false}) as MarkedExtension)
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
 export default class VersionInfo extends Command {
   static args = {
@@ -30,6 +24,9 @@ export default class VersionInfo extends Command {
     const {version} = args
 
     try {
+      // Lazy-load marked (markdown parser) only when command runs
+      const marked = await lazyModuleLoader.loadMarked()
+
       // Create parser (uses default changelog path)
       const parser = await ChangelogParser.create()
       const entry = version

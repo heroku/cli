@@ -2,8 +2,10 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import _ from 'lodash'
 import tsheredoc from 'tsheredoc'
+
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+
 const heredoc = tsheredoc.default
 
 const COST_MONTHLY: Record<string, number> = {
@@ -59,7 +61,7 @@ const emptyFormationErr = (app: string) => (
   new Error(`No process types on ${app}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
 )
 
-const displayFormation = async (heroku: APIClient, app: string) => {
+const displayFormation = async (heroku: APIClient, app: string, _: any) => {
   const {body: formation} = await heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
   const {body: appProps} = await heroku.get<Heroku.App>(`/apps/${app}`)
   const shielded = appProps.space && appProps.space.shield
@@ -68,8 +70,8 @@ const displayFormation = async (heroku: APIClient, app: string) => {
 
   const formationTableData = _.sortBy(formation, 'type')
     // this filter shouldn't be necessary, but it makes TS happy
-    .filter((f): f is Heroku.Formation & {quantity: number, size: string} => typeof f.size === 'string' && typeof f.quantity === 'number')
-    .map((d => {
+    .filter((f: any): f is Heroku.Formation & {quantity: number, size: string} => typeof f.size === 'string' && typeof f.quantity === 'number')
+    .map((d: any) => {
       if (d.size === 'Eco') {
         isShowingEcoCostMessage = true
       }
@@ -98,7 +100,7 @@ const displayFormation = async (heroku: APIClient, app: string) => {
           :  '',
       }
       /* eslint-enable perfectionist/sort-objects */
-    }))
+    })
 
   const dynoTotalsTableData = Object.keys(dynoTotals)
     .map(k => ({
@@ -153,6 +155,9 @@ export default class Type extends Command {
   static strict = false
 
   public async run(): Promise<void> {
+    // Lazy-load lodash only when command runs
+    const _ = await lazyModuleLoader.loadLodash()
+
     const {flags, ...restParse} = await this.parse(Type)
     const argv = restParse.argv as string[]
     const {app} = flags
@@ -186,6 +191,6 @@ export default class Type extends Command {
       ux.action.stop()
     }
 
-    await displayFormation(this.heroku, app)
+    await displayFormation(this.heroku, app, _)
   }
 }

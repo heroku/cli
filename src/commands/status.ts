@@ -1,8 +1,8 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
 import {Command, Flags, ux} from '@oclif/core'
-import {formatDistanceToNow} from 'date-fns'
 
+import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
 import {getMaxUpdateTypeLength} from '../lib/status/util.js'
 import {
   FormattedTrustStatus,
@@ -132,6 +132,9 @@ export default class Status extends Command {
   }
 
   async run() {
+    // Lazy-load date-fns only when command runs
+    const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
+
     const {flags} = await this.parse(Status)
     const herokuApiPath = '/api/v4/current-status'
     let herokuStatus

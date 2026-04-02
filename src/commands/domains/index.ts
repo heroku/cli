@@ -1,20 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {confirm} from '@inquirer/prompts'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import {orderBy} from 'natural-orderby'
 import Uri from 'urijs'
 
 import parseKeyValue from '../../lib/utils/keyValueParser.js'
 import {paginateRequest} from '../../lib/utils/paginator.js'
-
-function isApexDomain(hostname: string) {
-  if (hostname.includes('*')) return false
-  const a = new Uri({hostname, protocol: 'http'})
-  return a.subdomain() === ''
-}
 
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
@@ -181,7 +173,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
     return fullConfig
   }
 
-  async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
+  async confirmDisplayAllDomains(customDomains: Heroku.Domain[], confirm: any) {
     return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
   }
 
@@ -205,8 +197,10 @@ www.example.com  CNAME            www.example.herokudns.com`]
         ux.stdout()
 
         if (customDomains.length > 100 && !flags.json && !flags.csv) {
+          // Lazy-load confirm from @inquirer/prompts
+          const {confirm} = await import('@inquirer/prompts')
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.code('heroku domains -a example-app --csv > example-file.csv')}`)
-          displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
+          displayTotalDomains = await this.confirmDisplayAllDomains(customDomains, confirm)
           if (!displayTotalDomains) {
             return
           }
@@ -229,4 +223,10 @@ www.example.com  CNAME            www.example.herokudns.com`]
       }
     }
   }
+}
+
+function isApexDomain(hostname: string) {
+  if (hostname.includes('*')) return false
+  const a = new Uri({hostname, protocol: 'http'})
+  return a.subdomain() === ''
 }

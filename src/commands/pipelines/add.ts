@@ -3,9 +3,9 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
-import inquirer from 'inquirer'
 
 import {createCoupling} from '../../lib/api.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stageNames} from '../../lib/pipelines/stages.js'
@@ -37,6 +37,9 @@ The stage of the app will be guessed based on its name if not specified.`
   }
 
   async run() {
+    // Lazy-load inquirer only when command runs
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {args, flags} = await this.parse(PipelinesAdd)
     const {app} = flags
 

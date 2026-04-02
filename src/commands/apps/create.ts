@@ -9,9 +9,9 @@ import {
 import * as Heroku from '@heroku-cli/schema'
 import {Args, Interfaces, ux} from '@oclif/core'
 import fs from 'fs-extra'
-import {parse} from 'yaml'
 
 import Git from '../../lib/git/git.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
 const git = new Git()
 
@@ -193,6 +193,8 @@ ${color.command('heroku apps:create --region eu')}`]
   static hiddenAliases = ['create']
 
   async readManifest() {
+    // Lazy-load yaml only when manifest is read
+    const {parse} = await lazyModuleLoader.loadYaml()
     const buffer = await fs.readFile('heroku.yml')
     return parse(buffer.toString())
   }
