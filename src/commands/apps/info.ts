@@ -43,7 +43,6 @@ repo_size=5000000
   static topic = 'apps'
 
   async run() {
-    // Lazy-load lodash only when command runs
     const _ = await lazyModuleLoader.loadLodash()
 
     const {args, flags} = await this.parse(AppsInfo)

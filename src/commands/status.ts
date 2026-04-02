@@ -132,7 +132,6 @@ export default class Status extends Command {
   }
 
   async run() {
-    // Lazy-load date-fns only when command runs
     const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
 
     const {flags} = await this.parse(Status)

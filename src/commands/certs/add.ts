@@ -61,7 +61,6 @@ export default class Add extends Command {
   }
 
   public async run(): Promise<void> {
-    // Lazy-load inquirer only when command runs
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(Add)

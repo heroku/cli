@@ -32,7 +32,6 @@ export default class AppsIndex extends Command {
   static topic = 'apps'
 
   async run() {
-    // Lazy-load lodash only when command runs
     const _ = await lazyModuleLoader.loadLodash()
 
     const {flags} = await this.parse(AppsIndex)

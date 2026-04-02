@@ -82,7 +82,6 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
-    // Lazy-load inquirer only when command runs
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(DomainsAdd)

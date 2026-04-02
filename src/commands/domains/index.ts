@@ -197,7 +197,6 @@ www.example.com  CNAME            www.example.herokudns.com`]
         ux.stdout()
 
         if (customDomains.length > 100 && !flags.json && !flags.csv) {
-          // Lazy-load confirm from @inquirer/prompts
           const {confirm} = await import('@inquirer/prompts')
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.code('heroku domains -a example-app --csv > example-file.csv')}`)
           displayTotalDomains = await this.confirmDisplayAllDomains(customDomains, confirm)

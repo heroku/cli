@@ -46,7 +46,6 @@ export default class Generate extends Command {
   }
 
   public async run(): Promise<void> {
-    // Lazy-load inquirer only when command runs
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {flags, args} = await this.parse(Generate)

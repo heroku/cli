@@ -193,7 +193,6 @@ ${color.command('heroku apps:create --region eu')}`]
   static hiddenAliases = ['create']
 
   async readManifest() {
-    // Lazy-load yaml only when manifest is read
     const {parse} = await lazyModuleLoader.loadYaml()
     const buffer = await fs.readFile('heroku.yml')
     return parse(buffer.toString())

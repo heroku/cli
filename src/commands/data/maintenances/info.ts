@@ -82,7 +82,6 @@ export default class DataMaintenancesInfo extends BaseCommand {
 
   // create new maintenance-ish object for the purpose of
   async run() {
-    // Lazy-load date-fns only when command runs
     const {addSeconds, formatDistance} = await lazyModuleLoader.loadDateFns()
 
     const {args, flags} = await this.parse(DataMaintenancesInfo)

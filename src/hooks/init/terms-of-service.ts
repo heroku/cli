@@ -5,7 +5,6 @@ import path from 'node:path'
 export async function checkTos(options: any) {
   const tosPath: string = path.join(options.config.cacheDir, 'terms-of-service')
 
-  // Lazy-load fs-extra only when needed (most users have already viewed the banner)
   const fs = await import('fs-extra')
   const viewedBanner = await fs.pathExists(tosPath)
   const message = 'Our terms of service have changed: https://dashboard.heroku.com/terms-of-service'

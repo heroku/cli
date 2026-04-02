@@ -24,7 +24,6 @@ export default class VersionInfo extends Command {
     const {version} = args
 
     try {
-      // Lazy-load marked (markdown parser) only when command runs
       const marked = await lazyModuleLoader.loadMarked()
 
       // Create parser (uses default changelog path)

@@ -41,7 +41,6 @@ Uploading SSH public key /my/key.pub... done`
   }
 
   async run() {
-    // Lazy-load inquirer only when command runs
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(Add)

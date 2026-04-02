@@ -58,7 +58,6 @@ export default class DataMaintenancesSchedule extends BaseCommand {
   }
 
   async run() {
-    // Lazy-load date-fns only when command runs
     const {differenceInCalendarWeeks} = await lazyModuleLoader.loadDateFns()
 
     const {args, flags} = await this.parse(DataMaintenancesSchedule)

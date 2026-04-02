@@ -96,7 +96,6 @@ export async function getToken(): Promise<string | undefined> {
   }
 
   try {
-    // Lazy-load heavy dependencies only when token is needed (in background worker)
     const [{APIClient}, {Config}] = await Promise.all([
       import('@heroku-cli/command'),
       import('@oclif/core/config'),

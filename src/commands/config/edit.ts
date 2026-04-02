@@ -42,7 +42,6 @@ ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
   app!: string
 
   async run() {
-    // Lazy-load lodash only when command runs
     const _ = await lazyModuleLoader.loadLodash()
 
     const {args: {key}, flags: {app}} = await this.parse(ConfigEdit)

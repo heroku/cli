@@ -49,7 +49,6 @@ export default class AppsTransfer extends Command {
   }
 
   public async run() {
-    // Lazy-load inquirer only when command runs
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(AppsTransfer)

@@ -136,7 +136,6 @@ export default class Dashboard extends Command {
   static topic = 'dashboard'
 
   public async run(): Promise<void> {
-    // Lazy-load lodash only when command runs
     const _ = await lazyModuleLoader.loadLodash()
 
     if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {

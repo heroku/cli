@@ -12,7 +12,6 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
   static promptFlagActive = false
 
   async run() {
-    // Lazy-load date-fns only when command runs
     const {formatRelative} = await lazyModuleLoader.loadDateFns()
 
     this.parse(AuthToken)

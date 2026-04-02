@@ -50,7 +50,6 @@ export default class Index extends Command {
   static topic = 'certs'
 
   public async run(): Promise<void> {
-    // Lazy-load date-fns only when command runs
     const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
 
     const {flags} = await this.parse(Index)

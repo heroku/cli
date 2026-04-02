@@ -95,7 +95,6 @@ export default class Fork extends BaseCommand {
   }
 
   public async run(): Promise<void> {
-    // Lazy-load chrono only when command runs
     const chrono = await lazyModuleLoader.loadChrono()
 
     const {args, flags} = await this.parse(Fork)

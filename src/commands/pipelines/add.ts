@@ -37,7 +37,6 @@ The stage of the app will be guessed based on its name if not specified.`
   }
 
   async run() {
-    // Lazy-load inquirer only when command runs
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(PipelinesAdd)

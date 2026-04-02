@@ -23,7 +23,6 @@ export default class SentryClient {
    * Send error data to Sentry
    */
   async send(data: CLIError): Promise<void> {
-    // Lazy-load Sentry only when we actually need to report an error
     this.ensureInitialized()
     try {
       telemetryDebug('Sentry payload: %O', {

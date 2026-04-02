@@ -28,7 +28,6 @@ export default class AccessIndex extends Command {
   static topic = 'access'
 
   public async run(): Promise<void> {
-    // Lazy-load lodash only when command runs
     const _ = await lazyModuleLoader.loadLodash()
 
     const {flags} = await this.parse(AccessIndex)
