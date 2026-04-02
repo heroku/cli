@@ -47,7 +47,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
       hidden: true,
     }),
     'start-cmd': Flags.string({
-      description: 'command to run as web when no Procfile is found',
+      description: 'command to run as a web process when there’s no Procfile',
     }),
   }
 
