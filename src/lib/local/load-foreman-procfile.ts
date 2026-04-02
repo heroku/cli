@@ -2,6 +2,10 @@ import fs from 'fs'
 
 function parseProcfile(content: string): Record<string, string> {
   const lines = content.split(/\r?\n/).filter((line, i) => {
+    if (line.match(/^\s*#/)) {
+      return false
+    }
+
     if (line.match(/\w/)) {
       if (!line.match(/^\s*\w+:/)) {
         throw new Error('line ' + (i + 1) + ' parse error: ' + line)
