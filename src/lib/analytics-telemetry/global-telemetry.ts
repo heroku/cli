@@ -6,8 +6,6 @@
 import type {Config} from '@oclif/core/interfaces'
 
 // Import internal dependencies
-import BackboardOtelClient from './backboard-otel-client.js'
-import SentryClient from './sentry-client.js'
 import {
   isTelemetryDisabled,
   setVersion,
@@ -16,9 +14,30 @@ import {
   telemetryDebug,
 } from './telemetry-utils.js'
 
-// Singleton client instances
-const backboardOtelClient = new BackboardOtelClient()
-const sentryClient = new SentryClient()
+// Lazy client singletons - only loaded when actually needed
+let backboardOtelClientInstance: any
+let sentryClientInstance: any
+
+/**
+ * Lazy load telemetry clients to avoid loading heavy OpenTelemetry/Sentry
+ * libraries during CLI initialization
+ */
+async function getClients() {
+  if (!backboardOtelClientInstance) {
+    const [{default: BackboardOtelClient}, {default: SentryClient}] = await Promise.all([
+      import('./backboard-otel-client.js'),
+      import('./sentry-client.js'),
+    ])
+    backboardOtelClientInstance = new BackboardOtelClient()
+    sentryClientInstance = new SentryClient()
+    telemetryDebug('Lazy-loaded telemetry clients')
+  }
+
+  return {
+    backboardOtelClient: backboardOtelClientInstance,
+    sentryClient: sentryClientInstance,
+  }
+}
 
 /**
  * Options passed to telemetry setup (from oclif hooks)
@@ -65,6 +84,7 @@ export async function sendTelemetry(currentTelemetry: TelemetryData): Promise<vo
     return
   }
 
+  const {backboardOtelClient, sentryClient} = await getClients()
   const telemetry = currentTelemetry
 
   if (telemetry instanceof Error) {
