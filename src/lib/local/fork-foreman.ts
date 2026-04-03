@@ -1,19 +1,37 @@
-import {ux} from '@oclif/core/ux'
 import {fork as forkChildProcess} from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
 import {fileURLToPath} from 'url'
 
+export class ForemanExitError extends Error {
+  public exitCode: number
+
+  public constructor(exitCode: number) {
+    super(`Foreman exited with code ${exitCode}`)
+    this.exitCode = exitCode
+    this.name = 'ForemanExitError'
+  }
+}
+
 export function fork(argv: string[]): Promise<void> {
   const script = getForemanScriptPath()
   const nf = forkChildProcess(script, argv, {stdio: 'inherit'})
 
-  return new Promise(resolve => {
-    nf.on('exit', (code: number) => {
-      if (code !== 0) ux.exit(code)
-      resolve()
+  return new Promise((resolve, reject) => {
+    nf.on('error', reject)
+    nf.on('exit', (code: null | number) => {
+      if (code === 0) {
+        resolve()
+        return
+      }
+
+      reject(new ForemanExitError(code ?? 1))
     })
   })
+}
+
+export function isForemanExitError(error: unknown): error is ForemanExitError {
+  return error instanceof ForemanExitError
 }
 
 // depending if this is being ran before or after compilation
