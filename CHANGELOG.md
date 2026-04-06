@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.2.0-beta.0](https://github.com/heroku/cli/compare/v11.1.1...v11.2.0-beta.0) (2026-04-06)
+
+
+### Features
+
+* adding --start-cmd flag to heroku local when no Procfile is present ([#3638](https://github.com/heroku/cli/issues/3638)) ([b9b8fed](https://github.com/heroku/cli/commit/b9b8fed8f44ad88946edc4141ec1fe41f157baac))
+* update color usage, telemetry activation logic, and command/util dependencies ([#3646](https://github.com/heroku/cli/issues/3646)) ([ede6655](https://github.com/heroku/cli/commit/ede665557ca3d387e3e57f5a438cd7ab7c27b1b3))
+
+
+### Bug Fixes
+
+* procfile comment parsing ([#3641](https://github.com/heroku/cli/issues/3641)) ([aae3751](https://github.com/heroku/cli/commit/aae37512b54bdcf2b832429254f0d2c0fe1f42d3))
+
+
+### Code Refactoring
+
+* unify telemetry architecture and use background workers for all telemetry ([#3642](https://github.com/heroku/cli/issues/3642)) ([c13074d](https://github.com/heroku/cli/commit/c13074da5f0892fa412ce6bc7c4b1d998eae3366))
+
+
+### Tests
+
+* this fixes the mocking difference causing flappy tests and adds chore to PR release title ([#3640](https://github.com/heroku/cli/issues/3640)) ([32920f9](https://github.com/heroku/cli/commit/32920f9600cc6b06815aa7db532dd8bb352d90db))
+
 ## [11.1.1](https://github.com/heroku/cli/compare/v11.1.0...v11.1.1) (2026-04-01)
 
 
