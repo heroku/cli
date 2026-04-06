@@ -16,18 +16,19 @@ const MAX_WORKER_LIFETIME_MS = 10000
  * This is important when stderr is inherited in DEBUG mode
  */
 function exitWorker(code: number): void {
-  // Use setImmediate to allow any pending stderr writes to flush
-  // before destroying the stream
-  setImmediate(() => {
-    try {
-      // Close stderr to release the file descriptor reference to parent
-      process.stderr.destroy()
-    } catch {
-      // Ignore errors during cleanup
-    }
-
-    process.exit(code)
-  })
+  try {
+    // End stderr gracefully, flushing all pending writes
+    // This properly releases the file descriptor reference to parent
+    process.stderr.end(() => {
+      process.exit(code)
+    })
+  } finally {
+    // Fallback: ensure we exit even if end() fails or callback never fires
+    // Use setImmediate to give the end() callback a chance to run first
+    setImmediate(() => {
+      process.exit(code)
+    })
+  }
 }
 
 setTimeout(() => {
