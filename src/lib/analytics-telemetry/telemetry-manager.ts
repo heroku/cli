@@ -4,10 +4,12 @@
  */
 
 import type {Config} from '@oclif/core/interfaces'
+import type BackboardOtelClient from './backboard-otel-client.js'
+import type SentryClient from './sentry-client.js'
 
 // Import internal dependencies
 import {
-  isTelemetryDisabled,
+  isTelemetryEnabled,
   setVersion,
   Telemetry,
   TelemetryData,
@@ -28,8 +30,8 @@ interface TelemetryOptions {
  * TelemetryManager - Singleton class for managing CLI telemetry
  */
 class TelemetryManager {
-  private backboardOtelClient: any
-  private sentryClient: any
+  private backboardOtelClient?: BackboardOtelClient
+  private sentryClient?: SentryClient
 
   /**
    * Create telemetry object for command_not_found errors
@@ -61,7 +63,7 @@ class TelemetryManager {
    * - Regular telemetry goes to Honeycomb only
    */
   async sendTelemetry(currentTelemetry: TelemetryData): Promise<void> {
-    if (isTelemetryDisabled) {
+    if (!isTelemetryEnabled()) {
       telemetryDebug('Telemetry disabled, skipping send')
       return
     }
@@ -141,8 +143,11 @@ class TelemetryManager {
    * Lazy load telemetry clients to avoid loading heavy OpenTelemetry/Sentry
    * libraries during CLI initialization
    */
-  private async getClients() {
-    if (!this.backboardOtelClient) {
+  private async getClients(): Promise<{
+    backboardOtelClient: BackboardOtelClient
+    sentryClient: SentryClient
+  }> {
+    if (!this.backboardOtelClient || !this.sentryClient) {
       const [{default: BackboardOtelClient}, {default: SentryClient}] = await Promise.all([
         import('./backboard-otel-client.js'),
         import('./sentry-client.js'),
@@ -152,6 +157,7 @@ class TelemetryManager {
       telemetryDebug('Lazy-loaded telemetry clients')
     }
 
+    // TypeScript: Both clients are guaranteed to be defined after the above check
     return {
       backboardOtelClient: this.backboardOtelClient,
       sentryClient: this.sentryClient,

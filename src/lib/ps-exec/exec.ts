@@ -1,12 +1,11 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import debug from 'debug'
-import forge from 'node-forge'
 import got, {Response} from 'got'
 import keypair from 'keypair'
+import forge from 'node-forge'
 import child from 'node:child_process'
 import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
@@ -58,7 +57,7 @@ export class HerokuExec {
 
           statuses.push({
             dyno_name: color.name(name),
-            dyno_status: dyno ? (dyno.state === 'up' ? color.success(dyno.state) : color.yellow(dyno.state)) : color.error('missing!'),
+            dyno_status: dyno ? (dyno.state === 'up' ? color.success(dyno.state) : color.yellow(dyno.state || '')) : color.error('missing!'),
             proxy_status: 'running',
           })
         }

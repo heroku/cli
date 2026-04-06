@@ -1,7 +1,7 @@
 import type {AddOnAttachment} from '@heroku-cli/schema'
 
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import ConfirmCommand from '../../../lib/confirmCommand.js'
@@ -63,7 +63,7 @@ export default class Rotate extends Command {
     }
 
     if (force) {
-      warnings.push(`Any followers lagging in replication (see ${color.cyan.bold('heroku pg:info')}) will be inaccessible until caught up.`)
+      warnings.push(`Any followers lagging in replication (see ${color.code('heroku pg:info')}) will be inaccessible until caught up.`)
     }
 
     if (attachments.length > 0) {

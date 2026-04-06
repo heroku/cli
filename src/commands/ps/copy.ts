@@ -38,10 +38,10 @@ export default class Copy extends Command {
     const src = args.file
     const dest = output || path.basename(src)
 
-    ux.stdout(`Copying ${color.white.bold(src)} to ${color.white.bold(dest)}`)
+    ux.stdout(`Copying ${color.bold(src)} to ${color.bold(dest)}`)
 
     if (fs.existsSync(dest)) {
-      ux.error(`The local file ${color.white.bold(dest)} already exists`)
+      ux.error(`The local file ${color.bold(dest)} already exists`)
     }
 
     const context = {
@@ -55,7 +55,7 @@ export default class Copy extends Command {
 
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
       await exec.updateClientKey(context, this.heroku, configVars, async (privateKey, dyno, response) => {
-        const message = `Connecting to ${color.cyan.bold(dyno)} on ${color.app(app)}`
+        const message = `Connecting to ${color.name(dyno)} on ${color.app(app)}`
         ux.action.start(message)
         const json = JSON.parse(response.body)
         await ssh.scp(json.tunnel_host, json.client_user, privateKey, json.proxy_public_key, src, dest)

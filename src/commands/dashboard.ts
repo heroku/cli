@@ -97,7 +97,7 @@ function displayNotifications(notifications?: {read: boolean}[]) {
   }
 }
 
-const dim = (s: string) => color.dim(s)
+const dim = (s: string) => color.gray(s)
 const bold = (s: string) => color.bold(s)
 const label = (s: string) => color.label(s)
 

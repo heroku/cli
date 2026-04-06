@@ -1,8 +1,7 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
@@ -17,7 +16,7 @@ import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
 // eslint-disable-next-line import/no-named-as-default-member
-const {Separator, prompt} = inquirer
+const {prompt, Separator} = inquirer
 
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
@@ -113,7 +112,7 @@ export default class DataPgCreate extends BaseCommand {
 
     try {
       this.addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {
-        actionStartMessage: `Creating a ${color.cyan(this.leaderLevel)} database on ${color.app(app)}`,
+        actionStartMessage: `Creating a ${color.addon(this.leaderLevel || '')} database on ${color.app(app)}`,
         actionStopMessage: 'done',
         as, config, name,
       })
@@ -223,7 +222,7 @@ export default class DataPgCreate extends BaseCommand {
           name: 'Remove high availability' + (
             renderPricingInfo(leaderPricing) === 'free'
               ? ''
-              : ` ${color.yellowBright(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
+              : ` ${color.info(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
           ),
           value: 'remove',
         },
@@ -247,14 +246,14 @@ export default class DataPgCreate extends BaseCommand {
     const instancePrice = renderPricingInfo(leaderLevelInfo?.pricing)
     process.stderr.write(heredoc`
       ${`${color.green('✓ Configure Leader Pool')} ${totalPrice}`}
-        ${color.dim(
-    `${this.leaderLevel} ${leaderLevelInfo?.vcpu} ${color.inverse('vCPU')} `
-          + `${leaderLevelInfo?.memory_in_gb} GB ${color.inverse('MEM')} `
+        ${color.gray(
+    `${this.leaderLevel} ${leaderLevelInfo?.vcpu} ${color.ansis.inverse('vCPU')} `
+          + `${leaderLevelInfo?.memory_in_gb} GB ${color.ansis.inverse('MEM')} `
           + instancePrice,
   )}
     `)
     if (this.highAvailability) {
-      process.stderr.write(color.dim(`  Standby (High Availability) ${instancePrice}\n`))
+      process.stderr.write(color.gray(`  Standby (High Availability) ${instancePrice}\n`))
     }
 
     process.stderr.write('\n')
@@ -285,13 +284,13 @@ export default class DataPgCreate extends BaseCommand {
     process.stderr.write(heredoc`
 
       Create a Heroku Postgres Advanced database
-      ${color.dim('Press Ctrl+C to cancel')}
+      ${color.gray('Press Ctrl+C to cancel')}
 
     `)
 
     process.stderr.write(heredoc`
       → Configure Leader Pool
-      ${color.dim('  Configure Follower Pool(s)')}\n
+      ${color.gray('  Configure Follower Pool(s)')}\n
     `)
 
     let configReady = false

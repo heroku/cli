@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -42,7 +42,7 @@ export default class DataPgCredentialsCreate extends BaseCommand {
     const data = {name}
     let attachCmd = ''
     try {
-      ux.action.start(`Creating credential ${color.cyan.bold(name)}`)
+      ux.action.start(`Creating credential ${color.name(name)}`)
       if (utils.pg.isAdvancedDatabase(addon)) {
         await this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials`, {body: data})
         attachCmd = `heroku data:pg:attachments:create ${addon.name} --credential ${name} -a ${app}`

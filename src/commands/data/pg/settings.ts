@@ -1,5 +1,5 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -21,9 +21,9 @@ const settingsHeaders = {
 }
 
 const settingsChangeTableData = (response: SettingsChangeResponse) => response.changes.map(change => ({
-  From: color.yellow(change.previous),
+  From: color.label(change.previous?.toString() || ''),
   Settings: change.name,
-  To: color.cyan(change.current),
+  To: color.info(change.current?.toString() || ''),
 }))
 
 const settingsTableData = (response: SettingsResponse) => {

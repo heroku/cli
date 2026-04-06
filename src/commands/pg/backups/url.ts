@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
@@ -36,7 +36,7 @@ export default class Url extends Command {
       succeededBackups.sort((a, b) => a.created_at.localeCompare(b.created_at))
       const lastBackup = succeededBackups.pop()
       if (!lastBackup)
-        throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+        throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.code('heroku pg:backups:capture')}`)
       num = lastBackup.num
     }
 
@@ -44,4 +44,3 @@ export default class Url extends Command {
     ux.stdout(info.url + '\n')
   }
 }
-

@@ -13,7 +13,6 @@ telemetryDebug.color = '147'
 
 // Environment flags
 export const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
-export const isTelemetryDisabled = process.env.DISABLE_TELEMETRY === 'true'
 
 // Cached values
 let version: string | undefined

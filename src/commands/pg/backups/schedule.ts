@@ -1,60 +1,62 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {PgDatabase} from '../../../lib/pg/types.js'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
+import {Args, ux} from '@oclif/core'
+
+import {PgDatabase} from '../../../lib/pg/types.js'
 import {nls} from '../../../nls.js'
 
 type Timezone = {
-  PST: string
-  PDT: string
-  MST: string
-  MDT: string
-  CST: string
-  CDT: string
-  EST: string
-  EDT: string
-  Z: string
-  GMT: string
   BST: string
-  CET: string
+  CDT: string
   CEST: string
+  CET: string
+  CST: string
+  EDT: string
+  EST: string
+  GMT: string
+  MDT: string
+  MST: string
+  PDT: string
+  PST: string
+  Z: string
 }
 
 const TZ: Timezone = {
-  PST: 'America/Los_Angeles',
-  PDT: 'America/Los_Angeles',
-  MST: 'America/Boise',
-  MDT: 'America/Boise',
-  CST: 'America/Chicago',
-  CDT: 'America/Chicago',
-  EST: 'America/New_York',
-  EDT: 'America/New_York',
-  Z: 'UTC',
-  GMT: 'Europe/London',
   BST: 'Europe/London',
-  CET: 'Europe/Paris',
+  CDT: 'America/Chicago',
   CEST: 'Europe/Paris',
+  CET: 'Europe/Paris',
+  CST: 'America/Chicago',
+  EDT: 'America/New_York',
+  EST: 'America/New_York',
+  GMT: 'Europe/London',
+  MDT: 'America/Boise',
+  MST: 'America/Boise',
+  PDT: 'America/Los_Angeles',
+  PST: 'America/Los_Angeles',
+  Z: 'UTC',
 }
 
 type BackupSchedule = {
   hour: string
-  timezone: string
   schedule_name?: string
+  timezone: string
 }
 
 export default class Schedule extends Command {
-  static topic = 'pg'
-  static description = 'schedule daily backups for given database'
-  static flags = {
-    at: flags.string({required: true, description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'"}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+
+  static description = 'schedule daily backups for given database'
+  static flags = {
+    app: flags.app({required: true}),
+    at: flags.string({description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'", required: true}),
+    remote: flags.remote(),
+  }
+
+  static topic = 'pg'
 
   parseDate = function (at: string): BackupSchedule {
     const m = at.match(/^(0?\d|1\d|2[0-3]):00 ?(\S*)$/)
@@ -68,7 +70,7 @@ export default class Schedule extends Command {
   }
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Schedule)
+    const {args, flags} = await this.parse(Schedule)
     const {app} = flags
     const {database} = args
 
@@ -82,7 +84,7 @@ export default class Schedule extends Command {
       .catch((error: HTTPError) => {
         if (error.statusCode !== 404)
           throw error
-        ux.error(`${color.datastore(db.name)} is not yet provisioned.\nRun ${color.cyan.bold('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
+        ux.error(`${color.datastore(db.name)} is not yet provisioned.\nRun ${color.code('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
       })
     const {body: dbInfo} = pgResponse || {body: null}
     if (dbInfo) {
@@ -101,4 +103,3 @@ export default class Schedule extends Command {
     ux.action.stop()
   }
 }
-
