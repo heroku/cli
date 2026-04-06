@@ -6,11 +6,11 @@
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^12.2.2",
+    "@heroku-cli/command": "^12.3.1",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/heroku-cli-util": "^10.7.0",
+    "@heroku/heroku-cli-util": "^10.8.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
     "@heroku/socksv5": "^0.0.9",

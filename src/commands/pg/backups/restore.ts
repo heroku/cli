@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -10,19 +10,6 @@ import backupsFactory from '../../../lib/pg/backups.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
-
-function dropboxURL(url: string) {
-  if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
-    if (url.endsWith('dl=0'))
-      url = url.replace('dl=0', 'dl=1')
-    else if (url.includes('?'))
-      url += '&dl=1'
-    else
-      url += '?dl=1'
-  }
-
-  return url
-}
 
 export default class Restore extends Command {
   static args = {
@@ -122,7 +109,7 @@ export default class Restore extends Command {
           return 0
         }).pop()
         if (!backup) {
-          throw new Error(`No backups for ${color.app(backupApp)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+          throw new Error(`No backups for ${color.app(backupApp)}. Capture one with ${color.code('heroku pg:backups:capture')}`)
         }
 
         backupName = pgbackups.name(backup)
@@ -137,8 +124,8 @@ export default class Restore extends Command {
     ux.stdout(heredoc(`
 
     Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
-    Use ${color.cyan.bold('heroku pg:backups')} to check progress.
-    Stop a running restore with ${color.cyan.bold('heroku pg:backups:cancel')}.
+    Use ${color.code('heroku pg:backups')} to check progress.
+    Stop a running restore with ${color.code('heroku pg:backups:cancel')}.
     `))
 
     const {body: restore} = await this.heroku.post<{uuid: string}>(`/client/v11/databases/${db.id}/restores`, {
@@ -150,3 +137,15 @@ export default class Restore extends Command {
   }
 }
 
+function dropboxURL(url: string) {
+  if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
+    if (url.endsWith('dl=0'))
+      url = url.replace('dl=0', 'dl=1')
+    else if (url.includes('?'))
+      url += '&dl=1'
+    else
+      url += '?dl=1'
+  }
+
+  return url
+}

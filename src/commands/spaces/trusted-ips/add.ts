@@ -1,7 +1,6 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -40,7 +39,7 @@ export default class Add extends Command {
 
     ruleset.rules.push({action: 'allow', source: args.source})
     await this.heroku.put(url, {body: ruleset})
-    ux.stdout(`Added ${color.cyan.bold(args.source)} to trusted IP ranges on ${color.space(space)}`)
+    ux.stdout(`Added ${color.name(args.source)} to trusted IP ranges on ${color.space(space)}`)
 
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)

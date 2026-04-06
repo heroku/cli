@@ -1,7 +1,6 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 export default class Set extends Command {
@@ -25,7 +24,7 @@ export default class Set extends Command {
       body: {url},
       headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
     })
-    ux.stdout(`Successfully set drain ${color.cyan(drain.url)} for ${color.space(space)}.`)
+    ux.stdout(`Successfully set drain ${color.info(drain.url || '')} for ${color.space(space)}.`)
     ux.warn('It may take a few moments for the changes to take effect.')
   }
 }

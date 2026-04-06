@@ -1,6 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
@@ -48,7 +48,7 @@ export default class DataMaintenancesRun extends BaseCommand {
       // app is in maintenance mode, or it was forced
     } else if (!confirm || confirm !== appName) {
       ux.warn('Application is not in maintenance mode.')
-      this.error(`To proceed, put the application into maintenance mode or re-run the command with ${color.bold.red(`--confirm ${appName}`)}`)
+      this.error(`To proceed, put the application into maintenance mode or re-run the command with ${color.warning(`--confirm ${appName}`)}`)
     }
   }
 

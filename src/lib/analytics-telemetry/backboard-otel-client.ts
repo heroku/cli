@@ -11,7 +11,7 @@ import {
   getToken,
   getVersion,
   isDev,
-  isTelemetryDisabled,
+  isTelemetryEnabled,
   TelemetryData,
   telemetryDebug,
 } from './telemetry-utils.js'
@@ -97,7 +97,7 @@ export default class BackboardOtelClient {
    * Ensure OpenTelemetry is initialized (lazy initialization)
    */
   private async ensureInitialized(): Promise<void> {
-    if (isInitialized || isTelemetryDisabled) {
+    if (isInitialized || !isTelemetryEnabled()) {
       return
     }
 

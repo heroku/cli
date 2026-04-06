@@ -4,7 +4,7 @@ import {PII_PATTERNS} from '../data-scrubber/patterns.js'
 import {GDPR_FIELDS, HEROKU_FIELDS, PCI_FIELDS} from '../data-scrubber/presets.js'
 import {Scrubber} from '../data-scrubber/scrubber.js'
 import {
-  CLIError, getVersion, isDev, isTelemetryDisabled, telemetryDebug,
+  CLIError, getVersion, isDev, isTelemetryEnabled, telemetryDebug,
 } from './telemetry-utils.js'
 
 export default class SentryClient {
@@ -47,7 +47,7 @@ export default class SentryClient {
    * Ensure Sentry is initialized (lazy initialization)
    */
   private ensureInitialized(): void {
-    if (this.isInitialized || isTelemetryDisabled) {
+    if (this.isInitialized || !isTelemetryEnabled()) {
       return
     }
 

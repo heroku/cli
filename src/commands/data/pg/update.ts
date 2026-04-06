@@ -1,10 +1,10 @@
 import type {Answers, DistinctChoice, ListChoiceMap} from 'inquirer'
 
+import {flags as Flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {
   color, hux, pg, utils,
 } from '@heroku/heroku-cli-util'
-import {flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
@@ -22,7 +22,7 @@ import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.
 
 const heredoc = tsheredoc.default
 // eslint-disable-next-line import/no-named-as-default-member
-const {Separator, prompt} = inquirer
+const {prompt, Separator} = inquirer
 
 export default class DataPgUpdate extends BaseCommand {
   static args = {
@@ -155,7 +155,7 @@ export default class DataPgUpdate extends BaseCommand {
         name: 'Remove high availability' + (
           renderPricingInfo(leaderPricing) === 'free'
             ? ''
-            : ` ${color.yellowBright(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
+            : ` ${color.info(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
         ),
         value: '__remove_ha',
       })
@@ -296,7 +296,7 @@ export default class DataPgUpdate extends BaseCommand {
       process.stderr.write(heredoc`
 
         Update ${color.addon(this.database!.name)} on ${color.app(app)}
-        ${color.dim('Press Ctrl+C to cancel')}
+        ${color.gray('Press Ctrl+C to cancel')}
 
       `)
 
@@ -356,9 +356,9 @@ export default class DataPgUpdate extends BaseCommand {
    * @returns Promise resolving to all Heroku Postgres databases
    * @throws {Error} When no legacy database add-on exists on the app
    */
-  private async getAllAdvancedDatabases(app: string): Promise<Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']>> {
+  private async getAllAdvancedDatabases(app: string): Promise<Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>> {
     const allAttachments = await this.allAdvancedDatabaseAttachments(app)
-    const addons: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']> = []
+    const addons: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
     for (const attachment of allAttachments) {
       if (!addons.some(a => a.id === attachment.addon.id)) {
         addons.push(attachment.addon)
@@ -453,7 +453,7 @@ export default class DataPgUpdate extends BaseCommand {
     this.pool = pools.find(pool => pool.name === this.selectedPoolOption)
   }
 
-  private renderDatabaseChoices(databases: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']>) {
+  private renderDatabaseChoices(databases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>) {
     const choices: Array<DistinctChoice<{ action: string }, ListChoiceMap<{ action: string }>>> = []
 
     databases.forEach(database => {
@@ -477,8 +477,8 @@ export default class DataPgUpdate extends BaseCommand {
       const levelInfo = this.extendedLevelsInfo!.find(level => level.name === leaderPool.expected_level)
       choices.push({
         name: `Leader: ${levelInfo!.name}`
-          + ` ${`${levelInfo!.vcpu} ${color.inverse('vCPU')}`}`
-          + ` ${`${levelInfo!.memory_in_gb} GB ${color.inverse('MEM')}`}`
+          + ` ${`${levelInfo!.vcpu} ${color.ansis.inverse('vCPU')}`}`
+          + ` ${`${levelInfo!.memory_in_gb} GB ${color.ansis.inverse('MEM')}`}`
           + color.green(
             ` ${leaderPool.expected_count} instance${leaderPool.expected_count === 1 ? '' : 's'}`
             + ` ${`starting at ${renderPricingInfo(levelInfo!.pricing)}`}`
@@ -492,8 +492,8 @@ export default class DataPgUpdate extends BaseCommand {
       const levelInfo = this.extendedLevelsInfo!.find(level => level.name === pool.expected_level)
       choices.push({
         name: `Follower ${color.bold(pool.name)}: ${levelInfo!.name}`
-          + ` ${`${levelInfo!.vcpu} ${color.inverse('vCPU')}`}`
-          + ` ${`${levelInfo!.memory_in_gb} GB ${color.inverse('MEM')}`}`
+          + ` ${`${levelInfo!.vcpu} ${color.ansis.inverse('vCPU')}`}`
+          + ` ${`${levelInfo!.memory_in_gb} GB ${color.ansis.inverse('MEM')}`}`
           + color.green(
             ` ${pool.expected_count} instance${pool.expected_count === 1 ? '' : 's'}`
             + ` ${`starting at ${renderPricingInfo(levelInfo!.pricing)}`}`

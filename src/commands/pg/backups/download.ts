@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
@@ -7,17 +7,6 @@ import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
 
 import pgBackupsApi from '../../../lib/pg/backups.js'
 import download from '../../../lib/pg/download.js'
-
-function defaultFilename() {
-  let f = 'latest.dump'
-  if (!fs.existsSync(f))
-    return f
-  let i = 1
-  do
-    f = `latest.dump.${i++}`
-  while (fs.existsSync(f))
-  return f
-}
 
 export default class Download extends Command {
   static args = {
@@ -51,7 +40,7 @@ export default class Download extends Command {
         .filter(t => t.succeeded && t.to_type === 'gof3r')
         .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
       if (!lastBackup)
-        throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.cyan.bold('heroku pg:backups:capture')}`)
+        throw new Error(`No backups on ${color.app(app)}. Capture one with ${color.code('heroku pg:backups:capture')}`)
       num = lastBackup.num
     }
 
@@ -61,4 +50,15 @@ export default class Download extends Command {
     ux.action.stop(`done, #${num}`)
     await download(info.url, output, {progress: true})
   }
+}
+
+function defaultFilename() {
+  let f = 'latest.dump'
+  if (!fs.existsSync(f))
+    return f
+  let i = 1
+  do
+    f = `latest.dump.${i++}`
+  while (fs.existsSync(f))
+  return f
 }

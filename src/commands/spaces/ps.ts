@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {ago} from '../../lib/time.js'
@@ -66,7 +66,7 @@ export default class Ps extends Command {
       } else {
         key = `${color.name(dyno.type)} (${color.info(size)}): ${dyno.command}`
         const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
-        item = `${dyno.name}: ${color.info(state)} ${color.dim(since)}`
+        item = `${dyno.name}: ${color.info(state)} ${color.gray(since)}`
       }
 
       if (!dynosByCommand.has(key)) {

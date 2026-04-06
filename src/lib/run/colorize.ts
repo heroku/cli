@@ -7,11 +7,11 @@ export const COLORS: Array<(s: string) => string> = [
   s => color.cyan(s),
   s => color.magenta(s),
   s => color.blue(s),
-  s => color.bold.green(s),
-  s => color.bold.cyan(s),
-  s => color.bold.magenta(s),
-  s => color.bold.yellow(s),
-  s => color.bold.blue(s),
+  s => color.teal(s),
+  s => color.pink(s),
+  s => color.gold(s),
+  s => color.purple(s),
+  s => color.orange(s),
 ]
 const assignedColors: any = {}
 let isInitialized = false
@@ -37,7 +37,7 @@ function getColorForIdentifier(i: string) {
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
-const dim = (i: string) => color.dim(i)
+const dim = (i: string) => color.inactive(i)
 const other = dim
 const path = (i: string) => color.green(i)
 const method = (i: string) => color.magenta(i)
@@ -53,10 +53,10 @@ const status = (code: any) => {
 const ms = (s: string) => {
   const ms = Number.parseInt(s, 10)
   if (!ms) return s
-  if (ms < 100) return color.greenBright(s)
-  if (ms < 500) return color.success(s)
+  if (ms < 100) return color.success(s)
+  if (ms < 500) return color.info(s)
   if (ms < 5000) return color.warning(s)
-  if (ms < 10000) return color.yellowBright(s)
+  if (ms < 10000) return color.error(s)
   return color.failure(s)
 }
 
@@ -139,7 +139,7 @@ const state = (s: string) => {
   }
 
   case 'starting': {
-    return color.yellowBright(s)
+    return color.info(s)
   }
 
   case 'complete': {

@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -33,16 +33,16 @@ export default class Create extends Command {
     }
 
     const data = {name}
-    ux.action.start(`Creating credential ${color.cyan.bold(name)}`)
+    ux.action.start(`Creating credential ${color.name(name)}`)
 
-    await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {hostname: utils.pg.host(), body: data})
+    await this.heroku.post(`/postgres/v0/databases/${db.name}/credentials`, {body: data, hostname: utils.pg.host()})
     ux.action.stop()
 
     const attachCmd = `heroku addons:attach ${db.name} --credential ${name} -a ${app}`
     const psqlCmd = `heroku pg:psql ${db.name} -a ${app}`
     ux.stdout(heredoc(`
 
-      Please attach the credential to the apps you want to use it in by running ${color.cyan.bold(attachCmd)}.
-      Please define the new grants for the credential within Postgres: ${color.cyan.bold(psqlCmd)}.`))
+      Please attach the credential to the apps you want to use it in by running ${color.code(attachCmd)}.
+      Please define the new grants for the credential within Postgres: ${color.code(psqlCmd)}.`))
   }
 }
