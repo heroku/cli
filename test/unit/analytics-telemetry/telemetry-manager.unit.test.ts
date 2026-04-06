@@ -7,11 +7,14 @@ const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 describe('telemetry-manager', function () {
   let originalTestEnv: string | undefined
+  let originalWindowsTelemetry: string | undefined
 
   beforeEach(function () {
     // Temporarily enable telemetry for these tests
     originalTestEnv = process.env.IS_HEROKU_TEST_ENV
+    originalWindowsTelemetry = process.env.ENABLE_WINDOWS_TELEMETRY
     delete process.env.IS_HEROKU_TEST_ENV
+    process.env.ENABLE_WINDOWS_TELEMETRY = 'true'
   })
 
   afterEach(function () {
@@ -19,6 +22,12 @@ describe('telemetry-manager', function () {
     // Restore test environment
     if (originalTestEnv !== undefined) {
       process.env.IS_HEROKU_TEST_ENV = originalTestEnv
+    }
+
+    if (originalWindowsTelemetry !== undefined) {
+      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
+    } else {
+      delete process.env.ENABLE_WINDOWS_TELEMETRY
     }
   })
 
