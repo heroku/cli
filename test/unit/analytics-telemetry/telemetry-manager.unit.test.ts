@@ -6,8 +6,20 @@ import {telemetryManager} from '../../../src/lib/analytics-telemetry/telemetry-m
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 
 describe('telemetry-manager', function () {
+  let originalTestEnv: string | undefined
+
+  beforeEach(function () {
+    // Temporarily enable telemetry for these tests
+    originalTestEnv = process.env.IS_HEROKU_TEST_ENV
+    delete process.env.IS_HEROKU_TEST_ENV
+  })
+
   afterEach(function () {
     nock.cleanAll()
+    // Restore test environment
+    if (originalTestEnv !== undefined) {
+      process.env.IS_HEROKU_TEST_ENV = originalTestEnv
+    }
   })
 
   describe('setupTelemetry', function () {

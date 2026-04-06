@@ -10,15 +10,23 @@ const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 describe('backboard-otel-client', function () {
   let sandbox: sinon.SinonSandbox
   let client: BackboardOtelClient
+  let originalTestEnv: string | undefined
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
+    // Temporarily enable telemetry for these tests
+    originalTestEnv = process.env.IS_HEROKU_TEST_ENV
+    delete process.env.IS_HEROKU_TEST_ENV
     client = new BackboardOtelClient()
   })
 
   afterEach(function () {
     sandbox.restore()
     nock.cleanAll()
+    // Restore test environment
+    if (originalTestEnv !== undefined) {
+      process.env.IS_HEROKU_TEST_ENV = originalTestEnv
+    }
   })
 
   describe('send', function () {
