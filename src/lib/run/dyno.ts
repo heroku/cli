@@ -418,7 +418,12 @@ export default class Dyno extends Duplex {
         const pathnameWithSearchParams = this.uri.pathname + this.uri.search
         c.write(pathnameWithSearchParams.slice(1) + '\r\n', () => {
           if (this.opts.showStatus) {
-            ux.action.status = this._status('connecting')
+            if (process.env.TERM === 'dumb') {
+              ux.action.stop(this._status('connecting'))
+              ux.action.start(`Running ${color.code(this.opts.command)} on ${color.app(this.opts.app)}`)
+            } else {
+              ux.action.status = this._status('connecting')
+            }
           }
         })
       })

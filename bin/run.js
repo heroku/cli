@@ -1,11 +1,11 @@
 #!/usr/bin/env -S node --no-deprecation
-/* eslint-disable n/no-process-exit */
+
 /* eslint-disable n/no-unpublished-bin */
 
 import {execute, settings} from '@oclif/core'
 
-// Enable performance tracking when DEBUG=oclif:perf or DEBUG=* is set
-if (process.env.DEBUG?.includes('oclif:perf') || process.env.DEBUG === '*') {
+// Enable performance tracking when oclif:perf is specified in DEBUG
+if (process.env.DEBUG?.includes('oclif:perf') || process.env.DEBUG === 'oclif:*' || process.env.DEBUG === '*') {
   settings.performanceEnabled = true
 }
 
@@ -16,54 +16,18 @@ const cliStartTime = now.getTime()
 
 // Skip telemetry entirely on Windows for performance (unless explicitly enabled)
 const enableTelemetry = process.platform !== 'win32' || process.env.ENABLE_WINDOWS_TELEMETRY === 'true'
-let globalTelemetry
 
 if (enableTelemetry) {
-  // Dynamically import telemetry only when needed
-  globalTelemetry = await import('../dist/global_telemetry.js')
-}
+  // Dynamically import telemetry modules
+  const {setupTelemetryHandlers} = await import('../dist/lib/analytics-telemetry/worker-client.js')
+  const {computeDuration} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
 
-process.once('beforeExit', async code => {
-  if (!enableTelemetry) return
-
-  // capture as successful exit
-  if (global.cliTelemetry) {
-    if (global.cliTelemetry.isVersionOrHelp) {
-      const cmdStartTime = global.cliTelemetry.commandRunDuration
-      global.cliTelemetry.commandRunDuration = globalTelemetry.computeDuration(cmdStartTime)
-    }
-
-    global.cliTelemetry.exitCode = code
-    global.cliTelemetry.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-    const telemetryData = global.cliTelemetry
-    await globalTelemetry.sendTelemetry(telemetryData)
-  }
-})
-
-process.on('SIGINT', () => {
-  if (enableTelemetry) {
-    // Fire-and-forget: attempt to send telemetry but don't block exit
-    const error = new Error('Received SIGINT')
-    error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-    globalTelemetry.sendTelemetry(error).catch(() => {})
-  }
-
-  process.exit(1)
-})
-
-process.on('SIGTERM', () => {
-  if (enableTelemetry) {
-    // Fire-and-forget: attempt to send telemetry but don't block exit
-    const error = new Error('Received SIGTERM')
-    error.cliRunDuration = globalTelemetry.computeDuration(cliStartTime)
-    globalTelemetry.sendTelemetry(error).catch(() => {})
-  }
-
-  process.exit(1)
-})
-
-if (enableTelemetry) {
-  globalTelemetry.initializeInstrumentation()
+  // Setup all telemetry handlers (beforeExit, SIGINT, SIGTERM)
+  setupTelemetryHandlers({
+    cliStartTime,
+    computeDuration,
+    enableTelemetry,
+  })
 }
 
 await execute({dir: import.meta.url})

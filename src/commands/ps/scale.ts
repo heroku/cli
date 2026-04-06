@@ -2,9 +2,9 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
-
-import _ from 'lodash'
 import tsheredoc from 'tsheredoc'
+
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
 const heredoc = tsheredoc.default
 
@@ -38,6 +38,8 @@ export default class Scale extends Command {
   static strict = false
 
   public async run(): Promise<void> {
+    const _ = await lazyModuleLoader.loadLodash()
+
     const {flags, ...restParse} = await this.parse(Scale)
     const argv = restParse.argv as string[]
     const {app} = flags

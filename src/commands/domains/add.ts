@@ -2,9 +2,9 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import inquirer from 'inquirer'
 
 import {quote} from '../../lib/config/quote.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import waitForDomain from '../../lib/domains/wait-for-domain.js'
 
 interface DomainCreatePayload {
@@ -34,7 +34,7 @@ export default class DomainsAdd extends Command {
     wait: flags.boolean(),
   }
 
-  certSelect = async (certs: Array<Heroku.SniEndpoint>) => {
+  certSelect = async (certs: Array<Heroku.SniEndpoint>, inquirer: any) => {
     const nullCertChoice = {
       name: 'No SNI Endpoint',
       value: null,
@@ -65,11 +65,11 @@ export default class DomainsAdd extends Command {
       }
     })
 
-    return this.promptForCert(nullCertChoice, certChoices)
+    return this.promptForCert(nullCertChoice, certChoices, inquirer)
   }
 
-  async promptForCert(nullCertChoice: CertChoice, certChoices: CertChoice[]) {
-    const selection = await inquirer.prompt<{ cert: string }>([
+  async promptForCert(nullCertChoice: CertChoice, certChoices: CertChoice[], inquirer: any) {
+    const selection: any = await inquirer.prompt([
       {
         choices: [nullCertChoice, ...certChoices],
         message: 'Choose an SNI endpoint to associate with this domain',
@@ -82,6 +82,8 @@ export default class DomainsAdd extends Command {
   }
 
   async run() {
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
@@ -103,7 +105,7 @@ export default class DomainsAdd extends Command {
 
     if (certs.length > 1) {
       ux.action.stop('resolving SNI endpoint')
-      const certSelection = await this.certSelect(certs)
+      const certSelection = await this.certSelect(certs, inquirer)
 
       if (certSelection) {
         domainCreatePayload.sni_endpoint = certSelection

@@ -6,19 +6,19 @@ import debugFactory from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import Dyno from '../../lib/run/dyno.js'
-import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
+import {buildCommandWithLauncher, revertSortedArgs} from '../../lib/run/helpers.js'
 
 const debug = debugFactory('heroku:run:inside')
 const heredoc = tsheredoc.default
 
 export default class RunInside extends Command {
   static args = {
-    command: Args.string({
-      description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
-      required: true,
-    }),
     dyno_name: Args.string({
       description: 'name of the dyno to run command inside',
+      required: true,
+    }),
+    command: Args.string({
+      description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
       required: true,
     }),
   }
@@ -57,13 +57,15 @@ export default class RunInside extends Command {
 
   async run() {
     const {args, argv, flags} = await this.parse(RunInside)
+    const orderedArgs = revertSortedArgs(process.argv, argv as string[])
+    const commandArgs = orderedArgs.slice(1)
 
     const {dyno_name: dynoName} = args
     const {app: appName, 'exit-code': exitCode, listen, 'no-launcher': noLauncher} = flags
 
     const opts = {
       app: appName,
-      command: await buildCommandWithLauncher(this.heroku, appName, argv.slice(1) as string[], noLauncher),
+      command: await buildCommandWithLauncher(this.heroku, appName, commandArgs, noLauncher),
       dyno: dynoName,
       'exit-code': exitCode,
       heroku: this.heroku,

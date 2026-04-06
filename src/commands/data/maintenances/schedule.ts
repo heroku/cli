@@ -2,9 +2,9 @@ import {color, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import {differenceInCalendarWeeks} from 'date-fns'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Maintenance} from '../../../lib/data/types.js'
 
 export default class DataMaintenancesSchedule extends BaseCommand {
@@ -39,7 +39,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
     }),
   }
 
-  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string) {
+  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any) {
     const {body: maintenance} = await this.dataApi.get<Maintenance>(
       `/data/maintenances/v1/${addon!.id}`,
       this.dataApi.defaults,
@@ -58,6 +58,8 @@ export default class DataMaintenancesSchedule extends BaseCommand {
   }
 
   async run() {
+    const {differenceInCalendarWeeks} = await lazyModuleLoader.loadDateFns()
+
     const {args, flags} = await this.parse(DataMaintenancesSchedule)
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, week, weeks} = flags
@@ -66,7 +68,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
 
     const delayWeeks = week === undefined
       ? weeks
-      : await this.computeDelayWeeks(addon, week)
+      : await this.computeDelayWeeks(addon, week, differenceInCalendarWeeks)
 
     await this.scheduleMaintenance(addon, delayWeeks)
   }

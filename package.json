@@ -1,9 +1,9 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.0.0",
+  "version": "11.1.1",
   "author": "Heroku",
-  "bin": "./bin/run",
+  "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^12.2.2",
@@ -66,12 +66,12 @@
     "phoenix": "^1.6.14",
     "portfinder": "^1.0.32",
     "printf": "0.6.1",
-    "psl": "^1.15.0",
     "redis-parser": "^3.0.0",
     "shell-quote": "^1.8.1",
     "ssh2": "^1.16.0",
     "strftime": "^0.10.0",
     "term-img": "^7.1.0",
+    "tldts": "^7.0.27",
     "tmp": "^0.2.5",
     "true-myth": "4.1.1",
     "tsheredoc": "^1.0.1",
@@ -100,10 +100,9 @@
     "@types/node-fetch": "^2.6.11",
     "@types/node-forge": "^1.3.14",
     "@types/phoenix": "^1.4.0",
-    "@types/psl": "1.1.3",
     "@types/redis-parser": "^3.0.3",
     "@types/shell-quote": "^1.7.5",
-    "@types/sinon": "^17.0.3",
+    "@types/sinon": "^21.0.0",
     "@types/ssh2": "^1.15.4",
     "@types/std-mocks": "^1.0.4",
     "@types/strftime": "^0.9.8",
@@ -142,7 +141,7 @@
     "std-mocks": "^2.0.0",
     "stdout-stderr": "^0.1.13",
     "ts-node": "^10.9.2",
-    "typescript": "4.8.4"
+    "typescript": "4.9.5"
   },
   "oclif": {
     "additionalHelpFlags": [
@@ -183,18 +182,21 @@
     "dirname": "heroku",
     "hooks": {
       "command_not_found": [
-        "./dist/hooks/command_not_found/performance_analytics"
+        "./dist/hooks/command_not_found/setup-otel-telemetry"
+      ],
+      "finally": [
+        "./dist/hooks/finally/send-otel-and-sentry-errors"
       ],
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
-        "./dist/hooks/init/performance_analytics"
+        "./dist/hooks/init/setup-otel-telemetry"
       ],
       "postrun": [
-        "./dist/hooks/postrun/performance_analytics"
+        "./dist/hooks/postrun/send-otel-telemetry"
       ],
       "prerun": [
-        "./dist/hooks/prerun/analytics"
+        "./dist/hooks/prerun/collect-and-send-herokulytics"
       ],
       "preupdate": [
         "./dist/hooks/preupdate/check-npm-auth"
@@ -345,7 +347,7 @@
     },
     "update": {
       "node": {
-        "version": "22.22.1"
+        "version": "22.22.2"
       },
       "s3": {
         "bucket": "heroku-cli-assets",

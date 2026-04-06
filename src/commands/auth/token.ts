@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-import {formatRelative}  from 'date-fns'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
 export default class AuthToken extends Command {
   static baseFlags = Command.baseFlagsWithoutPrompt()
@@ -12,6 +12,8 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
   static promptFlagActive = false
 
   async run() {
+    const {formatRelative} = await lazyModuleLoader.loadDateFns()
+
     this.parse(AuthToken)
     if (!this.heroku.auth) this.error('not logged in')
     try {

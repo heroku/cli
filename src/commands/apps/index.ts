@@ -3,8 +3,8 @@ import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import _ from 'lodash'
 
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {App} from '../../lib/types/app.js'
 
 export default class AppsIndex extends Command {
@@ -32,6 +32,8 @@ export default class AppsIndex extends Command {
   static topic = 'apps'
 
   async run() {
+    const _ = await lazyModuleLoader.loadLodash()
+
     const {flags} = await this.parse(AppsIndex)
 
     const teamIdentifier = flags.team
@@ -65,7 +67,7 @@ export default class AppsIndex extends Command {
     if (json) {
       hux.styledJSON(apps)
     } else {
-      print(apps, user, space, team)
+      print(apps, user, space, team, _)
     }
   }
 }
@@ -87,7 +89,7 @@ function listApps(apps: Heroku.App) {
   apps.forEach((app: App) => ux.stdout(regionizeAppName(app)))
 }
 
-function print(apps: Heroku.App, user: Heroku.Account, space?: string, team?: null | string) {
+function print(apps: Heroku.App, user: Heroku.Account, space: string | undefined, team: null | string | undefined, _: any) {
   if (apps.length === 0) {
     if (space) ux.stdout(`There are no apps in space ${color.space(space)}.`)
     else if (team) ux.stdout(`There are no apps in team ${color.team(team)}.`)

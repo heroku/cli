@@ -14,7 +14,7 @@ run heroku app locally
 
 ```
 USAGE
-  $ heroku local [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>]
+  $ heroku local [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>] [--start-cmd <value>]
 
 ARGUMENTS
   [PROCESSNAME]  name of the process
@@ -23,6 +23,7 @@ FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
   -p, --port=<value>      port to listen on
+      --start-cmd=<value>  command to run as a web process when there’s no Procfile
 
 DESCRIPTION
   run heroku app locally
@@ -41,7 +42,7 @@ EXAMPLES
    $ heroku local web=1,worker=2
 ```
 
-_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/local/index.ts)_
+_See code: [src/commands/local/index.ts](https://github.com/heroku/cli/blob/v11.1.1/src/commands/local/index.ts)_
 
 ## `heroku local:run`
 
@@ -62,7 +63,7 @@ EXAMPLES
    $ heroku local:run bin/migrate
 ```
 
-_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/local/run.ts)_
+_See code: [src/commands/local/run.ts](https://github.com/heroku/cli/blob/v11.1.1/src/commands/local/run.ts)_
 
 ## `heroku local:start [PROCESSNAME]`
 
@@ -70,7 +71,7 @@ run heroku app locally
 
 ```
 USAGE
-  $ heroku local:start [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>]
+  $ heroku local:start [PROCESSNAME] [-e <value>] [-p <value>] [-f <value>] [--start-cmd <value>]
 
 ARGUMENTS
   [PROCESSNAME]  name of the process
@@ -79,6 +80,7 @@ FLAGS
   -e, --env=<value>       location of env file (defaults to .env)
   -f, --procfile=<value>  use a different Procfile
   -p, --port=<value>      port to listen on
+      --start-cmd=<value>  command to run as a web process when there’s no Procfile
 
 DESCRIPTION
   run heroku app locally
@@ -109,4 +111,4 @@ DESCRIPTION
   display node-foreman version
 ```
 
-_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v11.0.0/src/commands/local/version.ts)_
+_See code: [src/commands/local/version.ts](https://github.com/heroku/cli/blob/v11.1.1/src/commands/local/version.ts)_

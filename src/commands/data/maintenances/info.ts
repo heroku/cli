@@ -1,9 +1,9 @@
 import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {addSeconds, formatDistance} from 'date-fns'
 
 import BaseCommand from '../../../lib/data/baseCommand.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Maintenance} from '../../../lib/data/types.js'
 
 interface StyledMaintenance extends Maintenance {
@@ -34,7 +34,7 @@ export default class DataMaintenancesInfo extends BaseCommand {
   }
 
   // a prettier display of the information
-  protected createStyledMaintenance(maintenance: Maintenance) {
+  protected createStyledMaintenance(maintenance: Maintenance, addSeconds: any, formatDistance: any) {
     // make a copy of the maintenance
     const styledMaintenance: StyledMaintenance = {
       ...maintenance,
@@ -82,6 +82,8 @@ export default class DataMaintenancesInfo extends BaseCommand {
 
   // create new maintenance-ish object for the purpose of
   async run() {
+    const {addSeconds, formatDistance} = await lazyModuleLoader.loadDateFns()
+
     const {args, flags} = await this.parse(DataMaintenancesInfo)
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, json} = flags
@@ -97,7 +99,7 @@ export default class DataMaintenancesInfo extends BaseCommand {
     if (json) {
       hux.styledJSON(maintenance)
     } else {
-      const styledMaintenance = this.createStyledMaintenance(maintenance)
+      const styledMaintenance = this.createStyledMaintenance(maintenance, addSeconds, formatDistance)
       hux.styledObject(styledMaintenance)
     }
   }
