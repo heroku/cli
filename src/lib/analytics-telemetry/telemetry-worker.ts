@@ -11,9 +11,27 @@ import {telemetryManager} from './telemetry-manager.js'
 // This ensures the worker never hangs indefinitely due to network issues or other failures
 const MAX_WORKER_LIFETIME_MS = 10000
 
+/**
+ * Close stderr before exiting to avoid keeping parent process alive
+ * This is important when stderr is inherited in DEBUG mode
+ */
+function exitWorker(code: number): void {
+  // Use setImmediate to allow any pending stderr writes to flush
+  // before destroying the stream
+  setImmediate(() => {
+    try {
+      // Close stderr to release the file descriptor reference to parent
+      process.stderr.destroy()
+    } catch {
+      // Ignore errors during cleanup
+    }
+    process.exit(code)
+  })
+}
+
 setTimeout(() => {
   telemetryDebug('Worker timeout reached after %dms, force exiting', MAX_WORKER_LIFETIME_MS)
-  process.exit(0)
+  exitWorker(0)
 }, MAX_WORKER_LIFETIME_MS)
 
 // Read telemetry data from stdin
@@ -42,7 +60,7 @@ process.stdin.on('end', async () => {
       // Send herokulytics data
       await client.send(parsed)
 
-      process.exit(0)
+      exitWorker(0)
       return
     }
 
@@ -61,13 +79,13 @@ process.stdin.on('end', async () => {
     // Send telemetry (this will initialize OpenTelemetry and Sentry if needed)
     await telemetryManager.sendTelemetry(telemetryData)
 
-    process.exit(0)
+    exitWorker(0)
   } catch {
     // Silently fail - don't let telemetry errors affect user experience
-    process.exit(1)
+    exitWorker(1)
   }
 })
 
 // Handle errors silently
-process.on('uncaughtException', () => process.exit(1))
-process.on('unhandledRejection', () => process.exit(1))
+process.on('uncaughtException', () => exitWorker(1))
+process.on('unhandledRejection', () => exitWorker(1))

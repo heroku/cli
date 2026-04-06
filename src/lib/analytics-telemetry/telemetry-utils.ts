@@ -169,8 +169,8 @@ export function spawnTelemetryWorker(data: WorkerData): void {
     const workerPath = path.join(__dirname, '..', '..', '..', 'dist', 'lib', 'analytics-telemetry', 'telemetry-worker.js')
     const child = spawn(process.execPath, [workerPath], {
       detached: true,
-      // Keep stderr attached to see DEBUG output, but ignore stdout
-      stdio: ['pipe', 'ignore', 'inherit'],
+      // Only inherit stderr when debugging to avoid keeping parent process alive
+      stdio: ['pipe', 'ignore', process.env.DEBUG ? 'inherit' : 'ignore'],
       // On Windows, prevent console window from appearing
       windowsHide: true,
     })
