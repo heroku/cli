@@ -399,7 +399,7 @@
     "test:all": "npm run pretest && c8 --no-clean -- mocha \"test/**/*.unit.test.ts\"",
     "test:file": "npm run pretest && c8 --no-clean -- mocha",
     "test:ci": "npm run test:ci:unit",
-    "test:ci:unit": "FORCE_COLOR=true npm run pretest && mocha --forbid-only \"test/**/*.unit.test.ts\"",
+    "test:ci:unit": "npm run pretest && mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "test:ci:unit:coverage": "npm run pretest && c8 --all --check-coverage --reporter=lcov --reporter=text-summary mocha --forbid-only \"test/**/*.unit.test.ts\"",
     "test:ci:acceptance": "npm run pretest && mocha --forbid-only \"test/**/*.acceptance.test.ts\" && node ./bin/bats-test-runner",
     "test:ci:integration": "npm run pretest && mocha --forbid-only \"test/**/*.integration.test.ts\"",
