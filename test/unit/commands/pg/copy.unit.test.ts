@@ -141,8 +141,8 @@ describe('pg:copy', function () {
       expect(stdout.output).to.equal('')
       expect(stderr.output).to.include('Starting copy of RED to BLUE... done\n')
       // Check for warning message parts (handle line wrapping in CI)
-      // Normalize: remove newlines with leading spaces/symbols, then collapse multiple spaces
-      const normalizedOutput = stderr.output.replace(/\n\s*›?\s*/g, ' ').replace(/\s+/g, ' ')
+      // Normalize: remove newlines and oclif warning prefixes (› on Unix, » on Windows), then collapse spaces
+      const normalizedOutput = stderr.output.replace(/\n\s*[›»]?\s*/g, ' ').replace(/\s+/g, ' ')
       expect(normalizedOutput).to.include('Warning: pg:copy will only copy your default credential')
       expect(normalizedOutput).to.include('and the data it has access to')
       expect(normalizedOutput).to.include('Any additional credentials and data that only they can access will not be copied')
