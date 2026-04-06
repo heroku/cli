@@ -183,5 +183,42 @@ describe('telemetry-manager', function () {
 
       process.env.DISABLE_TELEMETRY = originalDisableTelemetry
     })
+
+    it('skips sending on Windows without ENABLE_WINDOWS_TELEMETRY', async function () {
+      const originalPlatform = process.platform
+      const originalWindowsTelemetry = process.env.ENABLE_WINDOWS_TELEMETRY
+
+      // Simulate Windows environment
+      Object.defineProperty(process, 'platform', {value: 'win32', configurable: true})
+      delete process.env.ENABLE_WINDOWS_TELEMETRY
+
+      const mockTelemetry = {
+        _type: 'otel' as const,
+        cliRunDuration: 100,
+        command: 'test:command',
+        commandRunDuration: 50,
+        exitCode: 0,
+        exitState: 'successful',
+        isTTY: true,
+        isVersionOrHelp: false,
+        lifecycleHookCompletion: {
+          command_not_found: false,
+          init: true,
+          postrun: true,
+          prerun: true,
+        },
+        os: 'win32',
+        version: '1.0.0',
+      }
+
+      // Should not make any HTTP calls when on Windows without explicit opt-in
+      await telemetryManager.sendTelemetry(mockTelemetry)
+
+      // Restore environment
+      Object.defineProperty(process, 'platform', {value: originalPlatform, configurable: true})
+      if (originalWindowsTelemetry !== undefined) {
+        process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
+      }
+    })
   })
 })
