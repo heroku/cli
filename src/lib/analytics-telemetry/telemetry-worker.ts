@@ -4,8 +4,8 @@
  * This runs as a separate process to avoid blocking the main CLI
  */
 
-import {telemetryDebug} from './telemetry-utils.js'
 import {telemetryManager} from './telemetry-manager.js'
+import {telemetryDebug} from './telemetry-utils.js'
 
 // Set maximum lifetime for worker process (10 seconds)
 // This ensures the worker never hangs indefinitely due to network issues or other failures
@@ -25,6 +25,7 @@ function exitWorker(code: number): void {
     } catch {
       // Ignore errors during cleanup
     }
+
     process.exit(code)
   })
 }
