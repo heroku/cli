@@ -24,10 +24,10 @@ describe('telemetry-manager', function () {
       process.env.IS_HEROKU_TEST_ENV = originalTestEnv
     }
 
-    if (originalWindowsTelemetry !== undefined) {
-      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
-    } else {
+    if (originalWindowsTelemetry === undefined) {
       delete process.env.ENABLE_WINDOWS_TELEMETRY
+    } else {
+      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
     }
   })
 
@@ -189,7 +189,7 @@ describe('telemetry-manager', function () {
       const originalWindowsTelemetry = process.env.ENABLE_WINDOWS_TELEMETRY
 
       // Simulate Windows environment
-      Object.defineProperty(process, 'platform', {value: 'win32', configurable: true})
+      Object.defineProperty(process, 'platform', {configurable: true, value: 'win32'})
       delete process.env.ENABLE_WINDOWS_TELEMETRY
 
       const mockTelemetry = {
@@ -215,7 +215,7 @@ describe('telemetry-manager', function () {
       await telemetryManager.sendTelemetry(mockTelemetry)
 
       // Restore environment
-      Object.defineProperty(process, 'platform', {value: originalPlatform, configurable: true})
+      Object.defineProperty(process, 'platform', {configurable: true, value: originalPlatform})
       if (originalWindowsTelemetry !== undefined) {
         process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
       }

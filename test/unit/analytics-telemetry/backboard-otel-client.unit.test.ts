@@ -31,10 +31,10 @@ describe('backboard-otel-client', function () {
       process.env.IS_HEROKU_TEST_ENV = originalTestEnv
     }
 
-    if (originalWindowsTelemetry !== undefined) {
-      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
-    } else {
+    if (originalWindowsTelemetry === undefined) {
       delete process.env.ENABLE_WINDOWS_TELEMETRY
+    } else {
+      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
     }
   })
 
