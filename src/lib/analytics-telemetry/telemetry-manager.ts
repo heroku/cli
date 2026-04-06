@@ -4,6 +4,7 @@
  */
 
 import type {Config} from '@oclif/core/interfaces'
+
 import type BackboardOtelClient from './backboard-otel-client.js'
 import type SentryClient from './sentry-client.js'
 
