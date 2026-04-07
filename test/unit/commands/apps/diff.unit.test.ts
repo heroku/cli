@@ -132,8 +132,6 @@ describe('apps:diff', function () {
   it('throws App not found when one app returns 404 on releases', async function () {
     api
       .get(`/apps/${app1Name}/releases`).matchHeader('range', /version/).reply(404, {id: 'not_found', message: 'Couldn\'t find that app.'})
-      .get(`/apps/${app2Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId2))
-      .get(`/apps/${app2Name}/slugs/${slugId2}`).optionally().reply(200, slugBody(sameChecksum))
 
     const {error} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -146,8 +144,6 @@ describe('apps:diff', function () {
     api
       .get(`/apps/${app1Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId1))
       .get(`/apps/${app1Name}/slugs/${slugId1}`).reply(404, {id: 'not_found', message: 'Not found'})
-      .get(`/apps/${app2Name}/releases`).matchHeader('range', /version/).reply(200, releasesWithSlug(slugId2))
-      .get(`/apps/${app2Name}/slugs/${slugId2}`).reply(200, slugBody(sameChecksum))
 
     const {error} = await runCommand(AppsDiff, [app1Name, app2Name])
 
