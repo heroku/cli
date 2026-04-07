@@ -5,6 +5,7 @@ import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
 
 const topic = 'addons'
 
@@ -25,6 +26,7 @@ export default class Addons extends Command {
     all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps'}),
     app: flags.app(),
     json: flags.boolean({description: 'return add-ons in json format'}),
+    'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
 
@@ -41,13 +43,13 @@ export default class Addons extends Command {
       if (json)
         displayJSON(addons)
       else
-        displayForApp(app, addons)
+        displayForApp(app, addons, flags['no-wrap'])
     } else {
       const addons = await addonGetter(this.heroku)
       if (json)
         displayJSON(addons)
       else
-        displayAll(addons)
+        displayAll(addons, flags['no-wrap'])
     }
   }
 }
@@ -125,7 +127,7 @@ async function addonGetter(api: APIClient, app?: string) {
   return addons
 }
 
-function displayAll(addons: Heroku.AddOn[]) {
+function displayAll(addons: Heroku.AddOn[], noWrap = false) {
   addons = _.sortBy(addons, 'app.name', 'plan.name', 'addon.name')
   if (addons.length === 0) {
     ux.stdout('No add-ons.')
@@ -187,14 +189,12 @@ function displayAll(addons: Heroku.AddOn[]) {
         },
       },
     },
-    {
-      overflow: 'wrap',
-    },
+    huxTableNoWrapOptions(noWrap),
   )
   /* eslint-enable perfectionist/sort-objects */
 }
 
-function displayForApp(app: string, addons: Heroku.AddOn[]) {
+function displayForApp(app: string, addons: Heroku.AddOn[], noWrap = false) {
   if (addons.length === 0) {
     ux.stdout(`No add-ons for app ${app}.`)
     return
@@ -210,13 +210,16 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
 
     const addonLine = `${service} (${name})`
     const atts = _.sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
-    // render each attachment under the add-on
     const attLines = atts.map((attachment, idx) => {
       const isLast = (idx === addon.attachments.length - 1)
       return renderAttachment(attachment, app, isLast)
     })
-    return [addonLine].concat(attLines)
-      .join('\n') + '\n' // Separate each add-on row by a blank line
+    const lines = [addonLine, ...attLines]
+    if (noWrap) {
+      return lines.join('  ')
+    }
+
+    return `${lines.join('\n')}\n`
   }
 
   addons = _.sortBy(addons, isForeignApp, 'plan.name', 'name')
@@ -253,9 +256,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
         get: ({state}) => formatState(state || ''),
       },
     },
-    {
-      overflow: 'wrap',
-    },
+    huxTableNoWrapOptions(noWrap),
   )
   ux.stdout(`The table above shows add-ons and the attachments to the current app (${color.app(app)}) or other apps.\n  `)
 }

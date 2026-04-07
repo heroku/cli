@@ -2,6 +2,16 @@ import {ux} from '@oclif/core/ux'
 
 import parseKeyValue from './keyValueParser.js'
 
+export function huxTableNoWrapOptions(noWrap: boolean): {
+  maxWidth: 'none' | undefined
+  overflow: 'truncate' | 'wrap'
+} {
+  return {
+    maxWidth: noWrap ? 'none' : undefined,
+    overflow: noWrap ? 'truncate' : 'wrap',
+  }
+}
+
 export const constructSortFilterTableOptions = (flags: Record<string, string>, tableColumns: Record<string, any>) => {
   const {filter, sort} = flags
   const columnNames = new Set(Object.keys(tableColumns).map(key => key.toLowerCase()))

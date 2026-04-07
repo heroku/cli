@@ -1,7 +1,9 @@
 /* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
+import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
+import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/index.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
@@ -24,6 +26,7 @@ describe('addons', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    sinon.restore()
   })
 
   describe('--all', function () {
@@ -58,6 +61,14 @@ describe('addons', function () {
         const {stdout} = await runCommand(Cmd, [])
         expect(stdout.indexOf('acme-inc-api')).to.be.lt(stdout.indexOf('acme-inc-www'))
         expect(stdout.indexOf('www-db')).to.be.lt(stdout.indexOf('www-redis'))
+      })
+      it('passes no-wrap option through to table rendering', async function () {
+        const tableStub = sinon.stub(hux, 'table')
+
+        await runCommand(Cmd, ['--all', '--no-wrap'])
+
+        const callArgs = tableStub.firstCall.args
+        expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
       })
       context('--json', function () {
         it('prints the output in json format', async function () {

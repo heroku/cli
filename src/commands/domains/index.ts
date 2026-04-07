@@ -7,6 +7,7 @@ import Uri from 'urijs'
 
 import parseKeyValue from '../../lib/utils/keyValueParser.js'
 import {paginateRequest} from '../../lib/utils/paginator.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
 
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
@@ -30,6 +31,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
     extended: flags.boolean({char: 'x', description: 'show extra columns'}),
     filter: flags.string({description: 'filter property by partial string matching, ex: name=foo'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
+    'no-wrap': flags.noWrap(),
     remote: flags.remote(),
     sort: flags.string({description: 'sort by property'}),
   }
@@ -215,7 +217,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
           this.outputCSV(customDomains, tableConfig, sortProperty)
         } else {
           hux.table(customDomains, tableConfig, {
-            overflow: 'wrap',
+            ...huxTableNoWrapOptions(flags['no-wrap']),
             sort: flags.sort ? {[sortProperty]: 'asc'} : undefined,
           })
         }
