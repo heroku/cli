@@ -2,6 +2,8 @@ import {stdout} from 'stdout-stderr'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import sinon from 'sinon'
+import {hux} from '@heroku/heroku-cli-util'
 import Cmd from '../../../../src/commands/pg/credentials.js'
 import tsheredoc from 'tsheredoc'
 import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
@@ -29,6 +31,7 @@ describe('pg:credentials', function () {
 
   afterEach(function () {
     nock.cleanAll()
+    sinon.restore()
     pg.done()
     api.done()
   })
@@ -198,5 +201,27 @@ describe('pg:credentials', function () {
     expect(normalized).to.include('ransom')
     expect(normalized).to.include('heroku_postgresql_blue')
     expect(normalized).to.include('yet-another')
+  })
+
+  it('passes no-wrap option through to table rendering', async function () {
+    const credentials = [
+      {uuid: 'aaaa', name: 'default', state: 'active', database: 'd123', host: 'localhost', port: 5442, credentials: []},
+    ]
+    const attachments = [
+      {app: {name: 'main-app'}, name: 'DATABASE', namespace: null},
+    ]
+
+    api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
+      .reply(200, [{addon}])
+      .get('/addons/1/addon-attachments')
+      .reply(200, attachments)
+    pg.get('/postgres/v0/databases/1/credentials')
+      .reply(200, credentials)
+
+    const tableStub = sinon.stub(hux, 'table')
+    await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
+
+    const callArgs = tableStub.firstCall.args
+    expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
   })
 })
