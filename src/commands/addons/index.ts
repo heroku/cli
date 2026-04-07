@@ -210,13 +210,16 @@ function displayForApp(app: string, addons: Heroku.AddOn[], noWrap = false) {
 
     const addonLine = `${service} (${name})`
     const atts = _.sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
-    // render each attachment under the add-on
     const attLines = atts.map((attachment, idx) => {
       const isLast = (idx === addon.attachments.length - 1)
       return renderAttachment(attachment, app, isLast)
     })
-    return [addonLine].concat(attLines)
-      .join('\n') + '\n' // Separate each add-on row by a blank line
+    const lines = [addonLine, ...attLines]
+    if (noWrap) {
+      return lines.join('  ')
+    }
+
+    return `${lines.join('\n')}\n`
   }
 
   addons = _.sortBy(addons, isForeignApp, 'plan.name', 'name')

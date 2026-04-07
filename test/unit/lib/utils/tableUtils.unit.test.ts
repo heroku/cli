@@ -215,7 +215,7 @@ describe('tableUtils', function () {
       })
     })
 
-    it('disables width cap and truncates overflow when no-wrap is set', function () {
+    it('disables width cap and uses truncate so cells stay single-line (no word-wrap)', function () {
       expect(huxTableNoWrapOptions(true)).to.deep.equal({
         maxWidth: 'none',
         overflow: 'truncate',
