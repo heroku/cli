@@ -1,9 +1,7 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
-
 import debug from 'debug'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
@@ -56,7 +54,7 @@ export default class Exec extends Command {
         await exec.checkStatus(context, this.heroku, configVars)
       } else {
         await exec.updateClientKey(context, this.heroku, configVars, async (privateKey, dyno, response) => {
-          const message = `Connecting to ${color.cyan.bold(dyno)} on ${color.app(app)}`
+          const message = `Connecting to ${color.name(dyno)} on ${color.app(app)}`
           ux.action.start(message)
           psExecDebug(response.body)
           const json = JSON.parse(response.body)

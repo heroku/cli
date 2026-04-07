@@ -10,15 +10,32 @@ const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
 describe('backboard-otel-client', function () {
   let sandbox: sinon.SinonSandbox
   let client: BackboardOtelClient
+  let originalTestEnv: string | undefined
+  let originalWindowsTelemetry: string | undefined
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
+    // Temporarily enable telemetry for these tests
+    originalTestEnv = process.env.IS_HEROKU_TEST_ENV
+    originalWindowsTelemetry = process.env.ENABLE_WINDOWS_TELEMETRY
+    delete process.env.IS_HEROKU_TEST_ENV
+    process.env.ENABLE_WINDOWS_TELEMETRY = 'true'
     client = new BackboardOtelClient()
   })
 
   afterEach(function () {
     sandbox.restore()
     nock.cleanAll()
+    // Restore test environment
+    if (originalTestEnv !== undefined) {
+      process.env.IS_HEROKU_TEST_ENV = originalTestEnv
+    }
+
+    if (originalWindowsTelemetry === undefined) {
+      delete process.env.ENABLE_WINDOWS_TELEMETRY
+    } else {
+      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
+    }
   })
 
   describe('send', function () {

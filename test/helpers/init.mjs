@@ -2,7 +2,6 @@ import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import nock from 'nock'
 import path from 'path'
-import {fileURLToPath} from 'url'
 
 globalThis.setInterval = () => ({unref() {}})
 const tm = globalThis.setTimeout
@@ -16,6 +15,11 @@ process.env.IS_HEROKU_TEST_ENV = 'true'
 process.env.HEROKU_SKIP_NEW_VERSION_CHECK = 'true'
 
 process.env.HEROKU_DATA_CONTROL_PLANE = 'test-control-plane'
+
+// Force ANSI color support for tests while they run in non-tty
+// TODO: We should consider turning this off for most tests and tests colors
+// in a targeted way
+process.env.FORCE_COLOR = '3'
 
 // Set terminal size for tests to 200x50
 process.env.COLUMNS = '200'

@@ -67,7 +67,7 @@ export default class Forward extends Command {
         for (const portMapping of portMappings) {
           const [localPortNum, remotePort] = portMapping
 
-          ux.stdout(`Listening on ${color.white.bold(localPortNum)} and forwarding to ${color.white.bold(`${dynoName}:${remotePort}`)}`)
+          ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)
 
           net.createServer(connIn => {
             socks.connect({

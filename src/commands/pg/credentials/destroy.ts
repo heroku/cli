@@ -1,6 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import ConfirmCommand from '../../../lib/confirmCommand.js'
@@ -46,7 +46,7 @@ export default class Destroy extends Command {
         .join(', ')} before destroying.`)
 
     await new ConfirmCommand().confirm(app, confirm)
-    ux.action.start(`Destroying credential ${color.cyan.bold(name)}`)
+    ux.action.start(`Destroying credential ${color.name(name)}`)
     await this.heroku.delete(`/postgres/v0/databases/${db.name}/credentials/${encodeURIComponent(name)}`, {hostname: utils.pg.host()})
     ux.action.stop()
     ux.stdout(`The credential has been destroyed within ${db.name}.`)

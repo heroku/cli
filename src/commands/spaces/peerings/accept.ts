@@ -35,6 +35,6 @@ Accepting and configuring peering connection pcx-4bd27022`)]
       body: {pcx_id: pcxID},
       headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
     })
-    ux.stdout(`Accepting and configuring peering connection ${color.cyan.bold(pcxID)}`)
+    ux.stdout(`Accepting and configuring peering connection ${color.name(pcxID)}`)
   }
 }

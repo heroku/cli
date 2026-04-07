@@ -142,8 +142,8 @@ export default class PoolConfig {
     process.stderr.write('\n')
     process.stderr.write(heredoc`
       ${`${color.green('✓ Configure Follower Pool')} ${totalPrice}`}
-        ${this.followerName ? `${color.bold(this.followerName)}\n        ${color.dim(this.followerLevel)}` : `${color.dim(this.followerLevel)}`}
-        ${color.dim(`${this.followerCount} instance${this.followerCount! > 1 ? 's (High Availability)' : ''}`)}
+        ${this.followerName ? `${color.bold(this.followerName)}\n        ${color.gray(this.followerLevel || '')}` : `${color.gray(this.followerLevel || '')}`}
+        ${color.gray(`${this.followerCount} instance${this.followerCount! > 1 ? 's (High Availability)' : ''}`)}
     `)
     process.stderr.write('\n')
 
