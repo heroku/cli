@@ -38,9 +38,7 @@ describe('data:pg:upgrade:run', function () {
     expect(ansis.strip(stderr.output)).to.equal(
       heredoc(`
         Upgrading your ⛁ ${addon.name} database from 16.10 to the latest supported Postgres version... done
-
-        Upgrade started. Monitor progress with heroku data:pg:info.
-
+        Upgrade started. Run heroku data:pg:upgrade:wait advanced-horizontal-01234 -a myapp to monitor progress.
       `),
     )
     expect(stdout.output).to.equal('')
@@ -55,7 +53,7 @@ describe('data:pg:upgrade:run', function () {
       .get(`/data/postgres/v1/${addon.id}/info`)
       .reply(200, {...pgInfo, version: '16.10'})
       .post(`/data/postgres/v1/${addon.id}/upgrade/run`, {version: '17.5'})
-      .reply(200, {message: 'Upgrade to 17.5 started.'})
+      .reply(200, {message: 'Backend returned message should be ignored.'})
 
     await runCommand(DataPgUpgradeRun, [
       attachmentName,
@@ -68,7 +66,8 @@ describe('data:pg:upgrade:run', function () {
     dataApi.done()
 
     expect(ansis.strip(stderr.output)).to.include('from 16.10 to 17.5')
-    expect(ansis.strip(stderr.output)).to.include('Upgrade to 17.5 started.')
+    expect(ansis.strip(stderr.output)).to.include('Upgrade started.')
+    expect(ansis.strip(stderr.output)).not.to.include('Backend returned message should be ignored.')
   })
 
   it('errors if database is not Advanced-tier', async function () {

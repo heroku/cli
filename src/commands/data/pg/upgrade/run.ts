@@ -60,15 +60,12 @@ export default class DataPgUpgradeRun extends BaseCommand {
 
     try {
       ux.action.start(`Upgrading your ${color.datastore(addon.name)} database from ${currentVersion} to ${newVersion}`)
-      const {body: {message}} = await this.dataApi.post<UpgradeResponse>(
+      await this.dataApi.post<UpgradeResponse>(
         `/data/postgres/v1/${addon.id}/upgrade/run`,
         {body: {version}},
       )
-      ux.action.stop(heredoc(`
-        done
-
-        ${color.info(message)}
-      `))
+      ux.action.stop()
+      ux.stderr(`Upgrade started. Run ${color.code(`heroku data:pg:upgrade:wait ${addon.name} -a ${app}`)} to monitor progress.`)
     } catch (error: unknown) {
       ux.action.stop(color.red('!'))
       throw error
