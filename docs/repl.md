@@ -20,4 +20,4 @@ EXAMPLES
    $ heroku repl
 ```
 
-_See code: [src/commands/repl.ts](https://github.com/heroku/cli/blob/v11.1.1/src/commands/repl.ts)_
+_See code: [src/commands/repl.ts](https://github.com/heroku/cli/blob/v11.2.0-beta.1/src/commands/repl.ts)_
