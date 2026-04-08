@@ -45,9 +45,8 @@ async function checksum(heroku: APIClient, app: string): Promise<string | null> 
 }
 
 async function diffFiles(heroku: APIClient, app1: string, app2: string): Promise<DiffRow[]> {
-  const sum1 = await checksum(heroku, app1)
-  const sum2 = await checksum(heroku, app2)
-  return sum1 === sum2 ? [] : [{prop: 'slug (checksum)', app1: sum1 ?? undefined, app2: sum2 ?? undefined}]
+  const sums = await Promise.all([checksum(heroku, app1), checksum(heroku, app2)])
+  return sums[0] === sums[1] ? [] : [{prop: 'slug (checksum)', app1: sums[0] ?? undefined, app2: sums[1] ?? undefined}]
 }
 
 async function diffEnv(heroku: APIClient, app1: string, app2: string): Promise<DiffRow[]> {
