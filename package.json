@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.1.1",
+  "version": "11.2.0",
   "author": "Heroku",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -120,7 +120,7 @@
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
     "commit-and-tag-version": "^12.5.0",
-    "cspell": "9.7.0",
+    "cspell": "9.8.0",
     "eslint": "8.57.1",
     "eslint-config-oclif": "^5.2.2",
     "eslint-import-resolver-typescript": "^4.4.4",

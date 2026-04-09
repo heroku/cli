@@ -1,6 +1,8 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
+import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
+import sinon from 'sinon'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
@@ -18,6 +20,10 @@ import removeAllWhitespace from '../../../../../helpers/utils/remove-whitespaces
 const heredoc = tsheredoc.default
 
 describe('data:pg:credentials:index', function () {
+  afterEach(function () {
+    sinon.restore()
+  })
+
   it('shows error for non-advanced databases', async function () {
     const herokuApi = nock('https://api.heroku.com')
       .post('/actions/addons/resolve')
@@ -93,6 +99,27 @@ describe('data:pg:credentials:index', function () {
       const err = error as Error
       expect(ansis.strip(err.message)).to.include(`Addon ${addon.id} not found`)
     }
+
+    herokuApi.done()
+    dataApi.done()
+  })
+
+  it('passes no-wrap option through to table rendering', async function () {
+    const herokuApi = nock('https://api.heroku.com')
+      .post('/actions/addons/resolve')
+      .reply(200, [addon])
+      .get(`/addons/${addon.id}/addon-attachments`)
+      .reply(200, advancedCredentialsAttachmentsResponse)
+
+    const dataApi = nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${addon.id}/credentials`)
+      .reply(200, advancedCredentialsResponse)
+
+    const tableStub = sinon.stub(hux, 'table')
+    await runCommand(DataPgCredentialsIndex, ['DATABASE', '--app=myapp', '--no-wrap'])
+
+    const callArgs = tableStub.firstCall.args
+    expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
 
     herokuApi.done()
     dataApi.done()

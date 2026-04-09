@@ -8,6 +8,7 @@ import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.j
 import BaseCommand from '../../../../lib/data/baseCommand.js'
 import {sortByOwnerAndName} from '../../../../lib/data/credentialUtils.js'
 import {presentCredentialAttachments} from '../../../../lib/pg/util.js'
+import {huxTableNoWrapOptions} from '../../../../lib/utils/tableUtils.js'
 
 export default class DataPgCredentialsIndex extends BaseCommand {
   static args = {
@@ -25,6 +26,7 @@ export default class DataPgCredentialsIndex extends BaseCommand {
 
   static flags = {
     app: Flags.app({required: true}),
+    'no-wrap': Flags.noWrap(),
     remote: Flags.remote(),
   }
 
@@ -74,8 +76,6 @@ export default class DataPgCredentialsIndex extends BaseCommand {
       State: {
         get: cred => cred.state,
       },
-    }, {
-      overflow: 'wrap',
-    })
+    }, huxTableNoWrapOptions(flags['no-wrap']))
   }
 }

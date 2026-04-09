@@ -1,9 +1,11 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
+import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 import strftime from 'strftime'
 import tsheredoc from 'tsheredoc'
+import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/ps/index.js'
 import runCommand from '../../../helpers/runCommand.js'
@@ -41,6 +43,7 @@ function stubAppAndAccount() {
 describe('ps', function () {
   afterEach(function () {
     nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows dyno list', async function () {
@@ -259,6 +262,41 @@ describe('ps', function () {
     `))
 
     expect(stderr.output).to.equal('')
+  })
+
+  it('passes no-wrap option through to extended table rendering', async function () {
+    nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
+      .get('/account')
+      .reply(200, {id: '1234'})
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+      .get('/apps/myapp/dynos?extended=true')
+      .reply(200, [{
+        command: 'npm start',
+        extended: {
+          az: 'us-east',
+          execution_plane: 'execution_plane',
+          fleet: 'fleet',
+          instance: 'instance',
+          ip: '10.0.0.1',
+          port: 8000,
+          region: 'us',
+          route: 'da route',
+        },
+        id: '100',
+        name: 'web.1',
+        release: {id: '10', version: '40'},
+        size: 'Eco',
+        state: 'up',
+        type: 'web',
+        updated_at: hourAgo,
+      }])
+
+    const tableStub = sinon.stub(hux, 'table')
+    await runCommand(Cmd, ['--app', 'myapp', '--extended', '--no-wrap'])
+
+    const callArgs = tableStub.firstCall.args
+    expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
   })
 
   it('shows extended info for Private Space app', async function () {

@@ -6,6 +6,7 @@ import {Args} from '@oclif/core'
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 
 import {presentCredentialAttachments} from '../../lib/pg/util.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
 import {nls} from '../../nls.js'
 
 export default class Credentials extends Command {
@@ -16,6 +17,7 @@ export default class Credentials extends Command {
   static description = 'show information on credentials in the database'
   static flags = {
     app: flags.app({required: true}),
+    'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
 
@@ -62,9 +64,7 @@ export default class Credentials extends Command {
       State: {
         get: cred => cred.state,
       },
-    }, {
-      overflow: 'wrap',
-    })
+    }, huxTableNoWrapOptions(flags['no-wrap']))
   }
 
   protected sortByDefaultAndName(credentials: NonAdvancedCredentialInfo[]) {

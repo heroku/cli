@@ -2,6 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
+import {hux} from '@heroku/heroku-cli-util'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
 import {runCommand} from '../../../helpers/run-command.js'
@@ -194,5 +195,18 @@ describe('domains', function () {
     expect(unwrap(stderr)).to.contain(
       'Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.',
     )
+  })
+
+  it('passes no-wrap option through to table rendering', async function () {
+    api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
+    const tableStub = sinon.stub(hux, 'table')
+
+    await runCommand(DomainsIndex, ['--app', 'myapp', '--no-wrap'])
+
+    expect(tableStub.calledOnce).to.equal(true)
+    const callArgs = tableStub.firstCall.args
+    expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
+
+    tableStub.restore()
   })
 })

@@ -3,7 +3,7 @@ import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
-import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../../src/lib/utils/tableUtils.js'
+import {constructSortFilterTableOptions, constructTableColumns, huxTableNoWrapOptions, outputCSV} from '../../../../src/lib/utils/tableUtils.js'
 
 describe('tableUtils', function () {
   describe('constructSortFilterTableOptions', function () {
@@ -203,6 +203,22 @@ describe('tableUtils', function () {
       it('wraps values containing a newline in double quotes', function () {
         outputCSV([{name: 'line1\nline2', status: 'ok'}], tableColumns)
         expect(stdoutStub.secondCall.args[0]).to.equal('"line1\nline2",ok')
+      })
+    })
+  })
+
+  describe('huxTableNoWrapOptions', function () {
+    it('uses wrap layout by default', function () {
+      expect(huxTableNoWrapOptions(false)).to.deep.equal({
+        maxWidth: undefined,
+        overflow: 'wrap',
+      })
+    })
+
+    it('disables width cap and uses truncate so cells stay single-line (no word-wrap)', function () {
+      expect(huxTableNoWrapOptions(true)).to.deep.equal({
+        maxWidth: 'none',
+        overflow: 'truncate',
       })
     })
   })
