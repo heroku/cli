@@ -11,11 +11,11 @@ export default class DataPgUpgradeWait extends DataPgWait {
   static examples = [
     heredoc(`
       # Wait for upgrade to complete
-      ${color.command('heroku data:pg:upgrade:wait DATABASE --app myapp')}
+      ${color.code('<%= config.bin %> <%= command.id %> DATABASE --app myapp')}
     `),
     heredoc(`
       # Wait with custom polling interval (to avoid rate limiting)
-      ${color.command('heroku data:pg:upgrade:wait DATABASE --app myapp --wait-interval 10')}
+      ${color.code('<%= config.bin %> <%= command.id %> DATABASE --app myapp --wait-interval 10')}
     `),
   ]
 

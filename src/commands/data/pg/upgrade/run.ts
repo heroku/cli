@@ -16,12 +16,12 @@ export default class DataPgUpgradeRun extends BaseCommand {
     }),
   }
 
-  static description = 'upgrade the Postgres version on a Heroku Postgres Advanced database'
+  static description = 'upgrade the Postgres version on a Postgres Advanced database'
 
   static examples = [
     heredoc`
-      # Upgrade a Heroku Postgres Advanced database to version 17
-      <%= config.bin %> <%= command.id %> DATABASE --version 17 --app my-app
+      # Upgrade a Postgres Advanced database to version 17
+      ${color.code('<%= config.bin %> <%= command.id %> DATABASE --version 17 --app my-app')}
     `,
   ]
 
@@ -43,7 +43,7 @@ export default class DataPgUpgradeRun extends BaseCommand {
     if (!utils.pg.isAdvancedDatabase(addon)) {
       ux.error(
         'You can only use this command on Advanced-tier databases.\n'
-          + `Run ${color.code(`heroku pg:upgrade:run ${addon.name} --app ${app}`)} instead.`,
+          + `Use ${color.code(`heroku pg:upgrade:run ${addon.name} --app ${app}`)} instead.`,
       )
     }
 
@@ -65,7 +65,7 @@ export default class DataPgUpgradeRun extends BaseCommand {
         {body: {version}},
       )
       ux.action.stop()
-      ux.stderr(`Upgrade started. Run ${color.code(`heroku data:pg:upgrade:wait ${addon.name} -a ${app}`)} to monitor progress.`)
+      ux.stderr(`Upgrade started. Use ${color.code(`heroku data:pg:upgrade:wait ${addon.name} -a ${app}`)} to monitor progress.`)
     } catch (error: unknown) {
       ux.action.stop(color.red('!'))
       throw error

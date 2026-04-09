@@ -26,7 +26,7 @@ export default class DataPgWait extends BaseCommand {
   static examples = [
     heredoc(`
       # Wait for database to be available
-      ${color.command('heroku data:pg:wait DATABASE --app myapp')}
+      ${color.code('<%= config.bin %> <%= command.id %> DATABASE --app myapp')}
     `),
   ]
 
@@ -60,7 +60,7 @@ export default class DataPgWait extends BaseCommand {
     if (!isAdvancedDatabase(addon)) {
       ux.error(heredoc`
         You can only use this command on Advanced-tier databases.
-        Run ${color.code(`heroku ${this.classicWaitCommand} ${addon.name} -a ${app}`)} instead.`)
+        Use ${color.code(`heroku ${this.classicWaitCommand} ${addon.name} -a ${app}`)} instead.`)
     }
 
     await this.waitFor(addon, waitInterval || 5, noNotify)

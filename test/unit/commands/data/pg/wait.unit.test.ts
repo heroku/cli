@@ -150,7 +150,7 @@ describe('data:pg:wait', function () {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Run heroku pg:wait standard-database -a myapp instead.`)
+          Use heroku pg:wait standard-database -a myapp instead.`)
       }
     })
 

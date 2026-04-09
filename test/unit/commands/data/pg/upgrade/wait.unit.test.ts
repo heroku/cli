@@ -102,7 +102,7 @@ describe('data:pg:upgrade:wait', function () {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Run heroku pg:upgrade:wait standard-database -a myapp instead.`)
+          Use heroku pg:upgrade:wait standard-database -a myapp instead.`)
       }
     })
 
