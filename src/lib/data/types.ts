@@ -103,7 +103,7 @@ export type InfoResponse = {
   pools: Array<PoolInfoResponse>
   quotas: Array<Quota>
   region: CommonRuntimeRegion | PrivateSpaceRegion
-  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable'
+  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable' | 'upgrading'
   tier: 'advanced'
   version: string
 }
@@ -218,6 +218,10 @@ export type SettingsResponse = {
 
 export type TierPricingInfo = Record<string, PricingInfo>
 
+export type UpgradeResponse = {
+  message: string
+}
+
 export type WaitStatus = {
   message: null | string
   waiting: boolean
@@ -229,6 +233,7 @@ export type Window = {
   scheduled_at: null | string;
   window: null | string;
 }
+
 type AddonReference = ResourceReference
 type AppReference = ResourceReference
 

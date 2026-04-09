@@ -7,11 +7,11 @@ export const COLORS: Array<(s: string) => string> = [
   s => color.cyan(s),
   s => color.magenta(s),
   s => color.blue(s),
-  s => color.teal(s),
-  s => color.pink(s),
-  s => color.gold(s),
-  s => color.purple(s),
-  s => color.orange(s),
+  s => color.info(s),
+  s => color.name(s),
+  s => color.addon(s),
+  s => color.pipeline(s),
+  s => color.warning(s),
 ]
 const assignedColors: any = {}
 let isInitialized = false

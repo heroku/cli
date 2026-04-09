@@ -8,6 +8,7 @@ import {AccountQuota} from '../../lib/types/account_quota.js'
 import {AppProcessTier} from '../../lib/types/app_process_tier.js'
 import {DynoExtended} from '../../lib/types/dyno_extended.js'
 import {Account} from '../../lib/types/fir.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
 
 const heredoc = tsheredoc.default
 
@@ -29,6 +30,7 @@ export default class Index extends Command {
     app: flags.app({required: true}),
     extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
     json: flags.boolean({description: 'display as json'}),
+    'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
 
@@ -79,7 +81,7 @@ export default class Index extends Command {
     if (json)
       hux.styledJSON(selectedDynos)
     else if (extended)
-      printExtended(selectedDynos)
+      printExtended(selectedDynos, flags['no-wrap'])
     else {
       await printAccountQuota(this.heroku, appInfo, accountInfo)
       if (selectedDynos.length === 0)
@@ -207,7 +209,7 @@ function printDynos(dynos: DynoExtended[]) : void {
   })
 }
 
-function printExtended(dynos: DynoExtended[]) {
+function printExtended(dynos: DynoExtended[], noWrap = false) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
   /* eslint-disable perfectionist/sort-objects */
@@ -229,9 +231,7 @@ function printExtended(dynos: DynoExtended[]) {
       Route: {get: (dyno: DynoExtended) => dyno.extended?.route ?? ''},
       Size: {get: (dyno: DynoExtended) => dyno.size},
     },
-    {
-      overflow: 'wrap',
-    },
+    huxTableNoWrapOptions(noWrap),
   )
   /* eslint-enable perfectionist/sort-objects */
 }
