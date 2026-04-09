@@ -1,5 +1,5 @@
-import {pg} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {pg} from '@heroku/heroku-cli-util'
 
 import {
   CredentialInfo,
@@ -1217,5 +1217,10 @@ export const waitStatusMigrating: WaitStatus = {
 
 export const waitStatusUpdating: WaitStatus = {
   message: 'Updating',
+  waiting: true,
+}
+
+export const waitStatusUpgrading: WaitStatus = {
+  message: 'Upgrading',
   waiting: true,
 }
