@@ -199,10 +199,6 @@ export type Quota = {
 
 export type Quotas = { items: Array<Quota> }
 
-export type ScaleResponse = {
-  changes: Array<PoolChange>
-}
-
 export type SettingsChangeResponse = {
   changes: Array<SettingsChange>
 }
@@ -260,10 +256,6 @@ type NonAdvancedCredential = {
 
 type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
 type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
-
-type PoolChange = BaseChange & {
-  pool: string
-}
 
 type PrivateSpaceRegion =
   'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'

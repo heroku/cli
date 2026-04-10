@@ -48,6 +48,10 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
   static promptFlagActive = false
 
+  public async prompt<T extends inquirer.Answers>(...args: Parameters<typeof inquirer.prompt<T>>): Promise<T> {
+    return prompt<T>(...args)
+  }
+
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(DataPgAttachmentsCreate)
     const {database: databaseArg} = args
@@ -75,16 +79,18 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
         + `${credential ? ` --credential ${credential}` : ''}`
       ux.error(
         'You can only use this command on Advanced-tier databases.\n'
-          + `Run ${color.code(cmd)} instead.`,
+          + `Use ${color.code(cmd)} instead.`,
       )
     }
 
-    process.stderr.write(heredoc`
+    if (!credential || !pool || !as) {
+      process.stderr.write(heredoc`
 
-      Attach Postgres Advanced database to app
-      ${color.disabled('Press Ctrl+C to cancel')}
+        Attach Postgres Advanced database to app
+        ${color.disabled('Press Ctrl+C to cancel')}
 
-    `)
+      `)
+    }
 
     if (credential === undefined) {
       credential = await this.promptCredential(addon.id)
@@ -108,7 +114,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       const parts: string[] = []
       if (credential) parts.push(`credential ${color.yellow(credential)}`)
       if (pool) parts.push(`pool ${color.yellow(pool)}`)
-      const partsStr = parts.length > 0 ? ` with ${parts.join(' and ')} ` : ''
+      const partsStr = parts.length > 0 ? ` with ${parts.join(' and ')}` : ''
       const attachMessage = `Attaching ${color.addon(addon.name)}${partsStr}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`
 
       const body = {
@@ -132,7 +138,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
           ux.error(
             heredoc(`
               The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(addon.name)}.
-              Run ${color.command(`heroku data:pg:credentials ${addon.name} -a ${app}`)} to list the credentials on the database.
+              Use ${color.code(`heroku data:pg:credentials ${addon.name} -a ${app}`)} to list the credentials on the database.
             `).trimEnd(),
             {exit: 1},
           )
@@ -142,7 +148,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
           ux.error(
             heredoc(`
               The pool ${color.name(pool)} doesn't exist on the database ${color.datastore(addon.name)}.
-              Run ${color.command(`heroku data:pg:info ${addon.name} -a ${app}`)} to list the pools on the database.
+              Use ${color.code(`heroku data:pg:info ${addon.name} -a ${app}`)} to list the pools on the database.
             `).trimEnd(),
             {exit: 1},
           )
@@ -169,7 +175,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
   }
 
   private async promptAttachmentName(): Promise<string | undefined> {
-    const {attachmentName} = await prompt<{attachmentName: string}>({
+    const {attachmentName} = await this.prompt<{attachmentName: string}>({
       message: 'Name for Postgres database attachment, leave blank to randomly generate):',
       name: 'attachmentName',
       type: 'input',
@@ -193,13 +199,24 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       return sortedCredentials[0].name
     }
 
-    const choices = sortedCredentials.map(cred => ({
-      disabled: cred.state === AdvancedCredentialState.ACTIVE ? false : 'isn\'t active',
-      name: cred.type === 'owner' ? `${cred.name} (owner)` : cred.name,
-      value: cred.name,
-    }))
+    const choices = sortedCredentials.map(cred => {
+      const choiceName = cred.type === 'owner' ? `${cred.name} (owner)` : cred.name
 
-    const {credential} = await prompt<{credential: string}>({
+      if (cred.state === AdvancedCredentialState.ACTIVE) {
+        return {
+          name: choiceName,
+          value: cred.name,
+        }
+      }
+
+      return {
+        disabled: 'isn\'t active',
+        name: color.disabled(choiceName),
+        value: cred.name,
+      }
+    })
+
+    const {credential} = await this.prompt<{credential: string}>({
       choices,
       message: 'Which credential do you want to use?',
       name: 'credential',
@@ -223,13 +240,24 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       return sortedPools[0].name
     }
 
-    const choices = sortedPools.map(p => ({
-      disabled: p.status === PoolStatus.AVAILABLE ? false : 'isn\'t available',
-      name: `${p.name} (${p.expected_count} @ ${p.expected_level})`,
-      value: p.name,
-    }))
+    const choices = sortedPools.map(p => {
+      const choiceName = `${p.name} (${p.expected_count} @ ${p.expected_level})`
 
-    const {pool} = await prompt<{pool: string}>({
+      if (p.status === PoolStatus.AVAILABLE) {
+        return {
+          name: choiceName,
+          value: p.name,
+        }
+      }
+
+      return {
+        disabled: 'isn\'t available',
+        name: color.disabled(choiceName),
+        value: p.name,
+      }
+    })
+
+    const {pool} = await this.prompt<{pool: string}>({
       choices,
       message: 'Which instance pool would you like to attach?',
       name: 'pool',
