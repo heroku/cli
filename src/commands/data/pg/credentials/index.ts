@@ -1,12 +1,13 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
 
 import BaseCommand from '../../../../lib/data/baseCommand.js'
 import {sortByOwnerAndName} from '../../../../lib/data/credentialUtils.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parseAttachmentFactors.js'
 import {presentCredentialAttachments} from '../../../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../../../lib/utils/tableUtils.js'
 
@@ -57,9 +58,15 @@ export default class DataPgCredentialsIndex extends BaseCommand {
     const presentCredential = (cred: CredentialInfo): string => {
       let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
       if (cred.type === 'owner') {
-        credAttachments = attachments.filter(a => a.namespace === null)
+        credAttachments = attachments.filter(a => {
+          const attachmentRole = parseAttachmentFactors(a.namespace).role
+          return !attachmentRole || attachmentRole === cred.name
+        })
       } else {
-        credAttachments = attachments.filter(a => a.namespace === `role:${cred.name}`)
+        credAttachments = attachments.filter(a => {
+          const attachmentRole = parseAttachmentFactors(a.namespace).role
+          return attachmentRole === cred.name
+        })
       }
 
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)

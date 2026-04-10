@@ -8,6 +8,7 @@ import tsheredoc from 'tsheredoc'
 import DataPgInfo from '../../../../../src/commands/data/pg/info.js'
 import {
   addon,
+  multipleAttachmentsMultiFactorResponse,
   multipleAttachmentsResponse,
   nonAdvancedAddon,
   pgInfo,
@@ -34,7 +35,7 @@ describe('data:pg:info', function () {
     herokuApi.done()
   })
 
-  it('returns info with pool information', async function () {
+  it('returns info with pool information for single-factor attachments', async function () {
     dataApi
       .get(`/data/postgres/v1/${addon.id}/info`)
       .reply(200, pgInfo)
@@ -66,7 +67,7 @@ describe('data:pg:info', function () {
         Quotas:      
           Storage:  1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE)
+        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
           ✓ Available
           Connections: 10 / 400 used
@@ -75,6 +76,59 @@ describe('data:pg:info', function () {
             standby.i7fquhvs4efu74: up
 
         === Follower pool analytics (attached as DATABASE_ANALYTICS)
+
+          ✓ Available
+          Connections: 50 / 800 used
+          2 instances of 4G-Performance (HA):
+            follower.ic7mb4lq0rkurk: up
+            follower.i7q78mp2fg4v15: up
+
+      `),
+      // cspell:enable
+    )
+  })
+
+  it('returns info with pool information for multi-factor attachments', async function () {
+    dataApi
+      .get(`/data/postgres/v1/${addon.id}/info`)
+      .reply(200, pgInfo)
+    herokuApi
+      .post('/actions/addons/resolve')
+      .reply(200, [addon])
+      .get(`/addons/${addon.id}/addon-attachments`)
+      .reply(200, multipleAttachmentsMultiFactorResponse)
+
+    await runCommand(DataPgInfo, [
+      'advanced-horizontal-01234',
+      '--app=myapp',
+    ])
+
+    expect(stderr.output).to.equal('')
+    expect(ansis.strip(stdout.output)).to.equal(
+      // cspell:disable
+      heredoc(`
+        === ⛁ advanced-horizontal-01234 on ⬢ myapp
+
+        Plan:       Advanced
+        Status:     Available
+        Data Size:  1.10 GB / 128.00 TB
+        Tables:     10 / 4000 (In compliance)
+        PG Version: 17.5
+        Rollback:   earliest from 2025-01-02 00:00 UTC
+        Region:     us
+        Created:    2025-01-01 00:00 UTC
+        Quotas:      
+          Storage:  1.10 GB (No quotas set)
+
+        === Leader pool (attached as DATABASE)
+
+          ✓ Available
+          Connections: 10 / 400 used
+          2 instances of 4G-Performance (HA):
+            leader.i3r507gt6dbscn: up
+            standby.i7fquhvs4efu74: up
+
+        === Follower pool analytics (attached as MULTIFACTOR_ATTACHMENT)
 
           ✓ Available
           Connections: 50 / 800 used
@@ -120,7 +174,7 @@ describe('data:pg:info', function () {
         Quotas:       
           Storage:   1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE)
+        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
           ✓ Available
           Connections: 10 / 400 used
@@ -173,7 +227,7 @@ describe('data:pg:info', function () {
         Quotas:      
           Storage:  1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE)
+        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
           ✓ Available
           Connections: 10 / 400 used
@@ -248,7 +302,7 @@ describe('data:pg:info', function () {
         Quotas:      
           Storage:  128.05 TB (No quotas set)
 
-        === Leader pool (attached as DATABASE)
+        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
           ✓ Available
           Connections: 10 / 400 used

@@ -1,11 +1,12 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
 
 import BaseCommand from '../../../../lib/data/baseCommand.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parseAttachmentFactors.js'
 
 export default class DataPgAttachmentsIndex extends BaseCommand {
   static args = {
@@ -59,8 +60,9 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
       },
       Credential: {
         get(attachment) {
-          if (attachment.namespace?.startsWith('role:')) {
-            return color.name(attachment.namespace.split(':')[1])
+          const attachmentRoleFactor = parseAttachmentFactors(attachment.namespace).role
+          if (attachmentRoleFactor && attachmentRoleFactor !== ownerCred?.name) {
+            return color.name(attachmentRoleFactor)
           }
 
           return `${ownerCred?.name ? `${color.name(ownerCred.name)} (owner)` : ''}`
@@ -68,9 +70,8 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
       },
       Pool: {
         get(attachment) {
-          return color.name(attachment.namespace?.startsWith('pool:')
-            ? attachment.namespace.split(':')[1]
-            : 'leader')
+          const attachmentPoolFactor = parseAttachmentFactors(attachment.namespace).pool
+          return color.name(attachmentPoolFactor ?? 'leader')
         },
       },
     })
