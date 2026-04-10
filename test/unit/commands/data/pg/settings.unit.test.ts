@@ -33,8 +33,7 @@ describe('data:pg:settings', function () {
       expect(err.message).to.equal(heredoc(`
         You can only use this command to configure settings on Advanced-tier databases.
         See https://devcenter.heroku.com/articles/heroku-postgres-settings to configure settings on non-Advanced-tier databases.
-      `),
-      )
+      `))
     }
   })
 

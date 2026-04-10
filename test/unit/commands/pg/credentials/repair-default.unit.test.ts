@@ -1,9 +1,10 @@
+import {expect} from 'chai'
+import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/pg/credentials/repair-default.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
-import tsheredoc from 'tsheredoc'
-import {expect} from 'chai'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default

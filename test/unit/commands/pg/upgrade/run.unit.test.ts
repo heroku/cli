@@ -1,7 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'

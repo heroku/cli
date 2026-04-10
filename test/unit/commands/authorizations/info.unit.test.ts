@@ -27,7 +27,7 @@ describe('authorizations:info', function () {
   }
   const authorizationWithExpiration = {
     ...authorization,
-    access_token: {expires_in: 100000, token: 'secrettoken'},
+    access_token: {expires_in: 100_000, token: 'secrettoken'},
   }
 
   it('shows the authorization', async function () {
@@ -37,14 +37,12 @@ describe('authorizations:info', function () {
 
     const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID])
 
-    expect(stdout).to.eq(
-      'Client:      <none>\n'
+    expect(stdout).to.eq('Client:      <none>\n'
       + 'ID:          4UTHOri24tIoN-iD-3X4mPl3\n'
       + 'Description: desc\n'
       + 'Scope:       global\n'
       + 'Token:       secrettoken\n'
-      + `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`,
-    )
+      + `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`)
   })
 
   it('shows expires in', async function () {

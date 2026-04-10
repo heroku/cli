@@ -1,8 +1,9 @@
-import Cmd from '../../../../src/commands/orgs/open.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import sinon from 'sinon'
 import {expect} from 'chai'
 import nock from 'nock'
+import sinon from 'sinon'
+
+import Cmd from '../../../../src/commands/orgs/open.js'
+import {runCommand} from '../../../helpers/run-command.js'
 import {teamInfo} from '../../../helpers/stubs/get.js'
 
 describe('heroku org:open', function () {

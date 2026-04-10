@@ -30,8 +30,7 @@ describe('buildpacks:remove', function () {
 
       const {stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
 `)
     })
 
@@ -46,8 +45,7 @@ describe('buildpacks:remove', function () {
 
       const {stderr, stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed.
+      expect(stdout).to.equal(`Buildpack removed.
 `)
       expect(unwrap(stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
     })
@@ -63,8 +61,7 @@ describe('buildpacks:remove', function () {
 
       const {stderr, stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed.
+      expect(stdout).to.equal(`Buildpack removed.
 `)
       expect(unwrap(stderr)).to.equal('Warning: The BUILDPACK_URL config var is still set and will be used for the next release\n')
     })
@@ -80,8 +77,7 @@ describe('buildpacks:remove', function () {
 
       const {stdout} = await runCommand(BuildpacksRemove, ['-i', '2', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-java.
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-java.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -97,8 +93,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       const {stdout} = await runCommand(BuildpacksRemove, ['-i', '1', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -116,8 +111,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       const {stdout} = await runCommand(BuildpacksRemove, ['-i', '2', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-ruby
 Run git push heroku main to create a new release using these buildpacks.
@@ -172,8 +166,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       const {stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
 `)
     })
 
@@ -189,8 +182,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-java.
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-java.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -214,8 +206,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stderr, stdout} = await runCommand(BuildpacksRemove, ['heroku/ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will detect buildpacks normally.
 `)
     })
 
@@ -250,8 +241,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       const {stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack removed. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack removed. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
 Run git push heroku main to create a new release using these buildpacks.

@@ -40,13 +40,13 @@ describe('accounts', function () {
       expect(result).to.have.lengthOf(2)
       expect(result[0]).to.deep.include({
         name: 'account1',
-        username: 'user1',
         password: 'pass1',
+        username: 'user1',
       })
       expect(result[1]).to.deep.include({
         name: 'account2',
-        username: 'user2',
         password: 'pass2',
+        username: 'user2',
       })
     })
 
@@ -61,8 +61,8 @@ describe('accounts', function () {
       expect(result).to.have.lengthOf(1)
       expect(result[0]).to.deep.include({
         name: 'account1',
-        username: 'user1',
         password: 'pass1',
+        username: 'user1',
       })
       expect(result[0]).to.not.have.property(':username')
       expect(result[0]).to.not.have.property(':password')
@@ -138,9 +138,7 @@ describe('accounts', function () {
       AccountsModule.remove(accountName)
 
       expect(unlinkStub.calledOnce).to.be.true
-      expect(unlinkStub.firstCall.args[0]).to.equal(
-        path.join(`${basedir}/.config/heroku/accounts`, accountName),
-      )
+      expect(unlinkStub.firstCall.args[0]).to.equal(path.join(`${basedir}/.config/heroku/accounts`, accountName))
     })
 
     it('should throw an error if the file cannot be removed', function () {

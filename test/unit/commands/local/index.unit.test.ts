@@ -249,9 +249,7 @@ describe('local', function () {
       hasProcfileStub.returns(false)
       const {error} = await runCommand(Local)
 
-      expect(error?.message).to.equal(
-        'No Procfile found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.',
-      )
+      expect(error?.message).to.equal('No Procfile found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.')
       expect(runForemanStub.called).to.be.false
     })
   })

@@ -1,11 +1,12 @@
-import {stdout, stderr} from 'stdout-stderr'
-import nock from 'nock'
 import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/apps/join.js'
 import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {userAccount} from '../../../helpers/stubs/get.js'
 import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('heroku apps:join', function () {
   let apiGetUserAccount: nock.Scope
@@ -33,7 +34,7 @@ describe('heroku apps:join', function () {
 
   it('is forbidden from joining the app', async function () {
     const response = {
-      code: 403, description: {id: 'forbidden', error: 'You do not have access to the team heroku-tools.'},
+      code: 403, description: {error: 'You do not have access to the team heroku-tools.', id: 'forbidden'},
     }
     apiPostCollaborators = teamAppCollaborators('gandalf@heroku.com', [], response)
     let thrown = false

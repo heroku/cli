@@ -1,13 +1,14 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../src/commands/dashboard.js'
-import runCommand from '../../helpers/runCommand.js'
-import nock from 'nock'
 import {expect} from 'chai'
-import {ago} from '../../../src/lib/time.js'
-import {unwrap} from '../../helpers/utils/unwrap.js'
+import nock from 'nock'
 import os from 'node:os'
-import tsheredoc from 'tsheredoc'
 import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../src/commands/dashboard.js'
+import {ago} from '../../../src/lib/time.js'
+import runCommand from '../../helpers/runCommand.js'
+import {unwrap} from '../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default
 
@@ -37,21 +38,25 @@ describe('dashboard', function () {
 
   const pipeline = {pipeline: {name: 'foobar'}}
   const formation = [
-    {command: 'rails s -p $PORT', quantity: 1, size: 'Standard-1X', type: 'web'}, {command: 'npm start', quantity: 0, size: 'Standard-1X', type: 'node'},
+    {
+      command: 'rails s -p $PORT', quantity: 1, size: 'Standard-1X', type: 'web',
+    }, {
+      command: 'npm start', quantity: 0, size: 'Standard-1X', type: 'node',
+    },
   ]
   const router = {
-    latency: {
-      start_time: '2016-04-17T20:00:00Z', end_time: '2016-04-18T20:00:00Z', step: '1h0m0s', data: {
-        'latency.ms.p50': [46.924528301886795, 56.10526315789474, 41.19642857142857, 60.388888888888886, 54.94642857142857, 59.160714285714285, 45.24528301886792, 54.592592592592595, 43.51851851851852, 55, 44.160714285714285, 31.181818181818183, 36.089285714285715, 43.98275862068966, 49.74545454545454, 41.73684210526316, 46.70909090909091, 29.616666666666667, 40.610169491525426, 39.610169491525426, 47.35, 63.833333333333336, 51.1, 44.68333333333333, 32], 'latency.ms.p95': [148.58490566037736, 157.1578947368421, 139.75, 145.75925925925927, 209.30357142857142, 312.80357142857144, 119.56603773584905, 179.05555555555554, 171.62962962962962, 354.55357142857144, 181.17857142857142, 156.52727272727273, 172.89285714285714, 185.6206896551724, 141.96363636363637, 157.94736842105263, 177.0909090909091, 196.51666666666668, 227.25423728813558, 223.15254237288136, 329.8333333333333, 221.33333333333334, 189.7, 159.93333333333334, 238],
-      },
-    }, status: {
-      start_time: '2016-04-17T20:00:00Z', end_time: '2016-04-18T20:00:00Z', step: '1h0m0s', data: {
-        200: [null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], 201: [192, 197, 157, 143, 155, 178, 130, 178, 130, 146, 147, 522, 195, 198, 166, 187, 225, 330, 291, 328, 268, 283, 284, 285, 10],
-      },
-    }, errors: {
-      start_time: '2016-04-17T19:00:00Z', end_time: '2016-04-18T19:00:00Z', step: '1h0m0s', data: {
+    errors: {
+      data: {
         H12: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, null, null], H25: [null, null, null, null, 1, null, null, 1, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null], H27: [null, null, null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, null, null, 4, null, null, null, 3, null],
-      },
+      }, end_time: '2016-04-18T19:00:00Z', start_time: '2016-04-17T19:00:00Z', step: '1h0m0s',
+    }, latency: {
+      data: {
+        'latency.ms.p50': [46.924_528_301_886_795, 56.105_263_157_894_74, 41.196_428_571_428_57, 60.388_888_888_888_886, 54.946_428_571_428_57, 59.160_714_285_714_285, 45.245_283_018_867_92, 54.592_592_592_592_595, 43.518_518_518_518_52, 55, 44.160_714_285_714_285, 31.181_818_181_818_183, 36.089_285_714_285_715, 43.982_758_620_689_66, 49.745_454_545_454_54, 41.736_842_105_263_16, 46.709_090_909_090_91, 29.616_666_666_666_667, 40.610_169_491_525_426, 39.610_169_491_525_426, 47.35, 63.833_333_333_333_336, 51.1, 44.683_333_333_333_33, 32], 'latency.ms.p95': [148.584_905_660_377_36, 157.157_894_736_842_1, 139.75, 145.759_259_259_259_27, 209.303_571_428_571_42, 312.803_571_428_571_44, 119.566_037_735_849_05, 179.055_555_555_555_54, 171.629_629_629_629_62, 354.553_571_428_571_44, 181.178_571_428_571_42, 156.527_272_727_272_73, 172.892_857_142_857_14, 185.620_689_655_172_4, 141.963_636_363_636_37, 157.947_368_421_052_63, 177.090_909_090_909_1, 196.516_666_666_666_68, 227.254_237_288_135_58, 223.152_542_372_881_36, 329.833_333_333_333_3, 221.333_333_333_333_34, 189.7, 159.933_333_333_333_34, 238],
+      }, end_time: '2016-04-18T20:00:00Z', start_time: '2016-04-17T20:00:00Z', step: '1h0m0s',
+    }, status: {
+      data: {
+        200: [null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], 201: [192, 197, 157, 143, 155, 178, 130, 178, 130, 146, 147, 522, 195, 198, 166, 187, 225, 330, 291, 328, 268, 283, 284, 285, 10],
+      }, end_time: '2016-04-18T20:00:00Z', start_time: '2016-04-17T20:00:00Z', step: '1h0m0s',
     },
   }
 

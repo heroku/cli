@@ -2,6 +2,7 @@ import {expect} from 'chai'
 import inquirer from 'inquirer'
 import nock from 'nock'
 import sinon from 'sinon'
+
 import AddCommand from '../../../../src/commands/pipelines/add.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
@@ -29,7 +30,7 @@ describe('pipelines:add', function () {
       .query(true)
       .reply(200, pipelines)
 
-    const {stdout, stderr} = await runCommand(AddCommand, [
+    const {stderr, stdout} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       '--stage',
@@ -65,7 +66,7 @@ describe('pipelines:add', function () {
       .query(true)
       .reply(200, pipelines)
 
-    const {stdout, stderr} = await runCommand(AddCommand, [
+    const {stderr, stdout} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       'example-pipeline',
@@ -115,7 +116,7 @@ describe('pipelines:add', function () {
       .query({eq: {name: 'pipeline-with-identical-name-to-another-pipeline'}})
       .reply(200, pipelinesWithIdenticalNames)
 
-    const {stdout, stderr} = await runCommand(AddCommand, [
+    const {stderr, stdout} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       '--stage',

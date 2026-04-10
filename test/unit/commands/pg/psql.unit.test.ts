@@ -1,25 +1,26 @@
-import {stdout, stderr} from 'stdout-stderr'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
 import {pg, utils} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
+import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/pg/psql.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 const db = {
-  user: 'jeff',
-  host: 'localhost',
-  password: 'pass',
-  pathname: '/corn',
-  database: 'mydb',
-  url: 'postgres://jeff:pass@localhost:5432/corn',
-  port: '5432',
   attachment: {
     addon: {
       name: 'postgres-1',
     },
-    config_vars: ['DATABASE_URL'],
     app: {name: 'myapp'},
+    config_vars: ['DATABASE_URL'],
   },
+  database: 'mydb',
+  host: 'localhost',
+  password: 'pass',
+  pathname: '/corn',
+  port: '5432',
+  url: 'postgres://jeff:pass@localhost:5432/corn',
+  user: 'jeff',
 } as unknown as pg.ConnectionDetails
 
 describe('psql', function () {

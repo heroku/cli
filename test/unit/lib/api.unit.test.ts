@@ -1,12 +1,12 @@
+import {APIClient} from '@heroku-cli/command'
+import {expect} from 'chai'
+import nock from 'nock'
+
 import {createTestRun, getTestNodes, updateTestRun} from '../../../src/lib/api.js'
 import {getHerokuAPI} from '../../helpers/testInstances.js'
-import nock from 'nock'
-import {expect} from 'chai'
-import {APIClient} from '@heroku-cli/command'
 
 const TEST_RUN = {id: 'uuid-999'}
 
-/*
 describe('api', function () {
   let herokuAPI: APIClient
 
@@ -54,5 +54,3 @@ describe('api', function () {
     })
   })
 })
-
-*/

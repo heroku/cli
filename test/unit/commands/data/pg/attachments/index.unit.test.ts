@@ -31,10 +31,8 @@ describe('data:pg:attachments', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can only use this command on Advanced-tier databases.\n'
-         + 'Use heroku addons:info standard-database -a myapp instead.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+         + 'Use heroku addons:info standard-database -a myapp instead.')
     }
   })
 

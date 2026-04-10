@@ -28,8 +28,7 @@ describe('trusted-ips:remove', function () {
           {action: 'allow', source: '128.0.0.1/20'},
           {action: 'allow', source: '127.0.0.1/20'},
         ],
-      },
-      )
+      })
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'gandalf',
         rules: [
@@ -63,8 +62,7 @@ describe('trusted-ips:remove', function () {
           {action: 'allow', source: '128.0.0.1/20'},
           {action: 'allow', source: '127.0.0.1/20'},
         ],
-      },
-      )
+      })
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'gandalf',
         rules: [
@@ -96,8 +94,7 @@ describe('trusted-ips:remove', function () {
           {action: 'allow', source: '128.0.0.1/20'},
           {action: 'allow', source: '127.0.0.1/20'},
         ],
-      },
-      )
+      })
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'gandalf',
         rules: [

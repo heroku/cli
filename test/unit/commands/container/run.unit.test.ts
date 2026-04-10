@@ -1,12 +1,13 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/run.js'
-import runCommand from '../../../helpers/runCommand.js'
-import sinon from 'sinon'
-import {expect} from 'chai'
-import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {Errors} from '@oclif/core'
+import {expect} from 'chai'
 import nock from 'nock'
+import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/container/run.js'
+import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('container run', function () {
   let api: nock.Scope

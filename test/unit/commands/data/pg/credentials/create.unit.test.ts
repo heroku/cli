@@ -28,9 +28,7 @@ describe('data:pg:credentials:create', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can\'t create custom credentials on Essential-tier databases.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can\'t create custom credentials on Essential-tier databases.')
     }
   })
 
@@ -49,9 +47,7 @@ describe('data:pg:credentials:create', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can\'t create custom credentials on Essential-tier databases.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can\'t create custom credentials on Essential-tier databases.')
     }
   })
 
@@ -76,13 +72,11 @@ describe('data:pg:credentials:create', function () {
     expect(stderr.output).to.equal(heredoc`
       Creating credential my-credential... done
     `)
-    expect(ansis.strip(heredoc(stdout.output))).to.equal(
-      ansis.strip(heredoc`
+    expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
         Attach the credential to the apps you want to use it in with heroku data:pg:attachments:create advanced-horizontal-01234 --credential my-credential -a myapp.
         Define the new grants for the credential in Postgres with heroku pg:psql advanced-horizontal-01234 -a myapp.
 
-      `),
-    )
+      `))
   })
 
   it('creates a credential successfully on legacy non-Essential tier databases', async function () {
@@ -106,13 +100,11 @@ describe('data:pg:credentials:create', function () {
     expect(stderr.output).to.equal(heredoc`
       Creating credential my-credential... done
     `)
-    expect(ansis.strip(heredoc(stdout.output))).to.equal(
-      ansis.strip(heredoc`
+    expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
         Attach the credential to the apps you want to use it in with heroku addons:attach standard-database --credential my-credential -a myapp.
         Define the new grants for the credential in Postgres with heroku pg:psql standard-database -a myapp.
 
-      `),
-    )
+      `))
   })
 
   it('handles API errors gracefully on Advanced-tier databases', async function () {
@@ -138,12 +130,10 @@ describe('data:pg:credentials:create', function () {
       ])
     } catch (error: unknown) {
       const err = error as Error
-      expect(ansis.strip(err.message)).to.include(
-        heredoc`
+      expect(ansis.strip(err.message)).to.include(heredoc`
           my-credential on ${addon.name} already exists.
           Credential names must be unique within the database. Choose another name and try again.
-        `,
-      )
+        `)
     }
 
     herokuApi.done()
@@ -173,12 +163,10 @@ describe('data:pg:credentials:create', function () {
       ])
     } catch (error: unknown) {
       const err = error as Error
-      expect(ansis.strip(err.message)).to.include(
-        heredoc`
+      expect(ansis.strip(err.message)).to.include(heredoc`
           my-credential on ${nonAdvancedAddon.name} already exists.
           Credential names must be unique within the database. Choose another name and try again.
-        `,
-      )
+        `)
     }
 
     herokuApi.done()

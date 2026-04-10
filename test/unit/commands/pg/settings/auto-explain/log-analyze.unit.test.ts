@@ -1,9 +1,10 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-analyze.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
+import {runCommand} from '../../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -14,8 +15,8 @@ describe('pg:settings:auto-explain:log-analyze', function () {
   beforeEach(function () {
     api = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'test-database',
+        app: 'myapp',
       }).reply(200, [{addon}])
   })
 

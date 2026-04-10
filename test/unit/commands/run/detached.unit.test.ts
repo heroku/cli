@@ -1,3 +1,5 @@
+/* eslint-disable n/no-unsupported-features/node-builtins */
+
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr} from 'stdout-stderr'
@@ -89,9 +91,9 @@ describe('run:detached', function () {
       })
 
     // Mock EventSource for log streaming
-    const originalEventSource = global.EventSource
+    const originalEventSource = globalThis.EventSource
     // @ts-expect-error - Mocking EventSource for testing
-    global.EventSource = class MockEventSource {
+    globalThis.EventSource = class MockEventSource {
       constructor(public url: string) {}
 
       addEventListener() {}
@@ -110,7 +112,7 @@ describe('run:detached', function () {
         // Expected to fail when trying to connect to logs
       })
     } finally {
-      global.EventSource = originalEventSource
+      globalThis.EventSource = originalEventSource
     }
   })
 })

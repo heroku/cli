@@ -51,14 +51,14 @@ describe('spaces', function () {
   it('shows spaces scoped by teams', async function () {
     api
       .get('/spaces')
-      .reply(200, spaces.concat([{
+      .reply(200, [...spaces, {
         created_at: now.toISOString(),
         generation: 'cedar',
         name: 'other-space',
         region: {name: 'my-region'},
         state: 'allocated',
         team: {name: 'other-team'},
-      }]))
+      }])
 
     const {stdout} = await runCommand(Cmd, ['--team', 'my-team'])
     const actual = removeAllWhitespace(stdout)

@@ -1,6 +1,6 @@
+import {HerokuAPIError} from '@heroku-cli/command'
 import {utils} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
-import {HerokuAPIError} from '@heroku-cli/command'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -48,10 +48,8 @@ describe('data:pg:attachments:create', function () {
     } catch (error: unknown) {
       const err = error as Error
 
-      expect(ansis.strip(err.message)).to.equal(
-        'You can only use this command on Advanced-tier databases.\n'
-         + 'Use heroku addons:attach standard-database -a myapp --as TEST instead.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+         + 'Use heroku addons:attach standard-database -a myapp --as TEST instead.')
     }
   })
 
@@ -182,8 +180,7 @@ describe('data:pg:attachments:create', function () {
         expect(ansis.strip(err.message)).to.equal(heredoc`
           Internal server error.
 
-          Error ID: internal_server_error`,
-        )
+          Error ID: internal_server_error`)
       }
     })
 
@@ -208,8 +205,7 @@ describe('data:pg:attachments:create', function () {
         expect(ansis.strip(err.message)).to.equal(heredoc`
           Couldn't find that add on.
 
-          Error ID: not_found`,
-        )
+          Error ID: not_found`)
       }
     })
 
@@ -239,8 +235,7 @@ describe('data:pg:attachments:create', function () {
         expect(ansis.strip(err.message)).to.equal(heredoc`
           Internal server error.
 
-          Error ID: internal_server_error`,
-        )
+          Error ID: internal_server_error`)
       }
 
       herokuApi.done()
@@ -277,8 +272,7 @@ describe('data:pg:attachments:create', function () {
         expect(ansis.strip(err.message)).to.equal(heredoc`
           Internal server error.
 
-          Error ID: internal_server_error`,
-        )
+          Error ID: internal_server_error`)
       }
 
       herokuApi.done()
@@ -337,11 +331,9 @@ describe('data:pg:attachments:create', function () {
         const err = error as Error
 
         expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal(
-          'The credential nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
+        expect(ansis.strip(err.message)).to.equal('The credential nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
           + 'Use heroku data:pg:credentials advanced-horizontal-01234 -a myapp '
-          + 'to list the credentials on the database.',
-        )
+          + 'to list the credentials on the database.')
       }
 
       herokuApi.done()
@@ -373,12 +365,10 @@ describe('data:pg:attachments:create', function () {
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(
-        heredoc(`
+      expect(ansis.strip(stderr.output)).to.equal(heredoc(`
         Attaching mypool on advanced-horizontal-01234 as MYPOOL to ⬢ myapp... done
         Setting MYPOOL config vars and restarting ⬢ myapp... done, v123
-      `),
-      )
+      `))
     })
 
     it('throws error when pool does not exist', async function () {
@@ -398,11 +388,9 @@ describe('data:pg:attachments:create', function () {
         const err = error as Error
 
         expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal(
-          'The pool nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
+        expect(ansis.strip(err.message)).to.equal('The pool nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
           + 'Use heroku data:pg:info advanced-horizontal-01234 -a myapp '
-          + 'to list the pools on the database.',
-        )
+          + 'to list the pools on the database.')
       }
 
       herokuApi.done()

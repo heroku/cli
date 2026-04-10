@@ -55,10 +55,8 @@ describe('data:pg:attachments:destroy', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can only use this command on Advanced-tier databases.\n'
-         + 'Use heroku addons:detach DATABASE_ANALYST -a myapp instead.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+         + 'Use heroku addons:detach DATABASE_ANALYST -a myapp instead.')
     }
   })
 
@@ -111,8 +109,7 @@ describe('data:pg:attachments:destroy', function () {
         expect(err.message).to.equal(heredoc`
           Couldn't find that attachment.
 
-          Error ID: not_found`,
-        )
+          Error ID: not_found`)
       }
 
       herokuApi.done()
@@ -141,8 +138,7 @@ describe('data:pg:attachments:destroy', function () {
         expect(ansis.strip(err.message)).to.equal(heredoc`
           Internal server error.
 
-          Error ID: internal_server_error`,
-        )
+          Error ID: internal_server_error`)
       }
 
       herokuApi.done()
@@ -176,8 +172,7 @@ describe('data:pg:attachments:destroy', function () {
         expect(ansis.strip(err.message)).to.equal(heredoc`
           Internal server error.
 
-          Error ID: internal_server_error`,
-        )
+          Error ID: internal_server_error`)
       }
 
       herokuApi.done()

@@ -3,7 +3,7 @@ import nock from 'nock'
 
 import Index from '../../../../../src/commands/webhooks/deliveries/index.js'
 import {runCommand} from '../../../../helpers/run-command.js'
-import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 describe('webhooks:deliveries', function () {
   let api: nock.Scope

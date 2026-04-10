@@ -1,8 +1,9 @@
-import Cmd from '../../../../../src/commands/pg/backups/download.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
 import {expect} from 'chai'
 import fs from 'fs-extra'
+import nock from 'nock'
+
+import Cmd from '../../../../../src/commands/pg/backups/download.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 describe('pg:backups:download', function () {
   beforeEach(function () {
@@ -24,7 +25,7 @@ describe('pg:backups:download', function () {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {succeeded: true, to_type: 'gof3r', num: 3},
+          {num: 3, succeeded: true, to_type: 'gof3r'},
         ])
     })
 

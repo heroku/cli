@@ -57,9 +57,7 @@ describe('clients:info', function () {
 
       const {stdout} = await runCommand(ClientsInfo, [id, '--shell'])
 
-      expect(stdout).to.equal(
-        'HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=supersecretkey\n',
-      )
+      expect(stdout).to.equal('HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=supersecretkey\n')
     })
   })
 })

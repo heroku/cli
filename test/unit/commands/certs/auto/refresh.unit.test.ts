@@ -1,9 +1,10 @@
-import {stdout, stderr} from 'stdout-stderr'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
 import runCommand from '../../../../helpers/runCommand.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
-import nock from 'nock'
 
 const heredoc = tsheredoc.default
 

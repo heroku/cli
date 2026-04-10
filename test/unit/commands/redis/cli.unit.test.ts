@@ -4,7 +4,7 @@ import nock from 'nock'
 import {Duplex} from 'node:stream'
 
 import Cmd from '../../../../src/commands/redis/cli.js'
-import {runCommand, type GenericCmd} from '../../../helpers/run-command.js'
+import {type GenericCmd, runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 class Client extends Duplex {

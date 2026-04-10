@@ -1,4 +1,5 @@
 import nock from 'nock'
+
 import Cmd from '../../../../src/commands/spaces/rename.js'
 import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'

@@ -24,18 +24,14 @@ describe('authorizations:revoke', function () {
 
     const {stderr} = await runCommand(AuthorizationsRevoke, [authorizationID])
 
-    expect(stderr).to.contain(
-      'done, revoked authorization from Example Auth',
-    )
+    expect(stderr).to.contain('done, revoked authorization from Example Auth')
   })
 
   context('without an ID argument', function () {
     it('shows required ID error', async function () {
       const {error} = await runCommand(AuthorizationsRevoke, [])
 
-      expect(error?.message).to.equal(
-        'Missing 1 required arg:\nid  ID of the authorization\nSee more help with --help',
-      )
+      expect(error?.message).to.equal('Missing 1 required arg:\nid  ID of the authorization\nSee more help with --help')
     })
   })
 })

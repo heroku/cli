@@ -56,13 +56,11 @@ describe('data:pg:create', function () {
       await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance'])
 
       herokuApi.done()
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
@@ -87,16 +85,14 @@ describe('data:pg:create', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
           Success: we're provisioning readers follower pool on advanced-horizontal-01234.
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
 
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
@@ -118,13 +114,11 @@ describe('data:pg:create', function () {
       ])
 
       herokuApi.done()
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-      `),
-      )
+      `))
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
@@ -146,13 +140,11 @@ describe('data:pg:create', function () {
       ])
 
       herokuApi.done()
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-      `),
-      )
+      `))
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a 4G-Performance database on ⬢ myapp... done
       `)
@@ -241,13 +233,11 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('4G-Performance 2 vCPU 4 GB MEM ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).to.contain('Standby (High Availability) ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
@@ -315,13 +305,11 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('4G-Performance 2 vCPU 4 GB MEM ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).not.to.contain('Standby (High Availability) ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
@@ -359,13 +347,11 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('8G-Performance 4 vCPU 8 GB MEM ~$0.278/hour ($200/month)')
       expect(ansis.strip(stderr.output)).to.contain('Standby (High Availability) ~$0.278/hour ($200/month)')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
@@ -402,13 +388,11 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
       expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.083/hour ($60/month)')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
@@ -455,16 +439,14 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
           Success: we're provisioning readers follower pool on advanced-horizontal-01234.
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
 
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
       expect(ansis.strip(stderr.output)).to.contain('Configuring follower pool... done')
       expect(ansis.strip(stderr.output)).to.contain('Running heroku data:pg:info advanced-horizontal-01234 --app=myapp...')
@@ -525,8 +507,7 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
@@ -536,8 +517,7 @@ describe('data:pg:create', function () {
           Success: we're provisioning readonly2 follower pool on advanced-horizontal-01234.
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
 
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
       expect(ansis.strip(stderr.output)).to.contain(heredoc`
         Configuring follower pool... done
@@ -589,16 +569,14 @@ describe('data:pg:create', function () {
       herokuApi.done()
       dataApi.done()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your database is being provisioned
           advanced-horizontal-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
           Success: we're provisioning readonly follower pool on advanced-horizontal-01234.
           Run heroku data:pg:info advanced-horizontal-01234 -a myapp to check creation progress.
 
-        `),
-      )
+        `))
       expect(ansis.strip(stderr.output)).to.contain('Configure Leader Pool ~$0.167/hour ($120/month)')
       expect(ansis.strip(stderr.output)).to.contain(heredoc`
         Configuring follower pool... done

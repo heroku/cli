@@ -1,8 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../src/commands/pg/settings/auto-explain.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -12,17 +13,17 @@ describe('pg:settings:auto-explain', function () {
 
   beforeEach(function () {
     const addon = {
-      id: 1,
-      name: 'postgres-1',
       app: {name: 'myapp'},
       config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'],
+      id: 1,
+      name: 'postgres-1',
       plan: {name: 'heroku-postgresql:standard-0'},
     }
 
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'test-database',
+      app: 'myapp',
     }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')

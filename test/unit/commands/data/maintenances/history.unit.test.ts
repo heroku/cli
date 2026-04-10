@@ -7,7 +7,6 @@ import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.
 import runCommand from '../../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
-import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
 
 const addonFixture = {
   id: 'b8966596-d1af-4f39-8c72-a8b4d6a5d3e1',

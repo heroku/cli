@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import {stdout} from 'stdout-stderr'
 
-import {Host, displayHosts, displayHostsAsJSON} from '../../../../src/lib/spaces/hosts.js'
+import {displayHosts, displayHostsAsJSON, Host} from '../../../../src/lib/spaces/hosts.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const hosts: Host[] = [

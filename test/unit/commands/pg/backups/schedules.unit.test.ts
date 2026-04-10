@@ -1,10 +1,11 @@
+import {expect} from 'chai'
+import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/pg/backups/schedules.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
-import {expect} from 'chai'
-import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
@@ -28,7 +29,7 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
         .get('/apps/myapp/addons')
         .reply(200, [
           {
-            id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'}, app: {name: 'myapp'},
+            app: {name: 'myapp'}, id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
           },
         ])
     })
@@ -46,7 +47,7 @@ const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
       nock('https://api.data.heroku.com')
         .get('/client/v11/databases/1/transfer-schedules')
         .reply(200, [
-          {name: 'DATABASE_URL', hour: 5, timezone: 'UTC'},
+          {hour: 5, name: 'DATABASE_URL', timezone: 'UTC'},
         ])
       await cmdRun(['--app', 'myapp'])
       expectOutput(stdout.output, heredoc(`

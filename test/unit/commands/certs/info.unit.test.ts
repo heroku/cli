@@ -1,21 +1,21 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/info.js'
-import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
 
+import Cmd from '../../../../src/commands/certs/info.js'
+import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
+import runCommand from '../../../helpers/runCommand.js'
 import {
-  endpoint,
-  endpointWithDomains,
-  endpointUntrusted,
-  endpointTrusted,
   certificateDetails,
   certificateDetailsWithDomains,
+  endpoint,
+  endpointTrusted,
+  endpointUntrusted,
+  endpointWithDomains,
   untrustedCertificateDetails,
 } from '../../../helpers/stubs/sni-endpoints.js'
-import * as sharedSni from './shared_sni.unit.test.js'
-import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
+import * as sharedSni from './shared-sni.unit.test.js'
 
 const heredoc = tsheredoc.default
 

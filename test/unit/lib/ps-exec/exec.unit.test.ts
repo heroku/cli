@@ -546,6 +546,7 @@ describe('HerokuExec', function () {
 
       nock('https://exec-manager.heroku.com')
         .put('/api/v2/web.1')
+        .basicAuth({pass: 'pass', user: 'myapp'})
         .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
 
       await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
@@ -560,6 +561,7 @@ describe('HerokuExec', function () {
 
       nock('https://exec-manager.heroku.com')
         .put('/api/v2/web.1')
+        .basicAuth({pass: 'pass', user: 'myapp'})
         .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
 
       await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
@@ -576,6 +578,7 @@ describe('HerokuExec', function () {
 
       nock('https://exec-manager.heroku.com')
         .put('/api/v2/web.1')
+        .basicAuth({pass: 'pass', user: 'myapp'})
         .reply(500, 'Internal Server Error')
 
       try {

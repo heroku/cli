@@ -1,9 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/pg/credentials/create.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 describe('pg:credentials:create', function () {
   let api: nock.Scope
@@ -24,8 +24,8 @@ describe('pg:credentials:create', function () {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
     }
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials')
@@ -47,8 +47,8 @@ describe('pg:credentials:create', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: essentialAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
@@ -65,8 +65,8 @@ describe('pg:credentials:create', function () {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."

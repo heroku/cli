@@ -132,9 +132,8 @@ describe('data:pg:credentials:url', function () {
       herokuApi.done()
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
           === Connection information for u2vi1nt40t3mcq credential:
 
           Connection info string:
@@ -143,9 +142,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://u2vi1nt40t3mcq:secret1@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('shows specific credential URL when name is specified', async function () {
@@ -188,9 +186,8 @@ describe('data:pg:credentials:url', function () {
       herokuApi.done()
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
           === Connection information for analyst credential:
 
           Connection info string:
@@ -199,9 +196,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://analyst:secret2@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('handles API errors gracefully', async function () {
@@ -277,9 +273,8 @@ describe('data:pg:credentials:url', function () {
       herokuApi.done()
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
           === Connection information for default credential:
 
           Connection info string:
@@ -288,9 +283,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://u2vi1nt40t3mcq:secret1@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('shows specific credential URL when name is specified', async function () {
@@ -312,9 +306,8 @@ describe('data:pg:credentials:url', function () {
       herokuApi.done()
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
           === Connection information for analyst credential:
 
           Connection info string:
@@ -323,9 +316,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://analyst:secret2@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('handles API errors gracefully', async function () {

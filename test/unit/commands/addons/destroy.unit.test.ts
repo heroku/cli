@@ -33,7 +33,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -67,7 +67,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -113,7 +113,7 @@ describe('addons:destroy', function () {
           name: 'postgresql-swiftly-123',
           plan: {
             name: 'heroku-postgresql:standard-0',
-            price: {cents: 10000, unit: 'month'},
+            price: {cents: 10_000, unit: 'month'},
           },
           state: 'provisioned',
         }
@@ -156,7 +156,7 @@ describe('addons:destroy', function () {
       name: 'postgresql-swiftly-123',
       plan: {
         name: 'heroku-postgresql:standard-0',
-        price: {cents: 10000, unit: 'month'},
+        price: {cents: 10_000, unit: 'month'},
       },
       state: 'provisioned',
     }
@@ -174,7 +174,7 @@ describe('addons:destroy', function () {
   })
 
   it('shows that it failed to deprovision when there are errors returned', async function () {
-    const addon: {state: 'suspended'} & Omit<Heroku.AddOn, 'state'> = {
+    const addon: Omit<Heroku.AddOn, 'state'> & {state: 'suspended'} = {
       addon_service: {name: 'heroku-postgresql'},
       app: {
         id: '01234567-89ab-cdef-0123-456789abcdef',
@@ -185,7 +185,7 @@ describe('addons:destroy', function () {
       name: 'postgresql-swiftly-123',
       plan: {
         name: 'heroku-postgresql:standard-0',
-        price: {cents: 10000, unit: 'month'},
+        price: {cents: 10_000, unit: 'month'},
       },
       state: 'suspended',
     }
@@ -216,7 +216,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -231,7 +231,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-124',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -268,7 +268,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -283,7 +283,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-124',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }

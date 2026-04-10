@@ -1,11 +1,12 @@
+import {pg, utils} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
+import childProcess from 'node:child_process'
+import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../src/commands/pg/push.js'
 import runCommand from '../../../helpers/runCommand.js'
-import {expect} from 'chai'
-import tsheredoc from 'tsheredoc'
-import {pg, utils} from '@heroku/heroku-cli-util'
-import sinon = require('sinon')
-import childProcess from 'node:child_process'
 
 const heredoc = tsheredoc.default
 
@@ -15,7 +16,6 @@ describe('pg:push', function () {
   const emptyResponse = '00'
   let spawnStub: sinon.SinonStub
   let env: NodeJS.ProcessEnv
-  let sshTunnelStub: sinon.SinonStub
 
   const exitHandler = (_key: string, func: CallableFunction) => {
     func(0)

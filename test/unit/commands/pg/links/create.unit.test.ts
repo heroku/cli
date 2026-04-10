@@ -47,7 +47,7 @@ describe('pg:links:create', function () {
           'heroku-postgres',
         ])
       } catch (error) {
-        const {message} = error as { message: string }
+        const {message} = error as {message: string}
         expect(message).to.equal('pg:links isn\'t available for Essential-tier databases.')
       }
     })

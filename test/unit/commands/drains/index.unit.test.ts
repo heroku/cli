@@ -17,12 +17,12 @@ describe('drains', function () {
     {
       ...DRAIN_W_ADDON,
       extended: {
-        drain_id: 12345,
+        drain_id: 12_345,
       },
     }, {
       ...DRAIN,
       extended: {
-        drain_id: 67890,
+        drain_id: 67_890,
       },
     },
   ]

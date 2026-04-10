@@ -1,7 +1,8 @@
+import {expect} from 'chai'
+import nock from 'nock'
+
 import Cmd from '../../../../../src/commands/spaces/vpn/connections.js'
 import {runCommand} from '../../../../helpers/run-command.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces:vpn:connections', function () {
@@ -11,28 +12,28 @@ describe('spaces:vpn:connections', function () {
 
   const space = {
     id: '123456789012',
+    ike_version: 1,
     name: 'office',
     public_ip: '35.161.69.30',
     routable_cidrs: [
       '172.16.0.0/16',
     ],
-    ike_version: 1,
     space_cidr_block: '10.0.0.0/16',
     status: 'active',
     status_message: 'Active',
     tunnels: [
       {
-        last_status_change: '2016-10-25T22:10:05Z',
-        ip: '52.44.146.197',
         customer_ip: '52.44.146.197',
+        ip: '52.44.146.197',
+        last_status_change: '2016-10-25T22:10:05Z',
         pre_shared_key: 'secret',
         status: 'UP',
         status_message: 'status message',
       },
       {
-        last_status_change: '2016-10-25T22:09:05Z',
-        ip: '52.44.146.196',
         customer_ip: '52.44.146.196',
+        ip: '52.44.146.196',
+        last_status_change: '2016-10-25T22:09:05Z',
         pre_shared_key: 'secret',
         status: 'UP',
         status_message: 'status message',

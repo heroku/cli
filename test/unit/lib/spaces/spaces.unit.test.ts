@@ -3,6 +3,8 @@ import {expect} from 'chai'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
+import type {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+
 import {displayNat, displayShieldState, renderInfo} from '../../../../src/lib/spaces/spaces.js'
 import {SpaceNat} from '../../../../src/lib/types/fir.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
@@ -29,7 +31,7 @@ describe('displayShieldState', function () {
 
 describe('displayNat', function () {
   it('returns undefined when NAT is undefined', function () {
-    expect(displayNat(undefined)).to.be.undefined
+    expect(displayNat()).to.be.undefined
   })
 
   it('returns state when NAT state is updating', function () {
@@ -84,7 +86,7 @@ describe('displayNat', function () {
 })
 
 describe('renderInfo', function () {
-  const space = Object.assign({}, fixtures.spaces['non-shield-space'], {outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'}})
+  const space: SpaceWithOutboundIps = {...fixtures.spaces['non-shield-space'], outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'}}
 
   it('outputs space info in JSON format when json flag is true', function () {
     stdout.start()

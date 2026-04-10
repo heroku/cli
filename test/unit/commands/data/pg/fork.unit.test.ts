@@ -1,5 +1,4 @@
-/* eslint-disable mocha/no-setup-in-describe */
-/* eslint-disable max-nested-callbacks */
+
 import {Config} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -64,13 +63,11 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
     })
 
     it('creates a fork with custom name and attachment', async function () {
@@ -104,13 +101,11 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
     })
 
     it('creates a fork with custom level', async function () {
@@ -137,13 +132,11 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
     })
 
     it('creates a fork with provision options', async function () {
@@ -215,13 +208,11 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback to 2025-01-11T12:35:00... done
       `)
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
     })
 
     it('creates a rollback fork with rollback-by interval', async function () {
@@ -260,13 +251,11 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(stderr.output)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback by 1 day... done
       `)
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
-        `),
-      )
+        `))
     })
 
     it('creates a rollback fork with provision options', async function () {
@@ -322,8 +311,7 @@ describe('data:pg:fork', function () {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --fork standard-database instead.`,
-        )
+          Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --fork standard-database instead.`)
       }
 
       herokuApi.done()
@@ -344,8 +332,7 @@ describe('data:pg:fork', function () {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --to '2025-08-11T12:35:00' instead.`,
-        )
+          Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --to '2025-08-11T12:35:00' instead.`)
       }
 
       herokuApi.done()
@@ -366,8 +353,7 @@ describe('data:pg:fork', function () {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --by '3 days 7 hours 22 minutes' instead.`,
-        )
+          Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --by '3 days 7 hours 22 minutes' instead.`)
       }
 
       herokuApi.done()
@@ -408,12 +394,12 @@ describe('data:pg:fork', function () {
         {description: 'handles 24 hours', expected: '2025-01-30T00:00:00.000Z', input: '24 hours'},
       ]
 
-      testCases.forEach(({description, expected, input}) => {
+      for (const {description, expected, input} of testCases) {
         it(description, function () {
           const result = fork.parseRollbackInterval(input, chrono)
           expect(result.toISOString()).to.equal(expected)
         })
-      })
+      }
     })
 
     describe('invalid intervals', function () {
@@ -424,7 +410,7 @@ describe('data:pg:fork', function () {
         {description: 'rejects invalid numbers', input: 'xyz days'},
       ]
 
-      errorCases.forEach(({description, input}) => {
+      for (const {description, input} of errorCases) {
         it(description, function () {
           try {
             fork.parseRollbackInterval(input, chrono)
@@ -434,7 +420,7 @@ describe('data:pg:fork', function () {
             expect(ansis.strip(err.message)).to.include("isn't a supported time interval")
           }
         })
-      })
+      }
     })
   })
 })

@@ -22,11 +22,9 @@ describe('data:pg:destroy', function () {
     resolveApi.done()
     destroyApi.done()
 
-    expect(ansis.strip(stderr.output)).to.equal(
-      heredoc(`
+    expect(ansis.strip(stderr.output)).to.equal(heredoc(`
         Destroying advanced-horizontal-01234 on ⬢ myapp... done
-      `),
-    )
+      `))
     expect(stdout.output).to.equal('We successfully destroyed your database.\n')
   })
 
@@ -39,9 +37,7 @@ describe('data:pg:destroy', function () {
       await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=another-app'])
     } catch (error: unknown) {
       resolveApi.done()
-      expect(ansis.strip((error as Error).message)).to.equal(
-        `Confirmation another-app did not match myapp. Your database ${addon.name} still exists.`,
-      )
+      expect(ansis.strip((error as Error).message)).to.equal(`Confirmation another-app did not match myapp. Your database ${addon.name} still exists.`)
     }
   })
 
@@ -54,9 +50,7 @@ describe('data:pg:destroy', function () {
       await runCommand(DataPgDestroy, [nonPostgresAddon.name!, '--app=myapp', '--confirm=myapp'])
     } catch (error: unknown) {
       resolveApi.done()
-      expect(ansis.strip((error as Error).message)).to.equal(
-        'Couldn\'t find that addon.',
-      )
+      expect(ansis.strip((error as Error).message)).to.equal('Couldn\'t find that addon.')
     }
   })
 
@@ -69,9 +63,7 @@ describe('data:pg:destroy', function () {
       await runCommand(DataPgDestroy, [addon.name!, '--app=another-app'])
     } catch (error: unknown) {
       resolveApi.done()
-      expect(ansis.strip((error as Error).message)).to.equal(
-        'Database advanced-horizontal-01234 is on myapp not another-app. Try again with the correct app.',
-      )
+      expect(ansis.strip((error as Error).message)).to.equal('Database advanced-horizontal-01234 is on myapp not another-app. Try again with the correct app.')
     }
   })
 
@@ -88,9 +80,7 @@ describe('data:pg:destroy', function () {
     } catch (error: unknown) {
       resolveApi.done()
       destroyApi.done()
-      expect(ansis.strip((error as Error).message)).to.equal(
-        'We can\'t destroy your database due to an error: Test error. Try again or open a ticket with Heroku Support: https://help.heroku.com/',
-      )
+      expect(ansis.strip((error as Error).message)).to.equal('We can\'t destroy your database due to an error: Test error. Try again or open a ticket with Heroku Support: https://help.heroku.com/')
     }
   })
 

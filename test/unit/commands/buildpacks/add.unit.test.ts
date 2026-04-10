@@ -21,8 +21,10 @@ describe('buildpacks:add', function () {
   describe('URL', function () {
     it('# maps buildpack names', async function () {
       const registry = new Map()
-      registry.set('https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz',
-        {name: 'hone/test', url: 'urn:buildpack:hone/test'})
+      registry.set(
+        'https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz',
+        {name: 'hone/test', url: 'urn:buildpack:hone/test'},
+      )
 
       Stubber.get(api)
       Stubber.put(api, ['https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz'], registry)
@@ -41,8 +43,7 @@ describe('buildpacks:add', function () {
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['hone/test', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use hone/test.
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use hone/test.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -54,8 +55,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -70,8 +70,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-ruby
 Run git push heroku main to create a new release using these buildpacks.
@@ -92,8 +91,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
   3. https://github.com/heroku/heroku-buildpack-ruby
@@ -149,8 +147,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -165,8 +162,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-ruby
   2. https://github.com/heroku/heroku-buildpack-java
 Run git push heroku main to create a new release using these buildpacks.
@@ -187,8 +183,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '2', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack added. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack added. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-ruby
   3. https://github.com/heroku/heroku-buildpack-nodejs

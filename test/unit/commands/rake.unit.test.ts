@@ -7,7 +7,7 @@ import Dyno from '../../../src/lib/run/dyno.js'
 import runCommandHelper from '../../helpers/runCommand.js'
 
 describe('rake', function () {
-  let dynoOpts: { command: any }
+  let dynoOpts: {command: any}
 
   afterEach(function () {
     sinon.restore()

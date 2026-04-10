@@ -1,6 +1,6 @@
+import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stdout} from 'stdout-stderr'
@@ -37,10 +37,8 @@ describe('data:pg:credentials:index', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can only use this command on Advanced-tier databases.\n'
-          + 'Use heroku pg:credentials DATABASE -a myapp instead.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+          + 'Use heroku pg:credentials DATABASE -a myapp instead.')
     }
   })
 

@@ -1,7 +1,7 @@
 /* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
-import {expect} from 'chai'
 import {hux} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
@@ -82,7 +82,7 @@ describe('addons', function () {
     context('with a grandfathered add-on', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 10000}
+        addon.billed_price = {cents: 10_000}
         api
           .get('/addons')
           .reply(200, [addon])
@@ -313,7 +313,7 @@ describe('addons', function () {
     context('with a grandfathered add-on', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 10000}
+        addon.billed_price = {cents: 10_000}
         mockAPI('acme-inc-dwh', [
           addon,
         ], [

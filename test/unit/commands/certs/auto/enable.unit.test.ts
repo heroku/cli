@@ -1,11 +1,12 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import lolex from 'lolex'
+import nock from 'nock'
+import * as sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/certs/auto/enable.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
-import nock from 'nock'
-import lolex from 'lolex'
-import tsheredoc from 'tsheredoc'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 const heredoc = tsheredoc.default
 const sandbox = sinon.createSandbox()
@@ -22,13 +23,13 @@ describe('heroku certs:auto:enable', function () {
     const domainsApi = nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'foo.example.org.herokudns.com', hostname: 'foo.example.org', kind: 'custom'},
       ])
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'foo.example.org.herokudns.com', hostname: 'foo.example.org', kind: 'custom'},
       ])
 
     await runCommand(Cmd, [
@@ -52,16 +53,16 @@ describe('heroku certs:auto:enable', function () {
     const domainsApi = nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'haiku.not-stable-dns.heroku.com'},
-        {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'haiku.not-stable-dns.heroku.com', hostname: 'foo.example.org', kind: 'custom'},
+        {cname: 'bar.example.org.herokudns.com', hostname: 'bar.example.org', kind: 'custom'},
       ])
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'mis.example.org', cname: 'mis.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'foo.example.org.herokudns.com', hostname: 'foo.example.org', kind: 'custom'},
+        {cname: 'bar.example.org.herokudns.com', hostname: 'bar.example.org', kind: 'custom'},
+        {cname: 'mis.example.org.herokudns.com', hostname: 'mis.example.org', kind: 'custom'},
       ])
 
     await runCommand(Cmd, [
@@ -104,9 +105,7 @@ describe('heroku certs:auto:enable', function () {
     expect(stderr.output).to.equal(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
-    expect(stdout.output).to.equal(
-      '=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n\n',
-    )
+    expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n\n')
   })
 
   context('--wait', function () {
@@ -134,33 +133,49 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'in-progress', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'in-progress', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'dns-verified', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failing', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'dns-verified', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failing', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
       await runCommand(Cmd, [
@@ -189,27 +204,39 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'in-progress', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'in-progress', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'dns-verified', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failing', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'dns-verified', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failing', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failed', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failed', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
       await runCommand(Cmd, [
@@ -239,27 +266,39 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'in-progress', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'in-progress', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'dns-verified', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failing', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'dns-verified', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failing', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failed', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failed', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'failed', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failed', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
       await runCommand(Cmd, [
@@ -289,21 +328,29 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
       await runCommand(Cmd, [

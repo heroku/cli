@@ -6,9 +6,7 @@ import Info from '../../../../src/commands/version/info.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 describe('version:info', function () {
-  // eslint-disable-next-line mocha/no-setup-in-describe
   const __dirname = fileURLToPath(new URL('.', import.meta.url))
-  // eslint-disable-next-line mocha/no-setup-in-describe
   const fixtureChangelogPath = join(__dirname, '..', '..', '..', 'fixtures', 'CHANGELOG.md')
 
   beforeEach(function () {

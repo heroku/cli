@@ -1,10 +1,8 @@
-import {runCommand} from '../../../helpers/run-command.js'
 import {expect} from 'chai'
-import Cmd from '../../../../src/commands/pg/killall.js'
 import nock from 'nock'
-import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+import Cmd from '../../../../src/commands/pg/killall.js'
+import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pg:killall', function () {
   let pg: nock.Scope

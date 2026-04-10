@@ -1,14 +1,14 @@
-import ansis from 'ansis'
+import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout, stderr} from 'stdout-stderr'
+import sinon from 'sinon'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import * as sinon from 'sinon'
-import {hux} from '@heroku/heroku-cli-util'
 
 const heredoc = tsheredoc.default
 
@@ -18,11 +18,11 @@ const addon = {
 
 const attachments = [
   {
-    namespace: 'credential:my_role', app: {name: 'appname_1'},
+    app: {name: 'appname_1'}, namespace: 'credential:my_role',
   }, {
-    namespace: 'credential:my_role', app: {name: 'appname_2'},
+    app: {name: 'appname_2'}, namespace: 'credential:my_role',
   }, {
-    namespace: 'credential:other_role', app: {name: 'appname_3'},
+    app: {name: 'appname_3'}, namespace: 'credential:other_role',
   },
 ]
 
@@ -59,8 +59,8 @@ describe('pg:credentials:rotate', function () {
   describe('standard addon', function () {
     beforeEach(function () {
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'DATABASE_URL',
+        app: 'myapp',
       }).reply(200, [{addon}])
     })
 
@@ -213,8 +213,8 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = 'Legacy Essential-tier databases do not support named credentials.'
@@ -232,8 +232,8 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: essentialAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials/lucy/credentials_rotation')
@@ -259,8 +259,8 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation')
@@ -283,8 +283,8 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')

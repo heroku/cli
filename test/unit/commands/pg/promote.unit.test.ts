@@ -1,12 +1,13 @@
 import ansis from 'ansis'
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/pg/promote.js'
-import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/pg/promote.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -35,37 +36,37 @@ describe('pg:promote when argument is database', function () {
       .reply(200, [])
       .get('/apps/myapp/addon-attachments').reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         },
         {
-          name: 'DATABASE_CONNECTION_POOL',
-          id: pgbouncerAddonID,
           addon: {name: 'postgres-2'},
+          id: pgbouncerAddonID,
+          name: 'DATABASE_CONNECTION_POOL',
           namespace: 'connection-pooling:default',
         },
       ])
       .post('/addon-attachments', {
-        app: {name: 'myapp'},
         addon: {name: 'postgres-2'},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        namespace: null,
       }).reply(201, {name: 'RED'})
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: null,
       }).reply(201)
       .delete(`/addon-attachments/${pgbouncerAddonID}`).reply(200)
       .post('/addon-attachments', {
-        name: 'DATABASE_CONNECTION_POOL',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'connection-pooling:default',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE_CONNECTION_POOL',
+        namespace: 'connection-pooling:default',
       }).reply(201)
 
     await runCommand(Cmd, [
@@ -87,23 +88,23 @@ describe('pg:promote when argument is database', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         },
         {
-          name: 'DATABASE_CONNECTION_POOL2',
+          addon: {id: '1', name: addon.name},
           id: '12345',
-          addon: {name: addon.name, id: '1'},
+          name: 'DATABASE_CONNECTION_POOL2',
           namespace: 'connection-pooling:default',
         },
       ])
       .post('/addon-attachments', {
-        app: {name: 'myapp'}, addon: {name: 'postgres-2'}, namespace: null, confirm: 'myapp',
+        addon: {name: 'postgres-2'}, app: {name: 'myapp'}, confirm: 'myapp', namespace: null,
       })
       .reply(201, {name: 'RED'})
       .post('/addon-attachments', {
-        name: 'DATABASE', app: {name: 'myapp'}, addon: {name: addon.name}, namespace: null, confirm: 'myapp',
+        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
       })
       .reply(201)
 
@@ -125,23 +126,23 @@ describe('pg:promote when argument is database', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         },
         {
-          name: 'DATABASE_CONNECTION_POOL',
+          addon: {id: addon.id, name: addon.name},
           id: '12345',
-          addon: {name: addon.name, id: addon.id},
+          name: 'DATABASE_CONNECTION_POOL',
           namespace: 'connection-pooling:default',
         },
       ])
       .post('/addon-attachments', {
-        app: {name: 'myapp'}, addon: {name: 'postgres-2'}, namespace: null, confirm: 'myapp',
+        addon: {name: 'postgres-2'}, app: {name: 'myapp'}, confirm: 'myapp', namespace: null,
       })
       .reply(201, {name: 'RED'})
       .post('/addon-attachments', {
-        name: 'DATABASE', app: {name: 'myapp'}, addon: {name: addon.name}, namespace: null, confirm: 'myapp',
+        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
       })
       .reply(201)
 
@@ -162,21 +163,21 @@ describe('pg:promote when argument is database', function () {
       .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
-        {name: 'DATABASE', addon: {name: 'postgres-2'}, namespace: null},
+        {addon: {name: 'postgres-2'}, name: 'DATABASE', namespace: null},
       ])
       .post('/addon-attachments', {
-        app: {name: 'myapp'},
         addon: {name: 'postgres-2'},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        namespace: null,
       })
       .reply(201, {name: 'RED'})
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: null,
       })
       .reply(201)
 
@@ -198,22 +199,22 @@ describe('pg:promote when argument is database', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         },
         {
-          name: 'RED',
           addon: {name: 'postgres-2'},
+          name: 'RED',
           namespace: null,
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: null,
       })
       .reply(201)
 
@@ -234,8 +235,8 @@ describe('pg:promote when argument is database', function () {
       .reply(200, [])
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
-        {name: 'DATABASE', addon: {name: addon.name}, namespace: null},
-        {name: 'PURPLE', addon: {name: addon.name}, namespace: null},
+        {addon: {name: addon.name}, name: 'DATABASE', namespace: null},
+        {addon: {name: addon.name}, name: 'PURPLE', namespace: null},
       ])
     const err = `${addon.name} is already promoted on ⬢ myapp`
     await runCommand(Cmd, [
@@ -251,14 +252,14 @@ describe('pg:promote when argument is database', function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
-        {name: 'PURPLE', addon: {name: addon.name}, namespace: null},
+        {addon: {name: addon.name}, name: 'PURPLE', namespace: null},
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: null,
       })
       .reply(201)
       .get('/apps/myapp/formation')
@@ -293,8 +294,8 @@ describe('pg:promote when argument is a credential attachment', function () {
   beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'DATABASE',
+        app: 'myapp',
       })
       .reply(200, [{addon, name: 'PURPLE', namespace: 'credential:hello'}])
       .get('/apps/myapp/formation')
@@ -315,25 +316,25 @@ describe('pg:promote when argument is a credential attachment', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
         },
         {
-          name: 'RED',
           addon: {name: addon.name},
+          name: 'RED',
           namespace: 'credential:hello',
         },
       ])
       .post('/addon-attachments', {
-        app: {name: 'myapp'}, addon: {name: 'postgres-2'}, confirm: 'myapp',
+        addon: {name: 'postgres-2'}, app: {name: 'myapp'}, confirm: 'myapp',
       })
       .reply(201, {name: 'RED'})
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'credential:hello',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: 'credential:hello',
       })
       .reply(201)
 
@@ -353,29 +354,29 @@ describe('pg:promote when argument is a credential attachment', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'PURPLE',
           addon: {name: addon.name},
+          name: 'PURPLE',
           namespace: 'credential:hello',
         },
         {
-          name: 'DATABASE',
           addon: {name: addon.name},
+          name: 'DATABASE',
           namespace: 'credential:goodbye',
         },
       ])
       .post('/addon-attachments', {
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'credential:goodbye',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        namespace: 'credential:goodbye',
       })
       .reply(201, {name: 'RED'})
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'credential:hello',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: 'credential:hello',
       })
       .reply(201)
 
@@ -395,21 +396,21 @@ describe('pg:promote when argument is a credential attachment', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
+          addon: {name: 'postgres-2'},
           name: 'DATABASE',
-          addon: {name: 'postgres-2'},
         },
         {
+          addon: {name: 'postgres-2'},
           name: 'RED',
-          addon: {name: 'postgres-2'},
         },
         {
-          name: 'PURPLE',
           addon: {name: addon.name},
+          name: 'PURPLE',
           namespace: 'credential:hello',
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE', app: {name: 'myapp'}, addon: {name: addon.name}, namespace: 'credential:hello', confirm: 'myapp',
+        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: 'credential:hello',
       })
       .reply(201)
 
@@ -429,24 +430,24 @@ describe('pg:promote when argument is a credential attachment', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
+          addon: {name: addon.name},
           name: 'DATABASE',
+          namespace: null,
+        }, {
+          addon: {name: addon.name}, name: 'RED',
+          namespace: null,
+        }, {
           addon: {name: addon.name},
-          namespace: null,
-        }, {
-          name: 'RED', addon: {name: addon.name},
-          namespace: null,
-        }, {
           name: 'PURPLE',
-          addon: {name: addon.name},
           namespace: 'credential:hello',
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'credential:hello',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: 'credential:hello',
       })
       .reply(201)
 
@@ -466,25 +467,25 @@ describe('pg:promote when argument is a credential attachment', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
+          addon: {name: addon.name},
           name: 'DATABASE',
-          addon: {name: addon.name},
           namespace: 'credential:goodbye',
         }, {
+          addon: {name: addon.name},
           name: 'RED',
-          addon: {name: addon.name},
           namespace: 'credential:goodbye',
         }, {
-          name: 'PURPLE',
           addon: {name: addon.name},
+          name: 'PURPLE',
           namespace: 'credential:hello',
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'credential:hello',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: 'credential:hello',
       })
       .reply(201)
 
@@ -504,15 +505,15 @@ describe('pg:promote when argument is a credential attachment', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'RED',
-          addon: {name: addon.name}, namespace: null,
-        }, {
-          name: 'DATABASE',
           addon: {name: addon.name},
+          name: 'RED', namespace: null,
+        }, {
+          addon: {name: addon.name},
+          name: 'DATABASE',
           namespace: 'credential:hello',
         }, {
-          name: 'PURPLE',
           addon: {name: addon.name},
+          name: 'PURPLE',
           namespace: 'credential:hello',
         },
       ])
@@ -538,36 +539,36 @@ describe('pg:promote when release phase is present', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
+          addon: {name: addon.name},
           name: 'DATABASE',
-          addon: {name: addon.name},
           namespace: 'credential:goodbye',
         }, {
+          addon: {name: addon.name},
           name: 'RED',
-          addon: {name: addon.name},
           namespace: 'credential:goodbye',
         }, {
-          name: 'PURPLE',
           addon: {name: addon.name},
+          name: 'PURPLE',
           namespace: 'credential:hello',
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: 'credential:hello',
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: 'credential:hello',
       })
       .reply(201)
       .post('/addon-attachments', {
-        name: 'DATABASE', app: {name: 'myapp'}, addon: {name: addon.name}, namespace: null, confirm: 'myapp',
+        addon: {name: addon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
       })
       .reply(201)
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp', addon_attachment: 'DATABASE',
+        addon_attachment: 'DATABASE', app: 'myapp',
       })
       .reply(201, [{
-        name: 'PURPLE', addon: {name: addon.name, id: addon.id, plan: {id: addon.plan!.id, name: addon.plan!.name}}, namespace: 'credential:hello',
+        addon: {id: addon.id, name: addon.name, plan: {id: addon.plan!.id, name: addon.plan!.name}}, name: 'PURPLE', namespace: 'credential:hello',
       }])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)
@@ -583,7 +584,7 @@ describe('pg:promote when release phase is present', function () {
   it('checks release phase', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
+      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
       .get('/apps/myapp/releases/1')
       .reply(200, {status: 'succeeded'})
       .get('/apps/myapp/releases/2')
@@ -604,11 +605,11 @@ describe('pg:promote when release phase is present', function () {
   it('checks release phase for detach failure', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
+      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
       .get('/apps/myapp/releases/1')
       .reply(200, {status: 'succeeded'})
       .get('/apps/myapp/releases/2')
-      .reply(200, {status: 'failed', description: 'Detach DATABASE'})
+      .reply(200, {description: 'Detach DATABASE', status: 'failed'})
 
     await runCommand(Cmd, [
       '--app',
@@ -625,11 +626,11 @@ describe('pg:promote when release phase is present', function () {
   it('checks release phase for attach failure', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
+      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
       .get('/apps/myapp/releases/1')
-      .reply(200, {status: 'failed', description: 'Attach DATABASE'})
+      .reply(200, {description: 'Attach DATABASE', status: 'failed'})
       .get('/apps/myapp/releases/2')
-      .reply(200, {status: 'failed', description: 'Attach DATABASE'})
+      .reply(200, {description: 'Attach DATABASE', status: 'failed'})
 
     await runCommand(Cmd, [
       '--app',
@@ -646,11 +647,11 @@ describe('pg:promote when release phase is present', function () {
   it('checks release phase for attach failure and detach success', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
-      .reply(200, [{id: 1, description: 'Attach DATABASE'}, {id: 2, description: 'Detach DATABASE'}])
+      .reply(200, [{description: 'Attach DATABASE', id: 1}, {description: 'Detach DATABASE', id: 2}])
       .get('/apps/myapp/releases/1')
-      .reply(200, {status: 'failed', description: 'Attach DATABASE'})
+      .reply(200, {description: 'Attach DATABASE', status: 'failed'})
       .get('/apps/myapp/releases/2')
-      .reply(200, {status: 'succeeded', description: 'Attach DATABASE'})
+      .reply(200, {description: 'Attach DATABASE', status: 'succeeded'})
 
     await runCommand(Cmd, [
       '--app',
@@ -699,18 +700,18 @@ describe('pg:promote when database is not available or force flag is present', f
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         }, {
-          name: 'RED',
           addon: {name: 'postgres-2'},
+          name: 'RED',
           namespace: null,
         },
       ])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {'waiting?': true, message: 'pending'})
+      .reply(200, {message: 'pending', 'waiting?': true})
 
     const err = heredoc(`
       Database cannot be promoted while in state: pending
@@ -733,26 +734,26 @@ describe('pg:promote when database is not available or force flag is present', f
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         }, {
-          name: 'RED',
           addon: {name: 'postgres-2'},
+          name: 'RED',
           namespace: null,
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: null,
       })
       .reply(201)
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {'waiting?': true, message: 'pending'})
+      .reply(200, {message: 'pending', 'waiting?': true})
 
     await runCommand(Cmd, [
       '--app',
@@ -771,26 +772,26 @@ describe('pg:promote when database is not available or force flag is present', f
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         }, {
-          name: 'RED',
           addon: {name: 'postgres-2'},
+          name: 'RED',
           namespace: null,
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null,
+        app: {name: 'myapp'},
         confirm: 'myapp',
+        name: 'DATABASE',
+        namespace: null,
       })
       .reply(201)
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {'waiting?': false, message: 'available'})
+      .reply(200, {message: 'available', 'waiting?': false})
 
     await runCommand(Cmd, [
       '--app',
@@ -816,7 +817,7 @@ describe('pg:promote when promoted database is a follower', function () {
       .reply(200, [])
     nock('https://api.data.heroku.com')
       .get(`/client/v11/databases/${addon.id}/wait_status`)
-      .reply(200, {'waiting?': false, message: 'available'})
+      .reply(200, {message: 'available', 'waiting?': false})
   })
 
   afterEach(function () {
@@ -828,20 +829,20 @@ describe('pg:promote when promoted database is a follower', function () {
       .get('/apps/myapp/addon-attachments')
       .reply(200, [
         {
-          name: 'DATABASE',
           addon: {name: 'postgres-2'},
+          name: 'DATABASE',
           namespace: null,
         }, {
-          name: 'RED',
           addon: {name: 'postgres-2'},
+          name: 'RED',
           namespace: null,
         },
       ])
       .post('/addon-attachments', {
-        name: 'DATABASE',
-        app: {name: 'myapp'},
         addon: {name: addon.name},
-        namespace: null, confirm: 'myapp',
+        app: {name: 'myapp'},
+        confirm: 'myapp',
+        name: 'DATABASE', namespace: null,
       })
       .reply(201)
     nock('https://api.data.heroku.com')

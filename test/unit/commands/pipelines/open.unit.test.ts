@@ -1,6 +1,6 @@
 import {expect} from 'chai'
-import childProcess from 'child_process'
 import nock from 'nock'
+import childProcess from 'node:child_process'
 import sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/pipelines/open.js'

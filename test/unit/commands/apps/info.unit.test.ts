@@ -44,7 +44,7 @@ describe('apps:info', function () {
 
   const appStackChange = {...app, build_stack: {name: 'heroku-24'}}
 
-  const appExtended = {...app, extended: {foo: 'bar', id: 12345}}
+  const appExtended = {...app, extended: {foo: 'bar', id: 12_345}}
 
   const appAcm = {...app, acm: true}
 

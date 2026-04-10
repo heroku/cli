@@ -1,15 +1,15 @@
+import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import {hux} from '@heroku/heroku-cli-util'
 import nock from 'nock'
+import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 import strftime from 'strftime'
 import tsheredoc from 'tsheredoc'
-import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/ps/index.js'
 import runCommand from '../../../helpers/runCommand.js'
-import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
 
@@ -22,7 +22,9 @@ function stubAccountQuota(code: number, body: Record<string, unknown>) {
     .reply(200, {id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
   nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/apps/myapp/dynos')
-    .reply(200, [{command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo}])
+    .reply(200, [{
+      command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
+    }])
   nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
     .get('/account')
     .reply(200, {id: '1234'})
@@ -93,9 +95,15 @@ describe('ps', function () {
     const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', name: 'web.4ed720fa31-ur8z1', size: '1X-Classic', state: 'up', type: 'web', updated_at: hourAgo},
-        {command: 'npm start', name: 'web.4ed720fa31-5om2v', size: '1X-Classic', state: 'up', type: 'web', updated_at: hourAgo},
-        {command: 'npm start ./worker.js', name: 'node-worker.4ed720fa31-w4llb', size: '2X-Compute', state: 'up', type: 'node-worker', updated_at: hourAgo},
+        {
+          command: 'npm start', name: 'web.4ed720fa31-ur8z1', size: '1X-Classic', state: 'up', type: 'web', updated_at: hourAgo,
+        },
+        {
+          command: 'npm start', name: 'web.4ed720fa31-5om2v', size: '1X-Classic', state: 'up', type: 'web', updated_at: hourAgo,
+        },
+        {
+          command: 'npm start ./worker.js', name: 'node-worker.4ed720fa31-w4llb', size: '2X-Compute', state: 'up', type: 'node-worker', updated_at: hourAgo,
+        },
       ])
     stubAppAndAccount()
 
@@ -126,8 +134,12 @@ describe('ps', function () {
       .reply(200, {space: {shield: true}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', name: 'web.1', size: 'Private-M', state: 'up', type: 'web', updated_at: hourAgo},
-        {command: 'bash', name: 'run.1', size: 'Private-L', state: 'up', type: 'run', updated_at: hourAgo},
+        {
+          command: 'npm start', name: 'web.1', size: 'Private-M', state: 'up', type: 'web', updated_at: hourAgo,
+        },
+        {
+          command: 'bash', name: 'run.1', size: 'Private-L', state: 'up', type: 'run', updated_at: hourAgo,
+        },
       ])
 
     stubAppAndAccount()
@@ -156,8 +168,12 @@ describe('ps', function () {
     const api = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', name: 'web.1', size: 'Eco', state: 'up', type: 'web', updated_at: hourAgo},
-        {command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo},
+        {
+          command: 'npm start', name: 'web.1', size: 'Eco', state: 'up', type: 'web', updated_at: hourAgo,
+        },
+        {
+          command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
+        },
       ])
 
     stubAppAndAccount()
@@ -185,7 +201,9 @@ describe('ps', function () {
       .reply(200, {name: 'myapp'})
       .get('/apps/myapp/dynos')
       .reply(200, [
-        {command: 'npm start', name: 'web.1', size: 'Eco', state: 'up', type: 'web', updated_at: hourAgo},
+        {
+          command: 'npm start', name: 'web.1', size: 'Eco', state: 'up', type: 'web', updated_at: hourAgo,
+        },
       ])
 
     await runCommand(Cmd, [
@@ -372,7 +390,9 @@ describe('ps', function () {
       .get('/apps/myapp/dynos?extended=true')
       .reply(200, [{
         command: 'npm start',
-        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, az: 'us-east', route: 'da route'},
+        extended: {
+          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
+        },
         id: 100,
         name: 'web.1',
         release: {id: '10', version: '40'},
@@ -382,7 +402,9 @@ describe('ps', function () {
         updated_at: hourAgo,
       }, {
         command: 'bash',
-        extended: {region: 'us', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, az: 'us-east', route: 'da route'},
+        extended: {
+          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, region: 'us', route: 'da route',
+        },
         id: 101,
         name: 'run.1',
         release: {id: '10', version: '40'},
@@ -444,7 +466,7 @@ describe('ps', function () {
       run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
 
     `
-    stubAccountQuota(200, {account_quota: 3600000, apps: [], quota_used: 178200})
+    stubAccountQuota(200, {account_quota: 3_600_000, apps: [], quota_used: 178_200})
 
     await runCommand(Cmd, [
       '--app',
@@ -467,7 +489,7 @@ describe('ps', function () {
       run.1 (Eco): up ${hourAgoStr} (~ 1h ago): bash
 
     `
-    stubAccountQuota(200, {account_quota: 3600000, apps: [{app_uuid: '6789', quota_used: 178200}], quota_used: 178200})
+    stubAccountQuota(200, {account_quota: 3_600_000, apps: [{app_uuid: '6789', quota_used: 178_200}], quota_used: 178_200})
 
     await runCommand(Cmd, [
       '--app',
@@ -551,7 +573,9 @@ describe('ps', function () {
       .reply(200, {account_quota: 1000, apps: [], quota_used: 1})
     const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
-      .reply(200, [{command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo}])
+      .reply(200, [{
+        command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
+      }])
     const ecoExpression = heredoc`
       === run: one-off processes (1)
 
@@ -579,7 +603,9 @@ describe('ps', function () {
       .reply(200, {owner: {id: 1234}, process_tier: 'eco'})
     const dynos = nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos')
-      .reply(200, [{command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo}])
+      .reply(200, [{
+        command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
+      }])
     const ecoExpression = heredoc`
       === run: one-off processes (1)
 

@@ -137,8 +137,7 @@ describe('data:pg:update', function () {
         herokuApi.done()
         expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
-          Use heroku addons:upgrade standard-database -a myapp instead.`,
-        )
+          Use heroku addons:upgrade standard-database -a myapp instead.`)
       }
     })
   })
@@ -439,9 +438,7 @@ describe('data:pg:update', function () {
         .reply(200, pricingResponse)
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
-        .delete(
-          `/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[1].id}`,
-        )
+        .delete(`/data/postgres/v1/${addon.id}/pools/${pgInfo.pools[1].id}`)
         .reply(204)
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, {

@@ -129,7 +129,7 @@ State:        created\n
   context('with add-ons with grandfathered pricing', function () {
     beforeEach(function () {
       const addon = fixtures.addons['dwh-db']
-      addon.billed_price = {cents: 10000}
+      addon.billed_price = {cents: 10_000}
       apiSdk
         .post('/actions/addons/resolve', {addon: 'dwh-db', app: null})
         .reply(200, [addon])

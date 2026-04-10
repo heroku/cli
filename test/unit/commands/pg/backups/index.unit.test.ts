@@ -7,7 +7,7 @@ import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import runCommand from '../../../../helpers/runCommand.js'
-import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
 

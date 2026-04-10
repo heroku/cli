@@ -1,5 +1,5 @@
-import {HTTPError} from '@heroku/http-call'
 import * as Heroku from '@heroku-cli/schema'
+import {HTTPError} from '@heroku/http-call'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import _ from 'lodash'
@@ -25,7 +25,7 @@ describe('addons:create', function () {
     name: 'postgresql-swiftly-123',
     plan: {
       name: 'heroku-postgresql:standard-0',
-      price: {cents: 10000, unit: 'month'},
+      price: {cents: 10_000, unit: 'month'},
     },
     provision_message: 'provision message',
     state: 'provisioned',

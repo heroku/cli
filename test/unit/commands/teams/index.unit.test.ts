@@ -1,10 +1,11 @@
-import {stdout, stderr} from 'stdout-stderr'
+import {expect} from 'chai'
+import nock from 'nock'
+import {stderr, stdout} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/teams/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {teams} from '../../../helpers/stubs/get.js'
-import nock from 'nock'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
-import {expect} from 'chai'
 
 describe('heroku teams', function () {
   afterEach(function () {

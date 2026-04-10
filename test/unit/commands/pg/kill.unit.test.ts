@@ -1,9 +1,10 @@
-import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
-import {expect} from 'chai'
-import Cmd from '../../../../src/commands/pg/kill.js'
-import * as sinon from 'sinon'
 import {pg, utils} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
+import sinon from 'sinon'
+import {stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/pg/kill.js'
+import runCommand from '../../../helpers/runCommand.js'
 
 describe('pg:kill', function () {
   let sandbox: sinon.SinonSandbox

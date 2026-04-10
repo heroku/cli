@@ -1,5 +1,6 @@
 import {expect} from 'chai'
 import nock from 'nock'
+
 import Cmd from '../../../../../src/commands/pg/connection-pooling/attach.js'
 import {resolvedAttachments} from '../../../../fixtures/addons/fixtures.js'
 import {runCommand} from '../../../../helpers/run-command.js'

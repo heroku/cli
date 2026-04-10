@@ -35,16 +35,14 @@ describe('lib/displayQuota', function () {
       displayQuota(storageQuotaResponse)
       stdout.stop()
 
-      expect(stdout.output).to.equal(
-        heredoc(`
+      expect(stdout.output).to.equal(heredoc(`
         === Storage
 
         Warning:            50.00 GB
         Critical:           100.00 GB
         Enforcement Action: None
         Status:             0.00 MB / 100.00 GB (Within configured quotas)
-        `),
-      )
+        `))
     })
   })
 })

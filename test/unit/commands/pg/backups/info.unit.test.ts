@@ -34,7 +34,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers/3?verbose=true')
         .reply(200, {
-          from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], num: 3, processed_bytes: 100000, source_bytes: 1000000,
+          from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], num: 3, processed_bytes: 100_000, source_bytes: 1_000_000,
         })
     })
 
@@ -66,7 +66,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
         ])
         .get('/client/v11/apps/myapp/transfers/1?verbose=true')
         .reply(200, {
-          from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], name: 'ob001', num: 1, options: {pgbackups_name: 'b001'}, processed_bytes: 100000, source_bytes: 1000000,
+          from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], name: 'ob001', num: 1, options: {pgbackups_name: 'b001'}, processed_bytes: 100_000, source_bytes: 1_000_000,
         })
     })
 
@@ -96,7 +96,7 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
         ])
         .get('/client/v11/apps/myapp/transfers/3?verbose=true')
         .reply(200, {
-          finished_at: '100', from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], num: 3, processed_bytes: 100000, source_bytes: 1000000, succeeded: true,
+          finished_at: '100', from_name: 'RED', logs: [{created_at: '100', message: 'foo'}], num: 3, processed_bytes: 100_000, source_bytes: 1_000_000, succeeded: true,
         })
     })
 

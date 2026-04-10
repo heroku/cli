@@ -13,7 +13,7 @@ import {
 describe('push_pull', function () {
   describe('parseExclusions', function () {
     it('returns an empty array when rawExcludeList is undefined', function () {
-      let x
+      const x = undefined
       expect(parseExclusions(x)).to.deep.equal([])
     })
 
@@ -59,7 +59,7 @@ describe('push_pull', function () {
     })
 
     describe('remote database operations', function () {
-      const randomValue = 0.9794701999754457
+      const randomValue = 0.979_470_199_975_445_7
       const emptyMarker = `${randomValue}${randomValue}`
       const target = {
         database: 'firecrackers',
@@ -110,7 +110,7 @@ describe('push_pull', function () {
 
     const dbTunnelConfig = {
       localHost: '127.0.0.1',
-      localPort: 49152,
+      localPort: 49_152,
     }
 
     afterEach(function () {

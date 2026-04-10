@@ -342,7 +342,8 @@ describe('heroku certs:auto', function () {
         cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
         hostname: 'heroku-failed.heroku-cli-sni-test.com',
         kind: 'custom',
-        updated_at: now}])
+        updated_at: now,
+      }])
 
     await runCommand(Cmd, [
       '--app',
@@ -444,7 +445,9 @@ describe('heroku certs:auto', function () {
       .reply(200, [])
       .get('/apps/example/domains')
       .reply(200, [
-        {acm_status: null, cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {
+          acm_status: null, cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku',
+        },
       ])
 
     await runCommand(Cmd, [

@@ -207,7 +207,7 @@ describe('resolve', function () {
           })
           .then(function () {
             const diffId = nock('https://api.heroku.com:443')
-              .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-7'}).reply(200, [{name: 'myaddon-7'}])
+              .post('/actions/addons/resolve', {addon: 'myaddon-7', app: 'myapp'}).reply(200, [{name: 'myaddon-7'}])
 
             return resolveAddon(herokuAPI, 'myapp', 'myaddon-7')
               .then(function (diffIdAddon: Heroku.AddOn) {
@@ -217,7 +217,7 @@ describe('resolve', function () {
           })
           .then(function () {
             const diffApp = nock('https://api.heroku.com:443')
-              .post('/actions/addons/resolve', {app: 'fooapp', addon: 'myaddon-6'}).reply(200, [{name: 'myaddon-6'}])
+              .post('/actions/addons/resolve', {addon: 'myaddon-6', app: 'fooapp'}).reply(200, [{name: 'myaddon-6'}])
 
             return resolveAddon(herokuAPI, 'fooapp', 'myaddon-6')
               .then(function (diffAppAddon: Heroku.AddOn) {
@@ -227,7 +227,7 @@ describe('resolve', function () {
           })
           .then(function () {
             const diffAddonService = nock('https://api.heroku.com:443')
-              .post('/actions/addons/resolve', {app: 'fooapp', addon: 'myaddon-6', addon_service: 'slowdb'}).reply(200, [{name: 'myaddon-6'}])
+              .post('/actions/addons/resolve', {addon: 'myaddon-6', addon_service: 'slowdb', app: 'fooapp'}).reply(200, [{name: 'myaddon-6'}])
 
             return resolveAddon(herokuAPI, 'fooapp', 'myaddon-6', {addon_service: 'slowdb'})
               .then(function (diffAddonServiceAddon: Heroku.AddOn) {
@@ -253,7 +253,7 @@ describe('resolve', function () {
             nock.cleanAll()
 
             const apiRetry = nock('https://api.heroku.com:443')
-              .post('/actions/addons/resolve', {app: 'myapp', addon: 'myaddon-8'}).reply(200, [{name: 'myaddon-8'}])
+              .post('/actions/addons/resolve', {addon: 'myaddon-8', app: 'myapp'}).reply(200, [{name: 'myaddon-8'}])
 
             return resolveAddon(herokuAPI, 'myapp', 'myaddon-8')
               .then((addon: Heroku.AddOn) => expect(addon).to.have.nested.include({name: 'myaddon-8'}))

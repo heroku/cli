@@ -77,7 +77,7 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .reply(200, [addon])
     dataApi
       .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, {...maintenance, duration_seconds: 872.976767})
+      .reply(200, {...maintenance, duration_seconds: 872.976_767})
 
     await runCommand(DataMaintenancesInfo, [addon.name])
 

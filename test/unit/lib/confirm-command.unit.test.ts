@@ -1,8 +1,8 @@
 import {hux} from '@heroku/heroku-cli-util'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
-import ansis from 'ansis'
 
 import ConfirmCommand from '../../../src/lib/confirm-command.js'
 

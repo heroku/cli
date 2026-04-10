@@ -53,7 +53,7 @@ describe('pipelines:setup', function () {
 
       const couplings = [{app: prodApp, id: 1, stage: 'production'}, {app: stagingApp, id: 2, stage: 'staging'}]
 
-      couplings.forEach(coupling => {
+      for (const coupling of couplings) {
         api
           .post('/app-setups', {
             app: {name: coupling.app.name, personal: true},
@@ -63,7 +63,7 @@ describe('pipelines:setup', function () {
           .reply(201, {app: coupling.app, id: coupling.id})
 
         api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
-      })
+      }
 
       return api
     }
@@ -200,7 +200,7 @@ describe('pipelines:setup', function () {
             {app: stagingApp, id: 2, stage: 'staging'},
           ]
 
-          couplings.forEach(function (coupling) {
+          for (const coupling of couplings) {
             api
               .post('/app-setups', {
                 app: {name: coupling.app.name, organization: team},
@@ -210,7 +210,7 @@ describe('pipelines:setup', function () {
               .reply(201, {app: coupling.app, id: coupling.id})
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
-          })
+          }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
@@ -252,7 +252,7 @@ describe('pipelines:setup', function () {
             {app: stagingApp, id: 2, stage: 'staging'},
           ]
 
-          couplings.forEach(function (coupling) {
+          for (const coupling of couplings) {
             api
               .post('/app-setups', {
                 app: {name: coupling.app.name, organization: team},
@@ -262,7 +262,7 @@ describe('pipelines:setup', function () {
               .reply(201, {app: coupling.app, id: coupling.id})
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {app: {name: 'my-pipeline'}, failure_message: 'status failed', status: 'failed'})
-          })
+          }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
@@ -306,7 +306,7 @@ describe('pipelines:setup', function () {
             {app: stagingApp, id: 2, stage: 'staging'},
           ]
 
-          couplings.forEach(function (coupling) {
+          for (const coupling of couplings) {
             api
               .post('/app-setups', {
                 app: {name: coupling.app.name, organization: team},
@@ -317,7 +317,7 @@ describe('pipelines:setup', function () {
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'timedout'})
             api.get(`/app-setups/${coupling.id}`).reply(200, {app: {name: 'my-pipeline'}, failure_message: 'timedout', status: 'failed'})
-          })
+          }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 

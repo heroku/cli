@@ -59,9 +59,7 @@ describe('backboard-otel-client', function () {
     }
 
     it('sends telemetry data to Honeycomb', async function () {
-      const honeycombAPI = nock(
-        isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com',
-      )
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
         .post('/otel/v1/traces')
         .reply(200)
 
@@ -73,9 +71,7 @@ describe('backboard-otel-client', function () {
       const mockError = new Error('Test error') as any
       mockError.cliRunDuration = 123
 
-      const honeycombAPI = nock(
-        isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com',
-      )
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
         .post('/otel/v1/traces')
         .reply(200)
 
@@ -84,9 +80,7 @@ describe('backboard-otel-client', function () {
     })
 
     it('handles errors gracefully', async function () {
-      const honeycombAPI = nock(
-        isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com',
-      )
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
         .post('/otel/v1/traces')
         .replyWithError('Network error')
 

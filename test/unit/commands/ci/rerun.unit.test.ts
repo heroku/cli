@@ -131,12 +131,12 @@ describe('ci:rerun', function () {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              github: {user_id: 306015},
+              github: {user_id: 306_015},
               heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
-              id: 138865824,
+              id: 138_865_824,
               name: 'raulb/atleti',
               type: 'github',
             },
@@ -194,12 +194,12 @@ describe('ci:rerun', function () {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              github: {user_id: 306015},
+              github: {user_id: 306_015},
               heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
-              id: 138865824,
+              id: 138_865_824,
               name: 'raulb/atleti',
               type: 'github',
             },

@@ -7,7 +7,7 @@ import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('heroku access:remove', function () {
-  let apiDelete: { done: () => any }
+  let apiDelete: {done: () => any}
 
   context('with either a personal or org app', function () {
     beforeEach(function () {

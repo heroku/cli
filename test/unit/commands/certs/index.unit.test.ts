@@ -1,17 +1,18 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/certs/index.js'
+import {expect} from 'chai'
 import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/certs/index.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {
+  endpointAcm,
   endpointStables,
   endpointWildcard,
   endpointWildcardBug,
-  endpointAcm,
 } from '../../../helpers/stubs/sni-endpoints.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
-import {expect} from 'chai'
 
 const heredoc = tsheredoc.default
 

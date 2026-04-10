@@ -1,8 +1,9 @@
+import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
 import tsheredoc from 'tsheredoc'
-import {Errors} from '@oclif/core'
+
+import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
 import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
@@ -32,8 +33,8 @@ describe('pg:upgrade:wait', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
     pg
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': true, message: 'preparing upgrade service'})
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'recreating followers', step: '7/7'})
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'preparing upgrade service', 'waiting?': true})
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'recreating followers', step: '7/7', 'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -53,7 +54,7 @@ describe('pg:upgrade:wait', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
     pg
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'waiting?': false, message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.'})
+      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.', 'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',

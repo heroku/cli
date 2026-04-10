@@ -1,8 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../src/commands/pg/settings/index.js'
+import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -12,16 +13,16 @@ describe('pg:settings', function () {
 
   beforeEach(function () {
     const addon = {
+      app: {name: 'myapp'},
       id: 1,
       name: 'postgres-1',
-      app: {name: 'myapp'},
       plan: {name: 'heroku-postgresql:standard-0'},
     }
 
     api = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'postgres-1',
+        app: 'myapp',
       }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')
@@ -47,24 +48,24 @@ describe('pg:settings', function () {
 
   it('lists settings in ascending alphabetical order', async function () {
     const unorderedSettings = {
-      log_lock_waits: {value: true},
-      log_connections: {value: true},
-      log_min_duration_statement: {value: 2000},
-      log_statement: {value: 'ddl'},
-      track_functions: {value: 'none'},
-      log_min_error_statement: {value: 'error'},
-      pgbouncer_max_client_conn: {value: 10000},
-      pgbouncer_max_db_connections: {value: 150},
-      pgbouncer_default_pool_size: {value: 150},
-      data_connector_details_logs: {value: false},
       auto_explain: {value: false},
+      'auto_explain.log_analyze': {value: false},
+      'auto_explain.log_buffers': {value: false},
       'auto_explain.log_format': {value: 'text'},
       'auto_explain.log_min_duration': {value: -1},
-      'auto_explain.log_analyze': {value: false},
-      'auto_explain.log_triggers': {value: false},
-      'auto_explain.log_buffers': {value: false},
-      'auto_explain.log_verbose': {value: false},
       'auto_explain.log_nested_statements': {value: false},
+      'auto_explain.log_triggers': {value: false},
+      'auto_explain.log_verbose': {value: false},
+      data_connector_details_logs: {value: false},
+      log_connections: {value: true},
+      log_lock_waits: {value: true},
+      log_min_duration_statement: {value: 2000},
+      log_min_error_statement: {value: 'error'},
+      log_statement: {value: 'ddl'},
+      pgbouncer_default_pool_size: {value: 150},
+      pgbouncer_max_client_conn: {value: 10_000},
+      pgbouncer_max_db_connections: {value: 150},
+      track_functions: {value: 'none'},
     }
 
     pg.get('/postgres/v0/databases/1/config').reply(200, unorderedSettings)

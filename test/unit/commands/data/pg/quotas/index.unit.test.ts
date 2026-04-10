@@ -44,8 +44,7 @@ describe('data:pg:quotas', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output)).to.equal(
-        heredoc(`
+      expect(ansis.strip(stdout.output)).to.equal(heredoc(`
         === Storage
 
         Warning:            Not set
@@ -60,8 +59,7 @@ describe('data:pg:quotas', function () {
         Enforcement Action: Notify
         Status:             1.10 GB / 100.00 GB (1.10%) (Within configured quotas)
         
-        `),
-      )
+        `))
     })
   })
 
@@ -81,16 +79,14 @@ describe('data:pg:quotas', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output)).to.equal(
-        heredoc(`
+      expect(ansis.strip(stdout.output)).to.equal(heredoc(`
         === Storage
 
         Warning:            50.00 GB
         Critical:           100.00 GB
         Enforcement Action: None
         Status:             0.00 MB / 100.00 GB (Within configured quotas)
-        `),
-      )
+        `))
     })
   })
 

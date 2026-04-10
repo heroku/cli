@@ -4,7 +4,7 @@ import nock from 'nock'
 import Cmd from '../../../../src/commands/addons/plans.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import {runCommand} from '../../../helpers/run-command.js'
-import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 describe('addons:plans', function () {
   context('with non-metered plans', function () {

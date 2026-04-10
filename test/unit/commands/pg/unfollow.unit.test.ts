@@ -1,8 +1,9 @@
 import nock from 'nock'
+
 import Cmd from '../../../../src/commands/pg/unfollow.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
 describe('pg:unfollow', function () {
   const addon = fixtures.addons['dwh-db']

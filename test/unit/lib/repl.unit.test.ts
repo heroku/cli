@@ -1,9 +1,10 @@
-import {expect} from 'chai'
 import {Config} from '@oclif/core'
-import sinon from 'sinon'
-import {HerokuRepl} from '../../../src/lib/repl.js'
+import {expect} from 'chai'
 import * as os from 'node:os'
-import * as path from 'node:path'
+import path from 'node:path'
+import sinon from 'sinon'
+
+import {HerokuRepl} from '../../../src/lib/repl.js'
 
 describe('HerokuRepl', function () {
   let config: Config
@@ -12,9 +13,9 @@ describe('HerokuRepl', function () {
   beforeEach(async function () {
     // Create a minimal config mock
     config = {
-      root: '/fake/root',
       commands: [],
       findCommand: sinon.stub().returns(null),
+      root: '/fake/root',
       runCommand: sinon.stub().resolves(),
     } as any
   })
@@ -29,8 +30,8 @@ describe('HerokuRepl', function () {
       // Stub the protected fs methods before instantiation
       sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -40,8 +41,8 @@ describe('HerokuRepl', function () {
     it('should initialize with the provided config', function () {
       sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -53,8 +54,8 @@ describe('HerokuRepl', function () {
     it('should be callable', function () {
       sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -66,11 +67,11 @@ describe('HerokuRepl', function () {
     it('should load history from file if it exists', function () {
       const historyContent = 'apps:info\nps\nconfig:set FOO=bar'
 
-      const fsExistsStub = sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(true)
+      sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(true)
       const fsReadStub = sinon.stub(HerokuRepl.prototype, 'fsReadFileSync' as any).returns(historyContent)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -92,8 +93,8 @@ describe('HerokuRepl', function () {
       fsReadStub.withArgs(stateFile, 'utf8').returns(stateContent)
 
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -105,8 +106,8 @@ describe('HerokuRepl', function () {
     it('should handle missing history file gracefully', function () {
       sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -125,8 +126,8 @@ describe('HerokuRepl', function () {
       fsReadStub.withArgs(stateFile, 'utf8').returns('invalid json{')
 
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       // Should not throw even with corrupted state file
@@ -142,8 +143,8 @@ describe('HerokuRepl', function () {
       sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(true)
       const fsReadStub = sinon.stub(HerokuRepl.prototype, 'fsReadFileSync' as any).returns(longHistory)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -175,8 +176,8 @@ describe('HerokuRepl', function () {
     it('should create readline interface with correct configuration', function () {
       sinon.stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
       sinon.stub(HerokuRepl.prototype, 'fsCreateWriteStream' as any).returns({
-        write: sinon.stub(),
         close: sinon.stub(),
+        write: sinon.stub(),
       })
 
       repl = new HerokuRepl(config)
@@ -188,8 +189,8 @@ describe('HerokuRepl', function () {
   describe('command finding', function () {
     it('should work with config that has findCommand', function () {
       const findCommandStub = sinon.stub().returns({
-        id: 'apps:info',
         flags: {},
+        id: 'apps:info',
       })
       config = {
         ...config,
@@ -204,9 +205,9 @@ describe('HerokuRepl', function () {
       config = {
         ...config,
         commands: [
-          {id: 'apps:info', flags: {}},
-          {id: 'ps', flags: {}},
-          {id: 'config:set', flags: {}},
+          {flags: {}, id: 'apps:info'},
+          {flags: {}, id: 'ps'},
+          {flags: {}, id: 'config:set'},
         ],
       } as any
 

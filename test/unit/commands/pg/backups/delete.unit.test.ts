@@ -1,8 +1,9 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/delete.js'
-import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr} from 'stdout-stderr'
+
+import Cmd from '../../../../../src/commands/pg/backups/delete.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 describe('pg:backups:delete', function () {
   let pg: nock.Scope

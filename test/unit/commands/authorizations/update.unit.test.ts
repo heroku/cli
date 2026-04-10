@@ -33,16 +33,12 @@ describe('authorizations:update', function () {
         },
       )
 
-    const {stdout} = await runCommand(
-      AuthorizationsUpdate, [authorizationID, '--client-id', '100', '--client-secret', 'secret', '--description', 'awesome'],
-    )
+    const {stdout} = await runCommand(AuthorizationsUpdate, [authorizationID, '--client-id', '100', '--client-secret', 'secret', '--description', 'awesome'])
 
-    expect(stdout).to.eq(
-      'Client:      <none>\n'
+    expect(stdout).to.eq('Client:      <none>\n'
       + 'ID:          100\n'
       + 'Description: awesome\n'
       + 'Scope:       global\n'
-      + 'Token:       secrettoken\n',
-    )
+      + 'Token:       secrettoken\n')
   })
 })

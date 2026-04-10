@@ -1,12 +1,13 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/remove.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
 import {expect} from 'chai'
-import {spaceTelemetryDrain1, appTelemetryDrain1, appTelemetryDrain2} from '../../../fixtures/telemetry/fixtures.js'
+import nock from 'nock'
+import {stderr} from 'stdout-stderr'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/telemetry/remove.js'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
+import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

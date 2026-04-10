@@ -45,9 +45,9 @@ describe('apps:favorites:add', function () {
   it('errors if app not found', async function () {
     particleboardApi
       .get('/favorites?type=app')
-      .reply(200, [{resource_name: MY_APP}])
+      .reply(200, [])
       .post('/favorites', {resource_id: 'NOT_AN_APP', type: 'app'})
-      .replyWithError({statusCode: 404})
+      .reply(404)
 
     const {error} = await runCommand(Add, ['--app=NOT_AN_APP'])
 

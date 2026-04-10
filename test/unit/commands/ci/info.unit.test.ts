@@ -38,7 +38,8 @@ describe('ci:info', function () {
           {id: pipeline.id},
         ])
         .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-        .reply(200,
+        .reply(
+          200,
           {
             commit_branch: 'main',
             commit_message: 'Merge pull request #5848 from heroku/cli',
@@ -88,7 +89,8 @@ describe('ci:info', function () {
             {id: pipeline.id},
           ])
           .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-          .reply(200,
+          .reply(
+            200,
             {
               commit_branch: 'main',
               commit_message: 'Merge pull request #5848 from heroku/cli',
@@ -138,7 +140,8 @@ describe('ci:info', function () {
             {id: pipeline.id},
           ])
           .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-          .reply(200,
+          .reply(
+            200,
             {
               commit_branch: 'main',
               commit_message: 'Merge pull request #5848 from heroku/cli',
@@ -188,7 +191,8 @@ describe('ci:info', function () {
               {id: pipeline.id},
             ])
             .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-            .reply(200,
+            .reply(
+              200,
               {
                 commit_branch: 'main',
                 commit_message: 'Merge pull request #5848 from heroku/cli',
@@ -248,7 +252,8 @@ describe('ci:info', function () {
                 {id: pipeline.id},
               ])
               .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-              .reply(200,
+              .reply(
+                200,
                 {
                   commit_branch: 'main',
                   commit_message: 'Merge pull request #5848 from heroku/cli',

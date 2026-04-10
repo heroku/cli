@@ -90,7 +90,8 @@ describe('ci', function () {
     it('returns pipeline id', async function () {
       api
         .get(`/pipelines/${pipeline.id}`)
-        .reply(200,
+        .reply(
+          200,
           {
             id: pipeline.id,
             name: pipeline.id,

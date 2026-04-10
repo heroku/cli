@@ -437,7 +437,7 @@ describe('heroku certs:add', function () {
             'key_file',
           ])
         } catch (error) {
-          const {message} = error as { message: string }
+          const {message} = error as {message: string}
           expect(message).to.contain('Timed out while waiting for stable domains to be created')
         }
 

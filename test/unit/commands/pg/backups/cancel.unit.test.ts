@@ -1,9 +1,10 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/cancel.js'
-import runCommand from '../../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/backups/cancel.js'
+import runCommand from '../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
@@ -23,7 +24,9 @@ describe('pg:backups:cancel', function () {
   context('with no id', function () {
     beforeEach(function () {
       pg.get('/client/v11/apps/myapp/transfers').reply(200, [
-        {succeeded: true, to_type: 'gof3r', num: '3', uuid: '100-001'},
+        {
+          num: '3', succeeded: true, to_type: 'gof3r', uuid: '100-001',
+        },
       ])
     })
 
@@ -42,7 +45,7 @@ describe('pg:backups:cancel', function () {
   context('with id', function () {
     beforeEach(function () {
       pg.get('/client/v11/apps/myapp/transfers/3').reply(200, {
-        succeeded: true, to_type: 'gof3r', num: '3', uuid: '100-001',
+        num: '3', succeeded: true, to_type: 'gof3r', uuid: '100-001',
       })
     })
 

@@ -1,12 +1,11 @@
 import ansis from 'ansis'
+import {expect} from 'chai'
+import nock from 'nock'
 import {stderr} from 'stdout-stderr'
+
 import Cmd from '../../../../src/commands/ps/restart.js'
 import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {expect} from 'chai'
-import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
 
 describe('ps:restart', function () {
   it('restarts all dynos', async function () {

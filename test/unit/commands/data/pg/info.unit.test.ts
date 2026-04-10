@@ -50,9 +50,8 @@ describe('data:pg:info', function () {
     ])
 
     expect(stderr.output).to.equal('')
-    expect(ansis.strip(stdout.output)).to.equal(
-      // cspell:disable
-      heredoc(`
+    // cspell:disable
+    expect(ansis.strip(stdout.output)).to.equal(heredoc(`
         === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
         Plan:       Advanced
@@ -82,9 +81,8 @@ describe('data:pg:info', function () {
             follower.ic7mb4lq0rkurk: up
             follower.i7q78mp2fg4v15: up
 
-      `),
-      // cspell:enable
-    )
+      `))
+    // cspell:enable
   })
 
   it('returns info with forked database information', async function () {
@@ -103,9 +101,8 @@ describe('data:pg:info', function () {
     ])
 
     expect(stderr.output).to.equal('')
-    expect(ansis.strip(stdout.output)).to.equal(
-      // cspell:disable
-      heredoc(`
+    // cspell:disable
+    expect(ansis.strip(stdout.output)).to.equal(heredoc(`
         === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
         Plan:        Advanced
@@ -136,9 +133,8 @@ describe('data:pg:info', function () {
             follower.ic7mb4lq0rkurk: up
             follower.i7q78mp2fg4v15: up
 
-      `),
-      // cspell:enable
-    )
+      `))
+    // cspell:enable
   })
 
   it('returns info correctly when features are disabled', async function () {
@@ -157,9 +153,8 @@ describe('data:pg:info', function () {
     ])
 
     expect(stderr.output).to.equal('')
-    expect(ansis.strip(stdout.output)).to.equal(
-      // cspell:disable
-      heredoc(`
+    // cspell:disable
+    expect(ansis.strip(stdout.output)).to.equal(heredoc(`
         === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
         Plan:       Advanced
@@ -180,9 +175,8 @@ describe('data:pg:info', function () {
           1 instance of 4G-Performance:
             leader.i3r507gt6dbscn: up
 
-      `),
-      // cspell:enable
-    )
+      `))
+    // cspell:enable
   })
 
   it('returns info correctly when rollback is enabled but no earliest_time is available', async function () {
@@ -232,9 +226,8 @@ describe('data:pg:info', function () {
     ])
 
     expect(stderr.output).to.equal('')
-    expect(ansis.strip(stdout.output)).to.equal(
-      // cspell:disable
-      heredoc(`
+    // cspell:disable
+    expect(ansis.strip(stdout.output)).to.equal(heredoc(`
         === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
         Plan:       Advanced
@@ -255,9 +248,8 @@ describe('data:pg:info', function () {
           1 instance of 4G-Performance:
             leader.i3r507gt6dbscn: up
 
-      `),
-      // cspell:enable
-    )
+      `))
+    // cspell:enable
   })
 
   describe('data size', function () {
@@ -356,9 +348,7 @@ describe('data:pg:info', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include(
-        'Storage: 64.00 TB / 128.00 TB (50.00%) (Within configured quotas)',
-      )
+      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include('Storage: 64.00 TB / 128.00 TB (50.00%) (Within configured quotas)')
     })
 
     it('renders the percent of quota used when there is no current usage', async function () {
@@ -382,9 +372,7 @@ describe('data:pg:info', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include(
-        'Storage: 0.00 MB / 128.00 TB (Within configured quotas)',
-      )
+      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include('Storage: 0.00 MB / 128.00 TB (Within configured quotas)')
     })
 
     it('does not show the percent of quota used when no critical quota has been set', async function () {
@@ -408,9 +396,7 @@ describe('data:pg:info', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include(
-        'Storage: 64.00 TB (Within configured quotas)',
-      )
+      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include('Storage: 64.00 TB (Within configured quotas)')
     })
 
     it('shows a compliance message when the quotas have not been exceeded', async function () {
@@ -436,9 +422,7 @@ describe('data:pg:info', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include(
-        'Storage: 64.00 TB / 128.00 TB (50.00%) (Within configured quotas)',
-      )
+      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include('Storage: 64.00 TB / 128.00 TB (50.00%) (Within configured quotas)')
     })
 
     it('shows a compliance message when the warning quota has been exceeded', async function () {
@@ -464,9 +448,7 @@ describe('data:pg:info', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include(
-        'Storage: 64.00 TB / 128.00 TB (50.00%) (Exceeded configured warning quota)',
-      )
+      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include('Storage: 64.00 TB / 128.00 TB (50.00%) (Exceeded configured warning quota)')
     })
 
     it('shows a compliance message when the critical quota been exceeded', async function () {
@@ -492,9 +474,7 @@ describe('data:pg:info', function () {
       ])
 
       expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include(
-        'Storage: 64.00 TB / 50.00 TB (128.00%) (Exceeded configured critical quota)',
-      )
+      expect(ansis.strip(stdout.output.replaceAll(/\s+/g, ' '))).to.include('Storage: 64.00 TB / 50.00 TB (128.00%) (Exceeded configured critical quota)')
     })
   })
 
@@ -510,8 +490,7 @@ describe('data:pg:info', function () {
         const err = error as Error
         expect(ansis.strip(err.message)).to.equal(heredoc`
             You can only use this command on Advanced-tier databases.
-            Run heroku pg:info ${nonAdvancedAddon.name} -a myapp instead.`,
-        )
+            Run heroku pg:info ${nonAdvancedAddon.name} -a myapp instead.`)
       }
     })
   })

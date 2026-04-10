@@ -1,46 +1,66 @@
-/* eslint-env mocha */
-
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
-import {checkTos} from '../../../src/hooks/init/terms-of-service.js'
 import * as fs from 'fs-extra'
-import {join} from 'path'
+import * as os from 'node:os'
+import {join} from 'node:path'
+import sinon from 'sinon'
 
-const options = {
-  config: {
-    cacheDir: '/tmp/',
-  },
-}
+import {checkTos} from '../../../src/hooks/init/terms-of-service.js'
 
-const tosPath: string = join(options.config.cacheDir, 'terms-of-service')
-
-/*
 describe('terms-of-service hook', function () {
-  afterEach(function () {
-    fs.removeSync(tosPath)
+  let testCacheDir: string
+  let tosPath: string
+  let uxWarnStub: sinon.SinonStub
+
+  beforeEach(async function () {
+    // Create a temporary directory for each test
+    testCacheDir = join(os.tmpdir(), `test-tos-${Date.now()}`)
+    await fs.ensureDir(testCacheDir)
+    tosPath = join(testCacheDir, 'terms-of-service')
+
+    // Stub ux.warn
+    uxWarnStub = sinon.stub(ux, 'warn')
+  })
+
+  afterEach(async function () {
+    // Clean up test directory
+    await fs.remove(testCacheDir)
+    sinon.restore()
   })
 
   describe('has never run before', function () {
-    test
-      .stderr()
-      .do(() => checkTos(options))
-      .it('warns of new terms of service', context => {
-        expect(context.stderr).to.contain('Our terms of service have changed')
-      })
+    it('warns of new terms of service', async function () {
+      const options = {
+        config: {
+          cacheDir: testCacheDir,
+        },
+      }
+
+      await checkTos(options)
+
+      expect(uxWarnStub.calledOnce).to.be.true
+      expect(uxWarnStub.firstCall.args[0]).to.contain('Our terms of service have changed')
+
+      // Verify the file was created
+      const fileExists = await fs.pathExists(tosPath)
+      expect(fileExists).to.be.true
+    })
   })
 
   describe('has run once before', function () {
-    beforeEach(function () {
-      fs.createFileSync(tosPath)
-    })
+    it('does not give a warning', async function () {
+      // Create the file first to simulate having run before
+      await fs.createFile(tosPath)
 
-    test
-      .stderr()
-      .do(() => checkTos(options))
-      .it('does not give a warning', context => {
-        expect(context.stderr).to.not.contain('Our terms of service have changed')
-      })
+      const options = {
+        config: {
+          cacheDir: testCacheDir,
+        },
+      }
+
+      await checkTos(options)
+
+      expect(uxWarnStub.called).to.be.false
+    })
   })
 })
-
-*/
-

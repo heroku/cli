@@ -4,7 +4,7 @@ import {Config, Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stdout, stderr} from 'stdout-stderr'
+import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../../../../src/lib/run/log-displayer.js'
@@ -98,20 +98,20 @@ describe('logDisplayer', function () {
 
       addEventListener(type: string, listener: (event: any) => void) {
         switch (type) {
-        case 'error': {
-          this.onerror = listener
-          break
-        }
+          case 'error': {
+            this.onerror = listener
+            break
+          }
 
-        case 'message': {
-          this.onmessage = listener
-          break
-        }
+          case 'message': {
+            this.onmessage = listener
+            break
+          }
 
-        case 'open': {
-          this.onopen = listener
-          break
-        }
+          case 'open': {
+            this.onopen = listener
+            break
+          }
         }
       }
 
@@ -295,7 +295,7 @@ describe('logDisplayer', function () {
 
     context('when the log server responds with a stream of log lines', function () {
       it('displays log lines and exits', async function () {
-        const logServer = nock('https://logs.heroku.com', {
+        nock('https://logs.heroku.com', {
           reqheaders: {Accept: 'text/event-stream'},
         }).get('/stream')
           .query(true)

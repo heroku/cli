@@ -1,8 +1,8 @@
 import socks from '@heroku/socksv5'
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
-import child from 'child_process'
 import cliProgress from 'cli-progress'
+import child from 'node:child_process'
 import sinon from 'sinon'
 import {Client} from 'ssh2'
 
@@ -187,7 +187,7 @@ describe('ssh lib', function () {
         })
 
         await p
-        expect(clientExecStub.firstCall.args[0]).to.equal('echo "\\"hello\\""')
+        expect(clientExecStub.firstCall.args[0]).to.equal(String.raw`echo "\"hello\""`)
       })
 
       it('invokes callback after stream closes', async function () {
@@ -237,7 +237,7 @@ describe('ssh lib', function () {
         expect(config.hostHash).to.equal('sha256')
         expect(config.host).to.equal('addon.host')
         expect(config.username).to.equal('testuser')
-        expect(config.keepaliveInterval).to.equal(10000)
+        expect(config.keepaliveInterval).to.equal(10_000)
         expect(config.keepaliveCountMax).to.equal(3)
       })
     })

@@ -21,7 +21,7 @@ describe('heroku access', function () {
     it('shows the app collaborators', async function () {
       const apiGetPersonalApp = personalApp()
       const apiGetAppCollaborators = appCollaborators()
-      const {stdout, stderr} = await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
@@ -40,7 +40,7 @@ describe('heroku access', function () {
       const apiGetOrgMembers = teamMembers()
       const apiGetAppPermissions = appPermissions()
       const apiGetTeamAppCollaboratorsWithPermissions = teamAppCollaboratorsWithPermissions()
-      const {stdout, stderr} = await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])

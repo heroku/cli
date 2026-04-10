@@ -1,9 +1,10 @@
 import {ux} from '@oclif/core/ux'
-
 import {expect} from 'chai'
 import sinon from 'sinon'
 
-import {constructSortFilterTableOptions, constructTableColumns, huxTableNoWrapOptions, outputCSV} from '../../../../src/lib/utils/table-utils.js'
+import {
+  constructSortFilterTableOptions, constructTableColumns, huxTableNoWrapOptions, outputCSV,
+} from '../../../../src/lib/utils/table-utils.js'
 
 describe('tableUtils', function () {
   describe('constructSortFilterTableOptions', function () {

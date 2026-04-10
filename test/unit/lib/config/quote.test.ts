@@ -3,29 +3,29 @@ import {expect} from 'chai'
 import {parse, quote} from '../../../../src/lib/config/quote.js'
 
 describe('quote', function () {
-  [
+  for (const [a, b] of [
     ['abc', 'abc'],
     ['ab$c', "'ab$c'"],
     ['a\'bc', '"a\'bc"'],
-    ['a\nb\nc', '"a\\nb\\nc"'],
-    ['foo\\nb:ar\\bz', "'foo\\\\nb:ar\\\\bz'"],
-  ].forEach(([a, b]) => {
+    ['a\nb\nc', String.raw`"a\nb\nc"`],
+    [String.raw`foo\nb:ar\bz`, String.raw`'foo\\nb:ar\\bz'`],
+  ]) {
     it(`${a}===${b}`, function () {
       expect(quote(a)).to.eq(b)
     })
-  });
+  }
 
-  [
+  for (const s of [
     'abc',
     'ab$c',
     'a\'bc',
     'a\nb\nc',
-    'foo\\nb:ar\\bz',
-  ].forEach(s => {
+    String.raw`foo\nb:ar\bz`,
+  ]) {
     it(`parses "${s}"`, function () {
       expect(parse(quote(s))).to.eq(s)
     })
-  })
+  }
 })
 
 describe('parse', function () {

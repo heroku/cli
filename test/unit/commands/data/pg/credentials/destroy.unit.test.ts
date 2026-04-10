@@ -37,9 +37,7 @@ describe('data:pg:credentials:destroy', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can\'t destroy the default credential.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can\'t destroy the default credential.')
     }
   })
 
@@ -59,9 +57,7 @@ describe('data:pg:credentials:destroy', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can\'t destroy custom credentials on Essential-tier databases.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can\'t destroy custom credentials on Essential-tier databases.')
     }
   })
 
@@ -81,9 +77,7 @@ describe('data:pg:credentials:destroy', function () {
       const err = error as Error
 
       herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can\'t destroy the default credential.',
-      )
+      expect(ansis.strip(err.message)).to.equal('You can\'t destroy the default credential.')
     }
   })
 
@@ -138,9 +132,7 @@ describe('data:pg:credentials:destroy', function () {
 
         dataApi.done()
         herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(
-          'You must detach the credential analyst from the app ⬢ myapp before destroying it.',
-        )
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
       }
     })
 
@@ -167,9 +159,7 @@ describe('data:pg:credentials:destroy', function () {
 
         dataApi.done()
         herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(
-          'You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.',
-        )
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
       }
     })
 
@@ -199,12 +189,10 @@ describe('data:pg:credentials:destroy', function () {
       expect(stderr.output).to.equal(heredoc`
         Destroying credential my-credential... done
       `)
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        ansis.strip(heredoc`
+      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
           We destroyed the credential my-credential in ⛁ advanced-horizontal-01234.
           Database objects owned by my-credential will be assigned to the owner credential.
-        `),
-      )
+        `))
     })
 
     it('handles API errors gracefully', async function () {
@@ -259,9 +247,7 @@ describe('data:pg:credentials:destroy', function () {
         const err = error as Error
 
         herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(
-          'You must detach the credential analyst from the app ⬢ myapp before destroying it.',
-        )
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
       }
     })
 
@@ -282,9 +268,7 @@ describe('data:pg:credentials:destroy', function () {
         const err = error as Error
 
         herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(
-          'You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.',
-        )
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
       }
     })
 
@@ -312,12 +296,10 @@ describe('data:pg:credentials:destroy', function () {
       expect(stderr.output).to.equal(heredoc`
         Destroying credential my-credential... done
       `)
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        ansis.strip(heredoc`
+      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
           We destroyed the credential my-credential in ⛁ standard-database.
           Database objects owned by my-credential will be assigned to the default credential.
-        `),
-      )
+        `))
     })
 
     it('handles API errors gracefully', async function () {

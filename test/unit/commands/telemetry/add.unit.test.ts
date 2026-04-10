@@ -1,13 +1,16 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/add.js'
-import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain, splunkAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures.js'
+import {stdout} from 'stdout-stderr'
+
+import Cmd from '../../../../src/commands/telemetry/add.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import {firApp} from '../../../fixtures/apps/fixtures.js'
 import * as spaceFixtures from '../../../fixtures/spaces/fixtures.js'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import {
+  appTelemetryDrain1, grpcAppTelemetryDrain, spaceTelemetryDrain1, splunkAppTelemetryDrain,
+} from '../../../fixtures/telemetry/fixtures.js'
+import runCommand from '../../../helpers/runCommand.js'
+import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
@@ -34,7 +37,7 @@ describe('telemetry:add', function () {
         '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Exactly one of the following must be provided: --app, --space')
     }
   })
@@ -49,7 +52,7 @@ describe('telemetry:add', function () {
         'myspace',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('--space cannot also be provided when using --app')
     }
   })
@@ -111,7 +114,7 @@ describe('telemetry:add', function () {
         'logs,foo',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
     }
   })
@@ -131,7 +134,7 @@ describe('telemetry:add', function () {
         'logs,all',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Invalid signal option: logs,all. Run heroku telemetry:add --help to see signal options.')
     }
   })
@@ -142,16 +145,16 @@ describe('telemetry:add', function () {
       .reply(200, firApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: grpcDrainAppId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: testEndpoint,
-          type: 'otlp',
           headers: {},
+          type: 'otlp',
         },
+        owner: {
+          id: grpcDrainAppId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, spaceTelemetryDrain1)
 
@@ -173,16 +176,16 @@ describe('telemetry:add', function () {
       .reply(200, httpApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: appId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: testEndpoint,
-          type: 'otlphttp',
           headers: {},
+          type: 'otlphttp',
         },
+        owner: {
+          id: appId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, spaceTelemetryDrain1)
 
@@ -207,7 +210,7 @@ describe('telemetry:add', function () {
         'invalid-transport',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Expected --transport=invalid-transport to be one of: http, grpc')
     }
   })
@@ -219,16 +222,16 @@ describe('telemetry:add', function () {
       .reply(200, defaultApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: appId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: testEndpoint,
-          type: 'otlphttp',
           headers: {},
+          type: 'otlphttp',
         },
+        owner: {
+          id: appId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, spaceTelemetryDrain1)
 
@@ -249,18 +252,18 @@ describe('telemetry:add', function () {
       .reply(200, splunkApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: splunkDrainAppId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: splunkEndpoint,
-          type: 'splunk',
           headers: {
             Authorization: 'Splunk your-hec-token',
           },
+          type: 'splunk',
         },
+        owner: {
+          id: splunkDrainAppId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, splunkAppTelemetryDrain)
 

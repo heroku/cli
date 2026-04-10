@@ -6,7 +6,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import Cmd from '../../../../../src/commands/pg/backups/schedule.js'
 import runCommand from '../../../../helpers/runCommand.js'
 
-type CLIError = {oclif?: {exit?: number}} & Error
+type CLIError = Error & {oclif?: {exit?: number}}
 describe('pg:backups:schedule', function () {
   let api: nock.Scope
   let dataApi: nock.Scope

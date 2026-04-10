@@ -48,8 +48,7 @@ Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/h
 
 Enjoy!
 
-`,
-    )
+`)
   })
 
   it('provides zsh instructions', async function () {
@@ -82,7 +81,6 @@ Visit the autocomplete Dev Center doc at https://devcenter.heroku.com/articles/h
 
 Enjoy!
 
-`,
-    )
+`)
   })
 })

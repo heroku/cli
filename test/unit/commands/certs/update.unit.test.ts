@@ -1,5 +1,5 @@
-import ansis from 'ansis'
 import {Errors} from '@oclif/core'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
@@ -12,7 +12,7 @@ import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {certificateDetails, endpoint} from '../../../helpers/stubs/sni-endpoints.js'
-import * as sharedSni from './shared_sni.unit.test.js'
+import * as sharedSni from './shared-sni.unit.test.js'
 
 const heredoc = tsheredoc.default
 
@@ -145,7 +145,6 @@ describe('shared', function () {
     `
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stdout = function (certificateDetails: string, _endpoint: Partial<SniEndpoint>) {
     return `Updated certificate details:\n${heredoc(certificateDetails)}\n`
   }

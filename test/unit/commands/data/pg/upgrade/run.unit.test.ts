@@ -35,12 +35,10 @@ describe('data:pg:upgrade:run', function () {
     resolveApi.done()
     dataApi.done()
 
-    expect(ansis.strip(stderr.output)).to.equal(
-      heredoc(`
+    expect(ansis.strip(stderr.output)).to.equal(heredoc(`
         Upgrading your ⛁ ${addon.name} database from 16.10 to the latest supported Postgres version... done
         Upgrade started. Use heroku data:pg:upgrade:wait advanced-horizontal-01234 -a myapp to monitor progress.
-      `),
-    )
+      `))
     expect(stdout.output).to.equal('')
   })
 
@@ -84,10 +82,8 @@ describe('data:pg:upgrade:run', function () {
       ])
     } catch (error: unknown) {
       resolveApi.done()
-      expect(ansis.strip((error as Error).message)).to.equal(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use heroku pg:upgrade:run ${addon.name} --app myapp instead.`,
-      )
+      expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+          + `Use heroku pg:upgrade:run ${addon.name} --app myapp instead.`)
     }
   })
 

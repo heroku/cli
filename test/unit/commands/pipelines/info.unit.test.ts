@@ -27,9 +27,9 @@ describe('pipelines:info', function () {
   function itShowsPipelineApps(stdout: string) {
     expect(stdout).to.include('=== example')
 
-    appNames.forEach(name => {
+    for (const name of appNames) {
       expect(stdout).to.contain(name)
-    })
+    }
 
     const expectedTable = [
       'app name             stage       \n',
@@ -44,9 +44,9 @@ describe('pipelines:info', function () {
       '⬢ production-app-1   production ',
     ]
 
-    expectedTable.forEach(ln => {
+    for (const ln of expectedTable) {
       expect(removeAllWhitespace(stdout)).to.contain(removeAllWhitespace(ln))
-    })
+    }
   }
 
   function setupNock(owner?: Heroku.Account) {
@@ -56,25 +56,23 @@ describe('pipelines:info', function () {
     const couplings: Array<Heroku.PipelineCoupling> = []
 
     // Build couplings
-    appNames.forEach((name, id) => {
+    for (const [id, name] of appNames.entries()) {
       const stage: Stage = name.split('-')[0] as Stage
       couplings.push({
         app: {id: `app-${id + 1}`},
         stage,
       })
-    })
+    }
 
     // Build apps
-    appNames.forEach((name, id) => {
-      apps.push(
-        {
-          id: `app-${id + 1}`,
-          name,
-          owner: {email: 'foo@user.com', id: '1234'},
-          pipeline,
-        },
-      )
-    })
+    for (const [id, name] of appNames.entries()) {
+      apps.push({
+        id: `app-${id + 1}`,
+        name,
+        owner: {email: 'foo@user.com', id: '1234'},
+        pipeline,
+      })
+    }
 
     api
       .get('/pipelines')
@@ -105,9 +103,9 @@ describe('pipelines:info', function () {
       'Transfer these apps or change the pipeline owner in pipeline settings.',
       'See https://devcenter.heroku.com/articles/pipelines for more info.',
     ]
-    warningMessage.forEach(message => {
+    for (const message of warningMessage) {
       expect(stderr).to.contain(message)
-    })
+    }
   }
 
   beforeEach(function () {
