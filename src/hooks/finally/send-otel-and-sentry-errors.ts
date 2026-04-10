@@ -40,13 +40,16 @@ const finallyHook: Hook<'finally'> = async function (options) {
     return
   }
 
-  const {isTelemetryEnabled, spawnTelemetryWorker} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {isTelemetryEnabled, getTelemetryDisabledReason, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {
+    const reason = getTelemetryDisabledReason()
+    telemetryDebug('Telemetry disabled (%s): skipping finally hook, not sending error: %s', reason, options.error.message)
     return
   }
 
+  telemetryDebug('Telemetry enabled: finally hook spawning worker to send error: %s', options.error.message)
   // Spawn background process to send error without blocking
   spawnTelemetryWorker(options.error)
 }
