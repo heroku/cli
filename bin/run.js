@@ -12,9 +12,11 @@ process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS 
 const now = new Date()
 const cliStartTime = now.getTime()
 
-const {isTelemetryEnabled} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
+const {isTelemetryEnabled, getTelemetryDisabledReason, telemetryDebug} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
+const enableTelemetry = isTelemetryEnabled()
 
-if (isTelemetryEnabled()) {
+if (enableTelemetry) {
+  telemetryDebug('Telemetry enabled: setting up handlers (beforeExit, SIGINT, SIGTERM)')
   // Dynamically import telemetry modules
   const {setupTelemetryHandlers} = await import('../dist/lib/analytics-telemetry/worker-client.js')
   const {computeDuration} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
@@ -23,8 +25,11 @@ if (isTelemetryEnabled()) {
   setupTelemetryHandlers({
     cliStartTime,
     computeDuration,
-    enableTelemetry: isTelemetryEnabled(),
+    enableTelemetry,
   })
+} else {
+  const reason = getTelemetryDisabledReason()
+  telemetryDebug('Telemetry disabled (%s): skipping telemetry handler setup', reason)
 }
 
 await execute({dir: import.meta.url})

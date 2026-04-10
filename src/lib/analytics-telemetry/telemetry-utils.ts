@@ -71,6 +71,7 @@ export type TelemetryData = CLIError | Telemetry
 
 export interface TelemetryGlobal {
   cliTelemetry?: Telemetry
+  telemetrySent?: boolean
 }
 
 // All data types that can be sent via worker
@@ -83,6 +84,25 @@ export function computeDuration(cmdStartTime: number): number {
   const now = new Date()
   const cmdFinishTime = now.getTime()
   return cmdFinishTime - cmdStartTime
+}
+
+/**
+ * Get the reason why telemetry is disabled (for logging purposes)
+ */
+export function getTelemetryDisabledReason(): null | string {
+  if (process.env.DISABLE_TELEMETRY === 'true') {
+    return 'DISABLE_TELEMETRY=true'
+  }
+
+  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
+    return 'Windows platform requires ENABLE_WINDOWS_TELEMETRY=true'
+  }
+
+  if (process.env.IS_HEROKU_TEST_ENV === 'true') {
+    return 'IS_HEROKU_TEST_ENV=true'
+  }
+
+  return null
 }
 
 /**
@@ -119,11 +139,21 @@ export function getVersion(): string {
 
 /**
  * Check if telemetry is enabled based on environment variables
+ * Returns both the enabled status and a reason string for logging
  */
 export function isTelemetryEnabled(): boolean {
-  if (process.env.DISABLE_TELEMETRY === 'true') return false
-  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') return false
-  if (process.env.IS_HEROKU_TEST_ENV === 'true') return false
+  if (process.env.DISABLE_TELEMETRY === 'true') {
+    return false
+  }
+
+  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
+    return false
+  }
+
+  if (process.env.IS_HEROKU_TEST_ENV === 'true') {
+    return false
+  }
+
   return true
 }
 

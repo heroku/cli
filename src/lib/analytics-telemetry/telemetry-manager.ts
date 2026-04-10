@@ -65,7 +65,6 @@ class TelemetryManager {
    */
   async sendTelemetry(currentTelemetry: TelemetryData): Promise<void> {
     if (!isTelemetryEnabled()) {
-      telemetryDebug('Telemetry disabled, skipping send')
       return
     }
 
