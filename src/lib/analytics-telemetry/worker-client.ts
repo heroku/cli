@@ -1,11 +1,12 @@
 /* eslint-disable n/no-process-exit */
-import {CLIError, spawnTelemetryWorker, telemetryDebug, TelemetryGlobal} from './telemetry-utils.js'
+/* eslint-disable no-var */
+import {
+  CLIError, spawnTelemetryWorker, telemetryDebug, TelemetryGlobal,
+} from './telemetry-utils.js'
 
 // Extend global with telemetry property
 declare global {
-  // eslint-disable-next-line no-var
   var cliTelemetry: TelemetryGlobal['cliTelemetry']
-  // eslint-disable-next-line no-var
   var telemetrySent: TelemetryGlobal['telemetrySent']
 }
 

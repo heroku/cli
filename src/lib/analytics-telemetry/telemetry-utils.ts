@@ -87,6 +87,25 @@ export function computeDuration(cmdStartTime: number): number {
 }
 
 /**
+ * Get the reason why telemetry is disabled (for logging purposes)
+ */
+export function getTelemetryDisabledReason(): null | string {
+  if (process.env.DISABLE_TELEMETRY === 'true') {
+    return 'DISABLE_TELEMETRY=true'
+  }
+
+  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
+    return 'Windows platform requires ENABLE_WINDOWS_TELEMETRY=true'
+  }
+
+  if (process.env.IS_HEROKU_TEST_ENV === 'true') {
+    return 'IS_HEROKU_TEST_ENV=true'
+  }
+
+  return null
+}
+
+/**
  * Get authentication token, cached to avoid recreating Config/APIClient
  * Lazy-loads @heroku-cli/command and @oclif/core/config to avoid loading them during CLI init
  */
@@ -136,25 +155,6 @@ export function isTelemetryEnabled(): boolean {
   }
 
   return true
-}
-
-/**
- * Get the reason why telemetry is disabled (for logging purposes)
- */
-export function getTelemetryDisabledReason(): string | null {
-  if (process.env.DISABLE_TELEMETRY === 'true') {
-    return 'DISABLE_TELEMETRY=true'
-  }
-
-  if (process.platform === 'win32' && process.env.ENABLE_WINDOWS_TELEMETRY !== 'true') {
-    return 'Windows platform requires ENABLE_WINDOWS_TELEMETRY=true'
-  }
-
-  if (process.env.IS_HEROKU_TEST_ENV === 'true') {
-    return 'IS_HEROKU_TEST_ENV=true'
-  }
-
-  return null
 }
 
 /**
