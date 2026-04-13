@@ -1,4 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
@@ -8,7 +9,6 @@ import type {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import {displayNat, displayShieldState, renderInfo} from '../../../../src/lib/spaces/spaces.js'
 import {SpaceNat} from '../../../../src/lib/types/fir.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

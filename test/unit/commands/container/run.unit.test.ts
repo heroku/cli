@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -7,7 +8,6 @@ import {stderr, stdout} from 'stdout-stderr'
 import Cmd from '../../../../src/commands/container/run.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 import runCommand from '../../../helpers/legacy-run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('container run', function () {
   let api: nock.Scope

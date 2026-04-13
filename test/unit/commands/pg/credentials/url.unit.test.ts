@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
@@ -6,7 +7,6 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/credentials/url.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import runCommand from '../../../../helpers/legacy-run-command.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

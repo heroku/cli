@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
@@ -10,7 +11,6 @@ import {
   appTelemetryDrain1, grpcAppTelemetryDrain, spaceTelemetryDrain1, splunkAppTelemetryDrain,
 } from '../../../fixtures/telemetry/fixtures.js'
 import runCommand from '../../../helpers/legacy-run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id

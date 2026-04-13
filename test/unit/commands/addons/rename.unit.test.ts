@@ -1,10 +1,9 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/addons/rename.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('addons:rename', function () {
   context('when the add-on exists', function () {

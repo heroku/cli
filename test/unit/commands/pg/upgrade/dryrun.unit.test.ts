@@ -1,5 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
@@ -10,7 +10,6 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/dryrun.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

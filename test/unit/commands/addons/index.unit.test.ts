@@ -1,6 +1,6 @@
 /* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -8,7 +8,6 @@ import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/index.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons', function () {

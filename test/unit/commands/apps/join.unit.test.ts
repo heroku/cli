@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
@@ -6,7 +7,6 @@ import Cmd from '../../../../src/commands/apps/join.js'
 import runCommand from '../../../helpers/legacy-run-command.js'
 import {userAccount} from '../../../helpers/stubs/get.js'
 import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('heroku apps:join', function () {
   let apiGetUserAccount: nock.Scope

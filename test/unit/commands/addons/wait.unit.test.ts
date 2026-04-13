@@ -1,4 +1,4 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import _ from 'lodash'
 import lolex from 'lolex'
@@ -7,7 +7,6 @@ import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/wait.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 

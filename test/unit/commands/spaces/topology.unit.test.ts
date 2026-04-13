@@ -1,5 +1,5 @@
 import {App} from '@heroku-cli/schema'
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
@@ -8,7 +8,6 @@ import type {SpaceTopology} from '../../../../src/lib/types/spaces.js'
 
 import Cmd from '../../../../src/commands/spaces/topology.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -5,7 +6,6 @@ import {stderr} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ps/restart.js'
 import runCommand from '../../../helpers/legacy-run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('ps:restart', function () {
   it('restarts all dynos', async function () {

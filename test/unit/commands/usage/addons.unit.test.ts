@@ -1,11 +1,10 @@
 import * as Heroku from '@heroku-cli/schema'
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/usage/addons.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('usage:addons', function () {

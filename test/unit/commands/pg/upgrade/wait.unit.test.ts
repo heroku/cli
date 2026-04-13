@@ -1,11 +1,10 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stdout} from 'stdout-stderr'
@@ -7,7 +8,6 @@ import Cmd from '../../../../src/commands/telemetry/index.js'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 import runCommand from '../../../helpers/legacy-run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default

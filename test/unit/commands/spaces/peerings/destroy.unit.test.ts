@@ -1,9 +1,8 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../../src/commands/spaces/peerings/destroy.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 describe('spaces:peering:destroy', function () {
   it('destroys an active peering connection', async function () {

@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
@@ -15,7 +16,6 @@ import {
   endpointDomain,
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

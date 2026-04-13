@@ -1,9 +1,8 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/pg/unfollow.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('pg:unfollow', function () {
   const addon = fixtures.addons['dwh-db']

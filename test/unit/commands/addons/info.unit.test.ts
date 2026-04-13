@@ -1,10 +1,9 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/addons/info.js'
 import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const {cache} = resolveAddon
 

@@ -1,10 +1,9 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/pg/wait.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const all = [
   {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},

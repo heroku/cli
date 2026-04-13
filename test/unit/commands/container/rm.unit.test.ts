@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -5,7 +6,6 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/rm.js'
 import runCommand from '../../../helpers/legacy-run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('container removal', function () {
   let api: nock.Scope

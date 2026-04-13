@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
@@ -14,7 +15,6 @@ import {
   endpointWithDomains,
   untrustedCertificateDetails,
 } from '../../../helpers/stubs/sni-endpoints.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as sharedSni from './shared-sni.unit.test.js'
 
 const heredoc = tsheredoc.default

@@ -1,3 +1,4 @@
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
@@ -11,7 +12,6 @@ import {
   endpointWildcard,
   endpointWildcardBug,
 } from '../../../helpers/stubs/sni-endpoints.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default

@@ -1,10 +1,10 @@
 import {Peering, PeeringInfo} from '@heroku-cli/schema'
+import {expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {displayPeeringInfo, displayPeerings, displayPeeringsAsJSON} from '../../../../src/lib/spaces/peering.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default

@@ -1,8 +1,7 @@
-import {runCommand} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/spaces/rename.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('spaces:rename', function () {
   it('renames a space', async function () {
