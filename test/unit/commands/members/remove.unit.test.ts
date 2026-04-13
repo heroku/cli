@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import MembersRemove from '../../../../src/commands/members/remove.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku members:remove', function () {
   let api: nock.Scope

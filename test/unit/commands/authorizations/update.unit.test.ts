@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import AuthorizationsUpdate from '../../../../src/commands/authorizations/update.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:update', function () {
   let api: nock.Scope

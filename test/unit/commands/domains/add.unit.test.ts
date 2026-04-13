@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import DomainsAdd from '../../../../src/commands/domains/add.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:add', function () {
   afterEach(function () {

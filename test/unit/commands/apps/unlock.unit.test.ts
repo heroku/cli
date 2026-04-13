@@ -5,7 +5,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/apps/unlock.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('heroku apps:unlock', function () {
   let api: nock.Scope

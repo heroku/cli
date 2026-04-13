@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -5,7 +6,6 @@ import sinon from 'sinon'
 
 import Cmd, {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {EditorFactory} from '../../../../src/lib/config/util.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config:edit', function () {
   let updated: Record<string, unknown> | string

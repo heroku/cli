@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import LabsDisable from '../../../../src/commands/labs/disable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('labs:disable', function () {
   let api: nock.Scope

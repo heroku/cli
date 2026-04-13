@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import sinon from 'sinon'
 
 import DataPgDocs from '../../../../../src/commands/data/pg/docs.js'
-import runCommand from '../../../../../test/helpers/runCommand.js'
+import runCommand from '../../../../../test/helpers/legacy-run-command.js'
 
 describe('data:pg:docs', function () {
   let urlOpenerStub: sinon.SinonStub

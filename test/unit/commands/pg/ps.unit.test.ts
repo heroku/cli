@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -6,7 +7,6 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/ps.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 

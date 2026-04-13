@@ -1,8 +1,7 @@
+import {type GenericCmd, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-
-import {type GenericCmd, runCommand} from '../../../helpers/run-command.js'
 
 /* eslint-disable mocha/no-exports */
 export function shouldHandleArgs(command: GenericCmd, flags: Record<string, unknown> = {}) {

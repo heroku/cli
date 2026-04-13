@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {join} from 'node:path'
 import {fileURLToPath} from 'node:url'
 
 import Info from '../../../../src/commands/version/info.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('version:info', function () {
   const __dirname = fileURLToPath(new URL('.', import.meta.url))

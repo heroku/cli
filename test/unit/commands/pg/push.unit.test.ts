@@ -6,7 +6,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/push.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 

@@ -5,7 +5,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/disable.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default

@@ -4,7 +4,7 @@ import childProcess from 'node:child_process'
 import sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/apps/open.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import runCommandHelper from '../../../helpers/legacy-run-command.js'
 
 describe('apps:open', function () {
   const app = {

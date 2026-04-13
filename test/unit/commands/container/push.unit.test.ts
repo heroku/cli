@@ -7,7 +7,7 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/push.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('container push', function () {
   let api: nock.Scope

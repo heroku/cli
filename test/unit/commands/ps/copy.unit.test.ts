@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -7,7 +8,6 @@ import sinon from 'sinon'
 import PsCopy from '../../../../src/commands/ps/copy.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ps:copy', function () {
   let fsExistsSyncStub: sinon.SinonStub

@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
@@ -5,7 +6,6 @@ import Cmd from '../../../../src/commands/spaces/info.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default

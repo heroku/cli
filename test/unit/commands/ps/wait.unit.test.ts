@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import PsWait from '../../../../src/commands/ps/wait.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku ps:wait', function () {
   const APP_NAME = 'wubalubadubdub'

@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/access/remove.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 

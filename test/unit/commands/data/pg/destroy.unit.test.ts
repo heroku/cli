@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import DataPgDestroy from '../../../../../src/commands/data/pg/destroy.js'
 import {addon, destroyedAddonResponse, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 

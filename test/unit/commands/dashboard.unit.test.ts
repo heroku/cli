@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../src/commands/dashboard.js'
 import {ago} from '../../../src/lib/time.js'
-import runCommand from '../../helpers/runCommand.js'
+import runCommand from '../../helpers/legacy-run-command.js'
 import {unwrap} from '../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default

@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import ClientsCreate from '../../../../src/commands/clients/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:create', function () {
   let api: nock.Scope

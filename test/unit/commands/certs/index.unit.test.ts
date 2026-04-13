@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import {
   endpointAcm,
   endpointStables,

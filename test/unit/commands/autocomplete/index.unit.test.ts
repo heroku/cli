@@ -1,11 +1,11 @@
 /* eslint-disable mocha/no-top-level-hooks */
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import AutocompleteIndex from '../../../../src/commands/autocomplete/index.js'
 // autocomplete will throw error on windows
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 runtest('autocomplete:index', () => {
   let api: nock.Scope

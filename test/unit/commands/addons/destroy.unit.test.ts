@@ -1,4 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import * as lolex from 'lolex'
@@ -6,7 +7,6 @@ import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/destroy.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('addons:destroy', function () {
   let api: nock.Scope

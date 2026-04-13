@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/pg/unfollow.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('pg:unfollow', function () {

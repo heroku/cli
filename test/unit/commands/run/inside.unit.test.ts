@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import RunInside from '../../../../src/commands/run/inside.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('run:inside', function () {
   const originalProcessArgv = [...process.argv]

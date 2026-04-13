@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/apps/transfer.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import {apps, personalApp, teamApp} from '../../../helpers/stubs/get.js'
 import {teamAppTransfer} from '../../../helpers/stubs/patch.js'
 import {personalToPersonal} from '../../../helpers/stubs/post.js'

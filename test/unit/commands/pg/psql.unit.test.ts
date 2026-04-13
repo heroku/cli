@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/psql.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 const db = {
   attachment: {

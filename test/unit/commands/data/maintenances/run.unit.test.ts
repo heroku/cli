@@ -8,7 +8,7 @@ import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.
 import {cedarApp} from '../../../../fixtures/apps/fixtures.js'
 import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, legacyEssentialAddon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const appInMaintenance = {
   ...cedarApp,

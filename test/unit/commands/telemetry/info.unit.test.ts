@@ -4,7 +4,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/info.js'
 import {TelemetryDrain} from '../../../../src/lib/types/telemetry.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default

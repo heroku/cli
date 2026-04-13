@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
 import Local from '../../../../src/commands/local/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('local', function () {
   let sandbox: ReturnType<typeof sinon.createSandbox>

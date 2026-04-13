@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {formatDistanceToNow} from 'date-fns'
 import nock from 'nock'
 
 import AuthorizationsInfo from '../../../../src/commands/authorizations/info.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:info', function () {
   let api: nock.Scope

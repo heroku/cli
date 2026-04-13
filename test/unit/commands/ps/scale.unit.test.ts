@@ -4,7 +4,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ps/scale.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('ps:scale', function () {
   let api: nock.Scope

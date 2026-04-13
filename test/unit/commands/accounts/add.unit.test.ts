@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('accounts:add', function () {
   let api: nock.Scope

@@ -7,7 +7,7 @@ import DataMaintenancesWait from '../../../../../src/commands/data/maintenances/
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {maintenance} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const completedMaintenance: Maintenance = {
   ...maintenance,

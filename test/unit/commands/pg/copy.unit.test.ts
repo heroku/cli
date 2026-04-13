@@ -4,7 +4,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/copy.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 const addon = {
   app: {name: 'myapp'}, config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'], id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},

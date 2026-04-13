@@ -3,7 +3,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ps/type.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 

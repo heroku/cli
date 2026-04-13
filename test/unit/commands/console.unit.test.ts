@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import RunConsole from '../../../src/commands/console.js'
 import Dyno from '../../../src/lib/run/dyno.js'
-import runCommandHelper from '../../helpers/runCommand.js'
+import runCommandHelper from '../../helpers/legacy-run-command.js'
 
 describe('console', function () {
   let dynoOpts: {command: string}

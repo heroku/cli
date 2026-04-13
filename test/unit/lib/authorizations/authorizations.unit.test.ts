@@ -1,9 +1,9 @@
 import * as Heroku from '@heroku-cli/schema'
+import {captureOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
 import {display} from '../../../../src/lib/authorizations/authorizations.js'
-import {captureOutput} from '../../../helpers/run-command.js'
 
 describe('display', function () {
   const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'

@@ -1,11 +1,11 @@
 /* eslint-disable max-nested-callbacks */
+import {runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import SetupCommand from '../../../../src/commands/pipelines/setup.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:setup', function () {
   let api: nock.Scope

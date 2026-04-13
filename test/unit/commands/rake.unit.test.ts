@@ -4,7 +4,7 @@ import sinon from 'sinon'
 
 import RakeCommand from '../../../src/commands/rake.js'
 import Dyno from '../../../src/lib/run/dyno.js'
-import runCommandHelper from '../../helpers/runCommand.js'
+import runCommandHelper from '../../helpers/legacy-run-command.js'
 
 describe('rake', function () {
   let dynoOpts: {command: any}

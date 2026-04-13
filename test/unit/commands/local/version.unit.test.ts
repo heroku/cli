@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 
 import Version from '../../../../src/commands/local/version.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('local:version', function () {
   it('rejects extra arguments with helpful error', async function () {

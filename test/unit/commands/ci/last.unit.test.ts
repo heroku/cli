@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import CiLast from '../../../../src/commands/ci/last.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:last', function () {
   const testRunNumber = 10

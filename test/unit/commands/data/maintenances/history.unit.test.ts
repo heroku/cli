@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesHistory from '../../../../../src/commands/data/maintenances/history.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 

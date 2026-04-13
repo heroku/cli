@@ -15,7 +15,7 @@ import {
   nonAdvancedAddon,
   pgInfo,
 } from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const stubbedDate = new Date('2025-01-31T00:00:00+00:00')
 const heredoc = tsheredoc.default

@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {got} from 'got'
 import nock from 'nock'
@@ -7,7 +8,6 @@ import sinon from 'sinon'
 import Cmd from '../../../../src/commands/ci/run.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
 import {fileService} from '../../../../src/lib/ci/source.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:run', function () {
   let api: nock.Scope

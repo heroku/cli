@@ -5,7 +5,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import DataMaintenancesWindow from '../../../../../../src/commands/data/maintenances/window/index.js'
 import {maintenanceWindow} from '../../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/runCommand.js'
+import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 describe('data:maintenances:window', function () {
   const app = {

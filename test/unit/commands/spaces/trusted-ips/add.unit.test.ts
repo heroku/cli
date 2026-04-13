@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Add from '../../../../../src/commands/spaces/trusted-ips/add.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('trusted-ips:add', function () {
   let api: nock.Scope

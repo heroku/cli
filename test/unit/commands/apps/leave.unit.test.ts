@@ -3,7 +3,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import LeaveCommand from '../../../../src/commands/apps/leave.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
+import runCommandHelper from '../../../helpers/legacy-run-command.js'
 
 describe('heroku apps:leave', function () {
   let apiGetUserAccount: ReturnType<typeof mockUserAccount>

@@ -7,7 +7,7 @@ import stdMocks from 'std-mocks'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/release.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('container release', function () {
   let api: nock.Scope

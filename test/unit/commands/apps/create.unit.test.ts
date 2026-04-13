@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {execSync} from 'node:child_process'
 import sinon from 'sinon'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('apps:create', function () {
   let api: nock.Scope

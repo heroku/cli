@@ -6,7 +6,7 @@ import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/pull.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('container pull', function () {
   let sandbox: sinon.SinonSandbox

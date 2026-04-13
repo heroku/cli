@@ -4,7 +4,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/info.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import {
   certificateDetails,
   certificateDetailsWithDomains,

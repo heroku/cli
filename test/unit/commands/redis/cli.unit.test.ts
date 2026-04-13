@@ -1,10 +1,10 @@
+import {type GenericCmd, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import {Duplex} from 'node:stream'
 
 import Cmd from '../../../../src/commands/redis/cli.js'
-import {type GenericCmd, runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 class Client extends Duplex {

@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/spaces/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces', function () {

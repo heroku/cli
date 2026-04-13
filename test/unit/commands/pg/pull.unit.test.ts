@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import childProcess from 'node:child_process'
@@ -5,7 +6,6 @@ import sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/pull.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 

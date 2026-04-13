@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connections.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces:vpn:connections', function () {

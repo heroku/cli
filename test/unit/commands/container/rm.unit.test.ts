@@ -4,7 +4,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/rm.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('container removal', function () {

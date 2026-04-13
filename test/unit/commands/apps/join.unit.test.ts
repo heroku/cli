@@ -3,7 +3,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/apps/join.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import {userAccount} from '../../../helpers/stubs/get.js'
 import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'

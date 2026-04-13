@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Get from '../../../../../src/commands/ci/config/get.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const key = 'FOO'
 const value = 'bar'

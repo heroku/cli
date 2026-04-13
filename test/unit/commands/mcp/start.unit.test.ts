@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import * as childProcess from 'node:child_process'
 import {EventEmitter} from 'node:events'
@@ -6,7 +7,6 @@ import {fileURLToPath} from 'node:url'
 import * as sinon from 'sinon'
 
 import MCPStart from '../../../../src/commands/mcp/start.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 class MockStream extends EventEmitter {
   end() {

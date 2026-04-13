@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -5,7 +6,6 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 

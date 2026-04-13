@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import runCommand, {GenericCmd} from '../../../helpers/runCommand.js'
+import runCommand, {GenericCmd} from '../../../helpers/legacy-run-command.js'
 import {
   certificateDetails,
   endpoint,

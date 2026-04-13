@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/pg/killall.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pg:killall', function () {
   let pg: nock.Scope

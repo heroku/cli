@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import AddCommand from '../../../../src/commands/pipelines/add.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:add', function () {
   let api: nock.Scope

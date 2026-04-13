@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import Run from '../../../../src/commands/run/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('run', function () {
   beforeEach(function () {

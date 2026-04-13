@@ -1,11 +1,11 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import Ci from '../../../../src/commands/ci/index.js'
 import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import customRunCommand from '../../../helpers/runCommand.js'
+import customRunCommand from '../../../helpers/legacy-run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('ci', function () {

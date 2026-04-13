@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const appId = '30f93b8f-c592-4004-8d8a-3efb20395484'

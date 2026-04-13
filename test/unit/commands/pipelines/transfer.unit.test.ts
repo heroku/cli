@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import TransferCommand from '../../../../src/commands/pipelines/transfer.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:transfer', function () {
   const pipeline = {

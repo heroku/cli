@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksAdd from '../../../../src/commands/buildpacks/add.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:add', function () {
   let api: nock.Scope

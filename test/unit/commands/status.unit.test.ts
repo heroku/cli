@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
@@ -12,7 +13,6 @@ import {
   nonHerokuIncidentResponse,
   trustLocalizationsResponse,
 } from '../../fixtures/status/fixtures.js'
-import {runCommand} from '../../helpers/run-command.js'
 
 describe('status - Heroku Status API', function () {
   let herokuStatusApi: nock.Scope

@@ -11,7 +11,7 @@ import {
   settingsGetResponse,
   settingsPutResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default

@@ -9,7 +9,7 @@ import sinon from 'sinon'
 
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {BuildpackInstallation} from '../../../../src/lib/types/fir.js'
-import {getHerokuAPI} from '../../../helpers/testInstances.js'
+import {getHerokuAPI} from '../../../helpers/test-instances.js'
 
 describe('HerokuExec', function () {
   let herokuAPI: APIClient

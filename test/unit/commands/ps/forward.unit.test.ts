@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import net from 'node:net'
@@ -5,7 +6,6 @@ import sinon from 'sinon'
 
 import PsForward from '../../../../src/commands/ps/forward.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 function createMockServerWithSetup(portsCount = 1) {
   let setupComplete: () => void

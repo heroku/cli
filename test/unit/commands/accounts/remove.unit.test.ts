@@ -3,7 +3,7 @@ import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/remove.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('accounts:remove', function () {
   let currentStub: sinon.SinonStub

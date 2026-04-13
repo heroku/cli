@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/kill.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('pg:kill', function () {
   let sandbox: sinon.SinonSandbox

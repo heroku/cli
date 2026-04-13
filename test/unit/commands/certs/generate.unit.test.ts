@@ -4,7 +4,7 @@ import sinon, {SinonStub} from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/certs/generate.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 
 describe('heroku certs:generate', function () {

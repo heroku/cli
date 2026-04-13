@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Unset from '../../../../../src/commands/ci/config/unset.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('heroku ci:config:unset', function () {
   const key = 'FOO'

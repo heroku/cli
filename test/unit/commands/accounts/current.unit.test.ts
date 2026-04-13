@@ -5,7 +5,7 @@ import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/accounts/current.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('accounts:current', function () {
   let currentStub: sinon.SinonStub

@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/credentials.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 /** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */

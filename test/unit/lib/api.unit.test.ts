@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import {createTestRun, getTestNodes, updateTestRun} from '../../../src/lib/api.js'
-import {getHerokuAPI} from '../../helpers/testInstances.js'
+import {getHerokuAPI} from '../../helpers/test-instances.js'
 
 const TEST_RUN = {id: 'uuid-999'}
 

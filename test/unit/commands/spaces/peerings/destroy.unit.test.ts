@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../../src/commands/spaces/peerings/destroy.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 describe('spaces:peering:destroy', function () {

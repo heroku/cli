@@ -5,7 +5,7 @@ import nock from 'nock'
 import {stderr} from 'stdout-stderr'
 
 import RunDetached from '../../../../src/commands/run/detached.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('run:detached', function () {
   beforeEach(function () {

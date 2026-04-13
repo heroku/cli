@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/pipelines/promote.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:promote', function () {
   const pipeline = {

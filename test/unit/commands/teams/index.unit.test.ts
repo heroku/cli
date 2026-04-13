@@ -3,7 +3,7 @@ import nock from 'nock'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/teams/index.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import {teams} from '../../../helpers/stubs/get.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 

@@ -22,7 +22,7 @@ import {
   pgInfo,
   pricingResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 const {prompt} = inquirer

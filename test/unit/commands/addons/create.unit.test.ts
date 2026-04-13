@@ -1,4 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
+import {runCommand} from '@heroku-cli/test-utils'
 import {HTTPError} from '@heroku/http-call'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -8,7 +9,6 @@ import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('addons:create', function () {

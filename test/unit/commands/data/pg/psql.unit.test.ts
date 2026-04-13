@@ -7,7 +7,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import type {DynoOpts} from '../../../../../src/lib/run/dyno.js'
 
 import DataPgPsql from '../../../../../src/commands/data/pg/psql.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 describe('data:pg:psql', function () {
   let psqlServiceExecQueryStub: sinon.SinonSpy

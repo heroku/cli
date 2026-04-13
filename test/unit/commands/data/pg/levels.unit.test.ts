@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import DataPgLevels from '../../../../../src/commands/data/pg/levels.js'
 import {levelsResponse} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 
 describe('data:pg:levels', () => {
   let dataApi: nock.Scope

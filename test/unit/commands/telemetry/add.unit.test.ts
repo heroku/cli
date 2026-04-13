@@ -9,7 +9,7 @@ import * as spaceFixtures from '../../../fixtures/spaces/fixtures.js'
 import {
   appTelemetryDrain1, grpcAppTelemetryDrain, spaceTelemetryDrain1, splunkAppTelemetryDrain,
 } from '../../../fixtures/telemetry/fixtures.js'
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const appId = appTelemetryDrain1.owner.id

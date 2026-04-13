@@ -4,7 +4,7 @@ import sinon, {SinonStub} from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
-import runCommand from '../../../helpers/runCommand.js'
+import runCommand from '../../../helpers/legacy-run-command.js'
 const heredoc = tsheredoc.default
 import Cmd from '../../../../src/commands/certs/add.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'

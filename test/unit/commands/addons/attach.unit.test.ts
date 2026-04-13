@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -5,7 +6,6 @@ import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/attach.js'
 import ConfirmCommand from '../../../../src/lib/confirm-command.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 let confirmStub: sinon.SinonStub
 

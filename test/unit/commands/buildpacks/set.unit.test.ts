@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksSet from '../../../../src/commands/buildpacks/set.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:set', function () {
   let api: nock.Scope

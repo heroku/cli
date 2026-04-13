@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import {appAddon, resolveAddon} from '../../../../src/lib/addons/resolve.js'
-import {getHerokuAPI} from '../../../helpers/testInstances.js'
+import {getHerokuAPI} from '../../../helpers/test-instances.js'
 
 describe('resolve', function () {
   let herokuAPI: APIClient

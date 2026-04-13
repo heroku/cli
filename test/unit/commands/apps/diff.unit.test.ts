@@ -1,9 +1,9 @@
 import {APIClient} from '@heroku-cli/command'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
 import AppsDiff from '../../../../src/commands/apps/diff.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('apps:diff', function () {
   const app1Name = 'myapp-one'

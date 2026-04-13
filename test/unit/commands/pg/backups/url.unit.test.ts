@@ -2,7 +2,7 @@ import nock from 'nock'
 import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/pg/backups/url.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {

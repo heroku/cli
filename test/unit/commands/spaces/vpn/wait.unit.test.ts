@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/wait.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 

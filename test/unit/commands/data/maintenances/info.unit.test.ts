@@ -4,7 +4,7 @@ import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesInfo from '../../../../../src/commands/data/maintenances/info.js'
 import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import runCommand from '../../../../helpers/legacy-run-command.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 
 describe('data:maintenances:info', function () {
