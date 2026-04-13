@@ -493,7 +493,11 @@ export default class Dyno extends Duplex {
       this.legacyUri = new URL(this.dyno.attach_url)
     }
 
+<<<<<<< HEAD
     this.p = this._useSSH ? this._ssh() : this._rendezvous()
+=======
+    this.p = this._useSSH ? this._ssh() : this._rendezvous();
+>>>>>>> b431e8a9d (fix: apply linting fixes and resolve test failures)
 
     return this.p.then(() => {
       this.end()

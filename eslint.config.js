@@ -8,7 +8,14 @@ export default [
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       camelcase: 'warn',
+      'n/no-unpublished-bin': 'off', // we're getting false positives with this
+      'n/no-unsupported-features/node-builtins': 'warn',
+      'no-await-in-loop': 'warn',
       'no-promise-executor-return': 'warn',
+      'unicorn/consistent-function-scoping': 'warn',
+      'unicorn/no-array-callback-reference': 'warn',
+      'unicorn/no-array-for-each': 'warn',
+      'unicorn/no-array-reduce': 'warn',
       'unicorn/no-empty-file': 'warn',
       'unicorn/prefer-event-target': 'warn',
       'unicorn/prefer-spread': 'warn',
