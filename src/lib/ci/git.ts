@@ -115,7 +115,7 @@ function gitUrl(app?: string) {
  * Lists remotes by their url and returns an
  * array of objects containing the name and kind
  *
- * @return A map of remotes whose key is the url
+ * @returns A map of remotes whose key is the url
  * and value is an array of objects containing
  * the 'name' (heroku, heroku-dev, etc.) and 'kind' (fetch, push, etc.)
  */
@@ -125,12 +125,13 @@ async function listRemotes(): Promise<Map<string, {kind: string; name: string,}[
   const remotes = lines.map(line => line.trim().split(/\s+/)).map(([name, url, kind]) => ({kind, name, url}))
   const remotesByUrl = new Map<string, {kind: string; name: string,}[]>()
 
-  remotes.forEach(remote => {
+  for (const remote of remotes) {
     const {url, ...nameAndKind} = remote
     const entry = remotesByUrl.get(url) ?? []
     entry.push(nameAndKind)
     remotesByUrl.set(url, entry)
-  })
+  }
+
   return remotesByUrl
 }
 

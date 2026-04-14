@@ -1,19 +1,16 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import socks from '@heroku/socksv5'
 import {ux} from '@oclif/core/ux'
-
-import child from 'child_process'
 import cliProgress from 'cli-progress'
-import crypto from 'crypto'
 import debug from 'debug'
-import fs from 'fs'
-import * as fsp from 'fs/promises'
-import os from 'os'
-import path from 'path'
+import child from 'node:child_process'
+import crypto from 'node:crypto'
+import * as fsp from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import stream from 'node:stream'
+import tty from 'node:tty'
 import {Client, ConnectConfig} from 'ssh2'
-import stream from 'stream'
-import tmp from 'tmp'
-import tty from 'tty'
 
 const sshDebug = debug('cli:ps-exec:ssh')
 
@@ -84,7 +81,7 @@ export class HerokuSsh {
         debug: sshDebug,
         host: addonHost,
         keepaliveCountMax: 3,
-        keepaliveInterval: 10000,
+        keepaliveInterval: 10_000,
         privateKey,
         username: dynoUser,
       })
@@ -148,7 +145,8 @@ export class HerokuSsh {
     socks.createServer((info, accept, deny) => {
       const conn = new Client()
       conn.on('ready', () => {
-        conn.forwardOut(info.srcAddr,
+        conn.forwardOut(
+          info.srcAddr,
           info.srcPort,
           info.dstAddr,
           info.dstPort,
@@ -165,7 +163,8 @@ export class HerokuSsh {
               })
             } else
               conn.end()
-          })
+          },
+        )
       }).on('error', () => {
         deny()
       }).connect({
@@ -225,7 +224,7 @@ export class HerokuSsh {
     let cmd = ''
     for (let arg of args) {
       if (arg.includes(' ') || arg.includes('"')) {
-        arg = '"' + arg.replaceAll('"', '\\"') + '"'
+        arg = '"' + arg.replaceAll('"', String.raw`\"`) + '"'
       }
 
       cmd = cmd + ' ' + arg

@@ -1,9 +1,9 @@
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import {SpawnOptions} from 'child_process'
 import debug from 'debug'
-import * as fs from 'fs'
-import * as path from 'node:path'
+import {SpawnOptions} from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
 
 export async function fetchVersion(db: pg.ConnectionDetails) {
   const psqlService = new utils.pg.PsqlService(db)
@@ -55,16 +55,16 @@ export function psqlInteractiveOptions(prompt: string, dbEnv: NodeJS.ProcessEnv)
     if (fs.existsSync(psqlHistoryPath) && fs.statSync(psqlHistoryPath).isDirectory()) {
       const appLogFile = `${psqlHistoryPath}/${prompt.split(':')[0]}`
       pgDebug('Logging psql history to %s', appLogFile)
-      psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${appLogFile}`])
+      psqlArgs = [...psqlArgs, '--set', `HISTFILE=${appLogFile}`]
     } else if (fs.existsSync(path.dirname(psqlHistoryPath))) {
       pgDebug('Logging psql history to %s', psqlHistoryPath)
-      psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${psqlHistoryPath}`])
+      psqlArgs = [...psqlArgs, '--set', `HISTFILE=${psqlHistoryPath}`]
     } else {
       ux.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
     }
   }
 
-  psqlArgs = psqlArgs.concat(['--set', 'sslmode=require'])
+  psqlArgs = [...psqlArgs, '--set', 'sslmode=require']
 
   const childProcessOptions: SpawnOptions = {
     stdio: 'inherit',

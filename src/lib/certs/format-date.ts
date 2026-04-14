@@ -1,6 +1,6 @@
 import {format} from 'date-fns'
 
-function getUTCDate(dateString: string | number = Date.now()) {
+function getUTCDate(dateString: number | string = Date.now()) {
   const date = new Date(dateString)
 
   return new Date(
@@ -13,6 +13,6 @@ function getUTCDate(dateString: string | number = Date.now()) {
   )
 }
 
-export default function (date: string) {
+export default function formatDate(date: string) {
   return `${format(getUTCDate(date), 'yyyy-MM-dd HH:mm')} UTC`
 }

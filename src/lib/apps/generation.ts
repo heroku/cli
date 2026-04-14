@@ -1,13 +1,16 @@
 import {APIClient} from '@heroku-cli/command'
-import {App, Space, DynoSize, TeamApp, Pipeline, Generation, AppGeneration, DynoSizeGeneration, PipelineGeneration} from '../types/fir.js'
+
 import Dyno from '../run/dyno.js'
+import {
+  App, AppGeneration, DynoSize, DynoSizeGeneration, Generation, Pipeline, PipelineGeneration, Space, TeamApp,
+} from '../types/fir.js'
 
-export type GenerationKind = 'fir' | 'cedar';
+export type GenerationKind = 'cedar' | 'fir';
 // web.1 web-1234abcde-123ab
-export type GenerationLike = Generation | AppGeneration | DynoSizeGeneration | PipelineGeneration | Dyno
-export type GenerationCapable = App | Space | DynoSize | TeamApp | Pipeline
+export type GenerationLike = AppGeneration | Dyno | DynoSizeGeneration | Generation | PipelineGeneration
+export type GenerationCapable = App | DynoSize | Pipeline | Space | TeamApp
 
-function getGenerationFromGenerationLike(generation: string | GenerationLike | undefined): GenerationKind | undefined {
+function getGenerationFromGenerationLike(generation: GenerationLike | string | undefined): GenerationKind | undefined {
   let maybeGeneration = ''
 
   if (typeof generation === 'string') {
@@ -39,7 +42,7 @@ function getGenerationFromGenerationLike(generation: string | GenerationLike | u
  * @param source The object to get the generation from
  * @returns The generation of the object
  */
-export function getGeneration(source: GenerationLike | GenerationCapable | string): GenerationKind | undefined {
+export function getGeneration(source: GenerationCapable | GenerationLike | string): GenerationKind | undefined {
   if (typeof source === 'object' && 'generation' in source) {
     return getGenerationFromGenerationLike(source.generation)
   }
@@ -55,9 +58,8 @@ export function getGeneration(source: GenerationLike | GenerationCapable | strin
  * @returns The generation of the app
  */
 export async function getGenerationByAppId(appIdOrName: string, herokuApi: APIClient) {
-  const {body: app} = await herokuApi.get<App>(
-    `/apps/${appIdOrName}`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-    })
+  const {body: app} = await herokuApi.get<App>(`/apps/${appIdOrName}`, {
+    headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+  })
   return getGeneration(app)
 }

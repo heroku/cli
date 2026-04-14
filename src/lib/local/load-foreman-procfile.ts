@@ -1,15 +1,13 @@
-import fs from 'fs'
+import fs from 'node:fs'
 
 function parseProcfile(content: string): Record<string, string> {
   const lines = content.split(/\r?\n/).filter((line, i) => {
-    if (line.match(/^\s*#/)) {
+    if (/^\s*#/.test(line)) {
       return false
     }
 
-    if (line.match(/\w/)) {
-      if (!line.match(/^\s*\w+:/)) {
-        throw new Error('line ' + (i + 1) + ' parse error: ' + line)
-      }
+    if (/\w/.test(line) && !/^\s*\w+:/.test(line)) {
+      throw new Error('line ' + (i + 1) + ' parse error: ' + line)
     }
 
     return line.match(/\w/)
@@ -17,11 +15,11 @@ function parseProcfile(content: string): Record<string, string> {
 
   const ret: Record<string, string> = {}
 
-  lines.forEach(line => {
+  for (const line of lines) {
     const parts = line.split(':')
     const key = parts.shift()!.replace(/\s*$/, '')
     ret[key] = parts.join(':').replace(/^\s*/, '')
-  })
+  }
 
   return ret
 }

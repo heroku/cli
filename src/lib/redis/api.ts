@@ -66,7 +66,7 @@ type HttpVerb = 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
 
 type RedisEvictionPolicies = 'allkeys-lfu' | 'allkeys-lru' | 'allkeys-random' | 'noeviction' | 'volatile-lfu' | 'volatile-lru' | 'volatile-random' | 'volatile-ttl'
 
-export default (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
+const makeRedisAPI = (app: string, database: string | undefined, json: boolean, heroku: APIClient) => {
   const HOST = process.env.HEROKU_DATA_HOST || process.env.HEROKU_REDIS_HOST || 'api.data.heroku.com'
   const ADDON = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
@@ -140,7 +140,7 @@ export default (app: string, database: string | undefined, json: boolean, heroku
           hux.styledHeader(uxHeader)
           hux.styledObject(
             // eslint-disable-next-line unicorn/no-array-reduce
-            redis.info.reduce((memo: { [x: string]: any }, row: { name: number | string; values: any }) => {
+            redis.info.reduce((memo: {[x: string]: any}, row: {name: number | string; values: any}) => {
               memo[row.name] = row.values
               return memo
             }, {}),
@@ -202,3 +202,5 @@ export default (app: string, database: string | undefined, json: boolean, heroku
     },
   }
 }
+
+export default makeRedisAPI

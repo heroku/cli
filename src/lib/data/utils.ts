@@ -13,7 +13,6 @@ import {
   PricingInfoResponse,
 } from './types.js'
 
-// eslint-disable-next-line import/no-named-as-default-member
 const {Separator} = inquirer
 
 /**
@@ -53,7 +52,7 @@ export function renderPricingInfo(pricingInfo?: null | PricingInfo, count: numbe
  *   - `extendedLevelsInfo`: Array of Postgres level information with associated pricing data
  *   - `optimizedStoragePricing`: Optional pricing information for storage-optimized plans
  */
-const levelsAndPricingCache: Map<string, Promise<{ extendedLevelsInfo: ExtendedPostgresLevelInfo[]; optimizedStoragePricing?: PricingInfo }>> = new Map()
+const levelsAndPricingCache: Map<string, Promise<{extendedLevelsInfo: ExtendedPostgresLevelInfo[]; optimizedStoragePricing?: PricingInfo}>> = new Map()
 
 /**
  * @description Clears the cache of Postgres levels and pricing data.
@@ -104,14 +103,10 @@ export async function fetchLevelsAndPricing(
 
       const extendedLevelsInfo = levels.items.map(level => ({
         ...level,
-        pricing: Object.entries(pricing[tier]).find(
-          ([_, value]) => value.product_description === level.name,
-        )?.[1],
+        pricing: Object.entries(pricing[tier]).find(([_, value]) => value.product_description === level.name)?.[1],
       }))
 
-      const optimizedStoragePricing = Object.entries(pricing[tier]).find(
-        ([key, _]) => key === 'storage-optimized',
-      )?.[1]
+      const optimizedStoragePricing = Object.entries(pricing[tier]).find(([key, _]) => key === 'storage-optimized')?.[1]
 
       return {extendedLevelsInfo, optimizedStoragePricing}
     })().catch(error => {
@@ -149,10 +144,10 @@ export async function renderLevelChoices(
   extendedLevelsInfo: ExtendedPostgresLevelInfo[],
   pool?: PoolInfoResponse,
   withGoBack: boolean = false,
-): Promise<Array<DistinctChoice<{ level: string }, ListChoiceMap<{ level: string }>>>> {
+): Promise<Array<DistinctChoice<{level: string}, ListChoiceMap<{level: string}>>>> {
   const choices: string[][] = []
 
-  extendedLevelsInfo.forEach(level => {
+  for (const level of extendedLevelsInfo) {
     const columns: string[] = []
     columns.push(
       `${level.name}`,
@@ -161,7 +156,8 @@ export async function renderLevelChoices(
       `starting at ${color.green(renderPricingInfo(level.pricing))}`,
     )
     choices.push(columns)
-  })
+  }
+
   const alignedChoiceNames = hux.alignColumns(choices)
   return [
     ...alignedChoiceNames.map(choice => {
@@ -191,7 +187,7 @@ const retryAsync = async (retries: number, delay: number, fn: () => any, current
 }
 
 export async function waitUntilMaintenanceComplete(addonId: string, shogun: APIClient) {
-  return retryAsync(Number.POSITIVE_INFINITY, 5_000, async () => {
+  return retryAsync(Number.POSITIVE_INFINITY, 5000, async () => {
     const {body: maintenance} = await shogun.get<Maintenance>(
       `/data/maintenances/v1/${addonId}`,
       shogun.defaults,

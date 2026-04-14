@@ -1,5 +1,5 @@
-/* eslint-disable n/no-process-exit */
-/* eslint-disable no-var */
+/* eslint-disable n/no-process-exit, no-var */
+
 import {
   CLIError, spawnTelemetryWorker, telemetryDebug, TelemetryGlobal,
 } from './telemetry-utils.js'
@@ -31,15 +31,15 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
   // (e.g., version, --version, --help flags handled by oclif)
   process.once('beforeExit', code => {
     // Only send if telemetry wasn't already sent by postrun hook
-    if (global.cliTelemetry && !global.telemetrySent) {
-      telemetryDebug('Telemetry enabled: beforeExit spawning worker to send telemetry for command: %s (postrun did not run)', global.cliTelemetry.command)
-      const cmdStartTime = global.cliTelemetry.commandRunDuration
-      global.cliTelemetry.commandRunDuration = computeDuration(cmdStartTime)
-      global.cliTelemetry.exitCode = code
-      global.cliTelemetry.cliRunDuration = computeDuration(cliStartTime)
+    if (globalThis.cliTelemetry && !globalThis.telemetrySent) {
+      telemetryDebug('Telemetry enabled: beforeExit spawning worker to send telemetry for command: %s (postrun did not run)', globalThis.cliTelemetry.command)
+      const cmdStartTime = globalThis.cliTelemetry.commandRunDuration
+      globalThis.cliTelemetry.commandRunDuration = computeDuration(cmdStartTime)
+      globalThis.cliTelemetry.exitCode = code
+      globalThis.cliTelemetry.cliRunDuration = computeDuration(cliStartTime)
 
-      spawnTelemetryWorker(global.cliTelemetry)
-      global.telemetrySent = true
+      spawnTelemetryWorker(globalThis.cliTelemetry)
+      globalThis.telemetrySent = true
     }
   })
 

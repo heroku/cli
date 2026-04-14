@@ -1,7 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core/ux'
-
 import inquirer from 'inquirer'
 
 import {uuidValidate} from '../utils/uuid-validate.js'
@@ -23,24 +22,24 @@ export class PipelineService {
 
     let choices
     switch (pipelines.length) {
-    case 0: {
-      ux.error('Pipeline not found')
-      break
-    }
+      case 0: {
+        ux.error('Pipeline not found')
+        break
+      }
 
-    case 1: {
-      return pipelines[0]
-    }
+      case 1: {
+        return pipelines[0]
+      }
 
-    default: {
-      choices = pipelines.map((x: Heroku.Pipeline) => ({name: new Date(x.created_at!), value: x}))
+      default: {
+        choices = pipelines.map((x: Heroku.Pipeline) => ({name: new Date(x.created_at!), value: x}))
 
-      return this.promptForPipeline(pipelineIDOrName, choices)
-    }
+        return this.promptForPipeline(pipelineIDOrName, choices)
+      }
     }
   }
 
-  async getPipeline(flags: { app: null | string; pipeline: null | string }) {
+  async getPipeline(flags: {app: null | string; pipeline: null | string}) {
     let pipeline
 
     if ((!flags.pipeline) && (!flags.app)) {

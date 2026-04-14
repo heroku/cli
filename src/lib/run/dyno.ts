@@ -7,13 +7,13 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {HTTP, HTTPError} from '@heroku/http-call'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
-import * as https from 'https'
-import * as net from 'net'
 import {spawn} from 'node:child_process'
-import {Duplex, Transform} from 'stream'
-import * as tls from 'tls'
-import * as tty from 'tty'
-import {URL} from 'url'
+import * as https from 'node:https'
+import * as net from 'node:net'
+import {Duplex, Transform} from 'node:stream'
+import * as tls from 'node:tls'
+import * as tty from 'node:tty'
+import {URL} from 'node:url'
 
 import {buildEnvFromFlag} from './helpers.js'
 
@@ -47,27 +47,16 @@ interface HerokuApiClientRun extends APIClient {
 
 export default class Dyno extends Duplex {
   dyno?: APIDyno
-
   heroku: HerokuApiClientRun
-
   input: any
-
   legacyUri?: {[key: string]: any}
-
   p: any
-
   reject?: (reason?: any) => void
-
   resolve?: (value?: unknown) => void
-
   unpipeStdin: any
-
   uri?: URL
-
   useSSH: any
-
   private _notified?: boolean
-
   private _startedAt?: number
 
   constructor(public opts: DynoOpts) {
@@ -87,6 +76,8 @@ export default class Dyno extends Duplex {
       return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
       /* tslint:enable:no-http-string */
     }
+
+    return null
   }
 
   _connect() {
@@ -95,7 +86,7 @@ export default class Dyno extends Duplex {
       this.reject = reject
 
       // @ts-ignore
-      const options: https.RequestOptions & { rejectUnauthorized?: boolean } = this.legacyUri
+      const options: https.RequestOptions & {rejectUnauthorized?: boolean} = this.legacyUri
       options.headers = {Connection: 'Upgrade', Upgrade: 'tcp'}
       options.rejectUnauthorized = false
       const r = https.request(options)
@@ -346,7 +337,7 @@ export default class Dyno extends Duplex {
           // @ts-ignore
           this.resolve()
         } else {
-          const err: Error & { exitCode?: number } = new Error(`Process exited with code ${color.failure(code.toString())}`)
+          const err: Error & {exitCode?: number} = new Error(`Process exited with code ${color.failure(code.toString())}`)
           err.exitCode = code
           // @ts-ignore
           this.reject(err)
@@ -430,8 +421,12 @@ export default class Dyno extends Duplex {
       c.on('data', this._readData(c))
       c.on('close', () => {
         debug('dyno connection close')
-        // @ts-ignore
-        this.opts['exit-code'] ? this.reject('No exit code returned') : this.resolve()
+        if (this.opts['exit-code']) {
+          this.reject!('No exit code returned')
+        } else {
+          this.resolve!()
+        }
+
         if (this.unpipeStdin) {
           this.unpipeStdin()
         }
@@ -498,11 +493,7 @@ export default class Dyno extends Duplex {
       this.legacyUri = new URL(this.dyno.attach_url)
     }
 
-    if (this._useSSH) {
-      this.p = this._ssh()
-    } else {
-      this.p = this._rendezvous()
-    }
+    this.p = this._useSSH ? this._ssh() : this._rendezvous()
 
     return this.p.then(() => {
       this.end()

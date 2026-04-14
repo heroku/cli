@@ -10,21 +10,27 @@
 // These rules are disabled in order to prevent the need for refactoring
 /* eslint-disable guard-for-in */
 /* eslint-disable new-cap */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable  no-undef */
+/* eslint-disable n/no-process-exit */
+/* eslint-disable unicorn/no-process-exit */
+/* eslint-disable no-new */
+/* eslint-disable radix */
 
-const path = require('path')
-const events = require('events')
-const fs = require('fs')
-const quote = require('shell-quote').quote
 const program = require('commander')
 const colors = require('foreman/lib/colors')
+const events = require('node:events')
+const fs = require('node:fs')
+const path = require('node:path')
+const {quote} = require('shell-quote')
 const display = require('foreman/lib/console').Console
+const _envs    = require('foreman/lib/envs')
+const exporters = require('foreman/lib/exporters')
+const {startForward} = require('foreman/lib/forward')
 const _proc = require('foreman/lib/proc')
 const _procfile = require('foreman/lib/procfile')
-const _envs    = require('foreman/lib/envs')
+const {startProxies} = require('foreman/lib/proxy')
 const _requirements    = require('foreman/lib/requirements')
-const startProxies = require('foreman/lib/proxy').startProxies
-const startForward = require('foreman/lib/forward').startForward
-const exporters = require('foreman/lib/exporters')
 const foremanPjson = require('foreman/package.json')
 
 program.version(foremanPjson.version)
@@ -34,24 +40,24 @@ program.option('-p, --port     <PORT>', 'start indexing ports at number PORT', 0
 
 // Foreman Event Bus/Emitter //
 
-var emitter = new events.EventEmitter()
-emitter.once('killall', function (signal) {
+const emitter = new events.EventEmitter()
+emitter.once('killall', signal => {
   display.Done('Killing all processes with signal ', signal)
 })
 emitter.setMaxListeners(50)
 
-var start = _proc.start
-var once  = _proc.once
+const {start} = _proc
+const {once} = _proc
 
-var loadProc  = _procfile.loadProc
+const {loadProc} = _procfile
 
-var loadEnvs = _envs.loadEnvs
+const {loadEnvs} = _envs
 
-var getreqs          = _requirements.getreqs
-var calculatePadding = _requirements.calculatePadding
+const {getreqs} = _requirements
+const {calculatePadding} = _requirements
 
 // Kill All Child Processes on SIGINT
-process.once('SIGINT', function () {
+process.once('SIGINT', () => {
   display.Warn('Interrupted by User')
   emitter.emit('killall', 'SIGINT')
 })
@@ -70,21 +76,21 @@ program
   .option('-w, --wrap', 'wrap logs (negates trim)')
   .description('Start the jobs in the Procfile')
   .action(function (args) {
-    var envs = loadEnvs(program.env)
+    const envs = loadEnvs(program.env)
 
-    var proc = loadProc(program.procfile)
+    const proc = loadProc(program.procfile)
 
     if (!proc) {
       return
     }
 
     if (this.showenvs) {
-      for (var key in envs) {
+      for (const key in envs) {
         display.Alert('env %s=%s', key, envs[key])
       }
     }
 
-    var reqs = getreqs(args, proc)
+    const reqs = getreqs(args, proc)
 
     display.padding  = calculatePadding(reqs)
 
@@ -117,9 +123,9 @@ program
   .option('-s, --showenvs', 'show ENV variables on start', false)
   .description('Run a one off process using the ENV variables')
   .action(function (args) {
-    var envs = loadEnvs(program.env)
+    const envs = loadEnvs(program.env)
 
-    var callback = function (code) {
+    const callback = function (code) {
       process.exit(code)
     }
 
@@ -127,10 +133,10 @@ program
       return
     }
 
-    var input = quote(args)
+    const input = quote(args)
 
     if (this.showenvs) {
-      for (var key in envs) {
+      for (const key in envs) {
         display.Alert('env %s=%s', key, envs[key])
       }
     }
@@ -152,88 +158,88 @@ program
   .option('-m, --template <DIR>', 'use template folder')
   .description('Export to an upstart job independent of foreman')
   .action(function (procArgs) {
-    var envs = loadEnvs(program.env)
+    const envs = loadEnvs(program.env)
 
-    var procs = loadProc(program.procfile)
+    const procs = loadProc(program.procfile)
 
     if (!procs) {
       return
     }
 
-    var req  = getreqs(procArgs, procs)
+    const req  = getreqs(procArgs, procs)
 
     // Variables for Upstart Template
-    var config = {
+    const config = {
       application: this.app,
       cwd: path.resolve(process.cwd(), this.cwd || ''),
-      user: this.user,
-      logs: this.log,
-      envs: envs,
+      envs,
       group: this.gid || this.user,
+      logs: this.log,
       template: this.template,
+      user: this.user,
     }
 
     config.envfile = path.resolve(program.env)
 
-    var writeout
+    let writeout
     if (exporters[this.type]) {
       writeout = exporters[this.type]
     } else {
-      display.Error('Unknown Export Format', this.type)
+      new display.Error('Unknown Export Format', this.type)
       process.exit(1)
     }
 
     // Check for Upstart User
     // friendly warning - does not stop export
-    var userExists = false
-    fs.readFileSync('/etc/passwd')
-      .toString().split(/\n/).forEach(function (line) {
-        if (line.match(/^[^:]*/)[0] === config.user) {
-          userExists = true
-        }
-      })
+    let userExists = false
+    for (const line of fs.readFileSync('/etc/passwd')
+      .toString().split(/\n/)) {
+      if (line.match(/^[^:]*/)[0] === config.user) {
+        userExists = true
+      }
+    }
 
     if (!userExists) {
       display.Warn(display.fmt('User %s Does Not Exist on System', config.user))
     }
 
     // using port 5006 because it is not known to be used by other common software
-    var baseport = Number.parseInt(program.port || envs.PORT || process.env.PORT || 5006)
-    var baseport_i = 0
-    var baseport_j = 0
-    var envl = []
+    const baseport = Number.parseInt(program.port || envs.PORT || process.env.PORT || 5006)
+    let baseport_i = 0
+    let baseport_j = 0
+    let envl = []
 
     config.processes = []
 
     // This is ugly because of shitty support for array copying
     // Cleanup is definitely required
-    for (var key in req) {
-      var c = {}
-      var cmd = procs[key]
+    for (let key in req) {
+      const c = {}
+      const cmd = procs[key]
 
       if (!cmd) {
         display.Warn("Required Key '%s' Does Not Exist in Procfile Definition", key)
         continue
       }
 
-      var n = req[key]
+      const n = req[key]
 
-      config.processes.push({process: key, n: n})
+      config.processes.push({n, process: key})
       c.process = key
       c.command = cmd
 
-      for (var _ in config) {
+      for (const _ in config) {
         c[_] = config[_]
       }
 
       c.numbers = []
-      for (var i = 1; i <= n; i++) {
+      for (let i = 1; i <= n; i++) {
         const port = (baseport + baseport_i + baseport_j) * 100
 
         const envl = []
         for (key in envs) {
           envl.push({
-            key: key,
+            key,
             value: envs[key],
           })
         }
@@ -246,9 +252,9 @@ program
 
         const conf = {
           ...c,
+          envs: envl,
           number: i,
           port,
-          envs: envl,
         }
 
         // Write the APP-PROCESS-N.conf File
@@ -261,7 +267,7 @@ program
       envl = []
       for (key in envs) {
         envl.push({
-          key: key,
+          key,
           value: envs[key],
         })
       }

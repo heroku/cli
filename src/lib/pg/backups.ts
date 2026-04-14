@@ -1,32 +1,12 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
+import bytes from 'bytes'
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from './types.js'
 
-import bytes = require('bytes')
-
 const heredoc = tsheredoc.default
-
-function prefix(transfer: BackupTransfer) {
-  if (transfer.from_type === 'pg_dump') {
-    if (transfer.to_type === 'pg_restore') {
-      return 'c'
-    }
-
-    return transfer.schedule ? 'a' : 'b'
-
-    // eslint-disable-next-line no-else-return
-  } else {
-    if (transfer.to_type === 'pg_restore') {
-      return 'r'
-    }
-
-    return 'b'
-  }
-}
 
 class Backups {
   protected app: string
@@ -98,11 +78,7 @@ class Backups {
       } else if (tty) {
         const msg = backup.started_at ? this.filesize(backup.processed_bytes) : 'pending'
         const log = backup.logs?.pop()
-        if (log) {
-          ux.action.status = `${msg}\n${log.created_at + ' ' + log.message}`
-        } else {
-          ux.action.status = msg
-        }
+        ux.action.status = log ? `${msg}\n${log.created_at + ' ' + log.message}` : msg
       }
 
       if (backup?.finished_at) {
@@ -171,6 +147,24 @@ class Backups {
 
 function factory(app: string, heroku: APIClient) {
   return new Backups(app, heroku)
+}
+
+function prefix(transfer: BackupTransfer) {
+  if (transfer.from_type === 'pg_dump') {
+    if (transfer.to_type === 'pg_restore') {
+      return 'c'
+    }
+
+    return transfer.schedule ? 'a' : 'b'
+
+    // eslint-disable-next-line no-else-return
+  } else {
+    if (transfer.to_type === 'pg_restore') {
+      return 'r'
+    }
+
+    return 'b'
+  }
 }
 
 export default factory

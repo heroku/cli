@@ -55,6 +55,7 @@ module.exports = {
     'no-await-in-loop': 'off', // Perfect legit to use await in loops, we should leave it off
     'no-constant-condition': ['error', {checkLoops: false}],
     'no-else-return': 'warn', // TODO: fix issues and turn this back on
+    'no-inner-declarations': 'off',
     'no-negated-condition': 'warn', // TODO: fix issues and turn this back on
     'no-process-exit': 'off',
     'no-promise-executor-return': 'warn', // TODO: fix issues and turn this back on

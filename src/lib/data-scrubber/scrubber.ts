@@ -58,8 +58,8 @@ import {ScrubConfig, ScrubResult} from './types.js'
  * ```
  */
 export class Scrubber {
-  private config: Required<ScrubConfig>
   private circularRefs = new WeakSet()
+  private config: Required<ScrubConfig>
   private pathSet: Set<string>
 
   /**
@@ -87,8 +87,8 @@ export class Scrubber {
       fields: config.fields || [],
       paths: config.paths || [],
       patterns: config.patterns || [],
-      replacement: config.replacement || '[SCRUBBED]',
       recursive: config.recursive === undefined ? true : config.recursive,
+      replacement: config.replacement || '[SCRUBBED]',
     }
 
     // Pre-compute path set for O(1) lookups
@@ -148,6 +148,59 @@ export class Scrubber {
       scrubbed: scrubbedPaths.length > 0,
       scrubbedPaths,
     }
+  }
+
+  private deepClone<T>(obj: T): T {
+    try {
+      // Fast path for JSON-serializable objects
+      return JSON.parse(JSON.stringify(obj))
+    } catch {
+      // Fallback for objects with circular references
+      const seen = new WeakMap()
+
+      function clone(value: any): any {
+        if (value === null || typeof value !== 'object') {
+          return value
+        }
+
+        if (seen.has(value)) {
+          return seen.get(value)
+        }
+
+        if (Array.isArray(value)) {
+          const arr: any[] = []
+          seen.set(value, arr)
+          for (const [i, item] of value.entries()) {
+            arr[i] = clone(item)
+          }
+
+          return arr
+        }
+
+        const obj: any = {}
+        seen.set(value, obj)
+        for (const key of Object.keys(value)) {
+          obj[key] = clone(value[key])
+        }
+
+        return obj
+      }
+
+      return clone(obj)
+    }
+  }
+
+  /**
+   * Check if a field name matches any configured sensitive field patterns
+   */
+  private isSensitiveField(key: string): boolean {
+    return this.config.fields.some((field: RegExp | string) => {
+      if (field instanceof RegExp) {
+        return field.test(key)
+      }
+
+      return key.toLowerCase().includes(field.toLowerCase())
+    })
   }
 
   private scrubObject(obj: any, path: string, paths: string[]): any {
@@ -231,57 +284,5 @@ export class Scrubber {
     }
 
     return scrubbed
-  }
-
-  /**
-   * Check if a field name matches any configured sensitive field patterns
-   */
-  private isSensitiveField(key: string): boolean {
-    return this.config.fields.some((field: string | RegExp) => {
-      if (field instanceof RegExp) {
-        return field.test(key)
-      }
-
-      return key.toLowerCase().includes(field.toLowerCase())
-    })
-  }
-
-  private deepClone<T>(obj: T): T {
-    try {
-      // Fast path for JSON-serializable objects
-      return JSON.parse(JSON.stringify(obj))
-    } catch {
-      // Fallback for objects with circular references
-      const seen = new WeakMap()
-
-      // eslint-disable-next-line no-inner-declarations
-      function clone(value: any): any {
-        if (value === null || typeof value !== 'object') {
-          return value
-        }
-
-        if (seen.has(value)) {
-          return seen.get(value)
-        }
-
-        if (Array.isArray(value)) {
-          const arr: any[] = []
-          seen.set(value, arr)
-          value.forEach((item, i) => {
-            arr[i] = clone(item)
-          })
-          return arr
-        }
-
-        const obj: any = {}
-        seen.set(value, obj)
-        Object.keys(value).forEach(key => {
-          obj[key] = clone(value[key])
-        })
-        return obj
-      }
-
-      return clone(obj)
-    }
   }
 }
