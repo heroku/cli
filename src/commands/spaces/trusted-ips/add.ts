@@ -10,22 +10,17 @@ export default class Add extends Command {
   static args = {
     source: Args.string({description: 'IP address in CIDR notation', required: true}),
   }
-
   static description = heredoc(`
   Add one range to the list of trusted IP ranges
   Uses CIDR notation.`)
-
   static examples = [heredoc(`
     ${color.command('heroku trusted-ips:add --space my-space 192.168.2.0/24')}
     Added 192.168.0.1/24 to trusted IP ranges on my-space`)]
-
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
     space: flags.string({char: 's', description: 'space to add rule to', required: true}),
   }
-
   static hiddenAliases = ['trusted-ips:add']
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

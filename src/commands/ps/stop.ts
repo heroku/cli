@@ -12,13 +12,11 @@ export default class Stop extends Command {
   static args = {
     dyno: Args.string({deprecated: true, description: 'name of the dyno to stop', required: false}),
   }
-
   static description = 'stop an app dyno or process type'
   static examples = [
     color.command('heroku ps:stop --app myapp --dyno-name run.1828'),
     color.command('heroku ps:stop --app myapp --process-type run'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'dyno-name': flags.string({
@@ -33,9 +31,7 @@ export default class Stop extends Command {
     }),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['stop', 'kill']
-
   static topic = 'ps'
 
   async run() {

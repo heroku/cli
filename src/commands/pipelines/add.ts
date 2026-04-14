@@ -17,15 +17,12 @@ export default class PipelinesAdd extends Command {
       required: true,
     }),
   }
-
   static description = `add this app to a pipeline
 The app and pipeline names must be specified.
 The stage of the app will be guessed based on its name if not specified.`
-
   static examples = [
     color.command('heroku pipelines:add my-pipeline -a my-app -s production'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

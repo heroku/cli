@@ -6,9 +6,7 @@ import BaseCommand from '../../lib/webhooks/base.js'
 
 export default class Webhooks extends BaseCommand {
   static description = 'list webhooks on an app'
-
   static examples = [`${color.command('heroku webhooks')}`]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({

@@ -32,7 +32,6 @@ export default class UsageAddons extends Command {
     app: flags.string({char: 'a', description: 'app to list metered add-ons usage for'}),
     team: flags.team({description: 'team to list metered add-ons usage for'}),
   }
-
   static topic = 'usage'
 
   public async run(): Promise<void> {
@@ -55,8 +54,7 @@ export default class UsageAddons extends Command {
         addonId: addon.id,
         label,
         quantity: data.quantity,
-      })),
-    )
+      })))
 
     hux.styledHeader(`Usage for ${color.app(app)}`)
     hux.table(metersArray, {
@@ -133,7 +131,7 @@ export default class UsageAddons extends Command {
     const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
 
     // Display usage for each app
-    usageData.apps.forEach((app: { addons: any[]; id: string }) => {
+    usageData.apps.forEach((app: {addons: any[]; id: string}) => {
       const appInfo = appInfoArray.find(info => info.id === app.id)
       this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
       ux.stdout()
@@ -142,13 +140,13 @@ export default class UsageAddons extends Command {
 
   private getAppInfoFromTeamAddons(teamAddons: Heroku.AddOn[]): AppInfo[] {
     const appInfoMap = new Map<string, string>()
-    teamAddons.forEach(addon => {
+    for (const addon of teamAddons) {
       if (addon.app && addon.app.id && addon.app.name) {
         appInfoMap.set(addon.app.id, addon.app.name)
       }
-    })
+    }
 
-    return Array.from(appInfoMap.entries()).map(([id, name]) => ({
+    return [...appInfoMap.entries()].map(([id, name]) => ({
       id,
       name,
     }))

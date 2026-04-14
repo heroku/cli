@@ -18,7 +18,6 @@ export default class Wait extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = 'wait for a space to be created'
   static flags = {
     interval: flags.integer({
@@ -34,7 +33,6 @@ export default class Wait extends Command {
       description: 'maximum number of seconds to wait',
     }),
   }
-
   static topic = 'spaces'
 
   protected notify(spaceName: string) {

@@ -14,9 +14,7 @@ export default class Forward extends Command {
   static args = {
     port: Args.string({description: 'port or list of ports to forward', required: true}),
   }
-
   static description = 'Forward traffic on a local port to a dyno'
-
   static examples = [heredoc`
     Provide a port or comma-separated list of ports to forward.
 
@@ -25,7 +23,6 @@ export default class Forward extends Command {
 
     ${color.command('heroku ps:forward 8080 --app murmuring-headland-14719')}
   `]
-
   static flags = {
     app: flags.app({required: true}),
     dyno: flags.string({
@@ -39,7 +36,6 @@ export default class Forward extends Command {
     }),
     remote: flags.remote(),
   }
-
   static topic = 'ps'
 
   public async run(): Promise<void> {

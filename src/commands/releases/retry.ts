@@ -12,9 +12,7 @@ export default class Retry extends Command {
   static flags = {
     app: flags.app({required: true}),
   }
-
   static help = 'Copies the latest release into a new release and retries the latest release-phase command. App must have a release-phase command.'
-
   static topic = 'releases'
 
   public async run(): Promise<void> {

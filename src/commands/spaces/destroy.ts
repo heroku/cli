@@ -17,7 +17,6 @@ export default class Destroy extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = heredoc`
     destroy a space
   `
@@ -25,12 +24,10 @@ export default class Destroy extends Command {
     ${color.command('heroku spaces:destroy --space my-space')}
     Destroying my-space... done
   `]
-
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt', hasValue: true}),
     space: flags.string({char: 's', description: 'space to destroy'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

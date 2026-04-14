@@ -28,12 +28,10 @@ export default class Scale extends Command {
     ${color.command('heroku ps:scale --app APP')}
     web=3:Standard-2X worker=1:Standard-1X
   `]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['scale']
   static strict = false
 
@@ -63,11 +61,11 @@ export default class Scale extends Command {
       const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
-        formation.forEach(d => {
+        for (const d of formation) {
           if (d.size !== undefined) {
             d.size = d.size.replace('Private-', 'Shield-')
           }
-        })
+        }
       }
 
       if (formation.length === 0) {
@@ -83,11 +81,11 @@ export default class Scale extends Command {
       const {body: formation} = await this.heroku.patch<Heroku.Formation[]>(`/apps/${app}/formation`, {body: {updates: changes}})
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
-        formation.forEach(d => {
+        for (const d of formation) {
           if (d.size !== undefined) {
             d.size = d.size.replace('Private-', 'Shield-')
           }
-        })
+        }
       }
 
       const output = formation.filter(f => changes.find(c => c.type === f.type))

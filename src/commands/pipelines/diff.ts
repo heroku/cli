@@ -26,16 +26,13 @@ const PROMOTION_ORDER = ['development', 'staging', 'production']
 
 export default class PipelinesDiff extends Command {
   static description = 'compares the latest release of this app to its downstream app(s)'
-
   static examples = [
     color.command('heroku pipelines:diff -a my-app-staging'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   getAppInfo = async (appName: string, appId: string, generation: GenerationKind): Promise<AppInfo> => {
     // Find GitHub connection for the app
     const githubApp = await this.kolkrabbi.getAppLink(appId)
@@ -70,7 +67,6 @@ export default class PipelinesDiff extends Command {
 
     return {hash: commit, name: appName, repo: githubApp.repo}
   }
-
   kolkrabbi: KolkrabbiAPI = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
 
   async run() {
@@ -113,11 +109,12 @@ export default class PipelinesDiff extends Command {
 
     // Fetch GitHub repo/latest release hash for [target, downstream[0], .., downstream[n]] apps
     const appInfoPromises = [this.getAppInfo(targetAppName, targetAppId, generation)]
-    downstreamApps.forEach(app => {
+    for (const app of downstreamApps) {
       if (app.name && app.id) {
         appInfoPromises.push(this.getAppInfo(app.name, app.id, generation))
       }
-    })
+    }
+
     ux.action.start('Fetching release info for all apps')
     const appInfo = await Promise.all(appInfoPromises)
     ux.action.stop()
@@ -138,9 +135,7 @@ export default class PipelinesDiff extends Command {
     // Diff [{target, downstream[0]}, {target, downstream[1]}, .., {target, downstream[n]}]
     const downstreamAppsInfo = appInfo.slice(1)
     for (const downstreamAppInfo of downstreamAppsInfo) {
-      await diff(
-        targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent,
-      )
+      await diff(targetAppInfo, downstreamAppInfo, githubAccount.github.token, this.config.userAgent)
     }
   }
 }

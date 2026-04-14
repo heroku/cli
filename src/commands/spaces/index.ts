@@ -13,7 +13,6 @@ export default class Index extends Command {
     json: Flags.boolean({description: 'output in json format'}),
     team: Flags.team(),
   }
-
   static topic = 'spaces'
 
   protected display(spaces: SpaceArray) {

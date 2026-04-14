@@ -8,14 +8,12 @@ export default class Info extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
-
   static description = 'gets information about redis'
   static flags = {
     app: flags.app({required: true}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     remote: flags.remote(),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

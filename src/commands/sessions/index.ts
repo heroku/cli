@@ -6,7 +6,6 @@ import {OAuthSession} from '../../lib/sessions/sessions.js'
 
 export default class SessionsIndex extends Command {
   static description = 'list your OAuth sessions'
-
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }

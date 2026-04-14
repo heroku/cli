@@ -12,7 +12,6 @@ export default class Info extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = heredoc(`
     display the information necessary to initiate a peering connection
 
@@ -27,7 +26,6 @@ export default class Info extends Command {
     Once you've established the peering connection request, you can use the spaces:peerings:accept command to accept and
     configure the peering connection for the space.
   `)
-
   static examples = [heredoc(`
     ${color.command('heroku spaces:peering:info example-space')}
     === example-space  Peering Info
@@ -39,14 +37,11 @@ export default class Info extends Command {
     Space CIDRs:       10.0.128.0/20, 10.0.144.0/20
     Unavailable CIDRs: 10.1.0.0/16
   `)]
-
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get peering info from'}),
   }
-
   static hiddenAliases = ['spaces:peering:info']
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import fs from 'node:fs'
-import * as path from 'node:path'
+import path from 'node:path'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../lib/ps-exec/ssh.js'
@@ -12,11 +12,8 @@ export default class Copy extends Command {
   static args = {
     file: Args.string({description: 'file to copy from dyno to local', required: true}),
   }
-
   static description = 'Copy a file from a dyno to the local filesystem'
-
   static examples = [`${color.command('heroku ps:copy FILENAME --app murmuring-headland-14719')}`]
-
   static flags = {
     app: flags.app({required: true}),
     dyno: flags.string({
@@ -29,7 +26,6 @@ export default class Copy extends Command {
     }),
     remote: flags.remote(),
   }
-
   static topic = 'ps'
 
   public async run(): Promise<void> {

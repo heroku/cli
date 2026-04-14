@@ -1,22 +1,22 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+
 import {stream} from '../../lib/releases/output.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
 
 export default class Output extends Command {
-  static topic = 'releases'
-  static description = 'View the release command output'
-  static flags = {
-    remote: flags.remote(),
-    app: flags.app({required: true}),
-  }
-
   static args = {
     release: Args.string({description: 'ID of the release. If omitted, we use the last release ID.'}),
   }
+  static description = 'View the release command output'
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
+  static topic = 'releases'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Output)
+    const {args, flags} = await this.parse(Output)
     const {app} = flags
     const release = await findByLatestOrId(this.heroku, app, args.release)
     const streamUrl = release.output_stream_url
@@ -37,4 +37,3 @@ export default class Output extends Command {
       })
   }
 }
-

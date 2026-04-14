@@ -8,13 +8,11 @@ export default class Promote extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
   }
-
   static description = 'sets DATABASE as your REDIS_URL'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {
@@ -41,4 +39,3 @@ export default class Promote extends Command {
     })
   }
 }
-

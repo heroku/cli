@@ -6,11 +6,9 @@ import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class EventsIndex extends BaseCommand {
   static description = 'list webhook events on an app'
-
   static examples = [
     `${color.command('heroku webhooks:events')}`,
   ]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),

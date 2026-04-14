@@ -56,13 +56,14 @@ const getTrustStatus = async () => {
 
 const determineIncidentSeverity = (incidents: TrustIncident[]) => {
   const severityArray: string[] = []
-  incidents.forEach(incident => {
-    incident.IncidentImpacts.forEach(impact => {
+  for (const incident of incidents) {
+    for (const impact of incident.IncidentImpacts) {
       if (!impact.endTime && impact.severity) {
         severityArray.push(impact.severity)
       }
-    })
-  })
+    }
+  }
+
   if (severityArray.includes('major')) return 'red'
   if (severityArray.includes('minor')) return 'yellow'
   return 'green'
@@ -108,11 +109,11 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
   if (maintenances.length > 0) scheduled.push(...maintenances)
 
   if (incidents.length > 0) {
-    incidents.forEach(incident => {
-      incident.IncidentEvents.forEach(event => {
+    for (const incident of incidents) {
+      for (const event of incident.IncidentEvents) {
         event.localizedType = localizations.find((l: any) => l.modelKey === event.type)?.text
-      })
-    })
+      }
+    }
   }
 
   /* eslint-disable perfectionist/sort-objects */
@@ -126,7 +127,6 @@ const formatTrustResponse = (instances: TrustInstance[], activeIncidents: TrustI
 
 export default class Status extends Command {
   static description = 'display current status of the Heroku platform'
-
   static flags = {
     json: Flags.boolean({description: 'output in json format'}),
   }
