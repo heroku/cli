@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.3.0-beta.0](https://github.com/heroku/cli/compare/v11.2.0...v11.3.0-beta.0) (2026-04-14)
+
+
+### Features
+
+* adds 'data:pg:upgrade:run/wait' commands (W-21304392) ([#3551](https://github.com/heroku/cli/issues/3551)) ([3297c5e](https://github.com/heroku/cli/commit/3297c5e218fe9105cd106000cba030e784d17a82))
+
+
+### Bug Fixes
+
+* restore beforeExit handler for version commands and add comprehensive telemetry debug logging ([#3657](https://github.com/heroku/cli/issues/3657)) ([6da79cd](https://github.com/heroku/cli/commit/6da79cd4686133e1ee1f92b59127d8e012739b99))
+
+
+### Miscellaneous Chores
+
+* remove @oclif/plugin-legacy dependency ([#3659](https://github.com/heroku/cli/issues/3659)) ([2523d48](https://github.com/heroku/cli/commit/2523d481a79f0d26ab8b6897c6b49d3e5713a218))
+
 ## [11.2.0](https://github.com/heroku/cli/compare/v11.1.1...v11.2.0) (2026-04-08)
 
 
