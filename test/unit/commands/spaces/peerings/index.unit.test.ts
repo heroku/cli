@@ -52,4 +52,12 @@ describe('spaces:peerings', function () {
     ])
     expect(JSON.parse(stdout)).to.eql(peerings)
   })
+
+  it('errors when space name is missing', async function () {
+    const {error} = await runCommand(Cmd, [])
+    expect(error).to.exist
+    if (error) {
+      expect(error.message).to.include('space required')
+    }
+  })
 })
