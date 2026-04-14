@@ -8,7 +8,7 @@ import {displayCertificateDetails} from '../../../lib/certs/certificate-details.
 import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Domain} from '../../../lib/types/domain.js'
-import {SniEndpoint} from '../../../lib/types/sni_endpoint.js'
+import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 
 const heredoc = tsheredoc.default
 

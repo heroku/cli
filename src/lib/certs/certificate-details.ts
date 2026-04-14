@@ -1,7 +1,7 @@
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {SniEndpoint} from '../types/sni_endpoint.js'
+import {SniEndpoint} from '../types/sni-endpoint.js'
 import formatDate from './format-date.js'
 
 export const displayCertificateDetails = function (sniEndpoint: SniEndpoint, message = 'Certificate details:') {

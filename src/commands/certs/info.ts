@@ -5,7 +5,7 @@ import {ux} from '@oclif/core/ux'
 import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
 import getEndpoint from '../../lib/certs/flags.js'
 import {Domain} from '../../lib/types/domain.js'
-import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 export default class Info extends Command {
   static description = 'show certificate information for an SSL certificate'

@@ -13,7 +13,7 @@ import {
   endpoint2Domain,
 } from '../../../helpers/stubs/sni-endpoints.js'
 import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
+import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default

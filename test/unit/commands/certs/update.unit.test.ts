@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/update.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
-import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
+import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {certificateDetails, endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared_sni.unit.test.js'
