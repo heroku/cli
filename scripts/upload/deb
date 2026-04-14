@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import qq from 'qqjs'
-import getHerokuS3Bucket from '../utils/getHerokuS3Bucket.js'
+import getHerokuS3Bucket from '../utils/get-heroku-s3-bucket.js'
 
 qq.config.silent = false
 qq.run(async () => {

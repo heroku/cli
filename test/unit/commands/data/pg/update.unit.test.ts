@@ -9,7 +9,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpdate from '../../../../../src/commands/data/pg/update.js'
-import PoolConfig from '../../../../../src/lib/data/poolConfig.js'
+import PoolConfig from '../../../../../src/lib/data/pool-config.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
   addon,

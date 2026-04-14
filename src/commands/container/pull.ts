@@ -3,7 +3,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
 import {debug} from '../../lib/container/debug.js'
-import {DockerHelper} from '../../lib/container/docker_helper.js'
+import {DockerHelper} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 export default class Pull extends Command {

@@ -6,8 +6,8 @@ import tsheredoc from 'tsheredoc'
 
 import {appTransfer} from '../../lib/apps/app-transfer.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
-import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
+import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
 import AppsLock from './lock.js'
 
 const heredoc = tsheredoc.default

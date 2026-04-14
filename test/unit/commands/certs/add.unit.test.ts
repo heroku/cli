@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import runCommand from '../../../helpers/runCommand.js'
 const heredoc = tsheredoc.default
 import Cmd from '../../../../src/commands/certs/add.js'
-import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
+import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
 import {
   certificateDetails,
   endpoint,

@@ -8,7 +8,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/update.js'
-import {CertAndKeyManager} from '../../../../src/lib/certs/get_cert_and_key.js'
+import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni_endpoint.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {certificateDetails, endpoint} from '../../../helpers/stubs/sni-endpoints.js'

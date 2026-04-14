@@ -3,7 +3,7 @@ import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
 
 export default class DataPgAttachmentsDestroy extends BaseCommand {
   static args = {

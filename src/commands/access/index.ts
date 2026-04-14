@@ -5,7 +5,7 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import {getOwner, isTeamApp} from '../../lib/teamUtils.js'
+import {getOwner, isTeamApp} from '../../lib/team-utils.js'
 
 type AdminWithPermissions = Heroku.TeamMember & {
   permissions?: Heroku.TeamAppPermission[],

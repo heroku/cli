@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {getOwner, isTeamApp} from '../../lib/teamUtils.js'
+import {getOwner, isTeamApp} from '../../lib/team-utils.js'
 
 export default class AccessAdd extends Command {
   static args = {

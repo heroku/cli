@@ -4,7 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import {displayCertificateDetails} from '../../../lib/certs/certificate_details.js'
+import {displayCertificateDetails} from '../../../lib/certs/certificate-details.js'
 import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Domain} from '../../../lib/types/domain.js'

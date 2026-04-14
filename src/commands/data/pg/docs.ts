@@ -1,7 +1,7 @@
 import {hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 
 export default class DataPgDocs extends BaseCommand {
   static defaultUrl = 'https://devcenter.heroku.com/categories/heroku-postgres'

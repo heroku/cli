@@ -1,5 +1,5 @@
 import {hux} from '@heroku/heroku-cli-util'
-import formatDate from './format_date.js'
+import formatDate from './format-date.js'
 import {SniEndpoint} from '../types/sni_endpoint.js'
 
 function type(endpoint: SniEndpoint) {

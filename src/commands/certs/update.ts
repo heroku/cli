@@ -3,10 +3,10 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
+import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
 import getEndpoint from '../../lib/certs/flags.js'
-import {CertAndKeyManager} from '../../lib/certs/get_cert_and_key.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
 
 const heredoc = tsheredoc.default

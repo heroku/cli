@@ -3,7 +3,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {HTTPError} from '@heroku/http-call'
 import printf from 'printf'
 
-import ConfirmCommand from '../confirmCommand.js'
+import ConfirmCommand from '../confirm-command.js'
 
 export const trapConfirmationRequired = async <T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) => {
   try {

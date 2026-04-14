@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {parseProvisionOpts} from '../../../../src/lib/data/parseProvisionOpts.js'
+import {parseProvisionOpts} from '../../../../src/lib/data/parse-provision-opts.js'
 
 describe('parseProvisionOpts', function () {
   it('parses simple key:value pairs', function () {

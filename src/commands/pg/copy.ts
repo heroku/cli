@@ -6,7 +6,7 @@ import {Args, ux} from '@oclif/core'
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 import type {BackupTransfer} from '../../lib/pg/types.js'
 
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import backupsFactory from '../../lib/pg/backups.js'
 
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {

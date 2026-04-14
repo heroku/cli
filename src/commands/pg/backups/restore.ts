@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 import backupsFactory from '../../../lib/pg/backups.js'
 import {nls} from '../../../nls.js'
 

@@ -3,7 +3,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 
 const heredoc = tsheredoc.default
 

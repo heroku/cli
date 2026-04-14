@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {waitForAddonDeprovisioning} from './addons_wait.js'
+import {waitForAddonDeprovisioning} from './addons-wait.js'
 
 export default async function (heroku: APIClient, addon: Heroku.AddOn, force = false, wait = false) {
   const addonName = addon.name || ''

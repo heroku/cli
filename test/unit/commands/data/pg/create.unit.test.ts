@@ -6,7 +6,7 @@ import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCreate from '../../../../../src/commands/data/pg/create.js'
-import PoolConfig from '../../../../../src/lib/data/poolConfig.js'
+import PoolConfig from '../../../../../src/lib/data/pool-config.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
   createAddonResponse,

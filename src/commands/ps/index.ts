@@ -5,10 +5,10 @@ import tsheredoc from 'tsheredoc'
 
 import {ago} from '../../lib/time.js'
 import {AccountQuota} from '../../lib/types/account_quota.js'
-import {AppProcessTier} from '../../lib/types/app_process_tier.js'
+import {AppProcessTier} from '../../lib/types/app-process-tier.js'
 import {DynoExtended} from '../../lib/types/dyno_extended.js'
 import {Account} from '../../lib/types/fir.js'
-import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const heredoc = tsheredoc.default
 

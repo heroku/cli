@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import parseKeyValue from '../../../../src/lib/utils/keyValueParser.js'
+import parseKeyValue from '../../../../src/lib/utils/key-value-parser.js'
 
 describe('parseKeyValue', function () {
   it('parses a simple key=value pair', function () {

@@ -5,7 +5,7 @@ import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
-import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const topic = 'addons'
 

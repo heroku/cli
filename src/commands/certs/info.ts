@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-import {displayCertificateDetails} from '../../lib/certs/certificate_details.js'
+import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
 import getEndpoint from '../../lib/certs/flags.js'
 import {Domain} from '../../lib/types/domain.js'
 import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
