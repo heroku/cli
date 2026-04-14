@@ -10,7 +10,6 @@ export default class Add extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'apps'
 
   async run() {

@@ -11,21 +11,21 @@ type ErrorSummary = Record<string, number>
 
 const colorize = (level: string, s: string) => {
   switch (level) {
-  case 'critical': {
-    return color.failure(s)
-  }
+    case 'critical': {
+      return color.failure(s)
+    }
 
-  case 'warning': {
-    return color.warning(s)
-  }
+    case 'info': {
+      return color.info(s)
+    }
 
-  case 'info': {
-    return color.info(s)
-  }
+    case 'warning': {
+      return color.warning(s)
+    }
 
-  default: {
-    return s
-  }
+    default: {
+      return s
+    }
   }
 }
 
@@ -55,15 +55,15 @@ function buildErrorTable(errors: ErrorSummary, source: string) {
 
 const sumErrors = (errors: AppErrors) => {
   const summed: ErrorSummary = {}
-  Object.keys(errors.data).forEach(key => {
+  for (const key of Object.keys(errors.data)) {
     summed[key] = errors.data[key].reduce((a, b) => a + b, 0)
-  })
+  }
+
   return summed
 }
 
 export default class Errors extends Command {
   static description = 'view app errors'
-
   static flags = {
     app: flags.app({required: true}),
     dyno: flags.boolean({description: 'show only dyno errors'}),
@@ -84,9 +84,10 @@ export default class Errors extends Command {
     async function getAllDynoErrors(types: string[]) {
       const values = await Promise.all(types.map(dynoErrors))
       const memo: Record<string, ErrorSummary> = {}
-      types.forEach((key, index) => {
+      for (const [index, key] of types.entries()) {
         memo[key] = values[index]
-      })
+      }
+
       return memo
     }
 

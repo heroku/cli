@@ -1,6 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 import _ from 'lodash'
 
@@ -12,10 +12,8 @@ export default class Destroy extends Command {
   static args = {
     addonName: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
-
   static description = 'permanently destroy an add-on resource'
   static examples = [`${color.command('addons:destroy [ADDON]... [flags]')}`]
-
   static flags = {
     app: flags.app(),
     confirm: flags.string({char: 'c'}),
@@ -23,12 +21,9 @@ export default class Destroy extends Command {
     remote: flags.remote(),
     wait: flags.boolean({description: 'watch add-on destruction status and exit when complete'}),
   }
-
   static hiddenAliases = ['addons:remove']
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
-
   static strict = false
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

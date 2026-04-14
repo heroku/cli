@@ -9,7 +9,6 @@ export default class Index extends Command {
   static flags  = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }
-
   static topic = 'apps'
 
   async run() {

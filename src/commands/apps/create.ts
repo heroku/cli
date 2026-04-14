@@ -1,4 +1,3 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {
   BuildpackCompletion,
@@ -7,6 +6,7 @@ import {
   StackCompletion,
 } from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, Interfaces, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
@@ -57,7 +57,7 @@ async function createApp(context: Interfaces.ParserOutput, heroku: APIClient, na
   return app
 }
 
-async function addAddons(heroku: APIClient, app: Heroku.App, addons: { as?: string, plan: string }[]) {
+async function addAddons(heroku: APIClient, app: Heroku.App, addons: {as?: string, plan: string}[]) {
   for (const addon of addons) {
     const body = {
       attachment: addon.as ? {name: addon.as} : undefined,
@@ -144,9 +144,7 @@ export default class Create extends Command {
   static args = {
     app: Args.string({description: 'name of app to create', required: false}),
   }
-
   static description = 'creates a new app'
-
   static examples = [`
 ${color.command('heroku apps:create')}
 Creating app... done, stack is heroku-24
@@ -163,7 +161,6 @@ ${color.command('heroku apps:create example')}`, `
 ${color.command('heroku apps:create example-staging --remote staging')}`, `
 # create an app in the eu region
 ${color.command('heroku apps:create --region eu')}`]
-
   static flags = {
     addons: flags.string({description: 'comma-delimited list of addons to install'}),
     // `app` set to `flags.string` instead of `flags.app` to maintain original v5 functionality and avoid a default value from the git remote set when used without an app
@@ -189,7 +186,6 @@ ${color.command('heroku apps:create --region eu')}`]
     stack: flags.string({char: 's', completion: StackCompletion, description: 'the stack to create the app on'}),
     team: flags.team(),
   }
-
   static hiddenAliases = ['create']
 
   async readManifest() {

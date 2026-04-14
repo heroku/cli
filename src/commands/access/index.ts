@@ -24,7 +24,6 @@ export default class AccessIndex extends Command {
     json: flags.boolean({description: 'output in json format'}),
     remote: flags.remote({char: 'r'}),
   }
-
   static topic = 'access'
 
   public async run(): Promise<void> {

@@ -75,16 +75,13 @@ export default class Open extends Command {
   public static args = {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
-
   public static description = 'open an add-on\'s dashboard in your browser'
   public static flags = {
     app: flags.app(),
     remote: flags.remote(),
     'show-url': flags.boolean({description: 'show URL, do not open browser'}),
   }
-
   public static topic = 'addons'
-
   public static urlOpener: (url: string) => Promise<unknown> = open
 
   public static async openUrl(url: string): Promise<void> {

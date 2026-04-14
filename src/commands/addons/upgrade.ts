@@ -17,7 +17,6 @@ export default class Upgrade extends Command {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
     plan: Args.string({description: 'unique identifier or name of the plan'}),
   }
-
   static description = `change add-on plan.
   See available plans with \`heroku addons:plans SERVICE\`.
 
@@ -32,12 +31,10 @@ export default class Upgrade extends Command {
     `# Upgrade a specific add-on:
     ${color.command('heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2')}`,
   ]
-
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
   }
-
   static topic = 'addons'
 
   protected buildApiErrorMessage(errorMessage: string, ctx: any) {
@@ -62,7 +59,7 @@ For example: ${color.blue('heroku addons:upgrade heroku-redis:premium-0')}
 ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
   }
 
-  protected getAddonPartsFromArgs(args: { addon: string, plan: string | undefined }): { addon: string, plan: string } {
+  protected getAddonPartsFromArgs(args: {addon: string, plan: string | undefined}): {addon: string, plan: string} {
     let {addon, plan} = args
 
     if (!plan && addon.includes(':')) {
@@ -130,13 +127,15 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     ux.action.start(`Changing ${color.addon(addonName ?? '')} on ${color.app(appName ?? '')} from ${color.blue(resolvedAddonPlan?.name ?? '')} to ${color.blue(updatedPlanName)}`)
 
     try {
-      const patchResult: HTTP<Required<AddOn>> = await this.heroku.patch(`/apps/${appName}/addons/${addonName}`,
+      const patchResult: HTTP<Required<AddOn>> = await this.heroku.patch(
+        `/apps/${appName}/addons/${addonName}`,
         {
           body: {plan: {name: updatedPlanName}},
           headers: {
             'Accept-Expansion': 'plan', 'X-Heroku-Legacy-Provider-Messages': 'true',
           },
-        })
+        },
+      )
       resolvedAddon = patchResult.body
     } catch (error) {
       let errorToThrow = error as Error

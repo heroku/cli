@@ -11,7 +11,6 @@ export default class Leave extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'apps'
 
   public async run(): Promise<void> {
