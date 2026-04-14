@@ -5,7 +5,7 @@ import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo, NonAdvancedCredentialInfo} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
 
 export default class Rotate extends BaseCommand {
   static args = {

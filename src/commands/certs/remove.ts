@@ -4,7 +4,7 @@ import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import getEndpoint from '../../lib/certs/flags.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 
 const heredoc = tsheredoc.default
 

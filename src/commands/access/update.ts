@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {isTeamApp} from '../../lib/teamUtils.js'
+import {isTeamApp} from '../../lib/team-utils.js'
 
 export default class Update extends Command {
   static args = {

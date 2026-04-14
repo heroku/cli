@@ -4,7 +4,7 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 import {nls} from '../../../nls.js'
 
 export default class Rotate extends Command {

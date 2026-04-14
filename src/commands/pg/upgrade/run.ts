@@ -4,7 +4,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
 import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'

@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import BaseCommand from '../../../../src/lib/data/baseCommand.js'
+import BaseCommand from '../../../../src/lib/data/base-command.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 class BaseCommandTest extends BaseCommand {

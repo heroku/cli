@@ -5,7 +5,7 @@ import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
-import {description, color as getStatusColor} from '../../lib/releases/status_helper.js'
+import {description, color as getStatusColor} from '../../lib/releases/status-helper.js'
 
 export default class Info extends Command {
   static args = {
@@ -82,4 +82,3 @@ export default class Info extends Command {
     }
   }
 }
-

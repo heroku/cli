@@ -1,4 +1,4 @@
-import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
+import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import * as path from 'path'

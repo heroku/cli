@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core/ux'
 
-import {DockerHelper} from '../../lib/container/docker_helper.js'
+import {DockerHelper} from '../../lib/container/docker-helper.js'
 import {debug} from '../../lib/container/debug.js'
 
 export default class Logout extends Command {

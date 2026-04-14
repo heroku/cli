@@ -4,8 +4,8 @@ import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import {formatQuotaStatus} from '../../../lib/data/displayQuota.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import {formatQuotaStatus} from '../../../lib/data/display-quota.js'
 import {InfoResponse, PoolInfoResponse, Quota} from '../../../lib/data/types.js'
 
 const heredoc = tsheredoc.default

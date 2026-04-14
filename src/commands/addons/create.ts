@@ -4,7 +4,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../lib/addons/create_addon.js'
+import createAddon from '../../lib/addons/create-addon.js'
 import * as util from '../../lib/addons/util.js'
 import notify from '../../lib/notify.js'
 

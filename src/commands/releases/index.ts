@@ -5,7 +5,7 @@ import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import * as statusHelper from '../../lib/releases/status_helper.js'
+import * as statusHelper from '../../lib/releases/status-helper.js'
 import * as time from '../../lib/time.js'
 
 type ColumnConfig = {

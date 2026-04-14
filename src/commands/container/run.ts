@@ -4,7 +4,7 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
-import {DockerHelper, DockerJob} from '../../lib/container/docker_helper.js'
+import {DockerHelper, DockerJob} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 export default class Run extends Command {

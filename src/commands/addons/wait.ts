@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {waitForAddonDeprovisioning, waitForAddonProvisioning} from '../../lib/addons/addons_wait.js'
+import {waitForAddonDeprovisioning, waitForAddonProvisioning} from '../../lib/addons/addons-wait.js'
 import {resolveAddon} from '../../lib/addons/resolve.js'
 import notify from '../../lib/notify.js'
 import {ExtendedAddon} from '../../lib/pg/types.js'

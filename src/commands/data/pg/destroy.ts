@@ -2,8 +2,8 @@ import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import destroyAddon from '../../../lib/addons/destroy_addon.js'
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import destroyAddon from '../../../lib/addons/destroy-addon.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 
 export default class DataPgDestroy extends BaseCommand {
   static args = {

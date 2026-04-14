@@ -3,9 +3,9 @@ import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
-import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/tableUtils.js'
+import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
 
 export default class DataMaintenancesIndex extends BaseCommand {
   static description = 'list maintenances for an app\'s data addons'

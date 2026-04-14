@@ -5,9 +5,9 @@ import {ux} from '@oclif/core/ux'
 import {orderBy} from 'natural-orderby'
 import Uri from 'urijs'
 
-import parseKeyValue from '../../lib/utils/keyValueParser.js'
+import parseKeyValue from '../../lib/utils/key-value-parser.js'
 import {paginateRequest} from '../../lib/utils/paginator.js'
-import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'

@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 import ansis from 'ansis'
 
-import ConfirmCommand from '../../../src/lib/confirmCommand.js'
+import ConfirmCommand from '../../../src/lib/confirm-command.js'
 
 describe('confirmApp', function () {
   afterEach(function () {

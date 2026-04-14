@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {waitForAddonProvisioning} from './addons_wait.js'
+import {waitForAddonProvisioning} from './addons-wait.js'
 import * as util from './util.js'
 
 function formatConfigVarsMessage(addon: Heroku.AddOn) {

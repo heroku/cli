@@ -6,8 +6,8 @@ import { rimrafSync } from 'rimraf'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import crypto from 'crypto'
-import getHerokuS3Bucket from '../utils/getHerokuS3Bucket.js'
-import isStableRelease from '../utils/isStableRelease.js'
+import getHerokuS3Bucket from '../utils/get-heroku-s3-bucket.js'
+import isStableRelease from '../utils/is-stable-release.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

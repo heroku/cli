@@ -3,7 +3,7 @@ import Cmd from '../../../../src/commands/container/login.js'
 import runCommand from '../../../helpers/runCommand.js'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
+import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 describe('container:login', function () {
   let sandbox: sinon.SinonSandbox

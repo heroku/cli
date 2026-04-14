@@ -4,8 +4,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {Args} from '@oclif/core'
 import _ from 'lodash'
 
-import destroyAddon from '../../lib/addons/destroy_addon.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import destroyAddon from '../../lib/addons/destroy-addon.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import notify from '../../lib/notify.js'
 
 export default class Destroy extends Command {

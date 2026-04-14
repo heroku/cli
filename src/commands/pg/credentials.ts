@@ -6,7 +6,7 @@ import {Args} from '@oclif/core'
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 
 import {presentCredentialAttachments} from '../../lib/pg/util.js'
-import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 import {nls} from '../../nls.js'
 
 export default class Credentials extends Command {

@@ -4,8 +4,8 @@ import {Args, ux} from '@oclif/core'
 
 import type {Quota, Quotas} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
-import {displayQuota} from '../../../../lib/data/displayQuota.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {displayQuota} from '../../../../lib/data/display-quota.js'
 
 export default class DataPgQuotasIndex extends BaseCommand {
   static args = {

@@ -5,8 +5,8 @@ import tsheredoc from 'tsheredoc'
 
 import type {Quota} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
-import {displayQuota} from '../../../../lib/data/displayQuota.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {displayQuota} from '../../../../lib/data/display-quota.js'
 
 type QuotaUpdate = {
   critical_gb?: null | number,

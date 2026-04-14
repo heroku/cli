@@ -10,7 +10,7 @@ import {fileURLToPath} from 'url'
 
 import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
 import {ago} from '../lib/time.js'
-import {AppErrors} from '../lib/types/app_errors.js'
+import {AppErrors} from '../lib/types/app-errors.js'
 import {sparkline} from '../lib/utils/sparkline.js'
 
 const __filename = fileURLToPath(import.meta.url)

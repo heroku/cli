@@ -1,6 +1,6 @@
 import {ux} from '@oclif/core/ux'
 
-import parseKeyValue from './keyValueParser.js'
+import parseKeyValue from './key-value-parser.js'
 
 export function huxTableNoWrapOptions(noWrap: boolean): {
   maxWidth: 'none' | undefined

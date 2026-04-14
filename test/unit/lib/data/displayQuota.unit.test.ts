@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
-import {displayQuota, formatQuotaStatus} from '../../../../src/lib/data/displayQuota.js'
+import {displayQuota, formatQuotaStatus} from '../../../../src/lib/data/display-quota.js'
 import {
   storageQuotaResponse, storageQuotaResponseCriticalNotify,
   storageQuotaResponseRestricted, storageQuotaResponseWarning,
