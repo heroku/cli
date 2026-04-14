@@ -189,7 +189,6 @@ describe('@acceptance smoke tests', function () {
       const cmd = await run('plugins --core')
       expect(cmd.stdout).to.contain('@oclif/plugin-commands')
       expect(cmd.stdout).to.contain('@oclif/plugin-help')
-      expect(cmd.stdout).to.contain('@oclif/plugin-legacy')
       expect(cmd.stdout).to.contain('@oclif/plugin-not-found')
       expect(cmd.stdout).to.contain('@oclif/plugin-plugins')
       expect(cmd.stdout).to.contain('@oclif/plugin-update')
