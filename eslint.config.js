@@ -8,7 +8,7 @@ export default [
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       'array-callback-return': 'warn',
-      camelcase: 'warn',
+      camelcase: 'off',
       'n/no-unpublished-bin': 'off', // we're getting false positives with this
       'n/no-unsupported-features/node-builtins': 'warn',
       'no-await-in-loop': 'warn',
