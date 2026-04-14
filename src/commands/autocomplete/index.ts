@@ -7,7 +7,7 @@ import {
 } from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, Interfaces, ux} from '@oclif/core'
-import * as path from 'path'
+import path from 'node:path'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
 import {updateCache} from '../../lib/autocomplete/cache.js'
@@ -17,16 +17,13 @@ export default class Index extends AutocompleteBase {
   static args = {
     shell: Args.string({description: 'shell type', required: false}),
   }
-
   static description = 'display autocomplete installation instructions'
-
   static examples = [
     color.command('heroku autocomplete'),
     color.command('heroku autocomplete bash'),
     color.command('heroku autocomplete zsh'),
     color.command('heroku autocomplete --refresh-cache'),
   ]
-
   static flags: Interfaces.FlagInput = {
     'refresh-cache': flags.boolean({char: 'r', description: 'refresh cache only (ignores displaying instructions)'}),
   }

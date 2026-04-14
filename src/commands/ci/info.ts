@@ -10,14 +10,11 @@ export default class CiInfo extends Command {
   static args = {
     'test-run': Args.string({description: 'auto-incremented test run number', required: true}),
   }
-
   static description = 'show the status of a specific test run'
-
   static examples = [
     color.command(`heroku ci:info 1288 --app murmuring-headland-14719
 `),
   ]
-
   static flags = {
     app: flags.app(),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),

@@ -2,11 +2,11 @@ import {APIClient, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import {execSync} from 'child_process'
-import * as path from 'path'
-import * as process from 'process'
+import {execSync} from 'node:child_process'
+import path from 'node:path'
+import * as process from 'node:process'
+import {fileURLToPath} from 'node:url'
 import img from 'term-img'
-import {fileURLToPath} from 'url'
 
 import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
 import {ago} from '../lib/time.js'
@@ -39,11 +39,10 @@ function displayErrors(metrics: FetchMetricsResponse[0], _: any) {
   }
 
   if (metrics.dynoErrors) {
-    metrics.dynoErrors.filter(Boolean)
-      .forEach(dynoErrors => {
-        errors = errors.concat(Object.entries(dynoErrors?.data || {})
-          .map(e => color.failure(`${_.sum(e[1])} ${e[0]}`)))
-      })
+    for (const dynoErrors of metrics.dynoErrors.filter(Boolean)) {
+      errors = errors.concat(Object.entries(dynoErrors?.data || {})
+        .map(e => color.failure(`${_.sum(e[1])} ${e[0]}`)))
+    }
   }
 
   if (errors.length > 0)
@@ -61,13 +60,13 @@ function displayMetrics(metrics: FetchMetricsResponse[0], _: any) {
     if (['win32', 'windows'].includes(process.platform))
       return ''
     const points: number[] = []
-    Object.values(metrics.routerStatus?.data || {})
-      .forEach(cur => {
-        for (const [i, element] of cur.entries()) {
-          const j = Math.floor(i / 3)
-          points[j] = (points[j] || 0) + element
-        }
-      })
+    for (const cur of Object.values(metrics.routerStatus?.data || {})) {
+      for (const [i, element] of cur.entries()) {
+        const j = Math.floor(i / 3)
+        points[j] = (points[j] || 0) + element
+      }
+    }
+
     points.pop()
     return dim(sparkline(points)) + ' last 24 hours rpm'
   }
@@ -108,13 +107,10 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
 
   const metricsData = await Promise.all(apps.map(app => {
     const types = app.formation.map((p: Heroku.Formation) => p.type)
-    const dynoErrorsPromise: Promise<(AppErrors | undefined)[]> = Promise.all(
-      types.map((type: string) => heroku.get<AppErrors>(
-        `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
-        {hostname: 'api.metrics.herokai.com'},
-      ).catch(() => {}),
-      ),
-    )
+    const dynoErrorsPromise: Promise<(AppErrors | undefined)[]> = Promise.all(types.map((type: string) => heroku.get<AppErrors>(
+      `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
+      {hostname: 'api.metrics.herokai.com'},
+    ).catch(() => {})))
     return Promise.all([
       dynoErrorsPromise,
       heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
@@ -170,7 +166,7 @@ export default class Dashboard extends Command {
     const apps = await favoriteApps()
     const [{body: teams}, notificationsResponse, appsWithMoreInfo] = await Promise.all([
       this.heroku.get<Heroku.Team[]>('/teams'),
-      this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'})
+      this.heroku.get<{read: boolean}[]>('/user/notifications', {hostname: 'telex.heroku.com'})
         .catch(() => null),
       Promise.all(apps.map(async appID => {
         const [{body: app}, {body: formation}, pipelineResponse] = await Promise.all([

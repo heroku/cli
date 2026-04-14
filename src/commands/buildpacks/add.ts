@@ -4,22 +4,20 @@ import {Args} from '@oclif/core'
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
 
 export default class Add extends Command {
-  static description = 'add new app buildpack, inserting into list of buildpacks if necessary'
-
-  static flags = {
-    app: Flags.app({required: true}),
-    remote: Flags.remote(),
-    index: Flags.integer({
-      description: 'the 1-based index of the URL in the list of URLs',
-      char: 'i',
-    }),
-  }
-
   static args = {
     buildpack: Args.string({
-      required: true,
       description: 'namespace/name of the buildpack',
+      required: true,
     }),
+  }
+  static description = 'add new app buildpack, inserting into list of buildpacks if necessary'
+  static flags = {
+    app: Flags.app({required: true}),
+    index: Flags.integer({
+      char: 'i',
+      description: 'the 1-based index of the URL in the list of URLs',
+    }),
+    remote: Flags.remote(),
   }
 
   async run() {

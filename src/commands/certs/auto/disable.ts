@@ -14,7 +14,6 @@ export default class Disable extends Command {
     confirm: flags.string({char: 'c', hidden: true}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

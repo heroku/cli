@@ -13,7 +13,7 @@ type ImageResponse = {
   }
   history: [{
     v1Compatibility: string,
-    }
+  },
   ],
   schemaVersion: number,
 }
@@ -24,17 +24,13 @@ export default class ContainerRelease extends Command {
     `${color.command('heroku container:release web')}        # Releases the previously pushed web process type`,
     `${color.command('heroku container:release web worker')} # Releases the previously pushed web and worker process types`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     verbose: flags.boolean({char: 'v'}),
   }
-
   static strict = false
-
   static topic = 'container'
-
   static usage = 'container:release'
 
   async run() {
@@ -70,16 +66,16 @@ export default class ContainerRelease extends Command {
       let imageID
       let v1Comp
       switch (imageResp.schemaVersion) {
-      case 1: {
-        v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
-        imageID = v1Comp.id
-        break
-      }
+        case 1: {
+          v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
+          imageID = v1Comp.id
+          break
+        }
 
-      case 2: {
-        imageID = imageResp.config.digest
-        break
-      }
+        case 2: {
+          imageID = imageResp.config.digest
+          break
+        }
       }
 
       updateData.push({

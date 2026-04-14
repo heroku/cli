@@ -16,7 +16,6 @@ export default class Update extends Command {
     CRT: Args.string({description: 'absolute path of the certificate file on disk', required: true}),
     KEY: Args.string({description: 'absolute path of the key file on disk', required: true}),
   }
-
   static description = heredoc`
     update an SSL certificate on an app
     Note: certificates with PEM encoding are also valid
@@ -27,7 +26,6 @@ export default class Update extends Command {
         If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
         https://help.salesforce.com/s/articleView?id=000333504&type=1
   `]
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({hidden: true}),
@@ -35,7 +33,6 @@ export default class Update extends Command {
     name: flags.string({description: 'name to update'}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

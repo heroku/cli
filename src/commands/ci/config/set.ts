@@ -12,20 +12,16 @@ const heredoc = tsheredoc.default
 
 export default class CiConfigSet extends Command {
   static description = 'set CI config vars'
-
   static examples = [heredoc(`
     ${color.command('heroku ci:config:set --pipeline PIPELINE RAILS_ENV=test')}
     Setting test config vars... done
     RAILS_ENV: test`)]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
     remote: flags.remote(),
   }
-
   static strict = false
-
   static topic = 'ci'
 
   async run() {
@@ -47,12 +43,10 @@ export default class CiConfigSet extends Command {
     await setPipelineConfigVars(this.heroku, pipeline.id, vars)
     ux.action.stop()
 
-    hux.styledObject(
-      Object.keys(vars).reduce((memo: Record<string, string>, key: string) => {
-        memo[color.green(key)] = vars[key]
-        return memo
-      }, {}),
-    )
+    hux.styledObject(Object.keys(vars).reduce((memo: Record<string, string>, key: string) => {
+      memo[color.green(key)] = vars[key]
+      return memo
+    }, {}))
   }
 }
 

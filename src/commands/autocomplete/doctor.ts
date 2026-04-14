@@ -1,8 +1,8 @@
 import {flags} from '@heroku-cli/command'
-import {Args, Interfaces} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
+import {Args, Interfaces} from '@oclif/core'
 import fs from 'fs-extra'
-import * as path from 'path'
+import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 
 import {AutocompleteBase} from '../../lib/autocomplete/base.js'
@@ -11,17 +11,14 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export default class Doctor extends AutocompleteBase {
-  static hidden = true
-
-  static description = 'autocomplete diagnostic'
-
   static args = {
     shell: Args.string({description: 'shell type', required: false}),
   }
-
+  static description = 'autocomplete diagnostic'
   static flags: Interfaces.FlagInput = {
     verbose: flags.boolean({description: 'list completable commands'}),
   }
+  static hidden = true
 
   async run() {
     const {args, flags} = await this.parse(Doctor)
@@ -46,7 +43,7 @@ export default class Doctor extends AutocompleteBase {
     try {
       const shellProfile = await fs.readFile(shellProfilePath)
       const regex = /AC_\w+_SETUP_PATH/
-      shimValue = regex.exec(shellProfile.toString()) ? 'present' : 'missing'
+      shimValue = regex.test(shellProfile.toString()) ? 'present' : 'missing'
     } catch {
       // File doesn't exist or can't be read
       shimValue = 'missing'
@@ -94,8 +91,9 @@ export default class Doctor extends AutocompleteBase {
     const header = 'Completable Commands'
     this.log(header)
     this.log('='.repeat(header.length))
-    this.config.plugins.forEach(p => {
-      p.commands.forEach(c => {
+    const pluginList = Array.isArray(this.config.plugins) ? this.config.plugins : Array.from(this.config.plugins.values())
+    for (const p of pluginList) {
+      for (const c of p.commands) {
         try {
           if (c.hidden) {
             this.log(`${c.id} (hidden)`)
@@ -117,7 +115,7 @@ export default class Doctor extends AutocompleteBase {
         } catch {
           this.log(`Error creating autocomplete for command ${c.id}`)
         }
-      })
-    })
+      }
+    }
   }
 }

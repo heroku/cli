@@ -16,7 +16,6 @@ export default class Info extends Command {
     remote: flags.remote(),
     'show-domains': flags.boolean({description: 'show associated domains'}),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

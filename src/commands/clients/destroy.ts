@@ -7,7 +7,6 @@ export default class ClientsDestroy extends Command {
   static args = {
     id: Args.string({description: 'ID of the OAuth client', required: true}),
   }
-
   static description = 'delete client by ID'
 
   async run() {
@@ -15,9 +14,7 @@ export default class ClientsDestroy extends Command {
 
     ux.action.start(`Destroying ${color.name(args.id)}`)
 
-    await this.heroku.delete<Heroku.OAuthClient>(
-      `/oauth/clients/${args.id}`,
-    )
+    await this.heroku.delete<Heroku.OAuthClient>(`/oauth/clients/${args.id}`)
 
     ux.action.stop()
   }
