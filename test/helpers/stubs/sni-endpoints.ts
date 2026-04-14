@@ -1,4 +1,4 @@
-import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
+import {SniEndpoint} from '../../../src/lib/types/sni-endpoint.js'
 import {Domain} from '../../../src/lib/types/domain.js'
 
 export const endpointStables: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
