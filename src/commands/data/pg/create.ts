@@ -15,14 +15,13 @@ import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.
 import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
+
 const {prompt, Separator} = inquirer
 
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'create a Postgres Advanced database'
   static examples = ['<%= config.bin %> <%= command.id %> --level 4G-Performance -a example-app']
-
   static flags = {
     app: Flags.app({
       required: true,
@@ -56,9 +55,7 @@ export default class DataPgCreate extends BaseCommand {
       description: 'watch database creation status and exit when complete',
     }),
   }
-
   static promptFlagActive = false
-
   private addon: Heroku.AddOn | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private followerInstanceCount: number = 0
@@ -139,9 +136,7 @@ export default class DataPgCreate extends BaseCommand {
     if (!level) {
       // Interactive mode
       await this.followerPoolConfigLoop()
-      process.stderr.write(
-        `Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`,
-      )
+      process.stderr.write(`Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`)
       await this.runCommand('data:pg:info', [this.addon.name!, `--app=${app}`])
     } else if (followers && followers > 0) {
       const poolInfo = await createPool(this.dataApi, this.addon!, {
@@ -192,16 +187,14 @@ export default class DataPgCreate extends BaseCommand {
 
         process.stderr.write('\n')
         this.followerInstanceCount += count
-        if (this.followerInstanceCount >= 13) {
-          oneMore = false
-        } else {
-          oneMore = (await this.prompt<{oneMore: boolean}>({
+        oneMore = this.followerInstanceCount >= 13
+          ? false
+          : (await this.prompt<{oneMore: boolean}>({
             default: false,
             message: 'Configure another follower pool?',
             name: 'oneMore',
             type: 'confirm',
           })).oneMore
-        }
       } else {
         oneMore = false
       }
@@ -209,10 +202,8 @@ export default class DataPgCreate extends BaseCommand {
   }
 
   private async highAvailabilityStep(): Promise<string> {
-    process.stderr.write(
-      'The leader pool has high availability enabled and includes a standby instance for redundancy.\n'
-      + 'If you disable high availability, you remove the standby and you won\'t have redundancy on your database.\n\n',
-    )
+    process.stderr.write('The leader pool has high availability enabled and includes a standby instance for redundancy.\n'
+      + 'If you disable high availability, you remove the standby and you won\'t have redundancy on your database.\n\n')
 
     const leaderPricing = this.extendedLevelsInfo!.find(level => level.name === this.leaderLevel)?.pricing
     const {action} = await this.prompt<{action: string}>({
@@ -246,11 +237,9 @@ export default class DataPgCreate extends BaseCommand {
     const instancePrice = renderPricingInfo(leaderLevelInfo?.pricing)
     process.stderr.write(heredoc`
       ${`${color.green('✓ Configure Leader Pool')} ${totalPrice}`}
-        ${color.gray(
-    `${this.leaderLevel} ${leaderLevelInfo?.vcpu} ${color.ansis.inverse('vCPU')} `
+        ${color.gray(`${this.leaderLevel} ${leaderLevelInfo?.vcpu} ${color.ansis.inverse('vCPU')} `
           + `${leaderLevelInfo?.memory_in_gb} GB ${color.ansis.inverse('MEM')} `
-          + instancePrice,
-  )}
+          + instancePrice)}
     `)
     if (this.highAvailability) {
       process.stderr.write(color.gray(`  Standby (High Availability) ${instancePrice}\n`))
@@ -298,50 +287,50 @@ export default class DataPgCreate extends BaseCommand {
 
     while (!configReady) {
       switch (currentStep) {
-      case 'leaderLevel': {
-        await this.leaderLevelStep()
-        currentStep = 'highAvailability'
-        break
-      }
+        case 'confirmation': {
+          switch (await this.leaderConfirmationStep()) {
+            case 'back': {
+              currentStep = 'highAvailability'
+              break
+            }
 
-      case 'highAvailability': {
-        switch (await this.highAvailabilityStep()) {
-        case 'keep': {
-          this.highAvailability = true
-          currentStep = 'confirmation'
+            case 'confirm': {
+              configReady = true
+              break
+            }
+          }
+
           break
         }
 
-        case 'remove': {
-          this.highAvailability = false
-          currentStep = 'confirmation'
+        case 'highAvailability': {
+          switch (await this.highAvailabilityStep()) {
+            case 'back': {
+              currentStep = 'leaderLevel'
+              break
+            }
+
+            case 'keep': {
+              this.highAvailability = true
+              currentStep = 'confirmation'
+              break
+            }
+
+            case 'remove': {
+              this.highAvailability = false
+              currentStep = 'confirmation'
+              break
+            }
+          }
+
           break
         }
 
-        case 'back': {
-          currentStep = 'leaderLevel'
-          break
-        }
-        }
-
-        break
-      }
-
-      case 'confirmation': {
-        switch (await this.leaderConfirmationStep()) {
-        case 'confirm': {
-          configReady = true
-          break
-        }
-
-        case 'back': {
+        case 'leaderLevel': {
+          await this.leaderLevelStep()
           currentStep = 'highAvailability'
           break
         }
-        }
-
-        break
-      }
       }
     }
   }

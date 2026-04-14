@@ -1,23 +1,22 @@
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {PGSettingsCommand, numericConverter} from '../../../../lib/pg/setter.js'
+
+import {numericConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
 import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class LogMinDuration extends PGSettingsCommand {
-  static topic = 'pg'
-  static description = heredoc(`
-    Sets the minimum execution time in milliseconds for a statement's plan to be logged.
-    Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
-  `)
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'minimum duration in milliseconds for queries before logging execution plans. A value of -1 disables it. A value of 0 logs all query execution plans.'}),
   }
-
+  static description = heredoc(`
+    Sets the minimum execution time in milliseconds for a statement's plan to be logged.
+    Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
+  `)
+  static topic = 'pg'
   protected settingKey: SettingKey = 'auto_explain.log_min_duration'
 
   protected convertValue(val: string): number {

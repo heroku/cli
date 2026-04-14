@@ -1,7 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import tsheredoc from 'tsheredoc'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
+import childProcess from 'node:child_process'
+import tsheredoc from 'tsheredoc'
+
 import {
   connArgs,
   maybeTunnel,
@@ -10,7 +12,6 @@ import {
   spawnPipe,
   verifyExtensionsMatch,
 } from '../../lib/pg/push-pull.js'
-import childProcess from 'node:child_process'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
@@ -21,7 +22,6 @@ export default class Push extends Command {
     source: Args.string({description: 'PostgreSQL connection string for the source database', required: true}),
     target: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: true}),
   }
-
   static description = heredoc`
     push local or remote into Heroku database
     Push from SOURCE into TARGET. TARGET must be empty.
@@ -31,7 +31,6 @@ export default class Push extends Command {
     SOURCE must be either the name of a database existing on your localhost or the
     fully qualified URL of a remote database.
   `
-
   static examples = [heredoc`
       # push mylocaldb into a Heroku DB named postgresql-swimmingly-100
       $ heroku pg:push mylocaldb postgresql-swimmingly-100 --app sushi
@@ -39,19 +38,18 @@ export default class Push extends Command {
       # push remote DB at postgres://myhost/mydb into a Heroku DB named postgresql-swimmingly-100
       $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100 --app sushi
   `]
-
   static flags = {
     app: flags.app({required: true}),
     'exclude-table-data': flags.string({description: 'tables for which data should be excluded (use \';\' to split multiple names)', hasValue: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   protected async push(
     sourceIn: pg.ConnectionDetails,
     targetIn: pg.ConnectionDetails,
-    exclusions: string[]) {
+    exclusions: string[],
+  ) {
     await prepare(targetIn)
 
     const source = await maybeTunnel(sourceIn)
@@ -62,11 +60,11 @@ export default class Push extends Command {
 
     if (exclude !== '') dumpFlags.push(exclude)
 
-    const dumpOptions: { env: NodeJS.ProcessEnv } & childProcess.SpawnOptions = {
+    const dumpOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {
         PGSSLMODE: 'prefer',
         ...env,
-      } as { [key: string]: string },
+      } as {[key: string]: string},
       shell: true,
       stdio: ['pipe', 'pipe', 2],
     }
@@ -74,7 +72,7 @@ export default class Push extends Command {
 
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
 
-    const restoreOptions: { env: NodeJS.ProcessEnv } & childProcess.SpawnOptions = {
+    const restoreOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {...env},
       shell: true,
       stdio: ['pipe', 'pipe', 2],

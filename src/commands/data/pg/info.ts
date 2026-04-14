@@ -24,11 +24,8 @@ export default class DataPgInfo extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'get details on a Postgres Advanced database'
-
   static examples = ['<%= config.bin %> <%= command.id %> database_name']
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
@@ -45,8 +42,7 @@ export default class DataPgInfo extends BaseCommand {
     if (!utils.pg.isAdvancedDatabase(addon)) {
       ux.error(heredoc`
         You can only use this command on Advanced-tier databases.
-        Run ${color.code(`heroku pg:info ${addon.name} -a ${app}`)} instead.`,
-      )
+        Run ${color.code(`heroku pg:info ${addon.name} -a ${app}`)} instead.`)
     }
 
     const [{body: info}, {body: attachments}] = await Promise.all([
@@ -112,9 +108,9 @@ export default class DataPgInfo extends BaseCommand {
       }
 
       if (otherPools.length > 0) {
-        otherPools.forEach(pool => {
+        for (const pool of otherPools) {
           renderPoolSummary(pool, attachments)
-        })
+        }
       }
     }
   }
@@ -142,10 +138,11 @@ export default class DataPgInfo extends BaseCommand {
 
   private renderQuotasInfo(quotas: Quota[]): Record<string, string> {
     const quotaInfo: Record<string, string> = {}
-    quotas.forEach(quota => {
+    for (const quota of quotas) {
       const usageMessage = formatQuotaStatus(quota)
       quotaInfo[`  ${hux.toTitleCase(quota.type)}`] = `${usageMessage}`
-    })
+    }
+
     return quotaInfo
   }
 
@@ -177,18 +174,12 @@ function renderPoolSummary(pool: PoolInfoResponse, attachments: Required<Heroku.
 
   const instances: string[] = []
   const {compute_instances: computeInstances, name: poolName} = pool
-  computeInstances.forEach(({id, role, status}) => {
-    let instanceName: string
-
-    if (role === 'standby') {
-      instanceName = color.inactive(`${role}.${id}`)
-    } else {
-      instanceName = `${role}.${id}`
-    }
+  for (const {id, role, status} of computeInstances) {
+    const instanceName = role === 'standby' ? color.inactive(`${role}.${id}`) : `${role}.${id}`
 
     const instanceStatus = status === 'up' ? color.success(status) : color.warning(status)
     instances.push(`  ${instanceName}: ${instanceStatus}`)
-  })
+  }
 
   if (poolName === 'leader') {
     hux.styledHeader(`Leader pool${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`)
@@ -196,10 +187,8 @@ function renderPoolSummary(pool: PoolInfoResponse, attachments: Required<Heroku.
     hux.styledHeader(`Follower pool ${color.name(poolName)}${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`)
   }
 
-  ux.stdout(
-    `  ${poolStatus}\n`
+  ux.stdout(`  ${poolStatus}\n`
     + `  ${connections}\n`
     + `  ${poolSize}\n`
-    + `  ${instances.join('\n  ')}\n`,
-  )
+    + `  ${instances.join('\n  ')}\n`)
 }

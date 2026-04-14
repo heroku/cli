@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -14,16 +14,13 @@ export default class Upgrade extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = heredoc(`
     cancels a scheduled upgrade. You can't cancel a version upgrade that's in progress.
   `)
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

@@ -1,5 +1,5 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
@@ -10,16 +10,13 @@ export default class DataMaintenancesHistory extends BaseCommand {
   static args = {
     addon: Args.string({description: 'data addon', required: true}),
   }
-
   static description = 'show details of the most recent maintenances for an addon'
-
   static examples = [
     '$ heroku data:maintenances:history postgresql-sinuous-92834',
     '$ heroku data:maintenances:history postgresql-sinuous-92834 --num 10',
     '$ heroku data:maintenances:history postgresql-sinuous-92834 --json',
     '$ heroku data:maintenances:history DATABASE --app production-app',
   ]
-
   static flags = {
     app: Flags.app(),
     columns: Flags.string({description: 'only show provided columns (comma-separated)'}),
@@ -57,6 +54,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
       return
     }
 
+    /* eslint-disable perfectionist/sort-objects */
     const allTableColumns = {
       scheduled_for: {
         get: (row: Maintenance) => row && row.scheduled_for ? row.scheduled_for : '-',
@@ -85,7 +83,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
         header: 'Window',
       },
     }
-
+    /* eslint-enable perfectionist/sort-objects */
     const tableColumns = constructTableColumns(allTableColumns, Object.keys(allTableColumns), false, flags.columns)
 
     if (flags.json) {

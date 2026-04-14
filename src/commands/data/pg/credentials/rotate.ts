@@ -1,6 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {AddOn, AddOnAttachment} from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo, NonAdvancedCredentialInfo} from '../../../../lib/data/types.js'
@@ -14,9 +14,7 @@ export default class Rotate extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'rotate credentials on a Postgres database'
-
   static flags = {
     all: Flags.boolean({
       description: 'rotate all credentials',
@@ -83,6 +81,7 @@ export default class Rotate extends BaseCommand {
     if (all) {
       try {
         ux.action.start(`Rotating all credentials on ${color.datastore(addon.name)}`)
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         isAdvancedTier
           ? await this.dataApi.post(`/data/postgres/v1/${addon.id}/rotate_credentials`, body)
           : await this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials_rotation`, body)
@@ -100,6 +99,7 @@ export default class Rotate extends BaseCommand {
 
       try {
         ux.action.start(`Rotating ${color.name(credName)} on ${color.datastore(addon.name)}`)
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         isAdvancedTier
           ? await this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}/rotate`, body)
           : await this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}/credentials_rotation`, body)
@@ -201,9 +201,7 @@ export default class Rotate extends BaseCommand {
     }
 
     if (all && force) {
-      warnings.push(
-        `You're force rotating the passwords for all credentials including the ${defaultCredName} credential.`,
-      )
+      warnings.push(`You're force rotating the passwords for all credentials including the ${defaultCredName} credential.`)
     }
 
     if (all && !force) {
@@ -217,10 +215,8 @@ export default class Rotate extends BaseCommand {
     }
 
     if (force) {
-      warnings.push(
-        'You can\'t access any followers lagging in replication until they\'re caught up. '
-        + `Use ${color.code(infoCommand)} to track progress.`,
-      )
+      warnings.push('You can\'t access any followers lagging in replication until they\'re caught up. '
+        + `Use ${color.code(infoCommand)} to track progress.`)
     }
 
     return warnings

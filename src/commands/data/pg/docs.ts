@@ -1,5 +1,5 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 
 import BaseCommand from '../../../lib/data/base-command.js'
 

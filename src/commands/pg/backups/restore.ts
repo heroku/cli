@@ -16,9 +16,7 @@ export default class Restore extends Command {
     backup: Args.string({description: 'URL or backup ID from another app'}),
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'restore a backup (default latest) to a database'
-
   static examples = [
     heredoc(`
     # Basic Restore from Backup ID
@@ -45,7 +43,6 @@ export default class Restore extends Command {
     ${color.command('heroku pg:backups:restore b101 HEROKU_POSTGRESQL_PINK --app my-heroku-app')}
     `),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
@@ -61,7 +58,6 @@ export default class Restore extends Command {
     verbose: flags.boolean({char: 'v'}),
     'wait-interval': flags.integer({default: 3}),
   }
-
   static topic = 'pg'
 
   protected getSortedExtensions(extensions: null | string | undefined): string[] | undefined {
@@ -78,11 +74,11 @@ export default class Restore extends Command {
     let backupURL
     let backupName = args.backup
 
-    if (backupName && backupName.match(/^https?:\/\//)) {
+    if (backupName && /^https?:\/\//.test(backupName)) {
       backupURL = dropboxURL(backupName)
     } else {
       let backupApp
-      if (backupName && backupName.match(/::/)) {
+      if (backupName && /::/.test(backupName)) {
         [backupApp, backupName] = backupName.split('::')
       } else {
         backupApp = app
@@ -138,7 +134,7 @@ export default class Restore extends Command {
 }
 
 function dropboxURL(url: string) {
-  if (url.match(/^https?:\/\/www\.dropbox\.com/) && !url.endsWith('dl=1')) {
+  if (/^https?:\/\/www\.dropbox\.com/.test(url) && !url.endsWith('dl=1')) {
     if (url.endsWith('dl=0'))
       url = url.replace('dl=0', 'dl=1')
     else if (url.includes('?'))

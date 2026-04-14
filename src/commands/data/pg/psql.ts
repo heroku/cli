@@ -1,5 +1,5 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -14,21 +14,16 @@ export default class DataPgPsql extends Command {
       required: true,
     }),
   }
-
   static description = 'open a psql shell to the database'
-
   static examples = ['<%= config.bin %> <%= command.id %> database_name -a example-app']
-
   static flags = {
     app: Flags.app({required: true}),
     // prevent MITM attacks.
     'channel-binding': Flags.string({
       default: 'require',
-      description: heredoc(
-        'override the default channel binding behavior (required). '
+      description: heredoc('override the default channel binding behavior (required). '
         + 'Can be "disable" to disable channel binding if you run into compatibility issues with your libpq version '
-        + 'or if it was compiled without SSL support.',
-      ),
+        + 'or if it was compiled without SSL support.'),
       hidden: true,
       options: ['disable', 'require'],
     }),
@@ -60,8 +55,7 @@ export default class DataPgPsql extends Command {
         const addonResolver = new utils.AddonResolver(this.heroku)
         const addon = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())
         const credCommand = utils.pg.isAdvancedDatabase(addon) ? 'data:pg:credentials' : 'pg:credentials'
-        throw new Error(
-          `The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(databaseArg)}. `
+        throw new Error(`The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(databaseArg)}. `
           + `Run ${color.code(`heroku ${credCommand} ${addon.name}`)} to list the credentials on the database.`)
       }
 
@@ -75,7 +69,7 @@ export default class DataPgPsql extends Command {
       let psqlCommand: string
 
       if (command) {
-        psqlCommand = `psql -c "${command.replaceAll('"', '\\"')}" --set sslmode=require `
+        psqlCommand = `psql -c "${command.replaceAll('"', String.raw`\"`)}" --set sslmode=require `
           + `--set channel_binding=${channelBinding} $${db.attachment!.name}_URL`
       } else {
         const prompt = `${db.attachment!.app.name}::${db.attachment!.name}%R%# `
@@ -123,7 +117,7 @@ export default class DataPgPsql extends Command {
     try {
       await dyno.start()
     } catch (error: unknown) {
-      const dynoError = error as {exitCode?: number} & Error
+      const dynoError = error as Error & {exitCode?: number}
       if (dynoError.exitCode) {
         ux.error(dynoError.message, {code: String(dynoError.exitCode), exit: dynoError.exitCode})
       } else {

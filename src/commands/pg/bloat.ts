@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 
 import {nls} from '../../nls.js'
 
@@ -68,19 +68,18 @@ ORDER BY raw_waste DESC, bloat DESC
 `
 
 export default class Bloat extends Command {
-  static description = 'show table and index bloat in your database ordered by most wasteful'
-  static topic = 'pg'
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
+  static description = 'show table and index bloat in your database ordered by most wasteful'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Bloat)
+    const {args, flags} = await this.parse(Bloat)
     const {app} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(app, args.database)

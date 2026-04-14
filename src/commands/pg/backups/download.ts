@@ -12,15 +12,12 @@ export default class Download extends Command {
   static args = {
     backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
   }
-
   static description = 'downloads database backup'
-
   static flags = {
     app: flags.app({required: true}),
     output: flags.string({char: 'o', description: 'location to download to. Defaults to latest.dump'}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

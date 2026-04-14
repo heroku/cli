@@ -1,11 +1,11 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Maintenance} from '../../../lib/data/types.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
 export default class DataMaintenancesSchedule extends BaseCommand {
   static args = {
@@ -14,9 +14,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'schedule or re-schedule maintenance for an add-on'
-
   static examples = [
     '$ heroku data:maintenances:schedule postgresql-sinuous-83910',
     '$ heroku data:maintenances:schedule postgresql-sinuous-83910 --weeks 3',
@@ -24,7 +22,6 @@ export default class DataMaintenancesSchedule extends BaseCommand {
     '$ heroku data:maintenances:schedule postgresql-sinuous-83910 --week 2020-02-23',
     '$ heroku data:maintenances:schedule HEROKU_POSTGRESQL_RED --app test-app',
   ]
-
   static flags = {
     app: flags.app(),
     remote: flags.remote(),

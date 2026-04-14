@@ -1,6 +1,6 @@
-import {hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {hux, utils} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
@@ -13,14 +13,12 @@ export default class Credentials extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'show information on credentials in the database'
   static flags = {
     app: flags.app({required: true}),
     'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   protected isDefaultCredential(cred: NonAdvancedCredentialInfo): boolean {
@@ -48,11 +46,7 @@ export default class Credentials extends Command {
 
     const presentCredential = (cred: NonAdvancedCredentialInfo): string => {
       let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
-      if (cred.name === 'default') {
-        credAttachments = attachments.filter(a => a.namespace === null)
-      } else {
-        credAttachments = attachments.filter(a => a.namespace === `credential:${cred.name}`)
-      }
+      credAttachments = cred.name === 'default' ? attachments.filter(a => a.namespace === null) : attachments.filter(a => a.namespace === `credential:${cred.name}`)
 
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
     }

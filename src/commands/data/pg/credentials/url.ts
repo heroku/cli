@@ -1,8 +1,8 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
-import {URL} from 'url'
 
 import type {
   AdvancedCredentialInfo,
@@ -23,13 +23,10 @@ export default class Url extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'show information on a Postgres database credential'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> DATABASE --app myapp',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     name: Flags.string({
@@ -57,23 +54,17 @@ export default class Url extends BaseCommand {
     let credInfo: CredentialInfo
 
     if (isAdvancedTier) {
-      const {body: {items: availableCreds}} = await this.dataApi.get<CredentialsInfo>(
-        `/data/postgres/v1/${addon.id}/credentials`,
-      )
+      const {body: {items: availableCreds}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`)
       const ownerCred = availableCreds.find(cred => cred.type === 'owner')
       credName = name || ownerCred?.name
       if (!credName) {
         ux.error(`There are no active credentials on the database ${color.datastore(addon.name)}.`, {exit: 1})
       }
 
-      ({body: credInfo} = await this.dataApi.get<AdvancedCredentialInfo>(
-        `/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}`,
-      ))
+      ({body: credInfo} = await this.dataApi.get<AdvancedCredentialInfo>(`/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}`))
     } else {
       credName = name ?? 'default';
-      ({body: credInfo} = await this.dataApi.get<NonAdvancedCredentialInfo>(
-        `/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}`,
-      ))
+      ({body: credInfo} = await this.dataApi.get<NonAdvancedCredentialInfo>(`/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}`))
     }
 
     const activeCreds = isAdvancedCredentialInfo(credInfo)

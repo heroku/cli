@@ -1,29 +1,31 @@
 import {flags} from '@heroku-cli/command'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
+
 import type {Setting, SettingKey} from '../../../../lib/pg/types.js'
+
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class AutoExplainLogVerbose extends PGSettingsCommand {
-  static topic = 'pg'
-  static description = heredoc(
-    `Include verbose details in execution plans.
-    This is equivalent to calling EXPLAIN VERBOSE.`)
-
-  static flags = {
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if the database has verbose execution plan logging enabled'}),
   }
-
+  static description = heredoc(`Include verbose details in execution plans.
+    This is equivalent to calling EXPLAIN VERBOSE.`)
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
+  static topic = 'pg'
   protected settingKey: SettingKey = 'auto_explain.log_verbose'
+
+  protected convertValue(val: unknown): boolean {
+    return booleanConverter(val as BooleanAsString)
+  }
 
   protected explain(setting: Setting<unknown>) {
     if (setting.value) {
@@ -31,9 +33,5 @@ export default class AutoExplainLogVerbose extends PGSettingsCommand {
     }
 
     return 'Verbose execution plan logging has been disabled for auto_explain.'
-  }
-
-  protected convertValue(val: unknown): boolean {
-    return booleanConverter(val as BooleanAsString)
   }
 }

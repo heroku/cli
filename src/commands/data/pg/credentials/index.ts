@@ -1,6 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
@@ -17,13 +17,10 @@ export default class DataPgCredentialsIndex extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'list credentials on a Postgres Advanced database'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> database_name -a example-app',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     'no-wrap': Flags.noWrap(),
@@ -37,17 +34,13 @@ export default class DataPgCredentialsIndex extends BaseCommand {
 
     const addonResolver = new utils.AddonResolver(this.heroku)
     const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(
-      `/addons/${addon.id}/addon-attachments`,
-    )
+    const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
       const appAttachment = attachments.find(a => a.app.name === app)
       const suggestedDatabase = appAttachment?.name || database
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku pg:credentials ${suggestedDatabase} -a ${app}`)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(`heroku pg:credentials ${suggestedDatabase} -a ${app}`)} instead.`)
     }
 
     const {body: {items: credentials}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`)
@@ -56,11 +49,7 @@ export default class DataPgCredentialsIndex extends BaseCommand {
 
     const presentCredential = (cred: CredentialInfo): string => {
       let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
-      if (cred.type === 'owner') {
-        credAttachments = attachments.filter(a => a.namespace === null)
-      } else {
-        credAttachments = attachments.filter(a => a.namespace === `role:${cred.name}`)
-      }
+      credAttachments = cred.type === 'owner' ? attachments.filter(a => a.namespace === null) : attachments.filter(a => a.namespace === `role:${cred.name}`)
 
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
     }

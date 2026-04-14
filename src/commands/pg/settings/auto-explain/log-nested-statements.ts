@@ -1,16 +1,16 @@
 import {Args} from '@oclif/core'
-import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
+
 import type {Setting, SettingKey} from '../../../../lib/pg/types.js'
+
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
 import {nls} from '../../../../nls.js'
 
 export default class LogNestedStatements extends PGSettingsCommand {
-  static description = "Nested statements are included in the execution plan's log."
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if execution plan logs include nested statements'}),
   }
-
+  static description = "Nested statements are included in the execution plan's log."
   protected settingKey: SettingKey = 'auto_explain.log_nested_statements'
 
   protected convertValue(val: unknown): boolean {

@@ -12,7 +12,6 @@ export default class Create extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'create credential within database'
   static example = `${color.command('heroku pg:credentials:create postgresql-something-12345 --name new-cred-name')}`
   static flags = {
@@ -20,7 +19,6 @@ export default class Create extends Command {
     name: flags.string({char: 'n', description: 'name of the new credential within the database', required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

@@ -9,12 +9,10 @@ import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from 
 
 export default class DataMaintenancesIndex extends BaseCommand {
   static description = 'list maintenances for an app\'s data addons'
-
   static examples = [
     '$ heroku data:maintenances --app production-app',
     '$ heroku data:maintenances --app production-app --json',
   ]
-
   static flags = {
     app: Flags.app({
       description: 'app to list addon maintenances for',

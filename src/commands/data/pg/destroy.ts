@@ -1,5 +1,5 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import destroyAddon from '../../../lib/addons/destroy-addon.js'
@@ -12,11 +12,8 @@ export default class DataPgDestroy extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'destroy a Postgres Advanced database'
-
   static examples = ['<%= config.bin %> <%= command.id %> database_name']
-
   static flags = {
     app: Flags.app(),
     confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
