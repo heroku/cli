@@ -18,7 +18,6 @@
     "@oclif/core": "^4.8.4",
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
-    "@oclif/plugin-legacy": "^2.0.28",
     "@oclif/plugin-not-found": "^3.2.74",
     "@oclif/plugin-plugins": "^5.4.58",
     "@oclif/plugin-search": "1.2.38",
@@ -218,7 +217,6 @@
     "plugins": [
       "@oclif/plugin-commands",
       "@oclif/plugin-help",
-      "@oclif/plugin-legacy",
       "@oclif/plugin-not-found",
       "@oclif/plugin-plugins",
       "@oclif/plugin-search",
