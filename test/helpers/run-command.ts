@@ -118,7 +118,10 @@ export async function runCommand<T = unknown>(
   const instance = new Ctor(argsArray, conf)
 
   const {error, result, stderr, stdout} = await withCapturedOutput(
-    () => instance.run() as Promise<T>,
+    async () => {
+      await (instance as { init?: () => Promise<void> }).init?.()
+      return instance.run() as Promise<T>
+    },
     captureOpts,
   )
 

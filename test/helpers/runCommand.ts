@@ -21,7 +21,8 @@ const runCommand = async (Cmd: GenericCmd, args: string[] = [], printStd = false
   }
 
   return instance
-    .run()
+    .init()
+    .then(() => instance.run())
     .then(args => {
       stopMock()
       return args
