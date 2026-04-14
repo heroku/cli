@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import {resolveAddon} from '../../lib/addons/resolve.js'
@@ -12,14 +12,11 @@ export default class Info extends Command {
   static args = {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
-
   static description = 'show detailed add-on resource and attachment information'
-
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
   }
-
   static topic = topic
   static usage = `${topic}:info ADDON`
 

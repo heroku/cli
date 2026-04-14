@@ -9,17 +9,13 @@ export default class Destroy extends Command {
   static args = {
     app: Args.string({hidden: true}),
   }
-
   static description = 'permanently destroy an app'
-
   static flags = {
     app: flags.app(),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
   }
-
   static help = 'This will also destroy all add-ons on the app.'
-
   static hiddenAliases = ['destroy', 'apps:delete']
 
   async run() {

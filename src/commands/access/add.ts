@@ -9,14 +9,11 @@ export default class AccessAdd extends Command {
   static args = {
     email: Args.string({description: 'email address of the team member', required: true}),
   }
-
   static description = 'add new users to your app'
-
   static examples = [
     `${color.command('heroku access:add user@email.com --app APP')} # add a collaborator to your app`,
     `${color.command('heroku access:add user@email.com --app APP --permissions deploy,manage,operate')} # permissions must be comma separated`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     permissions: flags.string({char: 'p', description: 'list of permissions comma separated'}),

@@ -12,16 +12,13 @@ export default class Wait extends Command {
   static args = {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on'}),
   }
-
   static description = 'show provisioning status of the add-ons on the app'
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
     'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
   }
-
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

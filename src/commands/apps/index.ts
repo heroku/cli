@@ -12,7 +12,6 @@ export default class AppsIndex extends Command {
   static examples = [
     color.command('heroku apps'),
   ]
-
   static flags = {
     all: flags.boolean({char: 'A', description: 'include apps in all teams'}),
     'internal-routing': flags.boolean({char: 'i', description: 'filter to Internal Web Apps', hidden: true}),
@@ -26,9 +25,7 @@ export default class AppsIndex extends Command {
     }),
     team: flags.team(),
   }
-
   static hiddenAliases = ['list', 'apps:list']
-
   static topic = 'apps'
 
   async run() {

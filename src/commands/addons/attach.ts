@@ -9,9 +9,7 @@ export default class Attach extends Command {
   static args = {
     addon_name: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
-
   static description = 'attach an existing add-on resource to an app'
-
   static flags = {
     app: flags.app({required: true}),
     as: flags.string({description: 'name for add-on attachment'}),
@@ -19,7 +17,6 @@ export default class Attach extends Command {
     credential: flags.string({description: 'credential name for scoped access to Heroku Postgres'}),
     remote: flags.remote(),
   }
-
   static topic = 'addons'
 
   public async run(): Promise<void> {
