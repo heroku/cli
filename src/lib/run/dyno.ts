@@ -70,14 +70,10 @@ export default class Dyno extends Duplex {
     }
   }
 
-  get _useSSH() {
-    if (this.uri) {
-      /* tslint:disable:no-http-string */
-      return this.uri.protocol === 'http:' || this.uri.protocol === 'https:'
-      /* tslint:enable:no-http-string */
-    }
-
-    return undefined
+  get _useSSH(): boolean | undefined {
+    return this.uri
+      ? (this.uri.protocol === 'http:' || this.uri.protocol === 'https:')
+      : undefined
   }
 
   _connect() {
