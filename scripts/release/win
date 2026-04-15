@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import qq from 'qqjs'
-import getVersion from '../utils/_version.js'
+import getVersion from '../utils/version.js'
 
 qq.config.silent = false
 qq.run(async () => {
