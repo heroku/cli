@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {runCliSubprocess} from '../helpers/runCliSubprocess.js'
+import {runCliSubprocess} from '../helpers/run-cli-subprocess.js'
 
 describe('logs', function () {
   it('shows the logs', function () {

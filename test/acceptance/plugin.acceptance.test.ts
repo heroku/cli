@@ -1,7 +1,7 @@
 import execa from 'execa'
 import fs from 'fs-extra'
+import path from 'node:path'
 import {fileURLToPath} from 'node:url'
-import * as path from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,11 +27,11 @@ function safeCloneDirName(plugin: string): string {
 }
 
 describe('plugins', function () {
-  plugins.forEach(plugin => {
+  for (const plugin of plugins) {
     const pluginRoot = resolvePluginPath(plugin)
     if (!pluginRoot) {
       it.skip(plugin, async function () {})
-      return
+      continue
     }
 
     skipOnWindows(plugin, async () => {
@@ -70,5 +70,5 @@ describe('plugins', function () {
       await execa('npm', [], opts)
       await execa('npm', ['test'], opts)
     })
-  })
+  }
 })

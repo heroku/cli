@@ -2,11 +2,11 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 import fs from 'fs-extra'
-import * as path from 'path'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 import * as qq from 'qqjs'
-import {fileURLToPath} from 'url'
 
-import normalizeTableOutput from '../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../helpers/utils/normalize-table-output.js'
 import commandsOutput from './commands-output.js'
 
 const app = 'heroku-cli-ci-smoke-test-app'
@@ -198,10 +198,10 @@ describe('@acceptance smoke tests', function () {
 
     it('heroku commands', async function () {
       const {stdout} = await run('commands')
-      const normalizedOutput = normalizeTableOutput(stdout).replace(/\s+/g, ' ')
+      const normalizedOutput = normalizeTableOutput(stdout).replaceAll(/\s+/g, ' ')
       const commandsOutputByLine = commandsOutput.split('\n')
       for (const line of commandsOutputByLine) {
-        const normalizedLine = normalizeTableOutput(line).replace(/\s+/g, ' ').trim()
+        const normalizedLine = normalizeTableOutput(line).replaceAll(/\s+/g, ' ').trim()
         if (!normalizedLine || normalizedLine === 'id summary' || normalizedLine === 'command summary') continue
         expect(normalizedOutput, `'${normalizedLine}' was expected but wasn't found`).to.include(normalizedLine)
       }
