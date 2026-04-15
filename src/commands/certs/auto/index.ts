@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -46,7 +46,6 @@ export default class Index extends Command {
     remote: flags.remote(),
     wait: flags.boolean({description: 'watch ACM status and display the status when complete'}),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {
@@ -101,11 +100,13 @@ export default class Index extends Command {
           Status: {
             get: (domain: Domain) => humanize(domain.acm_status),
           },
-          ...(domains.some(d => d.acm_status_reason) ? {
-            Reason: {
-              get: (domain: Domain) => domain.acm_status_reason ?? '',
-            },
-          } : {}),
+          ...(domains.some(d => d.acm_status_reason)
+            ? {
+              Reason: {
+                get: (domain: Domain) => domain.acm_status_reason ?? '',
+              },
+            }
+            : {}),
           lastUpdated: {
             get: (domain: Domain) => formatDistanceToNow(new Date(domain.updated_at)),
             header: 'Last Updated',

@@ -17,7 +17,6 @@ export default class Remove extends Command {
     name: flags.string({description: 'name to remove'}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

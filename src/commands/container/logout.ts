@@ -1,17 +1,25 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ux} from '@oclif/core/ux'
 
-import {DockerHelper} from '../../lib/container/docker-helper.js'
 import {debug} from '../../lib/container/debug.js'
+import {DockerHelper} from '../../lib/container/docker-helper.js'
 
 export default class Logout extends Command {
-  static topic = 'container'
   static description = 'log out from Heroku Container Registry'
   static flags = {
     verbose: flags.boolean({char: 'v'}),
   }
-
+  static topic = 'container'
   dockerHelper = new DockerHelper()
+
+  dockerLogout(registry: string) {
+    const args = [
+      'logout',
+      registry,
+    ]
+
+    return this.dockerHelper.cmd('docker', args)
+  }
 
   async run() {
     const {flags} = await this.parse(Logout)
@@ -29,14 +37,5 @@ export default class Logout extends Command {
       const {message} = error as {message: string}
       ux.error(`Error: docker logout exited${message ? ` with: ${message}` : ''}.`)
     }
-  }
-
-  dockerLogout(registry: string) {
-    const args = [
-      'logout',
-      registry,
-    ]
-
-    return this.dockerHelper.cmd('docker', args)
   }
 }

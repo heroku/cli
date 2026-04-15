@@ -5,7 +5,6 @@ import {ux} from '@oclif/core/ux'
 
 export default class TwoFactor extends Command {
   static aliases = ['2fa', 'twofactor']
-
   static description = 'check 2fa status'
 
   async run() {

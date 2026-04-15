@@ -10,13 +10,10 @@ const {readFile} = fs
 export default class CiMigrateManifest extends Command {
   static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'app-ci.json is deprecated. Run this command to migrate to app.json with an environments key.'
-
   static examples = [
     color.command('heroku ci:migrate-manifest'),
   ]
-
   static promptFlagActive = true
-
   static topic = 'ci'
 
   async run() {

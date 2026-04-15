@@ -11,15 +11,12 @@ export default class CiConfigUnset extends Command {
   static examples = [
     color.command('heroku ci:config:unset RAILS_ENV'),
   ]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
     remote: flags.remote(),
   }
-
   static strict = false
-
   static topic = 'ci'
 
   async run() {

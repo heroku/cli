@@ -1,21 +1,28 @@
+import {flags as cmdFlags, Command} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core/ux'
 
-import {Command, flags as cmdFlags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {createTestRun, getAppSetup, getTestNodes, updateTestRun} from '../../lib/api.js'
+import {
+  createTestRun, getAppSetup, getTestNodes, updateTestRun,
+} from '../../lib/api.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
-import Dyno from '../../lib/run/dyno.js'
-import Git from '../../lib/git/git.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {waitForStates} from '../../lib/ci/test-run.js'
+import Git from '../../lib/git/git.js'
+import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
+import Dyno from '../../lib/run/dyno.js'
 
 // Default command. Run setup, source profile.d scripts and open a bash session
 const SETUP_COMMAND = 'ci setup && eval $(ci env)'
 
 export default class Debug extends Command {
   static description = 'opens an interactive test debugging session with the contents of the current directory'
-
+  static flags = {
+    app: cmdFlags.app(),
+    'no-cache': cmdFlags.boolean({description: 'start test run with an empty cache'}),
+    'no-setup': cmdFlags.boolean({description: 'start test dyno without running test-setup'}),
+    pipeline: cmdFlags.pipeline(),
+  }
   static help = `Example:
 
     $ heroku ci:debug --pipeline PIPELINE
@@ -25,13 +32,6 @@ export default class Debug extends Command {
 
 ~ $
 `
-  static flags = {
-    app: cmdFlags.app(),
-    'no-cache': cmdFlags.boolean({description: 'start test run with an empty cache'}),
-    'no-setup': cmdFlags.boolean({description: 'start test dyno without running test-setup'}),
-    pipeline: cmdFlags.pipeline(),
-  }
-
   static topic = 'ci'
 
   public async run(): Promise<void> {
@@ -53,11 +53,11 @@ export default class Debug extends Command {
     ux.action.start('Creating test run')
 
     const {body: run}: {body: Heroku.TestRun} = await createTestRun(this.heroku, {
+      clear_cache: Boolean(flags['no-cache']),
       commit_branch: commit.branch,
       commit_message: commit.message,
       commit_sha: commit.ref,
       debug: true,
-      clear_cache: Boolean(flags['no-cache']),
       organization,
       pipeline: pipeline.id,
       source_blob_url: sourceBlobUrl,
@@ -83,10 +83,10 @@ export default class Debug extends Command {
     const {body: testNodes} = await getTestNodes(this.heroku, testRun.id!)
 
     const dyno = new Dyno({
-      heroku: this.heroku,
       app: appSetup?.app?.id || '', // this should exist by here. ` || ''` is TS nudging
-      showStatus: false,
       command: '', // command is required, but is not used.
+      heroku: this.heroku,
+      showStatus: false,
     })
 
     dyno.dyno = {attach_url: testNodes?.[0]?.dyno?.attach_url}
@@ -111,8 +111,8 @@ export default class Debug extends Command {
 
     await ux.action.start('Cleaning up')
     await updateTestRun(this.heroku, testRun.id!, {
-      status: 'cancelled',
       message: 'debug run cancelled by Heroku CLI',
+      status: 'cancelled',
     })
     await ux.action.stop()
   }

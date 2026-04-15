@@ -10,9 +10,7 @@ export default class Remove extends Command {
       description: 'namespace/name of the buildpack',
     }),
   }
-
   static description = 'remove a buildpack set on the app'
-
   static flags = {
     app: Flags.app({required: true}),
     index: Flags.integer({

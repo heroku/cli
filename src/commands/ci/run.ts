@@ -11,12 +11,10 @@ import {displayAndExit} from '../../lib/ci/test-run.js'
 
 export default class CiRun extends Command {
   static description = 'run tests against current directory'
-
   static examples = [
     color.command(`heroku ci:run --app murmuring-headland-14719
 `),
   ]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({required: false}),

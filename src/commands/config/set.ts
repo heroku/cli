@@ -25,14 +25,11 @@ ${color.command('heroku config:set RAILS_ENV=staging RACK_ENV=staging')}
 Setting config vars and restarting example... done, v11
 RAILS_ENV: staging
 RACK_ENV:  staging`)]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['config:add']
-
   static strict = false
 
   async run() {
@@ -62,11 +59,9 @@ RACK_ENV:  staging`)]
     const release = await lastRelease(this.heroku, flags.app)
     ux.action.stop(`done, ${color.name('v' + release.version)}`)
 
-    config = Object.fromEntries(
-      Object.entries(config)
-        .filter(([k]) => vars[k])
-        .map(([k, v]) => [color.name(k), v]),
-    )
+    config = Object.fromEntries(Object.entries(config)
+      .filter(([k]) => vars[k])
+      .map(([k, v]) => [color.name(k), v]))
     hux.styledObject(config)
     await this.config.runHook('recache', {app: flags.app, type: 'config'})
   }
