@@ -77,7 +77,7 @@ export default class Dyno extends Duplex {
       /* tslint:enable:no-http-string */
     }
 
-    return null
+    return undefined
   }
 
   _connect() {
