@@ -1,7 +1,7 @@
 import {Hook} from '@oclif/core/hooks'
 
 const performance_analytics: Hook<'init'> = async function (options) {
-  const {isTelemetryEnabled, getTelemetryDisabledReason, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {getTelemetryDisabledReason, isTelemetryEnabled, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {
@@ -12,7 +12,7 @@ const performance_analytics: Hook<'init'> = async function (options) {
 
   telemetryDebug('Telemetry enabled: init hook setting up telemetry object for command')
   const {telemetryManager} = await import('../../lib/analytics-telemetry/telemetry-manager.js')
-  const globalAny = global as any
+  const globalAny = globalThis as any
   globalAny.cliTelemetry = telemetryManager.setupTelemetry(this.config, options)
 }
 
