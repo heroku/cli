@@ -1,10 +1,10 @@
-import {HTTP} from '@heroku/http-call'
 import {APIClient} from '@heroku-cli/command'
+import {HTTP} from '@heroku/http-call'
 
 import {Domain} from '../types/domain.js'
 import {SniEndpoint} from '../types/sni-endpoint.js'
 
-export default async function (flags: { app: string; endpoint: string | undefined; name: string | undefined }, heroku: APIClient) {
+export default async function getEndpoint(flags: {app: string; endpoint: string | undefined; name: string | undefined}, heroku: APIClient) {
   if (flags.endpoint && flags.name) {
     throw new Error('Specified both --name and --endpoint, please use just one')
   }
@@ -17,9 +17,9 @@ export default async function (flags: { app: string; endpoint: string | undefine
 
   if (flags.endpoint) {
     const promises: Promise<HTTP<Domain>>[] = []
-    sniEndpoints.forEach(endpoint => {
-      endpoint.domains.forEach(domain => promises.push(heroku.get<Domain>(`/apps/${flags.app}/domains/${domain}`)))
-    })
+    for (const endpoint of sniEndpoints) {
+      for (const domain of endpoint.domains) promises.push(heroku.get<Domain>(`/apps/${flags.app}/domains/${domain}`))
+    }
 
     const domains = (await Promise.all(promises)).map(({body: domain}) => domain)
 

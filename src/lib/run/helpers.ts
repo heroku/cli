@@ -2,8 +2,8 @@
 import type {APIClient} from '@heroku-cli/command'
 
 import {ux} from '@oclif/core/ux'
-import * as https from 'https'
-import {URL} from 'url'
+import https from 'node:https'
+import {URL} from 'node:url'
 
 import type {App} from '../types/fir.js'
 
@@ -19,7 +19,7 @@ export function buildCommand(args: Array<string>, prependLauncher: boolean = fal
   let cmd = ''
   for (let arg of args) {
     if (arg.includes(' ') || arg.includes('"')) {
-      arg = '"' + arg.replaceAll('"', '\\"') + '"'
+      arg = '"' + arg.replaceAll('"', String.raw`\"`) + '"'
     }
 
     cmd = cmd + ' ' + arg

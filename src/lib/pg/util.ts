@@ -8,7 +8,7 @@ import {
 } from '@heroku/heroku-cli-util'
 
 import {renderAttachment} from '../../commands/addons/index.js'
-import {type CredentialInfo, type NonAdvancedCredentialInfo, isAdvancedCredentialInfo} from '../../lib/data/types.js'
+import {type CredentialInfo, isAdvancedCredentialInfo, type NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 import {multiSortCompareFn} from '../utils/multisort.js'
 
 export function essentialPlan(addon: pg.ExtendedAddon | pg.ExtendedAddonAttachment['addon']) {

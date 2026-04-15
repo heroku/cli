@@ -30,6 +30,7 @@ export async function getTeamInvites(team: string, heroku: APIClient): Promise<H
       headers: {
         Accept: 'application/vnd.heroku+json; version=3.team-invitations',
       },
-    })
+    },
+  )
   return teamInvites
 }

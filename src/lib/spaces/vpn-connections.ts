@@ -4,11 +4,13 @@ import {hux} from '@heroku/heroku-cli-util'
 export function displayVPNConfigInfo(space: string, name: string, config: PrivateSpacesVpn) {
   hux.styledHeader(`${name} VPN Tunnels`)
   const configTunnels = config.tunnels || []
-  configTunnels.forEach((val, i) => {
+  for (const [i, val] of configTunnels.entries()) {
     val.tunnel_id = 'Tunnel ' + (i + 1)
     val.routable_cidr = config.space_cidr_block
     val.ike_version = config.ike_version
-  })
+  }
+
+  /* eslint-disable perfectionist/sort-objects */
   hux.table(configTunnels, {
     tunnel_id: {header: 'VPN Tunnel'},
     customer_ip: {header: 'Customer Gateway'},
@@ -17,4 +19,5 @@ export function displayVPNConfigInfo(space: string, name: string, config: Privat
     routable_cidr: {header: 'Routable Subnets'},
     ike_version: {header: 'IKE Version'},
   })
+  /* eslint-enable perfectionist/sort-objects */
 }

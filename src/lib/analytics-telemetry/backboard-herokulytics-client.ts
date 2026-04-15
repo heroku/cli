@@ -32,11 +32,8 @@ export interface RecordOpts {
 
 export default class BackboardHerokulyticsClient {
   config: Interfaces.Config
-
   http: ReturnType<typeof HTTP.create>
-
   userConfig!: HerokulyticsConfig
-
   private isInitialized = false
   private netrc: any
 
@@ -64,7 +61,7 @@ export default class BackboardHerokulyticsClient {
   }
 
   get user(): string | undefined {
-    if (this.usingHerokuAPIKey) return
+    if (this.usingHerokuAPIKey) return undefined
     return this.netrcLogin
   }
 

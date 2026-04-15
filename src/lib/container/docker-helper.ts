@@ -1,5 +1,4 @@
 import {ux} from '@oclif/core/ux'
-
 import {glob} from 'glob'
 import inquirer from 'inquirer'
 import Child from 'node:child_process'
@@ -139,9 +138,10 @@ export class DockerHelper {
 
   filterByProcessType(jobs: GroupedDockerJobs, processTypes: string[]): GroupedDockerJobs {
     const filteredJobs: GroupedDockerJobs = {}
-    processTypes.forEach(processType => {
+    for (const processType of processTypes) {
       filteredJobs[processType] = jobs[processType]
-    })
+    }
+
     return filteredJobs
   }
 
@@ -152,18 +152,14 @@ export class DockerHelper {
       nodir: true,
     })
 
-    if (recursive) {
-      dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile\.[\w]+$/))
-    } else {
-      dockerfiles = dockerfiles.filter(df => df.match(/Dockerfile$/))
-    }
+    dockerfiles = recursive ? dockerfiles.filter(df => df.match(/Dockerfile\.[\w]+$/)) : dockerfiles.filter(df => df.match(/Dockerfile$/))
 
     return dockerfiles.map(file => Path.join(rootdir, file))
   }
 
   getJobs(resourceRoot: string, dockerfiles: string[]): GroupedDockerJobs {
     const jobs: DockerJob[] = []
-    dockerfiles.forEach(dockerfile => {
+    for (const dockerfile of dockerfiles) {
       const match = dockerfile.match(DOCKERFILE_REGEX)
       if (match) {
         const proc = (match[1] || '.standard').slice(1)
@@ -175,17 +171,17 @@ export class DockerHelper {
           resource: `${resourceRoot}/${proc}`,
         })
       }
-    })
+    }
 
     // prefer closer Dockerfiles, then prefer Dockerfile over Dockerfile.web
     jobs.sort((a, b) => a.depth - b.depth || a.postfix - b.postfix)
 
     // group all Dockerfiles for the same process type together
     const groupedJobs: GroupedDockerJobs = {}
-    jobs.forEach(job => {
+    for (const job of jobs) {
       groupedJobs[job.name] = groupedJobs[job.name] || [] as DockerJob[]
       groupedJobs[job.name].push(job)
-    })
+    }
 
     return groupedJobs
   }

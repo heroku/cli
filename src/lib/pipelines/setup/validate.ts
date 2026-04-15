@@ -16,7 +16,7 @@ export function pipelineName(name: any): ValidatedResponse {
 }
 
 export function repoName(repo: any): ValidatedResponse {
-  const isValid = Boolean(repo.match(REPO_REGEX))
+  const isValid = Boolean(REPO_REGEX.test(repo))
   return isValid ? [isValid] : [isValid, ERR_REPO_FORMAT]
 }
 
@@ -28,4 +28,3 @@ export function nameAndRepo({name, repo}: {name?: string; repo?: string}) {
   if (repo && !repoIsValid) errors.push(repoMsg)
   return errors
 }
-

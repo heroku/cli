@@ -17,7 +17,7 @@ function formatConfigVarsMessage(addon: Heroku.AddOn) {
 }
 
 // eslint-disable-next-line max-params
-export default async function (
+export default async function createAddon(
   heroku: APIClient,
   app: string,
   plan: string,

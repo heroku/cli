@@ -20,7 +20,8 @@ const getRequestOpts = (options: Options) => {
       method: 'POST',
       path: '/account/app-transfers',
       transferMsg: `Initiating transfer of ${color.app(appName)}`,
-    } : {
+    }
+    : {
       body: {owner: recipient},
       method: 'PATCH',
       path: `/teams/apps/${appName}`,

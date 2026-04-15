@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git.js'
 import fs from 'fs-extra'
 import pkg from 'lodash'
-import * as path from 'path'
+import path from 'node:path'
 
 import type {Completion, CompletionContext} from '../types/completion.js'
 
@@ -224,7 +224,7 @@ export const TeamCompletion: Completion = {
   },
 }
 
-export const CompletionMapping: { [key: string]: Completion } = {
+export const CompletionMapping: {[key: string]: Completion} = {
   addon: AppAddonCompletion,
   app: AppCompletion,
   buildpack: BuildpackCompletion,
@@ -245,24 +245,26 @@ export const CompletionMapping: { [key: string]: Completion } = {
 }
 
 export class CompletionLookup {
-  private readonly blocklistMap: { [key: string]: string[] } = {
+  private readonly blocklistMap: {[key: string]: string[]} = {
     app: ['apps:create'],
     space: ['spaces:create'],
   }
-
-  private readonly commandArgsMap: { [key: string]: { [key: string]: string } } = {
+  private readonly commandArgsMap: {[key: string]: {[key: string]: string}} = {
     key: {
       'config:set': 'configSet',
     },
   }
-
-  private readonly keyAliasMap: { [key: string]: { [key: string]: string } } = {
+  private readonly keyAliasMap: {[key: string]: {[key: string]: string}} = {
     key: {
       'config:get': 'config',
     },
   }
 
   constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {}
+
+  private get key(): string {
+    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
+  }
 
   run(): Completion | undefined {
     if (this.blocklisted()) return
@@ -279,12 +281,8 @@ export class CompletionLookup {
 
   private descriptionAlias(): string | undefined {
     const d = this.description!
-    if (d.match(/^dyno size/)) return 'dynosize'
-    if (d.match(/^process type/)) return 'processtype'
-  }
-
-  private get key(): string {
-    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
+    if (d.startsWith('dyno size')) return 'dynosize'
+    if (d.startsWith('process type')) return 'processtype'
   }
 
   private keyAlias(): string | undefined {

@@ -545,7 +545,7 @@ describe('HerokuExec', function () {
       const callback = sinon.stub()
 
       nock('https://exec-manager.heroku.com')
-        .put('//api/v2/web.1')
+        .put('/api/v2/web.1')
         .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
 
       await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
@@ -559,7 +559,7 @@ describe('HerokuExec', function () {
       const callback = sinon.stub()
 
       nock('https://exec-manager.heroku.com')
-        .put('//api/v2/web.1')
+        .put('/api/v2/web.1')
         .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
 
       await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
