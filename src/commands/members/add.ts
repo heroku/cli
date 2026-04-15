@@ -26,9 +26,11 @@ export default class MembersAdd extends Command {
     const {role, team} = flags
     const {email} = args
 
-    await ((await isTeamInviteFeatureEnabled(team, this.heroku))
-      ? inviteMemberToTeam(email, role, team, this.heroku)
-      : addMemberToTeam(email, role, team, this.heroku)
-    )
+    const teamInviteEnabled = await isTeamInviteFeatureEnabled(team, this.heroku)
+    if (teamInviteEnabled) {
+      await inviteMemberToTeam(email, role, team, this.heroku)
+    } else {
+      await addMemberToTeam(email, role, team, this.heroku)
+    }
   }
 }
