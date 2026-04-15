@@ -57,4 +57,13 @@ describe('spaces:hosts', function () {
     ])
     expect(JSON.parse(stdout)).to.eql(hosts)
   })
+
+  it('errors when space name is missing', async function () {
+    const {error} = await runCommand(Cmd, [])
+    expect(error).to.exist
+    if (error) {
+      expect(error.message).to.include('Error: Missing 1 required arg')
+      expect(error.message).to.include('space')
+    }
+  })
 })

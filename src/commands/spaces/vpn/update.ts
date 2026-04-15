@@ -1,6 +1,5 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -15,7 +14,6 @@ export default class Update extends Command {
       required: true,
     }),
   }
-
   static description = heredoc`
     update VPN
     Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
@@ -24,12 +22,10 @@ export default class Update extends Command {
   static example = heredoc`
     ${color.command('heroku spaces:vpn:update vpn-connection-name --space my-space --cidrs 172.16.0.0/16,10.0.0.0/24')}
     Updating VPN Connection in space my-space... done`
-
   static flags = {
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),
     space: flags.string({char: 's', description: 'space name', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

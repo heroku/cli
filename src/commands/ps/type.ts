@@ -150,7 +150,6 @@ export default class Type extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['resize', 'dyno:type']
   static strict = false
 

@@ -10,7 +10,6 @@ export default class Get extends Command {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space for which to get log drain', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

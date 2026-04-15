@@ -7,14 +7,12 @@ export default class Credentials extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
   }
-
   static description = 'display credentials information'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     reset: flags.boolean({description: 'reset credentials'}),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

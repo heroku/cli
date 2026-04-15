@@ -25,7 +25,6 @@ export default class Index extends Command {
     === run: one-off dyno
     run.1: up for 5m: bash
   `]
-
   static flags = {
     app: flags.app({required: true}),
     extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
@@ -33,11 +32,8 @@ export default class Index extends Command {
     'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
-
   static strict = false
-
   static topic = 'ps'
-
   static usage = 'ps [TYPE [TYPE ...]]'
 
   public async run(): Promise<void> {
@@ -60,20 +56,20 @@ export default class Index extends Command {
     const shielded = appInfo.space && appInfo.space.shield
 
     if (shielded) {
-      dynos.forEach(d => {
+      for (const d of dynos) {
         d.size = d.size.replace('Private-', 'Shield-')
-      })
+      }
     }
 
     let selectedDynos = dynos
 
     if (types.length > 0) {
       selectedDynos = selectedDynos.filter(dyno => types.find((t: string) => dyno.type === t))
-      types.forEach(t => {
+      for (const t of types) {
         if (!selectedDynos.some(d => d.type === t)) {
           throw new Error(`No ${color.info(t)} dynos on ${color.app(app)}`)
         }
-      })
+      }
     }
 
     selectedDynos = selectedDynos.sort(byProcessName)
@@ -193,12 +189,12 @@ function printDynos(dynos: DynoExtended[]) : void {
   // Print one-off dynos
   if (oneOffs.length > 0) {
     hux.styledHeader(`${color.label('run')}: one-off processes (${oneOffs.length})`)
-    oneOffs.forEach(dyno => ux.stdout(decorateOneOffDyno(dyno)))
+    for (const dyno of oneOffs) ux.stdout(decorateOneOffDyno(dyno))
     ux.stdout()
   }
 
   // Print dynos grouped by command
-  commands.forEach(command => {
+  for (const command of commands) {
     const commandDynos = dynos.filter(d => d.command === command).sort(byProcessNumber)
     const {size = '1X', type} = commandDynos[0]
 
@@ -206,7 +202,7 @@ function printDynos(dynos: DynoExtended[]) : void {
     for (const dyno of commandDynos)
       ux.stdout(decorateCommandDyno(dyno))
     ux.stdout()
-  })
+  }
 }
 
 function printExtended(dynos: DynoExtended[], noWrap = false) {

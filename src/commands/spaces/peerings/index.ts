@@ -1,25 +1,25 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {displayPeerings, displayPeeringsAsJSON} from '../../../lib/spaces/peering.js'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {displayPeerings, displayPeeringsAsJSON} from '../../../lib/spaces/peering.js'
 
 const heredoc = tsheredoc.default
 
 export default class Index extends Command {
-  static topic = 'spaces'
-  static description = 'list peering connections for a space'
-  static flags = {
-    space: flags.string({char: 's', description: 'space to get peer list from'}),
-    json: flags.boolean({description: 'output in json format'}),
-  }
-
   static args = {
     space: Args.string({hidden: true}),
   }
+  static description = 'list peering connections for a space'
+  static flags = {
+    json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space to get peer list from'}),
+  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Index)
+    const {args, flags} = await this.parse(Index)
     const spaceName = flags.space || args.space
     if (!spaceName) {
       ux.error(heredoc`

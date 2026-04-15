@@ -31,7 +31,6 @@ export default class Wait extends Command {
       exclusive: ['type'],
     }),
   }
-
   static topic = 'ps'
 
   async run() {

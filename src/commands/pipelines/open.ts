@@ -10,9 +10,7 @@ export default class Open extends Command {
   static args = {
     pipeline: Args.string({description: 'name of pipeline', required: true}),
   }
-
   static description = 'open a pipeline in dashboard'
-
   static examples = [color.command('heroku pipelines:open my-pipeline')]
 
   async run() {

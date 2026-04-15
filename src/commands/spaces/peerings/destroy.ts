@@ -1,6 +1,5 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -12,13 +11,11 @@ export default class Destroy extends Command {
   static args = {
     pcxid: Args.string({hidden: true}),
   }
-
   static description = 'destroys an active peering connection in a private space'
   static example = heredoc`
     ${color.command('heroku spaces:peerings:destroy pcx-4bd27022 --confirm pcx-4bd27022 --space example-space')}
     Tearing down peering connection pcx-4bd27022... done
   `
-
   static flags = {
     confirm: flags.string({description: 'set to PCX ID to bypass confirm prompt'}),
     pcxid: flags.string({char: 'p', description: 'PCX ID of a pending peering'}),
@@ -28,7 +25,6 @@ export default class Destroy extends Command {
       required: true,
     }),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

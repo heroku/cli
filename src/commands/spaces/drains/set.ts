@@ -8,12 +8,10 @@ export default class Set extends Command {
   static args = {
     url: Args.string({description: 'URL to replace the log drain with', required: true}),
   }
-
   static description = 'replaces the log drain for a space'
   static flags = {
     space: flags.string({char: 's', description: 'space for which to set log drain', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

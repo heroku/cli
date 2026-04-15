@@ -1,17 +1,16 @@
 import type {Socket} from 'node:net'
-import type {Writable} from 'node:stream'
-import type {Duplex} from 'stream'
+import type {Duplex, Writable} from 'node:stream'
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
-import * as net from 'net'
+import * as net from 'node:net'
+import * as readline from 'node:readline'
+import * as tls from 'node:tls'
 import {promisify} from 'node:util'
 import portfinder from 'portfinder'
-import * as readline from 'readline'
 import Parser from 'redis-parser'
 import {Client} from 'ssh2'
-import * as tls from 'tls'
 
 import type {RedisFormationResponse} from '../../lib/redis/api.js'
 
@@ -32,56 +31,56 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
       console.dir(err)
     }, returnReply(reply: unknown) {
       switch (state) {
-      case 'monitoring': {
-        if (reply !== REPLY_OK) {
-          console.log(reply)
+        case 'closing': {
+          if (reply !== REPLY_OK) {
+            console.log(reply)
+          }
+
+          break
         }
 
-        break
-      }
+        case 'connect': {
+          if (reply !== REPLY_OK) {
+            console.log(reply)
+          }
 
-      case 'subscriber': {
-        if (Array.isArray(reply)) {
-          reply.forEach((value, i) => {
-            console.log(`${i + 1}) ${value}`)
-          })
-        } else {
-          console.log(reply)
+          state = 'normal'
+          io.prompt()
+          break
         }
 
-        break
-      }
+        case 'monitoring': {
+          if (reply !== REPLY_OK) {
+            console.log(reply)
+          }
 
-      case 'connect': {
-        if (reply !== REPLY_OK) {
-          console.log(reply)
+          break
         }
 
-        state = 'normal'
-        io.prompt()
-        break
-      }
+        case 'subscriber': {
+          if (Array.isArray(reply)) {
+            for (const [i, value] of reply.entries()) {
+              console.log(`${i + 1}) ${value}`)
+            }
+          } else {
+            console.log(reply)
+          }
 
-      case 'closing': {
-        if (reply !== REPLY_OK) {
-          console.log(reply)
+          break
         }
 
-        break
-      }
+        default: {
+          if (Array.isArray(reply)) {
+            for (const [i, value] of reply.entries()) {
+              console.log(`${i + 1}) ${value}`)
+            }
+          } else {
+            console.log(reply)
+          }
 
-      default: {
-        if (Array.isArray(reply)) {
-          reply.forEach((value, i) => {
-            console.log(`${i + 1}) ${value}`)
-          })
-        } else {
-          console.log(reply)
+          io.prompt()
+          break
         }
-
-        io.prompt()
-        break
-      }
       }
     },
   })
@@ -89,16 +88,16 @@ async function redisCLI(uri: URL, client: Writable): Promise<void> {
   io.setPrompt(uri.host + '> ')
   io.on('line', line => {
     switch (line.split(' ')[0]) {
-    case 'MONITOR': {
-      state = 'monitoring'
-      break
-    }
+      case 'MONITOR': {
+        state = 'monitoring'
+        break
+      }
 
-    case 'PSUBSCRIBE':
-    case 'SUBSCRIBE': {
-      state = 'subscriber'
-      break
-    }
+      case 'PSUBSCRIBE':
+      case 'SUBSCRIBE': {
+        state = 'subscriber'
+        break
+      }
     }
 
     client.write(`${line}\n`)
@@ -134,19 +133,16 @@ export default class Cli extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', ignoreStdin: true}),
   }
-
   static description = 'opens a redis prompt'
   static examples = [
     '$ heroku redis:cli --app=my-app my-database',
     '$ heroku redis:cli --app=my-app --confirm my-database',
   ]
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
   }
-
   static topic = 'redis'
 
   protected async createBastionConnection(uri: URL, bastions: string, config: Record<string, unknown>, preferNativeTls: boolean): Promise<Duplex> {
@@ -159,7 +155,7 @@ export default class Cli extends Command {
         username: 'bastion',
       })
     })
-    const localPort = await portfinder.getPortPromise({startPort: 49152, stopPort: 65535})
+    const localPort = await portfinder.getPortPromise({startPort: 49_152, stopPort: 65_535})
     const stream: Duplex = await promisify(tunnel.forwardOut.bind(tunnel))('localhost', localPort, uri.hostname, Number.parseInt(uri.port, 10))
 
     let client: Duplex = stream
@@ -233,8 +229,9 @@ export default class Cli extends Command {
 async function getRedisConfigVars(addon: Required<Heroku.AddOn>, heroku: APIClient): Promise<Record<string, unknown>> {
   const {body: config} = await heroku.get<Record<string, unknown>>(`/apps/${addon.billing_entity.name}/config-vars`)
   const redisConfigVars: Record<string, unknown> = {}
-  addon.config_vars.forEach(configVar => {
+  for (const configVar of addon.config_vars) {
     redisConfigVars[configVar] = config[configVar]
-  })
+  }
+
   return redisConfigVars
 }

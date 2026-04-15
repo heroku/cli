@@ -15,9 +15,7 @@ export default class RunRake extends Command {
     remote: flags.remote(),
     size: flags.string({char: 's', completion: DynoSizeCompletion, description: 'dyno size'}),
   }
-
   static hidden = true
-
   static strict = false
 
   async run() {

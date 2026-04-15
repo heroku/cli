@@ -6,11 +6,9 @@ import {removeCoupling} from '../../lib/api.js'
 
 export default class PipelinesRemove extends Command {
   static description = 'remove this app from its pipeline'
-
   static examples = [
     color.command('heroku pipelines:remove -a my-app'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

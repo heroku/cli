@@ -2,10 +2,10 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import assert from 'assert'
 import fetch from 'node-fetch'
-import * as Stream from 'stream'
-import * as util from 'util'
+import assert from 'node:assert'
+import * as Stream from 'node:stream'
+import {promisify} from 'node:util'
 
 import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api.js'
 import keyBy from '../../lib/pipelines/key-by.js'
@@ -27,11 +27,9 @@ const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms))
 
 export default class Promote extends Command {
   static description = 'promote the latest release of this app to its downstream app(s)'
-
   static examples = [
     color.command('heroku pipelines:promote -a my-app-staging'),
   ]
-
   static flags = {
     app: flags.app({
       required: true,
@@ -89,9 +87,7 @@ export default class Promote extends Command {
       promotionActionName = `Starting promotion to ${targetStage}`
     }
 
-    const promotion = await promote(
-      this.heroku, promotionActionName, coupling.pipeline!.id!, coupling.app!.id!, targetApps,
-    )
+    const promotion = await promote(this.heroku, promotionActionName, coupling.pipeline!.id!, coupling.app!.id!, targetApps)
 
     const pollLoop = pollPromotionStatus(this.heroku, promotion.id!, true)
     ux.stdout('Waiting for promotion to complete...')
@@ -228,7 +224,7 @@ async function streamReleaseCommand(heroku: APIClient, targets: Array<Heroku.App
   ux.stdout('Running release command...')
 
   async function streamReleaseOutput(releaseStreamUrl: string) {
-    const finished = util.promisify(Stream.finished)
+    const finished = promisify(Stream.finished)
     const fetchResponse = await fetch(releaseStreamUrl)
 
     if (fetchResponse.status >= 400) {

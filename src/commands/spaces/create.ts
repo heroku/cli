@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -15,7 +15,6 @@ export default class Create extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = heredoc`
     create a new space
   `
@@ -34,7 +33,6 @@ export default class Create extends Command {
     Generation: cedar
     Created at: 2016-01-06T03:23:13Z
   `]
-
   static flags = {
     channel: flags.string({hidden: true}),
     cidr: flags.string({description: 'RFC-1918 CIDR the space will use'}),
@@ -48,7 +46,6 @@ export default class Create extends Command {
     space: flags.string({char: 's', description: 'name of space to create'}),
     team: flags.team({required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {
@@ -92,9 +89,18 @@ export default class Create extends Command {
     ux.warn(`Use ${color.code('heroku spaces:wait')} to track allocation.`)
 
     hux.styledHeader(color.space(space.name))
+    /* eslint-disable perfectionist/sort-objects */
     hux.styledObject({
-      // eslint-disable-next-line perfectionist/sort-objects
-      ID: space.id, Team: color.team(space.team.name || ''), Region: space.region.name, CIDR: space.cidr, 'Data CIDR': space.data_cidr, State: space.state, Shield: displayShieldState(space), Generation: getGeneration(space), 'Created at': space.created_at,
+      ID: space.id,
+      Team: color.team(space.team.name || ''),
+      Region: space.region.name,
+      CIDR: space.cidr,
+      'Data CIDR': space.data_cidr,
+      State: space.state,
+      Shield: displayShieldState(space),
+      Generation: getGeneration(space),
+      'Created at': space.created_at,
     }, ['ID', 'Team', 'Region', 'CIDR', 'Data CIDR', 'State', 'Shield', 'Generation', 'Created at'])
+    /* eslint-enable perfectionist/sort-objects */
   }
 }

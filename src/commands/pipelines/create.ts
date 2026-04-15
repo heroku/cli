@@ -23,18 +23,15 @@ export default class Create extends Command {
       required: false,
     }),
   }
-
   static description = `create a new pipeline
   An existing app must be specified as the first app in the pipeline.
   The pipeline name will be inferred from the app name if not specified.
   The stage of the app will be guessed based on its name if not specified.
   The pipeline owner will be the user creating the pipeline if not specified with -t for teams or -o for orgs.`
-
   static examples = [
     color.command('heroku pipelines:create -a my-app-staging'),
     color.command('heroku pipelines:create my-pipeline -a my-app-staging'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

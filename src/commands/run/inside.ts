@@ -1,6 +1,5 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import tsheredoc from 'tsheredoc'
@@ -13,16 +12,15 @@ const heredoc = tsheredoc.default
 
 export default class RunInside extends Command {
   static args = {
-    dyno_name: Args.string({
-      description: 'name of the dyno to run command inside',
-      required: true,
-    }),
     command: Args.string({
       description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
       required: true,
     }),
+    dyno_name: Args.string({
+      description: 'name of the dyno to run command inside',
+      required: true,
+    }),
   }
-
   static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
   static examples = [
     heredoc`
@@ -38,7 +36,6 @@ export default class RunInside extends Command {
       ${color.command('heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app')}
     `,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'exit-code': flags.boolean({
@@ -52,7 +49,6 @@ export default class RunInside extends Command {
     }),
     remote: flags.remote(),
   }
-
   static strict = false
 
   async run() {
@@ -87,4 +83,3 @@ export default class RunInside extends Command {
     }
   }
 }
-
