@@ -13,6 +13,7 @@ export default [
       'n/no-unsupported-features/node-builtins': 'warn',
       'no-await-in-loop': 'warn',
       'no-promise-executor-return': 'warn',
+      semi: ['warn', 'never'],
       'unicorn/consistent-function-scoping': 'warn',
       'unicorn/no-array-callback-reference': 'warn',
       'unicorn/no-array-for-each': 'warn',

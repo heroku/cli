@@ -27,6 +27,7 @@ export default class MembersAdd extends Command {
     const {email} = args
 
     const teamInviteEnabled = await isTeamInviteFeatureEnabled(team, this.heroku)
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (teamInviteEnabled) {
       await inviteMemberToTeam(email, role, team, this.heroku)
     } else {

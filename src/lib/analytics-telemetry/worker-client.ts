@@ -1,4 +1,4 @@
-/* eslint-disable n/no-process-exit, no-var */
+/* eslint-disable n/no-process-exit */
 
 import {
   CLIError, spawnTelemetryWorker, telemetryDebug, TelemetryGlobal,

@@ -30,15 +30,15 @@ describe('quote', function () {
 
 describe('parse', function () {
   it('parses double-quoted strings with newlines', function () {
-    expect(parse('"hello\\nworld"')).to.eq('hello\nworld')
+    expect(parse(String.raw`"hello\nworld"`)).to.eq('hello\nworld')
   })
 
   it('parses double-quoted strings with escaped characters', function () {
-    expect(parse('"hello\\"world"')).to.eq('hello"world')
+    expect(parse(String.raw`"hello\"world"`)).to.eq('hello"world')
   })
 
   it('parses single-quoted strings with backslashes', function () {
-    expect(parse("'hello\\\\world'")).to.eq('hello\\world')
+    expect(parse(String.raw`'hello\\world'`)).to.eq(String.raw`hello\world`)
   })
 
   it('parses empty strings', function () {
