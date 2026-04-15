@@ -107,7 +107,9 @@ export default class Push extends Command {
     }
 
     if (recursive) {
-      filteredJobs = processTypes.length > 0 ? this.dockerHelper.filterByProcessType(jobs, processTypes) : jobs
+      filteredJobs = processTypes.length > 0
+        ? this.dockerHelper.filterByProcessType(jobs, processTypes)
+        : jobs
 
       selectedJobs = await this.dockerHelper.chooseJobs(filteredJobs)
     } else if (jobs.standard) {

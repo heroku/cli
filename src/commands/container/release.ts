@@ -8,13 +8,8 @@ import {ensureContainerStack} from '../../lib/container/helpers.js'
 import {streamer} from '../../lib/container/streamer.js'
 
 type ImageResponse = {
-  config: {
-    digest: string
-  }
-  history: [{
-    v1Compatibility: string,
-  },
-  ],
+  config: {digest: string}
+  history: [{v1Compatibility: string}],
   schemaVersion: number,
 }
 
