@@ -13,16 +13,13 @@ export default class DataMaintenancesRun extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'triggers a scheduled maintenance for a data add-on'
-
   static examples = [
     '$ heroku data:maintenances:run postgresql-sinuous-92834',
     '$ heroku data:maintenances:run postgresql-sinuous-92834 --confirm production-app',
     '$ heroku data:maintenances:run postgresql-sinuous-92834 --wait',
     '$ heroku data:maintenances:run DATABASE --app production-app',
   ]
-
   static flags = {
     app: Flags.app({description: 'app to run addon maintenance for'}),
     confirm: Flags.string({

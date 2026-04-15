@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {nls} from '../../nls.js'
@@ -8,19 +8,18 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export default class Blocking extends Command {
-  static description = 'display queries holding locks other queries are waiting to be released'
-  static topic = 'pg'
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
+  static description = 'display queries holding locks other queries are waiting to be released'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Blocking)
+    const {args, flags} = await this.parse(Blocking)
     const {app} = flags
     const query = heredoc`
       SELECT bl.pid AS blocked_pid,

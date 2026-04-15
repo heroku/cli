@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
@@ -10,14 +10,11 @@ export default class DataMaintenancesWait extends BaseCommand {
   static args = {
     addon: Args.string({description: 'data addon', required: true}),
   }
-
   static description = 'blocks until the maintenance process has completed'
-
   static examples = [
     '$ heroku data:maintenances:wait postgresql-sinuous-83720',
     '$ heroku data:maintenances:wait DATABASE --app production-app',
   ]
-
   static flags = {
     app: Flags.app(),
     remote: Flags.remote(),

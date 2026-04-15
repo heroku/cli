@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -13,16 +13,13 @@ export default class Destroy extends Command {
     database: Args.string({description: nls('pg:database:arg:description'), required: true}),
     link: Args.string({description: 'name of the linked data store', required: true}),
   }
-
   static description = 'destroys a link between data stores'
   static example = `${color.command('heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100')}`
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

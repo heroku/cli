@@ -16,7 +16,6 @@ export default class NotificationsIndex extends Command {
     read: flags.boolean({description: 'show notifications already read'}),
     remote: flags.remote(),
   }
-
   static topic = 'notifications'
 
   async run() {

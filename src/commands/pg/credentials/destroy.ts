@@ -11,17 +11,14 @@ export default class Destroy extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'destroy credential within database'
   static example = `${color.command('heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production')}`
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     name: flags.string({char: 'n', description: 'unique identifier for the credential', required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -40,7 +37,7 @@ export default class Destroy extends Command {
 
     const {body: attachments} = await this.heroku.get<Heroku.AddOnAttachment[]>(`/addons/${db.name}/addon-attachments`)
     const credAttachments = attachments.filter(a => a.namespace === `credential:${name}`)
-    const credAttachmentApps = Array.from(new Set(credAttachments.map(a => a.app?.name)))
+    const credAttachmentApps = [...new Set(credAttachments.map(a => a.app?.name))]
     if (credAttachmentApps.length > 0)
       throw new Error(`Credential ${name} must be detached from the app${credAttachmentApps.length > 1 ? 's' : ''} ${credAttachmentApps.map(appName => color.app(appName || ''))
         .join(', ')} before destroying.`)

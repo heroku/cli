@@ -6,7 +6,7 @@ import {ux} from '@oclif/core/ux'
 
 import {getTeamInvites, isTeamInviteFeatureEnabled} from '../../lib/members/team-invite-utils.js'
 
-type MemberWithStatus = Heroku.TeamMember & { status?: string }
+type MemberWithStatus = Heroku.TeamMember & {status?: string}
 
 const buildTableColumns = (teamInvites: MemberWithStatus[]) => {
   const baseColumns = {
@@ -45,7 +45,6 @@ export default class MembersIndex extends Command {
     }),
     team: flags.team({required: true}),
   }
-
   static topic = 'members'
 
   public async run(): Promise<void> {

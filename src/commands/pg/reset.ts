@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -12,7 +12,6 @@ export default class Reset extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'delete all data in DATABASE'
   static flags = {
     app: flags.app({required: true}),
@@ -20,7 +19,6 @@ export default class Reset extends Command {
     extensions: flags.string({char: 'e', description: 'comma-separated list of extensions to pre-install in the public schema'}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

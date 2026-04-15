@@ -9,7 +9,6 @@ export default class MaintenanceOn extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'maintenance'
 
   async run() {

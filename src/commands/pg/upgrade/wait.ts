@@ -1,6 +1,6 @@
+import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
-import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import tsheredoc from 'tsheredoc'
@@ -20,7 +20,6 @@ export default class Wait extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')}`}),
   }
-
   static description = 'provides the status of an upgrade and blocks it until the operation is complete'
   static examples = [
     heredoc(`
@@ -36,14 +35,12 @@ export default class Wait extends Command {
       ${color.command('heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --no-notify')}
     `),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'no-notify': flags.boolean({description: 'do not show OS notification'}),
     remote: flags.remote(),
     'wait-interval': flags.integer({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

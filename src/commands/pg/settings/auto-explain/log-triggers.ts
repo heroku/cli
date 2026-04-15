@@ -1,23 +1,22 @@
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {PGSettingsCommand, booleanConverter, BooleanAsString} from '../../../../lib/pg/setter.js'
-import {SettingKey, Setting} from '../../../../lib/pg/types.js'
+
+import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
+import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class LogTriggers extends PGSettingsCommand {
-  static topic = 'pg'
-  static description = heredoc(`
-    Includes trigger execution statistics in execution plan logs.
-    This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
-  `)
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
     value: Args.string({description: 'boolean indicating if the database has trigger execution statistics enabled'}),
   }
-
+  static description = heredoc(`
+    Includes trigger execution statistics in execution plan logs.
+    This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
+  `)
+  static topic = 'pg'
   protected settingKey = 'auto_explain.log_triggers' as SettingKey
 
   protected convertValue(val: BooleanAsString): boolean {

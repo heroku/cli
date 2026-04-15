@@ -1,13 +1,12 @@
 import {Command} from '@heroku-cli/command'
 import {spawn as cpSpawn} from 'node:child_process'
+import {dirname, join} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {dirname, join} from 'path'
 
 export default class MCPStart extends Command {
   static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'starts the Heroku platform MCP server in stdio mode'
   static promptFlagActive = false
-
   static spawn: typeof cpSpawn = cpSpawn
 
   public async run() {

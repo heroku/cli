@@ -10,14 +10,11 @@ export default class Url extends Command {
   static args = {
     backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
   }
-
   static description = 'get secret but publicly accessible URL of a backup'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

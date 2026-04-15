@@ -1,6 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
@@ -12,7 +12,7 @@ import backupsFactory from '../../lib/pg/backups.js'
 const getAttachmentInfo = async function (heroku: APIClient, db: string, app: string) {
   const dbResolver = new utils.pg.DatabaseResolver(heroku)
 
-  if (db.match(/^postgres:\/\//)) {
+  if (/^postgres:\/\//.test(db)) {
     const conn = utils.pg.DatabaseResolver.parsePostgresConnectionString(db)
     const host = `${conn.host}:${conn.port}`
     return {
@@ -47,7 +47,6 @@ export default class Copy extends Command {
     source: Args.string({description: 'config var exposed to the owning app containing the source database URL', required: true}),
     target: Args.string({description: 'config var exposed to the owning app containing the target database URL', required: true}),
   }
-
   static description = 'copy all data from source db to target'
   static flags = {
     app: flags.app({required: true}),
@@ -56,9 +55,7 @@ export default class Copy extends Command {
     verbose: flags.boolean(),
     'wait-interval': flags.string(),
   }
-
   static help = 'at least one of the databases must be a Heroku PostgreSQL DB'
-
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -94,7 +91,8 @@ export default class Copy extends Command {
             Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
           },
           hostname: utils.pg.host(),
-        })
+        },
+      )
       if (credentials.length > 1) {
         ux.warn('pg:copy will only copy your default credential and the data it has access to. Any additional credentials and data that only they can access will not be copied.')
       }

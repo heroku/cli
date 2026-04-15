@@ -20,16 +20,13 @@ export default class DataPgWait extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'show status of an operation until it\'s complete'
-
   static examples = [
     heredoc(`
       # Wait for database to be available
       ${color.code('<%= config.bin %> <%= command.id %> DATABASE --app myapp')}
     `),
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     'no-notify': Flags.boolean({
@@ -42,7 +39,6 @@ export default class DataPgWait extends BaseCommand {
       min: 1,
     }),
   }
-
   protected classicWaitCommand: string = 'pg:wait'
 
   public async notify(...args: Parameters<typeof notify>): Promise<void> {

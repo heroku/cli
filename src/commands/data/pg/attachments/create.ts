@@ -1,6 +1,6 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags, HerokuAPIError} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -16,9 +16,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'attach an existing Postgres Advanced database to an app'
-
   static flags = {
     app: Flags.app({required: true}),
     as: Flags.string({description: 'name for Postgres database attachment'}),
@@ -56,10 +54,8 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     if (!utils.pg.isAdvancedDatabase(addon)) {
       const cmd = `heroku addons:attach ${addon.name} -a ${app}${as ? ` --as ${as}` : ''}`
         + `${credential ? ` --credential ${credential}` : ''}`
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(cmd)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(cmd)} instead.`)
     }
 
     const createAttachment = async (confirmed?: string): Promise<Required<Heroku.AddOnAttachment>> => {
@@ -99,25 +95,23 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     }
 
     if (credential) {
-      const {body: credentialConfig} = await this.heroku.get<Required<Heroku.AddOnConfig>[]>(
-        `/addons/${addon.name}/config/role:${encodeURIComponent(credential)}`,
-      )
+      const {body: credentialConfig} = await this.heroku.get<Required<Heroku.AddOnConfig>[]>(`/addons/${addon.name}/config/role:${encodeURIComponent(credential)}`)
       if (credentialConfig.length === 0) {
-        ux.error(heredoc`
+        ux.error(
+          heredoc`
           The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(addon.name)}.
           Use ${color.code(`heroku data:pg:credentials ${addon.name} -a ${app}`)} to list the credentials on the database.`,
-        {exit: 1},
+          {exit: 1},
         )
       }
     } else if (pool) {
-      const {body: poolConfig} = await this.heroku.get<Required<Heroku.AddOnConfig>[]>(
-        `/addons/${addon.name}/config/pool:${encodeURIComponent(pool)}`,
-      )
+      const {body: poolConfig} = await this.heroku.get<Required<Heroku.AddOnConfig>[]>(`/addons/${addon.name}/config/pool:${encodeURIComponent(pool)}`)
       if (poolConfig.length === 0) {
-        ux.error(heredoc`
+        ux.error(
+          heredoc`
           The pool ${color.name(pool)} doesn't exist on the database ${color.datastore(addon.name)}.
           Use ${color.code(`heroku data:pg:info ${addon.name} -a ${app}`)} to list the pools on the database.`,
-        {exit: 1},
+          {exit: 1},
         )
       }
     }

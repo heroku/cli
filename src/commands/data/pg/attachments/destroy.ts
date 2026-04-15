@@ -1,6 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
@@ -12,9 +12,7 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'detach an existing database attachment from an app'
-
   static flags = {
     app: Flags.app({required: true}),
     confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
@@ -25,25 +23,19 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
     const {args, flags} = await this.parse(DataPgAttachmentsDestroy)
     const {attachment_name: attachmentName} = args
     const {app, confirm} = flags
-    const {body: attachment} = await this.heroku.get<Required<Heroku.AddOnAttachment>>(
-      `/apps/${app}/addon-attachments/${attachmentName}`,
-    )
+    const {body: attachment} = await this.heroku.get<Required<Heroku.AddOnAttachment>>(`/apps/${app}/addon-attachments/${attachmentName}`)
     const addonResolver = new utils.AddonResolver(this.heroku)
     const addon = await addonResolver.resolve(attachment.addon.name, undefined, utils.pg.addonService())
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku addons:detach ${attachmentName} -a ${app}`)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(`heroku addons:detach ${attachmentName} -a ${app}`)} instead.`)
     }
 
     await hux.confirmCommand({comparison: app, confirmation: confirm})
 
     try {
-      ux.action.start(
-        `Detaching ${color.attachment(attachmentName)} on ${color.datastore(addon.name)} from ${color.app(app)}`,
-      )
+      ux.action.start(`Detaching ${color.attachment(attachmentName)} on ${color.datastore(addon.name)} from ${color.app(app)}`)
       await this.heroku.delete(`/addon-attachments/${attachment.id}`)
       ux.action.stop()
     } catch (error) {

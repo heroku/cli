@@ -16,7 +16,6 @@ export default class LabsIndex extends Command {
     json: flags.boolean({description: 'display as json', required: false}),
     remote: flags.remote(),
   }
-
   static topic = 'labs'
 
   async run() {
@@ -37,7 +36,7 @@ export default class LabsIndex extends Command {
     }
 
     // makes sure app isn't added to json object if null
-    // eslint-disable-next-line unicorn/no-negated-condition, no-negated-condition
+    // eslint-disable-next-line unicorn/no-negated-condition
     if (appResponse !== null) {
       app = appResponse?.body
       features.app = app

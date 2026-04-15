@@ -1,10 +1,10 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Maintenance} from '../../../lib/data/types.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
 interface StyledMaintenance extends Maintenance {
   [key: string]: any;
@@ -18,15 +18,12 @@ export default class DataMaintenancesInfo extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'display details of the most recent maintenance for an addon'
-
   static examples = [
     '$ heroku data:maintenances:info postgresql-sinuous-83720',
     '$ heroku data:maintenances:info postgresql-sinuous-83720 --json',
     '$ heroku data:maintenances:info DATABASE --app test-app',
   ]
-
   static flags = {
     app: flags.app({description: 'app to list addon maintenances for'}),
     json: flags.boolean({char: 'j', description: 'output result in json'}),
@@ -57,14 +54,14 @@ export default class DataMaintenancesInfo extends BaseCommand {
     }
 
     ['app',  'addon'].forEach((key: string) => {
-      Object.keys(styledMaintenance[key]).forEach(childKey => {
+      for (const childKey of Object.keys(styledMaintenance[key])) {
         const composedKey = `${key}_${childKey}`
         const childValue = styledMaintenance[key][childKey]
 
         if (childValue !== undefined) {
           styledMaintenance[composedKey] = childValue
         }
-      })
+      }
 
       // after flattening the child keys from `key`, we can remove `key`
       // off the of object so that it isn't shown

@@ -1,66 +1,35 @@
-import {color, hux, pg, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util.js'
+import {
+  color, hux, pg, utils,
+} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
+
 import {PgDatabaseTenant} from '../../lib/pg/types.js'
+import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util.js'
 import {nls} from '../../nls.js'
 
 type DBObject = {
   addon: pg.ExtendedAddonAttachment | pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]},
-  configVars?: string[],
-  dbInfo: PgDatabaseTenant | null,
   config: Heroku.ConfigVars,
-}
-
-function displayDB(db: DBObject, app: string) {
-  if (db.addon.attachment_names) {
-    hux.styledHeader(db.addon.attachment_names.map((c: string) => color.attachment(c + '_URL'))
-      .join(', '))
-  } else {
-    hux.styledHeader(db.configVars?.map(c => color.name(c))
-      .join(', ') || '')
-  }
-
-  if (db.addon.app.name && db.addon.app.name !== app) {
-    db.dbInfo?.info.push({name: 'Billing App', values: [color.app(db.addon.app.name)]})
-  }
-
-  db.dbInfo?.info.push({name: 'Add-on', values: [color.addon(db.addon.name)]})
-  const info: Record<string, never> | Record<string, string> = {}
-  db.dbInfo?.info.forEach(infoObject => {
-    if (infoObject.values.length > 0) {
-      let valuesArray: string[]
-      if (infoObject.resolve_db_name) {
-        valuesArray = infoObject.values.map(v => databaseNameFromUrl(v, db.config))
-      } else {
-        valuesArray = infoObject.values
-      }
-
-      info[infoObject.name] = valuesArray.join(', ')
-    }
-  })
-  const keys = db.dbInfo?.info.map(i => i.name)
-  hux.styledObject(info, keys)
-  ux.stdout('')
+  configVars?: string[],
+  dbInfo: null | PgDatabaseTenant,
 }
 
 export default class Info extends Command {
-  static topic = 'pg'
+  static aliases = ['pg']
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
+  }
   static description = 'show database information'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
-  static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:all-dbs:suffix')}`}),
-  }
-
-  static aliases = ['pg']
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const {app} = flags
     const lodash = await import('lodash')
     const {sortBy} = lodash.default
@@ -85,7 +54,8 @@ export default class Info extends Command {
         `/client/v11/databases/${addon.id}`,
         {
           hostname: utils.pg.host(),
-        })
+        },
+      )
         .catch(error => {
           if (error.statusCode !== 404)
             throw error
@@ -99,10 +69,41 @@ export default class Info extends Command {
       }
     }))
     dbs = dbs.filter(db => db.dbInfo)
-    dbs.forEach(db => {
+    for (const db of dbs) {
       db.configVars = configVarNamesFromValue(db.config, db.dbInfo?.resource_url || '')
-    })
+    }
+
     dbs = sortBy(dbs, (db: DBObject) => db.configVars && db.configVars[0] !== 'DATABASE_URL', 'configVars[0]')
-    dbs.forEach(db => displayDB(db, app))
+    for (const db of dbs) displayDB(db, app)
   }
+}
+
+function displayDB(db: DBObject, app: string) {
+  if (db.addon.attachment_names) {
+    hux.styledHeader(db.addon.attachment_names.map((c: string) => color.attachment(c + '_URL'))
+      .join(', '))
+  } else {
+    hux.styledHeader(db.configVars?.map(c => color.name(c))
+      .join(', ') || '')
+  }
+
+  if (db.addon.app.name && db.addon.app.name !== app) {
+    db.dbInfo?.info.push({name: 'Billing App', values: [color.app(db.addon.app.name)]})
+  }
+
+  db.dbInfo?.info.push({name: 'Add-on', values: [color.addon(db.addon.name)]})
+  const info: Record<string, never> | Record<string, string> = {}
+  for (const infoObject of (db.dbInfo?.info || [])) {
+    if (infoObject.values.length > 0) {
+      const valuesArray = infoObject.resolve_db_name
+        ? infoObject.values.map(v => databaseNameFromUrl(v, db.config))
+        : infoObject.values
+
+      info[infoObject.name] = valuesArray.join(', ')
+    }
+  }
+
+  const keys = db.dbInfo?.info.map(i => i.name)
+  hux.styledObject(info, keys)
+  ux.stdout('')
 }

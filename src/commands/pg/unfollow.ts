@@ -1,30 +1,30 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
-import {utils, color} from '@heroku/heroku-cli-util'
-import {databaseNameFromUrl} from '../../lib/pg/util.js'
+import {color, utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
 import ConfirmCommand from '../../lib/confirm-command.js'
 import {PgDatabase} from '../../lib/pg/types.js'
-import tsheredoc from 'tsheredoc'
+import {databaseNameFromUrl} from '../../lib/pg/util.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Unfollow extends Command {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: nls('pg:database:arg:description'), required: true}),
+  }
   static description = 'stop a replica from following and make it a writeable database'
   static flags = {
-    confirm: flags.string({char: 'c'}),
     app: flags.app({required: true}),
+    confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
   }
-
-  static args = {
-    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Unfollow)
+    const {args, flags} = await this.parse(Unfollow)
     const {app, confirm} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, args.database)

@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -32,11 +32,8 @@ export default class DataPgQuotasUpdate extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'update quota settings on a Postgres Advanced database'
-
   static examples = ['<%= config.bin %> <%= command.id %> --app example-app --type storage --warning 12 --critical 15 --enforcement-action notify']
-
   static flags = {
     app: Flags.app({required: true}),
     critical: Flags.string({description: 'set critical threshold in GB, set to "none" to remove threshold'}),
