@@ -1,7 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
-import {expectOutput} from '@heroku-cli/test-utils'
+import {captureOutput, expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import type {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
@@ -88,19 +87,19 @@ describe('displayNat', function () {
 describe('renderInfo', function () {
   const space: SpaceWithOutboundIps = {...fixtures.spaces['non-shield-space'], outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'}}
 
-  it('outputs space info in JSON format when json flag is true', function () {
-    stdout.start()
-    renderInfo(space, true)
-    stdout.stop()
-    expect(JSON.parse(stdout.output)).to.eql(space)
+  it('outputs space info in JSON format when json flag is true', async function () {
+    const {stdout} = await captureOutput(async () => {
+      renderInfo(space, true)
+    })
+    expect(JSON.parse(stdout)).to.eql(space)
   })
 
-  it('outputs space info in styled format when json flag is false', function () {
-    stdout.start()
-    renderInfo(space, false)
-    stdout.stop()
+  it('outputs space info in styled format when json flag is false', async function () {
+    const {stdout} = await captureOutput(async () => {
+      renderInfo(space, false)
+    })
 
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}

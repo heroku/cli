@@ -1,5 +1,5 @@
+import {captureOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
 
 import {displayHosts, displayHostsAsJSON, Host} from '../../../../src/lib/spaces/hosts.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
@@ -21,12 +21,12 @@ const hosts: Host[] = [
 ]
 
 describe('displayHosts', function () {
-  it('displays hosts when json flag is false', function () {
-    stdout.start()
-    displayHosts('my-space', hosts)
-    stdout.stop()
+  it('displays hosts when json flag is false', async function () {
+    const {stdout} = await captureOutput(async () => {
+      displayHosts('my-space', hosts)
+    })
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space Hosts'))
     expect(actual).to.include(removeAllWhitespace('Host ID             State     Available Capacity Allocated At         Released At'))
     expect(actual).to.include(removeAllWhitespace('h-0f927460a59aac18e available 72%                2020-05-28T04:15:59Z'))
@@ -35,10 +35,10 @@ describe('displayHosts', function () {
 })
 
 describe('displayHostsAsJSON', function () {
-  it('displays hosts when json flag is true', function () {
-    stdout.start()
-    displayHostsAsJSON(hosts)
-    stdout.stop()
-    expect(JSON.parse(stdout.output)).to.eql(hosts)
+  it('displays hosts when json flag is true', async function () {
+    const {stdout} = await captureOutput(async () => {
+      displayHostsAsJSON(hosts)
+    })
+    expect(JSON.parse(stdout)).to.eql(hosts)
   })
 })

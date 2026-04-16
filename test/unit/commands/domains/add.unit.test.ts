@@ -2,15 +2,12 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import DomainsAdd from '../../../../src/commands/domains/add.js'
 
 describe('domains:add', function () {
   afterEach(function () {
     nock.cleanAll()
-    stdout.stop()
-    stderr.stop()
   })
 
   const domainsResponse = {

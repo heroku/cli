@@ -1,7 +1,6 @@
 import {Peering, PeeringInfo} from '@heroku-cli/schema'
-import {expectOutput} from '@heroku-cli/test-utils'
+import {captureOutput, expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {displayPeeringInfo, displayPeerings, displayPeeringsAsJSON} from '../../../../src/lib/spaces/peering.js'
@@ -40,12 +39,12 @@ describe('displayPeeringInfo', function () {
     vpc_id: 'vpc-1234568a',
   }
 
-  it('outputs peering info', function () {
-    stdout.start()
-    displayPeeringInfo('my-space', peeringInfo)
-    stdout.stop()
+  it('outputs peering info', async function () {
+    const {stdout} = await captureOutput(async () => {
+      displayPeeringInfo('my-space', peeringInfo)
+    })
 
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === my-space Peering Info
       AWS Account ID:    ${peeringInfo.aws_account_id}
       AWS Region:        ${peeringInfo.aws_region}
@@ -58,21 +57,21 @@ describe('displayPeeringInfo', function () {
 })
 
 describe('displayPeeringsAsJSON', function () {
-  it('outputs peerings in JSON format', function () {
-    stdout.start()
-    displayPeeringsAsJSON(peerings)
-    stdout.stop()
-    expect(JSON.parse(stdout.output)).to.eql(peerings)
+  it('outputs peerings in JSON format', async function () {
+    const {stdout} = await captureOutput(async () => {
+      displayPeeringsAsJSON(peerings)
+    })
+    expect(JSON.parse(stdout)).to.eql(peerings)
   })
 })
 
 describe('displayPeerings', function () {
-  it('outputs peerings in styled format', function () {
-    stdout.start()
-    displayPeerings('my-space', peerings)
-    stdout.stop()
+  it('outputs peerings in styled format', async function () {
+    const {stdout} = await captureOutput(async () => {
+      displayPeerings('my-space', peerings)
+    })
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space Peerings'))
     expect(actual).to.include(removeAllWhitespace('PCX ID Type CIDR Blocks Status VPC ID AWS Region AWS Account ID Expires'))
     expect(actual).to.include(removeAllWhitespace('pcx-12345 heroku-managed 10.0.0.0/16 active vpc-1234568a us-west-2 012345678910'))

@@ -1,10 +1,10 @@
 /* eslint-disable unicorn/prefer-add-event-listener */
 import {APIClient} from '@heroku-cli/command'
+import {captureOutput} from '@heroku-cli/test-utils'
 import {Config, Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../../../../src/lib/run/log-displayer.js'
@@ -306,15 +306,15 @@ describe('logDisplayer', function () {
             data: 2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2\n\n\n
                     `)
 
-        stdout.start()
-        await displayer.display({
-          app: 'my-cedar-app',
-          tail: false,
+        const {stdout} = await captureOutput(async () => {
+          await displayer.display({
+            app: 'my-cedar-app',
+            tail: false,
+          })
         })
-        stdout.stop()
 
         // Note: logServer.done() is not called because our MockEventSource intercepts the request
-        expect(stdout.output).to.eq(heredoc`
+        expect(stdout).to.eq(heredoc`
           2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1
           2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2
         `)
@@ -353,20 +353,22 @@ describe('logDisplayer', function () {
 
     context('when the log server responds with a stream of log lines and then timeouts', function () {
       it('displays log lines and exits showing a timeout error', async function () {
+        let stdout = ''
         try {
-          stdout.start()
-          await displayer.display({
-            app: 'my-cedar-app',
-            tail: true,
+          const output = await captureOutput(async () => {
+            await displayer.display({
+              app: 'my-cedar-app',
+              tail: true,
+            })
           })
+          stdout = output.stdout
         } catch (error: unknown) {
-          stdout.stop()
           const {message, oclif} = error as CLIError
           expect(message).to.equal('Logs eventsource failed with: 401')
           expect(oclif.exit).to.eq(1)
         }
 
-        expect(stdout.output).to.eq('')
+        expect(stdout).to.eq('')
       })
     })
   })
@@ -386,22 +388,22 @@ describe('logDisplayer', function () {
     })
 
     it('displays logs and recreates log sessions on timeout', async function () {
+      let stderr = ''
       try {
-        stdout.start()
-        stderr.start()
-        await displayer.display({
-          app: 'my-fir-app',
-          tail: false,
+        const output = await captureOutput(async () => {
+          await displayer.display({
+            app: 'my-fir-app',
+            tail: false,
+          })
         })
+        stderr = output.stderr
       } catch (error: unknown) {
-        stdout.stop()
-        stderr.stop()
         const {message} = error as Error
         expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
       }
 
       // it displays message about fetching logs for fir apps
-      expect(stderr.output).to.eq('Fetching logs...\n\n')
+      expect(stderr).to.eq('Fetching logs...\n\n')
     })
   })
 })

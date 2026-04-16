@@ -3,7 +3,6 @@ import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
@@ -24,8 +23,6 @@ describe('domains', function () {
     api.done()
     confirmStub.restore()
     nock.cleanAll()
-    stdout.stop()
-    stderr.stop()
   })
 
   const herokuOnlyDomainsResponse = [

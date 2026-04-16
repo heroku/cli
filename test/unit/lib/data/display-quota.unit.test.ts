@@ -1,5 +1,5 @@
+import {captureOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {displayQuota, formatQuotaStatus} from '../../../../src/lib/data/display-quota.js'
@@ -30,12 +30,12 @@ describe('lib/displayQuota', function () {
   })
 
   describe('displayQuota', function () {
-    it('displays the quota information in a human-readable format', function () {
-      stdout.start()
-      displayQuota(storageQuotaResponse)
-      stdout.stop()
+    it('displays the quota information in a human-readable format', async function () {
+      const {stdout} = await captureOutput(async () => {
+        displayQuota(storageQuotaResponse)
+      })
 
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
         === Storage
 
         Warning:            50.00 GB
