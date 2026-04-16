@@ -124,6 +124,7 @@ describe('logDisplayer', function () {
         for (const timeout of this.timeouts) {
           clearTimeout(timeout)
         }
+
         this.timeouts = []
       }
     }
@@ -140,6 +141,7 @@ describe('logDisplayer', function () {
     if (createEventSourceStub) {
       createEventSourceStub.restore()
     }
+
     // Ensure displayer is cleaned up to avoid hanging
     if (displayer) {
       displayer = null as any
