@@ -262,6 +262,9 @@ describe('container release', function () {
         'web',
       ])
 
+      stdMocks.flush()
+      stdMocks.restore()
+
       expect(stdout).to.contain('Running release command...')
       expect(stdout).to.contain('Release Output Content')
       expect(stderr).to.contain('Releasing images web to testapp...')
