@@ -1,4 +1,4 @@
-import {Command} from '@heroku-cli/command'
+import {Command, getStorageConfig} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
@@ -36,6 +36,12 @@ export default class Add extends Command {
       ux.error(logInMessage)
     }
 
-    AccountsModule.add(name, email, token)
+    const storageConfig = getStorageConfig()
+
+    if (storageConfig.credentialStore) {
+      AccountsModule.add(name, email)
+    } else {
+      AccountsModule.add(name, email, token)
+    }
   }
 }

@@ -6,7 +6,7 @@ import {stubUxActionStart} from './uxStub.js'
 
 // @heroku-cli/command reads and writes credentials via the OS (keychain / .netrc)
 // Unit tests should not run that code; we swap in a fake provider and restore after.
-import {stubCredentialManager} from './credential-manager-stub.js'
+import {stubCredentialManager} from './stubs/credential-manager.js'
 
 let uxStub: {restore: () => void}
 let credentialManagerStub: {restore: () => void}

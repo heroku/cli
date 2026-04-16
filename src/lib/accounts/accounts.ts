@@ -7,7 +7,7 @@ import * as Heroku from '@heroku-cli/schema'
 export interface IAccountsWrapper {
   list(): Heroku.Account[] | []
   current(): Promise<string | null>
-  add(name: string, username: string, password: string): void
+  add(name: string, username: string, password?: string): void
   remove(name: string): void
   set(name: string): Promise<void>
 }
@@ -70,13 +70,13 @@ export class AccountsWrapper implements IAccountsWrapper {
     return null
   }
 
-  add(name: string, username: string, password: string): void {
+  add(name: string, username: string, password?: string): void {
     const basedir = path.join(this.configDir(), 'accounts')
     fs.mkdirSync(basedir, {recursive: true})
 
     fs.writeFileSync(
       path.join(basedir, name),
-      stringify({username, password}),
+      stringify({username, password}, {keepUndefined: true}),
       'utf8',
     )
     fs.chmodSync(path.join(basedir, name), 0o600)
