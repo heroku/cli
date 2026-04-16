@@ -4,7 +4,6 @@ import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import stdMocks from 'std-mocks'
 
 import Cmd from '../../../../src/commands/container/release.js'
 
@@ -231,7 +230,6 @@ describe('container release', function () {
     })
 
     it('releases with previous release and pending then successful release phase', async function () {
-      stdMocks.use()
       const busl = nock('https://busl.test:443')
         .get('/streams/release.log')
         .reply(200, 'Release Output Content')
@@ -261,9 +259,6 @@ describe('container release', function () {
         'testapp',
         'web',
       ])
-
-      stdMocks.flush()
-      stdMocks.restore()
 
       expect(stdout).to.contain('Running release command...')
       expect(stdout).to.contain('Release Output Content')
