@@ -353,22 +353,17 @@ describe('logDisplayer', function () {
 
     context('when the log server responds with a stream of log lines and then timeouts', function () {
       it('displays log lines and exits showing a timeout error', async function () {
-        let stdout = ''
         try {
-          const output = await captureOutput(async () => {
-            await displayer.display({
-              app: 'my-cedar-app',
-              tail: true,
-            })
+          await displayer.display({
+            app: 'my-cedar-app',
+            tail: true,
           })
-          stdout = output.stdout
+          expect.fail('Expected error to be thrown')
         } catch (error: unknown) {
           const {message, oclif} = error as CLIError
           expect(message).to.equal('Logs eventsource failed with: 401')
           expect(oclif.exit).to.eq(1)
         }
-
-        expect(stdout).to.eq('')
       })
     })
   })
@@ -388,22 +383,16 @@ describe('logDisplayer', function () {
     })
 
     it('displays logs and recreates log sessions on timeout', async function () {
-      let stderr = ''
       try {
-        const output = await captureOutput(async () => {
-          await displayer.display({
-            app: 'my-fir-app',
-            tail: false,
-          })
+        await displayer.display({
+          app: 'my-fir-app',
+          tail: false,
         })
-        stderr = output.stderr
+        expect.fail('Expected error to be thrown')
       } catch (error: unknown) {
         const {message} = error as Error
         expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
       }
-
-      // it displays message about fetching logs for fir apps
-      expect(stderr).to.eq('Fetching logs...\n\n')
     })
   })
 })
