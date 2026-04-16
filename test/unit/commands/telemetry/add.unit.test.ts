@@ -1,7 +1,6 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/telemetry/add.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
@@ -10,7 +9,6 @@ import * as spaceFixtures from '../../../fixtures/spaces/fixtures.js'
 import {
   appTelemetryDrain1, grpcAppTelemetryDrain, spaceTelemetryDrain1, splunkAppTelemetryDrain,
 } from '../../../fixtures/telemetry/fixtures.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
@@ -65,7 +63,7 @@ describe('telemetry:add', function () {
       .post('/telemetry-drains')
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--headers',
       '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
@@ -75,7 +73,7 @@ describe('telemetry:add', function () {
       'logs',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('successfully creates a telemetry drain for a space', async function () {
@@ -86,7 +84,7 @@ describe('telemetry:add', function () {
       .post('/telemetry-drains')
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--headers',
       '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
@@ -96,7 +94,7 @@ describe('telemetry:add', function () {
       'logs',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('does not accept options other than logs, metrics, traces, or all for the --signal flag', async function () {
@@ -158,7 +156,7 @@ describe('telemetry:add', function () {
       })
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--app',
       grpcDrainAppId,
@@ -166,7 +164,7 @@ describe('telemetry:add', function () {
       'grpc',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('successfully creates a telemetry drain for an app with http transport (default)', async function () {
@@ -189,7 +187,7 @@ describe('telemetry:add', function () {
       })
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--app',
       appId,
@@ -197,7 +195,7 @@ describe('telemetry:add', function () {
       'http',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('returns an error for invalid transport option', async function () {
@@ -235,13 +233,13 @@ describe('telemetry:add', function () {
       })
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--app',
       appId,
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('successfully creates a telemetry drain splunk transport', async function () {
@@ -267,7 +265,7 @@ describe('telemetry:add', function () {
       })
       .reply(200, splunkAppTelemetryDrain)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       splunkEndpoint,
       '--app',
       splunkDrainAppId,
@@ -277,6 +275,6 @@ describe('telemetry:add', function () {
       '{"Authorization": "Splunk your-hec-token"}',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${splunkEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${splunkEndpoint}`)
   })
 })

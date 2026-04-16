@@ -5,7 +5,6 @@ import sinon from 'sinon'
 
 import Ci from '../../../../src/commands/ci/index.js'
 import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
-import customRunCommand from '../../../helpers/legacy-run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('ci', function () {
@@ -148,7 +147,7 @@ describe('ci', function () {
           .get(`/pipelines/${pipeline.id}/test-runs`)
           .reply(200, testRuns)
 
-        await customRunCommand(Ci, [`--pipeline=${pipeline.name}`])
+        await runCommand(Ci, [`--pipeline=${pipeline.name}`])
 
         expect(promptStub.calledOnce).to.equal(true)
       })

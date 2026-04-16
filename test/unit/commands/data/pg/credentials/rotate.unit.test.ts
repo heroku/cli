@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsRotate from '../../../../../../src/commands/data/pg/credentials/rotate.js'
@@ -19,7 +19,6 @@ import {
   nonAdvancedCredentialsMultipleAttachmentsResponse,
   nonAdvancedCredentialsResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -48,7 +47,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -62,10 +61,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
       expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates a specific credential attached to multiple apps successfully', async function () {
@@ -81,7 +80,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -95,10 +94,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
       expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
       expect(warningMessage).to.include('This command will affect the apps ⬢ myapp, ⬢ myapp2.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates owner credential by default when no name specified', async function () {
@@ -114,7 +113,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/data/postgres/v1/${addon.id}/credentials/u2vi1nt40t3mcq/rotate`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
       ])
@@ -127,10 +126,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the u2vi1nt40t3mcq credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating u2vi1nt40t3mcq on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates all credentials successfully', async function () {
@@ -146,7 +145,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/data/postgres/v1/${addon.id}/rotate_credentials`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--all',
@@ -160,10 +159,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the passwords for all credentials including the owner (u2vi1nt40t3mcq) credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating all credentials on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates specific credential with force flag', async function () {
@@ -181,7 +180,7 @@ describe('data:pg:credentials:rotate', function () {
         })
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -197,10 +196,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('You can\'t access any followers lagging in replication until they\'re caught up.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates all credentials with force flag', async function () {
@@ -216,7 +215,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/data/postgres/v1/${addon.id}/rotate_credentials`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--all',
@@ -231,10 +230,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re force rotating the passwords for all credentials including the owner (u2vi1nt40t3mcq) credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('You can\'t access any followers lagging in replication until they\'re caught up.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating all credentials on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
   })
 
@@ -244,14 +243,13 @@ describe('data:pg:credentials:rotate', function () {
         .post('/actions/addons/resolve')
         .reply(200, [legacyEssentialAddon])
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {error} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
-      ]).catch(error => {
-        herokuApi.done()
-        expect(error.message).to.equal('Legacy Essential-tier databases do not support named credentials.')
-      })
+      ])
+      herokuApi.done()
+      expect(error!.message).to.equal('Legacy Essential-tier databases do not support named credentials.')
     })
 
     it('shows error for essential databases when --name does not equal default', async function () {
@@ -259,14 +257,13 @@ describe('data:pg:credentials:rotate', function () {
         .post('/actions/addons/resolve')
         .reply(200, [essentialAddon])
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {error} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
-      ]).catch(error => {
-        herokuApi.done()
-        expect(error.message).to.equal('Essential-tier databases do not support named credentials.')
-      })
+      ])
+      herokuApi.done()
+      expect(error!.message).to.equal('Essential-tier databases do not support named credentials.')
     })
 
     it('rotates a specific credential attached to a single app successfully', async function () {
@@ -282,7 +279,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/analyst/credentials_rotation`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -296,10 +293,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
       expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ standard-database... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates a specific credential attached to multiple apps successfully', async function () {
@@ -315,7 +312,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/analyst/credentials_rotation`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -329,10 +326,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
       expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
       expect(warningMessage).to.include('This command will affect the apps ⬢ myapp, ⬢ myapp2.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ standard-database... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates default credential by default when no name specified', async function () {
@@ -348,7 +345,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/default/credentials_rotation`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
       ])
@@ -361,10 +358,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating default on ⛁ standard-database... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates all credentials successfully', async function () {
@@ -380,7 +377,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials_rotation`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--all',
@@ -394,10 +391,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the passwords for all credentials including the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating all credentials on ⛁ standard-database... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates specific credential with force flag', async function () {
@@ -415,7 +412,7 @@ describe('data:pg:credentials:rotate', function () {
         })
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -431,10 +428,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('You can\'t access any followers lagging in replication until they\'re caught up.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ standard-database... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('rotates all credentials with force flag', async function () {
@@ -450,7 +447,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials_rotation`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--all',
@@ -466,10 +463,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re force rotating the passwords for all credentials including the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('You can\'t access any followers lagging in replication until they\'re caught up.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating all credentials on ⛁ standard-database... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('successfully rotates essential-tier database credential', async function () {
@@ -485,7 +482,7 @@ describe('data:pg:credentials:rotate', function () {
         .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/default/credentials_rotation`)
         .reply(202, {})
 
-      await runCommand(DataPgCredentialsRotate, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
       ])
@@ -499,10 +496,10 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Rotating default on ⛁ advanced-horizontal-01234... done
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
   })
 
@@ -520,15 +517,12 @@ describe('data:pg:credentials:rotate', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, emptyCredentialsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsRotate, [
-          'DATABASE',
-          '--app=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal('There are no credentials on the database ⛁ advanced-horizontal-01234.')
-      }
+      const {error} = await runCommand(DataPgCredentialsRotate, [
+        'DATABASE',
+        '--app=myapp',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal('There are no credentials on the database ⛁ advanced-horizontal-01234.')
 
       dataApi.done()
       herokuApi.done()
@@ -554,16 +548,13 @@ describe('data:pg:credentials:rotate', function () {
           message: 'Credential not found.',
         })
 
-      try {
-        await runCommand(DataPgCredentialsRotate, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.include('Credential not found.')
-      }
+      const {error} = await runCommand(DataPgCredentialsRotate, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.include('Credential not found.')
 
       dataApi.done()
       herokuApi.done()
@@ -591,16 +582,13 @@ describe('data:pg:credentials:rotate', function () {
           message: 'Internal server error.',
         })
 
-      try {
-        await runCommand(DataPgCredentialsRotate, [
-          'DATABASE',
-          '--app=myapp',
-          '--all',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.include('Internal server error.')
-      }
+      const {error} = await runCommand(DataPgCredentialsRotate, [
+        'DATABASE',
+        '--app=myapp',
+        '--all',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.include('Internal server error.')
 
       dataApi.done()
       herokuApi.done()

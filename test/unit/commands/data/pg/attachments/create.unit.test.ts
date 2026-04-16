@@ -1,11 +1,11 @@
 import {HerokuAPIError} from '@heroku-cli/command'
+import {runCommand} from '@heroku-cli/test-utils'
 import {utils} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgAttachmentsCreate from '../../../../../../src/commands/data/pg/attachments/create.js'
@@ -20,7 +20,6 @@ import {
   poolConfigResponse,
   releasesResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -39,18 +38,15 @@ describe('data:pg:attachments:create', function () {
     resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
       .resolves(nonAdvancedAddon)
 
-    try {
-      await runCommand(DataPgAttachmentsCreate, [
-        'advanced-horizontal-01234',
-        '--app=myapp',
-        '--as=TEST',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgAttachmentsCreate, [
+      'advanced-horizontal-01234',
+      '--app=myapp',
+      '--as=TEST',
+    ])
+    const err = error as Error
 
-      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+    expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
          + 'Use heroku addons:attach standard-database -a myapp --as TEST instead.')
-    }
   })
 
   describe('basic attachment creation', function () {
@@ -67,14 +63,14 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      await runCommand(DataPgAttachmentsCreate, [
+      const {stderr} = await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--as=TEST',
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching advanced-horizontal-01234 as TEST to ⬢ myapp... done
         Setting TEST config vars and restarting ⬢ myapp... done, v123
       `)
@@ -96,14 +92,14 @@ describe('data:pg:attachments:create', function () {
       } as unknown as HTTPError))
       resolveStub.withArgs('advanced-horizontal-01234', undefined, utils.pg.addonService()).resolves(addon)
 
-      await runCommand(DataPgAttachmentsCreate, [
+      const {stderr} = await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
         '--app=myapp2',
         '--as=TEST2',
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching advanced-horizontal-01234 as TEST2 to ⬢ myapp2... done
         Setting TEST2 config vars and restarting ⬢ myapp2... done, v123
       `)
@@ -122,14 +118,14 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('myapp::DATABASE', 'myapp2', utils.pg.addonService())
         .resolves(addon)
 
-      await runCommand(DataPgAttachmentsCreate, [
+      const {stderr} = await runCommand(DataPgAttachmentsCreate, [
         'myapp::DATABASE',
         '--app=myapp2',
         '--as=TEST2',
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching advanced-horizontal-01234 as TEST2 to ⬢ myapp2... done
         Setting TEST2 config vars and restarting ⬢ myapp2... done, v123
       `)
@@ -150,13 +146,13 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      await runCommand(DataPgAttachmentsCreate, [
+      const {stderr} = await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
         '--app=myapp',
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching advanced-horizontal-01234 to ⬢ myapp... done
         Setting HEROKU_POSTGRESQL_COBALT config vars and restarting ⬢ myapp... done, v123
       `)
@@ -169,19 +165,16 @@ describe('data:pg:attachments:create', function () {
           http: {statusCode: 500},
         } as unknown as HTTPError))
 
-      try {
-        await runCommand(DataPgAttachmentsCreate, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(DataPgAttachmentsCreate, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+      ])
+      const err = error as Error
+      expect(resolveStub.callCount).to.equal(1)
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           Internal server error.
 
           Error ID: internal_server_error`)
-      }
     })
 
     it('handles API errors gracefully if the add-on doesn\'t exist', async function () {
@@ -194,19 +187,16 @@ describe('data:pg:attachments:create', function () {
         statusCode: 404,
       } as unknown as HTTPError))
 
-      try {
-        await runCommand(DataPgAttachmentsCreate, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(resolveStub.callCount).to.equal(2)
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(DataPgAttachmentsCreate, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+      ])
+      const err = error as Error
+      expect(resolveStub.callCount).to.equal(2)
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           Couldn't find that add on.
 
           Error ID: not_found`)
-      }
     })
 
     it('handles API errors gracefully on the attachment creation', async function () {
@@ -223,23 +213,20 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      try {
-        await runCommand(DataPgAttachmentsCreate, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-          '--as=TEST',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal(heredoc`
-          Internal server error.
+      const {error, stderr} = await runCommand(DataPgAttachmentsCreate, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--as=TEST',
+      ])
+      const err = error as Error
+      expect(resolveStub.callCount).to.equal(1)
+      expect(ansis.strip(err.message)).to.equal(heredoc`
+        Internal server error.
 
-          Error ID: internal_server_error`)
-      }
+        Error ID: internal_server_error`)
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching advanced-horizontal-01234 as TEST to ⬢ myapp... !
       `)
     })
@@ -260,23 +247,20 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      try {
-        await runCommand(DataPgAttachmentsCreate, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-          '--as=TEST',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal(heredoc`
-          Internal server error.
+      const {error, stderr} = await runCommand(DataPgAttachmentsCreate, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--as=TEST',
+      ])
+      const err = error as Error
+      expect(resolveStub.callCount).to.equal(1)
+      expect(ansis.strip(err.message)).to.equal(heredoc`
+        Internal server error.
 
-          Error ID: internal_server_error`)
-      }
+        Error ID: internal_server_error`)
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching advanced-horizontal-01234 as TEST to ⬢ myapp... done
         Setting TEST config vars and restarting ⬢ myapp... !
       `)
@@ -300,7 +284,7 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      await runCommand(DataPgAttachmentsCreate, [
+      const {stderr} = await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--as=MYCREDENTIAL',
@@ -308,7 +292,7 @@ describe('data:pg:attachments:create', function () {
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Attaching mycredential on advanced-horizontal-01234 as MYCREDENTIAL to ⬢ myapp... done
         Setting MYCREDENTIAL config vars and restarting ⬢ myapp... done, v123
       `)
@@ -321,20 +305,17 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      try {
-        await runCommand(DataPgAttachmentsCreate, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-          '--credential=nonexistent',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgAttachmentsCreate, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--credential=nonexistent',
+      ])
+      const err = error as Error
 
-        expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal('The credential nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
+      expect(resolveStub.callCount).to.equal(1)
+      expect(ansis.strip(err.message)).to.equal('The credential nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
           + 'Use heroku data:pg:credentials advanced-horizontal-01234 -a myapp '
           + 'to list the credentials on the database.')
-      }
 
       herokuApi.done()
     })
@@ -357,7 +338,7 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      await runCommand(DataPgAttachmentsCreate, [
+      const {stderr} = await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--as=MYPOOL',
@@ -365,7 +346,7 @@ describe('data:pg:attachments:create', function () {
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc(`
+      expect(ansis.strip(stderr)).to.equal(heredoc(`
         Attaching mypool on advanced-horizontal-01234 as MYPOOL to ⬢ myapp... done
         Setting MYPOOL config vars and restarting ⬢ myapp... done, v123
       `))
@@ -378,20 +359,17 @@ describe('data:pg:attachments:create', function () {
       resolveStub.withArgs('advanced-horizontal-01234', 'myapp', utils.pg.addonService())
         .resolves(addon)
 
-      try {
-        await runCommand(DataPgAttachmentsCreate, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-          '--pool=nonexistent',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgAttachmentsCreate, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--pool=nonexistent',
+      ])
+      const err = error as Error
 
-        expect(resolveStub.callCount).to.equal(1)
-        expect(ansis.strip(err.message)).to.equal('The pool nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
+      expect(resolveStub.callCount).to.equal(1)
+      expect(ansis.strip(err.message)).to.equal('The pool nonexistent doesn\'t exist on the database ⛁ advanced-horizontal-01234.\n'
           + 'Use heroku data:pg:info advanced-horizontal-01234 -a myapp '
           + 'to list the pools on the database.')
-      }
 
       herokuApi.done()
     })

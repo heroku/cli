@@ -1,9 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/pg/credentials/create.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 describe('pg:credentials:create', function () {
   let api: nock.Scope
@@ -31,14 +30,14 @@ describe('pg:credentials:create', function () {
     pg.post('/postgres/v0/databases/postgres-1/credentials')
       .reply(200)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'credname',
     ])
-    expect(stdout.output).to.equal('\nPlease attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.\nPlease define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.\n')
-    return expect(stderr.output).to.equal('Creating credential credname... done\n')
+    expect(stdout).to.equal('\nPlease attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.\nPlease define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.\n')
+    return expect(stderr).to.equal('Creating credential credname... done\n')
   })
 
   it('throws an error when the db is numbered essential plan', async function () {
@@ -52,12 +51,13 @@ describe('pg:credentials:create', function () {
     }).reply(200, [{addon: essentialAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ]).catch(error => expect(error.message).to.contain(err))
+    ])
+    expect(error!.message).to.contain(err)
   })
 
   it('throws an error when the db is essential plan', async function () {
@@ -70,11 +70,12 @@ describe('pg:credentials:create', function () {
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ]).catch(error => expect(error.message).to.contain(err))
+    ])
+    expect(error!.message).to.contain(err)
   })
 })

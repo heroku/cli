@@ -1,12 +1,11 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
@@ -32,11 +31,11 @@ describe('pg:backups', function () {
     })
 
     it('shows empty message', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
       === Backups
 
       No backups. Capture one with heroku pg:backups:capture
@@ -106,11 +105,11 @@ describe('pg:backups', function () {
     })
 
     it('shows backups', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
+      expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`=== Backups
 
  Id   Created at                Status                              Size   Database
  ──── ───────────────────────── ─────────────────────────────────── ────── ────────
@@ -150,11 +149,11 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows restore', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
+      expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`=== Backups
 
 No backups. Capture one with heroku pg:backups:capture
 
@@ -192,11 +191,11 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows copy', async function () {
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
-      expect(normalizeTableOutput(stdout.output)).to.equal(normalizeTableOutput(`=== Backups
+      expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`=== Backups
 
 No backups. Capture one with heroku pg:backups:capture
 

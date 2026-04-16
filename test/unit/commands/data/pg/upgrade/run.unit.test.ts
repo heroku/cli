@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpgradeRun from '../../../../../../src/commands/data/pg/upgrade/run.js'
@@ -10,7 +10,6 @@ import {
   nonAdvancedAddonAttachment,
   pgInfo,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -26,7 +25,7 @@ describe('data:pg:upgrade:run', function () {
       .post(`/data/postgres/v1/${addon.id}/upgrade/run`, {})
       .reply(200, {message: 'Upgrade started. Monitor progress with heroku data:pg:info.'})
 
-    await runCommand(DataPgUpgradeRun, [
+    const {stderr, stdout} = await runCommand(DataPgUpgradeRun, [
       attachmentName,
       '--app=myapp',
       '--confirm=myapp',
@@ -35,11 +34,11 @@ describe('data:pg:upgrade:run', function () {
     resolveApi.done()
     dataApi.done()
 
-    expect(ansis.strip(stderr.output)).to.equal(heredoc(`
+    expect(ansis.strip(stderr)).to.equal(heredoc(`
         Upgrading your ⛁ ${addon.name} database from 16.10 to the latest supported Postgres version... done
         Upgrade started. Use heroku data:pg:upgrade:wait advanced-horizontal-01234 -a myapp to monitor progress.
       `))
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 
   it('upgrades an advanced database to a specific version with --version', async function () {
@@ -53,7 +52,7 @@ describe('data:pg:upgrade:run', function () {
       .post(`/data/postgres/v1/${addon.id}/upgrade/run`, {version: '17.5'})
       .reply(200, {message: 'Backend returned message should be ignored.'})
 
-    await runCommand(DataPgUpgradeRun, [
+    const {stderr} = await runCommand(DataPgUpgradeRun, [
       attachmentName,
       '--app=myapp',
       '--confirm=myapp',
@@ -63,9 +62,9 @@ describe('data:pg:upgrade:run', function () {
     resolveApi.done()
     dataApi.done()
 
-    expect(ansis.strip(stderr.output)).to.include('from 16.10 to 17.5')
-    expect(ansis.strip(stderr.output)).to.include('Upgrade started.')
-    expect(ansis.strip(stderr.output)).not.to.include('Backend returned message should be ignored.')
+    expect(ansis.strip(stderr)).to.include('from 16.10 to 17.5')
+    expect(ansis.strip(stderr)).to.include('Upgrade started.')
+    expect(ansis.strip(stderr)).not.to.include('Backend returned message should be ignored.')
   })
 
   it('errors if database is not Advanced-tier', async function () {
@@ -74,17 +73,14 @@ describe('data:pg:upgrade:run', function () {
       .reply(200, [nonAdvancedAddonAttachment])
     const {addon, name: attachmentName} = nonAdvancedAddonAttachment
 
-    try {
-      await runCommand(DataPgUpgradeRun, [
-        attachmentName,
-        '--app=myapp',
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      resolveApi.done()
-      expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+    const {error} = await runCommand(DataPgUpgradeRun, [
+      attachmentName,
+      '--app=myapp',
+      '--confirm=myapp',
+    ])
+    resolveApi.done()
+    expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\n'
           + `Use heroku pg:upgrade:run ${addon.name} --app myapp instead.`)
-    }
   })
 
   it('displays the correct error when the upgrade API fails', async function () {
@@ -98,16 +94,13 @@ describe('data:pg:upgrade:run', function () {
       .post(`/data/postgres/v1/${addon.id}/upgrade/run`)
       .reply(422, {message: 'Database is not ready for upgrade.'})
 
-    try {
-      await runCommand(DataPgUpgradeRun, [
-        attachmentName,
-        '--app=myapp',
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      resolveApi.done()
-      dataApi.done()
-      expect(ansis.strip((error as Error).message)).to.include('Database is not ready for upgrade.')
-    }
+    const {error} = await runCommand(DataPgUpgradeRun, [
+      attachmentName,
+      '--app=myapp',
+      '--confirm=myapp',
+    ])
+    resolveApi.done()
+    dataApi.done()
+    expect(ansis.strip((error as Error).message)).to.include('Database is not ready for upgrade.')
   })
 })

@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsDestroy from '../../../../../../src/commands/data/pg/credentials/destroy.js'
@@ -16,7 +16,6 @@ import {
   nonAdvancedCredentialsAttachmentsResponse,
   nonAdvancedCredentialsMultipleAttachmentsResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -26,19 +25,16 @@ describe('data:pg:credentials:destroy', function () {
       .post('/actions/addons/resolve')
       .reply(200, [legacyEssentialAddon])
 
-    try {
-      await runCommand(DataPgCredentialsDestroy, [
-        addon.name!,
-        '--app=myapp',
-        '--name=default',
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgCredentialsDestroy, [
+      addon.name!,
+      '--app=myapp',
+      '--name=default',
+      '--confirm=myapp',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('You can\'t destroy the default credential.')
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('You can\'t destroy the default credential.')
   })
 
   it('shows error for Essential-tier databases', async function () {
@@ -46,19 +42,16 @@ describe('data:pg:credentials:destroy', function () {
       .post('/actions/addons/resolve')
       .reply(200, [essentialAddon])
 
-    try {
-      await runCommand(DataPgCredentialsDestroy, [
-        addon.name!,
-        '--app=myapp',
-        '--name=default',
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgCredentialsDestroy, [
+      addon.name!,
+      '--app=myapp',
+      '--name=default',
+      '--confirm=myapp',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('You can\'t destroy custom credentials on Essential-tier databases.')
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('You can\'t destroy custom credentials on Essential-tier databases.')
   })
 
   it('shows error for non-Advanced-tier databases when trying to destroy default credential', async function () {
@@ -66,19 +59,16 @@ describe('data:pg:credentials:destroy', function () {
       .post('/actions/addons/resolve')
       .reply(200, [nonAdvancedAddon])
 
-    try {
-      await runCommand(DataPgCredentialsDestroy, [
-        addon.name!,
-        '--app=myapp',
-        '--name=default',
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgCredentialsDestroy, [
+      addon.name!,
+      '--app=myapp',
+      '--name=default',
+      '--confirm=myapp',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('You can\'t destroy the default credential.')
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('You can\'t destroy the default credential.')
   })
 
   it('shows error for Advanced-tier databases when trying to destroy owner credential', async function () {
@@ -92,20 +82,17 @@ describe('data:pg:credentials:destroy', function () {
       .get(`/data/postgres/v1/${addon.id}/credentials`)
       .reply(200, advancedCredentialsResponse)
 
-    try {
-      await runCommand(DataPgCredentialsDestroy, [
-        'DATABASE',
-        '--app=myapp',
-        '--name=u2vi1nt40t3mcq', // owner credential name
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgCredentialsDestroy, [
+      'DATABASE',
+      '--app=myapp',
+      '--name=u2vi1nt40t3mcq', // owner credential name
+      '--confirm=myapp',
+    ])
+    const err = error as Error
 
-      dataApi.done()
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal("You can't destroy the owner credential.")
-    }
+    dataApi.done()
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal("You can't destroy the owner credential.")
   })
 
   describe('Advanced-tier databases', function () {
@@ -120,20 +107,17 @@ describe('data:pg:credentials:destroy', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst', // credential that has attachments
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst', // credential that has attachments
+        '--confirm=myapp',
+      ])
+      const err = error as Error
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
     })
 
     it('shows an error when credential is attached to multiple apps', async function () {
@@ -147,20 +131,17 @@ describe('data:pg:credentials:destroy', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst', // credential that has attachments
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst', // credential that has attachments
+        '--confirm=myapp',
+      ])
+      const err = error as Error
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
     })
 
     it('destroys a credential successfully', async function () {
@@ -176,7 +157,7 @@ describe('data:pg:credentials:destroy', function () {
         .delete(`/data/postgres/v1/${addon.id}/credentials/my-credential`)
         .reply(204)
 
-      await runCommand(DataPgCredentialsDestroy, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsDestroy, [
         'DATABASE',
         '--app=myapp',
         '--name=my-credential',
@@ -186,10 +167,10 @@ describe('data:pg:credentials:destroy', function () {
       dataApi.done()
       herokuApi.done()
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Destroying credential my-credential... done
       `)
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
+      expect(ansis.strip(heredoc(stdout))).to.equal(ansis.strip(heredoc`
           We destroyed the credential my-credential in ⛁ advanced-horizontal-01234.
           Database objects owned by my-credential will be assigned to the owner credential.
         `))
@@ -211,17 +192,14 @@ describe('data:pg:credentials:destroy', function () {
           message: 'Not found.',
         })
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=my-credential',
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.include('Not found.')
-      }
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=my-credential',
+        '--confirm=myapp',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.include('Not found.')
 
       dataApi.done()
       herokuApi.done()
@@ -236,19 +214,16 @@ describe('data:pg:credentials:destroy', function () {
         .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
         .reply(200, nonAdvancedCredentialsAttachmentsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst', // credential that has attachments
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst', // credential that has attachments
+        '--confirm=myapp',
+      ])
+      const err = error as Error
 
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
-      }
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
     })
 
     it('shows an error when credential is attached to multiple apps', async function () {
@@ -258,18 +233,15 @@ describe('data:pg:credentials:destroy', function () {
         .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
         .reply(200, nonAdvancedCredentialsMultipleAttachmentsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst', // credential that has attachments
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst', // credential that has attachments
+      ])
+      const err = error as Error
 
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
-      }
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
     })
 
     it('destroys a credential successfully', async function () {
@@ -283,7 +255,7 @@ describe('data:pg:credentials:destroy', function () {
         .delete(`/postgres/v0/databases/${nonAdvancedAddon.name}/credentials/my-credential`)
         .reply(204)
 
-      await runCommand(DataPgCredentialsDestroy, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsDestroy, [
         'DATABASE',
         '--app=myapp',
         '--name=my-credential',
@@ -293,10 +265,10 @@ describe('data:pg:credentials:destroy', function () {
       dataApi.done()
       herokuApi.done()
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Destroying credential my-credential... done
       `)
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(ansis.strip(heredoc`
+      expect(ansis.strip(heredoc(stdout))).to.equal(ansis.strip(heredoc`
           We destroyed the credential my-credential in ⛁ standard-database.
           Database objects owned by my-credential will be assigned to the default credential.
         `))
@@ -316,17 +288,14 @@ describe('data:pg:credentials:destroy', function () {
           message: 'Not found.',
         })
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=my-credential',
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.include('Not found.')
-      }
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=my-credential',
+        '--confirm=myapp',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.include('Not found.')
 
       dataApi.done()
       herokuApi.done()

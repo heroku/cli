@@ -1,13 +1,12 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 
 import DataMaintenancesWait from '../../../../../src/commands/data/maintenances/wait.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
 import {maintenance} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const completedMaintenance: Maintenance = {
   ...maintenance,
@@ -54,10 +53,10 @@ describe('data:maintenances:wait', function () {
           : [200, runningMaintenance]
       })
 
-    await runCommand(DataMaintenancesWait, [addon.name])
+    const {stderr} = await runCommand(DataMaintenancesWait, [addon.name])
 
-    expect(stderr.output).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
-    expect(stderr.output).to.contain('maintenance completed')
+    expect(stderr).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
+    expect(stderr).to.contain('maintenance completed')
   })
 
   it('waits until maintenance is complete scoped by optional app flag', async function () {
@@ -80,10 +79,10 @@ describe('data:maintenances:wait', function () {
           : [200, runningMaintenance]
       })
 
-    await runCommand(DataMaintenancesWait, [addon.name, `--app=${addon.app.name}`])
+    const {stderr} = await runCommand(DataMaintenancesWait, [addon.name, `--app=${addon.app.name}`])
 
-    expect(stderr.output).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
-    expect(stderr.output).to.contain('maintenance completed')
+    expect(stderr).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
+    expect(stderr).to.contain('maintenance completed')
   })
 
   it('shows error if initial maintenance state is not running', async function () {
@@ -95,12 +94,9 @@ describe('data:maintenances:wait', function () {
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, completedMaintenance)
 
-    try {
-      await runCommand(DataMaintenancesWait, [addon.name])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(ansis.strip(message)).to.equal(`There currently isn't any maintenance in progress for ${addon.name}`)
-    }
+    const {error} = await runCommand(DataMaintenancesWait, [addon.name])
+    const {message} = error as {message: string}
+    expect(ansis.strip(message)).to.equal(`There currently isn't any maintenance in progress for ${addon.name}`)
   })
 
   it('waits for non-postgres add-ons', async function () {
@@ -123,9 +119,9 @@ describe('data:maintenances:wait', function () {
           : [200, runningMaintenance]
       })
 
-    await runCommand(DataMaintenancesWait, [nonPostgresAddon.name])
+    const {stderr} = await runCommand(DataMaintenancesWait, [nonPostgresAddon.name])
 
-    expect(stderr.output).to.contain(`Waiting for maintenance on ${nonPostgresAddon.name} to complete`)
-    expect(stderr.output).to.contain('maintenance completed')
+    expect(stderr).to.contain(`Waiting for maintenance on ${nonPostgresAddon.name} to complete`)
+    expect(stderr).to.contain('maintenance completed')
   })
 })

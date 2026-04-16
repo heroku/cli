@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/capture.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -49,23 +48,23 @@ describe('pg:backups:capture', function () {
       .get('/client/v11/databases/1')
       .reply(200, dbA)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout).to.equal(heredoc`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
       Use heroku pg:backups:info to check progress.
       Stop a running backup with heroku pg:backups:cancel.
 
     `)
-    expect(stderr.output).to.match(new RegExp(heredoc`
+    expect(stderr).to.match(new RegExp(heredoc`
       Starting backup of ⛁ postgres-1... done
       Backing up ⛁ DATABASE to b005... done
     `))
-    expect(stderr.output).to.match(/backups of large databases are likely to fail/)
+    expect(stderr).to.match(/backups of large databases are likely to fail/)
   })
 
   it('captures a db (verbose)', async function () {
@@ -91,7 +90,7 @@ describe('pg:backups:capture', function () {
       .get('/client/v11/databases/1')
       .reply(200, dbA)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--verbose',
@@ -100,7 +99,7 @@ describe('pg:backups:capture', function () {
     api.done()
     pgApi.done()
 
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout).to.equal(heredoc`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
       Use heroku pg:backups:info to check progress.
@@ -109,8 +108,8 @@ describe('pg:backups:capture', function () {
       Backing up ⛁ DATABASE to b005...
       100 log message 1
     `)
-    expect(stderr.output).to.match(/Starting backup of ⛁ postgres-1... done/)
-    expect(stderr.output).not.to.match(/backups of large databases are likely to fail/)
+    expect(stderr).to.match(/Starting backup of ⛁ postgres-1... done/)
+    expect(stderr).not.to.match(/backups of large databases are likely to fail/)
   })
 
   it('captures a db (verbose) with non billing app', async function () {
@@ -137,7 +136,7 @@ describe('pg:backups:capture', function () {
       .get('/client/v11/databases/1')
       .reply(200, dbA)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--verbose',
@@ -146,7 +145,7 @@ describe('pg:backups:capture', function () {
     api.done()
     pgApi.done()
 
-    expect(stdout.output).to.equal(heredoc`
+    expect(stdout).to.equal(heredoc`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
       Use heroku pg:backups:info to check progress.
@@ -158,7 +157,7 @@ describe('pg:backups:capture', function () {
       Backing up ⛁ DATABASE to b005...
       100 log message 1
     `)
-    expect(stderr.output).to.match(/Starting backup of ⛁ postgres-1... done/)
-    expect(stderr.output).to.match(/backups of large databases are likely to fail/)
+    expect(stderr).to.match(/Starting backup of ⛁ postgres-1... done/)
+    expect(stderr).to.match(/backups of large databases are likely to fail/)
   })
 })

@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/remove.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('accounts:remove', function () {
   let currentStub: sinon.SinonStub

@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/logout.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('container logout', function () {
   let sandbox: sinon.SinonSandbox
@@ -21,10 +20,10 @@ describe('container logout', function () {
     const logout = sandbox.stub(DockerHelper.prototype, 'cmd')
       .withArgs('docker', ['logout', 'registry.heroku.com'])
 
-    await runCommand(Cmd)
+    const {stderr, stdout} = await runCommand(Cmd)
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('')
     sandbox.assert.calledOnce(logout)
   })
 })

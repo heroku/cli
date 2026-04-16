@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {utils} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgAttachmentsDestroy from '../../../../../../src/commands/data/pg/attachments/destroy.js'
@@ -13,7 +13,6 @@ import {
   nonAdvancedAddon,
   releasesResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -45,19 +44,16 @@ describe('data:pg:attachments:destroy', function () {
     resolveStub.withArgs(nonAdvancedAddon.name, undefined, utils.pg.addonService())
       .resolves(nonAdvancedAddon)
 
-    try {
-      await runCommand(DataPgAttachmentsDestroy, [
-        'DATABASE_ANALYST',
-        '--app=myapp',
-        '--confirm=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgAttachmentsDestroy, [
+      'DATABASE_ANALYST',
+      '--app=myapp',
+      '--confirm=myapp',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
          + 'Use heroku addons:detach DATABASE_ANALYST -a myapp instead.')
-    }
   })
 
   describe('basic attachment destruction', function () {
@@ -72,18 +68,18 @@ describe('data:pg:attachments:destroy', function () {
       resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
         .resolves(addon)
 
-      await runCommand(DataPgAttachmentsDestroy, [
+      const {stderr, stdout} = await runCommand(DataPgAttachmentsDestroy, [
         'DATABASE_ANALYST',
         '--app=myapp',
         '--confirm=myapp',
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Detaching DATABASE_ANALYST on ⛁ advanced-horizontal-01234 from ⬢ myapp... done
         Unsetting DATABASE_ANALYST config vars and restarting ⬢ myapp... done, v123
       `)
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
   })
 
@@ -97,20 +93,17 @@ describe('data:pg:attachments:destroy', function () {
           resource: 'attachment',
         })
 
-      try {
-        await runCommand(DataPgAttachmentsDestroy, [
-          'NONEXISTENT',
-          '--app=myapp',
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgAttachmentsDestroy, [
+        'NONEXISTENT',
+        '--app=myapp',
+        '--confirm=myapp',
+      ])
+      const err = error as Error
 
-        expect(err.message).to.equal(heredoc`
+      expect(err.message).to.equal(heredoc`
           Couldn't find that attachment.
 
           Error ID: not_found`)
-      }
 
       herokuApi.done()
     })
@@ -127,22 +120,19 @@ describe('data:pg:attachments:destroy', function () {
       resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
         .resolves(addon)
 
-      try {
-        await runCommand(DataPgAttachmentsDestroy, [
-          'DATABASE_ANALYST',
-          '--app=myapp',
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal(heredoc`
-          Internal server error.
+      const {error, stderr} = await runCommand(DataPgAttachmentsDestroy, [
+        'DATABASE_ANALYST',
+        '--app=myapp',
+        '--confirm=myapp',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal(heredoc`
+        Internal server error.
 
-          Error ID: internal_server_error`)
-      }
+        Error ID: internal_server_error`)
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Detaching DATABASE_ANALYST on ⛁ advanced-horizontal-01234 from ⬢ myapp... !
       `)
     })
@@ -161,22 +151,19 @@ describe('data:pg:attachments:destroy', function () {
       resolveStub.withArgs(addon.name, undefined, utils.pg.addonService())
         .resolves(addon)
 
-      try {
-        await runCommand(DataPgAttachmentsDestroy, [
-          'DATABASE_ANALYST',
-          '--app=myapp',
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal(heredoc`
-          Internal server error.
+      const {error, stderr} = await runCommand(DataPgAttachmentsDestroy, [
+        'DATABASE_ANALYST',
+        '--app=myapp',
+        '--confirm=myapp',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal(heredoc`
+        Internal server error.
 
-          Error ID: internal_server_error`)
-      }
+        Error ID: internal_server_error`)
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Detaching DATABASE_ANALYST on ⛁ advanced-horizontal-01234 from ⬢ myapp... done
         Unsetting DATABASE_ANALYST config vars and restarting ⬢ myapp... !
       `)

@@ -1,9 +1,7 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/pg/backups/url.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
   beforeEach(function () {
@@ -28,15 +26,15 @@ const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
     })
 
     it('shows URL', async function () {
-      await cmdRun(['--app', 'myapp'])
-      expectOutput(stdout.output, 'https://dburl')
+      const {stdout} = await cmdRun(['--app', 'myapp'])
+      expectOutput(stdout, 'https://dburl')
     })
   })
 
   context('with id', function () {
     it('shows URL', async function () {
-      await cmdRun(['--app', 'myapp', 'b003'])
-      expectOutput(stdout.output, 'https://dburl')
+      const {stdout} = await cmdRun(['--app', 'myapp', 'b003'])
+      expectOutput(stdout, 'https://dburl')
     })
   })
 }

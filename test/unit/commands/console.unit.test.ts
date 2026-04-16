@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
 import RunConsole from '../../../src/commands/console.js'
 import Dyno from '../../../src/lib/run/dyno.js'
-import runCommandHelper from '../../helpers/legacy-run-command.js'
 
 describe('console', function () {
   let dynoOpts: {command: string}
@@ -20,7 +20,7 @@ describe('console', function () {
       return Promise.resolve()
     })
 
-    await runCommandHelper(RunConsole, ['--app=heroku-cli-ci-smoke-test-app'])
+    await runCommand(RunConsole, ['--app=heroku-cli-ci-smoke-test-app'])
 
     expect(dynoOpts.command).to.equal('console')
   })

@@ -1,12 +1,11 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/remove.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
 
@@ -24,7 +23,7 @@ describe('heroku certs:remove', function () {
       .delete('/apps/example/sni-endpoints/' + endpoint.name)
       .reply(200, [endpoint])
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
@@ -33,7 +32,7 @@ describe('heroku certs:remove', function () {
 
     api.done()
 
-    expect(stderr.output).to.equal(heredoc`
+    expect(stderr).to.equal(heredoc`
       Removing SSL certificate tokyo-1050 from ⬢ example... done
     `)
   })
@@ -43,20 +42,17 @@ describe('heroku certs:remove', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'example',
-        '--confirm',
-        'notexample',
-      ])
-    } catch (error) {
-      const {message} = error as Error
-      expect(ansis.strip(message)).to.equal('Confirmation notexample did not match example. Aborted.')
-    }
+    const {error, stdout} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      '--confirm',
+      'notexample',
+    ])
 
+    expect(error).to.exist
+    expect(ansis.strip(error!.message)).to.equal('Confirmation notexample did not match example. Aborted.')
     api.done()
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 })
 

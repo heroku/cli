@@ -1,12 +1,10 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/url.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -38,13 +36,13 @@ describe('pg:credentials:url', function () {
       .get(`/postgres/v0/databases/${addon.name}/credentials/gandalf`)
       .reply(200, roleInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Connection information for gandalf credential.
       Connection info string:
         "dbname=d123 host=localhost port=5442 user=gandalf password=hunter2 sslmode=require"
@@ -60,14 +58,13 @@ describe('pg:credentials:url', function () {
       .reply(200, [{addon: hobbyAddon}])
     const err = 'Legacy Essential-tier databases do not support named credentials.'
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
-    ]).catch((error: Error) => {
-      expect(error.message).to.equal(err)
-    })
+    ])
+    expect(error!.message).to.equal(err)
   })
 
   it('shows the credentials when the db is numbered essential plan', async function () {
@@ -87,13 +84,13 @@ describe('pg:credentials:url', function () {
       .get(`/postgres/v0/databases/${addon.name}/credentials/lucy`)
       .reply(200, roleInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'lucy',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Connection information for lucy credential.
       Connection info string:
         "dbname=d123 host=localhost port=5442 user=lucy password=hunter2 sslmode=require"
@@ -118,11 +115,11 @@ describe('pg:credentials:url', function () {
       .get(`/postgres/v0/databases/${hobbyAddon.name}/credentials/default`)
       .reply(200, roleInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Connection information for default credential.
       Connection info string:
         "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"

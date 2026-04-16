@@ -1,12 +1,10 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/update.js'
 import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -25,15 +23,15 @@ describe('telemetry:update', function () {
       .get(`/apps/${appTelemetryDrain1.owner.id}`)
       .reply(200, {id: appTelemetryDrain1.owner.id, name: 'myapp'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       appTelemetryDrain1.id,
       '--signals',
       'logs',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Updating telemetry drain ${appTelemetryDrain1.id}... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${updatedAppTelemetryDrain.id}
       App:       ⬢ myapp
       Signals:   ${updatedAppTelemetryDrain.signals.join(', ')}
@@ -70,7 +68,7 @@ describe('telemetry:update', function () {
       .get(`/apps/${appTelemetryDrain1.owner.id}`)
       .reply(200, {id: appTelemetryDrain1.owner.id, name: 'myapp'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       appTelemetryDrain1.id,
       '--signals',
       'logs',
@@ -79,10 +77,10 @@ describe('telemetry:update', function () {
       '--transport',
       'grpc',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Updating telemetry drain ${appTelemetryDrain1.id}... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${updatedAppTelemetryDrain.id}
       App:       ⬢ myapp
       Signals:   ${updatedAppTelemetryDrain.signals.join(', ')}
@@ -94,8 +92,7 @@ describe('telemetry:update', function () {
 
   it('requires an updated attribute to be provided', async function () {
     const errorMessage = 'Requires either --signals, --endpoint, --transport or HEADERS to be provided.'
-    await runCommand(Cmd, [appTelemetryDrain1.id]).catch(error => {
-      expect(error.message).to.contain(errorMessage)
-    })
+    const {error} = await runCommand(Cmd, [appTelemetryDrain1.id])
+    expect(error?.message).to.contain(errorMessage)
   })
 })

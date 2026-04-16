@@ -1,12 +1,10 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/info.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
@@ -22,10 +20,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
 
     it('shows error message', async function () {
-      await cmdRun(['--app', 'myapp'])
-        .catch((error: Error) => {
-          expect(ansis.strip(error.message)).to.equal('No backups. Capture one with heroku pg:backups:capture')
-        })
+      const {error} = await cmdRun(['--app', 'myapp'])
+      expect(ansis.strip(error.message)).to.equal('No backups. Capture one with heroku pg:backups:capture')
     })
   })
 
@@ -39,8 +35,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
 
     it('shows the backup', async function () {
-      await cmdRun(['--app', 'myapp', 'b003'])
-      expectOutput(stdout.output, heredoc(`
+      const {stdout} = await cmdRun(['--app', 'myapp', 'b003'])
+      expectOutput(stdout, heredoc(`
         === Backup b003
         Database:         ⛁ RED
         Status:           Pending
@@ -71,8 +67,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
 
     it('shows the backup', async function () {
-      await cmdRun(['--app', 'myapp', 'ob001'])
-      expectOutput(stdout.output, heredoc(`
+      const {stdout} = await cmdRun(['--app', 'myapp', 'ob001'])
+      expectOutput(stdout, heredoc(`
         === Backup ob001
         Database:         ⛁ RED
         Status:           Pending
@@ -101,8 +97,8 @@ const shouldInfo = function (cmdRun: (args: string[]) => Promise<any>) {
     })
 
     it('shows the latest backup', async function () {
-      await cmdRun(['--app', 'myapp'])
-      expectOutput(stdout.output, heredoc(`
+      const {stdout} = await cmdRun(['--app', 'myapp'])
+      expectOutput(stdout, heredoc(`
         === Backup b003
         Database:         ⛁ RED
         Finished at:      100

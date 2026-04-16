@@ -1,11 +1,11 @@
 
+import {runCommand} from '@heroku-cli/test-utils'
 import {Config} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import * as chrono from 'chrono-node'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Fork from '../../../../../src/commands/data/pg/fork.js'
@@ -15,7 +15,6 @@ import {
   nonAdvancedAddon,
   pgInfo,
 } from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const stubbedDate = new Date('2025-01-31T00:00:00+00:00')
 const heredoc = tsheredoc.default
@@ -53,17 +52,17 @@ describe('data:pg:fork', function () {
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
 
-      await runCommand(Fork, [
+      const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
       ])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
@@ -89,7 +88,7 @@ describe('data:pg:fork', function () {
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
 
-      await runCommand(Fork, [
+      const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--name=my-forked-db',
@@ -98,10 +97,10 @@ describe('data:pg:fork', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
@@ -122,17 +121,17 @@ describe('data:pg:fork', function () {
         })
         .reply(200, createForkResponse)
 
-      await runCommand(Fork, [
+      const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--level=8G-Performance',
       ])
 
       herokuApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
@@ -155,7 +154,7 @@ describe('data:pg:fork', function () {
         .get(`/data/postgres/v1/${addon.id}/info`)
         .reply(200, pgInfo)
 
-      await runCommand(Fork, [
+      const {stderr} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--provision-option=foo:bar',
@@ -165,7 +164,7 @@ describe('data:pg:fork', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
     })
@@ -197,7 +196,7 @@ describe('data:pg:fork', function () {
           },
         })
 
-      await runCommand(Fork, [
+      const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--rollback-to=2025-01-11T12:35:00',
@@ -205,10 +204,10 @@ describe('data:pg:fork', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback to 2025-01-11T12:35:00... done
       `)
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
@@ -240,7 +239,7 @@ describe('data:pg:fork', function () {
           },
         })
 
-      await runCommand(Fork, [
+      const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--rollback-by=1 day',
@@ -248,10 +247,10 @@ describe('data:pg:fork', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback by 1 day... done
       `)
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
           Your forked database is being provisioned
           advanced-oblique-01234 is being created in the background. The app will restart when complete...
           Run heroku data:pg:info advanced-oblique-01234 -a myapp to check creation progress.
@@ -280,7 +279,7 @@ describe('data:pg:fork', function () {
           },
         })
 
-      await runCommand(Fork, [
+      const {stderr} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--rollback-to=2025-01-11T12:35:00',
@@ -290,7 +289,7 @@ describe('data:pg:fork', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stderr.output)).to.equal(heredoc`
+      expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback to 2025-01-11T12:35:00... done
       `)
     })
@@ -302,17 +301,14 @@ describe('data:pg:fork', function () {
         .post('/actions/addons/resolve')
         .reply(200, [nonAdvancedAddon])
 
-      try {
-        await runCommand(Fork, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-        ])
-      } catch (error) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(Fork, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --fork standard-database instead.`)
-      }
 
       herokuApi.done()
     })
@@ -322,18 +318,15 @@ describe('data:pg:fork', function () {
         .post('/actions/addons/resolve')
         .reply(200, [nonAdvancedAddon])
 
-      try {
-        await runCommand(Fork, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-          '--rollback-to=2025-08-11T12:35:00',
-        ])
-      } catch (error) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(Fork, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--rollback-to=2025-08-11T12:35:00',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --to '2025-08-11T12:35:00' instead.`)
-      }
 
       herokuApi.done()
     })
@@ -343,18 +336,15 @@ describe('data:pg:fork', function () {
         .post('/actions/addons/resolve')
         .reply(200, [nonAdvancedAddon])
 
-      try {
-        await runCommand(Fork, [
-          'advanced-horizontal-01234',
-          '--app=myapp',
-          '--rollback-by=3 days 7 hours 22 minutes',
-        ])
-      } catch (error) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(Fork, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--rollback-by=3 days 7 hours 22 minutes',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --by '3 days 7 hours 22 minutes' instead.`)
-      }
 
       herokuApi.done()
     })

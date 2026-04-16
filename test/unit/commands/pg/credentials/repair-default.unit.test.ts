@@ -1,11 +1,9 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/repair-default.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -25,14 +23,14 @@ describe('pg:credentials:repair-default', function () {
     nock('https://api.data.heroku.com')
       .post('/postgres/v0/databases/postgres-1/repair-default')
       .reply(200)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
     ])
-    expectOutput(stdout.output, '')
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stdout, '')
+    expectOutput(stderr, heredoc(`
       Resetting permissions and object ownership for default role to factory settings... done
     `))
   })
@@ -46,11 +44,12 @@ describe('pg:credentials:repair-default', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: hobbyAddon}])
     const err = "You can't perform this operation on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
-    ]).catch((error: Error) => expect(error.message).to.equal(err))
+    ])
+    expect(error!.message).to.equal(err)
   })
 })

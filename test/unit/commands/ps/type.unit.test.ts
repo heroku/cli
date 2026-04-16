@@ -1,10 +1,8 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ps/type.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 describe('ps:type', function () {
@@ -70,12 +68,12 @@ describe('ps:type', function () {
         {quantity: 1, size: 'dyno-16c-128gb', type: 'web'},
       ])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
       === Process Types
 
         type   size                 qty   cost/hour   max cost/month
@@ -175,13 +173,13 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=performance-l-ram',
     ])
 
-    expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(`
+    expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(`
       === Process Types
       type   size                qty   cost/hour   max cost/month  
       ───────────────────────────────────────────────────────────── 
@@ -192,7 +190,7 @@ describe('ps:type', function () {
       ─────────────────────────── 
       Performance-L-RAM   1      
     `))
-    expectOutput(stderr.output, 'Scaling dynos on ⬢ myapp... done')
+    expectOutput(stderr, 'Scaling dynos on ⬢ myapp... done')
   })
 
   it('switches to hobby dynos', async function () {
@@ -206,13 +204,13 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'basic',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
       === Process Types
        type     size    qty   cost/hour   max cost/month
       ───────────────────────────────────────────────────
@@ -224,7 +222,7 @@ describe('ps:type', function () {
       ───────────────
        Basic   3
     `))
-    expect(stderr.output).to.include('Scaling dynos on ⬢ myapp... done\n')
+    expect(stderr).to.include('Scaling dynos on ⬢ myapp... done\n')
   })
 
   it('switches to standard-1x and standard-2x dynos', async function () {
@@ -238,14 +236,14 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=standard-1x',
       'worker=standard-2x',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
     === Process Types
      type     size          qty   cost/hour   max cost/month
     ─────────────────────────────────────────────────────────
@@ -258,7 +256,7 @@ describe('ps:type', function () {
      Standard-1X   1
      Standard-2X   2
     `))
-    expect(stderr.output).to.include('Scaling dynos on ⬢ myapp... done\n')
+    expect(stderr).to.include('Scaling dynos on ⬢ myapp... done\n')
   })
 
   it('displays Shield dynos for apps in shielded spaces', async function () {
@@ -268,12 +266,12 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 0, size: 'Private-M', type: 'web'}, {quantity: 0, size: 'Private-L', type: 'web'}])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
     === Process Types
      type   size       qty   cost/hour   max cost/month
     ────────────────────────────────────────────────────

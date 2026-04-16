@@ -1,11 +1,9 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/index.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import {
   endpointAcm,
   endpointStables,
@@ -21,9 +19,9 @@ describe('heroku certs', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
-    await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, '')
-    expectOutput(stdout.output, heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
+    expectOutput(stderr, '')
+    expectOutput(stdout, heredoc(`
       ⬢ example has no SSL certificates.
       Use heroku certs:add CRT KEY to add one.
     `))
@@ -33,10 +31,10 @@ describe('heroku certs', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointAcm])
-    await runCommand(Cmd, ['--app', 'example'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
-    expectOutput(stderr.output, '')
-    const actual = removeAllWhitespace(stdout.output)
+    expectOutput(stderr, '')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Name       Common Name(s) Expires              Trusted Type')
     const expected = removeAllWhitespace(' tokyo-1050 heroku.com     2013-08-01 21:34 UTC True    ACM')
     expect(actual).to.include(expectedHeader)
@@ -47,10 +45,10 @@ describe('heroku certs', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
-    await runCommand(Cmd, ['--app', 'example'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
-    expectOutput(stderr.output, '')
-    const actual = removeAllWhitespace(stdout.output)
+    expectOutput(stderr, '')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Name       Common Name(s)                                    Expires              Trusted Type Domains')
     const expected = removeAllWhitespace(' tokyo-1050 foo.example.org, bar.example.org, biz.example.com 2013-08-01 21:34 UTC False   SNI  0')
     expect(actual).to.include(expectedHeader)
@@ -63,10 +61,10 @@ describe('heroku certs', function () {
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcardBug])
-    await runCommand(Cmd, ['--app', 'example'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
-    expectOutput(stderr.output, '')
-    const actual = removeAllWhitespace(stdout.output)
+    expectOutput(stderr, '')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Name       Common Name(s) Expires              Trusted Type Domains')
     const expected = removeAllWhitespace(' tokyo-1050 fooexample.org 2013-08-01 21:34 UTC False   SNI  0')
     expect(actual).to.include(expectedHeader)
@@ -79,10 +77,10 @@ describe('heroku certs', function () {
     })
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointWildcard])
-    await runCommand(Cmd, ['--app', 'example'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
-    expectOutput(stderr.output, '')
-    const actual = removeAllWhitespace(stdout.output)
+    expectOutput(stderr, '')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Name       Common Name(s) Expires              Trusted Type Domains')
     const expected = removeAllWhitespace(' tokyo-1050 *.example.org  2013-08-01 21:34 UTC False   SNI  0')
     expect(actual).to.include(expectedHeader)
@@ -93,10 +91,10 @@ describe('heroku certs', function () {
     nock('https://api.heroku.com')
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpointStables])
-    await runCommand(Cmd, ['--app', 'example'])
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
-    expectOutput(stderr.output, '')
-    const actual = removeAllWhitespace(stdout.output)
+    expectOutput(stderr, '')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Name       Common Name(s)                                    Expires              Trusted Type Domains')
     const expected = removeAllWhitespace(' tokyo-1050 foo.example.org, bar.example.org, biz.example.com 2013-08-01 21:34 UTC False   SNI  0')
     expect(actual).to.include(expectedHeader)

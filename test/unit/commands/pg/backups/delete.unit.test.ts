@@ -1,9 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/pg/backups/delete.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 describe('pg:backups:delete', function () {
   let pg: nock.Scope
@@ -22,13 +21,13 @@ describe('pg:backups:delete', function () {
   })
 
   it('shows URL', async function () {
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
       'b003',
     ])
-    expect(stderr.output).to.equal('Deleting backup b003 on ⬢ myapp... done\n')
+    expect(stderr).to.equal('Deleting backup b003 on ⬢ myapp... done\n')
   })
 })

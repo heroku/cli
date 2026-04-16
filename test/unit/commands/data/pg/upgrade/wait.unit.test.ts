@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {utils} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpgradeWait from '../../../../../../src/commands/data/pg/upgrade/wait.js'
@@ -15,7 +15,6 @@ import {
   waitStatusAvailable,
   waitStatusUpgrading,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -42,10 +41,10 @@ describe('data:pg:upgrade:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
 
-      expect(stdout.output).to.contain('advanced-horizontal-01234 is available')
-      expect(stderr.output).to.not.contain('Waiting for database')
+      expect(stdout).to.contain('advanced-horizontal-01234 is available')
+      expect(stderr).to.not.contain('Waiting for database')
       expect(notifyStub.called).to.be.false
     })
 
@@ -68,10 +67,10 @@ describe('data:pg:upgrade:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
+      const {stderr} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
 
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
+      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
+      expect(stderr).to.contain('available')
       expect(notifyStub.calledOnce).to.be.true
     })
 
@@ -83,10 +82,10 @@ describe('data:pg:upgrade:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
+      const {stderr} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
 
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
+      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
+      expect(stderr).to.contain('available')
       expect(notifyStub.calledOnce).to.be.true
     })
   })
@@ -95,15 +94,12 @@ describe('data:pg:upgrade:wait', function () {
     it('errors when database is not Advanced-tier', async function () {
       resolverStub.resolves(nonAdvancedAddonAttachment)
 
-      try {
-        await runCommand(DataPgUpgradeWait, ['STANDARD_DATABASE', '--app=myapp'])
-        expect.fail('Expected command to throw an error')
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(DataPgUpgradeWait, ['STANDARD_DATABASE', '--app=myapp'])
+      expect.fail('Expected command to throw an error')
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku pg:upgrade:wait standard-database -a myapp instead.`)
-      }
     })
 
     it('handles API errors gracefully', async function () {
@@ -112,13 +108,10 @@ describe('data:pg:upgrade:wait', function () {
         .reply(500, {id: 'server_error', message: 'Internal Server Error'})
       resolverStub.resolves(advancedAddonAttachment)
 
-      try {
-        await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
-        expect.fail('Expected command to throw an error')
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(err.message).to.include('Internal Server Error')
-      }
+      const {error} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
+      expect.fail('Expected command to throw an error')
+      const err = error as Error
+      expect(err.message).to.include('Internal Server Error')
     })
   })
 
@@ -131,10 +124,10 @@ describe('data:pg:upgrade:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--no-notify', '--wait-interval=1'])
+      const {stderr} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--no-notify', '--wait-interval=1'])
 
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
+      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
+      expect(stderr).to.contain('available')
       expect(notifyStub.called).to.be.false
     })
 
@@ -146,10 +139,10 @@ describe('data:pg:upgrade:wait', function () {
         .reply(200, waitStatusAvailable)
       resolverStub.resolves(advancedAddonAttachment)
 
-      await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=2'])
+      const {stderr} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp', '--wait-interval=2'])
 
-      expect(stderr.output).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr.output).to.contain('available')
+      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
+      expect(stderr).to.contain('available')
     })
   })
 })

@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgQuotasIndex from '../../../../../../src/commands/data/pg/quotas/index.js'
@@ -11,7 +11,6 @@ import {
   quotasResponse,
   storageQuotaResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -38,13 +37,13 @@ describe('data:pg:quotas', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      await runCommand(DataPgQuotasIndex, [
+      const {stderr, stdout} = await runCommand(DataPgQuotasIndex, [
         'advanced-horizontal-01234',
         '--app=myapp',
       ])
 
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output)).to.equal(heredoc(`
+      expect(stderr).to.equal('')
+      expect(ansis.strip(stdout)).to.equal(heredoc(`
         === Storage
 
         Warning:            Not set
@@ -72,14 +71,14 @@ describe('data:pg:quotas', function () {
         .post('/actions/addons/resolve')
         .reply(200, [addon])
 
-      await runCommand(DataPgQuotasIndex, [
+      const {stderr, stdout} = await runCommand(DataPgQuotasIndex, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--type=storage',
       ])
 
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output)).to.equal(heredoc(`
+      expect(stderr).to.equal('')
+      expect(ansis.strip(stdout)).to.equal(heredoc(`
         === Storage
 
         Warning:            50.00 GB
@@ -96,14 +95,11 @@ describe('data:pg:quotas', function () {
         .post('/actions/addons/resolve')
         .reply(200, [nonAdvancedAddon])
 
-      try {
-        await runCommand(DataPgQuotasIndex, ['advanced-horizontal-01234', '--app=myapp'])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgQuotasIndex, ['advanced-horizontal-01234', '--app=myapp'])
+      const err = error as Error
 
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases')
-      }
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases')
     })
   })
 })

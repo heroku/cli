@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import childProcess from 'node:child_process'
 import sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/pipelines/open.js'
-import runCommandHelper from '../../../helpers/legacy-run-command.js'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
@@ -35,7 +35,7 @@ describe('pipelines:open', function () {
       .query({eq: {name: pipeline.name}})
       .reply(200, [pipeline])
 
-    await runCommandHelper(OpenCommand, [pipeline.name])
+    await runCommand(OpenCommand, [pipeline.name])
 
     const urlArgArray = spawnStub.getCall(0).args[1]
     // For darwin-based platforms this arg is an array that contains the site url.

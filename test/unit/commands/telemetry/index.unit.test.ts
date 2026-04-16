@@ -1,13 +1,11 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/index.js'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
@@ -34,11 +32,11 @@ describe('telemetry:index', function () {
       .get(`/spaces/${spaceId}/telemetry-drains`)
       .reply(200, spaceTelemetryDrains)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       spaceId,
     ])
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace(`=== ${spaceId} Telemetry Drains`)
     const expectedTableHeader = removeAllWhitespace('ID                                   Signals                         Endpoint')
     const expected = removeAllWhitespace('44444321-5717-4562-b3fc-2c963f66afa6 traces, metrics, logs  https://api.honeycomb.io/')
@@ -52,11 +50,11 @@ describe('telemetry:index', function () {
       .get(`/apps/${appId}/telemetry-drains`)
       .reply(200, appTelemetryDrains)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       appId,
     ])
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace(`=== ${appId} Telemetry Drains`)
     const expectedTableHeader = removeAllWhitespace('ID                                   Signals                 Endpoint')
     const expected = removeAllWhitespace(heredoc(`
@@ -73,11 +71,11 @@ describe('telemetry:index', function () {
       .get(`/apps/${appId}/telemetry-drains`)
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       appId,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       There are no telemetry drains in ${appId}
     `))
   })

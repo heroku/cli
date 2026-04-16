@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/kill.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('pg:kill', function () {
   let sandbox: sinon.SinonSandbox
@@ -61,12 +60,12 @@ describe('pg:kill', function () {
   it('outputs the query result', async function () {
     execQueryStub.resolves('Query result output')
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '100',
       '--app',
       'myapp',
     ])
 
-    expect(stdout.output.trim()).to.eq('Query result output')
+    expect(stdout.trim()).to.eq('Query result output')
   })
 })

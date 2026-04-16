@@ -1,10 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon, {SinonStub} from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-
-import runCommand from '../../../helpers/legacy-run-command.js'
 const heredoc = tsheredoc.default
 import Cmd from '../../../../src/commands/certs/add.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
@@ -33,7 +31,7 @@ describe('heroku certs:add', function () {
     api = nock('https://api.heroku.com')
     stubbedSelectDomains = sinon.stub(Cmd.prototype, 'selectDomains')
     // eslint-disable-next-line arrow-body-style
-    stubbedSelectDomains.callsFake(async (domainOptions: string[]) => {
+    stubbedSelectDomains.callsFake(async (_domainOptions: string[]) => {
       // Let the method execute normally but return our stubbed value
       // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return Promise.resolve(stubbedSelectDomainsReturnValue)
@@ -58,14 +56,14 @@ describe('heroku certs:add', function () {
         certificate_chain: 'pem content', private_key: 'key content',
       })
       .reply(200, endpoint)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       'pem_file',
       'key_file',
     ])
-    expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-    expect(stdout.output).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
+    expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+    expect(stdout).to.equal(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
   it('# creates an SNI endpoint', async function () {
@@ -75,14 +73,14 @@ describe('heroku certs:add', function () {
         certificate_chain: 'pem content', private_key: 'key content',
       })
       .reply(200, endpoint)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       'pem_file',
       'key_file',
     ])
-    expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-    expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}`)
+    expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+    expect(stdout).to.eq(`Certificate details:\n${heredoc(certificateDetails)}`)
   })
 
   it('# shows the configure prompt', async function () {
@@ -94,14 +92,14 @@ describe('heroku certs:add', function () {
         certificate_chain: 'pem content', private_key: 'key content',
       })
       .reply(200, endpoint)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       'pem_file',
       'key_file',
     ])
-    expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-    expect(stdout.output).to.eq(`Certificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
+    expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+    expect(stdout).to.eq(`Certificate details:\n${heredoc(certificateDetails)}=== Almost done! Which of these domains on this application would you like this certificate associated with?\n\n`)
   })
 
   describe('stable cnames', function () {
@@ -130,7 +128,7 @@ describe('heroku certs:add', function () {
         .reply(200)
 
       stubbedSelectDomainsReturnValue = {domains: ['biz.example.com']}
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
@@ -140,8 +138,8 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'biz.example.com',
       ])
-      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-      expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
+      expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+      expect(stdout.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
     it('# does not error out if the cert CN is for the heroku domain', async function () {
@@ -162,7 +160,7 @@ describe('heroku certs:add', function () {
         ])
 
       stubbedSelectDomainsReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
@@ -171,8 +169,8 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.firstCall.args[0]).to.eql([
         'tokyo-1050.herokuapp.com',
       ])
-      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-      expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): tokyo-1050.herokuapp.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com\nSSL certificate is not trusted.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
+      expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+      expect(stdout.trim()).to.equal('Certificate details:\nCommon Name(s): tokyo-1050.herokuapp.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=heroku.com\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=tokyo-1050.herokuapp.com\nSSL certificate is not trusted.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
     it('# does not prompt if domains covered with wildcard', async function () {
@@ -191,7 +189,7 @@ describe('heroku certs:add', function () {
           },
         ])
       stubbedSelectDomainsReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
@@ -200,8 +198,8 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.called).to.be.false
       mock.done()
       domainsMock.done()
-      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-      expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
+      expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+      expect(stdout.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
     })
 
     it('# does not prompt if no domains and wildcard cert', async function () {
@@ -215,7 +213,7 @@ describe('heroku certs:add', function () {
         .reply(200, [])
 
       stubbedSelectDomainsReturnValue = {domains: ['tokyo-1050.herokuapp.com']}
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
@@ -224,8 +222,8 @@ describe('heroku certs:add', function () {
       expect(stubbedSelectDomains.called).to.be.false
       mock.done()
       domainsMock.done()
-      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-      expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
+      expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+      expect(stdout.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.')
     })
 
     it('# prints mismatched domains for wildcard cert', async function () {
@@ -248,7 +246,7 @@ describe('heroku certs:add', function () {
         .reply(200)
 
       stubbedSelectDomainsReturnValue = {domains: ['foo.example.org']}
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         'pem_file',
@@ -260,8 +258,8 @@ describe('heroku certs:add', function () {
       mock.done()
       domainsMock.done()
       domainsMockPatch.done()
-      expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-      expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
+      expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+      expect(stdout.trim()).to.equal('Certificate details:\nCommon Name(s): *.example.org\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
     })
 
     describe('waiting for domains', function () {
@@ -374,7 +372,7 @@ describe('heroku certs:add', function () {
             'biz.example.com',
           ],
         }
-        await runCommand(Cmd, [
+        const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'example',
           'pem_file',
@@ -392,9 +390,9 @@ describe('heroku certs:add', function () {
         domainsCreateFoo.done()
         domainsCreateBar.done()
         domainsCreateBiz.done()
-        expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done\n')
-        expect(stderr.output).to.contain('Waiting for stable domains to be created... done\n')
-        expect(stdout.output.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
+        expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
+        expect(stderr).to.contain('Waiting for stable domains to be created... done\n')
+        expect(stdout.trim()).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n=== Almost done! Which of these domains on this application would you like this certificate associated with?')
       })
 
       it('# tries 30 times and then gives up', async function () {
@@ -429,21 +427,17 @@ describe('heroku certs:add', function () {
               status: 'none',
             },
           ])
-        try {
-          await runCommand(Cmd, [
-            '--app',
-            'example',
-            'pem_file',
-            'key_file',
-          ])
-        } catch (error) {
-          const {message} = error as {message: string}
-          expect(message).to.contain('Timed out while waiting for stable domains to be created')
-        }
+        const {error, stderr, stdout} = await runCommand(Cmd, [
+          '--app',
+          'example',
+          'pem_file',
+          'key_file',
+        ])
 
-        expect(stderr.output).to.contain('Adding SSL certificate to ⬢ example... done')
-        expect(stderr.output).to.contain('Waiting for stable domains to be created... !')
-        expect(stdout.output).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n')
+        expect(error?.message).to.contain('Timed out while waiting for stable domains to be created')
+        expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done')
+        expect(stderr).to.contain('Waiting for stable domains to be created... !')
+        expect(stdout).to.equal('Certificate details:\nCommon Name(s): foo.example.org\n                bar.example.org\n                biz.example.com\nExpires At:     2013-08-01 21:34 UTC\nIssuer:         /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nStarts At:      2012-08-01 21:34 UTC\nSubject:        /C=US/ST=California/L=San Francisco/O=Heroku by Salesforce/CN=secure.example.org\nSSL certificate is self signed.\n')
       })
     })
   })

@@ -1,11 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/credentials.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 /** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */
@@ -105,12 +104,12 @@ describe('pg:credentials', function () {
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    const normalized = normalizeTableOutput(stripAppIcon(stdout.output))
+    const normalized = normalizeTableOutput(stripAppIcon(stdout))
     expect(normalized).to.include('connections state user')
     expect(normalized).to.include('0 connections waiting for no connections to be revoked jeff')
     expect(normalized).to.include('2 connections active jeff-rotating')
@@ -195,12 +194,12 @@ describe('pg:credentials', function () {
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    const normalized = normalizeTableOutput(stripAppIcon(stdout.output))
+    const normalized = normalizeTableOutput(stripAppIcon(stdout))
     expect(normalized).to.include('credential state')
     expect(normalized).to.include('default')
     expect(normalized).to.include('└─ as database on main-app app')

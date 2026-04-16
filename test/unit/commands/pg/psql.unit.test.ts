@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/psql.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 const db = {
   attachment: {
@@ -35,24 +34,24 @@ describe('psql', function () {
   })
 
   it('runs psql', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--command',
       'SELECT 1',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('--> Connecting to ⛁ postgres-1\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('--> Connecting to ⛁ postgres-1\n')
   })
 
   it('runs psql with file', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--file',
       'test.sql',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('--> Connecting to ⛁ postgres-1\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('--> Connecting to ⛁ postgres-1\n')
   })
 })

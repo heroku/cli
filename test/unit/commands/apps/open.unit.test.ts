@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import childProcess from 'node:child_process'
 import sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/apps/open.js'
-import runCommandHelper from '../../../helpers/legacy-run-command.js'
 
 describe('apps:open', function () {
   const app = {
@@ -35,7 +35,7 @@ describe('apps:open', function () {
       .get('/apps/myapp')
       .reply(200, app)
 
-    await runCommandHelper(OpenCommand, ['-a', 'myapp'])
+    await runCommand(OpenCommand, ['-a', 'myapp'])
 
     const urlArgArray = spawnStub.getCall(0).args[1]
     // For darwin-based platforms this arg is an array that contains the site url.
@@ -57,7 +57,7 @@ describe('apps:open', function () {
       .get('/apps/myapp')
       .reply(200, app)
 
-    await runCommandHelper(OpenCommand, ['-a', 'myapp', '/mypath'])
+    await runCommand(OpenCommand, ['-a', 'myapp', '/mypath'])
 
     const urlArgArray = spawnStub.getCall(0).args[1]
     // For darwin-based platforms this arg is an array that contains the site url.

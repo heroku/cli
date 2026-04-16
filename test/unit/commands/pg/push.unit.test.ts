@@ -1,12 +1,11 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import childProcess from 'node:child_process'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/push.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -69,7 +68,7 @@ describe('pg:push', function () {
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'localdb',
       'postgres-1',
       '-a',
@@ -77,11 +76,11 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('pushes out a db using url port', async () => {
@@ -101,7 +100,7 @@ describe('pg:push', function () {
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'postgres://localhost:5433/localdb',
       'postgres-1',
       '-a',
@@ -109,11 +108,11 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing postgres://localhost:5433/localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('pushes out a db using PGPORT', async () => {
@@ -135,7 +134,7 @@ describe('pg:push', function () {
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'localdb',
       'postgres-1',
       '-a',
@@ -143,11 +142,11 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
@@ -170,7 +169,7 @@ describe('pg:push', function () {
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'localdb',
       'postgres-1',
       '-a',
@@ -178,11 +177,11 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('exits non-zero when there is an error', async () => {
@@ -203,20 +202,17 @@ describe('pg:push', function () {
       },
     })
 
-    try {
-      await runCommand(Cmd, [
-        'localdb',
-        'postgres-1',
-        '-a',
-        'myapp',
-      ])
-    } catch (error) {
-      const {message} = error as Error
-      expect(message).to.eq('pg_dump errored with 1')
-    }
+    const {error, stderr, stdout} = await runCommand(Cmd, [
+      'localdb',
+      'postgres-1',
+      '-a',
+      'myapp',
+    ])
+    const {message} = error as Error
+    expect(message).to.eq('pg_dump errored with 1')
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq('Pushing localdb to postgres-1\n')
-    expect(stderr.output).to.eq('')
+    expect(stdout).to.eq('Pushing localdb to postgres-1\n')
+    expect(stderr).to.eq('')
   })
 })

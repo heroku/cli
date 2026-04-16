@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
 import RakeCommand from '../../../src/commands/rake.js'
 import Dyno from '../../../src/lib/run/dyno.js'
-import runCommandHelper from '../../helpers/legacy-run-command.js'
 
 describe('rake', function () {
   let dynoOpts: {command: any}
@@ -20,7 +20,7 @@ describe('rake', function () {
       return Promise.resolve()
     })
 
-    await runCommandHelper(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+    await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
 
     expect(dynoOpts.command).to.equal('rake test')
   })
@@ -33,7 +33,7 @@ describe('rake', function () {
     })
 
     try {
-      await runCommandHelper(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+      await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
       expect.fail('Expected command to throw error')
     } catch (error: any) {
       expect(error.message).to.equal('rake error')
@@ -47,7 +47,7 @@ describe('rake', function () {
     })
 
     try {
-      await runCommandHelper(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+      await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
       expect.fail('Expected command to throw error')
     } catch (error: any) {
       expect(error.message).to.equal('rake error')

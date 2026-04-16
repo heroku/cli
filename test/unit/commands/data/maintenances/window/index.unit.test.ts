@@ -1,11 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesWindow from '../../../../../../src/commands/data/maintenances/window/index.js'
 import {maintenanceWindow} from '../../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/legacy-run-command.js'
 
 describe('data:maintenances:window', function () {
   const app = {
@@ -34,10 +33,10 @@ describe('data:maintenances:window', function () {
       .get(`/data/maintenances/v1/${addon.id}/window`)
       .reply(200, maintenanceWindow)
 
-    await runCommand(DataMaintenancesWindow, [addon.name])
+    const {stderr, stdout} = await runCommand(DataMaintenancesWindow, [addon.name])
 
-    expect(stderr.output).to.contain(`Fetching maintenance window for ${addon.name}... done\n`)
-    expect(stdout.output).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stderr).to.contain(`Fetching maintenance window for ${addon.name}... done\n`)
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 
   it('can fetch a window for an addon scoped by an app', async function () {
@@ -48,10 +47,10 @@ describe('data:maintenances:window', function () {
       .get(`/data/maintenances/v1/${addon.id}/window`)
       .reply(200, maintenanceWindow)
 
-    await runCommand(DataMaintenancesWindow, [addon.name, `--app=${app.name}`])
+    const {stderr, stdout} = await runCommand(DataMaintenancesWindow, [addon.name, `--app=${app.name}`])
 
-    expect(stderr.output).to.contain(`Fetching maintenance window for ${addon.name}... done\n`)
-    expect(stdout.output).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stderr).to.contain(`Fetching maintenance window for ${addon.name}... done\n`)
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 
   it('can fetch a window for a non-postgres addon', async function () {
@@ -62,9 +61,9 @@ describe('data:maintenances:window', function () {
       .get(`/data/maintenances/v1/${nonPostgresAddon.id}/window`)
       .reply(200, maintenanceWindow)
 
-    await runCommand(DataMaintenancesWindow, [nonPostgresAddon.name])
+    const {stderr, stdout} = await runCommand(DataMaintenancesWindow, [nonPostgresAddon.name])
 
-    expect(stderr.output).to.contain(`Fetching maintenance window for ${nonPostgresAddon.name}... done\n`)
-    expect(stdout.output).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
+    expect(stderr).to.contain(`Fetching maintenance window for ${nonPostgresAddon.name}... done\n`)
+    expect(stdout).to.contain('window:          Tuesdays 17:30 to 21:30 UTC\n')
   })
 })

@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../../src/commands/pg/backups/schedule.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 type CLIError = Error & {oclif?: {exit?: number}}
 describe('pg:backups:schedule', function () {
@@ -63,11 +62,11 @@ describe('pg:backups:schedule', function () {
         .get('/client/v11/databases/1')
         .reply(200, dbA)
 
-      await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
+      const {stderr, stdout} = await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
 
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Scheduling automatic daily backups of ⛁ postgres-1 at 06:00 America/New_York')
-      expect(stderr.output).to.include('done')
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Scheduling automatic daily backups of ⛁ postgres-1 at 06:00 America/New_York')
+      expect(stderr).to.include('done')
     })
 
     it('warns user that logical backups are error prone if continuous protection is on', async function () {
@@ -80,9 +79,9 @@ describe('pg:backups:schedule', function () {
         .get('/client/v11/databases/1')
         .reply(200, dbA)
 
-      await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
+      const {stderr} = await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
 
-      expect(ansis.strip(stderr.output)).to.include(continuousProtectionWarning)
+      expect(ansis.strip(stderr)).to.include(continuousProtectionWarning)
     })
 
     it('does not warn user that logical backups are error prone if continuous protection is off', async function () {
@@ -95,40 +94,31 @@ describe('pg:backups:schedule', function () {
         .get('/client/v11/databases/1')
         .reply(200, dbA)
 
-      await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
+      const {stderr} = await runCommand(Cmd, ['--at', '06:00 EDT', '--app', 'myapp'])
 
-      expect(ansis.strip(stderr.output)).not.to.include(continuousProtectionWarning)
+      expect(ansis.strip(stderr)).not.to.include(continuousProtectionWarning)
     })
   })
 
   it('errors when the scheduled time has an invalid hour value', async function () {
-    try {
-      await runCommand(Cmd, ['--at', '24:00', '--app', 'myapp'])
-    } catch (error: unknown) {
-      const err = error as CLIError
-      expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-      expect(err.oclif?.exit).to.equal(1)
-    }
+    const {error} = await runCommand(Cmd, ['--at', '24:00', '--app', 'myapp'])
+    const err = error as CLIError
+    expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
+    expect(err.oclif?.exit).to.equal(1)
   })
 
   it('errors when the scheduled time has an invalid time zone value', async function () {
-    try {
-      await runCommand(Cmd, ['--at', '01:00 New York', '--app', 'myapp'])
-    } catch (error: unknown) {
-      const err = error as CLIError
-      expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-      expect(err.oclif?.exit).to.equal(1)
-    }
+    const {error} = await runCommand(Cmd, ['--at', '01:00 New York', '--app', 'myapp'])
+    const err = error as CLIError
+    expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
+    expect(err.oclif?.exit).to.equal(1)
   })
 
   it('errors when the scheduled time specifies minutes', async function () {
-    try {
-      await runCommand(Cmd, ['--at', '06:15 EDT', '--app', 'myapp'])
-    } catch (error: unknown) {
-      const err = error as CLIError
-      expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
-      expect(err.oclif?.exit).to.equal(1)
-    }
+    const {error} = await runCommand(Cmd, ['--at', '06:15 EDT', '--app', 'myapp'])
+    const err = error as CLIError
+    expect(err.message).to.eq("Invalid schedule format: expected --at '[HOUR]:00 [TIMEZONE]'")
+    expect(err.oclif?.exit).to.equal(1)
   })
 
   it('accepts a correctly formatted time string even if the time zone might not be correct', async function () {
@@ -160,11 +150,8 @@ describe('pg:backups:schedule', function () {
       })
       .reply(400, {id: 'bad_request', message: 'Bad request.'})
 
-    try {
-      await runCommand(Cmd, ['--at', '06:00 New_York', '--app', 'myapp'])
-    } catch (error: unknown) {
-      const err = error as CLIError
-      expect(err.message).to.contain('Bad request.')
-    }
+    const {error} = await runCommand(Cmd, ['--at', '06:00 New_York', '--app', 'myapp'])
+    const err = error as CLIError
+    expect(err.message).to.contain('Bad request.')
   })
 })

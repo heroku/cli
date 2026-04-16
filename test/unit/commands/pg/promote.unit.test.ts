@@ -1,13 +1,11 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/promote.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -69,12 +67,12 @@ describe('pg:promote when argument is database', function () {
         namespace: 'connection-pooling:default',
       }).reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
       Reattaching pooler to new leader... done
@@ -108,12 +106,12 @@ describe('pg:promote when argument is database', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -146,12 +144,12 @@ describe('pg:promote when argument is database', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -181,12 +179,12 @@ describe('pg:promote when argument is database', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -218,12 +216,12 @@ describe('pg:promote when argument is database', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -239,13 +237,12 @@ describe('pg:promote when argument is database', function () {
         {addon: {name: addon.name}, name: 'PURPLE', namespace: null},
       ])
     const err = `${addon.name} is already promoted on ⬢ myapp`
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
-    ]).catch((error: Error) => {
-      expect(ansis.strip(error.message)).to.equal(err)
-    })
+    ])
+    expect(ansis.strip(error!.message)).to.equal(err)
   })
 
   it('promotes when the db is not a follower and has no DATABASE attachment exists', async function () {
@@ -276,12 +273,12 @@ describe('pg:promote when argument is database', function () {
       .get('/apps/myapp/releases/2')
       .reply(200, {status: 'succeeded'})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'dwh-db',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... Promoting ⛁ dwh-db to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote succeeded.
     `))
@@ -338,12 +335,12 @@ describe('pg:promote when argument is a credential attachment', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -380,12 +377,12 @@ describe('pg:promote when argument is a credential attachment', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -414,12 +411,12 @@ describe('pg:promote when argument is a credential attachment', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -451,12 +448,12 @@ describe('pg:promote when argument is a credential attachment', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -489,12 +486,12 @@ describe('pg:promote when argument is a credential attachment', function () {
       })
       .reply(201)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -518,14 +515,12 @@ describe('pg:promote when argument is a credential attachment', function () {
         },
       ])
     const err = 'PURPLE is already promoted on ⬢ myapp'
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-      .catch((error: Error) => {
-        expect(ansis.strip(error.message)).to.equal(err)
-      })
+    expect(ansis.strip(error!.message)).to.equal(err)
   })
 })
 
@@ -590,12 +585,12 @@ describe('pg:promote when release phase is present', function () {
       .get('/apps/myapp/releases/2')
       .reply(200, {status: 'succeeded'})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote succeeded.
@@ -611,12 +606,12 @@ describe('pg:promote when release phase is present', function () {
       .get('/apps/myapp/releases/2')
       .reply(200, {description: 'Detach DATABASE', status: 'failed'})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote succeeded. It is safe to ignore the failed Detach DATABASE release.
@@ -632,12 +627,12 @@ describe('pg:promote when release phase is present', function () {
       .get('/apps/myapp/releases/2')
       .reply(200, {description: 'Attach DATABASE', status: 'failed'})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running with ${addon.name} attached as DATABASE_URL. Check your release phase logs for failure causes.
@@ -653,12 +648,12 @@ describe('pg:promote when release phase is present', function () {
       .get('/apps/myapp/releases/2')
       .reply(200, {description: 'Attach DATABASE', status: 'succeeded'})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting PURPLE to ⛁ DATABASE_URL on ⬢ myapp... done
       Checking release phase... pg:promote failed because Attach DATABASE release was unsuccessful. Your application is currently running without an attached DATABASE_URL. Check your release phase logs for failure causes.
@@ -720,13 +715,12 @@ describe('pg:promote when database is not available or force flag is present', f
 
       To ignore this error, you can pass the --force flag to promote the database and risk application issues.
     `)
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
-    ]).catch((error: Error) => {
-      expect(ansis.strip(error.message)).to.equal(err)
-    })
+    ])
+    expect(ansis.strip(error!.message)).to.equal(err)
   })
 
   it('promotes database in unavailable state if --force flag is present', async function () {
@@ -755,13 +749,13 @@ describe('pg:promote when database is not available or force flag is present', f
       .get(`/client/v11/databases/${addon.id}/wait_status`)
       .reply(200, {message: 'pending', 'waiting?': true})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--force',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -793,13 +787,13 @@ describe('pg:promote when database is not available or force flag is present', f
       .get(`/client/v11/databases/${addon.id}/wait_status`)
       .reply(200, {message: 'available', 'waiting?': false})
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--force',
       'DATABASE',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
       Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
     `))
@@ -855,11 +849,11 @@ describe('pg:promote when promoted database is a follower', function () {
         },
       })
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
     ])
-    expect(stderr.output).to.include('Your database has been promoted but it is currently a follower')
+    expect(stderr).to.include('Your database has been promoted but it is currently a follower')
   })
 })

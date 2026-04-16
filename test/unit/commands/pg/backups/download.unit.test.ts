@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import fs from 'fs-extra'
 import nock from 'nock'
 
 import Cmd from '../../../../../src/commands/pg/backups/download.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 describe('pg:backups:download', function () {
   beforeEach(function () {

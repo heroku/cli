@@ -1,11 +1,11 @@
 /* eslint-disable import/no-named-as-default-member */
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import mockStdin from 'mock-stdin'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpdate from '../../../../../src/commands/data/pg/update.js'
@@ -22,7 +22,6 @@ import {
   pgInfo,
   pricingResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 const {prompt} = inquirer
@@ -72,12 +71,12 @@ describe('data:pg:update', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      await runCommand(DataPgUpdate, ['--app=myapp'])
+      const {stdout} = await runCommand(DataPgUpdate, ['--app=myapp'])
 
       herokuApi.done()
-      expect(stdout.output).to.contain('advanced-horizontal-01234 (DATABASE)')
-      expect(stdout.output).not.to.contain('standard-database (STANDARD_DATABASE)')
-      expect(stdout.output).not.to.contain('redis-database (REDIS)')
+      expect(stdout).to.contain('advanced-horizontal-01234 (DATABASE)')
+      expect(stdout).not.to.contain('standard-database (STANDARD_DATABASE)')
+      expect(stdout).not.to.contain('redis-database (REDIS)')
     })
 
     it('errors out when no Advanced-tier databases are found', async function () {
@@ -88,13 +87,10 @@ describe('data:pg:update', function () {
           nonPostgresAddonAttachment,
         ])
 
-      try {
-        await runCommand(DataPgUpdate, ['--app=myapp'])
-      } catch (error: unknown) {
-        const err = error as Error
-        herokuApi.done()
-        expect(err.message).to.equal('No Heroku Postgres Advanced-tier databases found on the app.')
-      }
+      const {error} = await runCommand(DataPgUpdate, ['--app=myapp'])
+      const err = error as Error
+      herokuApi.done()
+      expect(err.message).to.equal('No Heroku Postgres Advanced-tier databases found on the app.')
     })
   })
 
@@ -115,14 +111,14 @@ describe('data:pg:update', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stdout.output).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
-      expect(stdout.output).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
-      expect(stdout.output).to.contain('Add a follower pool')
-      expect(stdout.output).to.contain('Exit')
+      expect(stdout).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(stdout).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(stdout).to.contain('Add a follower pool')
+      expect(stdout).to.contain('Exit')
     })
 
     it('errors out when the database isn\'t an Advanced-tier one', async function () {
@@ -130,15 +126,12 @@ describe('data:pg:update', function () {
         .post('/actions/addons/resolve')
         .reply(200, [nonAdvancedAddon])
 
-      try {
-        await runCommand(DataPgUpdate, ['STANDARD_DATABASE', '--app=myapp'])
-      } catch (error: unknown) {
-        const err = error as Error
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(heredoc`
+      const {error} = await runCommand(DataPgUpdate, ['STANDARD_DATABASE', '--app=myapp'])
+      const err = error as Error
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:upgrade standard-database -a myapp instead.`)
-      }
     })
   })
 
@@ -189,13 +182,13 @@ describe('data:pg:update', function () {
       // Simulate the user selecting the 8G-Performance level on the level selection prompt
       poolConfigLevelStepStub.resolves(levelsResponse.items[1].name)
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
-      expect(ansis.strip(stdout.output)).to.contain('Success: Level changed from 4G-Performance to 8G-Performance for leader pool.')
-      expect(ansis.strip(stdout.output)).to.contain('Leader: 8G-Performance 4 vCPU 8 GB MEM 2 instances starting at ~$0.278/hour ($200/month) each')
+      expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(ansis.strip(stdout)).to.contain('Success: Level changed from 4G-Performance to 8G-Performance for leader pool.')
+      expect(ansis.strip(stdout)).to.contain('Leader: 8G-Performance 4 vCPU 8 GB MEM 2 instances starting at ~$0.278/hour ($200/month) each')
     })
 
     it('allows the user to remove the high availability (HA) standby instance from the leader pool', async function () {
@@ -241,13 +234,13 @@ describe('data:pg:update', function () {
         '\u001B[A\n', // Pool selection prompt: selects 'Exit'
       ]
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
-      expect(ansis.strip(stderr.output)).to.contain('Removing the high availability (HA) standby instance from advanced-horizontal-01234... done')
-      expect(ansis.strip(stdout.output)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
+      expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(ansis.strip(stderr)).to.contain('Removing the high availability (HA) standby instance from advanced-horizontal-01234... done')
+      expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
     })
 
     it('allows the user to add a high availability (HA) standby instance to the leader pool', async function () {
@@ -305,13 +298,13 @@ describe('data:pg:update', function () {
         '\u001B[A\n', // Pool selection prompt: selects 'Exit'
       ]
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
-      expect(ansis.strip(stderr.output)).to.contain('Adding a high availability (HA) standby instance for advanced-horizontal-01234... done')
-      expect(ansis.strip(stdout.output)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
+      expect(ansis.strip(stderr)).to.contain('Adding a high availability (HA) standby instance for advanced-horizontal-01234... done')
+      expect(ansis.strip(stdout)).to.contain('Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
     })
   })
 
@@ -362,13 +355,13 @@ describe('data:pg:update', function () {
       // Simulate the user selecting the 8G-Performance level on the level selection prompt
       poolConfigLevelStepStub.resolves(levelsResponse.items[1].name)
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
-      expect(ansis.strip(stdout.output)).to.contain('Success: Level changed from 4G-Performance to 8G-Performance for follower pool analytics.')
-      expect(ansis.strip(stdout.output)).to.contain('Follower analytics: 8G-Performance 4 vCPU 8 GB MEM 2 instances starting at ~$0.278/hour ($200/month) each')
+      expect(ansis.strip(stdout)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(ansis.strip(stdout)).to.contain('Success: Level changed from 4G-Performance to 8G-Performance for follower pool analytics.')
+      expect(ansis.strip(stdout)).to.contain('Follower analytics: 8G-Performance 4 vCPU 8 GB MEM 2 instances starting at ~$0.278/hour ($200/month) each')
     })
 
     it('allows the user to update the number of instances in the follower pool', async function () {
@@ -417,13 +410,13 @@ describe('data:pg:update', function () {
       // Simulate the user selecting the 1 instance on the instance count selection prompt
       poolConfigInstanceCountStepStub.resolves('1')
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
-      expect(ansis.strip(stderr.output)).to.contain('Updating follower pool instances count... done')
-      expect(ansis.strip(stdout.output)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
+      expect(ansis.strip(stdout)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each')
+      expect(ansis.strip(stderr)).to.contain('Updating follower pool instances count... done')
+      expect(ansis.strip(stdout)).to.contain('Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 1 instance starting at ~$0.083/hour ($60/month)')
     })
 
     it('allows the user to destroy the follower pool', async function () {
@@ -463,16 +456,16 @@ describe('data:pg:update', function () {
       // Simulate the user confirming the pool destruction
       sinon.stub(DataPgUpdate.prototype, 'confirmCommand').resolves()
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain(heredoc`
+      expect(ansis.strip(stdout)).to.contain(heredoc`
         Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
           Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
       `)
-      expect(ansis.strip(stderr.output)).to.contain('Destroying follower pool analytics on ⛁ advanced-horizontal-01234... done')
-      expect(ansis.strip(stdout.output)).to.contain(heredoc`
+      expect(ansis.strip(stderr)).to.contain('Destroying follower pool analytics on ⛁ advanced-horizontal-01234... done')
+      expect(ansis.strip(stdout)).to.contain(heredoc`
         Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
           ──────────────
       `)
@@ -521,17 +514,17 @@ describe('data:pg:update', function () {
         name: 'readers',
       })
 
-      await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(ansis.strip(stdout.output)).to.contain(heredoc`
+      expect(ansis.strip(stdout)).to.contain(heredoc`
         Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
           Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
           ──────────────
       `)
-      expect(ansis.strip(stderr.output)).to.contain('Configuring follower pool... done')
-      expect(ansis.strip(stdout.output)).to.contain(heredoc`
+      expect(ansis.strip(stderr)).to.contain('Configuring follower pool... done')
+      expect(ansis.strip(stdout)).to.contain(heredoc`
         Leader: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
           Follower analytics: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 
           Follower readers: 4G-Performance 2 vCPU 4 GB MEM 2 instances starting at ~$0.083/hour ($60/month) each 

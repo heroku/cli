@@ -1,13 +1,12 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {CLIError} from '@oclif/core/errors'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import type {DynoOpts} from '../../../../../src/lib/run/dyno.js'
 
 import DataPgPsql from '../../../../../src/commands/data/pg/psql.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 describe('data:pg:psql', function () {
   let psqlServiceExecQueryStub: sinon.SinonSpy
@@ -40,7 +39,7 @@ describe('data:pg:psql', function () {
     } as unknown as pg.ConnectionDetails
 
     it('runs psql', async function () {
-      await runCommand(DataPgPsql, [
+      const {stderr, stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
         'myapp',
@@ -48,8 +47,8 @@ describe('data:pg:psql', function () {
         'SELECT 1',
       ])
 
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal('--> Connecting to postgres-1\n')
     })
 
     it('passes cmdArgs to execQuery with --command', async function () {
@@ -70,7 +69,7 @@ describe('data:pg:psql', function () {
     })
 
     it('runs psql with file', async function () {
-      await runCommand(DataPgPsql, [
+      const {stderr, stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
         'myapp',
@@ -78,8 +77,8 @@ describe('data:pg:psql', function () {
         'test.sql',
       ])
 
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal('--> Connecting to postgres-1\n')
     })
 
     it('passes cmdArgs to execFile with --file', async function () {
@@ -174,7 +173,7 @@ describe('data:pg:psql', function () {
     })
 
     it('runs psql with file', async function () {
-      await runCommand(DataPgPsql, [
+      const {stderr, stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
         'myapp',
@@ -182,8 +181,8 @@ describe('data:pg:psql', function () {
         'test.sql',
       ])
 
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal('--> Connecting to postgres-1\n')
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal('--> Connecting to postgres-1\n')
     })
 
     it('passes cmdArgs to execFile with --file for advanced tier', async function () {
@@ -262,23 +261,20 @@ describe('data:pg:psql', function () {
       user: 'jeff',
     } as unknown as pg.ConnectionDetails
 
-    it('errors out with ‘--file’ option', async function () {
-      try {
-        await runCommand(DataPgPsql, [
-          'DATABASE',
-          '--app',
-          'myapp',
-          '--file',
-          'test.sql',
-        ])
-      } catch (error: unknown) {
-        const {message, oclif} = error as CLIError
-        expect(message).to.eq("You can't use the --file flag on private networked Advanced databases.")
-        expect(oclif.exit).to.eq(1)
-      }
+    it("errors out with '--file' option", async function () {
+      const {error, stdout} = await runCommand(DataPgPsql, [
+        'DATABASE',
+        '--app',
+        'myapp',
+        '--file',
+        'test.sql',
+      ])
+      const {message, oclif} = error as CLIError
+      expect(message).to.eq("You can't use the --file flag on private networked Advanced databases.")
+      expect(oclif.exit).to.eq(1)
 
       expect(psqlServiceExecFileStub.called).to.be.false
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
     })
 
     it('runs psql command on a one-off dyno', async function () {
@@ -290,7 +286,7 @@ describe('data:pg:psql', function () {
         'exit-code': true,
       }
 
-      await runCommand(DataPgPsql, [
+      const {stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
         'myapp',
@@ -298,7 +294,7 @@ describe('data:pg:psql', function () {
         'SELECT 1',
       ])
 
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
       expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
     })
 
@@ -311,13 +307,13 @@ describe('data:pg:psql', function () {
         'exit-code': true,
       }
 
-      await runCommand(DataPgPsql, [
+      const {stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
         'myapp',
       ])
 
-      expect(stdout.output).to.equal('')
+      expect(stdout).to.equal('')
       expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
     })
   })

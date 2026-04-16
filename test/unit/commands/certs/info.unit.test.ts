@@ -1,11 +1,9 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/info.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import {
   certificateDetails,
   certificateDetailsWithDomains,
@@ -26,11 +24,11 @@ describe('heroku certs:info', function () {
       .reply(200, [endpoint])
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpoint)
-    await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
+    expectOutput(stderr, heredoc(`
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Certificate details:
       ${certificateDetails}
     `))
@@ -49,12 +47,12 @@ describe('heroku certs:info', function () {
         kind: 'custom',
         status: 'pending',
       })
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--show-domains',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Certificate details:
       ${certificateDetailsWithDomains}
     `))
@@ -66,11 +64,11 @@ describe('heroku certs:info', function () {
       .reply(200, [endpoint])
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpointUntrusted)
-    await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
+    expectOutput(stderr, heredoc(`
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
-    expectOutput(heredoc(stdout.output), heredoc(`
+    expectOutput(heredoc(stdout), heredoc(`
       Certificate details:
       ${untrustedCertificateDetails}
     `))
@@ -82,11 +80,11 @@ describe('heroku certs:info', function () {
       .reply(200, [endpoint])
       .get('/apps/example/sni-endpoints/tokyo-1050')
       .reply(200, endpointTrusted)
-    await runCommand(Cmd, ['--app', 'example'])
-    expectOutput(stderr.output, heredoc(`
+    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
+    expectOutput(stderr, heredoc(`
       Fetching SSL certificate tokyo-1050 info for ⬢ example... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Certificate details:
       Common Name(s): example.org
       Expires At:     2013-08-01 21:34 UTC

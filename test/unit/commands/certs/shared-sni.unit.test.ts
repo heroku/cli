@@ -1,11 +1,9 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, type GenericCmd, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import runCommand, {GenericCmd} from '../../../helpers/legacy-run-command.js'
 import {
   certificateDetails,
   endpoint,
@@ -51,13 +49,13 @@ export const shouldHandleArgs = (
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint])
       callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
-      await runCommand(command, [...additionalArgs,
+      const {stderr, stdout} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
         '--name',
         'tokyo-1050'].concat(additionalFlags))
-      expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(heredoc(certificateDetails), endpoint))
+      expectOutput(stderr, stderrOutput(endpoint))
+      expectOutput(stdout, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
     it('errors out for --endpoint when there are multiple', async function () {
@@ -69,13 +67,13 @@ export const shouldHandleArgs = (
         .get('/apps/example/domains/01234567-89ab-cdef-0123-456789abcdef')
         .reply(200, endpointCnameDomain)
       callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
-      await runCommand(command, [...additionalArgs,
+      const {error} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
         '--endpoint',
-        'tokyo-1050.herokussl.com'].concat(additionalFlags)).catch(function (error: Error) {
-        expect(error.message).to.equal('Must pass --name when more than one endpoint matches --endpoint')
-      })
+        'tokyo-1050.herokussl.com'].concat(additionalFlags))
+      expect(error).to.exist
+      expect(error!.message).to.equal('Must pass --name when more than one endpoint matches --endpoint')
     })
 
     it('allows an endpoint to be specified using --endpoint', async function () {
@@ -85,13 +83,13 @@ export const shouldHandleArgs = (
         .get('/apps/example/domains/456789ab-cdef-0123-4567-89abcdef0123')
         .reply(200, endpointDomain)
       callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
-      await runCommand(command, [...additionalArgs,
+      const {stderr, stdout} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
         '--endpoint',
         'tokyo-1050.herokussl.com'].concat(additionalFlags))
-      expectOutput(stderr.output, stderrOutput(endpoint))
-      expectOutput(stdout.output, stdoutOutput(heredoc(certificateDetails), endpoint))
+      expectOutput(stderr, stderrOutput(endpoint))
+      expectOutput(stdout, stdoutOutput(heredoc(certificateDetails), endpoint))
     })
 
     it('errors out if there is no match for --endpoint', async function () {
@@ -100,26 +98,26 @@ export const shouldHandleArgs = (
         .reply(200, [endpoint2])
         .get('/apps/example/domains/89abcdef-0123-4567-89ab-cdef01234567')
         .reply(200, endpoint2Domain)
-      await runCommand(command, [...additionalArgs,
+      const {error} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
         '--endpoint',
-        'tokyo-1050.herokussl.com'].concat(additionalFlags)).catch(function (error: Error) {
-        expect(error.message).to.equal('Record not found.')
-      })
+        'tokyo-1050.herokussl.com'].concat(additionalFlags))
+      expect(error).to.exist
+      expect(error!.message).to.equal('Record not found.')
     })
 
     it('errors out if more than one matches --name', async function () {
       nock('https://api.heroku.com')
         .get('/apps/example/sni-endpoints')
         .reply(200, [endpoint, endpointHeroku])
-      await runCommand(command, [...additionalArgs,
+      const {error} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
         '--name',
-        'tokyo-1050'].concat(additionalFlags)).catch(function (error: Error) {
-        expect(error.message).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket')
-      })
+        'tokyo-1050'].concat(additionalFlags))
+      expect(error).to.exist
+      expect(error!.message).to.equal('More than one endpoint matches tokyo-1050, please file a support ticket')
     })
   })
 }

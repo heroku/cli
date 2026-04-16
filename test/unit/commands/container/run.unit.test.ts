@@ -1,13 +1,11 @@
-import {expectOutput} from '@heroku-cli/test-utils'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/run.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('container run', function () {
   let api: nock.Scope
@@ -25,34 +23,28 @@ describe('container run', function () {
   })
 
   it('requires a process type', async function () {
-    let error
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
-    ]).catch(error_ => {
-      error = error_
-    })
+    ])
     const {message} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires one process type')
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 
   it('exits when the app stack is not "container"', async function () {
-    let error
     api
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
-    ]).catch(error_ => {
-      error = error_
-    })
+    ])
     const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.equal('This command is for Docker apps only.')
     expect(oclif.exit).to.equal(1)
-    expectOutput(stdout.output, '')
+    expectOutput(stdout, '')
   })
 
   context('when the app is a container app', function () {
@@ -67,13 +59,13 @@ describe('container run', function () {
         .returns(['/path/to/Dockerfile'])
       const run = sandbox.stub(DockerHelper.prototype, 'runImage')
         .withArgs('registry.heroku.com/testapp/web', '', 5000)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
       ])
-      expectOutput(stdout.output, '=== Running registry.heroku.com/testapp/web')
-      expectOutput(stderr.output, '')
+      expectOutput(stdout, '=== Running registry.heroku.com/testapp/web')
+      expectOutput(stderr, '')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(run)
     })
@@ -83,14 +75,14 @@ describe('container run', function () {
         .returns(['/path/to/Dockerfile'])
       const run = sandbox.stub(DockerHelper.prototype, 'runImage')
         .withArgs('registry.heroku.com/testapp/web', 'bash', 5000)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
         'bash',
       ])
-      expectOutput(stdout.output, '=== Running \'bash\' on registry.heroku.com/testapp/web')
-      expectOutput(stderr.output, '')
+      expectOutput(stdout, '=== Running \'bash\' on registry.heroku.com/testapp/web')
+      expectOutput(stderr, '')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(run)
     })
@@ -98,15 +90,14 @@ describe('container run', function () {
     it('requires a known dockerfile', async function () {
       const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns([])
-      await runCommand(Cmd, [
+      const {error, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'worker',
-      ]).catch((error: any) => {
-        expect(error.message).to.contain('No images to run')
-        expect(stdout.output).to.equal('')
-        sandbox.assert.calledOnce(dockerfiles)
-      })
+      ])
+      expect(error!.message).to.contain('No images to run')
+      expect(stdout).to.equal('')
+      sandbox.assert.calledOnce(dockerfiles)
     })
   })
 })

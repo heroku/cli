@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/set.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('accounts:set', function () {
   let listStub: sinon.SinonStub

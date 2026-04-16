@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/cancel.js'
-import runCommand from '../../../../helpers/legacy-run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -31,12 +30,12 @@ describe('pg:backups:cancel', function () {
     })
 
     it('cancels backup', async function () {
-      await runCommand(Cmd, [
+      const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Cancelling b003... done
       `)
     })
@@ -50,13 +49,13 @@ describe('pg:backups:cancel', function () {
     })
 
     it('cancels backup', async function () {
-      await runCommand(Cmd, [
+      const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
         'b003',
       ])
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Cancelling b003... done
       `)
     })

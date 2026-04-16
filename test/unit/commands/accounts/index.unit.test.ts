@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
-import {stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/accounts/index.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 
 describe('accounts', function () {
   let currentStub: sinon.SinonStub
@@ -22,8 +21,8 @@ describe('accounts', function () {
   it('should print a list of added accounts with the current account highlighted if accounts are found', async function () {
     currentStub.resolves('test-account')
     listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
-    await runCommand(Cmd, [])
-    expect(stdout.output).to.equal('* test-account\n  test-account-2\n')
+    const {stdout} = await runCommand(Cmd, [])
+    expect(stdout).to.equal('* test-account\n  test-account-2\n')
   })
 
   it('should print an error message if no accounts are found', async function () {

@@ -1,14 +1,13 @@
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
 import type {pg} from '@heroku/heroku-cli-util'
 
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {randomUUID} from 'node:crypto'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/diagnose.js'
-import runCommand from '../../../helpers/legacy-run-command.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
@@ -91,11 +90,11 @@ describe('pg:diagnose', function () {
         app: app.name, database: 'DATABASE_URL', metrics: [], plan: 'standard-0', url: dbURL,
       }).reply(200, report)
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         app.name,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report ${reportID} for ${app.name}::${report.database}
       available for one month after creation on 101
 
@@ -123,12 +122,12 @@ describe('pg:diagnose', function () {
           ], created_at: '101', database: addon.name, id: reportID,
         }
         diagnose.get(`/reports/${reportID}`).reply(200, report)
-        await runCommand(Cmd, [
+        const {stdout} = await runCommand(Cmd, [
           '--app',
           app.name,
           reportID,
         ])
-        expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+        expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
         Report ${reportID} for ${app.name}::${report.database}
         available for one month after creation on 101
 
@@ -166,11 +165,11 @@ describe('pg:diagnose', function () {
           app: app.name, database: 'HEROKU_POSTGRESQL_SILVER_URL', metrics: [], plan: 'standard-0', url: dbURL,
         })
           .reply(200, report)
-        await runCommand(Cmd, [
+        const {stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
         ])
-        expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+        expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
         Report ${reportID} for ${app.name}::${report.database}
         available for one month after creation on 101
 
@@ -208,12 +207,12 @@ describe('pg:diagnose', function () {
             app: app.name, database: 'DATABASE_URL', metrics: [], plan: 'standard-0', url: dbURL,
           })
             .reply(200, report)
-          await runCommand(Cmd, [
+          const {stdout} = await runCommand(Cmd, [
             '--app',
             'myapp',
             '--json',
           ])
-          expect(stdout.output).to.equal(JSON.stringify(report, null, 2) + '\n')
+          expect(stdout).to.equal(JSON.stringify(report, null, 2) + '\n')
         })
       })
     })
@@ -230,12 +229,12 @@ describe('pg:diagnose', function () {
             },
           ], created_at: '101', database: 'postgres-1', id,
         })
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         id,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report ${id} for myapp::postgres-1
       available for one month after creation on 101
 
@@ -258,12 +257,12 @@ describe('pg:diagnose', function () {
             },
           ], created_at: '2014-06-24 01:26:11.941197+00', database: 'dbcolor', id: 'abc123',
         })
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         id,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report abc123 for appname::dbcolor
       available for one month after creation on 2014-06-24 01:26:11.941197+00
 
@@ -294,12 +293,12 @@ describe('pg:diagnose', function () {
             },
           ], created_at: '2014-06-24 01:26:11.941197+00', database: 'dbcolor', id: 'abc123',
         })
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         id,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report abc123 for appname::dbcolor
       available for one month after creation on 2014-06-24 01:26:11.941197+00
 
