@@ -32,12 +32,9 @@ describe('rake', function () {
       throw err
     })
 
-    try {
-      await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
-      expect.fail('Expected command to throw error')
-    } catch (error: any) {
-      expect(error.message).to.equal('rake error')
-    }
+    const {error} = await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+    expect(error).to.exist
+    expect(error!.message).to.equal('rake error')
   })
 
   it('catches error without an exit code', async function () {
@@ -46,11 +43,8 @@ describe('rake', function () {
       throw err
     })
 
-    try {
-      await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
-      expect.fail('Expected command to throw error')
-    } catch (error: any) {
-      expect(error.message).to.equal('rake error')
-    }
+    const {error} = await runCommand(RakeCommand, ['--app=heroku-cli-ci-smoke-test-app', 'test'])
+    expect(error).to.exist
+    expect(error!.message).to.equal('rake error')
   })
 })

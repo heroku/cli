@@ -660,15 +660,16 @@ describe('pg:promote when release phase is present', function () {
     `))
   })
 
-  it('errors when there are no releases', function () {
+  it('errors when there are no releases', async function () {
     nock('https://api.heroku.com:')
       .get('/apps/myapp/releases')
       .reply(200, [])
-    return expect(runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'DATABASE',
-    ])).to.be.rejected
+    ])
+    expect(error).to.exist
   })
 })
 

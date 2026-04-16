@@ -95,7 +95,7 @@ describe('data:pg:upgrade:wait', function () {
       resolverStub.resolves(nonAdvancedAddonAttachment)
 
       const {error} = await runCommand(DataPgUpgradeWait, ['STANDARD_DATABASE', '--app=myapp'])
-      expect.fail('Expected command to throw an error')
+      expect(error).to.exist
       const err = error as Error
       expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
@@ -109,7 +109,7 @@ describe('data:pg:upgrade:wait', function () {
       resolverStub.resolves(advancedAddonAttachment)
 
       const {error} = await runCommand(DataPgUpgradeWait, ['DATABASE', '--app=myapp'])
-      expect.fail('Expected command to throw an error')
+      expect(error).to.exist
       const err = error as Error
       expect(err.message).to.include('Internal Server Error')
     })

@@ -35,16 +35,12 @@ describe('heroku apps:join', function () {
       code: 403, description: {error: 'You do not have access to the team heroku-tools.', id: 'forbidden'},
     }
     apiPostCollaborators = teamAppCollaborators('gandalf@heroku.com', [], response)
-    let thrown = false
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-      .catch(function (error) {
-        thrown = true
-        expect(error.body.error).to.eq('You do not have access to the team heroku-tools.')
-      })
-    expect(thrown).to.eq(true)
+    expect(error).to.exist
+    expect(error!.body.error).to.eq('You do not have access to the team heroku-tools.')
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })

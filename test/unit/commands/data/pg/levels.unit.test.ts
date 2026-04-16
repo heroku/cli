@@ -54,7 +54,7 @@ describe('data:pg:levels', () => {
       .reply(500, {id: 'server_error', message: 'Internal Server Error'})
 
     const {error} = await runCommand(DataPgLevels, [])
-    expect.fail('Expected command to throw an error')
+    expect(error).to.exist
     const err = error as Error
     expect(err.message).to.include('Internal Server Error')
   })
