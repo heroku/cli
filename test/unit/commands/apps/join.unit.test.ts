@@ -1,4 +1,5 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HTTPError} from '@heroku/http-call'
 import {expect} from 'chai'
 import nock from 'nock'
 
@@ -40,7 +41,7 @@ describe('heroku apps:join', function () {
       'myapp',
     ])
     expect(error).to.exist
-    expect(error!.body.error).to.eq('You do not have access to the team heroku-tools.')
+    expect((error as HTTPError).body.error).to.eq('You do not have access to the team heroku-tools.')
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })
