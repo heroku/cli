@@ -36,6 +36,7 @@ describe('logDisplayer', function () {
       public readyState: number = 0 // CONNECTING
       public url: string
       private errorCode: number
+      private timeouts: NodeJS.Timeout[] = []
 
       constructor(url: string, options?: any) {
         this.url = url
@@ -48,7 +49,7 @@ describe('logDisplayer', function () {
         }
 
         // Simulate connection attempt
-        setTimeout(() => {
+        const timeout1 = setTimeout(() => {
           // Check if this is the test that expects success (specific URL pattern for non-tail mode)
           const isSuccessTest = this.url.includes('logs.heroku.com') && this.url.includes('tail=false')
 
@@ -74,7 +75,7 @@ describe('logDisplayer', function () {
             }
 
             // Close after sending messages
-            setTimeout(() => {
+            const timeout2 = setTimeout(() => {
               this.close()
               // For non-tail mode, trigger error event to resolve the promise
               if (this.onerror) {
@@ -85,6 +86,7 @@ describe('logDisplayer', function () {
                 this.onerror(closeEvent)
               }
             }, 20)
+            this.timeouts.push(timeout2)
           } else if (this.onerror) {
             // Create a mock error event with status code
             const errorEvent = {
@@ -94,6 +96,7 @@ describe('logDisplayer', function () {
             this.onerror(errorEvent)
           }
         }, 10)
+        this.timeouts.push(timeout1)
       }
 
       addEventListener(type: string, listener: (event: any) => void) {
@@ -117,6 +120,11 @@ describe('logDisplayer', function () {
 
       close() {
         this.readyState = 2 // CLOSED
+        // Clear all pending timeouts to prevent them from running after tests complete
+        for (const timeout of this.timeouts) {
+          clearTimeout(timeout)
+        }
+        this.timeouts = []
       }
     }
 
@@ -131,6 +139,10 @@ describe('logDisplayer', function () {
     api?.done()
     if (createEventSourceStub) {
       createEventSourceStub.restore()
+    }
+    // Ensure displayer is cleaned up to avoid hanging
+    if (displayer) {
+      displayer = null as any
     }
   })
 
