@@ -1,15 +1,14 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
+import {createSandbox} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/index.js'
-import runCommand from '../../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
-const sandbox = sinon.createSandbox()
+const sandbox = createSandbox()
 const letsEncrypt = {
   domains: [],
   ssl_cert: {
@@ -68,14 +67,14 @@ describe('heroku certs:auto', function () {
         updated_at: now,
       }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
-    expect(stdout.output).to.include(heredoc`
+    expect(stderr).to.equal('')
+    expect(stdout).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
+    expect(stdout).to.include(heredoc`
       Certificate details:
       Common Name(s): heroku-acm.heroku-cli-sni-test.com
                       heroku-san-test.heroku-cli-sni-test.com
@@ -85,7 +84,7 @@ describe('heroku certs:auto', function () {
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
     `)
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                  Status Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com      OK     less than a minute
@@ -149,12 +148,12 @@ describe('heroku certs:auto', function () {
         updated_at: now,
       }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stdout.output).to.include(heredoc`
+    expect(stdout).to.include(heredoc`
       === Automatic Certificate Management is enabled on ⬢ example
 
       Certificate details:
@@ -166,7 +165,7 @@ describe('heroku certs:auto', function () {
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
     `)
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                      Status       Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com          OK           less than a minute
@@ -180,7 +179,7 @@ describe('heroku certs:auto', function () {
       === Some domains are failing validation, please verify that your DNS matches: heroku domains
           See our documentation at https://devcenter.heroku.com/articles/automated-certificate-management#failure-reasons
     `))
-    expect(stderr.output).to.equal('')
+    expect(stderr).to.equal('')
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
   })
@@ -226,13 +225,13 @@ describe('heroku certs:auto', function () {
         updated_at: now,
       }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    const actual = removeAllWhitespace(stdout.output)
+    expect(stderr).to.equal('')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                  Status  Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com      OK      less than a minute
@@ -280,13 +279,13 @@ describe('heroku certs:auto', function () {
         updated_at: now,
       }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.include(heredoc`
+    expect(stderr).to.equal('')
+    expect(stdout).to.include(heredoc`
       === Automatic Certificate Management is enabled on ⬢ example
 
       Certificate details:
@@ -298,7 +297,7 @@ describe('heroku certs:auto', function () {
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
     `)
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                  Status Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com      OK     less than a minute
@@ -342,15 +341,16 @@ describe('heroku certs:auto', function () {
         cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
         hostname: 'heroku-failed.heroku-cli-sni-test.com',
         kind: 'custom',
-        updated_at: now}])
+        updated_at: now,
+      }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.include(heredoc`
+    expect(stderr).to.equal('')
+    expect(stdout).to.include(heredoc`
       === Automatic Certificate Management is enabled on ⬢ example
 
       Certificate details:
@@ -362,7 +362,7 @@ describe('heroku certs:auto', function () {
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
     `)
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                  Status  Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com      OK      less than a minute
@@ -383,13 +383,13 @@ describe('heroku certs:auto', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [letsEncrypt])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
+    expect(stderr).to.equal('')
+    expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
   })
 
   it('displays message that there are no certificates', async function () {
@@ -419,14 +419,14 @@ describe('heroku certs:auto', function () {
         updated_at: now,
       }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
-    const actual = removeAllWhitespace(stdout.output)
+    expect(stderr).to.equal('')
+    expect(stdout).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                 Status  Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com     OK      less than a minute
@@ -444,16 +444,18 @@ describe('heroku certs:auto', function () {
       .reply(200, [])
       .get('/apps/example/domains')
       .reply(200, [
-        {acm_status: null, cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {
+          acm_status: null, cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku',
+        },
       ])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
+    expect(stderr).to.equal('')
+    expect(stdout).to.equal(heredoc`
       === Automatic Certificate Management is enabled on ⬢ example
 
       === Add a custom domain to your app by running: heroku domains:add <yourdomain.com>\n
@@ -467,13 +469,13 @@ describe('heroku certs:auto', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
+    expect(stderr).to.equal('')
+    expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
   })
 
   it('displays message that there are no ACM certificates', async function () {
@@ -485,13 +487,13 @@ describe('heroku certs:auto', function () {
       .get('/apps/example/domains')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal(heredoc`
+    expect(stderr).to.equal('')
+    expect(stdout).to.equal(heredoc`
       === Automatic Certificate Management is enabled on ⬢ example
 
       === Add a custom domain to your app by running: heroku domains:add <yourdomain.com>\n
@@ -505,13 +507,13 @@ describe('heroku certs:auto', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [selfSigned])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
+    expect(stderr).to.equal('')
+    expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
   })
 
   it('shows acm_status_reason', async function () {
@@ -537,13 +539,13 @@ describe('heroku certs:auto', function () {
         updated_at: now,
       }])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
 
-    expect(stderr.output).to.equal('')
-    expect(stdout.output).to.include(heredoc`
+    expect(stderr).to.equal('')
+    expect(stdout).to.include(heredoc`
       === Automatic Certificate Management is enabled on ⬢ example
 
       Certificate details:
@@ -555,7 +557,7 @@ describe('heroku certs:auto', function () {
       Subject:        /CN=heroku-acm.heroku-cli-sni-test.com
       SSL certificate is not trusted.
     `)
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain                                Status Reason                 Last Updated')
     const expected = removeAllWhitespace(heredoc(`
       heroku-acm.heroku-cli-sni-test.com    OK                            less than a minute
@@ -666,22 +668,22 @@ describe('heroku certs:auto', function () {
           updated_at: now,
         }])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
       ])
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Waiting until the certificate is issued to all domains... done
       `)
-      expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
+      expect(stdout).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
       const expectedHeader = removeAllWhitespace('Domain                                 Status      Last Updated')
       const expected = removeAllWhitespace(heredoc(`
         heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute
         heroku-failing.heroku-cli-sni-test.com Cert issued less than a minute
       `))
-      const actual = removeAllWhitespace(stdout.output)
+      const actual = removeAllWhitespace(stdout)
       expect(actual).to.include(expectedHeader)
       expect(actual).to.include(expected)
     })
@@ -770,17 +772,17 @@ describe('heroku certs:auto', function () {
           updated_at: now,
         }])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
       ])
 
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Waiting until the certificate is issued to all domains... !
       `)
-      expect(stdout.output).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
-      const actual = removeAllWhitespace(stdout.output)
+      expect(stdout).to.include('=== Automatic Certificate Management is enabled on ⬢ example')
+      const actual = removeAllWhitespace(stdout)
       const expectedHeader = removeAllWhitespace('Domain                                 Status      Last Updated')
       const expected = removeAllWhitespace(heredoc(`
         heroku-acm.heroku-cli-sni-test.com     Cert issued less than a minute

@@ -1,9 +1,10 @@
+/* eslint-disable n/no-unsupported-features/node-builtins */
+
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr} from 'stdout-stderr'
 
 import RunDetached from '../../../../src/commands/run/detached.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 describe('run:detached', function () {
   beforeEach(function () {
@@ -20,12 +21,11 @@ describe('run:detached', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    await runCommand(RunDetached, [
+    const {error} = await runCommand(RunDetached, [
       '--app',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.include('Usage: heroku run COMMAND')
-    })
+    ])
+    expect(error?.message).to.include('Usage: heroku run COMMAND')
   })
 
   it('creates a detached dyno', async function () {
@@ -48,14 +48,14 @@ describe('run:detached', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(RunDetached, [
+    const {stderr} = await runCommand(RunDetached, [
       '--app',
       'myapp',
       'echo',
       'test',
     ])
     // The command should output a message about viewing logs
-    expect(stderr.output).to.match(/Run.*heroku logs|Running.*done/)
+    expect(stderr).to.match(/Run.*heroku logs|Running.*done/)
   })
 
   it('streams logs when --tail is specified', async function () {
@@ -89,9 +89,9 @@ describe('run:detached', function () {
       })
 
     // Mock EventSource for log streaming
-    const originalEventSource = global.EventSource
+    const originalEventSource = globalThis.EventSource
     // @ts-expect-error - Mocking EventSource for testing
-    global.EventSource = class MockEventSource {
+    globalThis.EventSource = class MockEventSource {
       constructor(public url: string) {}
 
       addEventListener() {}
@@ -106,11 +106,10 @@ describe('run:detached', function () {
         '--tail',
         'echo',
         'test',
-      ]).catch(() => {
-        // Expected to fail when trying to connect to logs
-      })
+      ])
+      // Expected to fail when trying to connect to logs
     } finally {
-      global.EventSource = originalEventSource
+      globalThis.EventSource = originalEventSource
     }
   })
 })

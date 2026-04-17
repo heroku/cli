@@ -1,8 +1,7 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/backups/url.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+
+import Cmd from '../../../../../src/commands/pg/backups/url.js'
 
 const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
   beforeEach(function () {
@@ -22,20 +21,20 @@ const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
       nock('https://api.data.heroku.com')
         .get('/client/v11/apps/myapp/transfers')
         .reply(200, [
-          {succeeded: true, to_type: 'gof3r', num: 3},
+          {num: 3, succeeded: true, to_type: 'gof3r'},
         ])
     })
 
     it('shows URL', async function () {
-      await cmdRun(['--app', 'myapp'])
-      expectOutput(stdout.output, 'https://dburl')
+      const {stdout} = await cmdRun(['--app', 'myapp'])
+      expectOutput(stdout, 'https://dburl')
     })
   })
 
   context('with id', function () {
     it('shows URL', async function () {
-      await cmdRun(['--app', 'myapp', 'b003'])
-      expectOutput(stdout.output, 'https://dburl')
+      const {stdout} = await cmdRun(['--app', 'myapp', 'b003'])
+      expectOutput(stdout, 'https://dburl')
     })
   })
 }

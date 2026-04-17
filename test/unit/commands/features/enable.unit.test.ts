@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import FeaturesEnable from '../../../../src/commands/features/enable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('features:enable', function () {
   let api: nock.Scope

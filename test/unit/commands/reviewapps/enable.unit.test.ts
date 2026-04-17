@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import ReviewappsEnable from '../../../../src/commands/reviewapps/enable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('reviewapps:enable', function () {
   const pipeline = {

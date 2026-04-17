@@ -1,6 +1,6 @@
 import {PrivateSpacesVpn} from '@heroku-cli/schema'
+import {captureOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
 
 import {displayVPNConfigInfo} from '../../../../src/lib/spaces/vpn-connections.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
@@ -35,12 +35,12 @@ const vpnConnection: PrivateSpacesVpn = {
 }
 
 describe('displayVPNConfigInfo', function () {
-  it('displays VPN config info', function () {
-    stdout.start()
-    displayVPNConfigInfo('my-space', 'vpn-connection-name-config', vpnConnection)
-    stdout.stop()
+  it('displays VPN config info', async function () {
+    const {stdout} = await captureOutput(async () => {
+      displayVPNConfigInfo('my-space', 'vpn-connection-name-config', vpnConnection)
+    })
 
-    const actual = removeAllWhitespace(stdout.output)
+    const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== vpn-connection-name-config VPN Tunnels'))
     expect(actual).to.include(removeAllWhitespace('VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version'))
     expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1'))

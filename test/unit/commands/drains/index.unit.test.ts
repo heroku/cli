@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Drains from '../../../../src/commands/drains/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('drains', function () {
   let api: nock.Scope
@@ -17,12 +17,12 @@ describe('drains', function () {
     {
       ...DRAIN_W_ADDON,
       extended: {
-        drain_id: 12345,
+        drain_id: 12_345,
       },
     }, {
       ...DRAIN,
       extended: {
-        drain_id: 67890,
+        drain_id: 67_890,
       },
     },
   ]

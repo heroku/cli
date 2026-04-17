@@ -1,3 +1,4 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
@@ -5,8 +6,6 @@ import Cmd from '../../../../src/commands/spaces/info.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -31,7 +30,7 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
@@ -54,7 +53,7 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
       '--json',
@@ -69,7 +68,7 @@ describe('spaces:info', function () {
     api
       .get(`/spaces/${space.name}/nat`)
       .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
@@ -97,7 +96,7 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}/nat`)
       .reply(200, {sources: ['123.456.789.123'], state: 'disabled'})
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
@@ -121,7 +120,7 @@ describe('spaces:info', function () {
       .get(`/spaces/${space.name}`)
       .reply(200, space)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
@@ -143,7 +142,7 @@ describe('spaces:info', function () {
     api
       .get(`/spaces/${shieldSpace.name}`)
       .reply(200, shieldSpace)
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       shieldSpace.name,
     ])
@@ -166,7 +165,7 @@ describe('spaces:info', function () {
     api
       .get(`/spaces/${space.name}`)
       .reply(200, space)
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])

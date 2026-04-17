@@ -1,11 +1,11 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/certs/auto/enable.js'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
-import nock from 'nock'
 import lolex from 'lolex'
+import nock from 'nock'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/certs/auto/enable.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 const heredoc = tsheredoc.default
 const sandbox = sinon.createSandbox()
@@ -22,16 +22,16 @@ describe('heroku certs:auto:enable', function () {
     const domainsApi = nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'foo.example.org.herokudns.com', hostname: 'foo.example.org', kind: 'custom'},
       ])
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'foo.example.org.herokudns.com', hostname: 'foo.example.org', kind: 'custom'},
       ])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
@@ -39,10 +39,10 @@ describe('heroku certs:auto:enable', function () {
     domainsApi.done()
     acmApi.done()
 
-    expect(stderr.output).to.equal(heredoc`
+    expect(stderr).to.equal(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
-    expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
+    expect(stdout).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
   })
 
   it('enables acm with changed domains', async function () {
@@ -52,19 +52,19 @@ describe('heroku certs:auto:enable', function () {
     const domainsApi = nock('https://api.heroku.com')
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'haiku.not-stable-dns.heroku.com'},
-        {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'haiku.not-stable-dns.heroku.com', hostname: 'foo.example.org', kind: 'custom'},
+        {cname: 'bar.example.org.herokudns.com', hostname: 'bar.example.org', kind: 'custom'},
       ])
       .get('/apps/example/domains')
       .reply(200, [
-        {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-        {kind: 'custom', hostname: 'foo.example.org', cname: 'foo.example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'bar.example.org', cname: 'bar.example.org.herokudns.com'},
-        {kind: 'custom', hostname: 'mis.example.org', cname: 'mis.example.org.herokudns.com'},
+        {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+        {cname: 'foo.example.org.herokudns.com', hostname: 'foo.example.org', kind: 'custom'},
+        {cname: 'bar.example.org.herokudns.com', hostname: 'bar.example.org', kind: 'custom'},
+        {cname: 'mis.example.org.herokudns.com', hostname: 'mis.example.org', kind: 'custom'},
       ])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
@@ -72,11 +72,11 @@ describe('heroku certs:auto:enable', function () {
     domainsApi.done()
     acmApi.done()
 
-    expect(stderr.output).to.equal(heredoc`
+    expect(stderr).to.equal(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
-    expect(stdout.output).to.include("=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Update your application's DNS settings as follows")
-    const actual = removeAllWhitespace(stdout.output)
+    expect(stdout).to.include("=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Update your application's DNS settings as follows")
+    const actual = removeAllWhitespace(stdout)
     const expectedHeader = removeAllWhitespace('Domain          Record Type DNS Target')
     const expectedRow = removeAllWhitespace('foo.example.org CNAME foo.example.org.herokudns.com')
     expect(actual).to.include(expectedHeader)
@@ -93,7 +93,7 @@ describe('heroku certs:auto:enable', function () {
       .get('/apps/example/domains')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
@@ -101,12 +101,10 @@ describe('heroku certs:auto:enable', function () {
     domainsApi.done()
     acmApi.done()
 
-    expect(stderr.output).to.equal(heredoc`
+    expect(stderr).to.equal(heredoc`
       Enabling Automatic Certificate Management... starting. See status with heroku certs:auto or wait until active with heroku certs:auto --wait
     `)
-    expect(stdout.output).to.equal(
-      '=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n\n',
-    )
+    expect(stdout).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.  Add a custom domain to your app by running heroku domains:add <yourdomain.com>\n\n')
   })
 
   context('--wait', function () {
@@ -134,36 +132,52 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'in-progress', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'in-progress', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'dns-verified', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failing', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'dns-verified', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failing', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
@@ -173,11 +187,11 @@ describe('heroku certs:auto:enable', function () {
       acmApi.done()
 
       expect(notifySpy.called).to.equal(true)
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... done
       `)
-      expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
+      expect(stdout).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
     })
 
     it('waits until all certs are issued or failed and notifies', async function () {
@@ -189,45 +203,57 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'in-progress', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'in-progress', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'dns-verified', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failing', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'dns-verified', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failing', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failed', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failed', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
-      await runCommand(Cmd, [
+      const {error, stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
-      ]).catch(function (error) {
-        domainsApi.done()
-        acmApi.done()
+      ])
+      domainsApi.done()
+      acmApi.done()
 
-        expect(error.message).to.equal('ACM not enabled for some domains')
-        expect(notifySpy.called).to.equal(true)
-        expect(stderr.output).to.equal(heredoc`
-          Enabling Automatic Certificate Management... starting.
-          Waiting until the certificate is issued to all domains... !
-        `)
-        expect(stdout.output).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n\n')
-      })
+      expect(error).to.exist
+      expect(error!.message).to.equal('ACM not enabled for some domains')
+      expect(notifySpy.called).to.equal(true)
+      expect(stderr).to.equal(heredoc`
+        Enabling Automatic Certificate Management... starting.
+        Waiting until the certificate is issued to all domains... !
+      `)
+      expect(stdout).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n\n')
     })
 
     it('waits until all certs are failed and notifies', async function () {
@@ -239,45 +265,57 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'in-progress', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'in-progress', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'in-progress', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'dns-verified', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failing', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'dns-verified', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failing', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failed', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'failed', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'failed', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'failed', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
-      await runCommand(Cmd, [
+      const {error, stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
-      ]).catch(function (error: Error) {
-        domainsApi.done()
-        acmApi.done()
+      ])
+      domainsApi.done()
+      acmApi.done()
 
-        expect(error.message).to.equal('ACM not enabled for some domains')
-        expect(notifySpy.called).to.equal(true)
-        expect(stderr.output).to.equal(heredoc`
-          Enabling Automatic Certificate Management... starting.
-          Waiting until the certificate is issued to all domains... !
-        `)
-        expect(stdout.output).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n\n')
-      })
+      expect(error).to.exist
+      expect(error!.message).to.equal('ACM not enabled for some domains')
+      expect(notifySpy.called).to.equal(true)
+      expect(stderr).to.equal(heredoc`
+        Enabling Automatic Certificate Management... starting.
+        Waiting until the certificate is issued to all domains... !
+      `)
+      expect(stdout).to.equal('=== Error: The certificate could not be issued to all domains. See status with heroku certs:auto.\n\n')
     })
 
     it('does not wait if all certs are issued when first checked', async function () {
@@ -289,24 +327,32 @@ describe('heroku certs:auto:enable', function () {
       const domainsApi = nock('https://api.heroku.com')
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com'},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com'},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom'},
+          {cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom'},
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
         .get('/apps/example/domains')
         .reply(200, [
-          {kind: 'heroku', hostname: 'tokyo-1050.herokuapp.com', cname: null},
-          {kind: 'custom', hostname: 'heroku-acm.heroku-cli-sni-test.com', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
-          {kind: 'custom', hostname: 'heroku-san-test.heroku-cli-sni-test.com', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', acm_status: 'cert issued', updated_at: now},
+          {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
+          {
+            acm_status: 'cert issued', cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-acm.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
+          {
+            acm_status: 'cert issued', cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com', hostname: 'heroku-san-test.heroku-cli-sni-test.com', kind: 'custom', updated_at: now,
+          },
         ])
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
@@ -316,10 +362,10 @@ describe('heroku certs:auto:enable', function () {
       acmApi.done()
 
       expect(notifySpy.called).to.equal(true)
-      expect(stderr.output).to.equal(heredoc`
+      expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
       `)
-      expect(stdout.output).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
+      expect(stdout).to.equal('=== Your certificate will now be managed by Heroku. Check the status by running heroku certs:auto.\n\n')
     })
   })
 })

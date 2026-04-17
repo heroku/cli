@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/spaces/create.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default
@@ -45,7 +45,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -88,7 +88,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -121,7 +121,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -166,7 +166,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -200,7 +200,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -245,7 +245,7 @@ describe('spaces:create', function () {
       })
       .reply(201, firSpace)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team',
       firSpace.team.name,
       '--space',

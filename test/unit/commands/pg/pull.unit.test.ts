@@ -1,11 +1,13 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import childProcess from 'node:child_process'
-import sinon from 'sinon'
+import {
+  match, restore, SinonStub, stub,
+} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/pull.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -14,8 +16,8 @@ describe('pg:pull', function () {
   const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', 'mydb']
   const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-d', 'localdb']
   let db: pg.ConnectionDetails
-  let createDbStub: sinon.SinonStub
-  let spawnStub: sinon.SinonStub
+  let createDbStub: SinonStub
+  let spawnStub: SinonStub
   let env: NodeJS.ProcessEnv
 
   const exitHandler = (_key: string, func: CallableFunction) => {
@@ -40,22 +42,22 @@ describe('pg:pull', function () {
       user: 'jeff',
     } as pg.ConnectionDetails
 
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('00')
-    sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+    stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('00')
+    stub(utils.pg.psql, 'sshTunnel').resolves()
 
-    sinon.stub(Math, 'random').callsFake(() => 0)
-    createDbStub = sinon.stub(childProcess, 'execSync')
-    spawnStub = sinon.stub(childProcess, 'spawn')
+    stub(Math, 'random').callsFake(() => 0)
+    createDbStub = stub(childProcess, 'execSync')
+    spawnStub = stub(childProcess, 'spawn')
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
 
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
@@ -64,7 +66,7 @@ describe('pg:pull', function () {
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     process.env = env
   })
 

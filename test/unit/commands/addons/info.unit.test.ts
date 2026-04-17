@@ -1,10 +1,9 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/addons/info.js'
 import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const {cache} = resolveAddon
 
@@ -129,7 +128,7 @@ State:        created\n
   context('with add-ons with grandfathered pricing', function () {
     beforeEach(function () {
       const addon = fixtures.addons['dwh-db']
-      addon.billed_price = {cents: 10000}
+      addon.billed_price = {cents: 10_000}
       apiSdk
         .post('/actions/addons/resolve', {addon: 'dwh-db', app: null})
         .reply(200, [addon])

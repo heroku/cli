@@ -1,11 +1,10 @@
 import * as Heroku from '@heroku-cli/schema'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/links/index.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../../helpers/run-command.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -43,7 +42,7 @@ describe('pg:links', function () {
       .get(`/client/v11/databases/${addon.id}/links`)
       .reply(200, [redisLink])
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       appName,
     ])
@@ -64,7 +63,7 @@ describe('pg:links', function () {
       .get(`/client/v11/databases/${addon.id}/links`)
       .reply(200, [redisLink])
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'test-database',

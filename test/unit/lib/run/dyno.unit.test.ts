@@ -1,6 +1,7 @@
+import {APIClient} from '@heroku-cli/command'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import {APIClient} from '@heroku-cli/command'
+
 import Dyno, {DynoOpts} from '../../../../src/lib/run/dyno.js'
 
 describe('Dyno', function () {
@@ -11,8 +12,8 @@ describe('Dyno', function () {
     sandbox = sinon.createSandbox()
     mockHeroku = {
       get: sandbox.stub(),
-      post: sandbox.stub(),
       options: {},
+      post: sandbox.stub(),
     } as unknown as APIClient
   })
 

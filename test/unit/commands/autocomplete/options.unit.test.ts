@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Args, Config} from '@oclif/core'
 import {expect} from 'chai'
-import * as path from 'path'
-import {fileURLToPath} from 'url'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,15 +16,11 @@ class TestCommand extends Command {
   static args = {
     app: Args.string({required: false}),
   }
-
   static command = 'bar'
-
   static description = 'baz'
-
   static flags = {
     app: flags.app(),
   }
-
   static topic = 'foo'
 
   async run() {

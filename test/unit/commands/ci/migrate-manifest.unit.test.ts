@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {promises as fs} from 'node:fs'
 
 import CiMigrateManifest from '../../../../src/commands/ci/migrate-manifest.js'
-import {runCommand} from '../../../helpers/run-command.js'
 const {readFile, unlink, writeFile} = fs
 const unlinkFile = unlink
 

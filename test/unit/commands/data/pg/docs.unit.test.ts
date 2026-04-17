@@ -1,18 +1,18 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DataPgDocs from '../../../../../src/commands/data/pg/docs.js'
-import runCommand from '../../../../../test/helpers/runCommand.js'
 
 describe('data:pg:docs', function () {
-  let urlOpenerStub: sinon.SinonStub
+  let urlOpenerStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = sinon.stub(DataPgDocs.prototype, 'openUrl').resolves()
+    urlOpenerStub = stub(DataPgDocs.prototype, 'openUrl').resolves()
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('opens the default documentation URL', async function () {

@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/spaces/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces', function () {
@@ -51,14 +51,14 @@ describe('spaces', function () {
   it('shows spaces scoped by teams', async function () {
     api
       .get('/spaces')
-      .reply(200, spaces.concat([{
+      .reply(200, [...spaces, {
         created_at: now.toISOString(),
         generation: 'cedar',
         name: 'other-space',
         region: {name: 'my-region'},
         state: 'allocated',
         team: {name: 'other-team'},
-      }]))
+      }])
 
     const {stdout} = await runCommand(Cmd, ['--team', 'my-team'])
     const actual = removeAllWhitespace(stdout)

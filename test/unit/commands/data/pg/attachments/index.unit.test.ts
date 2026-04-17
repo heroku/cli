@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import DataPgAttachmentsIndex from '../../../../../../src/commands/data/pg/attachments/index.js'
 import {
@@ -13,7 +13,6 @@ import {
   nonAdvancedAddon,
   singleAttachmentResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../../../helpers/utils/remove-whitespaces.js'
 
 describe('data:pg:attachments', function () {
@@ -22,20 +21,15 @@ describe('data:pg:attachments', function () {
       .post('/actions/addons/resolve')
       .reply(200, [nonAdvancedAddon])
 
-    try {
-      await runCommand(DataPgAttachmentsIndex, [
-        'DATABASE',
-        '--app=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgAttachmentsIndex, [
+      'DATABASE',
+      '--app=myapp',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal(
-        'You can only use this command on Advanced-tier databases.\n'
-         + 'Use heroku addons:info standard-database -a myapp instead.',
-      )
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
+         + 'Use heroku addons:info standard-database -a myapp instead.')
   })
 
   describe('when attachments exist', function () {
@@ -49,12 +43,12 @@ describe('data:pg:attachments', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      const output = ansis.strip(removeAllWhitespace(stdout.output))
+      expect(stderr).to.equal('')
+      const output = ansis.strip(removeAllWhitespace(stdout))
       expect(output).to.include(removeAllWhitespace('Attachments for ⛁ advanced-horizontal-01234'))
       expect(output).to.include(removeAllWhitespace('Attachment Credential Pool'))
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE u2vi1nt40t3mcq (owner) leader'))
@@ -70,12 +64,12 @@ describe('data:pg:attachments', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      const output = ansis.strip(removeAllWhitespace(stdout.output))
+      expect(stderr).to.equal('')
+      const output = ansis.strip(removeAllWhitespace(stdout))
       expect(output).to.include(removeAllWhitespace('Attachments for ⛁ advanced-horizontal-01234'))
       expect(output).to.include(removeAllWhitespace('Attachment Credential Pool'))
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE u2vi1nt40t3mcq (owner) leader'))
@@ -94,12 +88,12 @@ describe('data:pg:attachments', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      const output = ansis.strip(removeAllWhitespace(stdout.output))
+      expect(stderr).to.equal('')
+      const output = ansis.strip(removeAllWhitespace(stdout))
       expect(output).to.include(removeAllWhitespace('Attachments for ⛁ advanced-horizontal-01234'))
       expect(output).to.include(removeAllWhitespace('Attachment Credential Pool'))
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE u2vi1nt40t3mcq (owner) leader'))
@@ -118,12 +112,12 @@ describe('data:pg:attachments', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(stdout.output)).to.equal('No attachments found for this database.\n')
+      expect(stderr).to.equal('')
+      expect(ansis.strip(stdout)).to.equal('No attachments found for this database.\n')
     })
   })
 })

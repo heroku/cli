@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Index from '../../../../../src/commands/webhooks/deliveries/index.js'
-import {runCommand} from '../../../../helpers/run-command.js'
-import normalizeTableOutput from '../../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 describe('webhooks:deliveries', function () {
   let api: nock.Scope
@@ -58,7 +58,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
+      const {stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -88,7 +88,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app', '--status', 'pending'])
+      const {stdout} = await runCommand(Index, ['--app', 'example-app', '--status', 'pending'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -191,7 +191,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
+      const {stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt

@@ -1,22 +1,20 @@
+import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
-import {hux} from '@heroku/heroku-cli-util'
+import {SinonStub, stub} from 'sinon'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('domains', function () {
-  let confirmStub: sinon.SinonStub
+  let confirmStub: SinonStub
   let api: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    confirmStub = sinon
-      .stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
+    confirmStub = stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
       .resolves(true)
   })
 
@@ -24,8 +22,6 @@ describe('domains', function () {
     api.done()
     confirmStub.restore()
     nock.cleanAll()
-    stdout.stop()
-    stderr.stop()
   })
 
   const herokuOnlyDomainsResponse = [
@@ -121,9 +117,7 @@ describe('domains', function () {
     api.get('/apps/myapp/domains').reply(200, herokuOnlyDomainsResponse)
 
     const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
-    expect(stdout).to.contain(
-      '=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com',
-    )
+    expect(stdout).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
     expect(stdout).to.contain('myapp.herokuapp.com')
     expect(stdout).to.not.contain('=== ⬢ myapp Custom Domains')
   })
@@ -133,23 +127,13 @@ describe('domains', function () {
 
     const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     const actual = removeAllWhitespace(stdout)
-    expect(stdout).to.contain(
-      '=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com',
-    )
+    expect(stdout).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
     expect(stdout).to.contain('myapp.herokuapp.com')
     expect(stdout).to.contain('=== ⬢ myapp Custom Domains')
-    expect(actual).to.contain(
-      removeAllWhitespace('Domain Name     DNS Record Type DNS Target'),
-    )
-    expect(actual).to.contain(
-      removeAllWhitespace('example.com     ALIAS or ANAME  foo.herokudns.com'),
-    )
-    expect(actual).to.contain(
-      removeAllWhitespace('www.example.com CNAME           bar.herokudns.com'),
-    )
-    expect(actual).to.contain(
-      removeAllWhitespace('*.example.com   CNAME           buzz.herokudns.com'),
-    )
+    expect(actual).to.contain(removeAllWhitespace('Domain Name     DNS Record Type DNS Target'))
+    expect(actual).to.contain(removeAllWhitespace('example.com     ALIAS or ANAME  foo.herokudns.com'))
+    expect(actual).to.contain(removeAllWhitespace('www.example.com CNAME           bar.herokudns.com'))
+    expect(actual).to.contain(removeAllWhitespace('*.example.com   CNAME           buzz.herokudns.com'))
   })
 
   it('shows the SNI endpoint column when multiple sni endpoints are enabled', async function () {
@@ -157,16 +141,8 @@ describe('domains', function () {
 
     const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     const actual = removeAllWhitespace(stdout)
-    expect(actual).to.contain(
-      removeAllWhitespace(
-        'Domain Name   DNS Record Type DNS Target         SNI Endpoint',
-      ),
-    )
-    expect(actual).to.contain(
-      removeAllWhitespace(
-        '*.example.com CNAME           buzz.herokudns.com some haiku',
-      ),
-    )
+    expect(actual).to.contain(removeAllWhitespace('Domain Name   DNS Record Type DNS Target         SNI Endpoint'))
+    expect(actual).to.contain(removeAllWhitespace('*.example.com CNAME           buzz.herokudns.com some haiku'))
   })
 
   it('shows warning message for over 100 domains', async function () {
@@ -192,14 +168,12 @@ describe('domains', function () {
 
     const {stderr, stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     expect(stdout).to.contain('=== ⬢ myapp Heroku Domain')
-    expect(unwrap(stderr)).to.contain(
-      'Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.',
-    )
+    expect(unwrap(stderr)).to.contain('Warning: This app has over 100 domains. Your terminal may not be configured to display the total amount of domains.')
   })
 
   it('passes no-wrap option through to table rendering', async function () {
     api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
-    const tableStub = sinon.stub(hux, 'table')
+    const tableStub = stub(hux, 'table')
 
     await runCommand(DomainsIndex, ['--app', 'myapp', '--no-wrap'])
 

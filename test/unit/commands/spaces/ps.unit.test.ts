@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Ps from '../../../../src/commands/spaces/ps.js'
 import {ago} from '../../../../src/lib/time.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -162,6 +162,7 @@ describe('spaces:ps', function () {
 
     const parsed = JSON.parse(stdout)
     // Convert Date objects to ISO strings for comparison
+    // eslint-disable-next-line unicorn/prefer-structured-clone
     const expectedWithIsoStrings = JSON.parse(JSON.stringify(spaceDynos))
     expect(parsed).to.eql(expectedWithIsoStrings)
   })

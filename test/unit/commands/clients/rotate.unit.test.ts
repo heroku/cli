@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import ClientsRotate from '../../../../src/commands/clients/rotate.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:rotate', function () {
   let api: nock.Scope
@@ -60,9 +60,7 @@ describe('clients:rotate', function () {
       const {stderr, stdout} = await runCommand(ClientsRotate, [id, '--shell'])
 
       expect(stderr).to.contain('Updating f6e8d969-129f-42d2-854b-c2eca9d5a42e... done\n')
-      expect(stdout).to.equal(
-        'HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=supersecretkey\n',
-      )
+      expect(stdout).to.equal('HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=supersecretkey\n')
     })
   })
 })

@@ -1,7 +1,6 @@
 import {register} from 'node:module'
-import {pathToFileURL} from 'node:url'
-import {fileURLToPath} from 'node:url'
 import path from 'node:path'
+import {fileURLToPath, pathToFileURL} from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

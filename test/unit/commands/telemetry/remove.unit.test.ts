@@ -1,12 +1,11 @@
-import {stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/remove.js'
-import runCommand from '../../../helpers/runCommand.js'
-import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import tsheredoc from 'tsheredoc'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {spaceTelemetryDrain1, appTelemetryDrain1, appTelemetryDrain2} from '../../../fixtures/telemetry/fixtures.js'
+import nock from 'nock'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/telemetry/remove.js'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
+import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
 const heredoc = tsheredoc.default
 
@@ -35,10 +34,10 @@ describe('telemetry:remove', function () {
       .delete(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       spaceTelemetryDrain1.id,
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Removing telemetry drain ${spaceTelemetryDrain1.id}... done
     `))
   })
@@ -51,10 +50,10 @@ describe('telemetry:remove', function () {
       .delete(`/telemetry-drains/${appTelemetryDrain1.id}`)
       .reply(200, appTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       appTelemetryDrain1.id,
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Removing telemetry drain ${appTelemetryDrain1.id}... done
     `))
   })
@@ -70,10 +69,10 @@ describe('telemetry:remove', function () {
       .delete(`/telemetry-drains/${appTelemetryDrain2.id}`)
       .reply(200, appTelemetryDrain2)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app', appId,
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Removing all telemetry drains from app ${appId}... done
     `))
   })
@@ -86,18 +85,17 @@ describe('telemetry:remove', function () {
       .delete(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--space', spaceId,
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Removing all telemetry drains from space ${spaceId}... done
     `))
   })
 
   it('requires a telemetry id, an app id, or a space id', async function () {
     const errorMessage = 'Requires either --app or --space or a TELEMETRY_DRAIN_ID to be provided.'
-    await runCommand(Cmd, []).catch(error => {
-      expect(error.message).to.contain(errorMessage)
-    })
+    const {error} = await runCommand(Cmd, [])
+    expect(error?.message).to.contain(errorMessage)
   })
 })

@@ -1,27 +1,27 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/attach.js'
 import ConfirmCommand from '../../../../src/lib/confirm-command.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
-let confirmStub: sinon.SinonStub
+let confirmStub: SinonStub
 
 describe('addons:attach', function () {
   let api: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    confirmStub = sinon.stub(ConfirmCommand.prototype, 'confirm').resolves()
+    confirmStub = stub(ConfirmCommand.prototype, 'confirm').resolves()
   })
 
   afterEach(function () {
     confirmStub.restore()
     api.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   it('attaches an add-on', async function () {

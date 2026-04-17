@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import PipelinesDiff from '../../../../src/commands/pipelines/diff.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:diff', function () {
   const pipelineWithGeneration = {

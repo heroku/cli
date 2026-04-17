@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import AuthorizationsUpdate from '../../../../src/commands/authorizations/update.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:update', function () {
   let api: nock.Scope
@@ -33,16 +33,12 @@ describe('authorizations:update', function () {
         },
       )
 
-    const {stdout} = await runCommand(
-      AuthorizationsUpdate, [authorizationID, '--client-id', '100', '--client-secret', 'secret', '--description', 'awesome'],
-    )
+    const {stdout} = await runCommand(AuthorizationsUpdate, [authorizationID, '--client-id', '100', '--client-secret', 'secret', '--description', 'awesome'])
 
-    expect(stdout).to.eq(
-      'Client:      <none>\n'
+    expect(stdout).to.eq('Client:      <none>\n'
       + 'ID:          100\n'
       + 'Description: awesome\n'
       + 'Scope:       global\n'
-      + 'Token:       secrettoken\n',
-    )
+      + 'Token:       secrettoken\n')
   })
 })

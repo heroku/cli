@@ -1,10 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/container/rm.js'
-import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import nock from 'nock'
-import {expect} from 'chai'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
+import {expect} from 'chai'
+import nock from 'nock'
+
+import Cmd from '../../../../src/commands/container/rm.js'
 
 describe('container removal', function () {
   let api: nock.Scope
@@ -18,34 +17,28 @@ describe('container removal', function () {
   })
 
   it('requires a container to be specified', async function () {
-    let error
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
-    ]).catch((error_: any) => {
-      error = error_
-    })
+    ])
     const {message} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires one or more process types')
-    expectOutput(stdout.output, '')
+    expectOutput(stdout, '')
   })
 
   it('exits when the app stack is not "container"', async function () {
-    let error
     api
       .get('/apps/testapp')
       .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
-    ]).catch((error_: any) => {
-      error = error_
-    })
+    ])
     const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.equal('This command is for Docker apps only.')
     expect(oclif.exit).to.equal(1)
-    expectOutput(stdout.output, '')
+    expectOutput(stdout, '')
   })
 
   context('when the app is a container app', function () {
@@ -65,13 +58,13 @@ describe('container removal', function () {
       apiV3DockerRelease
         .patch('/apps/testapp/formation/web')
         .reply(200, {})
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
       ])
-      expectOutput(stdout.output, '')
-      expect(stderr.output).to.contain('Removing container web for ⬢ testapp... done')
+      expectOutput(stdout, '')
+      expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
     })
 
     it('removes two containers', async function () {
@@ -80,15 +73,15 @@ describe('container removal', function () {
         .reply(200, {})
         .patch('/apps/testapp/formation/worker')
         .reply(200, {})
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
         'worker',
       ])
-      expectOutput(stdout.output, '')
-      expect(stderr.output).to.contain('Removing container web for ⬢ testapp... done')
-      expect(stderr.output).to.contain('Removing container worker for ⬢ testapp... done')
+      expectOutput(stdout, '')
+      expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
+      expect(stderr).to.contain('Removing container worker for ⬢ testapp... done')
     })
   })
 })

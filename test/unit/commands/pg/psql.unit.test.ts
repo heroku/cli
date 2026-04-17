@@ -1,57 +1,57 @@
-import {stdout, stderr} from 'stdout-stderr'
-import {expect} from 'chai'
-import * as sinon from 'sinon'
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
+import {restore, stub} from 'sinon'
+
 import Cmd from '../../../../src/commands/pg/psql.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 const db = {
-  user: 'jeff',
-  host: 'localhost',
-  password: 'pass',
-  pathname: '/corn',
-  database: 'mydb',
-  url: 'postgres://jeff:pass@localhost:5432/corn',
-  port: '5432',
   attachment: {
     addon: {
       name: 'postgres-1',
     },
-    config_vars: ['DATABASE_URL'],
     app: {name: 'myapp'},
+    config_vars: ['DATABASE_URL'],
   },
+  database: 'mydb',
+  host: 'localhost',
+  password: 'pass',
+  pathname: '/corn',
+  port: '5432',
+  url: 'postgres://jeff:pass@localhost:5432/corn',
+  user: 'jeff',
 } as unknown as pg.ConnectionDetails
 
 describe('psql', function () {
   beforeEach(function () {
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
-    sinon.stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
+    stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
+    stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('runs psql', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--command',
       'SELECT 1',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('--> Connecting to ⛁ postgres-1\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('--> Connecting to ⛁ postgres-1\n')
   })
 
   it('runs psql with file', async function () {
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--file',
       'test.sql',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('--> Connecting to ⛁ postgres-1\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('--> Connecting to ⛁ postgres-1\n')
   })
 })

@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import PipelinesUpdate from '../../../../src/commands/pipelines/update.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:update', function () {
   const app = 'example'

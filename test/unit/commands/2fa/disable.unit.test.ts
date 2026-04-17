@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 
 import Disable from '../../../../src/commands/auth/2fa/disable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('2fa:disable remove', function () {
   it('shows error when trying to disable 2fa', async function () {

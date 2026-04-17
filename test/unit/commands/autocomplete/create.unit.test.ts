@@ -1,8 +1,8 @@
 import {Config, Plugin} from '@oclif/core'
 import {expect} from 'chai'
 import fs from 'fs-extra'
-import * as path from 'path'
-import {fileURLToPath} from 'url'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 import Create from '../../../../src/commands/autocomplete/create.js'
 
@@ -58,9 +58,7 @@ describe('private methods', function () {
   })
 
   it('#genCmdWithDescription', function () {
-    expect(cmd.genCmdWithDescription(Klass)).to.eq(
-      '"autocomplete\\:foo":"foo cmd for autocomplete testing"',
-    )
+    expect(cmd.genCmdWithDescription(Klass)).to.eq(String.raw`"autocomplete\:foo":"foo cmd for autocomplete testing"`)
   })
 
   it('#genCmdPublicFlags', function () {
@@ -157,7 +155,7 @@ compinit;
   })
 
   it('#genZshAllCmdsListSetter', function () {
-    const cmdsWithDesc = ['"foo\\:alpha":"foo:alpha description"', '"foo\\:beta":"foo:beta description"']
+    const cmdsWithDesc = [String.raw`"foo\:alpha":"foo:alpha description"`, String.raw`"foo\:beta":"foo:beta description"`]
     expect(cmd.genZshAllCmdsListSetter(cmdsWithDesc)).to.eq(`
 _set_all_commands_list () {
 _all_commands_list=(

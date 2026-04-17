@@ -1,11 +1,10 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/maxmemory.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 const heredoc = tsheredoc.default

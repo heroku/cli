@@ -1,13 +1,13 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {got} from 'got'
 import nock from 'nock'
 import {PassThrough} from 'node:stream'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/ci/rerun.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
 import {fileService} from '../../../../src/lib/ci/source.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:rerun', function () {
   let api: nock.Scope
@@ -52,10 +52,10 @@ describe('ci:rerun', function () {
       pipeline: {id: pipeline.id},
       status: 'succeeded',
     }
-    let sandbox: ReturnType<typeof sinon.createSandbox>
+    let sandbox: ReturnType<typeof createSandbox>
 
     beforeEach(function () {
-      sandbox = sinon.createSandbox()
+      sandbox = createSandbox()
 
       // Stub gitService methods
       sandbox.stub(gitService, 'githubRepository').resolves({repo: ghRepository.repo, user: ghRepository.user} as any)
@@ -131,12 +131,12 @@ describe('ci:rerun', function () {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              github: {user_id: 306015},
+              github: {user_id: 306_015},
               heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
-              id: 138865824,
+              id: 138_865_824,
               name: 'raulb/atleti',
               type: 'github',
             },
@@ -194,12 +194,12 @@ describe('ci:rerun', function () {
             ci: true,
             organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
             owner: {
-              github: {user_id: 306015},
+              github: {user_id: 306_015},
               heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
               id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
             },
             repository: {
-              id: 138865824,
+              id: 138_865_824,
               name: 'raulb/atleti',
               type: 'github',
             },

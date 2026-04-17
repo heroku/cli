@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksInfo from '../../../../src/commands/buildpacks/info.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:info', function () {
   let registryApi: nock.Scope

@@ -1,11 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import Ci from '../../../../src/commands/ci/index.js'
 import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import customRunCommand from '../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('ci', function () {
@@ -33,7 +32,7 @@ describe('ci', function () {
     const statuses = ['succeeded', 'errored', 'failed', 'creating', 'cancelled', 'foo', '']
     const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
-    let promptStub: sinon.SinonStub
+    let promptStub: SinonStub
 
     const chosenOption = {
       pipeline: {
@@ -90,7 +89,8 @@ describe('ci', function () {
     it('returns pipeline id', async function () {
       api
         .get(`/pipelines/${pipeline.id}`)
-        .reply(200,
+        .reply(
+          200,
           {
             id: pipeline.id,
             name: pipeline.id,
@@ -116,7 +116,7 @@ describe('ci', function () {
 
     describe('specifying a pipeline with prompt', function () {
       beforeEach(function () {
-        promptStub = sinon.stub(PipelineService.prototype, 'promptForPipeline')
+        promptStub = stub(PipelineService.prototype, 'promptForPipeline')
         promptStub.onFirstCall().resolves(chosenOption)
       })
 
@@ -147,7 +147,7 @@ describe('ci', function () {
           .get(`/pipelines/${pipeline.id}/test-runs`)
           .reply(200, testRuns)
 
-        await customRunCommand(Ci, [`--pipeline=${pipeline.name}`])
+        await runCommand(Ci, [`--pipeline=${pipeline.name}`])
 
         expect(promptStub.calledOnce).to.equal(true)
       })

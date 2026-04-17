@@ -1,13 +1,12 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import _ from 'lodash'
 import lolex from 'lolex'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/wait.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 let clock: any
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
@@ -15,7 +14,7 @@ describe('addons:wait', function () {
   let sandbox: any
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
     nock.cleanAll()
     clock = lolex.install()
     clock.setTimeout = function (fn: any) {

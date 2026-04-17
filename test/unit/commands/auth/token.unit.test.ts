@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Token from '../../../../src/commands/auth/token.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('auth:token', function () {
   let api: nock.Scope

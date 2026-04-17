@@ -153,6 +153,7 @@ export class Scrubber {
   private deepClone<T>(obj: T): T {
     try {
       // Fast path for JSON-serializable objects
+      // eslint-disable-next-line unicorn/prefer-structured-clone
       return JSON.parse(JSON.stringify(obj))
     } catch {
       // Fallback for objects with circular references

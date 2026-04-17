@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Remove from '../../../../../src/commands/spaces/trusted-ips/remove.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -28,8 +28,7 @@ describe('trusted-ips:remove', function () {
           {action: 'allow', source: '128.0.0.1/20'},
           {action: 'allow', source: '127.0.0.1/20'},
         ],
-      },
-      )
+      })
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'gandalf',
         rules: [
@@ -63,8 +62,7 @@ describe('trusted-ips:remove', function () {
           {action: 'allow', source: '128.0.0.1/20'},
           {action: 'allow', source: '127.0.0.1/20'},
         ],
-      },
-      )
+      })
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'gandalf',
         rules: [
@@ -96,8 +94,7 @@ describe('trusted-ips:remove', function () {
           {action: 'allow', source: '128.0.0.1/20'},
           {action: 'allow', source: '127.0.0.1/20'},
         ],
-      },
-      )
+      })
       .put('/spaces/my-space/inbound-ruleset', {
         created_by: 'gandalf',
         rules: [

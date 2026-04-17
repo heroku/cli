@@ -1,10 +1,9 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/credentials/url.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
+import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/credentials/url.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
 const heredoc = tsheredoc.default
@@ -19,13 +18,13 @@ describe('pg:credentials:url', function () {
 
   it('shows the correct credentials', async function () {
     const roleInfo = {
-      uuid: 'aaaa', name: 'gandalf', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
+      credentials: [
         {
-          user: 'gandalf-rotating', password: 'passw0rd', state: 'revoking',
+          password: 'passw0rd', state: 'revoking', user: 'gandalf-rotating',
         }, {
-          user: 'gandalf', password: 'hunter2', state: 'active',
+          password: 'hunter2', state: 'active', user: 'gandalf',
         },
-      ],
+      ], database: 'd123', host: 'localhost', name: 'gandalf', port: 5442, state: 'created', uuid: 'aaaa',
     }
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
@@ -37,13 +36,13 @@ describe('pg:credentials:url', function () {
       .get(`/postgres/v0/databases/${addon.name}/credentials/gandalf`)
       .reply(200, roleInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Connection information for gandalf credential.
       Connection info string:
         "dbname=d123 host=localhost port=5442 user=gandalf password=hunter2 sslmode=require"
@@ -59,25 +58,24 @@ describe('pg:credentials:url', function () {
       .reply(200, [{addon: hobbyAddon}])
     const err = 'Legacy Essential-tier databases do not support named credentials.'
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
-    ]).catch((error: Error) => {
-      expect(error.message).to.equal(err)
-    })
+    ])
+    expect(error!.message).to.equal(err)
   })
 
   it('shows the credentials when the db is numbered essential plan', async function () {
     const roleInfo = {
-      uuid: 'bbbb', name: 'lucy', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
+      credentials: [
         {
-          user: 'lucy-rotating', password: 'passw0rd', state: 'revoking',
+          password: 'passw0rd', state: 'revoking', user: 'lucy-rotating',
         }, {
-          user: 'lucy', password: 'hunter2', state: 'active',
+          password: 'hunter2', state: 'active', user: 'lucy',
         },
-      ],
+      ], database: 'd123', host: 'localhost', name: 'lucy', port: 5442, state: 'created', uuid: 'bbbb',
     }
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
@@ -86,13 +84,13 @@ describe('pg:credentials:url', function () {
       .get(`/postgres/v0/databases/${addon.name}/credentials/lucy`)
       .reply(200, roleInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'lucy',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Connection information for lucy credential.
       Connection info string:
         "dbname=d123 host=localhost port=5442 user=lucy password=hunter2 sslmode=require"
@@ -104,11 +102,11 @@ describe('pg:credentials:url', function () {
   it('shows the correct credentials with starter plan', async function () {
     const hobbyAddon = fixtures.addons['www-db']
     const roleInfo = {
-      uuid: null, name: 'default', state: 'created', database: 'd123', host: 'localhost', port: 5442, credentials: [
+      credentials: [
         {
-          user: 'abcdef', password: 'hunter2', state: 'active',
+          password: 'hunter2', state: 'active', user: 'abcdef',
         },
-      ],
+      ], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'created', uuid: null,
     }
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve')
@@ -117,11 +115,11 @@ describe('pg:credentials:url', function () {
       .get(`/postgres/v0/databases/${hobbyAddon.name}/credentials/default`)
       .reply(200, roleInfo)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       Connection information for default credential.
       Connection info string:
         "dbname=d123 host=localhost port=5442 user=abcdef password=hunter2 sslmode=require"

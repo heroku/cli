@@ -1,8 +1,9 @@
-import {runCommand} from '../../../helpers/run-command.js'
-import {expect} from 'chai'
-import Cmd from '../../../../src/commands/pg/outliers.js'
-import * as sinon from 'sinon'
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
+import * as sinon from 'sinon'
+
+import Cmd from '../../../../src/commands/pg/outliers.js'
 
 describe('pg:outliers', function () {
   let sandbox: sinon.SinonSandbox

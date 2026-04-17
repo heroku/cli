@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import DomainsRemove from '../../../../src/commands/domains/remove.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:remove', function () {
   let api: nock.Scope
