@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import TransferCommand from '../../../../src/commands/pipelines/transfer.js'
 
@@ -42,7 +42,7 @@ describe('pipelines:transfer', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   function setupCommonMocks() {
@@ -92,7 +92,7 @@ describe('pipelines:transfer', function () {
   })
 
   it('does not pass confirm flag', async function () {
-    const promptStub = sinon.stub(hux, 'prompt').onFirstCall().resolves(pipeline.name)
+    const promptStub = stub(hux, 'prompt').onFirstCall().resolves(pipeline.name)
 
     setupCommonMocks()
 

@@ -3,7 +3,7 @@ import {utils} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgAttachmentsDestroy from '../../../../../../src/commands/data/pg/attachments/destroy.js'
@@ -17,14 +17,14 @@ import {
 const heredoc = tsheredoc.default
 
 describe('data:pg:attachments:destroy', function () {
-  let resolveStub: sinon.SinonStub
+  let resolveStub: SinonStub
 
   beforeEach(function () {
-    resolveStub = sinon.stub(utils.AddonResolver.prototype, 'resolve')
+    resolveStub = stub(utils.AddonResolver.prototype, 'resolve')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('shows error for non-advanced databases', async function () {

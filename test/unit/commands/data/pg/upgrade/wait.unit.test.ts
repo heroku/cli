@@ -3,7 +3,7 @@ import {utils} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpgradeWait from '../../../../../../src/commands/data/pg/upgrade/wait.js'
@@ -20,18 +20,18 @@ const heredoc = tsheredoc.default
 
 describe('data:pg:upgrade:wait', function () {
   let dataApi: nock.Scope
-  let notifyStub: sinon.SinonStub
-  let resolverStub: sinon.SinonStub
+  let notifyStub: SinonStub
+  let resolverStub: SinonStub
 
   beforeEach(function () {
     dataApi = nock('https://api.data.heroku.com')
-    notifyStub = sinon.stub(DataPgUpgradeWait.prototype, 'notify')
-    resolverStub = sinon.stub(utils.pg.DatabaseResolver.prototype, 'getAttachment')
+    notifyStub = stub(DataPgUpgradeWait.prototype, 'notify')
+    resolverStub = stub(utils.pg.DatabaseResolver.prototype, 'getAttachment')
   })
 
   afterEach(function () {
     dataApi.done()
-    sinon.restore()
+    restore()
   })
 
   describe('database resolution', function () {

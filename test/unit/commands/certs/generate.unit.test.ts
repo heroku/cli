@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon, {SinonStub} from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/certs/generate.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
@@ -17,10 +17,10 @@ describe('heroku certs:generate', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    promptForOwnerInfoStub = sinon.stub(Cmd.prototype, 'promptForOwnerInfo')
+    promptForOwnerInfoStub = stub(Cmd.prototype, 'promptForOwnerInfo')
     promptForOwnerInfoStub.returns(Promise.resolve({}))
 
-    spawnOpenSSLStub = sinon.stub(Cmd.prototype as any, 'spawnOpenSSL')
+    spawnOpenSSLStub = stub(Cmd.prototype as any, 'spawnOpenSSL')
     spawnOpenSSLStub.resolves(0)
   })
 

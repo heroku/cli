@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import PsWait from '../../../../src/commands/ps/wait.js'
 
@@ -26,7 +26,7 @@ describe('heroku ps:wait', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   it('warns and exits 0 if no releases', async function () {
@@ -56,7 +56,7 @@ describe('heroku ps:wait', function () {
   })
 
   it('waits for all dynos to be on latest release', async function () {
-    sinon.stub(hux, 'wait').resolves()
+    stub(hux, 'wait').resolves()
 
     api
       .get(`/apps/${APP_NAME}/releases`)
@@ -123,7 +123,7 @@ describe('heroku ps:wait', function () {
   })
 
   it('includes run dynos with the --with-run flag', async function () {
-    sinon.stub(hux, 'wait').resolves()
+    stub(hux, 'wait').resolves()
 
     api
       .get(`/apps/${APP_NAME}/releases`)

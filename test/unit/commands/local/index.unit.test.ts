@@ -1,14 +1,14 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {createSandbox, SinonStub} from 'sinon'
 
 import Local from '../../../../src/commands/local/index.js'
 
 describe('local', function () {
-  let sandbox: ReturnType<typeof sinon.createSandbox>
+  let sandbox: ReturnType<typeof createSandbox>
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
   })
 
   afterEach(function () {
@@ -69,9 +69,9 @@ describe('local', function () {
   })
 
   describe('argument construction', function () {
-    let runForemanStub: sinon.SinonStub
-    let hasProcfileStub: sinon.SinonStub
-    let loadProcfileStub: sinon.SinonStub
+    let runForemanStub: SinonStub
+    let hasProcfileStub: SinonStub
+    let loadProcfileStub: SinonStub
     let originalCwd: string
 
     beforeEach(function () {
@@ -139,12 +139,12 @@ describe('local', function () {
   })
 
   describe('procfile integration', function () {
-    let sandbox: ReturnType<typeof sinon.createSandbox>
-    let runForemanStub: sinon.SinonStub
-    let loadProcfileStub: sinon.SinonStub
+    let sandbox: ReturnType<typeof createSandbox>
+    let runForemanStub: SinonStub
+    let loadProcfileStub: SinonStub
 
     beforeEach(function () {
-      sandbox = sinon.createSandbox()
+      sandbox = createSandbox()
       runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
       sandbox.stub(Local.prototype, 'hasProcfile').returns(true)
     })
@@ -218,9 +218,9 @@ describe('local', function () {
   })
 
   describe('start command precedence', function () {
-    let runForemanStub: sinon.SinonStub
-    let hasProcfileStub: sinon.SinonStub
-    let loadProcfileStub: sinon.SinonStub
+    let runForemanStub: SinonStub
+    let hasProcfileStub: SinonStub
+    let loadProcfileStub: SinonStub
 
     beforeEach(function () {
       runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
@@ -255,12 +255,12 @@ describe('local', function () {
   })
 
   describe('environment file integration', function () {
-    let sandbox: ReturnType<typeof sinon.createSandbox>
-    let runForemanStub: sinon.SinonStub
+    let sandbox: ReturnType<typeof createSandbox>
+    let runForemanStub: SinonStub
     let originalCwd: string
 
     beforeEach(function () {
-      sandbox = sinon.createSandbox()
+      sandbox = createSandbox()
       runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
       originalCwd = process.cwd()
     })

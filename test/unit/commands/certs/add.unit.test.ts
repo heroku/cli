@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon, {SinonStub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 const heredoc = tsheredoc.default
 import Cmd from '../../../../src/commands/certs/add.js'
@@ -29,14 +29,14 @@ describe('heroku certs:add', function () {
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
-    stubbedSelectDomains = sinon.stub(Cmd.prototype, 'selectDomains')
+    stubbedSelectDomains = stub(Cmd.prototype, 'selectDomains')
     // eslint-disable-next-line arrow-body-style
     stubbedSelectDomains.callsFake(async (_domainOptions: string[]) => {
       // Let the method execute normally but return our stubbed value
       // eslint-disable-next-line unicorn/no-useless-promise-resolve-reject
       return Promise.resolve(stubbedSelectDomainsReturnValue)
     })
-    stubbedGetCertAndKey = sinon.stub(CertAndKeyManager.prototype, 'getCertAndKey')
+    stubbedGetCertAndKey = stub(CertAndKeyManager.prototype, 'getCertAndKey')
     stubbedGetCertAndKey.returns(Promise.resolve({
       crt: Buffer.from('pem content'),
       key: Buffer.from('key content'),
@@ -44,7 +44,7 @@ describe('heroku certs:add', function () {
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     api.done()
     nock.cleanAll()
   })
@@ -266,7 +266,7 @@ describe('heroku certs:add', function () {
       let timeoutStub: SinonStub
 
       beforeEach(function () {
-        timeoutStub = sinon.stub(globalThis, 'setTimeout')
+        timeoutStub = stub(globalThis, 'setTimeout')
         timeoutStub.callsArgWith(0)
       })
 

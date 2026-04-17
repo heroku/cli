@@ -2,13 +2,13 @@ import {captureOutput} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import ConfirmCommand from '../../../src/lib/confirm-command.js'
 
 describe('confirmApp', function () {
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('should not error or prompt with confirm flag match', async function () {
@@ -30,7 +30,7 @@ describe('confirmApp', function () {
   })
 
   it('should not err on confirm prompt match', async function () {
-    sinon.stub(hux, 'prompt').resolves('app')
+    stub(hux, 'prompt').resolves('app')
 
     const {stderr, stdout} = await captureOutput(async () => {
       await new ConfirmCommand().confirm('app')
@@ -42,7 +42,7 @@ describe('confirmApp', function () {
 
   it('should display custom message', async function () {
     const customMessage = 'custom message'
-    sinon.stub(hux, 'prompt').resolves('app')
+    stub(hux, 'prompt').resolves('app')
 
     const {stderr, stdout} = await captureOutput(async () => {
       await new ConfirmCommand().confirm('app', undefined, customMessage)
@@ -53,7 +53,7 @@ describe('confirmApp', function () {
   })
 
   it('should err on confirm prompt mismatch', async function () {
-    sinon.stub(hux, 'prompt').resolves('nope')
+    stub(hux, 'prompt').resolves('nope')
 
     try {
       await new ConfirmCommand().confirm('app')

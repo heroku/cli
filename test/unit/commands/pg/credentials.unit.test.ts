@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/credentials.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
@@ -28,7 +28,7 @@ describe('pg:credentials', function () {
 
   afterEach(function () {
     nock.cleanAll()
-    sinon.restore()
+    restore()
     pg.done()
     api.done()
   })
@@ -229,7 +229,7 @@ describe('pg:credentials', function () {
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
 
-    const tableStub = sinon.stub(hux, 'table')
+    const tableStub = stub(hux, 'table')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args

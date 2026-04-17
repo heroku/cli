@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import RakeCommand from '../../../src/commands/rake.js'
 import Dyno from '../../../src/lib/run/dyno.js'
@@ -10,11 +10,11 @@ describe('rake', function () {
   let dynoOpts: {command: any}
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('runs rake', async function () {
-    sinon.stub(Dyno.prototype, 'start').callsFake(function () {
+    stub(Dyno.prototype, 'start').callsFake(function () {
       // @ts-ignore
       dynoOpts = this.opts
       return Promise.resolve()
@@ -26,7 +26,7 @@ describe('rake', function () {
   })
 
   it('catches error with an exit code', async function () {
-    sinon.stub(Dyno.prototype, 'start').callsFake(function () {
+    stub(Dyno.prototype, 'start').callsFake(function () {
       const err:any = new Error('rake error')
       err.exitCode = 1
       throw err
@@ -38,7 +38,7 @@ describe('rake', function () {
   })
 
   it('catches error without an exit code', async function () {
-    sinon.stub(Dyno.prototype, 'start').callsFake(function () {
+    stub(Dyno.prototype, 'start').callsFake(function () {
       const err = new Error('rake error')
       throw err
     })

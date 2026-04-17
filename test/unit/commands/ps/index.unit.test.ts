@@ -3,7 +3,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 import strftime from 'strftime'
 import tsheredoc from 'tsheredoc'
 
@@ -44,7 +44,7 @@ function stubAppAndAccount() {
 describe('ps', function () {
   afterEach(function () {
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   it('shows dyno list', async function () {
@@ -306,7 +306,7 @@ describe('ps', function () {
         updated_at: hourAgo,
       }])
 
-    const tableStub = sinon.stub(hux, 'table')
+    const tableStub = stub(hux, 'table')
     await runCommand(Cmd, ['--app', 'myapp', '--extended', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args

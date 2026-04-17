@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/psql.js'
 
@@ -24,13 +24,13 @@ const db = {
 
 describe('psql', function () {
   beforeEach(function () {
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
-    sinon.stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
+    stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
+    stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('runs psql', async function () {

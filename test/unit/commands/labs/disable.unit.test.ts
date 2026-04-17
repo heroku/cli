@@ -2,23 +2,23 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import LabsDisable from '../../../../src/commands/labs/disable.js'
 
 describe('labs:disable', function () {
   let api: nock.Scope
-  let promptStub: sinon.SinonStub
+  let promptStub: SinonStub
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    promptStub = sinon.stub()
+    promptStub = stub()
   })
 
   afterEach(function () {
     api.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   it('disables a user lab feature', async function () {
@@ -41,7 +41,7 @@ describe('labs:disable', function () {
   })
 
   it('warns user of insecure action', async function () {
-    sinon.stub(hux, 'prompt').resolves('myapp')
+    stub(hux, 'prompt').resolves('myapp')
 
     api
       .get('/account/features/spaces-strict-tls')
@@ -64,7 +64,7 @@ describe('labs:disable', function () {
   it('errors when confirmation name does not match', async function () {
     promptStub.onFirstCall().resolves('myapp')
     promptStub.onSecondCall().resolves('notMyApp')
-    sinon.stub(hux, 'prompt').returns(promptStub as any)
+    stub(hux, 'prompt').returns(promptStub as any)
 
     const {error} = await runCommand(LabsDisable, ['spaces-strict-tls', '--app=myapp'])
 
