@@ -1,16 +1,16 @@
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
-import * as os from 'node:os'
+import os from 'node:os'
 import {join} from 'node:path'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import {checkTos} from '../../../src/hooks/init/terms-of-service.js'
 
 describe('terms-of-service hook', function () {
   let testCacheDir: string
   let tosPath: string
-  let uxWarnStub: sinon.SinonStub
+  let uxWarnStub: SinonStub
 
   beforeEach(async function () {
     // Create a temporary directory for each test
@@ -19,13 +19,13 @@ describe('terms-of-service hook', function () {
     tosPath = join(testCacheDir, 'terms-of-service')
 
     // Stub ux.warn
-    uxWarnStub = sinon.stub(ux, 'warn')
+    uxWarnStub = stub(ux, 'warn')
   })
 
   afterEach(async function () {
     // Clean up test directory
     await fs.remove(testCacheDir)
-    sinon.restore()
+    restore()
   })
 
   describe('has never run before', function () {

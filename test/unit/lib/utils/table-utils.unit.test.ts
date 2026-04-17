@@ -1,6 +1,6 @@
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import {
   constructSortFilterTableOptions, constructTableColumns, huxTableNoWrapOptions, outputCSV,
@@ -146,10 +146,10 @@ describe('tableUtils', function () {
   })
 
   describe('outputCSV', function () {
-    let stdoutStub: sinon.SinonStub
+    let stdoutStub: SinonStub
 
     beforeEach(function () {
-      stdoutStub = sinon.stub(ux, 'stdout')
+      stdoutStub = stub(ux, 'stdout')
     })
 
     afterEach(function () {

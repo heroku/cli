@@ -4,7 +4,7 @@ import {captureOutput} from '@heroku-cli/test-utils'
 import {Config, Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../../../../src/lib/run/log-displayer.js'
@@ -18,7 +18,7 @@ describe('logDisplayer', function () {
   let heroku: APIClient
   let env: NodeJS.ProcessEnv
   let displayer: LogDisplayer
-  let createEventSourceStub: sinon.SinonStub
+  let createEventSourceStub: SinonStub
 
   before(async function () {
     env = process.env
@@ -133,7 +133,7 @@ describe('logDisplayer', function () {
     displayer = new LogDisplayer(heroku)
 
     // Stub the createEventSourceInstance method
-    createEventSourceStub = sinon.stub(displayer, 'createEventSourceInstance').callsFake((url: string, options?: any) => new MockEventSource(url, options) as any)
+    createEventSourceStub = stub(displayer, 'createEventSourceInstance').callsFake((url: string, options?: any) => new MockEventSource(url, options) as any)
   })
 
   afterEach(function () {

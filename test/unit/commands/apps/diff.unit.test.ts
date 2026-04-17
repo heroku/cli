@@ -1,7 +1,9 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {
+  createSandbox, SinonSandbox, SinonStub,
+} from 'sinon'
 
 import AppsDiff from '../../../../src/commands/apps/diff.js'
 
@@ -18,9 +20,9 @@ describe('apps:diff', function () {
   const emptyAddons: Array<{addon_service: {name: string}}> = []
   const emptyFeatures: Array<{enabled: boolean; name: string;}> = []
 
-  let sandbox: sinon.SinonSandbox
-  let requestStub: sinon.SinonStub
-  let getStub: sinon.SinonStub
+  let sandbox: SinonSandbox
+  let requestStub: SinonStub
+  let getStub: SinonStub
 
   function httpStatusError(statusCode: number): Error & {http: {statusCode: number}} {
     const e = new Error(`HTTP ${statusCode}`) as Error & {http: {statusCode: number}}
@@ -29,7 +31,7 @@ describe('apps:diff', function () {
   }
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
     requestStub = sandbox.stub(APIClient.prototype, 'request')
     getStub = sandbox.stub(APIClient.prototype, 'get')
   })

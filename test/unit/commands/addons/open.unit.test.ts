@@ -4,15 +4,15 @@ import {expect} from 'chai'
 import nock from 'nock'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/open.js'
 
 describe('The addons:open command', function () {
-  let urlOpenerStub: sinon.SinonStub
+  let urlOpenerStub: SinonStub
 
   beforeEach(function () {
-    urlOpenerStub = sinon.stub(Cmd, 'urlOpener').callsFake(async () => {})
+    urlOpenerStub = stub(Cmd, 'urlOpener').callsFake(async () => {})
   })
 
   afterEach(function () {

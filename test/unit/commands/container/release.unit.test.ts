@@ -3,17 +3,17 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox, SinonSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/container/release.js'
 
 describe('container release', function () {
   let api: nock.Scope
-  let sandbox: sinon.SinonSandbox
+  let sandbox: SinonSandbox
 
   beforeEach(function () {
     api = nock('https://api.heroku.com:443')
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
   })
 
   afterEach(function () {

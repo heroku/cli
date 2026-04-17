@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import os from 'node:os'
-import sinon from 'sinon'
+import {useFakeTimers} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../src/commands/dashboard.js'
@@ -23,7 +23,7 @@ describe('dashboard', function () {
   let now: Date
 
   beforeEach(function () {
-    clock = sinon.useFakeTimers({
+    clock = useFakeTimers({
       now: new Date(2024, 1, 1, 0, 0),
       shouldAdvanceTime: true,
       toFake: ['Date'],

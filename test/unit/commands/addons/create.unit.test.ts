@@ -6,7 +6,7 @@ import {expect} from 'chai'
 import _ from 'lodash'
 import lolex from 'lolex'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/create.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
@@ -205,11 +205,11 @@ describe('addons:create', function () {
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
-      let sandbox: ReturnType<typeof sinon.createSandbox>
+      let sandbox: ReturnType<typeof createSandbox>
       beforeEach(function () {
-        sandbox = sinon.createSandbox()
+        sandbox = createSandbox()
         clock = lolex.install()
-        clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
+        clock.setTimeout = function (callback: () => void, _timeout: number, ..._args: any[]): number {
           callback()
           return 1
         }

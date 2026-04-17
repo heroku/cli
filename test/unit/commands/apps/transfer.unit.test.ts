@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox, SinonSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/apps/transfer.js'
 import {apps, personalApp, teamApp} from '../../../helpers/stubs/get.js'
@@ -10,10 +10,10 @@ import {teamAppTransfer} from '../../../helpers/stubs/patch.js'
 import {personalToPersonal} from '../../../helpers/stubs/post.js'
 
 describe('heroku apps:transfer', function () {
-  let sandbox: sinon.SinonSandbox
+  let sandbox: SinonSandbox
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
     apps()
   })
 

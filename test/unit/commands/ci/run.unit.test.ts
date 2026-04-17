@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import {got} from 'got'
 import nock from 'nock'
 import {PassThrough} from 'node:stream'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/ci/run.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
@@ -47,10 +47,10 @@ describe('ci:run', function () {
       status: 'succeeded',
     }
 
-    let sandbox: ReturnType<typeof sinon.createSandbox>
+    let sandbox: ReturnType<typeof createSandbox>
 
     beforeEach(function () {
-      sandbox = sinon.createSandbox()
+      sandbox = createSandbox()
 
       // Stub gitService methods
       sandbox.stub(gitService, 'readCommit').resolves({branch: ghRepository.branch, message: `pushed to ${ghRepository.branch}`, ref: ghRepository.ref})

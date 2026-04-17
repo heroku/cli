@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import Ci from '../../../../src/commands/ci/index.js'
 import {PipelineService} from '../../../../src/lib/ci/pipelines.js'
@@ -32,7 +32,7 @@ describe('ci', function () {
     const statuses = ['succeeded', 'errored', 'failed', 'creating', 'cancelled', 'foo', '']
     const commit_branch = 'main'
     const commit_sha = ['d2e177a', '14a0a11', '40d9717', 'f2e574e']
-    let promptStub: sinon.SinonStub
+    let promptStub: SinonStub
 
     const chosenOption = {
       pipeline: {
@@ -116,7 +116,7 @@ describe('ci', function () {
 
     describe('specifying a pipeline with prompt', function () {
       beforeEach(function () {
-        promptStub = sinon.stub(PipelineService.prototype, 'promptForPipeline')
+        promptStub = stub(PipelineService.prototype, 'promptForPipeline')
         promptStub.onFirstCall().resolves(chosenOption)
       })
 

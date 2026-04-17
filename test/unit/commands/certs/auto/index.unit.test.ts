@@ -1,14 +1,14 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/index.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
-const sandbox = sinon.createSandbox()
+const sandbox = createSandbox()
 const letsEncrypt = {
   domains: [],
   ssl_cert: {

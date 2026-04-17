@@ -4,7 +4,7 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import * as lolex from 'lolex'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/destroy.js'
 
@@ -88,9 +88,9 @@ describe('addons:destroy', function () {
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
-      let sandbox: ReturnType<typeof sinon.createSandbox>
+      let sandbox: ReturnType<typeof createSandbox>
       beforeEach(function () {
-        sandbox = sinon.createSandbox()
+        sandbox = createSandbox()
         clock = lolex.install()
         clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
           callback()

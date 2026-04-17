@@ -1,15 +1,15 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {createSandbox, SinonSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/container/logout.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 describe('container logout', function () {
-  let sandbox: sinon.SinonSandbox
+  let sandbox: SinonSandbox
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
   })
 
   afterEach(function () {
