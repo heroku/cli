@@ -1,21 +1,21 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../src/commands/logs.js'
 import {LogDisplayer} from '../../../src/lib/run/log-displayer.js'
 
 describe('logs', function () {
-  let logDisplayerStub: sinon.SinonStub
+  let logDisplayerStub: SinonStub
 
   beforeEach(async function () {
     // Stub only the display method
-    logDisplayerStub = sinon.stub(LogDisplayer.prototype, 'display').resolves()
+    logDisplayerStub = stub(LogDisplayer.prototype, 'display').resolves()
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   context('without --num option', function () {

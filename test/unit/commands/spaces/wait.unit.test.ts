@@ -103,7 +103,7 @@ describe('spaces:wait', function () {
       .get(`/spaces/${allocatedSpace.name}/nat`)
       .reply(503, {})
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       allocatedSpace.name,
       '--interval',

@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCreate from '../../../../../src/commands/data/pg/create.js'
@@ -18,33 +18,33 @@ import {
 const heredoc = tsheredoc.default
 
 describe('data:pg:create', function () {
-  let promptStub: sinon.SinonStub
+  let promptStub: SinonStub
   let poolConfigStubs: {
-    followerInteractiveConfig: sinon.SinonStub
-    instanceCountStep: sinon.SinonStub
-    levelStep: sinon.SinonStub
+    followerInteractiveConfig: SinonStub
+    instanceCountStep: SinonStub
+    levelStep: SinonStub
   }
 
   beforeEach(function () {
-    promptStub = sinon.stub()
+    promptStub = stub()
 
     // Create stubs for PoolConfig methods
     poolConfigStubs = {
-      followerInteractiveConfig: sinon.stub(),
-      instanceCountStep: sinon.stub(),
-      levelStep: sinon.stub(),
+      followerInteractiveConfig: stub(),
+      instanceCountStep: stub(),
+      levelStep: stub(),
     }
 
-    sinon.stub(PoolConfig.prototype, 'followerInteractiveConfig').callsFake(poolConfigStubs.followerInteractiveConfig)
-    sinon.stub(PoolConfig.prototype, 'instanceCountStep').callsFake(poolConfigStubs.instanceCountStep)
-    sinon.stub(PoolConfig.prototype, 'levelStep').callsFake(poolConfigStubs.levelStep)
-    sinon.stub(DataPgCreate.prototype, 'prompt').callsFake(promptStub)
-    sinon.stub(DataPgCreate.prototype, 'runCommand').resolves()
+    stub(PoolConfig.prototype, 'followerInteractiveConfig').callsFake(poolConfigStubs.followerInteractiveConfig)
+    stub(PoolConfig.prototype, 'instanceCountStep').callsFake(poolConfigStubs.instanceCountStep)
+    stub(PoolConfig.prototype, 'levelStep').callsFake(poolConfigStubs.levelStep)
+    stub(DataPgCreate.prototype, 'prompt').callsFake(promptStub)
+    stub(DataPgCreate.prototype, 'runCommand').resolves()
   })
 
   afterEach(function () {
     clearLevelsAndPricingCache()
-    sinon.restore()
+    restore()
   })
 
   describe('non-interactive mode (--level flag provided)', function () {

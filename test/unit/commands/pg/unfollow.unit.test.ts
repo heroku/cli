@@ -25,7 +25,7 @@ describe('pg:unfollow', function () {
       .put(`/client/v11/databases/${addon.id}/unfollow`)
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       appName,
       '--confirm',

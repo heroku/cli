@@ -45,7 +45,7 @@ describe('spaces:vpn:info', function () {
       .get(`/spaces/my-space/vpn-connections/${vpnConnection.name}`)
       .reply(200, vpnConnection)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       'vpn-connection-name',
@@ -70,7 +70,7 @@ describe('spaces:vpn:info', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name')
       .reply(200, vpnConnection)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       vpnConnection.name as string,
@@ -84,7 +84,7 @@ describe('spaces:vpn:info', function () {
       .get(`/spaces/my-space/vpn-connections/${vpnConnection.id}`)
       .reply(200, vpnConnection)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       vpnConnection.id as string,

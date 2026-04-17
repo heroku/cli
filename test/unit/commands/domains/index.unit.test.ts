@@ -2,20 +2,19 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('domains', function () {
-  let confirmStub: sinon.SinonStub
+  let confirmStub: SinonStub
   let api: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    confirmStub = sinon
-      .stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
+    confirmStub = stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
       .resolves(true)
   })
 
@@ -174,7 +173,7 @@ describe('domains', function () {
 
   it('passes no-wrap option through to table rendering', async function () {
     api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
-    const tableStub = sinon.stub(hux, 'table')
+    const tableStub = stub(hux, 'table')
 
     await runCommand(DomainsIndex, ['--app', 'myapp', '--no-wrap'])
 

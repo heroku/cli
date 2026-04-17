@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Status from '../../../src/commands/status.js'
 import {
@@ -74,11 +74,11 @@ Tools:     No known issues at this time.\n`)
     const timeISO = new Date(now).toISOString()
 
     before(function () {
-      sinon.stub(Date, 'now').returns(now)
+      stub(Date, 'now').returns(now)
     })
 
     after(function () {
-      sinon.restore()
+      restore()
     })
 
     it('shows the issues', async function () {
@@ -198,11 +198,11 @@ Tools:     No known issues at this time.\n`)
 
   describe('when there are active Heroku incidents', function () {
     before(function () {
-      sinon.stub(Date, 'now').returns(fixtureNow)
+      stub(Date, 'now').returns(fixtureNow)
     })
 
     after(function () {
-      sinon.restore()
+      restore()
     })
 
     it('shows the issues', async function () {

@@ -99,7 +99,7 @@ describe('pg:info', function () {
         .get('/client/v11/databases/2')
         .reply(200, dbB)
 
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])

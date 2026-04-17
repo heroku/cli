@@ -21,7 +21,7 @@ describe('pg:reset', function () {
     nock('https://api.data.heroku.com')
       .put(`/client/v11/databases/${addon.id}/reset`)
       .reply(200)
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
@@ -45,7 +45,7 @@ describe('pg:reset', function () {
     })
 
     it('resets a db with pre-installed extensions', async function () {
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',

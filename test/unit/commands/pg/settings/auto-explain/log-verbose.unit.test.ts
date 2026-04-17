@@ -30,7 +30,7 @@ describe('pg:settings:auto-explain:log-verbose', function () {
 
   it('shows settings for auto_explain.log_verbose with value', async function () {
     pg.get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_verbose': {value: 'test_value'}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     auto-explain.log-verbose is set to test_value for ${addon.name}.
     Verbose execution plan logging has been enabled for auto_explain.
@@ -39,7 +39,7 @@ describe('pg:settings:auto-explain:log-verbose', function () {
 
   it('shows settings for auto_explain.log_verbose with no value', async function () {
     pg.get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_verbose': {value: ''}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     auto-explain.log-verbose is set to  for ${addon.name}.
     Verbose execution plan logging has been disabled for auto_explain.

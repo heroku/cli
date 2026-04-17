@@ -26,7 +26,7 @@ describe('pg:data-connector-details-logs', function () {
   it('turns on data-connector-details-logs option', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {data_connector_details_logs: {value: 'on'}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       data-connector-details-logs is set to on for ${addon.name}.
       Data replication slot details will be logged.
@@ -36,7 +36,7 @@ describe('pg:data-connector-details-logs', function () {
   it('turns off data-connector-details-logs option', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {data_connector_details_logs: {value: ''}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       data-connector-details-logs is set to  for ${addon.name}.
       Data replication slot details will no longer be logged.

@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd, {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {EditorFactory} from '../../../../src/lib/config/util.js'
@@ -10,8 +10,8 @@ import {EditorFactory} from '../../../../src/lib/config/util.js'
 describe('config:edit', function () {
   let updated: Record<string, unknown> | string
   let editedConfig = ''
-  let createEditorStub: sinon.SinonStub
-  let editorEditStub: sinon.SinonStub
+  let createEditorStub: SinonStub
+  let editorEditStub: SinonStub
   let api: nock.Scope
 
   beforeEach(function () {
@@ -33,17 +33,17 @@ describe('config:edit', function () {
 
   describe('blank config vars', function () {
     beforeEach(function () {
-      editorEditStub = sinon.stub().callsFake(function () {
+      editorEditStub = stub().callsFake(function () {
         return Promise.resolve(editedConfig)
       })
-      createEditorStub = sinon.stub(EditorFactory, 'createEditor').callsFake(() => ({
+      createEditorStub = stub(EditorFactory, 'createEditor').callsFake(() => ({
         edit: editorEditStub,
       }) as any)
-      sinon.stub(hux, 'confirm').returns(Promise.resolve(true) as any)
+      stub(hux, 'confirm').returns(Promise.resolve(true) as any)
     })
 
     afterEach(function () {
-      sinon.restore()
+      restore()
     })
 
     describe('deleting config var', function () {

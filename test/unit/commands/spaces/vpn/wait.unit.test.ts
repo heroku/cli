@@ -2,12 +2,10 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/wait.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
 type CLIError = Errors.CLIError
 
 describe('spaces:vpn:wait', function () {

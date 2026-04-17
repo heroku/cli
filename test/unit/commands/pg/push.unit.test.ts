@@ -2,7 +2,9 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import childProcess from 'node:child_process'
-import sinon from 'sinon'
+import {
+  match, restore, SinonStub, stub,
+} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/push.js'
@@ -13,7 +15,7 @@ describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   let db: pg.ConnectionDetails
   const emptyResponse = '00'
-  let spawnStub: sinon.SinonStub
+  let spawnStub: SinonStub
   let env: NodeJS.ProcessEnv
 
   const exitHandler = (_key: string, func: CallableFunction) => {
@@ -38,16 +40,16 @@ describe('pg:push', function () {
       user: 'jeff',
     } as pg.ConnectionDetails
 
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
-    sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+    stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
+    stub(utils.pg.psql, 'sshTunnel').resolves()
 
-    sinon.stub(Math, 'random').callsFake(() => 0)
-    spawnStub = sinon.stub(childProcess, 'spawn')
+    stub(Math, 'random').callsFake(() => 0)
+    spawnStub = stub(childProcess, 'spawn')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     process.env = env
   })
 
@@ -55,13 +57,13 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
@@ -87,13 +89,13 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-h', 'localhost', '-p', '5433', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
@@ -121,13 +123,13 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-p', '5433', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
@@ -156,13 +158,13 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
@@ -188,7 +190,7 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on(key: string, func: CallableFunction) {
         return func(1)
       },
@@ -196,7 +198,7 @@ describe('pg:push', function () {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       stdin: {
         end() {},
       },

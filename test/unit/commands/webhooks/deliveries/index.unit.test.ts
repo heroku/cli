@@ -58,7 +58,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app'])
+      const {stdout} = await runCommand(Index, ['--app', 'example-app'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -88,7 +88,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(Index, ['--app', 'example-app', '--status', 'pending'])
+      const {stdout} = await runCommand(Index, ['--app', 'example-app', '--status', 'pending'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt
@@ -191,7 +191,7 @@ describe('webhooks:deliveries', function () {
           },
         ])
 
-      const {stderr, stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
+      const {stdout} = await runCommand(Index, ['--pipeline', 'example-pipeline'])
 
       expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
         Delivery ID                          Created              Status   Include   Level  Attempts Code Error  Next Attempt

@@ -1,14 +1,16 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
+import {
+  createSandbox, SinonSandbox, SinonStub,
+} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/locks.js'
 
 describe('pg:locks', function () {
-  let sandbox: sinon.SinonSandbox
-  let getDatabaseStub: sinon.SinonStub
-  let execQueryStub: sinon.SinonStub
+  let sandbox: SinonSandbox
+  let getDatabaseStub: SinonStub
+  let execQueryStub: SinonStub
   const expectedOutput = 'pid | relname | transactionid | granted | query_snippet | age\n---+---\n100 | users | 123 | t | SELECT * FROM... | 00:01:00'
 
   const mockDb: pg.ConnectionDetails = {
@@ -22,7 +24,7 @@ describe('pg:locks', function () {
   }
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
     getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
     execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(expectedOutput)
   })
@@ -32,7 +34,7 @@ describe('pg:locks', function () {
   })
 
   it('displays queries with active locks', async function () {
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -47,7 +49,7 @@ describe('pg:locks', function () {
   })
 
   it('includes full query without truncation by default', async function () {
-    const {stderr, stdout} = await runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -58,7 +60,7 @@ describe('pg:locks', function () {
   })
 
   it('truncates queries with --truncate flag', async function () {
-    const {stderr, stdout} = await runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
       '--truncate',
@@ -71,7 +73,7 @@ describe('pg:locks', function () {
   })
 
   it('accepts a database argument', async function () {
-    const {stderr, stdout} = await runCommand(Cmd, [
+    await runCommand(Cmd, [
       '--app',
       'myapp',
       'postgres-123',

@@ -1,21 +1,21 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/index.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 describe('accounts', function () {
-  let currentStub: sinon.SinonStub
-  let listStub: sinon.SinonStub
+  let currentStub: SinonStub
+  let listStub: SinonStub
 
   beforeEach(function () {
-    currentStub = sinon.stub(AccountsModule, 'current')
-    listStub = sinon.stub(AccountsModule, 'list')
+    currentStub = stub(AccountsModule, 'current')
+    listStub = stub(AccountsModule, 'list')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('should print a list of added accounts with the current account highlighted if accounts are found', async function () {

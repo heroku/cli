@@ -43,7 +43,7 @@ describe('pg:settings:log-statement', function () {
         },
       )
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       log-statement is set to ddl for ${addon.name}.
       All data definition statements, such as CREATE, ALTER and DROP, will be logged in your application's logs.

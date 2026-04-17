@@ -6,7 +6,7 @@ import inquirer from 'inquirer'
 import nock from 'nock'
 import os from 'node:os'
 import path from 'node:path'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Add from '../../../../src/commands/keys/add.js'
 
@@ -30,7 +30,7 @@ describe('keys:add', function () {
     await fs.remove(home)
     nock.cleanAll()
     api.done()
-    sinon.restore()
+    restore()
   })
 
   describe('direct key addition', function () {
@@ -57,9 +57,9 @@ describe('keys:add', function () {
         .post('/account/keys')
         .reply(200)
 
-      sinon.stub(os, 'homedir').returns(home)
-      sinon.stub(inquirer, 'prompt').resolves({yes: true})
-      sinon.stub(hux, 'prompt').resolves('yes')
+      stub(os, 'homedir').returns(home)
+      stub(inquirer, 'prompt').resolves({yes: true})
+      stub(hux, 'prompt').resolves('yes')
 
       const {stderr} = await runCommand(Add, ['--quiet'])
 
@@ -84,8 +84,8 @@ describe('keys:add', function () {
         .post('/account/keys', {public_key: PUBLIC_KEY})
         .reply(200)
 
-      sinon.stub(os, 'homedir').returns(home)
-      sinon.stub(inquirer, 'prompt').callsFake(function () {
+      stub(os, 'homedir').returns(home)
+      stub(inquirer, 'prompt').callsFake(function () {
         // eslint-disable-next-line prefer-rest-params
         const choices = arguments[0]
         expect(choices[0].message).to.equal('Which SSH key would you like to upload?')

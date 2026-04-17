@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import net from 'node:net'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import PsForward from '../../../../src/commands/ps/forward.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
@@ -15,7 +15,7 @@ function createMockServerWithSetup(portsCount = 1) {
 
   let setupCount = 0
   const mockServer = {
-    listen: sinon.stub(),
+    listen: stub(),
   }
 
   mockServer.listen.callsFake(() => {
@@ -31,18 +31,18 @@ function createMockServerWithSetup(portsCount = 1) {
 }
 
 describe('ps:forward', function () {
-  let herokuExecInitFeatureStub: sinon.SinonStub
-  let herokuExecCreateSocksProxyStub: sinon.SinonStub
-  let netCreateServerStub: sinon.SinonStub
+  let herokuExecInitFeatureStub: SinonStub
+  let herokuExecCreateSocksProxyStub: SinonStub
+  let netCreateServerStub: SinonStub
 
   beforeEach(function () {
-    herokuExecInitFeatureStub = sinon.stub(HerokuExec.prototype, 'initFeature')
-    herokuExecCreateSocksProxyStub = sinon.stub(HerokuExec.prototype, 'createSocksProxy')
-    netCreateServerStub = sinon.stub(net, 'createServer')
+    herokuExecInitFeatureStub = stub(HerokuExec.prototype, 'initFeature')
+    herokuExecCreateSocksProxyStub = stub(HerokuExec.prototype, 'createSocksProxy')
+    netCreateServerStub = stub(net, 'createServer')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 

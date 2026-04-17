@@ -4,7 +4,7 @@ import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
@@ -28,12 +28,12 @@ const attachments = [
 describe('pg:credentials:rotate', function () {
   let api: nock.Scope
   let pg: nock.Scope
-  let uxWarnStub: sinon.SinonStub
-  let uxPromptStub: sinon.SinonStub
+  let uxWarnStub: SinonStub
+  let uxPromptStub: SinonStub
 
   before(function () {
-    uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
+    uxWarnStub = stub(ux, 'warn')
+    uxPromptStub = stub(hux, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {

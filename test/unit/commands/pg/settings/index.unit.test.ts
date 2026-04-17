@@ -37,7 +37,7 @@ describe('pg:settings', function () {
   it('shows settings', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {log_statement: {value: 'none'}})
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
 
     expect(stdout).to.eq(heredoc`
       === postgres-1
@@ -70,7 +70,7 @@ describe('pg:settings', function () {
 
     pg.get('/postgres/v0/databases/1/config').reply(200, unorderedSettings)
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'postgres-1'])
 
     expect(stdout).to.eq(heredoc`
       === postgres-1

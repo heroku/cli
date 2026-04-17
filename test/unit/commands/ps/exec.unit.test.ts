@@ -2,29 +2,29 @@ import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import PsExec from '../../../../src/commands/ps/exec.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
 
 describe('ps:exec', function () {
-  let herokuExecInitFeatureStub: sinon.SinonStub
-  let herokuExecUpdateClientKeyStub: sinon.SinonStub
-  let herokuExecCheckStatusStub: sinon.SinonStub
-  let herokuSshConnectStub: sinon.SinonStub
-  let herokuSshSshStub: sinon.SinonStub
+  let herokuExecInitFeatureStub: SinonStub
+  let herokuExecUpdateClientKeyStub: SinonStub
+  let herokuExecCheckStatusStub: SinonStub
+  let herokuSshConnectStub: SinonStub
+  let herokuSshSshStub: SinonStub
 
   beforeEach(function () {
-    herokuExecInitFeatureStub = sinon.stub(HerokuExec.prototype, 'initFeature')
-    herokuExecUpdateClientKeyStub = sinon.stub(HerokuExec.prototype, 'updateClientKey')
-    herokuExecCheckStatusStub = sinon.stub(HerokuExec.prototype, 'checkStatus')
-    herokuSshConnectStub = sinon.stub(HerokuSsh.prototype, 'connect')
-    herokuSshSshStub = sinon.stub(HerokuSsh.prototype, 'ssh')
+    herokuExecInitFeatureStub = stub(HerokuExec.prototype, 'initFeature')
+    herokuExecUpdateClientKeyStub = stub(HerokuExec.prototype, 'updateClientKey')
+    herokuExecCheckStatusStub = stub(HerokuExec.prototype, 'checkStatus')
+    herokuSshConnectStub = stub(HerokuSsh.prototype, 'connect')
+    herokuSshSshStub = stub(HerokuSsh.prototype, 'ssh')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 

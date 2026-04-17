@@ -2,19 +2,19 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox, SinonSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/container/run.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 describe('container run', function () {
   let api: nock.Scope
-  let sandbox: sinon.SinonSandbox
+  let sandbox: SinonSandbox
 
   beforeEach(function () {
     api = nock('https://api.heroku.com:443')
     process.env.HEROKU_API_KEY = 'heroku_token'
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
   })
 
   afterEach(function () {

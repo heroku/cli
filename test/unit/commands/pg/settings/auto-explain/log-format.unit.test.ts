@@ -28,7 +28,7 @@ describe('pg:settings:auto-explain:log-format', function () {
     const pg = nock('https://api.data.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_format': {value: 'json'}})
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'json'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'json'])
 
     api.done()
     pg.done()

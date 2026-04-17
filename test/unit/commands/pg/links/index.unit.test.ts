@@ -42,7 +42,7 @@ describe('pg:links', function () {
       .get(`/client/v11/databases/${addon.id}/links`)
       .reply(200, [redisLink])
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       appName,
     ])
@@ -63,7 +63,7 @@ describe('pg:links', function () {
       .get(`/client/v11/databases/${addon.id}/links`)
       .reply(200, [redisLink])
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'test-database',

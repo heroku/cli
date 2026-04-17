@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import childProcess from 'node:child_process'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import OpenCommand from '../../../../src/commands/pipelines/open.js'
 
@@ -16,13 +16,13 @@ describe('pipelines:open', function () {
 
   afterEach(function () {
     api.done()
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 
   it('opens the url', async function () {
     let hasCorrectUrl = false
-    const spawnStub = sinon.stub(childProcess, 'spawn').returns({
+    const spawnStub = stub(childProcess, 'spawn').returns({
       on(event: string, cb: CallableFunction) {
         if (event === 'exit') {
           cb()

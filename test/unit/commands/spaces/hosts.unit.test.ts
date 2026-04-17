@@ -30,7 +30,7 @@ describe('spaces:hosts', function () {
     })
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
@@ -51,7 +51,7 @@ describe('spaces:hosts', function () {
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',

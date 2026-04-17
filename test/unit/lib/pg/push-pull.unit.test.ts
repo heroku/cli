@@ -4,7 +4,9 @@ import {expect} from 'chai'
 import {EventEmitter} from 'node:events'
 import {Server} from 'node:net'
 import {PassThrough} from 'node:stream'
-import sinon from 'sinon'
+import {
+  restore, SinonStub, spy, stub,
+} from 'sinon'
 
 import {
   connArgs, maybeTunnel, parseExclusions, prepare, spawnPipe, verifyExtensionsMatch,
@@ -24,10 +26,10 @@ describe('push_pull', function () {
 
   describe('prepare', function () {
     describe('local database operations', function () {
-      let execStub: sinon.SinonStub
+      let execStub: SinonStub
 
       beforeEach(function () {
-        execStub = sinon.stub()
+        execStub = stub()
       })
 
       it('creates a local database when host is localhost', async function () {
@@ -68,20 +70,19 @@ describe('push_pull', function () {
         user: 'vic',
       }
 
-      let uxErrorStub: sinon.SinonStub
+      let uxErrorStub: SinonStub
 
       beforeEach(function () {
-        sinon.stub(Math, 'random').returns(randomValue)
-        uxErrorStub = sinon.stub(ux, 'error')
+        stub(Math, 'random').returns(randomValue)
+        uxErrorStub = stub(ux, 'error')
       })
 
       afterEach(function () {
-        sinon.restore()
+        restore()
       })
 
       it('prints an error message if the database is not empty', async function () {
-        sinon
-          .stub(utils.pg.PsqlService.prototype, 'execQuery')
+        stub(utils.pg.PsqlService.prototype, 'execQuery')
           .resolves('hello')
 
         await prepare(target as any)
@@ -90,8 +91,7 @@ describe('push_pull', function () {
       })
 
       it('is silent when the remote database is empty', async function () {
-        sinon
-          .stub(utils.pg.PsqlService.prototype, 'execQuery')
+        stub(utils.pg.PsqlService.prototype, 'execQuery')
           .resolves(emptyMarker)
 
         await prepare(target as any)
@@ -114,13 +114,13 @@ describe('push_pull', function () {
     }
 
     afterEach(function () {
-      sinon.restore()
+      restore()
     })
 
     it('returns connection details containing tunnel config, when a tunnel is configured', async function () {
-      const fakeTunnel = {close: sinon.stub()} as unknown as Server
-      sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
-      sinon.stub(utils.pg.psql, 'sshTunnel').resolves(fakeTunnel)
+      const fakeTunnel = {close: stub()} as unknown as Server
+      stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
+      stub(utils.pg.psql, 'sshTunnel').resolves(fakeTunnel)
 
       const result = await maybeTunnel(target as any)
 
@@ -132,8 +132,8 @@ describe('push_pull', function () {
     })
 
     it('does not return tunnel config in the connection details, when a tunnel is not configured', async function () {
-      sinon.stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
-      sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+      stub(utils.pg.psql, 'getPsqlConfigs').returns({dbTunnelConfig} as any)
+      stub(utils.pg.psql, 'sshTunnel').resolves()
 
       const result = await maybeTunnel(target as any)
 
@@ -267,7 +267,7 @@ describe('push_pull', function () {
       pgDump.stdout = new PassThrough()
       pgRestore.stdin = new PassThrough()
 
-      const endSpy = sinon.spy(pgRestore.stdin, 'end')
+      const endSpy = spy(pgRestore.stdin, 'end')
 
       spawnPipe(pgDump as any, pgRestore as any)
 
@@ -281,8 +281,8 @@ describe('push_pull', function () {
   describe('verifyExtensionsMatch', function () {
     // cspell:ignore plpgsql
 
-    let uxWarnStub: sinon.SinonStub
-    let execQueryStub: sinon.SinonStub
+    let uxWarnStub: SinonStub
+    let execQueryStub: SinonStub
 
     const source = {
       database: 'source_db',
@@ -298,16 +298,16 @@ describe('push_pull', function () {
     }
 
     beforeEach(function () {
-      uxWarnStub = sinon.stub(ux, 'warn')
+      uxWarnStub = stub(ux, 'warn')
     })
 
     afterEach(function () {
-      sinon.restore()
+      restore()
     })
 
     it('does not warn when extensions match', async function () {
       const extensions = 'plpgsql\nuuid-ossp\n'
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(extensions)
+      execQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(extensions)
 
       await verifyExtensionsMatch(source as any, target as any)
 
@@ -315,7 +315,7 @@ describe('push_pull', function () {
     })
 
     it('warns when extensions differ between source and target', async function () {
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery')
       execQueryStub.onFirstCall().resolves('plpgsql\n')  // target
       execQueryStub.onSecondCall().resolves('plpgsql\nuuid-ossp\n')  // source
 
@@ -327,7 +327,7 @@ describe('push_pull', function () {
     it('includes both extension lists in the warning message', async function () {
       const targetExtensions = 'plpgsql\n'
       const sourceExtensions = 'plpgsql\nuuid-ossp\n'
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery')
       execQueryStub.onFirstCall().resolves(targetExtensions)
       execQueryStub.onSecondCall().resolves(sourceExtensions)
 
@@ -340,7 +340,7 @@ describe('push_pull', function () {
     })
 
     it('queries both databases for installed extensions', async function () {
-      execQueryStub = sinon.stub(utils.pg.PsqlService.prototype, 'execQuery')
+      execQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery')
 
       await verifyExtensionsMatch(source as any, target as any)
 

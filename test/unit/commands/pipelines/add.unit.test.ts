@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import AddCommand from '../../../../src/commands/pipelines/add.js'
 
@@ -14,7 +14,7 @@ describe('pipelines:add', function () {
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 
@@ -47,7 +47,7 @@ describe('pipelines:add', function () {
     // the inquirer package to simulate what would be
     // returned from answering if "development" was
     // selected by the user
-    sinon.stub(inquirer, 'prompt').callsFake(function (questions: any) {
+    stub(inquirer, 'prompt').callsFake(function (questions: any) {
       if (questions[0].name === 'stage') {
         return Promise.resolve({stage: 'development'})
       }
@@ -81,7 +81,7 @@ describe('pipelines:add', function () {
     // simulating that the user picked the identical
     // pipeline value with id: '0987' for the pipeline
     // question
-    sinon.stub(inquirer, 'prompt').callsFake(function (questions: any) {
+    stub(inquirer, 'prompt').callsFake(function (questions: any) {
       const question = questions[0]
 
       if (question && question.name === 'pipeline') {

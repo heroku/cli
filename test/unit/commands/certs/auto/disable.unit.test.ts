@@ -30,7 +30,7 @@ describe('heroku certs:auto:disable', function () {
   })
 
   it('confirms that they want to disable', async function () {
-    const {error, stderr, stdout} = await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',

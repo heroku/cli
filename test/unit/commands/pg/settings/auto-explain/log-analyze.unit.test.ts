@@ -28,7 +28,7 @@ describe('pg:settings:auto-explain:log-analyze', function () {
     const pg = nock('https://api.data.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_analyze': {value: true}})
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'true'])
 
     api.done()
     pg.done()
@@ -43,7 +43,7 @@ describe('pg:settings:auto-explain:log-analyze', function () {
     const pg = nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_analyze': {value: false}})
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
 
     api.done()
     pg.done()

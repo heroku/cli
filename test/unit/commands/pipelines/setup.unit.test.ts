@@ -3,7 +3,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import SetupCommand from '../../../../src/commands/pipelines/setup.js'
 
@@ -23,7 +23,7 @@ describe('pipelines:setup', function () {
     kolkrabbiApi.done()
     githubApi.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   it('errors if the user is not linked to GitHub', async function () {
@@ -92,12 +92,12 @@ describe('pipelines:setup', function () {
 
     context('and pipeline name is valid', function () {
       context('in a personal account', function () {
-        let promptStub: sinon.SinonStub
-        let confirmStub: sinon.SinonStub
+        let promptStub: SinonStub
+        let confirmStub: SinonStub
 
         beforeEach(function () {
-          promptStub = sinon.stub()
-          confirmStub = sinon.stub()
+          promptStub = stub()
+          confirmStub = stub()
         })
 
         it('creates apps in the personal account with CI enabled', async function () {
@@ -105,9 +105,9 @@ describe('pipelines:setup', function () {
           promptStub.onSecondCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'prompt').callsFake(promptStub)
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -130,9 +130,9 @@ describe('pipelines:setup', function () {
           promptStub.onFirstCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'prompt').callsFake(promptStub)
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -153,8 +153,8 @@ describe('pipelines:setup', function () {
         it('does not prompt for options with the -y flag', async function () {
           confirmStub.resetHistory()
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -175,13 +175,13 @@ describe('pipelines:setup', function () {
       })
 
       context('in a team', function () {
-        let promptStub: sinon.SinonStub
-        let confirmStub: sinon.SinonStub
+        let promptStub: SinonStub
+        let confirmStub: SinonStub
         const team = 'test-org'
 
         beforeEach(function () {
-          promptStub = sinon.stub()
-          confirmStub = sinon.stub()
+          promptStub = stub()
+          confirmStub = stub()
         })
 
         it('creates apps in a team with CI enabled', async function () {
@@ -189,9 +189,9 @@ describe('pipelines:setup', function () {
           promptStub.onSecondCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'prompt').callsFake(promptStub)
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -233,17 +233,17 @@ describe('pipelines:setup', function () {
 
       context('when pollAppSetup status fails', function () {
         const team = 'test-org'
-        let confirmStub: sinon.SinonStub
+        let confirmStub: SinonStub
 
         beforeEach(function () {
-          confirmStub = sinon.stub()
+          confirmStub = stub()
         })
 
         it('shows error if getAppSetup returns body with setup.status === failed', async function () {
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -287,17 +287,17 @@ describe('pipelines:setup', function () {
 
       context('when pollAppSetup status times out', function () {
         const team = 'test-org'
-        let confirmStub: sinon.SinonStub
+        let confirmStub: SinonStub
 
         beforeEach(function () {
-          confirmStub = sinon.stub()
+          confirmStub = stub()
         })
 
         it('shows error if getAppSetup times out', async function () {
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
 

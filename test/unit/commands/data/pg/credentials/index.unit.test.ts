@@ -3,7 +3,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsIndex from '../../../../../../src/commands/data/pg/credentials/index.js'
@@ -20,7 +20,7 @@ const heredoc = tsheredoc.default
 
 describe('data:pg:credentials:index', function () {
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   it('shows error for non-advanced databases', async function () {
@@ -106,7 +106,7 @@ describe('data:pg:credentials:index', function () {
       .get(`/data/postgres/v1/${addon.id}/credentials`)
       .reply(200, advancedCredentialsResponse)
 
-    const tableStub = sinon.stub(hux, 'table')
+    const tableStub = stub(hux, 'table')
     await runCommand(DataPgCredentialsIndex, ['DATABASE', '--app=myapp', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args

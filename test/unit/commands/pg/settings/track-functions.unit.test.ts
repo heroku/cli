@@ -36,7 +36,7 @@ describe('pg:settings:track-functions', function () {
           values: {test_value: 'No function calls will be tracked.'},
         },
       })
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       track-functions is set to test_value for ${addon.name}.
       No function calls will be tracked.

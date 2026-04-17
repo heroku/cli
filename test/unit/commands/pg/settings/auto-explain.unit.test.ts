@@ -37,7 +37,7 @@ describe('pg:settings:auto-explain', function () {
 
   it('shows settings for auto_explain with value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {auto_explain: {value: 'test_value'}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     auto-explain is set to test_value for postgres-1.
     Execution plans of queries will be logged for future connections.
@@ -46,7 +46,7 @@ describe('pg:settings:auto-explain', function () {
 
   it('shows settings for auto_explain with no value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {auto_explain: {value: ''}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     auto-explain is set to  for postgres-1.
     Execution plans of queries will not be logged for future connections.

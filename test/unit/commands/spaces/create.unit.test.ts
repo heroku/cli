@@ -45,7 +45,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -88,7 +88,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -121,7 +121,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -166,7 +166,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -200,7 +200,7 @@ describe('spaces:create', function () {
         team: {name: 'my-team'},
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
       '--space=my-space',
       '--region=my-region',
@@ -245,7 +245,7 @@ describe('spaces:create', function () {
       })
       .reply(201, firSpace)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--team',
       firSpace.team.name,
       '--space',

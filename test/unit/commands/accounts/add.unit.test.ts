@@ -1,24 +1,24 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 describe('accounts:add', function () {
   let api: nock.Scope
-  let addStub: sinon.SinonStub
+  let addStub: SinonStub
 
   beforeEach(function () {
-    sinon.stub(AccountsModule, 'list').returns([])
-    addStub = sinon.stub(AccountsModule, 'add')
+    stub(AccountsModule, 'list').returns([])
+    addStub = stub(AccountsModule, 'add')
     api = nock('https://api.heroku.com')
   })
 
   afterEach(function () {
     delete process.env.HEROKU_API_KEY
-    sinon.restore()
+    restore()
     api.done()
     nock.cleanAll()
   })

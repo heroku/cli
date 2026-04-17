@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsRotate from '../../../../../../src/commands/data/pg/credentials/rotate.js'
@@ -23,14 +23,14 @@ import {
 const heredoc = tsheredoc.default
 
 describe('data:pg:credentials:rotate', function () {
-  let confirmStub: sinon.SinonStub
+  let confirmStub: SinonStub
 
   beforeEach(function () {
-    confirmStub = sinon.stub(DataPgCredentialsRotate.prototype, 'confirmCommand').resolves()
+    confirmStub = stub(DataPgCredentialsRotate.prototype, 'confirmCommand').resolves()
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   context('Advanced-tier databases', function () {

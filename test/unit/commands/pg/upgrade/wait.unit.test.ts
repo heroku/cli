@@ -55,7 +55,7 @@ describe('pg:upgrade:wait', function () {
     pg
       .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.', 'waiting?': false})
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--wait-interval',

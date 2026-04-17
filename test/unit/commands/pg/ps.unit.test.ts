@@ -55,7 +55,7 @@ describe('pg:ps', function () {
   })
 
   it('runs query', async function () {
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
@@ -76,7 +76,7 @@ SELECT pid,
   })
 
   it('runs verbose query', async function () {
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--verbose',

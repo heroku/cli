@@ -45,7 +45,7 @@ describe('pg:settings:log-min-error-statement', function () {
         },
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       log-min-error-statement is set to error for ${addon.name}.
       Logs all ERROR, LOG, FATAL, and PANIC level messages. (Default)

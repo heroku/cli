@@ -5,7 +5,7 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import * as chrono from 'chrono-node'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub, useFakeTimers} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Fork from '../../../../../src/commands/data/pg/fork.js'
@@ -21,16 +21,16 @@ const heredoc = tsheredoc.default
 
 describe('data:pg:fork', function () {
   beforeEach(function () {
-    sinon.useFakeTimers({
+    useFakeTimers({
       now: stubbedDate,
       shouldAdvanceTime: false,
       toFake: ['Date'],
     })
-    sinon.stub(Fork.prototype, 'notify').resolves()
+    stub(Fork.prototype, 'notify').resolves()
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   describe('basic fork functionality', function () {

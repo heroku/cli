@@ -26,7 +26,7 @@ describe('pg:settings:auto-explain:log-buffers', function () {
   it('shows settings for auto_explain with value', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_buffers': {value: 'test_value'}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       auto-explain.log-buffers is set to test_value for ${addon.name}.
       Buffer statistics have been enabled for auto_explain.
@@ -36,7 +36,7 @@ describe('pg:settings:auto-explain:log-buffers', function () {
   it('shows settings for auto_explain with no value', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_buffers': {value: ''}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       auto-explain.log-buffers is set to  for ${addon.name}.
       Buffer statistics have been disabled for auto_explain.
