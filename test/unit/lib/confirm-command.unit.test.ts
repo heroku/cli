@@ -22,9 +22,7 @@ describe('confirmApp', function () {
 
   it('should err on confirm flag mismatch', async function () {
     try {
-      await captureOutput(async () => {
-        await new ConfirmCommand().confirm('app', 'nope')
-      })
+      await new ConfirmCommand().confirm('app', 'nope')
       expect.fail('Expected confirm to throw error')
     } catch (error: any) {
       expect(ansis.strip(error.message)).to.equal('Confirmation nope did not match app. Aborted.')
@@ -58,9 +56,7 @@ describe('confirmApp', function () {
     sinon.stub(hux, 'prompt').resolves('nope')
 
     try {
-      await captureOutput(async () => {
-        await new ConfirmCommand().confirm('app')
-      })
+      await new ConfirmCommand().confirm('app')
       expect.fail('Expected confirm to throw error')
     } catch (error: any) {
       expect(ansis.strip(error.message)).to.equal('Confirmation did not match app. Aborted.')
