@@ -1,11 +1,10 @@
-/* eslint-disable import/no-named-as-default-member */
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import mockStdin from 'mock-stdin'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgUpdate from '../../../../../src/commands/data/pg/update.js'
@@ -29,17 +28,17 @@ const {prompt} = inquirer
 describe('data:pg:update', function () {
   let stdin: mockStdin.MockSTDIN
   let mockedStdinInput: string[] = []
-  let poolConfigLevelStepStub: sinon.SinonStub
-  let poolConfigInstanceCountStepStub: sinon.SinonStub
-  let poolConfigFollowerInteractiveConfigStub: sinon.SinonStub
+  let poolConfigLevelStepStub: SinonStub
+  let poolConfigInstanceCountStepStub: SinonStub
+  let poolConfigFollowerInteractiveConfigStub: SinonStub
 
   beforeEach(function () {
     // Create stubs for PoolConfig methods
     stdin = mockStdin.stdin()
-    poolConfigLevelStepStub = sinon.stub(PoolConfig.prototype, 'levelStep')
-    poolConfigInstanceCountStepStub = sinon.stub(PoolConfig.prototype, 'instanceCountStep')
-    poolConfigFollowerInteractiveConfigStub = sinon.stub(PoolConfig.prototype, 'followerInteractiveConfig')
-    sinon.stub(DataPgUpdate.prototype, 'prompt').callsFake(async (...args: Parameters<typeof prompt>) => {
+    poolConfigLevelStepStub = stub(PoolConfig.prototype, 'levelStep')
+    poolConfigInstanceCountStepStub = stub(PoolConfig.prototype, 'instanceCountStep')
+    poolConfigFollowerInteractiveConfigStub = stub(PoolConfig.prototype, 'followerInteractiveConfig')
+    stub(DataPgUpdate.prototype, 'prompt').callsFake(async (...args: Parameters<typeof prompt>) => {
       process.nextTick(() => {
         const input = mockedStdinInput.shift()
         if (input) {
@@ -54,7 +53,7 @@ describe('data:pg:update', function () {
 
   afterEach(function () {
     clearLevelsAndPricingCache()
-    sinon.restore()
+    restore()
     stdin.restore()
   })
 
@@ -454,7 +453,7 @@ describe('data:pg:update', function () {
       poolConfigInstanceCountStepStub.resolves('1')
 
       // Simulate the user confirming the pool destruction
-      sinon.stub(DataPgUpdate.prototype, 'confirmCommand').resolves()
+      stub(DataPgUpdate.prototype, 'confirmCommand').resolves()
 
       const {stderr, stdout} = await runCommand(DataPgUpdate, ['DATABASE', '--app=myapp'])
 

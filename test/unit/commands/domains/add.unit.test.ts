@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import DomainsAdd from '../../../../src/commands/domains/add.js'
 
@@ -71,10 +71,10 @@ describe('domains:add', function () {
         },
       ]
 
-      let promptForCertStub: sinon.SinonStub
+      let promptForCertStub: SinonStub
 
       beforeEach(function () {
-        promptForCertStub = sinon.stub(DomainsAdd.prototype, 'promptForCert').resolves('my-cert')
+        promptForCertStub = stub(DomainsAdd.prototype, 'promptForCert').resolves('my-cert')
       })
 
       afterEach(function () {

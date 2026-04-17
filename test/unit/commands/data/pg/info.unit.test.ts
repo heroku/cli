@@ -2,7 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgInfo from '../../../../../src/commands/data/pg/info.js'
@@ -28,7 +28,7 @@ describe('data:pg:info', function () {
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     dataApi.done()
     herokuApi.done()
   })

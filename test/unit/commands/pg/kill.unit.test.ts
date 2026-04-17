@@ -1,14 +1,14 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {createSandbox, SinonSandbox, SinonStub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/kill.js'
 
 describe('pg:kill', function () {
-  let sandbox: sinon.SinonSandbox
-  let getDatabaseStub: sinon.SinonStub
-  let execQueryStub: sinon.SinonStub
+  let sandbox: SinonSandbox
+  let getDatabaseStub: SinonStub
+  let execQueryStub: SinonStub
 
   const mockDb: pg.ConnectionDetails = {
     database: 'testdb',
@@ -21,7 +21,7 @@ describe('pg:kill', function () {
   }
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
     getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
     execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
   })
