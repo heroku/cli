@@ -48,6 +48,11 @@ export default class Ps extends Command {
     FROM pg_stat_activity
     WHERE query <> '<insufficient privilege>'${verbose ? '' : " AND state <> 'idle'"}
       AND pid <> pg_backend_pid()
+      AND NOT (
+        state = 'idle in transaction'
+        AND usename = 'postgres'
+        AND query LIKE '%pg_backup_start%'
+      )
     ORDER BY query_start DESC
     `)
     const output = await psqlService.execQuery(query)

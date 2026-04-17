@@ -69,6 +69,11 @@ SELECT pid,
     FROM pg_stat_activity
     WHERE query <> '<insufficient privilege>' AND state <> 'idle'
       AND pid <> pg_backend_pid()
+      AND NOT (
+        state = 'idle in transaction'
+        AND usename = 'postgres'
+        AND query LIKE '%pg_backup_start%'
+      )
     ORDER BY query_start DESC
 `))
     expect(stdout).to.equal(FAKE_OUTPUT_TEXT)
@@ -90,6 +95,11 @@ SELECT pid,
     FROM pg_stat_activity
     WHERE query <> '<insufficient privilege>'
       AND pid <> pg_backend_pid()
+      AND NOT (
+        state = 'idle in transaction'
+        AND usename = 'postgres'
+        AND query LIKE '%pg_backup_start%'
+      )
     ORDER BY query_start DESC
 `))
     expect(stdout).to.equal(FAKE_OUTPUT_TEXT)
