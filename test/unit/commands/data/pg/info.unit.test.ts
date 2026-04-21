@@ -52,36 +52,36 @@ describe('data:pg:info', function () {
     expect(stderr).to.equal('')
     // cspell:disable
     expect(ansis.strip(stdout)).to.equal(heredoc(`
-        === ⛁ advanced-horizontal-01234 on ⬢ myapp
+      === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-        Plan:       Advanced
-        Status:     Available
-        Data Size:  1.10 GB / 128.00 TB
-        Tables:     10 / 4000 (In compliance)
-        PG Version: 17.5
-        Rollback:   earliest from 2025-01-02 00:00 UTC
-        Region:     us
-        Created:    2025-01-01 00:00 UTC
-        Quotas:      
-          Storage:  1.10 GB (No quotas set)
+      Plan:       Advanced
+      Status:     Available
+      Data Size:  1.10 GB / 128.00 TB
+      Tables:     10 / 4000 (In compliance)
+      PG Version: 17.5
+      Rollback:   earliest from 2025-01-02 00:00 UTC
+      Region:     us
+      Created:    2025-01-01 00:00 UTC
+      Quotas:      
+        Storage:  1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
+      === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
-          ✓ Available
-          Connections: 10 / 400 used
-          2 instances of 4G-Performance (HA):
-            leader.i3r507gt6dbscn: up
-            standby.i7fquhvs4efu74: up
+        ✓ Available
+        Connections: 10 / 400 used
+        2 instances of 4G-Performance (HA):
+          leader.i3r507gt6dbscn: up
+          standby.i7fquhvs4efu74: up
 
-        === Follower pool analytics (attached as DATABASE_ANALYTICS)
+      === Follower pool analytics (attached as DATABASE_ANALYTICS)
 
-          ✓ Available
-          Connections: 50 / 800 used
-          2 instances of 4G-Performance (HA):
-            follower.ic7mb4lq0rkurk: up
-            follower.i7q78mp2fg4v15: up
+        ✓ Available
+        Connections: 50 / 800 used
+        2 instances of 4G-Performance (HA):
+          follower.ic7mb4lq0rkurk: up
+          follower.i7q78mp2fg4v15: up
 
-      `))
+    `))
     // cspell:enable
   })
 
@@ -101,41 +101,39 @@ describe('data:pg:info', function () {
     ])
 
     expect(stderr).to.equal('')
-    expect(ansis.strip(stdout)).to.equal(
-      // cspell:disable
-      heredoc(`
-        === ⛁ advanced-horizontal-01234 on ⬢ myapp
+    // cspell:disable
+    expect(ansis.strip(stdout)).to.equal(heredoc(`
+      === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-        Plan:       Advanced
-        Status:     Available
-        Data Size:  1.10 GB / 128.00 TB
-        Tables:     10 / 4000 (In compliance)
-        PG Version: 17.5
-        Rollback:   earliest from 2025-01-02 00:00 UTC
-        Region:     us
-        Created:    2025-01-01 00:00 UTC
-        Quotas:      
-          Storage:  1.10 GB (No quotas set)
+      Plan:       Advanced
+      Status:     Available
+      Data Size:  1.10 GB / 128.00 TB
+      Tables:     10 / 4000 (In compliance)
+      PG Version: 17.5
+      Rollback:   earliest from 2025-01-02 00:00 UTC
+      Region:     us
+      Created:    2025-01-01 00:00 UTC
+      Quotas:      
+        Storage:  1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE)
+      === Leader pool (attached as DATABASE)
 
-          ✓ Available
-          Connections: 10 / 400 used
-          2 instances of 4G-Performance (HA):
-            leader.i3r507gt6dbscn: up
-            standby.i7fquhvs4efu74: up
+        ✓ Available
+        Connections: 10 / 400 used
+        2 instances of 4G-Performance (HA):
+          leader.i3r507gt6dbscn: up
+          standby.i7fquhvs4efu74: up
 
-        === Follower pool analytics (attached as MULTIFACTOR_ATTACHMENT)
+      === Follower pool analytics (attached as MULTIFACTOR_ATTACHMENT)
 
-          ✓ Available
-          Connections: 50 / 800 used
-          2 instances of 4G-Performance (HA):
-            follower.ic7mb4lq0rkurk: up
-            follower.i7q78mp2fg4v15: up
+        ✓ Available
+        Connections: 50 / 800 used
+        2 instances of 4G-Performance (HA):
+          follower.ic7mb4lq0rkurk: up
+          follower.i7q78mp2fg4v15: up
 
-      `),
-      // cspell:enable
-    )
+    `))
+    // cspell:enable
   })
 
   it('returns info with forked database information', async function () {
@@ -156,37 +154,37 @@ describe('data:pg:info', function () {
     expect(stderr).to.equal('')
     // cspell:disable
     expect(ansis.strip(stdout)).to.equal(heredoc(`
-        === ⛁ advanced-horizontal-01234 on ⬢ myapp
+      === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-        Plan:        Advanced
-        Status:      Available
-        Data Size:   1.10 GB / 128.00 TB
-        Tables:      10 / 4000 (In compliance)
-        PG Version:  17.5
-        Rollback:    earliest from 2025-01-02 00:00 UTC
-        Region:      us
-        Forked From: ⛁ advanced-oblique-01234
-        Created:     2025-01-01 00:00 UTC
-        Quotas:       
-          Storage:   1.10 GB (No quotas set)
+      Plan:        Advanced
+      Status:      Available
+      Data Size:   1.10 GB / 128.00 TB
+      Tables:      10 / 4000 (In compliance)
+      PG Version:  17.5
+      Rollback:    earliest from 2025-01-02 00:00 UTC
+      Region:      us
+      Forked From: ⛁ advanced-oblique-01234
+      Created:     2025-01-01 00:00 UTC
+      Quotas:       
+        Storage:   1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
+      === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
-          ✓ Available
-          Connections: 10 / 400 used
-          2 instances of 4G-Performance (HA):
-            leader.i3r507gt6dbscn: up
-            standby.i7fquhvs4efu74: up
+        ✓ Available
+        Connections: 10 / 400 used
+        2 instances of 4G-Performance (HA):
+          leader.i3r507gt6dbscn: up
+          standby.i7fquhvs4efu74: up
 
-        === Follower pool analytics (attached as DATABASE_ANALYTICS)
+      === Follower pool analytics (attached as DATABASE_ANALYTICS)
 
-          ✓ Available
-          Connections: 50 / 800 used
-          2 instances of 4G-Performance (HA):
-            follower.ic7mb4lq0rkurk: up
-            follower.i7q78mp2fg4v15: up
+        ✓ Available
+        Connections: 50 / 800 used
+        2 instances of 4G-Performance (HA):
+          follower.ic7mb4lq0rkurk: up
+          follower.i7q78mp2fg4v15: up
 
-      `))
+    `))
     // cspell:enable
   })
 
@@ -208,27 +206,27 @@ describe('data:pg:info', function () {
     expect(stderr).to.equal('')
     // cspell:disable
     expect(ansis.strip(stdout)).to.equal(heredoc(`
-        === ⛁ advanced-horizontal-01234 on ⬢ myapp
+      === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-        Plan:       Advanced
-        Status:     Available
-        Data Size:  1.10 GB / 128.00 TB
-        Tables:     10 / 4000 (In compliance)
-        PG Version: 17.5
-        Rollback:   Unsupported
-        Region:     us
-        Created:    2025-01-01 00:00 UTC
-        Quotas:      
-          Storage:  1.10 GB (No quotas set)
+      Plan:       Advanced
+      Status:     Available
+      Data Size:  1.10 GB / 128.00 TB
+      Tables:     10 / 4000 (In compliance)
+      PG Version: 17.5
+      Rollback:   Unsupported
+      Region:     us
+      Created:    2025-01-01 00:00 UTC
+      Quotas:      
+        Storage:  1.10 GB (No quotas set)
 
-        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
+      === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
-          ✓ Available
-          Connections: 10 / 400 used
-          1 instance of 4G-Performance:
-            leader.i3r507gt6dbscn: up
+        ✓ Available
+        Connections: 10 / 400 used
+        1 instance of 4G-Performance:
+          leader.i3r507gt6dbscn: up
 
-      `))
+    `))
     // cspell:enable
   })
 
@@ -281,27 +279,27 @@ describe('data:pg:info', function () {
     expect(stderr).to.equal('')
     // cspell:disable
     expect(ansis.strip(stdout)).to.equal(heredoc(`
-        === ⛁ advanced-horizontal-01234 on ⬢ myapp
+      === ⛁ advanced-horizontal-01234 on ⬢ myapp
 
-        Plan:       Advanced
-        Status:     Available
-        Data Size:  128.05 TB / 128.00 TB
-        Tables:     4001 / 4000 (Not in compliance)
-        PG Version: 17.5
-        Rollback:   Unsupported
-        Region:     us
-        Created:    2025-01-01 00:00 UTC
-        Quotas:      
-          Storage:  128.05 TB (No quotas set)
+      Plan:       Advanced
+      Status:     Available
+      Data Size:  128.05 TB / 128.00 TB
+      Tables:     4001 / 4000 (Not in compliance)
+      PG Version: 17.5
+      Rollback:   Unsupported
+      Region:     us
+      Created:    2025-01-01 00:00 UTC
+      Quotas:      
+        Storage:  128.05 TB (No quotas set)
 
-        === Leader pool (attached as DATABASE, DATABASE_ANALYST)
+      === Leader pool (attached as DATABASE, DATABASE_ANALYST)
 
-          ✓ Available
-          Connections: 10 / 400 used
-          1 instance of 4G-Performance:
-            leader.i3r507gt6dbscn: up
+        ✓ Available
+        Connections: 10 / 400 used
+        1 instance of 4G-Performance:
+          leader.i3r507gt6dbscn: up
 
-      `))
+    `))
     // cspell:enable
   })
 

@@ -145,9 +145,7 @@ describe('data:pg:credentials:destroy', function () {
 
         dataApi.done()
         herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(
-          'You must detach the credential analyst from the app ⬢ myapp before destroying it.',
-        )
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
       }
     })
 
@@ -198,9 +196,7 @@ describe('data:pg:credentials:destroy', function () {
 
         dataApi.done()
         herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal(
-          'You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.',
-        )
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
       }
     })
 

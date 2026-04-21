@@ -50,17 +50,15 @@ export default class DataPgCredentialsIndex extends BaseCommand {
 
     const presentCredential = (cred: CredentialInfo): string => {
       let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
-      if (cred.type === 'owner') {
-        credAttachments = attachments.filter(a => {
+      credAttachments = cred.type === 'owner'
+        ? attachments.filter(a => {
           const attachmentRole = parseAttachmentFactors(a.namespace).role
           return !attachmentRole || attachmentRole === cred.name
         })
-      } else {
-        credAttachments = attachments.filter(a => {
+        : attachments.filter(a => {
           const attachmentRole = parseAttachmentFactors(a.namespace).role
           return attachmentRole === cred.name
         })
-      }
 
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
     }

@@ -91,7 +91,7 @@ export default class Doctor extends AutocompleteBase {
     const header = 'Completable Commands'
     this.log(header)
     this.log('='.repeat(header.length))
-    const pluginList = Array.isArray(this.config.plugins) ? this.config.plugins : Array.from(this.config.plugins.values())
+    const pluginList = Array.isArray(this.config.plugins) ? this.config.plugins : [...this.config.plugins.values()]
     for (const p of pluginList) {
       for (const c of p.commands) {
         try {

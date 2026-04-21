@@ -15,7 +15,6 @@ import {
   AdvancedCredentialState, type CredentialsInfo, type InfoResponse, PoolStatus,
 } from '../../../../lib/data/types.js'
 
-// eslint-disable-next-line import/no-named-as-default-member
 const {prompt} = inquirer
 const heredoc = tsheredoc.default
 
@@ -26,15 +25,11 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       required: true,
     }),
   }
-
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
-
   static description = 'attach an existing Postgres Advanced database to an app'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> database_name --app example-app',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     as: Flags.string({description: 'name for Postgres database attachment'}),
@@ -45,7 +40,6 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     pool: Flags.string({description: 'instance pool to attach'}),
     remote: Flags.remote(),
   }
-
   static promptFlagActive = false
 
   public async prompt<T extends inquirer.Answers>(...args: Parameters<typeof inquirer.prompt<T>>): Promise<T> {
@@ -160,11 +154,9 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
     try {
       ux.action.start(`Setting ${color.attachment(attachment.name)} config vars and restarting ${color.app(app)}`)
-      const {body: releases} = await this.heroku.get<Required<Heroku.Release>[]>(
-        `/apps/${app}/releases`, {
-          headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
-        },
-      )
+      const {body: releases} = await this.heroku.get<Required<Heroku.Release>[]>(`/apps/${app}/releases`, {
+        headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
+      })
       ux.action.stop(`done, v${releases[0].version}`)
     } catch (error) {
       ux.action.stop(color.red('!'))
@@ -184,9 +176,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
   }
 
   private async promptCredential(addonId: string): Promise<string | undefined> {
-    const {body: {items: credentials}} = await this.dataApi.get<CredentialsInfo>(
-      `/data/postgres/v1/${addonId}/credentials`,
-    )
+    const {body: {items: credentials}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addonId}/credentials`)
     const sortedCredentials = sortByOwnerAndName(credentials)
 
     if (sortedCredentials.length === 0) {

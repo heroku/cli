@@ -257,8 +257,8 @@ type NonAdvancedCredential = {
 type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
 type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
 
-type PrivateSpaceRegion =
-  'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
+type PrivateSpaceRegion
+  = 'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
     | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
 
 type ResourceReference = {

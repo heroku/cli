@@ -26,9 +26,7 @@ export type AttachmentFactors = {
  * @param namespace - Raw attachment namespace, or nullish/blank for no factors
  * @returns A plain object with zero or more of `pool`, `proxy`, and `role` set
  */
-export function parseAttachmentFactors(
-  namespace?: null | string,
-): AttachmentFactors {
+export function parseAttachmentFactors(namespace?: null | string): AttachmentFactors {
   const result: AttachmentFactors = {}
 
   if (!namespace?.trim()) {

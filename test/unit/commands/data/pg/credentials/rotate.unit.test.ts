@@ -126,9 +126,7 @@ describe('data:pg:credentials:rotate', function () {
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
-      expect(warningMessage).to.include(
-        'This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.',
-      )
+      expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
       expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ advanced-horizontal-01234... done
