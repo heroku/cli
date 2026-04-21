@@ -101,36 +101,4 @@ export default class Git {
     return this.hasGitRemote(remote)
       .then(exists => exists ? null : this.exec(['remote', 'add', remote, url]))
   }
-
-  /**
-   * Ensure Git uses the Heroku CLI as a credential helper for HTTPS Git to this cloud,
-   * so `git fetch`/`git push` use the same token source as the CLI (keychain, netrc, HEROKU_API_KEY, etc.).
-   * Scoped to `credential.https://<httpGitHost>.helper` (local config when {@link repoRoot} is set or implied).
-   *
-   * Uses `heroku` on `PATH` by default.
-   *
-   * @param repoRoot - repository root for `git -C … config --local`; omit to use the current working tree.
-   */
-  async ensureHerokuGitCredentialHelper(repoRoot?: string): Promise<void> {
-    if (!repoRoot && !this.inGitRepo()) {
-      return
-    }
-
-    const {httpGitHost} = vars
-    const configKey = `credential.https://${httpGitHost}.helper`
-    const helperValue = '!f() { heroku git:credentials "$@"; }; f'
-    const prefix = repoRoot ? ['-C', repoRoot] as const : [] as const
-
-    try {
-      const existing = await this.exec([...prefix, 'config', '--local', '--get-all', configKey]).catch(() => '')
-      if (existing.split('\n').some(line => line.includes('git:credentials') && line.includes('$@'))) {
-        return
-      }
-
-      await this.exec([...prefix, 'config', '--local', '--add', configKey, helperValue])
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error)
-      ux.warn(`Could not configure Git credential helper for ${httpGitHost}: ${message}`)
-    }
-  }
 }

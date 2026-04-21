@@ -1,6 +1,5 @@
-import {Command, vars} from '@heroku-cli/command'
+import {Command} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import fs from 'node:fs'
 
 export class GitCredentials extends Command {
   static hidden = true
@@ -15,18 +14,9 @@ export class GitCredentials extends Command {
     const {args} = await this.parse(GitCredentials)
     switch (args.command) {
     case 'get': {
-      const stdin = readCredentialStdin()
-      const {protocol, host} = parseCredentialStdin(stdin)
-      if (protocol !== 'https' || host !== vars.httpGitHost) {
-        return
-      }
-
-      if (!this.heroku.auth) {
-        return
-      }
-
+      if (!this.heroku.auth) throw new Error('not logged in')
       ux.stdout(`protocol=https
-host=${vars.httpGitHost}
+host=git.heroku.com
 username=heroku
 password=${this.heroku.auth}`)
       break
@@ -43,27 +33,4 @@ password=${this.heroku.auth}`)
     }
     }
   }
-}
-
-function readCredentialStdin(): string {
-  try {
-    return fs.readFileSync(0, 'utf8')
-  } catch {
-    return ''
-  }
-}
-
-function parseCredentialStdin(input: string): {protocol?: string; host?: string} {
-  const out: {protocol?: string; host?: string} = {}
-  for (const line of input.split('\n')) {
-    if (!line || line === '\r') continue
-    const eq = line.indexOf('=')
-    if (eq === -1) continue
-    const key = line.slice(0, eq).trim()
-    const value = line.slice(eq + 1).trim()
-    if (key === 'protocol') out.protocol = value
-    if (key === 'host') out.host = value
-  }
-
-  return out
 }

@@ -30,6 +30,5 @@ remote: Counting objects: 42, done.
     const directory = args.DIRECTORY || (app.name as string)
     const remote = flags.remote || 'heroku'
     await git.spawn(['clone', '-o', remote, git.url(app.name!), directory])
-    await git.ensureHerokuGitCredentialHelper(directory)
   }
 }
