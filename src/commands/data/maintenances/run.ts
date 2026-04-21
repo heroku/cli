@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
 
 export default class DataMaintenancesRun extends BaseCommand {

@@ -4,7 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 
 const heredoc = tsheredoc.default
 

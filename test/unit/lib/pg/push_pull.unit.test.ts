@@ -8,7 +8,7 @@ import sinon from 'sinon'
 
 import {
   connArgs, maybeTunnel, parseExclusions, prepare, spawnPipe, verifyExtensionsMatch,
-} from '../../../../src/lib/pg/push_pull.js'
+} from '../../../../src/lib/pg/push-pull.js'
 
 describe('push_pull', function () {
   describe('parseExclusions', function () {

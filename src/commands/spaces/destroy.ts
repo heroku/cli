@@ -5,7 +5,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {getGeneration} from '../../lib/apps/generation.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import {displayNat} from '../../lib/spaces/spaces.js'
 import {Space} from '../../lib/types/fir.js'
 

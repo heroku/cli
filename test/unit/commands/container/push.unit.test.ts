@@ -6,7 +6,7 @@ import * as sinon from 'sinon'
 import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/push.js'
-import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
+import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 import runCommand from '../../../helpers/runCommand.js'
 
 describe('container push', function () {

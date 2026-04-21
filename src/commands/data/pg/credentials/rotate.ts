@@ -5,8 +5,8 @@ import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo, NonAdvancedCredentialInfo} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
-import {parseAttachmentFactors} from '../../../../lib/data/parseAttachmentFactors.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 
 export default class Rotate extends BaseCommand {
   static args = {

@@ -4,7 +4,7 @@ import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/attach.js'
-import ConfirmCommand from '../../../../src/lib/confirmCommand.js'
+import ConfirmCommand from '../../../../src/lib/confirm-command.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 let confirmStub: sinon.SinonStub

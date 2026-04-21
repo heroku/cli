@@ -12,7 +12,7 @@ import {
   prepare,
   spawnPipe,
   verifyExtensionsMatch,
-} from '../../lib/pg/push_pull.js'
+} from '../../lib/pg/push-pull.js'
 
 const {env} = process
 const heredoc = tsheredoc.default

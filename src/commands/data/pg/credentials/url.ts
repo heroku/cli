@@ -11,7 +11,7 @@ import type {
   NonAdvancedCredentialInfo,
 } from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
 import {isAdvancedCredentialInfo} from '../../../../lib/data/types.js'
 
 const heredoc = tsheredoc.default

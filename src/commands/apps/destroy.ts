@@ -3,23 +3,19 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import * as git from '../../lib/ci/git.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 
 export default class Destroy extends Command {
   static args = {
     app: Args.string({hidden: true}),
   }
-
   static description = 'permanently destroy an app'
-
   static flags = {
     app: flags.app(),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
   }
-
   static help = 'This will also destroy all add-ons on the app.'
-
   static hiddenAliases = ['destroy', 'apps:delete']
 
   async run() {

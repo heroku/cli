@@ -5,7 +5,7 @@ import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
-import {huxTableNoWrapOptions} from '../../lib/utils/tableUtils.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const topic = 'addons'
 
@@ -21,7 +21,6 @@ export default class Addons extends Command {
     `${color.command(`heroku ${topic} --all`)}`,
     `${color.command(`heroku ${topic} --app acme-inc-www`)}`,
   ]
-
   static flags = {
     all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps'}),
     app: flags.app(),
@@ -29,9 +28,7 @@ export default class Addons extends Command {
     'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
-
   static topic = topic
-
   static usage = 'addons [--all|--app APP]'
 
   public async run(): Promise<void> {
@@ -71,6 +68,7 @@ async function addonGetter(api: APIClient, app?: string) {
       },
     })
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
       // because the root /addon-attachments endpoint won't include relevant
       // attachments when sudo-ing for another app, we will use the more
@@ -114,15 +112,14 @@ async function addonGetter(api: APIClient, app?: string) {
   // This is probably normal (because we are asking API for all attachments)
   // but it could also be due to certain types of permissions issues, so check
   // if the attachment looks relevant to the app, and then render whatever
-  _.values(groupedAttachments)
-    .forEach(atts => {
-      const inaccessibleAddon = {
-        addon_service: {}, app: atts[0].addon.app, attachments: atts, name: atts[0].addon.name, plan: {},
-      }
-      if (isRelevantToApp(inaccessibleAddon)) {
-        addons.push(inaccessibleAddon)
-      }
-    })
+  for (const atts of _.values(groupedAttachments)) {
+    const inaccessibleAddon = {
+      addon_service: {}, app: atts[0].addon.app, attachments: atts, name: atts[0].addon.name, plan: {},
+    }
+    if (isRelevantToApp(inaccessibleAddon)) {
+      addons.push(inaccessibleAddon)
+    }
+  }
 
   return addons
 }
@@ -170,19 +167,19 @@ function displayAll(addons: Heroku.AddOn[], noWrap = false) {
         get({state}) {
           let result: string = state || ''
           switch (state) {
-          case 'provisioned': {
-            result = 'created'
-            break
-          }
+            case 'provisioned': {
+              result = 'created'
+              break
+            }
 
-          case 'provisioning': {
-            result = 'creating'
-            break
-          }
+            case 'provisioning': {
+              result = 'creating'
+              break
+            }
 
-          case 'deprovisioned': {
-            result = 'errored'
-          }
+            case 'deprovisioned': {
+              result = 'errored'
+            }
           }
 
           return result

@@ -8,20 +8,16 @@ export default class AppsOpen extends Command {
   static args = {
     path: Args.string({description: 'base URL path of app', required: false}),
   }
-
   static description = 'open the app in a web browser'
   static examples = [
     color.command('heroku open -a myapp'),
     color.command('heroku open -a myapp /foo'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['open']
-
   static topic = 'apps'
 
   async run() {

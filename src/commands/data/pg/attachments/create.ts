@@ -9,8 +9,8 @@ import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
 import {trapConfirmationRequired} from '../../../../lib/addons/util.js'
-import BaseCommand from '../../../../lib/data/baseCommand.js'
-import {sortByLeaderAndName, sortByOwnerAndName} from '../../../../lib/data/credentialUtils.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {sortByLeaderAndName, sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
 import {
   AdvancedCredentialState, type CredentialsInfo, type InfoResponse, PoolStatus,
 } from '../../../../lib/data/types.js'

@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 

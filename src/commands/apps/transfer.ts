@@ -5,9 +5,9 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {appTransfer} from '../../lib/apps/app-transfer.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
-import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
+import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
 import AppsLock from './lock.js'
 
 const heredoc = tsheredoc.default
@@ -16,7 +16,6 @@ export default class AppsTransfer extends Command {
   static args = {
     recipient: Args.string({description: 'user or team to transfer applications to', required: true}),
   }
-
   static description = 'transfer applications to another user or team'
   static examples = [heredoc(`
     ${color.command('heroku apps:transfer collaborator@example.com')}
@@ -25,7 +24,6 @@ export default class AppsTransfer extends Command {
     Transferring example to acme-widgets... done`), heredoc(`
     ${color.command('heroku apps:transfer --bulk acme-widgets')}
     ...`)]
-
   static flags = {
     app: flags.app(),
     bulk: flags.boolean({description: 'transfer applications in bulk', required: false}),
@@ -33,7 +31,6 @@ export default class AppsTransfer extends Command {
     locked: flags.boolean({char: 'l', description: 'lock the app upon transfer', required: false}),
     remote: flags.remote({char: 'r'}),
   }
-
   static topic = 'apps'
 
   getAppsToTransfer(apps: Heroku.App[], inquirer: any) {

@@ -5,11 +5,11 @@ import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
-import {sortByOwnerAndName} from '../../../../lib/data/credentialUtils.js'
-import {parseAttachmentFactors} from '../../../../lib/data/parseAttachmentFactors.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 import {presentCredentialAttachments} from '../../../../lib/pg/util.js'
-import {huxTableNoWrapOptions} from '../../../../lib/utils/tableUtils.js'
+import {huxTableNoWrapOptions} from '../../../../lib/utils/table-utils.js'
 
 export default class DataPgCredentialsIndex extends BaseCommand {
   static args = {

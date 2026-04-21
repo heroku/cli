@@ -3,7 +3,7 @@ import {flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Maintenance} from '../../../lib/data/types.js'
 

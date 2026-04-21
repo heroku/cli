@@ -9,9 +9,9 @@ import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import createPool from '../../../lib/data/createPool.js'
-import PoolConfig from '../../../lib/data/poolConfig.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import createPool from '../../../lib/data/create-pool.js'
+import PoolConfig from '../../../lib/data/pool-config.js'
 import {
   DeepRequired,
   ExtendedPostgresLevelInfo,

@@ -15,7 +15,7 @@ import * as tls from 'tls'
 
 import type {RedisFormationResponse} from '../../lib/redis/api.js'
 
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import apiFactory from '../../lib/redis/api.js'
 
 const REPLY_OK = 'OK'

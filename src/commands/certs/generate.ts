@@ -3,7 +3,7 @@ import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 function getCommand(certs: SniEndpoint[], domain: string): 'update' | 'add' {
   const shouldUpdate = certs

@@ -2,7 +2,7 @@ import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
 import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
 

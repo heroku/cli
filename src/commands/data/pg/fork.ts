@@ -3,10 +3,10 @@ import {flags as Flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../../lib/addons/create_addon.js'
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import createAddon from '../../../lib/addons/create-addon.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
-import {parseProvisionOpts} from '../../../lib/data/parseProvisionOpts.js'
+import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
 import {InfoResponse} from '../../../lib/data/types.js'
 import notify from '../../../lib/notify.js'
 

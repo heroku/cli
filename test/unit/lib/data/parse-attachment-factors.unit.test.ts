@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {parseAttachmentFactors} from '../../../../src/lib/data/parseAttachmentFactors.js'
+import {parseAttachmentFactors} from '../../../../src/lib/data/parse-attachment-factors.js'
 
 describe('parseAttachmentFactors', function () {
   it('returns an empty object when namespace is null', function () {

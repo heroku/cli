@@ -7,7 +7,7 @@ import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {WaitStatus} from '../../../lib/data/types.js'
 import notify from '../../../lib/notify.js'
 

@@ -9,7 +9,7 @@ import {
   prepare,
   spawnPipe,
   verifyExtensionsMatch,
-} from '../../lib/pg/push_pull.js'
+} from '../../lib/pg/push-pull.js'
 import childProcess from 'node:child_process'
 import {nls} from '../../nls.js'
 
