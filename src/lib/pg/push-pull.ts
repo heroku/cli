@@ -34,9 +34,7 @@ export const prepare = async (target: pg.ConnectionDetails, execFn: ExecFn = exe
   }
 }
 
-export const maybeTunnel = async (
-  herokuDb: pg.ConnectionDetails,
-): Promise<pg.ConnectionDetails> => {
+export const maybeTunnel = async (herokuDb: pg.ConnectionDetails): Promise<pg.ConnectionDetails> => {
   let withTunnel: pg.ConnectionDetails = {...herokuDb}
   const configs = utils.pg.psql.getPsqlConfigs(herokuDb)
   const tunnel = await utils.pg.psql.sshTunnel(herokuDb, configs.dbTunnelConfig)

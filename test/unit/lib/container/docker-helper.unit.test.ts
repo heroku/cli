@@ -1,10 +1,11 @@
-import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
-import * as path from 'path'
-import childProcess from 'node:child_process'
 import inquirer from 'inquirer'
-import {EventEmitter} from 'events'
+import childProcess from 'node:child_process'
+import {EventEmitter} from 'node:events'
+import path from 'node:path'
+import * as sinon from 'sinon'
+
+import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 describe('DockerHelper', function () {
   let helper: DockerHelper
@@ -130,9 +131,9 @@ describe('DockerHelper', function () {
       const resourceRoot = 'rootfulroot'
       const results = helper.getJobs(resourceRoot, dockerfiles)
       expect(results).to.have.keys('worker', 'web', 'standard')
-      expect(results.worker.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile.worker')])
-      expect(results.web.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Dockerfile.web')])
-      expect(results.standard.map((j: { dockerfile: any }) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile')])
+      expect(results.worker.map((j: {dockerfile: any}) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile.worker')])
+      expect(results.web.map((j: {dockerfile: any}) => j.dockerfile)).to.have.members([path.join('.', 'Dockerfile.web')])
+      expect(results.standard.map((j: {dockerfile: any}) => j.dockerfile)).to.have.members([path.join('.', 'Nested', 'Dockerfile')])
     })
   })
 
@@ -271,9 +272,9 @@ describe('DockerHelper', function () {
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
       await helper.buildImage({
+        buildArgs: [],
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
-        buildArgs: [],
       })
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
@@ -299,10 +300,10 @@ describe('DockerHelper', function () {
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
       await helper.buildImage({
+        arch: 'arm64',
+        buildArgs: [],
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
-        buildArgs: [],
-        arch: 'arm64',
       })
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
@@ -321,9 +322,9 @@ describe('DockerHelper', function () {
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
       await helper.buildImage({
+        buildArgs: [],
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
-        buildArgs: [],
       })
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
@@ -343,10 +344,10 @@ describe('DockerHelper', function () {
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
       await helper.buildImage({
+        arch: 'arm64',
+        buildArgs: [],
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
-        buildArgs: [],
-        arch: 'arm64',
       })
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
@@ -366,10 +367,10 @@ describe('DockerHelper', function () {
       const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
 
       await helper.buildImage({
+        arch: 'aarch64',
+        buildArgs: [],
         dockerfile: 'dockerfile',
         resource: 'registry.heroku.com/test-app/web',
-        buildArgs: [],
-        arch: 'aarch64',
       })
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)

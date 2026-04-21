@@ -1,5 +1,5 @@
-import {utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {Quota, Quotas} from '../../../../lib/data/types.js'
@@ -14,13 +14,10 @@ export default class DataPgQuotasIndex extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'display quotas set on a Postgres Advanced database'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> database_name --app example-app',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
@@ -45,10 +42,10 @@ export default class DataPgQuotasIndex extends BaseCommand {
     } else {
       const {body: quotas} = await this.dataApi.get<Quotas>(`/data/postgres/v1/${addon.id}/quotas`)
 
-      quotas.items.forEach(quota => {
+      for (const quota of quotas.items) {
         displayQuota(quota)
         ux.stdout('')
-      })
+      }
     }
   }
 }

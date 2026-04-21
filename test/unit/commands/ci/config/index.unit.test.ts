@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Config from '../../../../../src/commands/ci/config/index.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('ci:config', function () {
   const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'my-pipeline'}

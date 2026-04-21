@@ -11,9 +11,7 @@ export default class Rotate extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'rotate the database credentials'
-
   static flags = {
     all: flags.boolean({description: 'rotate all credentials', exclusive: ['name']}),
     app: flags.app({required: true}),
@@ -25,7 +23,6 @@ export default class Rotate extends Command {
     }),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

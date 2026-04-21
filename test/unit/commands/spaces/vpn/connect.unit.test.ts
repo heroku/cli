@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connect.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 

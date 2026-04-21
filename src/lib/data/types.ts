@@ -58,13 +58,13 @@ export type CreatePoolParameters = {
 
 export type CredentialInfo = AdvancedCredentialInfo | NonAdvancedCredentialInfo
 
-export type CredentialsInfo = { items: Array<AdvancedCredentialInfo> }
+export type CredentialsInfo = {items: Array<AdvancedCredentialInfo>}
 
 // This can be removed if at any point we get to generate a correct TypeScript schema from the Platform API
 // HyperSchema, but that's not easy due to API variants and some other header-selectable serialization expansion
 // options like `Accept-Inclusion` and `Accept-Expansion`.
 export type DeepRequired<T> = T extends object
-  ? { [K in keyof T]-?: DeepRequired<T[K]> }
+  ? {[K in keyof T]-?: DeepRequired<T[K]>}
   : T;
 
 export type ExtendedPostgresLevelInfo = PostgresLevelInfo & {
@@ -109,29 +109,29 @@ export type InfoResponse = {
 }
 
 export type Maintenance = {
-  'addon': {
-    'attachments': string[];
-    'kind': string;
-    'name': string;
-    'plan': string;
-    'uuid'?: string;
-    'window': null | string;
+  addon: {
+    attachments: string[];
+    kind: string;
+    name: string;
+    plan: string;
+    uuid?: string;
+    window: null | string;
   };
-  'app': {
-    'name': string;
-    'uuid'?: string;
+  app: {
+    name: string;
+    uuid?: string;
   };
-  'completed_at': null | string;
-  'duration_seconds': null | string;
-  'method': string;
-  'previously_scheduled_for': null | string;
-  'reason': string;
-  'required_by': null | string;
-  'scheduled_for': null | string;
-  'server_created_at': string;
-  'started_at': null | string;
-  'status': MaintenanceStatus;
-  'window': null | string;
+  completed_at: null | string;
+  duration_seconds: null | string;
+  method: string;
+  previously_scheduled_for: null | string;
+  reason: string;
+  required_by: null | string;
+  scheduled_for: null | string;
+  server_created_at: string;
+  started_at: null | string;
+  status: MaintenanceStatus;
+  window: null | string;
 }
 
 export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
@@ -197,7 +197,7 @@ export type Quota = {
   warning_gb: null | number
 }
 
-export type Quotas = { items: Array<Quota> }
+export type Quotas = {items: Array<Quota>}
 
 export type SettingsChangeResponse = {
   changes: Array<SettingsChange>

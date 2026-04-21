@@ -1,7 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-format.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
@@ -14,8 +15,8 @@ describe('pg:settings:auto-explain:log-format', function () {
   beforeEach(function () {
     api = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'test-database',
+        app: 'myapp',
       }).reply(200, [{addon}])
   })
 
@@ -27,7 +28,7 @@ describe('pg:settings:auto-explain:log-format', function () {
     const pg = nock('https://api.data.heroku.com')
       .patch(`/postgres/v0/databases/${addon.id}/config`).reply(200, {'auto_explain.log_format': {value: 'json'}})
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'json'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database', 'json'])
 
     api.done()
     pg.done()

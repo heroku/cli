@@ -1,18 +1,15 @@
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import netrc from 'netrc-parser'
-import {vars} from '@heroku-cli/command'
 
 import AnalyticsCommand, {AnalyticsInterface} from '../../src/lib/analytics-telemetry/backboard-herokulytics-client.js'
-import HerokulyticsConfig from '../../src/lib/analytics-telemetry/herokulytics-config.js'
 
 const mockCommand = {
+  id: 'login',
   plugin: {
     name: 'foo',
     version: '123',
   },
-  id: 'login',
 }
 
 const mockInvalidCommand = {
@@ -48,7 +45,7 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
 
   const backboard = createBackboardMock(expectedCbk, actual)
   await analytics.send({
-    Command: mockCommand as any, argv: ['foo', 'bar'],
+    argv: ['foo', 'bar'], Command: mockCommand as any,
   })
   backboard.done()
 }

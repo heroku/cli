@@ -77,10 +77,8 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     if (!isAdvancedDatabase(addon)) {
       const cmd = `heroku addons:attach ${addon.name} -a ${app}${as ? ` --as ${as}` : ''}`
         + `${credential ? ` --credential ${credential}` : ''}`
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(cmd)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(cmd)} instead.`)
     }
 
     if (!credential || !pool || !as) {

@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import LabsEnable from '../../../../src/commands/labs/enable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('labs:enable', function () {
   let api: nock.Scope

@@ -17,7 +17,6 @@ export default class Push extends Command {
     `${color.command('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`,
     `${color.command('heroku container:push --recursive --context-path .')} # Pushes Dockerfile.* using current dir as build context`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     arg: flags.string({description: 'set build-time variables'}),
@@ -26,11 +25,8 @@ export default class Push extends Command {
     remote: flags.remote({char: 'r'}),
     verbose: flags.boolean({char: 'v'}),
   }
-
   static strict = false
-
   static topic = 'container'
-
   dockerHelper = new DockerHelper()
 
   async run(): Promise<void> {
@@ -111,17 +107,16 @@ export default class Push extends Command {
     }
 
     if (recursive) {
-      if (processTypes.length > 0) {
-        filteredJobs = this.dockerHelper.filterByProcessType(jobs, processTypes)
-      } else {
-        filteredJobs = jobs
-      }
+      filteredJobs = processTypes.length > 0
+        ? this.dockerHelper.filterByProcessType(jobs, processTypes)
+        : jobs
 
       selectedJobs = await this.dockerHelper.chooseJobs(filteredJobs)
     } else if (jobs.standard) {
-      jobs.standard.forEach(pj => {
+      for (const pj of jobs.standard) {
         pj.resource = pj.resource.replace(/standard$/, processTypes[0])
-      })
+      }
+
       selectedJobs = jobs.standard || []
     }
 

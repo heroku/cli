@@ -1,5 +1,4 @@
-import {stdout, stderr} from 'stdout-stderr'
-import runCommand from '../../../../helpers/runCommand.js'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
@@ -24,21 +23,21 @@ describe('pg:credentials:create', function () {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
     }
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials')
       .reply(200)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'credname',
     ])
-    expect(stdout.output).to.equal('\nPlease attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.\nPlease define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.\n')
-    return expect(stderr.output).to.equal('Creating credential credname... done\n')
+    expect(stdout).to.equal('\nPlease attach the credential to the apps you want to use it in by running heroku addons:attach postgres-1 --credential credname -a myapp.\nPlease define the new grants for the credential within Postgres: heroku pg:psql postgres-1 -a myapp.\n')
+    return expect(stderr).to.equal('Creating credential credname... done\n')
   })
 
   it('throws an error when the db is numbered essential plan', async function () {
@@ -47,17 +46,18 @@ describe('pg:credentials:create', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: essentialAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ]).catch(error => expect(error.message).to.contain(err))
+    ])
+    expect(error!.message).to.contain(err)
   })
 
   it('throws an error when the db is essential plan', async function () {
@@ -65,16 +65,17 @@ describe('pg:credentials:create', function () {
       name: 'postgres-1', plan: {name: 'heroku-postgresql:mini'},
     }
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = "You can't create a custom credential on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ]).catch(error => expect(error.message).to.contain(err))
+    ])
+    expect(error!.message).to.contain(err)
   })
 })

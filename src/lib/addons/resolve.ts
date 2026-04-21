@@ -1,9 +1,9 @@
-import type {pg} from '@heroku/heroku-cli-util'
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
+import type {pg} from '@heroku/heroku-cli-util'
 
-import {HTTP, HTTPError} from '@heroku/http-call'
 import {APIClient} from '@heroku-cli/command'
 import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
+import {HTTP, HTTPError} from '@heroku/http-call'
 
 import type {ExtendedAddon} from '../pg/types.js'
 
@@ -21,7 +21,7 @@ export const appAddon = async function (heroku: APIClient, app: string, id: stri
   return singularize('addon', options.namespace)(response?.body)
 }
 
-const handleNotFound = function (err: { body?: { resource: string }, statusCode: number }, resource: string) {
+const handleNotFound = function (err: {body?: {resource: string}, statusCode: number}, resource: string) {
   if (err.statusCode === 404 && err.body && err.body.resource === resource) {
     return true
   }
@@ -67,7 +67,7 @@ const filter = function (app: string | undefined, addonService: AddOnAttachment[
   })
 }
 
-const attachmentHeaders: Readonly<{ Accept: string, 'Accept-Inclusion': string }> = {
+const attachmentHeaders: Readonly<{Accept: string, 'Accept-Inclusion': string}> = {
   Accept: 'application/vnd.heroku+json; version=3.sdk',
   'Accept-Inclusion': 'addon:plan,config_vars',
 }
@@ -145,6 +145,7 @@ export async function resolveAddon(...args: Parameters<typeof addonResolver>): R
   const promise: ReturnType<typeof addonResolver> = addonResolverMap.get(key) || addonResolver(...args)
   try {
     await promise
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     addonResolverMap.has(key) || addonResolverMap.set(key, promise)
   } catch {
     addonResolverMap.delete(key)
@@ -166,7 +167,7 @@ export class AmbiguousError extends Error {
   public readonly message: string
   public readonly statusCode = 422
 
-  constructor(public readonly matches: { name?: string }[], public readonly type: string) {
+  constructor(public readonly matches: {name?: string}[], public readonly type: string) {
     super()
     this.message = `Ambiguous identifier; multiple matching add-ons found: ${matches.map(match => match.name).join(', ')}.`
     this.body = {id: 'multiple_matches', message: this.message}
@@ -174,7 +175,7 @@ export class AmbiguousError extends Error {
 }
 
 function singularize(type?: null | string, namespace?: null | string) {
-  return <T extends { name?: string, namespace?: null | string }>(matches: T[]): T => {
+  return <T extends {name?: string, namespace?: null | string}>(matches: T[]): T => {
     if (namespace) {
       matches = matches.filter(m => m.namespace === namespace)
     } else if (matches.length > 1) {
@@ -183,18 +184,17 @@ function singularize(type?: null | string, namespace?: null | string) {
     }
 
     switch (matches.length) {
-    case 0: {
-      throw new NotFound()
-    }
+      case 0: {
+        throw new NotFound()
+      }
 
-    case 1: {
-      return matches[0]
-    }
+      case 1: {
+        return matches[0]
+      }
 
-    default: {
-      throw new AmbiguousError(matches, type ?? '')
-    }
+      default: {
+        throw new AmbiguousError(matches, type ?? '')
+      }
     }
   }
 }
-

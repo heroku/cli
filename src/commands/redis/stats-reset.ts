@@ -12,15 +12,12 @@ export default class StatsReset extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
-
   static description = 'reset all stats covered by RESETSTAT (https://redis.io/commands/config-resetstat)'
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

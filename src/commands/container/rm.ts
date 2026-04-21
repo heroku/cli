@@ -11,16 +11,12 @@ export default class Rm extends Command {
     `${color.command('heroku container:rm web')}        # Destroys the web container`,
     `${color.command('heroku container:rm web worker')} # Destroys the web and worker containers`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static strict = false
-
   static topic = 'container'
-
   static usage = 'container:rm -a APP [-v] PROCESS_TYPE...'
 
   async run() {

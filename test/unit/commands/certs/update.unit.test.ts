@@ -1,18 +1,17 @@
-import ansis from 'ansis'
+import {runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 import {SinonStub} from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/update.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
-import runCommand from '../../../helpers/runCommand.js'
 import {certificateDetails, endpoint} from '../../../helpers/stubs/sni-endpoints.js'
-import * as sharedSni from './shared_sni.unit.test.js'
+import * as sharedSni from './shared-sni.unit.test.js'
 
 const heredoc = tsheredoc.default
 
@@ -37,38 +36,33 @@ describe('heroku certs:update', function () {
       .get('/apps/example/sni-endpoints')
       .reply(200, [endpoint])
 
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'example',
-        '--confirm',
-        'notexample',
-        'pem_file',
-        'key_file',
-      ])
-    } catch (error) {
-      const {message} = error as Error
-      expect(ansis.strip(message)).to.equal('Confirmation notexample did not match example. Aborted.')
-    }
+    const {error, stdout} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      '--confirm',
+      'notexample',
+      'pem_file',
+      'key_file',
+    ])
 
+    expect(error).to.exist
+    expect(ansis.strip(error!.message)).to.equal('Confirmation notexample did not match example. Aborted.')
     api.done()
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 
   it('# errors out when args < 2', async function () {
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'example',
-        'pem_file',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as Errors.CLIError
-      expect(ansis.strip(message)).to.equal('Missing 1 required arg:\nKEY  absolute path of the key file on disk\nSee more help with --help')
-      expect(oclif.exit).to.equal(2)
-    }
+    const {error, stdout} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+    ])
 
-    expect(stdout.output).to.equal('')
+    expect(error).to.exist
+    const {message, oclif} = error as Errors.CLIError
+    expect(ansis.strip(message)).to.equal('Missing 1 required arg:\nKEY  absolute path of the key file on disk\nSee more help with --help')
+    expect(oclif.exit).to.equal(2)
+    expect(stdout).to.equal('')
   })
 
   it('# can run', async function () {
@@ -80,7 +74,7 @@ describe('heroku certs:update', function () {
       })
       .reply(200, endpoint)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
@@ -90,28 +84,26 @@ describe('heroku certs:update', function () {
     ])
 
     api.done()
-    expect(stderr.output).to.equal(heredoc`
+    expect(stderr).to.equal(heredoc`
       Updating SSL certificate tokyo-1050 for ⬢ example... done
     `)
-    expect(stdout.output).to.equal(`Updated certificate details:\n${heredoc(certificateDetails)}`)
+    expect(stdout).to.equal(`Updated certificate details:\n${heredoc(certificateDetails)}`)
   })
 
   it('# errors out with intermediaries', async function () {
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'example',
-        'pem_file',
-        'int_file',
-        'key_file',
-      ])
-    } catch (error) {
-      const {message, oclif} = error as Errors.CLIError
-      expect(ansis.strip(message)).to.equal('Unexpected argument: key_file\nSee more help with --help')
-      expect(oclif.exit).to.equal(2)
-    }
+    const {error, stdout} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+      'int_file',
+      'key_file',
+    ])
 
-    expect(stdout.output).to.equal('')
+    expect(error).to.exist
+    const {message, oclif} = error as Errors.CLIError
+    expect(ansis.strip(message)).to.equal('Unexpected argument: key_file\nSee more help with --help')
+    expect(oclif.exit).to.equal(2)
+    expect(stdout).to.equal('')
   })
 })
 
@@ -145,7 +137,6 @@ describe('shared', function () {
     `
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stdout = function (certificateDetails: string, _endpoint: Partial<SniEndpoint>) {
     return `Updated certificate details:\n${heredoc(certificateDetails)}\n`
   }

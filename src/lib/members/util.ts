@@ -12,7 +12,8 @@ export const inviteMemberToTeam = async function (email: string, role: string, t
         Accept: 'application/vnd.heroku+json; version=3.team-invitations',
       },
       method: 'PUT',
-    })
+    },
+  )
   ux.action.stop()
 }
 
@@ -23,6 +24,7 @@ export const addMemberToTeam = async function (email: string, role: string, grou
     {
       body: {email, role},
       method,
-    })
+    },
+  )
   ux.action.stop()
 }

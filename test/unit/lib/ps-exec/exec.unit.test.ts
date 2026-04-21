@@ -5,37 +5,37 @@ import {Errors, ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import child from 'node:child_process'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {BuildpackInstallation} from '../../../../src/lib/types/fir.js'
-import {getHerokuAPI} from '../../../helpers/testInstances.js'
+import {getHerokuAPI} from '../../../helpers/test-instances.js'
 
 describe('HerokuExec', function () {
   let herokuAPI: APIClient
   let herokuExec: HerokuExec
-  let uxActionStartStub: sinon.SinonStub
-  let uxActionStopStub: sinon.SinonStub
-  let uxStdoutStub: sinon.SinonStub
-  let uxWarnStub: sinon.SinonStub
-  let huxPromptStub: sinon.SinonStub
-  let huxStyledHeaderStub: sinon.SinonStub
-  let huxTableStub: sinon.SinonStub
+  let uxActionStartStub: SinonStub
+  let uxActionStopStub: SinonStub
+  let uxStdoutStub: SinonStub
+  let uxWarnStub: SinonStub
+  let huxPromptStub: SinonStub
+  let huxStyledHeaderStub: SinonStub
+  let huxTableStub: SinonStub
 
   beforeEach(async function () {
     herokuAPI = await getHerokuAPI()
     herokuExec = new HerokuExec()
-    uxActionStartStub = sinon.stub(ux.action, 'start')
-    uxActionStopStub = sinon.stub(ux.action, 'stop')
-    uxStdoutStub = sinon.stub(ux, 'stdout')
-    uxWarnStub = sinon.stub(ux, 'warn')
-    huxPromptStub = sinon.stub(hux, 'prompt').resolves('n')
-    huxStyledHeaderStub = sinon.stub(hux, 'styledHeader')
-    huxTableStub = sinon.stub(hux, 'table')
+    uxActionStartStub = stub(ux.action, 'start')
+    uxActionStopStub = stub(ux.action, 'stop')
+    uxStdoutStub = stub(ux, 'stdout')
+    uxWarnStub = stub(ux, 'warn')
+    huxPromptStub = stub(hux, 'prompt').resolves('n')
+    huxStyledHeaderStub = stub(hux, 'styledHeader')
+    huxTableStub = stub(hux, 'table')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
     delete process.env.HEROKU_EXEC_URL
     delete process.env.HEROKU_API_KEY
@@ -291,7 +291,7 @@ describe('HerokuExec', function () {
 
     it('shows exec-specific error message and exits when app generation is fir and command === exec', async function () {
       const app = {generation: 'fir', space: null}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -308,7 +308,7 @@ describe('HerokuExec', function () {
 
     it('shows generic unavailable message and exits when app generation is fir and command is anything else', async function () {
       const app = {generation: 'fir', space: null}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -328,7 +328,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = []
       const configVars = {}
       const feature = {enabled: false}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -354,7 +354,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}]
       const configVars = {}
       const feature = {enabled: true}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -377,7 +377,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = []
       const configVars = {}
       const feature = {enabled: false}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -403,7 +403,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}]
       const configVars = {}
       const feature = {enabled: false}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -417,7 +417,7 @@ describe('HerokuExec', function () {
         .patch('/apps/myapp/features/runtime-heroku-exec')
         .reply(200, {enabled: true})
 
-      const childExecSyncStub = sinon.stub(child, 'execSync')
+      const childExecSyncStub = stub(child, 'execSync')
 
       try {
         await herokuExec.initFeature(context, herokuAPI, callback)
@@ -436,7 +436,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = [{buildpack: {url: 'https://github.com/heroku/exec-buildpack'}, ordinal: 1}]
       const configVars = {}
       const feature = {enabled: true}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -459,7 +459,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = []
       const configVars = {HEROKU_EXEC_URL: 'https://legacy.heroku.com'}
       const feature = {enabled: false}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -485,7 +485,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = []
       const configVars = {}
       const feature = {enabled: false}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -514,7 +514,7 @@ describe('HerokuExec', function () {
       const buildpacks: BuildpackInstallation[] = []
       const configVars = {}
       const feature = {enabled: true}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://api.heroku.com')
         .get('/apps/myapp')
@@ -542,10 +542,11 @@ describe('HerokuExec', function () {
 
     it('generates a keypair and sends the public key via PUT request', async function () {
       const configVars = {}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://exec-manager.heroku.com')
-        .put('//api/v2/web.1')
+        .put('/api/v2/web.1')
+        .basicAuth({pass: 'pass', user: 'myapp'})
         .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
 
       await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
@@ -556,10 +557,11 @@ describe('HerokuExec', function () {
 
     it('calls callback with (privateKey, dyno, response) on success', async function () {
       const configVars = {}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://exec-manager.heroku.com')
-        .put('//api/v2/web.1')
+        .put('/api/v2/web.1')
+        .basicAuth({pass: 'pass', user: 'myapp'})
         .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
 
       await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
@@ -572,10 +574,11 @@ describe('HerokuExec', function () {
 
     it('shows "Could not connect to dyno" error and does not call callback when the request rejects', async function () {
       const configVars = {}
-      const callback = sinon.stub()
+      const callback = stub()
 
       nock('https://exec-manager.heroku.com')
         .put('/api/v2/web.1')
+        .basicAuth({pass: 'pass', user: 'myapp'})
         .reply(500, 'Internal Server Error')
 
       try {

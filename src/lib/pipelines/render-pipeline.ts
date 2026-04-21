@@ -11,7 +11,8 @@ export default async function renderPipeline(
   pipeline: Heroku.Pipeline,
   pipelineApps: Array<AppWithPipelineCoupling>,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  {showOwnerWarning, withOwners} = {showOwnerWarning: false, withOwners: false}) {
+  {showOwnerWarning, withOwners} = {showOwnerWarning: false, withOwners: false},
+) {
   hux.styledHeader(color.pipeline(pipeline.name!))
 
   let owner

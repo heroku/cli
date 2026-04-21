@@ -1,14 +1,13 @@
 /* eslint-disable max-nested-callbacks */
 import * as Heroku from '@heroku-cli/schema'
-import {expect} from 'chai'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
+import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/index.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons', function () {
@@ -26,7 +25,7 @@ describe('addons', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   describe('--all', function () {
@@ -63,7 +62,7 @@ describe('addons', function () {
         expect(stdout.indexOf('www-db')).to.be.lt(stdout.indexOf('www-redis'))
       })
       it('passes no-wrap option through to table rendering', async function () {
-        const tableStub = sinon.stub(hux, 'table')
+        const tableStub = stub(hux, 'table')
 
         await runCommand(Cmd, ['--all', '--no-wrap'])
 
@@ -82,7 +81,7 @@ describe('addons', function () {
     context('with a grandfathered add-on', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 10000}
+        addon.billed_price = {cents: 10_000}
         api
           .get('/addons')
           .reply(200, [addon])
@@ -313,7 +312,7 @@ describe('addons', function () {
     context('with a grandfathered add-on', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 10000}
+        addon.billed_price = {cents: 10_000}
         mockAPI('acme-inc-dwh', [
           addon,
         ], [

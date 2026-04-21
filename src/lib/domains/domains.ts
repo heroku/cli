@@ -17,14 +17,15 @@ export async function getDomains(heroku: APIClient, app: string) {
 
 export function printDomains(domains: Required<Heroku.Domain>[], message: string) {
   domains = domains.filter(domain => domain.kind === 'custom')
-  const domains_with_type: (Required<Heroku.Domain> & { type: string })[] = domains.map(domain => ({...domain, type: type(domain)}))
+  const domains_with_type: (Required<Heroku.Domain> & {type: string})[] = domains.map(domain => ({...domain, type: type(domain)}))
 
   if (domains_with_type.length === 0) {
     hux.styledHeader(`${message}  Add a custom domain to your app by running ${color.code('heroku domains:add <yourdomain.com>')}`)
   } else {
     hux.styledHeader(`${message}  Update your application's DNS settings as follows`)
 
-    hux.table(domains_with_type,
+    hux.table(
+      domains_with_type,
       {
         domain: {
           get: ({hostname}) => hostname,

@@ -1,7 +1,7 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
+
 import Cmd from '../../../../src/commands/pg/unfollow.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
 describe('pg:unfollow', function () {
@@ -25,7 +25,7 @@ describe('pg:unfollow', function () {
       .put(`/client/v11/databases/${addon.id}/unfollow`)
       .reply(200)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       appName,
       '--confirm',

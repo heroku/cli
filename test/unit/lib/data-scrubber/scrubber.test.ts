@@ -1,5 +1,6 @@
-import {describe, it} from 'mocha'
 import {expect} from 'chai'
+import {describe, it} from 'mocha'
+
 import {Scrubber} from '../../../../src/lib/data-scrubber/scrubber.js'
 
 describe('Scrubber', () => {
@@ -20,9 +21,7 @@ describe('Scrubber', () => {
       }
 
       const {data} = scrubber.scrub(input)
-      expect(data.user.profile.settings.auth.access_token).to.equal(
-        '[SCRUBBED]',
-      )
+      expect(data.user.profile.settings.auth.access_token).to.equal('[SCRUBBED]')
     })
 
     it('handles case-insensitive field matching', () => {
@@ -48,9 +47,9 @@ describe('Scrubber', () => {
       })
 
       const input = {
-        user_api_key: 'secret',
         API_KEY_V2: 'secret',
         myApiKeyHere: 'secret',
+        user_api_key: 'secret',
       }
 
       const {data} = scrubber.scrub(input)
@@ -164,8 +163,8 @@ describe('Scrubber', () => {
         teams: [
           {
             members: [
-              {name: 'bob', api_key: 'secret1'},
-              {name: 'alice', api_key: 'secret2'},
+              {api_key: 'secret1', name: 'bob'},
+              {api_key: 'secret2', name: 'alice'},
             ],
           },
         ],
@@ -218,15 +217,15 @@ describe('Scrubber', () => {
       })
 
       const input = {
-        user: {
-          email: 'bob@example.com', // Path-based
-          api_key: 'secret-key-123', // Field-based
-        },
         log: 'SSN: 123-45-6789', // Pattern-based
         nested: {
           service: {
             api_key: 'another-secret', // Field-based (any depth)
           },
+        },
+        user: {
+          api_key: 'secret-key-123', // Field-based
+          email: 'bob@example.com', // Path-based
         },
       }
 
@@ -263,7 +262,7 @@ describe('Scrubber', () => {
         fields: ['password'],
       })
 
-      const input = {name: 'Bob', age: 30}
+      const input = {age: 30, name: 'Bob'}
       const result = scrubber.scrub(input)
       expect(result.scrubbed).to.be.false
       expect(result.scrubbedPaths).to.have.length(0)
@@ -276,7 +275,7 @@ describe('Scrubber', () => {
         fields: ['password'],
       })
 
-      const input = {user: {password: 'secret', name: 'Bob'}}
+      const input = {user: {name: 'Bob', password: 'secret'}}
       const original = JSON.stringify(input)
 
       scrubber.scrub(input)
@@ -342,13 +341,13 @@ describe('Scrubber', () => {
       })
 
       const input = {
-        users: [
-          {name: 'bob', email: 'bob@example.com'}, // Should be scrubbed entirely
-          {name: 'alice', email: 'alice@example.com'}, // Not scrubbed
-        ],
         items: [
           {id: 1, value: 'keep'}, // Not scrubbed
           {id: 2, value: 'scrub'}, // Should be scrubbed entirely
+        ],
+        users: [
+          {email: 'bob@example.com', name: 'bob'}, // Should be scrubbed entirely
+          {email: 'alice@example.com', name: 'alice'}, // Not scrubbed
         ],
       }
 
@@ -366,14 +365,14 @@ describe('Scrubber', () => {
       })
 
       const input = {
+        teams: [
+          {id: 'team-a'}, // Index 0 - not scrubbed
+          {id: 'team-b'}, // Index 1 - scrubbed
+        ],
         users: [
           {name: 'bob'}, // Index 0 - not scrubbed
           {name: 'alice'}, // Index 1 - scrubbed
           {name: 'charlie'}, // Index 2 - not scrubbed
-        ],
-        teams: [
-          {id: 'team-a'}, // Index 0 - not scrubbed
-          {id: 'team-b'}, // Index 1 - scrubbed
         ],
       }
 
@@ -426,7 +425,7 @@ describe('Scrubber', () => {
 
       // Create an object with circular references that will trigger the fallback clone
       const parent: any = {name: 'parent', password: 'secret'}
-      const child1: any = {name: 'child1', items: []}
+      const child1: any = {items: [], name: 'child1'}
       const child2 = {name: 'child2', password: 'hidden'}
 
       // Create circular reference in an array
@@ -450,8 +449,8 @@ describe('Scrubber', () => {
       })
 
       const obj: any = {
-        token: 'secret-token',
         list: [{name: 'item1'}],
+        token: 'secret-token',
       }
       // Array references the parent object
       obj.list.push(obj)

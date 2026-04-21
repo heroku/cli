@@ -7,11 +7,9 @@ import {updateCoupling} from '../../lib/api.js'
 
 export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
-
   static examples = [
     color.command('heroku pipelines:update -s staging -a my-app'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

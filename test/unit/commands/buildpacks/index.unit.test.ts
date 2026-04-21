@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Buildpacks from '../../../../src/commands/buildpacks/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 const heredoc = tsheredoc.default
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'

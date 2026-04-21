@@ -1,5 +1,3 @@
-/* eslint-env mocha */
-
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import {EventEmitter} from 'node:events'

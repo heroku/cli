@@ -10,23 +10,18 @@ export default class Remove extends Command {
   static args = {
     source: Args.string({description: 'IP address in CIDR notation', required: true}),
   }
-
   static description = heredoc(`
   Remove a range from the list of trusted IP ranges
   Uses CIDR notation.`)
-
   static examples = [heredoc(`
     ${color.command('heroku trusted-ips:remove --space my-space 192.168.2.0/24')}
     Removed 192.168.2.0/24 from trusted IP ranges on my-space
   `)]
-
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
     space: flags.string({char: 's', description: 'space to remove rule from', required: true}),
   }
-
   static hiddenAliases = ['trusted-ips:remove']
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

@@ -1,5 +1,5 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
@@ -12,14 +12,11 @@ export default class DataMaintenancesWindow extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'describe the maintenance window on an add-on'
-
   static examples = [
     '$ heroku data:maintenances:window postgresql-sinuous-92834',
     '$ heroku data:maintenances:window DATABASE --app production-app',
   ]
-
   static flags = {
     app: Flags.app({description: 'app to show addon maintenance window for'}),
     json: Flags.boolean({char: 'j', description: 'output result in json'}),

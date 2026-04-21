@@ -1,13 +1,13 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import createAddon from '../../../lib/addons/create-addon.js'
 import BaseCommand from '../../../lib/data/base-command.js'
-import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
 import {InfoResponse} from '../../../lib/data/types.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
@@ -19,9 +19,7 @@ export default class Fork extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'fork or rollback a Postgres Advanced database'
-
   static examples = [
     heredoc`
       # Create a fork for an existing database
@@ -36,7 +34,6 @@ export default class Fork extends BaseCommand {
       <%= config.bin %> <%= command.id %> DATABASE --app my-app --as RESTORED --rollback-by '1 day 3 hours 20 minutes'
     `,
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     as: Flags.string({description: 'name for the initial database attachment'}),
@@ -85,10 +82,8 @@ export default class Fork extends BaseCommand {
     const parsedDate = chrono.parseDate(timeString)
 
     if (!parsedDate) {
-      ux.error(
-        `${interval} isn't a supported time interval. Use a format like '1 day', '3 hours', '2 days 5 hours' for example. `
-        + 'See https://devcenter.heroku.com/articles/heroku-postgres-rollback.',
-      )
+      ux.error(`${interval} isn't a supported time interval. Use a format like '1 day', '3 hours', '2 days 5 hours' for example. `
+        + 'See https://devcenter.heroku.com/articles/heroku-postgres-rollback.')
     }
 
     return parsedDate
@@ -125,10 +120,8 @@ export default class Fork extends BaseCommand {
         + `${rollbackBy ? ` --by '${rollbackBy}'` : ''}`
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(renderLegacyCommand())} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(renderLegacyCommand())} instead.`)
     }
 
     if (!level) {

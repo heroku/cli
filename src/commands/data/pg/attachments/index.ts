@@ -15,13 +15,10 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'list attachments on a Postgres Advanced database'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> database_name -a example-app',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
@@ -36,10 +33,8 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
     const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku addons:info ${addon.name} -a ${app}`)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(`heroku addons:info ${addon.name} -a ${app}`)} instead.`)
     }
 
     const [{body: {items: credentials}}, {body: attachments}] = await Promise.all([

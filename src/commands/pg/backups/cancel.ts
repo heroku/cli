@@ -1,23 +1,23 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
+
 import backupsFactory from '../../../lib/pg/backups.js'
 import {BackupTransfer} from '../../../lib/pg/types.js'
 
 export default class Cancel extends Command {
-  static topic = 'pg'
+  static args = {
+    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last unfinished backup ID.'}),
+  }
   static description = 'cancel an in-progress backup or restore (default newest)'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
-  static args = {
-    backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last unfinished backup ID.'}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Cancel)
+    const {args, flags} = await this.parse(Cancel)
     const {app} = flags
     const {backup_id} = args
     const pgbackups = backupsFactory(app, this.heroku)

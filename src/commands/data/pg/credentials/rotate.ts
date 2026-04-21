@@ -15,9 +15,7 @@ export default class Rotate extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'rotate credentials on a Postgres database'
-
   static flags = {
     all: Flags.boolean({
       description: 'rotate all credentials',
@@ -217,9 +215,7 @@ export default class Rotate extends BaseCommand {
     }
 
     if (all && force) {
-      warnings.push(
-        `You're force rotating the passwords for all credentials including the ${defaultCredName} credential.`,
-      )
+      warnings.push(`You're force rotating the passwords for all credentials including the ${defaultCredName} credential.`)
     }
 
     if (all && !force) {
@@ -233,10 +229,8 @@ export default class Rotate extends BaseCommand {
     }
 
     if (force) {
-      warnings.push(
-        'You can\'t access any followers lagging in replication until they\'re caught up. '
-        + `Use ${color.code(infoCommand)} to track progress.`,
-      )
+      warnings.push('You can\'t access any followers lagging in replication until they\'re caught up. '
+        + `Use ${color.code(infoCommand)} to track progress.`)
     }
 
     return warnings

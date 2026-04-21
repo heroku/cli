@@ -8,82 +8,60 @@
  * Kolkrabbi API.
  */
 export interface KolkrabbiApi {
+  [k: string]: any;
   'account-link'?: KolkrabbiApiAccountLink;
-  'app-json-schema'?: AppJsonSchema;
   'app-json'?: KolkrabbiApiAppJson;
+  'app-json-schema'?: AppJsonSchema;
   apps?: KolkrabbiApiApps;
   organization?: HerokuPlatformApiOrganization;
-  'pipeline-repository'?: KolkrabbiApiPipelineRepositories;
   pipeline?: HerokuPlatformApiPipeline;
+  'pipeline-repository'?: KolkrabbiApiPipelineRepositories;
   'pull-requests'?: KolkrabbiApiPullRequests;
   repository?: KolkrabbiApiRepositories;
-  [k: string]: any;
 }
 /**
  * An account link represents the relationship between a Heroku user and a GitHub user.
  */
 export interface KolkrabbiApiAccountLink {
-  /**
-   * unique identifier of an account link
-   */
-  id?: string;
-  /**
-   * Heroku details for the account link
-   */
-  heroku?: {
-    /**
-     * unique identifier of the Heroku user
-     */
-    user_id?: string;
-    [k: string]: any;
-  };
+  [k: string]: any;
   /**
    * GitHub details for the account link
    */
   github?: {
+    [k: string]: any;
     /**
      * unique identifier of the GitHub user
      */
     user_id?: number;
-    [k: string]: any;
   };
-  [k: string]: any;
+  /**
+   * Heroku details for the account link
+   */
+  heroku?: {
+    [k: string]: any;
+    /**
+     * unique identifier of the Heroku user
+     */
+    user_id?: string;
+  };
+  /**
+   * unique identifier of an account link
+   */
+  id?: string;
 }
 export interface AppJsonSchema {
   /**
-   * A clean and simple name to identify the template (30 characters max).
+   * An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan` or `addon`. If plan is omitted, that addon's default plan will be provisioned.
    */
-  name?: string;
+  addons?: any[];
+  /**
+   * An ordered array of objects specifying the buildpacks to be applied to this app
+   */
+  buildpacks?: any[];
   /**
    * A brief summary of the app: what it does, who it's for, why it exists, etc.
    */
   description?: string;
-  /**
-   * An array of strings describing the app.
-   */
-  keywords?: any[];
-  /**
-   * The project's website.
-   */
-  website?: string;
-  /**
-   * The location of the application's source code, such as a Git URL, GitHub URL, Subversion URL, or Mercurial URL.
-   */
-  repository?: string;
-  /**
-   * The URL of the application's logo image. Dimensions should be square. Format can be SVG, PNG, or JPG.
-   */
-  logo?: string;
-  /**
-   * A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value begins with a slash `/`, the user should be redirected to that path in their newly deployed app.
-   */
-  success_url?: string;
-  /**
-   * A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, `postdeploy` is the only supported script.
-   */
-  scripts?: {
-    [k: string]: any;
-  };
   /**
    * A key-value object for environment variables, or [config vars](https://devcenter.heroku.com/articles/config-vars) in Heroku parlance. Keys are the names of the environment variables. Values can be strings or objects. If the value is a string, it will be used. If the value is an object, it defines specific requirements for that variable:
    *
@@ -96,32 +74,55 @@ export interface AppJsonSchema {
     [k: string]: any;
   };
   /**
-   * An array of strings specifying Heroku addons to provision on the app before deploying. Each addon should be in the format `addon:plan` or `addon`. If plan is omitted, that addon's default plan will be provisioned.
-   */
-  addons?: any[];
-  /**
-   * An ordered array of objects specifying the buildpacks to be applied to this app
-   */
-  buildpacks?: any[];
-  /**
    * Dynos to scale on the app before deploying.
    */
   formation?: {
     [k: string]: any;
   };
+  /**
+   * An array of strings describing the app.
+   */
+  keywords?: any[];
+  /**
+   * The URL of the application's logo image. Dimensions should be square. Format can be SVG, PNG, or JPG.
+   */
+  logo?: string;
+  /**
+   * A clean and simple name to identify the template (30 characters max).
+   */
+  name?: string;
+  /**
+   * The location of the application's source code, such as a Git URL, GitHub URL, Subversion URL, or Mercurial URL.
+   */
+  repository?: string;
+  /**
+   * A key-value object specifying scripts or shell commands to execute at different stages in the build/release process. Currently, `postdeploy` is the only supported script.
+   */
+  scripts?: {
+    [k: string]: any;
+  };
+  /**
+   * A URL specifying where to redirect the user once their new app is deployed. If value is a fully-qualified URL, the user should be redirected to that URL. If value begins with a slash `/`, the user should be redirected to that path in their newly deployed app.
+   */
+  success_url?: string;
+  /**
+   * The project's website.
+   */
+  website?: string;
 }
 export interface KolkrabbiApiAppJson {
+  [k: string]: any;
   app_json?: AppJsonSchema;
   /**
    * name of branch to commit to
    */
-  branch?: string | null;
-  [k: string]: any;
+  branch?: null | string;
 }
 /**
  * FIXME
  */
 export interface KolkrabbiApiApps {
+  [k: string]: any;
   /**
    * unique identifier of app
    */
@@ -137,17 +138,13 @@ export interface KolkrabbiApiApps {
   /**
    * when app was updated
    */
-  updated_at?: string | null;
-  [k: string]: any;
+  updated_at?: null | string;
 }
 /**
  * Deprecated: Organizations allow you to manage access to a shared group of applications across your development team.
  */
 export interface HerokuPlatformApiOrganization {
-  /**
-   * unique identifier of organization
-   */
-  id?: string;
+  [k: string]: any;
   /**
    * when the organization was created
    */
@@ -161,9 +158,13 @@ export interface HerokuPlatformApiOrganization {
    */
   default?: boolean;
   /**
+   * unique identifier of organization
+   */
+  id?: string;
+  /**
    * upper limit of members allowed in an organization.
    */
-  membership_limit?: number | null;
+  membership_limit?: null | number;
   /**
    * unique name of organization
    */
@@ -184,12 +185,12 @@ export interface HerokuPlatformApiOrganization {
    * when the organization was updated
    */
   updated_at?: string;
-  [k: string]: any;
 }
 /**
  * Pipeline repositories link a pipeline to a GitHub repository.
  */
 export interface KolkrabbiApiPipelineRepositories {
+  [k: string]: any;
   /**
    * whether automatic review apps is enabled
    */
@@ -199,20 +200,20 @@ export interface KolkrabbiApiPipelineRepositories {
    */
   ci?: boolean;
   /**
-   * unique identifier of a pipeline repository
-   */
-  id?: string;
-  creator?: KolkrabbiApiAccountLink;
-  /**
    * when the pipeline repository was created
    */
   created_at?: string;
+  creator?: KolkrabbiApiAccountLink;
+  /**
+   * unique identifier of a pipeline repository
+   */
+  id?: string;
   /**
    * organization tied to this pipeline repository
    */
-  organization?: {
+  organization?: null | {
     [k: string]: any;
-  } | null;
+  };
   owner?: KolkrabbiApiAccountLink;
   pipeline?: HerokuPlatformApiPipeline;
   repository?: KolkrabbiApiRepositories;
@@ -227,23 +228,27 @@ export interface KolkrabbiApiPipelineRepositories {
   /**
    * when pipeline repository was updated
    */
-  updated_at?: string | null;
-  [k: string]: any;
+  updated_at?: null | string;
 }
 /**
  * A pipeline allows grouping of apps into different stages.
  */
 export interface HerokuPlatformApiPipeline {
+  [k: string]: any;
   /**
    * unique identifier of pipeline
    */
   id?: string;
-  [k: string]: any;
 }
 /**
  * A Repository is a reference to a remote DVCS codebase
  */
 export interface KolkrabbiApiRepositories {
+  [k: string]: any;
+  /**
+   * when the repository reference was created
+   */
+  created_at?: string;
   /**
    * The id that the remote DVCS uses for the repository
    */
@@ -257,20 +262,17 @@ export interface KolkrabbiApiRepositories {
    */
   type?: string;
   /**
-   * when the repository reference was created
-   */
-  created_at?: string;
-  /**
    * when repository was updated
    */
-  updated_at?: string | null;
-  [k: string]: any;
+  updated_at?: null | string;
 }
 /**
  * FIXME
  */
 export interface KolkrabbiApiPullRequests {
+  [k: string]: any;
   app_setup?: {
+    [k: string]: any;
     /**
      * unique identifier of app setup
      */
@@ -279,13 +281,13 @@ export interface KolkrabbiApiPullRequests {
      * the overall status of app setup
      */
     status?: 'failed' | 'pending' | 'succeeded';
-    [k: string]: any;
   };
   /**
    * when app was created
    */
   created_at?: string;
   pull_request?: {
+    [k: string]: any;
     /**
      * unique identifier of pull request
      */
@@ -302,11 +304,9 @@ export interface KolkrabbiApiPullRequests {
      * pull request title
      */
     title?: string;
-    [k: string]: any;
   };
   /**
    * when app was updated
    */
-  updated_at?: string | null;
-  [k: string]: any;
+  updated_at?: null | string;
 }

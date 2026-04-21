@@ -1,9 +1,11 @@
-import {expect} from 'chai'
-import sinon from 'sinon'
 import {APIClient} from '@heroku-cli/command'
+import {runCommand} from '@heroku-cli/test-utils'
+import {expect} from 'chai'
+import {
+  createSandbox, SinonSandbox, SinonStub,
+} from 'sinon'
 
 import AppsDiff from '../../../../src/commands/apps/diff.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('apps:diff', function () {
   const app1Name = 'myapp-one'
@@ -12,15 +14,15 @@ describe('apps:diff', function () {
   const slugId2 = 'slug-id-2'
   const sameChecksum = 'SHA256:same-checksum-for-both-apps'
   const releasesWithSlug = (slugId: string) => [{slug: {id: slugId}, status: 'succeeded'}]
-  const slugBody = (checksum: string) => ({id: 'slug-1', checksum})
-  const appStack = (stackName: string) => ({name: 'myapp', stack: {name: stackName}, id: 'app-id'})
+  const slugBody = (checksum: string) => ({checksum, id: 'slug-1'})
+  const appStack = (stackName: string) => ({id: 'app-id', name: 'myapp', stack: {name: stackName}})
   const emptyBuildpacks: Array<{buildpack: {url: string}}> = []
   const emptyAddons: Array<{addon_service: {name: string}}> = []
-  const emptyFeatures: Array<{name: string; enabled: boolean}> = []
+  const emptyFeatures: Array<{enabled: boolean; name: string;}> = []
 
-  let sandbox: sinon.SinonSandbox
-  let requestStub: sinon.SinonStub
-  let getStub: sinon.SinonStub
+  let sandbox: SinonSandbox
+  let requestStub: SinonStub
+  let getStub: SinonStub
 
   function httpStatusError(statusCode: number): Error & {http: {statusCode: number}} {
     const e = new Error(`HTTP ${statusCode}`) as Error & {http: {statusCode: number}}
@@ -29,7 +31,7 @@ describe('apps:diff', function () {
   }
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
     requestStub = sandbox.stub(APIClient.prototype, 'request')
     getStub = sandbox.stub(APIClient.prototype, 'get')
   })
@@ -80,7 +82,7 @@ describe('apps:diff', function () {
       throw new Error(`unexpected GET ${url}`)
     })
 
-    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
     expect(error).to.be.undefined
     expect(stdout).to.include('property')
@@ -135,7 +137,7 @@ describe('apps:diff', function () {
       throw new Error(`unexpected GET ${url}`)
     })
 
-    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
     expect(error).to.be.undefined
     expect(stdout).to.include('slug (checksum)')
@@ -161,8 +163,8 @@ describe('apps:diff', function () {
       if (url.includes('/config-vars')) {
         return {
           body: url.includes(app1Name)
-            ? {FOO: 'a', BAR: 'same'}
-            : {FOO: 'b', BAR: 'same'},
+            ? {BAR: 'same', FOO: 'a'}
+            : {BAR: 'same', FOO: 'b'},
         }
       }
 
@@ -189,7 +191,7 @@ describe('apps:diff', function () {
       throw new Error(`unexpected GET ${url}`)
     })
 
-    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
     expect(error).to.be.undefined
     expect(stdout).to.include('config (FOO)')
@@ -300,7 +302,7 @@ describe('apps:diff', function () {
       throw new Error(`unexpected GET ${url}`)
     })
 
-    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
     expect(error).to.be.undefined
     expect(stdout).to.include('slug (checksum)')
@@ -352,7 +354,7 @@ describe('apps:diff', function () {
       throw new Error(`unexpected GET ${url}`)
     })
 
-    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
     expect(error).to.be.undefined
     expect(stdout).to.include('add-on (heroku-postgresql)')
@@ -403,7 +405,7 @@ describe('apps:diff', function () {
       throw new Error(`unexpected GET ${url}`)
     })
 
-    const {stdout, error} = await runCommand(AppsDiff, [app1Name, app2Name])
+    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
     expect(error).to.be.undefined
     expect(stdout).to.include('property')

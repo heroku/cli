@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 
 import Run from '../../../../src/commands/local/run.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('local:run', function () {
   describe('argument validation', function () {

@@ -8,7 +8,7 @@ import {ExtendedPostgresLevelInfo, PoolInfoResponse} from './types.js'
 import {renderLevelChoices, renderPricingInfo} from './utils.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
+
 const {prompt, Separator} = inquirer
 
 export default class PoolConfig {
@@ -28,61 +28,61 @@ export default class PoolConfig {
 
     while (!configReady) {
       switch (currentStep) {
-      case 'poolLevelSelection': {
-        this.followerLevel = await this.levelStep('Follower')
-        currentStep = 'poolInstancesSelection'
-        break
-      }
+        case 'confirmation': {
+          switch (await this.followerConfirmationStep()) {
+            case '__confirm': {
+              configReady = true
+              break
+            }
 
-      case 'poolInstancesSelection': {
-        selection = await this.instanceCountStep()
-        switch (selection) {
-        case '__go_back': {
-          currentStep = 'poolLevelSelection'
+            case '__go_back': {
+              currentStep = 'poolNameSelection'
+              break
+            }
+          }
+
           break
         }
 
-        default: {
-          this.followerCount = Number(selection)
-          currentStep = 'poolNameSelection'
+        case 'poolInstancesSelection': {
+          selection = await this.instanceCountStep()
+          switch (selection) {
+            case '__go_back': {
+              currentStep = 'poolLevelSelection'
+              break
+            }
+
+            default: {
+              this.followerCount = Number(selection)
+              currentStep = 'poolNameSelection'
+              break
+            }
+          }
+
           break
         }
-        }
 
-        break
-      }
-
-      case 'poolNameSelection': {
-        switch (await this.followerNameStep()) {
-        case '__go_back': {
+        case 'poolLevelSelection': {
+          this.followerLevel = await this.levelStep('Follower')
           currentStep = 'poolInstancesSelection'
           break
         }
 
-        default: {
-          currentStep = 'confirmation'
+        case 'poolNameSelection': {
+          switch (await this.followerNameStep()) {
+            case '__go_back': {
+              currentStep = 'poolInstancesSelection'
+              break
+            }
+
+            default: {
+              currentStep = 'confirmation'
+              break
+            }
+          }
+
           break
         }
-        }
-
-        break
-      }
-
-      case 'confirmation': {
-        switch (await this.followerConfirmationStep()) {
-        case '__confirm': {
-          configReady = true
-          break
-        }
-
-        case '__go_back': {
-          currentStep = 'poolNameSelection'
-          break
-        }
-        }
-
-        break
-      }
       }
     }
 
@@ -101,7 +101,7 @@ export default class PoolConfig {
 
     `)
 
-    const choices: Array<DistinctChoice<{ action: string }, ListChoiceMap<{ action: string }>>>
+    const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>>
       = Array
         .from({length: 13 - this.followerInstanceCount}, (_, index) => index + 1)
         .map((i: number) => ({disabled: i === pool?.expected_count ? 'current amount' : false, name: `${i} instance${i === 1 ? '' : 's'}`, value: i.toString()}))
@@ -176,17 +176,17 @@ export default class PoolConfig {
 
     let name: string | undefined
     switch (action) {
-    case '__yes': {
-      process.stderr.write('\n')
-      name = (
-        await prompt<{name: string}>({
-          message: 'Enter a unique pool name (3-32 lowercase letters and numbers, no spaces):',
-          name: 'name',
-          type: 'input',
-        })
-      ).name
-      break
-    }
+      case '__yes': {
+        process.stderr.write('\n')
+        name = (
+          await prompt<{name: string}>({
+            message: 'Enter a unique pool name (3-32 lowercase letters and numbers, no spaces):',
+            name: 'name',
+            type: 'input',
+          })
+        ).name
+        break
+      }
     }
 
     this.followerName = name

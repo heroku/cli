@@ -8,11 +8,11 @@ export default function normalizeTableOutput(output: string): string {
     .normalize('NFKC')
     .toLowerCase()
     .split('\n')
-    .map(line => line.replace(TABLE_VERTICAL, ' ').replaceAll(/\s+/g, ' ').trim())
+    .map(line => line.replaceAll(TABLE_VERTICAL, ' ').replaceAll(/\s+/g, ' ').trim())
 
     // Note, there are 2 types of dashes in this regex: one from
     // the US keyboard of a Mac, and the other from the oclif/table
     // repo for the table layout we're using.
-    .filter(line => line && !line.match(/^\s*(?:[-─]+\s*)+$/))
+    .filter(line => line && !/^\s*(?:[-─]+\s*)+$/.test(line))
     .join('\n')
 }

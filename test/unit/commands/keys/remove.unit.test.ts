@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Remove from '../../../../src/commands/keys/remove.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('keys:remove', function () {
   let api: nock.Scope

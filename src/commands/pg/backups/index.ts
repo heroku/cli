@@ -18,7 +18,6 @@ export default class Index extends Command {
     verbose: flags.boolean({char: 'v', hidden: true}),
     'wait-interval': flags.string({hidden: true}),
   }
-
   static strict = false
   static topic = 'pg'
 

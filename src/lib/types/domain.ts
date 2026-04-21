@@ -43,7 +43,7 @@ export interface Domain {
   /**
    * type of domain name
    */
-  kind: 'heroku' | 'custom'
+  kind: 'custom' | 'heroku'
   sni_endpoint: null | {
     /**
      * unique identifier of this SNI endpoint

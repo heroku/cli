@@ -1,12 +1,13 @@
 import * as Heroku from '@heroku-cli/schema'
+import {captureOutput, expectOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
+
+import type {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 
 import {displayNat, displayShieldState, renderInfo} from '../../../../src/lib/spaces/spaces.js'
 import {SpaceNat} from '../../../../src/lib/types/fir.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -29,7 +30,7 @@ describe('displayShieldState', function () {
 
 describe('displayNat', function () {
   it('returns undefined when NAT is undefined', function () {
-    expect(displayNat(undefined)).to.be.undefined
+    expect(displayNat()).to.be.undefined
   })
 
   it('returns state when NAT state is updating', function () {
@@ -84,21 +85,21 @@ describe('displayNat', function () {
 })
 
 describe('renderInfo', function () {
-  const space = Object.assign({}, fixtures.spaces['non-shield-space'], {outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'}})
+  const space: SpaceWithOutboundIps = {...fixtures.spaces['non-shield-space'], outbound_ips: {sources: ['123.456.789.123'], state: 'enabled'}}
 
-  it('outputs space info in JSON format when json flag is true', function () {
-    stdout.start()
-    renderInfo(space, true)
-    stdout.stop()
-    expect(JSON.parse(stdout.output)).to.eql(space)
+  it('outputs space info in JSON format when json flag is true', async function () {
+    const {stdout} = await captureOutput(async () => {
+      renderInfo(space, true)
+    })
+    expect(JSON.parse(stdout)).to.eql(space)
   })
 
-  it('outputs space info in styled format when json flag is false', function () {
-    stdout.start()
-    renderInfo(space, false)
-    stdout.stop()
+  it('outputs space info in styled format when json flag is false', async function () {
+    const {stdout} = await captureOutput(async () => {
+      renderInfo(space, false)
+    })
 
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:           ${space.id}
       Team:         ${space.team.name}

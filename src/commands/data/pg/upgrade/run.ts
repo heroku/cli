@@ -15,16 +15,13 @@ export default class DataPgUpgradeRun extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'upgrade the Postgres version on a Postgres Advanced database'
-
   static examples = [
     heredoc`
       # Upgrade a Postgres Advanced database to version 17
       ${color.code('<%= config.bin %> <%= command.id %> DATABASE --version 17 --app my-app')}
     `,
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
@@ -41,10 +38,8 @@ export default class DataPgUpgradeRun extends BaseCommand {
     const {addon} = await dbResolver.getAttachment(app, database)
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku pg:upgrade:run ${addon.name} --app ${app}`)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(`heroku pg:upgrade:run ${addon.name} --app ${app}`)} instead.`)
     }
 
     const {body: databaseInfo} = await this.dataApi.get<InfoResponse>(`/data/postgres/v1/${addon.id}/info`)

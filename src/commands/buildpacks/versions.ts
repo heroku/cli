@@ -1,21 +1,18 @@
 import {Command} from '@heroku-cli/command'
-import {Args} from '@oclif/core'
+import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
 import {hux} from '@heroku/heroku-cli-util'
+import {Args} from '@oclif/core'
 import {ux} from '@oclif/core/ux'
-
 import {Result} from 'true-myth'
 
-import {BuildpackRegistry, RevisionBody} from '@heroku/buildpack-registry'
-
 export default class Versions extends Command {
-  static description = 'list versions of a buildpack'
-
   static args = {
     buildpack: Args.string({
-      required: true,
       description: 'namespace/name of the buildpack',
+      required: true,
     }),
   }
+  static description = 'list versions of a buildpack'
 
   async run() {
     const {args} = await this.parse(Versions)
@@ -33,7 +30,15 @@ export default class Versions extends Command {
 
     const result = await registry.listVersions(args.buildpack)
     Result.match({
+      Err(err: any) {
+        if (err.status === 404) {
+          ux.error(`Could not find '${args.buildpack}'`)
+        } else {
+          ux.error(`Problem fetching versions, ${err.status}: ${err.description}`)
+        }
+      },
       Ok(versions: RevisionBody[]) {
+        /* eslint-disable perfectionist/sort-objects */
         hux.table(versions.sort((a: RevisionBody, b: RevisionBody) => a.release > b.release ? -1 : 1), {
           release: {
             header: 'Version',
@@ -45,13 +50,7 @@ export default class Versions extends Command {
             header: 'Status',
           },
         })
-      },
-      Err(err: any) {
-        if (err.status === 404) {
-          ux.error(`Could not find '${args.buildpack}'`)
-        } else {
-          ux.error(`Problem fetching versions, ${err.status}: ${err.description}`)
-        }
+        /* eslint-enable perfectionist/sort-objects */
       },
     }, result as any)
   }

@@ -1,7 +1,7 @@
-import {utils} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
+import {utils} from '@heroku/heroku-cli-util'
 
-export default abstract class extends Command {
+export default abstract class BaseDataCommand extends Command {
   get dataApi(): APIClient {
     const client = new APIClient(this.config)
     client.defaults.host = utils.pg.host()

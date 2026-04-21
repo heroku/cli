@@ -1,160 +1,161 @@
 import * as Heroku from '@heroku-cli/schema'
+
 import type {SpaceTopology, SpaceWithOutboundIps} from '../../../src/lib/types/spaces.js'
 
 export const spaces: Record<string, SpaceWithOutboundIps> = {
-  'non-shield-space': {
+  'allocating-space': {
+    cidr: '10.0.0.0/16',
+    created_at: '2016-01-06T03:23:13Z',
+    data_cidr: '172.23.0.0/20',
+    generation: 'cedar',
     id: '1234',
     name: 'my-unshielded-space',
-    shield: false,
-    region: {
-      id: '1',
-      description: 'virginia',
-      name: 'us',
-    },
-    team: {
-      name: 'my-team',
-    },
-    cidr: '10.0.0.0/16',
-    data_cidr: '172.23.0.0/20',
-    state: 'allocated',
     organization: {
       name: 'my-org',
     },
-    generation: 'cedar',
-    created_at: '2016-01-06T03:23:13Z',
+    region: {
+      description: 'virginia',
+      id: '1',
+      name: 'us',
+    },
+    shield: false,
+    state: 'allocating',
+    team: {
+      name: 'my-team',
+    },
     updated_at: '2016-01-06T03:23:13Z',
   },
-  'shield-space': {
-    id: '1234',
-    name: 'my-shielded-space',
-    shield: true,
-    region: {
-      id: '1',
-      description: 'virginia',
-      name: 'us',
-    },
-    team: {
-      name: 'my-team',
-    },
+  'non-shield-space': {
     cidr: '10.0.0.0/16',
+    created_at: '2016-01-06T03:23:13Z',
     data_cidr: '172.23.0.0/20',
-    state: 'allocated',
+    generation: 'cedar',
+    id: '1234',
+    name: 'my-unshielded-space',
     organization: {
       name: 'my-org',
     },
-    generation: 'cedar',
-    created_at: '2016-01-06T03:23:13Z',
+    region: {
+      description: 'virginia',
+      id: '1',
+      name: 'us',
+    },
+    shield: false,
+    state: 'allocated',
+    team: {
+      name: 'my-team',
+    },
     updated_at: '2016-01-06T03:23:13Z',
   },
 
-  'allocating-space': {
-    id: '1234',
-    name: 'my-unshielded-space',
-    shield: false,
-    region: {
-      id: '1',
-      description: 'virginia',
-      name: 'us',
-    },
-    team: {
-      name: 'my-team',
-    },
+  'shield-space': {
     cidr: '10.0.0.0/16',
+    created_at: '2016-01-06T03:23:13Z',
     data_cidr: '172.23.0.0/20',
-    state: 'allocating',
+    generation: 'cedar',
+    id: '1234',
+    name: 'my-shielded-space',
     organization: {
       name: 'my-org',
     },
-    generation: 'cedar',
-    created_at: '2016-01-06T03:23:13Z',
+    region: {
+      description: 'virginia',
+      id: '1',
+      name: 'us',
+    },
+    shield: true,
+    state: 'allocated',
+    team: {
+      name: 'my-team',
+    },
     updated_at: '2016-01-06T03:23:13Z',
   },
 }
 
 export const apps: Record<string, Heroku.App> = {
   www: {
-    name: 'acme-inc-www',
     id: 'a84b035c-4c83-11e5-9bda-2cf0ee2c94de',
+    name: 'acme-inc-www',
   },
 }
 
 export const topologies: Record<string, SpaceTopology> = {
   'topology-one': {
-    version: 1,
     apps: [
       {
-        id: apps.www.id,
         domains: ['example.com', 'example.net'],
         formations: [
           {
-            process_type: 'web',
             dynos: [
               {
+                hostname: '1.example-app-90210.app.localspace',
                 number: 1,
                 private_ip: '10.0.134.42',
-                hostname: '1.example-app-90210.app.localspace',
               },
               {
+                hostname: '1.example-app-90210.app.localspace',
                 number: 2,
                 private_ip: '10.0.134.42',
-                hostname: '1.example-app-90210.app.localspace',
               },
             ],
+            process_type: 'web',
           },
         ],
-      },
-    ],
-  },
-  'topology-two': {
-    version: 1,
-    apps: [
-      {
         id: apps.www.id,
-        domains: ['example.com', 'example.net'],
-        formations: [
-          {
-            process_type: 'web',
-            dynos: [
-              {
-                number: 2,
-                private_ip: '10.0.134.42',
-                hostname: '1.example-app-90210.app.localspace',
-              },
-              {
-                number: 1,
-                private_ip: '10.0.134.42',
-                hostname: '1.example-app-90210.app.localspace',
-              },
-            ],
-          },
-        ],
       },
     ],
+    version: 1,
   },
   'topology-three': {
-    version: 1,
     apps: [
       {
-        id: apps.www.id,
         domains: ['example.com', 'example.net'],
         formations: [
           {
-            process_type: 'web',
             dynos: [
               {
+                hostname: '1.example-app-90210.app.localspace',
                 number: 1,
                 private_ip: '10.0.134.42',
-                hostname: '1.example-app-90210.app.localspace',
               },
               {
+                hostname: '1.example-app-90210.app.localspace',
                 number: 1,
                 private_ip: '10.0.134.42',
-                hostname: '1.example-app-90210.app.localspace',
               },
             ],
+            process_type: 'web',
           },
         ],
+        id: apps.www.id,
       },
     ],
+    version: 1,
+  },
+  'topology-two': {
+    apps: [
+      {
+        domains: ['example.com', 'example.net'],
+        formations: [
+          {
+            dynos: [
+              {
+                hostname: '1.example-app-90210.app.localspace',
+                number: 2,
+                private_ip: '10.0.134.42',
+              },
+              {
+                hostname: '1.example-app-90210.app.localspace',
+                number: 1,
+                private_ip: '10.0.134.42',
+              },
+            ],
+            process_type: 'web',
+          },
+        ],
+        id: apps.www.id,
+      },
+    ],
+    version: 1,
   },
 }

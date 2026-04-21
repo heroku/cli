@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
-import tsheredoc from 'tsheredoc'
-import {color, utils, pg} from '@heroku/heroku-cli-util'
 // import {SpawnOptions, spawn} from 'node:child_process'
 import childProcess from 'node:child_process'
-import {nls} from '../../nls.js'
+import tsheredoc from 'tsheredoc'
+
 import {
   connArgs,
   maybeTunnel,
@@ -13,16 +13,16 @@ import {
   spawnPipe,
   verifyExtensionsMatch,
 } from '../../lib/pg/push-pull.js'
+import {nls} from '../../nls.js'
 
 const {env} = process
 const heredoc = tsheredoc.default
 
 export default class Pull extends Command {
   static args = {
-    source: Args.string({required: true, description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    target: Args.string({required: true, description: 'PostgreSQL connection string for the target database'}),
+    source: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: true}),
+    target: Args.string({description: 'PostgreSQL connection string for the target database', required: true}),
   }
-
   static description = heredoc`
     pull Heroku database into local or remote database
     Pull from SOURCE into TARGET.
@@ -35,7 +35,6 @@ export default class Pull extends Command {
     To delete a local database run ${color.code('dropdb TARGET')}.
     To create an empty remote database, run ${color.code('createdb')} with connection command-line options (run ${color.code('createdb --help')} for details).
   `
-
   static examples = [heredoc`
     # pull Heroku DB named postgresql-swimmingly-100 into local DB mylocaldb that must not exist
     ${color.command('heroku pg:pull postgresql-swimmingly-100 mylocaldb --app sushi')}
@@ -43,19 +42,18 @@ export default class Pull extends Command {
     # pull Heroku DB named postgresql-swimmingly-100 into empty remote DB at postgres://myhost/mydb
     ${color.command('heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi')}
   `]
-
   static flags = {
     app: flags.app({required: true}),
     'exclude-table-data': flags.string({description: 'tables for which data should be excluded (use \';\' to split multiple names)', hasValue: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   protected async pull(
     sourceIn: pg.ConnectionDetails,
     targetIn: pg.ConnectionDetails,
-    exclusions: string[]) {
+    exclusions: string[],
+  ) {
     await prepare(targetIn)
 
     const source = await maybeTunnel(sourceIn)
@@ -66,11 +64,11 @@ export default class Pull extends Command {
 
     if (exclude !== '') dumpFlags.push(exclude)
 
-    const dumpOptions: { env: NodeJS.ProcessEnv } & childProcess.SpawnOptions = {
+    const dumpOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {
         PGSSLMODE: 'prefer',
         ...env,
-      } as { [key: string]: string },
+      } as {[key: string]: string},
       shell: true,
       stdio: ['pipe', 'pipe', 2],
     }
@@ -78,7 +76,7 @@ export default class Pull extends Command {
 
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
 
-    const restoreOptions: { env: NodeJS.ProcessEnv } & childProcess.SpawnOptions = {
+    const restoreOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {...env},
       shell: true,
       stdio: ['pipe', 'pipe', 2],

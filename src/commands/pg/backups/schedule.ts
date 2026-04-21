@@ -48,16 +48,13 @@ export default class Schedule extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'schedule daily backups for given database'
   static flags = {
     app: flags.app({required: true}),
     at: flags.string({description: "at a specific (24h) hour in the given timezone. Defaults to UTC. --at '[HOUR]:00 [TIMEZONE]'", required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
-
   parseDate = function (at: string): BackupSchedule {
     const m = at.match(/^(0?\d|1\d|2[0-3]):00 ?(\S*)$/)
 

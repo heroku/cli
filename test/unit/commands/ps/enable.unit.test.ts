@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import PsAutoscaleEnable from '../../../../src/commands/ps/autoscale/enable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ps:autoscale:enable', function () {
   const APP_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-111111111111'

@@ -14,13 +14,10 @@ export default class DataPgCredentialsCreate extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'create credentials for a Postgres database'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> DATABASE --name my-credential --app example-app',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     name: Flags.string({char: 'n', description: 'name for the credential', required: true}),

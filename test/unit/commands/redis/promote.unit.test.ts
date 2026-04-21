@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/redis/promote.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
 describe('heroku redis:promote should handle standard arg behavior', function () {

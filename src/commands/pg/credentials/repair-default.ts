@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -13,7 +13,6 @@ export default class RepairDefault extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'repair the permissions of the default credential within database'
   static example = `${color.command('heroku pg:credentials:repair-default postgresql-something-12345')}`
   static flags = {
@@ -21,7 +20,6 @@ export default class RepairDefault extends Command {
     confirm: flags.string({char: 'c', description: 'set to app name to bypass confirm prompt'}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

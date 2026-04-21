@@ -1,12 +1,9 @@
-/* eslint-env mocha */
-
 import {ux} from '@oclif/core/ux'
-
 import {expect} from 'chai'
 import fs from 'fs-extra'
 import inquirer from 'inquirer'
 import * as os from 'node:os'
-import * as path from 'node:path'
+import path from 'node:path'
 import * as sinon from 'sinon'
 
 import checkNpmAuth from '../../../../src/hooks/preupdate/check-npm-auth.js'

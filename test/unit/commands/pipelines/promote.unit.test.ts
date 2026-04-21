@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pipelines/promote.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:promote', function () {
   const pipeline = {
@@ -70,7 +70,7 @@ describe('pipelines:promote', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   function mockPromotionTargets() {
@@ -218,7 +218,7 @@ describe('pipelines:promote', function () {
 
   context('with release phase that errors', function () {
     it('attempts stream and returns error', async function () {
-      sinon.stub(Cmd, 'sleep').resolves()
+      stub(Cmd, 'sleep').resolves()
 
       setupNock()
 

@@ -57,7 +57,7 @@ export interface ScrubConfig {
    * ]
    * ```
    */
-  fields?: (string | RegExp)[];
+  fields?: (RegExp | string)[];
 
   /**
    * Path-based scrubbing: matches specific dot-notation paths
@@ -97,20 +97,6 @@ export interface ScrubConfig {
   patterns?: RegExp[];
 
   /**
-   * Replacement string for scrubbed values
-   *
-   * @default '[SCRUBBED]'
-   *
-   * @example
-   * ```typescript
-   * replacement: '[REDACTED]'     // Custom replacement text
-   * replacement: '***'            // Simple masking
-   * replacement: ''               // Empty string (removes content)
-   * ```
-   */
-  replacement?: string;
-
-  /**
    * Whether to recursively scrub nested objects
    *
    * When `true`, the scrubber traverses the entire object tree.
@@ -124,6 +110,20 @@ export interface ScrubConfig {
    * ```
    */
   recursive?: boolean;
+
+  /**
+   * Replacement string for scrubbed values
+   *
+   * @default '[SCRUBBED]'
+   *
+   * @example
+   * ```typescript
+   * replacement: '[REDACTED]'     // Custom replacement text
+   * replacement: '***'            // Simple masking
+   * replacement: ''               // Empty string (removes content)
+   * ```
+   */
+  replacement?: string;
 }
 
 /**

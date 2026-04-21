@@ -1,189 +1,189 @@
 export type ErrorInfo = {
+  level: string
   name: string
   title: string
-  level: string
 }
 
 const ERROR_INFO: ErrorInfo[] = [
   {
+    level: 'critical',
     name: 'H10',
     title: 'App Crashed',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H11',
     title: 'Backlog too deep',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H12',
     title: 'Request Timeout',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H13',
     title: 'Connection closed without response',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H14',
     title: 'No web dynos running',
-    level: 'critical',
   },
   {
+    level: 'warning',
     name: 'H15',
     title: 'Idle connection',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'H16',
     title: 'Redirect to herokuapp.com',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'H17',
     title: 'Poorly formatted HTTP response',
-    level: 'warning',
   },
   {
+    level: 'critical',
     name: 'H18',
     title: 'Server Request Interrupted',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H19',
     title: 'Backend connection timeout',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H20',
     title: 'App boot timeout',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H21',
     title: 'Backend connection refused',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H22',
     title: 'Connection limit reached',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H23',
     title: 'Endpoint misconfigured',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H24',
     title: 'Forced close',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H25',
     title: 'HTTP Restriction',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'H26',
     title: 'Request Error',
-    level: 'critical',
   },
   {
+    level: 'info',
     name: 'H27',
     title: 'Client Request Interrupted',
-    level: 'info',
   },
   {
+    level: 'warning',
     name: 'H28',
     title: 'Client Connection Idle',
-    level: 'warning',
   },
   {
+    level: 'critical',
     name: 'H31',
     title: 'Misdirected Request',
-    level: 'critical',
   },
   {
+    level: 'warning',
     name: 'H80',
     title: 'Maintenance Mode',
-    level: 'warning',
   },
   {
+    level: 'info',
     name: 'H81',
     title: 'Blank app',
-    level: 'info',
   },
   {
+    level: 'info',
     name: 'H82',
     title: "You've used up your dyno hour pool",
-    level: 'info',
   },
   {
+    level: 'critical',
     name: 'H99',
     title: 'Platform error',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'R10',
     title: 'Boot timeout',
-    level: 'critical',
   },
   {
+    level: 'warning',
     name: 'R12',
     title: 'Exit timeout',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'R13',
     title: 'Attach error',
-    level: 'warning',
   },
   {
+    level: 'critical',
     name: 'R14',
     title: 'Memory quota exceeded',
-    level: 'critical',
   },
   {
+    level: 'critical',
     name: 'R15',
     title: 'Memory quota vastly exceeded',
-    level: 'critical',
   },
   {
+    level: 'warning',
     name: 'R151',
     title: 'Memory quota vastly exceeded',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'R16',
     title: 'Detached',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'R99',
     title: 'Platform error',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'L10',
     title: 'Drain buffer overflow',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'L11',
     title: 'Tail buffer overflow',
-    level: 'warning',
   },
   {
+    level: 'warning',
     name: 'L12',
     title: 'Local buffer overflow',
-    level: 'warning',
   },
   {
+    level: 'critical',
     name: 'L13',
     title: 'Local delivery error',
-    level: 'critical',
   },
 ]
 

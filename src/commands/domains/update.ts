@@ -6,11 +6,8 @@ export default class DomainsUpdate extends Command {
   static args = {
     hostname: Args.string({description: 'unique identifier of the domain or full hostname', required: true}),
   }
-
   static description = 'update a domain to use a different SSL certificate on an app'
-
   static examples = [`${color.command('heroku domains:update www.example.com --cert mycert')}`]
-
   static flags = {
     app: flags.app({required: true}),
     cert: flags.string({

@@ -65,4 +65,4 @@ jobs:
             --channel=${{ fromJSON(inputs.isStableRelease) && 'stable' || env.prerelease-channel }}
         shell: bash
       - name: promote Linux install scripts
-        run: node ./scripts/postrelease/install_scripts.js
+        run: node ./scripts/postrelease/install-scripts.js

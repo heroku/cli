@@ -1,6 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -15,7 +15,6 @@ export default class Upgrade extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = heredoc(`
     starts a Postgres version upgrade
 
@@ -25,7 +24,6 @@ export default class Upgrade extends Command {
 
     On follower databases, this command unfollows the leader database before upgrading the follower's Postgres version.
     `)
-
   static examples = [
     heredoc`
       # Upgrade an Essential-tier database to a specific version
@@ -40,14 +38,12 @@ export default class Upgrade extends Command {
       ${color.command('heroku pg:upgrade:run DATABASE_URL --app myapp')}
     `,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote({char: 'r'}),
     version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -92,7 +88,7 @@ export default class Upgrade extends Command {
     try {
       const data = {version}
       ux.action.start(`Starting upgrade on ${color.datastore(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {hostname: utils.pg.host(), body: data})
+      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/run`, {body: data, hostname: utils.pg.host()})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
     } catch (error) {
       if (error instanceof Error && 'body' in error) {

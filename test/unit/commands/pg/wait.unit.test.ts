@@ -1,9 +1,9 @@
-import Cmd from '../../../../src/commands/pg/wait.js'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import {Errors} from '@oclif/core'
-import {runCommand} from '../../../helpers/run-command.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
+
+import Cmd from '../../../../src/commands/pg/wait.js'
 
 const all = [
   {id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:hobby-dev'}},
@@ -30,8 +30,8 @@ describe('pg:wait', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
     pg
-      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'pending'})
-      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
+      .get('/client/v11/databases/1/wait_status').reply(200, {message: 'pending', 'waiting?': true})
+      .get('/client/v11/databases/1/wait_status').reply(200, {message: 'available', 'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -81,8 +81,8 @@ describe('pg:wait', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
     pg
-      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': true, message: 'upgrading', step: '1/3'})
-      .get('/client/v11/databases/1/wait_status').reply(200, {'waiting?': false, message: 'available'})
+      .get('/client/v11/databases/1/wait_status').reply(200, {message: 'upgrading', step: '1/3', 'waiting?': true})
+      .get('/client/v11/databases/1/wait_status').reply(200, {message: 'available', 'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',

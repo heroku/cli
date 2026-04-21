@@ -13,15 +13,12 @@ export default class Wait extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
   }
-
   static description = 'wait for Redis instance to be available'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

@@ -129,9 +129,7 @@ describe('telemetry-manager', function () {
       }
 
       // Setup mock HTTP endpoint for Honeycomb
-      const honeycombAPI = nock(
-        isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com',
-      )
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
         .post('/otel/v1/traces')
         .reply(200)
 
@@ -144,9 +142,7 @@ describe('telemetry-manager', function () {
       const mockError = new Error('Test error')
 
       // Setup mock HTTP endpoint for Honeycomb
-      const honeycombAPI = nock(
-        isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com',
-      )
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
         .post('/otel/v1/traces')
         .reply(200)
 

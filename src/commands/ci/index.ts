@@ -7,12 +7,10 @@ import {renderList} from '../../lib/ci/test-run.js'
 
 export default class CiIndex extends Command {
   static description = 'display the most recent CI runs for the given pipeline'
-
   static examples = [
     color.command(`heroku ci --app murmuring-headland-14719
 `),
   ]
-
   static flags = {
     app: flags.app(),
     json: flags.boolean({description: 'output in json format', required: false}),

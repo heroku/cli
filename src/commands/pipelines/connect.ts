@@ -17,13 +17,10 @@ export default class Connect extends Command {
       required: true,
     }),
   }
-
   static description = 'connect a GitHub repo to an existing pipeline'
-
   static examples = [
     color.command('heroku pipelines:connect my-pipeline -r githuborg/reponame'),
   ]
-
   static flags = {
     repo: flags.string({
       char: 'r',

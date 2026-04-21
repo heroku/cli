@@ -1,11 +1,10 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
-import {stdout, stderr} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/certs/auto/disable.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
+import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/certs/auto/disable.js'
 
 const heredoc = tsheredoc.default
 
@@ -18,27 +17,26 @@ describe('heroku certs:auto:disable', function () {
     nock('https://api.heroku.com')
       .delete('/apps/example/acm')
       .reply(200, {acm: true})
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
       'example',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Disabling Automatic Certificate Management... done
     `))
-    expectOutput(stdout.output, '')
+    expectOutput(stdout, '')
   })
 
   it('confirms that they want to disable', async function () {
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
       'notexample',
     ])
-      .catch(error => {
-        expect(ansis.strip(error.message)).to.equal('Confirmation notexample did not match example. Aborted.')
-      })
+    expect(error).to.exist
+    expect(ansis.strip(error!.message)).to.equal('Confirmation notexample did not match example. Aborted.')
   })
 })

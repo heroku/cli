@@ -1,7 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import {Config, Interfaces} from '@oclif/core'
-import {fileURLToPath} from 'node:url'
 import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 let conf: Config
 

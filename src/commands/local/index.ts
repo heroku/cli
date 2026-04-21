@@ -1,6 +1,6 @@
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, Command, Flags} from '@oclif/core'
-import fs from 'fs'
+import fs from 'node:fs'
 
 import {validateEnvFile} from '../../lib/local/env-file-validator.js'
 import {fork as foreman, isForemanExitError} from '../../lib/local/fork-foreman.js'
@@ -8,21 +8,17 @@ import {loadProc} from '../../lib/local/load-foreman-procfile.js'
 
 export default class Index extends Command {
   static aliases = ['local:start']
-
   static args = {
     processname: Args.string({description: 'name of the process', required: false}),
   }
-
   static description = `run heroku app locally
 Start the application specified by a Procfile (defaults to ./Procfile)`
-
   static examples = [
     color.command('heroku local'),
     color.command('heroku local web'),
     color.command('heroku local web=2'),
     color.command('heroku local web=1,worker=2'),
   ]
-
   static flags = {
     concurrency: Flags.string({
       char: 'c',
@@ -103,9 +99,7 @@ Start the application specified by a Procfile (defaults to ./Procfile)`
       execArgv.push(processes.join(','))
     } else {
       if (!startCmd) {
-        this.error(
-          `No ${procfile} found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.`,
-        )
+        this.error(`No ${procfile} found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.`)
       }
 
       const resolvedStartCmd = startCmd ?? ''

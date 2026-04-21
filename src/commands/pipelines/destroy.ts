@@ -13,9 +13,7 @@ export default class PipelinesDestroy extends Command {
       required: true,
     }),
   }
-
   static description = 'destroy a pipeline'
-
   static examples = [
     color.command('heroku pipelines:destroy my-pipeline'),
   ]

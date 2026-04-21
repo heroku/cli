@@ -12,17 +12,14 @@ export default class Update extends Command {
   static args = {
     telemetry_drain_id: Args.string({description: 'ID of the drain to update', required: true}),
   }
-
   static description = 'updates a telemetry drain with provided attributes (attributes not provided remain unchanged)'
   static example = `${color.command('heroku telemetry:update acde070d-8c4c-4f0d-9d8a-162843c10333 --signals logs,metrics --endpoint https://my-new-endpoint.com')}`
-
   static flags = {
     endpoint: Flags.string({description: 'drain url'}),
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
     signals: Flags.string({description: 'comma-delimited list of signals to collect (traces, metrics, logs). Use "all" to collect all signals.'}),
     transport: Flags.string({description: 'transport protocol for the drain', options: ['http', 'grpc']}),
   }
-
   static topic = 'telemetry'
 
   public async run(): Promise<void> {

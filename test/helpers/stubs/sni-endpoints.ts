@@ -1,9 +1,9 @@
-import {SniEndpoint} from '../../../src/lib/types/sni-endpoint.js'
 import {Domain} from '../../../src/lib/types/domain.js'
+import {SniEndpoint} from '../../../src/lib/types/sni-endpoint.js'
 
-export const endpointStables: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointStables: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -17,9 +17,9 @@ export const endpointStables: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'>
   },
 }
 
-export const endpointWildcard: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointWildcard: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -33,9 +33,9 @@ export const endpointWildcard: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'
   },
 }
 
-export const endpointWildcardBug: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointWildcardBug: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -49,9 +49,9 @@ export const endpointWildcardBug: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_ce
   },
 }
 
-export const endpointAcm: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointAcm: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: true,
     'ca_signed?': true,
@@ -65,9 +65,9 @@ export const endpointAcm: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   },
 }
 
-export const endpointUntrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointUntrusted: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -81,9 +81,9 @@ export const endpointUntrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert
   },
 }
 
-export const endpointTrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointTrusted: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': true,
@@ -97,9 +97,9 @@ export const endpointTrusted: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'>
   },
 }
 
-export const endpointWithDomains: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointWithDomains: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: ['tokyo-1050.herokussl.com'],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -139,9 +139,9 @@ export const untrustedCertificateDetails = `
   Subject:        /C=US/ST=California/L=San Francisco/O=Untrusted/CN=untrusted.example.org
   SSL certificate is not trusted.
 `
-export const endpoint: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpoint: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: ['456789ab-cdef-0123-4567-89abcdef0123'],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -155,18 +155,18 @@ export const endpoint: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   },
 }
 
-export const endpointDomain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
-  id: '456789ab-cdef-0123-4567-89abcdef0123',
+export const endpointDomain: Pick<Domain, 'hostname' | 'id' | 'sni_endpoint'> = {
   hostname: 'tokyo-1050.herokussl.com',
+  id: '456789ab-cdef-0123-4567-89abcdef0123',
   sni_endpoint: {
     id: '01234567-89ab-cdef-0123-456789abcdef',
     name: 'tokyo-1050',
   },
 }
 
-export const endpoint2: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'akita-7777',
+export const endpoint2: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: ['89abcdef-0123-4567-89ab-cdef01234567'],
+  name: 'akita-7777',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -180,18 +180,18 @@ export const endpoint2: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
   },
 }
 
-export const endpoint2Domain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
-  id: '89abcdef-0123-4567-89ab-cdef01234567',
+export const endpoint2Domain: Pick<Domain, 'hostname' | 'id' | 'sni_endpoint'> = {
   hostname: 'akita-7777.herokussl.com',
+  id: '89abcdef-0123-4567-89ab-cdef01234567',
   sni_endpoint: {
     id: '01234567-89ab-cdef-0123-456789abcdef',
     name: 'akita-7777',
   },
 }
 
-export const endpointCname: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1051',
+export const endpointCname: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: ['01234567-89ab-cdef-0123-456789abcdef'],
+  name: 'tokyo-1051',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,
@@ -205,18 +205,18 @@ export const endpointCname: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> =
   },
 }
 
-export const endpointCnameDomain: Pick<Domain, 'id' | 'hostname' | 'sni_endpoint'> = {
-  id: '01234567-89ab-cdef-0123-456789abcdef',
+export const endpointCnameDomain: Pick<Domain, 'hostname' | 'id' | 'sni_endpoint'> = {
   hostname: 'tokyo-1050.herokussl.com',
+  id: '01234567-89ab-cdef-0123-456789abcdef',
   sni_endpoint: {
     id: '01234567-89ab-cdef-0123-456789abcdef',
     name: 'tokyo-1051',
   },
 }
 
-export const endpointHeroku: Pick<SniEndpoint, 'name' | 'domains' | 'ssl_cert'> = {
-  name: 'tokyo-1050',
+export const endpointHeroku: Pick<SniEndpoint, 'domains' | 'name' | 'ssl_cert'> = {
   domains: [],
+  name: 'tokyo-1050',
   ssl_cert: {
     acm: false,
     'ca_signed?': false,

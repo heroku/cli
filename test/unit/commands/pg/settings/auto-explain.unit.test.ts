@@ -1,7 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../src/commands/pg/settings/auto-explain.js'
 
 const heredoc = tsheredoc.default
@@ -12,17 +13,17 @@ describe('pg:settings:auto-explain', function () {
 
   beforeEach(function () {
     const addon = {
-      id: 1,
-      name: 'postgres-1',
       app: {name: 'myapp'},
       config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'],
+      id: 1,
+      name: 'postgres-1',
       plan: {name: 'heroku-postgresql:standard-0'},
     }
 
     api = nock('https://api.heroku.com')
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'test-database',
+      app: 'myapp',
     }).reply(200, [{addon}])
 
     pg = nock('https://api.data.heroku.com')
@@ -36,7 +37,7 @@ describe('pg:settings:auto-explain', function () {
 
   it('shows settings for auto_explain with value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {auto_explain: {value: 'test_value'}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     auto-explain is set to test_value for postgres-1.
     Execution plans of queries will be logged for future connections.
@@ -45,7 +46,7 @@ describe('pg:settings:auto-explain', function () {
 
   it('shows settings for auto_explain with no value', async function () {
     pg.get('/postgres/v0/databases/1/config').reply(200, {auto_explain: {value: ''}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
     auto-explain is set to  for postgres-1.
     Execution plans of queries will not be logged for future connections.

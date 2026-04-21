@@ -13,17 +13,14 @@ export default class Timeout extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
-
   static description = `set the number of seconds to wait before killing idle connections
     A value of zero means that connections will not be closed.
   `
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     seconds: flags.integer({char: 's', description: 'set timeout value', required: true}),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

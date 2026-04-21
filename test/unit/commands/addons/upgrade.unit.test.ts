@@ -1,10 +1,10 @@
 import {AddOn} from '@heroku-cli/schema'
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/addons/upgrade.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('addons:upgrade', function () {
   let api: ReturnType<typeof nock>

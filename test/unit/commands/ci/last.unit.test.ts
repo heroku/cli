@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import CiLast from '../../../../src/commands/ci/last.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ci:last', function () {
   const testRunNumber = 10
@@ -69,7 +69,8 @@ describe('ci:last', function () {
           {id: pipeline.id},
         ])
         .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-        .reply(200,
+        .reply(
+          200,
           {
             commit_branch: 'main',
             commit_message: 'Merge pull request #5848 from heroku/cli',
@@ -140,7 +141,8 @@ describe('ci:last', function () {
           {id: pipeline.id},
         ])
         .get(`/pipelines/${pipeline.id}/test-runs/${testRunNumber}`)
-        .reply(200,
+        .reply(
+          200,
           {
             commit_branch: 'main',
             commit_message: 'Merge pull request #5848 from heroku/cli',

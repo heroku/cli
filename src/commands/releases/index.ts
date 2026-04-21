@@ -42,12 +42,7 @@ const getDescriptionTruncation = function (releases: Heroku.Release[], columns: 
           colValue = colValue[part]
         }
 
-        let formattedValue
-        if (col.get) {
-          formattedValue = col.get(row)
-        } else {
-          formattedValue = colValue.toString()
-        }
+        const formattedValue = col.get ? col.get(row) : colValue.toString()
 
         if (key !== optimizeKey) {
           optimizationWidthMap[key] = Math.max(
@@ -75,7 +70,6 @@ export default class Index extends Command {
     `${color.command('v2 Config add BAR_BAZ email@example.com 2015/11/17 17:37:41 (~ 1h ago)')}`,
     `${color.command('v3 Config add BAZ_QUX email@example.com 2015/11/17 17:37:41 (~ 1h ago)')}`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     extended: flags.boolean({char: 'x', hidden: true}),
@@ -83,7 +77,6 @@ export default class Index extends Command {
     num: flags.string({char: 'n', description: 'number of releases to show'}),
     remote: flags.remote(),
   }
-
   static topic = 'releases'
 
   public async run(): Promise<void> {
@@ -120,27 +113,27 @@ export default class Index extends Command {
         const statusColor = statusHelper.color(release.status)
         let colorFn: (s: string) => string
         switch (statusColor) {
-        case 'red': {
-          colorFn = color.failure
+          case 'gray': {
+            colorFn = color.inactive
 
-          break
-        }
+            break
+          }
 
-        case 'yellow': {
-          colorFn = color.warning
+          case 'red': {
+            colorFn = color.failure
 
-          break
-        }
+            break
+          }
 
-        case 'gray': {
-          colorFn = color.inactive
+          case 'yellow': {
+            colorFn = color.warning
 
-          break
-        }
+            break
+          }
 
-        default: {
-          colorFn = color.info
-        }
+          default: {
+            colorFn = color.info
+          }
         }
 
         const sc = colorFn(status)

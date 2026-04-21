@@ -1,11 +1,9 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/info.js'
 import {TelemetryDrain} from '../../../../src/lib/types/telemetry.js'
-import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -57,10 +55,10 @@ describe('telemetry:info', function () {
       .get(`/spaces/${spaceTelemetryDrain.owner.id}`)
       .reply(200, {id: spaceTelemetryDrain.owner.id, name: 'myspace'})
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       spaceTelemetryDrain.id,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${spaceTelemetryDrain.id}
       Space:     ⬡ myspace
       Signals:   ${spaceTelemetryDrain.signals.join(', ')}
@@ -79,10 +77,10 @@ describe('telemetry:info', function () {
       .get(`/apps/${appTelemetryDrain.owner.id}`)
       .reply(200, {id: appTelemetryDrain.owner.id, name: 'myapp'})
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       appTelemetryDrain.id,
     ])
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       === ${appTelemetryDrain.id}
       App:       ⬢ myapp
       Signals:   ${appTelemetryDrain.signals.join(', ')}

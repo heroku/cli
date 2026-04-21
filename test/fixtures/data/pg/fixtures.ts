@@ -138,7 +138,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 20000,
+      rate: 20_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -159,7 +159,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 24000,
+      rate: 24_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -180,7 +180,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 28000,
+      rate: 28_000,
     },
     'storage-optimized': {
       billing_period: 'month',

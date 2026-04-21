@@ -1,31 +1,31 @@
 /* eslint-disable complexity */
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
 import {getRelease} from '../../lib/pg/fetcher.js'
-import {PgStatus, PgDatabase} from '../../lib/pg/types.js'
+import {PgDatabase, PgStatus} from '../../lib/pg/types.js'
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Promote extends Command {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: nls('pg:database:arg:description'), required: true}),
+  }
   static description = 'sets DATABASE as your DATABASE_URL'
   static flags = {
-    force: flags.boolean({char: 'f'}),
     app: flags.app({required: true}),
+    force: flags.boolean({char: 'f'}),
     remote: flags.remote(),
   }
-
-  static args = {
-    database: Args.string({required: true, description: nls('pg:database:arg:description')}),
-  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Promote)
-    const {force, app} = flags
+    const {args, flags} = await this.parse(Promote)
+    const {app, force} = flags
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const attachment = await dbResolver.getAttachment(app, database)
@@ -52,10 +52,10 @@ export default class Promote extends Command {
         // error, we can create a secondary attachment, just-in-time.
         const {body: backup} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {
           body: {
-            app: {name: app},
             addon: {name: current.addon?.name},
-            namespace: current.namespace,
+            app: {name: app},
             confirm: app,
+            namespace: current.namespace,
           },
         })
         ux.action.stop(color.attachment(backup.name + '_URL'))
@@ -77,21 +77,18 @@ export default class Promote extends Command {
       }
     }
 
-    let promotionMessage
-    if (attachment.namespace) {
-      promotionMessage = `Promoting ${color.attachment(attachment.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
-    } else {
-      promotionMessage = `Promoting ${color.datastore(attachment.addon.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
-    }
+    const promotionMessage = attachment.namespace
+      ? `Promoting ${color.attachment(attachment.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
+      : `Promoting ${color.datastore(attachment.addon.name)} to ${color.datastore('DATABASE_URL')} on ${color.app(app)}`
 
     ux.action.start(promotionMessage)
     await this.heroku.post('/addon-attachments', {
       body: {
-        name: 'DATABASE',
-        app: {name: app},
         addon: {name: attachment.addon.name},
-        namespace: attachment.namespace || null,
+        app: {name: app},
         confirm: app,
+        name: 'DATABASE',
+        namespace: attachment.namespace || null,
       },
     })
     ux.action.stop()
@@ -100,11 +97,11 @@ export default class Promote extends Command {
       ux.action.start('Reattaching pooler to new leader')
       await this.heroku.post('/addon-attachments', {
         body: {
-          name: currentPooler.name,
-          app: {name: app},
           addon: {name: attachment.addon.name},
-          namespace: 'connection-pooling:default',
+          app: {name: app},
           confirm: app,
+          name: currentPooler.name,
+          namespace: 'connection-pooling:default',
         },
       })
       ux.action.stop()
@@ -129,10 +126,10 @@ export default class Promote extends Command {
     if (releasePhase) {
       ux.action.start('Checking release phase')
       const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-        partial: true,
         headers: {
           Range: 'version ..; max=5, order=desc',
         },
+        partial: true,
       })
 
       const attach = releases.find(release => release.description?.includes('Attach DATABASE'))
@@ -141,7 +138,7 @@ export default class Promote extends Command {
         ux.error('Unable to check release phase. Check your Attach DATABASE release for failures.')
       }
 
-      const endTime = Date.now() + 900000 // 15 minutes from now
+      const endTime = Date.now() + 900_000 // 15 minutes from now
       const [attachId, detachId] = [attach?.id as string, detach?.id as string]
       while (true) {
         const attach = await getRelease(this.heroku, app, attachId)
@@ -159,11 +156,9 @@ export default class Promote extends Command {
         if (attach && attach.status === 'failed') {
           let msg = `pg:promote failed because ${attach.description} release was unsuccessful. Your application is currently running `
           const detach = await getRelease(this.heroku, app, detachId)
-          if (detach && detach.status === 'succeeded') {
-            msg += 'without an attached DATABASE_URL.'
-          } else {
-            msg += `with ${current?.addon?.name} attached as DATABASE_URL.`
-          }
+          msg += detach && detach.status === 'succeeded'
+            ? 'without an attached DATABASE_URL.'
+            : `with ${current?.addon?.name} attached as DATABASE_URL.`
 
           msg += ' Check your release phase logs for failure causes.'
           ux.action.stop(msg)

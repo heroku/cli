@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -14,17 +14,14 @@ export default class Upgrade extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = heredoc(`
     simulates a Postgres version upgrade on a Standard-tier and higher leader database by creating and upgrading a follower database. Heroku sends the results of the test upgrade via email.
   `)
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     version: flags.string({char: 'v', description: 'Postgres version to upgrade to'}),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

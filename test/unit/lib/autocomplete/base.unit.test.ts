@@ -1,23 +1,21 @@
 import {flags} from '@heroku-cli/command'
 import {Config} from '@oclif/core'
 import {expect} from 'chai'
-import * as path from 'path'
-import {fileURLToPath} from 'url'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 import {AutocompleteBase} from '../../../../src/lib/autocomplete/base.js'
-
 // autocomplete will throw error on windows
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
 
 class AutocompleteTest extends AutocompleteBase {
-  static id = 'test:foo'
-
   static flags = {
     app: flags.app(),
     bar: flags.boolean(),
   }
+  static id = 'test:foo'
 
   async run() {
     'do work!'

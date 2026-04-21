@@ -8,7 +8,6 @@ export default class SessionsDestroy extends Command {
   static args = {
     id: Args.string({description: 'ID of the OAuth session', required: true}),
   }
-
   static description = 'delete (logout) OAuth session by ID'
 
   async run() {
@@ -16,9 +15,7 @@ export default class SessionsDestroy extends Command {
 
     ux.action.start(`Destroying ${color.name(id)}`)
 
-    await this.heroku.delete<OAuthSession>(
-      `/oauth/sessions/${encodeURIComponent(id)}`,
-    )
+    await this.heroku.delete<OAuthSession>(`/oauth/sessions/${encodeURIComponent(id)}`)
 
     ux.action.stop()
   }

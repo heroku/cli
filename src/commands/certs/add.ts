@@ -1,6 +1,6 @@
-import {hux, color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -17,7 +17,6 @@ export default class Add extends Command {
     CRT: Args.string({description: 'absolute path of the certificate file on disk', required: true}),
     KEY: Args.string({description: 'absolute path of the key file on disk', required: true}),
   }
-
   static description = `Add an SSL certificate to an app.
 
   Note: certificates with PEM encoding are also valid.
@@ -25,16 +24,12 @@ export default class Add extends Command {
   static examples = [heredoc(`
     ${color.command('heroku certs:add example.com.crt example.com.key')}
     If you require intermediate certificates, refer to this article on merging certificates to get a complete chain:
-    ${color.info('https://help.salesforce.com/s/articleView?id=000333504&type=1')}`,
-  )]
-
+    ${color.info('https://help.salesforce.com/s/articleView?id=000333504&type=1')}`)]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static strict = true
-
   static topic = 'certs'
 
   async configureDomains(app: string, heroku: APIClient, cert: SniEndpoint, inquirer: any) {
@@ -97,12 +92,12 @@ function splitDomains(domains: string[]): [string, string][] {
 function createMatcherFromSplitDomain([firstChar, rest]: [string, string]) {
   const matcherContents = []
   if (firstChar === '*') {
-    matcherContents.push('^[\\w\\-]+')
+    matcherContents.push(String.raw`^[\w\-]+`)
   } else {
     matcherContents.push(firstChar)
   }
 
-  const escapedRest = rest.replaceAll('.', '\\.')
+  const escapedRest = rest.replaceAll('.', String.raw`\.`)
 
   matcherContents.push(escapedRest)
 
@@ -115,11 +110,11 @@ function matchDomains(certDomains: string[], appDomains: string[]) {
 
   if (splitCertDomains.some(domain => (domain[0] === '*'))) {
     const matchedDomains: string[] = []
-    appDomains.forEach(appDomain => {
+    for (const appDomain of appDomains) {
       if (matchers.some(matcher => matcher.test(appDomain))) {
         matchedDomains.push(appDomain)
       }
-    })
+    }
 
     return matchedDomains
   }

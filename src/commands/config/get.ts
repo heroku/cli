@@ -1,9 +1,8 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
-import {hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import {Args} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
 
@@ -11,21 +10,16 @@ export class ConfigGet extends Command {
   static args = {
     KEY: Args.string({description: 'key name of the config var value', required: true}),
   }
-
   static description = 'display a single config value for an app'
-
   static example = `${color.command(`heroku config:get RAILS_ENV
 production`)}`
-
   static flags = {
     app: flags.app({required: true}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output config vars in shell format'}),
   }
-
   static strict = false
-
   static usage = 'config:get KEY...'
 
   async run() {

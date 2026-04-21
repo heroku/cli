@@ -1,9 +1,9 @@
-import {stdout, stderr} from 'stdout-stderr'
-import nock from 'nock'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HTTPError} from '@heroku/http-call'
 import {expect} from 'chai'
+import nock from 'nock'
+
 import Cmd from '../../../../src/commands/apps/join.js'
-import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 import {userAccount} from '../../../helpers/stubs/get.js'
 import {teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
@@ -21,31 +21,27 @@ describe('heroku apps:join', function () {
 
   it('joins the app', async function () {
     apiPostCollaborators = teamAppCollaborators('gandalf@heroku.com')
-    await runCommand(Cmd, [
+    const {stderr, stdout}  = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    expectOutput(stdout.output, '')
-    expectOutput(stderr.output, 'Joining ⬢ myapp... done')
+    expectOutput(stdout, '')
+    expectOutput(stderr, 'Joining ⬢ myapp... done')
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })
 
   it('is forbidden from joining the app', async function () {
     const response = {
-      code: 403, description: {id: 'forbidden', error: 'You do not have access to the team heroku-tools.'},
+      code: 403, description: {error: 'You do not have access to the team heroku-tools.', id: 'forbidden'},
     }
     apiPostCollaborators = teamAppCollaborators('gandalf@heroku.com', [], response)
-    let thrown = false
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-      .catch(function (error) {
-        thrown = true
-        expect(error.body.error).to.eq('You do not have access to the team heroku-tools.')
-      })
-    expect(thrown).to.eq(true)
+    expect(error).to.exist
+    expect((error as HTTPError).body.error).to.eq('You do not have access to the team heroku-tools.')
     apiGetUserAccount.done()
     apiPostCollaborators.done()
   })

@@ -1,5 +1,5 @@
 import * as childProcess from 'node:child_process'
-import * as path from 'node:path'
+import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -7,10 +7,10 @@ const cliRoot = path.join(__dirname, '../..')
 const bin = path.join(cliRoot, 'bin/run')
 
 export interface RunCliResult {
-  stdout: string
-  stderr: string
   exitCode: number
   signal?: string
+  stderr: string
+  stdout: string
 }
 
 /**
@@ -21,7 +21,7 @@ export interface RunCliResult {
  */
 export function runCliSubprocess(
   args: string[],
-  opts?: { env?: NodeJS.ProcessEnv; timeout?: number },
+  opts?: {env?: NodeJS.ProcessEnv; timeout?: number},
 ): RunCliResult {
   const env = {...process.env, ...opts?.env}
   const result = childProcess.spawnSync(process.execPath, [bin, ...args], {
@@ -31,9 +31,9 @@ export function runCliSubprocess(
     timeout: opts?.timeout ?? 60_000,
   })
   return {
-    stdout: result.stdout ?? '',
-    stderr: result.stderr ?? '',
     exitCode: result.status ?? -1,
     signal: result.signal ?? undefined,
+    stderr: result.stderr ?? '',
+    stdout: result.stdout ?? '',
   }
 }

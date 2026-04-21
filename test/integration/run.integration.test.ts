@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 
-import {runCliSubprocess} from '../helpers/runCliSubprocess.js'
+import {runCliSubprocess} from '../helpers/run-cli-subprocess.js'
 import {unwrap} from '../helpers/utils/unwrap.js'
 
 describe('run', function () {

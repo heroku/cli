@@ -58,30 +58,30 @@ export const grandfatheredPrice = function (addon: Heroku.AddOn) {
 
 export const formatState = function (state: string) {
   switch (state) {
-  case 'provisioned': {
-    state = 'created'
-    break
-  }
+    case 'deprovisioned': {
+      state = 'errored'
+      break
+    }
 
-  case 'provisioning': {
-    state = 'creating'
-    break
-  }
+    case 'deprovisioning': {
+      state = 'destroying'
+      break
+    }
 
-  case 'deprovisioning': {
-    state = 'destroying'
-    break
-  }
+    case 'provisioned': {
+      state = 'created'
+      break
+    }
 
-  case 'deprovisioned': {
-    state = 'errored'
-    break
-  }
+    case 'provisioning': {
+      state = 'creating'
+      break
+    }
 
-  default: {
-    state = ''
-    break
-  }
+    default: {
+      state = ''
+      break
+    }
   }
 
   return state

@@ -1,16 +1,14 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 
 export default class Regions extends Command {
   static description = 'list available regions for deployment'
-
   static flags = {
     common: flags.boolean({description: 'show regions for common runtime'}),
     json: flags.boolean({description: 'output in json format'}),
     private: flags.boolean({description: 'show regions for private spaces'}),
   }
-
   static topic = 'regions'
 
   async run() {

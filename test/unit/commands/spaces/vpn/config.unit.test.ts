@@ -1,8 +1,9 @@
-import Cmd from '../../../../../src/commands/spaces/vpn/config.js'
-import {runCommand} from '../../../../helpers/run-command.js'
-import nock from 'nock'
-import {expect} from 'chai'
 import * as Heroku from '@heroku-cli/schema'
+import {runCommand} from '@heroku-cli/test-utils'
+import {expect} from 'chai'
+import nock from 'nock'
+
+import Cmd from '../../../../../src/commands/spaces/vpn/config.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces:vpn:config', function () {
@@ -11,26 +12,26 @@ describe('spaces:vpn:config', function () {
   beforeEach(function () {
     vpnConnection = {
       id: '123456789012',
+      ike_version: 1,
       name: 'vpn-connection-name-config',
       public_ip: '35.161.69.30',
       routable_cidrs: ['172.16.0.0/16'],
-      ike_version: 1,
       space_cidr_block: '10.0.0.0/16',
       status: 'failed',
       status_message: 'supplied CIDR block already in use',
       tunnels: [
         {
-          last_status_change: '2016-10-25T22:09:05Z',
-          ip: '52.44.146.196', // The one needed right now
           customer_ip: '52.44.146.197',
+          ip: '52.44.146.196', // The one needed right now
+          last_status_change: '2016-10-25T22:09:05Z',
           pre_shared_key: 'apresharedkey1',
           status: 'UP',
           status_message: 'status message',
         },
         {
-          last_status_change: '2016-10-25T22:09:05Z',
-          ip: '52.44.146.198',
           customer_ip: '52.44.146.199',
+          ip: '52.44.146.198',
+          last_status_change: '2016-10-25T22:09:05Z',
           pre_shared_key: 'apresharedkey2',
           status: 'UP',
           status_message: 'status message',
@@ -44,7 +45,7 @@ describe('spaces:vpn:config', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
       .reply(200, vpnConnection)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       'vpn-connection-name-config',
@@ -62,7 +63,7 @@ describe('spaces:vpn:config', function () {
       .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
       .reply(200, vpnConnection)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       'vpn-connection-name-config',

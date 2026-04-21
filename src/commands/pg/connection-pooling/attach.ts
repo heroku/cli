@@ -1,6 +1,6 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -13,19 +13,15 @@ export default class Attach extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'add an attachment to a database using connection pooling'
-
   static examples = [heredoc`
       ${color.command('heroku pg:connection-pooling:attach postgresql-something-12345')}
     `]
-
   static flags = {
     app: flags.app({required: true}),
     as: flags.string({description: 'name for add-on attachment'}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

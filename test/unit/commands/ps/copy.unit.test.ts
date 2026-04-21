@@ -1,29 +1,29 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import fs from 'node:fs'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import PsCopy from '../../../../src/commands/ps/copy.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ps:copy', function () {
-  let fsExistsSyncStub: sinon.SinonStub
-  let herokuExecInitFeatureStub: sinon.SinonStub
-  let herokuExecUpdateClientKeyStub: sinon.SinonStub
-  let herokuSshScpStub: sinon.SinonStub
+  let fsExistsSyncStub: SinonStub
+  let herokuExecInitFeatureStub: SinonStub
+  let herokuExecUpdateClientKeyStub: SinonStub
+  let herokuSshScpStub: SinonStub
 
   beforeEach(function () {
-    fsExistsSyncStub = sinon.stub(fs, 'existsSync')
-    herokuExecInitFeatureStub = sinon.stub(HerokuExec.prototype, 'initFeature')
-    herokuExecUpdateClientKeyStub = sinon.stub(HerokuExec.prototype, 'updateClientKey')
-    herokuSshScpStub = sinon.stub(HerokuSsh.prototype, 'scp')
+    fsExistsSyncStub = stub(fs, 'existsSync')
+    herokuExecInitFeatureStub = stub(HerokuExec.prototype, 'initFeature')
+    herokuExecUpdateClientKeyStub = stub(HerokuExec.prototype, 'updateClientKey')
+    herokuSshScpStub = stub(HerokuSsh.prototype, 'scp')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 

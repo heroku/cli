@@ -1,11 +1,10 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
-import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../../src/commands/pg/credentials/destroy.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 import {expect} from 'chai'
+import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/credentials/destroy.js'
 
 const heredoc = tsheredoc.default
 
@@ -27,14 +26,14 @@ describe('pg:credentials:destroy', function () {
       .reply(200)
     const attachments = [
       {
-        app: {name: 'myapp'}, addon: {id: 100, name: 'postgres-1'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'myapp'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
       },
     ]
     nock('https://api.heroku.com')
       .get('/addons/postgres-1/addon-attachments')
       .reply(200, attachments)
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
@@ -42,10 +41,10 @@ describe('pg:credentials:destroy', function () {
       '--confirm',
       'myapp',
     ])
-    expectOutput(stderr.output, heredoc(`
+    expectOutput(stderr, heredoc(`
       Destroying credential credname... done
     `))
-    expectOutput(stdout.output, heredoc(`
+    expectOutput(stdout, heredoc(`
       The credential has been destroyed within postgres-1.
       Database objects owned by credname will be assigned to the default credential.
     `))
@@ -60,14 +59,13 @@ describe('pg:credentials:destroy', function () {
       .reply(200, [{addon: hobbyAddon}])
 
     const err = "You can't destroy the default credential on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ]).catch((error: Error) => {
-      expect(error.message).to.equal(err)
-    })
+    ])
+    expect(error!.message).to.equal(err)
   })
 
   it('throws an error when the db is numbered essential plan', async function () {
@@ -78,22 +76,21 @@ describe('pg:credentials:destroy', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: essentialAddon}])
     const err = "You can't destroy the default credential on Essential-tier databases."
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
-    ]).catch((error: Error) => {
-      expect(error.message).to.equal(err)
-    })
+    ])
+    expect(error!.message).to.equal(err)
   })
 
   it('throws an error when the credential is still used for an attachment', async function () {
     const attachments = [
       {
-        app: {name: 'myapp'}, addon: {id: 100, name: 'postgres-1'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'myapp'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
       }, {
-        app: {name: 'otherapp'}, addon: {id: 100, name: 'postgres-1'}, namespace: 'credential:gandalf', config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'otherapp'}, config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'], namespace: 'credential:gandalf',
       },
     ]
     nock('https://api.heroku.com')
@@ -103,26 +100,25 @@ describe('pg:credentials:destroy', function () {
       .get('/addons/postgres-1/addon-attachments')
       .reply(200, attachments)
     const err = 'Credential gandalf must be detached from the app ⬢ otherapp before destroying.'
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
-    ]).catch((error: Error) => {
-      expect(ansis.strip(error.message)).to.equal(err)
-    })
+    ])
+    expect(ansis.strip(error!.message)).to.equal(err)
   })
 
   it('only mentions an app with multiple attachments once', async function () {
     const attachments = [
       {
-        app: {name: 'myapp'}, addon: {id: 100, name: 'postgres-1'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'myapp'}, config_vars: ['HEROKU_POSTGRESQL_PINK_URL'],
       }, {
-        app: {name: 'otherapp'}, addon: {id: 100, name: 'postgres-1'}, namespace: 'credential:gandalf', config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'otherapp'}, config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'], namespace: 'credential:gandalf',
       }, {
-        app: {name: 'otherapp'}, addon: {id: 100, name: 'postgres-1'}, namespace: 'credential:gandalf', config_vars: ['HEROKU_POSTGRESQL_RED_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'otherapp'}, config_vars: ['HEROKU_POSTGRESQL_RED_URL'], namespace: 'credential:gandalf',
       }, {
-        app: {name: 'yetanotherapp'}, addon: {id: 100, name: 'postgres-1'}, namespace: 'credential:gandalf', config_vars: ['HEROKU_POSTGRESQL_BLUE_URL'],
+        addon: {id: 100, name: 'postgres-1'}, app: {name: 'yetanotherapp'}, config_vars: ['HEROKU_POSTGRESQL_BLUE_URL'], namespace: 'credential:gandalf',
       },
     ]
     nock('https://api.heroku.com')
@@ -132,13 +128,12 @@ describe('pg:credentials:destroy', function () {
       .get('/addons/postgres-1/addon-attachments')
       .reply(200, attachments)
     const err = 'Credential gandalf must be detached from the apps ⬢ otherapp, ⬢ yetanotherapp before destroying.'
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'gandalf',
-    ]).catch((error: Error) => {
-      expect(ansis.strip(error.message)).to.equal(err)
-    })
+    ])
+    expect(ansis.strip(error!.message)).to.equal(err)
   })
 })

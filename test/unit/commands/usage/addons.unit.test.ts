@@ -1,11 +1,11 @@
-import Cmd from '../../../../src/commands/usage/addons.js'
-import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import * as Heroku from '@heroku-cli/schema'
-import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
+import nock from 'nock'
+
+import Cmd from '../../../../src/commands/usage/addons.js'
+import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('usage:addons', function () {
   let redisAddon: Heroku.AddOn
@@ -21,6 +21,7 @@ describe('usage:addons', function () {
       const usage = {
         addons: [{
           id: 'redis-123',
+          /* eslint-disable perfectionist/sort-objects */
           meters: {
             'Data Storage': {
               quantity: 2.5,
@@ -29,6 +30,7 @@ describe('usage:addons', function () {
               quantity: 100,
             },
           },
+          /* eslint-enable perfectionist/sort-objects */
         }],
       }
 
@@ -40,7 +42,7 @@ describe('usage:addons', function () {
         .get(`/apps/${app}/addons`)
         .reply(200, [redisAddon])
 
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         app,
       ])
@@ -69,7 +71,7 @@ describe('usage:addons', function () {
         .get(`/apps/${app}/addons`)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         app,
       ])
@@ -85,7 +87,6 @@ describe('usage:addons', function () {
       const app2 = 'app2'
       const usage = {
         apps: [{
-          id: app1,
           addons: [{
             id: 'redis-123',
             meters: {
@@ -94,8 +95,8 @@ describe('usage:addons', function () {
               },
             },
           }],
+          id: app1,
         }, {
-          id: app2,
           addons: [{
             id: 'redis-456',
             meters: {
@@ -104,12 +105,17 @@ describe('usage:addons', function () {
               },
             },
           }],
+          id: app2,
         }],
       }
 
       const teamAddons = [
-        {...redisAddon, id: 'redis-1', name: 'redis-123', app: {id: app1, name: 'App One'}},
-        {...redisAddon, id: 'redis-2', name: 'redis-456', app: {id: app2, name: 'App Two'}},
+        {
+          ...redisAddon, app: {id: app1, name: 'App One'}, id: 'redis-1', name: 'redis-123',
+        },
+        {
+          ...redisAddon, app: {id: app2, name: 'App Two'}, id: 'redis-2', name: 'redis-456',
+        },
       ]
 
       nock('https://api.heroku.com')
@@ -120,7 +126,7 @@ describe('usage:addons', function () {
         .get(`/teams/${team}/addons`)
         .reply(200, teamAddons)
 
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--team',
         team,
       ])
@@ -153,7 +159,7 @@ describe('usage:addons', function () {
         .get(`/teams/${team}/addons`)
         .reply(200, [])
 
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--team',
         team,
       ])

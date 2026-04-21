@@ -12,16 +12,13 @@ export default class Upgrade extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
-
   static description = 'perform in-place version upgrade'
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c'}),
     remote: flags.remote(),
     version: flags.string({char: 'v', required: true}),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

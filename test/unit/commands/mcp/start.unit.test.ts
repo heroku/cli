@@ -1,14 +1,18 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import * as child_process from 'node:child_process'
+import * as childProcess from 'node:child_process'
 import {EventEmitter} from 'node:events'
+import {dirname, join} from 'node:path'
 import {fileURLToPath} from 'node:url'
-import {join, dirname} from 'path'
 import * as sinon from 'sinon'
+
 import MCPStart from '../../../../src/commands/mcp/start.js'
 
-import {runCommand} from '../../../helpers/run-command.js'
-
 class MockStream extends EventEmitter {
+  end() {
+    return this
+  }
+
   pipe() {
     return this
   }
@@ -16,20 +20,15 @@ class MockStream extends EventEmitter {
   unpipe() {
     return this
   }
-
-  end() {
-    return this
-  }
 }
 
 class MockServerProcess extends EventEmitter {
+  public kill = sinon.stub()
   public stderr = new MockStream()
-  public stdout = new MockStream()
   public stdin = new MockStream()
+  public stdout = new MockStream()
 
   public [Symbol.dispose]() {}
-
-  public kill = sinon.stub()
 }
 
 describe('mcp:start', function () {
@@ -43,7 +42,7 @@ describe('mcp:start', function () {
       setTimeout(() => serverStub.stderr?.emit('data', 'test data'), 50)
       setTimeout(() => serverStub.stdout?.emit('data', 'more test data'), 60)
       setTimeout(() => serverStub.emit('exit', 0), 70)
-      return serverStub as unknown as child_process.ChildProcess
+      return serverStub as unknown as childProcess.ChildProcess
     })
   })
 

@@ -9,12 +9,10 @@ import {HerokuSsh} from '../../lib/ps-exec/ssh.js'
 
 export default class Exec extends Command {
   static description = 'Create an SSH session to a dyno'
-
   static examples = [
     `${color.command('heroku ps:exec --app murmuring-headland-14719')}`,
     `${color.command('heroku ps:exec --app murmuring-headland-14719 -- node -i')}`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     dyno: flags.string({
@@ -29,9 +27,7 @@ export default class Exec extends Command {
       description: 'lists the status of the SSH server in the dyno',
     }),
   }
-
   static strict = false
-
   static topic = 'ps'
 
   public async run(): Promise<void> {
@@ -50,6 +46,7 @@ export default class Exec extends Command {
     const psExecDebug = debug('cli:ps:exec')
 
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
+      // eslint-disable-next-line unicorn/prefer-ternary
       if (status) {
         await exec.checkStatus(context, this.heroku, configVars)
       } else {
@@ -58,11 +55,10 @@ export default class Exec extends Command {
           ux.action.start(message)
           psExecDebug(response.body)
           const json = JSON.parse(response.body)
-          if (useNativeSsh) {
-            await ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
-          } else {
-            await ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
-          }
+          await (useNativeSsh
+            ? ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
+            : ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
+          )
 
           ux.action.stop()
         })

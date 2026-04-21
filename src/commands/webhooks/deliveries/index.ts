@@ -5,16 +5,14 @@ import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class Deliveries extends BaseCommand {
   static description = 'list webhook deliveries on an app'
-
   static examples = [
     `${color.command('heroku webhooks:deliveries')}`,
   ]
-
   static flags = {
     app: flags.app(),
+    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
     remote: flags.remote(),
     status: flags.string({char: 's', description: 'filter deliveries by status'}),
-    pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
   }
 
   async run() {
@@ -29,7 +27,7 @@ export default class Deliveries extends BaseCommand {
       path += `?eq[status]=${encodeURIComponent(flags.status)}`
     }
 
-    const {body: deliveries}: { body: any[]} = await this.webhooksClient.get(path, {
+    const {body: deliveries}: {body: any[]} = await this.webhooksClient.get(path, {
       headers: {
         Range: `seq ..; order=desc,max=${max}`,
       },
@@ -49,6 +47,7 @@ export default class Deliveries extends BaseCommand {
       }
 
       const printLine: typeof this.log = (...args) => this.log(...args)
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(deliveries, {
         id: {
           header: 'Delivery ID',
@@ -80,6 +79,7 @@ export default class Deliveries extends BaseCommand {
       }, {
         printLine,
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
   }
 }

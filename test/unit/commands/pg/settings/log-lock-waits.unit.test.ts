@@ -1,7 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../src/commands/pg/settings/log-lock-waits.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -13,8 +14,8 @@ describe('pg:settings:log-lock-waits', function () {
   beforeEach(function () {
     nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'test-database',
+        app: 'myapp',
       }).reply(200, [{addon}])
   })
 
@@ -25,7 +26,7 @@ describe('pg:settings:log-lock-waits', function () {
   it('shows settings for log-lock-waits with value', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_lock_waits: {value: 'test_value'}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       log-lock-waits is set to test_value for ${addon.name}.
       When a deadlock is detected, a log message will be emitted in your application's logs.
@@ -35,7 +36,7 @@ describe('pg:settings:log-lock-waits', function () {
   it('shows settings for log-lock-waits with no value', async function () {
     nock('https://api.data.heroku.com')
       .get(`/postgres/v0/databases/${addon.id}/config`).reply(200, {log_lock_waits: {value: ''}})
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       log-lock-waits is set to  for ${addon.name}.
       When a deadlock is detected, no log message will be emitted in your application's logs.
