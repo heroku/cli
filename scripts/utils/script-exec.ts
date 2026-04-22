@@ -1,51 +1,36 @@
 import {execa, type Options as ExecaOptions, type ResultPromise} from 'execa'
 
-// Configuration for command logging
-export const config = {
-  silent: false,
-}
-
-// Log commands before execution
-function log(...args: string[]) {
-  if (config.silent) return
-  console.log(`$ ${args.join(' ')}`)
-}
-
 /**
  * Execute a command with args array
- * Uses stdio: 'inherit' by default (logs command, inherits stdio)
+ * Logs the command and uses stdio: 'inherit' by default
  */
 export function x(command: string, args: string[], options?: ExecaOptions): ResultPromise {
-  const defaultOptions: ExecaOptions = {
+  console.log(`$ ${command} ${args.join(' ')}`)
+  return execa(command, args, {
     stdio: 'inherit',
     ...options,
-  }
-
-  log(command, ...args)
-  return execa(command, args, defaultOptions)
+  })
 }
 
 /**
  * Execute a shell command (string with interpolation, pipes, etc.)
- * Uses stdio: 'inherit' by default
+ * Logs the command and uses stdio: 'inherit' by default
  */
 export function shell(command: string, options?: ExecaOptions): ResultPromise {
-  const defaultOptions: ExecaOptions = {
+  console.log(`$ ${command}`)
+  return execa(command, {
     shell: true,
     stdio: 'inherit',
     ...options,
-  }
-
-  log(command)
-  return execa(command, defaultOptions)
+  })
 }
 
 /**
  * Execute a command and return stdout as string
- * Trims trailing newline (like qqjs did)
+ * Trims trailing newline
  */
 export async function stdout(command: string, args: string[], options?: ExecaOptions): Promise<string> {
-  log(command, ...args)
+  console.log(`$ ${command} ${args.join(' ')}`)
   const result = await execa(command, args, {
     ...options,
     stderr: 'inherit',

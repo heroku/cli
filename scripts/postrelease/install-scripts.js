@@ -3,19 +3,17 @@
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 
-import {config, run, shell} from '../utils/exec.js'
 import getHerokuS3Bucket from '../utils/get-heroku-s3-bucket.js'
 import isStableRelease from '../utils/is-stable-release.js'
+import {run, shell} from '../utils/script-exec.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const opts = {
   cwd: path.join(__dirname, '..', '..'),
-  stdio: 'inherit' as const,
+  stdio: 'inherit',
 }
-
-config.silent = false
 
 await run(async () => {
   const {GITHUB_REF_NAME, GITHUB_REF_TYPE} = process.env

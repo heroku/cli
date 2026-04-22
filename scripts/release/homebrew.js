@@ -6,9 +6,9 @@ import {fileURLToPath} from 'node:url'
 import {promisify} from 'node:util'
 import {rimrafSync} from 'rimraf'
 
-import {run, shell, x} from '../utils/exec.js'
 import getHerokuS3Bucket from '../utils/get-heroku-s3-bucket.js'
 import isStableRelease from '../utils/is-stable-release.js'
+import {run, shell, x} from '../utils/script-exec.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

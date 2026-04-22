@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
 
-import {x} from '../../scripts/utils/exec.js'
+import {x} from '../../scripts/utils/script-exec.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
