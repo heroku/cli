@@ -65,8 +65,8 @@ describe('apps:destroy', function () {
       // Return a map with duplicate entries (fetch + push for same remote)
       const mockRemotes = new Map([
         ['https://git.heroku.com/myapp.git', [
-          {name: 'heroku', kind: '(fetch)'},
-          {name: 'heroku', kind: '(push)'},
+          {kind: '(fetch)', name: 'heroku'},
+          {kind: '(push)', name: 'heroku'},
         ]],
       ])
       sandbox.stub(gitService, 'listRemotes').resolves(mockRemotes)
@@ -94,10 +94,10 @@ describe('apps:destroy', function () {
       // Multiple remotes with duplicates (fetch + push for each)
       const mockRemotes = new Map([
         ['https://git.heroku.com/myapp.git', [
-          {name: 'heroku', kind: '(fetch)'},
-          {name: 'heroku', kind: '(push)'},
-          {name: 'production', kind: '(fetch)'},
-          {name: 'production', kind: '(push)'},
+          {kind: '(fetch)', name: 'heroku'},
+          {kind: '(push)', name: 'heroku'},
+          {kind: '(fetch)', name: 'production'},
+          {kind: '(push)', name: 'production'},
         ]],
       ])
       sandbox.stub(gitService, 'listRemotes').resolves(mockRemotes)
