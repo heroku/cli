@@ -67,20 +67,37 @@ The index of a command serves as the command for listing resources.
 
 ## UX Components and Colors
 
+### Component Sources
+
+UX components come from two primary sources:
+
+- **oclif/core** - Provides basic components:
+  - `ux.stdout` - Standard output
+  - `ux.stderr` - Standard error
+  - `ux.action.start` and `ux.action.stop` - Action spinners
+
+- **heroku-cli-util (hux)** - Provides more involved components:
+  - `hux.table` - Tabular data display
+  - Themeable color system
+  - Additional UX utilities
+  - Repository: https://github.com/heroku/heroku-cli-util
+
+### Commonly Used Components
+
 Here is a list of commonly used ux components and when they are typically used:
 
 - **ux.action.start and ux.action.stop**
   - Whenever data is changed (e.g., a POST, UPDATE, DELETE, etc.)
   - The request is expected to take longer than normal time (greater than, say, 600ms, as in when generating a report)
 
-- **confirmCommand**
+- **hux.confirm**
   - Destructive and irreversible actions
   - Important changes to a resource
 
-- **ux.table**
+- **hux.table**
   - The display of multiple instances of a resource (i.e., tabular data)
 
-- **ux.styledObject and ux.styledJson**
+- **hux.styledObject and hux.styledJson**
   - The display of a singular instance of a resource
 
 - **ux.error**
@@ -92,7 +109,10 @@ Here is a list of commonly used ux components and when they are typically used:
 - **Progress bar (cli-progress)**
   - When some action taking place has known progress values to display to the user (as in when downloading something)
 
-Colors should follow the organization and definitions described in [CLI Color Usability and Architecture RFC](https://github.com/heroku/rfcs/pull/276).
+### Colors
+
+The CLI uses a themeable color system provided by heroku-cli-util. Colors should follow the organization and definitions described in:
+- [heroku-cli-util Color System Documentation](https://github.com/heroku/heroku-cli-util/blob/main/docs/COLORS.md)
 
 ## Summary for AI Agents
 
