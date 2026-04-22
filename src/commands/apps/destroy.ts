@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import * as git from '../../lib/ci/git.js'
+import {gitService} from '../../lib/ci/git.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 
 export default class Destroy extends Command {
@@ -35,15 +35,15 @@ export default class Destroy extends Command {
      * you want, and they can all point to the same url.
      * The only requirement is that the "name" is unique.
      */
-    if (git.inGitRepo()) {
+    if (gitService.inGitRepo()) {
       // delete git remotes pointing to this app
-      const remotes = await git.listRemotes()
+      const remotes = await gitService.listRemotes()
       // Deduplicate remote names (same name appears for fetch and push)
       const names = new Set([
-        ...(remotes.get(git.gitUrl(app))?.map(({name}) => name) ?? []),
-        ...(remotes.get(git.sshGitUrl(app))?.map(({name}) => name) ?? []),
+        ...(remotes.get(gitService.gitUrl(app))?.map(({name}) => name) ?? []),
+        ...(remotes.get(gitService.sshGitUrl(app))?.map(({name}) => name) ?? []),
       ])
-      await Promise.all([...names].map(name => git.rmRemote(name)))
+      await Promise.all([...names].map(name => gitService.rmRemote(name)))
     }
 
     ux.action.stop()

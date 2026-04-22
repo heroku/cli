@@ -162,7 +162,6 @@ async function createRemote(remote: string, url: string) {
   return null
 }
 
-// GitService class for easier testing/stubbing
 export class GitService {
   async createArchive(ref: string) {
     return createArchive(ref)
@@ -172,8 +171,28 @@ export class GitService {
     return githubRepository()
   }
 
+  gitUrl(app?: string) {
+    return gitUrl(app)
+  }
+
+  inGitRepo() {
+    return inGitRepo()
+  }
+
+  async listRemotes() {
+    return listRemotes()
+  }
+
   async readCommit(commit: string) {
     return readCommit(commit)
+  }
+
+  async rmRemote(remote: string) {
+    return rmRemote(remote)
+  }
+
+  sshGitUrl(app: string) {
+    return sshGitUrl(app)
   }
 }
 
