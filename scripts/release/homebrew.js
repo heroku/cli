@@ -1,4 +1,3 @@
-import execa from 'execa'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -7,6 +6,7 @@ import {fileURLToPath} from 'node:url'
 import {promisify} from 'node:util'
 import {rimrafSync} from 'rimraf'
 
+import {run, shell, x} from '../utils/exec.js'
 import getHerokuS3Bucket from '../utils/get-heroku-s3-bucket.js'
 import isStableRelease from '../utils/is-stable-release.js'
 
@@ -41,7 +41,7 @@ const ARCH_ARM = 'arm64'
 function downloadFileFromS3(s3Path, fileName, downloadPath) {
   const downloadTo = path.join(downloadPath, fileName)
   const commandStr = `aws s3 cp s3://${HEROKU_S3_BUCKET}/${s3Path}/${fileName} ${downloadTo}`
-  return execa.command(commandStr)
+  return shell(commandStr)
 }
 
 async function updateHerokuFormula(brewDir) {
@@ -94,7 +94,7 @@ async function updateHerokuFormula(brewDir) {
 
 async function setupGit() {
   const githubSetupPath = path.join(__dirname, '..', 'utils', '_github_setup')
-  await execa(githubSetupPath)
+  await x(githubSetupPath, [])
 }
 
 async function updateHomebrew() {
@@ -108,7 +108,7 @@ async function updateHomebrew() {
   await setupGit()
 
   console.log(`cloning https://github.com/heroku/homebrew-brew to ${homebrewDir}`)
-  await execa(
+  await x(
     'git',
     [
       'clone',
@@ -122,7 +122,7 @@ async function updateHomebrew() {
 
   // run in git in cloned heroku/homebrew-brew git directory
   const git = async (args, opts = {}) => {
-    await execa('git', ['-C', homebrewDir, ...args], opts)
+    await x('git', ['-C', homebrewDir, ...args], opts)
   }
 
   console.log('updating local git...')
@@ -135,10 +135,6 @@ async function updateHomebrew() {
   }
 }
 
-try {
+await run(async () => {
   await updateHomebrew()
-} catch (error) {
-  console.error('error running scripts/release/homebrew.js', error)
-  // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
-  process.exit(1)
-}
+})

@@ -4,8 +4,8 @@ import {expect} from 'chai'
 import fs from 'fs-extra'
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
-import * as qq from 'qqjs'
 
+import {x} from '../../scripts/utils/exec.js'
 import normalizeTableOutput from '../helpers/utils/normalize-table-output.js'
 import commandsOutput from './commands-output.js'
 
@@ -16,7 +16,7 @@ const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {
   console.log(`$ heroku ${args}`)
-  return qq.x([bin, args].join(' '), {stdio: undefined})
+  return x([bin, args].join(' '), {stdio: undefined})
 }
 
 // Smoke tests expect the CI account: heroku-cli@salesforce.com, app heroku-cli-ci-smoke-test-app,
