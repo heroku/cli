@@ -31,8 +31,8 @@ export function x(command: string, args: string[], options?: ExecaOptions): Resu
  */
 export function shell(command: string, options?: ExecaOptions): ResultPromise {
   const defaultOptions: ExecaOptions = {
-    stdio: 'inherit',
     shell: true,
+    stdio: 'inherit',
     ...options,
   }
 
@@ -48,9 +48,9 @@ export async function stdout(command: string, args: string[], options?: ExecaOpt
   log(command, ...args)
   const result = await execa(command, args, {
     ...options,
+    stderr: 'inherit',
     stdin: 'inherit',
     stdout: 'pipe',
-    stderr: 'inherit',
   })
   const output = typeof result.stdout === 'string' ? result.stdout : ''
   return output.replace(/\n$/, '')
