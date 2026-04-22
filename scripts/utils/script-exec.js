@@ -1,10 +1,10 @@
-import {execa, type Options as ExecaOptions, type ResultPromise} from 'execa'
+import {execa} from 'execa'
 
 /**
  * Execute a command with args array
  * Logs the command and uses stdio: 'inherit' by default
  */
-export function x(command: string, args: string[], options?: ExecaOptions): ResultPromise {
+export function x(command, args, options) {
   console.log(`$ ${command} ${args.join(' ')}`)
   return execa(command, args, {
     stdio: 'inherit',
@@ -16,7 +16,7 @@ export function x(command: string, args: string[], options?: ExecaOptions): Resu
  * Execute a shell command (string with interpolation, pipes, etc.)
  * Logs the command and uses stdio: 'inherit' by default
  */
-export function shell(command: string, options?: ExecaOptions): ResultPromise {
+export function shell(command, options) {
   console.log(`$ ${command}`)
   return execa(command, {
     shell: true,
@@ -29,7 +29,7 @@ export function shell(command: string, options?: ExecaOptions): ResultPromise {
  * Execute a command and return stdout as string
  * Trims trailing newline
  */
-export async function stdout(command: string, args: string[], options?: ExecaOptions): Promise<string> {
+export async function stdout(command, args, options) {
   console.log(`$ ${command} ${args.join(' ')}`)
   const result = await execa(command, args, {
     ...options,
@@ -45,7 +45,7 @@ export async function stdout(command: string, args: string[], options?: ExecaOpt
  * Run an async function with error handling
  * Catches errors, logs them, and sets process.exitCode
  */
-export async function run<T>(fn: () => Promise<T>): Promise<T | void> {
+export async function run(fn) {
   try {
     return await fn()
   } catch (error) {
