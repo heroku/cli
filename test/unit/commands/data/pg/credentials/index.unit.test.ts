@@ -9,6 +9,7 @@ import tsheredoc from 'tsheredoc'
 import DataPgCredentialsIndex from '../../../../../../src/commands/data/pg/credentials/index.js'
 import {
   addon,
+  advancedCredentialsAttachmentsMultiFactorResponse,
   advancedCredentialsAttachmentsResponse,
   advancedCredentialsResponse,
   nonAdvancedAddon,
@@ -38,7 +39,7 @@ describe('data:pg:credentials:index', function () {
           + 'Use heroku pg:credentials DATABASE -a myapp instead.')
   })
 
-  it('displays credentials with attachments in a table', async function () {
+  it('displays credentials with single-factor attachments in a table', async function () {
     const herokuApi = nock('https://api.heroku.com')
       .post('/actions/addons/resolve')
       .reply(200, [addon])
@@ -60,11 +61,43 @@ describe('data:pg:credentials:index', function () {
     const actual = removeAllWhitespace(ansis.strip(stdout))
     const expectedHeader = removeAllWhitespace('Credential              Type       State')
     const expectedContent = removeAllWhitespace(heredoc`
-      u2vi1nt40t3mcq          owner      active 
-      └─ as DATABASE                           
+      u2vi1nt40t3mcq          owner      active
+      └─ as DATABASE
 
-      analyst                 additional active 
-      └─ as DATABASE_ANALYST                   
+      analyst                 additional active
+      └─ as DATABASE_ANALYST
+    `)
+    expect(actual).to.include(expectedHeader)
+    expect(actual).to.include(expectedContent)
+  })
+
+  it('displays credentials with multi-factor attachments in a table', async function () {
+    const herokuApi = nock('https://api.heroku.com')
+      .post('/actions/addons/resolve')
+      .reply(200, [addon])
+      .get(`/addons/${addon.id}/addon-attachments`)
+      .reply(200, advancedCredentialsAttachmentsMultiFactorResponse)
+
+    const dataApi = nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${addon.id}/credentials`)
+      .reply(200, advancedCredentialsResponse)
+
+    const {stdout} = await runCommand(DataPgCredentialsIndex, [
+      'DATABASE',
+      '--app=myapp',
+    ])
+
+    dataApi.done()
+    herokuApi.done()
+
+    const actual = removeAllWhitespace(ansis.strip(stdout))
+    const expectedHeader = removeAllWhitespace('Credential              Type       State')
+    const expectedContent = removeAllWhitespace(heredoc`
+      u2vi1nt40t3mcq                owner      active
+      └─ as DATABASE
+
+      analyst                       additional active
+      └─ as MULTIFACTOR_ATTACHMENT
     `)
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expectedContent)

@@ -7,6 +7,7 @@ import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.j
 
 import BaseCommand from '../../../../lib/data/base-command.js'
 import {sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 import {presentCredentialAttachments} from '../../../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../../../lib/utils/table-utils.js'
 
@@ -49,7 +50,15 @@ export default class DataPgCredentialsIndex extends BaseCommand {
 
     const presentCredential = (cred: CredentialInfo): string => {
       let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
-      credAttachments = cred.type === 'owner' ? attachments.filter(a => a.namespace === null) : attachments.filter(a => a.namespace === `role:${cred.name}`)
+      credAttachments = cred.type === 'owner'
+        ? attachments.filter(a => {
+          const attachmentRole = parseAttachmentFactors(a.namespace).role
+          return !attachmentRole || attachmentRole === cred.name
+        })
+        : attachments.filter(a => {
+          const attachmentRole = parseAttachmentFactors(a.namespace).role
+          return attachmentRole === cred.name
+        })
 
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
     }

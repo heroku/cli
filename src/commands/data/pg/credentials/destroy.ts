@@ -10,6 +10,7 @@ import {Args, ux} from '@oclif/core'
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 
 export default class DataPgCredentialsDestroy extends BaseCommand {
   static args = {
@@ -51,7 +52,7 @@ export default class DataPgCredentialsDestroy extends BaseCommand {
         ux.error('You can\'t destroy the owner credential.')
       }
 
-      credAttachments = attachments.filter(a => a.namespace === `role:${name}`)
+      credAttachments = attachments.filter(a => parseAttachmentFactors(a.namespace).role === name)
     } else if (isEssentialTier) {
       ux.error('You can\'t destroy custom credentials on Essential-tier databases.')
     } else if (isLegacyEssentialTier || name === 'default') {

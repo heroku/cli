@@ -1,3 +1,10 @@
+export enum AdvancedCredentialState {
+  ACTIVE = 'active',
+  ENABLING = 'enabling',
+  REVOKING = 'revoking',
+  ROTATING = 'rotating',
+}
+
 export enum MaintenanceStatus {
   completed = 'completed',
   none = 'none',
@@ -7,6 +14,12 @@ export enum MaintenanceStatus {
   running = 'running',
 }
 
+export enum PoolStatus {
+  AVAILABLE = 'available',
+  MODIFYING = 'modifying',
+  PROVISIONING = 'provisioning',
+  UNKNOWN = 'unknown',
+}
 export interface AdvancedCredentialInfo extends Record<string, unknown> {
   database: string
   host: string
@@ -18,7 +31,7 @@ export interface AdvancedCredentialInfo extends Record<string, unknown> {
     state: string
     user: string
   }>
-  state: string
+  state: AdvancedCredentialState
   type: 'additional' | 'owner'
 }
 
@@ -147,7 +160,7 @@ export type PoolInfoResponse = {
     leader: null | string
   }
   name: string
-  status: 'available' | 'modifying' | 'provisioning' | 'unknown'
+  status: PoolStatus
   wait_status: {
     message: null | string
     waiting: boolean
@@ -186,10 +199,6 @@ export type Quota = {
 
 export type Quotas = {items: Array<Quota>}
 
-export type ScaleResponse = {
-  changes: Array<PoolChange>
-}
-
 export type SettingsChangeResponse = {
   changes: Array<SettingsChange>
 }
@@ -222,7 +231,6 @@ export type Window = {
 }
 
 type AddonReference = ResourceReference
-
 type AppReference = ResourceReference
 
 type BaseChange = {
@@ -247,12 +255,7 @@ type NonAdvancedCredential = {
 }
 
 type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
-
 type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
-
-type PoolChange = BaseChange & {
-  pool: string
-}
 
 type PrivateSpaceRegion
   = 'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'

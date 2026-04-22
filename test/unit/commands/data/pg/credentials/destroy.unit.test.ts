@@ -7,7 +7,9 @@ import tsheredoc from 'tsheredoc'
 import DataPgCredentialsDestroy from '../../../../../../src/commands/data/pg/credentials/destroy.js'
 import {
   addon,
+  advancedCredentialsAttachmentsMultiFactorResponse,
   advancedCredentialsAttachmentsResponse,
+  advancedCredentialsMultipleAttachmentsMultiFactorResponse,
   advancedCredentialsMultipleAttachmentsResponse,
   advancedCredentialsResponse,
   essentialAddon,
@@ -96,7 +98,7 @@ describe('data:pg:credentials:destroy', function () {
   })
 
   describe('Advanced-tier databases', function () {
-    it('shows an error when credential is attached to a single app', async function () {
+    it('shows an error when credential is single-factor attached to a single app', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .post('/actions/addons/resolve')
         .reply(200, [addon])
@@ -120,7 +122,34 @@ describe('data:pg:credentials:destroy', function () {
       expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
     })
 
-    it('shows an error when credential is attached to multiple apps', async function () {
+    it('shows an error when credential is multi-factor attached to a single app', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .post('/actions/addons/resolve')
+        .reply(200, [addon])
+        .get(`/addons/${addon.id}/addon-attachments`)
+        .reply(200, advancedCredentialsAttachmentsMultiFactorResponse)
+
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${addon.id}/credentials`)
+        .reply(200, advancedCredentialsResponse)
+
+      try {
+        await runCommand(DataPgCredentialsDestroy, [
+          'DATABASE',
+          '--app=myapp',
+          '--name=analyst', // credential that has attachments
+          '--confirm=myapp',
+        ])
+      } catch (error: unknown) {
+        const err = error as Error
+
+        dataApi.done()
+        herokuApi.done()
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
+      }
+    })
+
+    it('shows an error when credential is single-factor attached to multiple apps', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .post('/actions/addons/resolve')
         .reply(200, [addon])
@@ -142,6 +171,33 @@ describe('data:pg:credentials:destroy', function () {
       dataApi.done()
       herokuApi.done()
       expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
+    })
+
+    it('shows an error when credential is multi-factor attached to multiple apps', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .post('/actions/addons/resolve')
+        .reply(200, [addon])
+        .get(`/addons/${addon.id}/addon-attachments`)
+        .reply(200, advancedCredentialsMultipleAttachmentsMultiFactorResponse)
+
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${addon.id}/credentials`)
+        .reply(200, advancedCredentialsResponse)
+
+      try {
+        await runCommand(DataPgCredentialsDestroy, [
+          'DATABASE',
+          '--app=myapp',
+          '--name=analyst', // credential that has attachments
+          '--confirm=myapp',
+        ])
+      } catch (error: unknown) {
+        const err = error as Error
+
+        dataApi.done()
+        herokuApi.done()
+        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
+      }
     })
 
     it('destroys a credential successfully', async function () {

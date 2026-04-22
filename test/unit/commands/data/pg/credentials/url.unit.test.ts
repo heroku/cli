@@ -4,9 +4,8 @@ import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
-import type {AdvancedCredentialInfo} from '../../../../../../src/lib/data/types.js'
-
 import DataPgCredentialsUrl from '../../../../../../src/commands/data/pg/credentials/url.js'
+import {type AdvancedCredentialInfo, AdvancedCredentialState} from '../../../../../../src/lib/data/types.js'
 import {
   addon,
   advancedCredentialsResponse,
@@ -148,7 +147,7 @@ describe('data:pg:credentials:url', function () {
             user: 'analyst',
           },
         ],
-        state: 'active',
+        state: AdvancedCredentialState.ACTIVE,
         type: 'additional',
       }
       // cspell:enable

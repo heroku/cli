@@ -9,6 +9,7 @@ import {
   advancedCredentialsResponse,
   attachmentWithMissingNamespace,
   emptyAttachmentsResponse,
+  multipleAttachmentsMultiFactorResponse,
   multipleAttachmentsResponse,
   nonAdvancedAddon,
   singleAttachmentResponse,
@@ -75,6 +76,28 @@ describe('data:pg:attachments', function () {
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE u2vi1nt40t3mcq (owner) leader'))
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE_ANALYST analyst leader'))
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE_ANALYTICS u2vi1nt40t3mcq (owner) analytics'))
+    })
+
+    it('displays multiple multi-factor attachments', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .post('/actions/addons/resolve')
+        .reply(200, [addon])
+        .get(`/addons/${addon.id}/addon-attachments`)
+        .reply(200, multipleAttachmentsMultiFactorResponse)
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${addon.id}/credentials`)
+        .reply(200, advancedCredentialsResponse)
+
+      const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('')
+      const output = ansis.strip(removeAllWhitespace(stdout))
+      expect(output).to.include(removeAllWhitespace('Attachments for ⛁ advanced-horizontal-01234'))
+      expect(output).to.include(removeAllWhitespace('Attachment Credential Pool'))
+      expect(output).to.include(removeAllWhitespace('myapp::DATABASE u2vi1nt40t3mcq (owner) leader'))
+      expect(output).to.include(removeAllWhitespace('myapp::MULTIFACTOR_ATTACHMENT analyst analytics'))
     })
 
     it('handles missing namespace gracefully', async function () {

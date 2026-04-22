@@ -1,14 +1,22 @@
-import type {CredentialInfo} from './types.js'
+import type {CredentialInfo, PoolInfoResponse} from './types.js'
 
-// NEW This is new. something similar exists in core: packages/cli/src/commands/pg/credentials.ts:61
-// protected sortByDefaultAndName(credentials: CredentialInfo[]) {
-//  return credentials.sort((a, b) => {
-//    const isDefaultA = this.isDefaultCredential(a)
-//    const isDefaultB = this.isDefaultCredential(b)
-//
-//    return isDefaultB < isDefaultA ? -1 : (isDefaultA < isDefaultB ? 1 : a.name.localeCompare(b.name))
-//  })
-// }
+export function isLeaderPool(pool: PoolInfoResponse): boolean {
+  return pool.name === 'leader'
+}
+
+export function isOwnerCredential(cred: CredentialInfo): boolean {
+  return cred.type === 'owner'
+}
+
+export function sortByLeaderAndName(pools: PoolInfoResponse[]) {
+  return pools.sort((a, b) => {
+    const isLeaderA = isLeaderPool(a)
+    const isLeaderB = isLeaderPool(b)
+
+    return isLeaderB < isLeaderA ? -1 : (isLeaderA < isLeaderB ? 1 : a.name.localeCompare(b.name))
+  })
+}
+
 export function sortByOwnerAndName(credentials: CredentialInfo[]) {
   return credentials.sort((a, b) => {
     const isOwnerA = isOwnerCredential(a)
@@ -16,12 +24,4 @@ export function sortByOwnerAndName(credentials: CredentialInfo[]) {
 
     return isOwnerB < isOwnerA ? -1 : (isOwnerA < isOwnerB ? 1 : a.name.localeCompare(b.name))
   })
-}
-
-// NEW This is new because we are now sorting on type instead of the name: packages/cli/src/commands/pg/credentials.ts:70
-// protected isDefaultCredential(cred: CredentialInfo): boolean {
-//  return cred.name === 'default'
-// }
-export function isOwnerCredential(cred: CredentialInfo): boolean {
-  return cred.type === 'owner'
 }

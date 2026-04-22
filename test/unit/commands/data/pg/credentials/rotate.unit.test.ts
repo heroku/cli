@@ -8,6 +8,7 @@ import tsheredoc from 'tsheredoc'
 import DataPgCredentialsRotate from '../../../../../../src/commands/data/pg/credentials/rotate.js'
 import {
   addon,
+  advancedCredentialsAttachmentsMultiFactorResponse,
   advancedCredentialsAttachmentsResponse,
   advancedCredentialsMultipleAttachmentsResponse,
   advancedCredentialsResponse,
@@ -34,7 +35,7 @@ describe('data:pg:credentials:rotate', function () {
   })
 
   context('Advanced-tier databases', function () {
-    it('rotates a specific credential attached to a single app successfully', async function () {
+    it('rotates a specific credential single-factor attached to a single app successfully', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .post('/actions/addons/resolve')
         .reply(200, [addon])
@@ -94,6 +95,39 @@ describe('data:pg:credentials:rotate', function () {
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
       expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
       expect(warningMessage).to.include('This command will affect the apps ⬢ myapp, ⬢ myapp2.')
+      expect(stderr).to.equal(heredoc`
+        Rotating analyst on ⛁ advanced-horizontal-01234... done
+      `)
+      expect(stdout).to.equal('')
+    })
+
+    it('rotates a specific credential multi-factor attached to a single app successfully', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .post('/actions/addons/resolve')
+        .reply(200, [addon])
+        .get(`/addons/${addon.id}/addon-attachments`)
+        .reply(200, advancedCredentialsAttachmentsMultiFactorResponse)
+
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${addon.id}/credentials`)
+        .reply(200, advancedCredentialsResponse)
+        .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
+        .reply(202, {})
+
+      const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst',
+      ])
+
+      dataApi.done()
+      herokuApi.done()
+
+      const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
+      expect(confirmStub.calledOnce).to.be.true
+      expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
+      expect(warningMessage).to.include('This action resets connections older than 30 minutes, and uses a temporary rotation username during the process.')
+      expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
       expect(stderr).to.equal(heredoc`
         Rotating analyst on ⛁ advanced-horizontal-01234... done
       `)

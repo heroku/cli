@@ -6,6 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../lib/data/base-command.js'
 import {formatQuotaStatus} from '../../../lib/data/display-quota.js'
+import {parseAttachmentFactors} from '../../../lib/data/parse-attachment-factors.js'
 import {InfoResponse, PoolInfoResponse, Quota} from '../../../lib/data/types.js'
 
 const heredoc = tsheredoc.default
@@ -158,11 +159,12 @@ export default class DataPgInfo extends BaseCommand {
 function renderPoolSummary(pool: PoolInfoResponse, attachments: Required<Heroku.AddOnAttachment>[]) {
   const poolAttachmentNames = attachments
     .filter(a => {
-      if (pool.name === 'leader') {
-        return !a.namespace && a.addon.app.id === a.app.id
+      if (a.addon.app.id !== a.app.id) {
+        return false
       }
 
-      return a.namespace === `pool:${pool.name}` && a.addon.app.id === a.app.id
+      const attachmentPoolFactor = parseAttachmentFactors(a.namespace).pool
+      return attachmentPoolFactor === pool.name || (pool.name === 'leader' && !attachmentPoolFactor)
     })
     .map(a => color.attachment(a.name))
     .join(', ')
