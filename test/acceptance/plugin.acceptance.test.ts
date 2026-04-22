@@ -66,7 +66,9 @@ describe('plugins', function () {
       }
 
       await x('git', ['clone', cloneUrl, cwd])
-      const opts = {cwd, stdin: 'inherit', stdout: 'inherit', stderr: 'inherit'} as const
+      const opts = {
+        cwd, stderr: 'inherit', stdin: 'inherit', stdout: 'inherit',
+      } as const
       await x('git', ['checkout', `v${pkg.version}`], opts)
       await x('npm', [], opts)
       await x('npm', ['test'], opts)
