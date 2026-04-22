@@ -38,10 +38,12 @@ export default class Destroy extends Command {
     if (git.inGitRepo()) {
       // delete git remotes pointing to this app
       const remotes = await git.listRemotes()
-      await Promise.all([
-        remotes.get(git.gitUrl(app))?.map(({name}) => git.rmRemote(name)),
-        remotes.get(git.sshGitUrl(app))?.map(({name}) => git.rmRemote(name)),
+      // Deduplicate remote names (same name appears for fetch and push)
+      const names = new Set([
+        ...(remotes.get(git.gitUrl(app))?.map(({name}) => name) ?? []),
+        ...(remotes.get(git.sshGitUrl(app))?.map(({name}) => name) ?? []),
       ])
+      await Promise.all([...names].map(name => git.rmRemote(name)))
     }
 
     ux.action.stop()
