@@ -139,12 +139,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Download PR coverage
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: coverage-report
           path: coverage-pr/
       - name: Download base coverage
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: coverage-base
           path: coverage-base/
