@@ -1,5 +1,4 @@
 'use strict'
-/* global beforeEach afterEach */
 
 import sinon from 'sinon'
 import {expect} from 'chai'
@@ -8,85 +7,127 @@ import {EventEmitter} from 'events'
 import Git from '../../../../src/lib/git/git.js'
 
 describe('git', function () {
-  let mock: sinon.SinonMock
+  let execFileStub: sinon.SinonStub
+  let spawnStub: sinon.SinonStub
   let git: Git
 
   beforeEach(function () {
-    mock = sinon.mock(cp)
     git = new Git()
+    execFileStub = sinon.stub(git as any, 'execFile')
+    spawnStub = sinon.stub(cp, 'spawn')
   })
 
   afterEach(function () {
-    return mock.restore()
+    execFileStub.restore()
+    spawnStub.restore()
   })
 
-  it.skip('runs exec', function () {
-    mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(null, 'foo')
-    return git.exec(['remote'])
-      .then((data: string) => {
-        expect(data).to.equal('foo')
-        mock.verify()
-      })
+  it('runs exec', async function () {
+    execFileStub.resolves({stdout: 'foo', stderr: ''})
+
+    const data = await git.exec(['remote'])
+
+    expect(data).to.equal('foo')
+    expect(execFileStub.calledOnceWith('git', ['remote'])).to.be.true
   })
 
-  it.skip('translates exec Errno::ENOENT to a friendlier error message', function () {
+  it('translates exec Errno::ENOENT to a friendlier error message', async function () {
     const err: any = new Error('err')
     err.code = 'ENOENT'
 
-    mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
+    execFileStub.rejects(err)
 
-    return expect(git.exec(['remote'])).to.throw(Error, 'Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+    try {
+      await git.exec(['remote'])
+      expect.fail('Should have thrown an error')
+    } catch (error: any) {
+      expect(error.message).to.contain('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+    }
   })
 
-  it.skip('exec passes through all other errors', function () {
+  it('exec passes through all other errors', async function () {
     const err = new Error('Some other error message')
 
-    mock.expects('execFile').withArgs('git', ['remote']).yieldsAsync(err, null)
+    execFileStub.rejects(err)
 
-    return expect(git.exec(['remote'])).to.throw(err.message)
+    try {
+      await git.exec(['remote'])
+      expect.fail('Should have thrown an error')
+    } catch (error: any) {
+      expect(error.message).to.equal('Some other error message')
+    }
   })
 
-  it.skip('runs spawn', function () {
+  it('runs spawn', async function () {
     const emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
-    process.nextTick(() => emitter.emit('close'))
-    return git.spawn(['remote'])
-      .then(() => mock.verify())
+    spawnStub.returns(emitter)
+
+    const spawnPromise = git.spawn(['remote'])
+
+    process.nextTick(() => emitter.emit('close', 0))
+
+    await spawnPromise
+    expect(spawnStub.calledOnceWith('git', ['remote'], {stdio: [0, 1, 2]})).to.be.true
   })
 
-  it.skip('translates spawn Errno::ENOENT to a friendlier error message', function () {
-    const err = new Error('err')
-    err.name = 'ENOENT'
+  it('translates spawn Errno::ENOENT to a friendlier error message', async function () {
+    const err: any = new Error('err')
+    err.code = 'ENOENT'
 
     const emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    spawnStub.returns(emitter)
+
+    const spawnPromise = git.spawn(['remote'])
+
     process.nextTick(() => emitter.emit('error', err))
 
-    return expect(git.spawn(['remote'])).to.throw('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+    try {
+      await spawnPromise
+      expect.fail('Should have thrown an error')
+    } catch (error: any) {
+      expect(error.message).to.contain('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+    }
   })
 
-  it.skip('spawn passes through all other errors', function () {
+  it('spawn passes through all other errors', async function () {
     const err = new Error('Some other error message')
 
     const emitter = new EventEmitter()
-    mock.expects('spawn').withExactArgs('git', ['remote'], {stdio: [0, 1, 2]}).returns(emitter)
+    spawnStub.returns(emitter)
+
+    const spawnPromise = git.spawn(['remote'])
+
     process.nextTick(() => emitter.emit('error', err))
 
-    return expect(git.spawn(['remote'])).to.throw(err.message)
+    try {
+      await spawnPromise
+      expect.fail('Should have thrown an error')
+    } catch (error: any) {
+      expect(error.message).to.equal('Some other error message')
+    }
   })
 
-  it.skip('gets heroku git remote config', function () {
-    mock.expects('execFile').withArgs('git', ['config', 'heroku.remote']).yieldsAsync(null, 'staging')
-    return git.remoteFromGitConfig()
-      .then((remote: string | void) => expect(remote).to.equal('staging'))
-      .then(() => mock.verify())
+  it('gets heroku git remote config', async function () {
+    execFileStub.resolves({stdout: 'staging', stderr: ''})
+
+    const remote = await git.remoteFromGitConfig()
+
+    expect(remote).to.equal('staging')
+    expect(execFileStub.calledOnceWith('git', ['config', 'heroku.remote'])).to.be.true
   })
 
-  it.skip('returns an http git url', function () {
+  it('returns an https git url', function () {
     expect(git.url('foo')).to.equal('https://git.heroku.com/foo.git')
   })
 
-  it.skip('returns an ssh git url', function () {
-    expect(git.url('foo')).to.equal('git@heroku.com:foo.git')
+  it('configures git credential helper globally for the Heroku Git host', async function () {
+    execFileStub.resolves({stdout: '', stderr: ''})
+
+    await git.configureCredentialHelper()
+
+    expect(execFileStub.calledOnce).to.be.true
+    const [cmd, args] = execFileStub.firstCall.args
+    expect(cmd).to.equal('git')
+    expect(args).to.deep.equal(['config', '--global', 'credential.https://git.heroku.com.helper', '!heroku git:credentials'])
   })
 })

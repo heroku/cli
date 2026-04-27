@@ -14,9 +14,9 @@ export class GitCredentials extends Command {
   /**
    * Reads git-credential input from stdin
    * Format: key=value pairs, one per line, terminated by blank line
-   * Returns parsed object with protocol, host, username, password
+   * Returns parsed object with protocol, host, username, and path
    */
-  private async readInput(): Promise<{protocol?: string; host?: string; username?: string; password?: string}> {
+  private async readInput(): Promise<{protocol?: string; host?: string; username?: string; path?: string}> {
     return new Promise(resolve => {
       const rl = readline.createInterface({
         input: process.stdin,
