@@ -7,12 +7,20 @@ import {runCommand} from '../../../helpers/run-command.js'
 
 describe('git:credentials', function () {
   let stdin: mockStdin.MockSTDIN
+  let savedApiKey: string | undefined
 
   beforeEach(function () {
+    savedApiKey = process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_API_KEY
+
     stdin = mockStdin.stdin()
   })
 
   afterEach(function () {
+    if (savedApiKey !== undefined) {
+      process.env.HEROKU_API_KEY = savedApiKey
+    }
+
     stdin.restore()
   })
 

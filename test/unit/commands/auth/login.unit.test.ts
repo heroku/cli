@@ -12,9 +12,14 @@ describe('auth:login', function () {
   let api: nock.Scope
   let configureCredentialHelperStub: sinon.SinonStub
   let loginStub: sinon.SinonStub
+  let savedApiKey: string | undefined
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
+
+    savedApiKey = process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_API_KEY
+
     configureCredentialHelperStub = sinon.stub(Git.prototype, 'configureCredentialHelper').resolves()
     loginStub = sinon.stub(APIClient.prototype, 'login').resolves()
   })
@@ -22,6 +27,10 @@ describe('auth:login', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+
+    if (savedApiKey !== undefined) {
+      process.env.HEROKU_API_KEY = savedApiKey
+    }
 
     configureCredentialHelperStub.restore()
     loginStub.restore()
