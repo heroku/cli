@@ -46,5 +46,7 @@ ${color.command('heroku git:remote --remote heroku-staging -a example-staging')}
 
     const newRemote = await git.remoteUrl(remote)
     this.log(`set git remote ${color.cyan(remote)} to ${color.cyan(newRemote)}`)
+
+    await git.configureCredentialHelper()
   }
 }
