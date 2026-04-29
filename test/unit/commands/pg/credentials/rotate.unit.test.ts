@@ -1,14 +1,13 @@
-import ansis from 'ansis'
+import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stdout, stderr} from 'stdout-stderr'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
+
 import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import * as sinon from 'sinon'
-import {hux} from '@heroku/heroku-cli-util'
 
 const heredoc = tsheredoc.default
 
@@ -18,23 +17,23 @@ const addon = {
 
 const attachments = [
   {
-    namespace: 'credential:my_role', app: {name: 'appname_1'},
+    app: {name: 'appname_1'}, namespace: 'credential:my_role',
   }, {
-    namespace: 'credential:my_role', app: {name: 'appname_2'},
+    app: {name: 'appname_2'}, namespace: 'credential:my_role',
   }, {
-    namespace: 'credential:other_role', app: {name: 'appname_3'},
+    app: {name: 'appname_3'}, namespace: 'credential:other_role',
   },
 ]
 
 describe('pg:credentials:rotate', function () {
   let api: nock.Scope
   let pg: nock.Scope
-  let uxWarnStub: sinon.SinonStub
-  let uxPromptStub: sinon.SinonStub
+  let uxWarnStub: SinonStub
+  let uxPromptStub: SinonStub
 
   before(function () {
-    uxWarnStub = sinon.stub(ux, 'warn')
-    uxPromptStub = sinon.stub(hux, 'prompt').resolves('myapp')
+    uxWarnStub = stub(ux, 'warn')
+    uxPromptStub = stub(hux, 'prompt').resolves('myapp')
   })
 
   beforeEach(async function () {
@@ -59,15 +58,15 @@ describe('pg:credentials:rotate', function () {
   describe('standard addon', function () {
     beforeEach(function () {
       api.post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'DATABASE_URL',
+        app: 'myapp',
       }).reply(200, [{addon}])
     })
 
     it('rotates credentials for a specific role with --name', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--name',
@@ -75,8 +74,8 @@ describe('pg:credentials:rotate', function () {
         '--confirm',
         'myapp',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal(heredoc(`
         Rotating my_role on ⛁ postgres-1... done
       `))
     })
@@ -84,15 +83,15 @@ describe('pg:credentials:rotate', function () {
     it('rotates credentials for all roles with --all', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
         .reply(200)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--all',
         '--confirm',
         'myapp',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal(heredoc(`
         Rotating all credentials on ⛁ postgres-1... done
       `))
     })
@@ -100,7 +99,7 @@ describe('pg:credentials:rotate', function () {
     it('rotates credentials for a specific role with --name and --force', async function () {
       pg.post('/postgres/v0/databases/postgres-1/credentials/my_role/credentials_rotation')
         .reply(200)
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--name',
@@ -109,8 +108,8 @@ describe('pg:credentials:rotate', function () {
         'myapp',
         '--force',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stdout).to.equal('')
+      expect(stderr).to.equal(heredoc(`
         Rotating my_role on ⛁ postgres-1... done
       `))
     })
@@ -120,7 +119,7 @@ describe('pg:credentials:rotate', function () {
       The following error occurred:
         [2m--name=my_role cannot also be provided when using --all[22m
       See more help with --help`)
-      await runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--all',
@@ -128,7 +127,8 @@ describe('pg:credentials:rotate', function () {
         'my_role',
         '--confirm',
         'myapp',
-      ]).catch(error => expect(error.message).to.contain(err))
+      ])
+      expect(error!.message).to.contain(err)
     })
 
     it('requires app confirmation for rotating all roles with --all', async function () {
@@ -213,17 +213,18 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     const err = 'Legacy Essential-tier databases do not support named credentials.'
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
       'jeff',
-    ]).catch(error => expect(error.message).to.contain(err))
+    ])
+    expect(error!.message).to.contain(err)
   })
 
   it('rotates credentials when the db is numbered essential plan', async function () {
@@ -232,13 +233,13 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: essentialAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials/lucy/credentials_rotation')
       .reply(200)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--name',
@@ -247,8 +248,8 @@ describe('pg:credentials:rotate', function () {
       'myapp',
       '--force',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal(heredoc(`
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal(heredoc(`
       Rotating lucy on ⛁ postgres-1... done
     `))
   })
@@ -259,20 +260,20 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials/default/credentials_rotation')
       .reply(200)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--confirm',
       'myapp',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal(heredoc(`
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal(heredoc(`
       Rotating default on ⛁ postgres-1... done
     `))
   })
@@ -283,21 +284,21 @@ describe('pg:credentials:rotate', function () {
     }
 
     api.post('/actions/addon-attachments/resolve', {
-      app: 'myapp',
       addon_attachment: 'DATABASE_URL',
+      app: 'myapp',
     }).reply(200, [{addon: hobbyAddon}])
 
     pg.post('/postgres/v0/databases/postgres-1/credentials_rotation')
       .reply(200)
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--all',
       '--confirm',
       'myapp',
     ])
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal(heredoc(`
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal(heredoc(`
       Rotating all credentials on ⛁ postgres-1... done
     `))
   })

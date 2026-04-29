@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import * as fs from 'fs'
+import fs from 'node:fs'
 
 export function validateEnvFile(envFile: string | undefined, warn: (message: string) => void): string {
   const resolvedEnvFile = envFile || '.env'

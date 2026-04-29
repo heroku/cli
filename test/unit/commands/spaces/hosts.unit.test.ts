@@ -1,23 +1,24 @@
-import Cmd from '../../../../src/commands/spaces/hosts.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import nock from 'nock'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
+import nock from 'nock'
+
+import Cmd from '../../../../src/commands/spaces/hosts.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('spaces:hosts', function () {
   const hosts = [
     {
-      host_id: 'h-0f927460a59aac18e',
-      state: 'available',
-      available_capacity_percentage: 72,
       allocated_at: '2020-05-28T04:15:59Z',
+      available_capacity_percentage: 72,
+      host_id: 'h-0f927460a59aac18e',
       released_at: null,
+      state: 'available',
     }, {
-      host_id: 'h-0e927460a59aac18f',
-      state: 'released',
-      available_capacity_percentage: 0,
       allocated_at: '2020-03-28T04:15:59Z',
+      available_capacity_percentage: 0,
+      host_id: 'h-0e927460a59aac18f',
       released_at: '2020-04-28T04:15:59Z',
+      state: 'released',
     },
   ]
 
@@ -29,7 +30,7 @@ describe('spaces:hosts', function () {
     })
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
@@ -50,11 +51,20 @@ describe('spaces:hosts', function () {
       .get('/spaces/my-space/hosts')
       .reply(200, hosts)
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
       '--json',
     ])
     expect(JSON.parse(stdout)).to.eql(hosts)
+  })
+
+  it('errors when space name is missing', async function () {
+    const {error} = await runCommand(Cmd, [])
+    expect(error).to.exist
+    if (error) {
+      expect(error.message).to.include('Error: Missing 1 required arg')
+      expect(error.message).to.include('space')
+    }
   })
 })

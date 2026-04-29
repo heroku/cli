@@ -1,18 +1,19 @@
-import * as Heroku from '@heroku-cli/schema'
 import type {pg} from '@heroku/heroku-cli-util'
+
+import * as Heroku from '@heroku-cli/schema'
 
 export const apps: Record<string, Heroku.App> = {
   api: {
-    name: 'acme-inc-api',
     id: 'e69612aa-4c88-11e5-887e-2cf0ee2c94de',
+    name: 'acme-inc-api',
   },
   dwh: {
-    name: 'acme-inc-dwh',
     id: '68878cbc-60ed-11e5-aa97-2cf0ee2c94de',
+    name: 'acme-inc-dwh',
   },
   www: {
-    name: 'acme-inc-www',
     id: 'a84b035c-4c83-11e5-9bda-2cf0ee2c94de',
+    name: 'acme-inc-www',
   },
 }
 
@@ -46,6 +47,51 @@ export const services: Record<string, Heroku.AddOnService> = {
 }
 
 export const plans: Record<string, Heroku.Plan> = {
+  'heroku-inference:plan-1': {
+    created_at: '2024-06-23T19:03:06Z',
+    default: true,
+    description: 'Heroku Inference Plan 1',
+    human_name: 'Plan 1',
+    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5ff',
+    name: 'heroku-inference:plan-1',
+    price: {
+      cents: 0,
+      metered: true,
+      unit: 'month',
+    },
+    state: 'ga',
+    updated_at: '2024-06-25T16:10:02Z',
+  },
+  'heroku-inference:plan-2': {
+    created_at: '2024-06-23T19:03:06Z',
+    default: false,
+    description: 'Heroku Inference Plan 2',
+    human_name: 'Plan 2',
+    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5gg',
+    name: 'heroku-inference:plan-2',
+    price: {
+      cents: 0,
+      metered: true,
+      unit: 'month',
+    },
+    state: 'ga',
+    updated_at: '2024-06-25T16:10:02Z',
+  },
+  'heroku-inference:plan-3': {
+    created_at: '2024-06-23T19:03:06Z',
+    default: false,
+    description: 'Heroku Inference Plan 3',
+    human_name: 'Plan 3',
+    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5hh',
+    name: 'heroku-inference:plan-3',
+    price: {
+      cents: 0,
+      metered: true,
+      unit: 'month',
+    },
+    state: 'ga',
+    updated_at: '2024-06-25T16:10:02Z',
+  },
   'heroku-postgresql:mini': {
     created_at: '2013-10-24T17:21:05Z',
     default: true,
@@ -60,20 +106,6 @@ export const plans: Record<string, Heroku.Plan> = {
     state: 'ga',
     updated_at: '2014-06-18T17:06:29Z',
   },
-  'heroku-postgresql:standard-2': {
-    created_at: '2014-08-07T21:37:41Z',
-    default: false,
-    description: 'Heroku Postgres Standard 2',
-    human_name: 'Standard 2',
-    id: '4ffe09a7-369d-452e-bdfc-db35073e971a',
-    name: 'heroku-postgresql:standard-2',
-    price: {
-      cents: 20000,
-      unit: 'month',
-    },
-    state: 'ga',
-    updated_at: '2014-09-04T14:03:26Z',
-  },
   'heroku-postgresql:premium-3': {
     created_at: '2014-08-07T21:37:41Z',
     default: false,
@@ -82,7 +114,7 @@ export const plans: Record<string, Heroku.Plan> = {
     id: 'aaaaaaaa-369d-452e-bdfc-db35073e971a',
     name: 'heroku-postgresql:premium-3',
     price: {
-      cents: 75000,
+      cents: 75_000,
       unit: 'month',
     },
     state: 'ga',
@@ -96,7 +128,21 @@ export const plans: Record<string, Heroku.Plan> = {
     id: 'bbbbbbbb-369d-452e-bdfc-db35073e971a',
     name: 'heroku-postgresql:private-4',
     price: {
-      cents: 150000,
+      cents: 150_000,
+      unit: 'month',
+    },
+    state: 'ga',
+    updated_at: '2014-09-04T14:03:26Z',
+  },
+  'heroku-postgresql:standard-2': {
+    created_at: '2014-08-07T21:37:41Z',
+    default: false,
+    description: 'Heroku Postgres Standard 2',
+    human_name: 'Standard 2',
+    id: '4ffe09a7-369d-452e-bdfc-db35073e971a',
+    name: 'heroku-postgresql:standard-2',
+    price: {
+      cents: 20_000,
       unit: 'month',
     },
     state: 'ga',
@@ -116,268 +162,223 @@ export const plans: Record<string, Heroku.Plan> = {
     state: 'ga',
     updated_at: '2015-06-25T16:10:02Z',
   },
-  'heroku-inference:plan-1': {
-    created_at: '2024-06-23T19:03:06Z',
-    default: true,
-    description: 'Heroku Inference Plan 1',
-    human_name: 'Plan 1',
-    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5ff',
-    name: 'heroku-inference:plan-1',
-    price: {
-      cents: 0,
-      unit: 'month',
-      metered: true,
-    },
-    state: 'ga',
-    updated_at: '2024-06-25T16:10:02Z',
-  },
-  'heroku-inference:plan-2': {
-    created_at: '2024-06-23T19:03:06Z',
-    default: false,
-    description: 'Heroku Inference Plan 2',
-    human_name: 'Plan 2',
-    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5gg',
-    name: 'heroku-inference:plan-2',
-    price: {
-      cents: 0,
-      unit: 'month',
-      metered: true,
-    },
-    state: 'ga',
-    updated_at: '2024-06-25T16:10:02Z',
-  },
-  'heroku-inference:plan-3': {
-    created_at: '2024-06-23T19:03:06Z',
-    default: false,
-    description: 'Heroku Inference Plan 3',
-    human_name: 'Plan 3',
-    id: 'b20bdaae-137f-4c39-9b51-e7b19b0ab5hh',
-    name: 'heroku-inference:plan-3',
-    price: {
-      cents: 0,
-      unit: 'month',
-      metered: true,
-    },
-    state: 'ga',
-    updated_at: '2024-06-25T16:10:02Z',
-  },
 }
 
 export const addons: Record<string, Heroku.AddOn> = {
-  'www-db': {
-    app: apps.www,
-    id: '8895ea98-4c7b-11e5-9a16-2cf0ee2c94de',
-    name: 'www-db',
-    addon_service: services['heroku-postgresql'],
-    plan: plans['heroku-postgresql:mini'],
-    state: 'provisioned',
-    billed_price: {
-      cents: 500,
-    },
-  },
-  'www-db-2': {
-    app: apps.api,
-    id: 'b68d8f51-6577-4a46-a617-c5f36f1bb032',
-    name: 'www-db-2',
-    addon_service: services['heroku-postgresql'],
-    plan: plans['heroku-postgresql:mini'],
-    state: 'deprovisioned',
-    billed_price: {
-      cents: 500,
-    },
-  },
-  'www-redis': {
-    app: apps.www,
-    id: '8a836ecc-4c88-11e5-ba7e-2cf0ee2c94de',
-    name: 'www-redis',
+  'api-redis': {
     addon_service: services['heroku-redis'],
-    plan: plans['heroku-redis:premium-2'],
-    state: 'provisioning',
+    app: apps.api,
     billed_price: {
       cents: 6000,
     },
+    id: 'fd1d2d74-4c88-11e5-8b63-2cf0ee2c94de',
+    name: 'api-redis',
+    plan: plans['heroku-redis:premium-2'],
+    state: 'provisioned',
+  },
+  'dwh-db': {
+    addon_service: services['heroku-postgresql'],
+    app: apps.dwh,
+    billed_price: {
+      cents: 20_000,
+    },
+    id: 'e00e794c-60ef-11e5-a8c7-2cf0ee2c94de',
+    name: 'dwh-db',
+    plan: plans['heroku-postgresql:standard-2'],
+    state: 'provisioned',
+  },
+  'dwh-db-2': {
+    addon_service: services['heroku-postgresql'],
+    app: apps.dwh,
+    billed_price: {
+      cents: 20_000,
+    },
+    id: '10b42dda-60fa-11e5-8567-2cf0ee2c94de',
+    name: 'dwh-db-2',
+    plan: plans['heroku-postgresql:standard-2'],
+    state: 'provisioned',
+  },
+  'dwh-test-db': {
+    addon_service: services['heroku-postgresql'],
+    app: apps.dwh,
+    billed_price: {
+      cents: 500,
+    },
+    id: '87f63372-60f8-11e5-bd19-2cf0ee2c94de',
+    name: 'dwh-test-db',
+    plan: plans['heroku-postgresql:mini'],
+    state: 'provisioned',
+  },
+  'www-db': {
+    addon_service: services['heroku-postgresql'],
+    app: apps.www,
+    billed_price: {
+      cents: 500,
+    },
+    id: '8895ea98-4c7b-11e5-9a16-2cf0ee2c94de',
+    name: 'www-db',
+    plan: plans['heroku-postgresql:mini'],
+    state: 'provisioned',
+  },
+  'www-db-2': {
+    addon_service: services['heroku-postgresql'],
+    app: apps.api,
+    billed_price: {
+      cents: 500,
+    },
+    id: 'b68d8f51-6577-4a46-a617-c5f36f1bb032',
+    name: 'www-db-2',
+    plan: plans['heroku-postgresql:mini'],
+    state: 'deprovisioned',
+  },
+  'www-redis': {
+    addon_service: services['heroku-redis'],
+    app: apps.www,
+    billed_price: {
+      cents: 6000,
+    },
+    id: '8a836ecc-4c88-11e5-ba7e-2cf0ee2c94de',
+    name: 'www-redis',
+    plan: plans['heroku-redis:premium-2'],
+    state: 'provisioning',
   },
   'www-redis-2': {
+    addon_service: services['heroku-redis'],
     app: apps.www,
+    billed_price: {
+      cents: 6000,
+    },
     id: 'bc28b002-44da-4b8b-9dba-f0ef236a5759',
     name: 'www-redis-2',
-    addon_service: services['heroku-redis'],
     plan: plans['heroku-redis:premium-2'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     state: 'deprovisioning',
-    billed_price: {
-      cents: 6000,
-    },
-  },
-  'api-redis': {
-    app: apps.api,
-    id: 'fd1d2d74-4c88-11e5-8b63-2cf0ee2c94de',
-    name: 'api-redis',
-    addon_service: services['heroku-redis'],
-    plan: plans['heroku-redis:premium-2'],
-    state: 'provisioned',
-    billed_price: {
-      cents: 6000,
-    },
-  },
-  'dwh-test-db': {
-    app: apps.dwh,
-    id: '87f63372-60f8-11e5-bd19-2cf0ee2c94de',
-    name: 'dwh-test-db',
-    addon_service: services['heroku-postgresql'],
-    plan: plans['heroku-postgresql:mini'],
-    state: 'provisioned',
-    billed_price: {
-      cents: 500,
-    },
-  },
-  'dwh-db': {
-    app: apps.dwh,
-    id: 'e00e794c-60ef-11e5-a8c7-2cf0ee2c94de',
-    name: 'dwh-db',
-    addon_service: services['heroku-postgresql'],
-    plan: plans['heroku-postgresql:standard-2'],
-    state: 'provisioned',
-    billed_price: {
-      cents: 20000,
-    },
-  },
-  'dwh-db-2': {
-    app: apps.dwh,
-    id: '10b42dda-60fa-11e5-8567-2cf0ee2c94de',
-    name: 'dwh-db-2',
-    addon_service: services['heroku-postgresql'],
-    plan: plans['heroku-postgresql:standard-2'],
-    state: 'provisioned',
-    billed_price: {
-      cents: 20000,
-    },
   },
 }
 
 export const attachments: Record<string, Heroku.AddOnAttachment> = {
   'acme-inc-api::QUEUE': {
+    addon: {
+      app: addons['api-redis'].app as Heroku.App,
+      id: addons['api-redis'].id as string,
+      name: addons['api-redis'].name as string,
+    },
+    app: apps.api,
     id: '59790f12-60f1-11e5-8b28-2cf0ee2c94de',
     name: 'QUEUE',
-    app: apps.api,
-    addon: {
-      id: addons['api-redis'].id as string,
-      name: addons['api-redis'].name as string,
-      app: addons['api-redis'].app as Heroku.App,
-    },
   },
   'acme-inc-api::WWW_DB': {
+    addon: {
+      app: addons['www-db'].app as Heroku.App,
+      id: addons['www-db'].id as string,
+      name: addons['www-db'].name as string,
+    },
+    app: apps.api,
     id: '3e8bd32e-60fb-11e5-8f58-2cf0ee2c94de',
     name: 'WWW_DB',
-    app: apps.api,
-    addon: {
-      id: addons['www-db'].id as string,
-      name: addons['www-db'].name as string,
-      app: addons['www-db'].app as Heroku.App,
-    },
-  },
-  'acme-inc-dwh::WWW_DB': {
-    id: 'e97f68d6-60f6-11e5-82ba-2cf0ee2c94de',
-    name: 'WWW_DB',
-    app: apps.dwh,
-    addon: {
-      id: addons['www-db'].id as string,
-      name: addons['www-db'].name as string,
-      app: addons['www-db'].app as Heroku.App,
-    },
   },
   'acme-inc-dwh::API_QUEUE': {
-    id: '5cf8e4be-60f1-11e5-b208-2cf0ee2c94de',
-    name: 'API_QUEUE',
-    app: apps.dwh,
     addon: {
+      app: addons['api-redis'].app as Heroku.App,
       id: addons['api-redis'].id as string,
       name: addons['api-redis'].name as string,
-      app: addons['api-redis'].app as Heroku.App,
     },
+    app: apps.dwh,
+    id: '5cf8e4be-60f1-11e5-b208-2cf0ee2c94de',
+    name: 'API_QUEUE',
   },
   'acme-inc-dwh::DATABASE': {
-    id: '483d95e2-60f1-11e5-8c3b-2cf0ee2c94de',
-    name: 'DATABASE',
-    app: apps.dwh,
     addon: {
+      app: addons['dwh-db'].app as Heroku.App,
       id: addons['dwh-db'].id as string,
       name: addons['dwh-db'].name as string,
-      app: addons['dwh-db'].app as Heroku.App,
     },
+    app: apps.dwh,
+    id: '483d95e2-60f1-11e5-8c3b-2cf0ee2c94de',
+    name: 'DATABASE',
   },
   'acme-inc-dwh::DATABASE_FOLLOWER': {
-    id: '3da438d0-60fa-11e5-9194-2cf0ee2c94de',
-    name: 'DATABASE_FOLLOWER',
-    app: apps.dwh,
     addon: {
+      app: addons['dwh-db-2'].app as Heroku.App,
       id: addons['dwh-db-2'].id as string,
       name: addons['dwh-db-2'].name as string,
-      app: addons['dwh-db-2'].app as Heroku.App,
     },
+    app: apps.dwh,
+    id: '3da438d0-60fa-11e5-9194-2cf0ee2c94de',
+    name: 'DATABASE_FOLLOWER',
   },
   'acme-inc-dwh::TEST': {
-    id: '483d95e2-60f1-11e5-8c3b-2cf0ee2c94de',
-    name: 'TEST',
-    app: apps.dwh,
     addon: {
+      app: addons['dwh-test-db'].app as Heroku.App,
       id: addons['dwh-test-db'].id as string,
       name: addons['dwh-test-db'].name as string,
-      app: addons['dwh-test-db'].app as Heroku.App,
     },
+    app: apps.dwh,
+    id: '483d95e2-60f1-11e5-8c3b-2cf0ee2c94de',
+    name: 'TEST',
   },
   'acme-inc-dwh::WWW_CACHE': {
+    addon: {
+      app: addons['www-redis'].app as Heroku.App,
+      id: addons['www-redis'].id as string,
+      name: addons['www-redis'].name as string,
+    },
+    app: apps.dwh,
     id: '233bc200-60f1-11e5-9da0-2cf0ee2c94de',
     name: 'WWW_CACHE',
-    app: apps.dwh,
+  },
+  'acme-inc-dwh::WWW_DB': {
     addon: {
-      id: addons['www-redis'].id as string,
-      name: addons['www-redis'].name as string,
-      app: addons['www-redis'].app as Heroku.App,
+      app: addons['www-db'].app as Heroku.App,
+      id: addons['www-db'].id as string,
+      name: addons['www-db'].name as string,
     },
+    app: apps.dwh,
+    id: 'e97f68d6-60f6-11e5-82ba-2cf0ee2c94de',
+    name: 'WWW_DB',
   },
   'acme-inc-www::DATABASE': {
+    addon: {
+      app: addons['www-db'].app as Heroku.App,
+      id: addons['www-db'].id as string,
+      name: addons['www-db'].name as string,
+    },
+    app: apps.www,
     id: '9e2f1620-60eb-11e5-b93e-2cf0ee2c94de',
     name: 'DATABASE',
-    app: apps.www,
-    addon: {
-      id: addons['www-db'].id as string,
-      name: addons['www-db'].name as string,
-      app: addons['www-db'].app as Heroku.App,
-    },
   },
   'acme-inc-www::HEROKU_POSTGRESQL_RED': {
-    id: '4b04417c-60f1-11e5-9312-2cf0ee2c94de',
-    name: 'HEROKU_POSTGRESQL_RED',
-    app: apps.www,
     addon: {
+      app: addons['www-db'].app as Heroku.App,
       id: addons['www-db'].id as string,
       name: addons['www-db'].name as string,
-      app: addons['www-db'].app as Heroku.App,
     },
+    app: apps.www,
+    id: '4b04417c-60f1-11e5-9312-2cf0ee2c94de',
+    name: 'HEROKU_POSTGRESQL_RED',
   },
   'acme-inc-www::REDIS': {
-    id: '221ce0c0-60ec-11e5-bd02-2cf0ee2c94de',
-    name: 'REDIS',
-    app: apps.www,
     addon: {
+      app: addons['www-redis'].app as Heroku.App,
       id: addons['www-redis'].id as string,
       name: addons['www-redis'].name as string,
-      app: addons['www-redis'].app as Heroku.App,
     },
+    app: apps.www,
+    id: '221ce0c0-60ec-11e5-bd02-2cf0ee2c94de',
+    name: 'REDIS',
   },
 }
 
 export const resolvedAttachments: Record<string, pg.ExtendedAddonAttachment> = {
   'myapp::postgres-1': {
     addon: {
-      id: '3cc8af1b-7c3d-4aab-873d-73c92a23bd35',
-      name: 'postgres-1',
       app: {
         id: 'a463b82a-6a06-4906-be0f-77d3108143c2',
         name: 'myapp',
       },
+      id: '3cc8af1b-7c3d-4aab-873d-73c92a23bd35',
+      name: 'postgres-1',
       plan: {
         id: '0ca9652e-52b8-4fbb-9798-131b764da83a',
         name: 'heroku-postgresql:premium-0',
@@ -387,15 +388,15 @@ export const resolvedAttachments: Record<string, pg.ExtendedAddonAttachment> = {
       id: 'a463b82a-6a06-4906-be0f-77d3108143c2',
       name: 'myapp',
     },
-    id: '6da14ba4-1aa6-4e8d-80cb-ef5e2865d557',
-    name: 'DATABASE',
-    namespace: null,
-    created_at: '2025-01-01T00:00:00Z',
-    updated_at: '2025-01-01T00:00:00Z',
-    web_url: 'https://addons-sso.heroku.com/apps/a463b82a-6a06-4906-be0f-77d3108143c2/addons/3cc8af1b-7c3d-4aab-873d-73c92a23bd35',
-    log_input_url: null,
     config_vars: [
       'DATABASE_URL',
     ],
+    created_at: '2025-01-01T00:00:00Z',
+    id: '6da14ba4-1aa6-4e8d-80cb-ef5e2865d557',
+    log_input_url: null,
+    name: 'DATABASE',
+    namespace: null,
+    updated_at: '2025-01-01T00:00:00Z',
+    web_url: 'https://addons-sso.heroku.com/apps/a463b82a-6a06-4906-be0f-77d3108143c2/addons/3cc8af1b-7c3d-4aab-873d-73c92a23bd35',
   },
 }

@@ -9,19 +9,15 @@ export default class Set extends Command {
   static args = {
     stack: Args.string({description: 'unique name or identifier of the stack', required: true}),
   }
-
   static description = 'set the stack of an app'
-
   static example = `${color.command('heroku stack:set heroku-24 -a myapp')}
 Setting stack to heroku-24... done
 You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to trigger a new build on myapp.`
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['stack:set']
 
   async run() {

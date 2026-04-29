@@ -7,7 +7,6 @@ export default class Refresh extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

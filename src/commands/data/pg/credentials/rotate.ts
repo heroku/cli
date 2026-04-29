@@ -1,11 +1,12 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import {AddOn, AddOnAttachment} from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo, NonAdvancedCredentialInfo} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 
 export default class Rotate extends BaseCommand {
   static args = {
@@ -14,9 +15,7 @@ export default class Rotate extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'rotate credentials on a Postgres database'
-
   static flags = {
     all: Flags.boolean({
       description: 'rotate all credentials',
@@ -83,9 +82,10 @@ export default class Rotate extends BaseCommand {
     if (all) {
       try {
         ux.action.start(`Rotating all credentials on ${color.datastore(addon.name)}`)
-        isAdvancedTier
-          ? await this.dataApi.post(`/data/postgres/v1/${addon.id}/rotate_credentials`, body)
-          : await this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials_rotation`, body)
+        await (isAdvancedTier
+          ? this.dataApi.post(`/data/postgres/v1/${addon.id}/rotate_credentials`, body)
+          : this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials_rotation`, body)
+        )
         ux.action.stop()
       } catch (error) {
         ux.action.stop('!')
@@ -100,9 +100,10 @@ export default class Rotate extends BaseCommand {
 
       try {
         ux.action.start(`Rotating ${color.name(credName)} on ${color.datastore(addon.name)}`)
-        isAdvancedTier
-          ? await this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}/rotate`, body)
-          : await this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}/credentials_rotation`, body)
+        await (isAdvancedTier
+          ? this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}/rotate`, body)
+          : this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}/credentials_rotation`, body)
+        )
         ux.action.stop()
       } catch (error) {
         ux.action.stop('!')
@@ -111,15 +112,28 @@ export default class Rotate extends BaseCommand {
     }
   }
 
-  private getCredAttachmentsAndUniqueAppNames(isAdvancedTier: boolean, isEssentialTier: boolean, credToRotate: CredentialInfo, attachments: AddOnAttachment[]): {
+  private getCredAttachmentsAndUniqueAppNames(
+    isAdvancedTier: boolean,
+    isEssentialTier: boolean,
+    credToRotate: CredentialInfo,
+    attachments: AddOnAttachment[],
+  ): {
     credAttachments: AddOnAttachment[],
     uniqueAppNames: string
   } {
     let uniqueAppNames = ''
-    const namespace = isAdvancedTier
-      ? (credToRotate.type === 'owner' ? null : `role:${credToRotate.name}`)
-      : (credToRotate.name === 'default' || isEssentialTier ? null : `credential:${credToRotate.name}`)
-    const credAttachments = attachments.filter(a => a.namespace === namespace)
+    const credAttachments = attachments.filter(a => {
+      if (isAdvancedTier) {
+        const attachmentRoleFactor = parseAttachmentFactors(a.namespace).role
+        return attachmentRoleFactor === credToRotate.name || (credToRotate.type === 'owner' && !attachmentRoleFactor)
+      }
+
+      return (
+        a.namespace === `credential:${credToRotate.name}`
+        || (!a.namespace && (credToRotate.name === 'default' || isEssentialTier))
+      )
+    })
+
     if (credAttachments.length > 0) {
       uniqueAppNames = [...new Set(credAttachments.map(attachment => attachment.app!.name!))]
         .sort()
@@ -201,9 +215,7 @@ export default class Rotate extends BaseCommand {
     }
 
     if (all && force) {
-      warnings.push(
-        `You're force rotating the passwords for all credentials including the ${defaultCredName} credential.`,
-      )
+      warnings.push(`You're force rotating the passwords for all credentials including the ${defaultCredName} credential.`)
     }
 
     if (all && !force) {
@@ -217,10 +229,8 @@ export default class Rotate extends BaseCommand {
     }
 
     if (force) {
-      warnings.push(
-        'You can\'t access any followers lagging in replication until they\'re caught up. '
-        + `Use ${color.code(infoCommand)} to track progress.`,
-      )
+      warnings.push('You can\'t access any followers lagging in replication until they\'re caught up. '
+        + `Use ${color.code(infoCommand)} to track progress.`)
     }
 
     return warnings

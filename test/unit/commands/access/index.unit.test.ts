@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/access/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {
   appCollaborators,
   appPermissions,
@@ -21,7 +21,7 @@ describe('heroku access', function () {
     it('shows the app collaborators', async function () {
       const apiGetPersonalApp = personalApp()
       const apiGetAppCollaborators = appCollaborators()
-      const {stdout, stderr} = await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])
@@ -40,7 +40,7 @@ describe('heroku access', function () {
       const apiGetOrgMembers = teamMembers()
       const apiGetAppPermissions = appPermissions()
       const apiGetTeamAppCollaboratorsWithPermissions = teamAppCollaboratorsWithPermissions()
-      const {stdout, stderr} = await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
       ])

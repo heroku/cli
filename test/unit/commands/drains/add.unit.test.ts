@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Add from '../../../../src/commands/drains/add.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('drains:add', function () {
   let api: nock.Scope

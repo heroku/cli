@@ -7,10 +7,9 @@ export default class MaxMemory extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
   }
-
   static description = `set the key eviction policy when instances reach their storage limit
   Available policies for key eviction include:
-  
+
   noeviction      # returns errors when memory limit is reached
   allkeys-lfu     # removes less frequently used keys first
   volatile-lfu    # removes less frequently used keys first that have an expiry set
@@ -25,7 +24,6 @@ export default class MaxMemory extends Command {
     policy: flags.string({char: 'p', description: 'set policy name', required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

@@ -1,24 +1,24 @@
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
+
 import type {Setting, SettingKey} from '../../../lib/pg/types.js'
+
+import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class LogLockWaits extends PGSettingsCommand {
-  static topic = 'pg'
+  static args = {
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
+    value: Args.string({description: 'boolean indicating if a message gets logged when a session waits longer than the deadlock_timeout to acquire a lock'}),
+  }
   static description = heredoc(`
     Controls whether a log message is produced when a session waits longer than the deadlock_timeout to acquire a lock. deadlock_timeout is set to 1 second
     Delays due to lock contention occur when multiple transactions are trying to access the same resource at the same time.
     Applications and their query patterns should try to avoid changes to many different tables within the same transaction.
   `)
-
-  static args = {
-    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
-    value: Args.string({description: 'boolean indicating if a message gets logged when a session waits longer than the deadlock_timeout to acquire a lock'}),
-  }
-
+  static topic = 'pg'
   protected settingKey: SettingKey = 'log_lock_waits'
 
   protected convertValue(val: unknown): boolean {

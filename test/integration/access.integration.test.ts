@@ -1,10 +1,10 @@
 import {expect} from 'chai'
 
-import {runCliSubprocess} from '../helpers/runCliSubprocess.js'
+import {runCliSubprocess} from '../helpers/run-cli-subprocess.js'
 
 describe('access', function () {
   it('shows a table with access status', function () {
-    const {stdout, stderr} = runCliSubprocess([
+    const {stderr, stdout} = runCliSubprocess([
       'access',
       '--app=heroku-cli-ci-smoke-test-app',
     ])

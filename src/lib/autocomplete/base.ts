@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import fs from 'fs-extra'
-import * as path from 'path'
+import path from 'node:path'
 
 import type {Completion} from '../types/completion.js'
 

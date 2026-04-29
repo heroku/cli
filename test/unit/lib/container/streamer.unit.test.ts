@@ -1,7 +1,7 @@
-/* eslint-env mocha */
 import {expect} from 'chai'
 import nock from 'nock'
-import stream from 'stream'
+import stream from 'node:stream'
+
 import {streamer} from '../../../../src/lib/container/streamer.js'
 
 function MockOut(this: any) {

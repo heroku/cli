@@ -12,15 +12,18 @@ const allowlist = [
 ]
 
 const version: Hook.Init = async function () {
-  // Get version flags from already-loaded config instead of reading package.json again
-  const additionalVersionFlags = this.config.pjson?.oclif?.additionalVersionFlags || []
-  const allVersionFlags = [...additionalVersionFlags, '--version']
+  const arg = process.argv[2]
+  if (!arg) return
 
-  if (allVersionFlags.includes(process.argv[2])) {
+  const additionalVersionFlags = this.config.pjson?.oclif?.additionalVersionFlags || []
+  const isVersionCommand = arg === '--version' || additionalVersionFlags.includes(arg)
+
+  if (isVersionCommand) {
     for (const env of allowlist) {
-      if (process.env[env]) {
-        const value = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${process.env[env]}`
-        this.warn(`${env} set ${value}`)
+      const value = process.env[env]
+      if (value) {
+        const displayValue = env === 'HEROKU_API_KEY' ? 'to [REDACTED]' : `to ${value}`
+        this.warn(`${env} set ${displayValue}`)
       }
     }
   }

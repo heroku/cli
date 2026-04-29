@@ -3,9 +3,9 @@ import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-import _ from 'lodash'
 
-import {getOwner, isTeamApp} from '../../lib/teamUtils.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {getOwner, isTeamApp} from '../../lib/team-utils.js'
 
 type AdminWithPermissions = Heroku.TeamMember & {
   permissions?: Heroku.TeamAppPermission[],
@@ -24,10 +24,11 @@ export default class AccessIndex extends Command {
     json: flags.boolean({description: 'output in json format'}),
     remote: flags.remote({char: 'r'}),
   }
-
   static topic = 'access'
 
   public async run(): Promise<void> {
+    const _ = await lazyModuleLoader.loadLodash()
+
     const {flags} = await this.parse(AccessIndex)
     const {app: appName, json} = flags
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
@@ -43,7 +44,7 @@ export default class AccessIndex extends Command {
           admin.permissions = adminPermissions
           return admin
         })
-        collaborators = buildCollaboratorsArray(collaborators, admins)
+        collaborators = buildCollaboratorsArray(collaborators, admins, _)
       } catch (error: any) {
         if (!(error instanceof HerokuAPIError && error.http.statusCode === 403))
           throw error
@@ -53,11 +54,11 @@ export default class AccessIndex extends Command {
     if (json)
       printJSON(collaborators)
     else
-      printAccess(app, collaborators)
+      printAccess(app, collaborators, _)
   }
 }
 
-function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[], admins: Heroku.TeamMember[]) {
+function buildCollaboratorsArray(collaboratorsRaw: Heroku.TeamAppCollaborator[], admins: Heroku.TeamMember[], _: any) {
   const collaboratorsNoAdmins = _.reject(collaboratorsRaw, {role: 'admin'})
   return _.union(collaboratorsNoAdmins, admins)
 }
@@ -82,12 +83,12 @@ function buildTableColumns(showPermissions: boolean) {
   return baseColumns
 }
 
-function printAccess(app: Heroku.App, collaborators: any[]) {
+function printAccess(app: Heroku.App, collaborators: any[], _: any) {
   const showPermissions = isTeamApp(app.owner?.email)
   collaborators = _.chain(collaborators)
-    .sortBy(c => c.email || c.user.email)
-    .reject(c => /herokumanager\.com$/.test(c.user.email))
-    .map(collab => {
+    .sortBy((c: any) => c.email || c.user.email)
+    .reject((c: any) => /herokumanager\.com$/.test(c.user.email))
+    .map((collab: any) => {
       const {email} = collab.user
       const {permissions, role} = collab
       const data: MemberData = {email, role: role || 'collaborator'}

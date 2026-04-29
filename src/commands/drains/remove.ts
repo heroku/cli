@@ -7,11 +7,8 @@ export default class Remove extends Command {
   static args = {
     url: Args.string({description: 'URL of the log drain', required: true}),
   }
-
   static description = 'removes a log drain from an app'
-
   static example = `${color.command('drains:remove [URL|TOKEN]')}`
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

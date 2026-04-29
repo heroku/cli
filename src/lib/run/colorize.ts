@@ -7,11 +7,11 @@ export const COLORS: Array<(s: string) => string> = [
   s => color.cyan(s),
   s => color.magenta(s),
   s => color.blue(s),
-  s => color.bold.green(s),
-  s => color.bold.cyan(s),
-  s => color.bold.magenta(s),
-  s => color.bold.yellow(s),
-  s => color.bold.blue(s),
+  s => color.info(s),
+  s => color.name(s),
+  s => color.addon(s),
+  s => color.pipeline(s),
+  s => color.warning(s),
 ]
 const assignedColors: any = {}
 let isInitialized = false
@@ -37,7 +37,7 @@ function getColorForIdentifier(i: string) {
 
 const lineRegex = /^(.*?\[([\w-]+)([\d.]+)?]:)(.*)?$/
 
-const dim = (i: string) => color.dim(i)
+const dim = (i: string) => color.inactive(i)
 const other = dim
 const path = (i: string) => color.green(i)
 const method = (i: string) => color.magenta(i)
@@ -53,51 +53,51 @@ const status = (code: any) => {
 const ms = (s: string) => {
   const ms = Number.parseInt(s, 10)
   if (!ms) return s
-  if (ms < 100) return color.greenBright(s)
-  if (ms < 500) return color.success(s)
+  if (ms < 100) return color.success(s)
+  if (ms < 500) return color.info(s)
   if (ms < 5000) return color.warning(s)
-  if (ms < 10000) return color.yellowBright(s)
+  if (ms < 10_000) return color.error(s)
   return color.failure(s)
 }
 
 function colorizeRouter(body: string) {
   const encodeColor = ([k, v]: [string, string]) => {
     switch (k) {
-    case 'at': {
-      return [k, v === 'error' ? color.failure(v) : other(v)]
-    }
+      case 'at': {
+        return [k, v === 'error' ? color.failure(v) : other(v)]
+      }
 
-    case 'code': {
-      return [k, color.failure(color.label(v))]
-    }
+      case 'code': {
+        return [k, color.failure(color.label(v))]
+      }
 
-    case 'method': {
-      return [k, method(v)]
-    }
+      case 'connect': {
+        return [k, ms(v)]
+      }
 
-    case 'dyno': {
-      return [k, getColorForIdentifier(v)(v)]
-    }
+      case 'dyno': {
+        return [k, getColorForIdentifier(v)(v)]
+      }
 
-    case 'status': {
-      return [k, status(v)]
-    }
+      case 'method': {
+        return [k, method(v)]
+      }
 
-    case 'path': {
-      return [k, path(v)]
-    }
+      case 'path': {
+        return [k, path(v)]
+      }
 
-    case 'connect': {
-      return [k, ms(v)]
-    }
+      case 'service': {
+        return [k, ms(v)]
+      }
 
-    case 'service': {
-      return [k, ms(v)]
-    }
+      case 'status': {
+        return [k, status(v)]
+      }
 
-    default: {
-      return [k, other(v)]
-    }
+      default: {
+        return [k, other(v)]
+      }
     }
   }
 
@@ -130,25 +130,25 @@ function colorizeRouter(body: string) {
 
 const state = (s: string) => {
   switch (s) {
-  case 'down': {
-    return color.failure(s)
-  }
+    case 'complete': {
+      return color.success(s)
+    }
 
-  case 'up': {
-    return color.success(s)
-  }
+    case 'down': {
+      return color.failure(s)
+    }
 
-  case 'starting': {
-    return color.yellowBright(s)
-  }
+    case 'starting': {
+      return color.info(s)
+    }
 
-  case 'complete': {
-    return color.success(s)
-  }
+    case 'up': {
+      return color.success(s)
+    }
 
-  default: {
-    return s
-  }
+    default: {
+      return s
+    }
   }
 }
 
@@ -162,44 +162,45 @@ export default function colorize(line: string) {
   const identifier = parsed[2]
   let body = (parsed[4] || '').trim()
   switch (identifier) {
-  case 'api': {
-    body = colorizeAPI(body)
-    break
-  }
+    case 'api': {
+      body = colorizeAPI(body)
+      break
+    }
 
-  case 'router': {
-    body = colorizeRouter(body)
-    break
-  }
+    case 'heroku-postgres':
+    // falls through
+    case 'postgres': {
+      body = colorizePG(body)
+      break
+    }
 
-  case 'run': {
-    body = colorizeRun(body)
-    break
-  }
+    case 'heroku-redis': {
+      body = colorizeRedis(body)
+      break
+    }
 
-  case 'web': {
-    body = colorizeWeb(body)
-    break
-  }
+    case 'router': {
+      body = colorizeRouter(body)
+      break
+    }
 
-  case 'heroku-redis': {
-    body = colorizeRedis(body)
-    break
-  }
+    case 'run': {
+      body = colorizeRun(body)
+      break
+    }
 
-  case 'heroku-postgres':
-  case 'postgres': {
-    body = colorizePG(body)
-    break
-  }
+    case 'web': {
+      body = colorizeWeb(body)
+      break
+    }
   }
 
   return getColorForIdentifier(identifier)(header) + ' ' + body
 }
 
 function colorizeAPI(body: string) {
-  if (body.match(/^Build succeeded$/)) return color.success(body)
-  if (body.match(/^Build failed/)) return color.failure(body)
+  if (/^Build succeeded$/.test(body)) return color.success(body)
+  if (body.startsWith('Build failed')) return color.failure(body)
   const build = body.match(/^(Build started by user )(.+)$/)
   if (build) {
     return [
@@ -251,7 +252,7 @@ function colorizePG(body: string) {
     ].join('')
   }
 
-  if (body.match(/source=\w+ sample#/)) {
+  if (/source=\w+ sample#/.test(body)) {
     body = dim(body)
   }
 
@@ -259,7 +260,7 @@ function colorizePG(body: string) {
 }
 
 function colorizeRedis(body: string) {
-  if (body.match(/source=\w+ sample#/)) {
+  if (/source=\w+ sample#/.test(body)) {
     body = dim(body)
   }
 
@@ -268,7 +269,7 @@ function colorizeRedis(body: string) {
 
 function colorizeRun(body: string) {
   try {
-    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.failure(body)
+    if (/^Stopping all processes with SIGTERM$/.test(body)) return color.failure(body)
     const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [
@@ -305,9 +306,9 @@ function colorizeRun(body: string) {
 
 function colorizeWeb(body: string) {
   try {
-    if (body.match(/^Unidling$/)) return color.yellow(body)
-    if (body.match(/^Restarting$/)) return color.yellow(body)
-    if (body.match(/^Stopping all processes with SIGTERM$/)) return color.failure(body)
+    if (/^Unidling$/.test(body)) return color.yellow(body)
+    if (/^Restarting$/.test(body)) return color.yellow(body)
+    if (/^Stopping all processes with SIGTERM$/.test(body)) return color.failure(body)
     const starting = body.match(/^(Starting process with command )(`.+`)(by user )?(.*)?$/)
     if (starting) {
       return [

@@ -5,11 +5,9 @@ import {ux} from '@oclif/core/ux'
 
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
-
   static examples = [
     color.command('heroku authorizations'),
   ]
-
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }

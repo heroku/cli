@@ -1,8 +1,8 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
-import {URL} from 'url'
 
 import type {NonAdvancedCredentialInfo} from '../../../lib/data/types.js'
 
@@ -14,7 +14,6 @@ export default class Url extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'show information on a database credential'
   static flags = {
     app: flags.app({required: true}),
@@ -25,7 +24,6 @@ export default class Url extends Command {
     }),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

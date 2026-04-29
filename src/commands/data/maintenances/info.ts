@@ -1,10 +1,10 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
-import {addSeconds, formatDistance} from 'date-fns'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance} from '../../../lib/data/types.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
 interface StyledMaintenance extends Maintenance {
   [key: string]: any;
@@ -18,15 +18,12 @@ export default class DataMaintenancesInfo extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'display details of the most recent maintenance for an addon'
-
   static examples = [
     '$ heroku data:maintenances:info postgresql-sinuous-83720',
     '$ heroku data:maintenances:info postgresql-sinuous-83720 --json',
     '$ heroku data:maintenances:info DATABASE --app test-app',
   ]
-
   static flags = {
     app: flags.app({description: 'app to list addon maintenances for'}),
     json: flags.boolean({char: 'j', description: 'output result in json'}),
@@ -34,7 +31,7 @@ export default class DataMaintenancesInfo extends BaseCommand {
   }
 
   // a prettier display of the information
-  protected createStyledMaintenance(maintenance: Maintenance) {
+  protected createStyledMaintenance(maintenance: Maintenance, addSeconds: any, formatDistance: any) {
     // make a copy of the maintenance
     const styledMaintenance: StyledMaintenance = {
       ...maintenance,
@@ -57,14 +54,14 @@ export default class DataMaintenancesInfo extends BaseCommand {
     }
 
     ['app',  'addon'].forEach((key: string) => {
-      Object.keys(styledMaintenance[key]).forEach(childKey => {
+      for (const childKey of Object.keys(styledMaintenance[key])) {
         const composedKey = `${key}_${childKey}`
         const childValue = styledMaintenance[key][childKey]
 
         if (childValue !== undefined) {
           styledMaintenance[composedKey] = childValue
         }
-      })
+      }
 
       // after flattening the child keys from `key`, we can remove `key`
       // off the of object so that it isn't shown
@@ -82,6 +79,8 @@ export default class DataMaintenancesInfo extends BaseCommand {
 
   // create new maintenance-ish object for the purpose of
   async run() {
+    const {addSeconds, formatDistance} = await lazyModuleLoader.loadDateFns()
+
     const {args, flags} = await this.parse(DataMaintenancesInfo)
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, json} = flags
@@ -97,7 +96,7 @@ export default class DataMaintenancesInfo extends BaseCommand {
     if (json) {
       hux.styledJSON(maintenance)
     } else {
-      const styledMaintenance = this.createStyledMaintenance(maintenance)
+      const styledMaintenance = this.createStyledMaintenance(maintenance, addSeconds, formatDistance)
       hux.styledObject(styledMaintenance)
     }
   }

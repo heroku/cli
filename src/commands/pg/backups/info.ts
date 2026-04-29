@@ -1,6 +1,6 @@
 
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
@@ -37,15 +37,12 @@ export default class Info extends Command {
   static args = {
     backup_id: Args.string({description: 'ID of the backup. If omitted, we use the last backup ID.'}),
   }
-
   static description = 'get information about a specific backup'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
-
   displayBackup = (backup: BackupTransfer, app: string) => {
     const pgbackups = pgBackupsApi(app, this.heroku)
     hux.styledHeader(`Backup ${color.name(pgbackups.name(backup))}`)
@@ -61,14 +58,12 @@ export default class Info extends Command {
     /* eslint-enable perfectionist/sort-objects */
     ux.stdout('\n')
   }
-
   displayLogs = (backup: BackupTransfer) => {
     hux.styledHeader('Backup Logs')
     for (const log of backup.logs)
       ux.stdout(`${log.created_at} ${log.message}\n`)
     ux.stdout('\n')
   }
-
   getBackup = async (id: string | undefined, app: string) => {
     let backupID
     if (id) {
@@ -100,4 +95,3 @@ export default class Info extends Command {
     this.displayLogs(backup)
   }
 }
-

@@ -1,6 +1,5 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import openBrowser from 'open'
@@ -16,7 +15,7 @@ import getRepo from '../../lib/pipelines/setup/get-repo.js'
 import getSettings from '../../lib/pipelines/setup/get-settings.js'
 import pollAppSetups from '../../lib/pipelines/setup/poll-app-setups.js'
 import setupPipeline from '../../lib/pipelines/setup/setup-pipeline.js'
-import {STAGING_APP_INDICATOR, nameAndRepo} from '../../lib/pipelines/setup/validate.js'
+import {nameAndRepo, STAGING_APP_INDICATOR} from '../../lib/pipelines/setup/validate.js'
 
 const pipelineDebug = debug('pipelines:setup')
 
@@ -31,12 +30,9 @@ export default class Setup extends Command {
       required: false,
     }),
   }
-
   static description
     = 'bootstrap a new pipeline with common settings and create a production and staging app (requires a fully formed app.json in the repo)'
-
   static examples = [color.command('heroku pipelines:setup my-pipeline githuborg/reponame -t my-team')]
-
   static flags = {
     team: flags.team({
       description: 'the team to assign pipeline ownership to (defaults to current user)',
@@ -47,7 +43,6 @@ export default class Setup extends Command {
       description: 'accept all default settings without prompting',
     }),
   }
-
   static open = openBrowser
 
   async run() {
@@ -92,9 +87,7 @@ export default class Setup extends Command {
     const appSetupsResult: any = await createApps(this.heroku, archiveURL, pipeline, pipelineName, stagingAppName, team)
     const appSetups = appSetupsResult.map((result: any) => result.body)
 
-    ux.action.start(
-      `Creating production and staging apps (${color.app(pipelineName)} and ${color.app(stagingAppName)})`,
-    )
+    ux.action.start(`Creating production and staging apps (${color.app(pipelineName)} and ${color.app(stagingAppName)})`)
     await pollAppSetups(this.heroku, appSetups)
     ux.action.stop()
 

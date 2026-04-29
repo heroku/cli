@@ -11,13 +11,10 @@ export default class ClientsCreate extends Command {
     name: Args.string({description: 'name of the OAuth client', required: true}),
     redirect_uri: Args.string({description: 'redirect URL of the OAuth client', required: true}),
   }
-
   static description = 'create a new OAuth client'
-
   static examples = [
     color.command('heroku clients:create "Amazing" https://amazing-client.herokuapp.com/auth/heroku/callback'),
   ]
-
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     shell: flags.boolean({char: 's', description: 'output in shell format'}),

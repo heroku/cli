@@ -5,7 +5,6 @@ import {ux} from '@oclif/core/ux'
 
 export default class ClientsIndex extends Command {
   static description = 'list your OAuth clients'
-
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format', name: 'json'}),
   }

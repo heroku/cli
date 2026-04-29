@@ -29,7 +29,7 @@ describe('spaces/format', function () {
       expect(hostStatus('under-assessment')).to.eq('\u001B[38;5;43munder-assessment\u001B[39m')
       expect(hostStatus('permanent-failure')).to.eq('\u001B[38;2;255;135;135mpermanent-failure\u001B[39m')
       expect(hostStatus('released-permanent-failure')).to.eq('\u001B[38;2;255;135;135mreleased-permanent-failure\u001B[39m')
-      expect(hostStatus('released')).to.eq('\u001B[90mreleased\u001B[39m')
+      expect(hostStatus('released')).to.eq('\u001B[38;5;248mreleased\u001B[39m')
       expect(hostStatus('foo')).to.eq('foo')
     })
   })

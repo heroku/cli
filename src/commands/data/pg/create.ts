@@ -1,29 +1,27 @@
-import {color, utils} from '@heroku/heroku-cli-util'
+/* eslint-disable no-await-in-loop */
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../../lib/addons/create_addon.js'
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import createPool from '../../../lib/data/createPool.js'
-import {parseProvisionOpts} from '../../../lib/data/parseProvisionOpts.js'
-import PoolConfig from '../../../lib/data/poolConfig.js'
+import createAddon from '../../../lib/addons/create-addon.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import createPool from '../../../lib/data/create-pool.js'
+import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
+import PoolConfig from '../../../lib/data/pool-config.js'
 import {ExtendedPostgresLevelInfo} from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
 const {prompt} = inquirer
 
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'create a Postgres Advanced database'
   static examples = ['<%= config.bin %> <%= command.id %> --level 4G-Performance -a example-app']
-
   static flags = {
     app: Flags.app({
       required: true,
@@ -57,9 +55,7 @@ export default class DataPgCreate extends BaseCommand {
       description: 'watch database creation status and exit when complete',
     }),
   }
-
   static promptFlagActive = false
-
   private addon: Heroku.AddOn | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private followerInstanceCount: number = 0
@@ -113,7 +109,7 @@ export default class DataPgCreate extends BaseCommand {
 
     try {
       this.addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {
-        actionStartMessage: `Creating a ${color.cyan(this.leaderLevel)} database on ${color.app(app)}`,
+        actionStartMessage: `Creating a ${color.addon(this.leaderLevel || '')} database on ${color.app(app)}`,
         actionStopMessage: 'done',
         as, config, name,
       })
@@ -140,9 +136,7 @@ export default class DataPgCreate extends BaseCommand {
     if (!level) {
       // Interactive mode
       await this.followerPoolConfigLoop()
-      process.stderr.write(
-        `Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`,
-      )
+      process.stderr.write(`Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`)
       await this.runCommand('data:pg:info', [this.addon.name!, `--app=${app}`])
     } else if (followers && followers > 0) {
       const poolInfo = await createPool(this.dataApi, this.addon!, {
@@ -193,16 +187,14 @@ export default class DataPgCreate extends BaseCommand {
 
         process.stderr.write('\n')
         this.followerInstanceCount += count
-        if (this.followerInstanceCount >= 13) {
-          oneMore = false
-        } else {
-          oneMore = (await this.prompt<{oneMore: boolean}>({
+        oneMore = this.followerInstanceCount >= 13
+          ? false
+          : (await this.prompt<{oneMore: boolean}>({
             default: false,
             message: 'Configure another follower pool?',
             name: 'oneMore',
             type: 'confirm',
           })).oneMore
-        }
       } else {
         oneMore = false
       }
@@ -215,13 +207,13 @@ export default class DataPgCreate extends BaseCommand {
     process.stderr.write(heredoc`
 
       Create a Heroku Postgres Advanced database
-      ${color.dim('Press Ctrl+C to cancel')}
+      ${color.gray('Press Ctrl+C to cancel')}
 
     `)
 
     process.stderr.write(heredoc`
       → Configure Leader Pool
-      ${color.dim('  Configure Follower Pool(s)')}\n
+      ${color.gray('  Configure Follower Pool(s)')}\n
     `)
 
     const {highAvailability, level} = await poolConfig.leaderInteractiveConfig()

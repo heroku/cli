@@ -10,165 +10,165 @@ export type PublicUrlResponse = {
   url: string,
 }
 
-type TransferTargetType = 'pg_dump' | 'pg_restore' | 'gof3r' | 'htcat'
+type TransferTargetType = 'gof3r' | 'htcat' | 'pg_dump' | 'pg_restore'
 
 export type BackupTransfer = {
-  uuid: string
-  num: number
+  canceled_at: string
+  created_at: string
+  deleted_at: string
+  finished_at: string
   from_name: string
   from_type: TransferTargetType
   from_url: string
-  to_name: string
-  to_type: TransferTargetType
-  to_url: string
-  options: {
-    [k: string]: unknown
-  }
-  source_bytes: number
-  processed_bytes: number
-  succeeded: boolean
-  warnings: number
-  created_at: string
-  started_at: string
-  canceled_at: string
-  updated_at: string
-  finished_at: string
-  deleted_at: string
-  purged_at: string
-  num_keep: number
-  schedule?: {
-    uuid: string
-  }
   logs: Array<{
     created_at: string
     level: string
     message: string
   }>
+  num: number
+  num_keep: number
+  options: {
+    [k: string]: unknown
+  }
+  processed_bytes: number
+  purged_at: string
+  schedule?: {
+    uuid: string
+  }
+  source_bytes: number
+  started_at: string
+  succeeded: boolean
+  to_name: string
+  to_type: TransferTargetType
+  to_url: string
+  updated_at: string
+  uuid: string
+  warnings: number
 }
 
-export type ExtendedAddon = {
+export type ExtendedAddon = Required<Heroku.AddOn> & {
   addon_service: Required<Heroku.AddOnService>,
   plan: Required<Heroku.Plan>,
-} & Required<Heroku.AddOn>
+}
 
-type ServiceInfo =
-  'Status'
-  | 'Fork/Follow'
-  | 'Rollback'
-  | 'Created'
-  | 'Region'
-  | 'Data Encryption'
-  | 'Continuous Protection'
-  | 'Enhanced Certificates'
-  | 'Upgradable Extensions'
-  | 'Plan'
-  | 'HA Status'
-  | 'Behind By'
-  | 'Data Size'
-  | 'Tables'
-  | 'PG Version'
-  | 'Connections'
+type ServiceInfo
+  = 'Behind By'
   | 'Connection Pooling'
+  | 'Connections'
+  | 'Continuous Protection'
+  | 'Created'
   | 'Credentials'
-  | 'Restricted Credentials'
-  | 'Mutual TLS'
   | 'Customer Encryption Key'
-  | 'Following'
-  | 'Forked From'
+  | 'Data Encryption'
+  | 'Data Size'
+  | 'Enhanced Certificates'
   | 'Followers'
+  | 'Following'
+  | 'Fork/Follow'
+  | 'Forked From'
   | 'Forks'
+  | 'HA Status'
+  | 'Infrastructure'
   | 'Maintenance'
   | 'Maintenance window'
-  | 'Infrastructure'
+  | 'Mutual TLS'
+  | 'PG Version'
+  | 'Plan'
+  | 'Region'
+  | 'Restricted Credentials'
+  | 'Rollback'
+  | 'Status'
+  | 'Tables'
+  | 'Upgradable Extensions'
   | 'Warning'
 
 export type PgDatabaseService = {
   addon_id: string
-  name: string
-  heroku_resource_id: string
+  available_for_ingress: boolean
+  created_at: string
+  credentials: number
+  current_transaction: number
+  database_name: string
+  database_password: string
+  database_user: string
+  following?: string
+  forked_from: string
   formation?: {
     id: string
     primary: string
   }
-  metaas_source: string
-  num_tables: number
-  num_connections: number
-  num_connections_waiting: number
-  num_bytes: number
-  postgres_version: string
-  current_transaction: number
-  is_in_recovery?: boolean
-  plan: {
-    id: number
-    name: string
-  }
-  created_at: string
-  'standalone?'?: boolean
-  port: number
-  database_name: string
-  database_user: string
+  heroku_resource_id: string
   'hot_standby?'?: boolean
-  status_updated_at?: string
-  following?: string
-  forked_from: string
-  target_transaction: string | null
-  available_for_ingress: boolean
-  resource_url: string
-  database_password: string
-  'waiting?': boolean
-  credentials: number
-  leader: string | null
   info: Array<{
     name: ServiceInfo
     values: string[]
   }>
+  is_in_recovery?: boolean
+  leader: null | string
+  metaas_source: string
+  name: string
+  num_bytes: number
+  num_connections: number
+  num_connections_waiting: number
+  num_tables: number
+  plan: {
+    id: number
+    name: string
+  }
+  port: number
+  postgres_version: string
+  resource_url: string
+  'standalone?'?: boolean
+  status_updated_at?: string
+  target_transaction: null | string
+  'waiting?': boolean
 }
 
 export type PgStatus = {
-  'waiting?': boolean
   'error?': boolean
   message: string
+  'waiting?': boolean
 }
 
 export type PgUpgradeStatus = {
-  'waiting?': boolean
   'error?': boolean
   message: string
   step: string
+  'waiting?': boolean
 }
 
-type TenantInfoNames =
-  'Plan'
-  | 'Status'
+type TenantInfoNames
+  = 'Add-on'
+  | 'Billing App'
   | 'Connections'
-  | 'PG Version'
+  | 'Continuous Protection'
   | 'Created'
   | 'Data Size'
-  | 'Tables'
   | 'Fork/Follow'
+  | 'PG Version'
+  | 'Plan'
   | 'Rollback'
-  | 'Continuous Protection'
-  | 'Billing App'
-  | 'Add-on'
+  | 'Status'
+  | 'Tables'
 
 export type TenantInfo = {
   name: TenantInfoNames
-  values: string[]
   resolve_db_name?: boolean
+  values: string[]
 }
 
 export type PgDatabaseTenant = {
   addon_id: string
-  name: string
-  plan: string
   created_at: string
-  database_user: string
   database_name: string
+  database_user: string
   following?: string
+  info: Array<TenantInfo>
+  name: string
+  num_bytes: number
+  plan: string
   resource_url: string
   'waiting?': boolean
-  num_bytes: number
-  info: Array<TenantInfo>
 }
 
 export type PgDatabase = PgDatabaseService & PgDatabaseTenant
@@ -186,56 +186,53 @@ export type PgUpgradeError = {
 
 // Updated according to https://github.com/heroku/shogun/blob/main/lib/shogun/serializers/link_serializer.rb
 export type Link = {
-  id: string,
   created_at: string,
+  id: string,
   name: string,
-  remote_name: string,
   remote: {
-    name: string,
     attachment_name: string,
+    name: string,
   },
+  remote_name: string,
 }
 export type MaintenanceApiResponse = {
   message: string,
 }
 export type PgDatabaseConfig = {
   [key: string]: any;
-  'log_lock_waits': {
+  log_lock_waits: {
     value: boolean,
   },
 }
-export type SettingKey =
-  'log_lock_waits'
+export type SettingKey
+  = 'auto_explain'
+  | 'auto_explain.log_analyze'
+  | 'auto_explain.log_buffers'
+  | 'auto_explain.log_format'
+  | 'auto_explain.log_min_duration'
+  | 'auto_explain.log_nested_statements'
+  | 'auto_explain.log_triggers'
+  | 'auto_explain.log_verbose'
+  | 'data_connector_details_logs'
   | 'log_connections'
+  | 'log_lock_waits'
   | 'log_min_duration_statement'
   | 'log_min_error_statement'
   | 'log_statement'
-  | 'track_functions'
-  | 'pgbouncer_max_client_conn'
-  | 'pg_bouncer_max_db_conns'
   | 'pg_bouncer_default_pool_size'
-  | 'data_connector_details_logs'
-  | 'auto_explain'
-  | 'auto_explain.log_min_duration'
-  | 'auto_explain.log_analyze'
-  | 'auto_explain.log_triggers'
-  | 'auto_explain.log_buffers'
-  | 'auto_explain.log_verbose'
-  | 'auto_explain.log_nested_statements'
-  | 'auto_explain.log_format'
+  | 'pg_bouncer_max_db_conns'
+  | 'pgbouncer_max_client_conn'
+  | 'track_functions'
 export type Setting<T> = {
+  default: T
+  desc: string
   value: T
   values: Record<string, string>
-  desc: string
-  default: T
 }
 export type SettingsResponse = Record<SettingKey, Setting<unknown>>
 
 export type PGDiagnoseResponse = {
-  id: string,
   app: string,
-  database: string,
-  created_at: string,
   checks: [
     PGDiagnoseCheck<ConnCountResult>,
     PGDiagnoseCheck<QueriesResult>,
@@ -245,43 +242,46 @@ export type PGDiagnoseResponse = {
     PGDiagnoseCheck<HitRateResult>,
     PGDiagnoseCheck<BlockingResult>,
   ],
+  created_at: string,
+  database: string,
+  id: string,
 }
 
 export type PGDiagnoseCheck<T extends PGDiagnoseResult = PGDiagnoseResult> = {
   name: string,
-  status: 'red' | 'yellow' | 'green',
   results: T[]
+  status: 'green' | 'red' | 'yellow',
 }
-export type PGDiagnoseResult =
-  ConnCountResult
+export type PGDiagnoseResult
+  = BloatResult
+  | BlockingResult
+  | ConnCountResult
+  | HitRateResult
   | QueriesResult
   | UnusedIndexesResult
-  | BloatResult
-  | HitRateResult
-  | BlockingResult
 export type ConnCountResult = {
   count: number
 }
 
 export type QueriesResult = {
-  pid: number,
   duration: string,
+  pid: number,
   query: string,
 }
 
 export type UnusedIndexesResult = {
-  reason: string,
   index: string,
   index_scan_pct: string,
-  scans_per_write: string,
   index_size: string,
+  reason: string,
+  scans_per_write: string,
   table_size: string,
 }
 
 export type BloatResult = {
-  type: string,
-  object: string,
   bloat: number,
+  object: string,
+  type: string,
   waste: string,
 }
 
@@ -291,20 +291,20 @@ export type HitRateResult = {
 }
 
 export type BlockingResult = {
+  blocked_duration: string,
   blocked_pid: number,
-  blocking_statement: string,
+  blocked_statement: string,
   blocking_duration: string,
   blocking_pid: number,
-  blocked_statement: string,
-  blocked_duration: string,
+  blocking_statement: string,
 }
 
 export type PGDiagnoseRequest = {
-  url: string,
-  plan: string,
   app: string,
-  database: string,
-  metrics?: unknown[],
   burst_data_present?: boolean,
   burst_status?: string,
+  database: string,
+  metrics?: unknown[],
+  plan: string,
+  url: string,
 }

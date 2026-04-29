@@ -1,7 +1,6 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {stream} from '../../lib/releases/output.js'
@@ -11,7 +10,6 @@ export default class Rollback extends Command {
   static args = {
     release: Args.string({description: 'ID of the release. If omitted, we use the last eligible release.'}),
   }
-
   static description = `Roll back to a previous release.
 
     If RELEASE is not specified, it will roll back to the last eligible release.
@@ -20,9 +18,7 @@ export default class Rollback extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['rollback']
-
   static topic = 'releases'
 
   public async run(): Promise<void> {
@@ -47,7 +43,7 @@ export default class Rollback extends Command {
     ux.action.stop(`done, ${color.green('v' + latest.version)}`)
     ux.warn("Rollback affects code and config vars; it doesn't add or remove addons.")
     if (latest.version) {
-      ux.warn(`To undo, run: ${color.cyan.bold('heroku rollback v' + (latest.version - 1))}`)
+      ux.warn(`To undo, run: ${color.code('heroku rollback v' + (latest.version - 1))}`)
     }
 
     if (streamUrl) {
@@ -64,4 +60,3 @@ export default class Rollback extends Command {
     }
   }
 }
-

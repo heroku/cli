@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import DomainsWait from '../../../../src/commands/domains/wait.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('domains:wait', function () {
   let api: nock.Scope

@@ -1,16 +1,64 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const topic = 'addons'
 
+export default class Addons extends Command {
+  static description = `Lists your add-ons and attachments.
+
+  The default filter applied depends on whether you are in a Heroku app
+  directory. If so, the --app flag is implied. If not, the default of --all
+  is implied. Explicitly providing either flag overrides the default
+  behavior.
+  `
+  static examples = [
+    `${color.command(`heroku ${topic} --all`)}`,
+    `${color.command(`heroku ${topic} --app acme-inc-www`)}`,
+  ]
+  static flags = {
+    all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps'}),
+    app: flags.app(),
+    json: flags.boolean({description: 'return add-ons in json format'}),
+    'no-wrap': flags.noWrap(),
+    remote: flags.remote(),
+  }
+  static topic = topic
+  static usage = 'addons [--all|--app APP]'
+
+  public async run(): Promise<void> {
+    const {flags} = await this.parse(Addons)
+    const {all, app, json} = flags
+
+    if (!all && app) {
+      const addons = await addonGetter(this.heroku, app)
+      if (json)
+        displayJSON(addons)
+      else
+        displayForApp(app, addons, flags['no-wrap'])
+    } else {
+      const addons = await addonGetter(this.heroku)
+      if (json)
+        displayJSON(addons)
+      else
+        displayAll(addons, flags['no-wrap'])
+    }
+  }
+}
+
+export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isLast = false): string {
+  const line = isLast ? '\u2514\u2500' : '\u251C\u2500'
+  const attName = formatAttachment(attachment, attachment.app?.name !== app)
+  return ` ${color.gray(line)} ${attName}`
+}
+
 async function addonGetter(api: APIClient, app?: string) {
-  let attachmentsResponse: ReturnType<typeof api.get<Heroku.AddOnAttachment>> | null = null
+  let attachmentsResponse: null | ReturnType<typeof api.get<Heroku.AddOnAttachment>> = null
   let addonsResponse: ReturnType<typeof api.get<Heroku.AddOn[]>>
   if (app) { // don't display attachments globally
     addonsResponse = api.get<Heroku.AddOn[]>(`/apps/${app}/addons`, {
@@ -20,6 +68,7 @@ async function addonGetter(api: APIClient, app?: string) {
       },
     })
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
       // because the root /addon-attachments endpoint won't include relevant
       // attachments when sudo-ing for another app, we will use the more
@@ -63,20 +112,19 @@ async function addonGetter(api: APIClient, app?: string) {
   // This is probably normal (because we are asking API for all attachments)
   // but it could also be due to certain types of permissions issues, so check
   // if the attachment looks relevant to the app, and then render whatever
-  _.values(groupedAttachments)
-    .forEach(atts => {
-      const inaccessibleAddon = {
-        addon_service: {}, app: atts[0].addon.app, attachments: atts, name: atts[0].addon.name, plan: {},
-      }
-      if (isRelevantToApp(inaccessibleAddon)) {
-        addons.push(inaccessibleAddon)
-      }
-    })
+  for (const atts of _.values(groupedAttachments)) {
+    const inaccessibleAddon = {
+      addon_service: {}, app: atts[0].addon.app, attachments: atts, name: atts[0].addon.name, plan: {},
+    }
+    if (isRelevantToApp(inaccessibleAddon)) {
+      addons.push(inaccessibleAddon)
+    }
+  }
 
   return addons
 }
 
-function displayAll(addons: Heroku.AddOn[]) {
+function displayAll(addons: Heroku.AddOn[], noWrap = false) {
   addons = _.sortBy(addons, 'app.name', 'plan.name', 'addon.name')
   if (addons.length === 0) {
     ux.stdout('No add-ons.')
@@ -96,21 +144,21 @@ function displayAll(addons: Heroku.AddOn[]) {
       Plan: {
         get({plan}) {
           if (plan === undefined)
-            return color.dim('?')
+            return color.inactive('?')
           return plan.name
         },
       },
       Price: {
         get({plan}) {
           if (plan?.price === undefined)
-            return color.dim('?')
+            return color.inactive('?')
           return formatPrice({hourly: true, price: plan?.price})
         },
       },
       'Max Price': {
         get({plan}) {
           if (plan?.price === undefined)
-            return color.dim('?')
+            return color.inactive('?')
           return formatPrice({hourly: false, price: plan?.price})
         },
       },
@@ -119,50 +167,31 @@ function displayAll(addons: Heroku.AddOn[]) {
         get({state}) {
           let result: string = state || ''
           switch (state) {
-          case 'provisioned': {
-            result = 'created'
-            break
-          }
+            case 'provisioned': {
+              result = 'created'
+              break
+            }
 
-          case 'provisioning': {
-            result = 'creating'
-            break
-          }
+            case 'provisioning': {
+              result = 'creating'
+              break
+            }
 
-          case 'deprovisioned': {
-            result = 'errored'
-          }
+            case 'deprovisioned': {
+              result = 'errored'
+            }
           }
 
           return result
         },
       },
     },
-    {
-      overflow: 'wrap',
-    },
+    huxTableNoWrapOptions(noWrap),
   )
   /* eslint-enable perfectionist/sort-objects */
 }
 
-function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
-  const attName = color.attachment(attachment.name || '')
-  const output = [color.dim('as'), attName]
-  if (showApp) {
-    const appInfo = `on ${color.app(attachment.app?.name || '')} app`
-    output.push(color.dim(appInfo))
-  }
-
-  return output.join(' ')
-}
-
-export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string, isLast = false): string {
-  const line = isLast ? '\u2514\u2500' : '\u251C\u2500'
-  const attName = formatAttachment(attachment, attachment.app?.name !== app)
-  return ` ${color.dim(line)} ${attName}`
-}
-
-function displayForApp(app: string, addons: Heroku.AddOn[]) {
+function displayForApp(app: string, addons: Heroku.AddOn[], noWrap = false) {
   if (addons.length === 0) {
     ux.stdout(`No add-ons for app ${app}.`)
     return
@@ -173,18 +202,21 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
     const name = color.addon(addon.name || '')
     let service = addon.addon_service?.name
     if (service === undefined) {
-      service = color.dim('?')
+      service = color.gray('?')
     }
 
     const addonLine = `${service} (${name})`
     const atts = _.sortBy(addon.attachments, isForeignApp, 'app.name', 'name')
-    // render each attachment under the add-on
     const attLines = atts.map((attachment, idx) => {
       const isLast = (idx === addon.attachments.length - 1)
       return renderAttachment(attachment, app, isLast)
     })
-    return [addonLine].concat(attLines)
-      .join('\n') + '\n' // Separate each add-on row by a blank line
+    const lines = [addonLine, ...attLines]
+    if (noWrap) {
+      return lines.join('  ')
+    }
+
+    return `${lines.join('\n')}\n`
   }
 
   addons = _.sortBy(addons, isForeignApp, 'plan.name', 'name')
@@ -196,7 +228,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
       Plan: {
         get: ({plan}) => plan && plan.name !== undefined
           ? plan.name.replace(/^[^:]+:/, '')
-          : color.dim('?'),
+          : color.inactive('?'),
       },
       Price: {
         get(addon) {
@@ -204,7 +236,7 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
             return formatPrice({hourly: true, price: addon.plan?.price})
           }
 
-          return color.dim(`(billed to ${color.app(addon.app?.name || '')} app)`)
+          return color.gray(`(billed to ${color.app(addon.app?.name || '')} app)`)
         },
       },
       // eslint-disable-next-line perfectionist/sort-objects
@@ -214,16 +246,14 @@ function displayForApp(app: string, addons: Heroku.AddOn[]) {
             return formatPrice({hourly: false, price: addon.plan?.price})
           }
 
-          return color.dim(`(billed to ${color.app(addon.app?.name || '')} app)`)
+          return color.gray(`(billed to ${color.app(addon.app?.name || '')} app)`)
         },
       },
       State: {
         get: ({state}) => formatState(state || ''),
       },
     },
-    {
-      overflow: 'wrap',
-    },
+    huxTableNoWrapOptions(noWrap),
   )
   ux.stdout(`The table above shows add-ons and the attachments to the current app (${color.app(app)}) or other apps.\n  `)
 }
@@ -232,46 +262,13 @@ function displayJSON(addons: Heroku.AddOn[]) {
   ux.stdout(JSON.stringify(addons, null, 2))
 }
 
-export default class Addons extends Command {
-  static description = `Lists your add-ons and attachments.
-
-  The default filter applied depends on whether you are in a Heroku app
-  directory. If so, the --app flag is implied. If not, the default of --all
-  is implied. Explicitly providing either flag overrides the default
-  behavior.
-  `
-  static examples = [
-    `${color.command(`heroku ${topic} --all`)}`,
-    `${color.command(`heroku ${topic} --app acme-inc-www`)}`,
-  ]
-
-  static flags = {
-    all: flags.boolean({char: 'A', description: 'show add-ons and attachments for all accessible apps'}),
-    app: flags.app(),
-    json: flags.boolean({description: 'return add-ons in json format'}),
-    remote: flags.remote(),
+function formatAttachment(attachment: Heroku.AddOnAttachment, showApp = true) {
+  const attName = color.attachment(attachment.name || '')
+  const output = [color.gray('as'), attName]
+  if (showApp) {
+    const appInfo = `on ${color.app(attachment.app?.name || '')} app`
+    output.push(color.gray(appInfo))
   }
 
-  static topic = topic
-
-  static usage = 'addons [--all|--app APP]'
-
-  public async run(): Promise<void> {
-    const {flags} = await this.parse(Addons)
-    const {all, app, json} = flags
-
-    if (!all && app) {
-      const addons = await addonGetter(this.heroku, app)
-      if (json)
-        displayJSON(addons)
-      else
-        displayForApp(app, addons)
-    } else {
-      const addons = await addonGetter(this.heroku)
-      if (json)
-        displayJSON(addons)
-      else
-        displayAll(addons)
-    }
-  }
+  return output.join(' ')
 }

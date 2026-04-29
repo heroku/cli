@@ -1,26 +1,26 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Locks extends Command {
-  static topic = 'pg'
-  static description = 'display queries with active locks'
-  static flags = {
-    truncate: flags.boolean({char: 't', description: 'truncates queries to 40 characters'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+  static description = 'display queries with active locks'
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+    truncate: flags.boolean({char: 't', description: 'truncates queries to 40 characters'}),
+  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Locks)
+    const {args, flags} = await this.parse(Locks)
     const {app, truncate} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(app, args.database)

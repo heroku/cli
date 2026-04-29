@@ -9,21 +9,16 @@ export default class AppsRename extends Command {
   static args = {
     newname: Args.string({description: 'new unique name of the app', required: true}),
   }
-
   static description = 'rename an app'
   static examples = [
     color.command('heroku apps:rename --app oldname newname'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static help = 'This will locally update the git remote if it is set to the old app.'
-
   static hiddenAliases = ['rename']
-
   static topic = 'apps'
 
   async run() {

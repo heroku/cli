@@ -11,12 +11,10 @@ export default class Rename extends Command {
     ${color.command('heroku spaces:rename --from old-space-name --to new-space-name')}
     Renaming space old-space-name to new-space-name... done
   `
-
   static flags = {
     from: flags.string({description: 'current name of space', required: true}),
     to: flags.string({description: 'desired name of space', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

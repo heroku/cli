@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import childProcess from 'child_process'
 import nock from 'nock'
-import sinon from 'sinon'
+import childProcess from 'node:child_process'
+import {restore, stub} from 'sinon'
 
 import OpenCommand from '../../../../src/commands/pipelines/open.js'
-import runCommandHelper from '../../../helpers/runCommand.js'
 
 describe('pipelines:open', function () {
   const pipeline = {id: '0123', name: 'Rigel'}
@@ -16,13 +16,13 @@ describe('pipelines:open', function () {
 
   afterEach(function () {
     api.done()
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 
   it('opens the url', async function () {
     let hasCorrectUrl = false
-    const spawnStub = sinon.stub(childProcess, 'spawn').returns({
+    const spawnStub = stub(childProcess, 'spawn').returns({
       on(event: string, cb: CallableFunction) {
         if (event === 'exit') {
           cb()
@@ -35,7 +35,7 @@ describe('pipelines:open', function () {
       .query({eq: {name: pipeline.name}})
       .reply(200, [pipeline])
 
-    await runCommandHelper(OpenCommand, [pipeline.name])
+    await runCommand(OpenCommand, [pipeline.name])
 
     const urlArgArray = spawnStub.getCall(0).args[1]
     // For darwin-based platforms this arg is an array that contains the site url.

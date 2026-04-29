@@ -1,7 +1,6 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import open from 'open'
 
@@ -11,16 +10,13 @@ export default class Docs extends Command {
   static args = {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
-
   static description = "open an add-on's Dev Center documentation in your browser"
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
     'show-url': flags.boolean({description: 'show URL, do not open browser'}),
   }
-
   static topic = 'addons'
-
   public static urlOpener: (url: string) => Promise<unknown> = open
 
   public async run(): Promise<void> {

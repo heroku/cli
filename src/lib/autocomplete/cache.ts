@@ -1,5 +1,5 @@
-import {stat} from 'node:fs/promises'
 import fs from 'fs-extra'
+import {stat} from 'node:fs/promises'
 
 export async function updateCache(cachePath: string, cache: any) {
   await fs.ensureFile(cachePath)

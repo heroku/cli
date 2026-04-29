@@ -4,9 +4,7 @@ export default function setupPipeline(kolkrabbi: any, app: any, settings: any, p
   const promises = [kolkrabbi.updateAppLink(app, settings)]
 
   if (ciSettings.ci) {
-    promises.push(
-      kolkrabbi.updatePipelineRepository(pipelineID, ciSettings),
-    )
+    promises.push(kolkrabbi.updatePipelineRepository(pipelineID, ciSettings))
   }
 
   return Promise.all(promises).then(([appLink]) => appLink, error => {

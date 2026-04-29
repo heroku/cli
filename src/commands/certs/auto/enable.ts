@@ -17,9 +17,7 @@ export default class Enable extends Command {
     remote: flags.remote(),
     wait: flags.boolean({description: 'watch ACM status and exit when complete'}),
   }
-
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

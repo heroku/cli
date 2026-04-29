@@ -2,6 +2,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {pg} from '@heroku/heroku-cli-util'
 
 import {
+  AdvancedCredentialInfo,
+  AdvancedCredentialState,
   CredentialInfo,
   CredentialsInfo,
   DatabaseStatus,
@@ -16,7 +18,6 @@ import {
   PricingInfoResponse,
   Quota,
   Quotas,
-  ScaleResponse,
   SettingsChangeResponse,
   SettingsResponse,
   WaitStatus,
@@ -140,7 +141,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 20000,
+      rate: 20_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -161,7 +162,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 24000,
+      rate: 24_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -182,7 +183,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 28000,
+      rate: 28_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -192,21 +193,6 @@ export const pricingResponse: PricingInfoResponse = {
       rate: 28,
     },
   },
-}
-
-export const scaleResponse: ScaleResponse = {
-  changes: [
-    {
-      current: '8G-Performance', name: 'level', pool: 'leader', previous: '4G-Performance',
-    },
-    {
-      current: 'false', name: 'high-availability', pool: 'leader', previous: 'true',
-    },
-  ],
-}
-
-export const emptyScaleResponse: ScaleResponse = {
-  changes: [],
 }
 
 export const createAddonResponse: DeepRequired<Heroku.AddOn> = {
@@ -624,6 +610,45 @@ export const multipleAttachmentsResponse: Heroku.AddOnAttachment[] = [
   },
 ]
 
+export const multipleAttachmentsMultiFactorResponse: Heroku.AddOnAttachment[] = [
+  {
+    addon: {
+      app: {
+        id: addon.app.id,
+        name: addon.app.name,
+      },
+      id: addon.id,
+      name: addon.name,
+    },
+    app: {
+      id: addon.app.id,
+      name: addon.app.name,
+    },
+    config_vars: ['DATABASE_URL'],
+    id: 'c61eb5ce-0ce2-447e-817e-ba34afe8b95f',
+    name: 'DATABASE',
+    namespace: null,
+  },
+  {
+    addon: {
+      app: {
+        id: addon.app.id,
+        name: addon.app.name,
+      },
+      id: addon.id,
+      name: addon.name,
+    },
+    app: {
+      id: addon.app.id,
+      name: addon.app.name,
+    },
+    config_vars: ['MULTIFACTOR_ATTACHMENT_URL'],
+    id: '0a971b48-76b7-4bdd-b526-26bb36047f59',
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+]
+
 export const attachmentWithMissingNamespace: Heroku.AddOnAttachment[] = [
   {
     // namespace is missing
@@ -646,28 +671,6 @@ export const attachmentWithMissingNamespace: Heroku.AddOnAttachment[] = [
 ]
 
 export const emptyAttachmentsResponse: Heroku.AddOnAttachment[] = []
-
-export const addonResponse = {
-  id: '01234567-89ab-cdef-0123-456789abcdef',
-  name: 'postgres-1',
-  plan: {
-    name: 'heroku-postgresql:essential-1',
-  },
-}
-
-export const credentialConfigResponse = [
-  {
-    name: 'role:mycredential',
-    value: 'some-value',
-  },
-]
-
-export const poolConfigResponse = [
-  {
-    name: 'pool:mypool',
-    value: 'some-value',
-  },
-]
 
 export const releasesResponse = [
   {
@@ -713,7 +716,7 @@ export const advancedCredentialsResponse: CredentialsInfo = {
           user: 'u2vi1nt40t3mcq',
         },
       ],
-      state: 'active',
+      state: AdvancedCredentialState.ACTIVE,
       type: 'owner',
     },
     {
@@ -729,7 +732,7 @@ export const advancedCredentialsResponse: CredentialsInfo = {
           user: 'analyst',
         },
       ],
-      state: 'active',
+      state: AdvancedCredentialState.ACTIVE,
       type: 'additional',
     },
   ],
@@ -837,6 +840,15 @@ export const advancedCredentialsAttachmentsResponse: Heroku.AddOnAttachment[] = 
   },
 ]
 
+export const advancedCredentialsAttachmentsMultiFactorResponse: Heroku.AddOnAttachment[] = [
+  advancedCredentialsAttachmentsResponse[0],
+  {
+    ...advancedCredentialsAttachmentsResponse[1],
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+]
+
 export const nonAdvancedCredentialsAttachmentsResponse: Heroku.AddOnAttachment[] = [
   {
     addon: {
@@ -933,6 +945,20 @@ export const advancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAttachm
   },
 ]
 
+export const advancedCredentialsMultipleAttachmentsMultiFactorResponse: Heroku.AddOnAttachment[] = [
+  advancedCredentialsMultipleAttachmentsResponse[0],
+  {
+    ...advancedCredentialsMultipleAttachmentsResponse[1],
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+  {
+    ...advancedCredentialsMultipleAttachmentsResponse[2],
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+]
+
 export const nonAdvancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAttachment[] = [
   {
     addon: {
@@ -990,7 +1016,7 @@ export const nonAdvancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAtta
   },
 ]
 
-export const createCredentialResponse: CredentialInfo = {
+export const createCredentialResponse: AdvancedCredentialInfo = {
   database: 'd4w8akz45kmru7',
   host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
   id: '3d1a0a2d-3e27-4f34-99fa-c701627c0e92',
@@ -1003,7 +1029,7 @@ export const createCredentialResponse: CredentialInfo = {
       user: 'my-credential',
     },
   ],
-  state: 'active',
+  state: AdvancedCredentialState.ACTIVE,
   type: 'additional',
 }
 
@@ -1020,7 +1046,7 @@ export const inactiveCredentialResponse: CredentialInfo = {
       user: 'analyst',
     },
   ],
-  state: 'inactive',
+  state: AdvancedCredentialState.REVOKING,
   type: 'additional',
 }
 
@@ -1041,7 +1067,7 @@ export const createAttachmentResponse: Required<Heroku.AddOnAttachment> = {
   id: '0484a63c-8ceb-453d-95c8-2aaf8861c40a',
   log_input_url: null,
   name: 'TEST',
-  namespace: null,
+  namespace: 'role:u2vi1nt40t3mcq|proxy:false|pool:leader',
   updated_at: '2025-01-01T12:00:00Z',
   web_url: addon.web_url,
 }
@@ -1052,13 +1078,8 @@ export const createForeignAttachmentResponse: Required<Heroku.AddOnAttachment> =
     id: '2ef2b408-12ae-4c7c-ac16-1327eb891399',
     name: 'myapp2',
   },
-  created_at: '2025-01-01T12:00:00Z',
   id: 'df05357b-9950-403b-bcdf-aed3d60ec94e',
-  log_input_url: null,
   name: 'TEST2',
-  namespace: null,
-  updated_at: '2025-01-01T12:00:00Z',
-  web_url: `https://addons-sso.heroku.com/apps/2ef2b408-12ae-4c7c-ac16-1327eb891399/addons/${addon.id}`,
 }
 
 export const createCredentialAttachmentResponse: Required<Heroku.AddOnAttachment> = {
@@ -1066,13 +1087,6 @@ export const createCredentialAttachmentResponse: Required<Heroku.AddOnAttachment
   id: 'fc5ce939-663e-4417-8b00-cb7e6e662564',
   name: 'MYCREDENTIAL',
   namespace: 'role:mycredential',
-}
-
-export const createPoolAttachmentResponse: Required<Heroku.AddOnAttachment> = {
-  ...createAttachmentResponse,
-  id: '711a83cd-d9b1-430d-b46d-b35b8847f346',
-  name: 'MYPOOL',
-  namespace: 'pool:mypool',
 }
 
 export const createForkResponse: DeepRequired<Heroku.AddOn> = {
@@ -1106,33 +1120,6 @@ export const quotasResponse: Quotas = {
 export const storageQuotaResponse: Quota = {
   critical_gb: 100,
   current_gb: null,
-  enforcement_action: 'none',
-  enforcement_active: false,
-  type: 'storage',
-  warning_gb: 50,
-}
-
-export const storageQuotaResponseRestricted: Quota = {
-  critical_gb: 100,
-  current_gb: 150,
-  enforcement_action: 'restrict',
-  enforcement_active: true,
-  type: 'storage',
-  warning_gb: 50,
-}
-
-export const storageQuotaResponseCriticalNotify: Quota = {
-  critical_gb: 100,
-  current_gb: 150,
-  enforcement_action: 'notify',
-  enforcement_active: false,
-  type: 'storage',
-  warning_gb: 50,
-}
-
-export const storageQuotaResponseWarning: Quota = {
-  critical_gb: 100,
-  current_gb: 75,
   enforcement_action: 'none',
   enforcement_active: false,
   type: 'storage',
@@ -1512,5 +1499,10 @@ export const waitStatusMigrating: WaitStatus = {
 
 export const waitStatusUpdating: WaitStatus = {
   message: 'Updating',
+  waiting: true,
+}
+
+export const waitStatusUpgrading: WaitStatus = {
+  message: 'Upgrading',
   waiting: true,
 }

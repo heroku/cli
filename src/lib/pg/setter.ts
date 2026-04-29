@@ -1,26 +1,27 @@
 import {Command, flags} from '@heroku-cli/command'
+import {utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {utils} from '@heroku/heroku-cli-util'
+import type {Setting, SettingKey, SettingsResponse} from './types.js'
+
 import {essentialPlan} from './util.js'
-import type {SettingKey, Setting, SettingsResponse} from './types.js'
 
 export abstract class PGSettingsCommand extends Command {
-  protected abstract settingKey: SettingKey
-  protected abstract convertValue(val: string): unknown
-  protected abstract explain(setting: Setting<unknown>): string
-
-  static topic = 'pg'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
+  static topic = 'pg'
+  protected abstract settingKey: SettingKey
+
+  protected abstract convertValue(val: string): unknown
+
+  protected abstract explain(setting: Setting<unknown>): string
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse()
+    const {args, flags} = await this.parse()
     const {app} = flags
-    const {value, database} = args as {value: string | undefined, database: string | undefined}
+    const {database, value} = args as {database: string | undefined; value: string | undefined,}
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon: db} = await dbResolver.getAttachment(app, database)
@@ -31,42 +32,43 @@ export abstract class PGSettingsCommand extends Command {
 
     if (value) {
       const {body: settings} = await this.heroku.patch<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {
-        hostname: utils.pg.host(),
         body: {[this.settingKey]: this.convertValue(value)},
+        hostname: utils.pg.host(),
       })
       const setting = settings[this.settingKey]
-      ux.stdout(`${this.settingKey.replace(/_/g, '-')} has been set to ${setting.value} for ${db.name}.`)
+      ux.stdout(`${this.settingKey.replaceAll('_', '-')} has been set to ${setting.value} for ${db.name}.`)
       ux.stdout(this.explain(setting))
     } else {
       const {body: settings} = await this.heroku.get<SettingsResponse>(`/postgres/v0/databases/${db.id}/config`, {hostname: utils.pg.host()})
       const setting = settings[this.settingKey]
-      ux.stdout(`${this.settingKey.replace(/_/g, '-')} is set to ${setting.value} for ${db.name}.`)
+      ux.stdout(`${this.settingKey.replaceAll('_', '-')} is set to ${setting.value} for ${db.name}.`)
       ux.stdout(this.explain(setting))
     }
   }
 }
 
-export type BooleanAsString = 'on' | 'ON' | 'true' | 'TRUE' | 'off' | 'OFF' | 'false' | 'FALSE'
+export type BooleanAsString = 'false' | 'FALSE' | 'off' | 'OFF' | 'on' | 'ON' | 'true' | 'TRUE'
 export const booleanConverter = (value: BooleanAsString) => {
   switch (value) {
-  case 'true':
-  case 'TRUE':
-  case 'ON':
-  case 'on': {
-    return true
-  }
+    case 'false':
+    case 'FALSE':
+    case null:
+    case 'OFF':
+    // falls through
+    case 'off': {
+      return false
+    }
 
-  case 'false':
-  case 'FALSE':
-  case 'OFF':
-  case 'off':
-  case null: {
-    return false
-  }
+    case 'ON':
+    case 'on':
+    case 'true':
+    case 'TRUE': {
+      return true
+    }
 
-  default: {
-    throw new TypeError('Invalid value. Valid options are: a boolean value')
-  }
+    default: {
+      throw new TypeError('Invalid value. Valid options are: a boolean value')
+    }
   }
 }
 

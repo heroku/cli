@@ -1,16 +1,16 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.0.0",
+  "version": "11.3.0",
   "author": "Heroku",
-  "bin": "./bin/run",
+  "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^12.2.2",
+    "@heroku-cli/command": "^12.3.1",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/heroku-cli-util": "^10.7.0",
+    "@heroku/heroku-cli-util": "^10.8.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
     "@heroku/socksv5": "^0.0.9",
@@ -18,7 +18,6 @@
     "@oclif/core": "^4.8.4",
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
-    "@oclif/plugin-legacy": "^2.0.28",
     "@oclif/plugin-not-found": "^3.2.74",
     "@oclif/plugin-plugins": "^5.4.58",
     "@oclif/plugin-search": "1.2.38",
@@ -46,7 +45,7 @@
     "date-fns": "^2.30.0",
     "debug": "^4.4.3",
     "eventsource": "^4",
-    "execa": "5.1.1",
+    "execa": "^9.6.1",
     "filesize": "^10.1",
     "foreman": "^3.0.1",
     "fs-extra": "^11.3.0",
@@ -66,12 +65,12 @@
     "phoenix": "^1.6.14",
     "portfinder": "^1.0.32",
     "printf": "0.6.1",
-    "psl": "^1.15.0",
     "redis-parser": "^3.0.0",
     "shell-quote": "^1.8.1",
     "ssh2": "^1.16.0",
     "strftime": "^0.10.0",
     "term-img": "^7.1.0",
+    "tldts": "^7.0.27",
     "tmp": "^0.2.5",
     "true-myth": "4.1.1",
     "tsheredoc": "^1.0.1",
@@ -84,10 +83,12 @@
   },
   "devDependencies": {
     "@actions/core": "^3.0.0",
+    "@heroku-cli/test-utils": "^0.2.0",
     "@types/ansi-styles": "^3.2.1",
     "@types/bytes": "^3.1.4",
     "@types/chai": "^4.3.14",
     "@types/chai-as-promised": "^7.1.8",
+    "@types/cli-progress": "^3.11.6",
     "@types/debug": "^4.1.2",
     "@types/fs-extra": "^11.0.4",
     "@types/glob": "^7.1.1",
@@ -100,12 +101,10 @@
     "@types/node-fetch": "^2.6.11",
     "@types/node-forge": "^1.3.14",
     "@types/phoenix": "^1.4.0",
-    "@types/psl": "1.1.3",
     "@types/redis-parser": "^3.0.3",
     "@types/shell-quote": "^1.7.5",
-    "@types/sinon": "^17.0.3",
+    "@types/sinon": "^21.0.0",
     "@types/ssh2": "^1.15.4",
-    "@types/std-mocks": "^1.0.4",
     "@types/strftime": "^0.9.8",
     "@types/supports-color": "^8.1.3",
     "@types/tmp": "^0.2.6",
@@ -114,35 +113,28 @@
     "@types/write-json-file": "^3.2.1",
     "@types/ws": "^6.0.1",
     "@types/yargs-parser": "^21.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.57.0",
-    "@typescript-eslint/parser": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.1",
+    "@typescript-eslint/parser": "^8.58.1",
     "bats": "^1.1.0",
     "c8": "^11.0.0",
-    "chai": "^4.4.1",
+    "chai": "^5.3.3",
     "chai-as-promised": "^7.1.1",
     "commit-and-tag-version": "^12.5.0",
-    "cspell": "9.7.0",
-    "eslint": "8.57.1",
-    "eslint-config-oclif": "^5.2.2",
+    "cspell": "9.8.0",
+    "eslint": "^9.39.4",
+    "eslint-config-oclif": "^6.0.157",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-mocha": "^10.4.3",
-    "eslint-plugin-n": "^17.24.0",
-    "eslint-plugin-perfectionist": "4.15.1",
     "husky": "8.0.3",
     "lolex": "^5.1.2",
     "mocha": "^10.8.2",
     "mock-stdin": "^1",
-    "nock": "^13.5.1",
+    "nock": "^14.0.12",
     "oclif": "^4.22.87",
-    "qqjs": "0.3.11",
     "rimraf": "5.0.5",
     "sinon": "^21.0.2",
     "source-map-support": "^0.5.21",
-    "std-mocks": "^2.0.0",
-    "stdout-stderr": "^0.1.13",
     "ts-node": "^10.9.2",
-    "typescript": "4.8.4"
+    "typescript": "4.9.5"
   },
   "oclif": {
     "additionalHelpFlags": [
@@ -183,18 +175,21 @@
     "dirname": "heroku",
     "hooks": {
       "command_not_found": [
-        "./dist/hooks/command_not_found/performance_analytics"
+        "./dist/hooks/command_not_found/setup-otel-telemetry"
+      ],
+      "finally": [
+        "./dist/hooks/finally/send-otel-and-sentry-errors"
       ],
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
-        "./dist/hooks/init/performance_analytics"
+        "./dist/hooks/init/setup-otel-telemetry"
       ],
       "postrun": [
-        "./dist/hooks/postrun/performance_analytics"
+        "./dist/hooks/postrun/send-otel-telemetry"
       ],
       "prerun": [
-        "./dist/hooks/prerun/analytics"
+        "./dist/hooks/prerun/collect-and-send-herokulytics"
       ],
       "preupdate": [
         "./dist/hooks/preupdate/check-npm-auth"
@@ -216,7 +211,6 @@
     "plugins": [
       "@oclif/plugin-commands",
       "@oclif/plugin-help",
-      "@oclif/plugin-legacy",
       "@oclif/plugin-not-found",
       "@oclif/plugin-plugins",
       "@oclif/plugin-search",
@@ -345,7 +339,7 @@
     },
     "update": {
       "node": {
-        "version": "22.22.1"
+        "version": "22.22.2"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
@@ -382,11 +376,11 @@
   "scripts": {
     "build": "rm -rf dist && tsc && npm run manifest",
     "build:dev": "rm -rf dist && tsc --sourcemap && npm run manifest",
-    "lint": "eslint . --ext .ts --config .eslintrc.cjs",
-    "lint:fix": "eslint . --ext .ts --config .eslintrc.cjs --fix --quiet",
-    "lint:fix:all": "eslint . --ext .ts --config .eslintrc.cjs --fix",
-    "coverage": "c8 --reporter=lcov --reporter=text-summary npm run test",
-    "coverage:html": "c8 --reporter=html --reporter=text-summary npm run test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix --quiet",
+    "lint:fix:all": "eslint . --fix",
+    "coverage": "c8 --all --reporter=lcov --reporter=text-summary npm run test",
+    "coverage:html": "c8 --all --reporter=html --reporter=text-summary npm run test",
     "create-shrinkwrap": "npm shrinkwrap",
     "prepublishOnly": "npm run create-shrinkwrap",
     "postpublish": "rm -f oclif.manifest.json",

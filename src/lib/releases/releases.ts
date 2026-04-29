@@ -3,11 +3,11 @@ import * as Heroku from '@heroku-cli/schema'
 
 export const findRelease = async function (heroku: APIClient, app: string, search: (releases: Heroku.Release[]) => Heroku.Release) {
   const {body: releases} = await heroku.request<Heroku.Release[]>(`/apps/${app}/releases`, {
-    partial: true,
     headers: {
-      Range: 'version ..; max=10, order=desc',
       Accept: 'application/vnd.heroku+json; version=3.sdk',
+      Range: 'version ..; max=10, order=desc',
     },
+    partial: true,
   })
 
   return search(releases)

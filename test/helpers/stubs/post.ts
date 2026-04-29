@@ -8,7 +8,7 @@ export function collaborators() {
 }
 
 export function teamAppCollaborators(email = 'gandalf@heroku.com', permissions: string[] = [], response: {code?: number, description?: Record<string, unknown>} = {}) {
-  const body: {user: string, permissions?: string[]} = {user: email}
+  const body: {permissions?: string[]; user: string,} = {user: email}
   if (permissions.length > 0) {
     body.permissions = permissions
   }

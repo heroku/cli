@@ -2,7 +2,7 @@ import {Command} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import {printTable, TableOptions} from '@oclif/table'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {PostgresLevelInfo, PostgresLevelsResponse} from '../../../lib/data/types.js'
 
 export default class DataPgLevels extends BaseCommand {

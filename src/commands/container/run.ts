@@ -4,7 +4,7 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
-import {DockerHelper, DockerJob} from '../../lib/container/docker_helper.js'
+import {DockerHelper, DockerJob} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 export default class Run extends Command {
@@ -14,20 +14,15 @@ export default class Run extends Command {
     `${color.command('heroku container:pull web worker')} # Pulls both the web and worker images from the app`,
     `${color.command('heroku container:pull web:latest')} # Pulls the latest tag from the web image`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     port: flags.integer({char: 'p', default: 5000, description: 'port the app will run on'}),
     remote: flags.remote(),
     verbose: flags.boolean({char: 'v'}),
   }
-
   static strict = false
-
   static topic = 'container'
-
   static usage = 'container:run -a APP [-v] PROCESS_TYPE...'
-
   dockerHelper = new DockerHelper()
 
   async run() {
@@ -56,7 +51,7 @@ export default class Run extends Command {
     let jobs: DockerJob[] = []
 
     if (possibleJobs.standard) {
-      possibleJobs.standard.forEach((pj: { resource: string }) => {
+      possibleJobs.standard.forEach((pj: {resource: string}) => {
         pj.resource = pj.resource.replace(/standard$/, processType)
       })
       jobs = possibleJobs.standard || []

@@ -1,7 +1,6 @@
 import {expect} from 'chai'
 
 import {CompletionLookup, CompletionMapping} from '../../../../src/lib/autocomplete/completions.js'
-
 // autocomplete will throw error on windows
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
 

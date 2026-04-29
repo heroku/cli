@@ -7,7 +7,6 @@ import {quote} from '../../lib/config/quote.js'
 
 export class ConfigIndex extends Command {
   static description = 'display the config vars for an app'
-
   static flags = {
     app: flags.app({required: true}),
     json: flags.boolean({char: 'j', description: 'output config vars in json format'}),
@@ -19,15 +18,12 @@ export class ConfigIndex extends Command {
     const {flags} = await this.parse(ConfigIndex)
     const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
     if (flags.shell) {
-      Object.entries(config)
-        .forEach(([k, v]) => ux.stdout(`${k}=${quote(v)}`))
+      for (const [k, v] of Object.entries(config)) ux.stdout(`${k}=${quote(v)}`)
     } else if (flags.json) {
       hux.styledJSON(config)
     } else {
       hux.styledHeader(`${color.app(flags.app)} Config Vars`)
-      const coloredConfig = Object.fromEntries(
-        Object.entries(config).map(([key, value]) => [color.name(key), value]),
-      )
+      const coloredConfig = Object.fromEntries(Object.entries(config).map(([key, value]) => [color.name(key), value]))
       hux.styledObject(coloredConfig)
     }
   }

@@ -1,12 +1,11 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import debug from 'debug'
-import forge from 'node-forge'
 import got, {Response} from 'got'
 import keypair from 'keypair'
+import forge from 'node-forge'
 import child from 'node:child_process'
 import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
@@ -58,7 +57,7 @@ export class HerokuExec {
 
           statuses.push({
             dyno_name: color.name(name),
-            dyno_status: dyno ? (dyno.state === 'up' ? color.success(dyno.state) : color.yellow(dyno.state)) : color.error('missing!'),
+            dyno_status: dyno ? (dyno.state === 'up' ? color.success(dyno.state) : color.yellow(dyno.state || '')) : color.error('missing!'),
             proxy_status: 'running',
           })
         }
@@ -189,7 +188,7 @@ export class HerokuExec {
       const execUrl = this._execUrl(context, configVars)
       const dyno = this._dyno(context)
 
-      const response = await got(`https://${execUrl.host}/${this._execApiPath(configVars)}/${dyno}`, {
+      const response = await got(`https://${execUrl.host}${this._execApiPath(configVars)}/${dyno}`, {
         body: JSON.stringify({client_key: pubkeypem}),
         headers: {...this._execHeaders(), 'content-type': 'application/json'},
         method: 'PUT',
@@ -241,11 +240,9 @@ export class HerokuExec {
       return new URL(urlString)
     }
 
-    if (process.env.HEROKU_EXEC_URL === undefined) {
-      urlString = 'https://exec-manager.heroku.com/'
-    } else {
-      urlString = process.env.HEROKU_EXEC_URL
-    }
+    urlString = process.env.HEROKU_EXEC_URL === undefined
+      ? 'https://exec-manager.heroku.com/'
+      : process.env.HEROKU_EXEC_URL
 
     const execUrl = new URL(urlString)
     execUrl.username = context.app

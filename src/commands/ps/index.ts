@@ -1,32 +1,91 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import tsheredoc from 'tsheredoc'
 
 import {ago} from '../../lib/time.js'
-import {AccountQuota} from '../../lib/types/account_quota.js'
-import {AppProcessTier} from '../../lib/types/app_process_tier.js'
-import {DynoExtended} from '../../lib/types/dyno_extended.js'
+import {AccountQuota} from '../../lib/types/account-quota.js'
+import {AppProcessTier} from '../../lib/types/app-process-tier.js'
+import {DynoExtended} from '../../lib/types/dyno-extended.js'
 import {Account} from '../../lib/types/fir.js'
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const heredoc = tsheredoc.default
 
-function getProcessNumber(s: string) : number {
-  const [processType, dynoNumber] = (s.match(/^([^.]+)\.(.*)$/) || []).slice(1, 3)
+export default class Index extends Command {
+  static description = 'list dynos for an app'
+  static examples = [heredoc`
+    ${color.command('heroku ps')}
+    === run: one-off dyno
+    run.1: up for 5m: bash
+    === web: bundle exec thin start -p $PORT
+    web.1: created for 30s
+  `, heredoc`
+    ${color.command('heroku ps run')} # specifying types
+    === run: one-off dyno
+    run.1: up for 5m: bash
+  `]
+  static flags = {
+    app: flags.app({required: true}),
+    extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
+    json: flags.boolean({description: 'display as json'}),
+    'no-wrap': flags.noWrap(),
+    remote: flags.remote(),
+  }
+  static strict = false
+  static topic = 'ps'
+  static usage = 'ps [TYPE [TYPE ...]]'
 
-  if (!processType || !dynoNumber?.match(/^\d+$/))
-    return 0
+  public async run(): Promise<void> {
+    const {flags, ...restParse} = await this.parse(Index)
+    const {app, extended, json} = flags
+    const types = restParse.argv as string[]
+    const suffix = extended ? '?extended=true' : ''
+    const promises = {
+      accountInfo: this.heroku.request<Account>('/account', {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }),
+      appInfo: this.heroku.request<AppProcessTier>(`/apps/${app}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }),
+      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }),
+    }
+    const [{body: dynos}, {body: appInfo}, {body: accountInfo}] = await Promise.all([promises.dynos, promises.appInfo, promises.accountInfo])
+    const shielded = appInfo.space && appInfo.space.shield
 
-  return Number.parseInt(dynoNumber, 10)
-}
+    if (shielded) {
+      for (const d of dynos) {
+        d.size = d.size.replace('Private-', 'Shield-')
+      }
+    }
 
-function uniqueValues(value: string, index: number, self: string[]) : boolean {
-  return self.indexOf(value) === index
-}
+    let selectedDynos = dynos
 
-function byProcessNumber(a: DynoExtended, b: DynoExtended) : number {
-  return getProcessNumber(a.name) - getProcessNumber(b.name)
+    if (types.length > 0) {
+      selectedDynos = selectedDynos.filter(dyno => types.find((t: string) => dyno.type === t))
+      for (const t of types) {
+        if (!selectedDynos.some(d => d.type === t)) {
+          throw new Error(`No ${color.info(t)} dynos on ${color.app(app)}`)
+        }
+      }
+    }
+
+    selectedDynos = selectedDynos.sort(byProcessName)
+
+    if (json)
+      hux.styledJSON(selectedDynos)
+    else if (extended)
+      printExtended(selectedDynos, flags['no-wrap'])
+    else {
+      await printAccountQuota(this.heroku, appInfo, accountInfo)
+      if (selectedDynos.length === 0)
+        ux.stdout(`No dynos on ${color.app(app)}`)
+      else
+        printDynos(selectedDynos)
+    }
+  }
 }
 
 function byProcessName(a: DynoExtended, b: DynoExtended) : number {
@@ -41,6 +100,10 @@ function byProcessName(a: DynoExtended, b: DynoExtended) : number {
   return 0
 }
 
+function byProcessNumber(a: DynoExtended, b: DynoExtended) : number {
+  return getProcessNumber(a.name) - getProcessNumber(b.name)
+}
+
 function byProcessTypeAndNumber(a: DynoExtended, b: DynoExtended) : number {
   if (a.type > b.type) {
     return 1
@@ -53,37 +116,29 @@ function byProcessTypeAndNumber(a: DynoExtended, b: DynoExtended) : number {
   return getProcessNumber(a.name) - getProcessNumber(b.name)
 }
 
-function truncate(s: string) {
-  return s.length > 35 ? `${s.slice(0, 34)}…` : s
+function decorateCommandDyno(dyno: DynoExtended) : string {
+  const since = ago(new Date(dyno.updated_at))
+  const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
+
+  return `${dyno.name}: ${state} ${color.gray(since)}`
 }
 
-function printExtended(dynos: DynoExtended[]) {
-  const sortedDynos = dynos.sort(byProcessTypeAndNumber)
+function decorateOneOffDyno(dyno: DynoExtended) : string {
+  const since = ago(new Date(dyno.updated_at))
+  // eslint-disable-next-line unicorn/explicit-length-check
+  const size = dyno.size || '1X'
+  const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
 
-  /* eslint-disable perfectionist/sort-objects */
-  hux.table<DynoExtended>(
-    sortedDynos,
-    {
-      ID: {get: (dyno: DynoExtended) => dyno.id},
-      Process: {get: (dyno: DynoExtended) => dyno.name},
-      State: {get: (dyno: DynoExtended) => `${dyno.state} ${ago(new Date(dyno.updated_at))}`},
-      Region: {get: (dyno: DynoExtended) => dyno.extended?.region ?? ''},
-      'Execution Plane': {get: (dyno: DynoExtended) => dyno.extended?.execution_plane ?? ''},
-      Fleet: {get: (dyno: DynoExtended) => dyno.extended?.fleet ?? ''},
-      Instance: {get: (dyno: DynoExtended) => dyno.extended?.instance ?? ''},
-      IP: {get: (dyno: DynoExtended) => dyno.extended?.ip ?? ''},
-      Port: {get: (dyno: DynoExtended) => dyno.extended?.port?.toString() ?? ''},
-      AZ: {get: (dyno: DynoExtended) => dyno.extended?.az ?? ''},
-      Release: {get: (dyno: DynoExtended) => dyno.release.version},
-      Command: {get: (dyno: DynoExtended) => truncate(dyno.command)},
-      Route: {get: (dyno: DynoExtended) => dyno.extended?.route ?? ''},
-      Size: {get: (dyno: DynoExtended) => dyno.size},
-    },
-    {
-      overflow: 'wrap',
-    },
-  )
-  /* eslint-enable perfectionist/sort-objects */
+  return `${dyno.name} (${color.info(size)}): ${state} ${color.gray(since)}: ${dyno.command}`
+}
+
+function getProcessNumber(s: string) : number {
+  const [processType, dynoNumber] = (s.match(/^([^.]+)\.(.*)$/) || []).slice(1, 3)
+
+  if (!processType || !dynoNumber?.match(/^\d+$/))
+    return 0
+
+  return Number.parseInt(dynoNumber, 10)
 }
 
 async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account: Account) {
@@ -124,22 +179,6 @@ async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account
   ux.stdout()
 }
 
-function decorateOneOffDyno(dyno: DynoExtended) : string {
-  const since = ago(new Date(dyno.updated_at))
-  // eslint-disable-next-line unicorn/explicit-length-check
-  const size = dyno.size || '1X'
-  const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
-
-  return `${dyno.name} (${color.info(size)}): ${state} ${color.dim(since)}: ${dyno.command}`
-}
-
-function decorateCommandDyno(dyno: DynoExtended) : string {
-  const since = ago(new Date(dyno.updated_at))
-  const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
-
-  return `${dyno.name}: ${state} ${color.dim(since)}`
-}
-
 function printDynos(dynos: DynoExtended[]) : void {
   const oneOffs = dynos.filter(d => d.type === 'run').sort(byProcessNumber)
 
@@ -150,12 +189,12 @@ function printDynos(dynos: DynoExtended[]) : void {
   // Print one-off dynos
   if (oneOffs.length > 0) {
     hux.styledHeader(`${color.label('run')}: one-off processes (${oneOffs.length})`)
-    oneOffs.forEach(dyno => ux.stdout(decorateOneOffDyno(dyno)))
+    for (const dyno of oneOffs) ux.stdout(decorateOneOffDyno(dyno))
     ux.stdout()
   }
 
   // Print dynos grouped by command
-  commands.forEach(command => {
+  for (const command of commands) {
     const commandDynos = dynos.filter(d => d.command === command).sort(byProcessNumber)
     const {size = '1X', type} = commandDynos[0]
 
@@ -163,84 +202,40 @@ function printDynos(dynos: DynoExtended[]) : void {
     for (const dyno of commandDynos)
       ux.stdout(decorateCommandDyno(dyno))
     ux.stdout()
-  })
+  }
 }
 
-export default class Index extends Command {
-  static description = 'list dynos for an app'
-  static examples = [heredoc`
-    ${color.command('heroku ps')}
-    === run: one-off dyno
-    run.1: up for 5m: bash
-    === web: bundle exec thin start -p $PORT
-    web.1: created for 30s
-  `, heredoc`
-    ${color.command('heroku ps run')} # specifying types
-    === run: one-off dyno
-    run.1: up for 5m: bash
-  `]
+function printExtended(dynos: DynoExtended[], noWrap = false) {
+  const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
-  static flags = {
-    app: flags.app({required: true}),
-    extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
-    json: flags.boolean({description: 'display as json'}),
-    remote: flags.remote(),
-  }
+  /* eslint-disable perfectionist/sort-objects */
+  hux.table<DynoExtended>(
+    sortedDynos,
+    {
+      ID: {get: (dyno: DynoExtended) => dyno.id},
+      Process: {get: (dyno: DynoExtended) => dyno.name},
+      State: {get: (dyno: DynoExtended) => `${dyno.state} ${ago(new Date(dyno.updated_at))}`},
+      Region: {get: (dyno: DynoExtended) => dyno.extended?.region ?? ''},
+      'Execution Plane': {get: (dyno: DynoExtended) => dyno.extended?.execution_plane ?? ''},
+      Fleet: {get: (dyno: DynoExtended) => dyno.extended?.fleet ?? ''},
+      Instance: {get: (dyno: DynoExtended) => dyno.extended?.instance ?? ''},
+      IP: {get: (dyno: DynoExtended) => dyno.extended?.ip ?? ''},
+      Port: {get: (dyno: DynoExtended) => dyno.extended?.port?.toString() ?? ''},
+      AZ: {get: (dyno: DynoExtended) => dyno.extended?.az ?? ''},
+      Release: {get: (dyno: DynoExtended) => dyno.release.version},
+      Command: {get: (dyno: DynoExtended) => truncate(dyno.command)},
+      Route: {get: (dyno: DynoExtended) => dyno.extended?.route ?? ''},
+      Size: {get: (dyno: DynoExtended) => dyno.size},
+    },
+    huxTableNoWrapOptions(noWrap),
+  )
+  /* eslint-enable perfectionist/sort-objects */
+}
 
-  static strict = false
+function truncate(s: string) {
+  return s.length > 35 ? `${s.slice(0, 34)}…` : s
+}
 
-  static topic = 'ps'
-
-  static usage = 'ps [TYPE [TYPE ...]]'
-
-  public async run(): Promise<void> {
-    const {flags, ...restParse} = await this.parse(Index)
-    const {app, extended, json} = flags
-    const types = restParse.argv as string[]
-    const suffix = extended ? '?extended=true' : ''
-    const promises = {
-      accountInfo: this.heroku.request<Account>('/account', {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-      appInfo: this.heroku.request<AppProcessTier>(`/apps/${app}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-    }
-    const [{body: dynos}, {body: appInfo}, {body: accountInfo}] = await Promise.all([promises.dynos, promises.appInfo, promises.accountInfo])
-    const shielded = appInfo.space && appInfo.space.shield
-
-    if (shielded) {
-      dynos.forEach(d => {
-        d.size = d.size.replace('Private-', 'Shield-')
-      })
-    }
-
-    let selectedDynos = dynos
-
-    if (types.length > 0) {
-      selectedDynos = selectedDynos.filter(dyno => types.find((t: string) => dyno.type === t))
-      types.forEach(t => {
-        if (!selectedDynos.some(d => d.type === t)) {
-          throw new Error(`No ${color.info(t)} dynos on ${color.app(app)}`)
-        }
-      })
-    }
-
-    selectedDynos = selectedDynos.sort(byProcessName)
-
-    if (json)
-      hux.styledJSON(selectedDynos)
-    else if (extended)
-      printExtended(selectedDynos)
-    else {
-      await printAccountQuota(this.heroku, appInfo, accountInfo)
-      if (selectedDynos.length === 0)
-        ux.stdout(`No dynos on ${color.app(app)}`)
-      else
-        printDynos(selectedDynos)
-    }
-  }
+function uniqueValues(value: string, index: number, self: string[]) : boolean {
+  return self.indexOf(value) === index
 }

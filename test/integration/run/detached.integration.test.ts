@@ -1,7 +1,7 @@
 import ansis from 'ansis'
 import {expect} from 'chai'
 
-import {runCliSubprocess} from '../../helpers/runCliSubprocess.js'
+import {runCliSubprocess} from '../../helpers/run-cli-subprocess.js'
 
 describe('run:detached', function () {
   it('runs a command', function () {

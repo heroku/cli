@@ -1,14 +1,14 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import sinon from 'sinon'
+import {createSandbox, SinonStub} from 'sinon'
 
 import Local from '../../../../src/commands/local/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('local', function () {
-  let sandbox: ReturnType<typeof sinon.createSandbox>
+  let sandbox: ReturnType<typeof createSandbox>
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
+    sandbox = createSandbox()
   })
 
   afterEach(function () {
@@ -39,6 +39,16 @@ describe('local', function () {
         expect(error.message).to.not.contain('Invalid flag')
       }
     })
+
+    it('accepts --start-cmd flag', async function () {
+      sandbox.stub(Local.prototype, 'runForeman').resolves()
+      sandbox.stub(Local.prototype, 'hasProcfile').returns(false)
+      const {error} = await runCommand(Local, ['--start-cmd', 'npm start'])
+      // If command parsing reaches execution, the flag was accepted
+      if (error) {
+        expect(error.message).to.not.contain('Invalid flag')
+      }
+    })
   })
 
   describe('error handling', function () {
@@ -59,11 +69,15 @@ describe('local', function () {
   })
 
   describe('argument construction', function () {
-    let runForemanStub: sinon.SinonStub
+    let runForemanStub: SinonStub
+    let hasProcfileStub: SinonStub
+    let loadProcfileStub: SinonStub
     let originalCwd: string
 
     beforeEach(function () {
       runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
+      hasProcfileStub = sandbox.stub(Local.prototype, 'hasProcfile').returns(true)
+      loadProcfileStub = sandbox.stub(Local.prototype, 'loadProcfile').returns({web: 'npm start'})
       originalCwd = process.cwd()
     })
 
@@ -110,6 +124,8 @@ describe('local', function () {
     it('uses default procfile when none specified', async function () {
       // Change to fixtures directory so the test can find the default Procfile
       process.chdir('test/fixtures/local')
+      hasProcfileStub.restore()
+      loadProcfileStub.restore()
 
       // This test verifies that when no procfile is specified, it defaults to 'Procfile'
       // and calls loadProc with the default path
@@ -123,13 +139,14 @@ describe('local', function () {
   })
 
   describe('procfile integration', function () {
-    let sandbox: ReturnType<typeof sinon.createSandbox>
-    let runForemanStub: sinon.SinonStub
-    let loadProcfileStub: sinon.SinonStub
+    let sandbox: ReturnType<typeof createSandbox>
+    let runForemanStub: SinonStub
+    let loadProcfileStub: SinonStub
 
     beforeEach(function () {
-      sandbox = sinon.createSandbox()
+      sandbox = createSandbox()
       runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
+      sandbox.stub(Local.prototype, 'hasProcfile').returns(true)
     })
 
     afterEach(function () {
@@ -200,13 +217,50 @@ describe('local', function () {
     })
   })
 
+  describe('start command precedence', function () {
+    let runForemanStub: SinonStub
+    let hasProcfileStub: SinonStub
+    let loadProcfileStub: SinonStub
+
+    beforeEach(function () {
+      runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
+      hasProcfileStub = sandbox.stub(Local.prototype, 'hasProcfile').returns(true)
+      loadProcfileStub = sandbox.stub(Local.prototype, 'loadProcfile').returns({web: 'node server.js'})
+    })
+
+    it('uses procfile and warns when both procfile and --start-cmd are provided', async function () {
+      const {stderr} = await runCommand(Local, ['--start-cmd', 'npm start'])
+
+      expect(loadProcfileStub.calledOnce).to.be.true
+      expect(runForemanStub.calledOnce).to.be.true
+      expect(stderr).to.contain('is being ignored')
+    })
+
+    it('uses --start-cmd when no procfile is found', async function () {
+      hasProcfileStub.returns(false)
+      await runCommand(Local, ['--start-cmd', 'python app.py'])
+
+      expect(loadProcfileStub.called).to.be.false
+      expect(runForemanStub.calledOnce).to.be.true
+      expect(runForemanStub.firstCall.args[0]).to.deep.equal(['run', '--env', '.env', '--', 'sh', '-c', 'python app.py'])
+    })
+
+    it('errors when no procfile and no --start-cmd are provided', async function () {
+      hasProcfileStub.returns(false)
+      const {error} = await runCommand(Local)
+
+      expect(error?.message).to.equal('No Procfile found.\nAdd a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile\nOr specify a start command with --start-cmd.')
+      expect(runForemanStub.called).to.be.false
+    })
+  })
+
   describe('environment file integration', function () {
-    let sandbox: ReturnType<typeof sinon.createSandbox>
-    let runForemanStub: sinon.SinonStub
+    let sandbox: ReturnType<typeof createSandbox>
+    let runForemanStub: SinonStub
     let originalCwd: string
 
     beforeEach(function () {
-      sandbox = sinon.createSandbox()
+      sandbox = createSandbox()
       runForemanStub = sandbox.stub(Local.prototype, 'runForeman').resolves()
       originalCwd = process.cwd()
     })

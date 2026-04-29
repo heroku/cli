@@ -1,24 +1,16 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {confirm} from '@inquirer/prompts'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import {orderBy} from 'natural-orderby'
 import Uri from 'urijs'
 
-import parseKeyValue from '../../lib/utils/keyValueParser.js'
+import parseKeyValue from '../../lib/utils/key-value-parser.js'
 import {paginateRequest} from '../../lib/utils/paginator.js'
-
-function isApexDomain(hostname: string) {
-  if (hostname.includes('*')) return false
-  const a = new Uri({hostname, protocol: 'http'})
-  return a.subdomain() === ''
-}
+import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 export default class DomainsIndex extends Command {
   static description = 'list domains for an app'
-
   static examples = [`${color.command('heroku domains')}
 === example Heroku Domain
 example-xxxxxxxxxxxx.herokuapp.com
@@ -30,7 +22,6 @@ www.example.com  CNAME            www.example.herokudns.com
 === example Custom Domains
 Domain Name      DNS Record Type  DNS Target
 www.example.com  CNAME            www.example.herokudns.com`]
-
   static flags = {
     app: flags.app({required: true}),
     columns: flags.string({description: 'only show provided columns (comma-separated)'}),
@@ -38,10 +29,10 @@ www.example.com  CNAME            www.example.herokudns.com`]
     extended: flags.boolean({char: 'x', description: 'show extra columns'}),
     filter: flags.string({description: 'filter property by partial string matching, ex: name=foo'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
+    'no-wrap': flags.noWrap(),
     remote: flags.remote(),
     sort: flags.string({description: 'sort by property'}),
   }
-
   getFilteredDomains = (filterKeyValue: string, domains: Array<Heroku.Domain>) => {
     const filteredInfo = {filteredDomains: domains, size: 0}
     const {key: filterName, value} = parseKeyValue(filterKeyValue)
@@ -75,7 +66,6 @@ www.example.com  CNAME            www.example.herokudns.com`]
     filteredInfo.size = filteredInfo.filteredDomains.length
     return filteredInfo
   }
-
   mapColumnHeadersToKeys = (columnHeaders: string[]): string[] => {
     const headerToKeyMap: Record<string, string> = {
       'ACM Status': 'acm_status',
@@ -87,7 +77,6 @@ www.example.com  CNAME            www.example.herokudns.com`]
 
     return columnHeaders.map(header => headerToKeyMap[header.trim()] || header.trim())
   }
-
   mapSortFieldToProperty = (sortField: string): string => {
     const headerToPropertyMap: Record<string, string> = {
       'ACM Status': 'acm_status',
@@ -99,7 +88,6 @@ www.example.com  CNAME            www.example.herokudns.com`]
 
     return headerToPropertyMap[sortField] || sortField
   }
-
   outputCSV = (customDomains: Heroku.Domain[], tableConfig: Record<string, any>, sortProperty?: string) => {
     const getValue = (domain: Heroku.Domain, key: string, config?: Record<string, any>) => {
       const columnConfig = config ?? tableConfig[key]
@@ -125,7 +113,6 @@ www.example.com  CNAME            www.example.herokudns.com`]
       ux.stdout(row.join(','))
     }
   }
-
   tableConfig = (needsEndpoints: boolean, extended: boolean, requestedColumns?: string[]) => {
     const tableConfig: Record<string, any> = {
       hostname: {
@@ -170,18 +157,19 @@ www.example.com  CNAME            www.example.herokudns.com`]
     // If specific columns are requested, filter the configuration
     if (requestedColumns && requestedColumns.length > 0) {
       const filteredConfig: Record<string, any> = {}
-      requestedColumns.forEach(columnKey => {
+      for (const columnKey of requestedColumns) {
         if (fullConfig[columnKey]) {
           filteredConfig[columnKey] = fullConfig[columnKey]
         }
-      })
+      }
+
       return filteredConfig
     }
 
     return fullConfig
   }
 
-  async confirmDisplayAllDomains(customDomains: Heroku.Domain[]) {
+  async confirmDisplayAllDomains(customDomains: Heroku.Domain[], confirm: any) {
     return confirm({default: false, message: `Display all ${customDomains.length} domains?`, theme: {prefix: '', style: {defaultAnswer: () => '(Y/N)'}}})
   }
 
@@ -205,8 +193,9 @@ www.example.com  CNAME            www.example.herokudns.com`]
         ux.stdout()
 
         if (customDomains.length > 100 && !flags.json && !flags.csv) {
+          const {confirm} = await import('@inquirer/prompts')
           ux.warn(`This app has over 100 domains. Your terminal may not be configured to display the total amount of domains. You can export all domains into a CSV file with: ${color.code('heroku domains -a example-app --csv > example-file.csv')}`)
-          displayTotalDomains = await this.confirmDisplayAllDomains(customDomains)
+          displayTotalDomains = await this.confirmDisplayAllDomains(customDomains, confirm)
           if (!displayTotalDomains) {
             return
           }
@@ -222,11 +211,17 @@ www.example.com  CNAME            www.example.herokudns.com`]
           this.outputCSV(customDomains, tableConfig, sortProperty)
         } else {
           hux.table(customDomains, tableConfig, {
-            overflow: 'wrap',
+            ...huxTableNoWrapOptions(flags['no-wrap']),
             sort: flags.sort ? {[sortProperty]: 'asc'} : undefined,
           })
         }
       }
     }
   }
+}
+
+function isApexDomain(hostname: string) {
+  if (hostname.includes('*')) return false
+  const a = new Uri({hostname, protocol: 'http'})
+  return a.subdomain() === ''
 }

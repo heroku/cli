@@ -2,12 +2,12 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
-import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
 import {appTransfer} from '../../lib/apps/app-transfer.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
-import {getOwner, isTeamApp, isValidEmail} from '../../lib/teamUtils.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
 import AppsLock from './lock.js'
 
 const heredoc = tsheredoc.default
@@ -16,7 +16,6 @@ export default class AppsTransfer extends Command {
   static args = {
     recipient: Args.string({description: 'user or team to transfer applications to', required: true}),
   }
-
   static description = 'transfer applications to another user or team'
   static examples = [heredoc(`
     ${color.command('heroku apps:transfer collaborator@example.com')}
@@ -25,7 +24,6 @@ export default class AppsTransfer extends Command {
     Transferring example to acme-widgets... done`), heredoc(`
     ${color.command('heroku apps:transfer --bulk acme-widgets')}
     ...`)]
-
   static flags = {
     app: flags.app(),
     bulk: flags.boolean({description: 'transfer applications in bulk', required: false}),
@@ -33,10 +31,9 @@ export default class AppsTransfer extends Command {
     locked: flags.boolean({char: 'l', description: 'lock the app upon transfer', required: false}),
     remote: flags.remote({char: 'r'}),
   }
-
   static topic = 'apps'
 
-  getAppsToTransfer(apps: Heroku.App[]) {
+  getAppsToTransfer(apps: Heroku.App[], inquirer: any) {
     return inquirer.prompt([{
       choices: apps.map(app => ({
         name: `${color.app(app.name ?? '')} (${getOwner(app.owner?.email ?? '')})`, value: {name: app.name, owner: app.owner?.email},
@@ -49,12 +46,14 @@ export default class AppsTransfer extends Command {
   }
 
   public async run() {
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {args, flags} = await this.parse(AppsTransfer)
     const {app, bulk, confirm, locked} = flags
     const {recipient} = args
     if (bulk) {
       const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
-      const selectedApps = await this.getAppsToTransfer(allApps.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')))
+      const selectedApps = await this.getAppsToTransfer(allApps.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')), inquirer)
       ux.warn(`Transferring applications to ${color.name(recipient)}...\n`)
       for (const app of selectedApps.choices) {
         try {

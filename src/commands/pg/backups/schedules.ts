@@ -10,7 +10,6 @@ export default class Schedules extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

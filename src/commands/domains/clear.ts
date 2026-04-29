@@ -5,9 +5,7 @@ import {ux} from '@oclif/core/ux'
 
 export default class DomainsClear extends Command {
   static description = 'remove all domains from an app'
-
   static examples = [`${color.command('heroku domains:clear')}`]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

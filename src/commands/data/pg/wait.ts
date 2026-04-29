@@ -1,10 +1,13 @@
-import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import type {pg} from '@heroku/heroku-cli-util'
+
 import {flags as Flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import {DatabaseResolver, isAdvancedDatabase} from '@heroku/heroku-cli-util/utils'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {WaitStatus} from '../../../lib/data/types.js'
 import notify from '../../../lib/notify.js'
 
@@ -17,16 +20,13 @@ export default class DataPgWait extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'show status of an operation until it\'s complete'
-
   static examples = [
     heredoc(`
       # Wait for database to be available
-      ${color.command('heroku data:pg:wait DATABASE --app myapp')}
+      ${color.code('<%= config.bin %> <%= command.id %> DATABASE --app myapp')}
     `),
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     'no-notify': Flags.boolean({
@@ -39,6 +39,7 @@ export default class DataPgWait extends BaseCommand {
       min: 1,
     }),
   }
+  protected classicWaitCommand: string = 'pg:wait'
 
   public async notify(...args: Parameters<typeof notify>): Promise<void> {
     return notify(...args)
@@ -48,14 +49,14 @@ export default class DataPgWait extends BaseCommand {
     const {args, flags} = await this.parse(DataPgWait)
     const {database} = args
     const {app, 'no-notify': noNotify, 'wait-interval': waitInterval} = flags
-    const databaseResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const databaseResolver = new DatabaseResolver(this.heroku)
     const db = await databaseResolver.getAttachment(app, database)
     const {addon} = db
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!isAdvancedDatabase(addon)) {
       ux.error(heredoc`
         You can only use this command on Advanced-tier databases.
-        Run ${color.code(`heroku pg:wait ${addon.name} -a ${app}`)} instead.`)
+        Use ${color.code(`heroku ${this.classicWaitCommand} ${addon.name} -a ${app}`)} instead.`)
     }
 
     await this.waitFor(addon, waitInterval || 5, noNotify)

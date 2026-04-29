@@ -1,11 +1,10 @@
-import type {Config} from '@oclif/core'
-import type {Interfaces} from '@oclif/core'
+import type {Config, Interfaces} from '@oclif/core'
 
 export interface CompletionContext {
-  config: Config
-  flags?: Record<string, any>
   args?: Record<string, any>
   argv?: string[]
+  config: Config
+  flags?: Record<string, any>
 }
 
 export interface Completion {
@@ -16,4 +15,3 @@ export interface Completion {
 }
 
 export type FlagInput = Interfaces.FlagInput
-

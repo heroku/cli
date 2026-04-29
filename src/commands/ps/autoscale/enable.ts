@@ -22,7 +22,6 @@ export default class Enable extends Command {
     p95: flags.integer({description: 'desired p95 response time'}),
     remote: flags.remote(),
   }
-
   static topic = 'ps:autoscale'
 
   async run() {
@@ -79,11 +78,13 @@ export default class Enable extends Command {
         value: flags.p95 || scaleMonitor.value,
       }
 
-      await this.heroku.patch(`/apps/${app.id}/formation/web/monitors/${scaleMonitor.id}`,
+      await this.heroku.patch(
+        `/apps/${app.id}/formation/web/monitors/${scaleMonitor.id}`,
         {
           body: updatedValues,
           hostname: METRICS_HOST,
-        })
+        },
+      )
     } else {
       updatedValues = {
         ...updatedValues,

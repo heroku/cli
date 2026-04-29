@@ -20,7 +20,7 @@ export default class Keys extends Command {
     } else {
       hux.styledHeader(`${color.user(keys[0].email || '')} keys`)
       if (flags.long) {
-        keys.forEach(k => ux.stdout(k.public_key))
+        for (const k of keys) ux.stdout(k.public_key)
       } else {
         keys.map(k => ux.stdout(formatKey(k.public_key || '')))
       }

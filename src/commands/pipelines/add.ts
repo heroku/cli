@@ -3,9 +3,9 @@ import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
-import inquirer from 'inquirer'
 
 import {createCoupling} from '../../lib/api.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stageNames} from '../../lib/pipelines/stages.js'
@@ -17,15 +17,12 @@ export default class PipelinesAdd extends Command {
       required: true,
     }),
   }
-
   static description = `add this app to a pipeline
 The app and pipeline names must be specified.
 The stage of the app will be guessed based on its name if not specified.`
-
   static examples = [
     color.command('heroku pipelines:add my-pipeline -a my-app -s production'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
@@ -37,6 +34,8 @@ The stage of the app will be guessed based on its name if not specified.`
   }
 
   async run() {
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {args, flags} = await this.parse(PipelinesAdd)
     const {app} = flags
 

@@ -1,11 +1,13 @@
-import {stderr, stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/pg/push.js'
-import runCommand from '../../../helpers/runCommand.js'
-import {expect} from 'chai'
-import tsheredoc from 'tsheredoc'
+import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
-import sinon = require('sinon')
+import {expect} from 'chai'
 import childProcess from 'node:child_process'
+import {
+  match, restore, SinonStub, stub,
+} from 'sinon'
+import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../src/commands/pg/push.js'
 
 const heredoc = tsheredoc.default
 
@@ -13,9 +15,8 @@ describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it
   let db: pg.ConnectionDetails
   const emptyResponse = '00'
-  let spawnStub: sinon.SinonStub
+  let spawnStub: SinonStub
   let env: NodeJS.ProcessEnv
-  let sshTunnelStub: sinon.SinonStub
 
   const exitHandler = (_key: string, func: CallableFunction) => {
     func(0)
@@ -39,16 +40,16 @@ describe('pg:push', function () {
       user: 'jeff',
     } as pg.ConnectionDetails
 
-    sinon.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
-    sinon.stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
-    sinon.stub(utils.pg.psql, 'sshTunnel').resolves()
+    stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+    stub(utils.pg.PsqlService.prototype, 'execQuery').resolves(emptyResponse)
+    stub(utils.pg.psql, 'sshTunnel').resolves()
 
-    sinon.stub(Math, 'random').callsFake(() => 0)
-    spawnStub = sinon.stub(childProcess, 'spawn')
+    stub(Math, 'random').callsFake(() => 0)
+    spawnStub = stub(childProcess, 'spawn')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     process.env = env
   })
 
@@ -56,20 +57,20 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'localdb',
       'postgres-1',
       '-a',
@@ -77,31 +78,31 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('pushes out a db using url port', async () => {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-h', 'localhost', '-p', '5433', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'postgres://localhost:5433/localdb',
       'postgres-1',
       '-a',
@@ -109,11 +110,11 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing postgres://localhost:5433/localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('pushes out a db using PGPORT', async () => {
@@ -122,20 +123,20 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', '-p', '5433', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'localdb',
       'postgres-1',
       '-a',
@@ -143,11 +144,11 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
@@ -157,20 +158,20 @@ describe('pg:push', function () {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on: exitHandler,
       stdout: {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       on: exitHandler,
       stdin: {
         end() {},
       },
     })
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       'localdb',
       'postgres-1',
       '-a',
@@ -178,18 +179,18 @@ describe('pg:push', function () {
     ])
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq(heredoc`
+    expect(stdout).to.eq(heredoc`
       Pushing localdb to postgres-1
       Pushing complete.
     `)
-    expect(stderr.output).to.eq('')
+    expect(stderr).to.eq('')
   })
 
   skipOnWindows('exits non-zero when there is an error', async () => {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
 
-    spawnStub.withArgs('pg_dump', dumpFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_dump', dumpFlags, match.any).returns({
       on(key: string, func: CallableFunction) {
         return func(1)
       },
@@ -197,26 +198,23 @@ describe('pg:push', function () {
         pipe() {},
       },
     })
-    spawnStub.withArgs('pg_restore', restoreFlags, sinon.match.any).returns({
+    spawnStub.withArgs('pg_restore', restoreFlags, match.any).returns({
       stdin: {
         end() {},
       },
     })
 
-    try {
-      await runCommand(Cmd, [
-        'localdb',
-        'postgres-1',
-        '-a',
-        'myapp',
-      ])
-    } catch (error) {
-      const {message} = error as Error
-      expect(message).to.eq('pg_dump errored with 1')
-    }
+    const {error, stderr, stdout} = await runCommand(Cmd, [
+      'localdb',
+      'postgres-1',
+      '-a',
+      'myapp',
+    ])
+    const {message} = error as Error
+    expect(message).to.eq('pg_dump errored with 1')
 
     expect(spawnStub.callCount).to.eq(2)
-    expect(stdout.output).to.eq('Pushing localdb to postgres-1\n')
-    expect(stderr.output).to.eq('')
+    expect(stdout).to.eq('Pushing localdb to postgres-1\n')
+    expect(stderr).to.eq('')
   })
 })

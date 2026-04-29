@@ -1,6 +1,5 @@
-/* eslint-env mocha */
-
 import {expect} from 'chai'
+
 import {ChangelogParser} from '../../../src/lib/changelog-parser.js'
 
 describe('ChangelogParser', function () {

@@ -1,17 +1,18 @@
+/* eslint-disable no-await-in-loop */
 import type {Answers, DistinctChoice, ListChoiceMap} from 'inquirer'
 
+import {flags as Flags} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import {
   color, hux, pg, utils,
 } from '@heroku/heroku-cli-util'
-import {flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import createPool from '../../../lib/data/createPool.js'
-import PoolConfig from '../../../lib/data/poolConfig.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import createPool from '../../../lib/data/create-pool.js'
+import PoolConfig from '../../../lib/data/pool-config.js'
 import {
   DeepRequired,
   ExtendedPostgresLevelInfo,
@@ -22,8 +23,8 @@ import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.
 import {getAllAdvancedDatabases} from '../../../lib/pg/util.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
-const {Separator, prompt} = inquirer
+
+const {prompt, Separator} = inquirer
 
 export default class DataPgUpdate extends BaseCommand {
   static args = {
@@ -31,19 +32,15 @@ export default class DataPgUpdate extends BaseCommand {
       description: 'database name, database attachment name, or related config var on an app',
     }),
   }
-
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'update a Postgres Advanced database through interactive prompts'
-
   static flags = {
     app: Flags.app({
       required: true,
     }),
     remote: Flags.remote(),
   }
-
   static promptFlagActive = false
-
   private database: DeepRequired<Heroku.AddOn> | pg.ExtendedAddonAttachment['addon'] | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private followerInstanceCount: number = 0
@@ -55,7 +52,7 @@ export default class DataPgUpdate extends BaseCommand {
   }
 
   public async followerPoolActionStep(pool: PoolInfoResponse): Promise<string> {
-    const choices: Array<DistinctChoice<{ action: string }, ListChoiceMap<{ action: string }>>> = [
+    const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = [
       {name: 'Change pool level', value: '__change_level'},
       {name: 'Update number of instances', value: '__update_count'},
       {name: 'Destroy pool', value: '__destroy_pool'},
@@ -74,71 +71,71 @@ export default class DataPgUpdate extends BaseCommand {
     let newCount: string | undefined
     const poolConfig = new PoolConfig(this.extendedLevelsInfo!, this.followerInstanceCount)
     switch (action) {
-    case '__change_level': {
-      newLevel = await poolConfig.levelStep('Follower', pool, true)
-      if (newLevel !== '__go_back') {
-        ux.action.start('Changing follower pool level')
+      case '__change_level': {
+        newLevel = await poolConfig.levelStep('Follower', pool, true)
+        if (newLevel !== '__go_back') {
+          ux.action.start('Changing follower pool level')
 
-        try {
-          await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-            body: {level: newLevel},
-          })
-          ux.action.stop()
-          ux.stdout(heredoc`
+          try {
+            await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
+              body: {level: newLevel},
+            })
+            ux.action.stop()
+            ux.stdout(heredoc`
               ${color.green('✓ Success:')} Level changed from ${pool.expected_level} to ${newLevel} for follower pool ${pool.name}.
             `)
-          pool.expected_level = newLevel
-        } catch (error) {
-          ux.action.stop(color.red('!'))
-          throw error
+            pool.expected_level = newLevel
+          } catch (error) {
+            ux.action.stop(color.red('!'))
+            throw error
+          }
         }
+
+        break
       }
 
-      break
-    }
-
-    case '__update_count': {
-      newCount = await poolConfig.instanceCountStep(pool)
-      if (newCount !== '__go_back') {
-        ux.action.start('Updating follower pool instances count')
+      case '__destroy_pool': {
+        await this.confirmCommand(this.database!.app.name)
+        ux.action.start(`Destroying follower pool ${color.name(`${pool.name}`)} on ${color.datastore(`${this.database!.name}`)}`)
 
         try {
-          await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-            body: {count: Number(newCount)},
-          })
+          await this.dataApi.delete(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`)
           ux.action.stop()
-          ux.stdout(heredoc`
-              ${color.success('✓ Success:')} The ${color.name(pool.name)} follower pool now has ${newCount} instance${Number(newCount) === 1 ? '' : 's'}.
-            `)
-          this.followerInstanceCount = this.followerInstanceCount - pool.expected_count + Number(newCount)
-          pool.expected_count = Number(newCount)
         } catch (error) {
           ux.action.stop(color.red('!'))
           throw error
         }
+
+        break
       }
 
-      break
-    }
-
-    case '__destroy_pool': {
-      await this.confirmCommand(this.database!.app.name)
-      ux.action.start(`Destroying follower pool ${color.name(`${pool.name}`)} on ${color.datastore(`${this.database!.name}`)}`)
-
-      try {
-        await this.dataApi.delete(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`)
-        ux.action.stop()
-      } catch (error) {
-        ux.action.stop(color.red('!'))
-        throw error
+      case '__go_back': {
+        break
       }
 
-      break
-    }
+      case '__update_count': {
+        newCount = await poolConfig.instanceCountStep(pool)
+        if (newCount !== '__go_back') {
+          ux.action.start('Updating follower pool instances count')
 
-    case '__go_back': {
-      break
-    }
+          try {
+            await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
+              body: {count: Number(newCount)},
+            })
+            ux.action.stop()
+            ux.stdout(heredoc`
+              ${color.success('✓ Success:')} The ${color.name(pool.name)} follower pool now has ${newCount} instance${Number(newCount) === 1 ? '' : 's'}.
+            `)
+            this.followerInstanceCount = this.followerInstanceCount - pool.expected_count + Number(newCount)
+            pool.expected_count = Number(newCount)
+          } catch (error) {
+            ux.action.stop(color.red('!'))
+            throw error
+          }
+        }
+
+        break
+      }
     }
 
     process.stderr.write('\n')
@@ -147,7 +144,7 @@ export default class DataPgUpdate extends BaseCommand {
 
   public async leaderPoolActionStep(pool: PoolInfoResponse): Promise<string> {
     const leaderPricing = this.extendedLevelsInfo!.find(level => level.name === pool.expected_level)?.pricing
-    const choices: Array<DistinctChoice<{ action: string }, ListChoiceMap<{ action: string }>>> = [
+    const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = [
       {name: 'Change pool level', value: '__change_level'},
     ]
 
@@ -156,20 +153,18 @@ export default class DataPgUpdate extends BaseCommand {
         name: 'Remove high availability' + (
           renderPricingInfo(leaderPricing) === 'free'
             ? ''
-            : ` ${color.yellowBright(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
+            : ` ${color.info(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
         ),
         value: '__remove_ha',
       })
     } else {
-      choices.push(
-        {
-          name: (
-            'Add a high availability (HA) standby instance'
+      choices.push({
+        name: (
+          'Add a high availability (HA) standby instance'
             + ` ${color.green(renderPricingInfo(leaderPricing))}`
-          ),
-          value: '__add_ha',
-        },
-      )
+        ),
+        value: '__add_ha',
+      })
     }
 
     choices.push(
@@ -187,66 +182,66 @@ export default class DataPgUpdate extends BaseCommand {
     let newLevel: string | undefined
     const poolConfig = new PoolConfig(this.extendedLevelsInfo!, this.followerInstanceCount)
     switch (action) {
-    case '__change_level': {
-      newLevel = await poolConfig.levelStep('Leader', pool, true)
-      if (newLevel !== '__go_back') {
-        ux.action.start('Changing leader pool level')
+      case '__add_ha': {
+        ux.action.start(`Adding a high availability (HA) standby instance for ${color.addon(`${this.database!.name}`)}`)
 
         try {
           await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-            body: {level: newLevel},
+            body: {count: 2},
           })
           ux.action.stop()
-          ux.stdout(heredoc`
-              ${color.green('✓ Success:')} Level changed from ${pool.expected_level} to ${newLevel} for leader pool.
-            `)
-          pool.expected_level = newLevel
+          pool.expected_count = 2
         } catch (error) {
           ux.action.stop(color.red('!'))
           throw error
         }
+
+        break
       }
 
-      break
-    }
+      case '__change_level': {
+        newLevel = await poolConfig.levelStep('Leader', pool, true)
+        if (newLevel !== '__go_back') {
+          ux.action.start('Changing leader pool level')
 
-    case '__remove_ha': {
-      ux.action.start(`Removing the high availability (HA) standby instance from ${color.addon(`${this.database!.name}`)}`)
+          try {
+            await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
+              body: {level: newLevel},
+            })
+            ux.action.stop()
+            ux.stdout(heredoc`
+              ${color.green('✓ Success:')} Level changed from ${pool.expected_level} to ${newLevel} for leader pool.
+            `)
+            pool.expected_level = newLevel
+          } catch (error) {
+            ux.action.stop(color.red('!'))
+            throw error
+          }
+        }
 
-      try {
-        await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-          body: {count: 1},
-        })
-        ux.action.stop()
-        pool.expected_count = 1
-      } catch (error) {
-        ux.action.stop(color.red('!'))
-        throw error
+        break
       }
 
-      break
-    }
-
-    case '__add_ha': {
-      ux.action.start(`Adding a high availability (HA) standby instance for ${color.addon(`${this.database!.name}`)}`)
-
-      try {
-        await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
-          body: {count: 2},
-        })
-        ux.action.stop()
-        pool.expected_count = 2
-      } catch (error) {
-        ux.action.stop(color.red('!'))
-        throw error
+      case '__go_back': {
+        break
       }
 
-      break
-    }
+      case '__remove_ha': {
+        ux.action.start(`Removing the high availability (HA) standby instance from ${color.addon(`${this.database!.name}`)}`)
 
-    case '__go_back': {
-      break
-    }
+        try {
+          await this.dataApi.patch(`/data/postgres/v1/${this.database!.id}/pools/${pool.id}`, {
+            body: {count: 1},
+          })
+          ux.action.stop()
+          pool.expected_count = 1
+        } catch (error) {
+          ux.action.stop(color.red('!'))
+          throw error
+        }
+
+        break
+      }
     }
 
     process.stderr.write('\n')
@@ -269,8 +264,7 @@ export default class DataPgUpdate extends BaseCommand {
       if (this.database && !utils.pg.isAdvancedDatabase(this.database)) {
         ux.error(heredoc`
           You can only use this command on Advanced-tier databases.
-          Use ${color.code(`heroku addons:upgrade ${this.database.name} -a ${app}`)} instead.`,
-        )
+          Use ${color.code(`heroku addons:upgrade ${this.database.name} -a ${app}`)} instead.`)
       }
     } else {
       const databases = await getAllAdvancedDatabases(this.heroku, app)
@@ -297,7 +291,7 @@ export default class DataPgUpdate extends BaseCommand {
       process.stderr.write(heredoc`
 
         Update ${color.addon(this.database!.name)} on ${color.app(app)}
-        ${color.dim('Press Ctrl+C to cancel')}
+        ${color.gray('Press Ctrl+C to cancel')}
 
       `)
 
@@ -337,38 +331,34 @@ export default class DataPgUpdate extends BaseCommand {
     do {
       let action: string | undefined
       switch (currentStep) {
-      case 'poolSelectionStep': {
-        await this.poolSelectionStep()
-        if (this.selectedPoolOption === '__exit') {
-          currentStep = '__exit'
-        } else if (this.selectedPoolOption === '__add_follower_pool') {
-          currentStep = 'addFollowerPoolStage'
-        } else {
-          currentStep = 'poolActionStage'
-        }
-
-        break
-      }
-
-      case 'poolActionStage': {
-        if (this.pool!.name === 'leader') {
-          action = await this.leaderPoolActionStep(this.pool!)
-        } else {
-          action = await this.followerPoolActionStep(this.pool!)
-        }
-
-        if (action === '__go_back' || action === '__destroy_pool') {
+        case 'addFollowerPoolStage': {
+          await this.addFollowerPoolStage()
           currentStep = 'poolSelectionStep'
+          break
         }
 
-        break
-      }
+        case 'poolActionStage': {
+          action = await (this.pool!.name === 'leader' ? this.leaderPoolActionStep(this.pool!) : this.followerPoolActionStep(this.pool!))
 
-      case 'addFollowerPoolStage': {
-        await this.addFollowerPoolStage()
-        currentStep = 'poolSelectionStep'
-        break
-      }
+          if (action === '__go_back' || action === '__destroy_pool') {
+            currentStep = 'poolSelectionStep'
+          }
+
+          break
+        }
+
+        case 'poolSelectionStep': {
+          await this.poolSelectionStep()
+          if (this.selectedPoolOption === '__exit') {
+            currentStep = '__exit'
+          } else if (this.selectedPoolOption === '__add_follower_pool') {
+            currentStep = 'addFollowerPoolStage'
+          } else {
+            currentStep = 'poolActionStage'
+          }
+
+          break
+        }
       }
     } while (currentStep !== '__exit')
   }
@@ -396,14 +386,13 @@ export default class DataPgUpdate extends BaseCommand {
     this.pool = pools.find(pool => pool.name === this.selectedPoolOption)
   }
 
-  private renderDatabaseChoices(databases: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']>) {
-    const choices: Array<DistinctChoice<{ action: string }, ListChoiceMap<{ action: string }>>> = []
+  private renderDatabaseChoices(databases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>) {
+    const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = []
 
-    databases.forEach(database => {
-      choices.push(
-        {name: `${database.name} (${database.attachment_names?.join(', ')})`, value: database.name},
-      )
-    })
+    for (const database of databases) {
+      choices.push({name: `${database.name} (${database.attachment_names?.join(', ')})`, value: database.name})
+    }
+
     choices.push(
       new Separator(),
       {name: 'Exit', value: '__exit'},
@@ -411,40 +400,36 @@ export default class DataPgUpdate extends BaseCommand {
     return choices
   }
 
-  private async renderPoolChoices(pools: PoolInfoResponse[]): Promise<Array<DistinctChoice<{ pool: string }, ListChoiceMap<{ pool: string }>>>> {
+  private async renderPoolChoices(pools: PoolInfoResponse[]): Promise<Array<DistinctChoice<{pool: string}, ListChoiceMap<{pool: string}>>>> {
     const leaderPool = pools.find(pool => pool.name === 'leader')
     const followerPools = pools.filter(pool => pool.name !== 'leader').sort((a, b) => a.name.localeCompare(b.name))
-    const choices: Array<DistinctChoice<{ pool: string }, ListChoiceMap<{ pool: string }>>> = []
+    const choices: Array<DistinctChoice<{pool: string}, ListChoiceMap<{pool: string}>>> = []
 
     if (leaderPool) {
       const levelInfo = this.extendedLevelsInfo!.find(level => level.name === leaderPool.expected_level)
       choices.push({
         name: `Leader: ${levelInfo!.name}`
-          + ` ${`${levelInfo!.vcpu} ${color.inverse('vCPU')}`}`
-          + ` ${`${levelInfo!.memory_in_gb} GB ${color.inverse('MEM')}`}`
-          + color.green(
-            ` ${leaderPool.expected_count} instance${leaderPool.expected_count === 1 ? '' : 's'}`
+          + ` ${`${levelInfo!.vcpu} ${color.ansis.inverse('vCPU')}`}`
+          + ` ${`${levelInfo!.memory_in_gb} GB ${color.ansis.inverse('MEM')}`}`
+          + color.green(` ${leaderPool.expected_count} instance${leaderPool.expected_count === 1 ? '' : 's'}`
             + ` ${`starting at ${renderPricingInfo(levelInfo!.pricing)}`}`
-            + `${leaderPool.expected_count === 1 ? '' : ' each'}`,
-          ),
+            + `${leaderPool.expected_count === 1 ? '' : ' each'}`),
         value: leaderPool.name,
       })
     }
 
-    followerPools.forEach(pool => {
+    for (const pool of followerPools) {
       const levelInfo = this.extendedLevelsInfo!.find(level => level.name === pool.expected_level)
       choices.push({
         name: `Follower ${color.bold(pool.name)}: ${levelInfo!.name}`
-          + ` ${`${levelInfo!.vcpu} ${color.inverse('vCPU')}`}`
-          + ` ${`${levelInfo!.memory_in_gb} GB ${color.inverse('MEM')}`}`
-          + color.green(
-            ` ${pool.expected_count} instance${pool.expected_count === 1 ? '' : 's'}`
+          + ` ${`${levelInfo!.vcpu} ${color.ansis.inverse('vCPU')}`}`
+          + ` ${`${levelInfo!.memory_in_gb} GB ${color.ansis.inverse('MEM')}`}`
+          + color.green(` ${pool.expected_count} instance${pool.expected_count === 1 ? '' : 's'}`
             + ` ${`starting at ${renderPricingInfo(levelInfo!.pricing)}`}`
-            + `${pool.expected_count === 1 ? '' : ' each'}`,
-          ),
+            + `${pool.expected_count === 1 ? '' : ' each'}`),
         value: pool.name,
       })
-    })
+    }
 
     choices.push(
       new Separator(),

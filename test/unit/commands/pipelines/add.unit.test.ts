@@ -1,9 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
+
 import AddCommand from '../../../../src/commands/pipelines/add.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:add', function () {
   let api: nock.Scope
@@ -13,7 +14,7 @@ describe('pipelines:add', function () {
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 
@@ -29,7 +30,7 @@ describe('pipelines:add', function () {
       .query(true)
       .reply(200, pipelines)
 
-    const {stdout, stderr} = await runCommand(AddCommand, [
+    const {stderr, stdout} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       '--stage',
@@ -46,7 +47,7 @@ describe('pipelines:add', function () {
     // the inquirer package to simulate what would be
     // returned from answering if "development" was
     // selected by the user
-    sinon.stub(inquirer, 'prompt').callsFake(function (questions: any) {
+    stub(inquirer, 'prompt').callsFake(function (questions: any) {
       if (questions[0].name === 'stage') {
         return Promise.resolve({stage: 'development'})
       }
@@ -65,7 +66,7 @@ describe('pipelines:add', function () {
       .query(true)
       .reply(200, pipelines)
 
-    const {stdout, stderr} = await runCommand(AddCommand, [
+    const {stderr, stdout} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       'example-pipeline',
@@ -80,7 +81,7 @@ describe('pipelines:add', function () {
     // simulating that the user picked the identical
     // pipeline value with id: '0987' for the pipeline
     // question
-    sinon.stub(inquirer, 'prompt').callsFake(function (questions: any) {
+    stub(inquirer, 'prompt').callsFake(function (questions: any) {
       const question = questions[0]
 
       if (question && question.name === 'pipeline') {
@@ -115,7 +116,7 @@ describe('pipelines:add', function () {
       .query({eq: {name: 'pipeline-with-identical-name-to-another-pipeline'}})
       .reply(200, pipelinesWithIdenticalNames)
 
-    const {stdout, stderr} = await runCommand(AddCommand, [
+    const {stderr, stdout} = await runCommand(AddCommand, [
       '--app',
       'example-app',
       '--stage',

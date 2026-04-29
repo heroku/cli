@@ -7,9 +7,7 @@ export default class Enable extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the app feature', required: true}),
   }
-
   static description = 'enables an app feature'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

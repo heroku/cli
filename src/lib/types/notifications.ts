@@ -1,20 +1,20 @@
 type FollowUp = {
-  created_at: string;
   body: string;
+  created_at: string;
 }
 
 export type Notification = {
-  id: string;
-  created_at: string;
-  title: string;
-  read: boolean;
   body: string;
-  target: {
-    type: string;
-    id: string;
-  }
+  created_at: string;
   followup: FollowUp[]
+  id: string;
+  read: boolean;
   resource_name: string;
+  target: {
+    id: string;
+    type: string;
+  }
+  title: string;
   type: string;
 }
 

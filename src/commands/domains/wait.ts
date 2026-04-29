@@ -5,15 +5,13 @@ import {Args} from '@oclif/core'
 import waitForDomain from '../../lib/domains/wait-for-domain.js'
 
 export default class DomainsWait extends Command {
+  static args = {
+    hostname: Args.string({description: 'unique identifier of the domain or full hostname'}),
+  }
   static description = 'wait for domain to be active for an app'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
-  }
-
-  static args = {
-    hostname: Args.string({description: 'unique identifier of the domain or full hostname'}),
   }
 
   async run() {

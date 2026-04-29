@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import AuthorizationsCreate from '../../../../src/commands/authorizations/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:create', function () {
   let api: nock.Scope

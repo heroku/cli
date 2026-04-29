@@ -1,5 +1,5 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
@@ -7,7 +7,6 @@ import {App} from '../../lib/types/fir.js'
 
 export default class Index extends Command {
   static description = 'list the buildpacks on an app'
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
@@ -28,11 +27,9 @@ export default class Index extends Command {
     } else {
       const pluralizedBuildpacks = buildpacks.length > 1 ? 'Buildpacks' : 'Buildpack'
       let header = `${color.app(flags.app)}`
-      if (isFirApp) {
-        header += ` Cloud Native ${pluralizedBuildpacks} (from the latest release's OCI image)`
-      } else {
-        header += ` Classic ${pluralizedBuildpacks} (from the Heroku Buildpack Registry)`
-      }
+      header += isFirApp
+        ? ` Cloud Native ${pluralizedBuildpacks} (from the latest release's OCI image)`
+        : ` Classic ${pluralizedBuildpacks} (from the Heroku Buildpack Registry)`
 
       hux.styledHeader(header)
       buildpacksCommand.display(buildpacks, '')

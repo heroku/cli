@@ -1,9 +1,9 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {SettingsChangeResponse, SettingsResponse} from '../../../lib/data/types.js'
 
 const heredoc = tsheredoc.default
@@ -21,9 +21,9 @@ const settingsHeaders = {
 }
 
 const settingsChangeTableData = (response: SettingsChangeResponse) => response.changes.map(change => ({
-  From: color.yellow(change.previous),
+  From: color.label(change.previous?.toString() || ''),
   Settings: change.name,
-  To: color.cyan(change.current),
+  To: color.info(change.current?.toString() || ''),
 }))
 
 const settingsTableData = (response: SettingsResponse) => {
@@ -39,16 +39,13 @@ export default class DataPgSettings extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'get or update the settings of a Postgres Advanced database'
-
   static examples = [
     '# Get database settings\n'
     + '<%= config.bin %> <%= command.id %> database_name -a app_name',
     '# Change ‘log_min_duration_statement’ and ‘log_statement’ settings for database\n'
     + '<%= config.bin %> <%= command.id %> database_name --set=log_min_duration_statement:2000 --set=log_statement:ddl -a app_name',
   ]
-
   static flags = {
     app: Flags.app({
       required: true,
@@ -84,18 +81,13 @@ export default class DataPgSettings extends BaseCommand {
       const {body} = response
 
       if (body.changes.length === 0) {
-        ux.stdout(
-          `\nThose settings are already applied to ${color.addon(database.name)}. `
-          + `Use ${color.code(`heroku data:pg:settings ${database.name} -a ${app}`)} to see the current settings on the database.`,
-        )
+        ux.stdout(`\nThose settings are already applied to ${color.addon(database.name)}. `
+          + `Use ${color.code(`heroku data:pg:settings ${database.name} -a ${app}`)} to see the current settings on the database.`)
       } else {
         const tableData = settingsChangeTableData(body)
         ux.stdout('Updating these settings...')
         hux.table(tableData, settingsChangeHeaders)
-        ux.stdout(`Updating your database ${color.addon(database.name)} shortly. You can use ${color.code(
-          `data:pg:info ${database.name} -a ${app}`,
-        )} to track progress`,
-        )
+        ux.stdout(`Updating your database ${color.addon(database.name)} shortly. You can use ${color.code(`data:pg:info ${database.name} -a ${app}`)} to track progress`)
       }
     } else {
       const response = await this.dataApi.get<SettingsResponse>(`/data/postgres/v1/${database.id}/settings`)
