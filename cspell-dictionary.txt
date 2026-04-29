@@ -275,6 +275,7 @@ pguser
 pico
 pinentry
 pipefail
+pkill
 pjson
 printenv
 pooler
