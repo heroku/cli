@@ -1,4 +1,4 @@
-import {vars} from '@heroku-cli/command'
+import {APIClient} from '@heroku-cli/command'
 import {HTTP} from '@heroku/http-call'
 import {Command, Interfaces} from '@oclif/core'
 import fs from 'fs-extra'
@@ -37,8 +37,8 @@ export default class BackboardHerokulyticsClient {
 
   userConfig!: HerokulyticsConfig
 
+  private heroku!: APIClient
   private isInitialized = false
-  private netrc: any
 
   constructor(config: Interfaces.Config) {
     this.config = config
@@ -48,29 +48,11 @@ export default class BackboardHerokulyticsClient {
   }
 
   get authorizationToken(): string | undefined {
-    return process.env.HEROKU_API_KEY || this.netrcToken
-  }
-
-  get netrcLogin(): string | undefined {
-    return this.netrc?.machines[vars.apiHost]?.login
-  }
-
-  get netrcToken(): string | undefined {
-    return this.netrc?.machines[vars.apiHost]?.password
+    return this.heroku.auth
   }
 
   get url(): string {
     return process.env.HEROKU_ANALYTICS_URL || 'https://backboard.heroku.com/hamurai'
-  }
-
-  get user(): string | undefined {
-    if (this.usingHerokuAPIKey) return
-    return this.netrcLogin
-  }
-
-  get usingHerokuAPIKey(): boolean {
-    const k = process.env.HEROKU_API_KEY
-    return Boolean(k && k.length > 0)
   }
 
   async _acAnalytics(id: string): Promise<number> {
@@ -151,10 +133,8 @@ export default class BackboardHerokulyticsClient {
     telemetryDebug('Initializing Herokulytics client...')
     this.isInitialized = true
 
-    const NetrcModule = await import('netrc-parser')
-    const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
-    this.netrc = new NetrcClass()
-    await this.netrc.load()
+    this.heroku = new APIClient(this.config)
+    await this.heroku.getAuth()
     this.userConfig = new HerokulyticsConfig(this.config)
     await this.userConfig.init()
     telemetryDebug('Herokulytics client initialized (install_id: %s)', this.userConfig.install)
