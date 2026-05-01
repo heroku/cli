@@ -136,4 +136,48 @@ describe('AutocompleteOptions', function () {
       })
     })
   })
+
+  describe('#determineCompletion', function () {
+    it('resolves app completion for an app arg', function () {
+      const commandStateVars = {
+        argsIndex: 0,
+        curPositionIsFlag: false,
+        curPositionIsFlagValue: false,
+        id: 'apps:info',
+        Klass: {args: [{name: 'app'}], flags: {}, strict: true},
+        slicedArgv: [],
+      }
+      const {cacheCompletion, cacheKey} = cmd.determineCompletion(commandStateVars)
+      expect(cacheKey).to.eq('app')
+      expect(cacheCompletion).to.not.be.undefined
+    })
+
+    it('resolves completion via key alias for config:get key arg', function () {
+      const commandStateVars = {
+        argsIndex: 0,
+        curPositionIsFlag: false,
+        curPositionIsFlagValue: false,
+        id: 'config:get',
+        Klass: {args: [{name: 'key'}], flags: {}, strict: true},
+        slicedArgv: [],
+      }
+      const {cacheCompletion, cacheKey} = cmd.determineCompletion(commandStateVars)
+      expect(cacheKey).to.eq('key')
+      expect(cacheCompletion).to.not.be.undefined
+    })
+
+    it('resolves app completion for a non-strict command', function () {
+      const commandStateVars = {
+        argsIndex: -1,
+        curPositionIsFlag: false,
+        curPositionIsFlagValue: false,
+        id: 'apps:info',
+        Klass: {args: [{name: 'app'}], flags: {}, strict: false},
+        slicedArgv: [],
+      }
+      const {cacheCompletion, cacheKey} = cmd.determineCompletion(commandStateVars)
+      expect(cacheKey).to.eq('app')
+      expect(cacheCompletion).to.not.be.undefined
+    })
+  })
 })
