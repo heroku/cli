@@ -3,9 +3,9 @@ import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
-import AnalyticsCommand, {AnalyticsInterface} from '../../src/lib/analytics-telemetry/backboard-herokulytics-client.js'
-import HerokulyticsConfig from '../../src/lib/analytics-telemetry/herokulytics-config.js'
-import {stubCredentialManager} from '../helpers/credential-manager-stub.js'
+import AnalyticsCommand, {AnalyticsInterface} from '../../../src/lib/analytics-telemetry/backboard-herokulytics-client.js'
+import HerokulyticsConfig from '../../../src/lib/analytics-telemetry/herokulytics-config.js'
+import {stubCredentialManager} from '../../helpers/credential-manager-stub.js'
 
 const mockCommand = {
   plugin: {
