@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export const inviteMemberToTeam = async function (email: string, role: string, team: string, heroku: APIClient) {
   ux.action.start(`Inviting ${color.user(email)} to ${color.team(team)} as ${color.green(role)}`)
@@ -12,7 +12,8 @@ export const inviteMemberToTeam = async function (email: string, role: string, t
         Accept: 'application/vnd.heroku+json; version=3.team-invitations',
       },
       method: 'PUT',
-    })
+    },
+  )
   ux.action.stop()
 }
 
@@ -23,6 +24,7 @@ export const addMemberToTeam = async function (email: string, role: string, grou
     {
       body: {email, role},
       method,
-    })
+    },
+  )
   ux.action.stop()
 }

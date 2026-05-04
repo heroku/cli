@@ -1,14 +1,14 @@
-import {HTTPError} from '@heroku/http-call'
 import * as Heroku from '@heroku-cli/schema'
+import {runCommand} from '@heroku-cli/test-utils'
+import {HTTPError} from '@heroku/http-call'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import _ from 'lodash'
 import lolex from 'lolex'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('addons:create', function () {
@@ -25,7 +25,7 @@ describe('addons:create', function () {
     name: 'postgresql-swiftly-123',
     plan: {
       name: 'heroku-postgresql:standard-0',
-      price: {cents: 10000, unit: 'month'},
+      price: {cents: 10_000, unit: 'month'},
     },
     provision_message: 'provision message',
     state: 'provisioned',
@@ -205,11 +205,11 @@ describe('addons:create', function () {
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
-      let sandbox: ReturnType<typeof sinon.createSandbox>
+      let sandbox: ReturnType<typeof createSandbox>
       beforeEach(function () {
-        sandbox = sinon.createSandbox()
+        sandbox = createSandbox()
         clock = lolex.install()
-        clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
+        clock.setTimeout = function (callback: () => void, _timeout: number, ..._args: any[]): number {
           callback()
           return 1
         }

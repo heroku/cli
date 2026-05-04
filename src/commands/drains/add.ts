@@ -1,15 +1,13 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 export default class Add extends Command {
   static args = {
     url: Args.string({description: 'URL of the log drain', required: true}),
   }
-
   static description = 'adds a log drain to an app'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

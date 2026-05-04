@@ -1,12 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-
-function formatKey(key: string) {
-  const [name, pub, email] = key.trim().split(/\s/)
-  return `${name} ${pub.slice(0, 10)}...${pub.slice(-10)} ${color.user(email)}`
-}
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 export default class Keys extends Command {
   static description = 'display your SSH keys'
@@ -25,10 +20,15 @@ export default class Keys extends Command {
     } else {
       hux.styledHeader(`${color.user(keys[0].email || '')} keys`)
       if (flags.long) {
-        keys.forEach(k => ux.stdout(k.public_key))
+        for (const k of keys) ux.stdout(k.public_key)
       } else {
         keys.map(k => ux.stdout(formatKey(k.public_key || '')))
       }
     }
   }
+}
+
+function formatKey(key: string) {
+  const [name, pub, email] = key.trim().split(/\s/)
+  return `${name} ${pub.slice(0, 10)}...${pub.slice(-10)} ${color.user(email)}`
 }

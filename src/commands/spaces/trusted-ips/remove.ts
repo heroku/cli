@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -10,23 +10,18 @@ export default class Remove extends Command {
   static args = {
     source: Args.string({description: 'IP address in CIDR notation', required: true}),
   }
-
   static description = heredoc(`
   Remove a range from the list of trusted IP ranges
   Uses CIDR notation.`)
-
   static examples = [heredoc(`
     ${color.command('heroku trusted-ips:remove --space my-space 192.168.2.0/24')}
     Removed 192.168.2.0/24 from trusted IP ranges on my-space
   `)]
-
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
     space: flags.string({char: 's', description: 'space to remove rule from', required: true}),
   }
-
   static hiddenAliases = ['trusted-ips:remove']
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {
@@ -45,7 +40,7 @@ export default class Remove extends Command {
     }
 
     await this.heroku.put(url, {body: rules})
-    ux.stdout(`Removed ${color.cyan.bold(args.source)} from trusted IP ranges on ${color.space(space)}`)
+    ux.stdout(`Removed ${color.name(args.source)} from trusted IP ranges on ${color.space(space)}`)
 
     // Fetch updated ruleset to check applied status
     const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)

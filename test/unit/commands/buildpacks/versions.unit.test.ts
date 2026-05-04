@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksVersions from '../../../../src/commands/buildpacks/versions.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:versions', function () {
   let originalApiKey: string | undefined

@@ -22,6 +22,8 @@ jobs:
           node-version: 22.x
           cache: npm
       - run: npm ci
+      - name: build
+        run: npm run build
       - name: linting
         run: npm run lint
 

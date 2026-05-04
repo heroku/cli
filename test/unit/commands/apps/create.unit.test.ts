@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {execSync} from 'node:child_process'
-import sinon from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('apps:create', function () {
   let api: nock.Scope
@@ -134,10 +134,10 @@ describe('apps:create', function () {
       setup: {addons: [{as: 'DATABASE', plan: 'heroku-postgresql'}], config: {S3_BUCKET: 'my-example-bucket'}},
     }
 
-    let readManifestStub: sinon.SinonStub
+    let readManifestStub: SinonStub
 
     beforeEach(async function () {
-      readManifestStub = sinon.stub(CreateCommand.prototype, 'readManifest').resolves(manifest)
+      readManifestStub = stub(CreateCommand.prototype, 'readManifest').resolves(manifest)
     })
 
     afterEach(function () {

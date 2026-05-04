@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {ago} from '../../lib/time.js'
@@ -15,13 +15,11 @@ export default class Ps extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = 'list dynos for a space'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get dynos of'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {
@@ -37,13 +35,13 @@ export default class Ps extends Command {
     ])
 
     if (space.shield) {
-      spaceDynos.forEach(spaceDyno => {
-        spaceDyno.dynos.forEach(d => {
+      for (const spaceDyno of spaceDynos) {
+        for (const d of spaceDyno.dynos) {
           if (d.size?.startsWith('Private')) {
             d.size = d.size.replace('Private-', 'Shield-')
           }
-        })
-      })
+        }
+      }
     }
 
     if (flags.json) {
@@ -66,7 +64,7 @@ export default class Ps extends Command {
       } else {
         key = `${color.name(dyno.type)} (${color.info(size)}): ${dyno.command}`
         const state = dyno.state === 'up' ? color.success(dyno.state) : color.warning(dyno.state)
-        item = `${dyno.name}: ${color.info(state)} ${color.dim(since)}`
+        item = `${dyno.name}: ${color.info(state)} ${color.gray(since)}`
       }
 
       if (!dynosByCommand.has(key)) {
@@ -88,8 +86,8 @@ export default class Ps extends Command {
   }
 
   private render(spaceDynos?: SpaceDynosInfo[]) {
-    spaceDynos?.forEach(spaceDyno => {
+    if (spaceDynos) for (const spaceDyno of spaceDynos) {
       this.printDynos(spaceDyno.app_name, spaceDyno.dynos)
-    })
+    }
   }
 }

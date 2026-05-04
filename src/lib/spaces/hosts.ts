@@ -1,17 +1,19 @@
-import {ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
+
 import {hostStatus} from './format.js'
 
 export type Host = {
-  host_id: string,
-  state: string,
-  available_capacity_percentage: number,
   allocated_at: string,
+  available_capacity_percentage: number,
+  host_id: string,
   released_at: string,
+  state: string,
 }
 
 export function displayHosts(space: string, hosts: Host[]) {
   hux.styledHeader(`${space} Hosts`)
+  /* eslint-disable perfectionist/sort-objects */
   hux.table(hosts, {
     host_id: {
       header: 'Host ID',
@@ -33,6 +35,7 @@ export function displayHosts(space: string, hosts: Host[]) {
       get: host => host.released_at || '',
     },
   })
+  /* eslint-enable perfectionist/sort-objects */
 }
 
 export function displayHostsAsJSON(hosts: Host[]) {

@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import {IncomingHttpHeaders} from 'node:http'
@@ -17,15 +17,12 @@ export default class Info extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = 'show info about a space'
   static example = `${color.command('heroku spaces:info my-space')}`
-
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get info of'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

@@ -1,21 +1,30 @@
 
-import {flags, Command} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
-import {TelemetryDrain} from '../../lib/types/telemetry.js'
 import tsheredoc from 'tsheredoc'
+
+import {TelemetryDrain} from '../../lib/types/telemetry.js'
 
 const heredoc = tsheredoc.default
 
 export default class Remove extends Command {
-  static topic = 'telemetry'
-  static description = 'remove a telemetry drain'
   static args = {
     telemetry_drain_id: Args.string({description: 'ID of the drain to remove'}),
   }
-
+  static description = 'remove a telemetry drain'
   static flags = {
     app: flags.app({description: 'name of the app to remove all drains from'}),
     space: flags.string({char: 's', description: 'name of the space to remove all drains from'}),
+  }
+  static topic = 'telemetry'
+
+  protected async removeDrain(telemetry_drain_id: string) {
+    const {body: telemetryDrain} = await this.heroku.delete<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
+      headers: {
+        Accept: 'application/vnd.heroku+json; version=3.sdk',
+      },
+    })
+    return telemetryDrain
   }
 
   public async run(): Promise<void> {
@@ -57,14 +66,5 @@ export default class Remove extends Command {
     }
 
     ux.action.stop()
-  }
-
-  protected async removeDrain(telemetry_drain_id: string) {
-    const {body: telemetryDrain} = await this.heroku.delete<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
-    return telemetryDrain
   }
 }

@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
@@ -10,20 +10,16 @@ export class ConfigUnset extends Command {
   static aliases = [
     'config:remove',
   ]
-
   static description = 'unset one or more config vars'
-
   static examples = [heredoc(`
     ${color.command('heroku config:unset RAILS_ENV')}
 Unsetting RAILS_ENV and restarting example... done, v10`), heredoc(`
     ${color.command('heroku config:unset RAILS_ENV RACK_ENV')}
 Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`)]
-
   static flags = {
     app: flags.app({char: 'a', required: true}),
     remote: flags.remote({char: 'r'}),
   }
-
   static strict = false
 
   async run() {

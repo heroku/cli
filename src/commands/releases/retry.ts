@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import {stream} from '../../lib/releases/output.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
@@ -12,9 +12,7 @@ export default class Retry extends Command {
   static flags = {
     app: flags.app({required: true}),
   }
-
   static help = 'Copies the latest release into a new release and retries the latest release-phase command. App must have a release-phase command.'
-
   static topic = 'releases'
 
   public async run(): Promise<void> {
@@ -57,4 +55,3 @@ export default class Retry extends Command {
     }
   }
 }
-

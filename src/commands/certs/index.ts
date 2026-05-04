@@ -1,9 +1,9 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
-import displayTable from '../../lib/certs/display_table.js'
-import {SniEndpoint} from '../../lib/types/sni_endpoint.js'
+import displayTable from '../../lib/certs/display-table.js'
+import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 export default class Index extends Command {
   static description = 'list SSL certificates for an app'
@@ -11,7 +11,6 @@ export default class Index extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

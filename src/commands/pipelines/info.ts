@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import {listPipelineApps} from '../../lib/api.js'
@@ -14,13 +14,10 @@ export default class PipelinesInfo extends Command {
       required: true,
     }),
   }
-
   static description = 'show list of apps in a pipeline'
-
   static examples = [
     color.command('heroku pipelines:info my-pipeline'),
   ]
-
   static flags = {
     json: flags.boolean({
       description: 'output in json format',

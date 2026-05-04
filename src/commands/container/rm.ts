@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 
@@ -11,16 +11,12 @@ export default class Rm extends Command {
     `${color.command('heroku container:rm web')}        # Destroys the web container`,
     `${color.command('heroku container:rm web worker')} # Destroys the web and worker containers`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static strict = false
-
   static topic = 'container'
-
   static usage = 'container:rm -a APP [-v] PROCESS_TYPE...'
 
   async run() {

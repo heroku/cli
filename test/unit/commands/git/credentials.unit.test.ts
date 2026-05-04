@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 
 import {GitCredentials as Credentials} from '../../../../src/commands/git/credentials.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('git:credentials', function () {
   it('errors if no app given', async function () {

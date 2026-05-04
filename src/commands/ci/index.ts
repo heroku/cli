@@ -1,18 +1,16 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {renderList} from '../../lib/ci/test-run.js'
 
 export default class CiIndex extends Command {
   static description = 'display the most recent CI runs for the given pipeline'
-
   static examples = [
     color.command(`heroku ci --app murmuring-headland-14719
 `),
   ]
-
   static flags = {
     app: flags.app(),
     json: flags.boolean({description: 'output in json format', required: false}),

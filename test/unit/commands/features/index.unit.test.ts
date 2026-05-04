@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Features from '../../../../src/commands/features/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('features', function () {
   let api: nock.Scope

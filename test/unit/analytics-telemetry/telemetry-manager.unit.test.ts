@@ -1,0 +1,220 @@
+import {expect} from 'chai'
+import nock from 'nock'
+
+import {telemetryManager} from '../../../src/lib/analytics-telemetry/telemetry-manager.js'
+
+const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
+
+describe('telemetry-manager', function () {
+  let originalTestEnv: string | undefined
+  let originalWindowsTelemetry: string | undefined
+
+  beforeEach(function () {
+    // Temporarily enable telemetry for these tests
+    originalTestEnv = process.env.IS_HEROKU_TEST_ENV
+    originalWindowsTelemetry = process.env.ENABLE_WINDOWS_TELEMETRY
+    delete process.env.IS_HEROKU_TEST_ENV
+    process.env.ENABLE_WINDOWS_TELEMETRY = 'true'
+  })
+
+  afterEach(function () {
+    nock.cleanAll()
+    // Restore test environment
+    if (originalTestEnv !== undefined) {
+      process.env.IS_HEROKU_TEST_ENV = originalTestEnv
+    }
+
+    if (originalWindowsTelemetry === undefined) {
+      delete process.env.ENABLE_WINDOWS_TELEMETRY
+    } else {
+      process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
+    }
+  })
+
+  describe('setupTelemetry', function () {
+    const mockConfig = {
+      platform: 'darwin',
+      version: '1.2.3',
+    } as any
+
+    it('creates telemetry object for regular command', function () {
+      const mockOpts = {
+        Command: {
+          id: 'apps:info',
+        },
+      }
+
+      const result = telemetryManager.setupTelemetry(mockConfig, mockOpts)
+
+      expect(result.command).to.equal('apps:info')
+      expect(result.os).to.equal('darwin')
+      expect(result.version).to.equal('1.2.3')
+      expect(result.exitCode).to.equal(0)
+      expect(result.exitState).to.equal('successful')
+      expect(result.isVersionOrHelp).to.be.false
+      expect(result.lifecycleHookCompletion.init).to.be.true
+      expect(result.lifecycleHookCompletion.prerun).to.be.true
+      expect(result.lifecycleHookCompletion.postrun).to.be.false
+      expect(result.lifecycleHookCompletion.command_not_found).to.be.false
+    })
+
+    it('creates telemetry object for version/help command', function () {
+      const mockOpts = {
+        id: 'version',
+      }
+
+      const result = telemetryManager.setupTelemetry(mockConfig, mockOpts)
+
+      expect(result.command).to.equal('version')
+      expect(result.isVersionOrHelp).to.be.true
+      expect(result.lifecycleHookCompletion.prerun).to.be.false
+    })
+
+    it('includes MCP version when in MCP mode', function () {
+      const originalMcpMode = process.env.HEROKU_MCP_MODE
+      const originalMcpVersion = process.env.HEROKU_MCP_SERVER_VERSION
+      process.env.HEROKU_MCP_MODE = 'true'
+      process.env.HEROKU_MCP_SERVER_VERSION = '1.0.0'
+
+      const mockOpts = {
+        id: 'version',
+      }
+
+      const result = telemetryManager.setupTelemetry(mockConfig, mockOpts)
+
+      expect(result.version).to.equal('1.2.3 (MCP 1.0.0)')
+
+      process.env.HEROKU_MCP_MODE = originalMcpMode
+      process.env.HEROKU_MCP_SERVER_VERSION = originalMcpVersion
+    })
+  })
+
+  describe('reportCmdNotFound', function () {
+    it('creates telemetry object for command not found', function () {
+      const mockConfig = {
+        platform: 'darwin',
+        version: '1.2.3',
+      } as any
+
+      const result = telemetryManager.reportCmdNotFound(mockConfig)
+
+      expect(result.command).to.equal('invalid_command')
+      expect(result.exitState).to.equal('command_not_found')
+      expect(result.commandRunDuration).to.equal(0)
+      expect(result.lifecycleHookCompletion.command_not_found).to.be.true
+      expect(result.lifecycleHookCompletion.prerun).to.be.false
+      expect(result.lifecycleHookCompletion.postrun).to.be.false
+    })
+  })
+
+  describe('sendTelemetry', function () {
+    it('sends regular telemetry without throwing', async function () {
+      const mockTelemetry = {
+        _type: 'otel' as const,
+        cliRunDuration: 100,
+        command: 'test:command',
+        commandRunDuration: 50,
+        exitCode: 0,
+        exitState: 'successful',
+        isTTY: true,
+        isVersionOrHelp: false,
+        lifecycleHookCompletion: {
+          command_not_found: false,
+          init: true,
+          postrun: true,
+          prerun: true,
+        },
+        os: 'darwin',
+        version: '1.0.0',
+      }
+
+      // Setup mock HTTP endpoint for Honeycomb
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
+        .post('/otel/v1/traces')
+        .reply(200)
+
+      await telemetryManager.sendTelemetry(mockTelemetry)
+
+      honeycombAPI.done()
+    })
+
+    it('sends errors without throwing', async function () {
+      const mockError = new Error('Test error')
+
+      // Setup mock HTTP endpoint for Honeycomb
+      const honeycombAPI = nock(isDev ? 'https://backboard.staging.herokudev.com' : 'https://backboard.heroku.com')
+        .post('/otel/v1/traces')
+        .reply(200)
+
+      await telemetryManager.sendTelemetry(mockError)
+
+      honeycombAPI.done()
+    })
+
+    it('skips sending when telemetry is disabled', async function () {
+      const originalDisableTelemetry = process.env.DISABLE_TELEMETRY
+      process.env.DISABLE_TELEMETRY = 'true'
+
+      const mockTelemetry = {
+        _type: 'otel' as const,
+        cliRunDuration: 100,
+        command: 'test:command',
+        commandRunDuration: 50,
+        exitCode: 0,
+        exitState: 'successful',
+        isTTY: true,
+        isVersionOrHelp: false,
+        lifecycleHookCompletion: {
+          command_not_found: false,
+          init: true,
+          postrun: true,
+          prerun: true,
+        },
+        os: 'darwin',
+        version: '1.0.0',
+      }
+
+      // Should not make any HTTP calls when telemetry is disabled
+      await telemetryManager.sendTelemetry(mockTelemetry)
+
+      process.env.DISABLE_TELEMETRY = originalDisableTelemetry
+    })
+
+    it('skips sending on Windows without ENABLE_WINDOWS_TELEMETRY', async function () {
+      const originalPlatform = process.platform
+      const originalWindowsTelemetry = process.env.ENABLE_WINDOWS_TELEMETRY
+
+      // Simulate Windows environment
+      Object.defineProperty(process, 'platform', {configurable: true, value: 'win32'})
+      delete process.env.ENABLE_WINDOWS_TELEMETRY
+
+      const mockTelemetry = {
+        _type: 'otel' as const,
+        cliRunDuration: 100,
+        command: 'test:command',
+        commandRunDuration: 50,
+        exitCode: 0,
+        exitState: 'successful',
+        isTTY: true,
+        isVersionOrHelp: false,
+        lifecycleHookCompletion: {
+          command_not_found: false,
+          init: true,
+          postrun: true,
+          prerun: true,
+        },
+        os: 'win32',
+        version: '1.0.0',
+      }
+
+      // Should not make any HTTP calls when on Windows without explicit opt-in
+      await telemetryManager.sendTelemetry(mockTelemetry)
+
+      // Restore environment
+      Object.defineProperty(process, 'platform', {configurable: true, value: originalPlatform})
+      if (originalWindowsTelemetry !== undefined) {
+        process.env.ENABLE_WINDOWS_TELEMETRY = originalWindowsTelemetry
+      }
+    })
+  })
+})

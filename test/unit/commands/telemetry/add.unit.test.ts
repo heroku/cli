@@ -1,13 +1,14 @@
-import {stdout} from 'stdout-stderr'
-import Cmd from '../../../../src/commands/telemetry/add.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import {spaceTelemetryDrain1, appTelemetryDrain1, grpcAppTelemetryDrain, splunkAppTelemetryDrain} from '../../../fixtures/telemetry/fixtures.js'
+
+import Cmd from '../../../../src/commands/telemetry/add.js'
+import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import {firApp} from '../../../fixtures/apps/fixtures.js'
 import * as spaceFixtures from '../../../fixtures/spaces/fixtures.js'
-import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
+import {
+  appTelemetryDrain1, grpcAppTelemetryDrain, spaceTelemetryDrain1, splunkAppTelemetryDrain,
+} from '../../../fixtures/telemetry/fixtures.js'
 
 const appId = appTelemetryDrain1.owner.id
 const grpcDrainAppId = grpcAppTelemetryDrain.owner.id
@@ -34,7 +35,7 @@ describe('telemetry:add', function () {
         '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Exactly one of the following must be provided: --app, --space')
     }
   })
@@ -49,7 +50,7 @@ describe('telemetry:add', function () {
         'myspace',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('--space cannot also be provided when using --app')
     }
   })
@@ -62,7 +63,7 @@ describe('telemetry:add', function () {
       .post('/telemetry-drains')
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--headers',
       '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
@@ -72,7 +73,7 @@ describe('telemetry:add', function () {
       'logs',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('successfully creates a telemetry drain for a space', async function () {
@@ -83,7 +84,7 @@ describe('telemetry:add', function () {
       .post('/telemetry-drains')
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--headers',
       '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
@@ -93,7 +94,7 @@ describe('telemetry:add', function () {
       'logs',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('does not accept options other than logs, metrics, traces, or all for the --signal flag', async function () {
@@ -111,7 +112,7 @@ describe('telemetry:add', function () {
         'logs,foo',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
     }
   })
@@ -131,7 +132,7 @@ describe('telemetry:add', function () {
         'logs,all',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Invalid signal option: logs,all. Run heroku telemetry:add --help to see signal options.')
     }
   })
@@ -142,20 +143,20 @@ describe('telemetry:add', function () {
       .reply(200, firApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: grpcDrainAppId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: testEndpoint,
-          type: 'otlp',
           headers: {},
+          type: 'otlp',
         },
+        owner: {
+          id: grpcDrainAppId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--app',
       grpcDrainAppId,
@@ -163,7 +164,7 @@ describe('telemetry:add', function () {
       'grpc',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('successfully creates a telemetry drain for an app with http transport (default)', async function () {
@@ -173,20 +174,20 @@ describe('telemetry:add', function () {
       .reply(200, httpApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: appId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: testEndpoint,
-          type: 'otlphttp',
           headers: {},
+          type: 'otlphttp',
         },
+        owner: {
+          id: appId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--app',
       appId,
@@ -194,7 +195,7 @@ describe('telemetry:add', function () {
       'http',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('returns an error for invalid transport option', async function () {
@@ -207,7 +208,7 @@ describe('telemetry:add', function () {
         'invalid-transport',
       ])
     } catch (error) {
-      const {message} = error as { message: string }
+      const {message} = error as {message: string}
       expect(message).to.contain('Expected --transport=invalid-transport to be one of: http, grpc')
     }
   })
@@ -219,26 +220,26 @@ describe('telemetry:add', function () {
       .reply(200, defaultApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: appId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: testEndpoint,
-          type: 'otlphttp',
           headers: {},
+          type: 'otlphttp',
         },
+        owner: {
+          id: appId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, spaceTelemetryDrain1)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       testEndpoint,
       '--app',
       appId,
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${testEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${testEndpoint}`)
   })
 
   it('successfully creates a telemetry drain splunk transport', async function () {
@@ -249,22 +250,22 @@ describe('telemetry:add', function () {
       .reply(200, splunkApp)
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .post('/telemetry-drains', {
-        owner: {
-          type: 'app',
-          id: splunkDrainAppId,
-        },
-        signals: ['traces', 'metrics', 'logs'],
         exporter: {
           endpoint: splunkEndpoint,
-          type: 'splunk',
           headers: {
             Authorization: 'Splunk your-hec-token',
           },
+          type: 'splunk',
         },
+        owner: {
+          id: splunkDrainAppId,
+          type: 'app',
+        },
+        signals: ['traces', 'metrics', 'logs'],
       })
       .reply(200, splunkAppTelemetryDrain)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       splunkEndpoint,
       '--app',
       splunkDrainAppId,
@@ -274,6 +275,6 @@ describe('telemetry:add', function () {
       '{"Authorization": "Splunk your-hec-token"}',
     ])
 
-    expectOutput(stdout.output, `successfully added drain ${splunkEndpoint}`)
+    expectOutput(stdout, `successfully added drain ${splunkEndpoint}`)
   })
 })

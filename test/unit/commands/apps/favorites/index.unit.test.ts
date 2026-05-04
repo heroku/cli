@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Favorites from '../../../../../src/commands/apps/favorites/index.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('apps:favorites', function () {
   let particleboardApi: nock.Scope

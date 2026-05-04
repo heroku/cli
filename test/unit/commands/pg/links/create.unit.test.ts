@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/links/create.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -29,7 +29,7 @@ describe('pg:links:create', function () {
 
     it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'heroku-postgres', addon_service: 'heroku-postgresql', app: 'myapp',
+        addon_attachment: 'heroku-postgres', app: 'myapp',
       }).reply(200, [{addon}])
 
       api.post('/actions/addons/resolve', {
@@ -47,7 +47,7 @@ describe('pg:links:create', function () {
           'heroku-postgres',
         ])
       } catch (error) {
-        const {message} = error as { message: string }
+        const {message} = error as {message: string}
         expect(message).to.equal('pg:links isn\'t available for Essential-tier databases.')
       }
     })
@@ -61,7 +61,6 @@ describe('pg:links:create', function () {
     it('errors when attempting to create a link', async function () {
       api.post('/actions/addon-attachments/resolve', {
         addon_attachment: 'heroku-postgres',
-        addon_service: 'heroku-postgresql',
         app: 'myapp',
       }).reply(200, [{addon}])
 

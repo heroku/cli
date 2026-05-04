@@ -1,12 +1,10 @@
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 
 export default function setupPipeline(kolkrabbi: any, app: any, settings: any, pipelineID: any, ciSettings: any = {}) {
   const promises = [kolkrabbi.updateAppLink(app, settings)]
 
   if (ciSettings.ci) {
-    promises.push(
-      kolkrabbi.updatePipelineRepository(pipelineID, ciSettings),
-    )
+    promises.push(kolkrabbi.updatePipelineRepository(pipelineID, ciSettings))
   }
 
   return Promise.all(promises).then(([appLink]) => appLink, error => {

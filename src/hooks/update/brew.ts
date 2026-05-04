@@ -1,20 +1,20 @@
-import {Hook} from '@oclif/core'
-import {spawnSync, SpawnSyncOptions} from 'child_process'
-import * as path from 'path'
+import {Hook} from '@oclif/core/hooks'
 import debug from 'debug'
 import fs from 'fs-extra'
+import {spawnSync, SpawnSyncOptions} from 'node:child_process'
+import path from 'node:path'
 
 const debugLog = debug('heroku:brewhook')
-
-function brew(args: string[], opts: SpawnSyncOptions = {}) {
-  debugLog('brew %o', args)
-  return spawnSync('brew', args, {stdio: 'inherit', ...opts, encoding: 'utf8'})
-}
 
 interface InstallReceipt {
   source: {
     tap: string;
   };
+}
+
+function brew(args: string[], opts: SpawnSyncOptions = {}) {
+  debugLog('brew %o', args)
+  return spawnSync('brew', args, {stdio: 'inherit', ...opts, encoding: 'utf8'})
 }
 
 const brewHook: Hook<'update'> = async function () {

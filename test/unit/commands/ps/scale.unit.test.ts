@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ps/scale.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 describe('ps:scale', function () {
   let api: nock.Scope
@@ -25,13 +24,13 @@ describe('ps:scale', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expect(stdout.output).to.equal('web=1:Free worker=2:Free\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('web=1:Free worker=2:Free\n')
+    expect(stderr).to.equal('')
   })
 
   it('shows formation with shield dynos for apps in a shielded private space', async function () {
@@ -41,13 +40,13 @@ describe('ps:scale', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', space: {shield: true}})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expect(stdout.output).to.equal('web=1:Shield-L worker=2:Shield-M\n')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('web=1:Shield-L worker=2:Shield-M\n')
+    expect(stderr).to.equal('')
   })
 
   it('errors with no process types', async function () {
@@ -57,17 +56,14 @@ describe('ps:scale', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-      ])
-    } catch (error: any) {
-      expect(ansis.strip(error.message)).to.include('No process types on ⬢ myapp.')
-    }
+    const {error, stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+    ])
+    expect(ansis.strip(error!.message)).to.include('No process types on ⬢ myapp.')
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.equal('')
+    expect(stdout).to.equal('')
+    expect(stderr).to.equal('')
   })
 
   it('scales web=1 worker=2', async function () {
@@ -77,15 +73,15 @@ describe('ps:scale', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=1',
       'worker=2',
     ])
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n')
   })
 
   it('scales up a shield dyno if the app is in a shielded private space', async function () {
@@ -95,14 +91,14 @@ describe('ps:scale', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', space: {shield: true}})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=1:Shield-L',
     ])
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Scaling dynos... done, now running web at 1:Shield-L\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Scaling dynos... done, now running web at 1:Shield-L\n')
   })
 
   it('scales web-1', async function () {
@@ -112,13 +108,13 @@ describe('ps:scale', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp'})
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web+1',
     ])
 
-    expect(stdout.output).to.equal('')
-    expect(stderr.output).to.contain('Scaling dynos... done, now running web at 2:Free\n')
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Scaling dynos... done, now running web at 2:Free\n')
   })
 })

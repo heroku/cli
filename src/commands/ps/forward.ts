@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
-import socks from '@heroku/socksv5'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import socks from '@heroku/socksv5'
 import {Args, ux} from '@oclif/core'
 import net from 'node:net'
 import tsheredoc from 'tsheredoc'
@@ -14,9 +14,7 @@ export default class Forward extends Command {
   static args = {
     port: Args.string({description: 'port or list of ports to forward', required: true}),
   }
-
   static description = 'Forward traffic on a local port to a dyno'
-
   static examples = [heredoc`
     Provide a port or comma-separated list of ports to forward.
 
@@ -25,7 +23,6 @@ export default class Forward extends Command {
 
     ${color.command('heroku ps:forward 8080 --app murmuring-headland-14719')}
   `]
-
   static flags = {
     app: flags.app({required: true}),
     dyno: flags.string({
@@ -39,7 +36,6 @@ export default class Forward extends Command {
     }),
     remote: flags.remote(),
   }
-
   static topic = 'ps'
 
   public async run(): Promise<void> {
@@ -67,7 +63,7 @@ export default class Forward extends Command {
         for (const portMapping of portMappings) {
           const [localPortNum, remotePort] = portMapping
 
-          ux.stdout(`Listening on ${color.white.bold(localPortNum)} and forwarding to ${color.white.bold(`${dynoName}:${remotePort}`)}`)
+          ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)
 
           net.createServer(connIn => {
             socks.connect({

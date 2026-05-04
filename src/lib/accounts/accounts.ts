@@ -1,13 +1,13 @@
-import {parse, stringify} from 'yaml'
+import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import * as Heroku from '@heroku-cli/schema'
+import {parse, stringify} from 'yaml'
 
 export interface IAccountsWrapper {
-  list(): Heroku.Account[] | []
-  current(): Promise<string | null>
   add(name: string, username: string, password: string): void
+  current(): Promise<null | string>
+  list(): [] | Heroku.Account[]
   remove(name: string): void
   set(name: string): Promise<void>
 }
@@ -15,24 +15,50 @@ export interface IAccountsWrapper {
 export class AccountsWrapper implements IAccountsWrapper {
   private netrc: any
 
-  private async initNetrc() {
-    if (!this.netrc) {
-      const NetrcModule = await import('netrc-parser')
-      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
-      this.netrc = new NetrcClass()
-      await this.netrc.load()
-    }
+  add(name: string, username: string, password: string): void {
+    const basedir = path.join(this.configDir(), 'accounts')
+    fs.mkdirSync(basedir, {recursive: true})
 
-    return this.netrc
+    fs.writeFileSync(
+      path.join(basedir, name),
+      // eslint-disable-next-line perfectionist/sort-objects
+      stringify({username, password}),
+      'utf8',
+    )
+    fs.chmodSync(path.join(basedir, name), 0o600)
   }
 
-  private configDir() {
-    const legacyDir = path.join(os.homedir(), '.heroku')
-    if (fs.existsSync(legacyDir)) {
-      return legacyDir
+  async current(): Promise<null | string> {
+    const netrcInstance = await this.initNetrc()
+    if (netrcInstance.machines['api.heroku.com']) {
+      const current = this.list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
+      return current && current.name ? current.name : null
     }
 
-    return path.join(os.homedir(), '.config', 'heroku')
+    return null
+  }
+
+  list(): [] | Heroku.Account[] {
+    const basedir = path.join(this.configDir(), 'accounts')
+    try {
+      return fs.readdirSync(basedir)
+        .map(name => Object.assign(this.account(name), {name}))
+    } catch {
+      return []
+    }
+  }
+
+  remove(name: string): void {
+    const basedir = path.join(this.configDir(), 'accounts')
+    fs.unlinkSync(path.join(basedir, name))
+  }
+
+  async set(name: string): Promise<void> {
+    const netrcInstance = await this.initNetrc()
+    const current = this.account(name)
+    netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
+    netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
+    await netrcInstance.save()
   }
 
   private account(name: string): Heroku.Account {
@@ -50,49 +76,24 @@ export class AccountsWrapper implements IAccountsWrapper {
     return account
   }
 
-  list(): Heroku.Account[] | [] {
-    const basedir = path.join(this.configDir(), 'accounts')
-    try {
-      return fs.readdirSync(basedir)
-        .map(name => Object.assign(this.account(name), {name}))
-    } catch {
-      return []
-    }
-  }
-
-  async current(): Promise<string | null> {
-    const netrcInstance = await this.initNetrc()
-    if (netrcInstance.machines['api.heroku.com']) {
-      const current = this.list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
-      return current && current.name ? current.name : null
+  private configDir() {
+    const legacyDir = path.join(os.homedir(), '.heroku')
+    if (fs.existsSync(legacyDir)) {
+      return legacyDir
     }
 
-    return null
+    return path.join(os.homedir(), '.config', 'heroku')
   }
 
-  add(name: string, username: string, password: string): void {
-    const basedir = path.join(this.configDir(), 'accounts')
-    fs.mkdirSync(basedir, {recursive: true})
+  private async initNetrc() {
+    if (!this.netrc) {
+      const NetrcModule = await import('netrc-parser')
+      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
+      this.netrc = new NetrcClass()
+      await this.netrc.load()
+    }
 
-    fs.writeFileSync(
-      path.join(basedir, name),
-      stringify({username, password}),
-      'utf8',
-    )
-    fs.chmodSync(path.join(basedir, name), 0o600)
-  }
-
-  remove(name: string): void {
-    const basedir = path.join(this.configDir(), 'accounts')
-    fs.unlinkSync(path.join(basedir, name))
-  }
-
-  async set(name: string): Promise<void> {
-    const netrcInstance = await this.initNetrc()
-    const current = this.account(name)
-    netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
-    netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
-    await netrcInstance.save()
+    return this.netrc
   }
 }
 

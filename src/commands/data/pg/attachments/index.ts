@@ -1,11 +1,12 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
+import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 
 export default class DataPgAttachmentsIndex extends BaseCommand {
   static args = {
@@ -14,13 +15,10 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'list attachments on a Postgres Advanced database'
-
   static examples = [
     '<%= config.bin %> <%= command.id %> database_name -a example-app',
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
@@ -35,10 +33,8 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
     const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku addons:info ${addon.name} -a ${app}`)} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(`heroku addons:info ${addon.name} -a ${app}`)} instead.`)
     }
 
     const [{body: {items: credentials}}, {body: attachments}] = await Promise.all([
@@ -59,8 +55,9 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
       },
       Credential: {
         get(attachment) {
-          if (attachment.namespace?.startsWith('role:')) {
-            return color.name(attachment.namespace.split(':')[1])
+          const attachmentRoleFactor = parseAttachmentFactors(attachment.namespace).role
+          if (attachmentRoleFactor && attachmentRoleFactor !== ownerCred?.name) {
+            return color.name(attachmentRoleFactor)
           }
 
           return `${ownerCred?.name ? `${color.name(ownerCred.name)} (owner)` : ''}`
@@ -68,9 +65,8 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
       },
       Pool: {
         get(attachment) {
-          return color.name(attachment.namespace?.startsWith('pool:')
-            ? attachment.namespace.split(':')[1]
-            : 'leader')
+          const attachmentPoolFactor = parseAttachmentFactors(attachment.namespace).pool
+          return color.name(attachmentPoolFactor ?? 'leader')
         },
       },
     })

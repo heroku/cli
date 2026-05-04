@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 
 import AutocompleteScript from '../../../../src/commands/autocomplete/script.js'
 import {default as runtest} from '../../../helpers/autocomplete/runtest.js'
-import {runCommand} from '../../../helpers/run-command.js'
-import {getConfig} from '../../../helpers/testInstances.js'
+import {getConfig} from '../../../helpers/test-instances.js'
 
 runtest('autocomplete:script', () => {
   it('outputs bash profile config', async function () {

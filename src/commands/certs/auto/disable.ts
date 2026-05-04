@@ -1,9 +1,9 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -14,7 +14,6 @@ export default class Disable extends Command {
     confirm: flags.string({char: 'c', hidden: true}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

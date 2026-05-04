@@ -1,13 +1,13 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
-import * as chrono from 'chrono-node'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../../lib/addons/create_addon.js'
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import {parseProvisionOpts} from '../../../lib/data/parseProvisionOpts.js'
+import createAddon from '../../../lib/addons/create-addon.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
 import {InfoResponse} from '../../../lib/data/types.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
@@ -19,9 +19,7 @@ export default class Fork extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'fork or rollback a Postgres Advanced database'
-
   static examples = [
     heredoc`
       # Create a fork for an existing database
@@ -36,7 +34,6 @@ export default class Fork extends BaseCommand {
       <%= config.bin %> <%= command.id %> DATABASE --app my-app --as RESTORED --rollback-by '1 day 3 hours 20 minutes'
     `,
   ]
-
   static flags = {
     app: Flags.app({required: true}),
     as: Flags.string({description: 'name for the initial database attachment'}),
@@ -75,7 +72,7 @@ export default class Fork extends BaseCommand {
    * parseRollbackInterval('2 days 5 hours')   // 2 days 5 hours ago
    * parseRollbackInterval('1 day ago')        // 1 day ago (doesn't double-add)
    */
-  public parseRollbackInterval(interval: string): Date {
+  public parseRollbackInterval(interval: string, chrono: any): Date {
     const normalized = interval.trim().toLowerCase()
 
     const timeString = normalized.endsWith('ago')
@@ -85,16 +82,16 @@ export default class Fork extends BaseCommand {
     const parsedDate = chrono.parseDate(timeString)
 
     if (!parsedDate) {
-      ux.error(
-        `${interval} isn't a supported time interval. Use a format like '1 day', '3 hours', '2 days 5 hours' for example. `
-        + 'See https://devcenter.heroku.com/articles/heroku-postgres-rollback.',
-      )
+      ux.error(`${interval} isn't a supported time interval. Use a format like '1 day', '3 hours', '2 days 5 hours' for example. `
+        + 'See https://devcenter.heroku.com/articles/heroku-postgres-rollback.')
     }
 
     return parsedDate
   }
 
   public async run(): Promise<void> {
+    const chrono = await lazyModuleLoader.loadChrono()
+
     const {args, flags} = await this.parse(Fork)
     const {database} = args
     const {app, as, confirm, name, 'provision-option': provisionOpts, 'rollback-by': rollbackBy, 'rollback-to': rollbackTo, wait} = flags
@@ -123,10 +120,8 @@ export default class Fork extends BaseCommand {
         + `${rollbackBy ? ` --by '${rollbackBy}'` : ''}`
 
     if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error(
-        'You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(renderLegacyCommand())} instead.`,
-      )
+      ux.error('You can only use this command on Advanced-tier databases.\n'
+          + `Use ${color.code(renderLegacyCommand())} instead.`)
     }
 
     if (!level) {
@@ -139,7 +134,7 @@ export default class Fork extends BaseCommand {
     if (rollbackTo) {
       recoveryTime = rollbackTo
     } else if (rollbackBy) {
-      const parsedDate = this.parseRollbackInterval(rollbackBy)
+      const parsedDate = this.parseRollbackInterval(rollbackBy, chrono)
       recoveryTime = this.formatRecoveryTime(parsedDate)
     }
 

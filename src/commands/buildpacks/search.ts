@@ -1,22 +1,19 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
-
 import {BuildpackBody, BuildpackRegistry, Category} from '@heroku/buildpack-registry'
+import {hux} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 
 export default class Search extends Command {
-  static description = 'search for buildpacks'
-
-  static flags = {
-    namespace: Flags.string({description: 'buildpack namespaces to filter on using a comma separated list'}),
-    name: Flags.string({description: 'buildpack names to filter on using a comma separated list '}),
-    description: Flags.string({description: 'buildpack description to filter on'}),
-  }
-
   static args = {
     term: Args.string({
       description: 'search term that searches across name, namespace, and description',
     }),
+  }
+  static description = 'search for buildpacks'
+  static flags = {
+    description: Flags.string({description: 'buildpack description to filter on'}),
+    name: Flags.string({description: 'buildpack names to filter on using a comma separated list '}),
+    namespace: Flags.string({description: 'buildpack namespaces to filter on using a comma separated list'}),
   }
 
   async run() {

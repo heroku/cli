@@ -1,9 +1,9 @@
 import socks from '@heroku/socksv5'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
-import child from 'child_process'
 import cliProgress from 'cli-progress'
-import sinon from 'sinon'
+import child from 'node:child_process'
+import {restore, SinonStub, stub} from 'sinon'
 import {Client} from 'ssh2'
 
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
@@ -28,7 +28,7 @@ function makeStream() {
       handlers[event].push(handler)
       return s
     },
-    pipe: sinon.stub().returnsThis() as sinon.SinonStub,
+    pipe: stub().returnsThis() as SinonStub,
     stderr,
   }
   return s
@@ -36,12 +36,12 @@ function makeStream() {
 
 describe('ssh lib', function () {
   let capturedClient: Client
-  let clientConnectStub: sinon.SinonStub
-  let clientExecStub: sinon.SinonStub
-  let clientShellStub: sinon.SinonStub
-  let clientEndStub: sinon.SinonStub
-  let clientSftpStub: sinon.SinonStub
-  let uxErrorStub: sinon.SinonStub
+  let clientConnectStub: SinonStub
+  let clientExecStub: SinonStub
+  let clientShellStub: SinonStub
+  let clientEndStub: SinonStub
+  let clientSftpStub: SinonStub
+  let uxErrorStub: SinonStub
   let sshInstance: HerokuSsh
   let originalMaxListeners: number
   let originalSigintListeners: NodeJS.SignalsListener[]
@@ -50,22 +50,22 @@ describe('ssh lib', function () {
     originalMaxListeners = process.getMaxListeners()
     originalSigintListeners = process.listeners('SIGINT')
     process.setMaxListeners(50)
-    clientConnectStub = sinon.stub(Client.prototype, 'connect').callsFake(function (this: Client) {
+    clientConnectStub = stub(Client.prototype, 'connect').callsFake(function (this: Client) {
       // eslint-disable-next-line @typescript-eslint/no-this-alias, unicorn/no-this-assignment
       capturedClient = this
       return this
     } as () => Client)
-    clientExecStub = sinon.stub(Client.prototype, 'exec')
-    clientShellStub = sinon.stub(Client.prototype, 'shell')
-    clientEndStub = sinon.stub(Client.prototype, 'end')
-    clientSftpStub = sinon.stub(Client.prototype, 'sftp')
-    sinon.stub(ux.action, 'stop')
-    uxErrorStub = sinon.stub(ux, 'error')
+    clientExecStub = stub(Client.prototype, 'exec')
+    clientShellStub = stub(Client.prototype, 'shell')
+    clientEndStub = stub(Client.prototype, 'end')
+    clientSftpStub = stub(Client.prototype, 'sftp')
+    stub(ux.action, 'stop')
+    uxErrorStub = stub(ux, 'error')
     sshInstance = new HerokuSsh()
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     process.setMaxListeners(originalMaxListeners)
     process.removeAllListeners('SIGINT')
     for (const listener of originalSigintListeners) {
@@ -187,13 +187,13 @@ describe('ssh lib', function () {
         })
 
         await p
-        expect(clientExecStub.firstCall.args[0]).to.equal('echo "\\"hello\\""')
+        expect(clientExecStub.firstCall.args[0]).to.equal(String.raw`echo "\"hello\""`)
       })
 
       it('invokes callback after stream closes', async function () {
         const mockStream = makeStream()
         clientExecStub.callsFake((_cmd: string, _opts: {pty: boolean}, cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
-        const callbackStub = sinon.stub()
+        const callbackStub = stub()
 
         const p = sshInstance.connect({args: ['echo', 'hi']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123', callbackStub)
         setImmediate(() => {
@@ -237,7 +237,7 @@ describe('ssh lib', function () {
         expect(config.hostHash).to.equal('sha256')
         expect(config.host).to.equal('addon.host')
         expect(config.username).to.equal('testuser')
-        expect(config.keepaliveInterval).to.equal(10000)
+        expect(config.keepaliveInterval).to.equal(10_000)
         expect(config.keepaliveCountMax).to.equal(3)
       })
     })
@@ -287,10 +287,10 @@ describe('ssh lib', function () {
   })
 
   describe('ssh() native', function () {
-    let childExecSyncStub: sinon.SinonStub
+    let childExecSyncStub: SinonStub
 
     beforeEach(function () {
-      childExecSyncStub = sinon.stub(child, 'execSync')
+      childExecSyncStub = stub(child, 'execSync')
     })
 
     it('includes host, user, port in the ssh command', async function () {
@@ -345,9 +345,9 @@ describe('ssh lib', function () {
   describe('scp()', function () {
     it('opens an sftp session, calls fastGet with src/dest, and resolves', async function () {
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(null)),
+        fastGet: stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(null)),
       }
-      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, sinon.SinonStub>) => void) => cb(null, mockSftp))
+      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, SinonStub>) => void) => cb(null, mockSftp))
 
       const p = sshInstance.scp('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123', '/remote/file.txt', '/local/file.txt')
       setImmediate(() => capturedClient.emit('ready'))
@@ -361,9 +361,9 @@ describe('ssh lib', function () {
 
     it('calls ux.error when the file transfer fails', async function () {
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(new Error('transfer failed'))),
+        fastGet: stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(new Error('transfer failed'))),
       }
-      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, sinon.SinonStub>) => void) => cb(null, mockSftp))
+      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, SinonStub>) => void) => cb(null, mockSftp))
 
       const p = sshInstance.scp('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123', '/remote/file.txt', '/local/file.txt')
       setImmediate(() => capturedClient.emit('ready'))
@@ -373,7 +373,7 @@ describe('ssh lib', function () {
     })
 
     it('calls ux.error when the sftp session cannot be opened', async function () {
-      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, sinon.SinonStub>) => void) => cb(new Error('sftp unavailable')))
+      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, SinonStub>) => void) => cb(new Error('sftp unavailable')))
 
       sshInstance.scp('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123', '/remote/file.txt', '/local/file.txt')
       setImmediate(() => capturedClient.emit('ready'))
@@ -399,9 +399,9 @@ describe('ssh lib', function () {
 
     it('ends the connection even when the file transfer fails', async function () {
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(new Error('transfer failed'))),
+        fastGet: stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(new Error('transfer failed'))),
       }
-      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, sinon.SinonStub>) => void) => cb(null, mockSftp))
+      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, SinonStub>) => void) => cb(null, mockSftp))
 
       const p = sshInstance.scp('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123', '/remote/file.txt', '/local/file.txt')
       setImmediate(() => capturedClient.emit('ready'))
@@ -412,9 +412,9 @@ describe('ssh lib', function () {
 
     it('connects with the correct SSH config', async function () {
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(null)),
+        fastGet: stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(null)),
       }
-      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, sinon.SinonStub>) => void) => cb(null, mockSftp))
+      clientSftpStub.callsFake((cb: (err: Error | null, sftp?: Record<string, SinonStub>) => void) => cb(null, mockSftp))
 
       const p = sshInstance.scp('addon.host', 'testuser', Buffer.from('supersecretkey'), 'ssh-rsa abc123', '/remote/file.txt', '/local/file.txt')
       setImmediate(() => capturedClient.emit('ready'))
@@ -428,11 +428,11 @@ describe('ssh lib', function () {
     })
 
     it('initializes, starts, and updates the progress bar on step callbacks', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
-      sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
+      const barStub = {start: stub(), stop: stub(), update: stub()}
+      stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, opts: {step: (t: number, c: number, total: number) => void}, cb: (err: Error | null) => void) => {
+        fastGet: stub().callsFake((_src: string, _dest: string, opts: {step: (t: number, c: number, total: number) => void}, cb: (err: Error | null) => void) => {
           opts.step(500, 100, 1000)
           opts.step(1000, 100, 1000)
           cb(null)
@@ -444,18 +444,18 @@ describe('ssh lib', function () {
       setImmediate(() => capturedClient.emit('ready'))
 
       await p
-      expect((cliProgress.SingleBar as unknown as sinon.SinonStub).calledOnce).to.be.true
+      expect((cliProgress.SingleBar as unknown as SinonStub).calledOnce).to.be.true
       expect(barStub.start.calledWith(1000, 0)).to.be.true
       expect(barStub.update.calledWith(500)).to.be.true
       expect(barStub.update.calledWith(1000)).to.be.true
     })
 
     it('stops the progress bar after a successful transfer', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
-      sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
+      const barStub = {start: stub(), stop: stub(), update: stub()}
+      stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, opts: {step: (t: number, c: number, total: number) => void}, cb: (err: Error | null) => void) => {
+        fastGet: stub().callsFake((_src: string, _dest: string, opts: {step: (t: number, c: number, total: number) => void}, cb: (err: Error | null) => void) => {
           opts.step(1000, 100, 1000)
           cb(null)
         }),
@@ -470,11 +470,11 @@ describe('ssh lib', function () {
     })
 
     it('stops the progress bar after a failed transfer', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
-      sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
+      const barStub = {start: stub(), stop: stub(), update: stub()}
+      stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, opts: {step: (t: number, c: number, total: number) => void}, cb: (err: Error | null) => void) => {
+        fastGet: stub().callsFake((_src: string, _dest: string, opts: {step: (t: number, c: number, total: number) => void}, cb: (err: Error | null) => void) => {
           opts.step(500, 100, 1000)
           cb(new Error('transfer failed'))
         }),
@@ -489,11 +489,11 @@ describe('ssh lib', function () {
     })
 
     it('does not stop the progress bar when no step callbacks fired', async function () {
-      const barStub = {start: sinon.stub(), update: sinon.stub(), stop: sinon.stub()}
-      sinon.stub(cliProgress, 'SingleBar').returns(barStub as any)
+      const barStub = {start: stub(), stop: stub(), update: stub()}
+      stub(cliProgress, 'SingleBar').returns(barStub as any)
 
       const mockSftp = {
-        fastGet: sinon.stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(null)),
+        fastGet: stub().callsFake((_src: string, _dest: string, _opts: Record<string, unknown>, cb: (err: Error | null) => void) => cb(null)),
       }
       clientSftpStub.callsFake((cb: (err: Error | null, sftp?: typeof mockSftp) => void) => cb(null, mockSftp))
 
@@ -506,24 +506,29 @@ describe('ssh lib', function () {
   })
 
   describe('socksv5()', function () {
-    let mockServer: {listen: sinon.SinonStub; useAuth: sinon.SinonStub}
-    let createServerStub: sinon.SinonStub
-    let capturedSocksHandler: (info: {srcAddr: string; srcPort: number; dstAddr: string; dstPort: number}, accept: (autoAccept?: boolean) => ReturnType<typeof makeStream> | null, deny: () => void) => void
-    let clientForwardOutStub: sinon.SinonStub
+    let mockServer: {listen: SinonStub; useAuth: SinonStub}
+    let createServerStub: SinonStub
+    let capturedSocksHandler:
+    (info:
+    {
+      dstAddr: string;
+      dstPort: number; srcAddr: string; srcPort: number;
+    }, accept: (autoAccept?: boolean) => null | ReturnType<typeof makeStream>, deny: () => void) => void
+    let clientForwardOutStub: SinonStub
 
     beforeEach(function () {
       mockServer = {
-        listen: sinon.stub().callsFake((_port: number, _host: string, cb: () => void) => {
+        listen: stub().callsFake((_port: number, _host: string, cb: () => void) => {
           cb()
           return mockServer
         }),
-        useAuth: sinon.stub().returns(mockServer),
+        useAuth: stub().returns(mockServer),
       }
-      createServerStub = sinon.stub(socks, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
+      createServerStub = stub(socks, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
         capturedSocksHandler = handler
         return mockServer
       }) as any)
-      clientForwardOutStub = sinon.stub(Client.prototype, 'forwardOut')
+      clientForwardOutStub = stub(Client.prototype, 'forwardOut')
     })
 
     it('starts the SOCKSv5 proxy on port 1080 and invokes the callback', function (done) {
@@ -547,12 +552,14 @@ describe('ssh lib', function () {
     })
 
     it('calls forwardOut with the SOCKS request info on ready', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub().returns(makeStream()), sinon.stub())
+      capturedSocksHandler(info, stub().returns(makeStream()), stub())
       capturedClient.emit('ready')
 
       expect(clientForwardOutStub.calledOnce).to.be.true
@@ -564,12 +571,14 @@ describe('ssh lib', function () {
     })
 
     it('denies and ends the connection when forwardOut errors', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
-      const deny = sinon.stub()
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
+      const deny = stub()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: null) => void) => cb(new Error('forward failed'), null))
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub(), deny)
+      capturedSocksHandler(info, stub(), deny)
       capturedClient.emit('ready')
 
       expect(deny.calledOnce).to.be.true
@@ -577,25 +586,29 @@ describe('ssh lib', function () {
     })
 
     it('pipes the forwarded stream to the accepted client socket', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       const clientSocket = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub().returns(clientSocket), sinon.stub())
+      capturedSocksHandler(info, stub().returns(clientSocket), stub())
       capturedClient.emit('ready')
 
       expect(fwdStream.pipe.calledWith(clientSocket)).to.be.true
     })
 
     it('ends the connection when the piped stream closes', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub().returns(makeStream()), sinon.stub())
+      capturedSocksHandler(info, stub().returns(makeStream()), stub())
       capturedClient.emit('ready')
       fwdStream.emit('close')
 
@@ -603,34 +616,40 @@ describe('ssh lib', function () {
     })
 
     it('ends the connection immediately when accept returns null', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       const fwdStream = makeStream()
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, fwdStream))
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub().returns(null), sinon.stub())
+      capturedSocksHandler(info, stub().returns(null), stub())
       capturedClient.emit('ready')
 
       expect(clientEndStub.calledOnce).to.be.true
     })
 
     it('denies the request on SSH client error', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
-      const deny = sinon.stub()
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
+      const deny = stub()
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub(), deny)
+      capturedSocksHandler(info, stub(), deny)
       capturedClient.emit('error', new Error('connection failed'))
 
       expect(deny.calledOnce).to.be.true
     })
 
     it('connects with the correct SSH config for each SOCKS request', function () {
-      const info = {srcAddr: '127.0.0.1', srcPort: 1234, dstAddr: 'example.com', dstPort: 80}
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
       clientForwardOutStub.callsFake((_sa: string, _sp: number, _da: string, _dp: number, cb: (err: Error | null, s: ReturnType<typeof makeStream>) => void) => cb(null, makeStream()))
 
       sshInstance.socksv5('addon.host', 'testuser', Buffer.from('supersecretkey'), 'ssh-rsa abc123')
-      capturedSocksHandler(info, sinon.stub().returns(makeStream()), sinon.stub())
+      capturedSocksHandler(info, stub().returns(makeStream()), stub())
 
       const config = clientConnectStub.firstCall.args[0]
       expect(config.host).to.equal('addon.host')

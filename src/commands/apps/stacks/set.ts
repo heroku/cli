@@ -1,31 +1,23 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import push from '../../../lib/git/push.js'
-
-function map(stack: string): string {
-  return stack === 'cedar-10' ? 'cedar' : stack
-}
 
 export default class Set extends Command {
   static args = {
     stack: Args.string({description: 'unique name or identifier of the stack', required: true}),
   }
-
   static description = 'set the stack of an app'
-
   static example = `${color.command('heroku stack:set heroku-24 -a myapp')}
 Setting stack to heroku-24... done
 You will need to redeploy myapp for the change to take effect.
 Run git push heroku main to trigger a new build on myapp.`
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['stack:set']
 
   async run() {
@@ -46,4 +38,8 @@ Run git push heroku main to trigger a new build on myapp.`
 
     ux.action.stop()
   }
+}
+
+function map(stack: string): string {
+  return stack === 'cedar-10' ? 'cedar' : stack
 }

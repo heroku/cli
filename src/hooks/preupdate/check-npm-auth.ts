@@ -1,6 +1,6 @@
-/* eslint-disable valid-jsdoc */
-import {color} from '@heroku/heroku-cli-util'
-import {Hook, ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {Hook} from '@oclif/core/hooks'
+import {ux} from '@oclif/core/ux'
 import inquirer from 'inquirer'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
@@ -52,13 +52,11 @@ const checkNpmAuth: Hook<'preupdate'> = async function (opts) {
 
     for (let i = 0; i < plugins.length; i += batchSize) {
       const batch = plugins.slice(i, i + batchSize)
-      const results = await Promise.all(
-        batch.map(async plugin => {
-          const isPrivate = await NpmAuth.isPrivatePackage(plugin)
-          this.debug(`${plugin} is ${isPrivate ? 'private' : 'public'}`)
-          return isPrivate ? plugin : null
-        }),
-      )
+      const results = await Promise.all(batch.map(async plugin => {
+        const isPrivate = await NpmAuth.isPrivatePackage(plugin)
+        this.debug(`${plugin} is ${isPrivate ? 'private' : 'public'}`)
+        return isPrivate ? plugin : null
+      }))
 
       privatePlugins.push(...results.filter((p): p is string => p !== null))
     }

@@ -2,21 +2,23 @@ import {expect} from 'chai'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import sinon from 'sinon'
+import {
+  match, restore, SinonStub, stub,
+} from 'sinon'
 
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 describe('accounts', function () {
-  let fsReaddirStub: sinon.SinonStub
-  let fsReadFileStub: sinon.SinonStub
+  let fsReaddirStub: SinonStub
+  let fsReadFileStub: SinonStub
 
   beforeEach(function () {
-    fsReaddirStub = sinon.stub(fs, 'readdirSync')
-    fsReadFileStub = sinon.stub(fs, 'readFileSync')
+    fsReaddirStub = stub(fs, 'readdirSync')
+    fsReadFileStub = stub(fs, 'readFileSync')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     // fs.unlinkSync(tmpNetrc)
   })
 
@@ -29,9 +31,9 @@ describe('accounts', function () {
 
     it('should return array of account objects when files exist', function () {
       fsReaddirStub.returns(['account1', 'account2'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account1$/), 'utf8')
         .returns('{"username": "user1", "password": "pass1"}')
-      fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account2$/), 'utf8')
         .returns('{"username": "user2", "password": "pass2"}')
 
       const result = AccountsModule.list()
@@ -40,19 +42,19 @@ describe('accounts', function () {
       expect(result).to.have.lengthOf(2)
       expect(result[0]).to.deep.include({
         name: 'account1',
-        username: 'user1',
         password: 'pass1',
+        username: 'user1',
       })
       expect(result[1]).to.deep.include({
         name: 'account2',
-        username: 'user2',
         password: 'pass2',
+        username: 'user2',
       })
     })
 
     it('should handle ruby-style symbol keys', function () {
       fsReaddirStub.returns(['account1'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account1$/), 'utf8')
         .returns('{":username": "user1", ":password": "pass1"}')
 
       const result = AccountsModule.list()
@@ -61,8 +63,8 @@ describe('accounts', function () {
       expect(result).to.have.lengthOf(1)
       expect(result[0]).to.deep.include({
         name: 'account1',
-        username: 'user1',
         password: 'pass1',
+        username: 'user1',
       })
       expect(result[0]).to.not.have.property(':username')
       expect(result[0]).to.not.have.property(':password')
@@ -70,15 +72,15 @@ describe('accounts', function () {
   })
 
   describe('add', function () {
-    let mkdirSyncStub: sinon.SinonStub
-    let writeFileSyncStub: sinon.SinonStub
-    let chmodSyncStub: sinon.SinonStub
+    let mkdirSyncStub: SinonStub
+    let writeFileSyncStub: SinonStub
+    let chmodSyncStub: SinonStub
 
     beforeEach(function () {
       // Setup stubs before each test
-      mkdirSyncStub = sinon.stub(fs, 'mkdirSync')
-      writeFileSyncStub = sinon.stub(fs, 'writeFileSync')
-      chmodSyncStub = sinon.stub(fs, 'chmodSync')
+      mkdirSyncStub = stub(fs, 'mkdirSync')
+      writeFileSyncStub = stub(fs, 'writeFileSync')
+      chmodSyncStub = stub(fs, 'chmodSync')
     })
 
     it('should create directory with recursive option', function () {
@@ -117,15 +119,15 @@ describe('accounts', function () {
   })
 
   describe('remove', function () {
-    let unlinkStub: sinon.SinonStub
-    let osHomeStub: sinon.SinonStub
-    let existsSyncStub: sinon.SinonStub
+    let unlinkStub: SinonStub
+    let osHomeStub: SinonStub
+    let existsSyncStub: SinonStub
 
     beforeEach(function () {
       // Create a stub for fs.unlinkSync before each test
-      unlinkStub = sinon.stub(fs, 'unlinkSync')
-      osHomeStub = sinon.stub(os, 'homedir')
-      existsSyncStub = sinon.stub(fs, 'existsSync')
+      unlinkStub = stub(fs, 'unlinkSync')
+      osHomeStub = stub(os, 'homedir')
+      existsSyncStub = stub(fs, 'existsSync')
     })
 
     it('should remove the account file with the given name', function () {
@@ -138,9 +140,7 @@ describe('accounts', function () {
       AccountsModule.remove(accountName)
 
       expect(unlinkStub.calledOnce).to.be.true
-      expect(unlinkStub.firstCall.args[0]).to.equal(
-        path.join(`${basedir}/.config/heroku/accounts`, accountName),
-      )
+      expect(unlinkStub.firstCall.args[0]).to.equal(path.join(`${basedir}/.config/heroku/accounts`, accountName))
     })
 
     it('should throw an error if the file cannot be removed', function () {

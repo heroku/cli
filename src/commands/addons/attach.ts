@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {trapConfirmationRequired} from '../../lib/addons/util.js'
@@ -9,9 +9,7 @@ export default class Attach extends Command {
   static args = {
     addon_name: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
   }
-
   static description = 'attach an existing add-on resource to an app'
-
   static flags = {
     app: flags.app({required: true}),
     as: flags.string({description: 'name for add-on attachment'}),
@@ -19,7 +17,6 @@ export default class Attach extends Command {
     credential: flags.string({description: 'credential name for scoped access to Heroku Postgres'}),
     remote: flags.remote(),
   }
-
   static topic = 'addons'
 
   public async run(): Promise<void> {
@@ -36,10 +33,16 @@ export default class Attach extends Command {
         addon: {name: addon.name}, app: {name: app}, confirm: confirmed, name: as, namespace,
       }
 
-      ux.action.start(`Attaching ${credential ? color.name(credential) + ' of ' : ''}${color.datastore(addon.name || '')}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`)
-      const {body: attachments} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {body})
-      ux.action.stop()
-      return attachments
+      try {
+        ux.action.start(`Attaching ${credential ? color.name(credential) + ' of ' : ''}${color.datastore(addon.name || '')}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`)
+        const {body: attachment} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {body})
+        ux.action.stop()
+
+        return attachment
+      } catch (error: unknown) {
+        ux.action.stop(color.red('!'))
+        throw error
+      }
     }
 
     if (credential && credential !== 'default') {

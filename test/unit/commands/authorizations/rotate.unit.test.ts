@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import AuthorizationsRotate from '../../../../src/commands/authorizations/rotate.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('authorizations:rotate', function () {
   let api: nock.Scope

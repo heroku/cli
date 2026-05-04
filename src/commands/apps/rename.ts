@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import * as git from '../../lib/ci/git.js'
@@ -9,21 +9,16 @@ export default class AppsRename extends Command {
   static args = {
     newname: Args.string({description: 'new unique name of the app', required: true}),
   }
-
   static description = 'rename an app'
   static examples = [
     color.command('heroku apps:rename --app oldname newname'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static help = 'This will locally update the git remote if it is set to the old app.'
-
   static hiddenAliases = ['rename']
-
   static topic = 'apps'
 
   async run() {
@@ -55,7 +50,7 @@ export default class AppsRename extends Command {
       const targetRemotesBySSHUrl = remotes.get(sshUrl)
       const targetRemotesByHttpsUrl = remotes.get(httpsUrl)
 
-      const doRename = async (remotes: {name: string}[] | undefined, url: string) => {
+      const doRename = async (remotes: undefined | {name: string}[], url: string) => {
         for (const remote of remotes ?? []) {
           const {name} = remote
           await git.rmRemote(name)

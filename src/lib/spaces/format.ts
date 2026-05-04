@@ -1,79 +1,81 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 
 export function displayCIDR(cidr: string[] | undefined) {
   return cidr?.join(', ') ?? ''
 }
 
+export function displayVPNStatus(s: string | undefined) {
+  switch (s) {
+    case 'available':
+    case 'UP': {
+      return `${color.success(s)}`
+    }
+
+    case 'deleted':
+    case 'deleting':
+    case 'DOWN': {
+      return `${color.failure(s)}`
+    }
+
+    case 'deprovisioning':
+    case 'pending':
+    case 'provisioning': {
+      return `${color.info(s)}`
+    }
+
+    default: {
+      return s
+    }
+  }
+}
+
 export function hostStatus(s: string) {
   switch (s) {
-  case 'available': {
-    return `${color.success(s)}`
-  }
+    case 'available': {
+      return `${color.success(s)}`
+    }
 
-  case 'under-assessment': {
-    return `${color.info(s)}`
-  }
+    case 'permanent-failure':
+    // falls through
+    case 'released-permanent-failure': {
+      return `${color.failure(s)}`
+    }
 
-  case 'permanent-failure':
-  case 'released-permanent-failure': {
-    return `${color.failure(s)}`
-  }
+    case 'released': {
+      return `${color.gray(s)}`
+    }
 
-  case 'released': {
-    return `${color.gray(s)}`
-  }
+    case 'under-assessment': {
+      return `${color.info(s)}`
+    }
 
-  default: {
-    return s
-  }
+    default: {
+      return s
+    }
   }
 }
 
 export function peeringStatus(s: string) {
   switch (s) {
-  case 'active': {
-    return `${color.success(s)}`
-  }
+    case 'active': {
+      return `${color.success(s)}`
+    }
 
-  case 'pending-acceptance':
-  case 'provisioning': {
-    return `${color.info(s)}`
-  }
+    case 'deleted':
+    case 'expired':
+    // falls through
+    case 'failed':
+    case 'rejected': {
+      return `${color.failure(s)}`
+    }
 
-  case 'expired':
-  case 'failed':
-  case 'deleted':
-  case 'rejected': {
-    return `${color.failure(s)}`
-  }
+    case 'pending-acceptance':
+    case 'provisioning': {
+      return `${color.info(s)}`
+    }
 
-  default: {
-    return s
-  }
-  }
-}
-
-export function displayVPNStatus(s: string | undefined) {
-  switch (s) {
-  case 'UP':
-  case 'available': {
-    return `${color.success(s)}`
-  }
-
-  case 'pending':
-  case 'provisioning':
-  case 'deprovisioning': {
-    return `${color.info(s)}`
-  }
-
-  case 'DOWN':
-  case 'deleting':
-  case 'deleted': {
-    return `${color.failure(s)}`
-  }
-
-  default: {
-    return s
-  }
+    default: {
+      return s
+    }
   }
 }

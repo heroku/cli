@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {TransferSchedule} from '../../../lib/pg/types.js'
@@ -9,13 +9,11 @@ export default class Unschedule extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:arbitrary:suffix')}`}),
   }
-
   static description = 'stop daily backups'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -57,4 +55,3 @@ export default class Unschedule extends Command {
     ux.action.stop()
   }
 }
-

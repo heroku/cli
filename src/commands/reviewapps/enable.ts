@@ -1,17 +1,15 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
 
 export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
-
   static examples = [
     color.command('heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy'),
   ]
-
   static flags = {
     app: flags.app({
       description: 'parent app used by review apps',
@@ -92,6 +90,7 @@ export default class ReviewappsEnable extends Command {
       settings.repo = repository.name
     }
 
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (flags.autodeploy || flags.autodestroy || flags['wait-for-ci']) {
       await this.heroku.patch(`/pipelines/${pipeline.id}/review-app-config`, {
         body: settings,

@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
@@ -10,9 +10,7 @@ export default class Remove extends Command {
       description: 'namespace/name of the buildpack',
     }),
   }
-
   static description = 'remove a buildpack set on the app'
-
   static flags = {
     app: Flags.app({required: true}),
     index: Flags.integer({

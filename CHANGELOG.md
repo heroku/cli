@@ -3,7 +3,99 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [11.0.0-beta.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0-beta.0) (2026-02-26)
+
+## [11.3.0](https://github.com/heroku/cli/compare/v11.2.0...v11.3.0) (2026-04-15)
+
+
+### Features
+
+* adds 'data:pg:upgrade:run/wait' commands (W-21304392) ([#3551](https://github.com/heroku/cli/issues/3551)) ([3297c5e](https://github.com/heroku/cli/commit/3297c5e218fe9105cd106000cba030e784d17a82))
+
+
+### Bug Fixes
+
+* restore beforeExit handler for version commands and add comprehensive telemetry debug logging ([#3657](https://github.com/heroku/cli/issues/3657)) ([6da79cd](https://github.com/heroku/cli/commit/6da79cd4686133e1ee1f92b59127d8e012739b99))
+
+
+### Miscellaneous Chores
+
+* remove @oclif/plugin-legacy dependency ([#3659](https://github.com/heroku/cli/issues/3659)) ([2523d48](https://github.com/heroku/cli/commit/2523d481a79f0d26ab8b6897c6b49d3e5713a218))
+
+
+### Code Refactoring
+
+* apply lint formatting to access, accounts, addons, and apps commands ([#3664](https://github.com/heroku/cli/issues/3664)) ([5568483](https://github.com/heroku/cli/commit/5568483130be2eb90bae4096b89c164dcd1d8742))
+* rename lib and script files to kebab-case ([#3663](https://github.com/heroku/cli/issues/3663)) ([c6a101f](https://github.com/heroku/cli/commit/c6a101f4295425ccd362d315f8d2733d88bc6278))
+
+## [11.2.0](https://github.com/heroku/cli/compare/v11.1.1...v11.2.0) (2026-04-08)
+
+
+### Features
+
+* adding --start-cmd flag to heroku local when no Procfile is present ([#3638](https://github.com/heroku/cli/issues/3638)) ([b9b8fed](https://github.com/heroku/cli/commit/b9b8fed8f44ad88946edc4141ec1fe41f157baac))
+* include a --no-wrap flag for table displays ([#3613](https://github.com/heroku/cli/issues/3613)) ([1d27c09](https://github.com/heroku/cli/commit/1d27c09f3973c81bb610583c3afe418ff0c867a6))
+* update color usage, telemetry activation logic, and command/util dependencies ([#3646](https://github.com/heroku/cli/issues/3646)) ([ede6655](https://github.com/heroku/cli/commit/ede665557ca3d387e3e57f5a438cd7ab7c27b1b3))
+
+
+### Bug Fixes
+
+* flaky apps:diff tests ([#3649](https://github.com/heroku/cli/issues/3649)) ([8c4f8c3](https://github.com/heroku/cli/commit/8c4f8c3e5c99f688cbbefcf91a44ed234ba6c65b))
+* improve telemetry worker stderr cleanup ([#3648](https://github.com/heroku/cli/issues/3648)) ([150e74a](https://github.com/heroku/cli/commit/150e74abe77b7c51b6b9ea84c8e246fe3165c6b5))
+* procfile comment parsing ([#3641](https://github.com/heroku/cli/issues/3641)) ([aae3751](https://github.com/heroku/cli/commit/aae37512b54bdcf2b832429254f0d2c0fe1f42d3))
+
+
+### Code Refactoring
+
+* unify telemetry architecture and use background workers for all telemetry ([#3642](https://github.com/heroku/cli/issues/3642)) ([c13074d](https://github.com/heroku/cli/commit/c13074da5f0892fa412ce6bc7c4b1d998eae3366))
+
+
+### Tests
+
+* this fixes the mocking difference causing flappy tests and adds chore to PR release title ([#3640](https://github.com/heroku/cli/issues/3640)) ([32920f9](https://github.com/heroku/cli/commit/32920f9600cc6b06815aa7db532dd8bb352d90db))
+* use Sinon stubs; parallel slug checksums ([#3650](https://github.com/heroku/cli/issues/3650)) ([73e4990](https://github.com/heroku/cli/commit/73e4990222d4a1b1dfec5fc64eae0c25f811c93c))
+
+## [11.1.1](https://github.com/heroku/cli/compare/v11.1.0...v11.1.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* run:inside argument parsing order ([#3633](https://github.com/heroku/cli/issues/3633)) ([d46b239](https://github.com/heroku/cli/commit/d46b239cac4b9d97b86e7189350baa9a2dca43be))
+
+## [11.1.0](https://github.com/heroku/cli/compare/v11.0.2...v11.1.0) (2026-03-31)
+
+
+### Features
+
+* add isTTY context to telemetry and filter SIGINT from Sentry ([#3632](https://github.com/heroku/cli/issues/3632)) ([74bbdfb](https://github.com/heroku/cli/commit/74bbdfbe45eef40b7232c9159e3cc4a541290296))
+
+
+### Performance Improvements
+
+* optimize telemetry initialization and reduce startup overhead ([#3620](https://github.com/heroku/cli/issues/3620)) ([65575a0](https://github.com/heroku/cli/commit/65575a01f7da69d602af52d1991f880be23bd3df))
+
+## [11.0.2](https://github.com/heroku/cli/compare/v11.0.1...v11.0.2) (2026-03-27)
+
+
+### Bug Fixes
+
+* point bin to run.js instead of symlink for npm compatibility ([#3624](https://github.com/heroku/cli/issues/3624)) ([dd3cfa3](https://github.com/heroku/cli/commit/dd3cfa3bcc711ded29ca99d9403fa516c2e55473))
+
+## [11.0.1](https://github.com/heroku/cli/compare/v11.0.0...v11.0.1) (2026-03-26)
+
+
+### Bug Fixes
+
+* address UI issues with confirmation prompts on multiple commands (W-21649376) ([#3602](https://github.com/heroku/cli/issues/3602)) ([7e96152](https://github.com/heroku/cli/commit/7e96152f8789d4580cd30b0e501866d6f01c9079))
+* resolve addons across data maintenances commands ([#3609](https://github.com/heroku/cli/issues/3609)) ([84eb648](https://github.com/heroku/cli/commit/84eb64866d1204cb393bae80ae8b4c58eabcb1cc))
+* separate TERM=dumb run status lines ([#3617](https://github.com/heroku/cli/issues/3617)) ([3eff3dc](https://github.com/heroku/cli/commit/3eff3dccfe6bb131756ed4a7984904f80af06165))
+* show correct error message for Essential-tier (W-21653472) ([#3614](https://github.com/heroku/cli/issues/3614)) ([6fcb3a4](https://github.com/heroku/cli/commit/6fcb3a4ae28166c46b7412dec518afa275c54d6a))
+
+
+### Performance Improvements
+
+* improve Windows CLI performance ([#3610](https://github.com/heroku/cli/issues/3610)) ([85c2224](https://github.com/heroku/cli/commit/85c2224f4a7d1c8068aff0b7945f24a7353c4c49))
+
+## [11.0.0](https://github.com/heroku/cli/compare/v10.17.0...v11.0.0) (2026-03-18)
 
 ### Summary
 

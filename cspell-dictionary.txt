@@ -115,6 +115,7 @@ hamurai
 herokai
 herokuapp
 herokudns
+herokulytics
 herokumanager
 herokussl
 histfile
@@ -122,6 +123,7 @@ HRKU
 howmany
 hstore
 htcat
+Icann
 infile
 iname
 indexrelid
@@ -197,6 +199,7 @@ mstarting
 mstatus
 mtest
 mtimeout
+MULTIFACTOR
 multisort
 munder
 mweb
@@ -229,6 +232,7 @@ newpassword
 NGPG
 nodir
 noeviction
+notadomain
 notaninteger
 notexample
 notinteger
@@ -366,6 +370,7 @@ testuser
 texcl
 timedout
 tikki
+tldts
 tmpl
 toolbelt
 topo

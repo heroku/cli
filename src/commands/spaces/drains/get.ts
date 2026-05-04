@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export default class Get extends Command {
   static aliases = ['drains:get']
@@ -10,7 +10,6 @@ export default class Get extends Command {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space for which to get log drain', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

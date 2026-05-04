@@ -1,16 +1,14 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import BaseCommand from '../../../lib/webhooks/base.js'
 
 export default class EventsIndex extends BaseCommand {
   static description = 'list webhook events on an app'
-
   static examples = [
     `${color.command('heroku webhooks:events')}`,
   ]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({char: 'p', description: 'pipeline on which to list', hidden: true}),
@@ -52,6 +50,7 @@ export default class EventsIndex extends BaseCommand {
       }, {
         printLine,
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
   }
 }

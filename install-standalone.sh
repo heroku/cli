@@ -44,9 +44,10 @@
   fi
 
   mkdir -p /usr/local/lib
+  mkdir -p /usr/local/bin
   cd /usr/local/lib
   rm -rf heroku
-  rm -rf ~/.local/share/heroku/client
+  rm -rf $HOME/.local/share/heroku/client
   if [ \$(command -v xz) ]; then
     URL=https://cli-assets.heroku.com/channels/stable/heroku-\$OS-\$ARCH.tar.xz
     TAR_ARGS="xJ"

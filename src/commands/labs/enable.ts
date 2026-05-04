@@ -1,26 +1,17 @@
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
-
-async function enableFeature(heroku: APIClient, feature: string, app?: string) {
-  return heroku.patch<Heroku.AccountFeature | Heroku.AppFeature>(app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`, {
-    body: {enabled: true},
-  })
-}
 
 export default class LabsEnable extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
-
   static description = 'enables an experimental feature'
-
   static flags = {
     app: flags.app({required: false}),
     remote: flags.remote(),
   }
-
   static topic = 'labs'
 
   async run() {
@@ -47,4 +38,10 @@ export default class LabsEnable extends Command {
     await request
     ux.action.stop()
   }
+}
+
+async function enableFeature(heroku: APIClient, feature: string, app?: string) {
+  return heroku.patch<Heroku.AccountFeature | Heroku.AppFeature>(app ? `/apps/${app}/features/${feature}` : `/account/features/${feature}`, {
+    body: {enabled: true},
+  })
 }

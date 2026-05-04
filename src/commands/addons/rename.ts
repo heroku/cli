@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 export default class Rename extends Command {
@@ -8,9 +8,7 @@ export default class Rename extends Command {
     addon_name: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
     new_name: Args.string({description: 'new globally unique name of the add-on', required: true}),
   }
-
   static description = 'rename an add-on'
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

@@ -1,9 +1,9 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -14,18 +14,15 @@ export default class Destroy extends Command {
       required: true,
     }),
   }
-
   static description = 'destroys VPN in a private space'
   static examples = [heredoc(`
     ${color.command('heroku spaces:vpn:destroy vpn-connection-name --space example-space --confirm vpn-connection-name')}
     Tearing down VPN Connection vpn-connection-name in space example-space... done
   `)]
-
   static flags = {
     confirm: flags.string({description: 'set to VPN connection name to bypass confirm prompt', hidden: true}),
     space: flags.string({char: 's', description: 'space name', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

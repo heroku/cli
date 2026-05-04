@@ -1,23 +1,22 @@
-Heroku CLI
-==========
+<div align="center">
+  <img src="assets/Heroku-Logo-Mark-Light-RGB.svg" alt="Heroku logo" width="100">
+  <p>&nbsp;</p>
 
-![Heroku logo](https://d4yt8xl9b7in.cloudfront.net/assets/home/logotype-heroku.png)
-[![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
-[![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
-
-The Heroku CLI is used to manage Heroku apps from the command line. It is built using [oclif](https://oclif.io).
-
-For more about Heroku see <https://www.heroku.com/home>
-
-To get started see <https://devcenter.heroku.com/start>
+  [![Node CI Suite](https://github.com/heroku/cli/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/cli/actions/workflows/ci.yml)
+  [![npm](https://img.shields.io/npm/v/heroku.svg)](https://www.npmjs.com/package/heroku)
+  [![ISC License](https://img.shields.io/github/license/heroku/cli.svg)](https://github.com/heroku/cli/blob/main/LICENSE)
+</div>
 
 Overview
 ========
 
 The Heroku CLI is a command-line interface for managing Heroku applications and services. Built with Node.js and [oclif](https://oclif.io), it provides an extensible architecture for interacting with the Heroku platform.
 
-Key features include:
+For more about Heroku see <https://www.heroku.com/home>
+
+To get started see <https://devcenter.heroku.com/start>
+
+Key features of the CLI include:
 
 - **App management** - Deploy, scale, and monitor your applications
 - **Heroku Postgres database management** - Backup, restore, and manage Heroku Postgres databases
@@ -56,7 +55,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku clients`](docs/clients.md) - OAuth clients on the platform
 * [`heroku config`](docs/config.md) - environment variables of apps
 * [`heroku container`](docs/container.md) - deploy your Docker-based app to Heroku
-* [`heroku data`](docs/data.md) - display details of the most recent maintenance for an addon
+* [`heroku data`](docs/data.md) - list maintenances for an app's data addons
 * [`heroku domains`](docs/domains.md) - custom domains for apps
 * [`heroku drains`](docs/drains.md) - forward logs to syslog or HTTPS
 * [`heroku features`](docs/features.md) - add/remove app features
@@ -74,7 +73,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku pg`](docs/pg.md) - manage postgresql databases
 * [`heroku pipelines`](docs/pipelines.md) - manage pipelines
 * [`heroku plugins`](docs/plugins.md) - List installed plugins.
-* [`heroku ps`](docs/ps.md) - Client tools for Heroku Exec
+* [`heroku ps`](docs/ps.md) - manage app dynos
 * [`heroku redis`](docs/redis.md) - manage heroku redis instances
 * [`heroku regions`](docs/regions.md) - list available regions for deployment
 * [`heroku releases`](docs/releases.md) - display the releases for an app
@@ -89,7 +88,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku telemetry`](docs/telemetry.md) - list telemetry drains
 * [`heroku update`](docs/update.md) - update the Heroku CLI
 * [`heroku usage`](docs/usage.md) - list usage for metered add-ons attached to an app or apps within a team
-* [`heroku version`](docs/version.md)
+* [`heroku version`](docs/version.md) - display changelog information for a specific CLI version
 * [`heroku webhooks`](docs/webhooks.md) - list webhooks on an app
 
 <!-- commandsstop -->
@@ -116,8 +115,7 @@ Using WebStorm (from JetBrains / IntelliJ), you can run/debug an individual test
 - Create a new run/debug configuration
 - Select the 'Mocha' type
 
-Releasing
+Contributing
 =========
-See the [Heroku CLI Release Steps](https://salesforce.quip.com/aPLDA1ZwjNlW).
 
-Review our [PR guidelines](./.github/PULL_REQUEST_TEMPLATE.md).
+Please review our [Contributing guidelines](./CONTRIBUTING.md) as well as our [PR template](./.github/PULL_REQUEST_TEMPLATE.md).

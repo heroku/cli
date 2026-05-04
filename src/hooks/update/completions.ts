@@ -1,4 +1,4 @@
-import {Hook} from '@oclif/core'
+import {Hook} from '@oclif/core/hooks'
 
 const doRecache: Hook<'update'> = async function () {
   // autocomplete is now in core, skip windows

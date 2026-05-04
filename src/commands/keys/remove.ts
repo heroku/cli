@@ -1,13 +1,12 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 export default class Remove extends Command {
   static args = {
     key: Args.string({description: 'email address of the user', required: true}),
   }
-
   static description = 'remove an SSH key from the user'
   static example = `${color.command('heroku keys:remove email@example.com')}
 Removing email@example.com SSH key... done`

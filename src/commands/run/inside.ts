@@ -1,11 +1,11 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import Dyno from '../../lib/run/dyno.js'
-import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
+import {buildCommandWithLauncher, revertSortedArgs} from '../../lib/run/helpers.js'
 
 const debug = debugFactory('heroku:run:inside')
 const heredoc = tsheredoc.default
@@ -21,7 +21,6 @@ export default class RunInside extends Command {
       required: true,
     }),
   }
-
   static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
   static examples = [
     heredoc`
@@ -37,7 +36,6 @@ export default class RunInside extends Command {
       ${color.command('heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app')}
     `,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'exit-code': flags.boolean({
@@ -51,18 +49,19 @@ export default class RunInside extends Command {
     }),
     remote: flags.remote(),
   }
-
   static strict = false
 
   async run() {
     const {args, argv, flags} = await this.parse(RunInside)
+    const orderedArgs = revertSortedArgs(process.argv, argv as string[])
+    const commandArgs = orderedArgs.slice(1)
 
     const {dyno_name: dynoName} = args
     const {app: appName, 'exit-code': exitCode, listen, 'no-launcher': noLauncher} = flags
 
     const opts = {
       app: appName,
-      command: await buildCommandWithLauncher(this.heroku, appName, argv.slice(1) as string[], noLauncher),
+      command: await buildCommandWithLauncher(this.heroku, appName, commandArgs, noLauncher),
       dyno: dynoName,
       'exit-code': exitCode,
       heroku: this.heroku,
@@ -84,4 +83,3 @@ export default class RunInside extends Command {
     }
   }
 }
-

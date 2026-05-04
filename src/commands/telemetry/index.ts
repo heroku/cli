@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {TelemetryDrains} from '../../lib/types/telemetry.js'
 
@@ -11,7 +11,6 @@ export default class Index extends Command {
     app: Flags.string({char: 'a', description: 'filter by app name'}),
     space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
   }
-
   static topic = 'telemetry'
 
   protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {

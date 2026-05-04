@@ -1,15 +1,13 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export default class Auth2faGenerate extends Command {
   static aliases = [
     'twofactor:disable',
     '2fa:disable',
   ]
-
   static description = 'disables 2fa on account'
-
   static example = `${color.command('heroku auth:2fa:disable')}`
 
   async run() {

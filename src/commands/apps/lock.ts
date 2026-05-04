@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export default class AppsLock extends Command {
   static aliases = ['lock']
@@ -10,7 +10,6 @@ export default class AppsLock extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'apps'
 
   public async run(): Promise<void> {
@@ -28,7 +27,8 @@ export default class AppsLock extends Command {
       `/teams/apps/${appName}`,
       {
         body: {locked: true},
-      })
+      },
+    )
     ux.action.stop()
   }
 }

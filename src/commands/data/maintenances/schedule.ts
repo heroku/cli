@@ -1,11 +1,11 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
-import {differenceInCalendarWeeks} from 'date-fns'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance} from '../../../lib/data/types.js'
+import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
 export default class DataMaintenancesSchedule extends BaseCommand {
   static args = {
@@ -14,9 +14,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'schedule or re-schedule maintenance for an add-on'
-
   static examples = [
     '$ heroku data:maintenances:schedule postgresql-sinuous-83910',
     '$ heroku data:maintenances:schedule postgresql-sinuous-83910 --weeks 3',
@@ -24,7 +22,6 @@ export default class DataMaintenancesSchedule extends BaseCommand {
     '$ heroku data:maintenances:schedule postgresql-sinuous-83910 --week 2020-02-23',
     '$ heroku data:maintenances:schedule HEROKU_POSTGRESQL_RED --app test-app',
   ]
-
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
@@ -39,7 +36,7 @@ export default class DataMaintenancesSchedule extends BaseCommand {
     }),
   }
 
-  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string) {
+  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any) {
     const {body: maintenance} = await this.dataApi.get<Maintenance>(
       `/data/maintenances/v1/${addon!.id}`,
       this.dataApi.defaults,
@@ -58,15 +55,17 @@ export default class DataMaintenancesSchedule extends BaseCommand {
   }
 
   async run() {
+    const {differenceInCalendarWeeks} = await lazyModuleLoader.loadDateFns()
+
     const {args, flags} = await this.parse(DataMaintenancesSchedule)
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {app, week, weeks} = flags
 
-    const addon = await addonResolver.resolve(args.addon, app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, app)
 
     const delayWeeks = week === undefined
       ? weeks
-      : await this.computeDelayWeeks(addon, week)
+      : await this.computeDelayWeeks(addon, week, differenceInCalendarWeeks)
 
     await this.scheduleMaintenance(addon, delayWeeks)
   }

@@ -1,6 +1,6 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 
@@ -18,7 +18,6 @@ export default class Index extends Command {
     verbose: flags.boolean({char: 'v', hidden: true}),
     'wait-interval': flags.string({hidden: true}),
   }
-
   static strict = false
   static topic = 'pg'
 
@@ -108,6 +107,7 @@ export default class Index extends Command {
     if (restores.length === 0) {
       ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
+      /* eslint-disable perfectionist/sort-objects */
       hux.table(restores, {
         ID: {
           get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
@@ -125,6 +125,7 @@ export default class Index extends Command {
           get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
         },
       })
+      /* eslint-enable perfectionist/sort-objects */
     }
 
     ux.stdout()

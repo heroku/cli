@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../lib/run/log-displayer.js'
@@ -13,7 +13,6 @@ export default class Logs extends Command {
     display recent log output
     disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
   `
-
   static examples = [
     `${color.command('heroku logs --app=my-app')}`,
     `${color.command('heroku logs --num=50 --app=my-app')}`,
@@ -21,7 +20,6 @@ export default class Logs extends Command {
     `${color.command('heroku logs --process-type=web --app=my-app')}`,
     `${color.command('heroku logs --app=my-app --tail')}`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'dyno-name': flags.string({

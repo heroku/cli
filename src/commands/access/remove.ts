@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 export default class AccessRemove extends Command {
   static description = 'remove users from a team app'
@@ -10,9 +10,7 @@ export default class AccessRemove extends Command {
     app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),
   }
-
   static strict = false
-
   static topic = 'access'
 
   public async run(): Promise<void> {

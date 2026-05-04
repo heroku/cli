@@ -1,20 +1,15 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 import {streamer} from '../../lib/container/streamer.js'
 
 type ImageResponse = {
-  config: {
-    digest: string
-  }
-  history: [{
-    v1Compatibility: string,
-    }
-  ],
+  config: {digest: string}
+  history: [{v1Compatibility: string}],
   schemaVersion: number,
 }
 
@@ -24,17 +19,13 @@ export default class ContainerRelease extends Command {
     `${color.command('heroku container:release web')}        # Releases the previously pushed web process type`,
     `${color.command('heroku container:release web worker')} # Releases the previously pushed web and worker process types`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     verbose: flags.boolean({char: 'v'}),
   }
-
   static strict = false
-
   static topic = 'container'
-
   static usage = 'container:release'
 
   async run() {
@@ -70,16 +61,16 @@ export default class ContainerRelease extends Command {
       let imageID
       let v1Comp
       switch (imageResp.schemaVersion) {
-      case 1: {
-        v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
-        imageID = v1Comp.id
-        break
-      }
+        case 1: {
+          v1Comp = JSON.parse(imageResp.history[0].v1Compatibility)
+          imageID = v1Comp.id
+          break
+        }
 
-      case 2: {
-        imageID = imageResp.config.digest
-        break
-      }
+        case 2: {
+          imageID = imageResp.config.digest
+          break
+        }
       }
 
       updateData.push({

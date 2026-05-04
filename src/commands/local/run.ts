@@ -1,17 +1,15 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Command, Flags} from '@oclif/core'
 
 import {validateEnvFile} from '../../lib/local/env-file-validator.js'
-import {fork as foreman} from '../../lib/local/fork-foreman.js'
+import {fork as foreman, isForemanExitError} from '../../lib/local/fork-foreman.js'
 import {revertSortedArgs} from '../../lib/run/helpers.js'
 
 export default class Run extends Command {
   static description = 'run a one-off command'
-
   static examples = [
     color.command('heroku local:run bin/migrate'),
   ]
-
   static flags = {
     env: Flags.string({
       char: 'e',
@@ -22,7 +20,6 @@ export default class Run extends Command {
       description: 'port to listen on',
     }),
   }
-
   static strict = false
 
   async run() {
@@ -43,6 +40,14 @@ export default class Run extends Command {
     execArgv.push('--') // disable node-foreman flag parsing
     execArgv.push(...commandArgs as string[]) // eslint-disable-line unicorn/no-array-push-push
 
-    await foreman(execArgv)
+    try {
+      await foreman(execArgv)
+    } catch (error: unknown) {
+      if (isForemanExitError(error)) {
+        this.exit(error.exitCode)
+      }
+
+      throw error
+    }
   }
 }

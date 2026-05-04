@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {destroyPipeline} from '../../lib/api.js'
@@ -13,9 +13,7 @@ export default class PipelinesDestroy extends Command {
       required: true,
     }),
   }
-
   static description = 'destroy a pipeline'
-
   static examples = [
     color.command('heroku pipelines:destroy my-pipeline'),
   ]

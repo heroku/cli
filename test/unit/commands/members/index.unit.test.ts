@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import MembersIndex from '../../../../src/commands/members/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku members', function () {
   const adminTeamMember = {email: 'admin@heroku.com', role: 'admin', user: {email: 'admin@heroku.com'}}

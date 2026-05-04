@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {getPipelineConfigVars} from '../../../lib/api.js'
@@ -10,19 +10,16 @@ export default class CiConfigGet extends Command {
   static args = {
     key: Args.string({description: 'name of the config var key', required: true}),
   }
-
   static description = 'get a CI config var'
   static examples = [
     color.command('heroku ci:config:get --pipeline=PIPELINE RAILS_ENV test'),
   ]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({exactlyOne: ['pipeline', 'app']}),
     remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output config var in shell format'}),
   }
-
   static topic = 'ci'
 
   async run() {

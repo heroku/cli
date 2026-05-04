@@ -1,8 +1,8 @@
-import {BuildpackRegistry} from '@heroku/buildpack-registry'
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {BuildpackRegistry} from '@heroku/buildpack-registry'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {OciImage} from '../../lib/types/fir.js'
@@ -16,19 +16,8 @@ export type BuildpackResponse = {
   ordinal: number;
 }
 
-// Simple URL validation function that returns boolean
-function isValidURL(url: string): boolean {
-  try {
-    const urlObj = new URL(url)
-    return Boolean(urlObj)
-  } catch {
-    return false
-  }
-}
-
 export class BuildpackCommand {
   heroku: APIClient
-
   registry: BuildpackRegistry
 
   constructor(heroku: APIClient) {
@@ -56,9 +45,9 @@ export class BuildpackCommand {
     if (buildpacks.length === 1) {
       ux.stdout(this.registryUrlToName(buildpacks[0].buildpack.url, true))
     } else {
-      buildpacks.forEach((b, i) => {
+      for (const [i, b] of buildpacks.entries()) {
         ux.stdout(`${indent}${i + 1}. ${this.registryUrlToName(b.buildpack.url, true)}`)
-      })
+      }
     }
   }
 
@@ -92,8 +81,8 @@ export class BuildpackCommand {
       })
       buildpacks = ociImages[0].buildpacks.map((b, index) => ({
         buildpack: {
-          url: b.id || b.homepage,
           name: b.id,
+          url: b.id || b.homepage,
         },
         ordinal: index,
       }))
@@ -212,5 +201,15 @@ export class BuildpackCommand {
     if (await this.findUrl(buildpacks, buildpack) !== -1) {
       ux.error(`The buildpack ${buildpack} is already set on your app.`, {exit: 1})
     }
+  }
+}
+
+// Simple URL validation function that returns boolean
+function isValidURL(url: string): boolean {
+  try {
+    const urlObj = new URL(url)
+    return Boolean(urlObj)
+  } catch {
+    return false
   }
 }

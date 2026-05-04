@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
+import {HTTPError} from '@heroku/http-call'
 import {Args, ux} from '@oclif/core'
 
 import redisApi, {RedisFormationWaitResponse} from '../../lib/redis/api.js'
@@ -13,15 +13,12 @@ export default class Wait extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.', required: false}),
   }
-
   static description = 'wait for Redis instance to be available'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
   }
-
   static topic = 'redis'
 
   public async run(): Promise<void> {

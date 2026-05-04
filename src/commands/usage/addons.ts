@@ -1,7 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
+
+interface AppInfo extends Record<string, unknown> {
+  id: string
+  name: string
+}
 
 interface AppUsage {
   addons: Array<{
@@ -21,18 +26,12 @@ interface TeamUsage {
   }>;
 }
 
-interface AppInfo extends Record<string, unknown> {
-  id: string
-  name: string
-}
-
 export default class UsageAddons extends Command {
   static description = 'list usage for metered add-ons attached to an app or apps within a team'
   static flags = {
     app: flags.string({char: 'a', description: 'app to list metered add-ons usage for'}),
     team: flags.team({description: 'team to list metered add-ons usage for'}),
   }
-
   static topic = 'usage'
 
   public async run(): Promise<void> {
@@ -52,11 +51,10 @@ export default class UsageAddons extends Command {
   private displayAppUsage(app: string, usageAddons: AppUsage['addons'], appAddons: Heroku.AddOn[]): void {
     const metersArray = usageAddons.flatMap(addon =>
       Object.entries(addon.meters).map(([label, data]) => ({
+        addonId: addon.id,
         label,
         quantity: data.quantity,
-        addonId: addon.id,
-      })),
-    )
+      })))
 
     hux.styledHeader(`Usage for ${color.app(app)}`)
     hux.table(metersArray, {
@@ -133,7 +131,7 @@ export default class UsageAddons extends Command {
     const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
 
     // Display usage for each app
-    usageData.apps.forEach((app: { addons: any[]; id: string }) => {
+    usageData.apps.forEach((app: {addons: any[]; id: string}) => {
       const appInfo = appInfoArray.find(info => info.id === app.id)
       this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
       ux.stdout()
@@ -142,13 +140,13 @@ export default class UsageAddons extends Command {
 
   private getAppInfoFromTeamAddons(teamAddons: Heroku.AddOn[]): AppInfo[] {
     const appInfoMap = new Map<string, string>()
-    teamAddons.forEach(addon => {
+    for (const addon of teamAddons) {
       if (addon.app && addon.app.id && addon.app.name) {
         appInfoMap.set(addon.app.id, addon.app.name)
       }
-    })
+    }
 
-    return Array.from(appInfoMap.entries()).map(([id, name]) => ({
+    return [...appInfoMap.entries()].map(([id, name]) => ({
       id,
       name,
     }))

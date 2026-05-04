@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import open from 'open'
 
@@ -10,9 +10,7 @@ export default class Open extends Command {
   static args = {
     pipeline: Args.string({description: 'name of pipeline', required: true}),
   }
-
   static description = 'open a pipeline in dashboard'
-
   static examples = [color.command('heroku pipelines:open my-pipeline')]
 
   async run() {

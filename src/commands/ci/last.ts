@@ -1,19 +1,17 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {displayTestRunInfo} from '../../lib/ci/test-run.js'
 
 export default class CiLast extends Command {
   static description = 'looks for the most recent run and returns the output of that run'
-
   static examples = [
     color.command(`heroku ci:last --pipeline=my-pipeline --node 100
 `),
   ]
-
   static flags = {
     app: flags.app(),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),

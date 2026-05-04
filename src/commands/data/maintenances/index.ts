@@ -1,20 +1,18 @@
-import {hux} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
-import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/tableUtils.js'
+import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
 
 export default class DataMaintenancesIndex extends BaseCommand {
   static description = 'list maintenances for an app\'s data addons'
-
   static examples = [
     '$ heroku data:maintenances --app production-app',
     '$ heroku data:maintenances --app production-app --json',
   ]
-
   static flags = {
     app: Flags.app({
       description: 'app to list addon maintenances for',
@@ -62,6 +60,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
   }
 
   private getTableColumns(extended: boolean, columns: string | undefined) {
+    /* eslint-disable perfectionist/sort-objects */
     const allTableColumns = {
       addon: {
         get: (row: Maintenance) => row.addon && row.addon.name,
@@ -110,6 +109,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
         header: 'Plan',
       },
     }
+    /* eslint-enable perfectionist/sort-objects */
 
     const baseColumnNames = ['addon', 'attachments', 'window', 'status', 'required_by', 'scheduled_for']
 

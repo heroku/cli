@@ -1,18 +1,16 @@
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import socks from '@heroku/socksv5'
-import {ux} from '@oclif/core'
-import child from 'child_process'
+import {ux} from '@oclif/core/ux'
 import cliProgress from 'cli-progress'
-import crypto from 'crypto'
 import debug from 'debug'
-import fs from 'fs'
-import * as fsp from 'fs/promises'
-import os from 'os'
-import path from 'path'
+import child from 'node:child_process'
+import crypto from 'node:crypto'
+import * as fsp from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import stream from 'node:stream'
+import tty from 'node:tty'
 import {Client, ConnectConfig} from 'ssh2'
-import stream from 'stream'
-import tmp from 'tmp'
-import tty from 'tty'
 
 const sshDebug = debug('cli:ps-exec:ssh')
 
@@ -83,46 +81,11 @@ export class HerokuSsh {
         debug: sshDebug,
         host: addonHost,
         keepaliveCountMax: 3,
-        keepaliveInterval: 10000,
+        keepaliveInterval: 10_000,
         privateKey,
         username: dynoUser,
       })
     })
-  }
-
-  public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
-    sshDebug('[cli-ssh] native')
-
-    const tmpDir = os.tmpdir()
-    const keyPath = path.join(tmpDir, `heroku-exec-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
-    const proxyKeyPath = path.join(tmpDir, `heroku-exec-proxy-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
-
-    try {
-      await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
-      await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
-
-      let sshCommand = 'ssh '
-        + `-o UserKnownHostsFile=${proxyKeyPath} `
-        + '-o ServerAliveInterval=10 '
-        + '-o ServerAliveCountMax=3 '
-        + '-p 80 '
-        + `-i ${keyPath} `
-        + `${dynoUser}@${addonHost} `
-
-      if (context.args.length > 0 && !context.args.includes('bash')) {
-        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
-      }
-
-      try {
-        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
-      } catch (error: any) {
-        if (error.stderr) sshDebug(error.stderr)
-        sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
-      }
-    } finally {
-      await fsp.unlink(keyPath).catch(() => {})
-      await fsp.unlink(proxyKeyPath).catch(() => {})
-    }
   }
 
   public scp(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, src: string, dest: string) {
@@ -182,7 +145,8 @@ export class HerokuSsh {
     socks.createServer((info, accept, deny) => {
       const conn = new Client()
       conn.on('ready', () => {
-        conn.forwardOut(info.srcAddr,
+        conn.forwardOut(
+          info.srcAddr,
           info.srcPort,
           info.dstAddr,
           info.dstPort,
@@ -199,7 +163,8 @@ export class HerokuSsh {
               })
             } else
               conn.end()
-          })
+          },
+        )
       }).on('error', () => {
         deny()
       }).connect({
@@ -212,6 +177,72 @@ export class HerokuSsh {
       console.log(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
       if (callback) callback(socksPort)
     }).useAuth(socks.auth.None()) // eslint-disable-line new-cap
+  }
+
+  public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
+    sshDebug('[cli-ssh] native')
+
+    const tmpDir = os.tmpdir()
+    const keyPath = path.join(tmpDir, `heroku-exec-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+    const proxyKeyPath = path.join(tmpDir, `heroku-exec-proxy-key-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+
+    try {
+      await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
+      await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
+
+      let sshCommand = 'ssh '
+        + `-o UserKnownHostsFile=${proxyKeyPath} `
+        + '-o ServerAliveInterval=10 '
+        + '-o ServerAliveCountMax=3 '
+        + '-p 80 '
+        + `-i ${keyPath} `
+        + `${dynoUser}@${addonHost} `
+
+      if (context.args.length > 0 && !context.args.includes('bash')) {
+        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
+      }
+
+      try {
+        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
+      } catch (error: any) {
+        if (error.stderr) sshDebug(error.stderr)
+        sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
+      }
+    } finally {
+      await fsp.unlink(keyPath).catch(() => {})
+      await fsp.unlink(proxyKeyPath).catch(() => {})
+    }
+  }
+
+  private _buildCommand(args: string[]) {
+    if (args.length === 1) {
+      // do not add quotes around arguments if there is only one argument
+      // `heroku run "rake test"` should work like `heroku run rake test`
+      return args[0]
+    }
+
+    let cmd = ''
+    for (let arg of args) {
+      if (arg.includes(' ') || arg.includes('"')) {
+        arg = '"' + arg.replaceAll('"', String.raw`\"`) + '"'
+      }
+
+      cmd = cmd + ' ' + arg
+    }
+
+    return cmd.trim()
+  }
+
+  private _connectionDefaults(proxyKey: string): Partial<ConnectConfig> {
+    return {
+      hostHash: 'sha256',
+      hostVerifier(hashedKey: string) {
+        const hasher = crypto.createHash('sha256')
+        hasher.update(Buffer.from(proxyKey.split(' ')[1], 'base64'))
+        return hasher.digest('hex') === hashedKey
+      },
+      port: 80,
+    }
   }
 
   private _logConnectionError() {
@@ -254,37 +285,6 @@ export class HerokuSsh {
         objectMode: true,
         transform: (chunk, _, next) => c.write(chunk, next),
       }))
-    }
-  }
-
-  private _buildCommand(args: string[]) {
-    if (args.length === 1) {
-      // do not add quotes around arguments if there is only one argument
-      // `heroku run "rake test"` should work like `heroku run rake test`
-      return args[0]
-    }
-
-    let cmd = ''
-    for (let arg of args) {
-      if (arg.includes(' ') || arg.includes('"')) {
-        arg = '"' + arg.replaceAll('"', '\\"') + '"'
-      }
-
-      cmd = cmd + ' ' + arg
-    }
-
-    return cmd.trim()
-  }
-
-  private _connectionDefaults(proxyKey: string): Partial<ConnectConfig> {
-    return {
-      hostHash: 'sha256',
-      hostVerifier(hashedKey: string) {
-        const hasher = crypto.createHash('sha256')
-        hasher.update(Buffer.from(proxyKey.split(' ')[1], 'base64'))
-        return hasher.digest('hex') === hashedKey
-      },
-      port: 80,
     }
   }
 }

@@ -1,16 +1,16 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
-import {execSync} from 'child_process'
-import _ from 'lodash'
-import * as path from 'path'
-import * as process from 'process'
-import {fileURLToPath} from 'url'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
+import {execSync} from 'node:child_process'
+import path from 'node:path'
+import * as process from 'node:process'
+import {fileURLToPath} from 'node:url'
 import img from 'term-img'
 
+import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
 import {ago} from '../lib/time.js'
-import {AppErrors} from '../lib/types/app_errors.js'
+import {AppErrors} from '../lib/types/app-errors.js'
 import {sparkline} from '../lib/utils/sparkline.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -31,13 +31,7 @@ type FetchMetricsResponse =  {
 
 const empty = (o: Record<string, any>) => Object.keys(o).length === 0
 
-function displayFormation(formation: Heroku.Formation) {
-  formation = _.groupBy(formation, 'size')
-  formation = _.map(formation, (p, size) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
-  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
-}
-
-function displayErrors(metrics: FetchMetricsResponse[0]) {
+function displayErrors(metrics: FetchMetricsResponse[0], _: any) {
   let errors: string[] = []
   if (metrics.routerErrors) {
     errors = errors.concat(Object.entries(metrics.routerErrors.data)
@@ -45,29 +39,34 @@ function displayErrors(metrics: FetchMetricsResponse[0]) {
   }
 
   if (metrics.dynoErrors) {
-    metrics.dynoErrors.filter(Boolean)
-      .forEach(dynoErrors => {
-        errors = errors.concat(Object.entries(dynoErrors?.data || {})
-          .map(e => color.failure(`${_.sum(e[1])} ${e[0]}`)))
-      })
+    for (const dynoErrors of metrics.dynoErrors.filter(Boolean)) {
+      errors = errors.concat(Object.entries(dynoErrors?.data || {})
+        .map(e => color.failure(`${_.sum(e[1])} ${e[0]}`)))
+    }
   }
 
   if (errors.length > 0)
     ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.code('heroku apps:errors')})`)
 }
 
-function displayMetrics(metrics: FetchMetricsResponse[0]) {
+function displayFormation(formation: Heroku.Formation, _: any) {
+  formation = _.groupBy(formation, 'size')
+  formation = _.map(formation, (p: any, size: string) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
+  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
+}
+
+function displayMetrics(metrics: FetchMetricsResponse[0], _: any) {
   function rpmSparkline() {
     if (['win32', 'windows'].includes(process.platform))
       return ''
     const points: number[] = []
-    Object.values(metrics.routerStatus?.data || {})
-      .forEach(cur => {
-        for (const [i, element] of cur.entries()) {
-          const j = Math.floor(i / 3)
-          points[j] = (points[j] || 0) + element
-        }
-      })
+    for (const cur of Object.values(metrics.routerStatus?.data || {})) {
+      for (const [i, element] of cur.entries()) {
+        const j = Math.floor(i / 3)
+        points[j] = (points[j] || 0) + element
+      }
+    }
+
     points.pop()
     return dim(sparkline(points)) + ' last 24 hours rpm'
   }
@@ -97,7 +96,7 @@ function displayNotifications(notifications?: {read: boolean}[]) {
   }
 }
 
-const dim = (s: string) => color.dim(s)
+const dim = (s: string) => color.gray(s)
 const bold = (s: string) => color.bold(s)
 const label = (s: string) => color.label(s)
 
@@ -108,13 +107,10 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
 
   const metricsData = await Promise.all(apps.map(app => {
     const types = app.formation.map((p: Heroku.Formation) => p.type)
-    const dynoErrorsPromise: Promise<(AppErrors | undefined)[]> = Promise.all(
-      types.map((type: string) => heroku.get<AppErrors>(
-        `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
-        {hostname: 'api.metrics.herokai.com'},
-      ).catch(() => {}),
-      ),
-    )
+    const dynoErrorsPromise: Promise<(AppErrors | undefined)[]> = Promise.all(types.map((type: string) => heroku.get<AppErrors>(
+      `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
+      {hostname: 'api.metrics.herokai.com'},
+    ).catch(() => {})))
     return Promise.all([
       dynoErrorsPromise,
       heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
@@ -128,26 +124,6 @@ const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<Fetc
   }))
 }
 
-function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse) {
-  const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
-  const zipped = _.zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
-  for (const a of zipped) {
-    const app = a[0]
-    const metrics = a[1]
-    hux.styledHeader(color.app(app.app.name || ''))
-    ux.stdout(`  ${label('Owner:')} ${color.user(getOwner(app.app.owner) || '')}`)
-    if (app.pipeline) {
-      ux.stdout(`  ${label('Pipeline:')} ${color.pipeline(app.pipeline.pipeline?.name || '')}`)
-    }
-
-    displayFormation(app.formation)
-    ux.stdout(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
-    displayMetrics(metrics)
-    displayErrors(metrics)
-    ux.stdout()
-  }
-}
-
 export default class Dashboard extends Command {
   static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'display information about favorite apps'
@@ -156,6 +132,8 @@ export default class Dashboard extends Command {
   static topic = 'dashboard'
 
   public async run(): Promise<void> {
+    const _ = await lazyModuleLoader.loadLodash()
+
     if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
       execSync('heroku help', {stdio: 'inherit'})
       return
@@ -188,7 +166,7 @@ export default class Dashboard extends Command {
     const apps = await favoriteApps()
     const [{body: teams}, notificationsResponse, appsWithMoreInfo] = await Promise.all([
       this.heroku.get<Heroku.Team[]>('/teams'),
-      this.heroku.get<{ read: boolean }[]>('/user/notifications', {hostname: 'telex.heroku.com'})
+      this.heroku.get<{read: boolean}[]>('/user/notifications', {hostname: 'telex.heroku.com'})
         .catch(() => null),
       Promise.all(apps.map(async appID => {
         const [{body: app}, {body: formation}, pipelineResponse] = await Promise.all([
@@ -206,7 +184,7 @@ export default class Dashboard extends Command {
     const metrics = await fetchMetrics(appsWithMoreInfo, this.heroku)
     ux.action.stop()
     if (apps.length > 0)
-      displayApps(appsWithMoreInfo, metrics)
+      displayApps(appsWithMoreInfo, metrics, _)
     else
       ux.warn(`Add apps to this dashboard by favoriting them with ${color.code('heroku apps:favorites:add')}`)
     ux.stdout(`See all add-ons with ${color.code('heroku addons')}`)
@@ -216,5 +194,25 @@ export default class Dashboard extends Command {
     ux.stdout(`See all apps with ${color.code('heroku apps --all')}`)
     displayNotifications(notificationsResponse?.body)
     ux.stdout(`\nSee other CLI commands with ${color.code('heroku help')}\n`)
+  }
+}
+
+function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse, _: any) {
+  const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
+  const zipped = _.zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
+  for (const a of zipped) {
+    const app = a[0]
+    const metrics = a[1]
+    hux.styledHeader(color.app(app.app.name || ''))
+    ux.stdout(`  ${label('Owner:')} ${color.user(getOwner(app.app.owner) || '')}`)
+    if (app.pipeline) {
+      ux.stdout(`  ${label('Pipeline:')} ${color.pipeline(app.pipeline.pipeline?.name || '')}`)
+    }
+
+    displayFormation(app.formation, _)
+    ux.stdout(`  ${label('Last release:')} ${ago(new Date(app.app.released_at || ''))}`)
+    displayMetrics(metrics, _)
+    displayErrors(metrics, _)
+    ux.stdout()
   }
 }

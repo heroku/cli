@@ -1,28 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 interface Features {
   app?: Heroku.AppFeature | null,
   currentUser: Heroku.Account,
   user: Heroku.AccountFeature,
-}
-
-function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.AppFeature) {
-  ux.stdout(JSON.stringify(features, null, 2))
-}
-
-function printFeatures(features: Heroku.AccountFeature | Heroku.AppFeature) {
-  const groupedFeatures = features.sort((a: Heroku.AccountFeature | Heroku.AppFeature, b: Heroku.AccountFeature | Heroku.AppFeature) =>
-    (a.name || '').localeCompare(b.name || ''))
-  const longest = Math.max(...groupedFeatures.map((f: Heroku.AccountFeature | Heroku.AppFeature) => (f.name || '').length))
-  for (const f of groupedFeatures) {
-    let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
-    if (f.enabled) line = color.success(line)
-    line = `${line}  ${f.description}`
-    ux.stdout(line)
-  }
 }
 
 export default class LabsIndex extends Command {
@@ -32,7 +16,6 @@ export default class LabsIndex extends Command {
     json: flags.boolean({description: 'display as json', required: false}),
     remote: flags.remote(),
   }
-
   static topic = 'labs'
 
   async run() {
@@ -53,7 +36,7 @@ export default class LabsIndex extends Command {
     }
 
     // makes sure app isn't added to json object if null
-    // eslint-disable-next-line unicorn/no-negated-condition, no-negated-condition
+    // eslint-disable-next-line unicorn/no-negated-condition
     if (appResponse !== null) {
       app = appResponse?.body
       features.app = app
@@ -76,4 +59,20 @@ export default class LabsIndex extends Command {
       }
     }
   }
+}
+
+function printFeatures(features: Heroku.AccountFeature | Heroku.AppFeature) {
+  const groupedFeatures = features.sort((a: Heroku.AccountFeature | Heroku.AppFeature, b: Heroku.AccountFeature | Heroku.AppFeature) =>
+    (a.name || '').localeCompare(b.name || ''))
+  const longest = Math.max(...groupedFeatures.map((f: Heroku.AccountFeature | Heroku.AppFeature) => (f.name || '').length))
+  for (const f of groupedFeatures) {
+    let line = `${f.enabled ? '[+]' : '[ ]'} ${f.name?.padEnd(longest) ?? ''}`
+    if (f.enabled) line = color.success(line)
+    line = `${line}  ${f.description}`
+    ux.stdout(line)
+  }
+}
+
+function printJSON(features: Heroku.Account | Heroku.AccountFeature | Heroku.AppFeature) {
+  ux.stdout(JSON.stringify(features, null, 2))
 }

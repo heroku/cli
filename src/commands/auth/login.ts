@@ -1,12 +1,10 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 
 export default class Login extends Command {
   static aliases = ['login']
-
   static description = 'login with your Heroku credentials'
-
   static flags = {
     browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
     'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 30 days)'}),
@@ -24,4 +22,3 @@ export default class Login extends Command {
     await this.config.runHook('recache', {type: 'login'})
   }
 }
-

@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 import {EventSource} from 'eventsource'
 import {HttpsProxyAgent} from 'https-proxy-agent'
 
@@ -97,11 +97,13 @@ export class LogDisplayer {
       const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
 
       // Custom fetch function to handle headers and proxy
+      // eslint-disable-next-line no-undef
       const customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
         const headers = new Headers(init?.headers)
         headers.set('User-Agent', userAgent)
 
-        const fetchOptions: RequestInit & { agent?: any } = {
+        // eslint-disable-next-line no-undef
+        const fetchOptions: RequestInit & {agent?: any} = {
           ...init,
           headers,
         }
@@ -156,7 +158,7 @@ export class LogDisplayer {
   private setupProcessHandlers(): void {
     process.stdout.on('error', err => {
       if (err.code === 'EPIPE') {
-        // eslint-disable-next-line n/no-process-exit
+        // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
         process.exit(0)
       } else {
         ux.error(err.stack, {exit: 1})

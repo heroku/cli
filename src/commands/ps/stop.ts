@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -12,13 +12,11 @@ export default class Stop extends Command {
   static args = {
     dyno: Args.string({deprecated: true, description: 'name of the dyno to stop', required: false}),
   }
-
   static description = 'stop an app dyno or process type'
   static examples = [
     color.command('heroku ps:stop --app myapp --dyno-name run.1828'),
     color.command('heroku ps:stop --app myapp --process-type run'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'dyno-name': flags.string({
@@ -33,9 +31,7 @@ export default class Stop extends Command {
     }),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['stop', 'kill']
-
   static topic = 'ps'
 
   async run() {

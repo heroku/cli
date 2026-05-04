@@ -1,11 +1,12 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
-import inquirer from 'inquirer'
 import {spawn} from 'node:child_process'
 import os from 'node:os'
 import path from 'node:path'
+
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
 function sshKeygen(file: string, quiet: boolean) {
   return new Promise((resolve, reject) => {
@@ -14,29 +15,14 @@ function sshKeygen(file: string, quiet: boolean) {
   })
 }
 
-async function confirmPrompt(message: string) {
-  if (process.stdin.isTTY) {
-    return inquirer.prompt([{
-      message,
-      name: 'yes',
-      type: 'confirm',
-    }])
-  }
-
-  const data = await hux.prompt(message + ' [Y/n]')
-  return {yes: /^y(es)?/i.test(data)}
-}
-
 export default class Add extends Command {
   static args = {
     key: Args.string({description: 'absolute path to the key located on disk. If omitted, we use the default rsa key.'}),
   }
-
   static description = `
     add an SSH key for a user
     if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
   `
-
   static example = `
 ${color.command('heroku keys:add')}
 Could not find an existing public key.
@@ -46,15 +32,29 @@ Uploading SSH public key /.ssh/id_rsa.pub... done
 
 ${color.command('heroku keys:add /my/key.pub')}
 Uploading SSH public key /my/key.pub... done`
-
   static flags = {
     quiet: flags.boolean({hidden: true}),
     yes: flags.boolean({char: 'y', description: 'automatically answer yes for all prompts'}),
   }
 
   async run() {
+    const inquirer = await lazyModuleLoader.loadInquirer()
+
     const {args, flags} = await this.parse(Add)
     const sshdir = path.join(os.homedir(), '.ssh')
+
+    async function confirmPrompt(message: string) {
+      if (process.stdin.isTTY) {
+        return inquirer.prompt([{
+          message,
+          name: 'yes',
+          type: 'confirm',
+        }])
+      }
+
+      const data = await hux.prompt(message + ' [Y/n]')
+      return {yes: /^y(es)?/i.test(data)}
+    }
 
     const generate = async function () {
       await fs.ensureDir(sshdir, {mode: 0o700})

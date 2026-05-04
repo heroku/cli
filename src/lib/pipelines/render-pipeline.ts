@@ -1,7 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {AppWithPipelineCoupling} from '../api.js'
 import {getOwner, warnMixedOwnership} from './ownership.js'
@@ -11,7 +11,8 @@ export default async function renderPipeline(
   pipeline: Heroku.Pipeline,
   pipelineApps: Array<AppWithPipelineCoupling>,
   // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  {showOwnerWarning, withOwners} = {showOwnerWarning: false, withOwners: false}) {
+  {showOwnerWarning, withOwners} = {showOwnerWarning: false, withOwners: false},
+) {
   hux.styledHeader(color.pipeline(pipeline.name!))
 
   let owner

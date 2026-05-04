@@ -1,10 +1,11 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
-import {hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
+import {hux} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
 
 const heredoc = tsheredoc.default
 
@@ -13,7 +14,12 @@ const wait = (ms: number) => new Promise(resolve => {
 })
 
 export default class Wait extends Command {
-  static topic = 'spaces'
+  static args = {
+    name: Args.string({
+      description: 'name or id of the VPN connection you are waiting on for allocation.',
+      required: true,
+    }),
+  }
   static description = 'wait for VPN Connection to be created'
   static examples = [heredoc(`
     ${color.command('heroku spaces:vpn:wait vpn-connection-name --space my-space')}
@@ -25,24 +31,17 @@ export default class Wait extends Command {
      Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
      Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
     `)]
-
   static flags = {
-    space: flags.string({char: 's', description: 'space the vpn connection belongs to', required: true}),
-    json: flags.boolean({description: 'output in json format'}),
     interval: flags.string({char: 'i', description: 'seconds to wait between poll intervals'}),
+    json: flags.boolean({description: 'output in json format'}),
+    space: flags.string({char: 's', description: 'space the vpn connection belongs to', required: true}),
     timeout: flags.string({char: 't', description: 'maximum number of seconds to wait'}),
   }
-
-  static args = {
-    name: Args.string({
-      description: 'name or id of the VPN connection you are waiting on for allocation.',
-      required: true,
-    }),
-  }
+  static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Wait)
-    const {space, json} = flags
+    const {args, flags} = await this.parse(Wait)
+    const {json, space} = flags
     const {name} = args
     const interval = (flags.interval ? Number.parseInt(flags.interval, 10) : 10) * 1000
     const timeout = (flags.timeout ? Number.parseInt(flags.timeout, 10) : 20 * 60) * 1000

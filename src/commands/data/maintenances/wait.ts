@@ -1,8 +1,8 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
+import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
 import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
 
@@ -10,14 +10,11 @@ export default class DataMaintenancesWait extends BaseCommand {
   static args = {
     addon: Args.string({description: 'data addon', required: true}),
   }
-
   static description = 'blocks until the maintenance process has completed'
-
   static examples = [
     '$ heroku data:maintenances:wait postgresql-sinuous-83720',
     '$ heroku data:maintenances:wait DATABASE --app production-app',
   ]
-
   static flags = {
     app: Flags.app(),
     remote: Flags.remote(),
@@ -26,7 +23,7 @@ export default class DataMaintenancesWait extends BaseCommand {
   async run() {
     const {args, flags} = await this.parse(DataMaintenancesWait)
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(args.addon, flags.app, utils.pg.addonService())
+    const addon = await addonResolver.resolve(args.addon, flags.app)
 
     const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
     if (isEssentialTier) {

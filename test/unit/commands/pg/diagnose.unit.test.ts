@@ -1,13 +1,14 @@
 import type {AddOn, AddOnAttachment} from '@heroku-cli/schema'
+import type {pg} from '@heroku/heroku-cli-util'
+
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import {randomUUID} from 'node:crypto'
-import {stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
-import type {pg} from '@heroku/heroku-cli-util'
+
 import Cmd from '../../../../src/commands/pg/diagnose.js'
-import runCommand from '../../../helpers/runCommand.js'
-import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
 
@@ -15,42 +16,42 @@ describe('pg:diagnose', function () {
   let api: nock.Scope
   let pg: nock.Scope
   let diagnose: nock.Scope
-  let db: Pick<pg.ExtendedAddonAttachment, 'id' | 'name' | 'plan' | 'config_vars' | 'app'>
+  let db: Pick<pg.ExtendedAddonAttachment, 'app' | 'config_vars' | 'id' | 'name' | 'plan'>
   let dbName: string | undefined
-  let app: { name: string; id?: string; }
+  let app: {id?: string; name: string;}
   let addon: AddOn
-  let plan: { name: string; id: string; }
+  let plan: {id: string; name: string;}
   let attachment: AddOnAttachment
   let reportID: string
   const dbURL = 'postgres://user:password@herokupostgres.com/db'
 
   beforeEach(function () {
     plan = {
-      name: 'heroku-postgresql:standard-0', id: randomUUID(),
+      id: randomUUID(), name: 'heroku-postgresql:standard-0',
     }
     db = {
+      app: {id: randomUUID(), name: 'myapp'},
+      config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
       id: randomUUID(),
       name: dbName || 'DATABASE',
       get plan() {
         return plan
       },
-      config_vars: ['DATABASE_ENDPOINT_042EExxx_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_SILVER_URL'],
-      app: {name: 'myapp', id: randomUUID()},
     }
     attachment = {
-      id: '1', get name() {
-        return db.name
-      }, get config_vars() {
+      get config_vars() {
         return db.config_vars
+      }, id: '1', get name() {
+        return db.name
       }, namespace: null,
     }
     app = {
-      name: 'myapp', id: randomUUID(),
+      id: randomUUID(), name: 'myapp',
     }
     addon = {
-      name: 'postgres-1', get id() {
+      app, get id() {
         return db.id
-      }, plan, app,
+      }, name: 'postgres-1', plan,
     }
     reportID = randomUUID()
     api = nock('https://api.heroku.com')
@@ -77,23 +78,23 @@ describe('pg:diagnose', function () {
         .get(`/client/v11/databases/${db.id}/burst_status`).reply(200, {})
 
       const report = {
-        id: reportID, app: app.name, database: 'DATABASE_URL', created_at: '101', checks: [
+        app: app.name, checks: [
           {
-            name: 'Connection count', status: 'red', results: [{count: 1}],
+            name: 'Connection count', results: [{count: 1}], status: 'red',
           }, {
-            name: 'Load', status: 'red', results: {load: 100},
+            name: 'Load', results: {load: 100}, status: 'red',
           },
-        ],
+        ], created_at: '101', database: 'DATABASE_URL', id: reportID,
       }
       diagnose.post('/reports', {
-        url: dbURL, plan: 'standard-0', app: app.name, database: 'DATABASE_URL', metrics: [],
+        app: app.name, database: 'DATABASE_URL', metrics: [], plan: 'standard-0', url: dbURL,
       }).reply(200, report)
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         app.name,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report ${reportID} for ${app.name}::${report.database}
       available for one month after creation on 101
 
@@ -112,21 +113,21 @@ describe('pg:diagnose', function () {
       it('displays an existing report', async function () {
         dbName = 'HEROKU_POSTGRESQL_SILVER'
         const report = {
-          id: reportID, app: app.name, database: addon.name, created_at: '101', checks: [
+          app: app.name, checks: [
             {
-              name: 'Connection count', status: 'red', results: [{count: 1}],
+              name: 'Connection count', results: [{count: 1}], status: 'red',
             }, {
-              name: 'Load', status: 'red', results: {load: 100},
+              name: 'Load', results: {load: 100}, status: 'red',
             },
-          ],
+          ], created_at: '101', database: addon.name, id: reportID,
         }
         diagnose.get(`/reports/${reportID}`).reply(200, report)
-        await runCommand(Cmd, [
+        const {stdout} = await runCommand(Cmd, [
           '--app',
           app.name,
           reportID,
         ])
-        expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+        expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
         Report ${reportID} for ${app.name}::${report.database}
         available for one month after creation on 101
 
@@ -152,23 +153,23 @@ describe('pg:diagnose', function () {
         pg.get(`/client/v11/databases/${db.id}/burst_status`)
           .reply(200, {})
         const report = {
-          id: reportID, app: app.name, database: 'HEROKU_POSTGRESQL_SILVER_URL', created_at: '101', checks: [
+          app: app.name, checks: [
             {
-              name: 'Connection count', status: 'red', results: [{count: 1}],
+              name: 'Connection count', results: [{count: 1}], status: 'red',
             }, {
-              name: 'Load', status: 'red', results: {load: 100},
+              name: 'Load', results: {load: 100}, status: 'red',
             },
-          ],
+          ], created_at: '101', database: 'HEROKU_POSTGRESQL_SILVER_URL', id: reportID,
         }
         diagnose.post('/reports', {
-          url: dbURL, plan: 'standard-0', app: app.name, database: 'HEROKU_POSTGRESQL_SILVER_URL', metrics: [],
+          app: app.name, database: 'HEROKU_POSTGRESQL_SILVER_URL', metrics: [], plan: 'standard-0', url: dbURL,
         })
           .reply(200, report)
-        await runCommand(Cmd, [
+        const {stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
         ])
-        expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+        expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
         Report ${reportID} for ${app.name}::${report.database}
         available for one month after creation on 101
 
@@ -194,24 +195,24 @@ describe('pg:diagnose', function () {
           pg.get(`/client/v11/databases/${db.id}/burst_status`)
             .reply(200, {})
           const report = {
-            id: reportID, app: app.name, database: 'DATABASE_URL', created_at: '101', checks: [
+            app: app.name, checks: [
               {
-                name: 'Connection count', status: 'red', results: [{count: 1}],
+                name: 'Connection count', results: [{count: 1}], status: 'red',
               }, {
-                name: 'Load', status: 'red', results: {load: 100},
+                name: 'Load', results: {load: 100}, status: 'red',
               },
-            ],
+            ], created_at: '101', database: 'DATABASE_URL', id: reportID,
           }
           diagnose.post('/reports', {
-            url: dbURL, plan: 'standard-0', app: app.name, database: 'DATABASE_URL', metrics: [],
+            app: app.name, database: 'DATABASE_URL', metrics: [], plan: 'standard-0', url: dbURL,
           })
             .reply(200, report)
-          await runCommand(Cmd, [
+          const {stdout} = await runCommand(Cmd, [
             '--app',
             'myapp',
             '--json',
           ])
-          expect(stdout.output).to.equal(JSON.stringify(report, null, 2) + '\n')
+          expect(stdout).to.equal(JSON.stringify(report, null, 2) + '\n')
         })
       })
     })
@@ -220,20 +221,20 @@ describe('pg:diagnose', function () {
       const id = randomUUID()
       diagnose.get(`/reports/${id}`)
         .reply(200, {
-          id, app: 'myapp', database: 'postgres-1', created_at: '101', checks: [
+          app: 'myapp', checks: [
             {
-              name: 'Connection count', status: 'red', results: [],
+              name: 'Connection count', results: [], status: 'red',
             }, {
-              name: 'Load', status: 'red', results: {},
+              name: 'Load', results: {}, status: 'red',
             },
-          ],
+          ], created_at: '101', database: 'postgres-1', id,
         })
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         id,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report ${id} for myapp::postgres-1
       available for one month after creation on 101
 
@@ -246,22 +247,22 @@ describe('pg:diagnose', function () {
       const id = randomUUID()
       diagnose.get(`/reports/${id}`)
         .reply(200, {
-          id: 'abc123', app: 'appname', created_at: '2014-06-24 01:26:11.941197+00', database: 'dbcolor', checks: [
-            {name: 'Hit Rate', status: 'green', results: null}, {name: 'Connection Count', status: 'red', results: [{count: 150}]}, {
-              name: 'list', status: 'yellow', results: [{thing: 'one'}, {thing: 'two'}],
+          app: 'appname', checks: [
+            {name: 'Hit Rate', results: null, status: 'green'}, {name: 'Connection Count', results: [{count: 150}], status: 'red'}, {
+              name: 'list', results: [{thing: 'one'}, {thing: 'two'}], status: 'yellow',
             }, {
-              name: 'Load', status: 'skipped', results: {
+              name: 'Load', results: {
                 error: 'Load check not supported on this plan',
-              },
+              }, status: 'skipped',
             },
-          ],
+          ], created_at: '2014-06-24 01:26:11.941197+00', database: 'dbcolor', id: 'abc123',
         })
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         id,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report abc123 for appname::dbcolor
       available for one month after creation on 2014-06-24 01:26:11.941197+00
 
@@ -284,20 +285,20 @@ describe('pg:diagnose', function () {
       const id = randomUUID()
       diagnose.get(`/reports/${id}`)
         .reply(200, {
-          id: 'abc123', app: 'appname', created_at: '2014-06-24 01:26:11.941197+00', database: 'dbcolor', checks: [
+          app: 'appname', checks: [
             {
-              name: 'Load', status: 'skipped', results: {
+              name: 'Load', results: {
                 error_thing: 'Load check not supported on this plan',
-              },
+              }, status: 'skipped',
             },
-          ],
+          ], created_at: '2014-06-24 01:26:11.941197+00', database: 'dbcolor', id: 'abc123',
         })
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         id,
       ])
-      expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(heredoc(`
+      expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(heredoc(`
       Report abc123 for appname::dbcolor
       available for one month after creation on 2014-06-24 01:26:11.941197+00
 

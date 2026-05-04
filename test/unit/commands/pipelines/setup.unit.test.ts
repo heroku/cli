@@ -1,11 +1,11 @@
 /* eslint-disable max-nested-callbacks */
+import {runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import SetupCommand from '../../../../src/commands/pipelines/setup.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('pipelines:setup', function () {
   let api: nock.Scope
@@ -23,7 +23,7 @@ describe('pipelines:setup', function () {
     kolkrabbiApi.done()
     githubApi.done()
     nock.cleanAll()
-    sinon.restore()
+    restore()
   })
 
   it('errors if the user is not linked to GitHub', async function () {
@@ -53,7 +53,7 @@ describe('pipelines:setup', function () {
 
       const couplings = [{app: prodApp, id: 1, stage: 'production'}, {app: stagingApp, id: 2, stage: 'staging'}]
 
-      couplings.forEach(coupling => {
+      for (const coupling of couplings) {
         api
           .post('/app-setups', {
             app: {name: coupling.app.name, personal: true},
@@ -63,7 +63,7 @@ describe('pipelines:setup', function () {
           .reply(201, {app: coupling.app, id: coupling.id})
 
         api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
-      })
+      }
 
       return api
     }
@@ -92,12 +92,12 @@ describe('pipelines:setup', function () {
 
     context('and pipeline name is valid', function () {
       context('in a personal account', function () {
-        let promptStub: sinon.SinonStub
-        let confirmStub: sinon.SinonStub
+        let promptStub: SinonStub
+        let confirmStub: SinonStub
 
         beforeEach(function () {
-          promptStub = sinon.stub()
-          confirmStub = sinon.stub()
+          promptStub = stub()
+          confirmStub = stub()
         })
 
         it('creates apps in the personal account with CI enabled', async function () {
@@ -105,9 +105,9 @@ describe('pipelines:setup', function () {
           promptStub.onSecondCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'prompt').callsFake(promptStub)
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -130,9 +130,9 @@ describe('pipelines:setup', function () {
           promptStub.onFirstCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'prompt').callsFake(promptStub)
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -153,8 +153,8 @@ describe('pipelines:setup', function () {
         it('does not prompt for options with the -y flag', async function () {
           confirmStub.resetHistory()
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
           githubApi.get(`/repos/${repo.name}`).reply(200, repo)
@@ -175,13 +175,13 @@ describe('pipelines:setup', function () {
       })
 
       context('in a team', function () {
-        let promptStub: sinon.SinonStub
-        let confirmStub: sinon.SinonStub
+        let promptStub: SinonStub
+        let confirmStub: SinonStub
         const team = 'test-org'
 
         beforeEach(function () {
-          promptStub = sinon.stub()
-          confirmStub = sinon.stub()
+          promptStub = stub()
+          confirmStub = stub()
         })
 
         it('creates apps in a team with CI enabled', async function () {
@@ -189,9 +189,9 @@ describe('pipelines:setup', function () {
           promptStub.onSecondCall().resolves(repo.name)
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'prompt').callsFake(promptStub)
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'prompt').callsFake(promptStub)
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -200,7 +200,7 @@ describe('pipelines:setup', function () {
             {app: stagingApp, id: 2, stage: 'staging'},
           ]
 
-          couplings.forEach(function (coupling) {
+          for (const coupling of couplings) {
             api
               .post('/app-setups', {
                 app: {name: coupling.app.name, organization: team},
@@ -210,7 +210,7 @@ describe('pipelines:setup', function () {
               .reply(201, {app: coupling.app, id: coupling.id})
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'succeeded'})
-          })
+          }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
@@ -233,17 +233,17 @@ describe('pipelines:setup', function () {
 
       context('when pollAppSetup status fails', function () {
         const team = 'test-org'
-        let confirmStub: sinon.SinonStub
+        let confirmStub: SinonStub
 
         beforeEach(function () {
-          confirmStub = sinon.stub()
+          confirmStub = stub()
         })
 
         it('shows error if getAppSetup returns body with setup.status === failed', async function () {
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -252,7 +252,7 @@ describe('pipelines:setup', function () {
             {app: stagingApp, id: 2, stage: 'staging'},
           ]
 
-          couplings.forEach(function (coupling) {
+          for (const coupling of couplings) {
             api
               .post('/app-setups', {
                 app: {name: coupling.app.name, organization: team},
@@ -262,7 +262,7 @@ describe('pipelines:setup', function () {
               .reply(201, {app: coupling.app, id: coupling.id})
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {app: {name: 'my-pipeline'}, failure_message: 'status failed', status: 'failed'})
-          })
+          }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
@@ -287,17 +287,17 @@ describe('pipelines:setup', function () {
 
       context('when pollAppSetup status times out', function () {
         const team = 'test-org'
-        let confirmStub: sinon.SinonStub
+        let confirmStub: SinonStub
 
         beforeEach(function () {
-          confirmStub = sinon.stub()
+          confirmStub = stub()
         })
 
         it('shows error if getAppSetup times out', async function () {
           confirmStub.resolves(true)
 
-          sinon.stub(hux, 'confirm').callsFake(confirmStub)
-          sinon.stub(SetupCommand, 'open').resolves()
+          stub(hux, 'confirm').callsFake(confirmStub)
+          stub(SetupCommand, 'open').resolves()
 
           api.post('/pipelines').reply(201, pipeline)
 
@@ -306,7 +306,7 @@ describe('pipelines:setup', function () {
             {app: stagingApp, id: 2, stage: 'staging'},
           ]
 
-          couplings.forEach(function (coupling) {
+          for (const coupling of couplings) {
             api
               .post('/app-setups', {
                 app: {name: coupling.app.name, organization: team},
@@ -317,7 +317,7 @@ describe('pipelines:setup', function () {
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'timedout'})
             api.get(`/app-setups/${coupling.id}`).reply(200, {app: {name: 'my-pipeline'}, failure_message: 'timedout', status: 'failed'})
-          })
+          }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 

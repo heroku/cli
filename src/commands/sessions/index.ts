@@ -1,12 +1,11 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 
 import {OAuthSession} from '../../lib/sessions/sessions.js'
 
 export default class SessionsIndex extends Command {
   static description = 'list your OAuth sessions'
-
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
   }

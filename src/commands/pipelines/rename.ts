@@ -1,5 +1,5 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {updatePipeline} from '../../lib/api.js'
@@ -20,9 +20,7 @@ export default class PipelinesRename extends Command {
     }),
   }
   /* eslint-enable perfectionist/sort-objects */
-
   static description = 'rename a pipeline'
-
   static examples = [
     color.command('heroku pipelines:rename my-pipeline new-pipeline-name'),
   ]

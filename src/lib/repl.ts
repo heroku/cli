@@ -7,7 +7,7 @@ import path from 'node:path'
 // do not use the older node:readline module
 // else things will break
 import * as readline from 'node:readline/promises'
-import util from 'node:util'
+import {stripVTControlCharacters} from 'node:util'
 import * as shellQuote from 'shell-quote'
 import yargs from 'yargs-parser'
 
@@ -58,17 +58,14 @@ export class HerokuRepl {
    * to execute commands
    */
   private config: Config
-
   /**
    * The history of the REPL commands used
    */
   private history: string[] = []
-
   /**
    * The write stream for the history file
    */
   private historyStream: fs.WriteStream | undefined
-
   /**
    * Processes the line received from the terminal stdin
    *
@@ -103,7 +100,7 @@ export class HerokuRepl {
 
     if (command === 'exit') {
       this.historyStream?.close()
-      // eslint-disable-next-line n/no-process-exit
+      // eslint-disable-next-line unicorn/no-process-exit
       process.exit(0)
     }
 
@@ -174,12 +171,10 @@ export class HerokuRepl {
       this.rl.write(null, {ctrl: true, name: 'u'})
     }
   }
-
   /**
    * The readline interface used for the REPL
    */
   private rl!: readline.Interface
-
   /**
    * A map of key/value pairs used for
    * the 'set' and 'unset' command
@@ -206,13 +201,8 @@ export class HerokuRepl {
     this.historyStream?.close()
   }
 
-  /**
-   * Starts the REPL by showing the prompt.
-   *
-   * @returns {void}
-   */
-  start() {
-    this.rl.prompt()
+  protected fsCreateWriteStream(path: string, options: any): fs.WriteStream {
+    return fs.createWriteStream(path, options)
   }
 
   /**
@@ -222,6 +212,7 @@ export class HerokuRepl {
     return fs.existsSync(path)
   }
 
+  // eslint-disable-next-line no-undef
   protected fsReadFileSync(path: string, encoding: BufferEncoding): string {
     return fs.readFileSync(path, encoding)
   }
@@ -230,8 +221,13 @@ export class HerokuRepl {
     fs.writeFileSync(path, data, 'utf8')
   }
 
-  protected fsCreateWriteStream(path: string, options: any): fs.WriteStream {
-    return fs.createWriteStream(path, options)
+  /**
+   * Starts the REPL by showing the prompt.
+   *
+   * @returns {void}
+   */
+  start() {
+    this.rl.prompt()
   }
 
   /**
@@ -334,7 +330,7 @@ export class HerokuRepl {
    * @param {Record<string, unknown>} commandMeta the metadata from the command manifest
    * @returns {{requiredInputs: {long: string, short: string}[], optionalInputs: {long: string, short: string}[]}} the inputs from the command manifest
    */
-  private collectInputsFromManifest(commandMeta: any): {requiredInputs: Array<{long: string; short: string}>; optionalInputs: Array<{long: string; short: string}>} {
+  private collectInputsFromManifest(commandMeta: any): {optionalInputs: Array<{long: string; short: string}>; requiredInputs: Array<{long: string; short: string}>;} {
     const requiredInputs: Array<{long: string; short: string}> = []
     const optionalInputs: Array<{long: string; short: string}> = []
 
@@ -463,7 +459,7 @@ export class HerokuRepl {
         const commandStr = Array.isArray(command) ? command[0] : command
         const argsArray = Array.isArray(args) ? args : [args]
         const completionsStr = await this.captureStdout(() => this.config.runCommand(commandStr, argsArray as any)) ?? '[]'
-        result = JSON.parse(util.stripVTControlCharacters(completionsStr))
+        result = JSON.parse(stripVTControlCharacters(completionsStr))
         completionResultsByName.set(flag, result)
       }
 
@@ -528,17 +524,18 @@ export class HerokuRepl {
    * @param {string[]} flags the flags for the command
    * @param {string[]} userFlags the flags that have already been used
    * @param {Record<string, unknown>} commandMeta the metadata for the command
-   * @return {Promise<[string[], string]>} the completions and the current input
+   * @returns {Promise<[string[], string]>} the completions and the current input
    */
   private async getCompletionsForFlag(line: string, current: string, flags: any, userFlags: any, commandMeta: any): Promise<[string[], string] | null> {
     const commandMetaWithCharKeys = {...commandMeta}
     // make sure the commandMeta also contains keys for char fields
-    Object.keys(commandMeta.flags).forEach(key => {
+    for (const key of Object.keys(commandMeta.flags)) {
       const flag = commandMeta.flags[key]
       if (flag.char) {
         commandMetaWithCharKeys.flags[flag.char] = flag
       }
-    })
+    }
+
     // flag completion for long and short flags.
     // flags that have already been used are
     // not included in the completions.

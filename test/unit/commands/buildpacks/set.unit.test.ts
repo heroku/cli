@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksSet from '../../../../src/commands/buildpacks/set.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('buildpacks:set', function () {
   let api: nock.Scope
@@ -27,8 +27,7 @@ describe('buildpacks:set', function () {
       const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -57,8 +56,7 @@ Run git push heroku main to create a new release using this buildpack.
 
       const {stdout} = await runCommand(BuildpacksSet, ['https://github.com/bar/bar', '-a', 'example'])
 
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/bar/bar
   2. https://github.com/baz/baz
   3. https://github.com/biz/biz
@@ -77,8 +75,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -94,8 +91,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use https://github.com/heroku/heroku-buildpack-ruby.
 Run git push heroku main to create a new release using this buildpack.
 `)
     })
@@ -123,8 +119,7 @@ Run git push heroku main to create a new release using this buildpack.
       const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '1', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-ruby
   2. https://github.com/heroku/heroku-buildpack-nodejs
 Run git push heroku main to create a new release using these buildpacks.
@@ -145,8 +140,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '3', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
   3. https://github.com/heroku/heroku-buildpack-ruby
@@ -168,8 +162,7 @@ Run git push heroku main to create a new release using these buildpacks.
       const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-i', '99', '-a', 'example'])
 
       expect(stderr).to.equal('')
-      expect(stdout).to.equal(
-        `Buildpack set. Next release on ⬢ example will use:
+      expect(stdout).to.equal(`Buildpack set. Next release on ⬢ example will use:
   1. https://github.com/heroku/heroku-buildpack-java
   2. https://github.com/heroku/heroku-buildpack-nodejs
   3. https://github.com/heroku/heroku-buildpack-ruby

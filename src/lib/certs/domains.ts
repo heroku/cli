@@ -1,6 +1,20 @@
 import {APIClient} from '@heroku-cli/command'
-import {ux} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
+
 import {Domain} from '../types/domain.js'
+
+export async function waitForDomains(app: string, heroku: APIClient): Promise<Domain[]> {
+  ux.action.start('Waiting for stable domains to be created')
+  for await (const apiDomains of customDomainCreationComplete(app, heroku)) {
+    if (apiDomains) {
+      ux.action.stop()
+      return apiDomains
+    }
+  }
+
+  ux.action.stop('!')
+  throw new Error('Timed out while waiting for stable domains to be created')
+}
 
 async function * customDomainCreationComplete(app: string, heroku: APIClient): AsyncGenerator<Domain[] | null> {
   let retries = 30
@@ -18,17 +32,4 @@ async function * customDomainCreationComplete(app: string, heroku: APIClient): A
 
     yield null
   }
-}
-
-export async function waitForDomains(app: string, heroku: APIClient): Promise<Domain[]> {
-  ux.action.start('Waiting for stable domains to be created')
-  for await (const apiDomains of customDomainCreationComplete(app, heroku)) {
-    if (apiDomains) {
-      ux.action.stop()
-      return apiDomains
-    }
-  }
-
-  ux.action.stop('!')
-  throw new Error('Timed out while waiting for stable domains to be created')
 }

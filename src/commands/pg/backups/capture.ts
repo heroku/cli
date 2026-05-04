@@ -1,6 +1,6 @@
+import {Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {HTTPError} from '@heroku/http-call'
-import {Command, flags} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -14,7 +14,6 @@ export default class Capture extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'capture a new backup'
   static flags = {
     app: flags.app({required: true}),
@@ -22,7 +21,6 @@ export default class Capture extends Command {
     verbose: flags.boolean({char: 'v'}),
     'wait-interval': flags.string(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

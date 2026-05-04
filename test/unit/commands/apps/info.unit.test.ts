@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Info from '../../../../src/commands/apps/info.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 describe('apps:info', function () {
@@ -44,7 +44,7 @@ describe('apps:info', function () {
 
   const appStackChange = {...app, build_stack: {name: 'heroku-24'}}
 
-  const appExtended = {...app, extended: {foo: 'bar', id: 12345}}
+  const appExtended = {...app, extended: {foo: 'bar', id: 12_345}}
 
   const appAcm = {...app, acm: true}
 

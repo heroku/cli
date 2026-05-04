@@ -1,6 +1,6 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {validateURL} from '../../lib/clients/clients.js'
@@ -25,13 +25,10 @@ export default class ClientsUpdate extends Command {
   static args = {
     id: Args.string({description: 'ID of the OAuth client', required: true}),
   }
-
   static description = 'update OAuth client'
-
   static examples = [
     color.command('heroku clients:update 3e304bda-d376-4278-bdea-6d6c08aa1359 --url https://amazing-client.herokuapp.com/auth/heroku/callback'),
   ]
-
   static flags = {
     name: flags.string({char: 'n', description: 'change the client name'}),
     url: flags.string({description: 'change the client redirect URL'}),

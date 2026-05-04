@@ -1,23 +1,22 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {getGeneration} from '../../lib/apps/generation.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 import {displayNat} from '../../lib/spaces/spaces.js'
 import {Space} from '../../lib/types/fir.js'
 
 const heredoc = tsheredoc.default
 
-type RequiredSpaceWithNat = {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>} & Required<Space>
+type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 
 export default class Destroy extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = heredoc`
     destroy a space
   `
@@ -25,12 +24,10 @@ export default class Destroy extends Command {
     ${color.command('heroku spaces:destroy --space my-space')}
     Destroying my-space... done
   `]
-
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt', hasValue: true}),
     space: flags.string({char: 's', description: 'space to destroy'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {
@@ -52,15 +49,15 @@ export default class Destroy extends Command {
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
         const ipv6 = getGeneration(space) === 'fir' ? ' and IPv6' : ''
         natWarning = heredoc`
-        ${color.dim('===')} ${color.label('WARNING: Outbound IPs Will Be Reused')}
+        ${color.gray('===')} ${color.label('WARNING: Outbound IPs Will Be Reused')}
         ${color.warning(`⚠️ Deleting this space frees up the following outbound IPv4${ipv6} IPs for reuse:`)}
         ${color.label(displayNat(space.outbound_ips) ?? '')}
 
-        ${color.dim('Update the following configurations:')}
-        ${color.dim('=')} IP allowlists
-        ${color.dim('=')} Firewall rules
-        ${color.dim('=')} Security group configurations
-        ${color.dim('=')} Network ACLs
+        ${color.gray('Update the following configurations:')}
+        ${color.gray('=')} IP allowlists
+        ${color.gray('=')} Firewall rules
+        ${color.gray('=')} Security group configurations
+        ${color.gray('=')} Network ACLs
 
         ${color.warning(`Ensure that you remove the listed IPv4${ipv6} addresses from your security configurations.`)}
       `

@@ -1,6 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import * as Heroku from '@heroku-cli/schema'
-import {ux} from '@oclif/core'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
@@ -8,8 +9,6 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../../helpers/run-command.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 

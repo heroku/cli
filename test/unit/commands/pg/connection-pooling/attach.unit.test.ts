@@ -1,8 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+
 import Cmd from '../../../../../src/commands/pg/connection-pooling/attach.js'
 import {resolvedAttachments} from '../../../../fixtures/addons/fixtures.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('pg:connection-pooling:attach', function () {
   const addon = {
@@ -17,7 +18,7 @@ describe('pg:connection-pooling:attach', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-      .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-1', addon_service: 'heroku-postgresql', app: 'myapp'})
+      .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-1', app: 'myapp'})
       .reply(200, [resolvedAttachments['myapp::postgres-1']])
       .get('/addons/postgres-1')
       .reply(200, addon)

@@ -1,9 +1,9 @@
-import {ux} from '@oclif/core'
-import {SpawnOptions} from 'child_process'
-import debug from 'debug'
-import * as fs from 'fs'
-import * as path from 'node:path'
 import {pg, utils} from '@heroku/heroku-cli-util'
+import {ux} from '@oclif/core/ux'
+import debug from 'debug'
+import {SpawnOptions} from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
 
 export async function fetchVersion(db: pg.ConnectionDetails) {
   const psqlService = new utils.pg.PsqlService(db)
@@ -12,51 +12,6 @@ export async function fetchVersion(db: pg.ConnectionDetails) {
 }
 
 const pgDebug = debug('pg')
-
-export function psqlFileOptions(file: string, dbEnv: NodeJS.ProcessEnv) {
-  pgDebug('Running sql file: %s', file.trim())
-
-  const childProcessOptions:SpawnOptions = {
-    stdio: ['ignore', 'pipe', 'inherit'],
-  }
-
-  const psqlArgs = ['-f', file, '--set', 'sslmode=require']
-
-  return {
-    dbEnv,
-    psqlArgs,
-    childProcessOptions,
-  }
-}
-
-export function psqlInteractiveOptions(prompt: string, dbEnv: NodeJS.ProcessEnv) {
-  let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`]
-  const psqlHistoryPath = process.env.HEROKU_PSQL_HISTORY
-  if (psqlHistoryPath) {
-    if (fs.existsSync(psqlHistoryPath) && fs.statSync(psqlHistoryPath).isDirectory()) {
-      const appLogFile = `${psqlHistoryPath}/${prompt.split(':')[0]}`
-      pgDebug('Logging psql history to %s', appLogFile)
-      psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${appLogFile}`])
-    } else if (fs.existsSync(path.dirname(psqlHistoryPath))) {
-      pgDebug('Logging psql history to %s', psqlHistoryPath)
-      psqlArgs = psqlArgs.concat(['--set', `HISTFILE=${psqlHistoryPath}`])
-    } else {
-      ux.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
-    }
-  }
-
-  psqlArgs = psqlArgs.concat(['--set', 'sslmode=require'])
-
-  const childProcessOptions: SpawnOptions = {
-    stdio: 'inherit',
-  }
-
-  return {
-    dbEnv,
-    psqlArgs,
-    childProcessOptions,
-  }
-}
 
 export async function execFile(db: pg.ConnectionDetails, file: string) {
   const psqlService = new utils.pg.PsqlService(db)
@@ -75,4 +30,49 @@ export async function interactive(db: pg.ConnectionDetails) {
   const options = psqlInteractiveOptions(prompt, configs.dbEnv)
 
   return psqlService.runWithTunnel(configs.dbTunnelConfig, options)
+}
+
+export function psqlFileOptions(file: string, dbEnv: NodeJS.ProcessEnv) {
+  pgDebug('Running sql file: %s', file.trim())
+
+  const childProcessOptions:SpawnOptions = {
+    stdio: ['ignore', 'pipe', 'inherit'],
+  }
+
+  const psqlArgs = ['-f', file, '--set', 'sslmode=require']
+
+  return {
+    childProcessOptions,
+    dbEnv,
+    psqlArgs,
+  }
+}
+
+export function psqlInteractiveOptions(prompt: string, dbEnv: NodeJS.ProcessEnv) {
+  let psqlArgs = ['--set', `PROMPT1=${prompt}`, '--set', `PROMPT2=${prompt}`]
+  const psqlHistoryPath = process.env.HEROKU_PSQL_HISTORY
+  if (psqlHistoryPath) {
+    if (fs.existsSync(psqlHistoryPath) && fs.statSync(psqlHistoryPath).isDirectory()) {
+      const appLogFile = `${psqlHistoryPath}/${prompt.split(':')[0]}`
+      pgDebug('Logging psql history to %s', appLogFile)
+      psqlArgs = [...psqlArgs, '--set', `HISTFILE=${appLogFile}`]
+    } else if (fs.existsSync(path.dirname(psqlHistoryPath))) {
+      pgDebug('Logging psql history to %s', psqlHistoryPath)
+      psqlArgs = [...psqlArgs, '--set', `HISTFILE=${psqlHistoryPath}`]
+    } else {
+      ux.warn(`HEROKU_PSQL_HISTORY is set but is not a valid path (${psqlHistoryPath})`)
+    }
+  }
+
+  psqlArgs = [...psqlArgs, '--set', 'sslmode=require']
+
+  const childProcessOptions: SpawnOptions = {
+    stdio: 'inherit',
+  }
+
+  return {
+    childProcessOptions,
+    dbEnv,
+    psqlArgs,
+  }
 }

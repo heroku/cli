@@ -1,28 +1,25 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args} from '@oclif/core'
 
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {displayTestRunInfo} from '../../lib/ci/test-run.js'
 
 export default class CiInfo extends Command {
+  static args = {
+    'test-run': Args.string({description: 'auto-incremented test run number', required: true}),
+  }
   static description = 'show the status of a specific test run'
-
   static examples = [
     color.command(`heroku ci:info 1288 --app murmuring-headland-14719
 `),
   ]
-
   static flags = {
     app: flags.app(),
-    remote: flags.remote(),
     node: flags.string({description: 'the node number to show its setup and output', required: false}),
     pipeline: flags.pipeline({required: false}),
-  }
-
-  static args = {
-    'test-run': Args.string({required: true, description: 'auto-incremented test run number'}),
+    remote: flags.remote(),
   }
 
   async run() {

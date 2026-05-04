@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color} from '@heroku/heroku-cli-util'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 import {getPipeline} from '../../lib/api.js'
@@ -11,24 +11,21 @@ import getRepo from '../../lib/pipelines/setup/get-repo.js'
 import {nameAndRepo} from '../../lib/pipelines/setup/validate.js'
 
 export default class Connect extends Command {
-  static description = 'connect a GitHub repo to an existing pipeline'
-
-  static examples = [
-    color.command('heroku pipelines:connect my-pipeline -r githuborg/reponame'),
-  ]
-
-  static flags = {
-    repo: flags.string({
-      name: 'repo',
-      char: 'r',
-      description: 'the GitHub repository to connect to',
-      required: true,
-    }),
-  }
-
   static args = {
     name: Args.string({
       description: 'name of pipeline',
+      required: true,
+    }),
+  }
+  static description = 'connect a GitHub repo to an existing pipeline'
+  static examples = [
+    color.command('heroku pipelines:connect my-pipeline -r githuborg/reponame'),
+  ]
+  static flags = {
+    repo: flags.string({
+      char: 'r',
+      description: 'the GitHub repository to connect to',
+      name: 'repo',
       required: true,
     }),
   }

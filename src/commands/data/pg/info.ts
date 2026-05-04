@@ -1,11 +1,12 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import {formatQuotaStatus} from '../../../lib/data/displayQuota.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import {formatQuotaStatus} from '../../../lib/data/display-quota.js'
+import {parseAttachmentFactors} from '../../../lib/data/parse-attachment-factors.js'
 import {InfoResponse, PoolInfoResponse, Quota} from '../../../lib/data/types.js'
 
 const heredoc = tsheredoc.default
@@ -17,52 +18,6 @@ const poolStatusRenderMap: Record<PoolInfoResponse['status'], string> = {
   unknown: color.failure('? Unknown'),
 }
 
-function renderPoolSummary(pool: PoolInfoResponse, attachments: Required<Heroku.AddOnAttachment>[]) {
-  const poolAttachmentNames = attachments
-    .filter(a => {
-      if (pool.name === 'leader') {
-        return !a.namespace && a.addon.app.id === a.app.id
-      }
-
-      return a.namespace === `pool:${pool.name}` && a.addon.app.id === a.app.id
-    })
-    .map(a => color.attachment(a.name))
-    .join(', ')
-
-  const poolStatus = poolStatusRenderMap[pool.status]
-  const connections = `Connections: ${pool.connections_used ?? color.dim('?')} / ${pool.expected_connection_limit} used`
-  const {expected_count: expectedCount, expected_level: expectedLevel} = pool
-  const poolSize = color.bold(`${expectedCount} instance${expectedCount === 1 ? '' : 's'} of ${expectedLevel}${expectedCount > 1 ? ' (HA)' : ''}:`)
-
-  const instances: string[] = []
-  const {compute_instances: computeInstances, name: poolName} = pool
-  computeInstances.forEach(({id, role, status}) => {
-    let instanceName: string
-
-    if (role === 'standby') {
-      instanceName = color.dim(`${role}.${id}`)
-    } else {
-      instanceName = `${role}.${id}`
-    }
-
-    const instanceStatus = status === 'up' ? color.success(status) : color.warning(status)
-    instances.push(`  ${instanceName}: ${instanceStatus}`)
-  })
-
-  if (poolName === 'leader') {
-    hux.styledHeader(`Leader pool${poolAttachmentNames ? color.dim(` (attached as ${poolAttachmentNames})`) : ''}`)
-  } else {
-    hux.styledHeader(`Follower pool ${color.name(poolName)}${poolAttachmentNames ? color.dim(` (attached as ${poolAttachmentNames})`) : ''}`)
-  }
-
-  ux.stdout(
-    `  ${poolStatus}\n`
-    + `  ${connections}\n`
-    + `  ${poolSize}\n`
-    + `  ${instances.join('\n  ')}\n`,
-  )
-}
-
 export default class DataPgInfo extends BaseCommand {
   static args = {
     database: Args.string({
@@ -70,11 +25,8 @@ export default class DataPgInfo extends BaseCommand {
       required: true,
     }),
   }
-
   static description = 'get details on a Postgres Advanced database'
-
   static examples = ['<%= config.bin %> <%= command.id %> database_name']
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),
@@ -91,8 +43,7 @@ export default class DataPgInfo extends BaseCommand {
     if (!utils.pg.isAdvancedDatabase(addon)) {
       ux.error(heredoc`
         You can only use this command on Advanced-tier databases.
-        Run ${color.code(`heroku pg:info ${addon.name} -a ${app}`)} instead.`,
-      )
+        Run ${color.code(`heroku pg:info ${addon.name} -a ${app}`)} instead.`)
     }
 
     const [{body: info}, {body: attachments}] = await Promise.all([
@@ -158,9 +109,9 @@ export default class DataPgInfo extends BaseCommand {
       }
 
       if (otherPools.length > 0) {
-        otherPools.forEach(pool => {
+        for (const pool of otherPools) {
           renderPoolSummary(pool, attachments)
-        })
+        }
       }
     }
   }
@@ -188,10 +139,11 @@ export default class DataPgInfo extends BaseCommand {
 
   private renderQuotasInfo(quotas: Quota[]): Record<string, string> {
     const quotaInfo: Record<string, string> = {}
-    quotas.forEach(quota => {
+    for (const quota of quotas) {
       const usageMessage = formatQuotaStatus(quota)
       quotaInfo[`  ${hux.toTitleCase(quota.type)}`] = `${usageMessage}`
-    })
+    }
+
     return quotaInfo
   }
 
@@ -200,6 +152,45 @@ export default class DataPgInfo extends BaseCommand {
     const tableLimitCompliance = tableLimit && tableLimit.current <= tableLimit.limit
       ? 'In compliance'
       : 'Not in compliance'
-    return tableLimit ? `${tableLimit.current} / ${tableLimit.limit} (${tableLimitCompliance})` : color.dim('N/A')
+    return tableLimit ? `${tableLimit.current} / ${tableLimit.limit} (${tableLimitCompliance})` : color.inactive('N/A')
   }
+}
+
+function renderPoolSummary(pool: PoolInfoResponse, attachments: Required<Heroku.AddOnAttachment>[]) {
+  const poolAttachmentNames = attachments
+    .filter(a => {
+      if (a.addon.app.id !== a.app.id) {
+        return false
+      }
+
+      const attachmentPoolFactor = parseAttachmentFactors(a.namespace).pool
+      return attachmentPoolFactor === pool.name || (pool.name === 'leader' && !attachmentPoolFactor)
+    })
+    .map(a => color.attachment(a.name))
+    .join(', ')
+
+  const poolStatus = poolStatusRenderMap[pool.status]
+  const connections = `Connections: ${pool.connections_used ?? color.inactive('?')} / ${pool.expected_connection_limit} used`
+  const {expected_count: expectedCount, expected_level: expectedLevel} = pool
+  const poolSize = color.bold(`${expectedCount} instance${expectedCount === 1 ? '' : 's'} of ${expectedLevel}${expectedCount > 1 ? ' (HA)' : ''}:`)
+
+  const instances: string[] = []
+  const {compute_instances: computeInstances, name: poolName} = pool
+  for (const {id, role, status} of computeInstances) {
+    const instanceName = role === 'standby' ? color.inactive(`${role}.${id}`) : `${role}.${id}`
+
+    const instanceStatus = status === 'up' ? color.success(status) : color.warning(status)
+    instances.push(`  ${instanceName}: ${instanceStatus}`)
+  }
+
+  if (poolName === 'leader') {
+    hux.styledHeader(`Leader pool${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`)
+  } else {
+    hux.styledHeader(`Follower pool ${color.name(poolName)}${poolAttachmentNames ? color.gray(` (attached as ${poolAttachmentNames})`) : ''}`)
+  }
+
+  ux.stdout(`  ${poolStatus}\n`
+    + `  ${connections}\n`
+    + `  ${poolSize}\n`
+    + `  ${instances.join('\n  ')}\n`)
 }

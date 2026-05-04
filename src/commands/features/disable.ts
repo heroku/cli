@@ -1,15 +1,13 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
 export default class Disable extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the app feature', required: true}),
   }
-
   static description = 'disables an app feature'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

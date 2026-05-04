@@ -1,7 +1,7 @@
-import {color} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
@@ -9,11 +9,9 @@ import {LogDisplayer} from '../../lib/run/log-displayer.js'
 
 export default class RunDetached extends Command {
   static description = 'run a detached dyno, where output is sent to your logs'
-
   static examples = [
     color.command('heroku run:detached ls'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
@@ -26,7 +24,6 @@ export default class RunDetached extends Command {
     tail: flags.boolean({char: 't', description: 'continually stream logs'}),
     type: flags.string({completion: ProcessTypeCompletion, description: 'process type'}),
   }
-
   static strict = false
 
   async run() {
@@ -62,4 +59,3 @@ export default class RunDetached extends Command {
     }
   }
 }
-

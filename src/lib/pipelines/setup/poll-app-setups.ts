@@ -1,10 +1,10 @@
-import {color} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core'
+import * as color from '@heroku/heroku-cli-util/color'
+import {ux} from '@oclif/core/ux'
 
 import * as api from '../../api.js'
 
-function wait(ms: any) {
-  return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))
+export default function pollAppSetups(heroku: any, appSetups: any) {
+  return Promise.all(appSetups.map((appSetup: any) => pollAppSetup(heroku, appSetup)))
 }
 
 function pollAppSetup(heroku: any, appSetup: any): any {
@@ -21,6 +21,6 @@ function pollAppSetup(heroku: any, appSetup: any): any {
   }).catch((error: any) => ux.error(error, {exit: 1}))
 }
 
-export default function pollAppSetups(heroku: any, appSetups: any) {
-  return Promise.all(appSetups.map((appSetup: any) => pollAppSetup(heroku, appSetup)))
+function wait(ms: any) {
+  return new Promise((resolve: (value?: any) => void) => setTimeout(resolve, ms))
 }
