@@ -19,7 +19,7 @@
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
     "@oclif/plugin-not-found": "^3.2.74",
-    "@oclif/plugin-plugins": "^5.4.58",
+    "@oclif/plugin-plugins": "^5.4.64",
     "@oclif/plugin-search": "1.2.38",
     "@oclif/plugin-update": "^4.7.22",
     "@oclif/plugin-version": "^2.2.37",
