@@ -16,7 +16,7 @@ export default class AccountsIndex extends Command {
       ux.error('You don\'t have any accounts in your cache.')
     }
 
-    const current = await accountsModule.current()
+    const current = await accountsModule.current(this.heroku)
     for (const account of accounts) {
       if (account.name === current || account.username === current) {
         ux.stdout(`* ${account.name ?? account.username}`)

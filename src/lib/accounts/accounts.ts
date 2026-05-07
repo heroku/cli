@@ -12,7 +12,7 @@ export interface AccountEntry {
 
 export interface IAccountsWrapper {
   list(): Promise<AccountEntry[]>
-  current(): Promise<string | null>
+  current(heroku: APIClient): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
   set(name: string): Promise<void>
@@ -82,11 +82,17 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
   }
 
-  async current(): Promise<string | null> {
+  async current(heroku: APIClient): Promise<string | null> {
+    const config = getStorageConfig()
+    if (config.credentialStore) {
+      const authEntry = await heroku.getAuthEntry()
+      return authEntry?.account ?? null
+    }
+
     const netrcInstance = await this.initNetrc()
     if (netrcInstance.machines['api.heroku.com']) {
-      const current = this.list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
-      return current && current.name ? current.name : null
+      const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
+      return current?.name ?? null
     }
 
     return null
