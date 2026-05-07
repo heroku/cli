@@ -58,9 +58,16 @@ describe('accounts', function () {
   })
 
   describe('list() with credentialStore', function () {
+    let originalPlatform: string
+
     beforeEach(function () {
       delete process.env.HEROKU_NETRC_WRITE
-      sinon.stub(process, 'platform').value('darwin')
+      originalPlatform = process.platform
+      Object.defineProperty(process, 'platform', {value: 'darwin', configurable: true})
+    })
+
+    afterEach(function () {
+      Object.defineProperty(process, 'platform', {value: originalPlatform, configurable: true})
     })
 
     it('should return AccountEntry objects with only username when credentialStore is set', async function () {
