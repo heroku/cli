@@ -17,11 +17,11 @@ export default class Remove extends Command {
     const {args} = await this.parse(Remove)
     const {name} = args
 
-    if (!AccountsModule.list().some(a => a.name === name)) {
+    if (!(await AccountsModule.list()).some(account => account.name === name)) {
       ux.error(`${name} doesn't exist in your accounts cache.`)
     }
 
-    if (await AccountsModule.current() === name) {
+    if (await AccountsModule.current(this.heroku) === name) {
       ux.error(`${name} is the current account.`)
     }
 

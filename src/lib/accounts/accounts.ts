@@ -1,11 +1,17 @@
-import {parse, stringify} from 'yaml'
+import {APIClient, listKeychainAccounts, getStorageConfig} from '@heroku-cli/command'
+import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import * as Heroku from '@heroku-cli/schema'
+import {parse, stringify} from 'yaml'
+
+export interface AccountEntry {
+  name?: string
+  username: string
+}
 
 export interface IAccountsWrapper {
-  list(): Heroku.Account[] | []
+  list(): Promise<AccountEntry[]>
   current(): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
@@ -50,11 +56,27 @@ export class AccountsWrapper implements IAccountsWrapper {
     return account
   }
 
-  list(): Heroku.Account[] | [] {
+  async getKeychainAccounts(): Promise<(string | null | undefined)[]> {
+    return listKeychainAccounts()
+  }
+
+  async list(): Promise<AccountEntry[]> {
+    const config = getStorageConfig()
+    if (config.credentialStore) {
+      const accounts = await this.getKeychainAccounts()
+      return accounts
+        .filter((account): account is string => account !== null && account !== undefined)
+        .map(account => ({username: account}))
+    }
+
+    return this.listNetrc()
+  }
+
+  listNetrc(): AccountEntry[] {
     const basedir = path.join(this.configDir(), 'accounts')
     try {
       return fs.readdirSync(basedir)
-        .map(name => Object.assign(this.account(name), {name}))
+        .map(name => ({name, username: this.account(name).username ?? ''}))
     } catch {
       return []
     }
