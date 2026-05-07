@@ -20,7 +20,6 @@ export class GitCredentials extends Command {
     return new Promise(resolve => {
       const rl = readline.createInterface({
         input: process.stdin,
-        output: process.stdout,
         terminal: false,
       })
 
