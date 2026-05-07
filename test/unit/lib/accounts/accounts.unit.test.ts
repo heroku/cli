@@ -60,7 +60,7 @@ describe('accounts', function () {
   describe('list() with credentialStore', function () {
     beforeEach(function () {
       delete process.env.HEROKU_NETRC_WRITE
-      process.env.HEROKU_NATIVE_STORE_WRITE = 'TRUE'
+      sinon.stub(process, 'platform').value('darwin')
     })
 
     it('should return AccountEntry objects with only username when credentialStore is set', async function () {
