@@ -18,6 +18,7 @@ describe('accounts', function () {
 
   afterEach(function () {
     delete process.env.HEROKU_NETRC_WRITE
+    delete process.env.HEROKU_NATIVE_STORE_WRITE
     sinon.restore()
   })
 
@@ -59,6 +60,7 @@ describe('accounts', function () {
   describe('list() with credentialStore', function () {
     beforeEach(function () {
       delete process.env.HEROKU_NETRC_WRITE
+      process.env.HEROKU_NATIVE_STORE_WRITE = 'TRUE'
     })
 
     it('should return AccountEntry objects with only username when credentialStore is set', async function () {
