@@ -36,10 +36,7 @@ describe('git:credentials', function () {
         getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
       })
 
-      setTimeout(() => {
-        stdin.send('protocol=https\nhost=git.heroku.com\n\n')
-      }, 0)
-
+      stdin.send('protocol=https\nhost=git.heroku.com\n\n')
       const {stdout, error} = await runCommand(Credentials, ['get'])
 
       expect(error).to.be.undefined
@@ -51,10 +48,7 @@ describe('git:credentials', function () {
         getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
       })
 
-      setTimeout(() => {
-        stdin.send('protocol=https\nhost=github.com\n\n')
-      }, 0)
-
+      stdin.send('protocol=https\nhost=github.com\n\n')
       const {stdout, error} = await runCommand(Credentials, ['get'])
 
       expect(error).to.be.undefined
@@ -66,10 +60,7 @@ describe('git:credentials', function () {
         getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
       })
 
-      setTimeout(() => {
-        stdin.send('protocol=http\nhost=git.heroku.com\n\n')
-      }, 0)
-
+      stdin.send('protocol=http\nhost=git.heroku.com\n\n')
       const {stdout, error} = await runCommand(Credentials, ['get'])
 
       expect(error).to.be.undefined
@@ -81,10 +72,7 @@ describe('git:credentials', function () {
         getAuth: async () => ({account: undefined, token: undefined}),
       })
 
-      setTimeout(() => {
-        stdin.send('protocol=https\nhost=git.heroku.com\n\n')
-      }, 0)
-
+      stdin.send('protocol=https\nhost=git.heroku.com\n\n')
       const {error} = await runCommand(Credentials, ['get'])
 
       expect(error?.message).to.contain('not logged in')
@@ -93,10 +81,7 @@ describe('git:credentials', function () {
 
   describe('store operation', function () {
     it('accepts input without error', async function () {
-      setTimeout(() => {
-        stdin.send('protocol=https\nhost=git.heroku.com\nusername=heroku\npassword=test-token\n\n')
-      }, 0)
-
+      stdin.send('protocol=https\nhost=git.heroku.com\nusername=heroku\npassword=test-token\n\n')
       const {error, stdout} = await runCommand(Credentials, ['store'])
 
       expect(error).to.be.undefined
@@ -106,10 +91,7 @@ describe('git:credentials', function () {
 
   describe('erase operation', function () {
     it('accepts input without error', async function () {
-      setTimeout(() => {
-        stdin.send('protocol=https\nhost=git.heroku.com\n\n')
-      }, 0)
-
+      stdin.send('protocol=https\nhost=git.heroku.com\n\n')
       const {error, stdout} = await runCommand(Credentials, ['erase'])
 
       expect(error).to.be.undefined
