@@ -60,8 +60,12 @@ export class AccountsWrapper implements IAccountsWrapper {
     return listKeychainAccounts()
   }
 
+  getStorageConfig() {
+    return getStorageConfig()
+  }
+
   async list(): Promise<AccountEntry[]> {
-    const config = getStorageConfig()
+    const config = this.getStorageConfig()
     if (config.credentialStore) {
       const accounts = await this.getKeychainAccounts()
       return accounts
