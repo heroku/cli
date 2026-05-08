@@ -72,23 +72,5 @@ describe('accounts:add', function () {
         expect((error as Error).message).to.contain('testAccountName already exists')
       }
     })
-
-    it('should error if the email is already associated with an existing account', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
-      })
-
-      listStub.resolves([{name: 'existingAccount', username: 'testEmail'}])
-
-      api.get('/account').reply(200, {email: 'testEmail'})
-
-      sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'macos-keychain', useNetrc: true})
-
-      try {
-        await runCommand(Cmd, ['newAccountName'])
-      } catch (error: any) {
-        expect((error as Error).message).to.contain('testEmail already exists')
-      }
-    })
   })
 })
