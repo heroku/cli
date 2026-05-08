@@ -6,10 +6,10 @@ import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Set extends Command {
   static args = {
-    name: Args.string({description: 'name of account to set', required: true}),
+    name: Args.string({description: 'name or username of account to set', required: true}),
   }
 
-  static description = 'set the current Heroku account from your cache'
+  static description = 'set the current Heroku account from your accounts cache or system keychain'
 
   static example = `${color.command('heroku accounts:set my-account')}`
 
@@ -17,10 +17,13 @@ export default class Set extends Command {
     const {args} = await this.parse(Set)
     const {name} = args
 
-    if (!(await AccountsModule.list()).some(account => account.name === name)) {
-      ux.error(`${name} does not exist in your accounts cache.`)
+    const accounts = await AccountsModule.list()
+    const accountExists = accounts.some(account => account.name === name || account.username === name)
+
+    if (!(accountExists)) {
+      ux.error(`${name} does not exist in your accounts cache or system keychain.`)
     }
 
-    AccountsModule.set(name)
+    await AccountsModule.set(name, this.config.dataDir)
   }
 }

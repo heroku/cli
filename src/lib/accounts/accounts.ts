@@ -1,4 +1,4 @@
-import {APIClient, listKeychainAccounts, getStorageConfig} from '@heroku-cli/command'
+import {APIClient, listKeychainAccounts, getStorageConfig, writeLoginState} from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
@@ -16,7 +16,8 @@ export interface IAccountsWrapper {
   current(heroku: APIClient): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
-  set(name: string): Promise<void>
+  set(name: string, dataDir: string): Promise<void>
+  writeLoginState(configDir: string, name: string): Promise<void>
 }
 
 export class AccountsWrapper implements IAccountsWrapper {
@@ -63,6 +64,10 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   getStorageConfig() {
     return getStorageConfig()
+  }
+
+  async writeLoginState(dataDir: string, name: string): Promise<void> {
+    return writeLoginState(dataDir, name)
   }
 
   async list(): Promise<AccountEntry[]> {
@@ -130,7 +135,13 @@ export class AccountsWrapper implements IAccountsWrapper {
     fs.unlinkSync(path.join(basedir, name))
   }
 
-  async set(name: string): Promise<void> {
+  async set(name: string, dataDir: string): Promise<void> {
+    const config = this.getStorageConfig()
+    if (config.credentialStore) {
+      await this.writeLoginState(dataDir, name)
+      return
+    }
+
     const netrcInstance = await this.initNetrc()
     const current = this.account(name)
     netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
