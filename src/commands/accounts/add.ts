@@ -28,7 +28,7 @@ export default class Add extends Command {
 
     const token = this.heroku.auth!
 
-    if (accounts.some(account => account.username === email)) {
+    if (AccountsModule.getStorageConfig().useNetrc && accounts.some(account => account.username === email)) {
       ux.error(`${email} already exists`)
     }
 

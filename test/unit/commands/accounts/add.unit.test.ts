@@ -82,6 +82,8 @@ describe('accounts:add', function () {
 
       api.get('/account').reply(200, {email: 'testEmail'})
 
+      sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'macos-keychain', useNetrc: true})
+
       try {
         await runCommand(Cmd, ['newAccountName'])
       } catch (error: any) {
