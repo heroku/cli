@@ -103,15 +103,19 @@ export class AccountsWrapper implements IAccountsWrapper {
   }
 
   add(name: string, username: string, password: string): void {
-    const basedir = path.join(this.configDir(), 'accounts')
-    fs.mkdirSync(basedir, {recursive: true})
+    const config = this.getStorageConfig()
 
-    fs.writeFileSync(
-      path.join(basedir, name),
-      stringify({username, password}),
-      'utf8',
-    )
-    fs.chmodSync(path.join(basedir, name), 0o600)
+    if (config.useNetrc) {
+      const basedir = path.join(this.configDir(), 'accounts')
+      fs.mkdirSync(basedir, {recursive: true})
+
+      fs.writeFileSync(
+        path.join(basedir, name),
+        stringify({username, password}),
+        'utf8',
+      )
+      fs.chmodSync(path.join(basedir, name), 0o600)
+    }
   }
 
   remove(name: string): void {

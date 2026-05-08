@@ -126,6 +126,13 @@ describe('accounts', function () {
       chmodSyncStub = sinon.stub(fs, 'chmodSync')
     })
 
+    it('should not run if useNetrc is false', function () {
+      sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'macos-keychain', useNetrc: false})
+      AccountsModule.add('test-user', 'username123', 'password123')
+
+      expect(mkdirSyncStub.calledOnce).to.be.false
+    })
+
     it('should create directory with recursive option', function () {
       AccountsModule.add('test-user', 'username123', 'password123')
 

@@ -17,23 +17,19 @@ export default class Add extends Command {
   async run() {
     const {args} = await this.parse(Add)
     const {name} = args
-    const logInMessage = 'You must be logged in to run this command.'
+    const accounts = await AccountsModule.list()
 
-    if ((await AccountsModule.list()).some(account => account.name === name)) {
+    if (accounts.some(account => account.name === name)) {
       ux.error(`${name} already exists`)
     }
 
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')
-    const email = account.email || ''
+    const email = account.email!
 
-    const token = this.heroku.auth || ''
+    const token = this.heroku.auth!
 
-    if (token === '') {
-      ux.error(logInMessage)
-    }
-
-    if (email === '') {
-      ux.error(logInMessage)
+    if (accounts.some(account => account.username === email)) {
+      ux.error(`${email} already exists`)
     }
 
     AccountsModule.add(name, email, token)
