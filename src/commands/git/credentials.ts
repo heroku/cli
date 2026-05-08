@@ -27,7 +27,7 @@ export class GitCredentials extends Command {
 
       rl.on('line', (line: string) => {
         if (!line.trim()) {
-          setImmediate(() => rl.close())
+          rl.close()
           return
         }
 
