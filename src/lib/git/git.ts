@@ -27,10 +27,16 @@ export default class Git {
     }
   }
 
-  public spawn(args: string[]) {
+  public spawn(args: string[], options: {stdio?: cp.StdioOptions; input?: string} = {}) {
     return new Promise((resolve, reject) => {
       gitDebug('spawn: git %o', args)
-      const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
+      const s = cp.spawn('git', args, {stdio: options.stdio ?? [0, 1, 2]})
+
+      if (options.input && s.stdin) {
+        s.stdin.write(options.input)
+        s.stdin.end()
+      }
+
       s.on('error', (err: Error & {code?: string}) => {
         if (err.code === 'ENOENT') {
           try {
@@ -120,6 +126,21 @@ export default class Git {
       `credential.https://${httpGitHost}.helper`,
       '!heroku git:credentials',
     ])
+  }
+
+  /** Removes `heroku git:credentials` from the global config */
+  async removeCredentialHelper() {
+    const {httpGitHost} = vars
+    await this.exec(['config', '--global', '--unset-all', `credential.https://${httpGitHost}.helper`])
+  }
+
+  /** Erases stored credentials for the Heroku Git host */
+  async eraseCredentials() {
+    const {httpGitHost} = vars
+    await this.spawn(['credential', 'reject'], {
+      stdio: ['pipe', 'ignore', 'ignore'],
+      input: `protocol=https\nhost=${httpGitHost}\n\n`,
+    })
   }
 }
 

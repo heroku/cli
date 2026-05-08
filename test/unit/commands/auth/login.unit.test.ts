@@ -11,6 +11,7 @@ import {runCommand} from '../../../helpers/run-command.js'
 describe('auth:login', function () {
   let api: nock.Scope
   let configureCredentialHelperStub: sinon.SinonStub
+  let eraseCredentialsStub: sinon.SinonStub
   let loginStub: sinon.SinonStub
   let savedApiKey: string | undefined
 
@@ -21,6 +22,7 @@ describe('auth:login', function () {
     delete process.env.HEROKU_API_KEY
 
     configureCredentialHelperStub = sinon.stub(Git.prototype, 'configureCredentialHelper').resolves()
+    eraseCredentialsStub = sinon.stub(Git.prototype, 'eraseCredentials').resolves()
     loginStub = sinon.stub(APIClient.prototype, 'login').resolves()
   })
 
@@ -33,6 +35,7 @@ describe('auth:login', function () {
     }
 
     configureCredentialHelperStub.restore()
+    eraseCredentialsStub.restore()
     loginStub.restore()
   })
 
@@ -58,12 +61,25 @@ describe('auth:login', function () {
     expect(configureCredentialHelperStub.calledOnce).to.be.true
   })
 
-  it('does not configure git credential helper if not logged in', async function () {
+  it('rejects stale git credentials after successful login', async function () {
+    api
+      .get('/account')
+      .reply(200, {
+        email: 'user@example.com',
+      })
+
+    await runCommand(Login, [])
+
+    expect(eraseCredentialsStub.calledOnce).to.be.true
+  })
+
+  it('does not perform git operations if not logged in', async function () {
     loginStub.rejects(new Error('Not logged in'))
 
     await runCommand(Login, [])
 
     expect(configureCredentialHelperStub.notCalled).to.be.true
+    expect(eraseCredentialsStub.notCalled).to.be.true
   })
 
   it('does not fail login if git credential helper configuration fails', async function () {
@@ -79,5 +95,20 @@ describe('auth:login', function () {
 
     expect(error).to.be.undefined
     expect(configureCredentialHelperStub.calledOnce).to.be.true
+  })
+
+  it('does not fail login if git credential deletion fails', async function () {
+    eraseCredentialsStub.rejects(new Error('Git not found'))
+
+    api
+      .get('/account')
+      .reply(200, {
+        email: 'user@example.com',
+      })
+
+    const {error} = await runCommand(Login, [])
+
+    expect(error).to.be.undefined
+    expect(eraseCredentialsStub.calledOnce).to.be.true
   })
 })

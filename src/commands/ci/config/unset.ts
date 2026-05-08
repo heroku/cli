@@ -38,7 +38,7 @@ export default class CiConfigUnset extends Command {
 
     await ux.action.start(`Unsetting ${Object.keys(vars).join(', ')}`)
 
-    setPipelineConfigVars(this.heroku, pipeline.id, vars)
+    await setPipelineConfigVars(this.heroku, pipeline.id, vars)
 
     ux.action.stop()
   }

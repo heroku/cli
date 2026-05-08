@@ -27,6 +27,7 @@ export default class Login extends Command {
     const git = new Git()
     try {
       await git.configureCredentialHelper()
+      await git.eraseCredentials()
     } catch {
       // ignore
     }
