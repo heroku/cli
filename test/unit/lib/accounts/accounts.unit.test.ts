@@ -163,6 +163,57 @@ describe('accounts', function () {
     })
   })
 
+  describe('set()', function () {
+    describe('with credentialStore', function () {
+      let writeLoginStateStub: sinon.SinonStub
+
+      beforeEach(function () {
+        sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+        writeLoginStateStub = sinon.stub(AccountsModule, 'writeLoginState').resolves()
+      })
+
+      it('calls writeLoginState with the dataDir and account name', async function () {
+        await AccountsModule.set('my-account', '/data/heroku')
+
+        expect(writeLoginStateStub.calledOnce).to.be.true
+        expect(writeLoginStateStub.firstCall.args[0]).to.equal('/data/heroku')
+        expect(writeLoginStateStub.firstCall.args[1]).to.equal('my-account')
+      })
+    })
+
+    describe('without credentialStore', function () {
+      let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: sinon.SinonStub}
+
+      function setNetrc(value: typeof fakeNetrc | undefined) {
+        (AccountsModule as unknown as {netrc: typeof fakeNetrc | undefined}).netrc = value
+      }
+
+      beforeEach(function () {
+        fakeNetrc = {machines: {}, save: sinon.stub().resolves()}
+        setNetrc(fakeNetrc)
+        fsReadFileStub.withArgs(sinon.match(/my-account$/), 'utf8')
+          .returns('username: user@example.com\npassword: secret\n')
+      })
+
+      afterEach(function () {
+        setNetrc(null as unknown as typeof fakeNetrc)
+      })
+
+      it('writes credentials to api.heroku.com and git.heroku.com machines', async function () {
+        await AccountsModule.set('my-account', '/data/heroku')
+
+        expect(fakeNetrc.machines['api.heroku.com']).to.deep.equal({login: 'user@example.com', password: 'secret'})
+        expect(fakeNetrc.machines['git.heroku.com']).to.deep.equal({login: 'user@example.com', password: 'secret'})
+      })
+
+      it('saves the netrc file', async function () {
+        await AccountsModule.set('my-account', '/data/heroku')
+
+        expect(fakeNetrc.save.calledOnce).to.be.true
+      })
+    })
+  })
+
   describe('remove', function () {
     let unlinkStub: sinon.SinonStub
     let osHomeStub: sinon.SinonStub
