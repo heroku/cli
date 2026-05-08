@@ -370,7 +370,9 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.4"
+    "serialize-javascript": "^7.0.4",
+    "socks": "^2.8.8",
+    "express-rate-limit": "^8.5.1"
   },
   "repository": "heroku/cli",
   "scripts": {
