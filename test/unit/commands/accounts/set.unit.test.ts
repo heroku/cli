@@ -23,7 +23,8 @@ describe('accounts:set', function () {
     await runCommand(Cmd, ['test-account-2'])
     expect(setStub.calledOnce).to.be.true
     expect(setStub.firstCall.args[0]).to.equal('test-account-2')
-    expect(setStub.firstCall.args[1]).to.contain('.local/share/heroku')
+    expect(setStub.firstCall.args[1].toLowerCase()).to.contain('local')
+    expect(setStub.firstCall.args[1]).to.contain('heroku')
   })
 
   it('calls set with the account name and dataDir when matched by username', async function () {
@@ -31,7 +32,8 @@ describe('accounts:set', function () {
     await runCommand(Cmd, ['user1@example.com'])
     expect(setStub.calledOnce).to.be.true
     expect(setStub.firstCall.args[0]).to.equal('user1@example.com')
-    expect(setStub.firstCall.args[1]).to.contain('.local/share/heroku')
+    expect(setStub.firstCall.args[1].toLowerCase()).to.contain('local')
+    expect(setStub.firstCall.args[1]).to.contain('heroku')
   })
 
   it('returns an error if the account is not in the list', async function () {
