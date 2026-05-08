@@ -130,4 +130,31 @@ describe('git', function () {
     expect(cmd).to.equal('git')
     expect(args).to.deep.equal(['config', '--global', 'credential.https://git.heroku.com.helper', '!heroku git:credentials'])
   })
+
+  it('removes git credential helper from global config', async function () {
+    execFileStub.resolves({stdout: '', stderr: ''})
+
+    await git.removeCredentialHelper()
+
+    expect(execFileStub.calledOnce).to.be.true
+    const [cmd, args] = execFileStub.firstCall.args
+    expect(cmd).to.equal('git')
+    expect(args).to.deep.equal(['config', '--global', '--unset-all', 'credential.https://git.heroku.com.helper'])
+  })
+
+  it('erases stored credentials for the Heroku Git host', async function () {
+    const emitter = new EventEmitter() as any
+    emitter.stdin = {write: sinon.stub(), end: sinon.stub()}
+    spawnStub.returns(emitter)
+
+    const erasePromise = git.eraseCredentials()
+
+    process.nextTick(() => emitter.emit('close', 0))
+
+    await erasePromise
+
+    expect(spawnStub.calledOnceWith('git', ['credential', 'reject'], {stdio: ['pipe', 'ignore', 'ignore']})).to.be.true
+    expect(emitter.stdin.write.calledOnceWith('protocol=https\nhost=git.heroku.com\n\n')).to.be.true
+    expect(emitter.stdin.end.calledOnce).to.be.true
+  })
 })
