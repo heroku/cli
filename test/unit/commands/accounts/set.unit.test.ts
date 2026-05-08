@@ -18,13 +18,13 @@ describe('accounts:set', function () {
   })
 
   it('calls the set function with the account name when the account exists', async function () {
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     await runCommand(Cmd, ['test-account-2'])
     expect(setStub.calledWith('test-account-2'))
   })
 
   it('should return an error if the selected account name is not included in the account list', async function () {
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     await runCommand(Cmd, ['test-account-3'])
       .catch((error: Error) => {
         expect(error.message).to.contain('test-account-3 does not exist in your accounts cache.')

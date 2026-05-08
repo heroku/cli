@@ -426,7 +426,7 @@ describe('HerokuExec', function () {
         const {oclif} = error as Errors.ExitError
         expect(uxActionStartStub.calledWith('Initializing feature')).to.be.true
         expect(uxStdoutStub.called).to.be.true
-        expect(childExecSyncStub.calledOnce).to.be.true
+        expect(childExecSyncStub.calledWith(sinon.match(/heroku buildpacks:add/))).to.be.true
         expect(oclif.exit).to.equal(0)
       }
     })

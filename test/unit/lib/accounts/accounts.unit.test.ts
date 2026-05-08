@@ -11,61 +11,107 @@ describe('accounts', function () {
   let fsReadFileStub: sinon.SinonStub
 
   beforeEach(function () {
+    process.env.HEROKU_NETRC_WRITE = 'true'
     fsReaddirStub = sinon.stub(fs, 'readdirSync')
     fsReadFileStub = sinon.stub(fs, 'readFileSync')
   })
 
   afterEach(function () {
+    delete process.env.HEROKU_NETRC_WRITE
+    delete process.env.HEROKU_NATIVE_STORE_WRITE
     sinon.restore()
-    // fs.unlinkSync(tmpNetrc)
   })
 
   describe('list()', function () {
-    it('should return an empty array when directory is not accessible', function () {
+    it('should return an empty array when directory is not accessible', async function () {
       fsReaddirStub.throws(new Error('Directory not found'))
-      const result = AccountsModule.list()
+      const result = await AccountsModule.list()
       expect(result).to.be.an('array').that.is.empty
     })
 
-    it('should return array of account objects when files exist', function () {
+    it('should return array of AccountEntry objects when files exist', async function () {
       fsReaddirStub.returns(['account1', 'account2'])
       fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
-        .returns('{"username": "user1", "password": "pass1"}')
+        .returns('username: user1\npassword: pass1\n')
       fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
-        .returns('{"username": "user2", "password": "pass2"}')
+        .returns('username: user2\npassword: pass2\n')
 
-      const result = AccountsModule.list()
+      const result = await AccountsModule.list()
 
       expect(result).to.be.an('array')
       expect(result).to.have.lengthOf(2)
-      expect(result[0]).to.deep.include({
-        name: 'account1',
-        username: 'user1',
-        password: 'pass1',
-      })
-      expect(result[1]).to.deep.include({
-        name: 'account2',
-        username: 'user2',
-        password: 'pass2',
-      })
+      expect(result[0]).to.deep.equal({name: 'account1', username: 'user1'})
+      expect(result[1]).to.deep.equal({name: 'account2', username: 'user2'})
     })
 
-    it('should handle ruby-style symbol keys', function () {
+    it('should handle ruby-style symbol keys', async function () {
       fsReaddirStub.returns(['account1'])
       fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
         .returns('{":username": "user1", ":password": "pass1"}')
 
-      const result = AccountsModule.list()
+      const result = await AccountsModule.list()
 
       expect(result).to.be.an('array')
       expect(result).to.have.lengthOf(1)
-      expect(result[0]).to.deep.include({
-        name: 'account1',
-        username: 'user1',
-        password: 'pass1',
-      })
-      expect(result[0]).to.not.have.property(':username')
-      expect(result[0]).to.not.have.property(':password')
+      expect(result[0]).to.deep.equal({name: 'account1', username: 'user1'})
+    })
+  })
+
+  describe('list() with credentialStore', function () {
+    beforeEach(function () {
+      delete process.env.HEROKU_NETRC_WRITE
+      sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+    })
+
+    it('should return AccountEntry objects with only username when credentialStore is set', async function () {
+      sinon.stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', 'user2@example.com'])
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.be.an('array').that.has.lengthOf(2)
+      expect(result[0]).to.deep.equal({username: 'user1@example.com'})
+      expect(result[1]).to.deep.equal({username: 'user2@example.com'})
+    })
+
+    it('should return an empty array when the keychain has no accounts', async function () {
+      sinon.stub(AccountsModule, 'getKeychainAccounts').resolves([])
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.be.an('array').that.is.empty
+    })
+
+    it('should filter out null and undefined keychain entries', async function () {
+      sinon.stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', null, undefined, 'user2@example.com'])
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.have.lengthOf(2)
+      expect(result[0]).to.deep.equal({username: 'user1@example.com'})
+      expect(result[1]).to.deep.equal({username: 'user2@example.com'})
+    })
+  })
+
+  describe('listNetrc()', function () {
+    it('should return an empty array when directory is not accessible', function () {
+      fsReaddirStub.throws(new Error('Directory not found'))
+      const result = AccountsModule.listNetrc()
+      expect(result).to.be.an('array').that.is.empty
+    })
+
+    it('should return array of AccountEntry objects with name and username', function () {
+      fsReaddirStub.returns(['account1', 'account2'])
+      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
+        .returns('username: user1\npassword: pass1\n')
+      fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
+        .returns('username: user2\npassword: pass2\n')
+
+      const result = AccountsModule.listNetrc()
+
+      expect(result).to.be.an('array')
+      expect(result).to.have.lengthOf(2)
+      expect(result[0]).to.deep.equal({name: 'account1', username: 'user1'})
+      expect(result[1]).to.deep.equal({name: 'account2', username: 'user2'})
     })
   })
 
@@ -75,7 +121,6 @@ describe('accounts', function () {
     let chmodSyncStub: sinon.SinonStub
 
     beforeEach(function () {
-      // Setup stubs before each test
       mkdirSyncStub = sinon.stub(fs, 'mkdirSync')
       writeFileSyncStub = sinon.stub(fs, 'writeFileSync')
       chmodSyncStub = sinon.stub(fs, 'chmodSync')
@@ -89,11 +134,7 @@ describe('accounts', function () {
     })
 
     it('should write credentials to file with correct format', function () {
-      const testName = 'test-user'
-      const testUsername = 'username123'
-      const testPassword = 'password123'
-
-      AccountsModule.add(testName, testUsername, testPassword)
+      AccountsModule.add('test-user', 'username123', 'password123')
 
       expect(writeFileSyncStub.calledOnce).to.be.true
       expect(writeFileSyncStub.firstCall.args[1]).to.equal('username: username123\npassword: password123\n')
@@ -101,9 +142,7 @@ describe('accounts', function () {
     })
 
     it('should set correct file permissions', function () {
-      const testName = 'test-user'
-
-      AccountsModule.add(testName, 'username123', 'password123')
+      AccountsModule.add('test-user', 'username123', 'password123')
 
       expect(chmodSyncStub.calledOnce).to.be.true
       expect(chmodSyncStub.firstCall.args[1]).to.equal(0o600)
@@ -122,7 +161,6 @@ describe('accounts', function () {
     let existsSyncStub: sinon.SinonStub
 
     beforeEach(function () {
-      // Create a stub for fs.unlinkSync before each test
       unlinkStub = sinon.stub(fs, 'unlinkSync')
       osHomeStub = sinon.stub(os, 'homedir')
       existsSyncStub = sinon.stub(fs, 'existsSync')

@@ -11,7 +11,7 @@ export default class Current extends Command {
   static promptFlagActive = false
 
   async run() {
-    const accountName = await AccountsModule.current()
+    const accountName = await AccountsModule.current(this.heroku)
     if (accountName) {
       hux.styledHeader(`Current account is ${color.user(accountName)}`)
     } else {

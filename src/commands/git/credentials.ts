@@ -20,7 +20,6 @@ export class GitCredentials extends Command {
     return new Promise(resolve => {
       const rl = readline.createInterface({
         input: process.stdin,
-        output: process.stdout,
         terminal: false,
       })
 
@@ -28,7 +27,7 @@ export class GitCredentials extends Command {
 
       rl.on('line', (line: string) => {
         if (!line.trim()) {
-          rl.close()
+          setImmediate(() => rl.close())
           return
         }
 

@@ -10,7 +10,7 @@ describe('accounts:add', function () {
   let addStub: sinon.SinonStub
 
   beforeEach(function () {
-    sinon.stub(AccountsModule, 'list').returns([])
+    sinon.stub(AccountsModule, 'list').resolves([])
     addStub = sinon.stub(AccountsModule, 'add')
     api = nock('https://api.heroku.com')
   })

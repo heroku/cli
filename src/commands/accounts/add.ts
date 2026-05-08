@@ -19,7 +19,7 @@ export default class Add extends Command {
     const {name} = args
     const logInMessage = 'You must be logged in to run this command.'
 
-    if (AccountsModule.list().some(a => a.name === name)) {
+    if ((await AccountsModule.list()).some(account => account.name === name)) {
       ux.error(`${name} already exists`)
     }
 

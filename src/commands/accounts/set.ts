@@ -17,7 +17,7 @@ export default class Set extends Command {
     const {args} = await this.parse(Set)
     const {name} = args
 
-    if (!AccountsModule.list().some(a => a.name === name)) {
+    if (!(await AccountsModule.list()).some(account => account.name === name)) {
       ux.error(`${name} does not exist in your accounts cache.`)
     }
 

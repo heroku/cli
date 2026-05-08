@@ -11,16 +11,17 @@ export default class AccountsIndex extends Command {
   static promptFlagActive = false
 
   async run() {
-    const accounts = accountsModule.list()
+    const accounts = await accountsModule.list()
     if (accounts.length === 0) {
       ux.error('You don\'t have any accounts in your cache.')
     }
 
+    const current = await accountsModule.current(this.heroku)
     for (const account of accounts) {
-      if (account.name === await accountsModule.current()) {
-        ux.stdout(`* ${account.name}`)
+      if (account.name === current || account.username === current) {
+        ux.stdout(`* ${account.name ?? account.username}`)
       } else {
-        ux.stdout(`  ${account.name}`)
+        ux.stdout(`  ${account.name ?? account.username}`)
       }
     }
   }
