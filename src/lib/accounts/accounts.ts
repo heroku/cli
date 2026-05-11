@@ -1,4 +1,4 @@
-import {APIClient, listKeychainAccounts, getStorageConfig} from '@heroku-cli/command'
+import {APIClient, listKeychainAccounts, getStorageConfig, removeAuth} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -64,6 +64,10 @@ export class AccountsWrapper implements IAccountsWrapper {
     return getStorageConfig()
   }
 
+  removeKeychainAuth(account: string, hosts: string[]) {
+    return removeAuth(account, hosts)
+  }
+
   async list(): Promise<AccountEntry[]> {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
@@ -87,7 +91,7 @@ export class AccountsWrapper implements IAccountsWrapper {
   }
 
   async current(heroku: APIClient): Promise<string | null> {
-    const config = getStorageConfig()
+    const config = this.getStorageConfig()
     if (config.credentialStore) {
       const authEntry = await heroku.getAuthEntry()
       return authEntry?.account ?? null
@@ -118,7 +122,13 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
   }
 
-  remove(name: string): void {
+  async remove(name: string): Promise<void> {
+    const config = this.getStorageConfig()
+    if (config.credentialStore) {
+      await this.removeKeychainAuth(name, ['api.heroku.com', 'git.heroku.com'])
+      return
+    }
+
     const basedir = path.join(this.configDir(), 'accounts')
     fs.unlinkSync(path.join(basedir, name))
   }

@@ -173,14 +173,14 @@ describe('accounts', function () {
       existsSyncStub = sinon.stub(fs, 'existsSync')
     })
 
-    it('should remove the account file with the given name', function () {
+    it('should remove the account file with the given name', async function () {
       const accountName = 'test-account'
       const basedir = '/user/home'
 
       osHomeStub.returns(basedir)
       existsSyncStub.returns(false)
 
-      AccountsModule.remove(accountName)
+      await AccountsModule.remove(accountName)
 
       expect(unlinkStub.calledOnce).to.be.true
       expect(unlinkStub.firstCall.args[0]).to.equal(
@@ -188,12 +188,49 @@ describe('accounts', function () {
       )
     })
 
-    it('should throw an error if the file cannot be removed', function () {
+    it('should throw an error if the file cannot be removed', async function () {
       const accountName = 'non-existent-account'
       const error = new Error('File not found')
       unlinkStub.throws(error)
 
-      expect(() => AccountsModule.remove(accountName)).to.throw(Error)
+      await expect(AccountsModule.remove(accountName)).to.be.rejectedWith(Error)
+    })
+
+    describe('with credentialStore', function () {
+      let removeKeychainAuthStub: sinon.SinonStub
+
+      beforeEach(function () {
+        removeKeychainAuthStub = sinon.stub(AccountsModule, 'removeKeychainAuth')
+        sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+      })
+
+      it('should call removeKeychainAuth with account name and hosts', async function () {
+        const accountName = 'test-account@example.com'
+        removeKeychainAuthStub.resolves()
+
+        await AccountsModule.remove(accountName)
+
+        expect(removeKeychainAuthStub.calledOnce).to.be.true
+        expect(removeKeychainAuthStub.firstCall.args[0]).to.equal(accountName)
+        expect(removeKeychainAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
+      })
+
+      it('should not call unlinkSync when credentialStore is set', async function () {
+        const accountName = 'test-account@example.com'
+        removeKeychainAuthStub.resolves()
+
+        await AccountsModule.remove(accountName)
+
+        expect(unlinkStub.called).to.be.false
+      })
+
+      it('should throw an error if removeKeychainAuth fails', async function () {
+        const accountName = 'test-account@example.com'
+        const error = new Error('Keychain removal failed')
+        removeKeychainAuthStub.rejects(error)
+
+        await expect(AccountsModule.remove(accountName)).to.be.rejectedWith('Keychain removal failed')
+      })
     })
   })
 })
