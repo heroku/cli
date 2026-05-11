@@ -1,4 +1,5 @@
-import {APIClient, listKeychainAccounts, getStorageConfig, removeAuth} from '@heroku-cli/command'
+import {APIClient, listKeychainAccounts, getStorageConfig} from '@heroku-cli/command'
+import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -64,10 +65,6 @@ export class AccountsWrapper implements IAccountsWrapper {
     return getStorageConfig()
   }
 
-  removeKeychainAuth(account: string, hosts: string[]) {
-    return removeAuth(account, hosts)
-  }
-
   async list(): Promise<AccountEntry[]> {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
@@ -125,7 +122,7 @@ export class AccountsWrapper implements IAccountsWrapper {
   async remove(name: string): Promise<void> {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
-      await this.removeKeychainAuth(name, ['api.heroku.com', 'git.heroku.com'])
+      await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
       return
     }
 

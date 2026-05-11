@@ -5,6 +5,7 @@ import path from 'node:path'
 import sinon from 'sinon'
 
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
+import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
 describe('accounts', function () {
   let fsReaddirStub: sinon.SinonStub
@@ -197,37 +198,43 @@ describe('accounts', function () {
     })
 
     describe('with credentialStore', function () {
-      let removeKeychainAuthStub: sinon.SinonStub
+      let credStub: ReturnType<typeof stubCredentialManager>
+      let removeAuthStub: sinon.SinonStub
 
       beforeEach(function () {
-        removeKeychainAuthStub = sinon.stub(AccountsModule, 'removeKeychainAuth')
+        removeAuthStub = sinon.stub().resolves()
+        credStub = stubCredentialManager({
+          removeAuth: removeAuthStub,
+        })
         sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
       })
 
-      it('should call removeKeychainAuth with account name and hosts', async function () {
+      afterEach(function () {
+        credStub.restore()
+      })
+
+      it('should call removeAuth with account name and hosts', async function () {
         const accountName = 'test-account@example.com'
-        removeKeychainAuthStub.resolves()
 
         await AccountsModule.remove(accountName)
 
-        expect(removeKeychainAuthStub.calledOnce).to.be.true
-        expect(removeKeychainAuthStub.firstCall.args[0]).to.equal(accountName)
-        expect(removeKeychainAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
+        expect(removeAuthStub.calledOnce).to.be.true
+        expect(removeAuthStub.firstCall.args[0]).to.equal(accountName)
+        expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
       })
 
       it('should not call unlinkSync when credentialStore is set', async function () {
         const accountName = 'test-account@example.com'
-        removeKeychainAuthStub.resolves()
 
         await AccountsModule.remove(accountName)
 
         expect(unlinkStub.called).to.be.false
       })
 
-      it('should throw an error if removeKeychainAuth fails', async function () {
+      it('should throw an error if removeAuth fails', async function () {
         const accountName = 'test-account@example.com'
         const error = new Error('Keychain removal failed')
-        removeKeychainAuthStub.rejects(error)
+        removeAuthStub.rejects(error)
 
         await expect(AccountsModule.remove(accountName)).to.be.rejectedWith('Keychain removal failed')
       })
