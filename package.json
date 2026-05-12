@@ -6,7 +6,7 @@
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^12.3.1",
+    "@heroku-cli/command": "^12.3.3",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
@@ -19,7 +19,7 @@
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
     "@oclif/plugin-not-found": "^3.2.74",
-    "@oclif/plugin-plugins": "^5.4.58",
+    "@oclif/plugin-plugins": "^5.4.64",
     "@oclif/plugin-search": "1.2.38",
     "@oclif/plugin-update": "^4.7.22",
     "@oclif/plugin-version": "^2.2.37",
@@ -134,7 +134,7 @@
     "sinon": "^21.0.2",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "typescript": "4.9.5"
+    "typescript": "5.8.3"
   },
   "oclif": {
     "additionalHelpFlags": [
@@ -370,7 +370,9 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.4"
+    "serialize-javascript": "^7.0.4",
+    "socks": "^2.8.8",
+    "express-rate-limit": "^8.5.1"
   },
   "repository": "heroku/cli",
   "scripts": {
