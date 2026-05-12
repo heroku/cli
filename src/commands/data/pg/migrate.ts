@@ -11,14 +11,15 @@ import tsheredoc from 'tsheredoc'
 
 import createAddon from '../../../lib/addons/create-addon.js'
 import BaseCommand from '../../../lib/data/base-command.js'
-// import PoolConfig from '../../../lib/data/poolConfig.js'
+import PoolConfig from '../../../lib/data/pool-config.js'
 import {
-  // ExtendedPostgresLevelInfo,
+  DatabaseStatus,
+  ExtendedPostgresLevelInfo,
   InfoResponse,
   MigrationResponse,
   MigrationStatus,
 } from '../../../lib/data/types.js'
-// import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
+import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
 
 const heredoc = tsheredoc.default
@@ -34,7 +35,7 @@ export default class DataPgMigrate extends BaseCommand {
   private advancedDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[], info?: InfoResponse}> = []
   private appName: string | undefined
   private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
-  // private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
+  private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private migrationTargets: Array<MigrationResponse> = []
 
   public async createAddon(...args: Parameters<typeof createAddon>): Promise<Heroku.AddOn> {
@@ -84,7 +85,7 @@ export default class DataPgMigrate extends BaseCommand {
 
   // eslint-disable-next-line complexity
   private async actOnReadyMigration(migrationAction: 'cancel' | 'start'): Promise<void> {
-    const readyMigrations = this.migrationTargets.filter(migration => migration.status === 'ready')
+    const readyMigrations = this.migrationTargets.filter(migration => migration.status === MigrationStatus.READY)
     let currentStep = '__select_migration'
     let selectedMigrationId: string | undefined
 
@@ -247,7 +248,7 @@ export default class DataPgMigrate extends BaseCommand {
                 name: color.gray(name),
                 value: database.id,
               })
-            } else if (database.info?.status === 'available') {
+            } else if (database.info?.status === DatabaseStatus.AVAILABLE) {
               choices.push({
                 name,
                 value: database.id,
@@ -271,9 +272,7 @@ export default class DataPgMigrate extends BaseCommand {
 
           choices.push(
             new Separator(),
-            // We're disabling the option to create a new Advanced database while configuring a migration until the backend is updated
-            // to support it.
-            // {name: 'Create a new Advanced database', value: '__create_database'},
+            {name: 'Create a new Advanced database', value: '__create_database'},
             {name: 'Go back', value: '__go_back'},
           )
           targetDatabaseId = (await this.prompt<{database: string}>({
@@ -283,17 +282,16 @@ export default class DataPgMigrate extends BaseCommand {
             type: 'list',
           })).database
 
-          // eslint-disable-next-line unicorn/prefer-ternary
           if (targetDatabaseId === '__go_back') {
             currentStep = '__select_source'
-            // } else if (targetDatabaseId === '__create_database') {
-            //   const addon = await this.createTargetDatabase(sourceDatabaseId!)
-            //   if (addon) {
-            //     targetDatabaseId = addon.id
-            //     currentStep = '__confirm_migration'
-            //   } else {
-            //     currentStep = '__select_target'
-            //   }
+          } else if (targetDatabaseId === '__create_database') {
+            const addon = await this.createTargetDatabase(sourceDatabaseId!)
+            if (addon) {
+              targetDatabaseId = addon.id
+              currentStep = '__confirm_migration'
+            } else {
+              currentStep = '__select_target'
+            }
           } else {
             currentStep = '__confirm_migration'
           }
@@ -304,54 +302,55 @@ export default class DataPgMigrate extends BaseCommand {
     }
   }
 
-  // private async createTargetDatabase(sourceDatabaseId: string): Promise<Heroku.AddOn | undefined> {
-  //   let networking: string | undefined
-  //   const sourceDatabase = this.classicDatabases.find(db => db.id === sourceDatabaseId)!
-  //   if (sourceDatabase.plan.name.split(':')[1].startsWith('private')) {
-  //     networking = 'private'
-  //   } else if (sourceDatabase.plan.name.split(':')[1].startsWith('shield')) {
-  //     networking = 'shield'
-  //   }
+  private async createTargetDatabase(sourceDatabaseId: string): Promise<Heroku.AddOn | undefined> {
+    let networking: string | undefined
+    const sourceDatabase = this.classicDatabases.find(db => db.id === sourceDatabaseId)!
+    if (sourceDatabase.plan.name.split(':')[1].startsWith('private')) {
+      networking = 'private'
+    } else if (sourceDatabase.plan.name.split(':')[1].startsWith('shield')) {
+      networking = 'shield'
+    }
 
-  //   const plan = `advanced${networking ? `-${networking}` : ''}`
-  //   const service = utils.pg.addonService()
-  //   const servicePlan = `${service}:${plan}`
-  //   const {extendedLevelsInfo} = await fetchLevelsAndPricing(plan, this.dataApi)
-  //   this.extendedLevelsInfo = extendedLevelsInfo
-  //   const poolConfig = new PoolConfig(this.extendedLevelsInfo!, 0)
+    const plan = `advanced${networking ? `-${networking}` : ''}`
+    const service = utils.pg.addonService()
+    const servicePlan = `${service}:${plan}`
+    const {extendedLevelsInfo} = await fetchLevelsAndPricing(plan, this.dataApi)
+    this.extendedLevelsInfo = extendedLevelsInfo
+    const poolConfig = new PoolConfig(this.extendedLevelsInfo!, 0)
 
-  //   ux.stdout(heredoc`
+    ux.stdout(heredoc`
 
-  //     → Configure Leader Pool
+      → Configure Leader Pool
 
-  //   `)
+    `)
 
-  //   const {action, highAvailability, level: leaderLevel} = await poolConfig.leaderInteractiveConfig(true)
+    const {action, highAvailability, level: leaderLevel} = await poolConfig.leaderInteractiveConfig(true)
 
-  //   if (action === '__go_back') {
-  //     return undefined
-  //   }
+    if (action === '__go_back') {
+      return undefined
+    }
 
-  //   // Database cluster provisioning (leader pool)
-  //   const config: Record<string, boolean | string | undefined> = {
-  //     'high-availability': highAvailability,
-  //     level: leaderLevel,
-  //   }
+    // Database cluster provisioning (leader pool)
+    const config: Record<string, boolean | string | undefined> = {
+      from: sourceDatabaseId,
+      'high-availability': highAvailability,
+      level: leaderLevel,
+    }
 
-  //   let addon: Heroku.AddOn | undefined
-  //   try {
-  //     addon = await this.createAddon(this.heroku, sourceDatabase.app.name, servicePlan, undefined, false, {
-  //       actionStartMessage: `Creating a ${color.cyan(leaderLevel)} database on ${color.app(sourceDatabase.app.name)}`,
-  //       actionStopMessage: 'done',
-  //       config,
-  //     })
-  //   } catch (error) {
-  //     ux.action.stop()
-  //     throw error
-  //   }
+    let addon: Heroku.AddOn | undefined
+    try {
+      addon = await this.createAddon(this.heroku, sourceDatabase.app.name, servicePlan, undefined, false, {
+        actionStartMessage: `Creating a ${color.info(leaderLevel!)} database on ${color.app(sourceDatabase.app.name)}`,
+        actionStopMessage: 'done',
+        config,
+      })
+    } catch (error) {
+      ux.action.stop()
+      throw error
+    }
 
-  //   return addon
-  // }
+    return addon
+  }
 
   private async getAppDatabases(app: string): Promise<void> {
     const {body: appAttachments} = await this.heroku.get<pg.ExtendedAddonAttachment[]>(
@@ -415,7 +414,8 @@ export default class DataPgMigrate extends BaseCommand {
   }
 
   private isActiveMigration(migration: MigrationResponse): boolean {
-    return migration.status === MigrationStatus.PREPARING
+    return migration.status === MigrationStatus.CREATING_TARGET
+      || migration.status === MigrationStatus.PREPARING
       || migration.status === MigrationStatus.MIGRATING
       || migration.status === MigrationStatus.PROMOTING
       || migration.status === MigrationStatus.READY
@@ -442,7 +442,9 @@ export default class DataPgMigrate extends BaseCommand {
           header: 'Destination Database',
         },
         status: {
-          get: (migration: MigrationResponse) => color.info(hux.toTitleCase(migration.status)!),
+          get: (migration: MigrationResponse) => (migration.status === MigrationStatus.MIGRATING && migration.status_description)
+            ? color.info(migration.status_description)
+            : color.info(hux.toTitleCase(migration.status)!),
           header: 'Status',
         },
       })

@@ -85,6 +85,12 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
   return [color.name(cred), ...attLines, ...rotationLines].join('\n') + '\n'
 }
 
+const comparator = (a: string, b: string) => {
+  const isDatabaseUrlA = Number(a === 'DATABASE_URL')
+  const isDatabaseUrlB = Number(b === 'DATABASE_URL')
+  return isDatabaseUrlA < isDatabaseUrlB ? -1 : (isDatabaseUrlB < isDatabaseUrlA ? 1 : 0)
+}
+
 export const configVarNamesFromValue = (config: Record<string, string>, value: string) => {
   const keys: string[] = []
   for (const key of Object.keys(config)) {
@@ -103,12 +109,6 @@ export const configVarNamesFromValue = (config: Record<string, string>, value: s
         // ignore -- this is not a valid URL so not a matching URL
       }
     }
-  }
-
-  const comparator = (a: string, b: string) => {
-    const isDatabaseUrlA = Number(a === 'DATABASE_URL')
-    const isDatabaseUrlB = Number(b === 'DATABASE_URL')
-    return isDatabaseUrlA < isDatabaseUrlB ? -1 : (isDatabaseUrlB < isDatabaseUrlA ? 1 : 0)
   }
 
   return keys.sort(comparator)
@@ -154,9 +154,9 @@ async function allAdvancedDatabaseAttachments(heroku: APIClient, app: string) {
  * @returns Promise resolving to all Heroku Postgres databases
  * @throws {Error} When no legacy database add-on exists on the app
  */
-export async function getAllAdvancedDatabases(heroku: APIClient, app: string): Promise<Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']>> {
+export async function getAllAdvancedDatabases(heroku: APIClient, app: string): Promise<Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>> {
   const allAttachments = await allAdvancedDatabaseAttachments(heroku, app)
-  const addons: Array<{attachment_names?: string[]} & pg.ExtendedAddonAttachment['addon']> = []
+  const addons: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
   for (const attachment of allAttachments) {
     if (!addons.some(a => a.id === attachment.addon.id)) {
       addons.push(attachment.addon)

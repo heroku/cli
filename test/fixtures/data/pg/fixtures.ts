@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import * as Heroku from '@heroku-cli/schema'
 import {pg} from '@heroku/heroku-cli-util'
 
@@ -1421,6 +1422,7 @@ export const existentMigrationResponse: MigrationResponse = {
   preassessment_results: [],
   source_id: 'ae4bac9d-99b5-4496-97dc-7b71a9d20999', // Standard DB
   status: MigrationStatus.PREPARING,
+  status_description: null,
   stop_reason: null,
   successful: false,
   tables_errored: 0,
@@ -1437,6 +1439,7 @@ export const createdMigrationResponse: MigrationResponse = {
   preassessment_results: [],
   source_id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054', // Premium DB
   status: MigrationStatus.PREPARING,
+  status_description: null,
   stop_reason: null,
   successful: false,
   tables_errored: 0,

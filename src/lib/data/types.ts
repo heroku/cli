@@ -25,6 +25,7 @@ export enum MaintenanceStatus {
 export enum MigrationStatus {
   CANCELLED = 'cancelled',
   COMPLETED = 'completed',
+  CREATING_TARGET = 'creating_target',
   FAILED = 'failed',
   MIGRATING = 'migrating',
   PREPARING = 'preparing',
@@ -167,6 +168,7 @@ export type MigrationResponse = {
   preassessment_results: PreassessmentResults
   source_id: string
   status: MigrationStatus
+  status_description: null | string
   stop_reason: null | string
   successful: boolean
   tables_errored: null | number
