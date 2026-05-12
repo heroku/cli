@@ -17,7 +17,8 @@ export interface IAccountsWrapper {
   add(name: string, username: string, password: string): void
   remove(name: string): void
   set(account: AccountEntry, dataDir: string): Promise<void>
-  writeLoginState(configDir: string, name: string): Promise<void>
+  getStorageConfig(): ReturnType<typeof getStorageConfig>
+  writeLoginState(dataDir: string, name: string): Promise<void>
 }
 
 export class AccountsWrapper implements IAccountsWrapper {
