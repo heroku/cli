@@ -35,7 +35,7 @@ import {
 
 const {prompt} = inquirer
 
-describe.only('data:pg:migrate', function () {
+describe('data:pg:migrate', function () {
   let createAddonStub: sinon.SinonStub
   let mockedStdinInput: string[] = []
   let poolConfigLeaderInteractiveConfigStub: sinon.SinonStub
