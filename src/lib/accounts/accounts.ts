@@ -1,4 +1,4 @@
-import {APIClient, listKeychainAccounts, getStorageConfig} from '@heroku-cli/command'
+import {APIClient, listKeychainAccounts, getStorageConfig, writeLoginState} from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
@@ -16,7 +16,9 @@ export interface IAccountsWrapper {
   current(heroku: APIClient): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
-  set(name: string): Promise<void>
+  set(account: AccountEntry, dataDir: string): Promise<void>
+  getStorageConfig(): ReturnType<typeof getStorageConfig>
+  writeLoginState(dataDir: string, name: string): Promise<void>
 }
 
 export class AccountsWrapper implements IAccountsWrapper {
@@ -63,6 +65,10 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   getStorageConfig() {
     return getStorageConfig()
+  }
+
+  async writeLoginState(dataDir: string, name: string): Promise<void> {
+    return writeLoginState(dataDir, name)
   }
 
   async list(): Promise<AccountEntry[]> {
@@ -130,12 +136,20 @@ export class AccountsWrapper implements IAccountsWrapper {
     fs.unlinkSync(path.join(basedir, name))
   }
 
-  async set(name: string): Promise<void> {
-    const netrcInstance = await this.initNetrc()
-    const current = this.account(name)
-    netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
-    netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
-    await netrcInstance.save()
+  async set(account: AccountEntry, dataDir: string): Promise<void> {
+    const config = this.getStorageConfig()
+    if (config.credentialStore && !account.name) {
+      await this.writeLoginState(dataDir, account.username)
+      return
+    }
+
+    if (config.useNetrc && account.name) {
+      const netrcInstance = await this.initNetrc()
+      const current = this.account(account.name)
+      netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
+      netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
+      await netrcInstance.save()
+    }
   }
 }
 

@@ -38,6 +38,7 @@ export class GitCredentials extends Command {
       })
 
       rl.on('close', () => {
+        process.stdin.pause()
         resolve(input)
       })
     })
