@@ -164,7 +164,7 @@ describe('accounts', function () {
   })
 
   describe('set()', function () {
-    describe('with credentialStore', function () {
+    describe('with credentialStore and no account name', function () {
       let writeLoginStateStub: sinon.SinonStub
 
       beforeEach(function () {
@@ -172,16 +172,24 @@ describe('accounts', function () {
         writeLoginStateStub = sinon.stub(AccountsModule, 'writeLoginState').resolves()
       })
 
-      it('calls writeLoginState with the dataDir and account name', async function () {
-        await AccountsModule.set('my-account', '/data/heroku')
+      it('calls writeLoginState with the dataDir and account username', async function () {
+        const account = {username: 'user@example.com'}
+        await AccountsModule.set(account, '/data/heroku')
 
         expect(writeLoginStateStub.calledOnce).to.be.true
         expect(writeLoginStateStub.firstCall.args[0]).to.equal('/data/heroku')
-        expect(writeLoginStateStub.firstCall.args[1]).to.equal('my-account')
+        expect(writeLoginStateStub.firstCall.args[1]).to.equal('user@example.com')
+      })
+
+      it('does not call writeLoginState when account has a name', async function () {
+        const account = {name: 'my-account', username: 'user@example.com'}
+        await AccountsModule.set(account, '/data/heroku')
+
+        expect(writeLoginStateStub.called).to.be.false
       })
     })
 
-    describe('without credentialStore', function () {
+    describe('with useNetrc and account name', function () {
       let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: sinon.SinonStub}
 
       function setNetrc(value: typeof fakeNetrc | undefined) {
@@ -189,6 +197,7 @@ describe('accounts', function () {
       }
 
       beforeEach(function () {
+        sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: null, useNetrc: true})
         fakeNetrc = {machines: {}, save: sinon.stub().resolves()}
         setNetrc(fakeNetrc)
         fsReadFileStub.withArgs(sinon.match(/my-account$/), 'utf8')
@@ -200,16 +209,25 @@ describe('accounts', function () {
       })
 
       it('writes credentials to api.heroku.com and git.heroku.com machines', async function () {
-        await AccountsModule.set('my-account', '/data/heroku')
+        const account = {name: 'my-account', username: 'user@example.com'}
+        await AccountsModule.set(account, '/data/heroku')
 
         expect(fakeNetrc.machines['api.heroku.com']).to.deep.equal({login: 'user@example.com', password: 'secret'})
         expect(fakeNetrc.machines['git.heroku.com']).to.deep.equal({login: 'user@example.com', password: 'secret'})
       })
 
       it('saves the netrc file', async function () {
-        await AccountsModule.set('my-account', '/data/heroku')
+        const account = {name: 'my-account', username: 'user@example.com'}
+        await AccountsModule.set(account, '/data/heroku')
 
         expect(fakeNetrc.save.calledOnce).to.be.true
+      })
+
+      it('does not update netrc when account has no name', async function () {
+        const account = {username: 'user@example.com'}
+        await AccountsModule.set(account, '/data/heroku')
+
+        expect(fakeNetrc.save.called).to.be.false
       })
     })
   })

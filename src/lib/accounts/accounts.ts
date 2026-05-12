@@ -16,7 +16,7 @@ export interface IAccountsWrapper {
   current(heroku: APIClient): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
-  set(name: string, dataDir: string): Promise<void>
+  set(account: AccountEntry, dataDir: string): Promise<void>
   writeLoginState(configDir: string, name: string): Promise<void>
 }
 
@@ -135,18 +135,20 @@ export class AccountsWrapper implements IAccountsWrapper {
     fs.unlinkSync(path.join(basedir, name))
   }
 
-  async set(name: string, dataDir: string): Promise<void> {
+  async set(account: AccountEntry, dataDir: string): Promise<void> {
     const config = this.getStorageConfig()
-    if (config.credentialStore) {
-      await this.writeLoginState(dataDir, name)
+    if (config.credentialStore && !account.name) {
+      await this.writeLoginState(dataDir, account.username)
       return
     }
 
-    const netrcInstance = await this.initNetrc()
-    const current = this.account(name)
-    netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
-    netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
-    await netrcInstance.save()
+    if (config.useNetrc && account.name) {
+      const netrcInstance = await this.initNetrc()
+      const current = this.account(account.name)
+      netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
+      netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
+      await netrcInstance.save()
+    }
   }
 }
 
