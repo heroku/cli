@@ -22,7 +22,7 @@ describe('accounts:set', function () {
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     await runCommand(Cmd, ['test-account-2'])
     expect(setStub.calledOnce).to.be.true
-    expect(setStub.firstCall.args[0]).to.equal('test-account-2')
+    expect(setStub.firstCall.args[0]).to.deep.equal({name: 'test-account-2', username: 'user2'})
     expect(setStub.firstCall.args[1].toLowerCase()).to.contain('local')
     expect(setStub.firstCall.args[1]).to.contain('heroku')
   })
@@ -31,16 +31,19 @@ describe('accounts:set', function () {
     listStub.resolves([{username: 'user1@example.com'}, {username: 'user2@example.com'}])
     await runCommand(Cmd, ['user1@example.com'])
     expect(setStub.calledOnce).to.be.true
-    expect(setStub.firstCall.args[0]).to.equal('user1@example.com')
+    expect(setStub.firstCall.args[0]).to.deep.equal({username: 'user1@example.com'})
     expect(setStub.firstCall.args[1].toLowerCase()).to.contain('local')
     expect(setStub.firstCall.args[1]).to.contain('heroku')
   })
 
   it('returns an error if the account is not in the list', async function () {
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
-    await runCommand(Cmd, ['test-account-3'])
-      .catch((error: Error) => {
-        expect(error.message).to.contain('test-account-3 does not exist in your accounts cache or system keychain.')
-      })
+
+    try {
+      await runCommand(Cmd, ['test-account-3'])
+      expect.fail('Expected command to throw error')
+    } catch (error: any) {
+      expect(error.message).to.contain('test-account-3 does not exist in your accounts cache or system keychain.')
+    }
   })
 })
