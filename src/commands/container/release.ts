@@ -1,4 +1,4 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
@@ -43,7 +43,6 @@ export default class ContainerRelease extends Command {
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
     ensureContainerStack(appBody, 'release')
 
-    const herokuHost: string = process.env.HEROKU_HOST || 'heroku.com'
     const updateData: any[] = []
     for (const process of argv) {
       const image = `${app}/${process}`
@@ -55,7 +54,7 @@ export default class ContainerRelease extends Command {
             Accept: 'application/vnd.docker.distribution.manifest.v2+json',
             Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
           },
-          hostname: `registry.${herokuHost}`,
+          hostname: `registry.${vars.host}`,
         },
       )
       let imageID
