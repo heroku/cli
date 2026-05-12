@@ -22,8 +22,9 @@ describe('accounts:remove', function () {
   it('calls the remove function with the account name when the account exists and it is not the current account', async function () {
     currentStub.resolves('test-account')
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
+    removeStub.resolves()
     await runCommand(Cmd, ['test-account-2'])
-    expect(removeStub.calledWith('test-account-2'))
+    expect(removeStub.calledWith('test-account-2')).to.be.true
   })
 
   it('should return an error if the selected account name is not included in the account list', async function () {
