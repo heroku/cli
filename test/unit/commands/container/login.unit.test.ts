@@ -30,11 +30,23 @@ describe('container:login', function () {
     sandbox.assert.calledOnce(login)
   })
 
-  it('rejects invalid HEROKU_HOST and uses default registry', async function () {
-    const originalHost = process.env.HEROKU_HOST
-    process.env.HEROKU_HOST = 'attacker.com'
+  context('when HEROKU_HOST is set to an invalid domain', function () {
+    let originalHost: string | undefined
 
-    try {
+    beforeEach(function () {
+      originalHost = process.env.HEROKU_HOST
+      process.env.HEROKU_HOST = 'attacker.com'
+    })
+
+    afterEach(function () {
+      if (originalHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHost
+      }
+    })
+
+    it('rejects invalid HEROKU_HOST and uses default registry', async function () {
       const version = sandbox.stub(DockerHelper.prototype, 'version').resolves([19, 12])
       const login = sandbox.stub(DockerHelper.prototype, 'cmd')
         .withArgs('docker', ['login', '--username=_', '--password-stdin', 'registry.heroku.com'], {input: 'heroku_token'})
@@ -44,13 +56,7 @@ describe('container:login', function () {
       expect(stderr).to.contain("Invalid HEROKU_HOST 'attacker.com'")
       sandbox.assert.calledOnce(version)
       sandbox.assert.calledOnce(login)
-    } finally {
-      if (originalHost === undefined) {
-        delete process.env.HEROKU_HOST
-      } else {
-        process.env.HEROKU_HOST = originalHost
-      }
-    }
+    })
   })
 
   it('logs to the docker registry with an old version', async function () {
