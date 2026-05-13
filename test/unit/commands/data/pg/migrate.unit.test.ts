@@ -78,7 +78,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       expect(stderr).to.equal('')
       expect(stdout).not.to.match(/Source Database\s+Destination Database\s+Status/)
-      expect(stdout).to.contain('There are no migrations configured for ⬢ myapp yet.')
+      expect(stdout).to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
     })
 
     it('enables configuring a new migration option when there are classic databases owned by the app', async function () {
@@ -95,7 +95,7 @@ describe('data:pg:migrate', function () {
 
       herokuApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Configure a new migration')
+      expect(stdout).to.contain('Configure a database migration')
       expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
     })
 
@@ -113,7 +113,7 @@ describe('data:pg:migrate', function () {
 
       herokuApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
 
     it('disables the start and cancel migration options', async function () {
@@ -193,7 +193,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
 
     it('enables configuring a new migration option when there are additional classic databases pending migration', async function () {
@@ -218,7 +218,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Configure a new migration')
+      expect(stdout).to.contain('Configure a database migration')
       expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
     })
 
@@ -250,7 +250,7 @@ describe('data:pg:migrate', function () {
 
         dataApi.done()
         expect(stderr).to.equal('')
-        expect(stdout).to.match(new RegExp(`⛁ postgresql-cubic-12345\\s+⛁ postgresql-lively-12345\\s+${hux.toTitleCase(status.toString())}`))
+        expect(stdout).to.match(new RegExp(`⛁ postgresql-cubic-12345\\s+⛁ postgresql-lively-12345\\s+${status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(status.toString())}`))
         expect(stdout).to.contain('- Start a migration (no ready migrations on ⬢ myapp)')
         expect(stdout).to.contain('- Cancel a migration (no ready migrations on ⬢ myapp)')
       }
@@ -289,7 +289,7 @@ describe('data:pg:migrate', function () {
     })
   })
 
-  describe('configure a new migration with an existing candidate target database for the migration', function () {
+  describe('configure a database migration with an existing candidate target database for the migration', function () {
     let herokuApi: nock.Scope
     let dataApi: nock.Scope
 
@@ -357,7 +357,7 @@ describe('data:pg:migrate', function () {
     it('creates a new migration configuration when confirmed', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
+        '\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
@@ -376,7 +376,7 @@ describe('data:pg:migrate', function () {
     it('shows the expected list of source databases', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
+        '\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
@@ -407,7 +407,7 @@ describe('data:pg:migrate', function () {
     it('shows the expected list of target databases', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
+        '\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
@@ -438,7 +438,7 @@ describe('data:pg:migrate', function () {
     it('allows the user to navigate back on every step', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n',         // Main menu: > Configure a new migration
+        '\n',         // Main menu: > Configure a database migration
         '\n',         // Select source database: > Premium database
         '\n',         // Select target database: > Non-target Advanced database
         '\u001B[A\n', // Confirm migration configuration: > Go back
@@ -458,7 +458,7 @@ describe('data:pg:migrate', function () {
     })
   })
 
-  describe('configure a new migration with a new target database created for the migration', function () {
+  describe('configure a database migration with a new target database created for the migration', function () {
     beforeEach(async function () {
       poolConfigLeaderInteractiveConfigStub.resolves({
         action: '__confirm',
@@ -511,7 +511,7 @@ describe('data:pg:migrate', function () {
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
+        '\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Create database
         '\n', // Confirm migration configuration: > Confirm
@@ -582,7 +582,7 @@ describe('data:pg:migrate', function () {
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
+        '\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Private database
         '\n', // Select target database: > Create database
         '\n', // Confirm migration configuration: > Confirm
@@ -653,7 +653,7 @@ describe('data:pg:migrate', function () {
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a new migration
+        '\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Shield database
         '\n', // Select target database: > Create database
         '\n', // Confirm migration configuration: > Confirm
@@ -838,8 +838,8 @@ describe('data:pg:migrate', function () {
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       // Verify the confirmation message is displayed
-      expect(stdout).to.contain('After cancelling, you\'ll have to create a new migration configuration')
-      expect(stderr).to.equal('Cancelling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+      expect(stdout).to.contain('After canceling, you must create a new migration configuration')
+      expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
     it('shows the expected list of migrations to choose from', async function () {

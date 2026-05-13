@@ -444,7 +444,7 @@ export default class DataPgMigrate extends BaseCommand {
         status: {
           get: (migration: MigrationResponse) => (migration.status === MigrationStatus.MIGRATING && migration.status_description)
             ? color.info(migration.status_description)
-            : color.info(hux.toTitleCase(migration.status)!),
+            : color.info(migration.status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(migration.status)!),
           header: 'Status',
         },
       })
