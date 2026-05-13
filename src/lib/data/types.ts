@@ -1,3 +1,11 @@
+export enum DatabaseStatus {
+  AVAILABLE = 'available',
+  MIGRATING = 'migrating',
+  MODIFYING = 'modifying',
+  PROVISIONING = 'provisioning',
+  UNAVAILABLE = 'unavailable',
+}
+
 export enum AdvancedCredentialState {
   ACTIVE = 'active',
   ENABLING = 'enabling',
@@ -12,6 +20,18 @@ export enum MaintenanceStatus {
   preparing = 'preparing',
   ready = 'ready',
   running = 'running',
+}
+
+export enum MigrationStatus {
+  CANCELLED = 'cancelled',
+  COMPLETED = 'completed',
+  CREATING_TARGET = 'creating_target',
+  FAILED = 'failed',
+  MIGRATING = 'migrating',
+  PREPARING = 'preparing',
+  PROMOTING = 'promoting',
+  READY = 'ready',
+  UNKNOWN = 'unknown',
 }
 
 export enum PoolStatus {
@@ -103,7 +123,7 @@ export type InfoResponse = {
   pools: Array<PoolInfoResponse>
   quotas: Array<Quota>
   region: CommonRuntimeRegion | PrivateSpaceRegion
-  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable' | 'upgrading'
+  status: DatabaseStatus
   tier: 'advanced'
   version: string
 }
@@ -132,6 +152,27 @@ export type Maintenance = {
   started_at: null | string;
   status: MaintenanceStatus;
   window: null | string;
+}
+
+export type UpgradeResponse = {
+  message: string
+}
+
+export type MigrationResponse = {
+  auto_promote: boolean
+  cdc_lag: null | number
+  completed: boolean
+  full_load_progress: null | number
+  id: string
+  last_error_message: null | string
+  preassessment_results: PreassessmentResults
+  source_id: string
+  status: MigrationStatus
+  status_description: null | string
+  stop_reason: null | string
+  successful: boolean
+  tables_errored: null | number
+  target_id: string
 }
 
 export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
@@ -199,6 +240,10 @@ export type Quota = {
 
 export type Quotas = {items: Array<Quota>}
 
+export type ScaleResponse = {
+  changes: Array<PoolChange>
+}
+
 export type SettingsChangeResponse = {
   changes: Array<SettingsChange>
 }
@@ -213,10 +258,6 @@ export type SettingsResponse = {
 }
 
 export type TierPricingInfo = Record<string, PricingInfo>
-
-export type UpgradeResponse = {
-  message: string
-}
 
 export type WaitStatus = {
   message: null | string
@@ -255,10 +296,23 @@ type NonAdvancedCredential = {
 }
 
 type NonAdvancedCredentialState = 'active' | 'archived' | 'enabling' | 'revoked' | 'revoking'
+
 type NonAdvancedCredentialStoreState = 'active' | 'archived' | 'provisioning' | 'revoking' | 'rotating' | 'rotation_completed' | 'wait_for_provisioning'
 
-type PrivateSpaceRegion
-  = 'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
+type PoolChange = BaseChange & {
+  pool: string
+}
+
+type PreassessmentCheck = {
+  checked_at: null | string
+  description: null | string
+  name: string
+  result: 'cancelled' | 'error' | 'failed' | 'passed' | 'pending' | 'running' | 'skipped' | 'warning'
+}
+
+type PreassessmentResults = Array<PreassessmentCheck>
+
+type PrivateSpaceRegion = 'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
     | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
 
 type ResourceReference = {

@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import type {Answers, DistinctChoice, ListChoiceMap} from 'inquirer'
 
 import {flags as Flags} from '@heroku-cli/command'
@@ -19,6 +20,7 @@ import {
   PoolInfoResponse,
 } from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.js'
+import {getAllAdvancedDatabases} from '../../../lib/pg/util.js'
 
 const heredoc = tsheredoc.default
 
@@ -265,7 +267,7 @@ export default class DataPgUpdate extends BaseCommand {
           Use ${color.code(`heroku addons:upgrade ${this.database.name} -a ${app}`)} instead.`)
       }
     } else {
-      const databases = await this.getAllAdvancedDatabases(app)
+      const databases = await getAllAdvancedDatabases(this.heroku, app)
       if (databases.length === 0) {
         ux.error('No Heroku Postgres Advanced-tier databases found on the app.')
       }
@@ -321,64 +323,6 @@ export default class DataPgUpdate extends BaseCommand {
 
     process.stderr.write('\n')
     this.followerInstanceCount += count
-  }
-
-  /**
-   * Helper function that attempts to find all Heroku Postgres Advanced-tier attachments on a given app.
-   *
-   * @param app - The name of the app to get the attachments for
-   * @returns Promise resolving to an array of all Heroku Postgres Advanced-tier attachments on the app
-   */
-  private async allAdvancedDatabaseAttachments(app: string) {
-    const {body: attachments} = await this.heroku.get<pg.ExtendedAddonAttachment[]>(
-      `/apps/${app}/addon-attachments`,
-      {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-          'Accept-Inclusion': 'addon:plan,config_vars',
-        },
-      },
-    )
-    return attachments.filter(a => utils.pg.isAdvancedDatabase(a.addon))
-  }
-
-  /**
-   * Return all Heroku Postgres databases on the Advanced-tier for a given app.
-   *
-   * @param app - The name of the app to get the databases for
-   * @returns Promise resolving to all Heroku Postgres databases
-   * @throws {Error} When no legacy database add-on exists on the app
-   */
-  private async getAllAdvancedDatabases(app: string): Promise<Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}>> {
-    const allAttachments = await this.allAdvancedDatabaseAttachments(app)
-    const addons: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
-    for (const attachment of allAttachments) {
-      if (!addons.some(a => a.id === attachment.addon.id)) {
-        addons.push(attachment.addon)
-      }
-    }
-
-    const attachmentNamesByAddon = this.getAttachmentNamesByAddon(allAttachments)
-    for (const addon of addons) {
-      addon.attachment_names = attachmentNamesByAddon[addon.id]
-    }
-
-    return addons
-  }
-
-  /**
-   * Helper function that groups attachment names by addon.
-   *
-   * @param attachments - The attachments to group by addon
-   * @returns A record of addon IDs with their attachment names
-   */
-  private getAttachmentNamesByAddon(attachments: pg.ExtendedAddonAttachment[]): Record<string, string[]> {
-    const addons: Record<string, string[]> = {}
-    for (const attachment of attachments) {
-      addons[attachment.addon.id] = [...(addons[attachment.addon.id] || []), attachment.name]
-    }
-
-    return addons
   }
 
   private async poolSelectionLoopStage(): Promise<void> {

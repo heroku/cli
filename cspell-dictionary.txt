@@ -285,6 +285,7 @@ postpublish
 postbump
 postrelease
 postrun
+preassessment
 preauth
 prerun
 preupdate

@@ -23,3 +23,6 @@ yarn.lock
 # TEMP
 tpsGetLock_response.txt
 tpsRecordRelease_response.txt
+
+# CLAUDE
+.agents/artifacts
