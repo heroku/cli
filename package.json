@@ -134,7 +134,7 @@
     "sinon": "^21.0.2",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "typescript": "5.8.3"
+    "typescript": "5.9.3"
   },
   "oclif": {
     "additionalHelpFlags": [
@@ -370,7 +370,9 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.4"
+    "serialize-javascript": "^7.0.4",
+    "socks": "^2.8.8",
+    "express-rate-limit": "^8.5.1"
   },
   "repository": "heroku/cli",
   "scripts": {
