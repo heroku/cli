@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.3.1-beta.0](https://github.com/heroku/cli/compare/v11.3.0...v11.3.1-beta.0) (2026-05-13)
+
+
+### Features
+
+* multi-factor attachment support for Advanced dbs (W-21632630) ([#3655](https://github.com/heroku/cli/issues/3655)) ([87785e8](https://github.com/heroku/cli/commit/87785e809fae29cc23a9c29b44b3a6f285961861))
+
+
+### Bug Fixes
+
+* align ps:type with customer-facing private/shield dyno names ([#3705](https://github.com/heroku/cli/issues/3705)) ([0b36a1f](https://github.com/heroku/cli/commit/0b36a1f3c0c5ab21b3a3887787f290f62135957f))
+* prevent unhandled promise rejection in apps:destroy ([#3679](https://github.com/heroku/cli/issues/3679)) ([3e4c838](https://github.com/heroku/cli/commit/3e4c838ec28276ed3b3e01dd76d5f6cb78c58f19)), closes [#3677](https://github.com/heroku/cli/issues/3677) [#3677](https://github.com/heroku/cli/issues/3677) [#3677](https://github.com/heroku/cli/issues/3677)
+* updates @heroku-cli/command to address 2FA token prompting bug ([#3690](https://github.com/heroku/cli/issues/3690)) ([eda4459](https://github.com/heroku/cli/commit/eda4459fb8b98442d0650c1612d215c74eb2250b))
+* validate HEROKU_HOST for container registry commands ([#3704](https://github.com/heroku/cli/issues/3704)) ([04df827](https://github.com/heroku/cli/commit/04df8275f933c2f055a384d7deaccd524bfa5220))
+
+
+### Documentation
+
+* add AGENTS.md with CLI design patterns for AI agents ([#3676](https://github.com/heroku/cli/issues/3676)) ([d547ed5](https://github.com/heroku/cli/commit/d547ed5fe25e49180c41fba51b761815af6d5b3f))
+
+
+### Code Refactoring
+
+* apply lint fixes to lib files ([#3668](https://github.com/heroku/cli/issues/3668)) ([eb9b040](https://github.com/heroku/cli/commit/eb9b04021ac902c196a0c216f442c7ce756179bc))
+* apply lint formatting to auth through features commands ([#3665](https://github.com/heroku/cli/issues/3665)) ([7e84cbf](https://github.com/heroku/cli/commit/7e84cbf2706f8edcbc0566255b71b22be64b5c32))
+* apply lint formatting to git through pg commands ([#3666](https://github.com/heroku/cli/issues/3666)) ([fd4c8c0](https://github.com/heroku/cli/commit/fd4c8c0eb178b76479e6ded1e8e99bc14b633af5))
+* apply lint formatting to remaining commands ([#3667](https://github.com/heroku/cli/issues/3667)) ([b3f11bd](https://github.com/heroku/cli/commit/b3f11bd34e8256da3b6a1198ec4845d5e03253c9))
+* apply lint formatting to scripts and hooks folders ([#3669](https://github.com/heroku/cli/issues/3669)) ([8a56a67](https://github.com/heroku/cli/commit/8a56a67f96e6e81603d76955ea78dbc2e1ed4433))
+* apply linting fixes to test helpers, fixtures, and integration tests ([#3671](https://github.com/heroku/cli/issues/3671)) ([6b96cb9](https://github.com/heroku/cli/commit/6b96cb9ed43604db8b21ff4d191dee9fed4dddb8))
+* migrate from qqjs to execa with custom wrapper ([#3678](https://github.com/heroku/cli/issues/3678)) ([ad81615](https://github.com/heroku/cli/commit/ad81615b2d4e6bd470be5ef10b3d35f94d8bed40))
+* migrate to shared eslint config and testing functions ([#3661](https://github.com/heroku/cli/issues/3661)) ([d5ad9ac](https://github.com/heroku/cli/commit/d5ad9acf0f22028475c47fb1e189022cf0374989))
+
 ## [11.3.0](https://github.com/heroku/cli/compare/v11.2.0...v11.3.0) (2026-04-15)
 
 
