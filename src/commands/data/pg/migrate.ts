@@ -109,7 +109,7 @@ export default class DataPgMigrate extends BaseCommand {
           } else {
             ux.stdout(color.info(heredoc`
 
-            After cancelling, you'll have to create a new migration configuration and wait for the migration tooling to be prepared in order to
+            After canceling, you must create a new migration configuration and wait for the migration tooling to finish preparing to
             migrate ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} again.
 
           `))
@@ -128,7 +128,7 @@ export default class DataPgMigrate extends BaseCommand {
             currentStep = '__select_migration'
           } else if (action === '__confirm') {
             ux.stdout()
-            ux.action.start(`${migrationAction === 'start' ? 'Starting' : 'Cancelling'} migration of ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} `
+            ux.action.start(`${migrationAction === 'start' ? 'Starting' : 'Canceling'} migration of ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} `
               + `to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}`)
             await this.dataApi.post(`/data/postgres/v1/${selectedMigration.target_id}/migrations/${migrationAction === 'start' ? 'run' : 'cancel'}`)
             ux.action.stop()
@@ -428,7 +428,7 @@ export default class DataPgMigrate extends BaseCommand {
 
     const pendingMigrations = this.classicDatabases.filter(db => !this.migrationTargets.some(migration => migration.source_id === db.id && this.isActiveMigration(migration)))
 
-    hux.styledHeader('Configured migrations')
+    hux.styledHeader('Configured Migrations')
 
     if (this.migrationTargets.length > 0) {
       /* eslint-disable perfectionist/sort-objects */
@@ -450,20 +450,20 @@ export default class DataPgMigrate extends BaseCommand {
       })
       /* eslint-enable perfectionist/sort-objects */
     } else {
-      ux.stdout(`There are no migrations configured for ${color.app(app)} yet.\n`)
+      ux.stdout(`You haven't configured any migrations for ${color.app(app)} yet.\n`)
     }
 
     const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = []
 
     if (pendingMigrations.length > 0) {
       choices.push({
-        name: 'Configure a new migration',
+        name: 'Configure a database migration',
         value: '__configure_migration',
       })
     } else {
       choices.push({
         disabled: `no classic Postgres databases pending migration on ${color.app(app)}`,
-        name: color.gray('Configure a new migration'),
+        name: color.gray('Configure a database migration'),
         value: '__configure_migration',
       })
     }
