@@ -1,4 +1,4 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 
@@ -34,8 +34,7 @@ export default class Pull extends Command {
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
     ensureContainerStack(appBody, 'pull')
 
-    const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-    const registry = `registry.${herokuHost}`
+    const registry = `registry.${vars.host}`
 
     if (verbose) {
       debug.enabled = true
