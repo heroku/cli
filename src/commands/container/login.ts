@@ -1,4 +1,4 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags, vars} from '@heroku-cli/command'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
@@ -45,8 +45,7 @@ export default class Login extends Command {
   async run() {
     const {flags} = await this.parse(Login)
     const {verbose} = flags
-    const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-    const registry = `registry.${herokuHost}`
+    const registry = `registry.${vars.host}`
     const password = this.heroku.auth
 
     if (verbose) {
