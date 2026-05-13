@@ -1,4 +1,4 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
@@ -48,8 +48,7 @@ export default class Push extends Command {
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
     ensureContainerStack(appBody, 'push')
 
-    const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-    const registry = `registry.${herokuHost}`
+    const registry = `registry.${vars.host}`
     const dockerfiles = this.dockerHelper.getDockerfiles(process.cwd(), recursive)
     const possibleJobs = this.dockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
     const jobs = await this.selectJobs(possibleJobs, processTypes as string[], recursive)

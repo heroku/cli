@@ -46,6 +46,55 @@ describe('container release', function () {
     expect(oclif.exit).to.equal(1)
   })
 
+  context('when HEROKU_HOST is set to an invalid domain', function () {
+    let originalHost: string | undefined
+    let registry: nock.Scope
+
+    beforeEach(function () {
+      originalHost = process.env.HEROKU_HOST
+      process.env.HEROKU_HOST = 'attacker.com'
+      api
+        .get('/apps/testapp')
+        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+      registry = nock('https://registry.heroku.com:443')
+    })
+
+    afterEach(function () {
+      if (originalHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHost
+      }
+
+      registry.done()
+    })
+
+    it('rejects invalid host and sends request to registry.heroku.com', async function () {
+      api
+        .patch('/apps/testapp/formation', {
+          updates: [
+            {docker_image: 'image_id', type: 'web'},
+          ],
+        })
+        .reply(200, {})
+        .get('/apps/testapp/releases')
+        .reply(200, [])
+        .get('/apps/testapp/releases')
+        .reply(200, [{id: 'release_id'}])
+      registry
+        .get('/v2/testapp/web/manifests/latest')
+        .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
+
+      const {stderr} = await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ])
+
+      expect(stderr).to.contain("Invalid HEROKU_HOST 'attacker.com'")
+    })
+  })
+
   context('when the app is a container app', function () {
     let registry: nock.Scope
     beforeEach(function () {
