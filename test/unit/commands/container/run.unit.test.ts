@@ -22,6 +22,43 @@ describe('container run', function () {
     return sandbox.restore()
   })
 
+  context('when HEROKU_HOST is set to an invalid domain', function () {
+    let originalHost: string | undefined
+
+    beforeEach(function () {
+      originalHost = process.env.HEROKU_HOST
+      process.env.HEROKU_HOST = 'attacker.com'
+      api
+        .get('/apps/testapp')
+        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+    })
+
+    afterEach(function () {
+      if (originalHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHost
+      }
+    })
+
+    it('rejects invalid HEROKU_HOST and uses default registry', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile'])
+      const run = sandbox.stub(DockerHelper.prototype, 'runImage')
+        .withArgs('registry.heroku.com/testapp/web', '', 5000)
+
+      const {stderr} = await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ])
+
+      expect(stderr).to.contain("Invalid HEROKU_HOST 'attacker.com'")
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledOnce(run)
+    })
+  })
+
   it('requires a process type', async function () {
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
