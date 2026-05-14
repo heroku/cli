@@ -61,6 +61,7 @@ jobs:
     if: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
     ## Calls publish-to-fig-autocomplete workflow during post release jobs
     uses: ./.github/workflows/publish-to-fig-autocomplete.yml
+    secrets: inherit
 
   publish-docs:
     needs: [get-version-channel, promote]
