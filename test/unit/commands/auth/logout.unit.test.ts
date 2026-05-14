@@ -2,21 +2,25 @@ import {expect} from 'chai'
 import sinon from 'sinon'
 
 import Logout from '../../../../src/commands/auth/logout.js'
+import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import Git from '../../../../src/lib/git/git.js'
 import {runCommand} from '../../../helpers/run-command.js'
 
 describe('auth:logout', function () {
   let eraseCredentialsStub: sinon.SinonStub
   let removeCredentialHelperStub: sinon.SinonStub
+  let currentNetrcStub: sinon.SinonStub
+  let removeStub: sinon.SinonStub
 
   beforeEach(function () {
     eraseCredentialsStub = sinon.stub(Git.prototype, 'eraseCredentials').resolves()
     removeCredentialHelperStub = sinon.stub(Git.prototype, 'removeCredentialHelper').resolves()
+    currentNetrcStub = sinon.stub(AccountsModule, 'currentNetrc').resolves(null)
+    removeStub = sinon.stub(AccountsModule, 'remove').resolves()
   })
 
   afterEach(function () {
-    eraseCredentialsStub.restore()
-    removeCredentialHelperStub.restore()
+    sinon.restore()
   })
 
   it('shows cli logging user out', async function () {
@@ -42,5 +46,28 @@ describe('auth:logout', function () {
     const {error} = await runCommand(Logout, [])
 
     expect(error).to.be.undefined
+  })
+
+  it('checks for cached netrc account', async function () {
+    await runCommand(Logout, [])
+
+    expect(currentNetrcStub.calledOnce).to.be.true
+  })
+
+  it('removes cached netrc account when present', async function () {
+    currentNetrcStub.resolves('my-account')
+
+    await runCommand(Logout, [])
+
+    expect(removeStub.calledOnce).to.be.true
+    expect(removeStub.firstCall.args[0]).to.equal('my-account')
+  })
+
+  it('does not remove account when no cached netrc account', async function () {
+    currentNetrcStub.resolves(null)
+
+    await runCommand(Logout, [])
+
+    expect(removeStub.called).to.be.false
   })
 })

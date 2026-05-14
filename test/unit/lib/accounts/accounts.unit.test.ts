@@ -232,6 +232,50 @@ describe('accounts', function () {
     })
   })
 
+  describe('currentNetrc()', function () {
+    let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: sinon.SinonStub}
+
+    function setNetrc(value: typeof fakeNetrc | undefined) {
+      (AccountsModule as unknown as {netrc: typeof fakeNetrc | undefined}).netrc = value
+    }
+
+    beforeEach(function () {
+      fakeNetrc = {machines: {}, save: sinon.stub().resolves()}
+      setNetrc(fakeNetrc)
+      fsReadFileStub.withArgs(sinon.match(/my-account$/), 'utf8')
+        .returns('username: user@example.com\npassword: secret\n')
+      fsReaddirStub.returns(['my-account', 'other-account'])
+      fsReadFileStub.withArgs(sinon.match(/other-account$/), 'utf8')
+        .returns('username: other@example.com\npassword: secret\n')
+    })
+
+    afterEach(function () {
+      setNetrc(null as unknown as typeof fakeNetrc)
+    })
+
+    it('returns account name when api.heroku.com machine exists and matches', async function () {
+      fakeNetrc.machines['api.heroku.com'] = {login: 'user@example.com', password: 'secret'}
+
+      const result = await AccountsModule.currentNetrc()
+
+      expect(result).to.equal('my-account')
+    })
+
+    it('returns null when api.heroku.com machine does not exist', async function () {
+      const result = await AccountsModule.currentNetrc()
+
+      expect(result).to.equal(null)
+    })
+
+    it('returns null when no account matches the login', async function () {
+      fakeNetrc.machines['api.heroku.com'] = {login: 'nomatch@example.com', password: 'secret'}
+
+      const result = await AccountsModule.currentNetrc()
+
+      expect(result).to.equal(null)
+    })
+  })
+
   describe('remove', function () {
     let unlinkStub: sinon.SinonStub
     let osHomeStub: sinon.SinonStub

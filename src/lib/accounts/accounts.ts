@@ -100,6 +100,10 @@ export class AccountsWrapper implements IAccountsWrapper {
       return authEntry?.account ?? null
     }
 
+    return this.currentNetrc()
+  }
+
+  async currentNetrc(): Promise<string | null> {
     const netrcInstance = await this.initNetrc()
     if (netrcInstance.machines['api.heroku.com']) {
       const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
