@@ -14,8 +14,10 @@ export interface AccountEntry {
 export interface IAccountsWrapper {
   list(): Promise<AccountEntry[]>
   current(heroku: APIClient): Promise<string | null>
+  currentNetrc(): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
+  removeNetrc(name: string): void
   set(account: AccountEntry, dataDir: string): Promise<void>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
   writeLoginState(dataDir: string, name: string): Promise<void>
@@ -136,6 +138,10 @@ export class AccountsWrapper implements IAccountsWrapper {
       return
     }
 
+    this.removeNetrc(name)
+  }
+
+  removeNetrc(name: string) {
     const basedir = path.join(this.configDir(), 'accounts')
     fs.unlinkSync(path.join(basedir, name))
   }
