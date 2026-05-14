@@ -232,7 +232,51 @@ describe('accounts', function () {
     })
   })
 
-  describe('remove', function () {
+  describe('currentNetrc()', function () {
+    let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: sinon.SinonStub}
+
+    function setNetrc(value: typeof fakeNetrc | undefined) {
+      (AccountsModule as unknown as {netrc: typeof fakeNetrc | undefined}).netrc = value
+    }
+
+    beforeEach(function () {
+      fakeNetrc = {machines: {}, save: sinon.stub().resolves()}
+      setNetrc(fakeNetrc)
+      fsReadFileStub.withArgs(sinon.match(/my-account$/), 'utf8')
+        .returns('username: user@example.com\npassword: secret\n')
+      fsReaddirStub.returns(['my-account', 'other-account'])
+      fsReadFileStub.withArgs(sinon.match(/other-account$/), 'utf8')
+        .returns('username: other@example.com\npassword: secret\n')
+    })
+
+    afterEach(function () {
+      setNetrc(null as unknown as typeof fakeNetrc)
+    })
+
+    it('returns account name when api.heroku.com machine exists and matches', async function () {
+      fakeNetrc.machines['api.heroku.com'] = {login: 'user@example.com', password: 'secret'}
+
+      const result = await AccountsModule.currentNetrc()
+
+      expect(result).to.equal('my-account')
+    })
+
+    it('returns null when api.heroku.com machine does not exist', async function () {
+      const result = await AccountsModule.currentNetrc()
+
+      expect(result).to.equal(null)
+    })
+
+    it('returns null when no account matches the login', async function () {
+      fakeNetrc.machines['api.heroku.com'] = {login: 'nomatch@example.com', password: 'secret'}
+
+      const result = await AccountsModule.currentNetrc()
+
+      expect(result).to.equal(null)
+    })
+  })
+
+  describe('removeNetrc()', function () {
     let unlinkStub: sinon.SinonStub
     let osHomeStub: sinon.SinonStub
     let existsSyncStub: sinon.SinonStub
@@ -243,14 +287,14 @@ describe('accounts', function () {
       existsSyncStub = sinon.stub(fs, 'existsSync')
     })
 
-    it('should remove the account file with the given name', async function () {
+    it('should remove the account file with the given name', function () {
       const accountName = 'test-account'
       const basedir = '/user/home'
 
       osHomeStub.returns(basedir)
       existsSyncStub.returns(false)
 
-      await AccountsModule.remove(accountName)
+      AccountsModule.removeNetrc(accountName)
 
       expect(unlinkStub.calledOnce).to.be.true
       expect(unlinkStub.firstCall.args[0]).to.equal(
@@ -258,12 +302,29 @@ describe('accounts', function () {
       )
     })
 
-    it('should throw an error if the file cannot be removed', async function () {
+    it('should throw an error if the file cannot be removed', function () {
       const accountName = 'non-existent-account'
       const error = new Error('File not found')
       unlinkStub.throws(error)
 
-      await expect(AccountsModule.remove(accountName)).to.be.rejectedWith(Error)
+      expect(() => AccountsModule.removeNetrc(accountName)).to.throw(Error)
+    })
+  })
+
+  describe('remove', function () {
+    let removeNetrcStub: sinon.SinonStub
+
+    beforeEach(function () {
+      removeNetrcStub = sinon.stub(AccountsModule, 'removeNetrc')
+    })
+
+    it('should call removeNetrc when no credential store', async function () {
+      const accountName = 'test-account'
+
+      await AccountsModule.remove(accountName)
+
+      expect(removeNetrcStub.calledOnce).to.be.true
+      expect(removeNetrcStub.firstCall.args[0]).to.equal(accountName)
     })
 
     describe('with credentialStore', function () {
@@ -292,12 +353,12 @@ describe('accounts', function () {
         expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
       })
 
-      it('should not call unlinkSync when credentialStore is set', async function () {
+      it('should not call removeNetrc when credentialStore is set', async function () {
         const accountName = 'test-account@example.com'
 
         await AccountsModule.remove(accountName)
 
-        expect(unlinkStub.called).to.be.false
+        expect(removeNetrcStub.called).to.be.false
       })
 
       it('should throw an error if removeAuth fails', async function () {

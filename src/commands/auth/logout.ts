@@ -1,7 +1,7 @@
-
 import {Command} from '@heroku-cli/command'
 import {ux} from '@oclif/core/ux'
 
+import AccountsModule from '../../lib/accounts/accounts.js'
 import Git from '../../lib/git/git.js'
 
 export default class Logout extends Command {
@@ -11,9 +11,10 @@ export default class Logout extends Command {
   static promptFlagActive = false
 
   async run() {
-    this.parse(Logout)
+    await this.parse(Logout)
 
     ux.action.start('Logging out')
+    const cachedNetrcAccount = await AccountsModule.currentNetrc()
     await this.heroku.logout()
 
     const git = new Git()
@@ -22,6 +23,10 @@ export default class Logout extends Command {
       await git.eraseCredentials()
     } catch {
       // ignore
+    }
+
+    if (cachedNetrcAccount) {
+      AccountsModule.removeNetrc(cachedNetrcAccount)
     }
 
     await this.config.runHook('recache', {type: 'logout'})
