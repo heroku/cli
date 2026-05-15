@@ -19,7 +19,7 @@ describe('maintenance:off', function () {
   it('turns maintenance mode off', async function () {
     api
       .patch('/apps/myapp', {maintenance: false})
-      .reply(200)
+      .reply(200, {maintenance: false})
 
     const {stderr, stdout} = await runCommand(Off, ['-a', 'myapp'])
 
