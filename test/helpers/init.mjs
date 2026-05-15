@@ -3,10 +3,6 @@ import chaiAsPromised from 'chai-as-promised'
 import nock from 'nock'
 import path from 'node:path'
 
-globalThis.setInterval = () => ({unref() {}})
-const tm = globalThis.setTimeout
-globalThis.setTimeout = cb => tm(cb)
-
 process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
 // Env var used to prevent some expensive
 // prerun and postrun hooks from initializing

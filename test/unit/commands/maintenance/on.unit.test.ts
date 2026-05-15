@@ -19,7 +19,7 @@ describe('maintenance:on', function () {
   it('turns maintenance mode on', async function () {
     api
       .patch('/apps/myapp', {maintenance: true})
-      .reply(200)
+      .reply(200, {maintenance: true})
 
     const {stderr, stdout} = await runCommand(On, ['-a', 'myapp'])
 
