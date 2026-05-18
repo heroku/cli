@@ -34,6 +34,6 @@ export default [
   },
   // Ignore patterns (in addition to shared ignores)
   {
-    ignores: ['**/test/**/*.js', '**/*.d.ts', '.github/**'],
+    ignores: ['**/test/**/*.js', '**/*.d.ts', '.github/**', 'tmp/**/*'],
   },
 ]
