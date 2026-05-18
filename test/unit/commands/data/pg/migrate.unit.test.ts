@@ -368,6 +368,7 @@ describe('data:pg:migrate', function () {
 
       // Verify the confirmation message is shown
       expect(stdout).to.contain('By continuing, we prepare the necessary steps for the migration.')
+      expect(stdout).to.contain('Preparing the migration deletes all the data on the destination database ⛁ postgresql-obscured-12345.')
       expect(stderr).to.equal('Configuring migration... done\n')
       // Verify the new migration is shown on the configured migrations table
       expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Preparing/)
