@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {listPipelineApps} from '@heroku/sdk/compositions/pipeline'
 import {Args} from '@oclif/core'
 
-import {listPipelineApps} from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import renderPipeline from '../../lib/pipelines/render-pipeline.js'
 
@@ -31,7 +31,7 @@ export default class PipelinesInfo extends Command {
   async run() {
     const {args, flags} = await this.parse(PipelinesInfo)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
-    const pipelineApps = await listPipelineApps(this.heroku, pipeline.id!)
+    const pipelineApps = await listPipelineApps(pipeline.id!)
 
     if (flags.json) {
       // eslint-disable-next-line perfectionist/sort-objects

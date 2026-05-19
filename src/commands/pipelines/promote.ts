@@ -1,11 +1,15 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {promotePipeline, type ReleaseStreamContext} from '@heroku/sdk/compositions/pipeline'
+import {
+  type AppWithPipelineCoupling,
+  listPipelineApps,
+  promotePipeline,
+  type ReleaseStreamContext,
+} from '@heroku/sdk/compositions/pipeline'
 import {ux} from '@oclif/core/ux'
 import assert from 'node:assert'
 
-import {AppWithPipelineCoupling, listPipelineApps} from '../../lib/api.js'
 import keyBy from '../../lib/pipelines/key-by.js'
 
 function assertNotPromotingToSelf(source: string, target: string) {
@@ -45,7 +49,7 @@ export default class Promote extends Command {
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
     ux.stdout(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
-    const allApps = await listPipelineApps(this.heroku, coupling.pipeline!.id!)
+    const allApps = await listPipelineApps(coupling.pipeline!.id!)
     const sourceStage = coupling.stage
 
     let promotionActionName = ''
