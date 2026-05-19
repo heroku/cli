@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {createPlatformClient} from '@heroku/sdk/platform'
 import {Args} from '@oclif/core'
 
 import {resolveAddon} from '../../lib/addons/resolve.js'
@@ -25,7 +26,8 @@ export default class Info extends Command {
     const {app} = flags
 
     const addon = await resolveAddon(this.heroku, app, args.addon)
-    const {body: attachments} = await this.heroku.get<Heroku.AddOnAttachment[]>(`/addons/${addon.id}/addon-attachments`)
+    const heroku = createPlatformClient()
+    const attachments = await heroku.addOnAttachment.listByAddOn(addon.id!) as unknown as Heroku.AddOnAttachment[]
 
     addon.plan.price = grandfatheredPrice(addon)
     addon.attachments = attachments
