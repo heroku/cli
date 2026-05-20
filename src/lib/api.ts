@@ -1,11 +1,10 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 
-import {App, Pipeline, PipelineCoupling} from './types/fir.js'
+import {Pipeline, PipelineCoupling} from './types/fir.js'
 
 export const V3_HEADER = 'application/vnd.heroku+json; version=3'
 export const SDK_HEADER = 'application/vnd.heroku+json; version=3.sdk'
-export const FILTERS_HEADER = `${V3_HEADER}.filters`
 export const PIPELINES_HEADER = `${V3_HEADER}.pipelines`
 const CI_HEADER = `${V3_HEADER}.ci`
 
@@ -81,41 +80,12 @@ export function getTeam(heroku: APIClient, teamId: any) {
   return heroku.get<Heroku.Team>(`/teams/${teamId}`)
 }
 
-function getAppFilter(heroku: APIClient, appIds: Array<string>) {
-  return heroku.request<Array<App>>('/filters/apps', {
-    body: {in: {id: appIds}},
-    headers: {Accept: FILTERS_HEADER, Range: 'id ..; max=1000;'},
-    method: 'POST',
-  })
-}
-
 export function getAccountInfo(heroku: APIClient, id = '~') {
   return heroku.get<Heroku.Account>(`/users/${id}`)
 }
 
 export function getAppSetup(heroku: APIClient, buildId: any) {
   return heroku.get<Heroku.AppSetup>(`/app-setups/${buildId}`)
-}
-
-function listCouplings(heroku: APIClient, pipelineId: string) {
-  return heroku.get<Array<PipelineCoupling>>(`/pipelines/${pipelineId}/pipeline-couplings`, {
-    headers: {Accept: SDK_HEADER},
-  })
-}
-
-export interface AppWithPipelineCoupling extends App {
-  [k: string]: unknown
-  pipelineCoupling: PipelineCoupling
-}
-
-export async function listPipelineApps(heroku: APIClient, pipelineId: string): Promise<Array<AppWithPipelineCoupling>> {
-  const {body: couplings} = await listCouplings(heroku, pipelineId)
-  const appIds = couplings.map(coupling => coupling.app!.id || '')
-  const {body: apps} = await getAppFilter(heroku, appIds)
-  return apps.map(app => ({
-    ...app,
-    pipelineCoupling: couplings.find(coupling => coupling.app!.id === app.id),
-  }) as AppWithPipelineCoupling)
 }
 
 export function patchCoupling(heroku: APIClient, id: string, stage: string) {
