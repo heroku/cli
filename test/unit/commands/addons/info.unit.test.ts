@@ -2,10 +2,7 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/addons/info.js'
-import  {resolveAddon} from '../../../../src/lib/addons/resolve.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-
-const {cache} = resolveAddon
 
 describe('addons:info', function () {
   let api: nock.Scope
@@ -19,7 +16,6 @@ describe('addons:info', function () {
         'Accept-Expansion': 'addon_service,plan',
       },
     })
-    cache.clear()
   })
 
   afterEach(function () {
@@ -31,9 +27,9 @@ describe('addons:info', function () {
   context('with add-ons', function () {
     beforeEach(function () {
       apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-db', app: null})
+        .post('/actions/addons/resolve', {addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
-      api.get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`).reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
+      apiSdk.get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`).reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
     it('prints add-ons in a table', async function () {
       const {stdout} = await runCommand(Cmd, [
@@ -57,14 +53,7 @@ State:        created\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-db', app: 'example'})
         .reply(200, [fixtures.addons['www-db']])
-      nock('https://api.heroku.com', {
-        reqheaders: {
-          'Accept-Expansion': 'addon_service,plan',
-        },
-      })
-        .get(`/addons/${fixtures.addons['www-db'].id}`)
-        .reply(200, fixtures.addons['www-db'])
-      api
+      apiSdk
         .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
@@ -89,19 +78,14 @@ State:        created\n
   })
   context('with app but not an app add-on', function () {
     beforeEach(function () {
+      // The SDK's resolver tries app-scoped first, falls back to global on 404 add_on.
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-db', app: 'example'})
+        .reply(404, {id: 'not_found', resource: 'add_on'})
+      apiSdk
+        .post('/actions/addons/resolve', {addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get('/apps/example/addons/www-db')
-        .reply(404)
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get('/addons/www-db')
-        .reply(200, fixtures.addons['www-db'])
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get(`/addons/${fixtures.addons['www-db'].id}`)
-        .reply(200, fixtures.addons['www-db'])
-      api
+      apiSdk
         .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
@@ -130,16 +114,9 @@ State:        created\n
       const addon = fixtures.addons['dwh-db']
       addon.billed_price = {cents: 10_000}
       apiSdk
-        .post('/actions/addons/resolve', {addon: 'dwh-db', app: null})
+        .post('/actions/addons/resolve', {addon: 'dwh-db'})
         .reply(200, [addon])
-      nock('https://api.heroku.com', {
-        reqheaders: {
-          'Accept-Expansion': 'addon_service,plan',
-        },
-      })
-        .get(`/addons/${addon.id}`)
-        .reply(200, addon)
-      api
+      apiSdk
         .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
@@ -166,16 +143,9 @@ State:        created\n
       const addon = fixtures.addons['dwh-db']
       addon.billed_price = {cents: 0, contract: true}
       apiSdk
-        .post('/actions/addons/resolve', {addon: 'dwh-db', app: null})
+        .post('/actions/addons/resolve', {addon: 'dwh-db'})
         .reply(200, [addon])
-      nock('https://api.heroku.com', {
-        reqheaders: {
-          'Accept-Expansion': 'addon_service,plan',
-        },
-      })
-        .get(`/addons/${addon.id}`)
-        .reply(200, addon)
-      api
+      apiSdk
         .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
@@ -201,12 +171,9 @@ State:        created\n
     beforeEach(function () {
       const provisioningAddon = fixtures.addons['www-redis']
       apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
+        .post('/actions/addons/resolve', {addon: 'www-redis'})
         .reply(200, [provisioningAddon])
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get(`/addons/${provisioningAddon.id}`)
-        .reply(200, provisioningAddon)
-      api
+      apiSdk
         .get(`/addons/${provisioningAddon.id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::REDIS']])
     })
@@ -232,12 +199,9 @@ State:        creating\n
     beforeEach(function () {
       const deprovisioningAddon = fixtures.addons['www-redis-2']
       apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-redis-2', app: null})
+        .post('/actions/addons/resolve', {addon: 'www-redis-2'})
         .reply(200, [deprovisioningAddon])
-      nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'addon_service,plan'}})
-        .get(`/addons/${deprovisioningAddon.id}`)
-        .reply(200, deprovisioningAddon)
-      api
+      apiSdk
         .get(`/addons/${deprovisioningAddon.id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::REDIS']])
     })

@@ -1,11 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {describeAddon} from '@heroku/sdk/compositions/add-on'
 import {Args} from '@oclif/core'
 
-import {resolveAddon} from '../../lib/addons/resolve.js'
-import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
+import {formatPrice, formatState} from '../../lib/addons/util.js'
 
 const topic = 'addons'
 
@@ -25,22 +24,19 @@ export default class Info extends Command {
     const {args, flags} = await this.parse(Info)
     const {app} = flags
 
-    const addon = await resolveAddon(this.heroku, app, args.addon)
-    const heroku = createPlatformClient()
-    const attachments = await heroku.addOnAttachment.listByAddOn(addon.id!) as unknown as Heroku.AddOnAttachment[]
+    const addon = await describeAddon(args.addon, {appIdentity: app})
+    const plan = addon.plan as undefined | {name?: string; price?: Heroku.AddOn['price']}
 
-    addon.plan.price = grandfatheredPrice(addon)
-    addon.attachments = attachments
     hux.styledHeader(color.addon(addon.name ?? ''))
     /* eslint-disable perfectionist/sort-objects */
     hux.styledObject({
-      Plan: addon.plan.name,
-      Price: formatPrice({hourly: true, price: addon.plan.price}),
-      'Max Price': formatPrice({hourly: false, price: addon.plan.price}),
-      Attachments: addon.attachments.map((att: Heroku.AddOnAttachment) => [
+      Plan: plan?.name,
+      Price: formatPrice({hourly: true, price: plan?.price}),
+      'Max Price': formatPrice({hourly: false, price: plan?.price}),
+      Attachments: addon.attachments.map(att => [
         color.app(att.app?.name || ''), color.attachment(att.name || ''),
       ].join('::')).sort(),
-      'Owning app': color.app(addon.app?.name ?? ''),
+      'Owning app': color.app(addon.app.name ?? ''),
       'Installed at': (new Date(addon.created_at ?? ''))
         .toString(),
       State: formatState(addon.state),

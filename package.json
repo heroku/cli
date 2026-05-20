@@ -13,7 +13,7 @@
     "@heroku/heroku-cli-util": "^10.8.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
-    "@heroku/sdk": "github:heroku/heroku-sdk#main",
+    "@heroku/sdk": "github:heroku/heroku-sdk#eb/fix/describe-addon-expansion",
     "@heroku/socksv5": "^0.0.9",
     "@inquirer/prompts": "^7.0",
     "@oclif/core": "^4.8.4",

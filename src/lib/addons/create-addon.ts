@@ -1,6 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
+import {createPlatformClient} from '@heroku/sdk/platform'
 import {ux} from '@oclif/core/ux'
 
 import {waitForAddonProvisioning} from './addons-wait.js'
@@ -37,18 +38,13 @@ export default async function createAddon(
       config: options.config,
       confirm: confirmed,
       name: options.name,
-      plan: {name: plan},
+      plan,
     }
 
     try {
       ux.action.start(options.actionStartMessage || `Creating ${plan} on ${color.app(app)}`)
-      const {body: addon} = await heroku.post<Heroku.AddOn>(`/apps/${app}/addons`, {
-        body,
-        headers: {
-          'accept-expansion': 'plan',
-          'x-heroku-legacy-provider-messages': 'true',
-        },
-      })
+      const sdk = createPlatformClient()
+      const addon = await sdk.addOn.create(app, body as Parameters<typeof sdk.addOn.create>[1]) as Heroku.AddOn
       ux.action.stop(options.actionStopMessage || color.green(util.formatPriceText(addon.plan?.price || '')))
 
       return addon
