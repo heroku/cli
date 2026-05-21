@@ -40,6 +40,9 @@ jobs:
         with:
           node-version: 22.x
           package-manager-cache: false
+      # Ensure npm 11.5.1 or later for trusted publishing
+      - name: install latest npm CLI
+        run: npm install -g npm@latest
       - run: npm ci
       - name: Publish to NPM
         run: |
