@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.5.0-alpha.4](https://github.com/heroku/cli/compare/v11.2.0...v11.5.0-alpha.4) (2026-05-21)
+
+
+### Features
+
+* adds 'data:pg:upgrade:run/wait' commands (W-21304392) ([#3551](https://github.com/heroku/cli/issues/3551)) ([3297c5e](https://github.com/heroku/cli/commit/3297c5e218fe9105cd106000cba030e784d17a82))
+* implement heroku git:credentials as a git credential helper ([#3683](https://github.com/heroku/cli/issues/3683)) ([781e99e](https://github.com/heroku/cli/commit/781e99e1b9c56339b1245e30087aa9b312c10e69))
+* remove cached netrc account on logout ([#3710](https://github.com/heroku/cli/issues/3710)) ([b07137b](https://github.com/heroku/cli/commit/b07137bed5282a1618ae7e2b1e7f603eeb9a70be))
+* update accounts and accounts:current commands to use the credential manager ([#3689](https://github.com/heroku/cli/issues/3689)) ([e753d06](https://github.com/heroku/cli/commit/e753d06407fe8ebf6f87b25131d6198d78e824e8))
+* update accounts:add to use the credential manager ([#3699](https://github.com/heroku/cli/issues/3699)) ([49e3938](https://github.com/heroku/cli/commit/49e3938f44ec52451870cf24c692d440a7a69701))
+* update accounts:remove to work with credential manager ([#3701](https://github.com/heroku/cli/issues/3701)) ([89d7b14](https://github.com/heroku/cli/commit/89d7b148df950429f902691c8348afc5bba07454))
+* update accounts:set to work with keychain managers ([#3696](https://github.com/heroku/cli/issues/3696)) ([1f896aa](https://github.com/heroku/cli/commit/1f896aab4b23fb312d444420a06ed9d839ec8cf4))
+
+
+### Bug Fixes
+
+* fix whoami and update heroku-cli-command and heroku-cli-util ([#3719](https://github.com/heroku/cli/issues/3719)) ([7db768f](https://github.com/heroku/cli/commit/7db768f21f0dbe04d8d422f93919bc4f6f9156c5))
+* restore beforeExit handler for version commands and add comprehensive telemetry debug logging ([#3657](https://github.com/heroku/cli/issues/3657)) ([6da79cd](https://github.com/heroku/cli/commit/6da79cd4686133e1ee1f92b59127d8e012739b99))
+* restore git configuration on logout ([#3697](https://github.com/heroku/cli/issues/3697)) ([5479fa5](https://github.com/heroku/cli/commit/5479fa53c75b152aece718999deee50b94b1f5ce))
+
+
+### Miscellaneous Chores
+
+* add registry-url to publish-npm ([3cab9db](https://github.com/heroku/cli/commit/3cab9db8b4caab0e59a712d51fa293d86ca67d0e))
+* ensure latest version of npm CLI is installed for publish-npm ([b3d7c6d](https://github.com/heroku/cli/commit/b3d7c6dd12b6adcb5abc4896e7a7f283bb338f9e))
+* go back to old release method ([13b31e1](https://github.com/heroku/cli/commit/13b31e1d855f58c9fc247efa3d21526f0378c2f5))
+* update CLI analytics to use heroku credential manager ([#3685](https://github.com/heroku/cli/issues/3685)) ([5f86e4c](https://github.com/heroku/cli/commit/5f86e4cf9a6b8ca74d6ef0650abbae1f940fab7d))
+* use corepack to update npm in publish-npm ([bb8903e](https://github.com/heroku/cli/commit/bb8903e8a65822b4d89411b6e9dc69a2c432b9be))
+* v11.5.0-alpha.0 ([b86653b](https://github.com/heroku/cli/commit/b86653bfbf40fef5cb7f26dfe234d9a42015bc10))
+
+
+### Tests
+
+* update analytics tests to use the credential manager ([#3688](https://github.com/heroku/cli/issues/3688)) ([4fde394](https://github.com/heroku/cli/commit/4fde394ac2351504a727829fd86fd647136afbc8))
+
 ## [11.5.0-alpha.3](https://github.com/heroku/cli/compare/v11.2.0...v11.5.0-alpha.3) (2026-05-21)
 
 
