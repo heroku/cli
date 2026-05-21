@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {disableMaintenanceMode} from '@heroku/sdk/compositions/app'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
+import {HerokuSDK} from '@heroku/sdk/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class MaintenanceOff extends Command {
@@ -14,7 +15,8 @@ export default class MaintenanceOff extends Command {
   async run() {
     const {flags} = await this.parse(MaintenanceOff)
     ux.action.start(`Disabling maintenance mode for ${color.app(flags.app)}`)
-    await disableMaintenanceMode(flags.app)
+    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    await platform.app.disableMaintenance(flags.app)
     ux.action.stop()
   }
 }

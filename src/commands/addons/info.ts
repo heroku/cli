@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {describeAddon} from '@heroku/sdk/compositions/add-on'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {HerokuSDK} from '@heroku/sdk/sdk'
 import {Args} from '@oclif/core'
 
 import {formatPrice, formatState} from '../../lib/addons/util.js'
@@ -24,7 +25,8 @@ export default class Info extends Command {
     const {args, flags} = await this.parse(Info)
     const {app} = flags
 
-    const addon = await describeAddon(args.addon, {appIdentity: app})
+    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const addon = await platform.addOn.describe(args.addon, {appIdentity: app})
     const plan = addon.plan as undefined | {name?: string; price?: Heroku.AddOn['price']}
 
     hux.styledHeader(color.addon(addon.name ?? ''))

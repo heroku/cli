@@ -2,8 +2,9 @@ import type {AddOn, Plan} from '@heroku-cli/schema'
 
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {AddonAmbiguousError, upgrade as upgradeAddon} from '@heroku/sdk/compositions/add-on'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
+import {HerokuSDK} from '@heroku/sdk/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {formatPriceText} from '../../lib/addons/util.js'
@@ -85,24 +86,8 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     }
 
     try {
-      const heroku = createPlatformClient()
-      const plans = (await heroku.plan.listByAddOn(addonServiceName)) as unknown as Plan[]
-      plans.sort((a, b) => {
-        if (a?.price?.cents === b?.price?.cents) {
-          return 0
-        }
-
-        if (!a?.price?.cents || !b?.price?.cents || a.price.cents > b.price.cents) {
-          return 1
-        }
-
-        if (a.price.cents < b.price.cents) {
-          return -1
-        }
-
-        return 0
-      })
-      return plans
+      const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+      return (await platform.addOn.listPlans(addonServiceName)) as unknown as Plan[]
     } catch {
       return []
     }
@@ -114,11 +99,12 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
 
+    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
     let addonServiceName: string | undefined
 
     let updatedAddon: Required<AddOn>
     try {
-      updatedAddon = await upgradeAddon(addon, plan, {
+      updatedAddon = await platform.addOn.upgrade(addon, plan, {
         appIdentity: app,
         onResolved(resolved) {
           addonServiceName = (resolved.addon_service as undefined | {name?: string})?.name
