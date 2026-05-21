@@ -1,13 +1,12 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import _ from 'lodash'
-import lolex from 'lolex'
 import nock from 'nock'
 import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/wait.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-let clock: any
+
 const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
 describe('addons:wait', function () {
@@ -16,14 +15,13 @@ describe('addons:wait', function () {
   beforeEach(function () {
     sandbox = createSandbox()
     nock.cleanAll()
-    clock = lolex.install()
-    clock.setTimeout = function (fn: any) {
-      process.nextTick(fn)
-    }
+    // Fake only Date so the >5s notifier threshold can be advanced
+    // synchronously without faking setTimeout (the SDK's polling loop
+    // needs real setTimeout to drive the test forward).
+    sandbox.useFakeTimers({shouldAdvanceTime: true, toFake: ['Date']})
   })
 
   afterEach(function () {
-    clock.uninstall()
     sandbox.restore()
   })
   context('waiting for an individual add-on to provision', function () {

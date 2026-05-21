@@ -48,7 +48,7 @@ export default class Wait extends Command {
       if (addon.state === 'provisioning') {
         let addonResponse
         try {
-          addonResponse = await waitForAddonProvisioning(this.heroku, addon as Heroku.AddOn, interval)
+          addonResponse = await waitForAddonProvisioning(addon as Heroku.AddOn, interval)
         } catch (error) {
           Wait.notifier(`heroku addons:wait ${addonName}`, 'Add-on failed to provision', false)
           throw error

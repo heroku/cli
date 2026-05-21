@@ -58,7 +58,7 @@ export default class Create extends Command {
     const config = parseConfig(argv)
     let addon: Heroku.AddOn
     try {
-      addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {as, config, name})
+      addon = await createAddon(app, servicePlan, confirm, wait, {as, config, name})
       if (wait) {
         Create.notifier(`heroku addons:create ${addon.name}`, 'Add-on successfully provisioned')
       }

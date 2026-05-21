@@ -339,7 +339,7 @@ export default class DataPgMigrate extends BaseCommand {
 
     let addon: Heroku.AddOn | undefined
     try {
-      addon = await this.createAddon(this.heroku, sourceDatabase.app.name, servicePlan, undefined, false, {
+      addon = await this.createAddon(sourceDatabase.app.name, servicePlan, undefined, false, {
         actionStartMessage: `Creating a ${color.info(leaderLevel!)} database on ${color.app(sourceDatabase.app.name)}`,
         actionStopMessage: 'done',
         config,

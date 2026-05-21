@@ -1,4 +1,3 @@
-import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {createPlatformClient} from '@heroku/sdk/platform'
@@ -19,7 +18,6 @@ function formatConfigVarsMessage(addon: Heroku.AddOn) {
 
 // eslint-disable-next-line max-params
 export default async function createAddon(
-  heroku: APIClient,
   app: string,
   plan: string,
   confirm: string | undefined,
@@ -63,7 +61,7 @@ export default async function createAddon(
   if (addon.state === 'provisioning') {
     if (wait) {
       ux.stdout(`Waiting for ${color.addon(addon.name || '')}...`)
-      addon = await waitForAddonProvisioning(heroku, addon, 5)
+      addon = await waitForAddonProvisioning(addon, 5)
       ux.stdout(formatConfigVarsMessage(addon))
     } else {
       ux.stdout(`${color.addon(addon.name || '')} is being created in the background. The app will restart when complete...`)
