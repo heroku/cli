@@ -31,16 +31,16 @@ jobs:
   publish-npm:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js 22.x
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: npm
+          package-manager-cache: false
       - run: npm ci
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: Publish to NPM
         run: |
           PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
