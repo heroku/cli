@@ -65,11 +65,14 @@ export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string
 }
 
 async function addonGetter(api: APIClient, app?: string) {
-  const heroku = createPlatformClient({headers: ADDON_EXPANSION_HEADERS})
+  const heroku = createPlatformClient()
+  // Apply Accept-Expansion only on add-on list calls (the global list
+  // endpoint rejects it; the attachments endpoints don't need it).
+  const herokuWithExpansion = heroku.withHeaders(ADDON_EXPANSION_HEADERS)
   let attachmentsResponse: null | Promise<Heroku.AddOnAttachment[]> = null
   let addonsResponse: Promise<Heroku.AddOn[]>
   if (app) { // don't display attachments globally
-    addonsResponse = heroku.addOn.listByApp(app) as unknown as Promise<Heroku.AddOn[]>
+    addonsResponse = herokuWithExpansion.addOn.listByApp(app) as unknown as Promise<Heroku.AddOn[]>
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
     // eslint-disable-next-line unicorn/prefer-ternary
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
@@ -83,6 +86,7 @@ async function addonGetter(api: APIClient, app?: string) {
       attachmentsResponse = heroku.addOnAttachment.list() as unknown as Promise<Heroku.AddOnAttachment[]>
     }
   } else {
+    // The global /addons endpoint doesn't support Accept-Expansion.
     addonsResponse = heroku.addOn.list() as unknown as Promise<Heroku.AddOn[]>
   }
 
