@@ -1,9 +1,32 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Apps from '../../../../src/commands/apps/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+
+type FakePlatform = {
+  account: {info: sinon.SinonStub}
+  app: {
+    list: sinon.SinonStub
+    listOwnedAndCollaborated: sinon.SinonStub
+  }
+  space: {info: sinon.SinonStub}
+  teamApp: {listByTeam: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    account: {info: sinon.stub()},
+    app: {
+      list: sinon.stub(),
+      listOwnedAndCollaborated: sinon.stub(),
+    },
+    space: {info: sinon.stub()},
+    teamApp: {listByTeam: sinon.stub()},
+  }
+}
 
 describe('apps', function () {
   const example = {
@@ -76,40 +99,32 @@ describe('apps', function () {
     space: {id: 'test-space-id', name: 'test-space'},
   }
 
-  let euLockedApp = {}
-  let euInternalApp = {}
-  let euInternalLockedApp = {}
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   describe('with no args', function () {
     it('displays a message when the user has no apps', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('You have no apps.\n')
+      expect(fakePlatform.app.listOwnedAndCollaborated.calledOnceWithExactly('~')).to.equal(true)
     })
 
     it('list all user apps', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, collabApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, collabApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -126,11 +141,8 @@ describe('apps', function () {
     })
 
     it('lists all apps', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/apps')
-        .reply(200, [example, collabApp, teamApp1])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.list.resolves([example, collabApp, teamApp1])
 
       const {stderr, stdout} = await runCommand(Apps, ['--all'])
 
@@ -144,14 +156,13 @@ describe('apps', function () {
       expect(actual).to.include(expectedPersonalApps)
       expect(actual).to.include(expectedCollaboratedAppsHeader)
       expect(actual).to.include(expectedCollaboratedApps)
+      expect(fakePlatform.app.list.calledOnce).to.equal(true)
+      expect(fakePlatform.app.listOwnedAndCollaborated.called).to.equal(false)
     })
 
     it('shows as json', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, collabApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, collabApp])
 
       const {stderr, stdout} = await runCommand(Apps, ['--json'])
 
@@ -160,11 +171,8 @@ describe('apps', function () {
     })
 
     it('shows region if not us', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -173,11 +181,8 @@ describe('apps', function () {
     })
 
     it('shows locked app', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp, lockedApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, lockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -186,13 +191,9 @@ describe('apps', function () {
     })
 
     it('shows locked eu app', async function () {
-      euLockedApp = Object.assign(lockedApp, {region: {name: 'eu'}})
-
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp, euLockedApp])
+      const euLockedApp = {...lockedApp, region: {name: 'eu'}}
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, euLockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -201,11 +202,8 @@ describe('apps', function () {
     })
 
     it('shows internal app', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp, internalApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, internalApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -214,11 +212,8 @@ describe('apps', function () {
     })
 
     it('shows internal locked app', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp, internalLockedApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, internalLockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -227,13 +222,9 @@ describe('apps', function () {
     })
 
     it('shows internal eu app', async function () {
-      euInternalApp = Object.assign(internalApp, {region: {name: 'eu'}})
-
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp, euInternalApp])
+      const euInternalApp = {...internalApp, region: {name: 'eu'}}
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, euInternalApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -242,13 +233,9 @@ describe('apps', function () {
     })
 
     it('shows internal locked eu app', async function () {
-      euInternalLockedApp = Object.assign(internalLockedApp, {region: {name: 'eu'}})
-
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/users/~/apps')
-        .reply(200, [example, euApp, euInternalLockedApp])
+      const euInternalLockedApp = {...internalLockedApp, region: {name: 'eu'}}
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, euInternalLockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
 
@@ -259,24 +246,19 @@ describe('apps', function () {
 
   describe('with team', function () {
     it('displays a message when the team has no apps', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/teams/test-team/apps')
-        .reply(200, [])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.teamApp.listByTeam.resolves([])
 
       const {stderr, stdout} = await runCommand(Apps, ['--team', 'test-team'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('There are no apps in team test-team.\n')
+      expect(fakePlatform.teamApp.listByTeam.calledOnceWithExactly('test-team')).to.equal(true)
     })
 
     it('list all in a team', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/teams/test-team/apps')
-        .reply(200, [teamApp1, teamApp2])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.teamApp.listByTeam.resolves([teamApp1, teamApp2])
 
       const {stderr, stdout} = await runCommand(Apps, ['--team', 'test-team'])
 
@@ -287,28 +269,22 @@ describe('apps', function () {
 
   describe('with space', function () {
     it('displays a message when the space has no apps', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/spaces/test-space')
-        .reply(200, {team: {name: 'test-team'}})
-        .get('/teams/test-team/apps')
-        .reply(200, [])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.space.info.resolves({team: {name: 'test-team'}})
+      fakePlatform.teamApp.listByTeam.resolves([])
 
       const {stderr, stdout} = await runCommand(Apps, ['--space', 'test-space'])
 
       expect(stderr).to.equal('')
       expect(stdout).to.equal('There are no apps in space ⬡ test-space.\n')
+      expect(fakePlatform.space.info.calledOnceWithExactly('test-space')).to.equal(true)
+      expect(fakePlatform.teamApp.listByTeam.calledOnceWithExactly('test-team')).to.equal(true)
     })
 
     it('lists only apps in spaces by name', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/spaces/test-space')
-        .reply(200, {team: {name: 'test-team'}})
-        .get('/teams/test-team/apps')
-        .reply(200, [teamSpaceApp1, teamSpaceApp2, teamApp1])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.space.info.resolves({team: {name: 'test-team'}})
+      fakePlatform.teamApp.listByTeam.resolves([teamSpaceApp1, teamSpaceApp2, teamApp1])
 
       const {stderr, stdout} = await runCommand(Apps, ['--space', 'test-space'])
 
@@ -317,13 +293,9 @@ describe('apps', function () {
     })
 
     it('lists only internal apps in spaces by name', async function () {
-      api
-        .get('/account')
-        .reply(200, {email: 'foo@bar.com'})
-        .get('/spaces/test-space')
-        .reply(200, {team: {name: 'test-team'}})
-        .get('/teams/test-team/apps')
-        .reply(200, [teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
+      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.space.info.resolves({team: {name: 'test-team'}})
+      fakePlatform.teamApp.listByTeam.resolves([teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
 
       const {stderr, stdout} = await runCommand(Apps, ['--space', 'test-space', '--internal-routing'])
 
