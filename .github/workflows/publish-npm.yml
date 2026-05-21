@@ -41,9 +41,11 @@ jobs:
           node-version: 22.x
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
-      # Ensure npm 11.5.1 or later for trusted publishing
+      # Ensure npm 11.5.1 or later for trusted publishing. Use corepack on Node 22.22.2 to avoid known issue with npm update -g npm
       - name: install latest npm CLI
-        run: npm install -g npm@latest
+        run: |
+          corepack enable
+          corepack prepare npm@latest --activate
       - run: npm ci
       - name: Publish to NPM
         run: |
