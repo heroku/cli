@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {listPipelineApps} from '@heroku/sdk/compositions/pipeline'
+import {HerokuSDK} from '@heroku/sdk'
+import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import type {OciImage, PipelineCoupling, Slug} from '../../lib/types/fir.js'
@@ -87,7 +88,8 @@ export default class PipelinesDiff extends Command {
     const generation = getGeneration(pipeline)!
 
     ux.action.start('Fetching apps from pipeline')
-    const allApps = await listPipelineApps(coupling!.pipeline!.id!)
+    const {platform} = new HerokuSDK({extensions: [pipelineCouplingExtensions]})
+    const allApps = await platform.pipelineCoupling.listApps(coupling!.pipeline!.id!)
     ux.action.stop()
 
     const sourceStage = coupling.stage

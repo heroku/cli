@@ -29,7 +29,7 @@ describe('addons:info', function () {
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
-      apiSdk.get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`).reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
+      api.get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`).reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
     it('prints add-ons in a table', async function () {
       const {stdout} = await runCommand(Cmd, [
@@ -53,7 +53,7 @@ State:        created\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-db', app: 'example'})
         .reply(200, [fixtures.addons['www-db']])
-      apiSdk
+      api
         .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
@@ -85,7 +85,7 @@ State:        created\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-db'})
         .reply(200, [fixtures.addons['www-db']])
-      apiSdk
+      api
         .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
     })
@@ -116,7 +116,7 @@ State:        created\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'dwh-db'})
         .reply(200, [addon])
-      apiSdk
+      api
         .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
@@ -145,7 +145,7 @@ State:        created\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'dwh-db'})
         .reply(200, [addon])
-      apiSdk
+      api
         .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
     })
@@ -173,7 +173,7 @@ State:        created\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-redis'})
         .reply(200, [provisioningAddon])
-      apiSdk
+      api
         .get(`/addons/${provisioningAddon.id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::REDIS']])
     })
@@ -201,7 +201,7 @@ State:        creating\n
       apiSdk
         .post('/actions/addons/resolve', {addon: 'www-redis-2'})
         .reply(200, [deprovisioningAddon])
-      apiSdk
+      api
         .get(`/addons/${deprovisioningAddon.id}/addon-attachments`)
         .reply(200, [fixtures.attachments['acme-inc-www::REDIS']])
     })

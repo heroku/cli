@@ -103,7 +103,7 @@ describe('pipelines:promote', function () {
     const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
 
     expect(promoteStub.calledOnce).to.be.true
-    expect(promoteStub.firstCall.args[0]).to.deep.equal({
+    expect(promoteStub.firstCall.args[1]).to.deep.equal({
       pipeline: {id: pipeline.id},
       source: {app: {id: sourceApp.id}},
       targets: [
@@ -128,7 +128,7 @@ describe('pipelines:promote', function () {
 
       const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`, `--to=${targetApp1.name}`])
 
-      expect(promoteStub.firstCall.args[0].targets).to.deep.equal([{app: {id: targetApp1.id}}])
+      expect(promoteStub.firstCall.args[1].targets).to.deep.equal([{app: {id: targetApp1.id}}])
       expect(stdout).to.contain('failed')
       expect(stdout).to.contain('Because reasons')
     })
@@ -145,7 +145,7 @@ describe('pipelines:promote', function () {
 
       const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`, `--to=${targetApp1.id}`])
 
-      expect(promoteStub.firstCall.args[0].targets).to.deep.equal([{app: {id: targetApp1.id}}])
+      expect(promoteStub.firstCall.args[1].targets).to.deep.equal([{app: {id: targetApp1.id}}])
       expect(stdout).to.contain('failed')
       expect(stdout).to.contain('Because reasons')
     })
@@ -160,7 +160,7 @@ describe('pipelines:promote', function () {
           controller.close()
         },
       })
-      const promoteStub = stub(Cmd, 'promotePipeline').callsFake(async (_body, options) => {
+      const promoteStub = stub(Cmd, 'promotePipeline').callsFake(async (_ctx, _body, options) => {
         await options!.onReleaseStream!({
           stream: streamBody,
           target: {app: {id: targetApp1.id}, status: 'pending'},
