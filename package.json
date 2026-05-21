@@ -6,11 +6,11 @@
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "13.0.0-beta.3",
+    "@heroku-cli/command": "12.4.0-beta.0",
     "@heroku-cli/notifications": "^1.2.6",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
-    "@heroku/heroku-cli-util": "^10.8.0",
+    "@heroku/heroku-cli-util": "10.8.1-alpha.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
     "@heroku/socksv5": "^0.0.9",
@@ -141,7 +141,7 @@
     "std-mocks": "^2.0.0",
     "stdout-stderr": "^0.1.13",
     "ts-node": "^10.9.2",
-    "typescript": "4.9.5"
+    "typescript": "5.9.3"
   },
   "oclif": {
     "additionalHelpFlags": [
@@ -378,7 +378,6 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "@heroku-cli/command": "13.0.0-beta.3",
     "serialize-javascript": "^7.0.4"
   },
   "repository": "heroku/cli",
