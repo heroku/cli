@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 export default class MaintenanceOff extends Command {
