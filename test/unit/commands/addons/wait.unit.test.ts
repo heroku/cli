@@ -2,7 +2,7 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import _ from 'lodash'
 import nock from 'nock'
-import {createSandbox} from 'sinon'
+import {createSandbox, type SinonFakeTimers} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/wait.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
@@ -11,6 +11,7 @@ const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
 
 describe('addons:wait', function () {
   let sandbox: any
+  let clock: SinonFakeTimers
 
   beforeEach(function () {
     sandbox = createSandbox()
@@ -18,7 +19,7 @@ describe('addons:wait', function () {
     // Fake only Date so the >5s notifier threshold can be advanced
     // synchronously without faking setTimeout (the SDK's polling loop
     // needs real setTimeout to drive the test forward).
-    sandbox.useFakeTimers({shouldAdvanceTime: true, toFake: ['Date']})
+    clock = sandbox.useFakeTimers({shouldAdvanceTime: true, toFake: ['Date']})
   })
 
   afterEach(function () {

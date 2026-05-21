@@ -286,7 +286,7 @@ describe('addons:create', function () {
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        expect((error as HTTPError)?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        expect((error as HTTPError)?.message).to.equal('The add-on was unable to be created, with status deprovisioned.')
       })
     })
   })
