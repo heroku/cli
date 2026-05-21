@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {HerokuSDK} from '@heroku/sdk/sdk'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import {formatPrice, formatState} from '../../lib/addons/util.js'

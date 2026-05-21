@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {Plan} from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {HerokuSDK} from '@heroku/sdk/sdk'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 import printf from 'printf'
 

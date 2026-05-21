@@ -2,7 +2,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
-import {HerokuSDK} from '@heroku/sdk/sdk'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import ConfirmCommand from '../confirm-command.js'

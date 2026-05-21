@@ -4,7 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
-import {HerokuSDK} from '@heroku/sdk/sdk'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {formatPriceText} from '../../lib/addons/util.js'
