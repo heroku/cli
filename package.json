@@ -45,7 +45,6 @@
     "commander": "^2.15.1",
     "date-fns": "^2.30.0",
     "debug": "^4.4.3",
-    "eventsource": "^4",
     "execa": "^9.6.1",
     "filesize": "^10.1",
     "foreman": "^3.0.1",

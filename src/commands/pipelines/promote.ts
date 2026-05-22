@@ -39,8 +39,6 @@ export default class Promote extends Command {
       description: 'comma separated list of apps to promote to',
     }),
   }
-  // Static reference so tests can stub the SDK call without changing the
-  // command's behavior in production.
   public static promotePipeline = promotePipeline
 
   async run() {
