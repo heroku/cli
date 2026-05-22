@@ -1,11 +1,10 @@
 import {APIClient} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {logSessionExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
-import {EventSource} from 'eventsource'
 import {HttpsProxyAgent} from 'https-proxy-agent'
 
-import {getGenerationByAppId} from '../apps/generation.js'
-import {LogSession} from '../types/fir.js'
 import colorize from './colorize.js'
 
 interface LogDisplayerOptions {
@@ -18,141 +17,78 @@ interface LogDisplayerOptions {
 }
 
 export class LogDisplayer {
-  private heroku: APIClient
-
-  constructor(heroku: APIClient) {
-    this.heroku = heroku
-  }
-
-  public createEventSourceInstance(url: string, options?: any): EventSource {
-    return new EventSource(url, options)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(private heroku: APIClient) {
+    // heroku is preserved on the constructor for back-compat with
+    // callers; the SDK manages its own auth via env / netrc.
   }
 
   async display(options: LogDisplayerOptions): Promise<void> {
     this.setupProcessHandlers()
 
-    const firApp = (await this.getGenerationByAppId(options)) === 'fir'
-    const isTail = firApp || options.tail
+    const controller = new AbortController()
+    const onAbort = () => controller.abort()
+    process.once('SIGINT', onAbort)
+    process.once('SIGTERM', onAbort)
 
-    const requestBodyParameters = this.buildRequestBodyParameters(firApp, options)
+    const sdk = new HerokuSDK({extensions: [logSessionExtensions]})
 
-    let recreateLogSession = false
-    do {
-      const logSession = await this.createLogSession(requestBodyParameters, options.app)
-
-      try {
-        await this.readLogs(
-          logSession.logplex_url,
-          isTail,
-          firApp ? Number(process.env.HEROKU_LOG_STREAM_TIMEOUT || '15') * 60 * 1000 : undefined,
-        )
-      } catch (error: unknown) {
-        const {message} = error as Error
-        if (message === 'Fir log stream timeout')
-          recreateLogSession = true
-        else
-          ux.error(message, {exit: 1})
-      }
-    } while (recreateLogSession)
-  }
-
-  private buildRequestBodyParameters(firApp: boolean, options: LogDisplayerOptions): Record<string, any> {
-    const requestBodyParameters = {
-      source: options.source,
-    }
-
-    if (firApp) {
-      process.stderr.write(color.info('Fetching logs...\n\n'))
-      Object.assign(requestBodyParameters, {
+    try {
+      for await (const line of sdk.platform.logSession.streamLogs(options.app, {
         dyno: options.dyno,
-        type: options.type,
-      })
-    } else {
-      Object.assign(requestBodyParameters, {
-        dyno: options.dyno || options.type,
+        fetch: this.buildFetch(),
         lines: options.lines,
+        onSessionCreated({generation, isRecreate}) {
+          // Fir's stream takes a moment to provision; print a hint
+          // before the first session so users don't think we're
+          // hung. Don't repeat it on tail-timeout recreates.
+          if (generation === 'fir' && !isRecreate) {
+            process.stderr.write(color.info('Fetching logs...\n\n'))
+          }
+        },
+        signal: controller.signal,
+        source: options.source,
         tail: options.tail,
-      })
+        type: options.type,
+      })) {
+        ux.stdout(colorize(line))
+      }
+    } catch (error) {
+      if (controller.signal.aborted) return
+      const message = error instanceof Error ? error.message : String(error)
+      ux.error(message, {exit: 1})
+    } finally {
+      process.off('SIGINT', onAbort)
+      process.off('SIGTERM', onAbort)
     }
-
-    return requestBodyParameters
   }
 
-  private async createLogSession(requestBodyParameters: Record<string, any>, app: string): Promise<LogSession> {
-    const {body: logSession} = await this.heroku.post<LogSession>(`/apps/${app}/log-sessions`, {
-      body: requestBodyParameters,
-      headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-    })
-    return logSession
-  }
+  /**
+   * Custom fetch override that injects User-Agent and routes through
+   * an https proxy when one is configured. The SDK's streamLogs
+   * accepts a `fetch` option for exactly this kind of CLI/Node-only
+   * transport configuration.
+   */
+  private buildFetch(): typeof fetch {
+    const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
+    const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
 
-  private async getGenerationByAppId(options: LogDisplayerOptions): Promise<string> {
-    const generation = await getGenerationByAppId(options.app, this.heroku)
-    return generation || ''
-  }
+    return async (input, init) => {
+      const headers = new Headers(init?.headers)
+      headers.set('User-Agent', userAgent)
 
-  private readLogs(logplexURL: string, isTail: boolean, recreateSessionTimeout?: number): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
-      const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
-
-      // Custom fetch function to handle headers and proxy
       // eslint-disable-next-line no-undef
-      const customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-        const headers = new Headers(init?.headers)
-        headers.set('User-Agent', userAgent)
-
-        // eslint-disable-next-line no-undef
-        const fetchOptions: RequestInit & {agent?: any} = {
-          ...init,
-          headers,
-        }
-
-        // If proxy is set, use https-proxy-agent
-        if (proxy) {
-          const proxyAgent = new HttpsProxyAgent(proxy)
-          fetchOptions.agent = proxyAgent
-        }
-
-        return fetch(input, fetchOptions)
+      const fetchOptions: RequestInit & {agent?: unknown} = {
+        ...init,
+        headers,
       }
 
-      const es = this.createEventSourceInstance(logplexURL, {
-        fetch: customFetch,
-      })
-
-      es.addEventListener('error', (err: Event) => {
-        // The new eventsource package provides message and code properties on errors
-        const errorEvent = err as any
-        if (errorEvent && (errorEvent.code || errorEvent.message)) {
-          const msg = (isTail && (errorEvent.code === 404 || errorEvent.code === 403))
-            ? 'Log stream timed out. Please try again.'
-            : `Logs eventsource failed with: ${errorEvent.code}${errorEvent.message ? ` ${errorEvent.message}` : ''}`
-          reject(new Error(msg))
-          es.close()
-        }
-
-        if (!isTail) {
-          resolve()
-          es.close()
-        }
-
-        // should only land here if --tail and no error status or message
-      })
-
-      es.addEventListener('message', (e: MessageEvent) => {
-        e.data.trim().split(/\n+/).forEach((line: string) => {
-          ux.stdout(colorize(line))
-        })
-      })
-
-      if (isTail && recreateSessionTimeout) {
-        setTimeout(() => {
-          reject(new Error('Fir log stream timeout'))
-          es.close()
-        }, recreateSessionTimeout)
+      if (proxy) {
+        fetchOptions.agent = new HttpsProxyAgent(proxy)
       }
-    })
+
+      return fetch(input, fetchOptions)
+    }
   }
 
   private setupProcessHandlers(): void {
