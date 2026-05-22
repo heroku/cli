@@ -4,7 +4,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import {LogDisplayer} from '../lib/run/log-displayer.js'
+import {displayLogs} from '../lib/run/log-displayer.js'
 
 const heredoc = tsheredoc.default
 
@@ -13,6 +13,7 @@ export default class Logs extends Command {
     display recent log output
     disable colors with --no-color, HEROKU_LOGS_COLOR=0, or HEROKU_COLOR=0
   `
+  public static displayLogs = displayLogs
   static examples = [
     `${color.command('heroku logs --app=my-app')}`,
     `${color.command('heroku logs --num=50 --app=my-app')}`,
@@ -79,15 +80,13 @@ export default class Logs extends Command {
     if (forceColors)
       ux.warn('The --force-colors flag is deprecated. Use FORCE_COLORS=true to force colors.')
 
-    const options = {
+    await Logs.displayLogs({
       app,
       dyno,
       lines: num || 100,
       source,
       tail,
       type: type || ps,
-    }
-    const displayer = new LogDisplayer(this.heroku)
-    await displayer.display(options)
+    })
   }
 }
