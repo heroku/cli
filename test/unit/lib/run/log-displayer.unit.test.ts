@@ -71,4 +71,26 @@ describe('displayLogs', function () {
     expect(passedOptions.type).to.equal(undefined)
     expect(passedOptions.tail).to.equal(false)
   })
+
+  it('swallows the rejection when the stream throws after abort', async function () {
+    // Mimic streamLogs throwing an AbortError after the caller aborts.
+    // displayLogs should resolve cleanly rather than re-throw.
+    const abortAwareStub = stub().callsFake((_app: string, opts: {signal: AbortSignal}) => (async function * () {
+      await new Promise<void>((resolve, reject) => {
+        opts.signal.addEventListener('abort', () => {
+          const err = new Error('aborted')
+          err.name = 'AbortError'
+          reject(err)
+        }, {once: true})
+      })
+      yield ''
+    })())
+
+    await patchExtension(abortAwareStub)
+
+    const displayPromise = displayLogs({app: 'my-app', tail: true})
+    process.emit('SIGINT')
+
+    await displayPromise
+  })
 })

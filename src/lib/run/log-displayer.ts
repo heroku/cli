@@ -14,9 +14,19 @@ export interface LogDisplayerOptions {
   type?: string
 }
 
-export async function displayLogs(options: LogDisplayerOptions): Promise<void> {
-  setupProcessHandlers()
+// Install once at module load so repeated displayLogs() calls don't
+// stack listeners on process.stdout (which would trip Node's
+// MaxListeners warning).
+process.stdout.on('error', err => {
+  if (err.code === 'EPIPE') {
+    // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
+    process.exit(0)
+  } else {
+    ux.error(err.message ?? String(err), {exit: 1})
+  }
+})
 
+export async function displayLogs(options: LogDisplayerOptions): Promise<void> {
   const controller = new AbortController()
   const onAbort = () => controller.abort()
   process.once('SIGINT', onAbort)
@@ -51,15 +61,4 @@ export async function displayLogs(options: LogDisplayerOptions): Promise<void> {
     process.off('SIGINT', onAbort)
     process.off('SIGTERM', onAbort)
   }
-}
-
-function setupProcessHandlers(): void {
-  process.stdout.on('error', err => {
-    if (err.code === 'EPIPE') {
-      // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
-      process.exit(0)
-    } else {
-      ux.error(err.stack, {exit: 1})
-    }
-  })
 }
