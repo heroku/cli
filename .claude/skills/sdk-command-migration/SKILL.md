@@ -22,7 +22,6 @@ Apply once per command in `src/commands/`. Each application produces one PR-read
 **Do NOT invoke for:**
 - Multi-command refactors — each command gets its own application.
 - Commands that import from `@heroku/sdk/compositions/*` (the subpath was removed in 0.4 — needs separate migration).
-- The `data` service (`sdk.data.*`) — this skill assumes Platform calls only.
 - Helpers/libraries shared by multiple commands — migrate the helper in its own commit and link from the command commits.
 
 ## Tech Stack
@@ -85,10 +84,11 @@ npx tsx scripts/codemods/sdk-migration/migrate-command.ts \
 ```
 
 The codemod handles the deterministic 80%:
-- Replaces every recognized `this.heroku.<verb>(path)` with `platform.<resource>.<method>(...)` by reverse-lookup against `@heroku/types/3.sdk/routes`.
+- Replaces every recognized `this.heroku.<verb>(path)` with `<service>.<resource>.<method>(...)` (`platform` for the Platform API, `data` for Postgres) by reverse-lookup against the SDK route metadata.
 - Drops `{body: x}` destructure at call sites (the SDK returns the body directly).
 - Unwraps the http-call options shape (`{body: {...}}`) to pass the bare body to SDK methods that take a request body.
-- Adds `import {HerokuSDK} from '@heroku/sdk'` and inserts `const {platform} = new HerokuSDK()` at the top of `run()`.
+- For data routes, silently strips the `{hostname: utils.pg.host()}` options arg — the SDK provides the data hostname automatically.
+- Adds `import {HerokuSDK} from '@heroku/sdk'` and inserts `const {<services>} = new HerokuSDK()` at the top of `run()`, destructuring only the services actually used (e.g., `{platform}`, `{data}`, or `{data, platform}`).
 - Removes `import * as Heroku from '@heroku-cli/schema'` if no remaining references.
 
 Inspect the diff. If it looks correct, re-run without `--dry-run` to write the file in place:
@@ -117,7 +117,10 @@ The path is a variable rather than a string/template literal. Trace the variable
 The second argument to a write-method call wasn't a recognizable `{body: ...}` wrapper. Inspect the argument and pass the SDK its expected body shape directly.
 
 **"this.heroku.<verb>(...) has an extra argument (request options?) ..."**
-The CLI passed http-call options (e.g., `{hostname: 'telex.heroku.com'}`) that the SDK doesn't accept. If the call is hitting a non-default host, escalate — the SDK assumes the standard Platform host. Otherwise, drop the options and replace manually.
+The CLI passed http-call options the SDK doesn't accept. For data routes, a lone `{hostname: utils.pg.host()}` is dropped silently and won't appear here — anything that reaches this flag has additional unrecognized properties. If the call is hitting a non-default host (other than the Platform or Data hostname the SDK knows about), escalate. Otherwise, drop the unused options and replace manually.
+
+**`Warning: name collision with SDK service(s)`** (non-blocking)
+A local variable in `run()` shadows the destructured `data` or `platform` service. The codemod still produces the migration, but the inner scope's SDK calls will fail at runtime. Rename the local before merging.
 
 ### Step 1.3: Type-check
 
@@ -283,7 +286,7 @@ Before opening the PR:
 ## Glossary
 
 - **Platform service:** `sdk.platform.*` — methods covering Apps, Spaces, Teams, Account, Pipelines, etc.
-- **Data service:** `sdk.data.*` — methods covering Postgres / data-stores. Out of scope for this skill.
+- **Data service:** `sdk.data.*` — methods covering Postgres / data-stores. The codemod migrates these alongside platform calls; the SDK supplies the data hostname automatically.
 - **Bare entry:** `import {HerokuSDK} from '@heroku/sdk'` — the canonical import. Do not use `@heroku/sdk/sdk` (removed in 0.4) or deep relative imports.
 - **Pre-flight baseline:** the snapshot of `tsc`/test state captured before any migration work, used to filter pre-existing noise out of post-migration verification.
 - **Codemod:** `scripts/codemods/sdk-migration/migrate-command.ts` — the deterministic transform run in Task 1, Step 1.1.

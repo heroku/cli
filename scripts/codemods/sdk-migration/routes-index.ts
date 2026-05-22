@@ -1,6 +1,9 @@
-import * as routes from '@heroku/types/3.sdk/routes'
+import * as dataRoutes from '@heroku/types/data/routes'
+import * as platformRoutes from '@heroku/types/3.sdk/routes'
 
 export type HttpVerb = 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
+
+export type ServiceName = 'data' | 'platform'
 
 export type RouteEntry = {
   hasRequestBody: boolean
@@ -9,6 +12,7 @@ export type RouteEntry = {
   pathRegex: RegExp
   placeholders: string[]
   resource: string
+  service: ServiceName
   verb: HttpVerb
 }
 
@@ -31,13 +35,8 @@ export class RouteIndex {
 
   static load(): RouteIndex {
     const entries: RouteEntry[] = []
-    for (const [resource, methods] of Object.entries(routes)) {
-      if (resource === 'default' || typeof methods !== 'object' || methods === null) continue
-      for (const [method, def] of Object.entries(methods as Record<string, {hasRequestBody?: boolean; method: string; path: string}>)) {
-        entries.push(buildEntry(resource, method, def))
-      }
-    }
-
+    collectEntries(platformRoutes, 'platform', entries)
+    collectEntries(dataRoutes, 'data', entries)
     return new RouteIndex(entries)
   }
 
@@ -61,7 +60,21 @@ export class RouteIndex {
   }
 }
 
-function buildEntry(resource: string, method: string, def: {hasRequestBody?: boolean; method: string; path: string}): RouteEntry {
+function collectEntries(source: Record<string, unknown>, service: ServiceName, entries: RouteEntry[]): void {
+  for (const [resource, methods] of Object.entries(source)) {
+    if (resource === 'default' || typeof methods !== 'object' || methods === null) continue
+    for (const [method, def] of Object.entries(methods as Record<string, {hasRequestBody?: boolean; method: string; path: string}>)) {
+      entries.push(buildEntry(resource, method, def, service))
+    }
+  }
+}
+
+function buildEntry(
+  resource: string,
+  method: string,
+  def: {hasRequestBody?: boolean; method: string; path: string},
+  service: ServiceName,
+): RouteEntry {
   const placeholders = [...def.path.matchAll(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g)].map(m => m[1])
   return {
     hasRequestBody: Boolean(def.hasRequestBody),
@@ -70,6 +83,7 @@ function buildEntry(resource: string, method: string, def: {hasRequestBody?: boo
     pathRegex: pathToRegex(def.path),
     placeholders,
     resource,
+    service,
     verb: def.method as HttpVerb,
   }
 }

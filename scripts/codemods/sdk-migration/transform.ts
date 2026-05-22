@@ -8,12 +8,13 @@ import {
   type VariableDeclaration,
 } from 'ts-morph'
 
-import {type HttpVerb, RouteIndex} from './routes-index.js'
+import {type HttpVerb, RouteIndex, type ServiceName} from './routes-index.js'
 
 export type TransformResult = {
   changed: boolean
   flags: string[]
   unmatched: number
+  usedServices: Set<ServiceName>
   warnings: string[]
 }
 
@@ -29,7 +30,13 @@ const HEROKU_SCHEMA_IMPORT = '@heroku-cli/schema'
 const HEROKU_SDK_IMPORT = '@heroku/sdk'
 
 export function transform(sourceFile: SourceFile, index: RouteIndex): TransformResult {
-  const result: TransformResult = {changed: false, flags: [], unmatched: 0, warnings: []}
+  const result: TransformResult = {
+    changed: false,
+    flags: [],
+    unmatched: 0,
+    usedServices: new Set(),
+    warnings: [],
+  }
 
   const calls = collectHerokuCalls(sourceFile)
   if (calls.length === 0) return result
@@ -44,11 +51,40 @@ export function transform(sourceFile: SourceFile, index: RouteIndex): TransformR
   }
 
   if (result.changed) {
+    flagServiceNameShadowing(sourceFile, result)
     ensureSdkSetup(sourceFile, result)
     pruneUnusedSchemaImport(sourceFile)
   }
 
   return result
+}
+
+function flagServiceNameShadowing(sourceFile: SourceFile, result: TransformResult): void {
+  // Detect locals in run() that shadow the SDK service names we're about to destructure.
+  // Shadowing would silently break the migrated SDK calls in the inner scope.
+  const runMethod = sourceFile
+    .getClasses()
+    .flatMap(c => c.getInstanceMethods())
+    .find(m => m.getName() === 'run')
+  if (!runMethod) return
+
+  const services = result.usedServices
+  const conflicts: string[] = []
+  for (const decl of runMethod.getDescendantsOfKind(SyntaxKind.VariableDeclaration)) {
+    const nameNode = decl.getNameNode()
+    const declared = Node.isIdentifier(nameNode) ? [nameNode.getText()] : []
+    for (const name of declared) {
+      if (services.has(name as ServiceName)) {
+        conflicts.push(`local '${name}' at line ${decl.getStartLineNumber()} shadows the SDK service '${name}'`)
+      }
+    }
+  }
+
+  if (conflicts.length === 0) return
+
+  result.warnings.push(
+    `name collision with SDK service(s); rename the local(s) before merging:\n  ` + conflicts.join('\n  '),
+  )
 }
 
 type CallContext = {
@@ -119,19 +155,20 @@ function replaceCall(ctx: CallContext, index: RouteIndex, result: TransformResul
   }
 
   const sdkArgs = [...pathInfo.params]
+  const fqMethod = `${entry.service}.${entry.resource}.${entry.method}`
   if (entry.hasRequestBody) {
     if (args.length < 2) {
-      flagCall(call, `SDK method platform.${entry.resource}.${entry.method} requires a request body`, result)
+      flagCall(call, `SDK method ${fqMethod} requires a request body`, result)
       result.unmatched++
       return false
     }
 
     const bodyArg = args[1]
-    const bodyText = unwrapHttpCallBody(bodyArg)
+    const bodyText = unwrapHttpCallBody(bodyArg, entry.service)
     if (bodyText === null) {
       flagCall(
         call,
-        `cannot determine SDK request body shape for platform.${entry.resource}.${entry.method}; review the second argument manually`,
+        `cannot determine SDK request body shape for ${fqMethod}; review the second argument manually`,
         result,
       )
       result.unmatched++
@@ -140,17 +177,23 @@ function replaceCall(ctx: CallContext, index: RouteIndex, result: TransformResul
 
     sdkArgs.push(bodyText)
   } else if (args.length > 1) {
-    // Don't replace this call — too risky to silently drop a request-options arg.
-    flagCall(
-      call,
-      `this.heroku.${verbName}(...) has an extra argument (request options?) that platform.${entry.resource}.${entry.method} does not accept; review manually`,
-      result,
-    )
-    result.unmatched++
-    return false
+    // Data routes commonly pass {hostname: utils.pg.host()}; the SDK provides the host automatically.
+    const optionsArg = args[1]
+    if (entry.service === 'data' && isHostnameOnlyOptions(optionsArg)) {
+      // Silently drop — the SDK handles hostname resolution for the data service.
+    } else {
+      flagCall(
+        call,
+        `this.heroku.${verbName}(...) has an extra argument (request options?) that ${fqMethod} does not accept; review manually`,
+        result,
+      )
+      result.unmatched++
+      return false
+    }
   }
 
-  const replacement = `platform.${entry.resource}.${entry.method}(${sdkArgs.join(', ')})`
+  const replacement = `${entry.service}.${entry.resource}.${entry.method}(${sdkArgs.join(', ')})`
+  result.usedServices.add(entry.service)
 
   const wrapping = findEnclosingAwaitOrBindingContext(call)
   rewriteCallSite(call, replacement, wrapping, result)
@@ -178,22 +221,38 @@ function extractPath(node: Node): null | PathInfo {
   return null
 }
 
-function unwrapHttpCallBody(node: Node): null | string {
+function unwrapHttpCallBody(node: Node, service: ServiceName): null | string {
   // The CLI's http-call wraps requests as `{body: <actual-body>, ...}`. The SDK takes the body directly.
-  // If the second arg is an object literal with a single `body` property, return its value.
+  // If the options object has only `body`, return its value. For data routes, also accept and strip `hostname`.
   if (!Node.isObjectLiteralExpression(node)) {
     // Could be a variable holding the body; pass it through as-is.
     return node.getText()
   }
 
   const properties = node.getProperties()
-  if (properties.length !== 1) return null
+  let bodyValue: null | string = null
+  for (const property of properties) {
+    if (!Node.isPropertyAssignment(property)) return null
+    const name = property.getName()
+    if (name === 'body') {
+      bodyValue = property.getInitializer()?.getText() ?? null
+    } else if (name === 'hostname' && service === 'data') {
+      // accepted; the SDK provides the data hostname automatically
+    } else {
+      return null
+    }
+  }
 
+  return bodyValue
+}
+
+function isHostnameOnlyOptions(node: Node): boolean {
+  if (!Node.isObjectLiteralExpression(node)) return false
+  const properties = node.getProperties()
+  if (properties.length !== 1) return false
   const property = properties[0]
-  if (!Node.isPropertyAssignment(property)) return null
-  if (property.getName() !== 'body') return null
-
-  return property.getInitializer()?.getText() ?? null
+  if (!Node.isPropertyAssignment(property)) return false
+  return property.getName() === 'hostname'
 }
 
 function extractFromTemplate(template: TemplateExpression): PathInfo {
@@ -282,6 +341,8 @@ function flagCall(call: CallExpression, message: string, result: TransformResult
 }
 
 function ensureSdkSetup(sourceFile: SourceFile, result: TransformResult): void {
+  if (result.usedServices.size === 0) return
+
   const existing = sourceFile.getImportDeclaration(d => d.getModuleSpecifierValue() === HEROKU_SDK_IMPORT)
   if (!existing) {
     // Insert at the top of the imports block; the project formats named imports without inner-brace spaces.
@@ -292,9 +353,6 @@ function ensureSdkSetup(sourceFile: SourceFile, result: TransformResult): void {
     const named = existing.getNamedImports().map(n => n.getName())
     if (!named.includes('HerokuSDK')) existing.addNamedImport('HerokuSDK')
   }
-
-  const usesPlatform = sourceFile.getText().includes('platform.')
-  if (!usesPlatform) return
 
   const runMethod = sourceFile
     .getClasses()
@@ -309,7 +367,9 @@ function ensureSdkSetup(sourceFile: SourceFile, result: TransformResult): void {
   const body = runMethod.getBodyText() ?? ''
   if (body.includes('new HerokuSDK')) return
 
-  runMethod.insertStatements(0, 'const {platform} = new HerokuSDK()')
+  // Sorted destructuring: 'data' comes before 'platform' alphabetically.
+  const services = [...result.usedServices].sort().join(', ')
+  runMethod.insertStatements(0, `const {${services}} = new HerokuSDK()`)
 }
 
 function pruneUnusedSchemaImport(sourceFile: SourceFile): void {
