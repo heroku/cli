@@ -49,6 +49,9 @@ ckey
 clearsign
 clientsecret
 cnames
+codemod
+codemodparam
+codemods
 collab
 commandsstop
 compadd

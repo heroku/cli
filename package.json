@@ -134,7 +134,9 @@
     "rimraf": "5.0.5",
     "sinon": "^21.0.2",
     "source-map-support": "^0.5.21",
+    "ts-morph": "^28.0.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.22.3",
     "typescript": "5.9.3"
   },
   "oclif": {
