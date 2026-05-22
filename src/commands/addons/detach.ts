@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 export default class Detach extends Command {
@@ -17,7 +17,7 @@ export default class Detach extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Detach)
     const {app} = flags
-    const platform = createPlatformClient()
+    const {platform} = new HerokuSDK()
     const attachment = await platform.addOnAttachment.infoByApp(app, args.attachment_name)
 
     ux.action.start(`Detaching ${color.attachment(attachment.name || '')} to ${color.addon(attachment.addon?.name || '')} from ${color.app(app)}`)

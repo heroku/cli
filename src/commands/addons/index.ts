@@ -1,7 +1,7 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
@@ -65,29 +65,29 @@ export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string
 }
 
 async function addonGetter(api: APIClient, app?: string) {
-  const heroku = createPlatformClient()
+  const {platform} = new HerokuSDK()
   // Apply Accept-Expansion only on add-on list calls (the global list
   // endpoint rejects it; the attachments endpoints don't need it).
-  const herokuWithExpansion = heroku.withHeaders(ADDON_EXPANSION_HEADERS)
+  const platformWithExpansion = platform.withHeaders(ADDON_EXPANSION_HEADERS)
   let attachmentsResponse: null | Promise<Heroku.AddOnAttachment[]> = null
   let addonsResponse: Promise<Heroku.AddOn[]>
   if (app) { // don't display attachments globally
-    addonsResponse = herokuWithExpansion.addOn.listByApp(app) as unknown as Promise<Heroku.AddOn[]>
+    addonsResponse = platformWithExpansion.addOn.listByApp(app) as unknown as Promise<Heroku.AddOn[]>
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
     // eslint-disable-next-line unicorn/prefer-ternary
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
       // because the root /addon-attachments endpoint won't include relevant
       // attachments when sudo-ing for another app, we will use the more
       // specific API call and sacrifice listing foreign attachments.
-      attachmentsResponse = heroku.addOnAttachment.listByApp(app) as unknown as Promise<Heroku.AddOnAttachment[]>
+      attachmentsResponse = platform.addOnAttachment.listByApp(app) as unknown as Promise<Heroku.AddOnAttachment[]>
     } else {
       // In order to display all foreign attachments, we'll get out entire
       // attachment list
-      attachmentsResponse = heroku.addOnAttachment.list() as unknown as Promise<Heroku.AddOnAttachment[]>
+      attachmentsResponse = platform.addOnAttachment.list() as unknown as Promise<Heroku.AddOnAttachment[]>
     }
   } else {
     // The global /addons endpoint doesn't support Accept-Expansion.
-    addonsResponse = heroku.addOn.list() as unknown as Promise<Heroku.AddOn[]>
+    addonsResponse = platform.addOn.list() as unknown as Promise<Heroku.AddOn[]>
   }
 
   // Get addons and attachments in parallel

@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 export default class Rename extends Command {
@@ -13,7 +13,7 @@ export default class Rename extends Command {
 
   public async run(): Promise<void> {
     const {args} = await this.parse(Rename)
-    const platform = createPlatformClient()
+    const {platform} = new HerokuSDK()
     const addon = await platform.addOn.info(args.addon_name)
     await platform.addOn.update(addon.app!.id!, addon.id!, {name: args.new_name, plan: addon.plan!.name!})
     ux.stdout(`${color.addon(args.addon_name)} successfully renamed to ${color.info(args.new_name)}.`)
