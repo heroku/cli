@@ -1,0 +1,292 @@
+---
+name: sdk-command-migration
+description: >
+  Migrate a single oclif command in src/commands/ from raw this.heroku.<verb>(path)
+  Platform API calls to @heroku/sdk resource methods, then rewrite that command's
+  unit tests to stub the SDK directly instead of intercepting HTTP via nock.
+  Triggers: migrate <command> to HerokuSDK, convert this command to @heroku/sdk,
+  apply SDK migration playbook, /sdk-command-migration.
+---
+
+# SDK Command Migration
+
+Apply once per command in `src/commands/`. Each application produces one PR-ready unit of work containing two commits: the source migration and the test rewrite.
+
+## When to Use
+
+**Invoke when:**
+- The user asks to migrate a specific command (e.g., "migrate apps:create", "convert apps/info.ts to HerokuSDK").
+- The user asks you to apply the SDK migration playbook to a command.
+- The user invokes `/sdk-command-migration` directly.
+
+**Do NOT invoke for:**
+- Multi-command refactors — each command gets its own application.
+- Commands that import from `@heroku/sdk/compositions/*` (the subpath was removed in 0.4 — needs separate migration).
+- Helpers/libraries shared by multiple commands — migrate the helper in its own commit and link from the command commits.
+
+## Tech Stack
+
+- TypeScript with NodeNext ESM, `module: "NodeNext"`, target `ES2022`.
+- oclif 4 command framework.
+- `@heroku/sdk` (current branch tracks GitHub `main`); the bare entry exports `HerokuSDK` and `HerokuSDKOptions`.
+- Tests use `mocha` + `chai` + `chai-as-promised` + `sinon`. Existing tests use `nock` to intercept HTTP; the rewrite drops `nock` in favor of direct SDK stubbing.
+
+## Process
+
+```
+Pre-flight ── Task 1 (codemod + manual cleanup) ── Task 2 (test rewrite) ── Verify ── Open PR
+```
+
+Each step is required. Do not skip.
+
+---
+
+## Pre-flight
+
+Run these once per command, before any code change. They prevent the most common surprises.
+
+### Step P1: Confirm working tree is clean and SDK is on disk
+
+```bash
+git status -sb
+node -e "console.log(require('@heroku/sdk/package.json').version)"
+node -e "const {HerokuSDK} = require('@heroku/sdk'); console.log(typeof HerokuSDK)"
+```
+
+Expected: no unmerged paths (`UU`), `HerokuSDK` is `function`. If the working tree is dirty, resolve before proceeding (commit, stash, or restore — depending on what's there). If `HerokuSDK` is `undefined`, the SDK is on the wrong version and the rest of this skill will not apply cleanly.
+
+### Step P2: Capture baseline of pre-existing failures
+
+```bash
+npx tsc --noEmit -p tsconfig.json 2>&1 | tee /tmp/tsc-baseline.txt | tail -20
+npx mocha 'test/unit/commands/<command-path>.unit.test.ts' --reporter min 2>&1 | tail -5
+```
+
+Save the `tsc` baseline. Any errors present here are NOT your responsibility — your goal is "no *new* errors after migration." For the test file, capture pass/fail status; if it was already failing, stop and ask the user before continuing.
+
+### Step P3: Verify the command's call surface
+
+Read the target command file. Confirm:
+- The command uses raw `this.heroku.<verb>(path)` calls (otherwise this skill doesn't apply).
+- No call site streams a response, uses raw fetch, or sets custom auth (the codemod flags these but they may indicate this command needs manual migration).
+
+---
+
+## Task 1: Migrate the command source
+
+Two stages: run the codemod, then resolve any TODO markers it left.
+
+### Step 1.1: Run the codemod (dry-run first)
+
+```bash
+npx tsx scripts/codemods/sdk-migration/migrate-command.ts \
+  --dry-run src/commands/<command-path>.ts
+```
+
+The codemod handles the deterministic 80%:
+- Replaces every recognized `this.heroku.<verb>(path)` with `<service>.<resource>.<method>(...)` (`platform` for the Platform API, `data` for Postgres) by reverse-lookup against the SDK route metadata.
+- Drops `{body: x}` destructure at call sites (the SDK returns the body directly).
+- Unwraps the http-call options shape (`{body: {...}}`) to pass the bare body to SDK methods that take a request body.
+- For data routes, silently strips the `{hostname: utils.pg.host()}` options arg — the SDK provides the data hostname automatically.
+- Adds `import {HerokuSDK} from '@heroku/sdk'` and inserts `const {<services>} = new HerokuSDK()` at the top of `run()`, destructuring only the services actually used (e.g., `{platform}`, `{data}`, or `{data, platform}`).
+- Removes `import * as Heroku from '@heroku-cli/schema'` if no remaining references.
+
+Inspect the diff. If it looks correct, re-run without `--dry-run` to write the file in place:
+
+```bash
+npx tsx scripts/codemods/sdk-migration/migrate-command.ts \
+  src/commands/<command-path>.ts
+```
+
+The codemod exits non-zero if it left any `// TODO(sdk-migration): ...` markers. That's a signal, not a failure.
+
+### Step 1.2: Resolve TODO(sdk-migration) markers
+
+The codemod flags but does not auto-fix the following cases. Address each by hand:
+
+**"no SDK route maps to <verb> <path>"**
+The CLI calls an endpoint the SDK does not expose. Stop and escalate — silently re-introducing a raw HTTP call defeats the migration's purpose.
+
+**"ambiguous route resolution for <verb> <path>: A, B, ..."**
+Multiple SDK methods share the same `(verb, path)` and disambiguate via request body shape (e.g., `release.create` vs `release.rollback`, both POST `/apps/{id}/releases`). Pick the right one based on the calling code's intent and replace the raw call manually.
+
+**"cannot statically extract path from this.heroku.<verb>(...)"**
+The path is a variable rather than a string/template literal. Trace the variable's value, then replace manually.
+
+**"cannot determine SDK request body shape ..."**
+The second argument to a write-method call wasn't a recognizable `{body: ...}` wrapper. Inspect the argument and pass the SDK its expected body shape directly.
+
+**"this.heroku.<verb>(...) has an extra argument (request options?) ..."**
+The CLI passed http-call options the SDK doesn't accept. For data routes, a lone `{hostname: utils.pg.host()}` is dropped silently and won't appear here — anything that reaches this flag has additional unrecognized properties. If the call is hitting a non-default host (other than the Platform or Data hostname the SDK knows about), escalate. Otherwise, drop the unused options and replace manually.
+
+**`Warning: name collision with SDK service(s)`** (non-blocking)
+A local variable in `run()` shadows the destructured `data` or `platform` service. The codemod still produces the migration, but the inner scope's SDK calls will fail at runtime. Rename the local before merging.
+
+### Step 1.3: Type-check
+
+```bash
+npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt | tail -20
+```
+
+Expected: empty output (no new errors). If new errors appear, they typically fall into:
+
+- **Local-type incompatibility** → use a single-step cast (`as App[]`, not `as unknown as App[]`) at the call site. Reach for `as unknown as X` only if the single-step is rejected.
+- **Helper signature mismatch** → if a helper parameter was typed as `Heroku.X` to mean an array, fix the helper to `App[]` honestly. Anticipate that `lodash` operations like `_.partition` return tuples — destructure: `const [a, b] = _.partition(...)`.
+- **Optional-field access** → SDK return types use `team?.name` patterns. If the calling code stored the result in a variable typed `null | string`, coerce with `?? null`.
+- **Method-doesn't-exist** → stop and escalate.
+
+Do NOT modify type files in `src/lib/types/` to satisfy a cast in a command file. Those types exist for a reason; the cast is the right tool here.
+
+### Step 1.4: Run the existing tests
+
+```bash
+npx mocha 'test/unit/commands/<command-path>.unit.test.ts' --reporter min 2>&1 | tail -5
+```
+
+Expected: same pass count as Pre-flight Step P2.
+
+If tests fail, the most likely causes:
+- **The SDK call returns a slightly different shape** than the raw HTTP response. Adjust the post-call code (often: drop the `.body` destructuring) until the data flow matches what the test expects.
+- **An assertion checks specific URL shape**. Skip ahead to Task 2 — the rewrite will replace the assertion with an SDK-stub assertion anyway.
+- **The output formatting changed** because the SDK normalized a field. Verify against the original output format in version control before changing the assertion.
+
+### Step 1.5: Lint and commit Task 1
+
+```bash
+npx eslint src/commands/<command-path>.ts
+git add src/commands/<command-path>.ts
+git commit -m "refactor: use @heroku/sdk for <command> command"
+```
+
+Lint warnings that pre-existed are acceptable. Do NOT introduce new violations; if eslint flags something, fix it (or re-run with `--fix` for stylistic-only issues, then verify the autofix didn't change semantics).
+
+---
+
+## Task 2: Rewrite tests to stub the SDK
+
+This task is required, not optional. `nock` keeps intercepting after Task 1 because `@heroku/sdk` issues the same HTTP calls under the hood — but that means the existing tests are still asserting on URL shape rather than the SDK contract the migrated code now depends on. Leaving nock in place would let a future SDK change (different endpoint, batched call, retry policy) break production while tests stay green.
+
+The reference implementation is at `test/unit/commands/apps/index.unit.test.ts`.
+
+### Step 2.1: Build a `FakePlatform` shape
+
+List only the resources used by the migrated command:
+
+```ts
+import {HerokuSDK} from '@heroku/sdk'
+import * as sinon from 'sinon'
+
+type FakePlatform = {
+  app: {info: sinon.SinonStub; delete: sinon.SinonStub}
+  // ...add only the resources/methods this command actually calls
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: sinon.stub(), delete: sinon.stub()},
+  }
+}
+```
+
+### Step 2.2: Stub the `platform` getter on `HerokuSDK.prototype`
+
+```ts
+let fakePlatform: FakePlatform
+
+beforeEach(function () {
+  fakePlatform = buildFakePlatform()
+  sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+})
+
+afterEach(function () {
+  sinon.restore()
+})
+```
+
+This works because `HerokuSDK.platform` is a class-prototype getter (configurable by default in ES). `sinon.stub(...).get(...)` swaps it for the duration of the test; `sinon.restore()` restores it.
+
+If you encounter `TypeError: Descriptor for property platform is non-configurable and non-writable`, escalate — the SDK's class shape changed and this skill needs updating.
+
+### Step 2.3: Wire individual stubs per test, drop `nock` interceptors
+
+```ts
+it('does the thing', async function () {
+  fakePlatform.app.info.resolves({name: 'example', /* ... */})
+
+  const {stdout} = await runCommand(Cmd, ['--app', 'example'])
+
+  expect(stdout).to.equal('expected output\n')
+  expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+})
+```
+
+Add `.calledOnceWithExactly(...)` assertions on tests where the flag-to-method routing is the unit under test. Skip them on tests that are about output formatting only — they add noise.
+
+### Step 2.4: Use non-mutating spreads for fixture variants
+
+If the old test used `Object.assign(baseFixture, {region: {name: 'eu'}})`, replace with `{...baseFixture, region: {name: 'eu'}}`. Shared mutable fixtures are a latent test-pollution bug; the rewrite is a chance to fix it.
+
+### Step 2.5: Run, lint, commit Task 2
+
+```bash
+npx mocha 'test/unit/commands/<command-path>.unit.test.ts' --reporter min 2>&1 | tail -5
+npx eslint test/unit/commands/<command-path>.unit.test.ts
+git add test/unit/commands/<command-path>.unit.test.ts
+git commit -m "test(<command>): stub @heroku/sdk directly, drop nock"
+```
+
+Expected: same test count, all passing.
+
+---
+
+## Verify and finish
+
+### Step V1: Targeted test run
+
+```bash
+npx mocha 'test/unit/commands/<dir>/**/*.unit.test.ts' --reporter min 2>&1 | tail -5
+```
+
+Use the parent directory of the migrated command. Expected: all passing. If a sibling command's tests broke, your change leaked outside the migrated file — investigate before continuing.
+
+### Step V2: Type-check delta
+
+```bash
+npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt
+```
+
+Expected: empty. New errors mean the migration introduced a regression.
+
+### Step V3: Push and open PR
+
+The PR contains exactly two commits per command:
+- `refactor: use @heroku/sdk for <command> command`
+- `test(<command>): stub @heroku/sdk directly, drop nock`
+
+Each PR migrates exactly one command. Don't bundle multiple command migrations — review surface stays small and bisect remains useful if a regression slips through.
+
+---
+
+## Self-Review Checklist
+
+Before opening the PR:
+
+- [ ] No `this.heroku.<verb>` calls remain in the migrated file.
+- [ ] No `// TODO(sdk-migration):` markers remain.
+- [ ] No `import * as Heroku from '@heroku-cli/schema'` if no longer used.
+- [ ] No `as unknown as X` cast where `as X` would suffice.
+- [ ] No new `tsc` errors (verify against the Pre-flight P2 baseline).
+- [ ] Tests rewritten per Task 2: `nock` removed, SDK stubbed via `HerokuSDK.prototype.platform`.
+- [ ] Lint clean on changed files.
+- [ ] One file changed per source commit; commit messages follow the convention.
+- [ ] No incidental edits to unrelated files (lockfile, type defs, sibling commands).
+
+---
+
+## Glossary
+
+- **Platform service:** `sdk.platform.*` — methods covering Apps, Spaces, Teams, Account, Pipelines, etc.
+- **Data service:** `sdk.data.*` — methods covering Postgres / data-stores. The codemod migrates these alongside platform calls; the SDK supplies the data hostname automatically.
+- **Bare entry:** `import {HerokuSDK} from '@heroku/sdk'` — the canonical import. Do not use `@heroku/sdk/sdk` (removed in 0.4) or deep relative imports.
+- **Pre-flight baseline:** the snapshot of `tsc`/test state captured before any migration work, used to filter pre-existing noise out of post-migration verification.
+- **Codemod:** `scripts/codemods/sdk-migration/migrate-command.ts` — the deterministic transform run in Task 1, Step 1.1.
