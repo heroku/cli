@@ -3,7 +3,6 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {logSessionExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
-import {HttpsProxyAgent} from 'https-proxy-agent'
 
 import colorize from './colorize.js'
 
@@ -36,7 +35,6 @@ export class LogDisplayer {
     try {
       for await (const line of sdk.platform.logSession.streamLogs(options.app, {
         dyno: options.dyno,
-        fetch: this.buildFetch(),
         lines: options.lines,
         onSessionCreated({generation, isRecreate}) {
           // Fir's stream takes a moment to provision; print a hint
@@ -60,34 +58,6 @@ export class LogDisplayer {
     } finally {
       process.off('SIGINT', onAbort)
       process.off('SIGTERM', onAbort)
-    }
-  }
-
-  /**
-   * Custom fetch override that injects User-Agent and routes through
-   * an https proxy when one is configured. The SDK's streamLogs
-   * accepts a `fetch` option for exactly this kind of CLI/Node-only
-   * transport configuration.
-   */
-  private buildFetch(): typeof fetch {
-    const userAgent = process.env.HEROKU_DEBUG_USER_AGENT || 'heroku-run'
-    const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
-
-    return async (input, init) => {
-      const headers = new Headers(init?.headers)
-      headers.set('User-Agent', userAgent)
-
-      // eslint-disable-next-line no-undef
-      const fetchOptions: RequestInit & {agent?: unknown} = {
-        ...init,
-        headers,
-      }
-
-      if (proxy) {
-        fetchOptions.agent = new HttpsProxyAgent(proxy)
-      }
-
-      return fetch(input, fetchOptions)
     }
   }
 
