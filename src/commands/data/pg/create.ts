@@ -108,7 +108,7 @@ export default class DataPgCreate extends BaseCommand {
     }
 
     try {
-      this.addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {
+      this.addon = await createAddon(app, servicePlan, confirm, wait, {
         actionStartMessage: `Creating a ${color.addon(this.leaderLevel || '')} database on ${color.app(app)}`,
         actionStopMessage: 'done',
         as, config, name,

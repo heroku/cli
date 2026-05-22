@@ -21,7 +21,7 @@ describe('addons:detach', function () {
       .get('/apps/myapp/addon-attachments/redis-123')
       .reply(200, {addon: {name: 'redis'}, id: 100, name: 'redis-123'})
       .delete('/addon-attachments/100')
-      .reply(200)
+      .reply(200, {id: 100, name: 'redis-123'})
       .get('/apps/myapp/releases')
       .reply(200, [{version: 10}])
 

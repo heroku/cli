@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Plan} from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
-import _ from 'lodash'
 import printf from 'printf'
 
 import {formatPrice} from '../../lib/addons/util.js'
@@ -29,12 +30,13 @@ export default class Plans extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Plans)
     const {service} = args
-    let {body: plans} = await this.heroku.get<PlanWithMeteredPrice[]>(`/addon-services/${service}/plans`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
-    plans = _.sortBy(plans, ['price.contract', 'price.cents'])
+    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const plans = ((await platform.addOn.listPlans(service)) as unknown as PlanWithMeteredPrice[])
+      .sort((a, b) => {
+        const contractDelta = Number(a.price?.contract ?? false) - Number(b.price?.contract ?? false)
+        if (contractDelta !== 0) return contractDelta
+        return (a.price?.cents ?? 0) - (b.price?.cents ?? 0)
+      })
     if (flags.json) {
       hux.styledJSON(plans)
     } else {

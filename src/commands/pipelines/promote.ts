@@ -1,12 +1,11 @@
+import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline-coupling'
+
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {
-  type AppWithPipelineCoupling,
-  listPipelineApps,
-  promotePipeline,
-  type ReleaseStreamContext,
-} from '@heroku/sdk/compositions/pipeline'
+import {HerokuSDK} from '@heroku/sdk'
+import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
+import {promotePipeline, type ReleaseStreamContext} from '@heroku/sdk/resources/platform/pipeline-promotion'
 import {ux} from '@oclif/core/ux'
 import assert from 'node:assert'
 
@@ -49,7 +48,9 @@ export default class Promote extends Command {
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
     ux.stdout(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
-    const allApps = await listPipelineApps(coupling.pipeline!.id!)
+    const sdk = new HerokuSDK({extensions: [pipelineCouplingExtensions]})
+    const {platform} = sdk
+    const allApps = await platform.pipelineCoupling.listApps(coupling.pipeline!.id!)
     const sourceStage = coupling.stage
 
     let promotionActionName = ''
@@ -103,11 +104,15 @@ export default class Promote extends Command {
       }
     }
 
-    const {targets: promotionTargets} = await Promote.promotePipeline({
-      pipeline: {id: coupling.pipeline!.id!},
-      source: {app: {id: coupling.app!.id!}},
-      targets: targetApps.map(app => ({app: {id: app.id}})),
-    }, {onReleaseStream})
+    const {targets: promotionTargets} = await Promote.promotePipeline(
+      {platform},
+      {
+        pipeline: {id: coupling.pipeline!.id!},
+        source: {app: {id: coupling.app!.id!}},
+        targets: targetApps.map(app => ({app: {id: app.id}})),
+      },
+      {onReleaseStream},
+    )
 
     if (releaseStreamError) {
       ux.error(releaseStreamError as Error)

@@ -17,8 +17,8 @@ describe('addons:rename', function () {
         .get(`/addons/${redis.name}`)
         .reply(200, redis)
       renameRequest = nock('https://api.heroku.com')
-        .patch(`/apps/${redis.app?.id}/addons/${redis.id}`, {name: 'cache-redis'})
-        .reply(201, '')
+        .patch(`/apps/${redis.app?.id}/addons/${redis.id}`, {name: 'cache-redis', plan: redis.plan!.name})
+        .reply(201, {...redis, name: 'cache-redis'})
     })
     it('renames the add-on', async function () {
       const {stdout} = await runCommand(Cmd, [redis_name, 'cache-redis'])

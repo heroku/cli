@@ -1,24 +1,23 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
-export const waitForAddonProvisioning = async function (api: APIClient, addon: Heroku.AddOn, interval: number) {
+export const waitForAddonProvisioning = async function (addon: Heroku.AddOn, interval: number) {
   const app = addon.app?.name || ''
   const addonName = addon.name
   let addonBody = {...addon}
 
   ux.action.start(`Creating ${color.addon(addonName || '')}`)
 
+  const {platform} = new HerokuSDK()
+  const platformWithExpansion = platform.withHeaders({'Accept-Expansion': 'addon_service,plan'})
   while (addonBody.state === 'provisioning') {
     // eslint-disable-next-line no-promise-executor-return
     await new Promise(resolve => setTimeout(resolve, interval * 1000))
 
-    const addonResponse = await api.get<Heroku.AddOn>(`/apps/${app}/addons/${addonName}`, {
-      headers: {'Accept-Expansion': 'addon_service,plan'},
-    })
-
-    addonBody = addonResponse?.body
+    addonBody = (await platformWithExpansion.addOn.infoByApp(app, addonName!)) as unknown as Heroku.AddOn
   }
 
   if (addonBody.state === 'deprovisioned') {

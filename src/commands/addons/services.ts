@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class Services extends Command {
@@ -12,12 +12,13 @@ export default class Services extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Services)
-    const {body: services} = await this.heroku.get<Heroku.AddOnService[]>('/addon-services')
+    const {platform} = new HerokuSDK()
+    const services = await platform.addOnService.list()
     if (flags.json) {
       hux.styledJSON(services)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(services, {
+      hux.table(services as Array<Record<string, unknown>>, {
         name: {
           header: 'Slug',
         },

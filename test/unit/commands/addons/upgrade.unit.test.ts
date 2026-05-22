@@ -21,14 +21,15 @@ describe('addons:upgrade', function () {
   it('upgrades an add-on', async function () {
     const addon: AddOn = {
       addon_service: {name: 'heroku-kafka'},
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
+      id: 'addon-1',
       name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
     api
       .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
       .reply(200, [addon])
-      .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
+      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-kafka:hobby'})
       .reply(200, {plan: {price: {cents: 0}}, provision_message: 'provision msg'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
@@ -44,7 +45,8 @@ describe('addons:upgrade', function () {
   it('displays hourly and monthly price when upgrading an add-on', async function () {
     const addon: AddOn = {
       addon_service: {name: 'heroku-kafka'},
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
+      id: 'addon-1',
       name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
@@ -52,7 +54,7 @@ describe('addons:upgrade', function () {
     api
       .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
       .reply(200, [addon])
-      .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:standard'}})
+      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-kafka:standard'})
       .reply(200, {plan: {price: {cents: 2500, unit: 'month'}}, provision_message: 'provision msg'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
@@ -68,7 +70,8 @@ describe('addons:upgrade', function () {
   it('does not display a price when upgrading an add-on and no price is returned from the api', async function () {
     const addon = {
       addon_service: {name: 'heroku-kafka'},
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
+      id: 'addon-1',
       name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
@@ -76,7 +79,7 @@ describe('addons:upgrade', function () {
     api
       .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
       .reply(200, [addon])
-      .patch('/apps/myapp/addons/kafka-swiftly-123', {plan: {name: 'heroku-kafka:hobby'}})
+      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-kafka:hobby'})
       .reply(200, {plan: {}, provision_message: 'provision msg'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
@@ -92,7 +95,8 @@ describe('addons:upgrade', function () {
   it('upgrades to a contract add-on', async function () {
     const addon = {
       addon_service: {name: 'heroku-connect'},
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
+      id: 'addon-1',
       name: 'connect-swiftly-123',
       plan: {name: 'free'},
     }
@@ -100,7 +104,7 @@ describe('addons:upgrade', function () {
     api
       .post('/actions/addons/resolve', {addon: 'heroku-connect', app: 'myapp'})
       .reply(200, [addon])
-      .patch('/apps/myapp/addons/connect-swiftly-123', {plan: {name: 'heroku-connect:contract'}})
+      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-connect:contract'})
       .reply(200, {plan: {price: {cents: 0, contract: true}}, provision_message: 'provision msg'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
@@ -116,14 +120,15 @@ describe('addons:upgrade', function () {
   it('upgrades an add-on with only one argument', async function () {
     const addon = {
       addon_service: {name: 'heroku-postgresql'},
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
+      id: 'addon-1',
       name: 'postgresql-swiftly-123',
       plan: {name: 'premium-0'},
     }
     api
       .post('/actions/addons/resolve', {addon: 'heroku-postgresql', app: 'myapp'})
       .reply(200, [addon])
-      .patch('/apps/myapp/addons/postgresql-swiftly-123', {plan: {name: 'heroku-postgresql:hobby'}})
+      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-postgresql:hobby'})
       .reply(200, {plan: {price: {cents: 0}}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
@@ -152,7 +157,8 @@ describe('addons:upgrade', function () {
   it('errors with invalid plan', async function () {
     const addon = {
       addon_service: {name: 'heroku-db1'},
-      app: {name: 'myapp'},
+      app: {id: 'app-1', name: 'myapp'},
+      id: 'addon-1',
       name: 'db1-swiftly-123',
       plan: {name: 'premium-0'},
     }
@@ -166,7 +172,7 @@ describe('addons:upgrade', function () {
         {name: 'heroku-db1:basic', plan: {cents: 25}},
         {name: 'heroku-db1:premium-0', price: {cents: 3500}},
       ])
-      .patch('/apps/myapp/addons/db1-swiftly-123', {plan: {name: 'heroku-db1:invalid'}})
+      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-db1:invalid'})
       .reply(422, {message: 'Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".'})
 
     try {
@@ -199,7 +205,7 @@ describe('addons:upgrade', function () {
   })
 
   it('handles multiple add-ons', async function () {
-    api.post('/actions/addons/resolve', {addon: 'heroku-redis', app: null})
+    api.post('/actions/addons/resolve', {addon: 'heroku-redis'})
       .reply(200, [{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}])
     try {
       await runCommand(Cmd, [

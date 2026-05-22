@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 export default class Detach extends Command {
@@ -17,19 +17,20 @@ export default class Detach extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Detach)
     const {app} = flags
-    const {body: attachment} = await this.heroku.get<Heroku.AddOnAttachment>(`/apps/${app}/addon-attachments/${args.attachment_name}`)
+    const {platform} = new HerokuSDK()
+    const attachment = await platform.addOnAttachment.infoByApp(app, args.attachment_name)
 
     ux.action.start(`Detaching ${color.attachment(attachment.name || '')} to ${color.addon(attachment.addon?.name || '')} from ${color.app(app)}`)
 
-    await this.heroku.delete(`/addon-attachments/${attachment.id}`)
+    await platform.addOnAttachment.delete(attachment.id!)
 
     ux.action.stop()
 
     ux.action.start(`Unsetting ${color.attachment(attachment.name || '')} config vars and restarting ${color.app(app)}`)
 
-    const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
-    })
+    const releases = await platform
+      .withHeaders({Range: 'version ..; max=1, order=desc'})
+      .release.list(app)
 
     ux.action.stop(`done, v${releases[0]?.version || ''}`)
   }

@@ -39,7 +39,9 @@ describe('addons', function () {
 
     context('with add-ons', function () {
       beforeEach(function () {
-        api
+        // Global /addons doesn't accept Accept-Expansion, so use a
+        // separate scope without the expansion reqheaders.
+        nock('https://api.heroku.com')
           .get('/addons')
           .reply(200, addons)
       })
@@ -82,7 +84,7 @@ describe('addons', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
         addon.billed_price = {cents: 10_000}
-        api
+        nock('https://api.heroku.com')
           .get('/addons')
           .reply(200, [addon])
       })
@@ -101,7 +103,7 @@ describe('addons', function () {
       beforeEach(function () {
         const addon = fixtures.addons['dwh-db']
         addon.billed_price = {cents: 0, contract: true}
-        api
+        nock('https://api.heroku.com')
           .get('/addons')
           .reply(200, [addon])
       })
