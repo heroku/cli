@@ -168,7 +168,7 @@ export class HerokuRepl {
       this.createInterface()
       this.start()
       // Force readline to refresh the current line
-      this.rl.write(null, {ctrl: true, name: 'u'})
+      this.rl.write('', {ctrl: true, name: 'u'})
     }
   }
   /**
