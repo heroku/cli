@@ -13,9 +13,7 @@ node_modules
 .idea
 .vscode
 .zed
-.claude/*
-!.claude/skills/
-.claude/skills/*.local.*
+.claude
 npm-shrinkwrap.json
 
 # Ignore .yarn directory from previous yarn setup
