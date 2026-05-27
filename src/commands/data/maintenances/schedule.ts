@@ -36,8 +36,7 @@ export default class DataMaintenancesSchedule extends Command {
     }),
   }
 
-  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any) {
-    const {data} = new HerokuSDK()
+  protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any, data: HerokuSDK['data']) {
     const maintenance = await data.maintenance.info(addon.id!) as unknown as Maintenance
 
     const scheduled = (maintenance.status === 'completed' || maintenance.scheduled_for === null)
@@ -60,17 +59,17 @@ export default class DataMaintenancesSchedule extends Command {
     const {app, week, weeks} = flags
 
     const addon = await addonResolver.resolve(args.addon, app)
+    const {data} = new HerokuSDK()
 
     const delayWeeks = week === undefined
       ? weeks
-      : await this.computeDelayWeeks(addon, week, differenceInCalendarWeeks)
+      : await this.computeDelayWeeks(addon, week, differenceInCalendarWeeks, data)
 
-    await this.scheduleMaintenance(addon, delayWeeks)
+    await this.scheduleMaintenance(addon, delayWeeks, data)
   }
 
-  protected async scheduleMaintenance(addon: Heroku.AddOn, delayWeeks: string) {
+  protected async scheduleMaintenance(addon: Heroku.AddOn, delayWeeks: string, data: HerokuSDK['data']) {
     ux.action.start(`Scheduling maintenance for ${color.addon(addon.name!)}`)
-    const {data} = new HerokuSDK()
     const schedule = await data.maintenance.schedule(addon.id!, {delay_weeks: delayWeeks}) as unknown as Maintenance
     ux.action.stop('maintenance scheduled')
 
