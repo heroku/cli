@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.4.1-beta.0](https://github.com/heroku/cli/compare/v11.4.0...v11.4.1-beta.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* 'run:inside' args ordering (W-22693654) ([#3727](https://github.com/heroku/cli/issues/3727)) ([355113e](https://github.com/heroku/cli/commit/355113e8253b8547ea86be4ef540287ea263af80))
+* add missing warning to 'data:pg:migrate' (W-22544849) ([#3716](https://github.com/heroku/cli/issues/3716)) ([400fc6e](https://github.com/heroku/cli/commit/400fc6e26eb7b7fdd634e0e4465fc5c19762303a))
+* inherit secrets in reusable workflow ([#3711](https://github.com/heroku/cli/issues/3711)) ([5dd58af](https://github.com/heroku/cli/commit/5dd58af6c14f55ab85fe8584598718ebee03ae4b))
+* pass empty string to rl.write in repl finally block (W-22295448) ([#3721](https://github.com/heroku/cli/issues/3721)) ([ebdf082](https://github.com/heroku/cli/commit/ebdf082ed317cb74a59945c60dc274615b735b81))
+
+
+### Miscellaneous Chores
+
+* add CLAUDE.md and Copilot instructions pointing to AGENTS.md ([#3724](https://github.com/heroku/cli/issues/3724)) ([8abed2f](https://github.com/heroku/cli/commit/8abed2faad739a1897734fe414cc2e1b70ea245a))
+* remove unused workflow file ([#3712](https://github.com/heroku/cli/issues/3712)) ([8860aa4](https://github.com/heroku/cli/commit/8860aa412261f05fae3df19438cfd50a5f4ae67f))
+
 ## [11.4.0](https://github.com/heroku/cli/compare/v11.3.0...v11.4.0) (2026-05-13)
 
 
