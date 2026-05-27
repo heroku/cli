@@ -1,13 +1,13 @@
-import {flags as Flags} from '@heroku-cli/command'
+import {Command, flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
-import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
 import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
 
-export default class DataMaintenancesIndex extends BaseCommand {
+export default class DataMaintenancesIndex extends Command {
   static description = 'list maintenances for an app\'s data addons'
   static examples = [
     '$ heroku data:maintenances --app production-app',
@@ -50,13 +50,11 @@ export default class DataMaintenancesIndex extends BaseCommand {
   private async fetchMaintenances(appName: string) {
     ux.action.start('Fetching maintenances')
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
-      `/data/maintenances/v1/apps/${app.id}`,
-      this.dataApi.defaults,
-    )
+    const {data} = new HerokuSDK()
+    const result = await data.maintenance.infoByApp(app.id!) as unknown as {maintenances: Maintenance[]}
     ux.action.stop()
 
-    return maintenances
+    return result.maintenances
   }
 
   private getTableColumns(extended: boolean, columns: string | undefined) {

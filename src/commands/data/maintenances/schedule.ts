@@ -1,13 +1,13 @@
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../lib/data/base-command.js'
 import {Maintenance} from '../../../lib/data/types.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
-export default class DataMaintenancesSchedule extends BaseCommand {
+export default class DataMaintenancesSchedule extends Command {
   static args = {
     addon: Args.string({
       description: 'addon to schedule or re-schedule maintenance for',
@@ -37,10 +37,8 @@ export default class DataMaintenancesSchedule extends BaseCommand {
   }
 
   protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any) {
-    const {body: maintenance} = await this.dataApi.get<Maintenance>(
-      `/data/maintenances/v1/${addon!.id}`,
-      this.dataApi.defaults,
-    )
+    const {data} = new HerokuSDK()
+    const maintenance = await data.maintenance.info(addon.id!) as unknown as Maintenance
 
     const scheduled = (maintenance.status === 'completed' || maintenance.scheduled_for === null)
       ? Date.now()
@@ -72,15 +70,8 @@ export default class DataMaintenancesSchedule extends BaseCommand {
 
   protected async scheduleMaintenance(addon: Heroku.AddOn, delayWeeks: string) {
     ux.action.start(`Scheduling maintenance for ${color.addon(addon.name!)}`)
-    const {body: schedule} = await this.dataApi.post<Maintenance>(
-      `/data/maintenances/v1/${addon.id}/schedule`,
-      {
-        ...this.dataApi.defaults,
-        body: {
-          delay_weeks: delayWeeks,
-        },
-      },
-    )
+    const {data} = new HerokuSDK()
+    const schedule = await data.maintenance.schedule(addon.id!, {delay_weeks: delayWeeks}) as unknown as Maintenance
     ux.action.stop('maintenance scheduled')
 
     const alreadyScheduled = schedule.previously_scheduled_for !== null

@@ -24,7 +24,7 @@ describe('data:maintenances:wait', function () {
 
   beforeEach(function () {
     herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {
@@ -38,11 +38,15 @@ describe('data:maintenances:wait', function () {
       .post('/actions/addons/resolve')
       .reply(200, [addon])
 
-    let pollingCalls = 0
+    // Initial info call via SDK (postgres-api.heroku.com)
     dataApi
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, runningMaintenance)
-    dataApi
+
+    // Polling via BaseDataCommand's dataApi (api.data.heroku.com)
+    const legacyDataApi = nock('https://api.data.heroku.com')
+    let pollingCalls = 0
+    legacyDataApi
       .get(`/data/maintenances/v1/${addon.id}`)
       .thrice()
       .reply(() => {
@@ -57,6 +61,7 @@ describe('data:maintenances:wait', function () {
 
     expect(stderr).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
     expect(stderr).to.contain('maintenance completed')
+    legacyDataApi.done()
   })
 
   it('waits until maintenance is complete scoped by optional app flag', async function () {
@@ -64,11 +69,15 @@ describe('data:maintenances:wait', function () {
       .post('/actions/addons/resolve')
       .reply(200, [addon])
 
-    let pollingCalls = 0
+    // Initial info call via SDK (postgres-api.heroku.com)
     dataApi
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, runningMaintenance)
-    dataApi
+
+    // Polling via BaseDataCommand's dataApi (api.data.heroku.com)
+    const legacyDataApi = nock('https://api.data.heroku.com')
+    let pollingCalls = 0
+    legacyDataApi
       .get(`/data/maintenances/v1/${addon.id}`)
       .thrice()
       .reply(() => {
@@ -83,6 +92,7 @@ describe('data:maintenances:wait', function () {
 
     expect(stderr).to.contain(`Waiting for maintenance on ${addon.name} to complete`)
     expect(stderr).to.contain('maintenance completed')
+    legacyDataApi.done()
   })
 
   it('shows error if initial maintenance state is not running', async function () {
@@ -104,11 +114,15 @@ describe('data:maintenances:wait', function () {
       .post('/actions/addons/resolve', body => body.addon_service === undefined)
       .reply(200, [nonPostgresAddon])
 
-    let pollingCalls = 0
+    // Initial info call via SDK (postgres-api.heroku.com)
     dataApi
       .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
       .reply(200, runningMaintenance)
-    dataApi
+
+    // Polling via BaseDataCommand's dataApi (api.data.heroku.com)
+    const legacyDataApi = nock('https://api.data.heroku.com')
+    let pollingCalls = 0
+    legacyDataApi
       .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
       .thrice()
       .reply(() => {
@@ -123,5 +137,6 @@ describe('data:maintenances:wait', function () {
 
     expect(stderr).to.contain(`Waiting for maintenance on ${nonPostgresAddon.name} to complete`)
     expect(stderr).to.contain('maintenance completed')
+    legacyDataApi.done()
   })
 })

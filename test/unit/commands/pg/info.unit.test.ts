@@ -10,7 +10,7 @@ describe('pg:info', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com:443')
-    pg = nock('https://api.data.heroku.com:443')
+    pg = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {

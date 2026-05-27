@@ -33,7 +33,7 @@ describe('data:maintenances:info', function () {
 
   beforeEach(function () {
     herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {
@@ -152,7 +152,7 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
 
     const {error} = await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
     const {message} = error as {message: string}
-    expect(message).to.equal('not found')
+    expect(message).to.equal('no maintenance found for this add-on')
   })
 
   it('shows maintenance for non-postgres add-ons', async function () {

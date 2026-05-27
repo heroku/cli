@@ -15,7 +15,7 @@ describe('pg:backups', function () {
   let transfers: BackupTransfer[]
 
   beforeEach(function () {
-    pg = nock('https://api.data.heroku.com')
+    pg = nock('https://postgres-api.heroku.com')
     pg.get('/client/v11/apps/myapp/transfers')
       .reply(200, transfers)
   })

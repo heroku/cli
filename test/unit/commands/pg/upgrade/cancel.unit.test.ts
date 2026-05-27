@@ -29,7 +29,7 @@ describe('pg:upgrade:cancel', function () {
   beforeEach(async function () {
     addon = fixtures.addons['dwh-db']
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
   })
@@ -110,7 +110,7 @@ describe('pg:upgrade:cancel', function () {
       .reply(200, [{addon}])
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(200, {message: 'You canceled the upgrade.'})
@@ -142,7 +142,7 @@ describe('pg:upgrade:cancel', function () {
       .reply(200, [{addon}])
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
@@ -170,7 +170,7 @@ describe('pg:upgrade:cancel', function () {
       .reply(200, [{addon}])
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
       .reply(422, {id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress."})

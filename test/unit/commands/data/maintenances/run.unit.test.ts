@@ -20,7 +20,7 @@ describe('data:maintenances:run', function () {
 
   beforeEach(function () {
     herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {
@@ -142,14 +142,15 @@ describe('data:maintenances:run', function () {
       .get(`/apps/${addon.app.id}`)
       .reply(200, appInMaintenance)
 
-    // call maintenance
+    // call maintenance via SDK (postgres-api.heroku.com)
     dataApi
       .post(`/data/maintenances/v1/${addon.id}/run`)
       .reply(200, maintenancesResponse)
 
-    // polling for maintenance status 3 times
+    // polling for maintenance status via BaseDataCommand's dataApi (api.data.heroku.com)
+    const legacyDataApi = nock('https://api.data.heroku.com')
     let pollingCalls = 0
-    dataApi
+    legacyDataApi
       .get(`/data/maintenances/v1/${addon.id}`)
       .thrice()
       .reply(() => {
@@ -175,5 +176,6 @@ describe('data:maintenances:run', function () {
     expect(stderr).to.contain('maintenance triggered')
     expect(stderr).to.contain('maintenance completed')
     expect(stdout).to.equal('')
+    legacyDataApi.done()
   })
 })

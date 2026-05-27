@@ -3,6 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {
   color, hux, pg, utils,
 } from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {PgDatabaseTenant} from '../../lib/pg/types.js'
@@ -49,19 +50,15 @@ export default class Info extends Command {
       }
     }
 
+    const {data} = new HerokuSDK()
     let dbs: DBObject[] = await Promise.all(addons.map(async addon => {
-      const pgResponse = await this.heroku.get<PgDatabaseTenant>(
-        `/client/v11/databases/${addon.id}`,
-        {
-          hostname: utils.pg.host(),
-        },
-      )
+      const dbInfo = await (data.database.info(addon.id) as Promise<PgDatabaseTenant>)
         .catch(error => {
           if (error.statusCode !== 404)
             throw error
           ux.warn(`${color.datastore(addon.name)} is not yet provisioned.\nRun ${color.code('heroku addons:wait')} to wait until the db is provisioned.`)
+          return null
         })
-      const {body: dbInfo} = pgResponse || {body: null}
       return {
         addon,
         config,

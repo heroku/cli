@@ -1,11 +1,11 @@
-import {flags as Flags} from '@heroku-cli/command'
+import {Command, flags as Flags} from '@heroku-cli/command'
 import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../../lib/data/base-command.js'
 import {Window} from '../../../../lib/data/types.js'
 
-export default class DataMaintenancesWindow extends BaseCommand {
+export default class DataMaintenancesWindow extends Command {
   static args = {
     addon: Args.string({
       description: 'addon to show window for',
@@ -29,10 +29,8 @@ export default class DataMaintenancesWindow extends BaseCommand {
     const addon = await addonResolver.resolve(args.addon, flags.app)
 
     ux.action.start(`Fetching maintenance window for ${color.addon(addon.name!)}`)
-    const {body: window} = await this.dataApi.get<Window>(
-      `/data/maintenances/v1/${addon.id}/window`,
-      this.dataApi.defaults,
-    )
+    const {data} = new HerokuSDK()
+    const window = await data.maintenance.window(addon.id!) as unknown as Window
     ux.action.stop()
 
     if (flags.json) {

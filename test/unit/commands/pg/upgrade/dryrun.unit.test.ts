@@ -28,7 +28,7 @@ describe('pg:upgrade:dryrun', function () {
   beforeEach(async function () {
     addon = fixtures.addons['dwh-db']
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
   })
@@ -108,7 +108,7 @@ describe('pg:upgrade:dryrun', function () {
       .reply(200, [{addon}])
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
       .reply(200, {message: "Started test upgrade. We'll notify you via email when it's complete."})
@@ -139,7 +139,7 @@ describe('pg:upgrade:dryrun', function () {
       .reply(200, [{addon}])
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
       .reply(200, {message: "Started test upgrade. We'll notify you via email when it's complete."})
@@ -168,7 +168,7 @@ describe('pg:upgrade:dryrun', function () {
       .reply(200, [{addon}])
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
       .reply(422, {id: 'unprocessable_entity', message: 'database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.'})

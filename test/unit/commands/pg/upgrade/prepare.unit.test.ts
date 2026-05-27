@@ -27,7 +27,7 @@ describe('pg:upgrade:prepare', function () {
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
     addon = fixtures.addons['dwh-db']
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
@@ -110,7 +110,7 @@ describe('pg:upgrade:prepare', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
       .reply(200, {message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
@@ -147,7 +147,7 @@ describe('pg:upgrade:prepare', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
       .reply(200, {message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
@@ -182,7 +182,7 @@ describe('pg:upgrade:prepare', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
       .reply(422, {id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.'})

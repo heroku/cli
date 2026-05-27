@@ -21,7 +21,7 @@ describe('data:maintenances:schedule', function () {
 
   beforeEach(function () {
     herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
   })
 
   afterEach(function () {

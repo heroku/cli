@@ -1,10 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
+import {PgDatabase} from '../../../lib/pg/types.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -38,7 +39,8 @@ export default class Upgrade extends Command {
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
-    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
+    const {data} = new HerokuSDK()
+    const replica = await data.database.info(db.id) as unknown as PgDatabase
 
     if (replica.following)
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
@@ -49,13 +51,16 @@ export default class Upgrade extends Command {
     `))
 
     try {
-      const data = {version}
       ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/prepare`, {body: data, hostname: utils.pg.host()})
-      ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.body.message)}`))
-    } catch (error) {
-      const response = error as PgUpgradeError
-      ux.error(heredoc(`${formatResponseWithCommands(response.body.message)}\n\nError ID: ${response.body.id}`))
+      const prepareUpgrade = data.database.prepareUpgrade as (name: string, body: {version?: string}) => Promise<unknown>
+      const response = await prepareUpgrade(db.id, {version}) as {message: string}
+      ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.message)}`))
+    } catch (error: any) {
+      if (error.id && error.message) {
+        ux.error(heredoc(`${formatResponseWithCommands(error.message)}\n\nError ID: ${error.id}`))
+      } else {
+        throw error
+      }
     }
   }
 }

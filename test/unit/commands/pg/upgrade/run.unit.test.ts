@@ -28,7 +28,7 @@ describe('pg:upgrade:run', function () {
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
+    dataApi = nock('https://postgres-api.heroku.com')
     hobbyAddon = fixtures.addons['www-db']
     addon = fixtures.addons['dwh-db']
     uxWarnStub.resetHistory()
@@ -144,7 +144,7 @@ describe('pg:upgrade:run', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${essentialAddon.id}`)
-      .reply(200)
+      .reply(200, {})
       .post(`/client/v11/databases/${essentialAddon.id}/upgrade/run`)
       .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
 
@@ -178,7 +178,7 @@ describe('pg:upgrade:run', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(400, {id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade."})
@@ -205,7 +205,7 @@ describe('pg:upgrade:run', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(400, {id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.'})
@@ -232,7 +232,7 @@ describe('pg:upgrade:run', function () {
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     dataApi
       .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
+      .reply(200, {})
     dataApi
       .post(`/client/v11/databases/${addon.id}/upgrade/run`)
       .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
