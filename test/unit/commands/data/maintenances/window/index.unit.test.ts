@@ -1,10 +1,12 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 
 import DataMaintenancesWindow from '../../../../../../src/commands/data/maintenances/window/index.js'
 import {maintenanceWindow} from '../../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 describe('data:maintenances:window', function () {
   const app = {
@@ -12,26 +14,22 @@ describe('data:maintenances:window', function () {
   }
 
   let herokuApi: nock.Scope
-  let dataApi: nock.Scope
-
-  beforeEach(function () {
-    herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://postgres-api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
     herokuApi.done()
-    dataApi.done()
     nock.cleanAll()
+    sdkMock?.restore()
   })
 
   it('can fetch a window for an addon', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}/window`)
-      .reply(200, maintenanceWindow)
+
+    const windowStub = stub().resolves(maintenanceWindow)
+    sdkMock = mockSDKData({maintenance: {window: windowStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesWindow, [addon.name])
 
@@ -40,12 +38,13 @@ describe('data:maintenances:window', function () {
   })
 
   it('can fetch a window for an addon scoped by an app', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}/window`)
-      .reply(200, maintenanceWindow)
+
+    const windowStub = stub().resolves(maintenanceWindow)
+    sdkMock = mockSDKData({maintenance: {window: windowStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesWindow, [addon.name, `--app=${app.name}`])
 
@@ -54,12 +53,13 @@ describe('data:maintenances:window', function () {
   })
 
   it('can fetch a window for a non-postgres addon', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve', body => body.addon_service === undefined)
       .reply(200, [nonPostgresAddon])
-    dataApi
-      .get(`/data/maintenances/v1/${nonPostgresAddon.id}/window`)
-      .reply(200, maintenanceWindow)
+
+    const windowStub = stub().resolves(maintenanceWindow)
+    sdkMock = mockSDKData({maintenance: {window: windowStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesWindow, [nonPostgresAddon.name])
 

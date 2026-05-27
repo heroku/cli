@@ -1,28 +1,30 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
+import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
 
 describe('pg:backups', function () {
-  let pg: nock.Scope
+  let sdkMock: MockSDK
+  let listByAppStub: ReturnType<typeof stub>
   let transfers: BackupTransfer[]
 
   beforeEach(function () {
-    pg = nock('https://postgres-api.heroku.com')
-    pg.get('/client/v11/apps/myapp/transfers')
-      .reply(200, transfers)
+    listByAppStub = stub().resolves(transfers)
+    sdkMock = mockSDKData({
+      transfer: {listByApp: listByAppStub},
+    })
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    pg.done()
+    sdkMock.restore()
   })
 
   describe('with no backups/restores/copies', function () {
@@ -31,6 +33,7 @@ describe('pg:backups', function () {
     })
 
     it('shows empty message', async function () {
+      listByAppStub.resolves(transfers)
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -105,6 +108,7 @@ describe('pg:backups', function () {
     })
 
     it('shows backups', async function () {
+      listByAppStub.resolves(transfers)
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -149,6 +153,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows restore', async function () {
+      listByAppStub.resolves(transfers)
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -191,6 +196,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows copy', async function () {
+      listByAppStub.resolves(transfers)
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',

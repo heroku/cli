@@ -6,10 +6,12 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/dryrun.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -18,7 +20,9 @@ describe('pg:upgrade:dryrun', function () {
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
   let api: nock.Scope
-  let dataApi: nock.Scope
+  let sdkMock: MockSDK
+  let infoStub: ReturnType<typeof stub>
+  let dryRunUpgradeStub: ReturnType<typeof stub>
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -28,14 +32,19 @@ describe('pg:upgrade:dryrun', function () {
   beforeEach(async function () {
     addon = fixtures.addons['dwh-db']
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://postgres-api.heroku.com')
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
+
+    infoStub = stub()
+    dryRunUpgradeStub = stub()
+    sdkMock = mockSDKData({
+      database: {info: infoStub, dryRunUpgrade: dryRunUpgradeStub},
+    })
   })
 
   afterEach(async function () {
+    sdkMock.restore()
     api.done()
-    dataApi.done()
     nock.cleanAll()
   })
 
@@ -83,15 +92,13 @@ describe('pg:upgrade:dryrun', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {
-        following: 'postgres://xxx.com:5432/abcdefghijklmn',
-        leader: {
-          addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
-          name: 'postgresql-leader',
-        },
-      })
+    infoStub.resolves({
+      following: 'postgres://xxx.com:5432/abcdefghijklmn',
+      leader: {
+        addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
+        name: 'postgresql-leader',
+      },
+    })
     const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -106,12 +113,8 @@ describe('pg:upgrade:dryrun', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {})
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
-      .reply(200, {message: "Started test upgrade. We'll notify you via email when it's complete."})
+    infoStub.resolves({})
+    dryRunUpgradeStub.resolves({message: "Started test upgrade. We'll notify you via email when it's complete."})
 
     const message = heredoc(`
       This command starts a test upgrade for ⛁ ${addon.name} to Postgres version 15.
@@ -137,12 +140,8 @@ describe('pg:upgrade:dryrun', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {})
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
-      .reply(200, {message: "Started test upgrade. We'll notify you via email when it's complete."})
+    infoStub.resolves({})
+    dryRunUpgradeStub.resolves({message: "Started test upgrade. We'll notify you via email when it's complete."})
 
     const message = heredoc(`
       This command starts a test upgrade for ⛁ ${addon.name} to the latest supported Postgres version.
@@ -166,12 +165,8 @@ describe('pg:upgrade:dryrun', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {})
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/dry_run`)
-      .reply(422, {id: 'unprocessable_entity', message: 'database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.'})
+    infoStub.resolves({})
+    dryRunUpgradeStub.rejects({statusCode: 422, id: 'unprocessable_entity', message: 'database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.'})
 
     const {error} = await runCommand(Cmd, [
       '--app',

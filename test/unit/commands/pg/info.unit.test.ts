@@ -1,29 +1,32 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/info.js'
+import {type MockSDK, mockSDKData} from '../../../helpers/mock-sdk.js'
 
 describe('pg:info', function () {
   let api: nock.Scope
-  let pg: nock.Scope
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com:443')
-    pg = nock('https://postgres-api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
     api.done()
-    pg.done()
     nock.cleanAll()
+    sdkMock?.restore()
   })
+
   context('with 0 dbs', function () {
     it('shows empty state', async function () {
+      api = nock('https://api.heroku.com:443')
       api.get('/apps/myapp/config-vars')
         .reply(200, {})
         .get('/apps/myapp/addon-attachments')
         .reply(200, [])
+
+      const databaseInfoStub = stub().resolves({})
+      sdkMock = mockSDKData({database: {info: databaseInfoStub}})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -44,17 +47,18 @@ describe('pg:info', function () {
         app: {name: 'myapp'}, id: 2, name: 'postgres-2', plan,
       },
     ]
-    const dbA = {
+    const dbA = () => ({
       info: [
         {name: 'Plan', values: ['Hobby-dev']}, {name: 'Empty', values: []}, {name: 'Following', resolve_db_name: true, values: ['postgres://ec2-54-111-111-1.compute-1.amazonaws.com:5452/dxxxxxxxxxxxx']},
       ], resource_url: config.DATABASE_URL,
-    }
-    const dbB = {
+    })
+    const dbB = () => ({
       info: [
         {name: 'Plan', values: ['Hobby-dev']}, {name: 'Following', resolve_db_name: true, values: ['postgres://ec2-55-111-111-1.compute-1.amazonaws.com/dxxxxxxxxxxxx']},
       ], resource_url: config.HEROKU_POSTGRESQL_PURPLE_URL,
-    }
+    })
     it('shows postgres info', async function () {
+      api = nock('https://api.heroku.com:443')
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
         .get('/apps/myapp/addon-attachments')
@@ -63,10 +67,12 @@ describe('pg:info', function () {
           {addon: addons[0], config_vars: ['DATABASE_URL'], name: 'DATABASE'},
           {addon: addons[1], config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'], name: 'HEROKU_POSTGRESQL_PURPLE'},
         ])
-      pg.get('/client/v11/databases/1')
-        .reply(200, dbA)
-        .get('/client/v11/databases/2')
-        .reply(200, dbB)
+
+      const databaseInfoStub = stub()
+      databaseInfoStub.withArgs(1).resolves(dbA())
+      databaseInfoStub.withArgs(2).resolves(dbB())
+      sdkMock = mockSDKData({database: {info: databaseInfoStub}})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -86,6 +92,7 @@ describe('pg:info', function () {
           app: {name: 'myapp'}, attachment_names: ['HEROKU_POSTGRESQL_PURPLE'], id: 2, name: 'postgres-2', plan,
         },
       ]
+      api = nock('https://api.heroku.com:443')
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
         .get('/apps/myapp/addon-attachments')
@@ -94,10 +101,11 @@ describe('pg:info', function () {
           {addon: all[0], config_vars: ['ATTACHMENT_NAME_URL'], name: 'ATTACHMENT_NAME'},
           {addon: all[1], config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'], name: 'HEROKU_POSTGRESQL_PURPLE'},
         ])
-      pg.get('/client/v11/databases/1')
-        .reply(200, dbA)
-        .get('/client/v11/databases/2')
-        .reply(200, dbB)
+
+      const databaseInfoStub = stub()
+      databaseInfoStub.withArgs(1).resolves(dbA())
+      databaseInfoStub.withArgs(2).resolves(dbB())
+      sdkMock = mockSDKData({database: {info: databaseInfoStub}})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -107,12 +115,15 @@ describe('pg:info', function () {
     })
     it('shows postgres info for single database when arg sent in', async function () {
       const addon = addons[1]
+      api = nock('https://api.heroku.com:443')
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
         .post('/actions/addon-attachments/resolve', {addon_attachment: 'postgres-2', app: 'myapp'})
         .reply(200, [{addon}])
-      pg.get('/client/v11/databases/2')
-        .reply(200, dbB)
+
+      const databaseInfoStub = stub()
+      databaseInfoStub.withArgs(2).resolves(dbB())
+      sdkMock = mockSDKData({database: {info: databaseInfoStub}})
 
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
@@ -123,6 +134,7 @@ describe('pg:info', function () {
       expect(stderr).to.equal('')
     })
     it('shows warning for 404', async function () {
+      api = nock('https://api.heroku.com:443')
       api.get('/apps/myapp/config-vars')
         .reply(200, config)
         .get('/apps/myapp/addon-attachments')
@@ -131,10 +143,11 @@ describe('pg:info', function () {
           {addon: addons[0], config_vars: ['DATABASE_URL'], name: 'DATABASE'},
           {addon: addons[1], config_vars: ['HEROKU_POSTGRESQL_PURPLE_URL'], name: 'HEROKU_POSTGRESQL_PURPLE'},
         ])
-      pg.get('/client/v11/databases/1')
-        .reply(404)
-        .get('/client/v11/databases/2')
-        .reply(200, dbB)
+
+      const databaseInfoStub = stub()
+      databaseInfoStub.withArgs(1).rejects({statusCode: 404})
+      databaseInfoStub.withArgs(2).resolves(dbB())
+      sdkMock = mockSDKData({database: {info: databaseInfoStub}})
 
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',

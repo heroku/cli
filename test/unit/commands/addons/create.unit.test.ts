@@ -1,17 +1,18 @@
 import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
-import {HTTPError} from '@heroku/http-call'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import _ from 'lodash'
-import nock from 'nock'
-import {createSandbox} from 'sinon'
+import {createSandbox, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/create.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
+import {AddonConfirmationRequiredError, AddonProvisioningFailedError} from '@heroku/sdk/resources/platform/add-on'
+
 describe('addons:create', function () {
-  let api: ReturnType<typeof nock>
+  let sdkMock: MockSDK
 
   const addon: Heroku.AddOn = {
     addon_service: {name: 'heroku-postgresql'},
@@ -30,22 +31,15 @@ describe('addons:create', function () {
     state: 'provisioned',
   }
 
-  beforeEach(async function () {
-    api = nock('https://api.heroku.com:443')
+  afterEach(function () {
+    sdkMock.restore()
   })
 
-  afterEach(function () {
-    api.done()
-    nock.cleanAll()
-  })
   context('creating a db with a name', function () {
-    beforeEach(function () {
-      api.post('/apps/myapp/addons', {
-        attachment: {}, config: {}, name: 'foobar', plan: 'heroku-postgresql:standard-0',
-      })
-        .reply(200, addon)
-    })
     it('passes name through to the API', async function () {
+      const createAndWaitStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -53,10 +47,16 @@ describe('addons:create', function () {
         'foobar',
         'heroku-postgresql:standard-0',
       ])
+      expect(createAndWaitStub.calledOnce).to.be.true
+      const [appArg, bodyArg] = createAndWaitStub.firstCall.args
+      expect(appArg).to.equal('myapp')
+      expect(bodyArg.name).to.equal('foobar')
+      expect(bodyArg.plan).to.equal('heroku-postgresql:standard-0')
     })
   })
   context('calling addons:create without a plan', function () {
     it('errors out with usage', async function () {
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: stub()}})
       return runCommand(Cmd, [
         '--app',
         'myapp',
@@ -71,15 +71,10 @@ describe('addons:create', function () {
     })
   })
   context('creating a db', function () {
-    beforeEach(function () {
-      api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'},
-        config: {follow: 'otherdb', foo: true, rollback: true},
-        plan: 'heroku-postgresql:standard-0',
-      })
-        .reply(200, addon)
-    })
     it('creates an add-on with proper output', async function () {
+      const createAndWaitStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -94,8 +89,15 @@ describe('addons:create', function () {
       ])
       expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
       expect(stdout).to.equal('provision message\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
+      const [appArg, bodyArg] = createAndWaitStub.firstCall.args
+      expect(appArg).to.equal('myapp')
+      expect(bodyArg.config).to.deep.equal({follow: 'otherdb', foo: true, rollback: true})
+      expect(bodyArg.attachment).to.deep.equal({name: 'mydb'})
     })
     it('creates an add-on with proper output using old syntax with deprecation message', async function () {
+      const createAndWaitStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -113,6 +115,9 @@ describe('addons:create', function () {
       expect(unwrap(stderr)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
     })
     it('creates an addon with = args', async function () {
+      const createAndWaitStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -124,8 +129,13 @@ describe('addons:create', function () {
         '--follow=otherdb',
         '--foo',
       ])
+      const [, bodyArg] = createAndWaitStub.firstCall.args
+      expect(bodyArg.config).to.deep.equal({follow: 'otherdb', foo: true, rollback: true})
     })
     it('turns args value true into literal true, not a string', async function () {
+      const createAndWaitStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -137,18 +147,17 @@ describe('addons:create', function () {
         '--follow=otherdb',
         '--foo=true',
       ])
+      const [, bodyArg] = createAndWaitStub.firstCall.args
+      expect(bodyArg.config).to.deep.equal({follow: 'otherdb', foo: true, rollback: true})
     })
   })
   context('when add-on is async', function () {
     context('provisioning message and config vars provided by add-on provider', function () {
-      beforeEach(function () {
-        const asyncAddon = {..._.clone(addon), config_vars: [], state: 'provisioning'}
-        api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, config: {}, plan: 'heroku-postgresql:standard-0',
-        })
-          .reply(200, asyncAddon)
-      })
       it('creates an add-on with output about async provisioning', async function () {
+        const asyncAddon = {..._.clone(addon), config_vars: [], state: 'provisioning'}
+        const createAndWaitStub = stub().resolves(asyncAddon)
+        sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -161,16 +170,13 @@ describe('addons:create', function () {
       })
     })
     context('and no provision message supplied', function () {
-      beforeEach(function () {
+      it('creates an add-on with output about async provisioning', async function () {
         const asyncAddon = {
           ..._.clone(addon), config_vars: [], provision_message: undefined, state: 'provisioning',
         }
-        api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, config: {}, plan: 'heroku-postgresql:standard-0',
-        })
-          .reply(200, asyncAddon)
-      })
-      it('creates an add-on with output about async provisioning', async function () {
+        const createAndWaitStub = stub().resolves(asyncAddon)
+        sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -183,14 +189,11 @@ describe('addons:create', function () {
       })
     })
     context('and no config vars supplied by add-on provider', function () {
-      beforeEach(function () {
-        const asyncAddon = {..._.clone(addon), config_vars: undefined, state: 'provisioning'}
-        api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, config: {}, plan: 'heroku-postgresql:standard-0',
-        })
-          .reply(200, asyncAddon)
-      })
       it('creates an add-on with output about async provisioning', async function () {
+        const asyncAddon = {..._.clone(addon), config_vars: undefined, state: 'provisioning'}
+        const createAndWaitStub = stub().resolves(asyncAddon)
+        sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -212,15 +215,17 @@ describe('addons:create', function () {
       })
       it('waits for response and notifies', async function () {
         const notifySpy = sandbox.spy(Cmd, 'notifier')
-        const asyncAddon = {..._.clone(addon), state: 'provisioning'}
-        const post = api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, config: {wait: true}, plan: 'heroku-postgresql:standard-0',
+        // When wait is true, createAndWait calls onProvisioning then returns provisioned addon
+        const createAndWaitStub = stub().callsFake(async (_app, _body, options) => {
+          if (options?.onProvisioning) {
+            const asyncAddon = {..._.clone(addon), config_vars: [], state: 'provisioning'}
+            options.onProvisioning(asyncAddon)
+          }
+
+          return addon
         })
-          .reply(200, asyncAddon)
-        const provisioningResponse = api.get('/apps/myapp/addons/postgresql-swiftly-123')
-          .reply(200, asyncAddon)
-        const provisionedResponse = api.get('/apps/myapp/addons/postgresql-swiftly-123')
-          .reply(200, addon)
+        sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -236,26 +241,15 @@ describe('addons:create', function () {
         expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
         expect(stderr).to.contain('Creating postgresql-swiftly-123... done')
         expect(stdout).to.equal('provision message\nWaiting for postgresql-swiftly-123...\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
-        post.done()
-        provisioningResponse.done()
-        provisionedResponse.done()
       })
       it('notifies when provisioning failure occurs', async function () {
         const notifySpy = sandbox.spy(Cmd, 'notifier')
-        const asyncAddon = _.clone(addon)
-        asyncAddon.state = 'provisioning'
-        api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, config: {wait: true}, plan: 'heroku-postgresql:standard-0',
-        })
-          .reply(200, asyncAddon)
-        api.get('/apps/myapp/addons/postgresql-swiftly-123')
-          .reply(200, asyncAddon)
-        const deprovisionedAddon = _.clone(addon)
-        deprovisionedAddon.state = 'deprovisioned'
-        api.get('/apps/myapp/addons/postgresql-swiftly-123')
-          .reply(200, deprovisionedAddon)
+        const deprovisionedAddon = {..._.clone(addon), state: 'deprovisioned'}
+        const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon))
+        sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
         try {
-          return await runCommand(Cmd, [
+          await runCommand(Cmd, [
             '--app',
             'myapp',
             '--as',
@@ -275,10 +269,9 @@ describe('addons:create', function () {
       it('shows that it failed to provision', async function () {
         const deprovisionedAddon = _.clone(addon)
         deprovisionedAddon.state = 'deprovisioned'
-        api.post('/apps/myapp/addons', {
-          attachment: {name: 'mydb'}, config: {}, plan: 'heroku-postgresql:standard-0',
-        })
-          .reply(200, deprovisionedAddon)
+        const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon))
+        sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
         const {error} = await runCommand(Cmd, [
           '--app',
           'myapp',
@@ -286,16 +279,16 @@ describe('addons:create', function () {
           'mydb',
           'heroku-postgresql:standard-0',
         ])
-        expect((error as HTTPError)?.message).to.equal('The add-on was unable to be created, with status deprovisioned.')
+        expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned.')
       })
     })
   })
   context('creating a db requiring confirmation', function () {
-    it('aborts if confirmation does not match', function () {
-      api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {follow: 'otherdb', foo: true, rollback: true}, confirm: 'not-my-app', plan: 'heroku-postgresql:standard-0',
-      })
-        .reply(423, {id: 'confirmation_required', message: 'This add-on is not automatically networked with this Private Space. '}, {'X-Confirmation-Required': 'myapp-confirm'})
+    it('aborts if confirmation does not match', async function () {
+      const createAndWaitStub = stub()
+        .onFirstCall().rejects(new AddonConfirmationRequiredError('This add-on is not automatically networked with this Private Space. '))
+        .onSecondCall().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
 
       return runCommand(Cmd, [
         '--app',
@@ -317,10 +310,11 @@ describe('addons:create', function () {
     })
 
     it('succeeds if confirmation does match', async function () {
-      api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {follow: 'otherdb', foo: true, rollback: true}, confirm: 'myapp', plan: 'heroku-postgresql:standard-0',
-      })
-        .reply(200, addon)
+      const createAndWaitStub = stub()
+        .onFirstCall().rejects(new AddonConfirmationRequiredError('This add-on is not automatically networked with this Private Space. '))
+        .onSecondCall().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -340,14 +334,11 @@ describe('addons:create', function () {
     })
   })
   context('--follow=--otherdb', function () {
-    beforeEach(function () {
-      api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {follow: '--otherdb', foo: true, rollback: true}, plan: 'heroku-postgresql:standard-0',
-      })
-        .reply(200, addon)
-    })
-    it('creates an addon with =-- args', function () {
-      return runCommand(Cmd, [
+    it('creates an addon with =-- args', async function () {
+      const createAndWaitStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
+      await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -358,18 +349,16 @@ describe('addons:create', function () {
         '--follow=--otherdb',
         '--foo',
       ])
+      const [, bodyArg] = createAndWaitStub.firstCall.args
+      expect(bodyArg.config).to.deep.equal({follow: '--otherdb', foo: true, rollback: true})
     })
   })
   context('no config vars supplied by add-on provider', function () {
-    beforeEach(function () {
-      const noConfigAddon = {..._.clone(addon), config_vars: undefined}
-
-      api.post('/apps/myapp/addons', {
-        attachment: {name: 'mydb'}, config: {}, plan: 'heroku-postgresql:standard-0',
-      })
-        .reply(200, noConfigAddon)
-    })
     it('creates an add-on without the config vars listed', async function () {
+      const noConfigAddon = {..._.clone(addon), config_vars: undefined}
+      const createAndWaitStub = stub().resolves(noConfigAddon)
+      sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',

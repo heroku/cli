@@ -1,9 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 
 import DataMaintenancesInfo from '../../../../../src/commands/data/maintenances/info.js'
 import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 
 describe('data:maintenances:info', function () {
@@ -35,26 +37,22 @@ describe('data:maintenances:info', function () {
   }
 
   let herokuApi: nock.Scope
-  let dataApi: nock.Scope
-
-  beforeEach(function () {
-    herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://postgres-api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
     herokuApi.done()
-    dataApi.done()
     nock.cleanAll()
+    sdkMock?.restore()
   })
 
   it('shows a maintenance for an addon in styled object format by default', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, maintenance)
+
+    const infoStub = stub().resolves(maintenance)
+    sdkMock = mockSDKData({maintenance: {info: infoStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name])
 
@@ -77,12 +75,13 @@ addon_window:             Thursdays 22:00 to Fridays 02:00 UTC
   })
 
   it('shows a maintenance for an addon with duration_seconds and generated approximate duration', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, {...maintenance, duration_seconds: 872.976_767})
+
+    const infoStub = stub().resolves({...maintenance, duration_seconds: 872.976_767})
+    sdkMock = mockSDKData({maintenance: {info: infoStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name])
 
@@ -107,12 +106,13 @@ duration_approximate:     ~ 15 minutes
   })
 
   it('shows a maintenance for an addon scoped by the app flag', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, maintenance)
+
+    const infoStub = stub().resolves(maintenance)
+    sdkMock = mockSDKData({maintenance: {info: infoStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
 
@@ -135,12 +135,13 @@ addon_window:             Thursdays 22:00 to Fridays 02:00 UTC
   })
 
   it('shows a maintenance for an addon in json format', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, maintenance)
+
+    const infoStub = stub().resolves(maintenance)
+    sdkMock = mockSDKData({maintenance: {info: infoStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name, '--json'])
 
@@ -149,12 +150,13 @@ addon_window:             Thursdays 22:00 to Fridays 02:00 UTC
   })
 
   it('shows 404 error when maintenance is not found', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(404, {message: 'not found'})
+
+    const infoStub = stub().rejects({statusCode: 404})
+    sdkMock = mockSDKData({maintenance: {info: infoStub}})
 
     const {error} = await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
     const {message} = error as {message: string}
@@ -162,12 +164,13 @@ addon_window:             Thursdays 22:00 to Fridays 02:00 UTC
   })
 
   it('shows maintenance for non-postgres add-ons', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve', body => body.addon_service === undefined)
       .reply(200, [nonPostgresAddon])
-    dataApi
-      .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
-      .reply(200, maintenance)
+
+    const infoStub = stub().resolves(maintenance)
+    sdkMock = mockSDKData({maintenance: {info: infoStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [nonPostgresAddon.name, '--json'])
 

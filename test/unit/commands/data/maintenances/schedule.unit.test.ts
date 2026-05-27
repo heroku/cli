@@ -1,10 +1,12 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 
 import DataMaintenancesSchedule from '../../../../../src/commands/data/maintenances/schedule.js'
 import {maintenance, maintenancesResponse} from '../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const unscheduledScheduleResponse = {
   ...maintenancesResponse,
@@ -17,26 +19,22 @@ describe('data:maintenances:schedule', function () {
   }
 
   let herokuApi: nock.Scope
-  let dataApi: nock.Scope
-
-  beforeEach(function () {
-    herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://postgres-api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
     herokuApi.done()
-    dataApi.done()
     nock.cleanAll()
+    sdkMock?.restore()
   })
 
   it('schedules a maintenance for an addon which has maintenance already scheduled', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/schedule`)
-      .reply(200, maintenancesResponse)
+
+    const scheduleStub = stub().resolves(maintenancesResponse)
+    sdkMock = mockSDKData({maintenance: {schedule: scheduleStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesSchedule, [addon.name])
 
@@ -45,12 +43,13 @@ describe('data:maintenances:schedule', function () {
   })
 
   it('schedules a maintenance for an addon that does not have maintenance already scheduled', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/schedule`)
-      .reply(200, unscheduledScheduleResponse)
+
+    const scheduleStub = stub().resolves(unscheduledScheduleResponse)
+    sdkMock = mockSDKData({maintenance: {schedule: scheduleStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesSchedule, [addon.name])
 
@@ -59,12 +58,13 @@ describe('data:maintenances:schedule', function () {
   })
 
   it('schedules a maintenance for an addon scoped to an app', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/schedule`)
-      .reply(200, unscheduledScheduleResponse)
+
+    const scheduleStub = stub().resolves(unscheduledScheduleResponse)
+    sdkMock = mockSDKData({maintenance: {schedule: scheduleStub}})
 
     const {stderr} = await runCommand(DataMaintenancesSchedule, [addon.name, `--app=${app.name}`])
 
@@ -72,12 +72,13 @@ describe('data:maintenances:schedule', function () {
   })
 
   it('schedules a maintenance for a specified number of weeks', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/schedule`)
-      .reply(200, maintenancesResponse)
+
+    const scheduleStub = stub().resolves(maintenancesResponse)
+    sdkMock = mockSDKData({maintenance: {schedule: scheduleStub}})
 
     const {stderr} = await runCommand(DataMaintenancesSchedule, [addon.name, '--weeks=4'])
 
@@ -85,12 +86,13 @@ describe('data:maintenances:schedule', function () {
   })
 
   it('schedules maintenance for non-postgres add-ons', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve', body => body.addon_service === undefined)
       .reply(200, [nonPostgresAddon])
-    dataApi
-      .post(`/data/maintenances/v1/${nonPostgresAddon.id}/schedule`)
-      .reply(200, unscheduledScheduleResponse)
+
+    const scheduleStub = stub().resolves(unscheduledScheduleResponse)
+    sdkMock = mockSDKData({maintenance: {schedule: scheduleStub}})
 
     const {stderr} = await runCommand(DataMaintenancesSchedule, [nonPostgresAddon.name])
 
@@ -98,15 +100,14 @@ describe('data:maintenances:schedule', function () {
   })
 
   it('schedules a maintenance for a specific week', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, maintenance)
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/schedule`)
-      .reply(200, maintenancesResponse)
+
+    const infoStub = stub().resolves(maintenance)
+    const scheduleStub = stub().resolves(maintenancesResponse)
+    sdkMock = mockSDKData({maintenance: {info: infoStub, schedule: scheduleStub}})
 
     const {stderr} = await runCommand(DataMaintenancesSchedule, [addon.name, '--week=2019-11-01'])
 
