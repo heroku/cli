@@ -11,16 +11,18 @@ const debug = debugFactory('heroku:run:inside')
 const heredoc = tsheredoc.default
 
 export default class RunInside extends Command {
+  /* eslint-disable perfectionist/sort-objects */
   static args = {
-    command: Args.string({
-      description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
-      required: true,
-    }),
     dyno_name: Args.string({
       description: 'name of the dyno to run command inside',
       required: true,
     }),
+    command: Args.string({
+      description: 'command to run (Heroku automatically prepends \'launcher\' to the command)',
+      required: true,
+    }),
   }
+  /* eslint-enable perfectionist/sort-objects */
   static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
   static examples = [
     heredoc`
