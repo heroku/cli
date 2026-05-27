@@ -5,7 +5,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {getDatabaseInfo} from '../../../lib/pg/sdk-adapter.js'
+import {dryRunUpgrade, getDatabaseInfo} from '../../../lib/pg/sdk-adapter.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -50,8 +50,7 @@ export default class Upgrade extends Command {
 
     try {
       ux.action.start(`Starting a test upgrade on ${color.datastore(db.name)}`)
-      const dryRunUpgrade = data.database.dryRunUpgrade as (name: string, body: {version?: string}) => Promise<unknown>
-      const response = await dryRunUpgrade(db.id, {version}) as {message: string}
+      const response = await dryRunUpgrade(data, db.id, {version})
       ux.action.stop('done\n' + formatResponseWithCommands(response.message))
     } catch (error: any) {
       if (error.id && error.message) {

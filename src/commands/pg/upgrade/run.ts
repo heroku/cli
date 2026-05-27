@@ -6,7 +6,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {getDatabaseInfo} from '../../../lib/pg/sdk-adapter.js'
+import {getDatabaseInfo, runUpgrade} from '../../../lib/pg/sdk-adapter.js'
 import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -89,8 +89,7 @@ export default class Upgrade extends Command {
 
     try {
       ux.action.start(`Starting upgrade on ${color.datastore(db.name)}`)
-      const runUpgrade = data.database.runUpgrade as (name: string, body: {version?: string}) => Promise<unknown>
-      const response = await runUpgrade(db.id, {version}) as {message: string}
+      const response = await runUpgrade(data, db.id, {version})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.message)}`))
     } catch (error: any) {
       if (error.id && error.message) {

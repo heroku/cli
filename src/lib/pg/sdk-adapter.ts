@@ -28,3 +28,18 @@ export async function listTransfersByApp(data: DataClient, appIdentity: string):
 export async function listCredentials(data: DataClient, addonId: string): Promise<NonAdvancedCredentialInfo[]> {
   return data.postgresDatabase.listCredentials(addonId) as unknown as NonAdvancedCredentialInfo[]
 }
+
+export async function runUpgrade(data: DataClient, addonId: string, body: {version?: string}): Promise<{message: string}> {
+  const fn = data.database.runUpgrade as (name: string, body: {version?: string}) => Promise<unknown>
+  return fn(addonId, body) as Promise<{message: string}>
+}
+
+export async function prepareUpgrade(data: DataClient, addonId: string, body: {version?: string}): Promise<{message: string}> {
+  const fn = data.database.prepareUpgrade as (name: string, body: {version?: string}) => Promise<unknown>
+  return fn(addonId, body) as Promise<{message: string}>
+}
+
+export async function dryRunUpgrade(data: DataClient, addonId: string, body: {version?: string}): Promise<{message: string}> {
+  const fn = data.database.dryRunUpgrade as (name: string, body: {version?: string}) => Promise<unknown>
+  return fn(addonId, body) as Promise<{message: string}>
+}
