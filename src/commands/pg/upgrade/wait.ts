@@ -6,6 +6,7 @@ import debug from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import notify from '../../../lib/notify.js'
+import {getUpgradeWaitStatus} from '../../../lib/pg/sdk-adapter.js'
 import {PgUpgradeStatus} from '../../../lib/pg/types.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
@@ -59,7 +60,7 @@ export default class Wait extends Command {
 
       while (true) {
         try {
-          status = await data.database.upgradeWaitStatus(db.id) as unknown as PgUpgradeStatus
+          status = await getUpgradeWaitStatus(data, db.id)
         } catch (error: any) {
           if (!retries || error.statusCode !== 404) {
             pgDebug(error)

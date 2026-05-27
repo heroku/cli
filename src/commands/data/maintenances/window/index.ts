@@ -3,8 +3,6 @@ import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import {Window} from '../../../../lib/data/types.js'
-
 export default class DataMaintenancesWindow extends Command {
   static args = {
     addon: Args.string({
@@ -30,7 +28,7 @@ export default class DataMaintenancesWindow extends Command {
 
     ux.action.start(`Fetching maintenance window for ${color.addon(addon.name!)}`)
     const {data} = new HerokuSDK()
-    const window = await data.maintenance.window(addon.id!) as unknown as Window
+    const window = await data.maintenance.window(addon.id!)
     ux.action.stop()
 
     if (flags.json) {

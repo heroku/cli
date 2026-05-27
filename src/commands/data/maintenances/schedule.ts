@@ -2,9 +2,9 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {MaintenanceInfoResult, MaintenanceScheduleResult} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 
-import {Maintenance} from '../../../lib/data/types.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
 export default class DataMaintenancesSchedule extends Command {
@@ -37,9 +37,9 @@ export default class DataMaintenancesSchedule extends Command {
   }
 
   protected async computeDelayWeeks(addon: Heroku.AddOn, week: string, differenceInCalendarWeeks: any, data: HerokuSDK['data']) {
-    const maintenance = await data.maintenance.info(addon.id!) as unknown as Maintenance
+    const maintenance: MaintenanceInfoResult = await data.maintenance.info(addon.id!)
 
-    const scheduled = (maintenance.status === 'completed' || maintenance.scheduled_for === null)
+    const scheduled = (maintenance.status === 'completed' || !maintenance.scheduled_for)
       ? Date.now()
       : Date.parse(maintenance.scheduled_for)
 
@@ -70,10 +70,10 @@ export default class DataMaintenancesSchedule extends Command {
 
   protected async scheduleMaintenance(addon: Heroku.AddOn, delayWeeks: string, data: HerokuSDK['data']) {
     ux.action.start(`Scheduling maintenance for ${color.addon(addon.name!)}`)
-    const schedule = await data.maintenance.schedule(addon.id!, {delay_weeks: delayWeeks}) as unknown as Maintenance
+    const schedule: MaintenanceScheduleResult = await data.maintenance.schedule(addon.id!, {delay_weeks: delayWeeks})
     ux.action.stop('maintenance scheduled')
 
-    const alreadyScheduled = schedule.previously_scheduled_for !== null
+    const alreadyScheduled = !!schedule.previously_scheduled_for
 
     if (alreadyScheduled) {
       this.log(`Scheduled maintenance for ${color.addon(addon.name!)} changed from ${schedule.previously_scheduled_for} to ${schedule.scheduled_for}`)

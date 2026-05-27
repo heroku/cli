@@ -3,8 +3,6 @@ import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import {Window} from '../../../../lib/data/types.js'
-
 export default class DataMaintenancesWindowUpdate extends Command {
   static args = {
     addon: Args.string({
@@ -44,7 +42,7 @@ export default class DataMaintenancesWindowUpdate extends Command {
     const result = await data.maintenance.updateWindow(addon.id!, {
       day_of_week: args.day_of_week,
       time_of_day: args.time_of_day,
-    }) as unknown as Window
+    })
     ux.action.stop()
 
     if (flags.json) {

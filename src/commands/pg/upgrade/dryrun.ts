@@ -5,7 +5,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {PgDatabase} from '../../../lib/pg/types.js'
+import {getDatabaseInfo} from '../../../lib/pg/sdk-adapter.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -40,7 +40,7 @@ export default class Upgrade extends Command {
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
     const {data} = new HerokuSDK()
-    const replica = await data.database.info(db.id) as unknown as PgDatabase
+    const replica = await getDatabaseInfo(data, db.id)
     if (replica.following)
       ux.error(`You can't use ${color.code('pg:upgrade:dryrun')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 

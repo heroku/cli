@@ -4,7 +4,7 @@ import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
+import {MaintenanceStatus} from '../../../lib/data/types.js'
 import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
 
 export default class DataMaintenancesWait extends BaseCommand {
@@ -32,7 +32,7 @@ export default class DataMaintenancesWait extends BaseCommand {
     }
 
     const {data} = new HerokuSDK()
-    const maintenance = await data.maintenance.info(addon.id!) as unknown as Maintenance
+    const maintenance = await data.maintenance.info(addon.id!)
 
     if (maintenance.status !== MaintenanceStatus.running) {
       this.error(`There currently isn't any maintenance in progress for ${color.addon(addon.name!)}`)

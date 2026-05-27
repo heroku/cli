@@ -6,6 +6,7 @@ import {ux} from '@oclif/core/ux'
 import type {BackupTransfer} from '../../../lib/pg/types.js'
 
 import backupsFactory from '../../../lib/pg/backups.js'
+import {listTransfersByApp} from '../../../lib/pg/sdk-adapter.js'
 
 export default class Index extends Command {
   static description = 'list database backups'
@@ -26,7 +27,7 @@ export default class Index extends Command {
     const {flags: {app}} = await this.parse(Index)
 
     const {data} = new HerokuSDK()
-    const transfers = await data.transfer.listByApp(app) as unknown as BackupTransfer[]
+    const transfers = await listTransfersByApp(data, app)
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))
 

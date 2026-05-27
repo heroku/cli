@@ -6,6 +6,7 @@ import {Args} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 
+import {listCredentials} from '../../lib/pg/sdk-adapter.js'
 import {presentCredentialAttachments} from '../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 import {nls} from '../../nls.js'
@@ -34,7 +35,7 @@ export default class Credentials extends Command {
     const {addon} = await dbResolver.getAttachment(app, database)
 
     const {data} = new HerokuSDK()
-    const credentials = await data.postgresDatabase.listCredentials(addon.id) as unknown as NonAdvancedCredentialInfo[]
+    const credentials = await listCredentials(data, addon.id)
     const sortedCredentials = this.sortByDefaultAndName(credentials)
     const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
 
