@@ -10,6 +10,10 @@ process.env.IS_HEROKU_TEST_ENV = 'true'
 
 process.env.HEROKU_SKIP_NEW_VERSION_CHECK = 'true'
 
+// Provide a fake API key so @heroku/sdk's token provider doesn't throw
+// during tests (nock intercepts all HTTP calls regardless)
+process.env.HEROKU_API_KEY = process.env.HEROKU_API_KEY || 'test-fake-token'
+
 process.env.HEROKU_DATA_CONTROL_PLANE = 'test-control-plane'
 
 // Force ANSI color support for tests while they run in non-tty
