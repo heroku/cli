@@ -8,13 +8,15 @@ import {
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {
-  App, AppCreateOpts, ConfigVarUpdateOpts, TeamAppCreateOpts,
+  AppCreateOpts, ConfigVarUpdateOpts, TeamAppCreateOpts,
 } from '@heroku/types/3.sdk'
 import {Args, Interfaces, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
 import Git from '../../lib/git/git.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+
+import {App} from '../../lib/types/app.js'
 
 const git = new Git()
 
@@ -44,7 +46,7 @@ async function createApp(context: Interfaces.ParserOutput, platform: Platform, n
   }
 
   const app = (params.space || params.team)
-    ? await platform.teamApp.create(params as TeamAppCreateOpts) as unknown as App
+    ? await platform.teamApp.create(params as TeamAppCreateOpts) as App
     : await platform.app.create(params as AppCreateOpts)
 
   let status = name ? 'done' : `done, ${color.app(app.name || '')}`
