@@ -173,7 +173,6 @@ export type PgDatabaseTenant = {
 
 export type PgDatabase = PgDatabaseService & PgDatabaseTenant
 
-
 // Updated according to https://github.com/heroku/shogun/blob/main/lib/shogun/serializers/link_serializer.rb
 export type Link = {
   created_at: string,

@@ -1,10 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {type ScaleUpdate, scaleDynos} from '../../lib/ps/sdk-adapter.js'
 
 const heredoc = tsheredoc.default
 
@@ -42,7 +43,7 @@ export default class Scale extends Command {
     const argv = restParse.argv as string[]
     const {app} = flags
 
-    function parse(args: string[]) {
+    function parse(args: string[]): ScaleUpdate[] {
       return _.compact(args.map(arg => {
         const change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
         if (!change)
@@ -54,11 +55,14 @@ export default class Scale extends Command {
       }))
     }
 
+    const {platform} = new HerokuSDK()
     const changes = parse(argv)
 
     if (changes.length === 0) {
-      const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
-      const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+      const [formation, appProps] = await Promise.all([
+        platform.formation.list(app),
+        platform.app.info(app),
+      ])
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
         for (const d of formation) {
@@ -77,8 +81,10 @@ export default class Scale extends Command {
         .join(' '))
     } else {
       ux.action.start('Scaling dynos')
-      const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-      const {body: formation} = await this.heroku.patch<Heroku.Formation[]>(`/apps/${app}/formation`, {body: {updates: changes}})
+      const [appProps, formation] = await Promise.all([
+        platform.app.info(app),
+        scaleDynos(platform, app, changes),
+      ])
       const shielded = appProps.space && appProps.space.shield
       if (shielded) {
         for (const d of formation) {

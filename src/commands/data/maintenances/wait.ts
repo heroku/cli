@@ -39,6 +39,7 @@ export default class DataMaintenancesWait extends BaseCommand {
     }
 
     ux.action.start(`Waiting for maintenance on ${color.addon(addon.name!)} to complete`)
+    // waitUntilMaintenanceComplete still uses legacy dataApi (polling loop not yet migrated to SDK)
     await waitUntilMaintenanceComplete(addon.id!, this.dataApi)
     ux.action.stop('maintenance completed')
   }

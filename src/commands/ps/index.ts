@@ -1,13 +1,15 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import type {Account} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
+import {getAppInfo, listDynos} from '../../lib/ps/sdk-adapter.js'
 import {ago} from '../../lib/time.js'
 import {AccountQuota} from '../../lib/types/account-quota.js'
 import {AppProcessTier} from '../../lib/types/app-process-tier.js'
 import {DynoExtended} from '../../lib/types/dyno-extended.js'
-import {Account} from '../../lib/types/fir.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const heredoc = tsheredoc.default
@@ -40,19 +42,32 @@ export default class Index extends Command {
     const {flags, ...restParse} = await this.parse(Index)
     const {app, extended, json} = flags
     const types = restParse.argv as string[]
-    const suffix = extended ? '?extended=true' : ''
-    const promises = {
-      accountInfo: this.heroku.request<Account>('/account', {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-      appInfo: this.heroku.request<AppProcessTier>(`/apps/${app}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
+
+    const {platform} = new HerokuSDK()
+
+    let dynos: DynoExtended[]
+    let appInfo: AppProcessTier
+    let accountInfo: Account
+
+    if (extended) {
+      const [{body: extDynos}, appInfoResult, accountInfoResult] = await Promise.all([
+        this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos?extended=true`, {
+          headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+        }),
+        getAppInfo(platform, app),
+        platform.account.info(),
+      ])
+      dynos = extDynos
+      appInfo = appInfoResult
+      accountInfo = accountInfoResult
+    } else {
+      [dynos, appInfo, accountInfo] = await Promise.all([
+        listDynos(platform, app),
+        getAppInfo(platform, app),
+        platform.account.info(),
+      ])
     }
-    const [{body: dynos}, {body: appInfo}, {body: accountInfo}] = await Promise.all([promises.dynos, promises.appInfo, promises.accountInfo])
+
     const shielded = appInfo.space && appInfo.space.shield
 
     if (shielded) {
