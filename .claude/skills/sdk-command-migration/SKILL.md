@@ -174,12 +174,44 @@ npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt | t
 
 Expected: empty output (no new errors). If new errors appear, they typically fall into:
 
-- **Local-type incompatibility** → use a single-step cast (`as App[]`, not `as unknown as App[]`) at the call site. Reach for `as unknown as X` only if the single-step is rejected.
+- **Local-type incompatibility** → first try a single-step cast (`as App[]`). If TS rejects it and demands `as unknown as App[]`, **do not accept the double cast** — see "Realigning local types" below.
 - **Helper signature mismatch** → if a helper parameter was typed as `Heroku.X` to mean an array, fix the helper to `App[]` honestly. Anticipate that `lodash` operations like `_.partition` return tuples — destructure: `const [a, b] = _.partition(...)`.
 - **Optional-field access** → SDK return types use `team?.name` patterns. If the calling code stored the result in a variable typed `null | string`, coerce with `?? null`.
 - **Method-doesn't-exist** → stop and escalate.
 
-Do NOT modify type files in `src/lib/types/` to satisfy a cast in a command file. Those types exist for a reason; the cast is the right tool here.
+#### Realigning local types when a single-step cast is rejected
+
+`as unknown as X` is a smell, not a tool. It means the local `X` and the SDK's return type are *structurally disjoint* — TS can't see any overlap, so it refuses the direct cast. Silencing that with `as unknown as X` doesn't fix the type mismatch; it just hides it from the type checker. Two common root causes, with prescribed fixes:
+
+1. **The local type was invented before the SDK had a usable type.** Older types in `src/lib/types/` (e.g., `App`, `Apps`) were authored as standalone shapes when only `@heroku-cli/schema` was available. Now that `@heroku/types/3.sdk` exposes the canonical types, realign the local type to *extend* the SDK type instead of duplicating it:
+
+   ```ts
+   // src/lib/types/app.d.ts — before
+   export type App = {
+     name: string,
+     locked: boolean,
+     // ...handwritten fields
+   }
+   ```
+
+   ```ts
+   // src/lib/types/app.d.ts — after
+   import type {App as BaseApp, TeamApp} from '@heroku/types/3.sdk'
+
+   export type App = BaseApp & Pick<TeamApp, 'locked' | 'joined'>
+   export type Apps = App[]
+   ```
+
+   With this shape, `as App[]` succeeds at the call site without `as unknown as`. The `Pick<TeamApp, ...>` pattern is the right tool when the CLI surfaces fields that the SDK only models on a sibling type (e.g., `locked` and `joined` live on `TeamApp`, not `App`, but the CLI's display logic treats them uniformly).
+
+2. **A field is on the upstream type the CLI doesn't realize.** Before adding `Pick<...>`, grep `node_modules/@heroku/types/dist/3.sdk/types.d.ts` for the field — it may already exist on the type the SDK returns. Avoid inventing intersections that duplicate fields the SDK models.
+
+When you realign a local type:
+- Stage the change in the source-migration commit (one logical unit: "use the SDK and adopt SDK-aligned types").
+- If the realignment exposes a transitive cleanup — e.g., a `_.sortBy(apps, 'name')` that worked under a weakly-typed `App` but feels lazy under the strict shape — replace with `apps.sort((a, b) => a.name.localeCompare(b.name))`. Optional, but prefer it when you can avoid pulling lodash into a hot path.
+- A `package-lock.json` bump is allowed if the realignment requires a newer `@heroku/types` (e.g., a missing field was just added upstream). Same rule as Step 1.2's metadata-gap path: include the bump in the source commit and call it out in the body.
+
+The earlier "do NOT modify `src/lib/types/`" rule was overstated — it applies when the local type genuinely diverges from the SDK on purpose (rare). When the local type is just a stale duplicate of the SDK shape, realignment is the correct fix.
 
 ### Step 1.4: Run the existing tests
 
@@ -323,7 +355,7 @@ Before opening the PR:
 - [ ] No `// TODO(sdk-migration):` markers remain.
 - [ ] No `import * as Heroku from '@heroku-cli/schema'` if no longer used.
 - [ ] No `import {APIClient} from '@heroku-cli/command'` if no longer used.
-- [ ] No `as unknown as X` cast where `as X` would suffice.
+- [ ] No `as unknown as X` casts. If TS rejected `as X`, the local type is structurally disjoint from the SDK type — realign the local type per Step 1.3's "Realigning local types" guidance instead of force-casting.
 - [ ] No new `tsc` errors (verify against the Pre-flight P2 baseline).
 - [ ] Tests rewritten per Task 2: `nock` removed, SDK stubbed via `HerokuSDK.prototype.platform`.
 - [ ] Lint clean on changed files.
