@@ -55,9 +55,9 @@ export default class AppsIndex extends Command {
       platform.account.info(),
     ])
 
-    let apps = appsList as unknown as App[]
+    let apps = appsList as App[]
 
-    apps = _.sortBy(apps, 'name')
+    apps.sort((a, b) => a.name.localeCompare(b.name))
     if (space) {
       apps = apps.filter((a: App) => a.space && (a.space.name === space || a.space.id === space))
     }
