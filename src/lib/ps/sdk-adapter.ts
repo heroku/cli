@@ -21,18 +21,19 @@ export type ScaleUpdate = {
   type: string
 }
 
+type ScaleBatchUpdateFn = (appIdentity: string, body: {updates: ScaleUpdate[]}) => Promise<Formation[]>
+
 export async function scaleDynos(platform: PlatformClient, appIdentity: string, updates: ScaleUpdate[]): Promise<Formation[]> {
-  const fn = platform.formation.batchUpdate as (
-    appIdentity: string,
-    body: {updates: ScaleUpdate[]},
-  ) => Promise<Formation[]>
+  // @ts-expect-error — FormationBatchUpdateOpts is missing size:string and quantity:string (tracked for heroku-types fix)
+  const fn: ScaleBatchUpdateFn = platform.formation.batchUpdate
   return fn(appIdentity, {updates})
 }
 
 export async function getAppInfo(platform: PlatformClient, appIdentity: string): Promise<AppProcessTier> {
-  return platform.app.info(appIdentity) as unknown as AppProcessTier
+  // @ts-expect-error — App type is missing process_tier (tracked for heroku-types fix)
+  return platform.app.info(appIdentity)
 }
 
 export async function listDynos(platform: PlatformClient, appIdentity: string): Promise<DynoExtended[]> {
-  return platform.dyno.list(appIdentity) as unknown as DynoExtended[]
+  return platform.dyno.list(appIdentity)
 }
