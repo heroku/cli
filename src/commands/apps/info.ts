@@ -1,12 +1,45 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+// eslint-disable-next-line n/no-extraneous-import
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
+import {
+  AddOn,
+  App,
+  Collaborator,
+  Dyno,
+  PipelineCoupling,
+} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import {filesize} from 'filesize'
 import {inspect} from 'node:util'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+
+type Platform = HerokuSDK['platform']
+
+type AppDetail = App & {
+  create_status?: string
+  cron_finished_at?: null | string
+  cron_next_run?: null | string
+  database_size?: null | number
+  extended?: Record<string, unknown>
+}
+
+type PipelineCouplingDetail = PipelineCoupling & {
+  pipeline: {id?: string; name: string}
+  stage: 'development' | 'production' | 'review' | 'staging' | 'test'
+}
+
+type AppInfo = {
+  addons: AddOn[]
+  app: AppDetail
+  appExtended?: AppDetail
+  collaborators: Collaborator[]
+  dynos: Dyno[]
+  pipeline_coupling: null | PipelineCouplingDetail
+}
 
 export default class AppsInfo extends Command {
   static args = {
@@ -45,14 +78,15 @@ repo_size=5000000
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
-    const info = await getInfo(app, this, flags.extended)
-    const addons = info.addons.map((a: Heroku.AddOn) => a.plan?.name).sort()
-    const collaborators = info.collaborators.map((c: Heroku.Collaborator) => c.user.email)
-      .filter((c: Heroku.Collaborator) => c !== info.app.owner.email)
+    const {platform} = new HerokuSDK()
+    const info = await getInfo(app, platform, flags.extended)
+    const addons = info.addons.map((a: AddOn) => a.plan?.name).sort()
+    const collaborators = info.collaborators.map((c: Collaborator) => c.user.email)
+      .filter((c: string) => c !== info.app.owner.email)
       .sort()
 
     function shell() {
-      function print(k: string, v: string) {
+      function print(k: string, v: unknown) {
         ux.stdout(`${_.snakeCase(k)}=${v}`)
       }
 
@@ -69,8 +103,8 @@ repo_size=5000000
 
       print('git_url', info.app.git_url)
       print('web_url', info.app.web_url)
-      print('repo_size', filesize(info.app.repo_size, {round: 0, standard: 'jedec'}))
-      if (getGeneration(info.app) !== 'fir') print('slug_size', filesize(info.app.slug_size, {round: 0, standard: 'jedec'}))
+      print('repo_size', filesize(info.app.repo_size ?? 0, {round: 0, standard: 'jedec'}))
+      if (getGeneration(info.app) !== 'fir') print('slug_size', filesize(info.app.slug_size!, {round: 0, standard: 'jedec'}))
       print('owner', info.app.owner.email)
       print('region', info.app.region.name)
       print('dynos', inspect(_.countBy(info.dynos, 'type')))
@@ -91,29 +125,29 @@ function formatDate(date: Date) {
   return date.toISOString()
 }
 
-async function getInfo(app: string, client: Command, extended: boolean) {
-  const promises = [
-    client.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
-    client.heroku.request<Heroku.App>(`/apps/${app}`),
-    client.heroku.get<Heroku.Dyno[]>(`/apps/${app}/dynos`).catch(() => ({body: []})),
-    client.heroku.get<Heroku.Collaborator[]>(`/apps/${app}/collaborators`).catch(() => ({body: []})),
-    client.heroku.get<Heroku.PipelineCoupling[]>(`/apps/${app}/pipeline-couplings`).catch(() => ({body: null})),
+async function getInfo(app: string, platform: Platform, extended: boolean): Promise<AppInfo> {
+  const promises: [
+    Promise<AddOn[]>,
+    Promise<AppDetail>,
+    Promise<Dyno[]>,
+    Promise<Collaborator[]>,
+    Promise<null | PipelineCouplingDetail>,
+    Promise<AppDetail>?,
+  ] = [
+    platform.addOn.listByApp(app),
+    platform.app.info(app) as Promise<AppDetail>,
+    platform.dyno.list(app).catch((): Dyno[] => []),
+    platform.collaborator.list(app).catch((): Collaborator[] => []),
+    platform.pipelineCoupling.infoByApp(app).catch((): null => null) as Promise<null | PipelineCouplingDetail>,
   ]
 
   if (extended) {
-    promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
+    promises.push(fetchExtendedApp(app))
   }
 
-  const [
-    {body: addons},
-    {body: appWithMoreInfo},
-    {body: dynos},
-    {body: collaborators},
-    {body: pipelineCouplings},
-    appExtendedResponse,
-  ] = await Promise.all(promises)
+  const [addons, appWithMoreInfo, dynos, collaborators, pipelineCouplings, appExtended] = await Promise.all(promises)
 
-  const data: Heroku.App = {
+  const data: AppInfo = {
     addons,
     app: appWithMoreInfo,
     collaborators,
@@ -121,11 +155,11 @@ async function getInfo(app: string, client: Command, extended: boolean) {
     pipeline_coupling: pipelineCouplings,
   }
 
-  if (appExtendedResponse) {
-    data.appExtended = appExtendedResponse.body
+  if (appExtended) {
+    data.appExtended = appExtended
   }
 
-  if (extended) {
+  if (extended && data.appExtended) {
     data.appExtended.acm = data.app.acm
     data.app = data.appExtended
     delete data.appExtended
@@ -134,8 +168,14 @@ async function getInfo(app: string, client: Command, extended: boolean) {
   return data
 }
 
-function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.Collaborator[], extended: boolean, _: any) {
-  const data: Heroku.App = {}
+async function fetchExtendedApp(app: string): Promise<AppDetail> {
+  const apiClient = new HerokuApiClient({service: 'platform'})
+  const response = await apiClient.get(`/apps/${app}`, {searchParams: {extended: true}})
+  return response.json() as Promise<AppDetail>
+}
+
+function print(info: AppInfo, addons: Array<string | undefined>, collaborators: string[], extended: boolean, _: any) {
+  const data: Record<string, unknown> = {}
   data.Addons = addons
   data.Collaborators = collaborators
 
@@ -144,19 +184,19 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   if (info.app.cron_next_run) data['Cron Next Run'] = formatDate(new Date(info.app.cron_next_run))
   if (info.app.database_size) data['Database Size'] = filesize(info.app.database_size, {round: 0, standard: 'jedec'})
   if (info.app.create_status !== 'complete') data['Create Status'] = info.app.create_status
-  if (info.app.space) data.Space = color.space(info.app.space.name)
+  if (info.app.space?.name) data.Space = color.space(info.app.space.name)
   if (info.app.space && info.app.internal_routing) data['Internal Routing'] = info.app.internal_routing
   if (info.pipeline_coupling) data.Pipeline = `${color.pipeline(info.pipeline_coupling.pipeline.name)} - ${info.pipeline_coupling.stage}`
 
   data['Auto Cert Mgmt'] = info.app.acm
   data['Git URL'] = info.app.git_url
-  data['Web URL'] = color.info(info.app.web_url)
-  data['Repo Size'] = filesize(info.app.repo_size, {round: 0, standard: 'jedec'})
-  if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size, {round: 0, standard: 'jedec'})
+  data['Web URL'] = color.info(info.app.web_url ?? '')
+  data['Repo Size'] = filesize(info.app.repo_size ?? 0, {round: 0, standard: 'jedec'})
+  if (getGeneration(info.app) !== 'fir') data['Slug Size'] = filesize(info.app.slug_size!, {round: 0, standard: 'jedec'})
   data.Owner = color.user(info.app.owner.email)
   data.Region = info.app.region.name
   data.Dynos = _.countBy(info.dynos, 'type')
-  data.Stack = (function (app) {
+  data.Stack = (function (app: App) {
     let stack = info.app.stack.name
     if (app.stack.name !== app.build_stack.name) {
       stack += ` (next build will use ${app.build_stack.name})`
