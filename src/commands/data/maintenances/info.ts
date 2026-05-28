@@ -1,17 +1,16 @@
-import {flags} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {MaintenanceInfoResult} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../lib/data/base-command.js'
-import {Maintenance} from '../../../lib/data/types.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 
-interface StyledMaintenance extends Maintenance {
-  [key: string]: any;
+type StyledMaintenance = Record<string, any> & {
   duration_approximate?: string;
 }
 
-export default class DataMaintenancesInfo extends BaseCommand {
+export default class DataMaintenancesInfo extends Command {
   static args = {
     addon: Args.string({
       description: 'data addon to show maintenance for',
@@ -31,27 +30,16 @@ export default class DataMaintenancesInfo extends BaseCommand {
   }
 
   // a prettier display of the information
-  protected createStyledMaintenance(maintenance: Maintenance, addSeconds: any, formatDistance: any) {
-    // make a copy of the maintenance
+  protected createStyledMaintenance(maintenance: MaintenanceInfoResult, addSeconds: any, formatDistance: any) {
+    // make a copy of the maintenance, omitting uuids for display
+    const {uuid: _appUuid, ...appWithoutUuid} = maintenance.app
+    const {uuid: _addonUuid, ...addonWithoutUuid} = maintenance.addon
+
     const styledMaintenance: StyledMaintenance = {
       ...maintenance,
-      addon: {
-        ...maintenance.addon,
-      },
-      app: {
-        ...maintenance.app,
-      },
-    }
-
-    // remove app uuid
-    if (styledMaintenance.app && styledMaintenance.app.uuid) {
-      delete styledMaintenance.app.uuid
-    }
-
-    // remove addon uuid
-    if (styledMaintenance.addon && styledMaintenance.addon.uuid) {
-      delete styledMaintenance.addon.uuid
-    }
+      addon: addonWithoutUuid,
+      app: appWithoutUuid,
+    };
 
     ['app',  'addon'].forEach((key: string) => {
       for (const childKey of Object.keys(styledMaintenance[key])) {
@@ -87,10 +75,19 @@ export default class DataMaintenancesInfo extends BaseCommand {
     const addon = await addonResolver.resolve(args.addon, app)
 
     ux.action.start(`Fetching maintenance for ${color.addon(addon.name!)}`)
-    const {body: maintenance} = await this.dataApi.get<Maintenance>(
-      `/data/maintenances/v1/${addon!.id}`,
-      this.dataApi.defaults,
-    )
+    const {data} = new HerokuSDK()
+    let maintenance: MaintenanceInfoResult
+    try {
+      maintenance = await data.maintenance.info(addon.id!)
+    } catch (error: any) {
+      ux.action.stop()
+      if (error.statusCode === 404) {
+        this.error('no maintenance found for this add-on')
+      }
+
+      throw error
+    }
+
     ux.action.stop()
 
     if (json) {

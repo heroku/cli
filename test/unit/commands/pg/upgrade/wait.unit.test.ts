@@ -2,9 +2,11 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
+import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -15,15 +17,19 @@ const all = [
 
 describe('pg:upgrade:wait', function () {
   let api: nock.Scope
-  let pg: nock.Scope
+  let sdkMock: MockSDK
+  let upgradeWaitStatusStub: ReturnType<typeof stub>
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    pg = nock('https://api.data.heroku.com')
+    upgradeWaitStatusStub = stub()
+    sdkMock = mockSDKData({
+      database: {upgradeWaitStatus: upgradeWaitStatusStub},
+    })
   })
 
   afterEach(function () {
-    pg.done()
+    sdkMock.restore()
     nock.cleanAll()
   })
 
@@ -31,9 +37,9 @@ describe('pg:upgrade:wait', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
-    pg
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'preparing upgrade service', 'waiting?': true})
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'recreating followers', step: '7/7', 'waiting?': false})
+    upgradeWaitStatusStub
+      .onFirstCall().resolves({message: 'preparing upgrade service', 'waiting?': true})
+      .onSecondCall().resolves({message: 'recreating followers', step: '7/7', 'waiting?': false})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -52,8 +58,7 @@ describe('pg:upgrade:wait', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
-    pg
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.', 'waiting?': false})
+    upgradeWaitStatusStub.resolves({message: 'upgrade is scheduled on 2025-04-17 20:30:00 UTC. You could also run the upgrade immediately using `heroku pg:upgrade:run`.', 'waiting?': false})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -79,8 +84,7 @@ describe('pg:upgrade:wait', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
-    pg
-      .get('/client/v11/databases/1/upgrade/wait_status').reply(200, {'error?': true, message: 'this is an error message'})
+    upgradeWaitStatusStub.resolves({'error?': true, message: 'this is an error message'})
 
     const {error} = await runCommand(Cmd, [
       '--app',

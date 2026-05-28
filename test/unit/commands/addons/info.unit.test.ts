@@ -1,37 +1,26 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import nock from 'nock'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/info.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('addons:info', function () {
-  let api: nock.Scope
-  let apiSdk: nock.Scope
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    apiSdk = nock('https://api.heroku.com', {
-      reqheaders: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-        'Accept-Expansion': 'addon_service,plan',
-      },
-    })
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
-    api.done()
-    apiSdk.done()
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   context('with add-ons', function () {
-    beforeEach(function () {
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-db'})
-        .reply(200, [fixtures.addons['www-db']])
-      api.get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`).reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
-    })
     it('prints add-ons in a table', async function () {
+      const addon = {
+        ...fixtures.addons['www-db'],
+        attachments: [fixtures.attachments['acme-inc-www::DATABASE']],
+      }
+      const describeStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         'www-db',
       ])
@@ -49,16 +38,14 @@ State:        created\n
   })
 
   context('with app add-ons', function () {
-    beforeEach(function () {
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-db', app: 'example'})
-        .reply(200, [fixtures.addons['www-db']])
-      api
-        .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
-        .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
-    })
-
     it('prints add-ons in a table', async function () {
+      const addon = {
+        ...fixtures.addons['www-db'],
+        attachments: [fixtures.attachments['acme-inc-www::DATABASE']],
+      }
+      const describeStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'example',
@@ -77,20 +64,14 @@ State:        created\n
     })
   })
   context('with app but not an app add-on', function () {
-    beforeEach(function () {
-      // The SDK's resolver tries app-scoped first, falls back to global on 404 add_on.
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-db', app: 'example'})
-        .reply(404, {id: 'not_found', resource: 'add_on'})
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-db'})
-        .reply(200, [fixtures.addons['www-db']])
-      api
-        .get(`/addons/${fixtures.addons['www-db'].id}/addon-attachments`)
-        .reply(200, [fixtures.attachments['acme-inc-www::DATABASE']])
-    })
-
     it('prints add-ons in a table', async function () {
+      const addon = {
+        ...fixtures.addons['www-db'],
+        attachments: [fixtures.attachments['acme-inc-www::DATABASE']],
+      }
+      const describeStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'example',
@@ -110,18 +91,16 @@ State:        created\n
   })
 
   context('with add-ons with grandfathered pricing', function () {
-    beforeEach(function () {
-      const addon = fixtures.addons['dwh-db']
-      addon.billed_price = {cents: 10_000}
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'dwh-db'})
-        .reply(200, [addon])
-      api
-        .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
-        .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
-    })
-
     it('prints add-ons in a table with grandfathered price', async function () {
+      const addon = {
+        ...fixtures.addons['dwh-db'],
+        attachments: [fixtures.attachments['acme-inc-dwh::DATABASE']],
+        billed_price: {cents: 10_000},
+        plan: {...fixtures.addons['dwh-db'].plan, price: {cents: 10_000, unit: 'month'}},
+      }
+      const describeStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         'dwh-db',
       ])
@@ -139,18 +118,16 @@ State:        created\n
   })
 
   context('with a contract add-on', function () {
-    beforeEach(function () {
-      const addon = fixtures.addons['dwh-db']
-      addon.billed_price = {cents: 0, contract: true}
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'dwh-db'})
-        .reply(200, [addon])
-      api
-        .get(`/addons/${fixtures.addons['dwh-db'].id}/addon-attachments`)
-        .reply(200, [fixtures.attachments['acme-inc-dwh::DATABASE']])
-    })
-
     it('prints add-ons in a table with contract', async function () {
+      const addon = {
+        ...fixtures.addons['dwh-db'],
+        attachments: [fixtures.attachments['acme-inc-dwh::DATABASE']],
+        billed_price: {cents: 0, contract: true},
+        plan: {...fixtures.addons['dwh-db'].plan, price: {cents: 0, contract: true, unit: 'month'}},
+      }
+      const describeStub = stub().resolves(addon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         'dwh-db',
       ])
@@ -168,17 +145,14 @@ State:        created\n
   })
 
   context('provisioning add-on', function () {
-    beforeEach(function () {
-      const provisioningAddon = fixtures.addons['www-redis']
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-redis'})
-        .reply(200, [provisioningAddon])
-      api
-        .get(`/addons/${provisioningAddon.id}/addon-attachments`)
-        .reply(200, [fixtures.attachments['acme-inc-www::REDIS']])
-    })
-
     it('prints add-ons in a table with humanized state', async function () {
+      const provisioningAddon = {
+        ...fixtures.addons['www-redis'],
+        attachments: [fixtures.attachments['acme-inc-www::REDIS']],
+      }
+      const describeStub = stub().resolves(provisioningAddon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         'www-redis',
       ])
@@ -196,17 +170,14 @@ State:        creating\n
   })
 
   context('deprovisioning add-on', function () {
-    beforeEach(function () {
-      const deprovisioningAddon = fixtures.addons['www-redis-2']
-      apiSdk
-        .post('/actions/addons/resolve', {addon: 'www-redis-2'})
-        .reply(200, [deprovisioningAddon])
-      api
-        .get(`/addons/${deprovisioningAddon.id}/addon-attachments`)
-        .reply(200, [fixtures.attachments['acme-inc-www::REDIS']])
-    })
-
     it('prints add-ons in a table with humanized state', async function () {
+      const deprovisioningAddon = {
+        ...fixtures.addons['www-redis-2'],
+        attachments: [fixtures.attachments['acme-inc-www::REDIS']],
+      }
+      const describeStub = stub().resolves(deprovisioningAddon)
+      sdkMock = mockSDKPlatform({addOn: {describe: describeStub}})
+
       const {stdout} = await runCommand(Cmd, [
         'www-redis-2',
       ])

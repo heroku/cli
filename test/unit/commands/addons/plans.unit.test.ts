@@ -1,26 +1,33 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/plans.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 describe('addons:plans', function () {
+  let sdkMock: MockSDK
+
+  afterEach(function () {
+    sdkMock?.restore()
+  })
+
   context('with non-metered plans', function () {
-    beforeEach(function () {
+    it('shows add-on plans', async function () {
       const plans = [
         fixtures.plans['heroku-postgresql:mini'],
         fixtures.plans['heroku-postgresql:standard-2'],
         fixtures.plans['heroku-postgresql:premium-3'],
         fixtures.plans['heroku-postgresql:private-4'],
       ]
-      nock('https://api.heroku.com')
-        .get('/addon-services/daservice/plans')
-        .reply(200, plans)
-    })
+      const listPlansStub = stub().resolves(plans)
+      const fakePlatform = {
+        addOn: {listPlans: listPlansStub},
+      }
+      sdkMock = mockSDKPlatform(fakePlatform)
 
-    it('shows add-on plans', async function () {
       const {stdout} = await runCommand(Cmd, ['daservice'])
       const [header, body] = stdout.split(/\s[-─]+\s/gm)
       const actualHeader  = normalizeTableOutput(header)
@@ -40,18 +47,18 @@ describe('addons:plans', function () {
   })
 
   context('with metered plans', function () {
-    beforeEach(function () {
+    it('formats price for metered usage plans', async function () {
       const meteredPlans = [
         fixtures.plans['heroku-inference:plan-1'],
         fixtures.plans['heroku-inference:plan-2'],
         fixtures.plans['heroku-inference:plan-3'],
       ]
-      nock('https://api.heroku.com')
-        .get('/addon-services/metered-service/plans')
-        .reply(200, meteredPlans)
-    })
+      const listPlansStub = stub().resolves(meteredPlans)
+      const fakePlatform = {
+        addOn: {listPlans: listPlansStub},
+      }
+      sdkMock = mockSDKPlatform(fakePlatform)
 
-    it('formats price for metered usage plans', async function () {
       const {stdout} = await runCommand(Cmd, ['metered-service'])
       const [header, body] = stdout.split(/\s[-─]+\s/gm)
       const actualHeader  = normalizeTableOutput(header)

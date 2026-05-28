@@ -173,16 +173,6 @@ export type PgDatabaseTenant = {
 
 export type PgDatabase = PgDatabaseService & PgDatabaseTenant
 
-export type PgUpgradeResponse = {
-  message: string
-}
-
-export type PgUpgradeError = {
-  body: {
-    id: string,
-    message: string,
-  }
-}
 
 // Updated according to https://github.com/heroku/shogun/blob/main/lib/shogun/serializers/link_serializer.rb
 export type Link = {

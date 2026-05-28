@@ -1,13 +1,16 @@
-import {flags as Flags} from '@heroku-cli/command'
+import {Command, flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {MaintenanceInfoByAppResult} from '@heroku/types/data'
 import {ux} from '@oclif/core/ux'
 
-import BaseCommand from '../../../lib/data/base-command.js'
-import {Maintenance, MaintenanceStatus} from '../../../lib/data/types.js'
+import {MaintenanceStatus} from '../../../lib/data/types.js'
 import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
 
-export default class DataMaintenancesIndex extends BaseCommand {
+type MaintenanceItem = MaintenanceInfoByAppResult['maintenances'][number]
+
+export default class DataMaintenancesIndex extends Command {
   static description = 'list maintenances for an app\'s data addons'
   static examples = [
     '$ heroku data:maintenances --app production-app',
@@ -50,38 +53,36 @@ export default class DataMaintenancesIndex extends BaseCommand {
   private async fetchMaintenances(appName: string) {
     ux.action.start('Fetching maintenances')
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    const {body: {maintenances}} = await this.dataApi.get<{maintenances: Maintenance[]}>(
-      `/data/maintenances/v1/apps/${app.id}`,
-      this.dataApi.defaults,
-    )
+    const {data} = new HerokuSDK()
+    const result = await data.maintenance.infoByApp(app.id!)
     ux.action.stop()
 
-    return maintenances
+    return result.maintenances
   }
 
   private getTableColumns(extended: boolean, columns: string | undefined) {
     /* eslint-disable perfectionist/sort-objects */
     const allTableColumns = {
       addon: {
-        get: (row: Maintenance) => row.addon && row.addon.name,
+        get: (row: MaintenanceItem) => row.addon && row.addon.name,
         header: 'Addon',
       },
       attachments: {
-        get(row: Maintenance) {
+        get(row: MaintenanceItem) {
           const attachments = (row && row.addon && row.addon.attachments) || []
           return attachments.join(', ')
         },
         header: 'Attachments',
       },
       window: {
-        get: (row: Maintenance) => row && row.addon && row.addon.window,
+        get: (row: MaintenanceItem) => row && row.addon && row.addon.window,
         header: 'Scheduling Window',
       },
       status: {
         header: 'Status',
       },
       required_by: {
-        get(row: Maintenance) {
+        get(row: MaintenanceItem) {
           if (row.status === MaintenanceStatus.completed) {
             return '-'
           }
@@ -91,7 +92,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
         header: 'Required by',
       },
       scheduled_for: {
-        get(row: Maintenance) {
+        get(row: MaintenanceItem) {
           if (row.status === MaintenanceStatus.completed) {
             return '-'
           }
@@ -101,11 +102,11 @@ export default class DataMaintenancesIndex extends BaseCommand {
         header: 'Scheduled for',
       },
       kind: {
-        get: (row: Maintenance) => row.addon.kind,
+        get: (row: MaintenanceItem) => row.addon.kind,
         header: 'Kind',
       },
       plan: {
-        get: (row: Maintenance) => row.addon.plan,
+        get: (row: MaintenanceItem) => row.addon.plan,
         header: 'Plan',
       },
     }
@@ -116,7 +117,7 @@ export default class DataMaintenancesIndex extends BaseCommand {
     return constructTableColumns(allTableColumns, baseColumnNames, extended, columns)
   }
 
-  private renderTable(maintenances: Maintenance[], tableColumns: Record<string, any>, flags: Record<string, any>) {
+  private renderTable(maintenances: MaintenanceItem[], tableColumns: Record<string, any>, flags: Record<string, any>) {
     const tableOptions = constructSortFilterTableOptions(flags, tableColumns)
     hux.table(maintenances, tableColumns, tableOptions)
   }
