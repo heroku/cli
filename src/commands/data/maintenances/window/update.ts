@@ -1,11 +1,9 @@
-import {flags as Flags} from '@heroku-cli/command'
+import {Command, flags as Flags} from '@heroku-cli/command'
 import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import BaseCommand from '../../../../lib/data/base-command.js'
-import {Window} from '../../../../lib/data/types.js'
-
-export default class DataMaintenancesWindowUpdate extends BaseCommand {
+export default class DataMaintenancesWindowUpdate extends Command {
   static args = {
     addon: Args.string({
       description: 'addon to change window for',
@@ -40,16 +38,11 @@ export default class DataMaintenancesWindowUpdate extends BaseCommand {
     const combinedWindowLabel = `${args.day_of_week} ${args.time_of_day}`
     ux.action.start(`Setting maintenance window for ${color.addon(addon.name!)} to ${combinedWindowLabel}`)
 
-    const {body: result} = await this.dataApi.post<Window>(
-      `/data/maintenances/v1/${addon.id}/window`,
-      {
-        ...this.dataApi.defaults,
-        body: {
-          day_of_week: args.day_of_week,
-          time_of_day: args.time_of_day,
-        },
-      },
-    )
+    const {data} = new HerokuSDK()
+    const result = await data.maintenance.updateWindow(addon.id!, {
+      day_of_week: args.day_of_week,
+      time_of_day: args.time_of_day,
+    })
     ux.action.stop()
 
     if (flags.json) {

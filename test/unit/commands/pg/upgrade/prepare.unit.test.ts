@@ -6,10 +6,12 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/prepare.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -18,7 +20,9 @@ describe('pg:upgrade:prepare', function () {
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
   let api: nock.Scope
-  let dataApi: nock.Scope
+  let sdkMock: MockSDK
+  let infoStub: ReturnType<typeof stub>
+  let prepareUpgradeStub: ReturnType<typeof stub>
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -27,13 +31,19 @@ describe('pg:upgrade:prepare', function () {
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
     addon = fixtures.addons['dwh-db']
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
+
+    infoStub = stub()
+    prepareUpgradeStub = stub()
+    sdkMock = mockSDKData({
+      database: {info: infoStub, prepareUpgrade: prepareUpgradeStub},
+    })
   })
 
   afterEach(async function () {
+    sdkMock.restore()
     nock.cleanAll()
   })
 
@@ -81,15 +91,13 @@ describe('pg:upgrade:prepare', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {
-        following: 'postgres://xxx.com:5432/abcdefghijklmn',
-        leader: {
-          addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
-          name: 'postgresql-leader',
-        },
-      })
+    infoStub.resolves({
+      following: 'postgres://xxx.com:5432/abcdefghijklmn',
+      leader: {
+        addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
+        name: 'postgresql-leader',
+      },
+    })
     const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -108,12 +116,8 @@ describe('pg:upgrade:prepare', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
-      .reply(200, {message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
+    infoStub.resolves({})
+    prepareUpgradeStub.resolves({message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
 
     const message = heredoc(`
       Destructive action
@@ -145,12 +149,8 @@ describe('pg:upgrade:prepare', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
-      .reply(200, {message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
+    infoStub.resolves({})
+    prepareUpgradeStub.resolves({message: 'Your database is scheduled for upgrade during your next available maintenance window.\nRun heroku pg:upgrade:wait to track its status.\nYou can also run this upgrade manually before the maintenance window with heroku pg:upgrade:run. You can only run the upgrade after it\'s fully prepared, which can take up to a day.'})
 
     const message = heredoc(`
       Destructive action
@@ -180,12 +180,8 @@ describe('pg:upgrade:prepare', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/prepare`)
-      .reply(422, {id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.'})
+    infoStub.resolves({})
+    prepareUpgradeStub.rejects({statusCode: 422, id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.'})
 
     const {error} = await runCommand(Cmd, [
       '--app',

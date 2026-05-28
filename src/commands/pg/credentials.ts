@@ -1,10 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 
+import {listCredentials} from '../../lib/pg/sdk-adapter.js'
 import {presentCredentialAttachments} from '../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 import {nls} from '../../nls.js'
@@ -32,15 +34,8 @@ export default class Credentials extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon} = await dbResolver.getAttachment(app, database)
 
-    const {body: credentials} = await this.heroku.get<NonAdvancedCredentialInfo[]>(
-      `/postgres/v0/databases/${addon.id}/credentials`,
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`:${this.heroku.auth}`).toString('base64')}`,
-        },
-        hostname: utils.pg.host(),
-      },
-    )
+    const {data} = new HerokuSDK()
+    const credentials = await listCredentials(data, addon.id)
     const sortedCredentials = this.sortByDefaultAndName(credentials)
     const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
 

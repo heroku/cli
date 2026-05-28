@@ -2,20 +2,19 @@ import {AddOn} from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/upgrade.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
+
+// Import the error classes from the SDK
+import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
 
 describe('addons:upgrade', function () {
-  let api: ReturnType<typeof nock>
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('upgrades an add-on', async function () {
@@ -26,11 +25,14 @@ describe('addons:upgrade', function () {
       name: 'kafka-swiftly-123',
       plan: {name: 'premium-0'},
     }
-    api
-      .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
-      .reply(200, [addon])
-      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-kafka:hobby'})
-      .reply(200, {plan: {price: {cents: 0}}, provision_message: 'provision msg'})
+    const upgradeStub = stub().callsFake(async (_addonIdentity, _plan, options) => {
+      if (options?.onResolved) {
+        options.onResolved(addon)
+      }
+
+      return {plan: {price: {cents: 0}}, provision_message: 'provision msg'}
+    })
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -51,11 +53,14 @@ describe('addons:upgrade', function () {
       plan: {name: 'premium-0'},
     }
 
-    api
-      .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
-      .reply(200, [addon])
-      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-kafka:standard'})
-      .reply(200, {plan: {price: {cents: 2500, unit: 'month'}}, provision_message: 'provision msg'})
+    const upgradeStub = stub().callsFake(async (_addonIdentity, _plan, options) => {
+      if (options?.onResolved) {
+        options.onResolved(addon)
+      }
+
+      return {plan: {price: {cents: 2500, unit: 'month'}}, provision_message: 'provision msg'}
+    })
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -76,11 +81,14 @@ describe('addons:upgrade', function () {
       plan: {name: 'premium-0'},
     }
 
-    api
-      .post('/actions/addons/resolve', {addon: 'heroku-kafka', app: 'myapp'})
-      .reply(200, [addon])
-      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-kafka:hobby'})
-      .reply(200, {plan: {}, provision_message: 'provision msg'})
+    const upgradeStub = stub().callsFake(async (_addonIdentity, _plan, options) => {
+      if (options?.onResolved) {
+        options.onResolved(addon)
+      }
+
+      return {plan: {}, provision_message: 'provision msg'}
+    })
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -101,11 +109,14 @@ describe('addons:upgrade', function () {
       plan: {name: 'free'},
     }
 
-    api
-      .post('/actions/addons/resolve', {addon: 'heroku-connect', app: 'myapp'})
-      .reply(200, [addon])
-      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-connect:contract'})
-      .reply(200, {plan: {price: {cents: 0, contract: true}}, provision_message: 'provision msg'})
+    const upgradeStub = stub().callsFake(async (_addonIdentity, _plan, options) => {
+      if (options?.onResolved) {
+        options.onResolved(addon)
+      }
+
+      return {plan: {price: {cents: 0, contract: true}}, provision_message: 'provision msg'}
+    })
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -125,11 +136,14 @@ describe('addons:upgrade', function () {
       name: 'postgresql-swiftly-123',
       plan: {name: 'premium-0'},
     }
-    api
-      .post('/actions/addons/resolve', {addon: 'heroku-postgresql', app: 'myapp'})
-      .reply(200, [addon])
-      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-postgresql:hobby'})
-      .reply(200, {plan: {price: {cents: 0}}})
+    const upgradeStub = stub().callsFake(async (_addonIdentity, _plan, options) => {
+      if (options?.onResolved) {
+        options.onResolved(addon)
+      }
+
+      return {plan: {price: {cents: 0}}}
+    })
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -141,6 +155,7 @@ describe('addons:upgrade', function () {
   })
 
   it('errors with no plan', async function () {
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: stub()}})
     try {
       await runCommand(Cmd, [
         '--app',
@@ -163,17 +178,21 @@ describe('addons:upgrade', function () {
       plan: {name: 'premium-0'},
     }
 
-    api
-      .post('/actions/addons/resolve', {addon: 'heroku-db1', app: 'myapp'})
-      .reply(200, [addon])
-      .get('/addon-services/heroku-db1/plans')
-      .reply(200, [
-        {name: 'heroku-db1:free', plan: {cents: 0}},
-        {name: 'heroku-db1:basic', plan: {cents: 25}},
-        {name: 'heroku-db1:premium-0', price: {cents: 3500}},
-      ])
-      .patch('/apps/app-1/addons/addon-1', {plan: 'heroku-db1:invalid'})
-      .reply(422, {message: 'Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".'})
+    const apiError = new Error('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".') as Error & {statusCode: number}
+    apiError.statusCode = 422
+    const upgradeStub = stub().callsFake(async (_addonIdentity, _plan, options) => {
+      if (options?.onResolved) {
+        options.onResolved(addon)
+      }
+
+      throw apiError
+    })
+    const listPlansStub = stub().resolves([
+      {name: 'heroku-db1:free', plan: {cents: 0}},
+      {name: 'heroku-db1:basic', plan: {cents: 25}},
+      {name: 'heroku-db1:premium-0', price: {cents: 3500}},
+    ])
+    sdkMock = mockSDKPlatform({addOn: {listPlans: listPlansStub, upgrade: upgradeStub}})
 
     try {
       await runCommand(Cmd, [
@@ -189,8 +208,8 @@ describe('addons:upgrade', function () {
   })
 
   it('displays an error when multiple matches exist', async function () {
-    api.post('/actions/addons/resolve', {addon: 'heroku-postgresql', app: 'myapp'})
-      .reply(422, {id: 'multiple_matches', message: 'Multiple matches'})
+    const upgradeStub = stub().rejects(new AddonAmbiguousError([{name: 'addon-1'}, {name: 'addon-2'}]))
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
     try {
       await runCommand(Cmd, [
         '--app',
@@ -205,8 +224,8 @@ describe('addons:upgrade', function () {
   })
 
   it('handles multiple add-ons', async function () {
-    api.post('/actions/addons/resolve', {addon: 'heroku-redis'})
-      .reply(200, [{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}])
+    const upgradeStub = stub().rejects(new AddonAmbiguousError([{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}]))
+    sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
     try {
       await runCommand(Cmd, [
         'heroku-redis:invalid',

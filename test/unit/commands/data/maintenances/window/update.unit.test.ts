@@ -1,10 +1,12 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 
 import DataMaintenancesWindowUpdate from '../../../../../../src/commands/data/maintenances/window/update.js'
 import {maintenanceWindow} from '../../../../../fixtures/data/maintenances/fixtures.js'
 import {addon, nonPostgresAddon} from '../../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 describe('data:maintenances:window:update', function () {
   const app = {
@@ -12,29 +14,22 @@ describe('data:maintenances:window:update', function () {
   }
 
   let herokuApi: nock.Scope
-  let dataApi: nock.Scope
-
-  beforeEach(function () {
-    herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
     herokuApi.done()
-    dataApi.done()
     nock.cleanAll()
+    sdkMock?.restore()
   })
 
   it('can change a window for an addon', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/window`, {
-        day_of_week: 'tuesday',
-        time_of_day: '5:30PM',
-      })
-      .reply(200, maintenanceWindow)
+
+    const updateWindowStub = stub().resolves(maintenanceWindow)
+    sdkMock = mockSDKData({maintenance: {updateWindow: updateWindowStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesWindowUpdate, [addon.name, 'tuesday', '5:30PM'])
 
@@ -44,15 +39,13 @@ describe('data:maintenances:window:update', function () {
   })
 
   it('can change a window for an addon scoped by an app', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve')
       .reply(200, [addon])
-    dataApi
-      .post(`/data/maintenances/v1/${addon.id}/window`, {
-        day_of_week: 'tuesday',
-        time_of_day: '5:30PM',
-      })
-      .reply(200, maintenanceWindow)
+
+    const updateWindowStub = stub().resolves(maintenanceWindow)
+    sdkMock = mockSDKData({maintenance: {updateWindow: updateWindowStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesWindowUpdate, [addon.name, 'tuesday', '5:30PM', `--app=${app.name}`])
 
@@ -62,15 +55,13 @@ describe('data:maintenances:window:update', function () {
   })
 
   it('can change a window for a non-postgres addon', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .post('/actions/addons/resolve', body => body.addon_service === undefined)
       .reply(200, [nonPostgresAddon])
-    dataApi
-      .post(`/data/maintenances/v1/${nonPostgresAddon.id}/window`, {
-        day_of_week: 'tuesday',
-        time_of_day: '5:30PM',
-      })
-      .reply(200, maintenanceWindow)
+
+    const updateWindowStub = stub().resolves(maintenanceWindow)
+    sdkMock = mockSDKData({maintenance: {updateWindow: updateWindowStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesWindowUpdate, [nonPostgresAddon.name, 'tuesday', '5:30PM'])
 
