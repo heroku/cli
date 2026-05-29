@@ -38,7 +38,7 @@ describe('pg:upgrade:dryrun', function () {
     infoStub = stub()
     dryRunUpgradeStub = stub()
     sdkMock = mockSDKData({
-      database: {info: infoStub, dryRunUpgrade: dryRunUpgradeStub},
+      database: {describe: infoStub, dryRunUpgrade: dryRunUpgradeStub},
     })
   })
 

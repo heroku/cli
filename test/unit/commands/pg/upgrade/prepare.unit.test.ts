@@ -38,7 +38,7 @@ describe('pg:upgrade:prepare', function () {
     infoStub = stub()
     prepareUpgradeStub = stub()
     sdkMock = mockSDKData({
-      database: {info: infoStub, prepareUpgrade: prepareUpgradeStub},
+      database: {describe: infoStub, prepareUpgrade: prepareUpgradeStub},
     })
   })
 

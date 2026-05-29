@@ -5,7 +5,6 @@ import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/credentials.js'
-import {type MockSDK, mockSDKData} from '../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 /** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */
@@ -20,23 +19,17 @@ describe('pg:credentials', function () {
     plan: {name: 'heroku-postgresql:standard-0'},
   }
   let api: nock.Scope
-  let sdkMock: MockSDK
-  let listCredentialsStub: ReturnType<typeof stub>
+  let pg: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    listCredentialsStub = stub()
-    sdkMock = mockSDKData({
-      postgresDatabase: {
-        listCredentials: listCredentialsStub,
-      },
-    })
+    pg = nock('https://api.data.heroku.com')
   })
 
   afterEach(function () {
     nock.cleanAll()
     restore()
-    sdkMock.restore()
+    pg.done()
     api.done()
   })
 
@@ -108,7 +101,8 @@ describe('pg:credentials', function () {
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    listCredentialsStub.resolves(credentials)
+    pg.get('/postgres/v0/databases/1/credentials')
+      .reply(200, credentials)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -197,7 +191,8 @@ describe('pg:credentials', function () {
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    listCredentialsStub.resolves(credentials)
+    pg.get('/postgres/v0/databases/1/credentials')
+      .reply(200, credentials)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -231,7 +226,8 @@ describe('pg:credentials', function () {
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    listCredentialsStub.resolves(credentials)
+    pg.get('/postgres/v0/databases/1/credentials')
+      .reply(200, credentials)
 
     const tableStub = stub(hux, 'table')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
