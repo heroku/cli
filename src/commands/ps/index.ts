@@ -2,13 +2,13 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
-import type {Account} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-import {ago} from '../../lib/time.js'
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 import type {DynoExtended} from '../../lib/types/dyno-extended.js'
+
+import {ago} from '../../lib/time.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const heredoc = tsheredoc.default
@@ -44,42 +44,20 @@ export default class Index extends Command {
 
     const {platform} = new HerokuSDK({extensions: [appExtensions]})
 
-    let dynos: DynoExtended[]
-    let shielded: boolean
-    let processTier: string | undefined
-    let appId: string | undefined
-    let ownerId: string | undefined
-    let accountInfo: Account
+    const dynosPromise = extended
+      ? this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos?extended=true`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      }).then(r => r.body)
+      : platform.dyno.list(app) as Promise<DynoExtended[]>
 
-    if (extended) {
-      const [{body: extDynos}, shieldedResult, appInfo, accountInfoResult] = await Promise.all([
-        this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos?extended=true`, {
-          headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-        }),
-        platform.app.isShielded(app),
-        platform.app.info(app),
-        platform.account.info(),
-      ])
-      dynos = extDynos
-      shielded = shieldedResult
-      processTier = (appInfo as {process_tier?: string}).process_tier
-      appId = appInfo.id
-      ownerId = appInfo.owner?.id
-      accountInfo = accountInfoResult
-    } else {
-      const [dynoList, shieldedResult, appInfo, accountInfoResult] = await Promise.all([
-        platform.dyno.list(app) as Promise<DynoExtended[]>,
-        platform.app.isShielded(app),
-        platform.app.info(app),
-        platform.account.info(),
-      ])
-      dynos = dynoList
-      shielded = shieldedResult
-      processTier = (appInfo as {process_tier?: string}).process_tier
-      appId = appInfo.id
-      ownerId = appInfo.owner?.id
-      accountInfo = accountInfoResult
-    }
+    const [dynos, shielded, appInfo, accountInfo] = await Promise.all([
+      dynosPromise,
+      platform.app.isShielded(app),
+      platform.app.info(app),
+      platform.account.info(),
+    ])
+
+    const processTier = (appInfo as {process_tier?: string}).process_tier
 
     if (shielded) {
       for (const d of dynos) {
@@ -105,7 +83,12 @@ export default class Index extends Command {
     else if (extended)
       printExtended(selectedDynos, flags['no-wrap'])
     else {
-      await printAccountQuota(this.heroku, processTier, appId, ownerId, accountInfo)
+      await printAccountQuota(this.heroku, {
+        account: accountInfo,
+        appId: appInfo.id,
+        ownerId: appInfo.owner?.id,
+        processTier,
+      })
       if (selectedDynos.length === 0)
         ux.stdout(`No dynos on ${color.app(app)}`)
       else
@@ -167,17 +150,24 @@ function getProcessNumber(s: string) : number {
   return Number.parseInt(dynoNumber, 10)
 }
 
-async function printAccountQuota(heroku: APIClient, processTier: string | undefined, appId: string | undefined, ownerId: string | undefined, account: Account) {
-  if (processTier !== 'eco') {
+type QuotaOpts = {
+  account: {id?: string}
+  appId?: string
+  ownerId?: string
+  processTier?: string
+}
+
+async function printAccountQuota(heroku: APIClient, opts: QuotaOpts) {
+  if (opts.processTier !== 'eco') {
     return
   }
 
-  if (ownerId !== account.id) {
+  if (opts.ownerId !== opts.account.id) {
     return
   }
 
   const {body: quota} = await heroku.request<AccountQuota>(
-    `/accounts/${account.id}/actions/get-quota`,
+    `/accounts/${opts.account.id}/actions/get-quota`,
     {headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}},
   ).catch(() => (
     {body: null}
@@ -192,7 +182,7 @@ async function printAccountQuota(heroku: APIClient, processTier: string | undefi
   const remainingMinutes = remaining / 60
   const hours = Math.floor(remainingMinutes / 60)
   const minutes = Math.floor(remainingMinutes % 60)
-  const appQuota = quota.apps.find(appQuota => appQuota.app_uuid === appId)
+  const appQuota = quota.apps.find(appQuota => appQuota.app_uuid === opts.appId)
   const appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
   const appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
   const appHours = Math.floor(appQuotaUsed / 60)

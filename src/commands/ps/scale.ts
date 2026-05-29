@@ -1,8 +1,11 @@
+import type {ScaleDynosUpdate} from '@heroku/sdk/resources/platform/dyno'
+
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
-import type {ScaleDynosUpdate} from '@heroku/sdk/resources/platform/dyno'
-import {appExtensions, dynoExtensions, privateToShield, shieldToPrivate} from '@heroku/sdk/extensions/platform'
+import {
+  appExtensions, dynoExtensions, privateToShield, shieldToPrivate,
+} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -68,7 +71,7 @@ export default class Scale extends Command {
         throw emptyFormationErr(app)
       }
 
-      ux.stdout(formation.map(d => `${d.type}=${d.quantity}:${shielded ? privateToShield(d.size || '') : d.size}`)
+      ux.stdout(formation.map(d => `${d.type}=${d.quantity}:${shielded && d.size !== undefined ? privateToShield(d.size) : d.size}`)
         .sort()
         .join(' '))
     } else {
@@ -79,7 +82,7 @@ export default class Scale extends Command {
       ])
 
       const output = formation.filter(f => changes.find(c => c.type === f.type))
-        .map(d => `${color.green(d.type || '')} at ${d.quantity}:${shielded ? privateToShield(d.size || '') : d.size}`)
+        .map(d => `${color.green(d.type || '')} at ${d.quantity}:${shielded && d.size !== undefined ? privateToShield(d.size) : d.size}`)
       ux.action.stop(`done, now running ${output.join(', ')}`)
     }
   }
