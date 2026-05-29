@@ -67,8 +67,18 @@ Save the `tsc` baseline. Any errors present here are NOT your responsibility —
 ### Step P3: Verify the command's call surface
 
 Read the target command file. Confirm:
-- The command uses raw `this.heroku.<verb>(path)` calls (otherwise this skill doesn't apply).
+- The command makes Platform/Data API calls. They may appear in one of two shapes:
+  - **Direct**: `this.heroku.<verb>(path, ...)` inside `run()`. The codemod handles these.
+  - **Helper-threaded**: `run()` passes `this.heroku` (an `APIClient`) into helper functions that call `heroku.<verb>(path, ...)`. The codemod will produce "no change" (it only matches the `this.heroku.<verb>` shape); follow Step 1.2a for these.
 - No call site streams a response, uses raw fetch, or sets custom auth (the codemod flags these but they may indicate this command needs manual migration).
+
+Quick diagnostic for the helper-threading shape:
+
+```bash
+grep -nE "(^|[^.])\bheroku\.(get|post|patch|put|delete)\(" src/commands/<command-path>.ts
+```
+
+A non-empty result with no `this.` prefix means at least one call site is in a helper that received `heroku` as a parameter — plan for manual migration.
 
 ---
 
@@ -119,8 +129,42 @@ The second argument to a write-method call wasn't a recognizable `{body: ...}` w
 **"this.heroku.<verb>(...) has an extra argument (request options?) ..."**
 The CLI passed http-call options the SDK doesn't accept. For data routes, a lone `{hostname: utils.pg.host()}` is dropped silently and won't appear here — anything that reaches this flag has additional unrecognized properties. If the call is hitting a non-default host (other than the Platform or Data hostname the SDK knows about), escalate. Otherwise, drop the unused options and replace manually.
 
+**Body silently dropped at runtime (route metadata gap)**
+The SDK's dispatcher only forwards a request body when the route metadata has `hasRequestBody: true`. If `@heroku/types` is missing that flag for a route, the generated SDK method's TS signature won't accept a body parameter *and* the dispatcher will silently drop any body you cast through. Symptoms: tests fail with "request body did not match" or the migrated PATCH/POST behaves as if it sent an empty payload. Diagnostic:
+
+```bash
+npx tsx -e "
+import {RouteIndex} from './scripts/codemods/sdk-migration/routes-index.ts';
+const r = RouteIndex.load().lookup('PATCH', '/apps/example/config-vars');
+console.log('hasRequestBody:', r?.entry.hasRequestBody, 'method:', r?.entry.resource + '.' + r?.entry.method);
+"
+```
+
+If `hasRequestBody` is `false` but the endpoint logically requires a body, the fix is upstream: the user (or you) needs to bump `@heroku/types` to a version where the route metadata is correct. Stop and ask the user before working around this — escape-hatching to the underlying client defeats the migration's purpose. Once the dependency is updated, re-run `npm install`, re-verify the diagnostic shows `hasRequestBody: true`, and refresh the Pre-flight P2 baseline (the bump may resolve unrelated `tsc` errors too).
+
 **`Warning: name collision with SDK service(s)`** (non-blocking)
 A local variable in `run()` shadows the destructured `data` or `platform` service. The codemod still produces the migration, but the inner scope's SDK calls will fail at runtime. Rename the local before merging.
+
+### Step 1.2a: Helper-threaded commands (codemod returned "no change")
+
+The codemod only rewrites `this.heroku.<verb>(...)` call sites. Some commands route API calls through private helpers and pass the `APIClient` as a parameter — the codemod produces "no change" for those because none of the call sites match its pattern. Migrate these by hand:
+
+1. **Convert helpers from `APIClient` to a `Platform` parameter.** At the top of the file (after the imports), declare:
+   ```ts
+   type Platform = HerokuSDK['platform']
+   ```
+   Then change each helper signature: replace `heroku: APIClient` with `platform: Platform` (or `data: HerokuSDK['data']` for data-service helpers). Inside the helper, replace each `heroku.<verb>(path, {body: x})` with the corresponding `platform.<resource>.<method>(...)` call — same lookup as Step 1.1 (use `scripts/codemods/sdk-migration/routes-index.ts` to find the resource/method for `(verb, path)`).
+2. **Construct the SDK once in `run()`.** Replace the original `this.heroku` thread with:
+   ```ts
+   const {platform} = new HerokuSDK()
+   ```
+   then pass `platform` to the helpers.
+3. **Drop the `APIClient` import** from `@heroku-cli/command` if it's no longer used; keep `Command` and `flags`.
+4. **Drop `{body: app}` destructure at call sites** the same way the codemod does for the simple shape. The SDK returns the body directly — `const app = await platform.app.create(params)`.
+
+For body shapes the codemod would have unwrapped, do the unwrap by hand. The pattern `await heroku.post<Heroku.App>('/apps', {body: params})` becomes `await platform.app.create(params)`. Cast to the `*CreateOpts` type from `@heroku/types/3.sdk` if the local body shape isn't structurally assignable.
+
+Both shapes (direct and helper-threaded) can coexist in the same command. If the codemod migrated some call sites and "no change"d others, finish the remaining ones manually using this step before moving on.
 
 ### Step 1.3: Type-check
 
@@ -143,12 +187,9 @@ Do NOT modify type files in `src/lib/types/` to satisfy a cast in a command file
 npx mocha 'test/unit/commands/<command-path>.unit.test.ts' --reporter min 2>&1 | tail -5
 ```
 
-Expected: same pass count as Pre-flight Step P2.
+The existing nock-based tests will likely fail at this stage with "Mocks not yet satisfied" or similar — the SDK uses `@heroku/heroku-fetch` (built on `undici`) which `nock` does not intercept on Node 20+. **Do not try to make these tests pass in Task 1.** Note the failure mode and move on to Task 2; the test rewrite is the fix.
 
-If tests fail, the most likely causes:
-- **The SDK call returns a slightly different shape** than the raw HTTP response. Adjust the post-call code (often: drop the `.body` destructuring) until the data flow matches what the test expects.
-- **An assertion checks specific URL shape**. Skip ahead to Task 2 — the rewrite will replace the assertion with an SDK-stub assertion anyway.
-- **The output formatting changed** because the SDK normalized a field. Verify against the original output format in version control before changing the assertion.
+The exception: if a test fails for a *different* reason (e.g., a TypeError thrown inside the migrated code), that's a real regression. Diagnose and fix before continuing. Useful filter: failures whose stack traces point into `src/commands/...` are real; failures whose only assertion is "Mocks not yet satisfied" or "expected … to include …" with empty output are nock-no-longer-intercepts noise.
 
 ### Step 1.5: Lint and commit Task 1
 
@@ -159,6 +200,12 @@ git commit -m "refactor: use @heroku/sdk for <command> command"
 ```
 
 Lint warnings that pre-existed are acceptable. Do NOT introduce new violations; if eslint flags something, fix it (or re-run with `--fix` for stylistic-only issues, then verify the autofix didn't change semantics).
+
+Common lint surprises on migrated files:
+- `n/no-extraneous-import` flags `import type {...} from '@heroku/types/3.sdk'`. The package is a transitive dependency, but the rule only complains about the type-only form. Drop the `type` modifier — `import {AppCreateOpts, ...} from '@heroku/types/3.sdk'` lints clean. Match the value-form pattern used in `src/commands/pipelines/create.ts`.
+- `@stylistic/operator-linebreak`, `@stylistic/object-curly-newline` — stylistic and autofixable. Run `npx eslint --fix` once, then re-lint to confirm no new errors.
+
+If the source migration required a `package.json`/`package-lock.json` bump (typically because of a route-metadata gap caught in Step 1.2), include the lockfile in this commit and explain the bump in the commit body. Don't split the lockfile change into its own commit — it's load-bearing for the source migration in the same PR.
 
 ---
 
@@ -272,14 +319,16 @@ Each PR migrates exactly one command. Don't bundle multiple command migrations �
 Before opening the PR:
 
 - [ ] No `this.heroku.<verb>` calls remain in the migrated file.
+- [ ] No bare `heroku.<verb>(...)` calls remain in helper functions (helper-threading shape — see Step 1.2a).
 - [ ] No `// TODO(sdk-migration):` markers remain.
 - [ ] No `import * as Heroku from '@heroku-cli/schema'` if no longer used.
+- [ ] No `import {APIClient} from '@heroku-cli/command'` if no longer used.
 - [ ] No `as unknown as X` cast where `as X` would suffice.
 - [ ] No new `tsc` errors (verify against the Pre-flight P2 baseline).
 - [ ] Tests rewritten per Task 2: `nock` removed, SDK stubbed via `HerokuSDK.prototype.platform`.
 - [ ] Lint clean on changed files.
-- [ ] One file changed per source commit; commit messages follow the convention.
-- [ ] No incidental edits to unrelated files (lockfile, type defs, sibling commands).
+- [ ] One source file changed per source commit; commit messages follow the convention. A `package-lock.json` bump driven by a route-metadata gap (Step 1.2) is allowed in the source commit and should be called out in the commit body.
+- [ ] No incidental edits to other unrelated files (type defs, sibling commands).
 
 ---
 

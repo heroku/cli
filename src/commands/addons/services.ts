@@ -18,7 +18,7 @@ export default class Services extends Command {
       hux.styledJSON(services)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(services as Array<Record<string, unknown>>, {
+      hux.table(services as unknown as Array<Record<string, unknown>>, {
         name: {
           header: 'Slug',
         },

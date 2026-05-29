@@ -172,6 +172,41 @@ describe('HerokuRepl', function () {
     })
   })
 
+  describe('processLine', function () {
+    it('passes an empty string to rl.write when clearing the line after command execution', async function () {
+      const writeSpy = stub()
+      const mockRl = {
+        close: stub(),
+        history: [],
+        off: stub(),
+        on: stub(),
+        once: stub(),
+        prompt: stub(),
+        setPrompt: stub(),
+        write: writeSpy,
+      }
+
+      stub(HerokuRepl.prototype, 'createInterface' as any).callsFake(function (this: any) {
+        this.rl = mockRl
+      })
+
+      config = {
+        commands: [],
+        findCommand: stub().returns({flags: {}, id: 'apps:info'}),
+        root: '/fake/root',
+        runCommand: stub().resolves(),
+      } as any
+
+      repl = new HerokuRepl(config)
+
+      await (repl as any).processLine('apps:info')
+
+      const writeCall = writeSpy.args.find((args: any[]) => args[1]?.ctrl === true && args[1]?.name === 'u')
+      expect(writeCall, 'rl.write should be called for ctrl+u line clear').to.exist
+      expect(writeCall![0]).to.equal('')
+    })
+  })
+
   describe('readline interface creation', function () {
     it('should create readline interface with correct configuration', function () {
       stub(HerokuRepl.prototype, 'fsExistsSync' as any).returns(false)
