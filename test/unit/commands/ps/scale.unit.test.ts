@@ -15,8 +15,8 @@ describe('ps:scale', function () {
 
   it('shows formation with no args', async function () {
     const listStub = stub().resolves([{quantity: 1, size: 'Free', type: 'web'}, {quantity: 2, size: 'Free', type: 'worker'}])
-    const infoStub = stub().resolves({name: 'myapp'})
-    sdkMock = mockSDKPlatform({app: {info: infoStub}, formation: {list: listStub}})
+    const isShieldedStub = stub().resolves(false)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, formation: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -30,8 +30,8 @@ describe('ps:scale', function () {
 
   it('shows formation with shield dynos for apps in a shielded private space', async function () {
     const listStub = stub().resolves([{quantity: 1, size: 'Private-L', type: 'web'}, {quantity: 2, size: 'Private-M', type: 'worker'}])
-    const infoStub = stub().resolves({name: 'myapp', space: {shield: true}})
-    sdkMock = mockSDKPlatform({app: {info: infoStub}, formation: {list: listStub}})
+    const isShieldedStub = stub().resolves(true)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, formation: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -44,8 +44,8 @@ describe('ps:scale', function () {
 
   it('errors with no process types', async function () {
     const listStub = stub().resolves([])
-    const infoStub = stub().resolves({name: 'myapp'})
-    sdkMock = mockSDKPlatform({app: {info: infoStub}, formation: {list: listStub}})
+    const isShieldedStub = stub().resolves(false)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, formation: {list: listStub}})
 
     const {error, stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -58,9 +58,9 @@ describe('ps:scale', function () {
   })
 
   it('scales web=1 worker=2', async function () {
-    const batchUpdateStub = stub().resolves([{quantity: 1, size: 'Free', type: 'web'}, {quantity: 2, size: 'Free', type: 'worker'}])
-    const infoStub = stub().resolves({name: 'myapp'})
-    sdkMock = mockSDKPlatform({app: {info: infoStub}, formation: {batchUpdate: batchUpdateStub}})
+    const scaleStub = stub().resolves([{quantity: 1, size: 'Free', type: 'web'}, {quantity: 2, size: 'Free', type: 'worker'}])
+    const isShieldedStub = stub().resolves(false)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, dyno: {scale: scaleStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -71,13 +71,13 @@ describe('ps:scale', function () {
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n')
-    expect(batchUpdateStub.calledOnceWith('myapp', {updates: [{quantity: '1', size: undefined, type: 'web'}, {quantity: '2', size: undefined, type: 'worker'}]})).to.be.true
+    expect(scaleStub.calledOnceWith('myapp', [{quantity: '1', size: undefined, type: 'web'}, {quantity: '2', size: undefined, type: 'worker'}])).to.be.true
   })
 
   it('scales up a shield dyno if the app is in a shielded private space', async function () {
-    const batchUpdateStub = stub().resolves([{quantity: 1, size: 'Private-L', type: 'web'}])
-    const infoStub = stub().resolves({name: 'myapp', space: {shield: true}})
-    sdkMock = mockSDKPlatform({app: {info: infoStub}, formation: {batchUpdate: batchUpdateStub}})
+    const scaleStub = stub().resolves([{quantity: 1, size: 'Private-L', type: 'web'}])
+    const isShieldedStub = stub().resolves(true)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, dyno: {scale: scaleStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -87,13 +87,13 @@ describe('ps:scale', function () {
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Scaling dynos... done, now running web at 1:Shield-L\n')
-    expect(batchUpdateStub.calledOnceWith('myapp', {updates: [{quantity: '1', size: 'Private-L', type: 'web'}]})).to.be.true
+    expect(scaleStub.calledOnceWith('myapp', [{quantity: '1', size: 'Private-L', type: 'web'}])).to.be.true
   })
 
   it('scales web-1', async function () {
-    const batchUpdateStub = stub().resolves([{quantity: 2, size: 'Free', type: 'web'}])
-    const infoStub = stub().resolves({name: 'myapp'})
-    sdkMock = mockSDKPlatform({app: {info: infoStub}, formation: {batchUpdate: batchUpdateStub}})
+    const scaleStub = stub().resolves([{quantity: 2, size: 'Free', type: 'web'}])
+    const isShieldedStub = stub().resolves(false)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, dyno: {scale: scaleStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -103,6 +103,6 @@ describe('ps:scale', function () {
 
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Scaling dynos... done, now running web at 2:Free\n')
-    expect(batchUpdateStub.calledOnceWith('myapp', {updates: [{quantity: '+1', size: undefined, type: 'web'}]})).to.be.true
+    expect(scaleStub.calledOnceWith('myapp', [{quantity: '+1', size: undefined, type: 'web'}])).to.be.true
   })
 })

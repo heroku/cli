@@ -42,7 +42,7 @@ describe('ps', function () {
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -76,7 +76,7 @@ describe('ps', function () {
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -108,7 +108,7 @@ describe('ps', function () {
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic', space: {shield: true}})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -139,7 +139,7 @@ describe('ps', function () {
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {error, stdout} = await runCommand(Cmd, [
       'foo',
@@ -158,7 +158,7 @@ describe('ps', function () {
     ])
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -173,7 +173,7 @@ describe('ps', function () {
   it('shows extended info', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}})
 
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos?extended=true')
@@ -222,7 +222,7 @@ describe('ps', function () {
   it('passes no-wrap option through to extended table rendering', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}})
 
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos?extended=true')
@@ -250,7 +250,7 @@ describe('ps', function () {
   it('shows extended info for Private Space app', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}})
 
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos?extended=true')
@@ -298,7 +298,7 @@ describe('ps', function () {
   it('shows shield dynos in extended info if app is in a shielded private space', async function () {
     const infoStub = stub().resolves({space: {shield: true}})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}})
 
     nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
       .get('/apps/myapp/dynos?extended=true')
@@ -349,7 +349,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 1000, apps: [], quota_used: 1})
 
     const ecoExpression = heredoc`
@@ -379,7 +379,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 3_600_000, apps: [], quota_used: 178_200})
 
     const ecoExpression = heredoc`
@@ -409,7 +409,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 3_600_000, apps: [{app_uuid: '6789', quota_used: 178_200}], quota_used: 178_200})
 
     const ecoExpression = heredoc`
@@ -439,7 +439,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 0, apps: [], quota_used: 0})
 
     const ecoExpression = heredoc`
@@ -469,7 +469,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 404, {id: 'not_found'})
 
     const ecoExpression = heredoc`
@@ -494,7 +494,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {id: 'not_found'})
 
     const ecoExpression = heredoc`
@@ -519,7 +519,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({owner: {id: '5678'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const ecoExpression = heredoc`
       === run: one-off processes (1)
@@ -543,7 +543,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({owner: {id: '1234'}, process_tier: 'basic'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const ecoExpression = heredoc`
       === run: one-off processes (1)
@@ -567,7 +567,7 @@ describe('ps', function () {
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 503, {id: 'server_error'})
 
     const ecoExpression = heredoc`
@@ -590,7 +590,7 @@ describe('ps', function () {
     const listStub = stub().resolves([])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub}, dyno: {list: listStub}})
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
