@@ -73,7 +73,7 @@ export default class DataMaintenancesSchedule extends Command {
     const schedule: MaintenanceScheduleResult = await data.maintenance.schedule(addon.id!, {delay_weeks: delayWeeks})
     ux.action.stop('maintenance scheduled')
 
-    const alreadyScheduled = !!schedule.previously_scheduled_for
+    const alreadyScheduled = Boolean(schedule.previously_scheduled_for)
 
     if (alreadyScheduled) {
       this.log(`Scheduled maintenance for ${color.addon(addon.name!)} changed from ${schedule.previously_scheduled_for} to ${schedule.scheduled_for}`)

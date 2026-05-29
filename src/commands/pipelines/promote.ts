@@ -107,7 +107,7 @@ export default class Promote extends Command {
       {
         pipeline: {id: coupling.pipeline!.id!},
         source: {app: {id: coupling.app!.id!}},
-        targets: targetApps.map(app => ({app: {id: app.id}})),
+        targets: targetApps.map(app => ({app: {id: app.id!}})),
       },
       {onReleaseStream},
     )

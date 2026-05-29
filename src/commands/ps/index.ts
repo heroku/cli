@@ -1,13 +1,14 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
+import type {AccountQuota} from '../../lib/types/account-quota.js'
+import type {DynoExtended} from '../../lib/types/dyno-extended.js'
+
 import {ago} from '../../lib/time.js'
-import {AccountQuota} from '../../lib/types/account-quota.js'
-import {AppProcessTier} from '../../lib/types/app-process-tier.js'
-import {DynoExtended} from '../../lib/types/dyno-extended.js'
-import {Account} from '../../lib/types/fir.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 const heredoc = tsheredoc.default
@@ -40,24 +41,27 @@ export default class Index extends Command {
     const {flags, ...restParse} = await this.parse(Index)
     const {app, extended, json} = flags
     const types = restParse.argv as string[]
-    const suffix = extended ? '?extended=true' : ''
-    const promises = {
-      accountInfo: this.heroku.request<Account>('/account', {
+
+    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+
+    const dynosPromise = extended
+      ? this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos?extended=true`, {
         headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-      appInfo: this.heroku.request<AppProcessTier>(`/apps/${app}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-      dynos: this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos${suffix}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }),
-    }
-    const [{body: dynos}, {body: appInfo}, {body: accountInfo}] = await Promise.all([promises.dynos, promises.appInfo, promises.accountInfo])
-    const shielded = appInfo.space && appInfo.space.shield
+      }).then(r => r.body)
+      : platform.dyno.list(app) as Promise<DynoExtended[]>
+
+    const [dynos, shielded, appInfo, accountInfo] = await Promise.all([
+      dynosPromise,
+      platform.app.isShielded(app),
+      platform.app.info(app),
+      platform.account.info(),
+    ])
+
+    const processTier = (appInfo as {process_tier?: string}).process_tier
 
     if (shielded) {
       for (const d of dynos) {
-        d.size = d.size.replace('Private-', 'Shield-')
+        d.size = privateToShield(d.size)
       }
     }
 
@@ -79,7 +83,12 @@ export default class Index extends Command {
     else if (extended)
       printExtended(selectedDynos, flags['no-wrap'])
     else {
-      await printAccountQuota(this.heroku, appInfo, accountInfo)
+      await printAccountQuota(this.heroku, {
+        account: accountInfo,
+        appId: appInfo.id,
+        ownerId: appInfo.owner?.id,
+        processTier,
+      })
       if (selectedDynos.length === 0)
         ux.stdout(`No dynos on ${color.app(app)}`)
       else
@@ -141,17 +150,24 @@ function getProcessNumber(s: string) : number {
   return Number.parseInt(dynoNumber, 10)
 }
 
-async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account: Account) {
-  if (app.process_tier !== 'eco') {
+type QuotaOpts = {
+  account: {id?: string}
+  appId?: string
+  ownerId?: string
+  processTier?: string
+}
+
+async function printAccountQuota(heroku: APIClient, opts: QuotaOpts) {
+  if (opts.processTier !== 'eco') {
     return
   }
 
-  if (app.owner.id !== account.id) {
+  if (opts.ownerId !== opts.account.id) {
     return
   }
 
   const {body: quota} = await heroku.request<AccountQuota>(
-    `/accounts/${account.id}/actions/get-quota`,
+    `/accounts/${opts.account.id}/actions/get-quota`,
     {headers: {Accept: 'application/vnd.heroku+json; version=3.account-quotas'}},
   ).catch(() => (
     {body: null}
@@ -166,7 +182,7 @@ async function printAccountQuota(heroku: APIClient, app: AppProcessTier, account
   const remainingMinutes = remaining / 60
   const hours = Math.floor(remainingMinutes / 60)
   const minutes = Math.floor(remainingMinutes % 60)
-  const appQuota = quota.apps.find(appQuota => appQuota.app_uuid === app.id)
+  const appQuota = quota.apps.find(appQuota => appQuota.app_uuid === opts.appId)
   const appQuotaUsed = appQuota ? appQuota.quota_used / 60 : 0
   const appPercentage = appQuota ? Math.floor(appQuota.quota_used * 100 / quota.account_quota) : 0
   const appHours = Math.floor(appQuotaUsed / 60)

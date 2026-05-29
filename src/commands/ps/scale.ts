@@ -1,6 +1,11 @@
+import type {ScaleDynosUpdate} from '@heroku/sdk/resources/platform/dyno'
+
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {
+  appExtensions, dynoExtensions, privateToShield, shieldToPrivate,
+} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -42,54 +47,42 @@ export default class Scale extends Command {
     const argv = restParse.argv as string[]
     const {app} = flags
 
-    function parse(args: string[]) {
+    function parse(args: string[]): ScaleDynosUpdate[] {
       return _.compact(args.map(arg => {
         const change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
         if (!change)
           return
         const quantity = change[2][0] === '=' ? change[2].slice(1) : change[2]
-        if (change[3])
-          change[3] = change[3].replace('Shield-', 'Private-')
-        return {quantity, size: change[3], type: change[1]}
+        const size = change[3] ? shieldToPrivate(change[3]) : undefined
+        return {quantity, size, type: change[1]}
       }))
     }
 
+    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
     const changes = parse(argv)
 
     if (changes.length === 0) {
-      const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
-      const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-      const shielded = appProps.space && appProps.space.shield
-      if (shielded) {
-        for (const d of formation) {
-          if (d.size !== undefined) {
-            d.size = d.size.replace('Private-', 'Shield-')
-          }
-        }
-      }
+      const [formation, shielded] = await Promise.all([
+        platform.formation.list(app),
+        platform.app.isShielded(app),
+      ])
 
       if (formation.length === 0) {
         throw emptyFormationErr(app)
       }
 
-      ux.stdout(formation.map(d => `${d.type}=${d.quantity}:${d.size}`)
+      ux.stdout(formation.map(d => `${d.type}=${d.quantity}:${shielded && d.size !== undefined ? privateToShield(d.size) : d.size}`)
         .sort()
         .join(' '))
     } else {
       ux.action.start('Scaling dynos')
-      const {body: appProps} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-      const {body: formation} = await this.heroku.patch<Heroku.Formation[]>(`/apps/${app}/formation`, {body: {updates: changes}})
-      const shielded = appProps.space && appProps.space.shield
-      if (shielded) {
-        for (const d of formation) {
-          if (d.size !== undefined) {
-            d.size = d.size.replace('Private-', 'Shield-')
-          }
-        }
-      }
+      const [shielded, formation] = await Promise.all([
+        platform.app.isShielded(app),
+        platform.dyno.scale(app, changes),
+      ])
 
       const output = formation.filter(f => changes.find(c => c.type === f.type))
-        .map(d => `${color.green(d.type || '')} at ${d.quantity}:${d.size}`)
+        .map(d => `${color.green(d.type || '')} at ${d.quantity}:${shielded && d.size !== undefined ? privateToShield(d.size) : d.size}`)
       ux.action.stop(`done, now running ${output.join(', ')}`)
     }
   }

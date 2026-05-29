@@ -170,6 +170,7 @@ export default class DataPgMigrate extends BaseCommand {
     let currentStep = '__select_source'
     let sourceDatabaseId: string | undefined
     let targetDatabaseId: string | undefined
+    let targetDatabaseName: string | undefined
 
     while (currentStep !== '__exit') {
       switch (currentStep) {
@@ -181,6 +182,7 @@ export default class DataPgMigrate extends BaseCommand {
           You'll receive an email when the preparation is complete or if there's an error.
           You have 24 hours to begin migration after the preparation is complete.
           Your source database will be unavailable during the migration.
+          Preparing the migration deletes all the data on the destination database ${color.datastore(targetDatabaseName!)}.
 
         `))
           const {action} = await this.prompt<{action: string}>({
@@ -281,6 +283,7 @@ export default class DataPgMigrate extends BaseCommand {
             name: 'database',
             type: 'list',
           })).database
+          targetDatabaseName = this.advancedDatabases.find(db => db.id === targetDatabaseId)?.name
 
           if (targetDatabaseId === '__go_back') {
             currentStep = '__select_source'
@@ -288,6 +291,7 @@ export default class DataPgMigrate extends BaseCommand {
             const addon = await this.createTargetDatabase(sourceDatabaseId!)
             if (addon) {
               targetDatabaseId = addon.id
+              targetDatabaseName = addon.name
               currentStep = '__confirm_migration'
             } else {
               currentStep = '__select_target'
