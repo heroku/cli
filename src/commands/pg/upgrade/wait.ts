@@ -6,8 +6,8 @@ import debug from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import notify from '../../../lib/notify.js'
-import {getUpgradeWaitStatus} from '../../../lib/pg/sdk-adapter.js'
-import {PgUpgradeStatus} from '../../../lib/pg/types.js'
+import {databaseExtensions} from '@heroku/sdk/extensions/data'
+import type {DatabaseUpgradeWaitResult} from '@heroku/sdk/resources/data/database'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -50,17 +50,17 @@ export default class Wait extends Command {
     const dbName = args.database
     const pgDebug = debug('pg')
 
-    const {data} = new HerokuSDK()
+    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
     const waitFor = async (db: pg.ExtendedAddonAttachment['addon']) => {
       const interval = (!waitInterval || waitInterval < 0) ? 5 : waitInterval
-      let status: PgUpgradeStatus
+      let status: DatabaseUpgradeWaitResult
       let waiting = false
       let retries = 20
       const notFoundMessage = 'Waiting to provision...'
 
       while (true) {
         try {
-          status = await getUpgradeWaitStatus(data, db.id)
+          status = await data.database.upgradeWaitStatus(app, db.name)
         } catch (error: any) {
           if (!retries || error.statusCode !== 404) {
             pgDebug(error)
