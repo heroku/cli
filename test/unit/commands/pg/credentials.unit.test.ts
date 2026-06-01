@@ -5,6 +5,7 @@ import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pg/credentials.js'
+import {type MockSDK, mockSDKData} from '../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 /** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */
@@ -18,91 +19,91 @@ describe('pg:credentials', function () {
     name: 'postgres-1',
     plan: {name: 'heroku-postgresql:standard-0'},
   }
+
+  const credentials = [
+    {
+      credentials: [],
+      database: 'd123',
+      host: 'localhost',
+      name: 'ransom',
+      port: 5442,
+      state: 'active',
+      uuid: 'aaaa',
+    },
+    {
+      credentials: [],
+      database: 'd123',
+      host: 'localhost',
+      name: 'default',
+      port: 5442,
+      state: 'active',
+      uuid: 'aaab',
+    },
+    {
+      credentials: [
+        {
+          connections: 0,
+          state: 'revoking',
+          user: 'jeff',
+        },
+        {
+          connections: 2,
+          state: 'active',
+          user: 'jeff-rotating',
+        },
+      ],
+      database: 'd123',
+      host: 'localhost',
+      name: 'jeff',
+      port: 5442,
+      state: 'rotating',
+      uuid: 'aabb',
+    },
+  ]
+
+  const attachments = [
+    {
+      app: {name: 'main-app'},
+      name: 'DATABASE',
+      namespace: null,
+    },
+    {
+      app: {name: 'main-app'},
+      name: 'HEROKU_POSTGRESQL_GREEN',
+      namespace: 'credential:jeff',
+    },
+    {
+      app: {name: 'another-app'},
+      name: 'HEROKU_POSTGRESQL_PINK',
+      namespace: 'credential:jeff',
+    },
+    {
+      app: {name: 'yet-another-app'},
+      name: 'HEROKU_POSTGRESQL_BLUE',
+      namespace: 'credential:ransom',
+    },
+  ]
+
   let api: nock.Scope
-  let pg: nock.Scope
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    pg = nock('https://api.data.heroku.com')
   })
 
   afterEach(function () {
     nock.cleanAll()
+    sdkMock.restore()
     restore()
-    pg.done()
     api.done()
   })
 
   it('shows the correct credentials', async function () {
-    const credentials = [
-      {
-        credentials: [],
-        database: 'd123',
-        host: 'localhost',
-        name: 'ransom',
-        port: 5442,
-        state: 'active',
-        uuid: 'aaaa',
-      },
-      {
-        credentials: [],
-        database: 'd123',
-        host: 'localhost',
-        name: 'default',
-        port: 5442,
-        state: 'active',
-        uuid: 'aaab',
-      },
-      {
-        credentials: [
-          {
-            connections: 0,
-            state: 'revoking',
-            user: 'jeff',
-          },
-          {
-            connections: 2,
-            state: 'active',
-            user: 'jeff-rotating',
-          },
-        ],
-        database: 'd123',
-        host: 'localhost',
-        name: 'jeff',
-        port: 5442,
-        state: 'rotating',
-        uuid: 'aabb',
-      },
-    ]
-    const attachments = [
-      {
-        app: {name: 'main-app'},
-        name: 'DATABASE',
-        namespace: null,
-      },
-      {
-        app: {name: 'main-app'},
-        name: 'HEROKU_POSTGRESQL_GREEN',
-        namespace: 'credential:jeff',
-      },
-      {
-        app: {name: 'another-app'},
-        name: 'HEROKU_POSTGRESQL_PINK',
-        namespace: 'credential:jeff',
-      },
-      {
-        app: {name: 'yet-another-app'},
-        name: 'HEROKU_POSTGRESQL_BLUE',
-        namespace: 'credential:ransom',
-      },
-    ]
-
     api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    pg.get('/postgres/v0/databases/1/credentials')
-      .reply(200, credentials)
+    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(credentials)}})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -126,7 +127,7 @@ describe('pg:credentials', function () {
   })
 
   it('shows the correct rotation information if no connection information is available yet', async function () {
-    const credentials = [
+    const rotatingCredentials = [
       {
         credentials: [],
         database: 'd123',
@@ -164,35 +165,12 @@ describe('pg:credentials', function () {
         uuid: 'aabb',
       },
     ]
-    const attachments = [
-      {
-        app: {name: 'main-app'},
-        name: 'DATABASE',
-        namespace: null,
-      },
-      {
-        app: {name: 'main-app'},
-        name: 'HEROKU_POSTGRESQL_GREEN',
-        namespace: 'credential:jeff',
-      },
-      {
-        app: {name: 'another-app'},
-        name: 'HEROKU_POSTGRESQL_PINK',
-        namespace: 'credential:jeff',
-      },
-      {
-        app: {name: 'yet-another-app'},
-        name: 'HEROKU_POSTGRESQL_BLUE',
-        namespace: 'credential:ransom',
-      },
-    ]
 
     api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
       .reply(200, attachments)
-    pg.get('/postgres/v0/databases/1/credentials')
-      .reply(200, credentials)
+    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(rotatingCredentials)}})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -213,21 +191,20 @@ describe('pg:credentials', function () {
   })
 
   it('passes no-wrap option through to table rendering', async function () {
-    const credentials = [
+    const simpleCredentials = [
       {
         credentials: [], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'active', uuid: 'aaaa',
       },
     ]
-    const attachments = [
+    const simpleAttachments = [
       {app: {name: 'main-app'}, name: 'DATABASE', namespace: null},
     ]
 
     api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
       .reply(200, [{addon}])
       .get('/addons/1/addon-attachments')
-      .reply(200, attachments)
-    pg.get('/postgres/v0/databases/1/credentials')
-      .reply(200, credentials)
+      .reply(200, simpleAttachments)
+    sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(simpleCredentials)}})
 
     const tableStub = stub(hux, 'table')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
