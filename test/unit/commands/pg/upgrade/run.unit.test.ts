@@ -40,7 +40,7 @@ describe('pg:upgrade:run', function () {
     infoStub = stub()
     runUpgradeStub = stub()
     sdkMock = mockSDKData({
-      database: {info: infoStub, runUpgrade: runUpgradeStub},
+      database: {describe: infoStub, runUpgrade: runUpgradeStub},
     })
   })
 

@@ -1,30 +1,23 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {stub} from 'sinon'
+import {restore, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
-import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
 
 describe('pg:backups', function () {
   let sdkMock: MockSDK
-  let listByAppStub: ReturnType<typeof stub>
   let transfers: BackupTransfer[]
-
-  beforeEach(function () {
-    listByAppStub = stub().resolves(transfers)
-    sdkMock = mockSDKData({
-      transfer: {listByApp: listByAppStub},
-    })
-  })
 
   afterEach(function () {
     sdkMock.restore()
+    restore()
   })
 
   describe('with no backups/restores/copies', function () {
@@ -33,7 +26,7 @@ describe('pg:backups', function () {
     })
 
     it('shows empty message', async function () {
-      listByAppStub.resolves(transfers)
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -108,7 +101,7 @@ describe('pg:backups', function () {
     })
 
     it('shows backups', async function () {
-      listByAppStub.resolves(transfers)
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -153,7 +146,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows restore', async function () {
-      listByAppStub.resolves(transfers)
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -196,7 +189,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows copy', async function () {
-      listByAppStub.resolves(transfers)
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',

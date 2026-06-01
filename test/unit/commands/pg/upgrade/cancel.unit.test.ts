@@ -38,7 +38,7 @@ describe('pg:upgrade:cancel', function () {
     infoStub = stub()
     cancelUpgradeStub = stub()
     sdkMock = mockSDKData({
-      database: {info: infoStub, cancelUpgrade: cancelUpgradeStub},
+      database: {describe: infoStub, cancelUpgrade: cancelUpgradeStub},
     })
   })
 

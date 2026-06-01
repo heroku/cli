@@ -1,12 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {transferExtensions} from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core/ux'
 
-import type {BackupTransfer} from '../../../lib/pg/types.js'
-
 import backupsFactory from '../../../lib/pg/backups.js'
-import {listTransfersByApp} from '../../../lib/pg/sdk-adapter.js'
+import type {BackupTransfer} from '../../../lib/pg/types.js'
 
 export default class Index extends Command {
   static description = 'list database backups'
@@ -26,8 +25,8 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags: {app}} = await this.parse(Index)
 
-    const {data} = new HerokuSDK()
-    const transfers = await listTransfersByApp(data, app)
+    const {data} = new HerokuSDK({extensions: [transferExtensions]})
+    const transfers = await data.transfer.listByApp(app) as BackupTransfer[]
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))
 

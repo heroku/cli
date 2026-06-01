@@ -5,6 +5,7 @@ import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import TransferCommand from '../../../../src/commands/pipelines/transfer.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('pipelines:transfer', function () {
   const pipeline = {
@@ -31,9 +32,11 @@ describe('pipelines:transfer', function () {
   const app = {
     id: coupling.app.id,
     name: 'my-app',
+    pipelineCoupling: coupling,
   }
 
   let api: nock.Scope
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
@@ -42,23 +45,23 @@ describe('pipelines:transfer', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    sdkMock.restore()
     restore()
   })
 
-  function setupCommonMocks() {
-    api
-      .get(`/pipelines/${pipeline.id}`)
-      .reply(200, pipeline)
-      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-      .reply(200, [coupling])
-      .post('/filters/apps')
-      .reply(200, [app])
+  function setupSDKMocks() {
+    const infoStub = stub().resolves(pipeline)
+    const listAppsStub = stub().resolves([app])
+    sdkMock = mockSDKPlatform({
+      pipeline: {info: infoStub},
+      pipelineCoupling: {listApps: listAppsStub},
+    })
   }
 
   it('transfers to a team', async function () {
     this.retries(2)
 
-    setupCommonMocks()
+    setupSDKMocks()
 
     api
       .get(`/teams/${team.name}`)
@@ -75,7 +78,7 @@ describe('pipelines:transfer', function () {
   })
 
   it('transfers to an account', async function () {
-    setupCommonMocks()
+    setupSDKMocks()
 
     api
       .get(`/users/${account.email}`)
@@ -94,7 +97,7 @@ describe('pipelines:transfer', function () {
   it('does not pass confirm flag', async function () {
     const promptStub = stub(hux, 'prompt').onFirstCall().resolves(pipeline.name)
 
-    setupCommonMocks()
+    setupSDKMocks()
 
     api
       .get(`/users/${account.email}`)

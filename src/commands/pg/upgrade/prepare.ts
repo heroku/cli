@@ -5,7 +5,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {getDatabaseInfo, prepareUpgrade} from '../../../lib/pg/sdk-adapter.js'
+import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -39,8 +39,8 @@ export default class Upgrade extends Command {
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For Essential-tier databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
-    const {data} = new HerokuSDK()
-    const replica = await getDatabaseInfo(data, db.id)
+    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
+    const replica = await data.database.describe(app, db.name)
 
     if (replica.following)
       ux.error(`You can only use ${color.code('heroku pg:upgrade:prepare')} on Standard-tier and higher leader databases. For follower databases, use ${color.code('heroku pg:upgrade:run')} instead.`)
@@ -52,7 +52,7 @@ export default class Upgrade extends Command {
 
     try {
       ux.action.start(`Preparing upgrade on ${color.addon(db.name)}`)
-      const response = await prepareUpgrade(data, db.id, {version})
+      const response = await data.database.prepareUpgrade(app, db.name, {version})
       ux.action.stop(heredoc(`done\n${formatResponseWithCommands(response.message)}`))
     } catch (error: any) {
       if (error.id && error.message) {

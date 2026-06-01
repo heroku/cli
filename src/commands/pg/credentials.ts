@@ -2,11 +2,10 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
+import type {CredentialInfo} from '@heroku/sdk/resources/data/postgres-database'
 import {Args} from '@oclif/core'
 
-import type {NonAdvancedCredentialInfo} from '../../lib/data/types.js'
-
-import {listCredentials} from '../../lib/pg/sdk-adapter.js'
 import {presentCredentialAttachments} from '../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 import {nls} from '../../nls.js'
@@ -23,7 +22,7 @@ export default class Credentials extends Command {
   }
   static topic = 'pg'
 
-  protected isDefaultCredential(cred: NonAdvancedCredentialInfo): boolean {
+  protected isDefaultCredential(cred: CredentialInfo): boolean {
     return cred.name === 'default'
   }
 
@@ -34,16 +33,16 @@ export default class Credentials extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const {addon} = await dbResolver.getAttachment(app, database)
 
-    const {data} = new HerokuSDK()
-    const credentials = await listCredentials(data, addon.id)
+    const {data} = new HerokuSDK({extensions: [postgresDatabaseExtensions]})
+    const credentials = await data.postgresDatabase.listCredentials(app, addon.name)
     const sortedCredentials = this.sortByDefaultAndName(credentials)
     const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
 
-    const presentCredential = (cred: NonAdvancedCredentialInfo): string => {
+    const presentCredential = (cred: CredentialInfo): string => {
       let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
       credAttachments = cred.name === 'default' ? attachments.filter(a => a.namespace === null) : attachments.filter(a => a.namespace === `credential:${cred.name}`)
 
-      return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
+      return presentCredentialAttachments(app, credAttachments, sortedCredentials as any, cred.name)
     }
 
     hux.table(credentials, {
@@ -56,8 +55,8 @@ export default class Credentials extends Command {
     }, huxTableNoWrapOptions(flags['no-wrap']))
   }
 
-  protected sortByDefaultAndName(credentials: NonAdvancedCredentialInfo[]) {
-    return credentials.sort((a: NonAdvancedCredentialInfo, b: NonAdvancedCredentialInfo) => {
+  protected sortByDefaultAndName(credentials: CredentialInfo[]) {
+    return credentials.sort((a: CredentialInfo, b: CredentialInfo) => {
       const isDefaultA = this.isDefaultCredential(a)
       const isDefaultB = this.isDefaultCredential(b)
 

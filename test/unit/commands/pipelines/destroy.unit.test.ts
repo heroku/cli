@@ -1,11 +1,14 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import PipelinesDestroy from '../../../../src/commands/pipelines/destroy.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('pipelines:destroy', function () {
   let api: nock.Scope
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
@@ -14,6 +17,8 @@ describe('pipelines:destroy', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    sdkMock.restore()
+    restore()
   })
 
   it('displays the right messages', async function () {
@@ -22,11 +27,13 @@ describe('pipelines:destroy', function () {
     api
       .get(`/pipelines?eq[name]=${pipeline.name}`)
       .reply(200, [pipeline])
-      .delete(`/pipelines/${pipeline.id}`)
-      .reply(200, pipeline)
+
+    const deleteStub = stub().resolves(pipeline)
+    sdkMock = mockSDKPlatform({pipeline: {delete: deleteStub}})
 
     const {stderr} = await runCommand(PipelinesDestroy, ['example'])
 
     expect(stderr).to.include('Destroying example pipeline... done')
+    expect(deleteStub.calledOnceWith(pipeline.id)).to.be.true
   })
 })

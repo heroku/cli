@@ -245,7 +245,7 @@ describe('addons:create', function () {
       it('notifies when provisioning failure occurs', async function () {
         const notifySpy = sandbox.spy(Cmd, 'notifier')
         const deprovisionedAddon = {..._.clone(addon), state: 'deprovisioned'}
-        const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon))
+        const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon as any))
         sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
 
         try {
@@ -269,7 +269,7 @@ describe('addons:create', function () {
       it('shows that it failed to provision', async function () {
         const deprovisionedAddon = _.clone(addon)
         deprovisionedAddon.state = 'deprovisioned'
-        const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon))
+        const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon as any))
         sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
 
         const {error} = await runCommand(Cmd, [
