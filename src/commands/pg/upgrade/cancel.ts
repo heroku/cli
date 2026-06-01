@@ -51,7 +51,7 @@ export default class Upgrade extends Command {
 
     try {
       ux.action.start(`Cancelling upgrade on ${color.addon(db.name)}`)
-      const response = await data.database.cancelUpgrade(db.id)
+      const response = await data.database.cancelUpgrade(app, db.name)
       ux.action.stop('done\n' + formatResponseWithCommands(response.message))
     } catch (error: any) {
       if (error.id && error.message) {
