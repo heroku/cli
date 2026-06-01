@@ -1,3 +1,4 @@
+import type {PipelinePromotionTarget} from '@heroku/types/3.sdk'
 import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline-coupling'
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
@@ -118,12 +119,12 @@ export default class Promote extends Command {
 
     const appsByID = keyBy(allApps, 'id')
 
-    const styledTargets = promotionTargets.reduce((memo: Heroku.App, target: any) => {
+    const styledTargets = promotionTargets.reduce((memo: Record<string, string[]>, target: PipelinePromotionTarget) => {
       const app = appsByID[target.app.id]
-      const details = [target.status]
+      const details: string[] = [target.status]
 
       if (isFailed(target)) {
-        details.push(target.error_message)
+        details.push(target.error_message ?? '')
       }
 
       memo[app.name] = details
@@ -158,10 +159,10 @@ async function getCoupling(heroku: APIClient, app: string): Promise<Heroku.Pipel
   return coupling
 }
 
-function isFailed(promotionTarget: Heroku.PipelinePromotionTarget) {
+function isFailed(promotionTarget: PipelinePromotionTarget) {
   return promotionTarget.status === 'failed'
 }
 
-function isSucceeded(promotionTarget: Heroku.PipelinePromotionTarget) {
+function isSucceeded(promotionTarget: PipelinePromotionTarget) {
   return promotionTarget.status === 'succeeded'
 }

@@ -14,6 +14,13 @@ const ADDON_EXPANSION_HEADERS = {
   'Accept-Expansion': 'addon_service,plan',
 }
 
+// SDK resource types use required fields while @heroku-cli/schema uses
+// optional fields for the same shapes. This cast bridges the gap until
+// the codebase fully migrates off @heroku-cli/schema.
+function asSchemaBased<T>(value: unknown): T {
+  return value as T
+}
+
 const topic = 'addons'
 
 export default class Addons extends Command {
@@ -72,22 +79,22 @@ async function addonGetter(api: APIClient, app?: string) {
   let attachmentsResponse: null | Promise<Heroku.AddOnAttachment[]> = null
   let addonsResponse: Promise<Heroku.AddOn[]>
   if (app) { // don't display attachments globally
-    addonsResponse = platformWithExpansion.addOn.listByApp(app) as unknown as Promise<Heroku.AddOn[]>
+    addonsResponse = platformWithExpansion.addOn.listByApp(app).then(asSchemaBased<Heroku.AddOn[]>)
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
     // eslint-disable-next-line unicorn/prefer-ternary
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
       // because the root /addon-attachments endpoint won't include relevant
       // attachments when sudo-ing for another app, we will use the more
       // specific API call and sacrifice listing foreign attachments.
-      attachmentsResponse = platform.addOnAttachment.listByApp(app) as unknown as Promise<Heroku.AddOnAttachment[]>
+      attachmentsResponse = platform.addOnAttachment.listByApp(app).then(asSchemaBased<Heroku.AddOnAttachment[]>)
     } else {
       // In order to display all foreign attachments, we'll get out entire
       // attachment list
-      attachmentsResponse = platform.addOnAttachment.list() as unknown as Promise<Heroku.AddOnAttachment[]>
+      attachmentsResponse = platform.addOnAttachment.list().then(asSchemaBased<Heroku.AddOnAttachment[]>)
     }
   } else {
     // The global /addons endpoint doesn't support Accept-Expansion.
-    addonsResponse = platform.addOn.list() as unknown as Promise<Heroku.AddOn[]>
+    addonsResponse = platform.addOn.list().then(asSchemaBased<Heroku.AddOn[]>)
   }
 
   // Get addons and attachments in parallel

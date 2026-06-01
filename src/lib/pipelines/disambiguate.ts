@@ -1,6 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import inquirer from 'inquirer'
 
 import {findPipelineByName} from '../api.js'
@@ -10,8 +10,8 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
   let pipeline: Heroku.Pipeline
 
   if (uuidValidate(pipelineIDOrName)) {
-    const sdk = createPlatformClient()
-    pipeline = await sdk.pipeline.info(pipelineIDOrName)
+    const {platform} = new HerokuSDK()
+    pipeline = await platform.pipeline.info(pipelineIDOrName)
   } else {
     const {body: pipelines} = await findPipelineByName(heroku, pipelineIDOrName)
 

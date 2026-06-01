@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class PipelinesUpdate extends Command {
@@ -24,11 +24,11 @@ export default class PipelinesUpdate extends Command {
     const {flags} = await this.parse(PipelinesUpdate)
 
     const {app, stage} = flags
-    const heroku = createPlatformClient()
+    const {platform} = new HerokuSDK()
 
     ux.action.start(`Changing ${color.app(app)} to ${stage}`)
-    const coupling = await heroku.pipelineCoupling.infoByApp(app)
-    await heroku.pipelineCoupling.update(coupling.id!, {stage: stage as 'development' | 'production' | 'review' | 'staging' | 'test'})
+    const coupling = await platform.pipelineCoupling.infoByApp(app)
+    await platform.pipelineCoupling.update(coupling.id!, {stage: stage as 'development' | 'production' | 'review' | 'staging' | 'test'})
     ux.action.stop()
   }
 }

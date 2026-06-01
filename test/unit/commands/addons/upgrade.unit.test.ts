@@ -208,7 +208,7 @@ describe('addons:upgrade', function () {
   })
 
   it('displays an error when multiple matches exist', async function () {
-    const upgradeStub = stub().rejects(new AddonAmbiguousError([{name: 'addon-1'}, {name: 'addon-2'}]))
+    const upgradeStub = stub().rejects(new AddonAmbiguousError([{name: 'addon-1'}, {name: 'addon-2'}] as any))
     sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
     try {
       await runCommand(Cmd, [
@@ -224,7 +224,7 @@ describe('addons:upgrade', function () {
   })
 
   it('handles multiple add-ons', async function () {
-    const upgradeStub = stub().rejects(new AddonAmbiguousError([{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}]))
+    const upgradeStub = stub().rejects(new AddonAmbiguousError([{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}] as any))
     sdkMock = mockSDKPlatform({addOn: {listPlans: stub().resolves([]), upgrade: upgradeStub}})
     try {
       await runCommand(Cmd, [

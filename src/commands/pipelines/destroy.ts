@@ -1,7 +1,7 @@
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import disambiguate from '../../lib/pipelines/disambiguate.js'
@@ -23,8 +23,8 @@ export default class PipelinesDestroy extends Command {
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
 
     ux.action.start(`Destroying ${color.pipeline(pipeline.name!)} pipeline`)
-    const heroku = createPlatformClient()
-    await heroku.pipeline.delete(pipeline.id!)
+    const {platform} = new HerokuSDK()
+    await platform.pipeline.delete(pipeline.id!)
     ux.action.stop()
   }
 }

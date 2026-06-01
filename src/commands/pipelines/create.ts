@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {createPlatformClient} from '@heroku/sdk/platform'
+import {HerokuSDK} from '@heroku/sdk'
 import {PipelineCreateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
@@ -84,12 +84,12 @@ export default class Create extends Command {
 
     const ownerType = teamName ? 'team' : 'user'
 
-    const heroku = createPlatformClient()
+    const {platform} = new HerokuSDK()
 
     // If team or org is not specified, we assign ownership to the user creating
     const ownerRecord = teamName
-      ? await heroku.team.info(teamName)
-      : await heroku.account.infoByUser('~')
+      ? await platform.team.info(teamName)
+      : await platform.account.infoByUser('~')
     const ownerID = ownerRecord.id!
 
     const answers: Answers = await inquirer.prompt(questions)
@@ -103,11 +103,11 @@ export default class Create extends Command {
       name,
       owner: {id: ownerID, type: ownerType},
     }
-    const pipeline = await heroku.pipeline.create(body)
+    const pipeline = await platform.pipeline.create(body)
     ux.action.stop()
 
     ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name || '')} pipeline as ${stage}`)
-    await heroku.pipelineCoupling.create({
+    await platform.pipelineCoupling.create({
       app,
       pipeline: pipeline.id!,
       stage,

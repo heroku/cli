@@ -16,15 +16,18 @@ export interface LogDisplayerOptions {
 
 // Install once at module load so repeated displayLogs() calls don't
 // stack listeners on process.stdout (which would trip Node's
-// MaxListeners warning).
-process.stdout.on('error', err => {
-  if (err.code === 'EPIPE') {
-    // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
-    process.exit(0)
-  } else {
-    ux.error(err.message ?? String(err), {exit: 1})
-  }
-})
+// MaxListeners warning). Skip in test environments to avoid killing
+// the test runner on piped-output scenarios.
+if (!process.env.IS_HEROKU_TEST_ENV) {
+  process.stdout.on('error', err => {
+    if (err.code === 'EPIPE') {
+      // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
+      process.exit(0)
+    } else {
+      ux.error(err.message ?? String(err), {exit: 1})
+    }
+  })
+}
 
 export async function displayLogs(options: LogDisplayerOptions): Promise<void> {
   const controller = new AbortController()

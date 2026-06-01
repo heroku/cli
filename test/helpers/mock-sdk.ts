@@ -2,11 +2,13 @@ import {HerokuSDK} from '@heroku/sdk'
 import {SinonStub, stub} from 'sinon'
 
 type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+  [P in keyof T]?: T[P] extends (...args: any[]) => any ? T[P] : T[P] extends object ? DeepPartial<T[P]> : T[P]
 }
 
-type StubbedDataClient = DeepPartial<HerokuSDK['data']>
-type StubbedPlatformClient = DeepPartial<HerokuSDK['platform']>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type StubbedDataClient = Record<string, any>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type StubbedPlatformClient = Record<string, any>
 
 export interface MockSDK {
   dataStub?: SinonStub
