@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import nock from 'nock'
 
 import {ConfigUnset} from '../../../../src/commands/config/unset.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config', function () {
   let api: nock.Scope

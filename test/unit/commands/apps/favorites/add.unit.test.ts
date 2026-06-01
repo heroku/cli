@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Add from '../../../../../src/commands/apps/favorites/add.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const MY_APP = 'myapp'
 
@@ -45,9 +45,9 @@ describe('apps:favorites:add', function () {
   it('errors if app not found', async function () {
     particleboardApi
       .get('/favorites?type=app')
-      .reply(200, [{resource_name: MY_APP}])
+      .reply(200, [])
       .post('/favorites', {resource_id: 'NOT_AN_APP', type: 'app'})
-      .replyWithError({statusCode: 404})
+      .reply(404)
 
     const {error} = await runCommand(Add, ['--app=NOT_AN_APP'])
 

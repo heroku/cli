@@ -5,11 +5,6 @@ import {fileURLToPath} from 'node:url'
 export class ChangelogParser {
   private constructor(private readonly changelog: string) {}
 
-  private normalizeLineEndings(text: string): string {
-    // Normalize CRLF (\r\n) to LF (\n) for consistent parsing across platforms
-    return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-  }
-
   static async create(changelogPath?: string): Promise<ChangelogParser> {
     // Allow overriding path via environment variable (useful for testing)
     const path = changelogPath ?? process.env.HEROKU_CHANGELOG_PATH ?? ChangelogParser.getDefaultChangelogPath()
@@ -97,5 +92,10 @@ export class ChangelogParser {
     const end = endIndex === -1 ? lines.length : startIndex + 1 + endIndex
 
     return lines.slice(startIndex, end).join('\n').trim()
+  }
+
+  private normalizeLineEndings(text: string): string {
+    // Normalize CRLF (\r\n) to LF (\n) for consistent parsing across platforms
+    return text.replaceAll('\r\n', '\n').replaceAll('\r', '\n')
   }
 }

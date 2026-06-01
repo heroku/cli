@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/links/create.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -47,7 +47,7 @@ describe('pg:links:create', function () {
           'heroku-postgres',
         ])
       } catch (error) {
-        const {message} = error as { message: string }
+        const {message} = error as {message: string}
         expect(message).to.equal('pg:links isn\'t available for Essential-tier databases.')
       }
     })

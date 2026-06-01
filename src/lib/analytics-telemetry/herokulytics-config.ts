@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-unused-expressions */
 import {Interfaces} from '@oclif/core'
 import debug from 'debug'
 import fs from 'fs-extra'
@@ -16,13 +17,9 @@ export interface ConfigJSON {
 
 export default class HerokulyticsConfig {
   private _init!: Promise<void>
-
   private body!: ConfigJSON
-
   private mtime?: number
-
   private needsSave = false
-
   private saving?: Promise<void>
 
   constructor(private readonly config: Interfaces.Config) {}

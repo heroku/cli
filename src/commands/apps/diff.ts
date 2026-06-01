@@ -1,14 +1,14 @@
 import {Command} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
-import {Args, ux} from '@oclif/core'
 import {hux} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 
 type APIClient = InstanceType<typeof Command>['heroku']
 
 interface DiffRow {
-  prop: string
   app1: string | undefined
   app2: string | undefined
+  prop: string
 }
 
 function trunc(val: unknown): string {
@@ -16,11 +16,11 @@ function trunc(val: unknown): string {
   return v.length > 56 ? v.slice(0, 56) + '...' : v
 }
 
-async function checksum(heroku: APIClient, app: string): Promise<string | null> {
+async function checksum(heroku: APIClient, app: string): Promise<null | string> {
   try {
     const {body: releases} = await heroku.request<Heroku.Release[]>(`/apps/${app}/releases`, {
-      partial: true,
       headers: {Range: 'version ..; max=1, order=desc'},
+      partial: true,
     })
     if (releases?.[0]?.slug) {
       const slugId = releases[0].slug!.id
@@ -46,7 +46,7 @@ async function checksum(heroku: APIClient, app: string): Promise<string | null> 
 
 async function diffFiles(heroku: APIClient, app1: string, app2: string): Promise<DiffRow[]> {
   const sums = await Promise.all([checksum(heroku, app1), checksum(heroku, app2)])
-  return sums[0] === sums[1] ? [] : [{prop: 'slug (checksum)', app1: sums[0] ?? undefined, app2: sums[1] ?? undefined}]
+  return sums[0] === sums[1] ? [] : [{app1: sums[0] ?? undefined, app2: sums[1] ?? undefined, prop: 'slug (checksum)'}]
 }
 
 async function diffEnv(heroku: APIClient, app1: string, app2: string): Promise<DiffRow[]> {
@@ -59,7 +59,7 @@ async function diffEnv(heroku: APIClient, app1: string, app2: string): Promise<D
   const keys = new Set([...Object.keys(vars1), ...Object.keys(vars2)])
   return [...keys]
     .filter(k => vars1[k] !== vars2[k])
-    .map(k => ({prop: `config (${k})`, app1: vars1[k], app2: vars2[k]}))
+    .map(k => ({app1: vars1[k], app2: vars2[k], prop: `config (${k})`}))
 }
 
 async function diffStack(heroku: APIClient, app1: string, app2: string): Promise<DiffRow[]> {
@@ -69,7 +69,7 @@ async function diffStack(heroku: APIClient, app1: string, app2: string): Promise
   ])
   const a = (res1.body as {stack?: {name?: string}})?.stack?.name
   const b = (res2.body as {stack?: {name?: string}})?.stack?.name
-  return a === b ? [] : [{prop: 'stack', app1: a, app2: b}]
+  return a === b ? [] : [{app1: a, app2: b, prop: 'stack'}]
 }
 
 async function diffBuildpacks(heroku: APIClient, app1: string, app2: string): Promise<DiffRow[]> {
@@ -87,9 +87,9 @@ async function diffBuildpacks(heroku: APIClient, app1: string, app2: string): Pr
   const urls2 = bps2.map(obj => obj.buildpack?.url ?? '')
   const longest = urls1.length >= urls2.length ? urls1 : urls2
   const pairs = longest.map((_, k) => ({
-    prop: `buildpack (${k})`,
     app1: urls1[k],
     app2: urls2[k],
+    prop: `buildpack (${k})`,
   }))
 
   return pairs.filter(pair => pair.app1 !== pair.app2)
@@ -104,8 +104,8 @@ async function diffAddons(heroku: APIClient, app1: string, app2: string): Promis
   const addons2 = res2.body ?? []
   const names1 = new Set(addons1.map(addon => addon.addon_service?.name ?? '').filter(Boolean))
   const names2 = new Set(addons2.map(addon => addon.addon_service?.name ?? '').filter(Boolean))
-  const only1 = [...names1].filter(name => !names2.has(name)).map(name => ({prop: `add-on (${name})`, app1: 'true', app2: 'false'}))
-  const only2 = [...names2].filter(name => !names1.has(name)).map(name => ({prop: `add-on (${name})`, app1: 'false', app2: 'true'}))
+  const only1 = [...names1].filter(name => !names2.has(name)).map(name => ({app1: 'true', app2: 'false', prop: `add-on (${name})`}))
+  const only2 = [...names2].filter(name => !names1.has(name)).map(name => ({app1: 'false', app2: 'true', prop: `add-on (${name})`}))
 
   return [...only1, ...only2]
 }
@@ -117,14 +117,10 @@ async function diffFeatures(heroku: APIClient, app1: string, app2: string): Prom
   ])
   const features1 = res1.body ?? []
   const features2 = res2.body ?? []
-  const names1 = new Set(
-    features1.map(f => (f.enabled ? f.name : null)).filter(Boolean) as string[],
-  )
-  const names2 = new Set(
-    features2.map(f => (f.enabled ? f.name : null)).filter(Boolean) as string[],
-  )
-  const only1 = [...names1].filter(name => !names2.has(name)).map(name => ({prop: `feature (${name})`, app1: 'enabled', app2: 'disabled'}))
-  const only2 = [...names2].filter(name => !names1.has(name)).map(name => ({prop: `feature (${name})`, app1: 'disabled', app2: 'enabled'}))
+  const names1 = new Set(features1.map(f => (f.enabled ? f.name : null)).filter(Boolean) as string[])
+  const names2 = new Set(features2.map(f => (f.enabled ? f.name : null)).filter(Boolean) as string[])
+  const only1 = [...names1].filter(name => !names2.has(name)).map(name => ({app1: 'enabled', app2: 'disabled', prop: `feature (${name})`}))
+  const only2 = [...names2].filter(name => !names1.has(name)).map(name => ({app1: 'disabled', app2: 'enabled', prop: `feature (${name})`}))
 
   return [...only1, ...only2]
 }
@@ -134,11 +130,8 @@ export default class AppsDiff extends Command {
     app1: Args.string({description: 'first app to compare', required: true}),
     app2: Args.string({description: 'second app to compare', required: true}),
   }
-
   static description = 'diffs two apps'
-
   static help = 'help text for apps:diff'
-
   static topic = 'apps'
 
   public async run(): Promise<void> {
@@ -157,17 +150,17 @@ export default class AppsDiff extends Command {
 
     const list: DiffRow[] = [...files, ...env, ...stack, ...bp, ...addons, ...features]
     const truncated = list.map(entry => ({
-      prop: entry.prop,
       app1: trunc(entry.app1),
       app2: trunc(entry.app2),
+      prop: entry.prop,
     }))
 
     ux.stdout('\n')
-    type TableRow = {prop: string; app1: string; app2: string}
+    type TableRow = {app1: string; app2: string; prop: string;}
     hux.table(truncated, {
-      property: {header: 'property', get: (row: TableRow) => row.prop},
-      firstApp: {header: app1, get: (row: TableRow) => row.app1},
-      secondApp: {header: app2, get: (row: TableRow) => row.app2},
+      firstApp: {get: (row: TableRow) => row.app1, header: app1},
+      property: {get: (row: TableRow) => row.prop, header: 'property'},
+      secondApp: {get: (row: TableRow) => row.app2, header: app2},
     })
     ux.stdout('\n')
   }

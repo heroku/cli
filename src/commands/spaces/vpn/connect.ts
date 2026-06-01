@@ -14,7 +14,6 @@ export default class Connect extends Command {
       required: true,
     }),
   }
-
   static description = heredoc`
     create VPN
     Private Spaces can be connected to another private network via an IPSec VPN connection allowing dynos to connect to hosts on your private networks and vice versa.
@@ -25,13 +24,11 @@ export default class Connect extends Command {
     Creating VPN Connection in space my-space... done
     ▸    Use spaces:vpn:wait to track allocation.
   `)]
-
   static flags = {
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),
     ip: flags.string({char: 'i', description: 'public IP of customer gateway', required: true}),
     space: flags.string({char: 's', description: 'space name', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

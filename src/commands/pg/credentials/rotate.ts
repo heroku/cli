@@ -4,16 +4,14 @@ import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 import {nls} from '../../../nls.js'
 
 export default class Rotate extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'rotate the database credentials'
-
   static flags = {
     all: flags.boolean({description: 'rotate all credentials', exclusive: ['name']}),
     app: flags.app({required: true}),
@@ -25,7 +23,6 @@ export default class Rotate extends Command {
     }),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

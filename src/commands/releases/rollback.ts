@@ -10,7 +10,6 @@ export default class Rollback extends Command {
   static args = {
     release: Args.string({description: 'ID of the release. If omitted, we use the last eligible release.'}),
   }
-
   static description = `Roll back to a previous release.
 
     If RELEASE is not specified, it will roll back to the last eligible release.
@@ -19,9 +18,7 @@ export default class Rollback extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['rollback']
-
   static topic = 'releases'
 
   public async run(): Promise<void> {

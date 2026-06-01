@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {addDays} from 'date-fns'
 import nock from 'nock'
 
 import Index from '../../../../src/commands/webhooks/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('webhooks:index', function () {
   let api: nock.Scope

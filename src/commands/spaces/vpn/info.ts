@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -15,7 +15,6 @@ export default class Info extends Command {
       required: true,
     }),
   }
-
   static description = 'display the information for VPN'
   static example = heredoc`
     ${color.command('heroku spaces:vpn:info vpn-connection-name --space my-space')}
@@ -32,7 +31,6 @@ export default class Info extends Command {
      Tunnel 1   52.44.146.197 UP     2016-10-25T22:09:05Z status message
      Tunnel 2   52.44.146.197 UP     2016-10-25T22:09:05Z status message
   `
-
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({
@@ -41,7 +39,6 @@ export default class Info extends Command {
       required: true,
     }),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {
@@ -66,9 +63,10 @@ export default class Info extends Command {
     }, ['Name', 'ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
     /* eslint-enable perfectionist/sort-objects */
     const vpnConnectionTunnels = vpnConnection.tunnels || []
-    vpnConnectionTunnels.forEach((val, i) => {
+    for (const [i, val] of vpnConnectionTunnels.entries()) {
       val.tunnel_id = 'Tunnel ' + (i + 1)
-    })
+    }
+
     hux.styledHeader(`${name} VPN Tunnel Info`)
     /* eslint-disable perfectionist/sort-objects */
     hux.table(vpnConnectionTunnels, {

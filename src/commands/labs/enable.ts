@@ -7,14 +7,11 @@ export default class LabsEnable extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
-
   static description = 'enables an experimental feature'
-
   static flags = {
     app: flags.app({required: false}),
     remote: flags.remote(),
   }
-
   static topic = 'labs'
 
   async run() {

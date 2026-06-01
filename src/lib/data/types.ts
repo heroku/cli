@@ -1,3 +1,18 @@
+export enum DatabaseStatus {
+  AVAILABLE = 'available',
+  MIGRATING = 'migrating',
+  MODIFYING = 'modifying',
+  PROVISIONING = 'provisioning',
+  UNAVAILABLE = 'unavailable',
+}
+
+export enum AdvancedCredentialState {
+  ACTIVE = 'active',
+  ENABLING = 'enabling',
+  REVOKING = 'revoking',
+  ROTATING = 'rotating',
+}
+
 export enum MaintenanceStatus {
   completed = 'completed',
   none = 'none',
@@ -7,6 +22,24 @@ export enum MaintenanceStatus {
   running = 'running',
 }
 
+export enum MigrationStatus {
+  CANCELLED = 'cancelled',
+  COMPLETED = 'completed',
+  CREATING_TARGET = 'creating_target',
+  FAILED = 'failed',
+  MIGRATING = 'migrating',
+  PREPARING = 'preparing',
+  PROMOTING = 'promoting',
+  READY = 'ready',
+  UNKNOWN = 'unknown',
+}
+
+export enum PoolStatus {
+  AVAILABLE = 'available',
+  MODIFYING = 'modifying',
+  PROVISIONING = 'provisioning',
+  UNKNOWN = 'unknown',
+}
 export interface AdvancedCredentialInfo extends Record<string, unknown> {
   database: string
   host: string
@@ -18,7 +51,7 @@ export interface AdvancedCredentialInfo extends Record<string, unknown> {
     state: string
     user: string
   }>
-  state: string
+  state: AdvancedCredentialState
   type: 'additional' | 'owner'
 }
 
@@ -45,13 +78,13 @@ export type CreatePoolParameters = {
 
 export type CredentialInfo = AdvancedCredentialInfo | NonAdvancedCredentialInfo
 
-export type CredentialsInfo = { items: Array<AdvancedCredentialInfo> }
+export type CredentialsInfo = {items: Array<AdvancedCredentialInfo>}
 
 // This can be removed if at any point we get to generate a correct TypeScript schema from the Platform API
 // HyperSchema, but that's not easy due to API variants and some other header-selectable serialization expansion
 // options like `Accept-Inclusion` and `Accept-Expansion`.
 export type DeepRequired<T> = T extends object
-  ? { [K in keyof T]-?: DeepRequired<T[K]> }
+  ? {[K in keyof T]-?: DeepRequired<T[K]>}
   : T;
 
 export type ExtendedPostgresLevelInfo = PostgresLevelInfo & {
@@ -90,35 +123,56 @@ export type InfoResponse = {
   pools: Array<PoolInfoResponse>
   quotas: Array<Quota>
   region: CommonRuntimeRegion | PrivateSpaceRegion
-  status: 'available' | 'migrating' | 'modifying' | 'provisioning' | 'unavailable' | 'upgrading'
+  status: DatabaseStatus
   tier: 'advanced'
   version: string
 }
 
 export type Maintenance = {
-  'addon': {
-    'attachments': string[];
-    'kind': string;
-    'name': string;
-    'plan': string;
-    'uuid'?: string;
-    'window': null | string;
+  addon: {
+    attachments: string[];
+    kind: string;
+    name: string;
+    plan: string;
+    uuid?: string;
+    window: null | string;
   };
-  'app': {
-    'name': string;
-    'uuid'?: string;
+  app: {
+    name: string;
+    uuid?: string;
   };
-  'completed_at': null | string;
-  'duration_seconds': null | string;
-  'method': string;
-  'previously_scheduled_for': null | string;
-  'reason': string;
-  'required_by': null | string;
-  'scheduled_for': null | string;
-  'server_created_at': string;
-  'started_at': null | string;
-  'status': MaintenanceStatus;
-  'window': null | string;
+  completed_at: null | string;
+  duration_seconds: null | string;
+  method: string;
+  previously_scheduled_for: null | string;
+  reason: string;
+  required_by: null | string;
+  scheduled_for: null | string;
+  server_created_at: string;
+  started_at: null | string;
+  status: MaintenanceStatus;
+  window: null | string;
+}
+
+export type UpgradeResponse = {
+  message: string
+}
+
+export type MigrationResponse = {
+  auto_promote: boolean
+  cdc_lag: null | number
+  completed: boolean
+  full_load_progress: null | number
+  id: string
+  last_error_message: null | string
+  preassessment_results: PreassessmentResults
+  source_id: string
+  status: MigrationStatus
+  status_description: null | string
+  stop_reason: null | string
+  successful: boolean
+  tables_errored: null | number
+  target_id: string
 }
 
 export interface NonAdvancedCredentialInfo extends Record<string, unknown> {
@@ -147,7 +201,7 @@ export type PoolInfoResponse = {
     leader: null | string
   }
   name: string
-  status: 'available' | 'modifying' | 'provisioning' | 'unknown'
+  status: PoolStatus
   wait_status: {
     message: null | string
     waiting: boolean
@@ -184,7 +238,7 @@ export type Quota = {
   warning_gb: null | number
 }
 
-export type Quotas = { items: Array<Quota> }
+export type Quotas = {items: Array<Quota>}
 
 export type ScaleResponse = {
   changes: Array<PoolChange>
@@ -205,10 +259,6 @@ export type SettingsResponse = {
 
 export type TierPricingInfo = Record<string, PricingInfo>
 
-export type UpgradeResponse = {
-  message: string
-}
-
 export type WaitStatus = {
   message: null | string
   waiting: boolean
@@ -222,7 +272,6 @@ export type Window = {
 }
 
 type AddonReference = ResourceReference
-
 type AppReference = ResourceReference
 
 type BaseChange = {
@@ -254,8 +303,16 @@ type PoolChange = BaseChange & {
   pool: string
 }
 
-type PrivateSpaceRegion =
-  'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
+type PreassessmentCheck = {
+  checked_at: null | string
+  description: null | string
+  name: string
+  result: 'cancelled' | 'error' | 'failed' | 'passed' | 'pending' | 'running' | 'skipped' | 'warning'
+}
+
+type PreassessmentResults = Array<PreassessmentCheck>
+
+type PrivateSpaceRegion = 'california' | 'dublin' | 'frankfurt' | 'london' | 'montreal' | 'mumbai'
     | 'ohio' | 'oregon' | 'paris' | 'singapore' | 'sydney' | 'tokyo' | 'virginia'
 
 type ResourceReference = {

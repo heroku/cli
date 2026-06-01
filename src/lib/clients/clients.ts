@@ -1,13 +1,11 @@
-'use strict'
-
-import {URL} from 'url'
+import {URL} from 'node:url'
 
 function insecureURL(uri: any): boolean {
   if (uri.protocol === 'https:') return false
   // allow non-https localhost, 10.*, 127.*, and 192.* clients for testing
   if (/^localhost(?:[:]\d+)?$/.test(uri.host)) return false
   if (/\.local(?:[:]\d+)?$/.test(uri.host)) return false
-  if (uri.host.match(/^(10|127|192)\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:[:]\d+)?$/)) return false
+  if (/^(10|127|192)\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:[:]\d+)?$/.test(uri.host)) return false
   return true
 }
 

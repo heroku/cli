@@ -1,5 +1,5 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import type {Link} from '../../../lib/pg/types.js'
@@ -17,17 +17,13 @@ export default class Create extends Command {
     database: Args.string({description: nls('pg:database:arg:description'), required: true}),
   }
   /* eslint-enable perfectionist/sort-objects */
-
   static description = 'create a link between data stores'
-
   static example = `${color.command('heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN')}`
-
   static flags = {
     app: flags.app({required: true}),
     as: flags.string({description: 'name of link to create'}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -36,7 +32,7 @@ export default class Create extends Command {
 
     const service = async (remoteId: string) => {
       const addon = await addonResolver(this.heroku, app, remoteId)
-      if (!addon.plan.name.match(/^heroku-(redis|postgresql)/))
+      if (!/^heroku-(redis|postgresql)/.test(addon.plan.name))
         throw new Error('Remote database must be heroku-redis or heroku-postgresql')
       return addon
     }

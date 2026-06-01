@@ -1,6 +1,6 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgSettings from '../../../../../src/commands/data/pg/settings.js'
@@ -11,7 +11,6 @@ import {
   settingsGetResponse,
   settingsPutResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
@@ -22,20 +21,16 @@ describe('data:pg:settings', function () {
       .post('/actions/addons/resolve')
       .reply(200, [nonAdvancedAddon])
 
-    try {
-      await runCommand(DataPgSettings, [
-        'my-addon',
-        '--app=myapp',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
-      herokuApi.done()
-      expect(err.message).to.equal(heredoc(`
+    const {error} = await runCommand(DataPgSettings, [
+      'my-addon',
+      '--app=myapp',
+    ])
+    const err = error as Error
+    herokuApi.done()
+    expect(err.message).to.equal(heredoc(`
         You can only use this command to configure settings on Advanced-tier databases.
         See https://devcenter.heroku.com/articles/heroku-postgres-settings to configure settings on non-Advanced-tier databases.
-      `),
-      )
-    }
+      `))
   })
 
   context('put', function () {
@@ -45,7 +40,7 @@ describe('data:pg:settings', function () {
         .put(`/data/postgres/v1/${addon.id}/settings`)
         .reply(200, emptySettingsChangeResponse)
 
-      await runCommand(DataPgSettings, [
+      const {stderr, stdout} = await runCommand(DataPgSettings, [
         'my-addon',
         '--app=myapp',
         '--set=log_min_duration_statement:500',
@@ -53,8 +48,8 @@ describe('data:pg:settings', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
-      expect(stdout.output.trim()).to.include('Those settings are already applied to advanced-horizontal-01234.')
+      expect(stderr).to.equal('')
+      expect(stdout.trim()).to.include('Those settings are already applied to advanced-horizontal-01234.')
     })
 
     it('shows received changes', async function () {
@@ -66,7 +61,7 @@ describe('data:pg:settings', function () {
         )
         .reply(200, settingsPutResponse)
 
-      await runCommand(DataPgSettings, [
+      const {stderr, stdout} = await runCommand(DataPgSettings, [
         'my-addon',
         '--app=myapp',
         '--set=log_min_duration_statement:500',
@@ -75,9 +70,9 @@ describe('data:pg:settings', function () {
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
+      expect(stderr).to.equal('')
 
-      const actual = removeAllWhitespace(stdout.output)
+      const actual = removeAllWhitespace(stdout)
       expect(actual).to.include(removeAllWhitespace('Updating these settings...'))
       expect(actual).to.include(removeAllWhitespace('log_min_duration_statement 550 500'))
       expect(actual).to.include(removeAllWhitespace('idle_in_transaction_session_timeout 80000 864000'))
@@ -92,16 +87,16 @@ describe('data:pg:settings', function () {
         .get(`/data/postgres/v1/${addon.id}/settings`)
         .reply(200, settingsGetResponse)
 
-      await runCommand(DataPgSettings, [
+      const {stderr, stdout} = await runCommand(DataPgSettings, [
         'my-addon',
         '--app=myapp',
       ])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr.output).to.equal('')
+      expect(stderr).to.equal('')
 
-      const actual = removeAllWhitespace(stdout.output)
+      const actual = removeAllWhitespace(stdout)
       expect(actual).to.include(removeAllWhitespace('=== advanced-horizontal-01234'))
       expect(actual).to.include(removeAllWhitespace('Setting Value'))
       expect(actual).to.include(removeAllWhitespace('log_connections true'))

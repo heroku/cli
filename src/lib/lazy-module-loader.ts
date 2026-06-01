@@ -19,14 +19,10 @@ class LazyModuleLoader {
   private inquirerModule?: typeof inquirerType
   // Lodash (utility library)
   private lodashModule?: typeof lodashType
-
   private markedConfigured = false
-
   // Marked (markdown parser) and marked-terminal (terminal renderer)
   private markedModule?: typeof import('marked')
-
   private markedTerminalModule?: typeof import('marked-terminal')
-
   // YAML parser
   private yamlModule?: typeof yamlType
 

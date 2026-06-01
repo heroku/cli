@@ -1,7 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../src/commands/pg/settings/log-min-error-statement.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -15,8 +16,8 @@ describe('pg:settings:log-min-error-statement', function () {
   beforeEach(function () {
     api = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'test-database',
+        app: 'myapp',
       })
       .reply(200, [{addon}])
   })
@@ -32,19 +33,19 @@ describe('pg:settings:log-min-error-statement', function () {
       .get(`/postgres/v0/databases/${addon.id}/config`)
       .reply(200, {
         log_min_error_statement: {
-          value: 'error',
-          desc: 'Specify the minimum severity level of SQL errors to be logged.',
           default: 'error',
+          desc: 'Specify the minimum severity level of SQL errors to be logged.',
+          value: 'error',
           values: {
             error: 'Logs all ERROR, LOG, FATAL, and PANIC level messages. (Default)',
-            log: 'Logs all LOG, FATAL, and PANIC level messages.',
             fatal: 'Logs all FATAL and PANIC level messages.',
+            log: 'Logs all LOG, FATAL, and PANIC level messages.',
             panic: 'Logs only PANIC level messages.',
           },
         },
       })
 
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       log-min-error-statement is set to error for ${addon.name}.
       Logs all ERROR, LOG, FATAL, and PANIC level messages. (Default)

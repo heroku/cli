@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -12,13 +12,11 @@ export default class Topology extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = 'show space topology'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get topology of'}),
   }
-
   static topic = 'spaces'
 
   protected getProcessNum(s: string) {
@@ -33,19 +31,19 @@ export default class Topology extends Command {
     if (json) {
       hux.styledJSON(topology)
     } else if (topology.apps) {
-      topology.apps.forEach(app => {
+      for (const app of topology.apps) {
         const formations: string[] = []
         const dynos: string[] = []
         if (app.formations) {
-          app.formations.forEach(formation => {
+          for (const formation of app.formations) {
             formations.push(formation.process_type)
             if (formation.dynos) {
-              formation.dynos.forEach(dyno => {
+              for (const dyno of formation.dynos) {
                 const dynoS = [`${formation.process_type}.${dyno.number}`, dyno.private_ip, dyno.hostname].filter(Boolean)
                 dynos.push(dynoS.join(' - '))
-              })
+              }
             }
-          })
+          }
         }
 
         const domains = app.domains.sort()
@@ -74,7 +72,7 @@ export default class Topology extends Command {
           Domains: domains, Dynos: dynos,
         }, ['Domains', 'Dynos'])
         ux.stdout()
-      })
+      }
     }
   }
 

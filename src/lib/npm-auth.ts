@@ -1,4 +1,3 @@
-/* eslint-disable valid-jsdoc */
 import {ux} from '@oclif/core/ux'
 import {exec, spawn} from 'node:child_process'
 import {promisify} from 'node:util'
@@ -53,7 +52,7 @@ export class NpmAuth {
           // Temporarily unset npm auth to test if package is public
           npm_config_registry: 'https://registry.npmjs.org',
         },
-        timeout: 10000,
+        timeout: 10_000,
       })
 
       // If we successfully got the package info, it's public

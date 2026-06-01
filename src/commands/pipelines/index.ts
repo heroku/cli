@@ -5,11 +5,9 @@ import {ux} from '@oclif/core/ux'
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
-
   static examples = [
     color.command('heroku pipelines'),
   ]
-
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }

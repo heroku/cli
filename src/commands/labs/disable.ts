@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 const SecurityExceptionFeatures: any = {
@@ -18,9 +18,7 @@ export default class LabsDisable extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
-
   static description = 'disables an experimental feature'
-
   static flags = {
     app: flags.app(),
     confirm: flags.string({required: false}),
@@ -39,13 +37,11 @@ export default class LabsDisable extends Command {
     let request
     let target
 
-    if (SecurityExceptionFeatures[feature]) {
-      if (flags.confirm !== flags.app) {
-        const {prompt} = SecurityExceptionFeatures[feature]
-        const confirm = await prompt(flags.app)
-        if (confirm !== flags.app) {
-          this.error('Confirmation name did not match app name. Try again.')
-        }
+    if (SecurityExceptionFeatures[feature] && flags.confirm !== flags.app) {
+      const {prompt} = SecurityExceptionFeatures[feature]
+      const confirm = await prompt(flags.app)
+      if (confirm !== flags.app) {
+        this.error('Confirmation name did not match app name. Try again.')
       }
     }
 

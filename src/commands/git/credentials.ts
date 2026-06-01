@@ -3,13 +3,11 @@ import {Args, ux} from '@oclif/core'
 import * as readline from 'node:readline'
 
 export class GitCredentials extends Command {
-  static hidden = true
-
-  static description = 'internal command for git-credentials'
-
   static args = {
-    command: Args.string({required: true, description: 'command name of the git credentials'}),
+    command: Args.string({description: 'command name of the git credentials', required: true}),
   }
+  static description = 'internal command for git-credentials'
+  static hidden = true
 
   /**
    * Reads git-credential input from stdin
@@ -47,34 +45,34 @@ export class GitCredentials extends Command {
   async run() {
     const {args} = await this.parse(GitCredentials)
     switch (args.command) {
-    case 'get': {
-      const {protocol, host} = await this.readInput()
-
-      const {httpGitHost} = vars
-      if (protocol !== 'https' || host !== httpGitHost) {
-        return
+      case 'erase':
+      // eslint-ignore-next-line no-fallthrough
+      case 'store': {
+        // ignore
+        break
       }
+      case 'get': {
+        const {protocol, host} = await this.readInput()
 
-      if (!this.heroku.auth) {
-        throw new Error('not logged in')
-      }
+        const {httpGitHost} = vars
+        if (protocol !== 'https' || host !== httpGitHost) {
+          return
+        }
 
-      ux.stdout(`protocol=https
+        if (!this.heroku.auth) {
+          throw new Error('not logged in')
+        }
+
+        ux.stdout(`protocol=https
 host=${httpGitHost}
 username=heroku
 password=${this.heroku.auth}`)
-      break
-    }
+        break
+      }
 
-    case 'erase':
-    case 'store': {
-      // ignore
-      break
-    }
-
-    default: {
-      throw new Error(`unknown command: ${args.command}`)
-    }
+      default: {
+        throw new Error(`unknown command: ${args.command}`)
+      }
     }
   }
 }

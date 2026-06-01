@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import ClientsCreate from '../../../../src/commands/clients/create.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:create', function () {
   let api: nock.Scope
@@ -33,9 +33,7 @@ describe('clients:create', function () {
 
     const {stderr, stdout} = await runCommand(ClientsCreate, ['awesome', 'https://myapp.com'])
 
-    expect(stdout).to.equal(
-      'HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=clientsecret\n',
-    )
+    expect(stdout).to.equal('HEROKU_OAUTH_ID=f6e8d969-129f-42d2-854b-c2eca9d5a42e\nHEROKU_OAUTH_SECRET=clientsecret\n')
     expect(stderr).to.contain('Creating awesome... done\n')
   })
 

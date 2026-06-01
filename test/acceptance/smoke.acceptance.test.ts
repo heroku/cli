@@ -1,12 +1,12 @@
 // tslint:disable no-console
 import ansis from 'ansis'
 import {expect} from 'chai'
+import {execa} from 'execa'
 import fs from 'fs-extra'
-import * as path from 'path'
-import * as qq from 'qqjs'
-import {fileURLToPath} from 'url'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
-import normalizeTableOutput from '../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../helpers/utils/normalize-table-output.js'
 import commandsOutput from './commands-output.js'
 
 const app = 'heroku-cli-ci-smoke-test-app'
@@ -16,7 +16,8 @@ const bin = path.join(__dirname, '../../bin/run')
 
 function run(args = '') {
   console.log(`$ heroku ${args}`)
-  return qq.x([bin, args].join(' '), {stdio: undefined})
+  // Use execa directly to capture output for test assertions
+  return execa([bin, args].join(' '), {shell: true})
 }
 
 // Smoke tests expect the CI account: heroku-cli@salesforce.com, app heroku-cli-ci-smoke-test-app,
@@ -189,7 +190,6 @@ describe('@acceptance smoke tests', function () {
       const cmd = await run('plugins --core')
       expect(cmd.stdout).to.contain('@oclif/plugin-commands')
       expect(cmd.stdout).to.contain('@oclif/plugin-help')
-      expect(cmd.stdout).to.contain('@oclif/plugin-legacy')
       expect(cmd.stdout).to.contain('@oclif/plugin-not-found')
       expect(cmd.stdout).to.contain('@oclif/plugin-plugins')
       expect(cmd.stdout).to.contain('@oclif/plugin-update')
@@ -199,10 +199,10 @@ describe('@acceptance smoke tests', function () {
 
     it('heroku commands', async function () {
       const {stdout} = await run('commands')
-      const normalizedOutput = normalizeTableOutput(stdout).replace(/\s+/g, ' ')
+      const normalizedOutput = normalizeTableOutput(stdout).replaceAll(/\s+/g, ' ')
       const commandsOutputByLine = commandsOutput.split('\n')
       for (const line of commandsOutputByLine) {
-        const normalizedLine = normalizeTableOutput(line).replace(/\s+/g, ' ').trim()
+        const normalizedLine = normalizeTableOutput(line).replaceAll(/\s+/g, ' ').trim()
         if (!normalizedLine || normalizedLine === 'id summary' || normalizedLine === 'command summary') continue
         expect(normalizedOutput, `'${normalizedLine}' was expected but wasn't found`).to.include(normalizedLine)
       }

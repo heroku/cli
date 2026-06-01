@@ -1,7 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import tsheredoc from 'tsheredoc'
-import {runCommand} from '../../../../helpers/run-command.js'
+
 import Cmd from '../../../../../src/commands/pg/settings/track-functions.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
@@ -15,8 +16,8 @@ describe('pg:settings:track-functions', function () {
   beforeEach(function () {
     api = nock('https://api.heroku.com')
       .post('/actions/addon-attachments/resolve', {
-        app: 'myapp',
         addon_attachment: 'test-database',
+        app: 'myapp',
       })
       .reply(200, [{addon}])
   })
@@ -35,7 +36,7 @@ describe('pg:settings:track-functions', function () {
           values: {test_value: 'No function calls will be tracked.'},
         },
       })
-    const {stderr, stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
+    const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'test-database'])
     expect(stdout).to.equal(heredoc(`
       track-functions is set to test_value for ${addon.name}.
       No function calls will be tracked.

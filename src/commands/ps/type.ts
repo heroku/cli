@@ -38,19 +38,19 @@ const COST_MONTHLY: Record<string, number> = {
   'Performance-L-RAM': 500,
   'Performance-M': 250,
   'Performance-XL': 750,
+  'Private-2XL': 1500,
   'Private-L': 900,
+  'Private-L-RAM': 500,
   'Private-M': 450,
-  'Private-Memory-2XL': 1500,
-  'Private-Memory-L': 500,
-  'Private-Memory-XL': 750,
   'Private-S': 225,
+  'Private-XL': 750,
   PX: 576,
+  'Shield-2XL': 1800,
   'Shield-L': 1080,
+  'Shield-L-RAM': 600,
   'Shield-M': 540,
-  'Shield-Memory-2XL': 1800,
-  'Shield-Memory-L': 600,
-  'Shield-Memory-XL': 900,
   'Shield-S': 270,
+  'Shield-XL': 900,
   'Standard-1X': 25,
   'Standard-2X': 50,
 }
@@ -150,7 +150,6 @@ export default class Type extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['resize', 'dyno:type']
   static strict = false
 

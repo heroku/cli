@@ -1,5 +1,5 @@
-import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux, utils} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import type {Link} from '../../../lib/pg/types.js'
@@ -10,13 +10,11 @@ export default class Index extends Command {
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
-
   static description = 'lists all databases and information on link'
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -42,8 +40,8 @@ export default class Index extends Command {
       db.links = links
       return db
     }))
-    let once: boolean
-    dbs.forEach(db => {
+    let once: boolean = false
+    for (const db of dbs) {
       if (once)
         this.log()
       else
@@ -54,8 +52,11 @@ export default class Index extends Command {
       // thrown instead, because Promise.all will reject if any of the promises reject and there's no catch block for that.
       // if (db.links?.message)
       //   return this.log(db.links.message)
-      if (db.links?.length === 0)
-        return this.log('No data sources are linked into this database')
+      if (db.links?.length === 0) {
+        this.log('No data sources are linked into this database')
+        continue
+      }
+
       db.links?.forEach((link: Link) => {
         this.log(` * ${color.name(link.name)}`)
         const remoteAttachmentName = link.remote?.attachment_name || ''
@@ -66,6 +67,6 @@ export default class Index extends Command {
           remote: remoteLinkText,
         })
       })
-    })
+    }
   }
 }

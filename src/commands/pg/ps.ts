@@ -1,29 +1,28 @@
 import {Command, flags} from '@heroku-cli/command'
+import {utils} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-import {utils} from '@heroku/heroku-cli-util'
+
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Ps extends Command {
-  static description = 'view active queries with execution time'
-  static flags = {
-    verbose: flags.boolean({char: 'v'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
-  static topic = 'pg'
-
   static args = {
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+  static description = 'view active queries with execution time'
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+    verbose: flags.boolean({char: 'v'}),
+  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Ps)
+    const {args, flags} = await this.parse(Ps)
     const {database: databaseName} = args
-    const {verbose, app} = flags
+    const {app, verbose} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(app, databaseName)
     const psqlService = new utils.pg.PsqlService(db)

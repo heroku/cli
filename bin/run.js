@@ -12,7 +12,7 @@ process.env.HEROKU_UPDATE_INSTRUCTIONS = process.env.HEROKU_UPDATE_INSTRUCTIONS 
 const now = new Date()
 const cliStartTime = now.getTime()
 
-const {isTelemetryEnabled, getTelemetryDisabledReason, telemetryDebug} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
+const {getTelemetryDisabledReason, isTelemetryEnabled, telemetryDebug} = await import('../dist/lib/analytics-telemetry/telemetry-utils.js')
 const enableTelemetry = isTelemetryEnabled()
 
 if (enableTelemetry) {

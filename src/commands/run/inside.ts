@@ -1,6 +1,5 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import debugFactory from 'debug'
 import tsheredoc from 'tsheredoc'
@@ -12,6 +11,7 @@ const debug = debugFactory('heroku:run:inside')
 const heredoc = tsheredoc.default
 
 export default class RunInside extends Command {
+  /* eslint-disable perfectionist/sort-objects */
   static args = {
     dyno_name: Args.string({
       description: 'name of the dyno to run command inside',
@@ -22,7 +22,7 @@ export default class RunInside extends Command {
       required: true,
     }),
   }
-
+  /* eslint-enable perfectionist/sort-objects */
   static description = 'run a command inside an existing dyno (for Fir-generation apps only)'
   static examples = [
     heredoc`
@@ -38,7 +38,6 @@ export default class RunInside extends Command {
       ${color.command('heroku run:inside web-848cd4f64d-pvpr2 worker -a my-app')}
     `,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     'exit-code': flags.boolean({
@@ -52,7 +51,6 @@ export default class RunInside extends Command {
     }),
     remote: flags.remote(),
   }
-
   static strict = false
 
   async run() {
@@ -87,4 +85,3 @@ export default class RunInside extends Command {
     }
   }
 }
-

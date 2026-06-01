@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Set from '../../../../../src/commands/spaces/drains/set.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:drains:set', function () {
   let api: nock.Scope

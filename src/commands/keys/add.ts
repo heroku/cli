@@ -1,5 +1,5 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 import {spawn} from 'node:child_process'
@@ -19,12 +19,10 @@ export default class Add extends Command {
   static args = {
     key: Args.string({description: 'absolute path to the key located on disk. If omitted, we use the default rsa key.'}),
   }
-
   static description = `
     add an SSH key for a user
     if no KEY is specified, will try to find ~/.ssh/id_rsa.pub
   `
-
   static example = `
 ${color.command('heroku keys:add')}
 Could not find an existing public key.
@@ -34,7 +32,6 @@ Uploading SSH public key /.ssh/id_rsa.pub... done
 
 ${color.command('heroku keys:add /my/key.pub')}
 Uploading SSH public key /my/key.pub... done`
-
   static flags = {
     quiet: flags.boolean({hidden: true}),
     yes: flags.boolean({char: 'y', description: 'automatically answer yes for all prompts'}),

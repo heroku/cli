@@ -4,7 +4,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../lib/addons/create_addon.js'
+import createAddon from '../../lib/addons/create-addon.js'
 import * as util from '../../lib/addons/util.js'
 import notify from '../../lib/notify.js'
 
@@ -14,13 +14,11 @@ export default class Create extends Command {
   static args = {
     'service:plan': Args.string({description: 'unique identifier or unique name of the add-on service plan', required: true}),
   }
-
   static description = heredoc`
     Create a new add-on resource.
 
     In order to add additional config items, please place them at the end of the command after a double-dash (--).
   `
-
   static examples = [
     heredoc(`
       # Create an add-on resource:
@@ -31,7 +29,6 @@ export default class Create extends Command {
       ${color.command('heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE')}
     `),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     as: flags.string({description: 'name for the initial add-on attachment'}),
@@ -40,10 +37,8 @@ export default class Create extends Command {
     remote: flags.remote(),
     wait: flags.boolean({description: 'watch add-on creation status and exit when complete'}),
   }
-
   static hiddenAliases = ['addons:add']
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
-
   static strict = false
 
   public async run(): Promise<void> {

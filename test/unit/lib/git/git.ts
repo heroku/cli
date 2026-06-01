@@ -1,15 +1,13 @@
-'use strict'
-
 export default {
   exec(args: any[]) {
     switch (args.join(' ')) {
-    case 'remote': {
-      return Promise.resolve('heroku')
-    }
+      case 'remote': {
+        return Promise.resolve('heroku')
+      }
 
-    default: {
-      return Promise.resolve()
-    }
+      default: {
+        return Promise.resolve()
+      }
     }
   },
   remoteFromGitConfig: () => Promise.resolve('heroku'),

@@ -1,7 +1,7 @@
 import {Hook} from '@oclif/core/hooks'
 
 const analytics: Hook<'prerun'> = async function (options) {
-  const {isTelemetryEnabled, getTelemetryDisabledReason, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {getTelemetryDisabledReason, isTelemetryEnabled, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {
@@ -12,7 +12,7 @@ const analytics: Hook<'prerun'> = async function (options) {
 
   telemetryDebug('Telemetry enabled: prerun hook spawning worker to send Herokulytics for command: %s', options.Command.id)
   const {telemetryManager} = await import('../../lib/analytics-telemetry/telemetry-manager.js')
-  const globalAny = global as any
+  const globalAny = globalThis as any
 
   // Only setup telemetry if not already initialized (avoid overwriting init hook data)
   if (globalAny.cliTelemetry) {
@@ -31,10 +31,12 @@ const analytics: Hook<'prerun'> = async function (options) {
     argv: options.argv,
     Command: {
       id: options.Command.id,
-      plugin: options.Command.plugin ? {
-        name: options.Command.plugin.name,
-        version: options.Command.plugin.version,
-      } : undefined,
+      plugin: options.Command.plugin
+        ? {
+          name: options.Command.plugin.name,
+          version: options.Command.plugin.version,
+        }
+        : undefined,
     },
   }
 

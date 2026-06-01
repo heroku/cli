@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import PsSocks from '../../../../src/commands/ps/socks.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 function createSocksSetup() {
   let setupComplete: () => void
@@ -19,16 +19,16 @@ function createSocksSetup() {
 }
 
 describe('ps:socks', function () {
-  let herokuExecInitFeatureStub: sinon.SinonStub
-  let herokuExecCreateSocksProxyStub: sinon.SinonStub
+  let herokuExecInitFeatureStub: SinonStub
+  let herokuExecCreateSocksProxyStub: SinonStub
 
   beforeEach(function () {
-    herokuExecInitFeatureStub = sinon.stub(HerokuExec.prototype, 'initFeature')
-    herokuExecCreateSocksProxyStub = sinon.stub(HerokuExec.prototype, 'createSocksProxy')
+    herokuExecInitFeatureStub = stub(HerokuExec.prototype, 'initFeature')
+    herokuExecCreateSocksProxyStub = stub(HerokuExec.prototype, 'createSocksProxy')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     nock.cleanAll()
   })
 

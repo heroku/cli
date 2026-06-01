@@ -32,9 +32,7 @@ export interface RecordOpts {
 
 export default class BackboardHerokulyticsClient {
   config: Interfaces.Config
-
   http: ReturnType<typeof HTTP.create>
-
   userConfig!: HerokulyticsConfig
 
   private heroku!: APIClient

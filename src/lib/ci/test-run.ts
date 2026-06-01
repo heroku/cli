@@ -4,11 +4,11 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import ansiEscapes from 'ansi-escapes'
 import debug from 'debug'
-import * as http from 'http'
-import {get, RequestOptions} from 'https'
 import {randomUUID} from 'node:crypto'
+import * as http from 'node:http'
+import {get, RequestOptions} from 'node:https'
+import {inspect} from 'node:util'
 import {Socket} from 'phoenix'
-import {inspect} from 'util'
 import WebSocket from 'ws'
 
 const ciDebug = debug('ci')
@@ -24,33 +24,33 @@ function statusIcon({status}: Heroku.TestNode | Heroku.TestRun) {
   }
 
   switch (status) {
-  case 'pending':
-  case 'creating':
-  case 'building':
-  case 'running':
-  case 'debugging': {
-    return color.info('-')
-  }
+    case 'building':
+    case 'creating':
+    case 'debugging':
+    case 'pending':
+    case 'running': {
+      return color.info('-')
+    }
 
-  case 'errored': {
-    return color.failure('!')
-  }
+    case 'cancelled': {
+      return color.warning('!')
+    }
 
-  case 'failed': {
-    return color.failure('✗')
-  }
+    case 'errored': {
+      return color.failure('!')
+    }
 
-  case 'succeeded': {
-    return color.success('✓')
-  }
+    case 'failed': {
+      return color.failure('✗')
+    }
 
-  case 'cancelled': {
-    return color.warning('!')
-  }
+    case 'succeeded': {
+      return color.success('✓')
+    }
 
-  default: {
-    return color.info('?')
-  }
+    default: {
+      return color.info('?')
+    }
   }
 }
 
@@ -79,12 +79,12 @@ const SUCCEEDED = 'succeeded'
 const CANCELLED = 'cancelled'
 
 const TERMINAL_STATES = [SUCCEEDED, FAILED, ERRORED, CANCELLED]
-const RUNNING_STATES = [RUNNING].concat(TERMINAL_STATES)
-const BUILDING_STATES = [BUILDING, RUNNING].concat(TERMINAL_STATES)
+const RUNNING_STATES = [RUNNING, ...TERMINAL_STATES]
+const BUILDING_STATES = [BUILDING, RUNNING, ...TERMINAL_STATES]
 
 export async function displayAndExit(pipeline: Heroku.Pipeline, number: number, command: Command) {
   const testNode = await display(pipeline, number, command)
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   testNode ? processExitCode(command, testNode) : ux.exit(1)
 }
 
@@ -108,9 +108,9 @@ export async function displayTestRunInfo(command: Command, testRun: Heroku.TestR
     command.log(printLine(testRun))
     command.log()
 
-    testNodes.forEach(testNode => {
+    for (const testNode of testNodes) {
       command.log(printLineTestNode(testNode))
-    })
+    }
   } else {
     testNode = testNodes[0]
     await renderNodeOutput(command, testRun, testNode)
@@ -222,19 +222,18 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
 
   const data: any = []
 
-  latestTestRuns.forEach(testRun => {
+  for (const testRun of latestTestRuns) {
     /* eslint-disable perfectionist/sort-objects */
-    data.push(
-      {
-        iconStatus: `${statusIcon(testRun)}`,
-        number: testRun.number,
-        branch: testRun.commit_branch,
-        sha: testRun.commit_sha!.slice(0, 7),
-        status: testRun.status,
-      },
-    )
+    data.push({
+      iconStatus: `${statusIcon(testRun)}`,
+      number: testRun.number,
+      branch: testRun.commit_branch,
+      sha: testRun.commit_sha!.slice(0, 7),
+      status: testRun.status,
+    })
     /* eslint-enable perfectionist/sort-objects */
-  })
+  }
+
   /* eslint-disable perfectionist/sort-objects */
   hux.table(
     data,
@@ -248,7 +247,8 @@ function draw(testRuns: Heroku.TestRun[], watchOption = false, jsonOption = fals
       branch: {},
       sha: {},
       status: {},
-    })
+    },
+  )
   /* eslint-enable perfectionist/sort-objects */
   if (watchOption) {
     process.stdout.write(ansiEscapes.cursorUp(latestTestRuns.length))

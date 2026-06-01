@@ -53,10 +53,11 @@ export function validateAndFormatSignals(signalInput: string | undefined): strin
   const signalOptions = ['traces', 'metrics', 'logs']
   if (!signalInput || signalInput === 'all') return signalOptions
   const signalArray = signalInput.split(',')
-  signalArray.forEach(signal => {
+  for (const signal of signalArray) {
     if (!signalOptions.includes(signal)) {
       ux.error(`Invalid signal option: ${signalArray}. Run heroku telemetry:add --help to see signal options.`, {exit: 1})
     }
-  })
+  }
+
   return signalArray
 }

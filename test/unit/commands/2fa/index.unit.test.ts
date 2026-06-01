@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import TwoFactorAuth from '../../../../src/commands/auth/2fa/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('2fa', function () {
   let api: nock.Scope

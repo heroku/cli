@@ -12,14 +12,11 @@ export default class CiReRun extends Command {
   static args = {
     number: Args.string({description: 'auto-incremented test run number', required: false}),
   }
-
   static description = 'rerun tests against current directory'
-
   static examples = [
     color.command(`heroku ci:rerun 985 --app murmuring-headland-14719
 `),
   ]
-
   static flags = {
     app: flags.app(),
     pipeline: flags.pipeline({required: false}),

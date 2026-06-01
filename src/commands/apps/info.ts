@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import {filesize} from 'filesize'
-import * as util from 'util'
+import {inspect} from 'node:util'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
@@ -12,13 +12,11 @@ export default class AppsInfo extends Command {
   static args = {
     app: Args.string({hidden: true}),
   }
-
   static description = 'show detailed app information'
   static examples = [
     color.command('heroku apps:info'),
     color.command('heroku apps:info --shell'),
   ]
-
   static flags = {
     app: flags.app(),
     extended: flags.boolean({char: 'x', hidden: true}),
@@ -26,7 +24,6 @@ export default class AppsInfo extends Command {
     remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
   }
-
   static help = `$ heroku apps:info
 === example
 Git URL:   https://git.heroku.com/example.git
@@ -37,9 +34,7 @@ $ heroku apps:info --shell
 git_url=https://git.heroku.com/example.git
 repo_size=5000000
 ...`
-
   static hiddenAliases = ['info']
-
   static topic = 'apps'
 
   async run() {
@@ -78,7 +73,7 @@ repo_size=5000000
       if (getGeneration(info.app) !== 'fir') print('slug_size', filesize(info.app.slug_size, {round: 0, standard: 'jedec'}))
       print('owner', info.app.owner.email)
       print('region', info.app.region.name)
-      print('dynos', util.inspect(_.countBy(info.dynos, 'type')))
+      print('dynos', inspect(_.countBy(info.dynos, 'type')))
       print('stack', info.app.stack.name)
     }
 
@@ -176,7 +171,7 @@ function print(info: Heroku.App, addons: Heroku.AddOn[], collaborators: Heroku.C
   if (extended) {
     ux.stdout('\n\n--- Extended Information ---\n\n')
     if (info.app.extended) {
-      ux.stdout(util.inspect(info.app.extended))
+      ux.stdout(inspect(info.app.extended))
     }
   }
 }

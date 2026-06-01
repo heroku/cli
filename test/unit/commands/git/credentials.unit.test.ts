@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import mockStdin from 'mock-stdin'
 
 import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 import {GitCredentials as Credentials} from '../../../../src/commands/git/credentials.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('git:credentials', function () {
   let stdin: mockStdin.MockSTDIN

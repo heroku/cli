@@ -13,16 +13,12 @@ export default class Add extends Command {
   static args = {
     endpoint: Args.string({description: 'drain url', required: true}),
   }
-
   static description = 'Add and configure a new telemetry drain. Defaults to collecting all telemetry unless otherwise specified.'
-
-  /* eslint-disable quotes */
   static example = heredoc`
     Add a telemetry drain to an app to collect logs and traces:
 
-    ${color.command(`heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers '{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}'`)}
+    ${color.command('heroku telemetry:add https://my-endpoint.com --app myapp --signals logs,traces --headers \'{"x-drain-example-team": "API_KEY", "x-drain-example-dataset": "METRICS_DATASET"}\'')}
   `
-
   static flags = {
     app: Flags.string({char: 'a', description: 'app to add a drain to', exactlyOne: ['app', 'space']}),
     headers: Flags.string({description: 'custom headers to configure the drain in json format'}),
@@ -31,7 +27,6 @@ export default class Add extends Command {
     // If splunk transport is accepted as a feature, this should have options: ['http', 'grpc', 'splunk']
     transport: Flags.string({default: 'http', description: 'transport protocol for the drain'}),
   }
-  /* eslint-enable quotes */
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Add)
@@ -48,10 +43,9 @@ export default class Add extends Command {
 
     let id
     if (app) {
-      const {body: herokuApp} = await this.heroku.get<App>(
-        `/apps/${app}`, {
-          headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-        })
+      const {body: herokuApp} = await this.heroku.get<App>(`/apps/${app}`, {
+        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
+      })
       id = herokuApp.id
     } else {
       const {body: herokuSpace} = await this.heroku.get<Space>(`/spaces/${space}`)
@@ -84,17 +78,17 @@ export default class Add extends Command {
 
   private getExporterType(transport: string): string {
     switch (transport) {
-    case 'grpc': {
-      return 'otlp'
-    }
+      case 'grpc': {
+        return 'otlp'
+      }
 
-    case 'splunk': {
-      return 'splunk'
-    }
+      case 'splunk': {
+        return 'splunk'
+      }
 
-    default: {
-      return 'otlphttp'
-    }
+      default: {
+        return 'otlphttp'
+      }
     }
   }
 }

@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {waitForAddonDeprovisioning, waitForAddonProvisioning} from '../../lib/addons/addons_wait.js'
+import {waitForAddonDeprovisioning, waitForAddonProvisioning} from '../../lib/addons/addons-wait.js'
 import {resolveAddon} from '../../lib/addons/resolve.js'
 import notify from '../../lib/notify.js'
 import {ExtendedAddon} from '../../lib/pg/types.js'
@@ -12,16 +12,13 @@ export default class Wait extends Command {
   static args = {
     addon: Args.string({description: 'unique identifier or globally unique name of the add-on'}),
   }
-
   static description = 'show provisioning status of the add-ons on the app'
   static flags = {
     app: flags.app(),
     remote: flags.remote(),
     'wait-interval': flags.string({description: 'how frequently to poll in seconds'}),
   }
-
   public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

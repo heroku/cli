@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Set from '../../../../../src/commands/ci/config/set.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('heroku ci:config:set', function () {
   const key = 'FOO'

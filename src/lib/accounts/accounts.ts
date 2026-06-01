@@ -13,7 +13,7 @@ export interface AccountEntry {
 
 export interface IAccountsWrapper {
   list(): Promise<AccountEntry[]>
-  current(heroku: APIClient): Promise<string | null>
+  current(heroku: APIClient): Promise<null | string>
   currentNetrc(): Promise<string | null>
   add(name: string, username: string, password: string): void
   remove(name: string): void
@@ -109,7 +109,7 @@ export class AccountsWrapper implements IAccountsWrapper {
     const netrcInstance = await this.initNetrc()
     if (netrcInstance.machines['api.heroku.com']) {
       const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
-      return current?.name ?? null
+      return current && current.name ? current.name : null
     }
 
     return null
@@ -124,6 +124,7 @@ export class AccountsWrapper implements IAccountsWrapper {
 
       fs.writeFileSync(
         path.join(basedir, name),
+        // eslint-disable-next-line perfectionist/sort-objects
         stringify({username, password}),
         'utf8',
       )

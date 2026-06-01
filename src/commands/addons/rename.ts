@@ -8,9 +8,7 @@ export default class Rename extends Command {
     addon_name: Args.string({description: 'unique identifier or globally unique name of the add-on', required: true}),
     new_name: Args.string({description: 'new globally unique name of the add-on', required: true}),
   }
-
   static description = 'rename an add-on'
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

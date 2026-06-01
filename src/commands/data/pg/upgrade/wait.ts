@@ -7,7 +7,6 @@ const heredoc = tsheredoc.default
 
 export default class DataPgUpgradeWait extends DataPgWait {
   static description = 'shows status of an upgrade until it\'s complete'
-
   static examples = [
     heredoc(`
       # Wait for upgrade to complete
@@ -18,6 +17,5 @@ export default class DataPgUpgradeWait extends DataPgWait {
       ${color.code('<%= config.bin %> <%= command.id %> DATABASE --app myapp --wait-interval 10')}
     `),
   ]
-
   protected classicWaitCommand: string = 'pg:upgrade:wait'
 }

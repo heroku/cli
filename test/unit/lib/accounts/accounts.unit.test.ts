@@ -2,25 +2,27 @@ import {expect} from 'chai'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import sinon from 'sinon'
+import {
+  match, restore, SinonStub, stub,
+} from 'sinon'
 
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
 describe('accounts', function () {
-  let fsReaddirStub: sinon.SinonStub
-  let fsReadFileStub: sinon.SinonStub
+  let fsReaddirStub: SinonStub
+  let fsReadFileStub: SinonStub
 
   beforeEach(function () {
     process.env.HEROKU_NETRC_WRITE = 'true'
-    fsReaddirStub = sinon.stub(fs, 'readdirSync')
-    fsReadFileStub = sinon.stub(fs, 'readFileSync')
+    fsReaddirStub = stub(fs, 'readdirSync')
+    fsReadFileStub = stub(fs, 'readFileSync')
   })
 
   afterEach(function () {
     delete process.env.HEROKU_NETRC_WRITE
     delete process.env.HEROKU_NATIVE_STORE_WRITE
-    sinon.restore()
+    restore()
   })
 
   describe('list()', function () {
@@ -32,9 +34,9 @@ describe('accounts', function () {
 
     it('should return array of AccountEntry objects when files exist', async function () {
       fsReaddirStub.returns(['account1', 'account2'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account1$/), 'utf8')
         .returns('username: user1\npassword: pass1\n')
-      fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account2$/), 'utf8')
         .returns('username: user2\npassword: pass2\n')
 
       const result = await AccountsModule.list()
@@ -47,7 +49,7 @@ describe('accounts', function () {
 
     it('should handle ruby-style symbol keys', async function () {
       fsReaddirStub.returns(['account1'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account1$/), 'utf8')
         .returns('{":username": "user1", ":password": "pass1"}')
 
       const result = await AccountsModule.list()
@@ -61,11 +63,11 @@ describe('accounts', function () {
   describe('list() with credentialStore', function () {
     beforeEach(function () {
       delete process.env.HEROKU_NETRC_WRITE
-      sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+      stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
     })
 
     it('should return AccountEntry objects with only username when credentialStore is set', async function () {
-      sinon.stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', 'user2@example.com'])
+      stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', 'user2@example.com'])
 
       const result = await AccountsModule.list()
 
@@ -75,7 +77,7 @@ describe('accounts', function () {
     })
 
     it('should return an empty array when the keychain has no accounts', async function () {
-      sinon.stub(AccountsModule, 'getKeychainAccounts').resolves([])
+      stub(AccountsModule, 'getKeychainAccounts').resolves([])
 
       const result = await AccountsModule.list()
 
@@ -83,7 +85,7 @@ describe('accounts', function () {
     })
 
     it('should filter out null and undefined keychain entries', async function () {
-      sinon.stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', null, undefined, 'user2@example.com'])
+      stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', null, undefined, 'user2@example.com'])
 
       const result = await AccountsModule.list()
 
@@ -102,9 +104,9 @@ describe('accounts', function () {
 
     it('should return array of AccountEntry objects with name and username', function () {
       fsReaddirStub.returns(['account1', 'account2'])
-      fsReadFileStub.withArgs(sinon.match(/account1$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account1$/), 'utf8')
         .returns('username: user1\npassword: pass1\n')
-      fsReadFileStub.withArgs(sinon.match(/account2$/), 'utf8')
+      fsReadFileStub.withArgs(match(/account2$/), 'utf8')
         .returns('username: user2\npassword: pass2\n')
 
       const result = AccountsModule.listNetrc()
@@ -117,18 +119,18 @@ describe('accounts', function () {
   })
 
   describe('add', function () {
-    let mkdirSyncStub: sinon.SinonStub
-    let writeFileSyncStub: sinon.SinonStub
-    let chmodSyncStub: sinon.SinonStub
+    let mkdirSyncStub: SinonStub
+    let writeFileSyncStub: SinonStub
+    let chmodSyncStub: SinonStub
 
     beforeEach(function () {
-      mkdirSyncStub = sinon.stub(fs, 'mkdirSync')
-      writeFileSyncStub = sinon.stub(fs, 'writeFileSync')
-      chmodSyncStub = sinon.stub(fs, 'chmodSync')
+      mkdirSyncStub = stub(fs, 'mkdirSync')
+      writeFileSyncStub = stub(fs, 'writeFileSync')
+      chmodSyncStub = stub(fs, 'chmodSync')
     })
 
     it('should not run if useNetrc is false', function () {
-      sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'macos-keychain', useNetrc: false})
+      stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'macos-keychain', useNetrc: false})
       AccountsModule.add('test-user', 'username123', 'password123')
 
       expect(mkdirSyncStub.calledOnce).to.be.false
@@ -165,11 +167,11 @@ describe('accounts', function () {
 
   describe('set()', function () {
     describe('with credentialStore and no account name', function () {
-      let writeLoginStateStub: sinon.SinonStub
+      let writeLoginStateStub: SinonStub
 
       beforeEach(function () {
-        sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
-        writeLoginStateStub = sinon.stub(AccountsModule, 'writeLoginState').resolves()
+        stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+        writeLoginStateStub = stub(AccountsModule, 'writeLoginState').resolves()
       })
 
       it('calls writeLoginState with the dataDir and account username', async function () {
@@ -190,17 +192,17 @@ describe('accounts', function () {
     })
 
     describe('with useNetrc and account name', function () {
-      let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: sinon.SinonStub}
+      let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: SinonStub}
 
       function setNetrc(value: typeof fakeNetrc | undefined) {
         (AccountsModule as unknown as {netrc: typeof fakeNetrc | undefined}).netrc = value
       }
 
       beforeEach(function () {
-        sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: null, useNetrc: true})
-        fakeNetrc = {machines: {}, save: sinon.stub().resolves()}
+        stub(AccountsModule, 'getStorageConfig').returns({credentialStore: null, useNetrc: true})
+        fakeNetrc = {machines: {}, save: stub().resolves()}
         setNetrc(fakeNetrc)
-        fsReadFileStub.withArgs(sinon.match(/my-account$/), 'utf8')
+        fsReadFileStub.withArgs(match(/my-account$/), 'utf8')
           .returns('username: user@example.com\npassword: secret\n')
       })
 
@@ -233,19 +235,19 @@ describe('accounts', function () {
   })
 
   describe('currentNetrc()', function () {
-    let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: sinon.SinonStub}
+    let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: SinonStub}
 
     function setNetrc(value: typeof fakeNetrc | undefined) {
       (AccountsModule as unknown as {netrc: typeof fakeNetrc | undefined}).netrc = value
     }
 
     beforeEach(function () {
-      fakeNetrc = {machines: {}, save: sinon.stub().resolves()}
+      fakeNetrc = {machines: {}, save: stub().resolves()}
       setNetrc(fakeNetrc)
-      fsReadFileStub.withArgs(sinon.match(/my-account$/), 'utf8')
+      fsReadFileStub.withArgs(match(/my-account$/), 'utf8')
         .returns('username: user@example.com\npassword: secret\n')
       fsReaddirStub.returns(['my-account', 'other-account'])
-      fsReadFileStub.withArgs(sinon.match(/other-account$/), 'utf8')
+      fsReadFileStub.withArgs(match(/other-account$/), 'utf8')
         .returns('username: other@example.com\npassword: secret\n')
     })
 
@@ -277,14 +279,14 @@ describe('accounts', function () {
   })
 
   describe('removeNetrc()', function () {
-    let unlinkStub: sinon.SinonStub
-    let osHomeStub: sinon.SinonStub
-    let existsSyncStub: sinon.SinonStub
+    let unlinkStub: SinonStub
+    let osHomeStub: SinonStub
+    let existsSyncStub: SinonStub
 
     beforeEach(function () {
-      unlinkStub = sinon.stub(fs, 'unlinkSync')
-      osHomeStub = sinon.stub(os, 'homedir')
-      existsSyncStub = sinon.stub(fs, 'existsSync')
+      unlinkStub = stub(fs, 'unlinkSync')
+      osHomeStub = stub(os, 'homedir')
+      existsSyncStub = stub(fs, 'existsSync')
     })
 
     it('should remove the account file with the given name', function () {
@@ -297,9 +299,7 @@ describe('accounts', function () {
       AccountsModule.removeNetrc(accountName)
 
       expect(unlinkStub.calledOnce).to.be.true
-      expect(unlinkStub.firstCall.args[0]).to.equal(
-        path.join(`${basedir}/.config/heroku/accounts`, accountName),
-      )
+      expect(unlinkStub.firstCall.args[0]).to.equal(path.join(`${basedir}/.config/heroku/accounts`, accountName))
     })
 
     it('should throw an error if the file cannot be removed', function () {
@@ -312,10 +312,10 @@ describe('accounts', function () {
   })
 
   describe('remove', function () {
-    let removeNetrcStub: sinon.SinonStub
+    let removeNetrcStub: SinonStub
 
     beforeEach(function () {
-      removeNetrcStub = sinon.stub(AccountsModule, 'removeNetrc')
+      removeNetrcStub = stub(AccountsModule, 'removeNetrc')
     })
 
     it('should call removeNetrc when no credential store', async function () {
@@ -329,14 +329,14 @@ describe('accounts', function () {
 
     describe('with credentialStore', function () {
       let credStub: ReturnType<typeof stubCredentialManager>
-      let removeAuthStub: sinon.SinonStub
+      let removeAuthStub: SinonStub
 
       beforeEach(function () {
-        removeAuthStub = sinon.stub().resolves()
+        removeAuthStub = stub().resolves()
         credStub = stubCredentialManager({
           removeAuth: removeAuthStub,
         })
-        sinon.stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+        stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
       })
 
       afterEach(function () {

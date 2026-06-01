@@ -17,15 +17,12 @@ export default class Info extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = 'show info about a space'
   static example = `${color.command('heroku spaces:info my-space')}`
-
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get info of'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

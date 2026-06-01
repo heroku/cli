@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import PsAutoscaleDisable from '../../../../src/commands/ps/autoscale/disable.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('ps:autoscale:disable', function () {
   const APP_NAME = 'wubalubadubdub'

@@ -10,7 +10,6 @@ export default class Disable extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'ps:autoscale'
 
   async run() {

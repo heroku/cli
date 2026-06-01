@@ -3,7 +3,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {HTTPError} from '@heroku/http-call'
 import printf from 'printf'
 
-import ConfirmCommand from '../confirmCommand.js'
+import ConfirmCommand from '../confirm-command.js'
 
 export const trapConfirmationRequired = async <T> (app: string, confirm: string | undefined, fn: (confirmed?: string) => Promise<T>) => {
   try {
@@ -58,30 +58,30 @@ export const grandfatheredPrice = function (addon: Heroku.AddOn) {
 
 export const formatState = function (state: string) {
   switch (state) {
-  case 'provisioned': {
-    state = 'created'
-    break
-  }
+    case 'deprovisioned': {
+      state = 'errored'
+      break
+    }
 
-  case 'provisioning': {
-    state = 'creating'
-    break
-  }
+    case 'deprovisioning': {
+      state = 'destroying'
+      break
+    }
 
-  case 'deprovisioning': {
-    state = 'destroying'
-    break
-  }
+    case 'provisioned': {
+      state = 'created'
+      break
+    }
 
-  case 'deprovisioned': {
-    state = 'errored'
-    break
-  }
+    case 'provisioning': {
+      state = 'creating'
+      break
+    }
 
-  default: {
-    state = ''
-    break
-  }
+    default: {
+      state = ''
+      break
+    }
   }
 
   return state

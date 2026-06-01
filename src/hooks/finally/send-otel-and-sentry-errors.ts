@@ -40,7 +40,7 @@ const finallyHook: Hook<'finally'> = async function (options) {
     return
   }
 
-  const {isTelemetryEnabled, getTelemetryDisabledReason, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {getTelemetryDisabledReason, isTelemetryEnabled, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {

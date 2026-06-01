@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Regions from '../../../src/commands/regions.js'
-import {runCommand} from '../../helpers/run-command.js'
 import removeAllWhitespace from '../../helpers/utils/remove-whitespaces.js'
 
 describe('regions', function () {

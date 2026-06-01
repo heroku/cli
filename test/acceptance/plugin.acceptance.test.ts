@@ -1,7 +1,8 @@
-import execa from 'execa'
 import fs from 'fs-extra'
+import path from 'node:path'
 import {fileURLToPath} from 'node:url'
-import * as path from 'path'
+
+import {x} from '../../scripts/utils/script-exec.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,11 +28,11 @@ function safeCloneDirName(plugin: string): string {
 }
 
 describe('plugins', function () {
-  plugins.forEach(plugin => {
+  for (const plugin of plugins) {
     const pluginRoot = resolvePluginPath(plugin)
     if (!pluginRoot) {
       it.skip(plugin, async function () {})
-      return
+      continue
     }
 
     skipOnWindows(plugin, async () => {
@@ -64,11 +65,13 @@ describe('plugins', function () {
         cloneUrl = repoUrl
       }
 
-      await execa('git', ['clone', cloneUrl, cwd])
-      const opts = {cwd, stdio: [0, 1, 2]}
-      await execa('git', ['checkout', `v${pkg.version}`], opts)
-      await execa('npm', [], opts)
-      await execa('npm', ['test'], opts)
+      await x('git', ['clone', cloneUrl, cwd])
+      const opts = {
+        cwd, stderr: 'inherit', stdin: 'inherit', stdout: 'inherit',
+      } as const
+      await x('git', ['checkout', `v${pkg.version}`], opts)
+      await x('npm', [], opts)
+      await x('npm', ['test'], opts)
     })
-  })
+  }
 })

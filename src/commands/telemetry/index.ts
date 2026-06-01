@@ -11,7 +11,6 @@ export default class Index extends Command {
     app: Flags.string({char: 'a', description: 'filter by app name'}),
     space: Flags.string({char: 's', description: 'filter by space name', exactlyOne: ['app', 'space']}),
   }
-
   static topic = 'telemetry'
 
   protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {

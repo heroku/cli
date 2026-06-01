@@ -4,7 +4,6 @@ import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
 
 export default class Clear extends Command {
   static description = 'clear all buildpacks set on the app'
-
   static flags = {
     app: Flags.app({required: true}),
     remote: Flags.remote(),

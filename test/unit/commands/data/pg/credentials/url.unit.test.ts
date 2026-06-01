@@ -1,12 +1,11 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
-import type {AdvancedCredentialInfo} from '../../../../../../src/lib/data/types.js'
-
 import DataPgCredentialsUrl from '../../../../../../src/commands/data/pg/credentials/url.js'
+import {type AdvancedCredentialInfo, AdvancedCredentialState} from '../../../../../../src/lib/data/types.js'
 import {
   addon,
   advancedCredentialsResponse,
@@ -17,7 +16,6 @@ import {
   nonAdvancedCredentialsResponse,
   nonAdvancedInactiveCredentialResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
@@ -27,18 +25,15 @@ describe('data:pg:credentials:url', function () {
       .post('/actions/addons/resolve')
       .reply(200, [legacyEssentialAddon])
 
-    try {
-      await runCommand(DataPgCredentialsUrl, [
-        'DATABASE',
-        '--app=myapp',
-        '--name=non-default-credential',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgCredentialsUrl, [
+      'DATABASE',
+      '--app=myapp',
+      '--name=non-default-credential',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('Essential-tier databases don\'t support named credentials.')
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('Essential-tier databases don\'t support named credentials.')
   })
 
   it('shows error for Essential-tier databases with a custom credential name', async function () {
@@ -46,18 +41,15 @@ describe('data:pg:credentials:url', function () {
       .post('/actions/addons/resolve')
       .reply(200, [essentialAddon])
 
-    try {
-      await runCommand(DataPgCredentialsUrl, [
-        'DATABASE',
-        '--app=myapp',
-        '--name=non-default-credential',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgCredentialsUrl, [
+      'DATABASE',
+      '--app=myapp',
+      '--name=non-default-credential',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('Essential-tier databases don\'t support named credentials.')
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('Essential-tier databases don\'t support named credentials.')
   })
 
   describe('Advanced-tier databases', function () {
@@ -72,18 +64,15 @@ describe('data:pg:credentials:url', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, emptyCredentialsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsUrl, [
-          'DATABASE',
-          '--app=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsUrl, [
+        'DATABASE',
+        '--app=myapp',
+      ])
+      const err = error as Error
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('There are no active credentials on the database ⛁ advanced-horizontal-01234.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('There are no active credentials on the database ⛁ advanced-horizontal-01234.')
     })
 
     it('shows error when specified credential isn\'t active', async function () {
@@ -97,19 +86,16 @@ describe('data:pg:credentials:url', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials/analyst`)
         .reply(200, inactiveCredentialResponse)
 
-      try {
-        await runCommand(DataPgCredentialsUrl, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsUrl, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst',
+      ])
+      const err = error as Error
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database ⛁ advanced-horizontal-01234.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database ⛁ advanced-horizontal-01234.')
     })
 
     it('shows owner credential URL by default when no name specified', async function () {
@@ -123,7 +109,7 @@ describe('data:pg:credentials:url', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials/u2vi1nt40t3mcq`)
         .reply(200, advancedCredentialsResponse.items[0])
 
-      await runCommand(DataPgCredentialsUrl, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
       ])
@@ -131,10 +117,9 @@ describe('data:pg:credentials:url', function () {
       dataApi.done()
       herokuApi.done()
 
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      expect(stderr).to.equal('')
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout))).to.equal(ansis.strip(heredoc`
           === Connection information for u2vi1nt40t3mcq credential:
 
           Connection info string:
@@ -143,9 +128,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://u2vi1nt40t3mcq:secret1@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('shows specific credential URL when name is specified', async function () {
@@ -163,7 +147,7 @@ describe('data:pg:credentials:url', function () {
             user: 'analyst',
           },
         ],
-        state: 'active',
+        state: AdvancedCredentialState.ACTIVE,
         type: 'additional',
       }
       // cspell:enable
@@ -178,7 +162,7 @@ describe('data:pg:credentials:url', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials/analyst`)
         .reply(200, analystCredentialResponse)
 
-      await runCommand(DataPgCredentialsUrl, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -187,10 +171,9 @@ describe('data:pg:credentials:url', function () {
       dataApi.done()
       herokuApi.done()
 
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      expect(stderr).to.equal('')
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout))).to.equal(ansis.strip(heredoc`
           === Connection information for analyst credential:
 
           Connection info string:
@@ -199,9 +182,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://analyst:secret2@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('handles API errors gracefully', async function () {
@@ -218,16 +200,13 @@ describe('data:pg:credentials:url', function () {
           message: 'Credential not found.',
         })
 
-      try {
-        await runCommand(DataPgCredentialsUrl, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.include('Credential not found.')
-      }
+      const {error} = await runCommand(DataPgCredentialsUrl, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.include('Credential not found.')
 
       dataApi.done()
       herokuApi.done()
@@ -244,19 +223,16 @@ describe('data:pg:credentials:url', function () {
         .get(`/postgres/v0/databases/${addon.id}/credentials/analyst`)
         .reply(200, nonAdvancedInactiveCredentialResponse)
 
-      try {
-        await runCommand(DataPgCredentialsUrl, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsUrl, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst',
+      ])
+      const err = error as Error
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database ⛁ standard-database.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database ⛁ standard-database.')
     })
 
     it('shows default credential URL by default when no name specified', async function () {
@@ -268,7 +244,7 @@ describe('data:pg:credentials:url', function () {
         .get(`/postgres/v0/databases/${addon.id}/credentials/default`)
         .reply(200, nonAdvancedCredentialsResponse[0])
 
-      await runCommand(DataPgCredentialsUrl, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
       ])
@@ -276,10 +252,9 @@ describe('data:pg:credentials:url', function () {
       dataApi.done()
       herokuApi.done()
 
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      expect(stderr).to.equal('')
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout))).to.equal(ansis.strip(heredoc`
           === Connection information for default credential:
 
           Connection info string:
@@ -288,9 +263,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://u2vi1nt40t3mcq:secret1@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('shows specific credential URL when name is specified', async function () {
@@ -302,7 +276,7 @@ describe('data:pg:credentials:url', function () {
         .get(`/postgres/v0/databases/${addon.id}/credentials/analyst`)
         .reply(200, nonAdvancedCredentialsResponse[1])
 
-      await runCommand(DataPgCredentialsUrl, [
+      const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
@@ -311,10 +285,9 @@ describe('data:pg:credentials:url', function () {
       dataApi.done()
       herokuApi.done()
 
-      expect(stderr.output).to.equal('')
-      expect(ansis.strip(heredoc(stdout.output))).to.equal(
-        // cspell:disable
-        ansis.strip(heredoc`
+      expect(stderr).to.equal('')
+      // cspell:disable
+      expect(ansis.strip(heredoc(stdout))).to.equal(ansis.strip(heredoc`
           === Connection information for analyst credential:
 
           Connection info string:
@@ -323,9 +296,8 @@ describe('data:pg:credentials:url', function () {
           Connection URL:
           postgres://analyst:secret2@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7
 
-        `),
-        // cspell:enable
-      )
+        `))
+      // cspell:enable
     })
 
     it('handles API errors gracefully', async function () {
@@ -340,16 +312,13 @@ describe('data:pg:credentials:url', function () {
           message: 'Not found.',
         })
 
-      try {
-        await runCommand(DataPgCredentialsUrl, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
-        expect(ansis.strip(err.message)).to.include('Not found.')
-      }
+      const {error} = await runCommand(DataPgCredentialsUrl, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst',
+      ])
+      const err = error as Error
+      expect(ansis.strip(err.message)).to.include('Not found.')
 
       dataApi.done()
       herokuApi.done()

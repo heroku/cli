@@ -1,8 +1,7 @@
 import {vars} from '@heroku-cli/command'
-import cp from 'node:child_process'
 import {ux} from '@oclif/core/ux'
-
-import fs from 'fs'
+import cp from 'node:child_process'
+import fs from 'node:fs'
 import {promisify} from 'node:util'
 const execFilePromise = promisify(cp.execFile)
 
@@ -15,7 +14,7 @@ export default class Git {
   public async exec(args: string[]): Promise<string> {
     gitDebug('exec: git %o', args)
     try {
-      const {stdout, stderr} = await this.execFile('git', args)
+      const {stderr, stdout} = await this.execFile('git', args)
       if (stderr) process.stderr.write(stderr)
       return stdout.trim()
     } catch (error: any) {
@@ -143,4 +142,3 @@ export default class Git {
     })
   }
 }
-

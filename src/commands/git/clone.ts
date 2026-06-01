@@ -1,7 +1,6 @@
-import * as color from '@heroku/heroku-cli-util/color'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import {Args} from '@oclif/core'
 
 import Git from '../../lib/git/git.js'
@@ -10,16 +9,15 @@ export class GitClone extends Command {
   static args = {
     DIRECTORY: Args.string({description: 'where to clone the app', optional: true}),
   }
-
   static description = 'clones a heroku app to your local machine at DIRECTORY (defaults to app name)'
-
   static example = `${color.command('heroku git:clone -a example')}
 Cloning into 'example'...
 remote: Counting objects: 42, done.
 ...`
-
   static flags = {
-    app: flags.string({char: 'a', description: 'the Heroku app to use', env: 'HEROKU_APP', required: true}),
+    app: flags.string({
+      char: 'a', description: 'the Heroku app to use', env: 'HEROKU_APP', required: true,
+    }),
     remote: flags.string({char: 'r', description: 'the git remote to create, default "heroku"'}),
   }
 

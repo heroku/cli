@@ -5,7 +5,6 @@ import {ux} from '@oclif/core/ux'
 
 export default class Drains extends Command {
   static description = 'display the log drains of an app'
-
   static flags = {
     app: flags.app({required: true}),
     extended: flags.boolean({char: 'x', hidden: true}),
@@ -26,17 +25,15 @@ export default class Drains extends Command {
     if (flags.json) {
       hux.styledJSON(drains)
     } else {
-      const [drainsWithAddons, drainsWithoutAddons] = drains.reduce<Heroku.LogDrain[]>(
-        (acc, drain) => {
-          if (drain.addon) {
-            acc[0].push(drain)
-          } else {
-            acc[1].push(drain)
-          }
+      const [drainsWithAddons, drainsWithoutAddons] = drains.reduce<Heroku.LogDrain[]>((acc, drain) => {
+        if (drain.addon) {
+          acc[0].push(drain)
+        } else {
+          acc[1].push(drain)
+        }
 
-          return acc
-        }, [[], []],
-      )
+        return acc
+      }, [[], []])
 
       if (drainsWithoutAddons.length > 0) {
         hux.styledHeader('Drains')
@@ -46,13 +43,11 @@ export default class Drains extends Command {
       }
 
       if (drainsWithAddons.length > 0) {
-        const addons = await Promise.all(
-          drainsWithAddons.map((d: Heroku.LogDrain) => this.heroku.get<Heroku.AddOn>(`/apps/${flags.app}/addons/${d.addon?.name}`)),
-        )
+        const addons = await Promise.all(drainsWithAddons.map((d: Heroku.LogDrain) => this.heroku.get<Heroku.AddOn>(`/apps/${flags.app}/addons/${d.addon?.name}`)))
         hux.styledHeader('Add-on Drains')
-        addons.forEach(({body: addon}, i) => {
+        for (const [i, {body: addon}] of addons.entries()) {
           styledDrain(color.addon(addon.plan?.name || ''), color.addon(addon.name || ''), drainsWithAddons[i])
-        })
+        }
       }
     }
   }

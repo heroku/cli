@@ -1,10 +1,10 @@
-import Cmd from '../../../../../src/commands/pg/links/destroy.js'
-import {runCommand} from '../../../../helpers/run-command.js'
-import nock from 'nock'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import nock from 'nock'
 import tsheredoc from 'tsheredoc'
+
+import Cmd from '../../../../../src/commands/pg/links/destroy.js'
+import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
 const heredoc = tsheredoc.default
 
@@ -42,7 +42,7 @@ describe('pg:links:destroy', function () {
       nock('https://api.data.heroku.com')
         .delete(`/client/v11/databases/${addon.id}/links/postgres-link`)
         .reply(200)
-      const {stdout, stderr} = await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',

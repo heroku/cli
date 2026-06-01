@@ -1,7 +1,7 @@
-import {fork as forkChildProcess} from 'child_process'
-import * as fs from 'fs'
-import * as path from 'path'
-import {fileURLToPath} from 'url'
+import {fork as forkChildProcess} from 'node:child_process'
+import * as fs from 'node:fs'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 export class ForemanExitError extends Error {
   public exitCode: number

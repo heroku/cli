@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import ClientsDestroy from '../../../../src/commands/clients/destroy.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('clients:destroy', function () {
   let api: nock.Scope

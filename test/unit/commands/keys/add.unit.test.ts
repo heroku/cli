@@ -1,3 +1,4 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import * as fs from 'fs-extra'
@@ -5,10 +6,9 @@ import inquirer from 'inquirer'
 import nock from 'nock'
 import os from 'node:os'
 import path from 'node:path'
-import sinon from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Add from '../../../../src/commands/keys/add.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('keys:add', function () {
   const PUBLIC_KEY = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDsAbr7QvJUwDC0dfX3p884w7T06MgJcwbvKDeMpOGg7FXhVSjpXz0SrFrbzbUfs9LtIDIvBPfA5+LTA45+apQTt+A3fiMsKElFjiJgO0ag12vbttHxjda12tmm/Sc0CBpOOeLJxJYboWeN7G4LfW+llUXhb45gNp48qJKbCZKZN2RTd3F8BFUgLedVKg9xs1OyyioFaQJC0N8Ka4CyfTn0mpWnkyrzYvziG1KMELohbP74hAEmW7+/PM9KjXdLeFaOJXTYZLGYJR6DX2Wdd/AP1JFljtXNXlVQ224IPRuwrnVK/KqegY1tk+io4+Ju7mL9PyyXtFOESK+yinzQ3MJn'
@@ -30,7 +30,7 @@ describe('keys:add', function () {
     await fs.remove(home)
     nock.cleanAll()
     api.done()
-    sinon.restore()
+    restore()
   })
 
   describe('direct key addition', function () {
@@ -57,9 +57,9 @@ describe('keys:add', function () {
         .post('/account/keys')
         .reply(200)
 
-      sinon.stub(os, 'homedir').returns(home)
-      sinon.stub(inquirer, 'prompt').resolves({yes: true})
-      sinon.stub(hux, 'prompt').resolves('yes')
+      stub(os, 'homedir').returns(home)
+      stub(inquirer, 'prompt').resolves({yes: true})
+      stub(hux, 'prompt').resolves('yes')
 
       const {stderr} = await runCommand(Add, ['--quiet'])
 
@@ -84,8 +84,8 @@ describe('keys:add', function () {
         .post('/account/keys', {public_key: PUBLIC_KEY})
         .reply(200)
 
-      sinon.stub(os, 'homedir').returns(home)
-      sinon.stub(inquirer, 'prompt').callsFake(function () {
+      stub(os, 'homedir').returns(home)
+      stub(inquirer, 'prompt').callsFake(function () {
         // eslint-disable-next-line prefer-rest-params
         const choices = arguments[0]
         expect(choices[0].message).to.equal('Which SSH key would you like to upload?')

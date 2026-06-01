@@ -15,13 +15,11 @@ export default class Ps extends Command {
   static args = {
     space: Args.string({hidden: true}),
   }
-
   static description = 'list dynos for a space'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get dynos of'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {
@@ -37,13 +35,13 @@ export default class Ps extends Command {
     ])
 
     if (space.shield) {
-      spaceDynos.forEach(spaceDyno => {
-        spaceDyno.dynos.forEach(d => {
+      for (const spaceDyno of spaceDynos) {
+        for (const d of spaceDyno.dynos) {
           if (d.size?.startsWith('Private')) {
             d.size = d.size.replace('Private-', 'Shield-')
           }
-        })
-      })
+        }
+      }
     }
 
     if (flags.json) {
@@ -88,8 +86,8 @@ export default class Ps extends Command {
   }
 
   private render(spaceDynos?: SpaceDynosInfo[]) {
-    spaceDynos?.forEach(spaceDyno => {
+    if (spaceDynos) for (const spaceDyno of spaceDynos) {
       this.printDynos(spaceDyno.app_name, spaceDyno.dynos)
-    })
+    }
   }
 }

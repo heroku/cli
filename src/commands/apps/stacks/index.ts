@@ -9,9 +9,7 @@ export default class StacksIndex extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static hiddenAliases = ['stack']
-
   static topic = 'apps'
 
   async run() {

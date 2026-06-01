@@ -1,10 +1,10 @@
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
-import {DockerHelper, DockerJob, GroupedDockerJobs} from '../../lib/container/docker_helper.js'
+import {DockerHelper, DockerJob, GroupedDockerJobs} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 export default class Push extends Command {
@@ -17,7 +17,6 @@ export default class Push extends Command {
     `${color.command('heroku container:push web --arg ENV=live,HTTPS=on')}  # Build-time variables`,
     `${color.command('heroku container:push --recursive --context-path .')} # Pushes Dockerfile.* using current dir as build context`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     arg: flags.string({description: 'set build-time variables'}),
@@ -26,11 +25,8 @@ export default class Push extends Command {
     remote: flags.remote({char: 'r'}),
     verbose: flags.boolean({char: 'v'}),
   }
-
   static strict = false
-
   static topic = 'container'
-
   dockerHelper = new DockerHelper()
 
   async run(): Promise<void> {
@@ -52,8 +48,7 @@ export default class Push extends Command {
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
     ensureContainerStack(appBody, 'push')
 
-    const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-    const registry = `registry.${herokuHost}`
+    const registry = `registry.${vars.host}`
     const dockerfiles = this.dockerHelper.getDockerfiles(process.cwd(), recursive)
     const possibleJobs = this.dockerHelper.getJobs(`${registry}/${app}`, dockerfiles)
     const jobs = await this.selectJobs(possibleJobs, processTypes as string[], recursive)
@@ -111,17 +106,16 @@ export default class Push extends Command {
     }
 
     if (recursive) {
-      if (processTypes.length > 0) {
-        filteredJobs = this.dockerHelper.filterByProcessType(jobs, processTypes)
-      } else {
-        filteredJobs = jobs
-      }
+      filteredJobs = processTypes.length > 0
+        ? this.dockerHelper.filterByProcessType(jobs, processTypes)
+        : jobs
 
       selectedJobs = await this.dockerHelper.chooseJobs(filteredJobs)
     } else if (jobs.standard) {
-      jobs.standard.forEach(pj => {
+      for (const pj of jobs.standard) {
         pj.resource = pj.resource.replace(/standard$/, processTypes[0])
-      })
+      }
+
       selectedJobs = jobs.standard || []
     }
 

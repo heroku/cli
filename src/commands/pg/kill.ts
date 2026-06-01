@@ -1,29 +1,31 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Args, ux} from '@oclif/core'
 import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
 import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
 export default class Kill extends Command {
-  static topic = 'pg'
-  static description = 'kill a query'
-  static flags = {
-    force: flags.boolean({char: 'f'}),
-    app: flags.app({required: true}),
-    remote: flags.remote(),
-  }
-
+  /* eslint-disable perfectionist/sort-objects */
   static args = {
-    pid: Args.string({required: true, description: 'ID of the process'}),
+    pid: Args.string({description: 'ID of the process', required: true}),
     database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`}),
   }
+  /* eslint-enable perfectionist/sort-objects */
+  static description = 'kill a query'
+  static flags = {
+    app: flags.app({required: true}),
+    force: flags.boolean({char: 'f'}),
+    remote: flags.remote(),
+  }
+  static topic = 'pg'
 
   public async run(): Promise<void> {
-    const {flags, args} = await this.parse(Kill)
+    const {args, flags} = await this.parse(Kill)
     const {app, force} = flags
-    const {pid, database} = args
+    const {database, pid} = args
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(app, database)

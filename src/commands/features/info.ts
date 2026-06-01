@@ -1,15 +1,13 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 export default class Info extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the app feature', required: true}),
   }
-
   static description = 'display information about a feature'
-
   static flags = {
     app: flags.app({required: true}),
     json: flags.boolean({description: 'output in json format'}),

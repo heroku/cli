@@ -4,7 +4,7 @@ import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import getEndpoint from '../../lib/certs/flags.js'
-import ConfirmCommand from '../../lib/confirmCommand.js'
+import ConfirmCommand from '../../lib/confirm-command.js'
 
 const heredoc = tsheredoc.default
 
@@ -17,7 +17,6 @@ export default class Remove extends Command {
     name: flags.string({description: 'name to remove'}),
     remote: flags.remote(),
   }
-
   static topic = 'certs'
 
   public async run(): Promise<void> {

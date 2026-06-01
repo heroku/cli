@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import DataMaintenancesInfo from '../../../../../src/commands/data/maintenances/info.js'
 import {addon, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
 import {unwrap} from '../../../../helpers/utils/unwrap.js'
 
 describe('data:maintenances:info', function () {
@@ -51,10 +50,10 @@ describe('data:maintenances:info', function () {
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, maintenance)
 
-    await runCommand(DataMaintenancesInfo, [addon.name])
+    const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name])
 
-    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(stdout.output).to.equal(`addon_attachments:        DATABASE_URL
+    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(stdout).to.equal(`addon_attachments:        DATABASE_URL
 addon_kind:               heroku-postgresql
 addon_name:               postgresql-sinuous-83720
 addon_plan:               standard-0
@@ -77,12 +76,12 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .reply(200, [addon])
     dataApi
       .get(`/data/maintenances/v1/${addon.id}`)
-      .reply(200, {...maintenance, duration_seconds: 872.976767})
+      .reply(200, {...maintenance, duration_seconds: 872.976_767})
 
-    await runCommand(DataMaintenancesInfo, [addon.name])
+    const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name])
 
-    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(stdout.output).to.equal(`addon_attachments:        DATABASE_URL
+    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(stdout).to.equal(`addon_attachments:        DATABASE_URL
 addon_kind:               heroku-postgresql
 addon_name:               postgresql-sinuous-83720
 addon_plan:               standard-0
@@ -109,10 +108,10 @@ duration_approximate:     ~ 15 minutes
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, maintenance)
 
-    await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
+    const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
 
-    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(stdout.output).to.equal(`addon_attachments:        DATABASE_URL
+    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(stdout).to.equal(`addon_attachments:        DATABASE_URL
 addon_kind:               heroku-postgresql
 addon_name:               postgresql-sinuous-83720
 addon_plan:               standard-0
@@ -137,10 +136,10 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(200, maintenance)
 
-    await runCommand(DataMaintenancesInfo, [addon.name, '--json'])
+    const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [addon.name, '--json'])
 
-    expect(unwrap(stderr.output)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
-    expect(JSON.parse(stdout.output)).to.deep.equal(maintenance)
+    expect(unwrap(stderr)).to.contain('Fetching maintenance for advanced-horizontal-01234... done\n')
+    expect(JSON.parse(stdout)).to.deep.equal(maintenance)
   })
 
   it('shows 404 error when maintenance is not found', async function () {
@@ -151,12 +150,9 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .get(`/data/maintenances/v1/${addon.id}`)
       .reply(404, {message: 'not found'})
 
-    try {
-      await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(message).to.equal('not found')
-    }
+    const {error} = await runCommand(DataMaintenancesInfo, [addon.name, `--app=${app.name}`])
+    const {message} = error as {message: string}
+    expect(message).to.equal('not found')
   })
 
   it('shows maintenance for non-postgres add-ons', async function () {
@@ -167,9 +163,9 @@ window:                   Thursdays 22:00 to Fridays 02:00 UTC
       .get(`/data/maintenances/v1/${nonPostgresAddon.id}`)
       .reply(200, maintenance)
 
-    await runCommand(DataMaintenancesInfo, [nonPostgresAddon.name, '--json'])
+    const {stderr, stdout} = await runCommand(DataMaintenancesInfo, [nonPostgresAddon.name, '--json'])
 
-    expect(unwrap(stderr.output)).to.contain(`Fetching maintenance for ${nonPostgresAddon.name}... done\n`)
-    expect(JSON.parse(stdout.output)).to.deep.equal(maintenance)
+    expect(unwrap(stderr)).to.contain(`Fetching maintenance for ${nonPostgresAddon.name}... done\n`)
+    expect(JSON.parse(stdout)).to.deep.equal(maintenance)
   })
 })
