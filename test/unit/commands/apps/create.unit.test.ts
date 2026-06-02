@@ -271,7 +271,7 @@ describe('apps:create', function () {
     })
 
     it('does not create a remote when not in a git repository', async function () {
-      const inGitRepoStub = sinon.stub(Git.prototype, 'inGitRepo').returns(false)
+      const inGitRepoStub = stub(Git.prototype, 'inGitRepo').returns(false)
 
       api
         .post('/apps', {})

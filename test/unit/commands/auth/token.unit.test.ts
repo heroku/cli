@@ -1,6 +1,8 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Token from '../../../../src/commands/auth/token.js'
 
@@ -9,13 +11,13 @@ describe('auth:token', function () {
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    process.env.HEROKU_API_KEY = 'foobar'
+    stub(APIClient.prototype, 'auth').get(() => 'foobar')
   })
 
   afterEach(function () {
-    delete process.env.HEROKU_API_KEY
     api.done()
     nock.cleanAll()
+    restore()
   })
 
   it('shows auth token', async function () {

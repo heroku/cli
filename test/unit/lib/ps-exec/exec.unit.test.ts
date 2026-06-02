@@ -5,7 +5,12 @@ import {Errors, ux} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import child from 'node:child_process'
-import {restore, SinonStub, stub} from 'sinon'
+import {
+  match,
+  restore,
+  SinonStub,
+  stub,
+} from 'sinon'
 
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
 import {BuildpackInstallation} from '../../../../src/lib/types/fir.js'
@@ -426,7 +431,7 @@ describe('HerokuExec', function () {
         const {oclif} = error as Errors.ExitError
         expect(uxActionStartStub.calledWith('Initializing feature')).to.be.true
         expect(uxStdoutStub.called).to.be.true
-        expect(childExecSyncStub.calledWith(sinon.match(/heroku buildpacks:add/))).to.be.true
+        expect(childExecSyncStub.calledWith(match(/heroku buildpacks:add/))).to.be.true
         expect(oclif.exit).to.equal(0)
       }
     })
