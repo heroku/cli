@@ -11,6 +11,33 @@ const gitDebug = debug('git')
 export default class Git {
   private readonly execFile = execFilePromise
 
+  /** Configures `heroku git:credentials` as a Git credential helper
+  * that is URL-scoped to Heroku Git operations only.
+  */
+  async configureCredentialHelper() {
+    const {httpGitHost} = vars
+    await this.exec([
+      'config',
+      '--global',
+      `credential.https://${httpGitHost}.helper`,
+      '!heroku git:credentials',
+    ])
+  }
+
+  createRemote(remote: string, url: string) {
+    return this.hasGitRemote(remote)
+      .then(exists => exists ? null : this.exec(['remote', 'add', remote, url]))
+  }
+
+  /** Erases stored credentials for the Heroku Git host */
+  async eraseCredentials() {
+    const {httpGitHost} = vars
+    await this.spawn(['credential', 'reject'], {
+      input: `protocol=https\nhost=${httpGitHost}\n\n`,
+      stdio: ['pipe', 'ignore', 'ignore'],
+    })
+  }
+
   public async exec(args: string[]): Promise<string> {
     gitDebug('exec: git %o', args)
     try {
@@ -26,7 +53,69 @@ export default class Git {
     }
   }
 
-  public spawn(args: string[], options: {stdio?: cp.StdioOptions; input?: string} = {}) {
+  async getBranch(symbolicRef: string) {
+    return this.exec(['symbolic-ref', '--short', symbolicRef])
+  }
+
+  async getCommitTitle(ref: string) {
+    return this.exec(['log', ref || '', '-1', '--pretty=format:%s'])
+  }
+
+  async getRef(branch: string) {
+    return this.exec(['rev-parse', branch || 'HEAD'])
+  }
+
+  hasGitRemote(remote: string) {
+    return this.remoteUrl(remote)
+      // eslint-disable-next-line unicorn/prefer-native-coercion-functions
+      .then((remote?: string) => Boolean(remote))
+  }
+
+  httpGitUrl(app: string) {
+    return `https://${vars.httpGitHost}/${app}.git`
+  }
+
+  inGitRepo() {
+    try {
+      fs.lstatSync('.git')
+      return true
+    } catch (error: any) {
+      if (error.code !== 'ENOENT') throw error
+      return false
+    }
+  }
+
+  async readCommit(commit: string) {
+    const branch = await this.getBranch('HEAD')
+    const ref = await this.getRef(commit)
+    const message = await this.getCommitTitle(ref)
+
+    return {
+      branch,
+      message,
+      ref,
+    }
+  }
+
+  remoteFromGitConfig() {
+    return this.exec(['config', 'heroku.remote']).catch(() => {})
+  }
+
+  async remoteUrl(name: string) {
+    const remotes = await this.exec(['remote', '-v'])
+    return remotes.split('\n')
+      .map(r => r.split('\t'))
+      .find(r => r[0] === name)?.[1]
+      ?.split(' ')[0] ?? ''
+  }
+
+  /** Removes `heroku git:credentials` from the global config */
+  async removeCredentialHelper() {
+    const {httpGitHost} = vars
+    await this.exec(['config', '--global', '--unset-all', `credential.https://${httpGitHost}.helper`])
+  }
+
+  public spawn(args: string[], options: {input?: string; stdio?: cp.StdioOptions;} = {}) {
     return new Promise((resolve, reject) => {
       gitDebug('spawn: git %o', args)
       const s = cp.spawn('git', args, {stdio: options.stdio ?? [0, 1, 2]})
@@ -49,96 +138,7 @@ export default class Git {
     })
   }
 
-  remoteFromGitConfig() {
-    return this.exec(['config', 'heroku.remote']).catch(() => {})
-  }
-
-  httpGitUrl(app: string) {
-    return `https://${vars.httpGitHost}/${app}.git`
-  }
-
-  async remoteUrl(name: string) {
-    const remotes = await this.exec(['remote', '-v'])
-    return remotes.split('\n')
-      .map(r => r.split('\t'))
-      .find(r => r[0] === name)?.[1]
-      ?.split(' ')[0] ?? ''
-  }
-
   url(app: string) {
     return this.httpGitUrl(app)
-  }
-
-  async getBranch(symbolicRef: string) {
-    return this.exec(['symbolic-ref', '--short', symbolicRef])
-  }
-
-  async getRef(branch: string) {
-    return this.exec(['rev-parse', branch || 'HEAD'])
-  }
-
-  async getCommitTitle(ref: string) {
-    return this.exec(['log', ref || '', '-1', '--pretty=format:%s'])
-  }
-
-  async readCommit(commit: string) {
-    const branch = await this.getBranch('HEAD')
-    const ref = await this.getRef(commit)
-    const message = await this.getCommitTitle(ref)
-
-    return {
-      branch,
-      message,
-      ref,
-    }
-  }
-
-  inGitRepo() {
-    try {
-      fs.lstatSync('.git')
-      return true
-    } catch (error: any) {
-      if (error.code !== 'ENOENT') throw error
-      return false
-    }
-  }
-
-  hasGitRemote(remote: string) {
-    return this.remoteUrl(remote)
-      // eslint-disable-next-line unicorn/prefer-native-coercion-functions
-      .then((remote?: string) => Boolean(remote))
-  }
-
-  createRemote(remote: string, url: string) {
-    return this.hasGitRemote(remote)
-      .then(exists => exists ? null : this.exec(['remote', 'add', remote, url]))
-  }
-
-  /** Configures `heroku git:credentials` as a Git credential helper
-  * that is URL-scoped to Heroku Git operations only.
-  */
-  async configureCredentialHelper() {
-    const {httpGitHost} = vars
-    await this.exec([
-      'config',
-      '--global',
-      `credential.https://${httpGitHost}.helper`,
-      '!heroku git:credentials',
-    ])
-  }
-
-  /** Removes `heroku git:credentials` from the global config */
-  async removeCredentialHelper() {
-    const {httpGitHost} = vars
-    await this.exec(['config', '--global', '--unset-all', `credential.https://${httpGitHost}.helper`])
-  }
-
-  /** Erases stored credentials for the Heroku Git host */
-  async eraseCredentials() {
-    const {httpGitHost} = vars
-    await this.spawn(['credential', 'reject'], {
-      stdio: ['pipe', 'ignore', 'ignore'],
-      input: `protocol=https\nhost=${httpGitHost}\n\n`,
-    })
   }
 }

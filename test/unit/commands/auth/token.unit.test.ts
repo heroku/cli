@@ -2,7 +2,7 @@ import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {restore, SinonStub, stub} from 'sinon'
+import {restore, stub} from 'sinon'
 
 import Token from '../../../../src/commands/auth/token.js'
 

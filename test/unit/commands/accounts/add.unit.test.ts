@@ -1,6 +1,6 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import {APIClient} from '@heroku-cli/command'
 import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
 
@@ -69,7 +69,7 @@ describe('accounts:add', function () {
 
       try {
         await runCommand(Cmd, ['testAccountName'])
-      } catch (error: any) {
+      } catch (error: unknown) {
         expect((error as Error).message).to.contain('testAccountName already exists')
       }
     })
