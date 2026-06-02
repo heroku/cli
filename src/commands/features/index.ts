@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import type {AppFeature} from '@heroku/types/3.sdk'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class Features extends Command {
@@ -15,7 +16,8 @@ export default class Features extends Command {
     const {flags} = await this.parse(Features)
     const {app, json} = flags
 
-    let {body: features} = await this.heroku.get<Heroku.AppFeature[]>(`/apps/${app}/features`)
+    const {platform} = new HerokuSDK()
+    let features = await platform.appFeature.list(app) as AppFeature[]
     features = features.filter(f => f.state === 'general')
     features = features.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
 
