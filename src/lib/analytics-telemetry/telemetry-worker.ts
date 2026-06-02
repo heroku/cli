@@ -1,4 +1,4 @@
-/* eslint-disable n/no-process-exit */
+/* eslint-disable n/no-process-exit, unicorn/no-process-exit */
 /**
  * Telemetry worker process - runs in background to send telemetry data
  * This runs as a separate process to avoid blocking the main CLI
@@ -9,7 +9,7 @@ import {telemetryDebug} from './telemetry-utils.js'
 
 // Set maximum lifetime for worker process (10 seconds)
 // This ensures the worker never hangs indefinitely due to network issues or other failures
-const MAX_WORKER_LIFETIME_MS = 10000
+const MAX_WORKER_LIFETIME_MS = 10_000
 
 /**
  * Close stderr before exiting to avoid keeping parent process alive

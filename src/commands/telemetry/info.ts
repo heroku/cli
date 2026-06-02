@@ -9,10 +9,8 @@ export default class Info extends Command {
   static args = {
     telemetry_drain_id: Args.string({description: 'ID of the drain to show info for', required: true}),
   }
-
   static description = 'show a telemetry drain\'s info'
   static example = `${color.command('heroku telemetry:info 022e2e2e-2e2e-2e2e-2e2e-2e2e2e2e2e2e')}`
-
   static topic = 'telemetry'
 
   public async run(): Promise<void> {

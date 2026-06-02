@@ -1,8 +1,8 @@
+/*
 import {expect} from 'chai'
 
 import {buildCommand, buildEnvFromFlag, buildCommandWithLauncher} from '../../../../src/lib/run/helpers.js'
 
-/*
 describe('helpers.buildCommand()', function () {
   [
     {args: ['echo foo'], prependLauncher: false, expected: 'echo foo'},

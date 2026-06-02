@@ -7,9 +7,7 @@ export default class Add extends Command {
   static args = {
     url: Args.string({description: 'URL of the log drain', required: true}),
   }
-
   static description = 'adds a log drain to an app'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

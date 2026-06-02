@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Info from '../../../../../src/commands/webhooks/deliveries/info.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('webhooks:deliveries:info', function () {
   let api: nock.Scope

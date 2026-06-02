@@ -20,7 +20,6 @@ export default class Wait extends Command {
       required: true,
     }),
   }
-
   static description = 'wait for VPN Connection to be created'
   static examples = [heredoc(`
     ${color.command('heroku spaces:vpn:wait vpn-connection-name --space my-space')}
@@ -32,14 +31,12 @@ export default class Wait extends Command {
      Tunnel 1    104.196.121.200   35.171.237.136  abcdef12345     10.0.0.0/16       1
      Tunnel 2    104.196.121.200   52.44.7.216     fedcba54321     10.0.0.0/16       1
     `)]
-
   static flags = {
     interval: flags.string({char: 'i', description: 'seconds to wait between poll intervals'}),
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space the vpn connection belongs to', required: true}),
     timeout: flags.string({char: 't', description: 'maximum number of seconds to wait'}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

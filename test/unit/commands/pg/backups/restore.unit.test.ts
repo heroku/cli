@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/restore.js'
-import runCommand from '../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 const addon = {
@@ -50,62 +49,62 @@ describe('pg:backups:restore', function () {
     })
 
     it('restores a db', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
       Use heroku pg:backups to check progress.
       Stop a running restore with heroku pg:backups:cancel.
 
       `))
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stderr).to.equal(heredoc(`
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })
 
     it('restores a specific db', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'b005',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
       Use heroku pg:backups to check progress.
       Stop a running restore with heroku pg:backups:cancel.
 
       `))
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stderr).to.equal(heredoc(`
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
     })
 
     it('restores a specific app db', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'myapp::b005',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
       Use heroku pg:backups to check progress.
       Stop a running restore with heroku pg:backups:cancel.
 
       `))
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stderr).to.equal(heredoc(`
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
@@ -131,14 +130,14 @@ describe('pg:backups:restore', function () {
     })
 
     it('shows verbose output', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         '--verbose',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
       Use heroku pg:backups to check progress.
@@ -148,7 +147,7 @@ describe('pg:backups:restore', function () {
       100 log message 1
       `))
 
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stderr).to.equal(heredoc(`
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
@@ -168,14 +167,14 @@ describe('pg:backups:restore', function () {
     })
 
     it('restores a db from a URL', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'https://www.dropbox.com',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
       Use heroku pg:backups to check progress.
@@ -183,7 +182,7 @@ describe('pg:backups:restore', function () {
 
       `))
 
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stderr).to.equal(heredoc(`
       Starting restore of https://www.dropbox.com to ⛁ postgres-1... done
       Restoring... done
       `))
@@ -209,7 +208,7 @@ describe('pg:backups:restore', function () {
     })
 
     it('restores a db with pre-installed extensions', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -217,7 +216,7 @@ describe('pg:backups:restore', function () {
         '--extensions',
         'uuid-ossp, Postgis',
       ])
-      expect(stdout.output).to.equal(heredoc(`
+      expect(stdout).to.equal(heredoc(`
 
       Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
       Use heroku pg:backups to check progress.
@@ -225,7 +224,7 @@ describe('pg:backups:restore', function () {
 
       `))
 
-      expect(stderr.output).to.equal(heredoc(`
+      expect(stderr).to.equal(heredoc(`
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))

@@ -1,11 +1,11 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
-import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import waitForDomain from '../../lib/domains/wait-for-domain.js'
+import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
 interface DomainCreatePayload {
   hostname: string;
@@ -21,11 +21,8 @@ export default class DomainsAdd extends Command {
   static args = {
     hostname: Args.string({description: 'unique identifier of the domain or full hostname', required: true}),
   }
-
   static description = 'add a domain to an app'
-
   static examples = [`${color.command('heroku domains:add www.example.com')}`]
-
   static flags = {
     app: flags.app({required: true}),
     cert: flags.string({char: 'c', description: 'the name of the SSL cert you want to use for this domain'}),
@@ -33,7 +30,6 @@ export default class DomainsAdd extends Command {
     remote: flags.remote(),
     wait: flags.boolean(),
   }
-
   certSelect = async (certs: Array<Heroku.SniEndpoint>, inquirer: any) => {
     const nullCertChoice = {
       name: 'No SNI Endpoint',

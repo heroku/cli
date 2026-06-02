@@ -10,7 +10,6 @@ export default class Remove extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'apps'
 
   async run() {

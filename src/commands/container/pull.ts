@@ -1,9 +1,9 @@
-import {color, hux} from '@heroku/heroku-cli-util'
-import {Command, flags} from '@heroku-cli/command'
+import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 
 import {debug} from '../../lib/container/debug.js'
-import {DockerHelper} from '../../lib/container/docker_helper.js'
+import {DockerHelper} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 
 export default class Pull extends Command {
@@ -13,19 +13,14 @@ export default class Pull extends Command {
     `${color.command('heroku container:pull web worker')} # Pulls both the web and worker images from the app`,
     `${color.command('heroku container:pull web:latest')} # Pulls the latest tag from the web image`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
     verbose: flags.boolean({char: 'v'}),
   }
-
   static strict = false
-
   static topic = 'container'
-
   static usage = 'container:pull -a APP [-v] PROCESS_TYPE...'
-
   dockerHelper = new DockerHelper()
 
   async run() {
@@ -39,8 +34,7 @@ export default class Pull extends Command {
     const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
     ensureContainerStack(appBody, 'pull')
 
-    const herokuHost = process.env.HEROKU_HOST || 'heroku.com'
-    const registry = `registry.${herokuHost}`
+    const registry = `registry.${vars.host}`
 
     if (verbose) {
       debug.enabled = true

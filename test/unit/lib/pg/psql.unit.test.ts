@@ -1,10 +1,8 @@
-/* eslint-disable max-nested-callbacks */
 /*
 import {expect} from 'chai'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import * as proxyquire from 'proxyquire'
-import {stderr} from 'stdout-stderr'
 import {ConnectionDetails, ConnectionDetailsWithAttachment, utils} from '@heroku/heroku-cli-util'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 import sinon = require('sinon')
@@ -82,13 +80,11 @@ describe('psql', function () {
       },
     })
     sandbox.stub(Math, 'random').callsFake(() => 0)
-    stderr.start()
   })
 
   afterEach(async function () {
     queryString = ''
     sandbox.restore()
-    stderr.stop()
     process.env = env
   })
 

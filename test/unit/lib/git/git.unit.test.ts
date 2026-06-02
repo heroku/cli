@@ -1,20 +1,19 @@
-'use strict'
-
-import sinon from 'sinon'
 import {expect} from 'chai'
 import cp from 'node:child_process'
-import {EventEmitter} from 'events'
+import {EventEmitter} from 'node:events'
+import {SinonStub, stub} from 'sinon'
+
 import Git from '../../../../src/lib/git/git.js'
 
 describe('git', function () {
-  let execFileStub: sinon.SinonStub
-  let spawnStub: sinon.SinonStub
+  let execFileStub: SinonStub
+  let spawnStub: SinonStub
   let git: Git
 
   beforeEach(function () {
     git = new Git()
-    execFileStub = sinon.stub(git as any, 'execFile')
-    spawnStub = sinon.stub(cp, 'spawn')
+    execFileStub = stub(git as any, 'execFile')
+    spawnStub = stub(cp, 'spawn')
   })
 
   afterEach(function () {
@@ -23,7 +22,7 @@ describe('git', function () {
   })
 
   it('runs exec', async function () {
-    execFileStub.resolves({stdout: 'foo', stderr: ''})
+    execFileStub.resolves({stderr: '', stdout: 'foo'})
 
     const data = await git.exec(['remote'])
 
@@ -108,7 +107,7 @@ describe('git', function () {
   })
 
   it('gets heroku git remote config', async function () {
-    execFileStub.resolves({stdout: 'staging', stderr: ''})
+    execFileStub.resolves({stderr: '', stdout: 'staging'})
 
     const remote = await git.remoteFromGitConfig()
 
@@ -121,7 +120,7 @@ describe('git', function () {
   })
 
   it('configures git credential helper globally for the Heroku Git host', async function () {
-    execFileStub.resolves({stdout: '', stderr: ''})
+    execFileStub.resolves({stderr: '', stdout: ''})
 
     await git.configureCredentialHelper()
 
@@ -132,7 +131,7 @@ describe('git', function () {
   })
 
   it('removes git credential helper from global config', async function () {
-    execFileStub.resolves({stdout: '', stderr: ''})
+    execFileStub.resolves({stderr: '', stdout: ''})
 
     await git.removeCredentialHelper()
 
@@ -144,7 +143,7 @@ describe('git', function () {
 
   it('erases stored credentials for the Heroku Git host', async function () {
     const emitter = new EventEmitter() as any
-    emitter.stdin = {write: sinon.stub(), end: sinon.stub()}
+    emitter.stdin = {end: stub(), write: stub()}
     spawnStub.returns(emitter)
 
     const erasePromise = git.eraseCredentials()

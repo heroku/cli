@@ -8,9 +8,7 @@ export default class Set extends Command {
   static args = {
     name: Args.string({description: 'name or username of account to set', required: true}),
   }
-
   static description = 'set the current Heroku account from your accounts cache or system keychain'
-
   static example = `${color.command('heroku accounts:set my-account')}`
 
   async run() {

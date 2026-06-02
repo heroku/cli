@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Stacks from '../../../../../src/commands/apps/stacks/index.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 const MY_APP = 'myapp'
 

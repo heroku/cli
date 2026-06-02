@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Keys from '../../../../src/commands/keys/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('heroku keys', function () {
   const PUBLIC_KEY = 'ssh-rsa AAAAB3NzxCXXXXXXXXXXXXXXXXXXXV7iHuYrZxd user@machine'

@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
 import Logout from '../../../../src/commands/auth/logout.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import Git from '../../../../src/lib/git/git.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('auth:logout', function () {
   let eraseCredentialsStub: sinon.SinonStub

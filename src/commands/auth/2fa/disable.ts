@@ -7,9 +7,7 @@ export default class Auth2faGenerate extends Command {
     'twofactor:disable',
     '2fa:disable',
   ]
-
   static description = 'disables 2fa on account'
-
   static example = `${color.command('heroku auth:2fa:disable')}`
 
   async run() {

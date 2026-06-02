@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/destroy.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:vpn:destroy', function () {
   it('destroys a VPN Connection when name is specified', async function () {

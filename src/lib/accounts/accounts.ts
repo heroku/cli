@@ -1,4 +1,9 @@
-import {APIClient, listKeychainAccounts, getStorageConfig, writeLoginState} from '@heroku-cli/command'
+import {
+  APIClient,
+  getStorageConfig,
+  listKeychainAccounts,
+  writeLoginState,
+} from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
@@ -12,65 +17,63 @@ export interface AccountEntry {
 }
 
 export interface IAccountsWrapper {
-  list(): Promise<AccountEntry[]>
-  current(heroku: APIClient): Promise<string | null>
-  currentNetrc(): Promise<string | null>
   add(name: string, username: string, password: string): void
+  current(heroku: APIClient): Promise<null | string>
+  currentNetrc(): Promise<null | string>
+  getStorageConfig(): ReturnType<typeof getStorageConfig>
+  list(): Promise<AccountEntry[]>
   remove(name: string): void
   removeNetrc(name: string): void
   set(account: AccountEntry, dataDir: string): Promise<void>
-  getStorageConfig(): ReturnType<typeof getStorageConfig>
   writeLoginState(dataDir: string, name: string): Promise<void>
 }
 
 export class AccountsWrapper implements IAccountsWrapper {
   private netrc: any
 
-  private async initNetrc() {
-    if (!this.netrc) {
-      const NetrcModule = await import('netrc-parser')
-      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
-      this.netrc = new NetrcClass()
-      await this.netrc.load()
-    }
+  add(name: string, username: string, password: string): void {
+    const config = this.getStorageConfig()
 
-    return this.netrc
+    if (config.useNetrc) {
+      const basedir = path.join(this.configDir(), 'accounts')
+      fs.mkdirSync(basedir, {recursive: true})
+
+      fs.writeFileSync(
+        path.join(basedir, name),
+        // eslint-disable-next-line perfectionist/sort-objects
+        stringify({username, password}),
+        'utf8',
+      )
+      fs.chmodSync(path.join(basedir, name), 0o600)
+    }
   }
 
-  private configDir() {
-    const legacyDir = path.join(os.homedir(), '.heroku')
-    if (fs.existsSync(legacyDir)) {
-      return legacyDir
+  async current(heroku: APIClient): Promise<null | string> {
+    const config = this.getStorageConfig()
+    if (config.credentialStore) {
+      const authEntry = await heroku.getAuthEntry()
+      return authEntry?.account ?? null
     }
 
-    return path.join(os.homedir(), '.config', 'heroku')
+    return this.currentNetrc()
   }
 
-  private account(name: string): Heroku.Account {
-    const basedir = path.join(this.configDir(), 'accounts')
-    const file = fs.readFileSync(path.join(basedir, name), 'utf8')
-    const account = parse(file)
-    if (account[':username']) {
-      // convert from ruby symbols
-      account.username = account[':username']
-      account.password = account[':password']
-      delete account[':username']
-      delete account[':password']
+  async currentNetrc(): Promise<null | string> {
+    const netrcInstance = await this.initNetrc()
+    if (netrcInstance.machines['api.heroku.com']) {
+      const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
+      return current && current.name ? current.name : null
     }
 
-    return account
+    return null
   }
 
-  async getKeychainAccounts(): Promise<(string | null | undefined)[]> {
+  async getKeychainAccounts(): Promise<(null | string | undefined)[]> {
     return listKeychainAccounts()
   }
 
   getStorageConfig() {
     return getStorageConfig()
-  }
-
-  async writeLoginState(dataDir: string, name: string): Promise<void> {
-    return writeLoginState(dataDir, name)
   }
 
   async list(): Promise<AccountEntry[]> {
@@ -92,42 +95,6 @@ export class AccountsWrapper implements IAccountsWrapper {
         .map(name => ({name, username: this.account(name).username ?? ''}))
     } catch {
       return []
-    }
-  }
-
-  async current(heroku: APIClient): Promise<string | null> {
-    const config = this.getStorageConfig()
-    if (config.credentialStore) {
-      const authEntry = await heroku.getAuthEntry()
-      return authEntry?.account ?? null
-    }
-
-    return this.currentNetrc()
-  }
-
-  async currentNetrc(): Promise<string | null> {
-    const netrcInstance = await this.initNetrc()
-    if (netrcInstance.machines['api.heroku.com']) {
-      const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
-      return current?.name ?? null
-    }
-
-    return null
-  }
-
-  add(name: string, username: string, password: string): void {
-    const config = this.getStorageConfig()
-
-    if (config.useNetrc) {
-      const basedir = path.join(this.configDir(), 'accounts')
-      fs.mkdirSync(basedir, {recursive: true})
-
-      fs.writeFileSync(
-        path.join(basedir, name),
-        stringify({username, password}),
-        'utf8',
-      )
-      fs.chmodSync(path.join(basedir, name), 0o600)
     }
   }
 
@@ -160,6 +127,45 @@ export class AccountsWrapper implements IAccountsWrapper {
       netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
       await netrcInstance.save()
     }
+  }
+
+  async writeLoginState(dataDir: string, name: string): Promise<void> {
+    return writeLoginState(dataDir, name)
+  }
+
+  private account(name: string): Heroku.Account {
+    const basedir = path.join(this.configDir(), 'accounts')
+    const file = fs.readFileSync(path.join(basedir, name), 'utf8')
+    const account = parse(file)
+    if (account[':username']) {
+      // convert from ruby symbols
+      account.username = account[':username']
+      account.password = account[':password']
+      delete account[':username']
+      delete account[':password']
+    }
+
+    return account
+  }
+
+  private configDir() {
+    const legacyDir = path.join(os.homedir(), '.heroku')
+    if (fs.existsSync(legacyDir)) {
+      return legacyDir
+    }
+
+    return path.join(os.homedir(), '.config', 'heroku')
+  }
+
+  private async initNetrc() {
+    if (!this.netrc) {
+      const NetrcModule = await import('netrc-parser')
+      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
+      this.netrc = new NetrcClass()
+      await this.netrc.load()
+    }
+
+    return this.netrc
   }
 }
 

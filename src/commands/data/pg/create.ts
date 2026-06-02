@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
@@ -5,24 +6,22 @@ import {ux} from '@oclif/core/ux'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../../lib/addons/create_addon.js'
-import BaseCommand from '../../../lib/data/baseCommand.js'
-import createPool from '../../../lib/data/createPool.js'
-import {parseProvisionOpts} from '../../../lib/data/parseProvisionOpts.js'
-import PoolConfig from '../../../lib/data/poolConfig.js'
+import createAddon from '../../../lib/addons/create-addon.js'
+import BaseCommand from '../../../lib/data/base-command.js'
+import createPool from '../../../lib/data/create-pool.js'
+import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
+import PoolConfig from '../../../lib/data/pool-config.js'
 import {ExtendedPostgresLevelInfo} from '../../../lib/data/types.js'
-import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.js'
+import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import notify from '../../../lib/notify.js'
 
 const heredoc = tsheredoc.default
-// eslint-disable-next-line import/no-named-as-default-member
-const {prompt, Separator} = inquirer
+const {prompt} = inquirer
 
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
   static description = 'create a Postgres Advanced database'
   static examples = ['<%= config.bin %> <%= command.id %> --level 4G-Performance -a example-app']
-
   static flags = {
     app: Flags.app({
       required: true,
@@ -56,9 +55,7 @@ export default class DataPgCreate extends BaseCommand {
       description: 'watch database creation status and exit when complete',
     }),
   }
-
   static promptFlagActive = false
-
   private addon: Heroku.AddOn | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private followerInstanceCount: number = 0
@@ -139,9 +136,7 @@ export default class DataPgCreate extends BaseCommand {
     if (!level) {
       // Interactive mode
       await this.followerPoolConfigLoop()
-      process.stderr.write(
-        `Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`,
-      )
+      process.stderr.write(`Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`)
       await this.runCommand('data:pg:info', [this.addon.name!, `--app=${app}`])
     } else if (followers && followers > 0) {
       const poolInfo = await createPool(this.dataApi, this.addon!, {
@@ -192,95 +187,23 @@ export default class DataPgCreate extends BaseCommand {
 
         process.stderr.write('\n')
         this.followerInstanceCount += count
-        if (this.followerInstanceCount >= 13) {
-          oneMore = false
-        } else {
-          oneMore = (await this.prompt<{oneMore: boolean}>({
+        oneMore = this.followerInstanceCount >= 13
+          ? false
+          : (await this.prompt<{oneMore: boolean}>({
             default: false,
             message: 'Configure another follower pool?',
             name: 'oneMore',
             type: 'confirm',
           })).oneMore
-        }
       } else {
         oneMore = false
       }
     } while (oneMore)
   }
 
-  private async highAvailabilityStep(): Promise<string> {
-    process.stderr.write(
-      'The leader pool has high availability enabled and includes a standby instance for redundancy.\n'
-      + 'If you disable high availability, you remove the standby and you won\'t have redundancy on your database.\n\n',
-    )
-
-    const leaderPricing = this.extendedLevelsInfo!.find(level => level.name === this.leaderLevel)?.pricing
-    const {action} = await this.prompt<{action: string}>({
-      choices: [
-        {name: 'Keep high availability (HA)', value: 'keep'},
-        {
-          name: 'Remove high availability' + (
-            renderPricingInfo(leaderPricing) === 'free'
-              ? ''
-              : ` ${color.info(`-${renderPricingInfo(leaderPricing).replace('~', '')}`)}`
-          ),
-          value: 'remove',
-        },
-        new Separator(),
-        {name: 'Go back', value: 'back'},
-      ],
-      message: 'Do you want to keep the high availability standby instance?',
-      name: 'action',
-      type: 'list',
-    })
-    process.stderr.write('\n')
-
-    return action
-  }
-
-  private async leaderConfirmationStep(): Promise<string> {
-    const leaderLevelInfo = this.extendedLevelsInfo!.find(level => level.name === this.leaderLevel)
-    const totalPrice = this.highAvailability
-      ? renderPricingInfo(leaderLevelInfo?.pricing, 2)
-      : renderPricingInfo(leaderLevelInfo?.pricing)
-    const instancePrice = renderPricingInfo(leaderLevelInfo?.pricing)
-    process.stderr.write(heredoc`
-      ${`${color.green('✓ Configure Leader Pool')} ${totalPrice}`}
-        ${color.gray(
-    `${this.leaderLevel} ${leaderLevelInfo?.vcpu} ${color.ansis.inverse('vCPU')} `
-          + `${leaderLevelInfo?.memory_in_gb} GB ${color.ansis.inverse('MEM')} `
-          + instancePrice,
-  )}
-    `)
-    if (this.highAvailability) {
-      process.stderr.write(color.gray(`  Standby (High Availability) ${instancePrice}\n`))
-    }
-
-    process.stderr.write('\n')
-
-    const {action} = await this.prompt<{action: string}>({
-      choices: [
-        {name: 'Confirm', value: 'confirm'},
-        {name: 'Go back', value: 'back'},
-      ],
-      message: 'Confirm provisioning?',
-      name: 'action',
-      type: 'list',
-    })
-    process.stderr.write('\n')
-
-    return action
-  }
-
-  private async leaderLevelStep(): Promise<void> {
-    const poolConfig = new PoolConfig(this.extendedLevelsInfo!, this.followerInstanceCount)
-    const level = await poolConfig.levelStep('Leader')
-    process.stderr.write('\n')
-
-    this.leaderLevel = level
-  }
-
   private async leaderPoolConfig(): Promise<void> {
+    const poolConfig = new PoolConfig(this.extendedLevelsInfo!, this.followerInstanceCount)
+
     process.stderr.write(heredoc`
 
       Create a Heroku Postgres Advanced database
@@ -293,56 +216,8 @@ export default class DataPgCreate extends BaseCommand {
       ${color.gray('  Configure Follower Pool(s)')}\n
     `)
 
-    let configReady = false
-    let currentStep = 'leaderLevel'
-
-    while (!configReady) {
-      switch (currentStep) {
-      case 'leaderLevel': {
-        await this.leaderLevelStep()
-        currentStep = 'highAvailability'
-        break
-      }
-
-      case 'highAvailability': {
-        switch (await this.highAvailabilityStep()) {
-        case 'keep': {
-          this.highAvailability = true
-          currentStep = 'confirmation'
-          break
-        }
-
-        case 'remove': {
-          this.highAvailability = false
-          currentStep = 'confirmation'
-          break
-        }
-
-        case 'back': {
-          currentStep = 'leaderLevel'
-          break
-        }
-        }
-
-        break
-      }
-
-      case 'confirmation': {
-        switch (await this.leaderConfirmationStep()) {
-        case 'confirm': {
-          configReady = true
-          break
-        }
-
-        case 'back': {
-          currentStep = 'highAvailability'
-          break
-        }
-        }
-
-        break
-      }
-      }
-    }
+    const {highAvailability, level} = await poolConfig.leaderInteractiveConfig()
+    this.leaderLevel = level
+    this.highAvailability = highAvailability
   }
 }

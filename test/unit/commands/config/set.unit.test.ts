@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import ConfigSet from '../../../../src/commands/config/set.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('config:set', function () {
   let api: nock.Scope

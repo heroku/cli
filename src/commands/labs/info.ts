@@ -1,6 +1,6 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 function print(feature: Record<string, string>) {
@@ -18,15 +18,12 @@ export default class LabsInfo extends Command {
   static args = {
     feature: Args.string({description: 'unique identifier or name of the account feature', required: true}),
   }
-
   static description = 'show feature info'
-
   static flags = {
     app: flags.app({required: false}),
     json: flags.boolean({description: 'display as json', required: false}),
     remote: flags.remote(),
   }
-
   static topic = 'labs'
 
   async run() {

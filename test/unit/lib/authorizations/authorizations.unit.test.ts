@@ -1,9 +1,9 @@
 import * as Heroku from '@heroku-cli/schema'
+import {captureOutput} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
 import {display} from '../../../../src/lib/authorizations/authorizations.js'
-import {captureOutput} from '../../../helpers/run-command.js'
 
 describe('display', function () {
   const authId = 'f6e8d969-129f-42d2-854b-c2eca9d5a42e'
@@ -38,7 +38,7 @@ describe('display', function () {
     const updatedAt = new Date(0)
     const auth: Heroku.OAuthAuthorization = {
       access_token: {
-        expires_in: 10000,
+        expires_in: 10_000,
         token: '1234abcd-129f-42d2-854b-EfGhIjKlMn12',
       },
       description: authDesc,
@@ -52,7 +52,7 @@ describe('display', function () {
         display(auth)
       })
 
-      const expirationDate = addSeconds(new Date(), 10000)
+      const expirationDate = addSeconds(new Date(), 10_000)
       expect(stdout).to.contain(`ID:          ${authId}\n`)
       expect(stdout).to.contain('Scope:       global,app\n')
       expect(stdout).to.contain('Description: a cool auth\n')

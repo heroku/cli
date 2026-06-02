@@ -10,9 +10,7 @@ export default class AccessRemove extends Command {
     app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),
   }
-
   static strict = false
-
   static topic = 'access'
 
   public async run(): Promise<void> {

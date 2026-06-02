@@ -1,25 +1,26 @@
-import {expect} from 'chai'
 import {APIClient} from '@heroku-cli/command'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '@heroku-cli/test-utils'
+import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
+
 import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
 describe('accounts:add', function () {
   let api: nock.Scope
-  let addStub: sinon.SinonStub
-  let listStub: sinon.SinonStub
+  let addStub: SinonStub
+  let listStub: SinonStub
 
   beforeEach(function () {
-    listStub = sinon.stub(AccountsModule, 'list').resolves([])
-    addStub = sinon.stub(AccountsModule, 'add')
+    listStub = stub(AccountsModule, 'list').resolves([])
+    addStub = stub(AccountsModule, 'add')
     api = nock('https://api.heroku.com')
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
     api.done()
     nock.cleanAll()
   })
@@ -45,7 +46,7 @@ describe('accounts:add', function () {
         getAuth: async () => ({account: undefined, token: undefined}),
       })
 
-      const APIClientStub = sinon.stub(APIClient.prototype, 'login')
+      const APIClientStub = stub(APIClient.prototype, 'login')
       APIClientStub.resolves()
 
       api.get('/account')
@@ -68,7 +69,7 @@ describe('accounts:add', function () {
 
       try {
         await runCommand(Cmd, ['testAccountName'])
-      } catch (error: any) {
+      } catch (error: unknown) {
         expect((error as Error).message).to.contain('testAccountName already exists')
       }
     })

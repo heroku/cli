@@ -9,9 +9,7 @@ export default class Add extends Command {
   static args = {
     name: Args.string({description: 'name of Heroku account to add', required: true}),
   }
-
   static description = 'add a Heroku account to your cache'
-
   static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {

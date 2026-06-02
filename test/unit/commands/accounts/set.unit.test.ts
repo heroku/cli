@@ -1,9 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/set.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 describe('accounts:set', function () {
   let listStub: SinonStub
@@ -39,11 +39,7 @@ describe('accounts:set', function () {
   it('returns an error if the account is not in the list', async function () {
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
 
-    try {
-      await runCommand(Cmd, ['test-account-3'])
-      expect.fail('Expected command to throw error')
-    } catch (error: any) {
-      expect(error.message).to.contain('test-account-3 does not exist in your accounts cache or system keychain.')
-    }
+    const {error} = await runCommand(Cmd, ['test-account-3'])
+    expect(error?.message).to.contain('test-account-3 does not exist in your accounts cache or system keychain.')
   })
 })

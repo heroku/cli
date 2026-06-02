@@ -1,10 +1,25 @@
+import {prompter} from '@heroku-cli/command'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Run from '../../../../src/commands/run/index.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 describe('run', function () {
+  const originalProcessArgv = [...process.argv]
+
+  const runWithCliArgv = async (args: string[]) => {
+    process.argv = [
+      '/usr/local/bin/node',
+      '/usr/local/bin/heroku',
+      'run',
+      ...args,
+    ]
+
+    return runCommand(Run, args)
+  }
+
   beforeEach(function () {
     nock.cleanAll()
     nock.disableNetConnect()
@@ -12,6 +27,8 @@ describe('run', function () {
 
   afterEach(function () {
     nock.enableNetConnect()
+    process.argv = [...originalProcessArgv]
+    sinon.restore()
   })
 
   it('requires a command', async function () {
@@ -119,5 +136,47 @@ describe('run', function () {
     ]).catch(() => {
       // Expected to fail when trying to connect
     })
+  })
+
+  it('prompts for 2FA via prompter and retries with Heroku-Two-Factor-Code header on 403 two_factor', async function () {
+    const promptStub = sinon.stub(prompter, 'prompt').resolves({factor: '123456'})
+
+    const api = nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
+      .get('/account')
+      .reply(403, {id: 'two_factor', message: 'Two-factor code required'})
+      .get('/account', undefined, {reqheaders: {'heroku-two-factor-code': '123456'}})
+      .reply(200, {email: 'test@example.com'})
+      .post('/apps/myapp/dynos')
+      .reply(201, {
+        attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
+        command: 'echo test',
+        created_at: '2020-01-01T00:00:00Z',
+        id: '12345678-1234-1234-1234-123456789012',
+        name: 'run.1234',
+        size: 'basic',
+        state: 'starting',
+        type: 'run',
+        updated_at: '2020-01-01T00:00:00Z',
+      })
+
+    await runWithCliArgv([
+      '--app',
+      'myapp',
+      'echo',
+      'test',
+    ]).catch(() => {
+      // Expected to fail when trying to connect to rendezvous
+    })
+
+    expect(promptStub.calledOnce, 'prompter.prompt should be called exactly once').to.be.true
+    expect(promptStub.firstCall.args[0]).to.deep.equal([{
+      mask: '*',
+      message: 'Two-factor code',
+      name: 'factor',
+      type: 'password',
+    }])
+    expect(api.isDone(), 'all expected requests including the 2FA-retried /account should be made').to.be.true
   })
 })

@@ -20,9 +20,7 @@ export default class PipelinesRename extends Command {
     }),
   }
   /* eslint-enable perfectionist/sort-objects */
-
   static description = 'rename a pipeline'
-
   static examples = [
     color.command('heroku pipelines:rename my-pipeline new-pipeline-name'),
   ]

@@ -3,7 +3,6 @@ import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
-
 import debugFactory from 'debug'
 
 import Dyno from '../../lib/run/dyno.js'
@@ -13,12 +12,10 @@ const debug = debugFactory('heroku:run')
 
 export default class Run extends Command {
   static description = 'run a one-off process inside a heroku dyno\nShows a notification if the dyno takes more than 20 seconds to start.\nHeroku automatically prepends \'launcher\' to the command on CNB apps (use --no-launcher to disable).'
-
   static examples = [
     color.command('heroku run bash'),
     color.command('heroku run -s standard-2x -- myscript.sh -a arg1 -s arg2'),
   ]
-
   static flags = {
     app: flags.app({description: 'parent app used by review apps', required: true}),
     env: flags.string({char: 'e', description: "environment variables to set (use ';' to split multiple vars)"}),
@@ -34,7 +31,6 @@ export default class Run extends Command {
     size: flags.string({char: 's', completion: DynoSizeCompletion, description: 'dyno size'}),
     type: flags.string({completion: ProcessTypeCompletion, description: 'process type'}),
   }
-
   // This is to allow for variable length arguments
   static strict = false
 

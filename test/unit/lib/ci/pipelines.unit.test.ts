@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import {getPipeline} from '../../../../src/lib/ci/pipelines.js'
-import {getHerokuAPI} from '../../../helpers/testInstances.js'
+import {getHerokuAPI} from '../../../helpers/test-instances.js'
 
 const PIPELINE = {
   id: '123e4567-e89b-12d3-a456-426655440000',

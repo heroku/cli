@@ -1,10 +1,10 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 import sinon from 'sinon'
 
 import {GitClone as Clone} from '../../../../src/commands/git/clone.js'
 import Git from '../../../../src/lib/git/git.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('git:clone', function () {
   let api: nock.Scope

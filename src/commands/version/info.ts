@@ -11,9 +11,7 @@ export default class VersionInfo extends Command {
       required: false,
     }),
   }
-
   static description = 'display changelog information for a specific CLI version'
-
   static examples = [
     `${color.command('<%= config.bin %> <%= command.id %>')}`,
     `${color.command('<%= config.bin %> <%= command.id %> 11.0.0')}`,

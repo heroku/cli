@@ -29,7 +29,7 @@ describe('util.formatPrice', function () {
     })
 
     it('formats as dollars without cents when the calculated price is whole dollars', function () {
-      expect(util.formatPrice({hourly: false, price: {cents: 720000, unit: 'month'}})).to.eq('$7200/month')
+      expect(util.formatPrice({hourly: false, price: {cents: 720_000, unit: 'month'}})).to.eq('$7200/month')
     })
   })
 })

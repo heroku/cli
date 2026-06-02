@@ -1,23 +1,25 @@
-import fs from 'fs'
-import execa from 'execa'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import { rimrafSync } from 'rimraf'
-import { promisify } from 'util'
-import { pipeline } from 'stream'
-import crypto from 'crypto'
-import getHerokuS3Bucket from '../utils/getHerokuS3Bucket.js'
-import isStableRelease from '../utils/isStableRelease.js'
+import crypto from 'node:crypto'
+import fs from 'node:fs'
+import path from 'node:path'
+import {pipeline} from 'node:stream'
+import {fileURLToPath} from 'node:url'
+import {promisify} from 'node:util'
+import {rimrafSync} from 'rimraf'
+
+import getHerokuS3Bucket from '../utils/get-heroku-s3-bucket.js'
+import isStableRelease from '../utils/is-stable-release.js'
+import {run, shell, x} from '../utils/script-exec.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const {GITHUB_SHA_SHORT, GITHUB_REF_TYPE, GITHUB_REF_NAME} = process.env
-const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'))
+const {GITHUB_REF_NAME, GITHUB_REF_TYPE, GITHUB_SHA_SHORT} = process.env
+const packageJson = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf8'))
 const VERSION = packageJson.version
 
 if (!isStableRelease(GITHUB_REF_TYPE, GITHUB_REF_NAME)) {
   console.log('Not on stable release; skipping releasing homebrew')
+  // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit
   process.exit(0)
 }
 
@@ -39,12 +41,12 @@ const ARCH_ARM = 'arm64'
 function downloadFileFromS3(s3Path, fileName, downloadPath) {
   const downloadTo = path.join(downloadPath, fileName)
   const commandStr = `aws s3 cp s3://${HEROKU_S3_BUCKET}/${s3Path}/${fileName} ${downloadTo}`
-  return execa.command(commandStr)
+  return shell(commandStr)
 }
 
 async function updateHerokuFormula(brewDir) {
   const templatePath = path.join(TEMPLATES, 'heroku.rb')
-  const template = fs.readFileSync(templatePath).toString('utf-8')
+  const template = fs.readFileSync(templatePath).toString('utf8')
   const formulaPath = path.join(brewDir, 'Formula', 'heroku.rb')
 
   const fileNamePrefix = `heroku-v${VERSION}-${GITHUB_SHA_SHORT}`
@@ -69,8 +71,8 @@ async function updateHerokuFormula(brewDir) {
   const sha256LinuxIntel = await calculateSHA256(path.join(__dirname, fileNameLinuxIntel))
   const sha256LinuxArm = await calculateSHA256(path.join(__dirname, fileNameLinuxArm))
 
-  const templateReplaced =
-    template
+  const templateReplaced
+    = template
       .replace('__CLI_VERSION__', VERSION)
 
       .replace('__CLI_MAC_INTEL_DOWNLOAD_URL__', `${urlPrefix}/${fileNameMacIntel}`)
@@ -92,7 +94,7 @@ async function updateHerokuFormula(brewDir) {
 
 async function setupGit() {
   const githubSetupPath = path.join(__dirname, '..', 'utils', '_github_setup')
-  await execa(githubSetupPath)
+  await x(githubSetupPath, [])
 }
 
 async function updateHomebrew() {
@@ -106,7 +108,8 @@ async function updateHomebrew() {
   await setupGit()
 
   console.log(`cloning https://github.com/heroku/homebrew-brew to ${homebrewDir}`)
-  await execa('git',
+  await x(
+    'git',
     [
       'clone',
       'git@github.com:heroku/homebrew-brew.git',
@@ -119,7 +122,7 @@ async function updateHomebrew() {
 
   // run in git in cloned heroku/homebrew-brew git directory
   const git = async (args, opts = {}) => {
-    await execa('git', ['-C', homebrewDir, ...args], opts)
+    await x('git', ['-C', homebrewDir, ...args], opts)
   }
 
   console.log('updating local git...')
@@ -132,7 +135,6 @@ async function updateHomebrew() {
   }
 }
 
-updateHomebrew().catch(error => {
-  console.error('error running scripts/release/homebrew.js', error)
-  process.exit(1)
+await run(async () => {
+  await updateHomebrew()
 })

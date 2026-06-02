@@ -1,18 +1,15 @@
-import {stdout} from 'stdout-stderr'
-import runCommand from '../../../helpers/runCommand.js'
+import {runCommand} from '@heroku-cli/test-utils'
+import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
-import {hux} from '@heroku/heroku-cli-util'
-import Cmd from '../../../../src/commands/pg/credentials.js'
-import tsheredoc from 'tsheredoc'
-import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+import {restore, stub} from 'sinon'
 
-const heredoc = tsheredoc.default
+import Cmd from '../../../../src/commands/pg/credentials.js'
+import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 /** Strip app icon (⬢) so assertions pass whether or not the CLI outputs it. */
 function stripAppIcon(s: string): string {
-  return s.replace(/\u2B22/g, '')
+  return s.replaceAll('⬢', '')
 }
 
 describe('pg:credentials', function () {
@@ -31,45 +28,51 @@ describe('pg:credentials', function () {
 
   afterEach(function () {
     nock.cleanAll()
-    sinon.restore()
+    restore()
     pg.done()
     api.done()
   })
 
   it('shows the correct credentials', async function () {
     const credentials = [
-      {uuid: 'aaaa',
+      {
+        credentials: [],
+        database: 'd123',
+        host: 'localhost',
         name: 'ransom',
+        port: 5442,
         state: 'active',
+        uuid: 'aaaa',
+      },
+      {
+        credentials: [],
         database: 'd123',
         host: 'localhost',
-        port: 5442,
-        credentials: []},
-      {uuid: 'aaab',
         name: 'default',
+        port: 5442,
         state: 'active',
-        database: 'd123',
-        host: 'localhost',
-        port: 5442,
-        credentials: []},
-      {uuid: 'aabb',
-        name: 'jeff',
-        state: 'rotating',
-        database: 'd123',
-        host: 'localhost',
-        port: 5442,
+        uuid: 'aaab',
+      },
+      {
         credentials: [
           {
-            user: 'jeff',
             connections: 0,
             state: 'revoking',
+            user: 'jeff',
           },
           {
-            user: 'jeff-rotating',
             connections: 2,
             state: 'active',
+            user: 'jeff-rotating',
           },
-        ]},
+        ],
+        database: 'd123',
+        host: 'localhost',
+        name: 'jeff',
+        port: 5442,
+        state: 'rotating',
+        uuid: 'aabb',
+      },
     ]
     const attachments = [
       {
@@ -101,12 +104,12 @@ describe('pg:credentials', function () {
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    const normalized = normalizeTableOutput(stripAppIcon(stdout.output))
+    const normalized = normalizeTableOutput(stripAppIcon(stdout))
     expect(normalized).to.include('connections state user')
     expect(normalized).to.include('0 connections waiting for no connections to be revoked jeff')
     expect(normalized).to.include('2 connections active jeff-rotating')
@@ -124,36 +127,42 @@ describe('pg:credentials', function () {
 
   it('shows the correct rotation information if no connection information is available yet', async function () {
     const credentials = [
-      {uuid: 'aaaa',
+      {
+        credentials: [],
+        database: 'd123',
+        host: 'localhost',
         name: 'ransom',
+        port: 5442,
         state: 'active',
+        uuid: 'aaaa',
+      },
+      {
+        credentials: [],
         database: 'd123',
         host: 'localhost',
-        port: 5442,
-        credentials: []},
-      {uuid: 'aaab',
         name: 'default',
+        port: 5442,
         state: 'active',
-        database: 'd123',
-        host: 'localhost',
-        port: 5442,
-        credentials: []},
-      {uuid: 'aabb',
-        name: 'jeff',
-        state: 'rotating',
-        database: 'd123',
-        host: 'localhost',
-        port: 5442,
+        uuid: 'aaab',
+      },
+      {
         credentials: [
           {
-            user: 'jeff',
             state: 'active',
+            user: 'jeff',
           },
           {
-            user: 'jeff-rotating',
             state: 'enabling',
+            user: 'jeff-rotating',
           },
-        ]},
+        ],
+        database: 'd123',
+        host: 'localhost',
+        name: 'jeff',
+        port: 5442,
+        state: 'rotating',
+        uuid: 'aabb',
+      },
     ]
     const attachments = [
       {
@@ -185,12 +194,12 @@ describe('pg:credentials', function () {
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    const normalized = normalizeTableOutput(stripAppIcon(stdout.output))
+    const normalized = normalizeTableOutput(stripAppIcon(stdout))
     expect(normalized).to.include('credential state')
     expect(normalized).to.include('default')
     expect(normalized).to.include('└─ as database on main-app app')
@@ -205,7 +214,9 @@ describe('pg:credentials', function () {
 
   it('passes no-wrap option through to table rendering', async function () {
     const credentials = [
-      {uuid: 'aaaa', name: 'default', state: 'active', database: 'd123', host: 'localhost', port: 5442, credentials: []},
+      {
+        credentials: [], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'active', uuid: 'aaaa',
+      },
     ]
     const attachments = [
       {app: {name: 'main-app'}, name: 'DATABASE', namespace: null},
@@ -218,7 +229,7 @@ describe('pg:credentials', function () {
     pg.get('/postgres/v0/databases/1/credentials')
       .reply(200, credentials)
 
-    const tableStub = sinon.stub(hux, 'table')
+    const tableStub = stub(hux, 'table')
     await runCommand(Cmd, ['--app', 'myapp', '--no-wrap'])
 
     const callArgs = tableStub.firstCall.args

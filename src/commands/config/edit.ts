@@ -18,11 +18,9 @@ export default class ConfigEdit extends Command {
   static args = {
     key: Args.string({description: 'edit a single key', optional: true}),
   }
-
   static description = `interactively edit config vars
 This command opens the app config in a text editor set by $VISUAL or $EDITOR.
 Any variables added/removed/changed will be updated on the app after saving and closing the file.`
-
   static examples = [
     `# edit with vim
 ${color.command('EDITOR="vim" heroku config:edit')}`,
@@ -33,12 +31,10 @@ ${color.command('EDITOR="pico" heroku config:edit')}`,
     `# edit with atom editor
 ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   app!: string
 
   async run() {

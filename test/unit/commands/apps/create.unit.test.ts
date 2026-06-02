@@ -1,21 +1,22 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
+import {execSync} from 'node:child_process'
+import {SinonStub, stub} from 'sinon'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
 import Git from '../../../../src/lib/git/git.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('apps:create', function () {
   let api: nock.Scope
-  let configureCredentialHelperStub: sinon.SinonStub
-  let gitCreateRemoteStub: sinon.SinonStub
+  let configureCredentialHelperStub: SinonStub
+  let gitCreateRemoteStub: SinonStub
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
 
-    configureCredentialHelperStub = sinon.stub(Git.prototype, 'configureCredentialHelper').resolves()
-    gitCreateRemoteStub = sinon.stub(Git.prototype, 'createRemote').resolves()
+    configureCredentialHelperStub = stub(Git.prototype, 'configureCredentialHelper').resolves()
+    gitCreateRemoteStub = stub(Git.prototype, 'createRemote').resolves()
   })
 
   afterEach(function () {
@@ -133,10 +134,10 @@ describe('apps:create', function () {
       setup: {addons: [{as: 'DATABASE', plan: 'heroku-postgresql'}], config: {S3_BUCKET: 'my-example-bucket'}},
     }
 
-    let readManifestStub: sinon.SinonStub
+    let readManifestStub: SinonStub
 
     beforeEach(async function () {
-      readManifestStub = sinon.stub(CreateCommand.prototype, 'readManifest').resolves(manifest)
+      readManifestStub = stub(CreateCommand.prototype, 'readManifest').resolves(manifest)
     })
 
     afterEach(function () {
@@ -270,7 +271,7 @@ describe('apps:create', function () {
     })
 
     it('does not create a remote when not in a git repository', async function () {
-      const inGitRepoStub = sinon.stub(Git.prototype, 'inGitRepo').returns(false)
+      const inGitRepoStub = stub(Git.prototype, 'inGitRepo').returns(false)
 
       api
         .post('/apps', {})

@@ -6,10 +6,10 @@ export function quote(s: string): string {
   if (/["\s#!$&'()*,:;<=>?@\[\\\]^`{|}]/.test(s)) {
     if (/['\n]/.test(s)) return '"'
       + s
-        .replace(/(["\\$`!])/g, '\\$1')
-        .replace(/\n/g, '\\n')
+        .replaceAll(/(["\\$`!])/g, String.raw`\$1`)
+        .replaceAll('\n', String.raw`\n`)
       + '"'
-    return "'" + s.replace(/(['\\])/g, '\\$1') + "'"
+    return "'" + s.replaceAll(/(['\\])/g, String.raw`\$1`) + "'"
   }
 
   return s
@@ -17,9 +17,9 @@ export function quote(s: string): string {
 
 export function parse(a: string): string {
   if (a.startsWith('"')) {
-    a = a.replace(/\\n/g, '\n')
+    a = a.replaceAll(String.raw`\n`, '\n')
   } else if (a.startsWith("'")) {
-    a = a.replace(/\\\\/g, '\\')
+    a = a.replaceAll('\\\\', '\\')
   }
 
   const parsed = shell.parse(a)

@@ -1,18 +1,24 @@
+/* eslint-disable max-lines */
 import * as Heroku from '@heroku-cli/schema'
 import {pg} from '@heroku/heroku-cli-util'
 
 import {
+  AdvancedCredentialInfo,
+  AdvancedCredentialState,
   CredentialInfo,
   CredentialsInfo,
+  DatabaseStatus,
   DeepRequired,
   InfoResponse,
+  MigrationResponse,
+  MigrationStatus,
   NonAdvancedCredentialInfo,
   PoolInfoResponse,
+  PoolStatus,
   PostgresLevelsResponse,
   PricingInfoResponse,
   Quota,
   Quotas,
-  ScaleResponse,
   SettingsChangeResponse,
   SettingsResponse,
   WaitStatus,
@@ -136,7 +142,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 20000,
+      rate: 20_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -157,7 +163,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 24000,
+      rate: 24_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -178,7 +184,7 @@ export const pricingResponse: PricingInfoResponse = {
       billing_period: 'month',
       billing_unit: 'compute',
       product_description: '8G-Performance',
-      rate: 28000,
+      rate: 28_000,
     },
     'storage-optimized': {
       billing_period: 'month',
@@ -188,21 +194,6 @@ export const pricingResponse: PricingInfoResponse = {
       rate: 28,
     },
   },
-}
-
-export const scaleResponse: ScaleResponse = {
-  changes: [
-    {
-      current: '8G-Performance', name: 'level', pool: 'leader', previous: '4G-Performance',
-    },
-    {
-      current: 'false', name: 'high-availability', pool: 'leader', previous: 'true',
-    },
-  ],
-}
-
-export const emptyScaleResponse: ScaleResponse = {
-  changes: [],
 }
 
 export const createAddonResponse: DeepRequired<Heroku.AddOn> = {
@@ -294,7 +285,7 @@ export const pgInfo: InfoResponse = {
         leader: null,
       },
       name: 'leader',
-      status: 'available',
+      status: PoolStatus.AVAILABLE,
       wait_status: {
         message: null,
         waiting: false,
@@ -337,7 +328,7 @@ export const pgInfo: InfoResponse = {
         leader: null,
       },
       name: 'analytics',
-      status: 'available',
+      status: PoolStatus.AVAILABLE,
       wait_status: {
         message: null,
         waiting: false,
@@ -355,7 +346,7 @@ export const pgInfo: InfoResponse = {
     },
   ],
   region: 'us',
-  status: 'available',
+  status: DatabaseStatus.AVAILABLE,
   tier: 'advanced',
   version: '17.5',
 }
@@ -415,7 +406,7 @@ export const pgInfoWithDisabledFeatures: InfoResponse = {
         leader: null,
       },
       name: 'leader',
-      status: 'available',
+      status: PoolStatus.AVAILABLE,
       wait_status: {
         message: null,
         waiting: false,
@@ -620,6 +611,45 @@ export const multipleAttachmentsResponse: Heroku.AddOnAttachment[] = [
   },
 ]
 
+export const multipleAttachmentsMultiFactorResponse: Heroku.AddOnAttachment[] = [
+  {
+    addon: {
+      app: {
+        id: addon.app.id,
+        name: addon.app.name,
+      },
+      id: addon.id,
+      name: addon.name,
+    },
+    app: {
+      id: addon.app.id,
+      name: addon.app.name,
+    },
+    config_vars: ['DATABASE_URL'],
+    id: 'c61eb5ce-0ce2-447e-817e-ba34afe8b95f',
+    name: 'DATABASE',
+    namespace: null,
+  },
+  {
+    addon: {
+      app: {
+        id: addon.app.id,
+        name: addon.app.name,
+      },
+      id: addon.id,
+      name: addon.name,
+    },
+    app: {
+      id: addon.app.id,
+      name: addon.app.name,
+    },
+    config_vars: ['MULTIFACTOR_ATTACHMENT_URL'],
+    id: '0a971b48-76b7-4bdd-b526-26bb36047f59',
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+]
+
 export const attachmentWithMissingNamespace: Heroku.AddOnAttachment[] = [
   {
     // namespace is missing
@@ -643,28 +673,6 @@ export const attachmentWithMissingNamespace: Heroku.AddOnAttachment[] = [
 
 export const emptyAttachmentsResponse: Heroku.AddOnAttachment[] = []
 
-export const addonResponse = {
-  id: '01234567-89ab-cdef-0123-456789abcdef',
-  name: 'postgres-1',
-  plan: {
-    name: 'heroku-postgresql:essential-1',
-  },
-}
-
-export const credentialConfigResponse = [
-  {
-    name: 'role:mycredential',
-    value: 'some-value',
-  },
-]
-
-export const poolConfigResponse = [
-  {
-    name: 'pool:mypool',
-    value: 'some-value',
-  },
-]
-
 export const releasesResponse = [
   {
     id: '01234567-89ab-cdef-0123-456789abcdef',
@@ -687,7 +695,7 @@ export const createPoolResponse: PoolInfoResponse = {
     leader: null,
   },
   name: 'readers',
-  status: 'modifying',
+  status: PoolStatus.MODIFYING,
   wait_status: {
     message: 'Waiting for instances to become available',
     waiting: true,
@@ -709,7 +717,7 @@ export const advancedCredentialsResponse: CredentialsInfo = {
           user: 'u2vi1nt40t3mcq',
         },
       ],
-      state: 'active',
+      state: AdvancedCredentialState.ACTIVE,
       type: 'owner',
     },
     {
@@ -725,7 +733,7 @@ export const advancedCredentialsResponse: CredentialsInfo = {
           user: 'analyst',
         },
       ],
-      state: 'active',
+      state: AdvancedCredentialState.ACTIVE,
       type: 'additional',
     },
   ],
@@ -833,6 +841,15 @@ export const advancedCredentialsAttachmentsResponse: Heroku.AddOnAttachment[] = 
   },
 ]
 
+export const advancedCredentialsAttachmentsMultiFactorResponse: Heroku.AddOnAttachment[] = [
+  advancedCredentialsAttachmentsResponse[0],
+  {
+    ...advancedCredentialsAttachmentsResponse[1],
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+]
+
 export const nonAdvancedCredentialsAttachmentsResponse: Heroku.AddOnAttachment[] = [
   {
     addon: {
@@ -929,6 +946,20 @@ export const advancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAttachm
   },
 ]
 
+export const advancedCredentialsMultipleAttachmentsMultiFactorResponse: Heroku.AddOnAttachment[] = [
+  advancedCredentialsMultipleAttachmentsResponse[0],
+  {
+    ...advancedCredentialsMultipleAttachmentsResponse[1],
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+  {
+    ...advancedCredentialsMultipleAttachmentsResponse[2],
+    name: 'MULTIFACTOR_ATTACHMENT',
+    namespace: 'role:analyst|proxy:false|pool:analytics',
+  },
+]
+
 export const nonAdvancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAttachment[] = [
   {
     addon: {
@@ -986,7 +1017,7 @@ export const nonAdvancedCredentialsMultipleAttachmentsResponse: Heroku.AddOnAtta
   },
 ]
 
-export const createCredentialResponse: CredentialInfo = {
+export const createCredentialResponse: AdvancedCredentialInfo = {
   database: 'd4w8akz45kmru7',
   host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
   id: '3d1a0a2d-3e27-4f34-99fa-c701627c0e92',
@@ -999,7 +1030,7 @@ export const createCredentialResponse: CredentialInfo = {
       user: 'my-credential',
     },
   ],
-  state: 'active',
+  state: AdvancedCredentialState.ACTIVE,
   type: 'additional',
 }
 
@@ -1016,7 +1047,7 @@ export const inactiveCredentialResponse: CredentialInfo = {
       user: 'analyst',
     },
   ],
-  state: 'inactive',
+  state: AdvancedCredentialState.REVOKING,
   type: 'additional',
 }
 
@@ -1037,7 +1068,7 @@ export const createAttachmentResponse: Required<Heroku.AddOnAttachment> = {
   id: '0484a63c-8ceb-453d-95c8-2aaf8861c40a',
   log_input_url: null,
   name: 'TEST',
-  namespace: null,
+  namespace: 'role:u2vi1nt40t3mcq|proxy:false|pool:leader',
   updated_at: '2025-01-01T12:00:00Z',
   web_url: addon.web_url,
 }
@@ -1048,13 +1079,8 @@ export const createForeignAttachmentResponse: Required<Heroku.AddOnAttachment> =
     id: '2ef2b408-12ae-4c7c-ac16-1327eb891399',
     name: 'myapp2',
   },
-  created_at: '2025-01-01T12:00:00Z',
   id: 'df05357b-9950-403b-bcdf-aed3d60ec94e',
-  log_input_url: null,
   name: 'TEST2',
-  namespace: null,
-  updated_at: '2025-01-01T12:00:00Z',
-  web_url: `https://addons-sso.heroku.com/apps/2ef2b408-12ae-4c7c-ac16-1327eb891399/addons/${addon.id}`,
 }
 
 export const createCredentialAttachmentResponse: Required<Heroku.AddOnAttachment> = {
@@ -1062,13 +1088,6 @@ export const createCredentialAttachmentResponse: Required<Heroku.AddOnAttachment
   id: 'fc5ce939-663e-4417-8b00-cb7e6e662564',
   name: 'MYCREDENTIAL',
   namespace: 'role:mycredential',
-}
-
-export const createPoolAttachmentResponse: Required<Heroku.AddOnAttachment> = {
-  ...createAttachmentResponse,
-  id: '711a83cd-d9b1-430d-b46d-b35b8847f346',
-  name: 'MYPOOL',
-  namespace: 'pool:mypool',
 }
 
 export const createForkResponse: DeepRequired<Heroku.AddOn> = {
@@ -1102,33 +1121,6 @@ export const quotasResponse: Quotas = {
 export const storageQuotaResponse: Quota = {
   critical_gb: 100,
   current_gb: null,
-  enforcement_action: 'none',
-  enforcement_active: false,
-  type: 'storage',
-  warning_gb: 50,
-}
-
-export const storageQuotaResponseRestricted: Quota = {
-  critical_gb: 100,
-  current_gb: 150,
-  enforcement_action: 'restrict',
-  enforcement_active: true,
-  type: 'storage',
-  warning_gb: 50,
-}
-
-export const storageQuotaResponseCriticalNotify: Quota = {
-  critical_gb: 100,
-  current_gb: 150,
-  enforcement_action: 'notify',
-  enforcement_active: false,
-  type: 'storage',
-  warning_gb: 50,
-}
-
-export const storageQuotaResponseWarning: Quota = {
-  critical_gb: 100,
-  current_gb: 75,
   enforcement_action: 'none',
   enforcement_active: false,
   type: 'storage',
@@ -1198,6 +1190,299 @@ export const nonPostgresAddonAttachment: pg.ExtendedAddonAttachment = {
   config_vars: ['REDIS_URL'],
   id: '0e8e72a3-7922-452e-a490-09cf45797f7e',
   name: 'REDIS',
+}
+
+export const targetAdvancedDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: '283b1a3d-7894-457a-be87-87f260ef571e',
+    name: 'postgresql-lively-12345',
+    plan: {
+      id: '093d4682-9ca8-4cee-9c72-9b3a22dcd820',
+      name: 'heroku-postgresql:advanced',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['ADVANCED_DB_URL'],
+  id: '1d6bf68d-9123-4e25-a880-9aca0ab08340',
+  name: 'ADVANCED_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const nonTargetAdvancedDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: 'cc1995da-f3c2-4f9f-a805-fb0500257818',
+    name: 'postgresql-obscured-12345',
+    plan: {
+      id: '093d4682-9ca8-4cee-9c72-9b3a22dcd820',
+      name: 'heroku-postgresql:advanced',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['OTHER_ADVANCED_DB_URL'],
+  id: 'b31c9084-9dcf-4bd2-9fd7-adb6124de9c6',
+  name: 'OTHER_ADVANCED_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const foreignAdvancedDbAttachment = {
+  addon: {
+    app: {
+      id: '456789ab-cdef-0123-4567-89abcdef0123',
+      name: 'otherapp',
+    },
+    id: '4e677665-f585-4935-b70c-81ffd4291c13',
+    name: 'postgresql-vertical-12345',
+    plan: {
+      id: '093d4682-9ca8-4cee-9c72-9b3a22dcd820',
+      name: 'heroku-postgresql:advanced',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['FOREIGN_ADVANCED_DB_URL'],
+  id: '6d054b0c-9517-48ac-8bdc-12f66eabb8f4',
+  name: 'FOREIGN_ADVANCED_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const standardDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: 'ae4bac9d-99b5-4496-97dc-7b71a9d20999',
+    name: 'postgresql-cubic-12345',
+    plan: {
+      id: '93e93aef-1ef9-4a2c-bf80-7435f05293a6',
+      name: 'heroku-postgresql:standard-0',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['STANDARD_DB_URL'],
+  id: '8b6b1a00-307b-4165-9976-708044bc83c4',
+  name: 'STANDARD_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const premiumDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054',
+    name: 'postgresql-convex-12345',
+    plan: {
+      id: '5ba455ff-41ad-4ec2-ad74-c3c151cf80ff',
+      name: 'heroku-postgresql:premium-0',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['PREMIUM_DB_URL'],
+  id: '51fb6ba1-1200-476a-a3f6-e800681c8be6',
+  name: 'PREMIUM_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const essentialDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: '9e45a74d-2c05-4330-b8a2-b36d95345e4d',
+    name: 'postgresql-spherical-12345',
+    plan: {
+      id: '4d4b6fa5-b06c-474c-b052-cbae52e83acb',
+      name: 'heroku-postgresql:essential-0',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['ESSENTIAL_DB_URL'],
+  id: '095dce50-ace2-4b0e-b39f-7319af20d4a7',
+  name: 'ESSENTIAL_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const foreignStandardDbAttachment = {
+  addon: {
+    app: {
+      id: '456789ab-cdef-0123-4567-89abcdef0123',
+      name: 'otherapp',
+    },
+    id: 'ea8dafc3-16a4-4116-ab89-16bfdd0f3d67',
+    name: 'postgresql-silhouetted-12345',
+    plan: {
+      id: '93e93aef-1ef9-4a2c-bf80-7435f05293a6',
+      name: 'heroku-postgresql:standard-0',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['FOREIGN_STANDARD_DB_URL'],
+  id: 'd8771f84-1010-4b3e-8f99-781879093d3f',
+  name: 'FOREIGN_STANDARD_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const privateDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: '0265497f-8ee2-4843-a6a9-38570cc9fd12',
+    name: 'postgresql-corrugated-12345',
+    plan: {
+      id: '9633e9a9-a6c4-4a3f-8291-1ef6eb2ee5d3',
+      name: 'heroku-postgresql:private-0',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['PRIVATE_DB_URL'],
+  id: '2b81039b-80c4-4940-9780-ab7685f07000',
+  name: 'PRIVATE_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const shieldDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: 'ec5e74f7-542f-4ccf-88d6-202f41c9e50d',
+    name: 'postgresql-dimensional-12345',
+    plan: {
+      id: 'd0efe632-1c21-40f2-991d-67bbf4dec082',
+      name: 'heroku-postgresql:shield-0',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['SHIELD_DB_URL'],
+  id: 'deb02364-a4b1-432f-8a7c-9dc1189c40a7',
+  name: 'SHIELD_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const unavailableAdvancedDbAttachment = {
+  addon: {
+    app: {
+      id: '01234567-89ab-cdef-0123-456789abcdef',
+      name: 'myapp',
+    },
+    id: 'e7f365c8-b83a-49dd-b816-22324d7a2670',
+    name: 'postgresql-adjacent-12345',
+    plan: {
+      id: '093d4682-9ca8-4cee-9c72-9b3a22dcd820',
+      name: 'heroku-postgresql:advanced',
+    },
+  },
+  app: {
+    id: '01234567-89ab-cdef-0123-456789abcdef',
+    name: 'myapp',
+  },
+  config_vars: ['UNAVAILABLE_DB_URL'],
+  id: '25f9453f-0de9-4958-8a9f-a1e84b0a9d7a',
+  name: 'UNAVAILABLE_DB',
+} as unknown as pg.ExtendedAddonAttachment
+
+export const existentMigrationResponse: MigrationResponse = {
+  auto_promote: false,
+  cdc_lag: null,
+  completed: false,
+  full_load_progress: 0,
+  id: '575ec110-0e86-4f68-82d3-64d100a6dcec',
+  last_error_message: null,
+  preassessment_results: [],
+  source_id: 'ae4bac9d-99b5-4496-97dc-7b71a9d20999', // Standard DB
+  status: MigrationStatus.PREPARING,
+  status_description: null,
+  stop_reason: null,
+  successful: false,
+  tables_errored: 0,
+  target_id: '283b1a3d-7894-457a-be87-87f260ef571e', // Target Advanced DB
+}
+
+export const createdMigrationResponse: MigrationResponse = {
+  auto_promote: false,
+  cdc_lag: null,
+  completed: false,
+  full_load_progress: 0,
+  id: 'eb07b33c-f90a-4f7d-9c56-12c10c277121',
+  last_error_message: null,
+  preassessment_results: [],
+  source_id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054', // Premium DB
+  status: MigrationStatus.PREPARING,
+  status_description: null,
+  stop_reason: null,
+  successful: false,
+  tables_errored: 0,
+  target_id: 'cc1995da-f3c2-4f9f-a805-fb0500257818', // Non Target Advanced DB
+}
+
+export const targetAdvancedDbInfo: InfoResponse = {
+  ...pgInfo,
+  addon: {
+    id: targetAdvancedDbAttachment.addon.id,
+    name: targetAdvancedDbAttachment.addon.name,
+  },
+  app: {
+    id: targetAdvancedDbAttachment.app.id,
+    name: targetAdvancedDbAttachment.app.name,
+  },
+  status: DatabaseStatus.MIGRATING,
+}
+
+export const nonTargetAdvancedDbInfo: InfoResponse = {
+  ...pgInfo,
+  addon: {
+    id: nonTargetAdvancedDbAttachment.addon.id,
+    name: nonTargetAdvancedDbAttachment.addon.name,
+  },
+  app: {
+    id: nonTargetAdvancedDbAttachment.app.id,
+    name: nonTargetAdvancedDbAttachment.app.name,
+  },
+  status: DatabaseStatus.AVAILABLE,
+}
+
+export const unavailableAdvancedDbInfo: InfoResponse = {
+  ...pgInfo,
+  addon: {
+    id: unavailableAdvancedDbAttachment.addon.id,
+    name: unavailableAdvancedDbAttachment.addon.name,
+  },
+  app: {
+    id: unavailableAdvancedDbAttachment.app.id,
+    name: unavailableAdvancedDbAttachment.app.name,
+  },
+  status: DatabaseStatus.UNAVAILABLE,
 }
 
 export const waitStatusAvailable: WaitStatus = {

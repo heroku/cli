@@ -1,27 +1,23 @@
-import {color, utils} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
-import ConfirmCommand from '../../../lib/confirmCommand.js'
+import ConfirmCommand from '../../../lib/confirm-command.js'
 import backupsFactory from '../../../lib/pg/backups.js'
 
 export default class Delete extends Command {
   static args = {
     backup_id: Args.string({description: 'ID of the backup', required: true}),
   }
-
   static description = 'delete a backup'
-
   static examples = [
     color.command('heroku pg:backup:delete --app APP_ID BACKUP_ID'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     confirm: flags.string({char: 'c', hidden: true}),
     remote: flags.remote(),
   }
-
   static topic = 'pg'
 
   public async run(): Promise<void> {

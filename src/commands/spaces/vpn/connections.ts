@@ -1,8 +1,7 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
-
 import tsheredoc from 'tsheredoc'
 
 import {displayVPNStatus} from '../../../lib/spaces/format.js'
@@ -19,12 +18,10 @@ export default class Connections extends Command {
      Name   Status Tunnels
      ────── ────── ───────
      office active UP/UP`
-
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({char: 's', description: 'space to get VPN connections from', required: true}),
   }
-
   static topic = 'spaces'
 
   protected displayVPNConnections(space: string, connections: Required<Heroku.PrivateSpacesVpn>[]) {

@@ -1,7 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+
 import Cmd from '../../../../src/commands/orgs/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {teams} from '../../../helpers/stubs/get.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 

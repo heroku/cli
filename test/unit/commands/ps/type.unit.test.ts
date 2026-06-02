@@ -1,11 +1,9 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/ps/type.js'
-import runCommand from '../../../helpers/runCommand.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
-import normalizeTableOutput from '../../../helpers/utils/normalizeTableOutput.js'
+import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 describe('ps:type', function () {
   let api: nock.Scope
@@ -45,12 +43,12 @@ describe('ps:type', function () {
         {quantity: 1, size: 'Shield-M', type: 'web'},
         {quantity: 1, size: 'Shield-L', type: 'web'},
         {quantity: 1, size: 'Shield-S', type: 'web'},
-        {quantity: 1, size: 'Private-Memory-L', type: 'web'},
-        {quantity: 1, size: 'Private-Memory-XL', type: 'web'},
-        {quantity: 1, size: 'Private-Memory-2XL', type: 'web'},
-        {quantity: 1, size: 'Shield-Memory-L', type: 'web'},
-        {quantity: 1, size: 'Shield-Memory-XL', type: 'web'},
-        {quantity: 1, size: 'Shield-Memory-2XL', type: 'web'},
+        {quantity: 1, size: 'Private-L-RAM', type: 'web'},
+        {quantity: 1, size: 'Private-XL', type: 'web'},
+        {quantity: 1, size: 'Private-2XL', type: 'web'},
+        {quantity: 1, size: 'Shield-L-RAM', type: 'web'},
+        {quantity: 1, size: 'Shield-XL', type: 'web'},
+        {quantity: 1, size: 'Shield-2XL', type: 'web'},
         {quantity: 1, size: 'dyno-1c-0.5gb', type: 'web'},
         {quantity: 1, size: 'dyno-2c-1gb', type: 'web'},
         {quantity: 1, size: 'dyno-1c-4gb', type: 'web'},
@@ -70,12 +68,12 @@ describe('ps:type', function () {
         {quantity: 1, size: 'dyno-16c-128gb', type: 'web'},
       ])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
       === Process Types
 
         type   size                 qty   cost/hour   max cost/month
@@ -95,12 +93,12 @@ describe('ps:type', function () {
         web    Shield-M             1     ~$0.750     $540
         web    Shield-L             1     ~$1.500     $1080
         web    Shield-S             1     ~$0.375     $270
-        web    Private-Memory-L     1     ~$0.694     $500
-        web    Private-Memory-XL    1     ~$1.042     $750
-        web    Private-Memory-2XL   1     ~$2.083     $1500
-        web    Shield-Memory-L      1     ~$0.833     $600
-        web    Shield-Memory-XL     1     ~$1.250     $900
-        web    Shield-Memory-2XL    1     ~$2.500     $1800
+        web    Private-L-RAM        1     ~$0.694     $500
+        web    Private-XL           1     ~$1.042     $750
+        web    Private-2XL          1     ~$2.083     $1500
+        web    Shield-L-RAM         1     ~$0.833     $600
+        web    Shield-XL            1     ~$1.250     $900
+        web    Shield-2XL           1     ~$2.500     $1800
         web    dyno-1c-0.5gb        1     ~$0.035     $25
         web    dyno-2c-1gb          1     ~$0.069     $50
         web    dyno-1c-4gb          1     ~$0.111     $80
@@ -137,12 +135,12 @@ describe('ps:type', function () {
         Shield-M             1
         Shield-L             1
         Shield-S             1
-        Private-Memory-L     1
-        Private-Memory-XL    1
-        Private-Memory-2XL   1
-        Shield-Memory-L      1
-        Shield-Memory-XL     1
-        Shield-Memory-2XL    1
+        Private-L-RAM        1
+        Private-XL           1
+        Private-2XL          1
+        Shield-L-RAM         1
+        Shield-XL            1
+        Shield-2XL           1
         dyno-1c-0.5gb        1
         dyno-2c-1gb          1
         dyno-1c-4gb          1
@@ -175,13 +173,13 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=performance-l-ram',
     ])
 
-    expect(normalizeTableOutput(stdout.output)).to.eq(normalizeTableOutput(`
+    expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(`
       === Process Types
       type   size                qty   cost/hour   max cost/month  
       ───────────────────────────────────────────────────────────── 
@@ -192,7 +190,7 @@ describe('ps:type', function () {
       ─────────────────────────── 
       Performance-L-RAM   1      
     `))
-    expectOutput(stderr.output, 'Scaling dynos on ⬢ myapp... done')
+    expectOutput(stderr, 'Scaling dynos on ⬢ myapp... done')
   })
 
   it('switches to hobby dynos', async function () {
@@ -206,13 +204,13 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'basic',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
       === Process Types
        type     size    qty   cost/hour   max cost/month
       ───────────────────────────────────────────────────
@@ -224,7 +222,7 @@ describe('ps:type', function () {
       ───────────────
        Basic   3
     `))
-    expect(stderr.output).to.include('Scaling dynos on ⬢ myapp... done\n')
+    expect(stderr).to.include('Scaling dynos on ⬢ myapp... done\n')
   })
 
   it('switches to standard-1x and standard-2x dynos', async function () {
@@ -238,14 +236,14 @@ describe('ps:type', function () {
       .get('/apps/myapp/formation')
       .reply(200, [{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
 
-    await runCommand(Cmd, [
+    const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       'web=standard-1x',
       'worker=standard-2x',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
     === Process Types
      type     size          qty   cost/hour   max cost/month
     ─────────────────────────────────────────────────────────
@@ -258,7 +256,7 @@ describe('ps:type', function () {
      Standard-1X   1
      Standard-2X   2
     `))
-    expect(stderr.output).to.include('Scaling dynos on ⬢ myapp... done\n')
+    expect(stderr).to.include('Scaling dynos on ⬢ myapp... done\n')
   })
 
   it('displays Shield dynos for apps in shielded spaces', async function () {
@@ -266,25 +264,27 @@ describe('ps:type', function () {
       .get('/apps/myapp')
       .reply(200, app({space: {shield: true}}))
       .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 0, size: 'Private-M', type: 'web'}, {quantity: 0, size: 'Private-L', type: 'web'}])
+      .reply(200, [{quantity: 0, size: 'Private-M', type: 'web'}, {quantity: 0, size: 'Private-L', type: 'web'}, {quantity: 1, size: 'Private-L-RAM', type: 'worker'}])
 
-    await runCommand(Cmd, [
+    const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
 
-    expectOutput(normalizeTableOutput(stdout.output), normalizeTableOutput(`
+    expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
     === Process Types
-     type   size       qty   cost/hour   max cost/month
-    ────────────────────────────────────────────────────
-     web    Shield-M   0     ~$0.750     $0
-     web    Shield-L   0     ~$1.500     $0
+     type     size           qty   cost/hour   max cost/month
+    ──────────────────────────────────────────────────────────
+     web      Shield-M       0     ~$0.750     $0
+     web      Shield-L       0     ~$1.500     $0
+     worker   Shield-L-RAM   1     ~$0.833     $600
 
     === Dyno Totals
-     type       total
-    ──────────────────
-     Shield-M   0
-     Shield-L   0
+     type           total
+    ───────────────────────
+     Shield-M       0
+     Shield-L       0
+     Shield-L-RAM   1
     `))
   })
 })

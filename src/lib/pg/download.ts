@@ -1,7 +1,7 @@
 import cliProgress from 'cli-progress'
 import fs from 'fs-extra'
-import * as https from 'https'
-import * as Path from 'path'
+import https from 'node:https'
+import Path from 'node:path'
 
 type downloadOptions = {
   progress: boolean

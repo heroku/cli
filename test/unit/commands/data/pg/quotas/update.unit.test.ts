@@ -1,7 +1,7 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import DataPgQuotasUpdate from '../../../../../../src/commands/data/pg/quotas/update.js'
@@ -10,7 +10,6 @@ import {
   nonAdvancedAddon,
   storageQuotaResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
-import runCommand from '../../../../../helpers/runCommand.js'
 
 const heredoc = tsheredoc.default
 
@@ -36,7 +35,7 @@ describe('data:pg:quotas:update', function () {
       .patch(`/data/postgres/v1/${addon.id}/quotas/storage`)
       .reply(200, storageQuotaResponse)
 
-    await runCommand(DataPgQuotasUpdate, [
+    const {stderr, stdout} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
       '--app=myapp',
       '--type=storage',
@@ -45,10 +44,10 @@ describe('data:pg:quotas:update', function () {
       '--enforcement-action=none',
     ])
 
-    expect(stderr.output).to.equal(heredoc(`
+    expect(stderr).to.equal(heredoc(`
       Updating storage quota on ⛁ advanced-horizontal-01234... done
     `))
-    expect(stdout.output).to.equal(heredoc(`
+    expect(stdout).to.equal(heredoc(`
       === Storage
 
       Warning:            50.00 GB
@@ -123,17 +122,14 @@ describe('data:pg:quotas:update', function () {
   })
 
   it('will fail if neither of the warning, critical, or enforcement-action flags are set', async function () {
-    try {
-      await runCommand(DataPgQuotasUpdate, [
-        'advanced-horizontal-01234',
-        '--app=myapp',
-        '--type=storage',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgQuotasUpdate, [
+      'advanced-horizontal-01234',
+      '--app=myapp',
+      '--type=storage',
+    ])
+    const err = error as Error
 
-      expect(ansis.strip(err.message)).to.equal('You must set a value for either the warning, critical, or enforcement-action flags')
-    }
+    expect(ansis.strip(err.message)).to.equal('You must set a value for either the warning, critical, or enforcement-action flags')
   })
 
   it('errors when used with non-Advanced-tier add-ons', async function () {
@@ -141,56 +137,47 @@ describe('data:pg:quotas:update', function () {
       .post('/actions/addons/resolve')
       .reply(200, [nonAdvancedAddon])
 
-    try {
-      await runCommand(DataPgQuotasUpdate, [
-        'advanced-horizontal-01234',
-        '--app=myapp',
-        '--type=storage',
-        '--warning=50',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgQuotasUpdate, [
+      'advanced-horizontal-01234',
+      '--app=myapp',
+      '--type=storage',
+      '--warning=50',
+    ])
+    const err = error as Error
 
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.')
-    }
+    herokuApi.done()
+    expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.')
   })
 
   it('errors when the --warning flag is not an integer or "none"', async function () {
-    try {
-      await runCommand(DataPgQuotasUpdate, [
-        'advanced-horizontal-01234',
-        '--app=myapp',
-        '--type=storage',
-        '--warning=nope',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgQuotasUpdate, [
+      'advanced-horizontal-01234',
+      '--app=myapp',
+      '--type=storage',
+      '--warning=nope',
+    ])
+    const err = error as Error
 
-      expect(ansis.strip(err.message)).to.equal(heredoc(`
+    expect(ansis.strip(err.message)).to.equal(heredoc(`
         Parsing --warning
         You can only enter an integer or "none" in the --warning flag.
         See more help with --help
       `))
-    }
   })
 
   it('errors when the --critical flag is not an integer or "none"', async function () {
-    try {
-      await runCommand(DataPgQuotasUpdate, [
-        'advanced-horizontal-01234',
-        '--app=myapp',
-        '--type=storage',
-        '--critical=nope',
-      ])
-    } catch (error: unknown) {
-      const err = error as Error
+    const {error} = await runCommand(DataPgQuotasUpdate, [
+      'advanced-horizontal-01234',
+      '--app=myapp',
+      '--type=storage',
+      '--critical=nope',
+    ])
+    const err = error as Error
 
-      expect(ansis.strip(err.message)).to.equal(heredoc(`
+    expect(ansis.strip(err.message)).to.equal(heredoc(`
         Parsing --critical
         You can only enter an integer or "none" in the --critical flag.
         See more help with --help
         `))
-    }
   })
 })

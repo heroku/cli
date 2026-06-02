@@ -9,11 +9,9 @@ import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsCreate extends Command {
   static description = 'create a new OAuth authorization'
-
   static examples = [
     color.command('heroku authorizations:create --description "For use with Anvil"'),
   ]
-
   static flags = {
     description: flags.string({char: 'd', description: 'set a custom authorization'}),
     'expires-in': flags.string({char: 'e', description: 'set expiration in seconds (default no expiration)'}),

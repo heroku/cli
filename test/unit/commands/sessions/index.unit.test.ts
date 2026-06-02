@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Sessions from '../../../../src/commands/sessions/index.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('sessions:index', function () {
@@ -33,10 +33,8 @@ describe('sessions:index', function () {
     const {stdout} = await runCommand(Sessions, [])
 
     const actual = removeAllWhitespace(stdout)
-    const expected = removeAllWhitespace(
-      ' A Session @ 166.176.184.223 f6e8d969-129f-42d2-854b-c2eca9d5a42e \n'
-      + ' B Session @ 166.176.184.223 aBcD1234-129f-42d2-854b-dEf123abc123 \n',
-    )
+    const expected = removeAllWhitespace(' A Session @ 166.176.184.223 f6e8d969-129f-42d2-854b-c2eca9d5a42e \n'
+      + ' B Session @ 166.176.184.223 aBcD1234-129f-42d2-854b-dEf123abc123 \n')
     expect(actual).to.include(expected)
   })
 

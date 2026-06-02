@@ -1,9 +1,11 @@
+import {APIClient} from '@heroku-cli/command'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import mockStdin from 'mock-stdin'
+import {restore, stub} from 'sinon'
 
-import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 import {GitCredentials as Credentials} from '../../../../src/commands/git/credentials.js'
-import {runCommand} from '../../../helpers/run-command.js'
+import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
 describe('git:credentials', function () {
   let stdin: mockStdin.MockSTDIN
@@ -35,13 +37,15 @@ describe('git:credentials', function () {
       stubCredentialManager({
         getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
       })
+      stub(APIClient.prototype, 'auth').get(() => 'test-token')
 
       process.stdin.push('protocol=https\nhost=git.heroku.com\n\n')
 
-      const {stdout, error} = await runCommand(Credentials, ['get'])
+      const {error, stdout} = await runCommand(Credentials, ['get'])
 
       expect(error).to.be.undefined
       expect(stdout).to.equal('protocol=https\nhost=git.heroku.com\nusername=heroku\npassword=test-token\n')
+      restore()
     })
 
     it('does not output credentials for non-Heroku hosts', async function () {
@@ -51,7 +55,7 @@ describe('git:credentials', function () {
 
       process.stdin.push('protocol=https\nhost=github.com\n\n')
 
-      const {stdout, error} = await runCommand(Credentials, ['get'])
+      const {error, stdout} = await runCommand(Credentials, ['get'])
 
       expect(error).to.be.undefined
       expect(stdout).to.equal('')
@@ -64,7 +68,7 @@ describe('git:credentials', function () {
 
       process.stdin.push('protocol=http\nhost=git.heroku.com\n\n')
 
-      const {stdout, error} = await runCommand(Credentials, ['get'])
+      const {error, stdout} = await runCommand(Credentials, ['get'])
 
       expect(error).to.be.undefined
       expect(stdout).to.equal('')

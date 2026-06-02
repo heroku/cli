@@ -7,14 +7,11 @@ export default class Detach extends Command {
   static args = {
     attachment_name: Args.string({description: 'unique identifier of the add-on attachment', required: true}),
   }
-
   static description = 'detach an existing add-on resource from an app'
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

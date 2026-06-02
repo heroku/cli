@@ -1,7 +1,7 @@
-import chai from 'chai'
+import * as chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import nock from 'nock'
-import path from 'path'
+import path from 'node:path'
 
 globalThis.setInterval = () => ({unref() {}})
 const tm = globalThis.setTimeout

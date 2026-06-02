@@ -1,13 +1,12 @@
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/access/remove.js'
-import {runCommand} from '../../../helpers/run-command.js'
 import {collaboratorsPersonalApp} from '../../../helpers/stubs/delete.js'
-import expectOutput from '../../../helpers/utils/expectOutput.js'
 
 describe('heroku access:remove', function () {
-  let apiDelete: { done: () => any }
+  let apiDelete: {done: () => any}
 
   context('with either a personal or org app', function () {
     beforeEach(function () {

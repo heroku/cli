@@ -1,12 +1,12 @@
 import * as Heroku from '@heroku-cli/schema'
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import * as lolex from 'lolex'
 import nock from 'nock'
-import sinon from 'sinon'
+import {createSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/destroy.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('addons:destroy', function () {
   let api: nock.Scope
@@ -33,7 +33,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -67,7 +67,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -88,9 +88,9 @@ describe('addons:destroy', function () {
     })
     context('--wait', function () {
       let clock: ReturnType<typeof lolex.install>
-      let sandbox: ReturnType<typeof sinon.createSandbox>
+      let sandbox: ReturnType<typeof createSandbox>
       beforeEach(function () {
-        sandbox = sinon.createSandbox()
+        sandbox = createSandbox()
         clock = lolex.install()
         clock.setTimeout = function (callback: () => void, timeout: number, ...args: any[]): number {
           callback()
@@ -113,7 +113,7 @@ describe('addons:destroy', function () {
           name: 'postgresql-swiftly-123',
           plan: {
             name: 'heroku-postgresql:standard-0',
-            price: {cents: 10000, unit: 'month'},
+            price: {cents: 10_000, unit: 'month'},
           },
           state: 'provisioned',
         }
@@ -156,7 +156,7 @@ describe('addons:destroy', function () {
       name: 'postgresql-swiftly-123',
       plan: {
         name: 'heroku-postgresql:standard-0',
-        price: {cents: 10000, unit: 'month'},
+        price: {cents: 10_000, unit: 'month'},
       },
       state: 'provisioned',
     }
@@ -174,7 +174,7 @@ describe('addons:destroy', function () {
   })
 
   it('shows that it failed to deprovision when there are errors returned', async function () {
-    const addon: {state: 'suspended'} & Omit<Heroku.AddOn, 'state'> = {
+    const addon: Omit<Heroku.AddOn, 'state'> & {state: 'suspended'} = {
       addon_service: {name: 'heroku-postgresql'},
       app: {
         id: '01234567-89ab-cdef-0123-456789abcdef',
@@ -185,7 +185,7 @@ describe('addons:destroy', function () {
       name: 'postgresql-swiftly-123',
       plan: {
         name: 'heroku-postgresql:standard-0',
-        price: {cents: 10000, unit: 'month'},
+        price: {cents: 10_000, unit: 'month'},
       },
       state: 'suspended',
     }
@@ -216,7 +216,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -231,7 +231,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-124',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -268,7 +268,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-123',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }
@@ -283,7 +283,7 @@ describe('addons:destroy', function () {
         name: 'postgresql-swiftly-124',
         plan: {
           name: 'heroku-postgresql:standard-0',
-          price: {cents: 10000, unit: 'month'},
+          price: {cents: 10_000, unit: 'month'},
         },
         state: 'provisioned',
       }

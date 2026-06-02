@@ -8,7 +8,6 @@ export default class Services extends Command {
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
   }
-
   static topic = 'addons'
 
   public async run(): Promise<void> {

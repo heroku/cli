@@ -10,7 +10,6 @@ export default class AppsJoin extends Command {
     app: flags.app({required: true}),
     remote: flags.remote({char: 'r'}),
   }
-
   static topic = 'apps'
 
   public async run(): Promise<void> {

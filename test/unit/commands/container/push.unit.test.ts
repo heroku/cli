@@ -1,13 +1,12 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/container/push.js'
-import {DockerHelper} from '../../../../src/lib/container/docker_helper.js'
-import runCommand from '../../../helpers/runCommand.js'
+import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 describe('container push', function () {
   let api: nock.Scope
@@ -24,6 +23,45 @@ describe('container push', function () {
     return sandbox.restore()
   })
 
+  context('when HEROKU_HOST is set to an invalid domain', function () {
+    let originalHost: string | undefined
+
+    beforeEach(function () {
+      originalHost = process.env.HEROKU_HOST
+      process.env.HEROKU_HOST = 'attacker.com'
+      api
+        .get('/apps/testapp')
+        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+    })
+
+    afterEach(function () {
+      if (originalHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHost
+      }
+    })
+
+    it('rejects invalid HEROKU_HOST and uses default registry', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile'])
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
+        .withArgs('registry.heroku.com/testapp/web')
+
+      const {stderr} = await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        'web',
+      ])
+
+      expect(stderr).to.contain("Invalid HEROKU_HOST 'attacker.com'")
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledOnce(build)
+      sandbox.assert.calledOnce(push)
+    })
+  })
+
   context('when the app stack is not "container"', function () {
     beforeEach(function () {
       api
@@ -32,14 +70,11 @@ describe('container push', function () {
     })
 
     it('exits', async function () {
-      let error
-      await runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
-      ]).catch((error_: any) => {
-        error = error_
-      })
+      ])
       const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal(`This command is for Docker apps only. Switch stacks by running ${color.code('heroku stack:set container')}. Or, to deploy ${color.app('testapp')} with ${color.name('heroku-24')}, run ${color.code('git push heroku main')} instead.`)
       expect(oclif.exit).to.equal(1)
@@ -60,14 +95,14 @@ describe('container push', function () {
       const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
       ])
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
-      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
       expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile')
@@ -84,48 +119,42 @@ describe('container push', function () {
     })
 
     it('gets a build error', async function () {
-      let error
       const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
         .throws()
 
-      await runCommand(Cmd, [
+      const {error, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
-      ]).catch(error_ => {
-        error = error_
-      })
+      ])
       const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.contain('docker build exited with Error: Error')
       expect(oclif.exit).to.equal(1)
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
     })
 
     it('gets a push error', async function () {
-      let error
       const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns(['/path/to/Dockerfile'])
       const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
       const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .throws()
 
-      await runCommand(Cmd, [
+      const {error, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
-      ]).catch(error_ => {
-        error = error_
-      })
+      ])
       const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.contain('docker push exited with Error: Error')
       expect(oclif.exit).to.equal(1)
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
       sandbox.assert.calledOnce(push)
@@ -138,14 +167,14 @@ describe('container push', function () {
       const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
       ])
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
-      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
       expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile')
@@ -160,14 +189,14 @@ describe('container push', function () {
       const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/worker')
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'worker',
       ])
 
-      expect(stdout.output).to.contain('Building worker (/path/to/Dockerfile)')
-      expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Building worker (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Pushing worker (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
       expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile')
@@ -183,7 +212,7 @@ describe('container push', function () {
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         '--recursive',
@@ -191,10 +220,10 @@ describe('container push', function () {
         'worker',
       ])
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
-      expect(stdout.output).to.contain('Building worker (/path/to/Dockerfile.worker)')
-      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile.web)')
-      expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile.web)')
+      expect(stdout).to.contain('Building worker (/path/to/Dockerfile.worker)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile.web)')
+      expect(stdout).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledTwice(build)
       expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile.web')
@@ -215,7 +244,7 @@ describe('container push', function () {
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
 
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         '--recursive',
@@ -223,9 +252,9 @@ describe('container push', function () {
         'worker',
       ])
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
-      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile.web)')
-      expect(stderr.output).to.contain('Dockerfile.worker not found')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile.web)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile.web)')
+      expect(stderr).to.contain('Dockerfile.worker not found')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
       sandbox.assert.calledOnce(push)
@@ -239,16 +268,16 @@ describe('container push', function () {
       push.withArgs('registry.heroku.com/testapp/web')
       push.withArgs('registry.heroku.com/testapp/worker')
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         '--recursive',
       ])
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile.web)')
-      expect(stdout.output).to.contain('Building worker (/path/to/Dockerfile.worker)')
-      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile.web)')
-      expect(stdout.output).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile.web)')
+      expect(stdout).to.contain('Building worker (/path/to/Dockerfile.worker)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile.web)')
+      expect(stdout).to.contain('Pushing worker (/path/to/Dockerfile.worker)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledTwice(build)
       expect(build.getCall(0).args[0].dockerfile).to.equal('/path/to/Dockerfile.web')
@@ -263,7 +292,7 @@ describe('container push', function () {
       const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
         .withArgs('registry.heroku.com/testapp/web')
 
-      await runCommand(Cmd, [
+      const {stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         '--context-path',
@@ -273,8 +302,8 @@ describe('container push', function () {
 
       const buildCallArgs = build.getCall(0).args[0]
 
-      expect(stdout.output).to.contain('Building web (/path/to/Dockerfile)')
-      expect(stdout.output).to.contain('Pushing web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile)')
       sandbox.assert.calledOnce(dockerfiles)
       sandbox.assert.calledOnce(build)
       expect(buildCallArgs.dockerfile).to.equal('/path/to/Dockerfile')
@@ -284,53 +313,44 @@ describe('container push', function () {
     })
 
     it('does not find an image to push', async function () {
-      let error
       const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns([])
 
-      await runCommand(Cmd, [
+      const {error, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
-      ]).catch(error_ => {
-        error = error_
-      })
+      ])
       const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.contain('No images to push')
       expect(oclif.exit).to.equal(1)
 
-      expect(stdout.output, 'to be empty')
+      expect(stdout, 'to be empty')
       sandbox.assert.calledOnce(dockerfiles)
     })
   })
 
   it('requires a process type if we are not recursive', async function () {
-    let error
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
-    ]).catch(error_ => {
-      error = error_
-    })
+    ])
     const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires either --recursive or one or more process types')
     expect(oclif.exit).to.equal(1)
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 
   it('rejects multiple process types if we are not recursive', async function () {
-    let error
-    await runCommand(Cmd, [
+    const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
       'web',
       'worker',
-    ]).catch(error_ => {
-      error = error_
-    })
+    ])
     const {message, oclif} = error as unknown as Errors.CLIError
     expect(message).to.contain('Requires exactly one target process type, or --recursive option')
     expect(oclif.exit).to.equal(1)
-    expect(stdout.output).to.equal('')
+    expect(stdout).to.equal('')
   })
 })

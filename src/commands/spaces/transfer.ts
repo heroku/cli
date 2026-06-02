@@ -1,7 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
-
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
@@ -12,12 +11,10 @@ export default class Transfer extends Command {
     ${color.command('heroku spaces:transfer --space=space-name --team=team-name')}
     Transferring space-name to team-name... done
   `)]
-
   static flags = {
     space: flags.string({char: 's', description: 'name of space', required: true}),
     team: flags.string({char: 't', description: 'desired owner of space', required: true}),
   }
-
   static topic = 'spaces'
 
   public async run(): Promise<void> {

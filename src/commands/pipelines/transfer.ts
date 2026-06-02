@@ -1,5 +1,5 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {APIClient, Command, flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {
@@ -36,14 +36,11 @@ export default class PipelinesTransfer extends Command {
       required: true,
     }),
   }
-
   static description = 'transfer ownership of a pipeline'
-
   static examples = [
     color.command('heroku pipelines:transfer admin@example.com -p my-pipeline'),
     color.command('heroku pipelines:transfer admin-team -p my-pipeline'),
   ]
-
   static flags = {
     confirm: flags.string({char: 'c'}),
     pipeline: flags.pipeline({required: true}),

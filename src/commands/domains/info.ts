@@ -8,13 +8,10 @@ export default class DomainsInfo extends Command {
   static args = {
     hostname: Args.string({description: 'unique identifier of the domain or full hostname', required: true}),
   }
-
   static description = 'show detailed information for a domain on an app'
-
   static examples = [
     color.command('heroku domains:info www.example.com'),
   ]
-
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

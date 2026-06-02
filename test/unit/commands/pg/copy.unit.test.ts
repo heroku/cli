@@ -1,10 +1,9 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 
 import Cmd from '../../../../src/commands/pg/copy.js'
-import runCommand from '../../../helpers/runCommand.js'
 
 const addon = {
   app: {name: 'myapp'}, config_vars: ['READONLY_URL', 'DATABASE_URL', 'HEROKU_POSTGRESQL_RED_URL'], id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
@@ -76,7 +75,7 @@ describe('pg:copy', function () {
         .reply(200, {finished_at: '100', succeeded: true})
     })
     it('copies', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -84,12 +83,12 @@ describe('pg:copy', function () {
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
-      expect(stderr.output).to.include(copyingText)
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
+      expect(stderr).to.include(copyingText)
     })
     it('copies (with port number)', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -97,9 +96,9 @@ describe('pg:copy', function () {
         'postgres://boop.com:5678/bar',
         'HEROKU_POSTGRESQL_RED_URL',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of database bar on boop.com:5678 to RED... done\n')
-      expect(stderr.output).to.include(copyingText)
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Starting copy of database bar on boop.com:5678 to RED... done\n')
+      expect(stderr).to.include(copyingText)
     })
   })
   context('heroku to heroku with additional credentials', function () {
@@ -130,7 +129,7 @@ describe('pg:copy', function () {
         .reply(200, {finished_at: '100', succeeded: true})
     })
     it('copies', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -138,15 +137,15 @@ describe('pg:copy', function () {
         'HEROKU_POSTGRESQL_RED_URL',
         'myotherapp::DATABASE_URL',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of RED to BLUE... done\n')
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Starting copy of RED to BLUE... done\n')
       // Check for warning message parts (handle line wrapping in CI)
       // Normalize: remove newlines and oclif warning prefixes (› on Unix, » on Windows), then collapse spaces
-      const normalizedOutput = stderr.output.replace(/\n\s*[›»]?\s*/g, ' ').replace(/\s+/g, ' ')
+      const normalizedOutput = stderr.replaceAll(/\n\s*[›»]?\s*/g, ' ').replaceAll(/\s+/g, ' ')
       expect(normalizedOutput).to.include('Warning: pg:copy will only copy your default credential')
       expect(normalizedOutput).to.include('and the data it has access to')
       expect(normalizedOutput).to.include('Any additional credentials and data that only they can access will not be copied')
-      expect(stderr.output).to.include(copyingText)
+      expect(stderr).to.include(copyingText)
     })
   })
   context('heroku to heroku with non-billing app attachment name', function () {
@@ -176,7 +175,7 @@ describe('pg:copy', function () {
         .reply(200, {finished_at: '100', succeeded: true})
     })
     it('copies', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
@@ -184,9 +183,9 @@ describe('pg:copy', function () {
         'HEROKU_POSTGRESQL_RED_URL',
         'ATTACHED_BLUE',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of RED to ATTACHED_BLUE... done\n')
-      expect(stderr.output).to.include(copyingText)
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Starting copy of RED to ATTACHED_BLUE... done\n')
+      expect(stderr).to.include(copyingText)
     })
   })
   context('heroku to heroku with lower case attachment name', function () {
@@ -217,7 +216,7 @@ describe('pg:copy', function () {
         .reply(200, {finished_at: '100', succeeded: true})
     })
     it('copies', async function () {
-      await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'mylowercaseapp',
         '--confirm',
@@ -225,9 +224,9 @@ describe('pg:copy', function () {
         'lowercase_database_URL',
         'myotherapp::DATABASE_URL',
       ])
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of lowercase_database to BLUE... done\n')
-      expect(stderr.output).to.include(copyingText)
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Starting copy of lowercase_database to BLUE... done\n')
+      expect(stderr).to.include(copyingText)
     })
   })
   context('fails', function () {
@@ -253,17 +252,18 @@ describe('pg:copy', function () {
     })
     it('fails to copy', async function () {
       const err = 'An error occurred and the backup did not finish.\n\nfoobar\n\nRun heroku pg:backups:info b001 for more details.'
-      await runCommand(Cmd, [
+      const {error, stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--confirm',
         'myapp',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
-      ]).catch(error => expect(ansis.strip(error.message)).to.contain(err))
-      expect(stdout.output).to.equal('')
-      expect(stderr.output).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
-      expect(stderr.output).to.include(copyingFailText)
+      ])
+      expect(ansis.strip(error!.message)).to.contain(err)
+      expect(stdout).to.equal('')
+      expect(stderr).to.include('Starting copy of database bar on foo.com:5432 to RED... done\n')
+      expect(stderr).to.include(copyingFailText)
     })
   })
 })

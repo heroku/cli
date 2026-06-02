@@ -106,12 +106,10 @@ export default class BackboardOtelClient {
 
     const resource = Resource
       .default()
-      .merge(
-        new Resource({
-          [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
-          [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
-        }),
-      )
+      .merge(new Resource({
+        [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
+        [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
+      }))
 
     // Initialize without Sentry sampler initially (Sentry loaded lazily)
     provider = new NodeTracerProvider({
@@ -119,7 +117,7 @@ export default class BackboardOtelClient {
     })
     telemetryDebug('NodeTracerProvider created')
 
-    // eslint-disable-next-line no-negated-condition, unicorn/no-negated-condition
+    // eslint-disable-next-line unicorn/no-negated-condition
     const token = process.env.IS_HEROKU_TEST_ENV !== 'true' ? await getToken() : ''
     const headers = {Authorization: `Bearer ${token}`}
 

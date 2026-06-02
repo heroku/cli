@@ -1,14 +1,12 @@
 import * as Heroku from '@heroku-cli/schema'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stderr, stdout} from 'stdout-stderr'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/unschedule.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import runCommand from '../../../../helpers/runCommand.js'
-import expectOutput from '../../../../helpers/utils/expectOutput.js'
 
 const heredoc = tsheredoc.default
 
@@ -40,9 +38,9 @@ describe('pg:backups:unschedule', function () {
     })
 
     it('unschedules a backup', async function () {
-      await cmdRun(['--app', appName])
-      expectOutput(stdout.output, '')
-      expectOutput(stderr.output, heredoc(`
+      const {stderr, stdout} = await cmdRun(['--app', appName])
+      expectOutput(stdout, '')
+      expectOutput(stderr, heredoc(`
         Unscheduling ⛁ DATABASE_URL daily backups... done
       `))
     })
@@ -88,7 +86,7 @@ describe('pg:backups:unschedule error state', function () {
   })
 
   it('errors when multiple schedules are returned from API', async function () {
-    await runCommand(Cmd, ['--app', appName])
-      .catch(error => expect(ansis.strip(error.message)).to.equal(`Specify schedule on ⬢ ${appName}. Existing schedules: ⛁ DATABASE_URL, ⛁ DATABASE_URL2`))
+    const {error} = await runCommand(Cmd, ['--app', appName])
+    expect(ansis.strip(error!.message)).to.equal(`Specify schedule on ⬢ ${appName}. Existing schedules: ⛁ DATABASE_URL, ⛁ DATABASE_URL2`)
   })
 })

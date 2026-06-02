@@ -6,9 +6,7 @@ import Git from '../../lib/git/git.js'
 
 export default class Login extends Command {
   static aliases = ['login']
-
   static description = 'login with your Heroku credentials'
-
   static flags = {
     browser: flags.string({description: 'browser to open SSO with (example: "firefox", "safari")'}),
     'expires-in': flags.integer({char: 'e', description: 'duration of token in seconds (default 30 days)'}),

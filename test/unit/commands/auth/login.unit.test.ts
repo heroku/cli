@@ -1,18 +1,17 @@
+import {APIClient} from '@heroku-cli/command'
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
-
-import {APIClient} from '@heroku-cli/command'
+import {SinonStub, stub} from 'sinon'
 
 import Login from '../../../../src/commands/auth/login.js'
 import Git from '../../../../src/lib/git/git.js'
-import {runCommand} from '../../../helpers/run-command.js'
 
 describe('auth:login', function () {
   let api: nock.Scope
-  let configureCredentialHelperStub: sinon.SinonStub
-  let eraseCredentialsStub: sinon.SinonStub
-  let loginStub: sinon.SinonStub
+  let configureCredentialHelperStub: SinonStub
+  let eraseCredentialsStub: SinonStub
+  let loginStub: SinonStub
   let savedApiKey: string | undefined
 
   beforeEach(function () {
@@ -21,9 +20,9 @@ describe('auth:login', function () {
     savedApiKey = process.env.HEROKU_API_KEY
     delete process.env.HEROKU_API_KEY
 
-    configureCredentialHelperStub = sinon.stub(Git.prototype, 'configureCredentialHelper').resolves()
-    eraseCredentialsStub = sinon.stub(Git.prototype, 'eraseCredentials').resolves()
-    loginStub = sinon.stub(APIClient.prototype, 'login').resolves()
+    configureCredentialHelperStub = stub(Git.prototype, 'configureCredentialHelper').resolves()
+    eraseCredentialsStub = stub(Git.prototype, 'eraseCredentials').resolves()
+    loginStub = stub(APIClient.prototype, 'login').resolves()
   })
 
   afterEach(function () {

@@ -1,8 +1,8 @@
+import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../../src/commands/spaces/drains/get.js'
-import {runCommand} from '../../../../helpers/run-command.js'
 
 describe('spaces:drains:get', function () {
   const drain = {

@@ -5,16 +5,14 @@ import {Args, ux} from '@oclif/core'
 import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsUpdate extends Command {
-  static description = 'updates an OAuth authorization'
-
-  static flags = {
-    description: flags.string({char: 'd', description: 'set a custom authorization description'}),
-    'client-id': flags.string({description: 'identifier of OAuth client to set', dependsOn: ['client-secret']}),
-    'client-secret': flags.string({description: 'secret of OAuth client to set', dependsOn: ['client-id']}),
-  }
-
   static args = {
-    id: Args.string({required: true, description: 'ID of the authorization'}),
+    id: Args.string({description: 'ID of the authorization', required: true}),
+  }
+  static description = 'updates an OAuth authorization'
+  static flags = {
+    'client-id': flags.string({dependsOn: ['client-secret'], description: 'identifier of OAuth client to set'}),
+    'client-secret': flags.string({dependsOn: ['client-id'], description: 'secret of OAuth client to set'}),
+    description: flags.string({char: 'd', description: 'set a custom authorization description'}),
   }
 
   async run() {
@@ -34,8 +32,8 @@ export default class AuthorizationsUpdate extends Command {
       `/oauth/authorizations/${args.id}`,
       {
         body: {
-          description: flags.description,
           client,
+          description: flags.description,
         },
       },
     )

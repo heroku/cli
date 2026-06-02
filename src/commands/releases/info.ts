@@ -1,17 +1,16 @@
-import {color, hux} from '@heroku/heroku-cli-util'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
-import {description, color as getStatusColor} from '../../lib/releases/status_helper.js'
+import {description, color as getStatusColor} from '../../lib/releases/status-helper.js'
 
 export default class Info extends Command {
   static args = {
     release: Args.string({description: 'ID of the release. If omitted, we use the last release ID.'}),
   }
-
   static description = 'view detailed information for a release'
   static flags = {
     app: flags.app({required: true}),
@@ -19,7 +18,6 @@ export default class Info extends Command {
     remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output in shell format'}),
   }
-
   static topic = 'releases'
 
   public async run(): Promise<void> {
@@ -39,24 +37,24 @@ export default class Info extends Command {
       if (status) {
         let colorFn: (s: string) => string
         switch (statusColor) {
-        case 'red': {
-          colorFn = color.failure
-          break
-        }
+          case 'gray': {
+            colorFn = color.inactive
+            break
+          }
 
-        case 'yellow': {
-          colorFn = color.warning
-          break
-        }
+          case 'red': {
+            colorFn = color.failure
+            break
+          }
 
-        case 'gray': {
-          colorFn = color.inactive
-          break
-        }
+          case 'yellow': {
+            colorFn = color.warning
+            break
+          }
 
-        default: {
-          colorFn = color.info
-        }
+          default: {
+            colorFn = color.info
+          }
         }
 
         releaseChange += ' (' + colorFn(status) + ')'
@@ -73,13 +71,12 @@ export default class Info extends Command {
       ux.stdout()
       hux.styledHeader(`${color.name('v' + release.version)} Config vars`)
       if (shell) {
-        Object.entries(config).forEach(([k, v]) => {
+        for (const [k, v] of Object.entries(config)) {
           ux.stdout(`${k}=${quote(v)}`)
-        })
+        }
       } else {
         hux.styledObject(config)
       }
     }
   }
 }
-

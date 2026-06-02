@@ -8,11 +8,11 @@ import HerokulyticsConfig from '../../../src/lib/analytics-telemetry/herokulytic
 import {stubCredentialManager} from '../../helpers/credential-manager-stub.js'
 
 const mockCommand = {
+  id: 'login',
   plugin: {
     name: 'foo',
     version: '123',
   },
-  id: 'login',
 }
 
 const mockInvalidCommand = {
@@ -48,7 +48,7 @@ async function runAnalyticsTest(expectedCbk: (data: AnalyticsInterface) => any, 
 
   const backboard = createBackboardMock(expectedCbk, actual)
   await analytics.send({
-    Command: mockCommand as any, argv: ['foo', 'bar'],
+    argv: ['foo', 'bar'], Command: mockCommand as any,
   })
   backboard.done()
 }
@@ -87,7 +87,7 @@ describe('analytics (error handling)', function () {
 
     try {
       await analytics.send({
-        Command: mockCommand as any, argv: ['foo', 'bar'],
+        argv: ['foo', 'bar'], Command: mockCommand as any,
       })
     } catch {
       throw new Error('Expected analytics.send to catch error')
@@ -119,7 +119,7 @@ describe('analytics (error handling)', function () {
 
     try {
       await analytics.send({
-        Command: mockCommand as any, argv: ['foo', 'bar'],
+        argv: ['foo', 'bar'], Command: mockCommand as any,
       })
     } catch {
       throw new Error('Expected analytics.send to catch error')
@@ -140,7 +140,7 @@ describe('analytics (error handling)', function () {
 
     try {
       await analytics.send({
-        Command: mockInvalidCommand as any, argv: ['foo', 'bar'],
+        argv: ['foo', 'bar'], Command: mockInvalidCommand as any,
       })
     } catch {
       throw new Error('Expected analytics.send to catch error')

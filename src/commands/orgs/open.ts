@@ -9,7 +9,6 @@ export default class OrgsOpen extends Command {
   static flags = {
     team: flags.team({required: true}),
   }
-
   static topic = 'orgs'
 
   public static async openUrl(url: string): Promise<void> {

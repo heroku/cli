@@ -1,13 +1,13 @@
 import {Hook} from '@oclif/core/hooks'
 
 const performance_analytics: Hook<'postrun'> = async function () {
-  const globalAny = global as any
+  const globalAny = globalThis as any
 
   if (!globalAny.cliTelemetry) {
     return
   }
 
-  const {computeDuration, isTelemetryEnabled, getTelemetryDisabledReason, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
+  const {computeDuration, getTelemetryDisabledReason, isTelemetryEnabled, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
   if (!isTelemetryEnabled()) {

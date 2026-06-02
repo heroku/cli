@@ -7,11 +7,9 @@ import {revertSortedArgs} from '../../lib/run/helpers.js'
 
 export default class Run extends Command {
   static description = 'run a one-off command'
-
   static examples = [
     color.command('heroku local:run bin/migrate'),
   ]
-
   static flags = {
     env: Flags.string({
       char: 'e',
@@ -22,7 +20,6 @@ export default class Run extends Command {
       description: 'port to listen on',
     }),
   }
-
   static strict = false
 
   async run() {

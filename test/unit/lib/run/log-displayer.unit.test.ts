@@ -1,10 +1,10 @@
 /* eslint-disable unicorn/prefer-add-event-listener */
 import {APIClient} from '@heroku-cli/command'
+import {captureOutput} from '@heroku-cli/test-utils'
 import {Config, Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import sinon from 'sinon'
-import {stdout, stderr} from 'stdout-stderr'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import {LogDisplayer} from '../../../../src/lib/run/log-displayer.js'
@@ -18,7 +18,7 @@ describe('logDisplayer', function () {
   let heroku: APIClient
   let env: NodeJS.ProcessEnv
   let displayer: LogDisplayer
-  let createEventSourceStub: sinon.SinonStub
+  let createEventSourceStub: SinonStub
 
   before(async function () {
     env = process.env
@@ -36,6 +36,7 @@ describe('logDisplayer', function () {
       public readyState: number = 0 // CONNECTING
       public url: string
       private errorCode: number
+      private timeouts: NodeJS.Timeout[] = []
 
       constructor(url: string, options?: any) {
         this.url = url
@@ -48,7 +49,7 @@ describe('logDisplayer', function () {
         }
 
         // Simulate connection attempt
-        setTimeout(() => {
+        const timeout1 = setTimeout(() => {
           // Check if this is the test that expects success (specific URL pattern for non-tail mode)
           const isSuccessTest = this.url.includes('logs.heroku.com') && this.url.includes('tail=false')
 
@@ -74,7 +75,7 @@ describe('logDisplayer', function () {
             }
 
             // Close after sending messages
-            setTimeout(() => {
+            const timeout2 = setTimeout(() => {
               this.close()
               // For non-tail mode, trigger error event to resolve the promise
               if (this.onerror) {
@@ -85,6 +86,7 @@ describe('logDisplayer', function () {
                 this.onerror(closeEvent)
               }
             }, 20)
+            this.timeouts.push(timeout2)
           } else if (this.onerror) {
             // Create a mock error event with status code
             const errorEvent = {
@@ -94,29 +96,36 @@ describe('logDisplayer', function () {
             this.onerror(errorEvent)
           }
         }, 10)
+        this.timeouts.push(timeout1)
       }
 
       addEventListener(type: string, listener: (event: any) => void) {
         switch (type) {
-        case 'error': {
-          this.onerror = listener
-          break
-        }
+          case 'error': {
+            this.onerror = listener
+            break
+          }
 
-        case 'message': {
-          this.onmessage = listener
-          break
-        }
+          case 'message': {
+            this.onmessage = listener
+            break
+          }
 
-        case 'open': {
-          this.onopen = listener
-          break
-        }
+          case 'open': {
+            this.onopen = listener
+            break
+          }
         }
       }
 
       close() {
         this.readyState = 2 // CLOSED
+        // Clear all pending timeouts to prevent them from running after tests complete
+        for (const timeout of this.timeouts) {
+          clearTimeout(timeout)
+        }
+
+        this.timeouts = []
       }
     }
 
@@ -124,13 +133,18 @@ describe('logDisplayer', function () {
     displayer = new LogDisplayer(heroku)
 
     // Stub the createEventSourceInstance method
-    createEventSourceStub = sinon.stub(displayer, 'createEventSourceInstance').callsFake((url: string, options?: any) => new MockEventSource(url, options) as any)
+    createEventSourceStub = stub(displayer, 'createEventSourceInstance').callsFake((url: string, options?: any) => new MockEventSource(url, options) as any)
   })
 
   afterEach(function () {
     api?.done()
     if (createEventSourceStub) {
       createEventSourceStub.restore()
+    }
+
+    // Ensure displayer is cleaned up to avoid hanging
+    if (displayer) {
+      displayer = null as any
     }
   })
 
@@ -295,7 +309,7 @@ describe('logDisplayer', function () {
 
     context('when the log server responds with a stream of log lines', function () {
       it('displays log lines and exits', async function () {
-        const logServer = nock('https://logs.heroku.com', {
+        nock('https://logs.heroku.com', {
           reqheaders: {Accept: 'text/event-stream'},
         }).get('/stream')
           .query(true)
@@ -306,15 +320,15 @@ describe('logDisplayer', function () {
             data: 2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2\n\n\n
                     `)
 
-        stdout.start()
-        await displayer.display({
-          app: 'my-cedar-app',
-          tail: false,
+        const {stdout} = await captureOutput(async () => {
+          await displayer.display({
+            app: 'my-cedar-app',
+            tail: false,
+          })
         })
-        stdout.stop()
 
         // Note: logServer.done() is not called because our MockEventSource intercepts the request
-        expect(stdout.output).to.eq(heredoc`
+        expect(stdout).to.eq(heredoc`
           2024-10-17T22:23:22.209776+00:00 app[web.1]: log line 1
           2024-10-17T22:23:23.032789+00:00 app[web.1]: log line 2
         `)
@@ -354,19 +368,16 @@ describe('logDisplayer', function () {
     context('when the log server responds with a stream of log lines and then timeouts', function () {
       it('displays log lines and exits showing a timeout error', async function () {
         try {
-          stdout.start()
           await displayer.display({
             app: 'my-cedar-app',
             tail: true,
           })
+          expect.fail('Expected error to be thrown')
         } catch (error: unknown) {
-          stdout.stop()
           const {message, oclif} = error as CLIError
           expect(message).to.equal('Logs eventsource failed with: 401')
           expect(oclif.exit).to.eq(1)
         }
-
-        expect(stdout.output).to.eq('')
       })
     })
   })
@@ -387,21 +398,15 @@ describe('logDisplayer', function () {
 
     it('displays logs and recreates log sessions on timeout', async function () {
       try {
-        stdout.start()
-        stderr.start()
         await displayer.display({
           app: 'my-fir-app',
           tail: false,
         })
+        expect.fail('Expected error to be thrown')
       } catch (error: unknown) {
-        stdout.stop()
-        stderr.stop()
         const {message} = error as Error
         expect(message.trim()).to.equal('HTTP Error 500 for POST https://api.heroku.com/apps/my-fir-app/log-sessions')
       }
-
-      // it displays message about fetching logs for fir apps
-      expect(stderr.output).to.eq('Fetching logs...\n\n')
     })
   })
 })

@@ -10,7 +10,6 @@ export default class AppsLock extends Command {
     app: flags.app({required: true}),
     remote: flags.remote(),
   }
-
   static topic = 'apps'
 
   public async run(): Promise<void> {
@@ -28,7 +27,8 @@ export default class AppsLock extends Command {
       `/teams/apps/${appName}`,
       {
         body: {locked: true},
-      })
+      },
+    )
     ux.action.stop()
   }
 }
