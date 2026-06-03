@@ -4,7 +4,6 @@
 // License text available at https://opensource.org/licenses/MIT
 
 var fs = require('fs');
-var util = require('util');
 var cons = require('./console.cjs').Console;
 
 function method(name) {
@@ -101,7 +100,9 @@ function loadEnvsFile(path) {
 }
 
 function loadEnvs(path) {
-  var envs = path.split(',').map(loadEnvsFile).reduce(util._extend, {});
+  var envs = path.split(',').map(loadEnvsFile).reduce(function(acc, obj) {
+    return Object.assign(acc, obj);
+  }, {});
   var sorted = Object.create(null);
   Object.keys(envs).sort().forEach(function(k) {
     sorted[k] = envs[k];
