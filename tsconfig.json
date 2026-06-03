@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": true, // allowed to support run-foreman.js. Should be removed when that functionality is refactored.
+    "allowJs": true, // required to support run-foreman.cjs and vendored foreman .cjs files in src/lib/local/foreman/
     "declaration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
