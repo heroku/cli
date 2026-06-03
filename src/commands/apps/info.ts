@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {appExtensions, AppInfo} from '@heroku/sdk/extensions/platform'
 import {AddOn, App, Collaborator} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
@@ -21,6 +22,7 @@ export default class AppsInfo extends Command {
   ]
   static flags = {
     app: flags.app(),
+    extended: flags.boolean({char: 'x', hidden: true}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     remote: flags.remote(),
     shell: flags.boolean({char: 's', description: 'output more shell friendly key/value pairs'}),
@@ -47,7 +49,15 @@ repo_size=5000000
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
     const {platform} = new HerokuSDK({extensions: [appExtensions]})
-    const info = await platform.app.describe(app)
+    const extendedPromise = flags.extended
+      ? new HerokuApiClient()
+        .get(`/apps/${encodeURIComponent(app)}`, {searchParams: {extended: 'true'}})
+        .then(r => r.json() as Promise<{extended?: unknown}>)
+      : undefined
+    const [info, extendedApp] = await Promise.all([
+      platform.app.describe(app),
+      extendedPromise,
+    ])
     const addons = info.addons.map((a: AddOn) => a.plan?.name).sort()
     const collaborators = info.collaborators.map((c: Collaborator) => c.user.email)
       .filter((c: string) => c !== info.app.owner.email)
@@ -81,6 +91,10 @@ repo_size=5000000
       hux.styledJSON(toJsonShape(info))
     } else {
       print(info, addons, collaborators, _)
+      if (extendedApp?.extended) {
+        ux.stdout('\n\n--- Extended Information ---\n\n')
+        ux.stdout(inspect(extendedApp.extended))
+      }
     }
   }
 }
