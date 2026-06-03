@@ -8,20 +8,12 @@ import Info from '../../../../src/commands/apps/info.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 type FakePlatform = {
-  addOn: {listByApp: sinon.SinonStub}
-  app: {info: sinon.SinonStub}
-  collaborator: {list: sinon.SinonStub}
-  dyno: {list: sinon.SinonStub}
-  pipelineCoupling: {infoByApp: sinon.SinonStub}
+  app: {describe: sinon.SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    addOn: {listByApp: sinon.stub()},
-    app: {info: sinon.stub()},
-    collaborator: {list: sinon.stub()},
-    dyno: {list: sinon.stub()},
-    pipelineCoupling: {infoByApp: sinon.stub()},
+    app: {describe: sinon.stub()},
   }
 }
 
@@ -64,8 +56,6 @@ describe('apps:info', function () {
 
   const appStackChange = {...app, build_stack: {name: 'heroku-24'}}
 
-  const appExtended = {...app, extended: {foo: 'bar', id: 12_345}}
-
   const appAcm = {...app, acm: true}
 
   const firAppAcm = {...firApp, acm: true}
@@ -87,7 +77,6 @@ describe('apps:info', function () {
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
-Database Size:    1000 B
 Space:            ⬡ myspace
 Internal Routing: true
 Auto Cert Mgmt:   true
@@ -106,7 +95,6 @@ Stack:            cedar-14
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
-Database Size:    1000 B
 Space:            ⬡ myspace
 Internal Routing: true
 Auto Cert Mgmt:   true
@@ -122,11 +110,13 @@ Stack:            cedar-14
   let fakePlatform: FakePlatform
 
   function stubBaseInfo(appPayload: Record<string, unknown> = appAcm) {
-    fakePlatform.app.info.resolves(appPayload)
-    fakePlatform.addOn.listByApp.resolves(addons)
-    fakePlatform.collaborator.list.resolves(collaborators)
-    fakePlatform.dyno.list.resolves(dynos)
-    fakePlatform.pipelineCoupling.infoByApp.rejects(new Error('not coupled'))
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appPayload,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
   }
 
   beforeEach(function () {
@@ -146,49 +136,7 @@ Stack:            cedar-14
 
     expect(stdout).to.equal(BASE_INFO)
     expect(unwrap(stderr)).to.contains('')
-    expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
-    expect(fakePlatform.addOn.listByApp.calledOnceWithExactly('myapp')).to.equal(true)
-    expect(fakePlatform.collaborator.list.calledOnceWithExactly('myapp')).to.equal(true)
-    expect(fakePlatform.dyno.list.calledOnceWithExactly('myapp')).to.equal(true)
-  })
-
-  it('shows extended app info', async function () {
-    stubBaseInfo()
-    const extendedScope = nock('https://api.heroku.com')
-      .get('/apps/myapp')
-      .query({extended: 'true'})
-      .reply(200, appExtended)
-
-    const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp', '--extended'])
-
-    expect(stdout).to.equal(`${BASE_INFO}
-
---- Extended Information ---
-
-
-{ foo: 'bar', id: 12345 }
-`)
-    expect(unwrap(stderr)).to.contains('')
-    extendedScope.done()
-  })
-
-  it('shows empty extended app info when not defined', async function () {
-    stubBaseInfo()
-    const extendedScope = nock('https://api.heroku.com')
-      .get('/apps/myapp')
-      .query({extended: 'true'})
-      .reply(200, appAcm)
-
-    const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp', '--extended'])
-
-    expect(stdout).to.equal(`${BASE_INFO}
-
---- Extended Information ---
-
-
-`)
-    expect(unwrap(stderr)).to.contains('')
-    extendedScope.done()
+    expect(fakePlatform.app.describe.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('shows app info via arg', async function () {
@@ -201,11 +149,16 @@ Stack:            cedar-14
   })
 
   it('shows app info via arg when the app is in a pipeline', async function () {
-    stubBaseInfo()
-    fakePlatform.pipelineCoupling.infoByApp.resolves({
-      app: {id: appAcm.id},
-      pipeline: {name: 'my-pipeline'},
-      stage: 'production',
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: {
+        app: {id: appAcm.id},
+        pipeline: {name: 'my-pipeline'},
+        stage: 'production',
+      },
     })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp'])
@@ -215,7 +168,6 @@ Stack:            cedar-14
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
-Database Size:    1000 B
 Space:            ⬡ myspace
 Internal Routing: true
 Pipeline:         my-pipeline - production
@@ -240,7 +192,6 @@ Stack:            cedar-14
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
-database_size=1000 B
 git_url=https://git.heroku.com/myapp
 web_url=https://myapp.herokuapp.com
 repo_size=1000 B
@@ -254,11 +205,16 @@ stack=cedar-14
   })
 
   it('shows app info in shell format when the app is in pipeline', async function () {
-    stubBaseInfo()
-    fakePlatform.pipelineCoupling.infoByApp.resolves({
-      app: {id: appAcm.id},
-      pipeline: {name: 'my-pipeline'},
-      stage: 'production',
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: {
+        app: {id: appAcm.id},
+        pipeline: {name: 'my-pipeline'},
+        stage: 'production',
+      },
     })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
@@ -266,7 +222,6 @@ stack=cedar-14
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
-database_size=1000 B
 pipeline=my-pipeline:production
 git_url=https://git.heroku.com/myapp
 web_url=https://myapp.herokuapp.com
@@ -280,28 +235,16 @@ stack=cedar-14
     expect(unwrap(stderr)).to.contains('')
   })
 
-  it('shows extended app info in json format', async function () {
-    stubBaseInfo()
-    const extendedScope = nock('https://api.heroku.com')
-      .get('/apps/myapp')
-      .query({extended: 'true'})
-      .reply(200, appExtended)
-
-    const {stderr, stdout} = await runCommand(Info, ['myapp', '--extended', '--json'])
-
-    const json = JSON.parse(stdout)
-    expect(json.appExtended).to.equal(undefined)
-    expect(json.app.extended).not.to.equal(undefined)
-    expect(json.app.extended.id).to.equal(appExtended.extended.id)
-    expect(unwrap(stderr)).to.contains('')
-    extendedScope.done()
-  })
-
   it('shows app info in json format', async function () {
-    stubBaseInfo()
-    fakePlatform.pipelineCoupling.infoByApp.resolves({
-      app: {id: appAcm.id},
-      pipeline: {name: 'my-pipeline'},
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: {
+        app: {id: appAcm.id},
+        pipeline: {name: 'my-pipeline'},
+      },
     })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--json'])
@@ -326,7 +269,6 @@ stack=cedar-14
 Addons:           heroku-redis
                   papertrail
 Collaborators:    foo2@foo.com
-Database Size:    1000 B
 Space:            ⬡ myspace
 Internal Routing: true
 Git URL:          https://git.heroku.com/myapp
@@ -358,7 +300,6 @@ Stack:            cedar-14 (next build will use heroku-24)
     expect(stdout).to.equal(`auto_cert_mgmt=true
 addons=heroku-redis,papertrail
 collaborators=foo2@foo.com
-database_size=1000 B
 git_url=https://git.heroku.com/myapp
 web_url=https://myapp.herokuapp.com
 repo_size=1000 B
