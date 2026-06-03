@@ -1,20 +1,6 @@
 name: Publish NPM
 
 on:
-  workflow_dispatch:
-    inputs:
-      isStableRelease:
-        type: boolean
-        description: Is this a stable/prod release?
-        required: true
-        default: false
-      channel:
-        type: choice
-        description: If this is a prerelease, is it alpha or beta?
-        options:
-          - alpha
-          - beta
-        required: false
   workflow_call:
     inputs:
       isStableRelease:
@@ -56,8 +42,8 @@ jobs:
 
           if ${{ fromJSON(inputs.isStableRelease) }}
           then
-            npm publish --provenance --access public
+            npm publish --access public
           else
-            npm publish --provenance --access public --tag ${{ inputs.channel || 'beta' }}
+            npm publish --access public --tag ${{ inputs.channel || 'beta' }}
           fi
         shell: bash

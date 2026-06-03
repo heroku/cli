@@ -1,13 +1,6 @@
 name: Create CLI Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      isStableCandidate:
-        type: boolean
-        description: Is this a stable/prod candidate?
-        required: true
-        default: false
   workflow_call:
     inputs:
       isStableCandidate:

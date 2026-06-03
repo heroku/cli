@@ -7,6 +7,13 @@ on:
   push:
     branches:
       - prerelease/*
+  workflow_dispatch:
+    inputs:
+      isStableCandidate:
+        type: boolean
+        description: Is this a stable/prod candidate?
+        required: true
+        default: false
 
 permissions:
   contents: write
@@ -73,7 +80,7 @@ jobs:
     uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
-      isStableCandidate: ${{ github.event_name == 'release' && !contains(github.event.release.tag_name, '-') }}
+      isStableCandidate: ${{ (github.event_name == 'release' && !contains(github.event.release.tag_name, '-')) || (github.event_name == 'workflow_dispatch' && inputs.isStableCandidate) }}
 
   # --- Prerelease only: post-release smoke tests ---
   prerelease-smoke-tests:
