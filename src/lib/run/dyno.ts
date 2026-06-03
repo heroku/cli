@@ -443,8 +443,15 @@ export default class Dyno extends Duplex {
     // both concerns; `onPoll` updates the spinner status live so the
     // user sees `starting → up` transitions on the existing
     // "Running <cmd> on <app>" spinner started by `_doStart`.
+    //
+    // `attempts: 60` matches the prior code's effective behavior:
+    // it reset its retry budget on every 2xx, so state-polling
+    // (`down` → `idle` → `starting`) was effectively uncapped. The
+    // single shared budget here trades that for a hard ceiling;
+    // 60s is comfortably above typical shielded-space provisioning.
     const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
     const dyno = await platform.dyno.waitForInfo(this.opts.app, this.opts.dyno!, {
+      attempts: 60,
       onPoll: polled => {
         this.dyno = polled as APIDyno
         if (this.opts.showStatus) {
@@ -453,6 +460,12 @@ export default class Dyno extends Duplex {
       },
       states: ['starting', 'up'],
     }) as APIDyno
+    // `this.dyno` was already updated by the final `onPoll` (the
+    // helper fires onPoll before the state check returns), but the
+    // helper's return value is the canonical reference; assign it
+    // here as belt-and-suspenders so callers reading `this.dyno`
+    // synchronously after `_ssh` resolves get a defined value even
+    // if `onPoll` is ever skipped on the matching attempt.
     this.dyno = dyno
     if (this.opts.showStatus) {
       ux.action.stop(this._status(dyno.state))

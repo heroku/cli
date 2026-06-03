@@ -1,4 +1,5 @@
 import {APIClient} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
@@ -323,6 +324,88 @@ describe('Dyno', function () {
       const readData = dyno._readData()
       readData('regular output\n')
       expect(pushedData).to.equal('regular output\n')
+    })
+  })
+
+  describe('_ssh', function () {
+    let waitForInfoStub: sinon.SinonStub
+    let connectStub: sinon.SinonStub
+
+    beforeEach(function () {
+      waitForInfoStub = sandbox.stub()
+      const fakePlatform = {
+        dyno: {waitForInfo: waitForInfoStub},
+      }
+      sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+      // _connect opens a TLS socket; stub it so the test never tries
+      // to dial a real network endpoint.
+      connectStub = sandbox.stub(Dyno.prototype, '_connect' as keyof Dyno).resolves('connected')
+    })
+
+    function buildSshDyno(): Dyno {
+      const opts: DynoOpts = {
+        app: 'my-app',
+        command: 'bash',
+        dyno: 'run.1234',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      return new Dyno(opts)
+    }
+
+    it('calls waitForInfo with the runnable-state filter and forwards app+dyno args', async function () {
+      waitForInfoStub.resolves({name: 'run.1234', size: 'Standard-1X', state: 'up'})
+
+      const dyno = buildSshDyno()
+      await dyno._ssh()
+
+      expect(waitForInfoStub.calledOnce).to.equal(true)
+      const [appId, dynoId, options] = waitForInfoStub.firstCall.args
+      expect(appId).to.equal('my-app')
+      expect(dynoId).to.equal('run.1234')
+      expect(options.states).to.deep.equal(['starting', 'up'])
+      expect(typeof options.onPoll).to.equal('function')
+    })
+
+    it('updates this.dyno from onPoll and from the resolved value', async function () {
+      const finalDyno = {name: 'run.1234', size: 'Standard-1X', state: 'up'}
+      waitForInfoStub.callsFake(async (_app: string, _name: string, options: {onPoll?: (d: unknown) => void}) => {
+        // Simulate the helper firing onPoll for an intermediate state.
+        options.onPoll?.({name: 'run.1234', size: 'Standard-1X', state: 'starting'})
+        options.onPoll?.(finalDyno)
+        return finalDyno
+      })
+
+      const dyno = buildSshDyno()
+      await dyno._ssh()
+
+      expect(dyno.dyno).to.deep.equal(finalDyno)
+    })
+
+    it('connects after the dyno reaches a runnable state', async function () {
+      waitForInfoStub.resolves({name: 'run.1234', size: 'Standard-1X', state: 'starting'})
+
+      const dyno = buildSshDyno()
+      const result = await dyno._ssh()
+
+      expect(connectStub.calledOnce).to.equal(true)
+      expect(result).to.equal('connected')
+    })
+
+    it('propagates waitForInfo errors without calling _connect', async function () {
+      const failure = new Error('platform unreachable')
+      waitForInfoStub.rejects(failure)
+
+      const dyno = buildSshDyno()
+      let caught: unknown
+      try {
+        await dyno._ssh()
+      } catch (error) {
+        caught = error
+      }
+
+      expect(caught).to.equal(failure)
+      expect(connectStub.called).to.equal(false)
     })
   })
 })
