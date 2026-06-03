@@ -47,7 +47,7 @@
     "eventsource": "^4",
     "execa": "^9.6.1",
     "filesize": "^10.1",
-    "foreman": "^3.0.1",
+
     "fs-extra": "^11.3.0",
     "glob": "^13.0.2",
     "got": "^13.0.0",

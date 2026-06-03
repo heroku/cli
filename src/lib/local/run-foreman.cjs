@@ -3,9 +3,9 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-// This file is copied from the Node Foreman package. It was copied in order to fix
-// a bug related to the use of port 5000 as a default. It is not meant to be a
-// long-term solution, we plan to eventually remove our dependency on Node Foreman.
+// Based on the Node Foreman package (v3.0.1). The foreman library is vendored
+// in ./foreman/ and is no longer an external npm dependency. The default port
+// was changed from 5000 to 5006 to avoid conflicts with macOS AirPlay.
 
 // These rules are disabled in order to prevent the need for refactoring
 /* eslint-disable guard-for-in */
@@ -16,24 +16,24 @@
 /* eslint-disable unicorn/no-process-exit */
 /* eslint-disable no-new */
 /* eslint-disable radix */
+/* eslint-disable perfectionist/sort-imports */
 
 const program = require('commander')
-const colors = require('foreman/lib/colors')
+const colors = require('./foreman/colors.cjs')
 const events = require('node:events')
 const fs = require('node:fs')
 const path = require('node:path')
 const {quote} = require('shell-quote')
-const display = require('foreman/lib/console').Console
-const _envs    = require('foreman/lib/envs')
-const exporters = require('foreman/lib/exporters')
-const {startForward} = require('foreman/lib/forward')
-const _proc = require('foreman/lib/proc')
-const _procfile = require('foreman/lib/procfile')
-const {startProxies} = require('foreman/lib/proxy')
-const _requirements    = require('foreman/lib/requirements')
-const foremanPjson = require('foreman/package.json')
+const display = require('./foreman/console.cjs').Console
+const _envs    = require('./foreman/envs.cjs')
+const exporters = require('./foreman/exporters.cjs')
+const {startForward} = require('./foreman/forward.cjs')
+const _proc = require('./foreman/proc.cjs')
+const _procfile = require('./foreman/procfile.cjs')
+const {startProxies} = require('./foreman/proxy.cjs')
+const _requirements    = require('./foreman/requirements.cjs')
 
-program.version(foremanPjson.version)
+program.version('3.0.1')
 program.option('-j, --procfile <FILE>', 'load procfile FILE', 'Procfile')
 program.option('-e, --env      <FILE>', 'load environment from FILE, a comma-separated list', '.env')
 program.option('-p, --port     <PORT>', 'start indexing ports at number PORT', 0)
