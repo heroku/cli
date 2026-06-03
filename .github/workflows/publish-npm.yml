@@ -27,6 +27,10 @@ on:
         description: Release channel for prereleases
         required: false
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish-npm:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
@@ -38,9 +42,8 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: Publish to NPM
         run: |
           PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
@@ -53,8 +56,8 @@ jobs:
 
           if ${{ fromJSON(inputs.isStableRelease) }}
           then
-            npm publish
+            npm publish --provenance --access public
           else
-            npm publish --tag ${{ inputs.channel || 'beta' }}
+            npm publish --provenance --access public --tag ${{ inputs.channel || 'beta' }}
           fi
         shell: bash

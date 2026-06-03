@@ -16,6 +16,10 @@ on:
         required: true
         default: false
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   get-version-channel:
     runs-on: ubuntu-latest
