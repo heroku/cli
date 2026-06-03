@@ -42,8 +42,8 @@ jobs:
 
           if ${{ fromJSON(inputs.isStableRelease) }}
           then
-            npm publish --access public
+            npm publish
           else
-            npm publish --access public --tag ${{ inputs.channel || 'beta' }}
+            npm publish --tag ${{ inputs.channel || 'beta' }}
           fi
         shell: bash
