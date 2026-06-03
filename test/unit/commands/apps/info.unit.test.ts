@@ -310,4 +310,23 @@ stack=cedar-14
 `)
     expect(unwrap(stderr)).to.contains('')
   })
+
+  it('shows extended app info with --extended when the response carries an extended payload', async function () {
+    stubBaseInfo()
+
+    const extendedPayload = {feature_flags: 'foo,bar', processes: 'web=1'}
+    nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .query({extended: 'true'})
+      .reply(200, {...appAcm, extended: extendedPayload})
+
+    const {stderr, stdout} = await runCommand(Info, ['myapp', '--extended'])
+
+    expect(stdout).to.contain(BASE_INFO.trimEnd())
+    expect(stdout).to.contain('--- Extended Information ---')
+    expect(stdout).to.contain("feature_flags: 'foo,bar'")
+    expect(stdout).to.contain("processes: 'web=1'")
+    expect(unwrap(stderr)).to.contains('')
+    expect(fakePlatform.app.describe.calledOnceWithExactly('myapp')).to.equal(true)
+  })
 })
