@@ -13,7 +13,7 @@
     "@heroku/heroku-cli-util": "^10.8.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
-    "@heroku/sdk": "file:../heroku-sdk",
+    "@heroku/sdk": "^0.1.0-beta.0",
     "@heroku/socksv5": "^0.0.9",
     "@heroku/types": "github:heroku/heroku-types#main",
     "@inquirer/prompts": "^7.0",
