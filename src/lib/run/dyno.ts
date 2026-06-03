@@ -4,7 +4,9 @@ import {APIClient, type IOptions} from '@heroku-cli/command'
 import {type Notification, notify} from '@heroku-cli/notifications'
 import {Dyno as APIDyno} from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HTTP, HTTPError} from '@heroku/http-call'
+import {HTTP} from '@heroku/http-call'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 import {spawn} from 'node:child_process'
@@ -18,9 +20,6 @@ import {URL} from 'node:url'
 import {buildEnvFromFlag} from './helpers.js'
 
 const debug = debugFactory('heroku:run')
-const wait = (ms: number) => new Promise<void>(resolve => {
-  setTimeout(() => resolve(), ms)
-})
 
 export interface DynoOpts {
   app: string
@@ -438,31 +437,28 @@ export default class Dyno extends Duplex {
     })
   }
 
-  async _ssh(retries = 20): Promise<unknown> {
-    const interval = 1000
-
-    try {
-      const {body: dyno} = await this.heroku.get(`/apps/${this.opts.app}/dynos/${this.opts.dyno}`)
-      // @ts-ignore
-      this.dyno = dyno
-      // @ts-ignore
-      ux.action.stop(this._status(this.dyno.state))
-
-      // @ts-ignore
-      if (this.dyno.state === 'starting' || this.dyno.state === 'up') {
-        return this._connect()
-      }
-
-      await wait(interval)
-      return this._ssh()
-    } catch (error: unknown) {
-      // the API sometimes responds with a 404 when the dyno is not yet ready
-      if ((error as HTTPError).http.statusCode === 404 && retries > 0) {
-        return this._ssh(retries - 1)
-      }
-
-      throw error
+  async _ssh(): Promise<unknown> {
+    // Polls `dyno.info` past the post-creation 404 race and waits
+    // for the dyno to reach a runnable state. The SDK helper handles
+    // both concerns; `onPoll` updates the spinner status live so the
+    // user sees `starting → up` transitions on the existing
+    // "Running <cmd> on <app>" spinner started by `_doStart`.
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const dyno = await platform.dyno.waitForInfo(this.opts.app, this.opts.dyno!, {
+      onPoll: polled => {
+        this.dyno = polled as APIDyno
+        if (this.opts.showStatus) {
+          ux.action.status = this._status(polled.state)
+        }
+      },
+      states: ['starting', 'up'],
+    }) as APIDyno
+    this.dyno = dyno
+    if (this.opts.showStatus) {
+      ux.action.stop(this._status(dyno.state))
     }
+
+    return this._connect()
   }
 
   _status(status: string | undefined) {
