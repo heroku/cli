@@ -15,7 +15,7 @@
     "@heroku/mcp-server": "^1.2.0",
     "@heroku/sdk": "^0.1.0-beta.0",
     "@heroku/socksv5": "^0.0.9",
-    "@heroku/types": "github:heroku/heroku-types#main",
+    "@heroku/types": "^3.0.0-beta",
     "@inquirer/prompts": "^7.0",
     "@oclif/core": "^4.8.4",
     "@oclif/plugin-commands": "^4.1.40",
