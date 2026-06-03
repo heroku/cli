@@ -1,13 +1,6 @@
 name: Create CLI Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      isStableCandidate:
-        type: boolean
-        description: Is this a stable/prod candidate?
-        required: true
-        default: false
   workflow_call:
     inputs:
       isStableCandidate:
@@ -15,6 +8,10 @@ on:
         description: Is this a stable/prod candidate?
         required: true
         default: false
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   get-version-channel:
