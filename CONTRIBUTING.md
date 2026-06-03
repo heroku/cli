@@ -18,7 +18,7 @@ Use GitHub Issues page to submit issues, enhancement requests and discuss ideas.
    be reviewed.
 -  Issues that have already been identified as a bug (note: able to reproduce) will be labelled `bug`.
 -  If you'd like to submit a fix for a bug, [send a Pull Request](#creating_a_pull_request) and mention the Issue number.
-  -  Include tests that isolate the bug and verifies that it was fixed.
+  -  Include tests that isolate the bug and verify that it was fixed.
 
 ### New Features
 -  If you'd like to add new functionality to this project, describe the problem you want to solve in a [new Issue](https://github.com/heroku/cli/issues/new).
