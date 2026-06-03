@@ -14,7 +14,7 @@
     "@heroku/heroku-fetch": "^0.1.1-beta",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
-    "@heroku/sdk": "github:heroku/heroku-sdk#main",
+    "@heroku/sdk": "^0.1.0-beta",
     "@heroku/socksv5": "^0.0.9",
     "@inquirer/prompts": "^7.0",
     "@oclif/core": "^4.8.4",
