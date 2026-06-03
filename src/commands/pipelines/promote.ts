@@ -1,12 +1,12 @@
+import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline/coupling'
 import type {PipelinePromotionTarget} from '@heroku/types/3.sdk'
-import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline-coupling'
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
-import {promotePipeline, type ReleaseStreamContext} from '@heroku/sdk/resources/platform/pipeline-promotion'
+import {promotePipeline, type ReleaseStreamContext} from '@heroku/sdk/resources/platform/pipeline/promotion'
 import {ux} from '@oclif/core/ux'
 import assert from 'node:assert'
 
