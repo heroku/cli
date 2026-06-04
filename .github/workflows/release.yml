@@ -45,6 +45,9 @@ jobs:
       CURRENT_BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
       - run: npm ci
       - run: ./scripts/release/validate-prerelease
 
