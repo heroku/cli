@@ -30,6 +30,7 @@ Apply once per command in `src/commands/`. Each application produces one PR-read
 - oclif 4 command framework.
 - `@heroku/sdk` published beta (currently `^0.1.0-beta`); the bare entry exports `HerokuSDK` and `HerokuSDKOptions`. `@heroku/types` (the route metadata package) is `^3.0.0-beta`.
 - `@heroku/heroku-fetch` is a direct dependency exporting `HerokuApiClient`. The SDK uses it internally; commands also use it directly for CLI-only escape hatches (see "CLI-only escape hatches" below).
+- **`@heroku-cli/schema` is deprecated.** Replace `import * as Heroku from '@heroku-cli/schema'` with imports from `@heroku/types/3.sdk` (entity types: `App`, `AddOn`, `Collaborator`, `Dyno`, etc.) and from the SDK composite resource files (`AppInfo`, `PipelineCouplingDetail`, etc., from `@heroku/sdk/resources/<service>/<resource>/<file>`). See "Replacing @heroku-cli/schema" below.
 - Tests use `mocha` + `chai` + `chai-as-promised` + `sinon`. Existing tests use `nock` to intercept HTTP; the rewrite drops `nock` in favor of direct SDK stubbing.
 
 ## Process
@@ -215,6 +216,47 @@ The codemod only rewrites `this.heroku.<verb>(...)` call sites. Some commands ro
 For body shapes the codemod would have unwrapped, do the unwrap by hand. The pattern `await heroku.post<Heroku.App>('/apps', {body: params})` becomes `await platform.app.create(params)`. Cast to the `*CreateOpts` type from `@heroku/types/3.sdk` if the local body shape isn't structurally assignable.
 
 Both shapes (direct and helper-threaded) can coexist in the same command. If the codemod migrated some call sites and "no change"d others, finish the remaining ones manually using this step before moving on.
+
+### Step 1.2c: Replace `@heroku-cli/schema` imports
+
+`@heroku-cli/schema` is deprecated. Every reference to `Heroku.<Type>` in the migrated file needs to be replaced with the canonical type. There are three sources to choose from, in priority order:
+
+1. **Entity types — `@heroku/types/3.sdk`.** The base wire-format types: `App`, `AddOn`, `Collaborator`, `Dyno`, `PipelineCoupling`, `TeamApp`, `Release`, etc. Use these wherever the original code used `Heroku.App`, `Heroku.AddOn`, etc., for individual platform entities.
+
+   ```ts
+   import {AddOn, App, Collaborator, Dyno} from '@heroku/types/3.sdk'
+   ```
+
+   Use the value-form `import` (no `type` modifier) to avoid the `n/no-extraneous-import` lint quirk on transitive deps.
+
+2. **Composite return types — `@heroku/sdk/resources/<service>/<resource>/<file>`.** When the migrated code uses a composite SDK method (`platform.app.describe`, etc., from Step P4), the composite's return type is exported from the resource file alongside the function:
+
+   ```ts
+   import type {AppInfo, PipelineCouplingDetail} from '@heroku/sdk/resources/platform/app/info'
+   ```
+
+   The SDK's `package.json` exports map uses `./resources/*` with a wildcard; the path must be specific enough to disambiguate the file (e.g., `app/info`, not `app` — the latter resolves to a sibling file at the parent level).
+
+3. **Local extension types — define in the migrated file.** Strict types from `@heroku/types/3.sdk` are *narrower* than the loose `@heroku-cli/schema` types they replace. They will surface fields the CLI reads but `@heroku/types` doesn't declare (e.g., `cron_finished_at`, `cron_next_run`, `database_size`, `create_status`, `extended` on `App` — all platform-returned but absent from the strict schema). Don't paper over with `as any`; declare a local extension type:
+
+   ```ts
+   type LocalApp = App & {
+     create_status?: string
+     cron_finished_at?: null | string
+     cron_next_run?: null | string
+     database_size?: null | number
+     extended?: unknown
+   }
+   ```
+
+   This makes the gap visible and reviewable. If the same gap appears across multiple commands, propose an upstream `@heroku/types` bump rather than spreading the extension type.
+
+**Strict-null findings need careful handling.** Where `@heroku-cli/schema` had `web_url: string`, `@heroku/types/3.sdk` has `web_url: string | null` (correct per the OpenAPI spec). The migrated code may pass these through to functions expecting non-null arguments — e.g., `filesize(repo_size, ...)` or `print('web_url', web_url)`. **Don't silently coalesce nulls (`?? ''`, `?? 0`)**: that changes observable output (`web_url=null` becomes `web_url=`). Prefer one of:
+
+- **`as` cast at the call site** when the runtime path is gated upstream (truthiness check) but TS can't prove it: `filesize(info.app.repo_size as number, ...)`.
+- **Loosen the consumer's signature** if the consumer is local and just stringifies: `function print(k: string, v: unknown)` instead of `(k: string, v: string)`. This preserves the original behavior of printing `null` / `undefined` literally if they slipped through.
+
+Don't just gate with truthiness if the original code didn't — that's a behavior change disguised as a type fix.
 
 ### Step 1.2b: CLI-only escape hatches via `HerokuApiClient`
 
@@ -445,7 +487,8 @@ Before opening the PR:
 - [ ] No `// TODO(sdk-migration):` markers remain.
 - [ ] Composite resource methods checked (Step P4) before falling back to per-call replacements when the command had a `Promise.all` over multiple endpoints.
 - [ ] If a composite method is used (e.g., `platform.app.describe`), the corresponding extension (`appExtensions`, `addOnExtensions`, etc.) is imported from `@heroku/sdk/extensions/<service>` and passed to the `HerokuSDK` constructor via `{extensions: [...]}`. Without this, the method is `undefined` at runtime — but stub-based tests will pass anyway. Verify by reading a sibling command's wiring or smoke-testing against a real app.
-- [ ] No `import * as Heroku from '@heroku-cli/schema'` if no longer used.
+- [ ] No `import * as Heroku from '@heroku-cli/schema'` (deprecated). Entity types come from `@heroku/types/3.sdk`; composite return types from `@heroku/sdk/resources/<service>/<resource>/<file>`; CLI-only field gaps captured in a local extension type (Step 1.2c).
+- [ ] Strict-null findings handled without changing observable output: `as` cast or loosened consumer signature, never `?? ''` / `?? 0` for fields the original printed verbatim.
 - [ ] No `import {APIClient} from '@heroku-cli/command'` if no longer used.
 - [ ] No `as unknown as X` cast where `as X` would suffice.
 - [ ] No new `tsc` errors (verify against the Pre-flight P2 baseline).
@@ -464,6 +507,7 @@ Before opening the PR:
 - **Data service:** `sdk.data.*` — methods covering Postgres / data-stores. The codemod migrates these alongside platform calls; the SDK supplies the data hostname automatically.
 - **Bare entry:** `import {HerokuSDK} from '@heroku/sdk'` — the canonical import. Do not use `@heroku/sdk/sdk` (removed in 0.4) or deep relative imports.
 - **Composite method:** a resource method that fans out multiple underlying calls and soft-fails optional ones (e.g., `platform.app.describe`). Lives in `node_modules/@heroku/sdk/dist/resources/<service>/<resource>/` as a separate file from `index.{js,d.ts}`. Not in the codemod's route table — discovered manually per Step P4.
+- **Entity types vs. composite return types:** entity types (`App`, `AddOn`, etc.) come from `@heroku/types/3.sdk` and describe the wire format. Composite return types (`AppInfo`, `PipelineCouplingDetail`, etc.) come from the SDK resource file that owns the composite (e.g., `@heroku/sdk/resources/platform/app/info`).
 - **Escape hatch:** a direct `HerokuApiClient` call from `@heroku/heroku-fetch` for endpoints/variants the SDK doesn't expose. Sanctioned for CLI-only concerns like `?extended=true` query variants — see Step 1.2b.
 - **Pre-flight baseline:** the snapshot of `tsc`/test state captured before any migration work, used to filter pre-existing noise out of post-migration verification.
 - **Codemod:** `scripts/codemods/sdk-migration/migrate-command.ts` — the deterministic transform run in Task 1, Step 1.1.
