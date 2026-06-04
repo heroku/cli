@@ -1,13 +1,28 @@
-name: Watch and start pre release
+name: Release
 
 on:
+  release:
+    # This works for both releases and prereleases https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#release
+    types: [published]
   push:
     branches:
       - prerelease/*
+  workflow_dispatch:
+    inputs:
+      isStableCandidate:
+        type: boolean
+        description: Is this a stable/prod candidate?
+        required: true
+        default: false
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: read
 
 jobs:
+  # --- Shared: extract version/channel from package.json ---
   get-version-channel:
-    # get the version number and release channel name from the package.json
     runs-on: ubuntu-latest
     outputs:
       channel: ${{ steps.getVersion.outputs.channel }}
@@ -19,21 +34,24 @@ jobs:
         with:
           path: './package.json'
 
+  # --- Prerelease only: validate branch + version constraints ---
   validate-prerelease:
-    # validate that the release is on a pre-release branch, that it is a beta or alpha release, and check if it is already on github
-    needs: [ get-version-channel ]
+    if: github.event_name == 'push'
+    needs: [get-version-channel]
     runs-on: ubuntu-latest
     env:
-        CHANNEL: ${{ needs.get-version-channel.outputs.channel }}
-        VERSION: ${{ needs.get-version-channel.outputs.version }}
-        CURRENT_BRANCH_NAME: ${{ github.ref_name }}
+      CHANNEL: ${{ needs.get-version-channel.outputs.channel }}
+      VERSION: ${{ needs.get-version-channel.outputs.version }}
+      CURRENT_BRANCH_NAME: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v6
       - run: npm ci
       - run: ./scripts/release/validate-prerelease
 
+  # --- Prerelease only: publish git tag ---
   publish-github-tag:
-    needs: [ get-version-channel, validate-prerelease ]
+    if: github.event_name == 'push'
+    needs: [get-version-channel, validate-prerelease]
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
     runs-on: pub-hk-ubuntu-22.04-small
     env:
@@ -53,22 +71,30 @@ jobs:
           git tag "${{ env.TAG_NAME }}" -m "${{ env.TAG_NAME }}"
           git push origin "${{ env.TAG_NAME }}"
 
-  create-prerelease:
-    needs: [ get-version-channel, validate-prerelease ]
+  # --- Both paths: orchestrate the full release pipeline ---
+  create-release:
+    needs: [get-version-channel, validate-prerelease]
+    if: |
+      always() &&
+      (needs.validate-prerelease.result == 'success' || needs.validate-prerelease.result == 'skipped')
     uses: ./.github/workflows/create-cli-release.yml
     secrets: inherit
     with:
-      isStableCandidate: ${{ false }}
+      isStableCandidate: ${{ (github.event_name == 'release' && !contains(github.event.release.tag_name, '-')) || (github.event_name == 'workflow_dispatch' && inputs.isStableCandidate) }}
 
+  # --- Prerelease only: post-release smoke tests ---
   prerelease-smoke-tests:
-    needs: [ get-version-channel, create-prerelease ]
+    if: github.event_name == 'push'
+    needs: [get-version-channel, create-release]
     uses: ./.github/workflows/test-installed-cli.yml
     secrets: inherit
     with:
       version: ${{ needs.get-version-channel.outputs.version }}
 
+  # --- Prerelease only: direwolf integration tests ---
   prerelease-direwolf-tests:
-    needs: [ get-version-channel, create-prerelease ]
+    if: github.event_name == 'push'
+    needs: [get-version-channel, create-release]
     uses: ./.github/workflows/direwolf.yml
     secrets: inherit
     with:
