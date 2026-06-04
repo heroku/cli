@@ -1,12 +1,16 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import {filesize} from 'filesize'
 import {inspect} from 'node:util'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+
+type Platform = HerokuSDK['platform']
 
 export default class AppsInfo extends Command {
   static args = {
@@ -45,7 +49,9 @@ repo_size=5000000
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
-    const info = await getInfo(app, this, flags.extended)
+    const {platform} = new HerokuSDK()
+
+    const info = await getInfo(app, platform, flags.extended)
     const addons = info.addons.map((a: Heroku.AddOn) => a.plan?.name).sort()
     const collaborators = info.collaborators.map((c: Heroku.Collaborator) => c.user.email)
       .filter((c: Heroku.Collaborator) => c !== info.app.owner.email)
@@ -91,44 +97,23 @@ function formatDate(date: Date) {
   return date.toISOString()
 }
 
-async function getInfo(app: string, client: Command, extended: boolean) {
-  const promises = [
-    client.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
-    client.heroku.request<Heroku.App>(`/apps/${app}`),
-    client.heroku.get<Heroku.Dyno[]>(`/apps/${app}/dynos`).catch(() => ({body: []})),
-    client.heroku.get<Heroku.Collaborator[]>(`/apps/${app}/collaborators`).catch(() => ({body: []})),
-    client.heroku.get<Heroku.PipelineCoupling[]>(`/apps/${app}/pipeline-couplings`).catch(() => ({body: null})),
-  ]
-
-  if (extended) {
-    promises.push(client.heroku.get<Heroku.App>(`/apps/${app}?extended=true`))
-  }
-
-  const [
-    {body: addons},
-    {body: appWithMoreInfo},
-    {body: dynos},
-    {body: collaborators},
-    {body: pipelineCouplings},
-    appExtendedResponse,
-  ] = await Promise.all(promises)
+async function getInfo(app: string, platform: Platform, extended: boolean) {
+  const described = await platform.app.describe(app)
 
   const data: Heroku.App = {
-    addons,
-    app: appWithMoreInfo,
-    collaborators,
-    dynos,
-    pipeline_coupling: pipelineCouplings,
-  }
-
-  if (appExtendedResponse) {
-    data.appExtended = appExtendedResponse.body
+    addons: described.addons,
+    app: described.app,
+    collaborators: described.collaborators,
+    dynos: described.dynos,
+    pipeline_coupling: described.pipelineCoupling,
   }
 
   if (extended) {
-    data.appExtended.acm = data.app.acm
-    data.app = data.appExtended
-    delete data.appExtended
+    const client = new HerokuApiClient()
+    const response = await client.get(`/apps/${app}?extended=true`)
+    const appExtended = await response.json() as Heroku.App
+    appExtended.acm = data.app.acm
+    data.app = appExtended
   }
 
   return data
