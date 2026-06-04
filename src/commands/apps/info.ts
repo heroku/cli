@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, AppInfo} from '@heroku/sdk/extensions/platform'
 import {AddOn, App, Collaborator} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
