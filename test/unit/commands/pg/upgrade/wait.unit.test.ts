@@ -6,7 +6,7 @@ import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
-import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 

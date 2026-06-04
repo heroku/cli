@@ -163,7 +163,9 @@ describe('pipelines:promote', function () {
       const promoteStub = stub(Cmd, 'promotePipeline').callsFake(async (_ctx, _body, options) => {
         await options!.onReleaseStream!({
           stream: streamBody,
-          target: {app: {id: targetApp1.id}, error_message: null, id: 'target-1', pipeline_promotion: {id: 'promo-1'}, release: {id: 'release-1'}, status: 'pending'},
+          target: {
+            app: {id: targetApp1.id}, error_message: null, id: 'target-1', pipeline_promotion: {id: 'promo-1'}, release: {id: 'release-1'}, status: 'pending',
+          },
         })
         return {
           promotion,

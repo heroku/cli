@@ -15,7 +15,6 @@ import fs from 'fs-extra'
 
 import Git from '../../lib/git/git.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-
 import {App} from '../../lib/types/app.js'
 
 const git = new Git()

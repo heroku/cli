@@ -11,7 +11,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -38,7 +38,7 @@ describe('pg:upgrade:cancel', function () {
     infoStub = stub()
     cancelUpgradeStub = stub()
     sdkMock = mockSDKData({
-      database: {describe: infoStub, cancelUpgrade: cancelUpgradeStub},
+      database: {cancelUpgrade: cancelUpgradeStub, describe: infoStub},
     })
   })
 
@@ -143,7 +143,7 @@ describe('pg:upgrade:cancel', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
     infoStub.resolves({})
-    cancelUpgradeStub.rejects({statusCode: 422, id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
+    cancelUpgradeStub.rejects({id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade.", statusCode: 422})
 
     const {error, stderr} = await runCommand(Cmd, [
       '--app',
@@ -167,7 +167,7 @@ describe('pg:upgrade:cancel', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
     infoStub.resolves({})
-    cancelUpgradeStub.rejects({statusCode: 422, id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress."})
+    cancelUpgradeStub.rejects({id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress.", statusCode: 422})
 
     const {error, stderr} = await runCommand(Cmd, [
       '--app',

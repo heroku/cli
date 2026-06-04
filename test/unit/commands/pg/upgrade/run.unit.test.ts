@@ -11,7 +11,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/run.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -177,7 +177,7 @@ describe('pg:upgrade:run', function () {
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     infoStub.resolves({})
-    runUpgradeStub.rejects({statusCode: 400, id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade."})
+    runUpgradeStub.rejects({id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade.", statusCode: 400})
 
     const {error} = await runCommand(Cmd, [
       '--app',
@@ -200,7 +200,7 @@ describe('pg:upgrade:run', function () {
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     infoStub.resolves({})
-    runUpgradeStub.rejects({statusCode: 400, id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.'})
+    runUpgradeStub.rejects({id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.', statusCode: 400})
 
     const {error} = await runCommand(Cmd, [
       '--app',

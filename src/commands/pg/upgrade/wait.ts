@@ -1,13 +1,14 @@
+import type {DatabaseUpgradeWaitResult} from '@heroku/sdk/resources/data/database'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import notify from '../../../lib/notify.js'
-import {databaseExtensions} from '@heroku/sdk/extensions/data'
-import type {DatabaseUpgradeWaitResult} from '@heroku/sdk/resources/data/database'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 

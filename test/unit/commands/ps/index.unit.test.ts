@@ -106,7 +106,9 @@ describe('ps', function () {
         command: 'bash', name: 'run.1', size: 'Private-L', state: 'up', type: 'run', updated_at: hourAgo,
       },
     ])
-    const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic', space: {shield: true}})
+    const infoStub = stub().resolves({
+      id: '6789', owner: {id: '1234'}, process_tier: 'basic', space: {shield: true},
+    })
     const accountStub = stub().resolves({id: '1234'})
     sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {list: listStub}})
 

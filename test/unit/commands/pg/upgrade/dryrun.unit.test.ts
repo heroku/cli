@@ -11,7 +11,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/dryrun.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -166,7 +166,7 @@ describe('pg:upgrade:dryrun', function () {
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
     infoStub.resolves({})
-    dryRunUpgradeStub.rejects({statusCode: 422, id: 'unprocessable_entity', message: 'database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.'})
+    dryRunUpgradeStub.rejects({id: 'unprocessable_entity', message: 'database is in the middle of a version upgrade. To perform this action, wait until the upgrade is complete and try again.', statusCode: 422})
 
     const {error} = await runCommand(Cmd, [
       '--app',
