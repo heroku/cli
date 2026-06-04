@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.5.0-alpha.6](https://github.com/heroku/cli/compare/v11.4.0...v11.5.0-alpha.6) (2026-06-04)
+
+
+### Features
+
+* add hidden --method flag to data:pg:migrate ([#3743](https://github.com/heroku/cli/issues/3743)) ([665b189](https://github.com/heroku/cli/commit/665b1896d50f399cc20cfe39500b603665bc814a))
+* implement heroku git:credentials as a git credential helper ([#3683](https://github.com/heroku/cli/issues/3683)) ([781e99e](https://github.com/heroku/cli/commit/781e99e1b9c56339b1245e30087aa9b312c10e69))
+* remove cached netrc account on logout ([#3710](https://github.com/heroku/cli/issues/3710)) ([b07137b](https://github.com/heroku/cli/commit/b07137bed5282a1618ae7e2b1e7f603eeb9a70be))
+* update accounts and accounts:current commands to use the credential manager ([#3689](https://github.com/heroku/cli/issues/3689)) ([e753d06](https://github.com/heroku/cli/commit/e753d06407fe8ebf6f87b25131d6198d78e824e8))
+* update accounts:add to use the credential manager ([#3699](https://github.com/heroku/cli/issues/3699)) ([49e3938](https://github.com/heroku/cli/commit/49e3938f44ec52451870cf24c692d440a7a69701))
+* update accounts:remove to work with credential manager ([#3701](https://github.com/heroku/cli/issues/3701)) ([89d7b14](https://github.com/heroku/cli/commit/89d7b148df950429f902691c8348afc5bba07454))
+* update accounts:set to work with keychain managers ([#3696](https://github.com/heroku/cli/issues/3696)) ([1f896aa](https://github.com/heroku/cli/commit/1f896aab4b23fb312d444420a06ed9d839ec8cf4))
+
+
+### Bug Fixes
+
+* 'run:inside' args ordering (W-22693654) ([#3727](https://github.com/heroku/cli/issues/3727)) ([355113e](https://github.com/heroku/cli/commit/355113e8253b8547ea86be4ef540287ea263af80))
+* add missing warning to 'data:pg:migrate' (W-22544849) ([#3716](https://github.com/heroku/cli/issues/3716)) ([400fc6e](https://github.com/heroku/cli/commit/400fc6e26eb7b7fdd634e0e4465fc5c19762303a))
+* fix whoami and update heroku-cli-command and heroku-cli-util ([#3719](https://github.com/heroku/cli/issues/3719)) ([7db768f](https://github.com/heroku/cli/commit/7db768f21f0dbe04d8d422f93919bc4f6f9156c5))
+* inherit secrets in reusable workflow ([#3711](https://github.com/heroku/cli/issues/3711)) ([5dd58af](https://github.com/heroku/cli/commit/5dd58af6c14f55ab85fe8584598718ebee03ae4b))
+* pass empty string to rl.write in repl finally block (W-22295448) ([#3721](https://github.com/heroku/cli/issues/3721)) ([ebdf082](https://github.com/heroku/cli/commit/ebdf082ed317cb74a59945c60dc274615b735b81))
+* restore git configuration on logout ([#3697](https://github.com/heroku/cli/issues/3697)) ([5479fa5](https://github.com/heroku/cli/commit/5479fa53c75b152aece718999deee50b94b1f5ce))
+
+
+### Miscellaneous Chores
+
+* add CLAUDE.md and Copilot instructions pointing to AGENTS.md ([#3724](https://github.com/heroku/cli/issues/3724)) ([8abed2f](https://github.com/heroku/cli/commit/8abed2faad739a1897734fe414cc2e1b70ea245a))
+* consolidate release for trusted publishing ([#3744](https://github.com/heroku/cli/issues/3744)) ([0e81dd8](https://github.com/heroku/cli/commit/0e81dd8429cecba42ea31c64cbbaac9db2bd2f87))
+* fix linting errors ([7df4bf0](https://github.com/heroku/cli/commit/7df4bf076497d70c4c0ab3ae672598853f761247))
+* merge in main to feature branch ([#3747](https://github.com/heroku/cli/issues/3747)) ([8c100fd](https://github.com/heroku/cli/commit/8c100fd4667a88e414a4c9379ff896792ef07498))
+* merge main ([#3737](https://github.com/heroku/cli/issues/3737)) ([cb751e6](https://github.com/heroku/cli/commit/cb751e6a23d11baf44cd6111f7a1741e8477c06d))
+* remove unused workflow file ([#3712](https://github.com/heroku/cli/issues/3712)) ([8860aa4](https://github.com/heroku/cli/commit/8860aa412261f05fae3df19438cfd50a5f4ae67f))
+* update CLI analytics to use heroku credential manager ([#3685](https://github.com/heroku/cli/issues/3685)) ([5f86e4c](https://github.com/heroku/cli/commit/5f86e4cf9a6b8ca74d6ef0650abbae1f940fab7d))
+* upload arm64 win installer to Stampy unsigned bucket (W-22733412) ([#3734](https://github.com/heroku/cli/issues/3734)) ([e171ad5](https://github.com/heroku/cli/commit/e171ad5f670bb4d7aae80d625ae5bf65d77cd1ff))
+
+
+### Tests
+
+* fix accounts, apps, auth, buildpacks, container, git, and ps-exec tests ([391b6a6](https://github.com/heroku/cli/commit/391b6a6cff1cb754697db642f1c11464a8de6de3))
+* update analytics tests to use the credential manager ([#3688](https://github.com/heroku/cli/issues/3688)) ([4fde394](https://github.com/heroku/cli/commit/4fde394ac2351504a727829fd86fd647136afbc8))
+
 ## [11.4.0](https://github.com/heroku/cli/compare/v11.3.0...v11.4.0) (2026-05-13)
 
 
