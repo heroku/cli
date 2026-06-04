@@ -97,6 +97,25 @@ Files other than `index.{js,d.ts}` are composite or extension methods. Read the 
 
 When a composite fits, prefer it over the codemod output: the SDK encapsulates the parallelism and soft-fail logic that today lives inline in the command. The win is a "deep module" interface (one method, one arg) hiding substantial internal complexity. Note the field-name mapping you may need to apply — composites tend to use camelCase return fields, but CLI output contracts are often snake_case (e.g., `pipelineCoupling` from the SDK → `pipeline_coupling` in the command's output).
 
+**Composites are extension methods — register them on the SDK.** `platform.app.describe`, `addOn.create` (with the user-friendly options shape), `pipelineCoupling.infoByApp`, etc. are spliced onto the resource via `extendResource` and only exist when you pass the corresponding extension into the SDK constructor:
+
+```ts
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
+
+const {platform} = new HerokuSDK({extensions: [appExtensions]})
+await platform.app.describe('myapp')   // works
+```
+
+Without the `extensions: [...]` argument, `platform.app.describe` is `undefined` at runtime and you get a TypeError. **Test stubs will mask this** — `fakePlatform.app.describe = sinon.stub()` is structurally fine even when production wiring is missing, so confirm by reading other commands' wiring (e.g., `src/commands/addons/info.ts`) and run a smoke test against a real app before merging.
+
+The extension exports are at `@heroku/sdk/extensions/platform` and `@heroku/sdk/extensions/data`. Existing usage:
+- `appExtensions` — `describe`, `enableMaintenance`, `disableMaintenance`, `getGeneration`, `getProcessTier`, `isShielded`
+- `addOnExtensions` — `create` with the rich options shape used in `addons:create`
+- `pipelineCouplingExtensions` — `infoByApp` and related composites used in pipelines commands
+- `databaseExtensions` / `postgresDatabaseExtensions` — pg-resource composites
+- `logSessionExtensions` — used in `lib/run/log-displayer.ts` for streaming
+
 For commands whose `Promise.all` doesn't match an existing composite, run the codemod normally — the per-call replacements still produce a clean migration.
 
 ---
@@ -403,6 +422,7 @@ Before opening the PR:
 - [ ] No bare `heroku.<verb>(...)` calls remain in helper functions (helper-threading shape — see Step 1.2a).
 - [ ] No `// TODO(sdk-migration):` markers remain.
 - [ ] Composite resource methods checked (Step P4) before falling back to per-call replacements when the command had a `Promise.all` over multiple endpoints.
+- [ ] If a composite method is used (e.g., `platform.app.describe`), the corresponding extension (`appExtensions`, `addOnExtensions`, etc.) is imported from `@heroku/sdk/extensions/<service>` and passed to the `HerokuSDK` constructor via `{extensions: [...]}`. Without this, the method is `undefined` at runtime — but stub-based tests will pass anyway. Verify by reading a sibling command's wiring or smoke-testing against a real app.
 - [ ] No `import * as Heroku from '@heroku-cli/schema'` if no longer used.
 - [ ] No `import {APIClient} from '@heroku-cli/command'` if no longer used.
 - [ ] No `as unknown as X` cast where `as X` would suffice.

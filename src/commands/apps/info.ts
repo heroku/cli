@@ -3,6 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import {filesize} from 'filesize'
 import {inspect} from 'node:util'
@@ -49,7 +50,7 @@ repo_size=5000000
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
-    const {platform} = new HerokuSDK()
+    const {platform} = new HerokuSDK({extensions: [appExtensions]})
 
     const info = await getInfo(app, platform, flags.extended)
     const addons = info.addons.map((a: Heroku.AddOn) => a.plan?.name).sort()
