@@ -329,4 +329,45 @@ stack=cedar-14
     expect(unwrap(stderr)).to.contains('')
     expect(fakePlatform.app.describe.calledOnceWithExactly('myapp')).to.equal(true)
   })
+
+  it('omits the extended block when --extended is set but the response has no extended field', async function () {
+    stubBaseInfo()
+
+    nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .query({extended: 'true'})
+      .reply(200, {...appAcm}) // no `extended` field; what a non-sudo caller sees
+
+    const {stdout} = await runCommand(Info, ['myapp', '--extended'])
+
+    expect(stdout).to.equal(BASE_INFO)
+    expect(stdout).to.not.contain('--- Extended Information ---')
+  })
+
+  it('fails the command when --extended is set and the extended request errors', async function () {
+    stubBaseInfo()
+
+    nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .query({extended: 'true'})
+      .reply(403, {id: 'forbidden', message: 'sudo required'})
+
+    const {error} = await runCommand(Info, ['myapp', '--extended'])
+
+    expect(error, 'expected the command to reject').to.exist
+  })
+
+  it('does not append the extended block in --shell output even when --extended is set', async function () {
+    stubBaseInfo()
+
+    nock('https://api.heroku.com')
+      .get('/apps/myapp')
+      .query({extended: 'true'})
+      .reply(200, {...appAcm, extended: {feature_flags: 'foo'}})
+
+    const {stdout} = await runCommand(Info, ['myapp', '--shell', '--extended'])
+
+    expect(stdout).to.not.contain('--- Extended Information ---')
+    expect(stdout).to.not.contain('feature_flags')
+  })
 })
