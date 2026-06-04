@@ -3,12 +3,15 @@ import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import PipelinesInfo from '../../../../src/commands/pipelines/info.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('pipelines:info', function () {
   let api: nock.Scope
+  let sdkMock: MockSDK
 
   const appNames = [
     'development-app-1',
@@ -52,25 +55,23 @@ describe('pipelines:info', function () {
   function setupNock(owner?: Heroku.Account) {
     const pipeline = {id: '0123', name: 'example', owner}
     const pipelines = [pipeline]
-    const apps: Array<Heroku.App> = []
     const couplings: Array<Heroku.PipelineCoupling> = []
+    const pipelineApps: Array<any> = []
 
-    // Build couplings
+    // Build couplings and apps decorated with pipelineCoupling (as listApps returns)
     for (const [id, name] of appNames.entries()) {
       const stage: Stage = name.split('-')[0] as Stage
-      couplings.push({
+      const coupling = {
         app: {id: `app-${id + 1}`},
         stage,
-      })
-    }
-
-    // Build apps
-    for (const [id, name] of appNames.entries()) {
-      apps.push({
+      }
+      couplings.push(coupling)
+      pipelineApps.push({
         id: `app-${id + 1}`,
         name,
         owner: {email: 'foo@user.com', id: '1234'},
         pipeline,
+        pipelineCoupling: coupling,
       })
     }
 
@@ -78,10 +79,8 @@ describe('pipelines:info', function () {
       .get('/pipelines')
       .query(true)
       .reply(200, pipelines)
-      .get('/pipelines/0123/pipeline-couplings')
-      .reply(200, couplings)
-      .post('/filters/apps')
-      .reply(200, apps)
+
+    sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves(pipelineApps)}})
 
     if (owner && owner.type === 'team') {
       api.get(`/teams/${owner.id}`).reply(200, {
@@ -115,6 +114,8 @@ describe('pipelines:info', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    sdkMock?.restore()
+    restore()
   })
 
   describe("when pipeline doesn't have an owner", function () {

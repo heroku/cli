@@ -1,8 +1,10 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import PipelinesDiff from '../../../../src/commands/pipelines/diff.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('pipelines:diff', function () {
   const pipelineWithGeneration = {
@@ -118,6 +120,7 @@ describe('pipelines:diff', function () {
   let api: nock.Scope
   let kolkrabbiApi: nock.Scope
   let githubApi: nock.Scope
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
@@ -130,6 +133,8 @@ describe('pipelines:diff', function () {
     kolkrabbiApi.done()
     githubApi.done()
     nock.cleanAll()
+    sdkMock?.restore()
+    restore()
   })
 
   describe('for app without a pipeline', function () {
@@ -137,6 +142,8 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(404, {message: 'Not found.'})
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([])}})
 
       const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
@@ -149,12 +156,12 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
-        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-        .reply(200, [targetCoupling])
-        .post('/filters/apps')
-        .reply(200, [targetApp])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetApp, pipelineCoupling: targetCoupling},
+      ])}})
 
       const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
@@ -167,12 +174,14 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
-        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetApp, pipelineCoupling: targetCoupling},
+        {...downstreamApp1, pipelineCoupling: downstreamCoupling1},
+        {...downstreamApp2, pipelineCoupling: downstreamCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
@@ -191,12 +200,14 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
-        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetApp, pipelineCoupling: targetCoupling},
+        {...downstreamApp1, pipelineCoupling: downstreamCoupling1},
+        {...downstreamApp2, pipelineCoupling: downstreamCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
@@ -215,14 +226,16 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
-        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
         .get(`/apps/${targetApp.id}/releases`)
         .reply(200, [])
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetApp, pipelineCoupling: targetCoupling},
+        {...downstreamApp1, pipelineCoupling: downstreamCoupling1},
+        {...downstreamApp2, pipelineCoupling: downstreamCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
@@ -246,10 +259,6 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
-        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
         .get(`/apps/${targetApp.id}/releases`)
@@ -263,6 +272,12 @@ describe('pipelines:diff', function () {
         .reply(200, {commit: 'COMMIT-HASH'})
         .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
         .reply(200, {commit: 'COMMIT-HASH'})
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetApp, pipelineCoupling: targetCoupling},
+        {...downstreamApp1, pipelineCoupling: downstreamCoupling1},
+        {...downstreamApp2, pipelineCoupling: downstreamCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
@@ -286,10 +301,6 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetApp.name}/pipeline-couplings`)
         .reply(200, targetCoupling)
-        .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-        .reply(200, [targetCoupling, downstreamCoupling1, downstreamCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
         .get(`/apps/${targetApp.id}/releases`)
@@ -303,6 +314,12 @@ describe('pipelines:diff', function () {
         .reply(200, {commit: hashes[0]})
         .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
         .reply(200, {commit: hashes[1]})
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetApp, pipelineCoupling: targetCoupling},
+        {...downstreamApp1, pipelineCoupling: downstreamCoupling1},
+        {...downstreamApp2, pipelineCoupling: downstreamCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetApp.id}/github`)
@@ -332,10 +349,6 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
         .reply(200, targetFirCoupling)
-        .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
-        .reply(200, [targetFirCoupling, downstreamFirCoupling1, downstreamFirCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetFirApp, downstreamFirApp1, downstreamFirApp2])
         .get(`/pipelines/${targetFirCoupling.pipeline.id}`)
         .reply(200, {generation: {name: 'fir'}})
         .get(`/apps/${targetFirApp.id}/releases`)
@@ -349,6 +362,12 @@ describe('pipelines:diff', function () {
         .reply(200, [{commit: 'COMMIT-HASH'}])
         .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
         .reply(200, [{commit: 'COMMIT-HASH'}])
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetFirApp, pipelineCoupling: targetFirCoupling},
+        {...downstreamFirApp1, pipelineCoupling: downstreamFirCoupling1},
+        {...downstreamFirApp2, pipelineCoupling: downstreamFirCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetFirApp.id}/github`)
@@ -372,10 +391,6 @@ describe('pipelines:diff', function () {
       api
         .get(`/apps/${targetFirApp.name}/pipeline-couplings`)
         .reply(200, targetFirCoupling)
-        .get(`/pipelines/${firPipeline.id}/pipeline-couplings`)
-        .reply(200, [targetFirCoupling, downstreamFirCoupling1, downstreamFirCoupling2])
-        .post('/filters/apps')
-        .reply(200, [targetFirApp, downstreamFirApp1, downstreamFirApp2])
         .get(`/pipelines/${targetFirCoupling.pipeline.id}`)
         .reply(200, {generation: {name: 'fir'}})
         .get(`/apps/${targetFirApp.id}/releases`)
@@ -389,6 +404,12 @@ describe('pipelines:diff', function () {
         .reply(200, [{commit: hashes[0]}])
         .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
         .reply(200, [{commit: hashes[1]}])
+
+      sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves([
+        {...targetFirApp, pipelineCoupling: targetFirCoupling},
+        {...downstreamFirApp1, pipelineCoupling: downstreamFirCoupling1},
+        {...downstreamFirApp2, pipelineCoupling: downstreamFirCoupling2},
+      ])}})
 
       kolkrabbiApi
         .get(`/apps/${targetFirApp.id}/github`)
