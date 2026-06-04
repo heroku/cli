@@ -13,7 +13,7 @@
     "@heroku/heroku-cli-util": "^10.8.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.0",
-    "@heroku/sdk": "github:heroku/heroku-sdk#eb/W-22265258/dyno-info-with-retry",
+    "@heroku/sdk": "github:heroku/heroku-sdk#main",
     "@heroku/socksv5": "^0.0.9",
     "@heroku/types": "github:heroku/heroku-types#main",
     "@inquirer/prompts": "^7.0",
