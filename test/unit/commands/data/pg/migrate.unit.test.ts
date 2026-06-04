@@ -328,6 +328,7 @@ describe('data:pg:migrate', function () {
         .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/info`)
         .reply(200, unavailableAdvancedDbInfo)
         .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
           source_id: premiumDbAttachment.addon.id,
         })
         .reply(200, createdMigrationResponse)
@@ -459,6 +460,65 @@ describe('data:pg:migrate', function () {
     })
   })
 
+  describe('configure a database migration with the hidden --method flag', function () {
+    it('sends method=cdc when --method=streaming', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+          targetAdvancedDbAttachment,
+        ])
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+          targetAdvancedDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'cdc',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Non-target Advanced database
+        '\n', // Confirm migration configuration: > Confirm
+        '\n', // Main menu: > Exit
+      ]
+
+      const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+    })
+
+    it('rejects unsupported method values', async function () {
+      const {error} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=bogus'])
+      expect(error?.message).to.match(/Expected --method=bogus to be one of: snapshot, streaming/)
+    })
+  })
+
   describe('configure a database migration with a new target database created for the migration', function () {
     beforeEach(async function () {
       poolConfigLeaderInteractiveConfigStub.resolves({
@@ -498,6 +558,7 @@ describe('data:pg:migrate', function () {
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
         .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
           source_id: premiumDbAttachment.addon.id,
         })
         .reply(200, createdMigrationResponse)
@@ -563,6 +624,7 @@ describe('data:pg:migrate', function () {
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
         .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
           source_id: privateDbAttachment.addon.id,
         })
         .reply(200, {
@@ -634,6 +696,7 @@ describe('data:pg:migrate', function () {
         .get('/data/postgres/v1/pricing')
         .reply(200, pricingResponse)
         .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
           source_id: shieldDbAttachment.addon.id,
         })
         .reply(200, {
