@@ -107,7 +107,19 @@ const {platform} = new HerokuSDK({extensions: [appExtensions]})
 await platform.app.describe('myapp')   // works
 ```
 
-Without the `extensions: [...]` argument, `platform.app.describe` is `undefined` at runtime and you get a TypeError. **Test stubs will mask this** — `fakePlatform.app.describe = sinon.stub()` is structurally fine even when production wiring is missing, so confirm by reading other commands' wiring (e.g., `src/commands/addons/info.ts`) and run a smoke test against a real app before merging.
+Without the `extensions: [...]` argument, `platform.app.describe` is `undefined` at runtime and you get a TypeError. **Test stubs will mask the runtime miss** — `fakePlatform.app.describe = sinon.stub()` is structurally fine even when production wiring is missing, so confirm by reading other commands' wiring (e.g., `src/commands/addons/info.ts`) and run a smoke test against a real app before merging.
+
+**Helper signatures need the extensions threaded through too.** If you extract a helper that takes `platform` as a parameter, the obvious-looking `type Platform = HerokuSDK['platform']` resolves to the *unextended* `PlatformClient` — the class's `Exts` generic falls back to its default empty tuple when you index without supplying it, so `describe` is statically missing on the parameter type even when the runtime call site has the extension. Parameterize the alias instead:
+
+```ts
+type Platform = HerokuSDK<readonly [typeof appExtensions]>['platform']
+
+async function getInfo(app: string, platform: Platform) {
+  const described = await platform.app.describe(app)   // ok
+}
+```
+
+For helpers that only call route-derived methods (e.g., `app.info`, `app.update`), the bare `HerokuSDK['platform']` alias is fine.
 
 The extension exports are at `@heroku/sdk/extensions/platform` and `@heroku/sdk/extensions/data`. Existing usage:
 - `appExtensions` — `describe`, `enableMaintenance`, `disableMaintenance`, `getGeneration`, `getProcessTier`, `isShielded`
@@ -228,8 +240,14 @@ Confirm with the user before reaching for this — it's a deliberate escape hatc
 ### Step 1.3: Type-check
 
 ```bash
-npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt | tail -20
+if [ -s /tmp/tsc-baseline.txt ]; then
+  npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt | tail -20
+else
+  npx tsc --noEmit -p tsconfig.json 2>&1 | tail -20
+fi
 ```
+
+The `[ -s … ]` guard matters: when the baseline is empty (clean repo), `grep -v -F -f /tmp/tsc-baseline.txt` matches *nothing* because the empty pattern file has no patterns to match against — a false "no errors" signal in exactly the case where strict checking matters most.
 
 Expected: empty output (no new errors). If new errors appear, they typically fall into:
 
@@ -378,10 +396,14 @@ Use the parent directory of the migrated command. Expected: all passing. If a si
 ### Step V2: Type-check delta
 
 ```bash
-npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt
+if [ -s /tmp/tsc-baseline.txt ]; then
+  npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt
+else
+  npx tsc --noEmit -p tsconfig.json 2>&1
+fi
 ```
 
-Expected: empty. New errors mean the migration introduced a regression.
+Expected: empty. New errors mean the migration introduced a regression. (Same baseline-empty caveat as Step 1.3.)
 
 ### Step V3: Push and open PR
 

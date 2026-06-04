@@ -11,7 +11,7 @@ import {inspect} from 'node:util'
 import {getGeneration} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
-type Platform = HerokuSDK['platform']
+type Platform = HerokuSDK<readonly [typeof appExtensions]>['platform']
 
 export default class AppsInfo extends Command {
   static args = {
