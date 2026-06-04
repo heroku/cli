@@ -354,7 +354,8 @@ stack=cedar-14
 
     const {error} = await runCommand(Info, ['myapp', '--extended'])
 
-    expect(error, 'expected the command to reject').to.exist
+    expect(error, 'expected the command to reject').to.be.an.instanceOf(Error)
+    expect((error as {statusCode?: number}).statusCode).to.equal(403)
   })
 
   it('does not append the extended block in --shell output even when --extended is set', async function () {
