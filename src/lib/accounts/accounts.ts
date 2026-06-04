@@ -110,13 +110,8 @@ export class AccountsWrapper implements IAccountsWrapper {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
       await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
-      return
     }
 
-    this.removeNetrc(name)
-  }
-
-  removeNetrc(name: string) {
     const basedir = path.join(this.configDir(), 'accounts')
     fs.unlinkSync(path.join(basedir, name))
   }
