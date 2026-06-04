@@ -237,19 +237,66 @@ Both shapes (direct and helper-threaded) can coexist in the same command. If the
 
    The SDK's `package.json` exports map uses `./resources/*` with a wildcard; the path must be specific enough to disambiguate the file (e.g., `app/info`, not `app` — the latter resolves to a sibling file at the parent level).
 
-3. **Local extension types — define in the migrated file.** Strict types from `@heroku/types/3.sdk` are *narrower* than the loose `@heroku-cli/schema` types they replace. They will surface fields the CLI reads but `@heroku/types` doesn't declare (e.g., `cron_finished_at`, `cron_next_run`, `database_size`, `create_status`, `extended` on `App` — all platform-returned but absent from the strict schema). Don't paper over with `as any`; declare a local extension type:
+3. **Extension types — `src/lib/types/`, with local declarations only as a stepping stone.** Strict types from `@heroku/types/3.sdk` are *narrower* than the loose `@heroku-cli/schema` types they replace. They will surface fields the CLI reads but `@heroku/types` doesn't declare (e.g., `cron_finished_at`, `cron_next_run`, `database_size`, `create_status`, `extended` on `App` — all platform-returned but absent from the strict schema). Don't paper over with `as any`.
+
+   Check `src/lib/types/<resource>.d.ts` first — the gaps that have already surfaced in earlier migrations are exported there. For `App`, the existing extension is `ExtendedApp` in `src/lib/types/app.d.ts`:
 
    ```ts
-   type LocalApp = App & {
-     create_status?: string
-     cron_finished_at?: null | string
-     cron_next_run?: null | string
-     database_size?: null | number
-     extended?: unknown
-   }
+   import {ExtendedApp} from '../../lib/types/app.js'
    ```
 
-   This makes the gap visible and reviewable. If the same gap appears across multiple commands, propose an upstream `@heroku/types` bump rather than spreading the extension type.
+   If the gap you're hitting isn't already exported, add the extension type next to the existing `App`/`Apps` exports rather than declaring it locally in the command. Use a name that describes the *use case* (`ExtendedApp` = the `App` shape under `--extended`), not the file it lives in (avoid `LocalApp`, `MyApp`). A local declaration in the command file is fine as a transient stepping stone, but promote it to `src/lib/types/` the moment a second command needs the same fields.
+
+   When the same gap accumulates across many commands, propose an upstream `@heroku/types` bump and remove the extension once the strict schema catches up.
+
+**Derive composite-shaped helper types from the SDK; don't restate them.** When a command uses a composite return type (`AppInfo`, etc.) and needs to widen one field — e.g., the `app` field is the `ExtendedApp` shape under `--extended` — derive structurally instead of restating the whole type:
+
+```ts
+// Good — one field overridden, the rest stays in sync with the SDK.
+type Info = Omit<AppInfo, 'app'> & {app: ExtendedApp}
+
+async function getInfo(...): Promise<Info> {
+  return platform.app.describe(app)   // structural assignment, no field copy
+}
+
+// Bad — restates the SDK shape and copies fields one-by-one. New SDK fields
+// silently drop on the floor; an upstream rename type-checks but breaks at runtime.
+type Info = {
+  addons: AddOn[]
+  app: ExtendedApp
+  collaborators: Collaborator[]
+  dynos: Dyno[]
+  pipeline_coupling: null | PipelineCouplingDetail
+}
+
+async function getInfo(...): Promise<Info> {
+  const described = await platform.app.describe(app)
+  return {
+    addons: described.addons,
+    app: described.app,
+    collaborators: described.collaborators,
+    dynos: described.dynos,
+    pipeline_coupling: described.pipelineCoupling,
+  }
+}
+```
+
+The pathology of restating: `pipeline_coupling: described.pipelineCoupling` still type-checks if the SDK renames `pipelineCoupling` upstream — the bug surfaces only at runtime as `undefined`.
+
+**Localize CLI/SDK contract translations to the output boundary.** The CLI's JSON/shell output contract is snake_case; SDK return shapes are camelCase. Don't thread renamed fields through the entire helper pipeline — keep the SDK shape internal and rename only at the output sites that are the CLI contract:
+
+```ts
+// Good — rename happens at the JSON serialization boundary.
+} else if (flags.json) {
+  const {pipelineCoupling, ...rest} = info
+  hux.styledJSON({...rest, pipeline_coupling: pipelineCoupling})
+}
+
+// Bad — pipeline_coupling threaded through every read site upstream.
+if (info.pipeline_coupling) print('pipeline', `${info.pipeline_coupling.pipeline.name}:...`)
+```
+
+The CLI is the bounded context owning snake_case output; the SDK is a different bounded context using camelCase. Translation belongs at the seam, not inside either domain. This pattern recurs on every command whose JSON output uses snake_case — which is most of them.
 
 **Strict-null findings need careful handling.** Where `@heroku-cli/schema` had `web_url: string`, `@heroku/types/3.sdk` has `web_url: string | null` (correct per the OpenAPI spec). The migrated code may pass these through to functions expecting non-null arguments — e.g., `filesize(repo_size, ...)` or `print('web_url', web_url)`. **Don't silently coalesce nulls (`?? ''`, `?? 0`)**: that changes observable output (`web_url=null` becomes `web_url=`). Prefer one of:
 
@@ -267,7 +314,7 @@ import {HerokuApiClient} from '@heroku/heroku-fetch'
 
 const client = new HerokuApiClient()
 const response = await client.get(`/apps/${app}?extended=true`)
-const appExtended = await response.json() as Heroku.App
+const appExtended = await response.json() as ExtendedApp
 ```
 
 Why this is preferable to keeping `this.heroku.<verb>`:
@@ -487,7 +534,9 @@ Before opening the PR:
 - [ ] No `// TODO(sdk-migration):` markers remain.
 - [ ] Composite resource methods checked (Step P4) before falling back to per-call replacements when the command had a `Promise.all` over multiple endpoints.
 - [ ] If a composite method is used (e.g., `platform.app.describe`), the corresponding extension (`appExtensions`, `addOnExtensions`, etc.) is imported from `@heroku/sdk/extensions/<service>` and passed to the `HerokuSDK` constructor via `{extensions: [...]}`. Without this, the method is `undefined` at runtime — but stub-based tests will pass anyway. Verify by reading a sibling command's wiring or smoke-testing against a real app.
-- [ ] No `import * as Heroku from '@heroku-cli/schema'` (deprecated). Entity types come from `@heroku/types/3.sdk`; composite return types from `@heroku/sdk/resources/<service>/<resource>/<file>`; CLI-only field gaps captured in a local extension type (Step 1.2c).
+- [ ] No `import * as Heroku from '@heroku-cli/schema'` (deprecated). Entity types come from `@heroku/types/3.sdk`; composite return types from `@heroku/sdk/resources/<service>/<resource>/<file>`; CLI-only field gaps captured by extension types in `src/lib/types/` (Step 1.2c).
+- [ ] Helper return types derived from the SDK composite (`Omit<AppInfo, 'app'> & {app: ExtendedApp}`) rather than restated structurally; helpers spread/return the SDK result instead of copying fields one-by-one.
+- [ ] CLI/SDK contract renames (e.g., `pipelineCoupling` → `pipeline_coupling`) happen at output boundaries (JSON/shell), not threaded through internal helpers.
 - [ ] Strict-null findings handled without changing observable output: `as` cast or loosened consumer signature, never `?? ''` / `?? 0` for fields the original printed verbatim.
 - [ ] No `import {APIClient} from '@heroku-cli/command'` if no longer used.
 - [ ] No `as unknown as X` cast where `as X` would suffice.
