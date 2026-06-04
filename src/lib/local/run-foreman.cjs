@@ -14,8 +14,6 @@
 /* eslint-disable  no-undef */
 /* eslint-disable n/no-process-exit */
 /* eslint-disable unicorn/no-process-exit */
-/* eslint-disable no-new */
-/* eslint-disable radix */
 /* eslint-disable perfectionist/sort-imports */
 
 const program = require('commander')
