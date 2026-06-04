@@ -82,9 +82,7 @@ function flagServiceNameShadowing(sourceFile: SourceFile, result: TransformResul
 
   if (conflicts.length === 0) return
 
-  result.warnings.push(
-    `name collision with SDK service(s); rename the local(s) before merging:\n  ` + conflicts.join('\n  '),
-  )
+  result.warnings.push('name collision with SDK service(s); rename the local(s) before merging:\n  ' + conflicts.join('\n  '))
 }
 
 type CallContext = {
@@ -295,8 +293,8 @@ function rewriteCallSite(
   call.replaceWithText(replacement)
 }
 
-type WrappingContext =
-  | {await: AwaitExpression; bodyAlias: string; declaration: VariableDeclaration; kind: 'await-with-body-destructure'}
+type WrappingContext
+  = | {await: AwaitExpression; bodyAlias: string; declaration: VariableDeclaration; kind: 'await-with-body-destructure'}
   | {await: AwaitExpression; kind: 'await'}
   | {kind: 'bare-promise'}
 
@@ -344,14 +342,14 @@ function ensureSdkSetup(sourceFile: SourceFile, result: TransformResult): void {
   if (result.usedServices.size === 0) return
 
   const existing = sourceFile.getImportDeclaration(d => d.getModuleSpecifierValue() === HEROKU_SDK_IMPORT)
-  if (!existing) {
+  if (existing) {
+    const named = existing.getNamedImports().map(n => n.getName())
+    if (!named.includes('HerokuSDK')) existing.addNamedImport('HerokuSDK')
+  } else {
     // Insert at the top of the imports block; the project formats named imports without inner-brace spaces.
     const firstStatement = sourceFile.getStatementsWithComments()[0]
     const insertPos = firstStatement?.getStart() ?? 0
     sourceFile.insertText(insertPos, `import {HerokuSDK} from '${HEROKU_SDK_IMPORT}'\n`)
-  } else {
-    const named = existing.getNamedImports().map(n => n.getName())
-    if (!named.includes('HerokuSDK')) existing.addNamedImport('HerokuSDK')
   }
 
   const runMethod = sourceFile
@@ -382,8 +380,7 @@ function pruneUnusedSchemaImport(sourceFile: SourceFile): void {
   const name = namespace.getText()
   const stillUsed = sourceFile
     .getDescendantsOfKind(SyntaxKind.Identifier)
-    .filter(id => id.getText() === name && id !== namespace)
-    .length > 0
+    .some(id => id.getText() === name && id !== namespace)
 
   if (!stillUsed) decl.remove()
 }

@@ -1,7 +1,10 @@
 #!/usr/bin/env -S npx tsx
+/* eslint-disable n/no-process-exit */
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
-import {IndentationText, NewLineKind, Project, QuoteKind} from 'ts-morph'
+import {
+  IndentationText, NewLineKind, Project, QuoteKind,
+} from 'ts-morph'
 
 import {RouteIndex} from './routes-index.js'
 import {transform, type TransformResult} from './transform.js'
@@ -110,6 +113,7 @@ function reportFile(path: string, result: TransformResult, before: string, after
   }
 }
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 main().catch(error => {
   console.error(error)
   process.exit(1)

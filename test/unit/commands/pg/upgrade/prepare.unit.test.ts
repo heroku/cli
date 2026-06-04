@@ -11,7 +11,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/prepare.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
-import {mockSDKData, MockSDK} from '../../../../helpers/mock-sdk.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -181,7 +181,7 @@ describe('pg:upgrade:prepare', function () {
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
     infoStub.resolves({})
-    prepareUpgradeStub.rejects({statusCode: 422, id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.'})
+    prepareUpgradeStub.rejects({id: 'unprocessable_entity', message: 'database has an upgrade already scheduled, please check `pg:upgrade:wait` for more information on the status of your upgrade.', statusCode: 422})
 
     const {error} = await runCommand(Cmd, [
       '--app',

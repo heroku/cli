@@ -1,5 +1,6 @@
-import {Command, flags} from '@heroku-cli/command'
 import type {AppFeature} from '@heroku/types/3.sdk'
+
+import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'

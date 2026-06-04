@@ -1,5 +1,6 @@
 import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
+import {AddonConfirmationRequiredError, AddonProvisioningFailedError} from '@heroku/sdk/resources/platform/add-on'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import _ from 'lodash'
@@ -8,8 +9,6 @@ import {createSandbox, stub} from 'sinon'
 import Cmd from '../../../../src/commands/addons/create.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
-
-import {AddonConfirmationRequiredError, AddonProvisioningFailedError} from '@heroku/sdk/resources/platform/add-on'
 
 describe('addons:create', function () {
   let sdkMock: MockSDK

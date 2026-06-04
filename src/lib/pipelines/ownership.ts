@@ -1,4 +1,4 @@
-import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline-coupling'
+import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline/coupling'
 
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'

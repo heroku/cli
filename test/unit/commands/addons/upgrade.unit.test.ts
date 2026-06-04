@@ -1,14 +1,13 @@
 import {AddOn} from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
+// Import the error classes from the SDK
+import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/upgrade.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
-
-// Import the error classes from the SDK
-import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
 
 describe('addons:upgrade', function () {
   let sdkMock: MockSDK
