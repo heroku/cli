@@ -56,7 +56,7 @@ describe('pipelines:info', function () {
     const pipeline = {id: '0123', name: 'example', owner}
     const pipelines = [pipeline]
     const couplings: Array<Heroku.PipelineCoupling> = []
-    const pipelineApps: Array<any> = []
+    const pipelineApps: Array<Heroku.App & {pipelineCoupling: Heroku.PipelineCoupling}> = []
 
     // Build couplings and apps decorated with pipelineCoupling (as listApps returns)
     for (const [id, name] of appNames.entries()) {
@@ -80,6 +80,7 @@ describe('pipelines:info', function () {
       .query(true)
       .reply(200, pipelines)
 
+    sdkMock?.restore()
     sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves(pipelineApps)}})
 
     if (owner && owner.type === 'team') {
