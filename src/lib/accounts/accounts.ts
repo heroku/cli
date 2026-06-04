@@ -33,11 +33,19 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   add(name: string, username: string, password: string): void {
     const config = this.getStorageConfig()
+    const basedir = path.join(this.configDir(), 'accounts')
+    fs.mkdirSync(basedir, {recursive: true})
+
+    if (config.credentialStore) {
+      fs.writeFileSync(
+        path.join(basedir, name),
+        stringify({username}),
+        'utf8',
+      )
+      fs.chmodSync(path.join(basedir, name), 0o600)
+    }
 
     if (config.useNetrc) {
-      const basedir = path.join(this.configDir(), 'accounts')
-      fs.mkdirSync(basedir, {recursive: true})
-
       fs.writeFileSync(
         path.join(basedir, name),
         // eslint-disable-next-line perfectionist/sort-objects
