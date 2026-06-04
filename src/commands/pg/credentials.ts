@@ -1,9 +1,10 @@
+import type {CredentialInfo} from '@heroku/sdk/resources/data/postgres-database'
+
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
-import type {CredentialInfo} from '@heroku/sdk/resources/data/postgres-database'
 import {Args} from '@oclif/core'
 
 import {presentCredentialAttachments} from '../../lib/pg/util.js'

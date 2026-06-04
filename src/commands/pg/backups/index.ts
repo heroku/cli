@@ -4,8 +4,9 @@ import {HerokuSDK} from '@heroku/sdk'
 import {transferExtensions} from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core/ux'
 
-import backupsFactory from '../../../lib/pg/backups.js'
 import type {BackupTransfer} from '../../../lib/pg/types.js'
+
+import backupsFactory from '../../../lib/pg/backups.js'
 
 export default class Index extends Command {
   static description = 'list database backups'

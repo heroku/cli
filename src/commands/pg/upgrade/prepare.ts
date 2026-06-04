@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 

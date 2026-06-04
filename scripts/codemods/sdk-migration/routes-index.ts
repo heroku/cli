@@ -1,5 +1,5 @@
-import * as dataRoutes from '@heroku/types/data/routes'
 import * as platformRoutes from '@heroku/types/3.sdk/routes'
+import * as dataRoutes from '@heroku/types/data/routes'
 
 export type HttpVerb = 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
 
@@ -50,10 +50,8 @@ export class RouteIndex {
 
     if (matches.length === 0) return null
     if (matches.length > 1) {
-      throw new Error(
-        `ambiguous route resolution for ${verb} ${concretePath}: ` +
-          matches.map(m => `${m.entry.resource}.${m.entry.method}`).join(', '),
-      )
+      throw new Error(`ambiguous route resolution for ${verb} ${concretePath}: `
+          + matches.map(m => `${m.entry.resource}.${m.entry.method}`).join(', '))
     }
 
     return matches[0]
@@ -89,6 +87,6 @@ function buildEntry(
 }
 
 function pathToRegex(path: string): RegExp {
-  const escaped = path.replace(/[.+*?^$()|[\]\\]/g, '\\$&').replace(/\{[a-zA-Z][a-zA-Z0-9]*\}/g, '([^/]+)')
+  const escaped = path.replace(/[.+*?^$()|[\]\\]/g, String.raw`\$&`).replace(/\{[a-zA-Z][a-zA-Z0-9]*\}/g, '([^/]+)')
   return new RegExp(`^${escaped}$`)
 }

@@ -38,7 +38,7 @@ export function mockSDK(fakeData?: StubbedDataClient, fakePlatform?: StubbedPlat
   return {
     dataStub,
     platformStub,
-    restore: () => {
+    restore() {
       dataStub?.restore()
       platformStub?.restore()
     },

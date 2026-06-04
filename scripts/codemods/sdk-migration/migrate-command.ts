@@ -1,7 +1,9 @@
 #!/usr/bin/env -S npx tsx
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
-import {IndentationText, NewLineKind, Project, QuoteKind} from 'ts-morph'
+import {
+  IndentationText, NewLineKind, Project, QuoteKind,
+} from 'ts-morph'
 
 import {RouteIndex} from './routes-index.js'
 import {transform, type TransformResult} from './transform.js'

@@ -2,7 +2,7 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import _ from 'lodash'
 import nock from 'nock'
-import {createSandbox, stub, type SinonFakeTimers} from 'sinon'
+import {createSandbox, type SinonFakeTimers, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/wait.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
