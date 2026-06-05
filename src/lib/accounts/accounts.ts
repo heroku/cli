@@ -32,7 +32,7 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   add(name: string, username: string, password: string): void {
     const config = this.getStorageConfig()
-    const basedir = path.join(this.configDir(), 'accounts')
+    const basedir = this.accountsDir()
     fs.mkdirSync(basedir, {recursive: true})
 
     if (config.credentialStore) {
@@ -112,7 +112,7 @@ export class AccountsWrapper implements IAccountsWrapper {
   }
 
   listNetrc(): AccountEntry[] {
-    const basedir = path.join(this.configDir(), 'accounts')
+    const basedir = this.accountsDir()
     try {
       return fs.readdirSync(basedir)
         .map(name => ({name, username: this.account(name).username ?? ''}))
@@ -131,8 +131,7 @@ export class AccountsWrapper implements IAccountsWrapper {
       if (email) {
         // Aliased keychain account
         await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
-        const basedir = path.join(this.configDir(), 'accounts')
-        fs.unlinkSync(path.join(basedir, name))
+        fs.unlinkSync(path.join(this.accountsDir(), name))
       } else {
         // Non-aliased keychain account (name IS the email)
         await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
@@ -143,8 +142,7 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
 
     // Netrc mode: always remove alias file
-    const basedir = path.join(this.configDir(), 'accounts')
-    fs.unlinkSync(path.join(basedir, name))
+    fs.unlinkSync(path.join(this.accountsDir(), name))
   }
 
   async set(account: AccountEntry, dataDir: string): Promise<void> {
@@ -181,8 +179,7 @@ export class AccountsWrapper implements IAccountsWrapper {
   }
 
   private account(name: string): Heroku.Account {
-    const basedir = path.join(this.configDir(), 'accounts')
-    const file = fs.readFileSync(path.join(basedir, name), 'utf8')
+    const file = fs.readFileSync(path.join(this.accountsDir(), name), 'utf8')
     const account = parse(file)
     if (account[':username']) {
       // convert from ruby symbols
@@ -197,8 +194,7 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   private getAliasEmail(alias: string): string | null {
     try {
-      const basedir = path.join(this.configDir(), 'accounts')
-      const filePath = path.join(basedir, alias)
+      const filePath = path.join(this.accountsDir(), alias)
 
       if (!fs.existsSync(filePath)) {
         return null
@@ -220,10 +216,9 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   private listAliasFiles(): Map<string, string> {
     try {
-      const basedir = path.join(this.configDir(), 'accounts')
       const aliasMap = new Map<string, string>()
 
-      const files = fs.readdirSync(basedir)
+      const files = fs.readdirSync(this.accountsDir())
       for (const alias of files) {
         const email = this.getAliasEmail(alias)
         if (email) {
@@ -235,6 +230,10 @@ export class AccountsWrapper implements IAccountsWrapper {
     } catch {
       return new Map()
     }
+  }
+
+  private accountsDir(): string {
+    return path.join(this.configDir(), 'accounts')
   }
 
   private configDir() {
