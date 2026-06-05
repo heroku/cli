@@ -86,10 +86,26 @@ export class AccountsWrapper implements IAccountsWrapper {
   async list(): Promise<AccountEntry[]> {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
-      const accounts = await this.getKeychainAccounts()
-      return accounts
-        .filter((account): account is string => account !== null && account !== undefined)
-        .map(account => ({username: account}))
+      const keychainEmails = await this.getKeychainAccounts()
+      const aliasMap = this.listAliasFiles()
+
+      // Create reverse map: email → alias (for lookup)
+      const emailToAlias = new Map<string, string>()
+      for (const [alias, email] of aliasMap.entries()) {
+        // If multiple aliases point to same email, keep first
+        if (!emailToAlias.has(email)) {
+          emailToAlias.set(email, alias)
+        }
+      }
+
+      return keychainEmails
+        .filter((email): email is string => email !== null && email !== undefined)
+        .map(email => {
+          const alias = emailToAlias.get(email)
+          return alias
+            ? {name: alias, username: email}
+            : {username: email}
+        })
     }
 
     return this.listNetrc()

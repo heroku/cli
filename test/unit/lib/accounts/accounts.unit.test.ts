@@ -61,13 +61,20 @@ describe('accounts', function () {
   })
 
   describe('list() with credentialStore', function () {
+    let existsSyncStub: SinonStub
+    let osHomeStub: SinonStub
+
     beforeEach(function () {
       delete process.env.HEROKU_NETRC_WRITE
       stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
+      existsSyncStub = stub(fs, 'existsSync')
+      osHomeStub = stub(os, 'homedir').returns('/user/home')
     })
 
-    it('should return AccountEntry objects with only username when credentialStore is set', async function () {
+    it('should return AccountEntry objects with only username when no alias files exist', async function () {
       stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', 'user2@example.com'])
+      existsSyncStub.returns(false)
+      fsReaddirStub.throws(new Error('Directory not found'))
 
       const result = await AccountsModule.list()
 
@@ -78,6 +85,8 @@ describe('accounts', function () {
 
     it('should return an empty array when the keychain has no accounts', async function () {
       stub(AccountsModule, 'getKeychainAccounts').resolves([])
+      existsSyncStub.returns(false)
+      fsReaddirStub.throws(new Error('Directory not found'))
 
       const result = await AccountsModule.list()
 
@@ -86,12 +95,78 @@ describe('accounts', function () {
 
     it('should filter out null and undefined keychain entries', async function () {
       stub(AccountsModule, 'getKeychainAccounts').resolves(['user1@example.com', null, undefined, 'user2@example.com'])
+      existsSyncStub.returns(false)
+      fsReaddirStub.throws(new Error('Directory not found'))
 
       const result = await AccountsModule.list()
 
       expect(result).to.have.lengthOf(2)
       expect(result[0]).to.deep.equal({username: 'user1@example.com'})
       expect(result[1]).to.deep.equal({username: 'user2@example.com'})
+    })
+
+    it('should return AccountEntry objects with name when alias files exist', async function () {
+      stub(AccountsModule, 'getKeychainAccounts').resolves(['prod@example.com', 'stage@example.com'])
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/production$/)).returns(true)
+      existsSyncStub.withArgs(match(/staging$/)).returns(true)
+      fsReaddirStub.returns(['production', 'staging'])
+      fsReadFileStub.withArgs(match(/production$/), 'utf8')
+        .returns('username: prod@example.com\n')
+      fsReadFileStub.withArgs(match(/staging$/), 'utf8')
+        .returns('username: stage@example.com\n')
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.be.an('array').that.has.lengthOf(2)
+      expect(result[0]).to.deep.equal({name: 'production', username: 'prod@example.com'})
+      expect(result[1]).to.deep.equal({name: 'staging', username: 'stage@example.com'})
+    })
+
+    it('should return mixed results when some accounts have aliases', async function () {
+      stub(AccountsModule, 'getKeychainAccounts').resolves(['prod@example.com', 'user@example.com'])
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/production$/)).returns(true)
+      fsReaddirStub.returns(['production'])
+      fsReadFileStub.withArgs(match(/production$/), 'utf8')
+        .returns('username: prod@example.com\n')
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.be.an('array').that.has.lengthOf(2)
+      expect(result[0]).to.deep.equal({name: 'production', username: 'prod@example.com'})
+      expect(result[1]).to.deep.equal({username: 'user@example.com'})
+    })
+
+    it('should use first alias when multiple aliases point to same email', async function () {
+      stub(AccountsModule, 'getKeychainAccounts').resolves(['prod@example.com'])
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/production$/)).returns(true)
+      existsSyncStub.withArgs(match(/prod$/)).returns(true)
+      fsReaddirStub.returns(['production', 'prod'])
+      fsReadFileStub.withArgs(match(/production$/), 'utf8')
+        .returns('username: prod@example.com\n')
+      fsReadFileStub.withArgs(match(/prod$/), 'utf8')
+        .returns('username: prod@example.com\n')
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.be.an('array').that.has.lengthOf(1)
+      expect(result[0]).to.deep.equal({name: 'production', username: 'prod@example.com'})
+    })
+
+    it('should ignore orphaned alias files (no keychain entry)', async function () {
+      stub(AccountsModule, 'getKeychainAccounts').resolves(['user@example.com'])
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/orphaned$/)).returns(true)
+      fsReaddirStub.returns(['orphaned'])
+      fsReadFileStub.withArgs(match(/orphaned$/), 'utf8')
+        .returns('username: orphaned@example.com\n')
+
+      const result = await AccountsModule.list()
+
+      expect(result).to.be.an('array').that.has.lengthOf(1)
+      expect(result[0]).to.deep.equal({username: 'user@example.com'})
     })
   })
 
