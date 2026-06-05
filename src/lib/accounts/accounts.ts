@@ -6,6 +6,7 @@ import {
 } from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -112,10 +113,19 @@ export class AccountsWrapper implements IAccountsWrapper {
     const config = this.getStorageConfig()
 
     if (config.credentialStore) {
-      // Try to resolve alias to email
+      // Keychain mode
       const email = this.getAliasEmail(name)
 
       if (email) {
+        // Aliased account - check if it was created in netrc mode
+        const accountData = this.account(name)
+        if (accountData.password) {
+          throw new Error(
+            `Cannot remove ${name}: this account was created in netrc mode.\n` +
+            `To remove it, run: ${color.command(`HEROKU_NETRC_WRITE=true heroku accounts:remove ${name}`)}`
+          )
+        }
+
         // Aliased keychain account
         await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
         fs.unlinkSync(path.join(this.accountsDir(), name))
@@ -128,7 +138,20 @@ export class AccountsWrapper implements IAccountsWrapper {
       return
     }
 
-    // Netrc mode: always remove alias file
+    // Netrc mode - check if account is saved in keychain
+    const email = this.getAliasEmail(name)
+    if (email) {
+      const accountData = this.account(name)
+      if (!accountData.password) {
+        throw new Error(
+          `Cannot remove ${name}: this account is saved to your computer's keychain application.\n` +
+          `To remove it, run: ${color.command(`heroku accounts:remove ${name}`)}\n` +
+          `(without HEROKU_NETRC_WRITE set)`
+        )
+      }
+    }
+
+    // Netrc mode: remove alias file
     fs.unlinkSync(path.join(this.accountsDir(), name))
   }
 

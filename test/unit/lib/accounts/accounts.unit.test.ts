@@ -662,6 +662,47 @@ describe('accounts', function () {
 
         await expect(AccountsModule.remove(email)).to.be.rejectedWith('Keychain removal failed')
       })
+
+      it('should error when trying to remove netrc account in keychain mode', async function () {
+        const alias = 'netrc-account'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/netrc-account$/)).returns(true)
+        fsReadFileStub.withArgs(match(/netrc-account$/), 'utf8')
+          .returns('username: user@example.com\npassword: token123\n')
+
+        await expect(AccountsModule.remove(alias))
+          .to.be.rejectedWith(/this account was created in netrc mode/)
+      })
+    })
+
+    describe('with netrc mode', function () {
+      beforeEach(function () {
+        stub(AccountsModule, 'getStorageConfig').returns({credentialStore: null, useNetrc: true})
+      })
+
+      it('should remove netrc account successfully', async function () {
+        const alias = 'netrc-account'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/netrc-account$/)).returns(true)
+        fsReadFileStub.withArgs(match(/netrc-account$/), 'utf8')
+          .returns('username: user@example.com\npassword: token123\n')
+
+        await AccountsModule.remove(alias)
+
+        expect(unlinkStub.calledOnce).to.be.true
+        expect(unlinkStub.firstCall.args[0]).to.match(/netrc-account$/)
+      })
+
+      it('should error when trying to remove keychain account in netrc mode', async function () {
+        const alias = 'keychain-account'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/keychain-account$/)).returns(true)
+        fsReadFileStub.withArgs(match(/keychain-account$/), 'utf8')
+          .returns('username: user@example.com\n')
+
+        await expect(AccountsModule.remove(alias))
+          .to.be.rejectedWith(/this account is saved to your computer's keychain application/)
+      })
     })
   })
 })
