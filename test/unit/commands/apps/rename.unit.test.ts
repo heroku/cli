@@ -1,9 +1,20 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Rename from '../../../../src/commands/apps/rename.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
+
+type FakePlatform = {
+  app: {update: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {update: sinon.stub()},
+  }
+}
 
 describe('apps:rename', function () {
   const newApp = {
@@ -17,32 +28,29 @@ describe('apps:rename', function () {
   const oldApp = {
     name: 'myapp',
   }
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('renames an app', async function () {
-    api
-      .patch(`/apps/${oldApp.name}`, {name: newApp.name})
-      .reply(200, newApp)
+    fakePlatform.app.update.resolves(newApp)
 
     const {stderr, stdout} = await runCommand(Rename, ['-a', oldApp.name, newApp.name])
 
     expect(stdout).to.equal('https://newname.com | https://git.heroku.com/newname.git\n')
     expect(unwrap(stderr)).to.contains('Renaming ⬢ myapp to newname... doneWarning: Don\'t forget to update git remotes for all other local checkouts of the app.\n')
+    expect(fakePlatform.app.update.calledOnceWithExactly(oldApp.name, {name: newApp.name})).to.equal(true)
   })
 
   it('gives a message if the web_url is still http', async function () {
-    api
-      .patch(`/apps/${oldApp.name}`, {name: newApp.name})
-      .reply(200, newAppSillUsingHttp)
+    fakePlatform.app.update.resolves(newAppSillUsingHttp)
 
     const {stderr, stdout} = await runCommand(Rename, ['-a', oldApp.name, newApp.name])
 
