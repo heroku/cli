@@ -7,9 +7,9 @@ import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Add extends Command {
   static args = {
-    name: Args.string({description: 'name of Heroku account to add', required: true}),
+    name: Args.string({description: 'alias for Heroku account to add', required: true}),
   }
-  static description = 'add a Heroku account to your cache'
+  static description = 'add the current Heroku account to your accounts cache'
   static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {
