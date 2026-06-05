@@ -10,7 +10,10 @@ import * as color from '@heroku/heroku-cli-util/color'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import tsheredoc from 'tsheredoc'
 import {parse, stringify} from 'yaml'
+
+const heredoc = tsheredoc.default
 
 export interface AccountEntry {
   name?: string
@@ -120,10 +123,10 @@ export class AccountsWrapper implements IAccountsWrapper {
         // Aliased account - check if it was created in netrc mode
         const accountData = this.account(name)
         if (accountData.password) {
-          throw new Error(
-            `Cannot remove ${name}: this account was created in netrc mode.\n` +
-            `To remove it, run: ${color.command(`HEROKU_NETRC_WRITE=true heroku accounts:remove ${name}`)}`
-          )
+          throw new Error(heredoc(`
+            Cannot remove ${name}: this account was created in netrc mode.
+            To remove it, run: ${color.command(`HEROKU_NETRC_WRITE=true heroku accounts:remove ${name}`)}
+          `))
         }
 
         // Aliased keychain account
@@ -143,11 +146,11 @@ export class AccountsWrapper implements IAccountsWrapper {
     if (email) {
       const accountData = this.account(name)
       if (!accountData.password) {
-        throw new Error(
-          `Cannot remove ${name}: this account is saved to your computer's keychain application.\n` +
-          `To remove it, run: ${color.command(`heroku accounts:remove ${name}`)}\n` +
-          `(without HEROKU_NETRC_WRITE set)`
-        )
+        throw new Error(heredoc(`
+          Cannot remove ${name}: this account is saved to your computer's keychain application.
+          To remove it, run: ${color.command(`heroku accounts:remove ${name}`)}
+          (without HEROKU_NETRC_WRITE set)
+        `))
       }
     }
 
@@ -195,7 +198,29 @@ export class AccountsWrapper implements IAccountsWrapper {
     return account
   }
 
-  private getAliasEmail(alias: string): string | null {
+  private accountsDir(): string {
+    return path.join(this.configDir(), 'accounts')
+  }
+
+  private configDir() {
+    const legacyDir = path.join(os.homedir(), '.heroku')
+    if (fs.existsSync(legacyDir)) {
+      return legacyDir
+    }
+
+    return path.join(os.homedir(), '.config', 'heroku')
+  }
+
+  private convertRubySymbols(account: any): void {
+    if (account[':username']) {
+      account.username = account[':username']
+      account.password = account[':password']
+      delete account[':username']
+      delete account[':password']
+    }
+  }
+
+  private getAliasEmail(alias: string): null | string {
     try {
       const filePath = path.join(this.accountsDir(), alias)
 
@@ -211,6 +236,17 @@ export class AccountsWrapper implements IAccountsWrapper {
     } catch {
       return null
     }
+  }
+
+  private async initNetrc() {
+    if (!this.netrc) {
+      const NetrcModule = await import('netrc-parser')
+      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
+      this.netrc = new NetrcClass()
+      await this.netrc.load()
+    }
+
+    return this.netrc
   }
 
   private listAliasFiles(): Map<string, string> {
@@ -231,43 +267,10 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
   }
 
-  private accountsDir(): string {
-    return path.join(this.configDir(), 'accounts')
-  }
-
-  private convertRubySymbols(account: any): void {
-    if (account[':username']) {
-      account.username = account[':username']
-      account.password = account[':password']
-      delete account[':username']
-      delete account[':password']
-    }
-  }
-
   private writeAccountFile(name: string, content: Record<string, string>): void {
     const filePath = path.join(this.accountsDir(), name)
     fs.writeFileSync(filePath, stringify(content), 'utf8')
     fs.chmodSync(filePath, 0o600)
-  }
-
-  private configDir() {
-    const legacyDir = path.join(os.homedir(), '.heroku')
-    if (fs.existsSync(legacyDir)) {
-      return legacyDir
-    }
-
-    return path.join(os.homedir(), '.config', 'heroku')
-  }
-
-  private async initNetrc() {
-    if (!this.netrc) {
-      const NetrcModule = await import('netrc-parser')
-      const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
-      this.netrc = new NetrcClass()
-      await this.netrc.load()
-    }
-
-    return this.netrc
   }
 }
 
