@@ -1,9 +1,21 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Info from '../../../../src/commands/apps/info.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
+
+type FakePlatform = {
+  app: {describe: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {describe: sinon.stub()},
+  }
+}
 
 describe('apps:info', function () {
   const app = {
@@ -60,6 +72,8 @@ describe('apps:info', function () {
     {user: {email: 'foo2@foo.com'}},
   ]
 
+  const dynos = [{quantity: 2, size: 'Standard-1X', type: 'web'}]
+
   const BASE_INFO = `=== ⬢ myapp
 
 Addons:           heroku-redis
@@ -97,48 +111,44 @@ Dynos:            web: 1
 Stack:            cedar-14
 `
 
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
+  let apiGet: sinon.SinonStub
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    apiGet = sinon.stub(HerokuApiClient.prototype, 'get')
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows app info', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp/addons')
-      .reply(200, addons)
-      .get('/apps/myapp/collaborators')
-      .reply(200, collaborators)
-      .get('/apps/myapp/dynos')
-      .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp'])
 
     expect(stdout).to.equal(BASE_INFO)
     expect(unwrap(stderr)).to.contains('')
+    expect(fakePlatform.app.describe.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('shows extended app info', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp?extended=true')
-      .reply(200, appExtended)
-      .get('/apps/myapp/addons')
-      .reply(200, addons)
-      .get('/apps/myapp/collaborators')
-      .reply(200, collaborators)
-      .get('/apps/myapp/dynos')
-      .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
+    apiGet.withArgs('/apps/myapp?extended=true').resolves({json: async () => appExtended})
 
     const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp', '--extended'])
 
@@ -153,14 +163,14 @@ Stack:            cedar-14
   })
 
   it('shows empty extended app info when not defined', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp?extended=true').reply(200, appAcm)
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
+    apiGet.withArgs('/apps/myapp?extended=true').resolves({json: async () => appAcm})
 
     const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp', '--extended'])
 
@@ -174,13 +184,13 @@ Stack:            cedar-14
   })
 
   it('shows app info via arg', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp'])
 
@@ -189,14 +199,13 @@ Stack:            cedar-14
   })
 
   it('shows app info via arg when the app is in a pipeline', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}, stage: 'production'})
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}, stage: 'production'},
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp'])
 
@@ -223,13 +232,13 @@ Stack:            cedar-14
   })
 
   it('shows app info in shell format', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
 
@@ -250,14 +259,13 @@ stack=cedar-14
   })
 
   it('shows app info in shell format when the app is in pipeline', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}, stage: 'production'})
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}, stage: 'production'},
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
 
@@ -279,14 +287,14 @@ stack=cedar-14
   })
 
   it('shows extended app info in json format', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp?extended=true').reply(200, appExtended)
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
+    apiGet.withArgs('/apps/myapp?extended=true').resolves({json: async () => appExtended})
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--extended', '--json'])
 
@@ -298,14 +306,13 @@ stack=cedar-14
   })
 
   it('shows app info in json format', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appAcm)
-    api
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
-      .get('/apps/myapp/pipeline-couplings').reply(200, {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}})
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: {app: {id: appAcm.id}, pipeline: {name: 'my-pipeline'}},
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--json'])
 
@@ -320,13 +327,13 @@ stack=cedar-14
   })
 
   it('shows app info with a stack change', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, appStackChange)
-    api
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: appStackChange,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp'])
 
@@ -351,16 +358,13 @@ Stack:            cedar-14 (next build will use heroku-24)
   })
 
   it('shows fir app info without slug size', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, firAppAcm)
-    api
-      .get('/apps/myapp/addons')
-      .reply(200, addons)
-      .get('/apps/myapp/collaborators')
-      .reply(200, collaborators)
-      .get('/apps/myapp/dynos')
-      .reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: firAppAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['-a', 'myapp'])
 
@@ -369,13 +373,13 @@ Stack:            cedar-14 (next build will use heroku-24)
   })
 
   it('shows fir app info in shell format without slug size', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, firAppAcm)
-    api
-      .get('/apps/myapp/addons').reply(200, addons)
-      .get('/apps/myapp/collaborators').reply(200, collaborators)
-      .get('/apps/myapp/dynos').reply(200, [{quantity: 2, size: 'Standard-1X', type: 'web'}])
+    fakePlatform.app.describe.resolves({
+      addons,
+      app: firAppAcm,
+      collaborators,
+      dynos,
+      pipelineCoupling: null,
+    })
 
     const {stderr, stdout} = await runCommand(Info, ['myapp', '--shell'])
 
