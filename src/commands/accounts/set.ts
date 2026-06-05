@@ -16,15 +16,12 @@ export default class Set extends Command {
     const {name} = args
 
     const accounts = await AccountsModule.list()
-    const netrcAccount = accounts.find(account => account.name === name)
-    const keychainAccount = accounts.find(account => !account.name && account.username === name)
+    const account = accounts.find(account => account.name === name || account.username === name)
 
-    if (!netrcAccount && !keychainAccount) {
+    if (!account) {
       ux.error(`${name} does not exist in your accounts cache or system keychain.`)
     }
 
-    const account = netrcAccount ?? keychainAccount
-
-    await AccountsModule.set(account!, this.config.dataDir)
+    await AccountsModule.set(account, this.config.dataDir)
   }
 }
