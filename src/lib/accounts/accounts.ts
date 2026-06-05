@@ -181,14 +181,7 @@ export class AccountsWrapper implements IAccountsWrapper {
   private account(name: string): Heroku.Account {
     const file = fs.readFileSync(path.join(this.accountsDir(), name), 'utf8')
     const account = parse(file)
-    if (account[':username']) {
-      // convert from ruby symbols
-      account.username = account[':username']
-      account.password = account[':password']
-      delete account[':username']
-      delete account[':password']
-    }
-
+    this.convertRubySymbols(account)
     return account
   }
 
@@ -202,11 +195,7 @@ export class AccountsWrapper implements IAccountsWrapper {
 
       const file = fs.readFileSync(filePath, 'utf8')
       const account = parse(file)
-
-      // Handle Ruby-style symbol keys for backward compatibility with legacy Ruby CLI
-      if (account[':username']) {
-        account.username = account[':username']
-      }
+      this.convertRubySymbols(account)
 
       return account.username ?? null
     } catch {
@@ -234,6 +223,15 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   private accountsDir(): string {
     return path.join(this.configDir(), 'accounts')
+  }
+
+  private convertRubySymbols(account: any): void {
+    if (account[':username']) {
+      account.username = account[':username']
+      account.password = account[':password']
+      delete account[':username']
+      delete account[':password']
+    }
   }
 
   private configDir() {
