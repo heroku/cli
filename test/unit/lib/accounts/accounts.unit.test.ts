@@ -591,30 +591,63 @@ describe('accounts', function () {
         credStub.restore()
       })
 
-      it('should call removeAuth with account name and hosts', async function () {
-        const accountName = 'test-account@example.com'
+      it('should remove aliased keychain account by resolving email from alias file', async function () {
+        const alias = 'production'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/production$/)).returns(true)
+        fsReadFileStub.withArgs(match(/production$/), 'utf8')
+          .returns('username: prod@example.com\n')
 
-        await AccountsModule.remove(accountName)
+        await AccountsModule.remove(alias)
 
         expect(removeAuthStub.calledOnce).to.be.true
-        expect(removeAuthStub.firstCall.args[0]).to.equal(accountName)
+        expect(removeAuthStub.firstCall.args[0]).to.equal('prod@example.com')
         expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
       })
 
-      it('should also remove the alias file when credentialStore is set', async function () {
-        const accountName = 'test-account@example.com'
+      it('should remove alias file after removing from keychain for aliased account', async function () {
+        const alias = 'production'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/production$/)).returns(true)
+        fsReadFileStub.withArgs(match(/production$/), 'utf8')
+          .returns('username: prod@example.com\n')
 
-        await AccountsModule.remove(accountName)
+        await AccountsModule.remove(alias)
 
         expect(unlinkStub.calledOnce).to.be.true
+        expect(unlinkStub.firstCall.args[0]).to.match(/production$/)
+      })
+
+      it('should remove non-aliased keychain account using email directly', async function () {
+        const email = 'user@example.com'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/user@example\.com$/)).returns(false)
+
+        await AccountsModule.remove(email)
+
+        expect(removeAuthStub.calledOnce).to.be.true
+        expect(removeAuthStub.firstCall.args[0]).to.equal(email)
+        expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
+      })
+
+      it('should not try to remove alias file for non-aliased account', async function () {
+        const email = 'user@example.com'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/user@example\.com$/)).returns(false)
+
+        await AccountsModule.remove(email)
+
+        expect(unlinkStub.called).to.be.false
       })
 
       it('should throw an error if removeAuth fails', async function () {
-        const accountName = 'test-account@example.com'
+        const email = 'user@example.com'
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/user@example\.com$/)).returns(false)
         const error = new Error('Keychain removal failed')
         removeAuthStub.rejects(error)
 
-        await expect(AccountsModule.remove(accountName)).to.be.rejectedWith('Keychain removal failed')
+        await expect(AccountsModule.remove(email)).to.be.rejectedWith('Keychain removal failed')
       })
     })
   })

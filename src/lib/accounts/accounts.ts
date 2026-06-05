@@ -123,10 +123,26 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   async remove(name: string): Promise<void> {
     const config = this.getStorageConfig()
+
     if (config.credentialStore) {
-      await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
+      // Try to resolve alias to email
+      const email = this.getAliasEmail(name)
+
+      if (email) {
+        // Aliased keychain account
+        await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
+        const basedir = path.join(this.configDir(), 'accounts')
+        fs.unlinkSync(path.join(basedir, name))
+      } else {
+        // Non-aliased keychain account (name IS the email)
+        await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
+        // No alias file to remove
+      }
+
+      return
     }
 
+    // Netrc mode: always remove alias file
     const basedir = path.join(this.configDir(), 'accounts')
     fs.unlinkSync(path.join(basedir, name))
   }
