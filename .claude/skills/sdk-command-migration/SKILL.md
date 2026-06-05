@@ -47,26 +47,15 @@ Each step is required. Do not skip.
 
 Run these once per command, before any code change. They prevent the most common surprises.
 
-### Step P1: Confirm working tree is clean and SDK is on disk
+### Steps P1+P2: Working tree, SDK probe, and baselines
 
 ```bash
-git status -sb
-cat node_modules/@heroku/sdk/package.json | grep -E '"(name|version)"'
-node --input-type=module -e "import {HerokuSDK} from '@heroku/sdk'; console.log(typeof HerokuSDK)"
+bash scripts/codemods/sdk-migration/preflight.sh test/unit/commands/<command-path>.unit.test.ts
 ```
 
-Expected: no unmerged paths (`UU`), `HerokuSDK` prints `function`. If the working tree is dirty, resolve before proceeding (commit, stash, or restore — depending on what's there). If `HerokuSDK` prints `undefined`, the SDK is on the wrong version and the rest of this skill will not apply cleanly.
+Expected: no unmerged paths (`UU`), `HerokuSDK is function`, tsc baseline written to `/tmp/tsc-baseline.txt`, target test file pass/fail captured. If the working tree is dirty, resolve before proceeding (commit, stash, or restore). If `HerokuSDK` prints `undefined`, the SDK is on the wrong version and the rest of this skill will not apply cleanly. If the test file was already failing, stop and ask the user.
 
-**Why these specific invocations:** the SDK's `exports` map doesn't expose `./package.json` (so `require('@heroku/sdk/package.json')` fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`), and the SDK's entry uses top-level `await` (so `require('@heroku/sdk')` fails with `ERR_REQUIRE_ASYNC_MODULE`). Reading `node_modules/@heroku/sdk/package.json` directly and using `--input-type=module` for the import sidesteps both.
-
-### Step P2: Capture baseline of pre-existing failures
-
-```bash
-npx tsc --noEmit -p tsconfig.json 2>&1 | tee /tmp/tsc-baseline.txt | tail -20
-npx mocha 'test/unit/commands/<command-path>.unit.test.ts' --reporter min 2>&1 | tail -5
-```
-
-Save the `tsc` baseline. Any errors present here are NOT your responsibility — your goal is "no *new* errors after migration." For the test file, capture pass/fail status; if it was already failing, stop and ask the user before continuing.
+Any tsc errors in the baseline are NOT your responsibility — your goal is "no *new* errors after migration." The script's source comments explain why the SDK probe uses `--input-type=module` (top-level await + missing `./package.json` export).
 
 ### Step P3: Verify the command's call surface
 
@@ -184,11 +173,7 @@ The CLI passed http-call options the SDK doesn't accept. For data routes, a lone
 The SDK's dispatcher only forwards a request body when the route metadata has `hasRequestBody: true`. If `@heroku/types` is missing that flag for a route, the generated SDK method's TS signature won't accept a body parameter *and* the dispatcher will silently drop any body you cast through. Symptoms: tests fail with "request body did not match" or the migrated PATCH/POST behaves as if it sent an empty payload. Diagnostic:
 
 ```bash
-npx tsx -e "
-import {RouteIndex} from './scripts/codemods/sdk-migration/routes-index.ts';
-const r = RouteIndex.load().lookup('PATCH', '/apps/example/config-vars');
-console.log('hasRequestBody:', r?.entry.hasRequestBody, 'method:', r?.entry.resource + '.' + r?.entry.method);
-"
+bash scripts/codemods/sdk-migration/check-route.sh PATCH /apps/example/config-vars
 ```
 
 If `hasRequestBody` is `false` but the endpoint logically requires a body, the fix is upstream: the user (or you) needs to bump `@heroku/types` to a version where the route metadata is correct. Stop and ask the user before working around this — escape-hatching to the underlying client defeats the migration's purpose. Once the dependency is updated, re-run `npm install`, re-verify the diagnostic shows `hasRequestBody: true`, and refresh the Pre-flight P2 baseline (the bump may resolve unrelated `tsc` errors too).
@@ -329,16 +314,10 @@ Confirm with the user before reaching for this — it's a deliberate escape hatc
 ### Step 1.3: Type-check
 
 ```bash
-if [ -s /tmp/tsc-baseline.txt ]; then
-  npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt | tail -20
-else
-  npx tsc --noEmit -p tsconfig.json 2>&1 | tail -20
-fi
+bash scripts/codemods/sdk-migration/tsc-delta.sh 20
 ```
 
-The `[ -s … ]` guard matters: when the baseline is empty (clean repo), `grep -v -F -f /tmp/tsc-baseline.txt` matches *nothing* because the empty pattern file has no patterns to match against — a false "no errors" signal in exactly the case where strict checking matters most.
-
-Expected: empty output (no new errors). If new errors appear, they typically fall into:
+Expected: empty output (no new errors). The script's source comments explain the empty-baseline trap it guards against. If new errors appear, they typically fall into:
 
 - **Local-type incompatibility** → use a single-step cast (`as App[]`, not `as unknown as App[]`) at the call site. Reach for `as unknown as X` only if the single-step is rejected.
 - **Helper signature mismatch** → if a helper parameter was typed as `Heroku.X` to mean an array, fix the helper to `App[]` honestly. Anticipate that `lodash` operations like `_.partition` return tuples — destructure: `const [a, b] = _.partition(...)`.
@@ -485,14 +464,10 @@ Use the parent directory of the migrated command. Expected: all passing. If a si
 ### Step V2: Type-check delta
 
 ```bash
-if [ -s /tmp/tsc-baseline.txt ]; then
-  npx tsc --noEmit -p tsconfig.json 2>&1 | grep -v -F -f /tmp/tsc-baseline.txt
-else
-  npx tsc --noEmit -p tsconfig.json 2>&1
-fi
+bash scripts/codemods/sdk-migration/tsc-delta.sh
 ```
 
-Expected: empty. New errors mean the migration introduced a regression. (Same baseline-empty caveat as Step 1.3.)
+Expected: empty. New errors mean the migration introduced a regression.
 
 ### Step V3: Push and open PR
 
