@@ -36,9 +36,7 @@ export class AccountsWrapper implements IAccountsWrapper {
 
     if (config.credentialStore) {
       this.writeAccountFile(name, {username})
-    }
-
-    if (config.useNetrc) {
+    } else if (config.useNetrc) {
       // eslint-disable-next-line perfectionist/sort-objects
       this.writeAccountFile(name, {username, password})
     }
