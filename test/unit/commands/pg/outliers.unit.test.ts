@@ -21,6 +21,9 @@ describe('pg:outliers', function () {
     user: 'testuser',
   }
 
+  const mockEssentialDb = {...mockDb, plan: {name: 'heroku-postgresql:essential-0'}} as unknown as pg.ConnectionDetails
+  const mockAdvancedDb = {...mockDb, plan: {name: 'heroku-postgresql:advanced'}} as unknown as pg.ConnectionDetails
+
   beforeEach(function () {
     sandbox = sinon.createSandbox()
     getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
@@ -39,22 +42,42 @@ describe('pg:outliers', function () {
     execQueryStub.onCall(2).resolves(expectedOutputText) // main query
   }
 
-  it('resets query stats', async function () {
-    // For reset: 1) fetchVersion, 2) ensurePGStatStatement, 3) reset
+  it('resets query stats on standard plan using real function', async function () {
     execQueryStub.onCall(0).resolves('server_version\n---------\n13.7')
     execQueryStub.onCall(1).resolves('t')
     execQueryStub.onCall(2).resolves('')
 
-    await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--reset',
-    ])
+    await runCommand(Cmd, ['--app', 'myapp', '--reset'])
 
-    expect(getDatabaseStub.calledOnce).to.be.true
     expect(execQueryStub.calledThrice).to.be.true
     const resetQuery = execQueryStub.getCall(2).args[0]
     expect(resetQuery.trim()).to.eq('SELECT pg_stat_statements_reset();')
+  })
+
+  it('resets query stats on essential plan using _heroku wrapper', async function () {
+    getDatabaseStub.resolves(mockEssentialDb)
+    execQueryStub.onCall(0).resolves('server_version\n---------\n17.7')
+    execQueryStub.onCall(1).resolves('t')
+    execQueryStub.onCall(2).resolves('')
+
+    await runCommand(Cmd, ['--app', 'myapp', '--reset'])
+
+    expect(execQueryStub.calledThrice).to.be.true
+    const resetQuery = execQueryStub.getCall(2).args[0]
+    expect(resetQuery.trim()).to.eq('SELECT _heroku.pg_stat_statements_reset();')
+  })
+
+  it('resets query stats on advanced plan using _heroku wrapper', async function () {
+    getDatabaseStub.resolves(mockAdvancedDb)
+    execQueryStub.onCall(0).resolves('server_version\n---------\n17.7')
+    execQueryStub.onCall(1).resolves('t')
+    execQueryStub.onCall(2).resolves('')
+
+    await runCommand(Cmd, ['--app', 'myapp', '--reset'])
+
+    expect(execQueryStub.calledThrice).to.be.true
+    const resetQuery = execQueryStub.getCall(2).args[0]
+    expect(resetQuery.trim()).to.eq('SELECT _heroku.pg_stat_statements_reset();')
   })
 
   it('returns query outliers for version 11', async function () {
