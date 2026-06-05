@@ -155,8 +155,8 @@ export class AccountsWrapper implements IAccountsWrapper {
     if (config.useNetrc && account.name) {
       const netrcInstance = await this.initNetrc()
       const current = this.account(account.name)
-      netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password}
-      netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password}
+      netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password || ''}
+      netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password || ''}
       await netrcInstance.save()
     }
   }

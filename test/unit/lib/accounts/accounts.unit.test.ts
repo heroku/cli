@@ -342,6 +342,17 @@ describe('accounts', function () {
 
         expect(fakeNetrc.save.called).to.be.false
       })
+
+      it('handles alias file without password (created in keychain mode)', async function () {
+        fsReadFileStub.withArgs(match(/keychain-alias$/), 'utf8')
+          .returns('username: user@example.com\n')
+        const account = {name: 'keychain-alias', username: 'user@example.com'}
+        await AccountsModule.set(account, '/data/heroku')
+
+        expect(fakeNetrc.machines['api.heroku.com']).to.deep.equal({login: 'user@example.com', password: ''})
+        expect(fakeNetrc.machines['git.heroku.com']).to.deep.equal({login: 'user@example.com', password: ''})
+        expect(fakeNetrc.save.calledOnce).to.be.true
+      })
     })
   })
 
