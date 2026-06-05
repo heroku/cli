@@ -23,7 +23,6 @@ export interface IAccountsWrapper {
   getStorageConfig(): ReturnType<typeof getStorageConfig>
   list(): Promise<AccountEntry[]>
   remove(name: string): void
-  removeNetrc(name: string): void
   set(account: AccountEntry, dataDir: string): Promise<void>
   writeLoginState(dataDir: string, name: string): Promise<void>
 }
@@ -149,6 +148,29 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
 
     return account
+  }
+
+  private getAliasEmail(alias: string): string | null {
+    try {
+      const basedir = path.join(this.configDir(), 'accounts')
+      const filePath = path.join(basedir, alias)
+
+      if (!fs.existsSync(filePath)) {
+        return null
+      }
+
+      const file = fs.readFileSync(filePath, 'utf8')
+      const account = parse(file)
+
+      // Handle Ruby-style symbol keys for backward compatibility with legacy Ruby CLI
+      if (account[':username']) {
+        account.username = account[':username']
+      }
+
+      return account.username ?? null
+    } catch {
+      return null
+    }
   }
 
   private configDir() {

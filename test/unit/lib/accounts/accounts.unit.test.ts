@@ -278,53 +278,105 @@ describe('accounts', function () {
     })
   })
 
-  describe('removeNetrc()', function () {
+  describe('getAliasEmail()', function () {
+    let existsSyncStub: SinonStub
+    let osHomeStub: SinonStub
+
+    beforeEach(function () {
+      existsSyncStub = stub(fs, 'existsSync')
+      osHomeStub = stub(os, 'homedir').returns('/user/home')
+    })
+
+    it('should return email when valid alias file exists', function () {
+      existsSyncStub.returns(false)
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/production$/)).returns(true)
+      fsReadFileStub.withArgs(match(/production$/), 'utf8')
+        .returns('username: user@example.com\n')
+
+      const email = (AccountsModule as any).getAliasEmail('production')
+
+      expect(email).to.equal('user@example.com')
+    })
+
+    it('should return null when alias file does not exist', function () {
+      existsSyncStub.returns(false)
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/nonexistent$/)).returns(false)
+
+      const email = (AccountsModule as any).getAliasEmail('nonexistent')
+
+      expect(email).to.equal(null)
+    })
+
+    it('should handle ruby-style symbol keys', function () {
+      existsSyncStub.returns(false)
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/legacy$/)).returns(true)
+      fsReadFileStub.withArgs(match(/legacy$/), 'utf8')
+        .returns('{":username": "legacy@example.com"}')
+
+      const email = (AccountsModule as any).getAliasEmail('legacy')
+
+      expect(email).to.equal('legacy@example.com')
+    })
+
+    it('should return null when file exists but username is missing', function () {
+      existsSyncStub.returns(false)
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/invalid$/)).returns(true)
+      fsReadFileStub.withArgs(match(/invalid$/), 'utf8')
+        .returns('other_field: value\n')
+
+      const email = (AccountsModule as any).getAliasEmail('invalid')
+
+      expect(email).to.equal(null)
+    })
+
+    it('should return null when file is malformed', function () {
+      existsSyncStub.returns(false)
+      existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+      existsSyncStub.withArgs(match(/malformed$/)).returns(true)
+      fsReadFileStub.withArgs(match(/malformed$/), 'utf8')
+        .throws(new Error('Parse error'))
+
+      const email = (AccountsModule as any).getAliasEmail('malformed')
+
+      expect(email).to.equal(null)
+    })
+
+    it('should use legacy .heroku directory when it exists', function () {
+      existsSyncStub.returns(false)
+      existsSyncStub.withArgs('/user/home/.heroku').returns(true)
+      existsSyncStub.withArgs(match(/production$/)).returns(true)
+      fsReadFileStub.withArgs(match(/\.heroku.*production$/), 'utf8')
+        .returns('username: user@example.com\n')
+
+      const email = (AccountsModule as any).getAliasEmail('production')
+
+      expect(email).to.equal('user@example.com')
+    })
+  })
+
+  describe('remove', function () {
     let unlinkStub: SinonStub
     let osHomeStub: SinonStub
     let existsSyncStub: SinonStub
 
     beforeEach(function () {
       unlinkStub = stub(fs, 'unlinkSync')
-      osHomeStub = stub(os, 'homedir')
+      osHomeStub = stub(os, 'homedir').returns('/user/home')
       existsSyncStub = stub(fs, 'existsSync')
     })
 
-    it('should remove the account file with the given name', function () {
+    it('should remove the alias file when no credential store', async function () {
       const accountName = 'test-account'
-      const basedir = '/user/home'
-
-      osHomeStub.returns(basedir)
       existsSyncStub.returns(false)
-
-      AccountsModule.removeNetrc(accountName)
-
-      expect(unlinkStub.calledOnce).to.be.true
-      expect(unlinkStub.firstCall.args[0]).to.equal(path.join(`${basedir}/.config/heroku/accounts`, accountName))
-    })
-
-    it('should throw an error if the file cannot be removed', function () {
-      const accountName = 'non-existent-account'
-      const error = new Error('File not found')
-      unlinkStub.throws(error)
-
-      expect(() => AccountsModule.removeNetrc(accountName)).to.throw(Error)
-    })
-  })
-
-  describe('remove', function () {
-    let removeNetrcStub: SinonStub
-
-    beforeEach(function () {
-      removeNetrcStub = stub(AccountsModule, 'removeNetrc')
-    })
-
-    it('should call removeNetrc when no credential store', async function () {
-      const accountName = 'test-account'
 
       await AccountsModule.remove(accountName)
 
-      expect(removeNetrcStub.calledOnce).to.be.true
-      expect(removeNetrcStub.firstCall.args[0]).to.equal(accountName)
+      expect(unlinkStub.calledOnce).to.be.true
+      expect(unlinkStub.firstCall.args[0]).to.match(/test-account$/)
     })
 
     describe('with credentialStore', function () {
@@ -353,12 +405,12 @@ describe('accounts', function () {
         expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
       })
 
-      it('should not call removeNetrc when credentialStore is set', async function () {
+      it('should also remove the alias file when credentialStore is set', async function () {
         const accountName = 'test-account@example.com'
 
         await AccountsModule.remove(accountName)
 
-        expect(removeNetrcStub.called).to.be.false
+        expect(unlinkStub.calledOnce).to.be.true
       })
 
       it('should throw an error if removeAuth fails', async function () {
