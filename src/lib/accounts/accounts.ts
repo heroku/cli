@@ -133,9 +133,22 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   async set(account: AccountEntry, dataDir: string): Promise<void> {
     const config = this.getStorageConfig()
-    if (config.credentialStore && !account.name) {
-      await this.writeLoginState(dataDir, account.username)
-      return
+
+    if (config.credentialStore) {
+      if (account.name) {
+        // Aliased keychain account: read email from alias file
+        const email = this.getAliasEmail(account.name)
+        if (email) {
+          await this.writeLoginState(dataDir, email)
+          return
+        }
+
+        throw new Error(`Alias file for ${account.name} not found`)
+      } else {
+        // Non-aliased account: use username directly
+        await this.writeLoginState(dataDir, account.username)
+        return
+      }
     }
 
     if (config.useNetrc && account.name) {

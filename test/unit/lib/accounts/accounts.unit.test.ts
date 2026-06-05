@@ -241,15 +241,19 @@ describe('accounts', function () {
   })
 
   describe('set()', function () {
-    describe('with credentialStore and no account name', function () {
+    describe('with credentialStore', function () {
       let writeLoginStateStub: SinonStub
+      let existsSyncStub: SinonStub
+      let osHomeStub: SinonStub
 
       beforeEach(function () {
         stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
         writeLoginStateStub = stub(AccountsModule, 'writeLoginState').resolves()
+        existsSyncStub = stub(fs, 'existsSync')
+        osHomeStub = stub(os, 'homedir').returns('/user/home')
       })
 
-      it('calls writeLoginState with the dataDir and account username', async function () {
+      it('calls writeLoginState with username for non-aliased account', async function () {
         const account = {username: 'user@example.com'}
         await AccountsModule.set(account, '/data/heroku')
 
@@ -258,11 +262,41 @@ describe('accounts', function () {
         expect(writeLoginStateStub.firstCall.args[1]).to.equal('user@example.com')
       })
 
-      it('does not call writeLoginState when account has a name', async function () {
-        const account = {name: 'my-account', username: 'user@example.com'}
+      it('calls writeLoginState with email from alias file for aliased account', async function () {
+        const account = {name: 'production', username: 'prod@example.com'}
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/production$/)).returns(true)
+        fsReadFileStub.withArgs(match(/production$/), 'utf8')
+          .returns('username: prod@example.com\n')
+
         await AccountsModule.set(account, '/data/heroku')
 
-        expect(writeLoginStateStub.called).to.be.false
+        expect(writeLoginStateStub.calledOnce).to.be.true
+        expect(writeLoginStateStub.firstCall.args[0]).to.equal('/data/heroku')
+        expect(writeLoginStateStub.firstCall.args[1]).to.equal('prod@example.com')
+      })
+
+      it('throws error when alias file does not exist', async function () {
+        const account = {name: 'nonexistent', username: 'user@example.com'}
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/nonexistent$/)).returns(false)
+
+        await expect(AccountsModule.set(account, '/data/heroku'))
+          .to.be.rejectedWith('Alias file for nonexistent not found')
+      })
+
+      it('writes email to login.json not alias name', async function () {
+        const account = {name: 'production', username: 'prod@example.com'}
+        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
+        existsSyncStub.withArgs(match(/production$/)).returns(true)
+        fsReadFileStub.withArgs(match(/production$/), 'utf8')
+          .returns('username: prod@example.com\n')
+
+        await AccountsModule.set(account, '/data/heroku')
+
+        // Verify it writes EMAIL not alias
+        expect(writeLoginStateStub.firstCall.args[1]).to.equal('prod@example.com')
+        expect(writeLoginStateStub.firstCall.args[1]).to.not.equal('production')
       })
     })
 
