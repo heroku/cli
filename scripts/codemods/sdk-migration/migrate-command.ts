@@ -1,4 +1,5 @@
 #!/usr/bin/env -S npx tsx
+/* eslint-disable n/no-process-exit */
 import {readFileSync} from 'node:fs'
 import {resolve} from 'node:path'
 import {
@@ -112,6 +113,7 @@ function reportFile(path: string, result: TransformResult, before: string, after
   }
 }
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 main().catch(error => {
   console.error(error)
   process.exit(1)
