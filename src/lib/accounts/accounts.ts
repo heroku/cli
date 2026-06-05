@@ -173,6 +173,25 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
   }
 
+  private listAliasFiles(): Map<string, string> {
+    try {
+      const basedir = path.join(this.configDir(), 'accounts')
+      const aliasMap = new Map<string, string>()
+
+      const files = fs.readdirSync(basedir)
+      for (const alias of files) {
+        const email = this.getAliasEmail(alias)
+        if (email) {
+          aliasMap.set(alias, email)
+        }
+      }
+
+      return aliasMap
+    } catch {
+      return new Map()
+    }
+  }
+
   private configDir() {
     const legacyDir = path.join(os.homedir(), '.heroku')
     if (fs.existsSync(legacyDir)) {
