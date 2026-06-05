@@ -471,7 +471,7 @@ describe('accounts', function () {
       existsSyncStub.returns(false)
       existsSyncStub.withArgs('/user/home/.heroku').returns(true)
       existsSyncStub.withArgs(match(/production$/)).returns(true)
-      fsReadFileStub.withArgs(match(/\.heroku.*production$/), 'utf8')
+      fsReadFileStub.withArgs(match(/production$/), 'utf8')
         .returns('username: user@example.com\n')
 
       const email = (AccountsModule as any).getAliasEmail('production')
