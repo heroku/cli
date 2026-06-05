@@ -32,26 +32,15 @@ export class AccountsWrapper implements IAccountsWrapper {
 
   add(name: string, username: string, password: string): void {
     const config = this.getStorageConfig()
-    const basedir = this.accountsDir()
-    fs.mkdirSync(basedir, {recursive: true})
+    fs.mkdirSync(this.accountsDir(), {recursive: true})
 
     if (config.credentialStore) {
-      fs.writeFileSync(
-        path.join(basedir, name),
-        stringify({username}),
-        'utf8',
-      )
-      fs.chmodSync(path.join(basedir, name), 0o600)
+      this.writeAccountFile(name, {username})
     }
 
     if (config.useNetrc) {
-      fs.writeFileSync(
-        path.join(basedir, name),
-        // eslint-disable-next-line perfectionist/sort-objects
-        stringify({username, password}),
-        'utf8',
-      )
-      fs.chmodSync(path.join(basedir, name), 0o600)
+      // eslint-disable-next-line perfectionist/sort-objects
+      this.writeAccountFile(name, {username, password})
     }
   }
 
@@ -232,6 +221,12 @@ export class AccountsWrapper implements IAccountsWrapper {
       delete account[':username']
       delete account[':password']
     }
+  }
+
+  private writeAccountFile(name: string, content: Record<string, string>): void {
+    const filePath = path.join(this.accountsDir(), name)
+    fs.writeFileSync(filePath, stringify(content), 'utf8')
+    fs.chmodSync(filePath, 0o600)
   }
 
   private configDir() {
