@@ -24,6 +24,11 @@ export default class Add extends Command {
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')
     const email = account.email!
 
+    const existingAlias = accounts.find(account => account.name && account.username === email)
+    if (existingAlias) {
+      ux.error(`Account ${email} already has an alias: ${existingAlias.name}`)
+    }
+
     const token = this.heroku.auth!
 
     AccountsModule.add(name, email, token)
