@@ -1,23 +1,27 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/services.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons:services', function () {
-  beforeEach(function () {
+  let sdkMock: MockSDK
+
+  afterEach(function () {
+    sdkMock.restore()
+    restore()
+  })
+
+  it('shows addon services', async function () {
     const services = [
       fixtures.services['heroku-postgresql'],
       fixtures.services['heroku-redis'],
     ]
-    nock('https://api.heroku.com')
-      .get('/addon-services')
-      .reply(200, services)
-  })
+    sdkMock = mockSDKPlatform({addOnService: {list: stub().resolves(services)}})
 
-  it('shows addon services', async function () {
     const {stdout} = await runCommand(Cmd, [])
     const actual = removeAllWhitespace(stdout)
     const expected = removeAllWhitespace(`

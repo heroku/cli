@@ -1,20 +1,6 @@
 name: Publish NPM
 
 on:
-  workflow_dispatch:
-    inputs:
-      isStableRelease:
-        type: boolean
-        description: Is this a stable/prod release?
-        required: true
-        default: false
-      channel:
-        type: choice
-        description: If this is a prerelease, is it alpha or beta?
-        options:
-          - alpha
-          - beta
-        required: false
   workflow_call:
     inputs:
       isStableRelease:
@@ -27,6 +13,10 @@ on:
         description: Release channel for prereleases
         required: false
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish-npm:
     # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
@@ -38,9 +28,8 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
+          registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - name: set NPM auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_KEY }}" > ~/.npmrc
       - name: Publish to NPM
         run: |
           PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")

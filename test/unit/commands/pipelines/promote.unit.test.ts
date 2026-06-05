@@ -4,6 +4,7 @@ import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pipelines/promote.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('pipelines:promote', function () {
   const pipeline = {
@@ -56,7 +57,14 @@ describe('pipelines:promote', function () {
     status: 'pending',
   }
 
+  const allApps = [
+    {...sourceApp, pipelineCoupling: sourceCoupling},
+    {...targetApp1, pipelineCoupling: targetCoupling1},
+    {...targetApp2, pipelineCoupling: targetCoupling2},
+  ]
+
   let api: nock.Scope
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
@@ -65,17 +73,15 @@ describe('pipelines:promote', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    sdkMock.restore()
     restore()
   })
 
-  function setupNock() {
-    api
-      .get(`/apps/${sourceApp.name}/pipeline-couplings`)
-      .reply(200, sourceCoupling)
-      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-      .reply(200, [sourceCoupling, targetCoupling1, targetCoupling2])
-      .post('/filters/apps')
-      .reply(200, [sourceApp, targetApp1, targetApp2])
+  function setupMocks() {
+    // getCoupling still uses this.heroku
+    api.get(`/apps/${sourceApp.name}/pipeline-couplings`).reply(200, sourceCoupling)
+    // listApps goes through SDK
+    sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves(allApps)}})
   }
 
   function stubPromote(targets: any[]) {
@@ -86,7 +92,7 @@ describe('pipelines:promote', function () {
   }
 
   it('promotes to all apps in the next stage', async function () {
-    setupNock()
+    setupMocks()
     const promoteStub = stubPromote([
       {
         app: {id: targetApp1.id},
@@ -117,7 +123,7 @@ describe('pipelines:promote', function () {
 
   context('passing a `to` flag', function () {
     it('can promote by app name', async function () {
-      setupNock()
+      setupMocks()
       const promoteStub = stubPromote([
         {
           app: {id: targetApp1.id},
@@ -134,7 +140,7 @@ describe('pipelines:promote', function () {
     })
 
     it('can promote by app id', async function () {
-      setupNock()
+      setupMocks()
       const promoteStub = stubPromote([
         {
           app: {id: targetApp1.id},
@@ -153,7 +159,7 @@ describe('pipelines:promote', function () {
 
   context('with release phase', function () {
     it('streams the release command output to stdout', async function () {
-      setupNock()
+      setupMocks()
       const streamBody = new ReadableStream<Uint8Array>({
         start(controller) {
           controller.enqueue(new TextEncoder().encode('Release Command Output'))
@@ -188,7 +194,7 @@ describe('pipelines:promote', function () {
 
   context('with release phase that errors', function () {
     it('surfaces the SDK stream error', async function () {
-      setupNock()
+      setupMocks()
       stub(Cmd, 'promotePipeline').rejects(new Error('stream release output not available'))
 
       const {error} = await runCommand(Cmd, [`--app=${sourceApp.name}`])

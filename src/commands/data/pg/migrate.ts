@@ -30,12 +30,18 @@ export default class DataPgMigrate extends BaseCommand {
   static description = 'migrate an existing classic Postgres database to an Advanced database'
   static flags = {
     app: Flags.app({required: true}),
+    method: Flags.string({
+      default: 'snapshot',
+      hidden: true,
+      options: ['snapshot', 'streaming'],
+    }),
     remote: Flags.remote(),
   }
   private advancedDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[], info?: InfoResponse}> = []
   private appName: string | undefined
   private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
+  private migrationMethod: 'cdc' | 'full-load' = 'full-load'
   private migrationTargets: Array<MigrationResponse> = []
 
   public async createAddon(...args: Parameters<typeof createAddon>): Promise<Heroku.AddOn> {
@@ -48,8 +54,9 @@ export default class DataPgMigrate extends BaseCommand {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(DataPgMigrate)
-    const {app} = flags
+    const {app, method} = flags
     this.appName = app
+    this.migrationMethod = method === 'streaming' ? 'cdc' : 'full-load'
 
     ux.stdout(heredoc`
 
@@ -200,7 +207,7 @@ export default class DataPgMigrate extends BaseCommand {
             ux.stdout('')
             ux.action.start('Configuring migration')
             await this.dataApi.post<MigrationResponse>(`/data/postgres/v1/${targetDatabaseId}/migrations`, {
-              body: {source_id: sourceDatabaseId},
+              body: {method: this.migrationMethod, source_id: sourceDatabaseId},
             })
             ux.action.stop()
             currentStep = '__exit'
