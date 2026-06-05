@@ -21,12 +21,16 @@ describe('pg:outliers', function () {
     user: 'testuser',
   }
 
-  const mockEssentialDb = {...mockDb, plan: {name: 'heroku-postgresql:essential-0'}} as unknown as pg.ConnectionDetails
-  const mockAdvancedDb = {...mockDb, plan: {name: 'heroku-postgresql:advanced'}} as unknown as pg.ConnectionDetails
+  const mockStandardAddon = {plan: {name: 'heroku-postgresql:standard-0'}} as any
+  const mockEssentialAddon = {plan: {name: 'heroku-postgresql:essential-0'}} as any
+  const mockAdvancedAddon = {plan: {name: 'heroku-postgresql:advanced'}} as any
+
+  let getAttachmentStub: sinon.SinonStub
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
     getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
+    getAttachmentStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getAttachment').resolves({addon: mockStandardAddon} as any)
     execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery')
   })
 
@@ -55,7 +59,7 @@ describe('pg:outliers', function () {
   })
 
   it('resets query stats on essential plan using _heroku wrapper', async function () {
-    getDatabaseStub.resolves(mockEssentialDb)
+    getAttachmentStub.resolves({addon: mockEssentialAddon} as any)
     execQueryStub.onCall(0).resolves('server_version\n---------\n17.7')
     execQueryStub.onCall(1).resolves('t')
     execQueryStub.onCall(2).resolves('')
@@ -68,7 +72,7 @@ describe('pg:outliers', function () {
   })
 
   it('resets query stats on advanced plan using _heroku wrapper', async function () {
-    getDatabaseStub.resolves(mockAdvancedDb)
+    getAttachmentStub.resolves({addon: mockAdvancedAddon} as any)
     execQueryStub.onCall(0).resolves('server_version\n---------\n17.7')
     execQueryStub.onCall(1).resolves('t')
     execQueryStub.onCall(2).resolves('')
