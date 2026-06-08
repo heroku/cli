@@ -7,11 +7,27 @@ import Cmd from '../../../../src/commands/pg/outliers.js'
 
 describe('pg:outliers', function () {
   let sandbox: sinon.SinonSandbox
-  let getDatabaseStub: sinon.SinonStub
   let execQueryStub: sinon.SinonStub
   const expectedOutputText = 'slow things'
 
-  const mockDb: pg.ConnectionDetails = {
+  const mockEssentialDb = {
+    attachment: {
+      addon: {
+        id: 'addon-id',
+        name: 'postgres-addon-name',
+        plan: {
+          id: 'essential-0-plan-id',
+          name: 'heroku-postgresql:essential-0',
+        },
+      },
+      app: {
+        id: 'myapp-id',
+        name: 'myapp',
+      },
+      config_vars: ['DATABASE_URL'],
+      id: 'database-attachment-id',
+      name: 'DATABASE',
+    },
     database: 'testdb',
     host: 'localhost',
     password: 'testpass',
@@ -19,11 +35,38 @@ describe('pg:outliers', function () {
     port: '5432',
     url: 'postgres://localhost:5432/testdb',
     user: 'testuser',
-  }
+  } as unknown as pg.ConnectionDetails
+
+  const mockStandardDb = {
+    ...mockEssentialDb,
+    attachment: {
+      ...mockEssentialDb.attachment,
+      addon: {
+        ...mockEssentialDb.attachment!.addon,
+        plan: {
+          id: 'standard-0-plan-id',
+          name: 'heroku-postgresql:standard-0',
+        },
+      },
+    },
+  } as unknown as pg.ConnectionDetails
+
+  const mockAdvancedDb = {
+    ...mockEssentialDb,
+    attachment: {
+      ...mockEssentialDb.attachment,
+      addon: {
+        ...mockEssentialDb.attachment!.addon,
+        plan: {
+          id: 'advanced-plan-id',
+          name: 'heroku-postgresql:advanced',
+        },
+      },
+    },
+  } as unknown as pg.ConnectionDetails
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
-    getDatabaseStub = sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockDb)
     execQueryStub = sandbox.stub(utils.pg.PsqlService.prototype, 'execQuery')
   })
 
@@ -39,25 +82,47 @@ describe('pg:outliers', function () {
     execQueryStub.onCall(2).resolves(expectedOutputText) // main query
   }
 
-  it('resets query stats', async function () {
-    // For reset: 1) fetchVersion, 2) ensurePGStatStatement, 3) reset
+  it('resets query stats on standard plan using real function', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockStandardDb)
     execQueryStub.onCall(0).resolves('server_version\n---------\n13.7')
     execQueryStub.onCall(1).resolves('t')
     execQueryStub.onCall(2).resolves('')
 
-    await runCommand(Cmd, [
-      '--app',
-      'myapp',
-      '--reset',
-    ])
+    await runCommand(Cmd, ['--app', 'myapp', '--reset'])
 
-    expect(getDatabaseStub.calledOnce).to.be.true
     expect(execQueryStub.calledThrice).to.be.true
     const resetQuery = execQueryStub.getCall(2).args[0]
     expect(resetQuery.trim()).to.eq('SELECT pg_stat_statements_reset();')
   })
 
+  it('resets query stats on essential plan using _heroku wrapper', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockEssentialDb)
+    execQueryStub.onCall(0).resolves('server_version\n---------\n17.7')
+    execQueryStub.onCall(1).resolves('t')
+    execQueryStub.onCall(2).resolves('')
+
+    await runCommand(Cmd, ['--app', 'myapp', '--reset'])
+
+    expect(execQueryStub.calledThrice).to.be.true
+    const resetQuery = execQueryStub.getCall(2).args[0]
+    expect(resetQuery.trim()).to.eq('SELECT _heroku.pg_stat_statements_reset();')
+  })
+
+  it('resets query stats on advanced plan using _heroku wrapper', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockAdvancedDb)
+    execQueryStub.onCall(0).resolves('server_version\n---------\n17.7')
+    execQueryStub.onCall(1).resolves('t')
+    execQueryStub.onCall(2).resolves('')
+
+    await runCommand(Cmd, ['--app', 'myapp', '--reset'])
+
+    expect(execQueryStub.calledThrice).to.be.true
+    const resetQuery = execQueryStub.getCall(2).args[0]
+    expect(resetQuery.trim()).to.eq('SELECT _heroku.pg_stat_statements_reset();')
+  })
+
   it('returns query outliers for version 11', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockEssentialDb)
     setupVersionStub('11.16')
 
     const {stdout} = await runCommand(Cmd, [
@@ -74,6 +139,7 @@ describe('pg:outliers', function () {
   })
 
   it('uses an updated query for version 13+', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockEssentialDb)
     setupVersionStub('13.7')
 
     const {stdout} = await runCommand(Cmd, [
@@ -89,6 +155,7 @@ describe('pg:outliers', function () {
   })
 
   it('uses updated block time fields for version 17+', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockEssentialDb)
     setupVersionStub('17.0')
 
     await runCommand(Cmd, [
@@ -103,6 +170,7 @@ describe('pg:outliers', function () {
   })
 
   it('respects the --num flag', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockEssentialDb)
     setupVersionStub('13.7')
 
     await runCommand(Cmd, [
@@ -117,6 +185,7 @@ describe('pg:outliers', function () {
   })
 
   it('truncates queries with --truncate flag', async function () {
+    sandbox.stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(mockEssentialDb)
     setupVersionStub('13.7')
 
     await runCommand(Cmd, [
