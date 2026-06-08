@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import push from '../../../lib/git/push.js'
@@ -21,13 +21,12 @@ Run git push heroku main to trigger a new build on myapp.`
   static hiddenAliases = ['stack:set']
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Set)
     const stack = map(args.stack)
 
     ux.action.start(`Setting stack to ${color.name(stack)}`)
-    const {body: app} = await this.heroku.patch<Heroku.App>(`/apps/${flags.app}`, {
-      body: {build_stack: stack},
-    })
+    const app = await platform.app.update(flags.app, {build_stack: stack})
 
     // A redeployment is not required for apps that have never been deployed, since
     // API updates the app's `stack` to match `build_stack` immediately.

@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import * as git from '../../lib/ci/git.js'
@@ -22,13 +22,13 @@ export default class AppsRename extends Command {
   static topic = 'apps'
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(AppsRename)
     const oldApp = flags.app
     const newApp = args.newname
 
     ux.action.start(`Renaming ${color.app(oldApp)} to ${color.info(newApp)}`)
-    const appResponse = await this.heroku.patch<Heroku.App>(`/apps/${oldApp}`, {body: {name: newApp}})
-    const app = appResponse.body
+    const app = await platform.app.update(oldApp, {name: newApp})
     ux.action.stop()
 
     const gitUrl = git.gitUrl(app.name)
