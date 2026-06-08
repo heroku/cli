@@ -83,14 +83,13 @@ export default class Outliers extends Command {
     const {app, num, reset, truncate} = flags
 
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon} = await dbResolver.getAttachment(app, args.database)
     const db = await dbResolver.getDatabase(app, args.database)
     this.psqlService = new utils.pg.PsqlService(db)
     const version = await fetchVersion(db)
     await this.ensurePGStatStatement()
 
     if (reset) {
-      const resetFn = utils.pg.isEssentialDatabase(addon) || utils.pg.isAdvancedDatabase(addon)
+      const resetFn = utils.pg.isEssentialDatabase(db.attachment!.addon) || utils.pg.isAdvancedDatabase(db.attachment!.addon)
         ? '_heroku.pg_stat_statements_reset()'
         : 'pg_stat_statements_reset()'
       await this.psqlService.execQuery(`SELECT ${resetFn};`)
