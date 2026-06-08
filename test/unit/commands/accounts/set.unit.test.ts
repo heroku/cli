@@ -40,6 +40,6 @@ describe('accounts:set', function () {
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
 
     const {error} = await runCommand(Cmd, ['test-account-3'])
-    expect(error?.message).to.contain('test-account-3 does not exist in your accounts cache or system keychain.')
+    expect(error?.message).to.contain('test-account-3 doesn\'t exist in your accounts cache or system keychain.')
   })
 })

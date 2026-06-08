@@ -284,7 +284,7 @@ describe('accounts', function () {
         existsSyncStub.withArgs(match(/nonexistent$/)).returns(false)
 
         await expect(AccountsModule.set(account, '/data/heroku'))
-          .to.be.rejectedWith('Alias file for nonexistent not found')
+          .to.be.rejectedWith('We can\'t find the alias file for nonexistent.')
       })
 
       it('writes email to login.json not alias name', async function () {

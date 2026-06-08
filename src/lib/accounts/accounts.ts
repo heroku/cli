@@ -124,7 +124,7 @@ export class AccountsWrapper implements IAccountsWrapper {
         const accountData = this.account(name)
         if (accountData.password) {
           throw new Error(heredoc(`
-            Cannot remove ${name}: this account was created in netrc mode.
+            We can't remove ${name} because this account was created in netrc mode.
             To remove it, run: ${color.command(`HEROKU_NETRC_WRITE=true heroku accounts:remove ${name}`)}
           `))
         }
@@ -147,7 +147,7 @@ export class AccountsWrapper implements IAccountsWrapper {
       const accountData = this.account(name)
       if (!accountData.password) {
         throw new Error(heredoc(`
-          Cannot remove ${name}: this account is saved to your computer's keychain application.
+          We can't remove ${name} because this account is saved to your computer's keychain application.
           To remove it, run: ${color.command(`heroku accounts:remove ${name}`)}
           (without HEROKU_NETRC_WRITE set)
         `))
@@ -170,7 +170,7 @@ export class AccountsWrapper implements IAccountsWrapper {
           return
         }
 
-        throw new Error(`Alias file for ${account.name} not found`)
+        throw new Error(`We can't find the alias file for ${account.name}.`)
       } else {
         // Non-aliased account: use username directly
         await this.writeLoginState(dataDir, account.username)

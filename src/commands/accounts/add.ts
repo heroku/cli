@@ -26,7 +26,7 @@ export default class Add extends Command {
 
     const existingAlias = accounts.find(account => account.name && account.username === email)
     if (existingAlias) {
-      ux.error(`Account ${email} already has an alias: ${existingAlias.name}`)
+      ux.error(`Account ${email} already has an alias of ${existingAlias.name}.`)
     }
 
     const token = this.heroku.auth!
