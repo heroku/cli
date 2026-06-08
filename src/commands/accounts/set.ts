@@ -19,7 +19,7 @@ export default class Set extends Command {
     const account = accounts.find(account => account.name === name || account.username === name)
 
     if (!account) {
-      ux.error(`${name} does not exist in your accounts cache or system keychain.`)
+      ux.error(`${name} doesn't exist in your accounts cache or system keychain.`)
     }
 
     await AccountsModule.set(account, this.config.dataDir)
