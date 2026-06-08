@@ -26,7 +26,7 @@ export default class Logout extends Command {
     }
 
     if (cachedNetrcAccount) {
-      AccountsModule.removeNetrc(cachedNetrcAccount)
+      await AccountsModule.remove(cachedNetrcAccount)
     }
 
     await this.config.runHook('recache', {type: 'logout'})

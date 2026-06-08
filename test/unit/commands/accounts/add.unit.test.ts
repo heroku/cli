@@ -73,5 +73,22 @@ describe('accounts:add', function () {
         expect((error as Error).message).to.contain('testAccountName already exists')
       }
     })
+
+    it('should error if the email already has an alias', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
+      })
+
+      api.get('/account')
+        .reply(200, {email: 'testEmail'})
+
+      listStub.resolves([{name: 'existingAlias', username: 'testEmail'}])
+
+      try {
+        await runCommand(Cmd, ['newAlias'])
+      } catch (error: unknown) {
+        expect((error as Error).message).to.contain('testEmail already has an alias: existingAlias')
+      }
+    })
   })
 })
