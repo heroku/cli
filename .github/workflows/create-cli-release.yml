@@ -9,10 +9,6 @@ on:
         required: true
         default: false
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   get-version-channel:
     runs-on: ubuntu-latest
@@ -32,11 +28,39 @@ jobs:
     needs: [get-version-channel]
     # if NOT isStableCandidate confirm dist tag is in package.json version
     if: fromJSON(needs.get-version-channel.outputs.isStableRelease) || (!fromJSON(inputs.isStableCandidate) && !!needs.get-version-channel.outputs.channel)
-    uses: ./.github/workflows/publish-npm.yml
-    with:
-      isStableRelease: ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
-      channel: ${{ needs.get-version-channel.outputs.channel }}
-    secrets: inherit
+    # pub-hk-ubuntu-22.04- due to IP allow list issues with public repos: https://salesforce.quip.com/bu6UA0KImOxJ
+    runs-on: pub-hk-ubuntu-22.04-small
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@latest
+      - name: Publish to NPM
+        run: |
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+          PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
+
+          if npm view $PACKAGE_NAME@$PACKAGE_VERSION version &>/dev/null; then
+            echo "Version $PACKAGE_VERSION already published to npm, skipping"
+            exit 0
+          fi
+
+          if ${{ fromJSON(needs.get-version-channel.outputs.isStableRelease) }}
+          then
+            npm publish
+          else
+            npm publish --tag ${{ needs.get-version-channel.outputs.channel || 'beta' }}
+          fi
+        shell: bash
 
   pack-upload:
     needs: [publish-npm]

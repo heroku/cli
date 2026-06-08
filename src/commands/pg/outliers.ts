@@ -89,7 +89,10 @@ export default class Outliers extends Command {
     await this.ensurePGStatStatement()
 
     if (reset) {
-      await this.psqlService.execQuery('SELECT pg_stat_statements_reset();')
+      const resetFn = utils.pg.isEssentialDatabase(db.attachment!.addon) || utils.pg.isAdvancedDatabase(db.attachment!.addon)
+        ? '_heroku.pg_stat_statements_reset()'
+        : 'pg_stat_statements_reset()'
+      await this.psqlService.execQuery(`SELECT ${resetFn};`)
       return
     }
 
