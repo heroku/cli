@@ -19,7 +19,7 @@
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
     "@oclif/plugin-not-found": "^3.2.74",
-    "@oclif/plugin-plugins": "^5.4.64",
+    "@oclif/plugin-plugins": "^5.4.73",
     "@oclif/plugin-search": "1.2.38",
     "@oclif/plugin-update": "^4.7.22",
     "@oclif/plugin-version": "^2.2.37",
@@ -126,7 +126,7 @@
     "eslint-import-resolver-typescript": "^4.4.4",
     "husky": "8.0.3",
     "lolex": "^5.1.2",
-    "mocha": "^10.8.2",
+    "mocha": "^11.7.6",
     "mock-stdin": "^1",
     "nock": "^14.0.12",
     "oclif": "^4.22.87",
@@ -370,7 +370,13 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.4",
+    "serialize-javascript": "^7.0.5",
+    "mocha": {
+      "diff": "^8.0.3"
+    },
+    "node-notifier": {
+      "uuid": "^11.1.1"
+    },
     "socks": "^2.8.8",
     "express-rate-limit": "^8.5.1"
   },
