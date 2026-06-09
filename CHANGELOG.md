@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## Unreleased
+
+
+### Bug Fixes
+
+* fix `util._extend` deprecation warning when running `heroku local` ([#3742](https://github.com/heroku/cli/pull/3742))
+
+
+### Code Refactoring
+
+* vendor node-foreman, used by `heroku local`, into the CLI as an internal dependency ([#3742](https://github.com/heroku/cli/pull/3742))
+
 ## [11.4.0](https://github.com/heroku/cli/compare/v11.3.0...v11.4.0) (2026-05-13)
 
 

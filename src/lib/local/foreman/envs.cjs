@@ -1,0 +1,116 @@
+// Copyright IBM Corp. 2012,2016. All Rights Reserved.
+// Node module: foreman
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+
+var fs = require('fs');
+var cons = require('./console.cjs').Console;
+
+function method(name) {
+  return function(o) {
+    return o[name].apply(o);
+  };
+}
+
+// Parse a Key=Value File Containing Environmental Variables
+function keyValue(data) {
+  var env = {};
+
+  data
+    .toString()
+    .replace(/^\s*\#.*$/gm,'')
+    .replace(/^\s*$/gm,'')
+    .split(/\n/)
+    .map(method('trim'))
+    .filter(notBlank)
+    .forEach(capturePair);
+
+  return env;
+
+  function notBlank(str) {
+    return str.length > 2;
+  }
+
+  function capturePair(line) {
+    var pair = line.split('=');
+    var key = pair[0].trim();
+    var rawVal = pair.slice(1).join('=').trim();
+    env[key] = parseValue(rawVal);
+  }
+
+  function parseValue(val) {
+    switch (val[0]) {
+    case '"': return /^"([^"]*)"/.exec(val)[1];
+    case "'": return /^'([^']*)'/.exec(val)[1];
+    default : return val.replace(/\s*\#.*$/, '');
+    }
+  }
+}
+
+// Flatten nested object structure into KEY_SUBKEY=value pairs
+function flattenJSON(json) {
+  var flattened = {};
+
+  walk(json, function(path, item) {
+    flattened[path.join('_').toUpperCase()] = item;
+  });
+
+  return flattened;
+
+  function walk(obj, visitor, path) {
+    var item;
+    path = path || [];
+    for (var key in obj) {
+      item = obj[key];
+      if (typeof item === 'object') {
+        walk(item, visitor, path.concat(key));
+      } else {
+        visitor(path.concat(key), item);
+      }
+    }
+  }
+}
+
+function dumpEnv(conf) {
+  var output = [];
+  for (var key in conf) {
+    output.push(key + '=' + conf[key]);
+  }
+  return output.sort().join('\n') + '\n';
+}
+
+function loadEnvsFile(path) {
+  var env, data;
+
+  if(!fs.existsSync(path)) {
+    env = {};
+  } else {
+    data = fs.readFileSync(path);
+    try {
+      var envs_json = JSON.parse(data);
+      env = flattenJSON(envs_json, "", {});
+      cons.Alert("Loaded ENV %s File as JSON Format", path);
+    } catch (e) {
+      env = keyValue(data);
+      cons.Alert("Loaded ENV %s File as KEY=VALUE Format", path);
+    }
+  }
+  env.PATH = env.PATH || process.env.PATH;
+  return env;
+}
+
+function loadEnvs(path) {
+  var envs = path.split(',').map(loadEnvsFile).reduce(function(acc, obj) {
+    return Object.assign(acc, obj);
+  }, {});
+  var sorted = Object.create(null);
+  Object.keys(envs).sort().forEach(function(k) {
+    sorted[k] = envs[k];
+  });
+  return sorted;
+}
+
+module.exports.loadEnvs = loadEnvs;
+module.exports.flattenJSON = flattenJSON;
+module.exports.keyValue = keyValue;
+module.exports.dumpEnv = dumpEnv;
