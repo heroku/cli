@@ -371,9 +371,7 @@
   "main": "dist/index.js",
   "overrides": {
     "serialize-javascript": "^7.0.5",
-    "mocha": {
-      "diff": "^8.0.3"
-    },
+    "diff": "^8.0.3",
     "node-notifier": {
       "uuid": "^11.1.1"
     },
