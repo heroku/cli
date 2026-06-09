@@ -46,4 +46,4 @@ EXAMPLES
    $ heroku version:info 11.0.0
 ```
 
-_See code: [src/commands/version/info.ts](https://github.com/heroku/cli/blob/v11.5.0-alpha.7/src/commands/version/info.ts)_
+_See code: [src/commands/version/info.ts](https://github.com/heroku/cli/blob/v11.5.0-alpha.8/src/commands/version/info.ts)_
