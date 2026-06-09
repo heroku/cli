@@ -126,7 +126,7 @@
     "eslint-import-resolver-typescript": "^4.4.4",
     "husky": "8.0.3",
     "lolex": "^5.1.2",
-    "mocha": "^11.7.6",
+    "mocha": "^10.8.2",
     "mock-stdin": "^1",
     "nock": "^14.0.12",
     "oclif": "^4.22.87",
@@ -371,7 +371,6 @@
   "main": "dist/index.js",
   "overrides": {
     "serialize-javascript": "^7.0.5",
-    "diff": "^8.0.3",
     "node-notifier": {
       "uuid": "^11.1.1"
     },
