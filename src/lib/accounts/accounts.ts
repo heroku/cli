@@ -1,19 +1,14 @@
 import {
   APIClient,
   getStorageConfig,
-  listKeychainAccounts,
   writeLoginState,
 } from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
-import * as color from '@heroku/heroku-cli-util/color'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import tsheredoc from 'tsheredoc'
 import {parse, stringify} from 'yaml'
-
-const heredoc = tsheredoc.default
 
 export interface AccountEntry {
   name?: string
@@ -60,10 +55,6 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
 
     return null
-  }
-
-  async getKeychainAccounts(): Promise<(null | string | undefined)[]> {
-    return listKeychainAccounts()
   }
 
   getStorageConfig() {
@@ -185,24 +176,6 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
 
     return this.netrc
-  }
-
-  private listAliasFiles(): Map<string, string> {
-    try {
-      const aliasMap = new Map<string, string>()
-
-      const files = fs.readdirSync(this.accountsDir())
-      for (const alias of files) {
-        const email = this.getAliasEmail(alias)
-        if (email) {
-          aliasMap.set(alias, email)
-        }
-      }
-
-      return aliasMap
-    } catch {
-      return new Map()
-    }
   }
 
   private writeAccountFile(name: string, content: Record<string, string>): void {

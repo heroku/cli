@@ -15,7 +15,8 @@ export default class Current extends Command {
     if (accountName) {
       hux.styledHeader(`Current account is ${color.user(accountName)}`)
     } else {
-      ux.error(`You haven't set an account. Run ${color.code('heroku accounts:add <account-name>')} to add an account to your cache or ${color.code('heroku accounts:set <account-name>')} to set the current account.`)
+      ux.error(`You haven't set an account.\n
+      Run ${color.code('heroku accounts:add <account-name>')} to add an account to your cache or ${color.code('heroku accounts:set <account-name>')} to set the current account.`)
     }
   }
 }
