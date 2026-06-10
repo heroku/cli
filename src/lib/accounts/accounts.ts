@@ -25,7 +25,7 @@ export interface IAccountsWrapper {
   current(heroku: APIClient): Promise<null | string>
   currentNetrc(): Promise<null | string>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
-  list(): Promise<AccountEntry[]>
+  list(): AccountEntry[]
   remove(name: string): void
   set(account: AccountEntry, dataDir: string): Promise<void>
   writeLoginState(dataDir: string, name: string): Promise<void>
@@ -50,7 +50,8 @@ export class AccountsWrapper implements IAccountsWrapper {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
       const authEntry = await heroku.getAuthEntry()
-      return authEntry?.account ?? null
+      const current = this.list().find(a => a.username === authEntry?.account)
+      return current && current.name ? current.name : null
     }
 
     return this.currentNetrc()
@@ -59,7 +60,7 @@ export class AccountsWrapper implements IAccountsWrapper {
   async currentNetrc(): Promise<null | string> {
     const netrcInstance = await this.initNetrc()
     if (netrcInstance.machines['api.heroku.com']) {
-      const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
+      const current = this.list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
       return current && current.name ? current.name : null
     }
 
@@ -74,39 +75,12 @@ export class AccountsWrapper implements IAccountsWrapper {
     return getStorageConfig()
   }
 
-  async list(): Promise<AccountEntry[]> {
-    const config = this.getStorageConfig()
-    if (config.credentialStore) {
-      const keychainEmails = await this.getKeychainAccounts()
-      const aliasMap = this.listAliasFiles()
-
-      // Create reverse map: email → alias (for lookup)
-      const emailToAlias = new Map<string, string>()
-      for (const [alias, email] of aliasMap.entries()) {
-        // If multiple aliases point to same email, keep first
-        if (!emailToAlias.has(email)) {
-          emailToAlias.set(email, alias)
-        }
-      }
-
-      return keychainEmails
-        .filter((email): email is string => email !== null && email !== undefined)
-        .map(email => {
-          const alias = emailToAlias.get(email)
-          return alias
-            ? {name: alias, username: email}
-            : {username: email}
-        })
-    }
-
-    return this.listNetrc()
-  }
-
-  listNetrc(): AccountEntry[] {
+  list(): AccountEntry[] {
     const basedir = this.accountsDir()
     try {
       return fs.readdirSync(basedir)
-        .map(name => ({name, username: this.account(name).username ?? ''}))
+        .filter(name => this.account(name).username)
+        .map(name => ({name, username: this.account(name).username}))
     } catch {
       return []
     }
