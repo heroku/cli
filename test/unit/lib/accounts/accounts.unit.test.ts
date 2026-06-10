@@ -126,41 +126,48 @@ describe('accounts', function () {
       let writeLoginStateStub: SinonStub
       let existsSyncStub: SinonStub
       let osHomeStub: SinonStub
+      let fakeNetrc: {machines: Record<string, {login: string, password: string}>, save: SinonStub}
+
+      function setNetrc(value: typeof fakeNetrc | undefined) {
+        (AccountsModule as unknown as {netrc: typeof fakeNetrc | undefined}).netrc = value
+      }
 
       beforeEach(function () {
         stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'keychain' as any, useNetrc: false})
         writeLoginStateStub = stub(AccountsModule, 'writeLoginState').resolves()
         existsSyncStub = stub(fs, 'existsSync')
         osHomeStub = stub(os, 'homedir').returns('/user/home')
+        fakeNetrc = {machines: {}, save: stub().resolves()}
+        setNetrc(fakeNetrc)
       })
 
-      it('calls writeLoginState with username for non-aliased account', async function () {
-        const account = {username: 'user@example.com'}
-        await AccountsModule.set(account, '/data/heroku')
-
-        expect(writeLoginStateStub.calledOnce).to.be.true
-        expect(writeLoginStateStub.firstCall.args[0]).to.equal('/data/heroku')
-        expect(writeLoginStateStub.firstCall.args[1]).to.equal('user@example.com')
+      afterEach(function () {
+        setNetrc(null as unknown as typeof fakeNetrc)
       })
 
-      it('calls writeLoginState with email from alias file for aliased account', async function () {
+      it('calls writeLoginState with email from alias file and writes to netrc', async function () {
         const account = {name: 'production', username: 'prod@example.com'}
         existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
         existsSyncStub.withArgs(match(/production$/)).returns(true)
         fsReadFileStub.withArgs(match(/production$/), 'utf8')
-          .returns('username: prod@example.com\n')
+          .returns('username: prod@example.com\npassword: secret\n')
 
         await AccountsModule.set(account, '/data/heroku')
 
         expect(writeLoginStateStub.calledOnce).to.be.true
         expect(writeLoginStateStub.firstCall.args[0]).to.equal('/data/heroku')
         expect(writeLoginStateStub.firstCall.args[1]).to.equal('prod@example.com')
+        expect(fakeNetrc.machines['api.heroku.com']).to.deep.equal({login: 'prod@example.com', password: 'secret'})
+        expect(fakeNetrc.machines['git.heroku.com']).to.deep.equal({login: 'prod@example.com', password: 'secret'})
+        expect(fakeNetrc.save.calledOnce).to.be.true
       })
 
       it('throws error when alias file does not exist', async function () {
         const account = {name: 'nonexistent', username: 'user@example.com'}
         existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
         existsSyncStub.withArgs(match(/nonexistent$/)).returns(false)
+        fsReadFileStub.withArgs(match(/nonexistent$/), 'utf8')
+          .throws(new Error('ENOENT: no such file or directory'))
 
         await expect(AccountsModule.set(account, '/data/heroku'))
           .to.be.rejectedWith('We can\'t find the alias file for nonexistent.')

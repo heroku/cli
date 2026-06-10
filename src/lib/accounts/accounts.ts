@@ -90,26 +90,22 @@ export class AccountsWrapper implements IAccountsWrapper {
   async set(account: AccountEntry, dataDir: string): Promise<void> {
     const config = this.getStorageConfig()
 
-    if (config.credentialStore) {
-      if (account.name) {
-        // Aliased keychain account: read email from alias file
+    if (account.name) {
+      if (config.credentialStore) {
         const email = this.getAliasEmail(account.name)
         if (email) {
           await this.writeLoginState(dataDir, email)
-          return
         }
-
-        throw new Error(`We can't find the alias file for ${account.name}.`)
-      } else {
-        // Non-aliased account: use username directly
-        await this.writeLoginState(dataDir, account.username)
-        return
       }
-    }
 
-    if (config.useNetrc && account.name) {
       const netrcInstance = await this.initNetrc()
-      const current = this.account(account.name)
+      let current
+      try {
+        current = this.account(account.name)
+      } catch {
+        throw new Error(`We can't find the alias file for ${account.name}.`)
+      }
+
       netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password || ''}
       netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password || ''}
       await netrcInstance.save()
