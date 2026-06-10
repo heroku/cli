@@ -87,43 +87,12 @@ export class AccountsWrapper implements IAccountsWrapper {
     if (config.credentialStore) {
       // Keychain mode
       const email = this.getAliasEmail(name)
-
-      if (email) {
-        // Aliased account - check if it was created in netrc mode
-        const accountData = this.account(name)
-        if (accountData.password) {
-          throw new Error(heredoc(`
-            We can't remove ${name} because this account was created in netrc mode.
-            To remove it, run: ${color.command(`HEROKU_NETRC_WRITE=true heroku accounts:remove ${name}`)}
-          `))
-        }
-
-        // Aliased keychain account
-        await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
-        fs.unlinkSync(path.join(this.accountsDir(), name))
-      } else {
-        // Non-aliased keychain account (name IS the email)
-        await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
-        // No alias file to remove
-      }
-
+      await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
+      fs.unlinkSync(path.join(this.accountsDir(), name))
       return
     }
 
-    // Netrc mode - check if account is saved in keychain
-    const email = this.getAliasEmail(name)
-    if (email) {
-      const accountData = this.account(name)
-      if (!accountData.password) {
-        throw new Error(heredoc(`
-          We can't remove ${name} because this account is saved to your computer's keychain application.
-          To remove it, run: ${color.command(`heroku accounts:remove ${name}`)}
-          (without HEROKU_NETRC_WRITE set)
-        `))
-      }
-    }
-
-    // Netrc mode: remove alias file
+    // Netrc mode
     fs.unlinkSync(path.join(this.accountsDir(), name))
   }
 
@@ -189,21 +158,21 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
   }
 
-  private getAliasEmail(alias: string): null | string {
+  private getAliasEmail(alias: string): string | undefined {
     try {
       const filePath = path.join(this.accountsDir(), alias)
 
       if (!fs.existsSync(filePath)) {
-        return null
+        return
       }
 
       const file = fs.readFileSync(filePath, 'utf8')
       const account = parse(file)
       this.convertRubySymbols(account)
 
-      return account.username ?? null
+      return account.username ?? undefined
     } catch {
-      return null
+      return undefined
     }
   }
 

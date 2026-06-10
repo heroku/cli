@@ -300,14 +300,14 @@ describe('accounts', function () {
       expect(email).to.equal('user@example.com')
     })
 
-    it('should return null when alias file does not exist', function () {
+    it('should return undefined when alias file does not exist', function () {
       existsSyncStub.returns(false)
       existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
       existsSyncStub.withArgs(match(/nonexistent$/)).returns(false)
 
       const email = (AccountsModule as any).getAliasEmail('nonexistent')
 
-      expect(email).to.equal(null)
+      expect(email).to.be.undefined
     })
 
     it('should handle ruby-style symbol keys', function () {
@@ -322,7 +322,7 @@ describe('accounts', function () {
       expect(email).to.equal('legacy@example.com')
     })
 
-    it('should return null when file exists but username is missing', function () {
+    it('should return undefined when file exists but username is missing', function () {
       existsSyncStub.returns(false)
       existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
       existsSyncStub.withArgs(match(/invalid$/)).returns(true)
@@ -331,10 +331,10 @@ describe('accounts', function () {
 
       const email = (AccountsModule as any).getAliasEmail('invalid')
 
-      expect(email).to.equal(null)
+      expect(email).to.be.undefined
     })
 
-    it('should return null when file is malformed', function () {
+    it('should return undefined when file is malformed', function () {
       existsSyncStub.returns(false)
       existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
       existsSyncStub.withArgs(match(/malformed$/)).returns(true)
@@ -343,7 +343,7 @@ describe('accounts', function () {
 
       const email = (AccountsModule as any).getAliasEmail('malformed')
 
-      expect(email).to.equal(null)
+      expect(email).to.be.undefined
     })
 
     it('should use legacy .heroku directory when it exists', function () {
@@ -483,7 +483,7 @@ describe('accounts', function () {
         credStub.restore()
       })
 
-      it('should remove aliased keychain account by resolving email from alias file', async function () {
+      it('should remove account from keychain and delete alias file', async function () {
         const alias = 'production'
         existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
         existsSyncStub.withArgs(match(/production$/)).returns(true)
@@ -495,62 +495,20 @@ describe('accounts', function () {
         expect(removeAuthStub.calledOnce).to.be.true
         expect(removeAuthStub.firstCall.args[0]).to.equal('prod@example.com')
         expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
+        expect(unlinkStub.calledOnce).to.be.true
+        expect(unlinkStub.firstCall.args[0]).to.match(/production$/)
       })
 
-      it('should remove alias file after removing from keychain for aliased account', async function () {
+      it('should throw an error if removeAuth fails', async function () {
         const alias = 'production'
         existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
         existsSyncStub.withArgs(match(/production$/)).returns(true)
         fsReadFileStub.withArgs(match(/production$/), 'utf8')
           .returns('username: prod@example.com\n')
-
-        await AccountsModule.remove(alias)
-
-        expect(unlinkStub.calledOnce).to.be.true
-        expect(unlinkStub.firstCall.args[0]).to.match(/production$/)
-      })
-
-      it('should remove non-aliased keychain account using email directly', async function () {
-        const email = 'user@example.com'
-        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
-        existsSyncStub.withArgs(match(/user@example\.com$/)).returns(false)
-
-        await AccountsModule.remove(email)
-
-        expect(removeAuthStub.calledOnce).to.be.true
-        expect(removeAuthStub.firstCall.args[0]).to.equal(email)
-        expect(removeAuthStub.firstCall.args[1]).to.deep.equal(['api.heroku.com', 'git.heroku.com'])
-      })
-
-      it('should not try to remove alias file for non-aliased account', async function () {
-        const email = 'user@example.com'
-        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
-        existsSyncStub.withArgs(match(/user@example\.com$/)).returns(false)
-
-        await AccountsModule.remove(email)
-
-        expect(unlinkStub.called).to.be.false
-      })
-
-      it('should throw an error if removeAuth fails', async function () {
-        const email = 'user@example.com'
-        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
-        existsSyncStub.withArgs(match(/user@example\.com$/)).returns(false)
         const error = new Error('Keychain removal failed')
         removeAuthStub.rejects(error)
 
-        await expect(AccountsModule.remove(email)).to.be.rejectedWith('Keychain removal failed')
-      })
-
-      it('should error when trying to remove netrc account in keychain mode', async function () {
-        const alias = 'netrc-account'
-        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
-        existsSyncStub.withArgs(match(/netrc-account$/)).returns(true)
-        fsReadFileStub.withArgs(match(/netrc-account$/), 'utf8')
-          .returns('username: user@example.com\npassword: token123\n')
-
-        await expect(AccountsModule.remove(alias))
-          .to.be.rejectedWith(/this account was created in netrc mode/)
+        await expect(AccountsModule.remove(alias)).to.be.rejectedWith('Keychain removal failed')
       })
     })
 
@@ -559,28 +517,14 @@ describe('accounts', function () {
         stub(AccountsModule, 'getStorageConfig').returns({credentialStore: null, useNetrc: true})
       })
 
-      it('should remove netrc account successfully', async function () {
+      it('should remove alias file', async function () {
         const alias = 'netrc-account'
-        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
-        existsSyncStub.withArgs(match(/netrc-account$/)).returns(true)
-        fsReadFileStub.withArgs(match(/netrc-account$/), 'utf8')
-          .returns('username: user@example.com\npassword: token123\n')
+        existsSyncStub.returns(false)
 
         await AccountsModule.remove(alias)
 
         expect(unlinkStub.calledOnce).to.be.true
         expect(unlinkStub.firstCall.args[0]).to.match(/netrc-account$/)
-      })
-
-      it('should error when trying to remove keychain account in netrc mode', async function () {
-        const alias = 'keychain-account'
-        existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
-        existsSyncStub.withArgs(match(/keychain-account$/)).returns(true)
-        fsReadFileStub.withArgs(match(/keychain-account$/), 'utf8')
-          .returns('username: user@example.com\n')
-
-        await expect(AccountsModule.remove(alias))
-          .to.be.rejectedWith(/this account is saved to your computer's keychain application/)
       })
     })
   })
