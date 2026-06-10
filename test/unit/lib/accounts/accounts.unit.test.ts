@@ -92,15 +92,6 @@ describe('accounts', function () {
       chmodSyncStub = stub(fs, 'chmodSync')
     })
 
-    it('should write only username for credentialStore mode', function () {
-      stub(AccountsModule, 'getStorageConfig').returns({credentialStore: 'macos-keychain', useNetrc: false})
-      AccountsModule.add('test-user', 'username123', 'password123')
-
-      expect(writeFileSyncStub.calledOnce).to.be.true
-      expect(writeFileSyncStub.firstCall.args[1]).to.equal('username: username123\n')
-      expect(writeFileSyncStub.firstCall.args[1]).to.not.include('password')
-    })
-
     it('should create directory with recursive option', function () {
       AccountsModule.add('test-user', 'username123', 'password123')
 

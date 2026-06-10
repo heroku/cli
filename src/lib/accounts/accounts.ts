@@ -35,15 +35,10 @@ export class AccountsWrapper implements IAccountsWrapper {
   private netrc: any
 
   add(name: string, username: string, password: string): void {
-    const config = this.getStorageConfig()
     fs.mkdirSync(this.accountsDir(), {recursive: true})
 
-    if (config.credentialStore) {
-      this.writeAccountFile(name, {username})
-    } else if (config.useNetrc) {
-      // eslint-disable-next-line perfectionist/sort-objects
-      this.writeAccountFile(name, {username, password})
-    }
+    // eslint-disable-next-line perfectionist/sort-objects
+    this.writeAccountFile(name, {username, password})
   }
 
   async current(heroku: APIClient): Promise<null | string> {
