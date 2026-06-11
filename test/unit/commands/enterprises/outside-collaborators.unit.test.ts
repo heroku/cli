@@ -44,6 +44,19 @@ describe('heroku enterprises:outside-collaborators', function () {
     expect(JSON.parse(stdout)).to.deep.equal([collaborator])
   })
 
+  it('--json is a raw passthrough of the API response (preserves order, unsorted)', async function () {
+    // Returned in non-email order: zoe before alice. --json must NOT reorder.
+    const zoe = {...collaborator, id: 'c2', user: {email: 'zoe@example.com', federated: false, id: 'u2'}}
+    const alice = {...collaborator, id: 'c3', user: {email: 'alice@example.com', federated: true, id: 'u3'}}
+    api
+      .get('/enterprise-accounts/my-ea/outside-collaborators')
+      .reply(200, [zoe, alice])
+
+    const {stdout} = await runCommand(OutsideCollaborators, ['--enterprise-account', 'my-ea', '--json'])
+
+    expect(JSON.parse(stdout)).to.deep.equal([zoe, alice])
+  })
+
   it('shows an empty message when there are none', async function () {
     api
       .get('/enterprise-accounts/my-ea/outside-collaborators')

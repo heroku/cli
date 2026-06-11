@@ -29,11 +29,16 @@ export default class OutsideCollaborators extends Command {
       {headers: {Accept: SDK_HEADER}},
     )
 
+    if (flags.json) {
+      // JSON output is a faithful passthrough of the API response (raw, unsorted).
+      ux.stdout(JSON.stringify(collaborators, null, 3))
+      return
+    }
+
+    // The human-readable table is sorted by email for legibility.
     const sorted = [...collaborators].sort((a, b) => a.user.email.localeCompare(b.user.email))
 
-    if (flags.json) {
-      ux.stdout(JSON.stringify(sorted, null, 3))
-    } else if (sorted.length === 0) {
+    if (sorted.length === 0) {
       ux.stdout(`No outside collaborators in ${color.name(enterpriseAccount)}`)
     } else {
       hux.table(sorted, {
