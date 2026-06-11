@@ -53,4 +53,27 @@ describe('authorizations:create', function () {
       expect(json.scope).to.contain('global')
     })
   })
+
+  it('merges --grant values into the scope array', async function () {
+    api
+      .post('/oauth/authorizations', {scope: ['read', 'apps:01ab.read', 'teams:02cd.apps:*.write']})
+      .reply(201, {access_token: {token: 'secrettoken'}, scope: ['read', 'apps:01ab.read', 'teams:02cd.apps:*.write']})
+
+    const {stdout} = await runCommand(AuthorizationsCreate, [
+      '--scope', 'read',
+      '--grant', 'apps:01ab.read',
+      '--grant', 'teams:02cd.apps:*.write',
+    ])
+
+    expect(stdout).to.contain('Token:  secrettoken\n')
+  })
+
+  it('sends only granular grants when no --scope given', async function () {
+    api
+      .post('/oauth/authorizations', {scope: ['apps:01ab.read']})
+      .reply(201, {access_token: {token: 'tok'}, scope: ['apps:01ab.read']})
+
+    const {stdout} = await runCommand(AuthorizationsCreate, ['--grant', 'apps:01ab.read'])
+    expect(stdout).to.contain('Token:  tok\n')
+  })
 })
