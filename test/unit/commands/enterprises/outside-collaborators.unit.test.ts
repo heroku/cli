@@ -6,11 +6,11 @@ import OutsideCollaborators from '../../../../src/commands/enterprises/outside-c
 
 describe('heroku enterprises:outside-collaborators', function () {
   const collaborator = {
-    id: 'c1',
-    created_at: '2026-06-01T00:00:00Z',
-    updated_at: '2026-06-01T00:00:00Z',
-    user: {id: 'u1', email: 'outsider@example.com', federated: false},
     app: {id: 'a1', name: 'some-app'},
+    created_at: '2026-06-01T00:00:00Z',
+    id: 'c1',
+    updated_at: '2026-06-01T00:00:00Z',
+    user: {email: 'outsider@example.com', federated: false, id: 'u1'},
   }
   let api: nock.Scope
 
