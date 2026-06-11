@@ -1,19 +1,14 @@
 import {
   APIClient,
   getStorageConfig,
-  listKeychainAccounts,
   writeLoginState,
 } from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
-import * as color from '@heroku/heroku-cli-util/color'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import tsheredoc from 'tsheredoc'
 import {parse, stringify} from 'yaml'
-
-const heredoc = tsheredoc.default
 
 export interface AccountEntry {
   name?: string
@@ -25,7 +20,7 @@ export interface IAccountsWrapper {
   current(heroku: APIClient): Promise<null | string>
   currentNetrc(): Promise<null | string>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
-  list(): Promise<AccountEntry[]>
+  list(): AccountEntry[]
   remove(name: string): void
   set(account: AccountEntry, dataDir: string): Promise<void>
   writeLoginState(dataDir: string, name: string): Promise<void>
@@ -35,22 +30,18 @@ export class AccountsWrapper implements IAccountsWrapper {
   private netrc: any
 
   add(name: string, username: string, password: string): void {
-    const config = this.getStorageConfig()
     fs.mkdirSync(this.accountsDir(), {recursive: true})
 
-    if (config.credentialStore) {
-      this.writeAccountFile(name, {username})
-    } else if (config.useNetrc) {
-      // eslint-disable-next-line perfectionist/sort-objects
-      this.writeAccountFile(name, {username, password})
-    }
+    // eslint-disable-next-line perfectionist/sort-objects
+    this.writeAccountFile(name, {username, password})
   }
 
   async current(heroku: APIClient): Promise<null | string> {
     const config = this.getStorageConfig()
     if (config.credentialStore) {
       const authEntry = await heroku.getAuthEntry()
-      return authEntry?.account ?? null
+      const current = this.list().find(a => a.username === authEntry?.account)
+      return current && current.name ? current.name : null
     }
 
     return this.currentNetrc()
@@ -59,54 +50,23 @@ export class AccountsWrapper implements IAccountsWrapper {
   async currentNetrc(): Promise<null | string> {
     const netrcInstance = await this.initNetrc()
     if (netrcInstance.machines['api.heroku.com']) {
-      const current = this.listNetrc().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
+      const current = this.list().find(a => a.username === netrcInstance.machines['api.heroku.com'].login)
       return current && current.name ? current.name : null
     }
 
     return null
   }
 
-  async getKeychainAccounts(): Promise<(null | string | undefined)[]> {
-    return listKeychainAccounts()
-  }
-
   getStorageConfig() {
     return getStorageConfig()
   }
 
-  async list(): Promise<AccountEntry[]> {
-    const config = this.getStorageConfig()
-    if (config.credentialStore) {
-      const keychainEmails = await this.getKeychainAccounts()
-      const aliasMap = this.listAliasFiles()
-
-      // Create reverse map: email → alias (for lookup)
-      const emailToAlias = new Map<string, string>()
-      for (const [alias, email] of aliasMap.entries()) {
-        // If multiple aliases point to same email, keep first
-        if (!emailToAlias.has(email)) {
-          emailToAlias.set(email, alias)
-        }
-      }
-
-      return keychainEmails
-        .filter((email): email is string => email !== null && email !== undefined)
-        .map(email => {
-          const alias = emailToAlias.get(email)
-          return alias
-            ? {name: alias, username: email}
-            : {username: email}
-        })
-    }
-
-    return this.listNetrc()
-  }
-
-  listNetrc(): AccountEntry[] {
+  list(): AccountEntry[] {
     const basedir = this.accountsDir()
     try {
       return fs.readdirSync(basedir)
-        .map(name => ({name, username: this.account(name).username ?? ''}))
+        .filter(name => this.account(name).username)
+        .map(name => ({name, username: this.account(name).username}))
     } catch {
       return []
     }
@@ -118,69 +78,34 @@ export class AccountsWrapper implements IAccountsWrapper {
     if (config.credentialStore) {
       // Keychain mode
       const email = this.getAliasEmail(name)
-
-      if (email) {
-        // Aliased account - check if it was created in netrc mode
-        const accountData = this.account(name)
-        if (accountData.password) {
-          throw new Error(heredoc(`
-            We can't remove ${name} because this account was created in netrc mode.
-            To remove it, run: ${color.command(`HEROKU_NETRC_WRITE=true heroku accounts:remove ${name}`)}
-          `))
-        }
-
-        // Aliased keychain account
-        await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
-        fs.unlinkSync(path.join(this.accountsDir(), name))
-      } else {
-        // Non-aliased keychain account (name IS the email)
-        await removeAuth(name, ['api.heroku.com', 'git.heroku.com'])
-        // No alias file to remove
-      }
-
+      await removeAuth(email, ['api.heroku.com', 'git.heroku.com'])
+      fs.unlinkSync(path.join(this.accountsDir(), name))
       return
     }
 
-    // Netrc mode - check if account is saved in keychain
-    const email = this.getAliasEmail(name)
-    if (email) {
-      const accountData = this.account(name)
-      if (!accountData.password) {
-        throw new Error(heredoc(`
-          We can't remove ${name} because this account is saved to your computer's keychain application.
-          To remove it, run: ${color.command(`heroku accounts:remove ${name}`)}
-          (without HEROKU_NETRC_WRITE set)
-        `))
-      }
-    }
-
-    // Netrc mode: remove alias file
+    // Netrc mode
     fs.unlinkSync(path.join(this.accountsDir(), name))
   }
 
   async set(account: AccountEntry, dataDir: string): Promise<void> {
     const config = this.getStorageConfig()
 
-    if (config.credentialStore) {
-      if (account.name) {
-        // Aliased keychain account: read email from alias file
+    if (account.name) {
+      if (config.credentialStore) {
         const email = this.getAliasEmail(account.name)
         if (email) {
           await this.writeLoginState(dataDir, email)
-          return
         }
-
-        throw new Error(`We can't find the alias file for ${account.name}.`)
-      } else {
-        // Non-aliased account: use username directly
-        await this.writeLoginState(dataDir, account.username)
-        return
       }
-    }
 
-    if (config.useNetrc && account.name) {
       const netrcInstance = await this.initNetrc()
-      const current = this.account(account.name)
+      let current
+      try {
+        current = this.account(account.name)
+      } catch {
+        throw new Error(`We can't find the alias file for ${account.name}.`)
+      }
+
       netrcInstance.machines['git.heroku.com'] = {login: current.username, password: current.password || ''}
       netrcInstance.machines['api.heroku.com'] = {login: current.username, password: current.password || ''}
       await netrcInstance.save()
@@ -220,21 +145,21 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
   }
 
-  private getAliasEmail(alias: string): null | string {
+  private getAliasEmail(alias: string): string | undefined {
     try {
       const filePath = path.join(this.accountsDir(), alias)
 
       if (!fs.existsSync(filePath)) {
-        return null
+        return
       }
 
       const file = fs.readFileSync(filePath, 'utf8')
       const account = parse(file)
       this.convertRubySymbols(account)
 
-      return account.username ?? null
+      return account.username ?? undefined
     } catch {
-      return null
+      return undefined
     }
   }
 
@@ -247,24 +172,6 @@ export class AccountsWrapper implements IAccountsWrapper {
     }
 
     return this.netrc
-  }
-
-  private listAliasFiles(): Map<string, string> {
-    try {
-      const aliasMap = new Map<string, string>()
-
-      const files = fs.readdirSync(this.accountsDir())
-      for (const alias of files) {
-        const email = this.getAliasEmail(alias)
-        if (email) {
-          aliasMap.set(alias, email)
-        }
-      }
-
-      return aliasMap
-    } catch {
-      return new Map()
-    }
   }
 
   private writeAccountFile(name: string, content: Record<string, string>): void {

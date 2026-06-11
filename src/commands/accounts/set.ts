@@ -8,7 +8,7 @@ export default class Set extends Command {
   static args = {
     name: Args.string({description: 'name or username of account to set', required: true}),
   }
-  static description = 'set the current Heroku account from your accounts cache or system keychain'
+  static description = 'set the current Heroku account from your accounts cache'
   static example = `${color.command('heroku accounts:set my-account')}`
 
   async run() {
@@ -19,7 +19,7 @@ export default class Set extends Command {
     const account = accounts.find(account => account.name === name || account.username === name)
 
     if (!account) {
-      ux.error(`${name} doesn't exist in your accounts cache or system keychain.`)
+      ux.error(`${name} doesn't exist in your accounts cache.`)
     }
 
     await AccountsModule.set(account, this.config.dataDir)
