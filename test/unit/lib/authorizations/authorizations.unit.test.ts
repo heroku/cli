@@ -69,6 +69,25 @@ describe('display', function () {
     })
   })
 
+  context('with granular scopes', function () {
+    const auth: Heroku.OAuthAuthorization = {
+      description: 'scoped',
+      id: 'f6e8d969-129f-42d2-854b-c2eca9d5a42e',
+      scope: ['read', 'apps:01ab.read', 'teams:02cd.apps:*.write'],
+    }
+
+    it('renders legacy scopes inline and granular grants indented', async function () {
+      const {stdout} = await captureOutput(async () => {
+        display(auth)
+      })
+      expect(stdout).to.contain('read')
+      expect(stdout).to.contain('apps:01ab.read')
+      expect(stdout).to.contain('teams:02cd.apps:*.write')
+      expect(stdout).to.match(/Scope:.*read/s)
+      expect(stdout).to.contain('\n        apps:01ab.read')
+    })
+  })
+
   context('with a client', function () {
     const client: Heroku.OAuthClient = {
       name: 'a cool client',

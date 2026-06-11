@@ -2,6 +2,16 @@ import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
+function formatScope(scope: string[] | undefined): string | undefined {
+  if (!scope || scope.length === 0) return undefined
+  const isGranular = (s: string) => s.includes(':') || s.includes('.')
+  const legacy = scope.filter(s => !isGranular(s))
+  const granular = scope.filter(isGranular)
+  const lines = [legacy.join(',')].filter(Boolean)
+  for (const g of granular) lines.push(`        ${g}`)
+  return lines.join('\n')
+}
+
 export function display(auth: Heroku.OAuthAuthorization) {
   interface StyledObject {
     Client?: string;
@@ -18,7 +28,7 @@ export function display(auth: Heroku.OAuthAuthorization) {
     Client: '<none>',
     ID: auth.id,
     Description: auth.description,
-    Scope: auth.scope ? auth.scope.join(',') : undefined,
+    Scope: formatScope(auth.scope),
   }
   /* eslint-enable perfectionist/sort-objects */
   if (auth.client) {
