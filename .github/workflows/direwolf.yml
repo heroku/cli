@@ -35,6 +35,6 @@ jobs:
     - name: run direwolf suite
       run: ./scripts/direwolf-test-run
       env:
-        HEROKU_CLI_VERSION: ${{ inputs.releaseChannel }}
+        HEROKU_CLI_CHANNEL: ${{ inputs.releaseChannel }}
         DIREWOLF_TOKEN: ${{ secrets.DEV_TOOLING_DIREWOLF_TOKEN }}
         DIREWOLF_CLOUD_UUID: ${{ secrets.DIREWOLF_CLOUD_UUID_PRODUCTION }}
