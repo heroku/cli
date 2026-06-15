@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.4.0",
+  "version": "11.5.0",
   "author": "Heroku",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -19,7 +19,7 @@
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
     "@oclif/plugin-not-found": "^3.2.74",
-    "@oclif/plugin-plugins": "^5.4.64",
+    "@oclif/plugin-plugins": "^5.4.73",
     "@oclif/plugin-search": "1.2.38",
     "@oclif/plugin-update": "^4.7.22",
     "@oclif/plugin-version": "^2.2.37",
@@ -339,7 +339,7 @@
     },
     "update": {
       "node": {
-        "version": "22.22.2"
+        "version": "22.22.3"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
@@ -370,7 +370,10 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.4",
+    "serialize-javascript": "^7.0.5",
+    "node-notifier": {
+      "uuid": "^11.1.1"
+    },
     "socks": "^2.8.8",
     "express-rate-limit": "^8.5.1"
   },
