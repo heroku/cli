@@ -1,0 +1,69 @@
+import {Command, flags} from '@heroku-cli/command'
+import {utils} from '@heroku/heroku-cli-util'
+import {Args, ux} from '@oclif/core'
+
+import {ensureEssentialTierPlan} from '../../lib/pg/extras.js'
+
+export const generateFdwsqlQuery = (prefix: string): string => `
+SELECT
+  'CREATE FOREIGN TABLE '
+  || quote_ident('${prefix}_' || c.relname)
+  || '(' || array_to_string(array_agg(quote_ident(a.attname) || ' ' || t.typname), ', ') || ') '
+  || ' SERVER ${prefix}_db OPTIONS'
+  || ' (schema_name ''' || quote_ident(n.nspname) || ''', table_name ''' || quote_ident(c.relname) || ''');'
+FROM
+  pg_class     c,
+  pg_attribute a,
+  pg_type      t,
+  pg_namespace n
+WHERE
+  a.attnum > 0
+  AND a.attrelid = c.oid
+  AND a.atttypid = t.oid
+  AND n.oid = c.relnamespace
+  AND c.relkind in ('r', 'v')
+  AND n.nspname <> 'pg_catalog'
+  AND n.nspname <> 'information_schema'
+  AND n.nspname !~ '^pg_toast'
+  AND pg_catalog.pg_table_is_visible(c.oid)
+GROUP BY c.relname, n.nspname
+ORDER BY c.relname;
+`.trim()
+
+export default class PgFdwsql extends Command {
+  /* eslint-disable perfectionist/sort-objects */
+  static args = {
+    prefix: Args.string({description: 'prefix for foreign data wrapper', required: true}),
+    database: Args.string({description: 'database name', required: false}),
+  }
+  /* eslint-enable perfectionist/sort-objects */
+  static description = 'generate fdw install sql for database'
+  static flags = {
+    app: flags.app({required: true}),
+    remote: flags.remote(),
+  }
+  static topic = 'pg'
+
+  public async run(): Promise<void> {
+    const {args, flags} = await this.parse(PgFdwsql)
+    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
+    const db = await dbResolver.getDatabase(flags.app, args.database)
+
+    await ensureEssentialTierPlan(db)
+
+    const psqlService = new utils.pg.PsqlService(db)
+
+    ux.stdout('CREATE EXTENSION IF NOT EXISTS postgres_fdw;')
+    ux.stdout(`DROP SERVER IF EXISTS ${args.prefix}_db;`)
+    ux.stdout(`CREATE SERVER ${args.prefix}_db
+  FOREIGN DATA WRAPPER postgres_fdw
+  OPTIONS (dbname '${db.database}', host '${db.host}');`)
+    ux.stdout(`CREATE USER MAPPING FOR CURRENT_USER
+  SERVER ${args.prefix}_db
+  OPTIONS (user '${db.user}', password '${db.password}');`)
+
+    let output = await psqlService.execQuery(generateFdwsqlQuery(args.prefix))
+    output = output.split('\n').filter((l: string) => /CREATE/.test(l)).join('\n')
+    ux.stdout(output)
+  }
+}
