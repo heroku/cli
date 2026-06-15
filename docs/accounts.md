@@ -24,30 +24,30 @@ EXAMPLES
    $ heroku accounts
 ```
 
-_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v11.5.0/src/commands/accounts/index.ts)_
+_See code: [src/commands/accounts/index.ts](https://github.com/heroku/cli/blob/v11.6.0-beta.0/src/commands/accounts/index.ts)_
 
 ## `heroku accounts:add NAME`
 
-add a Heroku account to your cache
+add the current Heroku account to your accounts cache
 
 ```
 USAGE
   $ heroku accounts:add NAME [--prompt]
 
 ARGUMENTS
-  NAME  name of Heroku account to add
+  NAME  alias for Heroku account to add
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
-  add a Heroku account to your cache
+  add the current Heroku account to your accounts cache
 
 EXAMPLES
    $ heroku accounts:add my-account
 ```
 
-_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v11.5.0/src/commands/accounts/add.ts)_
+_See code: [src/commands/accounts/add.ts](https://github.com/heroku/cli/blob/v11.6.0-beta.0/src/commands/accounts/add.ts)_
 
 ## `heroku accounts:current`
 
@@ -64,7 +64,7 @@ EXAMPLES
    $ heroku accounts:current
 ```
 
-_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v11.5.0/src/commands/accounts/current.ts)_
+_See code: [src/commands/accounts/current.ts](https://github.com/heroku/cli/blob/v11.6.0-beta.0/src/commands/accounts/current.ts)_
 
 ## `heroku accounts:remove NAME`
 
@@ -87,27 +87,27 @@ EXAMPLES
    $ heroku accounts:remove my-account
 ```
 
-_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v11.5.0/src/commands/accounts/remove.ts)_
+_See code: [src/commands/accounts/remove.ts](https://github.com/heroku/cli/blob/v11.6.0-beta.0/src/commands/accounts/remove.ts)_
 
 ## `heroku accounts:set NAME`
 
-set the current Heroku account from your cache
+set the current Heroku account from your accounts cache
 
 ```
 USAGE
   $ heroku accounts:set NAME [--prompt]
 
 ARGUMENTS
-  NAME  name of account to set
+  NAME  name or username of account to set
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
 
 DESCRIPTION
-  set the current Heroku account from your cache
+  set the current Heroku account from your accounts cache
 
 EXAMPLES
    $ heroku accounts:set my-account
 ```
 
-_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v11.5.0/src/commands/accounts/set.ts)_
+_See code: [src/commands/accounts/set.ts](https://github.com/heroku/cli/blob/v11.6.0-beta.0/src/commands/accounts/set.ts)_
