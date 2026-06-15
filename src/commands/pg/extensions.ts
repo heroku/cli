@@ -1,8 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {pg, utils} from '@heroku/heroku-cli-util'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
 
 import {essentialNumPlan} from '../../lib/pg/extras.js'
+
+const heredoc = tsheredoc.default
 
 export function generateExtensionsQuery(db: pg.ConnectionDetails): string {
   return essentialNumPlan(db.attachment!.addon)
@@ -19,6 +22,9 @@ export default class PgExtensions extends Command {
     database: Args.string({description: 'database name', required: false}),
   }
   static description = 'list available and installed extensions'
+  static examples = [heredoc`
+    ${color.command('heroku pg:extensions --app example-app')}
+  `]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

@@ -1,8 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {pg, utils} from '@heroku/heroku-cli-util'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
 
 import {ensurePGStatStatement, newBlkTimeFields, newTotalExecTimeField} from '../../lib/pg/extras.js'
+
+const heredoc = tsheredoc.default
 
 export async function generateCallsQuery(db: pg.ConnectionDetails, flags: {truncate?: boolean}): Promise<string> {
   await ensurePGStatStatement(db)
@@ -35,6 +38,12 @@ export default class PgCalls extends Command {
     database: Args.string({description: 'database name', required: false}),
   }
   static description = 'show 10 queries that have highest frequency of execution'
+  static examples = [heredoc`
+    ${color.command('heroku pg:calls --app example-app')}
+  `, heredoc`
+    # truncate queries to 40 characters
+    ${color.command('heroku pg:calls --truncate --app example-app')}
+  `]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

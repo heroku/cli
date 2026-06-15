@@ -1,6 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {utils} from '@heroku/heroku-cli-util'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export const generateIndexUsageQuery = (): string => `
 SELECT relname,
@@ -19,7 +22,10 @@ export default class PgIndexUsage extends Command {
   static args = {
     database: Args.string({description: 'database name', required: false}),
   }
-  static description = 'calculates your index hit rate (effective databases are at 99% and up)'
+  static description = 'show percentage of times an index was used for each table'
+  static examples = [heredoc`
+    ${color.command('heroku pg:index-usage --app example-app')}
+  `]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

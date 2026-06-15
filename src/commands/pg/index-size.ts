@@ -1,6 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {utils} from '@heroku/heroku-cli-util'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc.default
 
 export const generateIndexSizeQuery = (): string => `
 SELECT c.relname AS name,
@@ -19,6 +22,9 @@ export default class PgIndexSize extends Command {
     database: Args.string({description: 'database name', required: false}),
   }
   static description = 'show the size of indexes, descending by size'
+  static examples = [heredoc`
+    ${color.command('heroku pg:index-size --app example-app')}
+  `]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),

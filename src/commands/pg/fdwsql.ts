@@ -1,8 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
-import {utils} from '@heroku/heroku-cli-util'
+import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
 
 import {ensureEssentialTierPlan} from '../../lib/pg/extras.js'
+
+const heredoc = tsheredoc.default
 
 export const generateFdwsqlQuery = (prefix: string): string => `
 SELECT
@@ -38,6 +41,9 @@ export default class PgFdwsql extends Command {
   }
   /* eslint-enable perfectionist/sort-objects */
   static description = 'generate fdw install sql for database'
+  static examples = [heredoc`
+    ${color.command('heroku pg:fdwsql example_prefix --app example-app')}
+  `]
   static flags = {
     app: flags.app({required: true}),
     remote: flags.remote(),
