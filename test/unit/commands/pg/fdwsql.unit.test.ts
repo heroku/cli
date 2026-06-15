@@ -91,6 +91,21 @@ ORDER BY c.relname;`
       expect(stderr).to.eq('')
     })
 
+    it('filters out non-CREATE lines from the query output', async function () {
+      execQueryStub.resolves(`                              ?column?
+-------------------------------------------------------
+ CREATE FOREIGN TABLE test_prefix_table1(col1 int) SERVER test_prefix_db OPTIONS (schema_name 'public', table_name 'table1');
+NOTICE:  some psql noise
+(1 row)`)
+
+      const {stdout} = await runCommand(Cmd, ['test_prefix', '--app', 'my-app'])
+
+      expect(stdout).to.contain('CREATE FOREIGN TABLE test_prefix_table1')
+      expect(stdout).to.not.contain('?column?')
+      expect(stdout).to.not.contain('NOTICE:')
+      expect(stdout).to.not.contain('(1 row)')
+    })
+
     it('shows setup SQL even when no foreign tables are returned', async function () {
       execQueryStub.resolves('')
 
