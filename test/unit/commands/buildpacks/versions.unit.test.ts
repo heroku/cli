@@ -1,28 +1,24 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import BuildpacksVersions from '../../../../src/commands/buildpacks/versions.js'
 
 describe('buildpacks:versions', function () {
-  let originalApiKey: string | undefined
   let registryApi: nock.Scope
 
   beforeEach(function () {
     registryApi = nock('https://buildpack-registry.heroku.com')
-    originalApiKey = process.env.HEROKU_API_KEY
-    process.env.HEROKU_API_KEY = 'authtoken'
+    stub(APIClient.prototype, 'auth').get(() => 'authtoken')
   })
 
   afterEach(function () {
     registryApi.done()
     nock.cleanAll()
-    if (originalApiKey) {
-      process.env.HEROKU_API_KEY = originalApiKey
-    } else {
-      delete process.env.HEROKU_API_KEY
-    }
+    restore()
   })
 
   it('shows info about the buildpack', async function () {

@@ -3,21 +3,45 @@ import {ux} from '@oclif/core/ux'
 import cp from 'node:child_process'
 import fs from 'node:fs'
 import {promisify} from 'node:util'
-const execFile = promisify(cp.execFile)
+const execFilePromise = promisify(cp.execFile)
 
 import debug from 'debug'
 const gitDebug = debug('git')
 
 export default class Git {
+  private readonly execFile = execFilePromise
+
+  /** Configures `heroku git:credentials` as a Git credential helper
+  * that is URL-scoped to Heroku Git operations only.
+  */
+  async configureCredentialHelper() {
+    const {httpGitHost} = vars
+    await this.exec([
+      'config',
+      '--global',
+      `credential.https://${httpGitHost}.helper`,
+      '!heroku git:credentials',
+    ])
+  }
+
   createRemote(remote: string, url: string) {
     return this.hasGitRemote(remote)
       .then(exists => exists ? null : this.exec(['remote', 'add', remote, url]))
   }
 
+  /** Erases stored credentials for the Heroku Git host */
+  async eraseCredentials() {
+    const {httpGitHost} = vars
+    await this.spawn(['credential', 'reject'], {
+      input: `protocol=https\nhost=${httpGitHost}\n\n`,
+      stdio: ['pipe', 'ignore', 'ignore'],
+    })
+  }
+
   public async exec(args: string[]): Promise<string> {
     gitDebug('exec: git %o', args)
     try {
-      const {stderr, stdout} = await execFile('git', args)
+      const {stderr, stdout} = await this.execFile('git', args)
       if (stderr) process.stderr.write(stderr)
       return stdout.trim()
     } catch (error: any) {
@@ -57,6 +81,7 @@ export default class Git {
       return true
     } catch (error: any) {
       if (error.code !== 'ENOENT') throw error
+      return false
     }
   }
 
@@ -84,13 +109,29 @@ export default class Git {
       ?.split(' ')[0] ?? ''
   }
 
-  public spawn(args: string[]) {
+  /** Removes `heroku git:credentials` from the global config */
+  async removeCredentialHelper() {
+    const {httpGitHost} = vars
+    await this.exec(['config', '--global', '--unset-all', `credential.https://${httpGitHost}.helper`])
+  }
+
+  public spawn(args: string[], options: {input?: string; stdio?: cp.StdioOptions;} = {}) {
     return new Promise((resolve, reject) => {
       gitDebug('spawn: git %o', args)
-      const s = cp.spawn('git', args, {stdio: [0, 1, 2]})
+      const s = cp.spawn('git', args, {stdio: options.stdio ?? [0, 1, 2]})
+
+      if (options.input && s.stdin) {
+        s.stdin.write(options.input)
+        s.stdin.end()
+      }
+
       s.on('error', (err: Error & {code?: string}) => {
         if (err.code === 'ENOENT') {
-          ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+          try {
+            ux.error('Git must be installed to use the Heroku CLI.  See instructions here: https://git-scm.com')
+          } catch (error) {
+            reject(error)
+          }
         } else reject(err)
       })
       s.on('close', resolve)

@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 
@@ -21,15 +22,16 @@ describe('accounts:remove', function () {
   })
 
   it('calls the remove function with the account name when the account exists and it is not the current account', async function () {
-    currentStub.returns('test-account')
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+    currentStub.resolves('test-account')
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
+    removeStub.resolves()
     await runCommand(Cmd, ['test-account-2'])
-    expect(removeStub.calledWith('test-account-2'))
+    expect(removeStub.calledWith('test-account-2')).to.be.true
   })
 
   it('should return an error if the selected account name is not included in the account list', async function () {
-    currentStub.returns('test-account')
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+    currentStub.resolves('test-account')
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     await runCommand(Cmd, ['test-account-3'])
       .catch((error: Error) => {
         expect(error.message).to.contain('test-account-3 doesn\'t exist in your accounts cache.')
@@ -37,11 +39,20 @@ describe('accounts:remove', function () {
   })
 
   it('should return an error if the selected account name is the current account', async function () {
-    currentStub.returns('test-account')
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+    currentStub.resolves('test-account')
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     await runCommand(Cmd, ['test-account'])
       .catch((error: Error) => {
-        expect(error.message).to.contain('test-account is the current account.')
+        expect(ansis.strip(error.message)).to.equal('test-account is the current account. To log out, run heroku logout.')
+      })
+  })
+
+  it('should return an error if the selected account is the current account (aliased)', async function () {
+    currentStub.resolves('user1@example.com')
+    listStub.resolves([{name: 'test-account', username: 'user1@example.com'}, {name: 'test-account-2', username: 'user2@example.com'}])
+    await runCommand(Cmd, ['test-account'])
+      .catch((error: Error) => {
+        expect(ansis.strip(error.message)).to.equal('test-account is the current account. To log out, run heroku logout.')
       })
   })
 })

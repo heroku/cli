@@ -1,12 +1,111 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
+import mockStdin from 'mock-stdin'
+import {restore, stub} from 'sinon'
 
 import {GitCredentials as Credentials} from '../../../../src/commands/git/credentials.js'
+import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
 describe('git:credentials', function () {
+  let stdin: mockStdin.MockSTDIN
+  let savedApiKey: string | undefined
+
+  beforeEach(function () {
+    savedApiKey = process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_API_KEY
+
+    stdin = mockStdin.stdin()
+  })
+
+  afterEach(function () {
+    if (savedApiKey !== undefined) {
+      process.env.HEROKU_API_KEY = savedApiKey
+    }
+
+    stdin.restore()
+  })
+
   it('errors if no app given', async function () {
     const {error} = await runCommand(Credentials, [])
 
     expect(error?.message).to.contain('Missing 1 required arg')
+  })
+
+  describe('get operation', function () {
+    it('outputs credentials', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
+      })
+      stub(APIClient.prototype, 'auth').get(() => 'test-token')
+
+      process.stdin.push('protocol=https\nhost=git.heroku.com\n\n')
+
+      const {error, stdout} = await runCommand(Credentials, ['get'])
+
+      expect(error).to.be.undefined
+      expect(stdout).to.equal('protocol=https\nhost=git.heroku.com\nusername=heroku\npassword=test-token\n')
+      restore()
+    })
+
+    it('does not output credentials for non-Heroku hosts', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
+      })
+
+      process.stdin.push('protocol=https\nhost=github.com\n\n')
+
+      const {error, stdout} = await runCommand(Credentials, ['get'])
+
+      expect(error).to.be.undefined
+      expect(stdout).to.equal('')
+    })
+
+    it('does not output credentials when protocol is not https', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: 'test@example.com', token: 'test-token'}),
+      })
+
+      process.stdin.push('protocol=http\nhost=git.heroku.com\n\n')
+
+      const {error, stdout} = await runCommand(Credentials, ['get'])
+
+      expect(error).to.be.undefined
+      expect(stdout).to.equal('')
+    })
+
+    it('errors when not logged in', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: undefined, token: undefined}),
+      })
+
+      process.stdin.push('protocol=https\nhost=git.heroku.com\n\n')
+
+      const {error} = await runCommand(Credentials, ['get'])
+
+      expect(error?.message).to.contain('not logged in')
+    })
+  })
+
+  describe('store operation', function () {
+    it('accepts input without error', async function () {
+      process.stdin.push('protocol=https\nhost=git.heroku.com\nusername=heroku\npassword=test-token\n\n')
+
+      const {error, stdout} = await runCommand(Credentials, ['store'])
+
+      expect(error).to.be.undefined
+      expect(stdout).to.equal('')
+    })
+  })
+
+  describe('erase operation', function () {
+    it('accepts input without error', async function () {
+      process.stdin.push('protocol=https\nhost=git.heroku.com\n\n')
+
+      const {error, stdout} = await runCommand(Credentials, ['erase'])
+
+      expect(error).to.be.undefined
+      expect(stdout).to.equal('')
+    })
   })
 })
