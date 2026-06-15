@@ -22,7 +22,7 @@ export default class PgIndexUsage extends Command {
   static args = {
     database: Args.string({description: 'database name', required: false}),
   }
-  static description = 'show percentage of times an index was used for each table'
+  static description = 'calculates your index hit rate (effective databases are at 99% and up)'
   static examples = [heredoc`
     ${color.command('heroku pg:index-usage --app example-app')}
   `]
