@@ -11,7 +11,7 @@ export async function ensurePGStatStatement(db: pg.ConnectionDetails): Promise<v
     const query = `
 SELECT exists(
   SELECT 1 FROM pg_extension e LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
-  WHERE e.extname='pg_stat_statements' AND n.nspname = 'public'
+  WHERE e.extname='pg_stat_statements' AND n.nspname IN ('public', 'heroku_ext')
 ) AS available`
     const psqlService = new utils.pg.PsqlService(db)
     const output = await psqlService.execQuery(query)

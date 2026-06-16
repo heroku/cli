@@ -55,6 +55,30 @@ describe('lib/pg/extras', function () {
       expect(uxErrorStub.called).to.be.false
     })
 
+    it('checks both public and heroku_ext schemas for pg_stat_statements', async function () {
+      execQueryStub.resolves('t')
+
+      await ensurePGStatStatement(mockDb())
+
+      const querySql = execQueryStub.firstCall.args[0]
+      expect(querySql).to.include('pg_stat_statements')
+      expect(querySql).to.include("'public'")
+      expect(querySql).to.include("'heroku_ext'")
+    })
+
+    it('detects pg_stat_statements when it is installed in the heroku_ext schema', async function () {
+      // Simulate a database where the extension lives in heroku_ext (standard for
+      // modern Heroku Postgres) and NOT in public. The check only succeeds if the
+      // query actually looks in heroku_ext, so this fails on the public-only bug.
+      execQueryStub.callsFake((query: string) =>
+        Promise.resolve(query.includes("'heroku_ext'") ? 't' : 'f'),
+      )
+
+      await ensurePGStatStatement(mockDb())
+
+      expect(uxErrorStub.called).to.be.false
+    })
+
     it('calls ux.error when psql exec fails', async function () {
       execQueryStub.rejects(new Error('boom'))
 
