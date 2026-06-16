@@ -70,9 +70,7 @@ describe('lib/pg/extras', function () {
       // Simulate a database where the extension lives in heroku_ext (standard for
       // modern Heroku Postgres) and NOT in public. The check only succeeds if the
       // query actually looks in heroku_ext, so this fails on the public-only bug.
-      execQueryStub.callsFake((query: string) =>
-        Promise.resolve(query.includes("'heroku_ext'") ? 't' : 'f'),
-      )
+      execQueryStub.callsFake((query: string) => Promise.resolve(query.includes("'heroku_ext'") ? 't' : 'f'))
 
       await ensurePGStatStatement(mockDb())
 
