@@ -34,6 +34,18 @@ describe('pg:records-rank', function () {
   })
 
   describe('generateRecordsRankQuery', function () {
+    it('generates the exact expected SQL query', function () {
+      const expectedQuery = `SELECT
+  relname AS name,
+  n_live_tup AS estimated_count
+FROM
+  pg_stat_user_tables
+ORDER BY
+  n_live_tup DESC;`
+
+      expect(generateRecordsRankQuery()).to.equal(expectedQuery)
+    })
+
     it('generates SQL ranking tables by row count', function () {
       const query = generateRecordsRankQuery()
       expect(query).to.contain('pg_stat_user_tables')
@@ -74,6 +86,12 @@ describe('pg:records-rank', function () {
       getDatabaseStub.rejects(new Error('Database connection failed'))
       const {error} = await runCommand(Cmd, ['--app', 'myapp'])
       expect(error?.message).to.contain('Database connection failed')
+    })
+
+    it('surfaces SQL execution failures', async function () {
+      execQueryStub.rejects(new Error('SQL execution failed'))
+      const {error} = await runCommand(Cmd, ['--app', 'myapp'])
+      expect(error?.message).to.contain('SQL execution failed')
     })
   })
 })

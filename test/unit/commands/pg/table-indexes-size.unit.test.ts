@@ -40,6 +40,19 @@ describe('pg:table-indexes-size', function () {
       expect(query).to.contain('pg_class')
       expect(query).to.contain('information_schema')
     })
+
+    it('generates the exact expected SQL query', function () {
+      const expectedQuery = `SELECT c.relname AS table,
+  pg_size_pretty(pg_indexes_size(c.oid)) AS index_size
+FROM pg_class c
+LEFT JOIN pg_namespace n ON (n.oid = c.relnamespace)
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+AND n.nspname !~ '^pg_toast'
+AND c.relkind='r'
+ORDER BY pg_indexes_size(c.oid) DESC;`
+
+      expect(generateTableIndexesSizeQuery()).to.equal(expectedQuery)
+    })
   })
 
   describe('command behavior', function () {
@@ -73,6 +86,12 @@ describe('pg:table-indexes-size', function () {
       getDatabaseStub.rejects(new Error('Database connection failed'))
       const {error} = await runCommand(Cmd, ['--app', 'myapp'])
       expect(error?.message).to.contain('Database connection failed')
+    })
+
+    it('surfaces SQL execution failures', async function () {
+      execQueryStub.rejects(new Error('SQL execution failed'))
+      const {error} = await runCommand(Cmd, ['--app', 'myapp'])
+      expect(error?.message).to.contain('SQL execution failed')
     })
   })
 })

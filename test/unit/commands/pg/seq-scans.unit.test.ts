@@ -34,6 +34,16 @@ describe('pg:seq-scans', function () {
   })
 
   describe('generateSeqScansQuery', function () {
+    it('generates the exact expected SQL query', function () {
+      const expectedQuery = `SELECT relname AS name,
+       seq_scan as count
+FROM
+  pg_stat_user_tables
+ORDER BY seq_scan DESC;`
+
+      expect(generateSeqScansQuery()).to.equal(expectedQuery)
+    })
+
     it('generates SQL counting sequential scans by table', function () {
       const query = generateSeqScansQuery()
       expect(query).to.contain('pg_stat_user_tables')
@@ -73,6 +83,12 @@ describe('pg:seq-scans', function () {
       getDatabaseStub.rejects(new Error('Database connection failed'))
       const {error} = await runCommand(Cmd, ['--app', 'myapp'])
       expect(error?.message).to.contain('Database connection failed')
+    })
+
+    it('surfaces SQL execution failures', async function () {
+      execQueryStub.rejects(new Error('SQL execution failed'))
+      const {error} = await runCommand(Cmd, ['--app', 'myapp'])
+      expect(error?.message).to.contain('SQL execution failed')
     })
   })
 })

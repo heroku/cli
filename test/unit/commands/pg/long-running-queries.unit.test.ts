@@ -34,6 +34,23 @@ describe('pg:long-running-queries', function () {
   })
 
   describe('generateLongRunningQueriesQuery', function () {
+    it('generates the exact expected SQL query', function () {
+      const expectedQuery = `SELECT
+  pid,
+  now() - pg_stat_activity.query_start AS duration,
+  query AS query
+FROM
+  pg_stat_activity
+WHERE
+  pg_stat_activity.query <> ''::text
+  AND state <> 'idle'
+  AND now() - pg_stat_activity.query_start > interval '5 minutes'
+ORDER BY
+  now() - pg_stat_activity.query_start DESC;`
+
+      expect(generateLongRunningQueriesQuery()).to.equal(expectedQuery)
+    })
+
     it('generates SQL selecting long running queries', function () {
       const query = generateLongRunningQueriesQuery()
       expect(query).to.contain('pg_stat_activity')
@@ -74,6 +91,12 @@ describe('pg:long-running-queries', function () {
       getDatabaseStub.rejects(new Error('Database connection failed'))
       const {error} = await runCommand(Cmd, ['--app', 'myapp'])
       expect(error?.message).to.contain('Database connection failed')
+    })
+
+    it('surfaces SQL execution failures', async function () {
+      execQueryStub.rejects(new Error('SQL execution failed'))
+      const {error} = await runCommand(Cmd, ['--app', 'myapp'])
+      expect(error?.message).to.contain('SQL execution failed')
     })
   })
 })

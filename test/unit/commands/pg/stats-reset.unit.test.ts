@@ -64,6 +64,32 @@ describe('pg:stats-reset', function () {
     pgApi.done()
   })
 
+  it('sends the stats_reset request to the Postgres data API host with no body', async function () {
+    // Confirm the data API host nock matches what utils.pg.host() resolves to by default.
+    expect(utils.pg.host()).to.eq('api.data.heroku.com')
+
+    let capturedBody: unknown
+    // The body matcher returns true only for an empty body, so the interceptor
+    // only matches (and pgApi.done() only succeeds) when no request body is sent.
+    pgApi.put(`/client/v11/databases/${addonId}/stats_reset`, body => {
+      capturedBody = body
+      return body === '' || body === undefined || (typeof body === 'object' && Object.keys(body).length === 0)
+    })
+      .reply(200, {message: 'stats reset'})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+    ])
+
+    // pgApi.done() asserts the interceptor on api.data.heroku.com was hit at the
+    // exact path, which proves the hostname option routed the PUT to the data API host.
+    pgApi.done()
+    expect(capturedBody === '' || (typeof capturedBody === 'object' && Object.keys(capturedBody as object).length === 0)).to.be.true
+    expect(stdout.trim()).to.eq('stats reset')
+    expect(stderr).to.eq('')
+  })
+
   it('accepts a database argument', async function () {
     pgApi.put(`/client/v11/databases/${addonId}/stats_reset`)
       .reply(200, {message: 'stats reset'})
