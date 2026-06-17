@@ -27,8 +27,9 @@ export function wrapAPIClientWithTouchId(apiClient: APIClient): APIClient {
 
     // Check if this request requires Touch ID
     if (requiresTouchIdAuth(method)) {
-      ux.info(`Touch ID required for ${method} request to ${url}`)
-      const result = await authenticateWithTouchId(`Heroku CLI is making a ${method} request to ${url}`)
+      const simplifiedUrl = url.split('?')[0] // Remove query params for cleaner message
+      ux.info(`🔐 Touch ID authentication required for ${method} request`)
+      const result = await authenticateWithTouchId(`Authenticate to allow Heroku CLI ${method} request`)
 
       if (!result.authenticated) {
         if (result.skipped) {

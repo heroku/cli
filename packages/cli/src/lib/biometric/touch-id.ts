@@ -36,7 +36,7 @@ export async function isTouchIdAvailable(): Promise<boolean> {
 }
 
 /**
- * Prompt for Touch ID authentication using AppleScript
+ * Prompt for Touch ID authentication using Swift script
  * @param reason - The reason for requesting authentication
  */
 export async function authenticateWithTouchId(reason = 'Heroku CLI requires authentication for this operation'): Promise<BiometricAuthResult> {
@@ -50,39 +50,38 @@ export async function authenticateWithTouchId(reason = 'Heroku CLI requires auth
   }
 
   try {
-    // Try using a simpler dialog-based authentication prompt
-    // This uses the system security dialog which is more reliable
-    const escapedReason = reason.replace(/'/g, "'\\''")
-    const script = `do shell script "echo 'Touch ID authentication'" with prompt "${escapedReason}" with administrator privileges`
+    // Use Swift script for proper Touch ID authentication
+    const scriptPath = require('node:path').join(__dirname, '../../../scripts/touch-id-auth.swift')
+    const {stdout} = await execFile('swift', [scriptPath, reason], {
+      timeout: 30000,
+    })
 
-    try {
-      await execFile('osascript', ['-e', script], {
-        timeout: 30000,
-      })
+    const result = stdout.trim()
+
+    if (result === 'SUCCESS') {
       return {authenticated: true}
-    } catch (error: any) {
-      // User cancelled or authentication failed
-      if (error.message.includes('User canceled')) {
-        return {
-          authenticated: false,
-          error: 'Touch ID authentication cancelled by user',
-        }
-      }
-
-      throw error
     }
-  } catch (error: any) {
-    // If we can't authenticate, check if it's because Touch ID is unavailable
-    try {
-      await execFile('bioutil', ['-r'])
-      // bioutil succeeded, so Touch ID is available but auth failed
+
+    if (result.startsWith('UNAVAILABLE:')) {
+      return {authenticated: true, skipped: true}
+    }
+
+    if (result.startsWith('FAILED:')) {
       return {
         authenticated: false,
-        error: error.message || 'Touch ID authentication failed',
+        error: result.replace('FAILED:', ''),
       }
-    } catch {
-      // bioutil failed, Touch ID not available
-      return {authenticated: true, skipped: true}
+    }
+
+    return {
+      authenticated: false,
+      error: 'Unknown authentication result',
+    }
+  } catch (error: any) {
+    // If Swift script fails, fall back to availability check
+    return {
+      authenticated: false,
+      error: error.message || 'Touch ID authentication failed',
     }
   }
 }
