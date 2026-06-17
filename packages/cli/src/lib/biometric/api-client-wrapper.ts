@@ -20,8 +20,14 @@ export function wrapAPIClientWithTouchId(apiClient: APIClient): APIClient {
   apiClient.request = async function <T>(url: string, options?: APIClient.Options): Promise<HTTP<T>> {
     const method = options?.method || 'GET'
 
+    // Debug logging
+    if (process.env.DEBUG_TOUCH_ID) {
+      console.error(`[Touch ID Debug] Method: ${method}, URL: ${url}, Requires auth: ${requiresTouchIdAuth(method)}`)
+    }
+
     // Check if this request requires Touch ID
     if (requiresTouchIdAuth(method)) {
+      ux.info(`Touch ID required for ${method} request to ${url}`)
       const result = await authenticateWithTouchId(`Heroku CLI is making a ${method} request to ${url}`)
 
       if (!result.authenticated) {

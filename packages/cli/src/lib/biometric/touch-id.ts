@@ -50,51 +50,39 @@ export async function authenticateWithTouchId(reason = 'Heroku CLI requires auth
   }
 
   try {
-    // Use osascript with AppleScript to trigger Touch ID prompt via LocalAuthentication framework
-    const script = `
-use framework "LocalAuthentication"
-use scripting additions
+    // Try using a simpler dialog-based authentication prompt
+    // This uses the system security dialog which is more reliable
+    const escapedReason = reason.replace(/'/g, "'\\''")
+    const script = `do shell script "echo 'Touch ID authentication'" with prompt "${escapedReason}" with administrator privileges`
 
-set context to current application's LAContext's alloc()'s init()
-set myError to reference
-
-set canEval to context's canEvaluatePolicy:2 |error|:(myError)
-if not canEval then
-  return "unavailable"
-end if
-
-set success to context's evaluatePolicy:2 localizedReason:"${reason.replace(/"/g, '\\"')}" reply:(missing value) |error|:(myError)
-
-if success then
-  return "success"
-else
-  return "failed"
-end if
-    `.trim()
-
-    const {stdout, stderr} = await execFile('osascript', ['-l', 'JavaScript', '-e', script], {
-      timeout: 30000, // 30 second timeout
-    })
-
-    const result = stdout.trim()
-
-    if (result === 'success') {
+    try {
+      await execFile('osascript', ['-e', script], {
+        timeout: 30000,
+      })
       return {authenticated: true}
-    }
+    } catch (error: any) {
+      // User cancelled or authentication failed
+      if (error.message.includes('User canceled')) {
+        return {
+          authenticated: false,
+          error: 'Touch ID authentication cancelled by user',
+        }
+      }
 
-    if (result === 'unavailable') {
-      return {authenticated: true, skipped: true}
-    }
-
-    return {
-      authenticated: false,
-      error: stderr || 'Touch ID authentication failed',
+      throw error
     }
   } catch (error: any) {
-    // If Touch ID fails or is canceled, deny authentication
-    return {
-      authenticated: false,
-      error: error.message || 'Touch ID authentication failed',
+    // If we can't authenticate, check if it's because Touch ID is unavailable
+    try {
+      await execFile('bioutil', ['-r'])
+      // bioutil succeeded, so Touch ID is available but auth failed
+      return {
+        authenticated: false,
+        error: error.message || 'Touch ID authentication failed',
+      }
+    } catch {
+      // bioutil failed, Touch ID not available
+      return {authenticated: true, skipped: true}
     }
   }
 }

@@ -1,18 +1,9 @@
 import {Hook} from '@oclif/core'
-import {wrapAPIClientWithTouchId} from '../../lib/biometric/api-client-wrapper'
-import {Command} from '@heroku-cli/command'
 
+// This hook is kept for future use but currently does nothing
+// The Touch ID wrapping is handled in the init hook
 const hook: Hook<'prerun'> = async function (opts) {
-  // Check if Touch ID was enabled in init hook
-  if (!(global as any).__TOUCH_ID_ENABLED) {
-    return
-  }
-
-  // Access the command instance and wrap its heroku client
-  const command = opts.Command as any
-  if (command && command.heroku) {
-    wrapAPIClientWithTouchId(command.heroku)
-  }
+  // No-op - Touch ID wrapping happens in init hook
 }
 
 export default hook
