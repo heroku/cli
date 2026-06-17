@@ -7,23 +7,19 @@ interface Plan {
 }
 
 export async function ensurePGStatStatement(db: pg.ConnectionDetails): Promise<void> {
-  try {
-    const query = `
+  const query = `
 SELECT exists(
   SELECT 1 FROM pg_extension e LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
   WHERE e.extname='pg_stat_statements' AND n.nspname IN ('public', 'heroku_ext')
 ) AS available`
-    const psqlService = new utils.pg.PsqlService(db)
-    const output = await psqlService.execQuery(query)
+  const psqlService = new utils.pg.PsqlService(db)
+  const output = await psqlService.execQuery(query)
 
-    if (!output.includes('t')) {
-      ux.error(`pg_stat_statements extension need to be installed in the public schema first.
+  if (!output.includes('t')) {
+    ux.error(`pg_stat_statements extension need to be installed in the public schema first.
 You can install it by running:
 
     CREATE EXTENSION pg_stat_statements;`, {exit: 1})
-    }
-  } catch {
-    ux.error('Failed to check pg_stat_statements extension availability', {exit: 1})
   }
 }
 
@@ -48,41 +44,31 @@ export function essentialNumPlan(a: Plan): boolean {
 }
 
 export async function newTotalExecTimeField(db: pg.ConnectionDetails): Promise<boolean> {
-  try {
-    const newTotalExecTimeFieldQuery = 'SELECT current_setting(\'server_version_num\')::numeric >= 130000'
-    const psqlService = new utils.pg.PsqlService(db)
-    const newTotalExecTimeFieldRaw = await psqlService.execQuery(newTotalExecTimeFieldQuery, ['-t', '-q'])
+  const newTotalExecTimeFieldQuery = 'SELECT current_setting(\'server_version_num\')::numeric >= 130000'
+  const psqlService = new utils.pg.PsqlService(db)
+  const newTotalExecTimeFieldRaw = await psqlService.execQuery(newTotalExecTimeFieldQuery, ['-t', '-q'])
 
-    // error checks
-    const newTotalExecTimeField = newTotalExecTimeFieldRaw.split('\n')[0].trim()
+  // error checks
+  const newTotalExecTimeField = newTotalExecTimeFieldRaw.split('\n')[0].trim()
 
-    if (newTotalExecTimeField !== 't' && newTotalExecTimeField !== 'f') {
-      ux.error(`Unable to determine database version, expected "t" or "f", got: "${newTotalExecTimeField}"`, {exit: 1})
-    }
-
-    return newTotalExecTimeField === 't'
-  } catch {
-    ux.error('Failed to determine database version for total execution time field', {exit: 1})
-    return false // This will never be reached due to ux.error exit
+  if (newTotalExecTimeField !== 't' && newTotalExecTimeField !== 'f') {
+    ux.error(`Unable to determine database version, expected "t" or "f", got: "${newTotalExecTimeField}"`, {exit: 1})
   }
+
+  return newTotalExecTimeField === 't'
 }
 
 export async function newBlkTimeFields(db: pg.ConnectionDetails): Promise<boolean> {
-  try {
-    const newBlkTimeFieldsQuery = 'SELECT current_setting(\'server_version_num\')::numeric >= 170000'
-    const psqlService = new utils.pg.PsqlService(db)
-    const newBlkTimeFieldsRaw = await psqlService.execQuery(newBlkTimeFieldsQuery, ['-t', '-q'])
+  const newBlkTimeFieldsQuery = 'SELECT current_setting(\'server_version_num\')::numeric >= 170000'
+  const psqlService = new utils.pg.PsqlService(db)
+  const newBlkTimeFieldsRaw = await psqlService.execQuery(newBlkTimeFieldsQuery, ['-t', '-q'])
 
-    // error checks
-    const newBlkTimeField = newBlkTimeFieldsRaw.split('\n')[0].trim()
+  // error checks
+  const newBlkTimeField = newBlkTimeFieldsRaw.split('\n')[0].trim()
 
-    if (newBlkTimeField !== 't' && newBlkTimeField !== 'f') {
-      ux.error(`Unable to determine database version, expected "t" or "f", got: "${newBlkTimeField}"`, {exit: 1})
-    }
-
-    return newBlkTimeField === 't'
-  } catch {
-    ux.error('Failed to determine database version for block time fields', {exit: 1})
-    return false // This will never be reached due to ux.error exit
+  if (newBlkTimeField !== 't' && newBlkTimeField !== 'f') {
+    ux.error(`Unable to determine database version, expected "t" or "f", got: "${newBlkTimeField}"`, {exit: 1})
   }
+
+  return newBlkTimeField === 't'
 }

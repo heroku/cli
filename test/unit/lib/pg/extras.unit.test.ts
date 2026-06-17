@@ -77,13 +77,10 @@ describe('lib/pg/extras', function () {
       expect(uxErrorStub.called).to.be.false
     })
 
-    it('calls ux.error when psql exec fails', async function () {
+    it('propagates the error when psql exec fails', async function () {
       execQueryStub.rejects(new Error('boom'))
 
-      await ensurePGStatStatement(mockDb())
-
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[1]).to.deep.equal({exit: 1})
+      await expect(ensurePGStatStatement(mockDb())).to.be.rejectedWith('boom')
     })
 
     it('calls ux.error when pg_stat_statements is not available', async function () {
@@ -169,11 +166,9 @@ describe('lib/pg/extras', function () {
       expect(uxErrorStub.firstCall.args[1]).to.deep.equal({exit: 1})
     })
 
-    it('calls ux.error when the query fails', async function () {
+    it('propagates the error when the query fails', async function () {
       execQueryStub.rejects(new Error('boom'))
-      await newTotalExecTimeField(mockDb())
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[1]).to.deep.equal({exit: 1})
+      await expect(newTotalExecTimeField(mockDb())).to.be.rejectedWith('boom')
     })
   })
 
@@ -196,11 +191,27 @@ describe('lib/pg/extras', function () {
       expect(uxErrorStub.firstCall.args[1]).to.deep.equal({exit: 1})
     })
 
-    it('calls ux.error when the query fails', async function () {
+    it('propagates the error when the query fails', async function () {
       execQueryStub.rejects(new Error('boom'))
-      await newBlkTimeFields(mockDb())
-      expect(uxErrorStub.calledOnce).to.be.true
-      expect(uxErrorStub.firstCall.args[1]).to.deep.equal({exit: 1})
+      await expect(newBlkTimeFields(mockDb())).to.be.rejectedWith('boom')
+    })
+  })
+
+  describe('error propagation', function () {
+    beforeEach(function () {
+      // Let ux.error throw as it does in production (instead of the no-op stub),
+      // so we can assert the real, user-visible message propagates uncaught.
+      uxErrorStub.restore()
+    })
+
+    it('newTotalExecTimeField surfaces the real version error on an unexpected response', async function () {
+      execQueryStub.resolves('garbage\n')
+      await expect(newTotalExecTimeField(mockDb())).to.be.rejectedWith('Unable to determine database version')
+    })
+
+    it('newBlkTimeFields surfaces the real version error on an unexpected response', async function () {
+      execQueryStub.resolves('garbage\n')
+      await expect(newBlkTimeFields(mockDb())).to.be.rejectedWith('Unable to determine database version')
     })
   })
 })

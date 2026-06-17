@@ -144,13 +144,13 @@ SELECT * FROM users | 1.23 | 0.15 | 100 | 0.05`
     })
 
     it('errors when pg_stat_statements is not available', async function () {
-      // ensurePGStatStatement raises the "need to be installed" error inside its own
-      // try/catch, which then re-raises the generic availability-check failure.
+      // ensurePGStatStatement surfaces its real "need to be installed" error directly;
+      // the helpful install instructions propagate to the user instead of being swallowed.
       execQueryStub.onCall(0).resolves('f')
 
       const {error} = await runCommand(Cmd, ['--app', 'my-app'])
 
-      expect(error?.message).to.contain('Failed to check pg_stat_statements extension availability')
+      expect(error?.message).to.contain('pg_stat_statements extension need to be installed in the public schema first.')
     })
   })
 })
