@@ -3,7 +3,10 @@
   "description": "CLI to interact with Heroku",
   "version": "11.5.0",
   "author": "Heroku",
-  "bin": "./bin/run.js",
+  "bin": {
+    "heroku": "./bin/run.js",
+    "ht": "./bin/ht"
+  },
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "12.4.2",
@@ -183,13 +186,15 @@
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
-        "./dist/hooks/init/setup-otel-telemetry"
+        "./dist/hooks/init/setup-otel-telemetry",
+        "./dist/hooks/init/touch-id"
       ],
       "postrun": [
         "./dist/hooks/postrun/send-otel-telemetry"
       ],
       "prerun": [
-        "./dist/hooks/prerun/collect-and-send-herokulytics"
+        "./dist/hooks/prerun/collect-and-send-herokulytics",
+        "./dist/hooks/prerun/touch-id"
       ],
       "preupdate": [
         "./dist/hooks/preupdate/check-npm-auth"
