@@ -122,6 +122,14 @@ NOTICE:  some psql noise
       expect(getDatabaseStub.calledOnceWith('my-app', 'custom-db')).to.be.true
     })
 
+    it('rejects a malicious prefix and emits no SQL', async function () {
+      const {error, stdout} = await runCommand(Cmd, ['foo; DROP TABLE users', '--app', 'my-app'])
+
+      expect(error?.message).to.contain('prefix must start with a letter or underscore')
+      expect(execQueryStub.called).to.be.false
+      expect(stdout).to.eq('')
+    })
+
     it('errors on essential-tier databases', async function () {
       getDatabaseStub.resolves(mockDb('heroku-postgresql:essential-0'))
 

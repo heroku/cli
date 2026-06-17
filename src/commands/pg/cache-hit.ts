@@ -3,6 +3,8 @@ import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {nls} from '../../nls.js'
+
 const heredoc = tsheredoc.default
 
 export const generateCacheHitQuery = (): string => `
@@ -19,7 +21,7 @@ FROM pg_statio_user_tables;
 
 export default class PgCacheHit extends Command {
   static args = {
-    database: Args.string({description: 'database name', required: false}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: false}),
   }
   static description = 'show index and table hit rate'
   static examples = [heredoc`

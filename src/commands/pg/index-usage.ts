@@ -3,6 +3,8 @@ import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {nls} from '../../nls.js'
+
 const heredoc = tsheredoc.default
 
 export const generateIndexUsageQuery = (): string => `
@@ -20,7 +22,7 @@ SELECT relname,
 
 export default class PgIndexUsage extends Command {
   static args = {
-    database: Args.string({description: 'database name', required: false}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: false}),
   }
   static description = 'calculates your index hit rate (effective databases are at 99% and up)'
   static examples = [heredoc`

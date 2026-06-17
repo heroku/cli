@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {ensureEssentialTierPlan} from '../../lib/pg/extras.js'
+import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
@@ -37,7 +38,7 @@ export default class PgFdwsql extends Command {
   /* eslint-disable perfectionist/sort-objects */
   static args = {
     prefix: Args.string({description: 'prefix for foreign data wrapper', required: true}),
-    database: Args.string({description: 'database name', required: false}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: false}),
   }
   /* eslint-enable perfectionist/sort-objects */
   static description = 'generate fdw install sql for database'
@@ -52,6 +53,10 @@ export default class PgFdwsql extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(PgFdwsql)
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(args.prefix)) {
+      ux.error('prefix must start with a letter or underscore and contain only letters, numbers, and underscores', {exit: 1})
+    }
+
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(flags.app, args.database)
 

@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {essentialNumPlan} from '../../lib/pg/extras.js'
+import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
@@ -19,7 +20,7 @@ export function generateExtensionsQuery(db: pg.ConnectionDetails): string {
 
 export default class PgExtensions extends Command {
   static args = {
-    database: Args.string({description: 'database name', required: false}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: false}),
   }
   static description = 'list available and installed extensions'
   static examples = [heredoc`

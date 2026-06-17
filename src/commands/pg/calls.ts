@@ -4,6 +4,7 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {ensurePGStatStatement, newBlkTimeFields, newTotalExecTimeField} from '../../lib/pg/extras.js'
+import {nls} from '../../nls.js'
 
 const heredoc = tsheredoc.default
 
@@ -35,7 +36,7 @@ LIMIT 10
 
 export default class PgCalls extends Command {
   static args = {
-    database: Args.string({description: 'database name', required: false}),
+    database: Args.string({description: `${nls('pg:database:arg:description')} ${nls('pg:database:arg:description:default:suffix')}`, required: false}),
   }
   static description = 'show 10 queries that have highest frequency of execution'
   static examples = [heredoc`
