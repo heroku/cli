@@ -134,6 +134,8 @@ Icann
 infile
 iname
 indexrelid
+indexrelname
+indisunique
 indrelid
 inreplace
 iotta
