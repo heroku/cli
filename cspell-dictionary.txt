@@ -415,9 +415,11 @@ wrapline
 writeout
 wubalubadubdub
 xact
+xgen
 xlarge
 xvzf
 yargs
 yetanotherapp
+ygen
 yourdomain
 ztestdomain7
