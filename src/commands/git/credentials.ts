@@ -1,5 +1,6 @@
-import {Command} from '@heroku-cli/command'
+import {Command, vars} from '@heroku-cli/command'
 import {Args, ux} from '@oclif/core'
+import * as readline from 'node:readline'
 
 export class GitCredentials extends Command {
   static args = {
@@ -14,14 +15,24 @@ export class GitCredentials extends Command {
       case 'erase':
       // eslint-ignore-next-line no-fallthrough
       case 'store': {
-      // ignore
+        // ignore
         break
       }
 
       case 'get': {
-        if (!this.heroku.auth) throw new Error('not logged in')
+        const {host, protocol} = await this.readInput()
+
+        const {httpGitHost} = vars
+        if (protocol !== 'https' || host !== httpGitHost) {
+          return
+        }
+
+        if (!this.heroku.auth) {
+          throw new Error('not logged in')
+        }
+
         ux.stdout(`protocol=https
-host=git.heroku.com
+host=${httpGitHost}
 username=heroku
 password=${this.heroku.auth}`)
         break
@@ -31,5 +42,38 @@ password=${this.heroku.auth}`)
         throw new Error(`unknown command: ${args.command}`)
       }
     }
+  }
+
+  /**
+   * Reads git-credential input from stdin
+   * Format: key=value pairs, one per line, terminated by blank line
+   * Returns parsed object with protocol, host, username, and path
+   */
+  private async readInput(): Promise<{host?: string; path?: string; protocol?: string; username?: string;}> {
+    return new Promise(resolve => {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        terminal: false,
+      })
+
+      const input: Record<string, string> = {}
+
+      rl.on('line', (line: string) => {
+        if (!line.trim()) {
+          rl.close()
+          return
+        }
+
+        const [key, value] = line.split('=', 2)
+        if (key && value) {
+          input[key] = value
+        }
+      })
+
+      rl.on('close', () => {
+        process.stdin.pause()
+        resolve(input)
+      })
+    })
   }
 }

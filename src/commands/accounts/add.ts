@@ -7,32 +7,29 @@ import AccountsModule from '../../lib/accounts/accounts.js'
 
 export default class Add extends Command {
   static args = {
-    name: Args.string({description: 'name of Heroku account to add', required: true}),
+    name: Args.string({description: 'alias for Heroku account to add', required: true}),
   }
-  static description = 'add a Heroku account to your cache'
+  static description = 'add the current Heroku account to your accounts cache'
   static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {
     const {args} = await this.parse(Add)
     const {name} = args
-    const logInMessage = 'You must be logged in to run this command.'
+    const accounts = await AccountsModule.list()
 
-    if (AccountsModule.list().some(a => a.name === name)) {
+    if (accounts.some(account => account.name === name)) {
       ux.error(`${name} already exists`)
     }
 
     const {body: account} = await this.heroku.get<Heroku.Account>('/account')
-    const email = account.email || ''
+    const email = account.email!
 
-    const token = this.heroku.auth || ''
-
-    if (token === '') {
-      ux.error(logInMessage)
+    const existingAlias = accounts.find(account => account.name && account.username === email)
+    if (existingAlias) {
+      ux.error(`Account ${email} already has an alias of ${existingAlias.name}.`)
     }
 
-    if (email === '') {
-      ux.error(logInMessage)
-    }
+    const token = this.heroku.auth!
 
     AccountsModule.add(name, email, token)
   }

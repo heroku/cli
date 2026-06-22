@@ -20,13 +20,13 @@ describe('accounts', function () {
 
   it('should print a list of added accounts with the current account highlighted if accounts are found', async function () {
     currentStub.resolves('test-account')
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     const {stdout} = await runCommand(Cmd, [])
     expect(stdout).to.equal('* test-account\n  test-account-2\n')
   })
 
   it('should print an error message if no accounts are found', async function () {
-    listStub.returns([])
+    listStub.resolves([])
     await runCommand(Cmd, [])
       .catch((error: Error) => {
         expect(error.message).to.contain('You don\'t have any accounts in your cache.')

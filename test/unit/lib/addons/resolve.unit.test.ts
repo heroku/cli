@@ -66,13 +66,13 @@ describe('resolve', function () {
 
     it('fails if errored', function () {
       nock('https://api.heroku.com:443')
-        .post('/actions/addons/resolve', {addon: 'myaddon-5', app: 'myapp'}).reply(401)
+        .post('/actions/addons/resolve', {addon: 'myaddon-5', app: 'myapp'}).reply(503)
 
       return resolveAddon(herokuAPI, 'myapp', 'myaddon-5')
         .then(() => {
           throw new Error('unreachable')
         })
-        .catch((error: any) => expect(error).to.have.nested.include({statusCode: 401}))
+        .catch((error: any) => expect(error).to.have.nested.include({statusCode: 503}))
     })
 
     it('fails if ambiguous', function () {

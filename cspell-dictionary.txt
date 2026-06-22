@@ -33,6 +33,7 @@ autoloaded
 autoscale
 autovacuum
 awscli
+badheaders
 barsize
 baseport
 bindkey
