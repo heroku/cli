@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.7.0-beta.0](https://github.com/heroku/cli/compare/v11.6.0...v11.7.0-beta.0) (2026-06-23)
+
+
+### Features
+
+* migrate extra pg commands from pg-extras plugin to cli ([#3782](https://github.com/heroku/cli/issues/3782)) ([38a4604](https://github.com/heroku/cli/commit/38a4604e46a3385578a223cd88c6d7c784119e53))
+
+
+### Bug Fixes
+
+* revert whoami status code fix ([#3785](https://github.com/heroku/cli/issues/3785)) ([1706012](https://github.com/heroku/cli/commit/1706012f6e37253677efffff35d866c8097648c2))
+
 ## [11.6.0](https://github.com/heroku/cli/compare/v11.5.0...v11.6.0) (2026-06-17)
 
 
