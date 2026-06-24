@@ -117,6 +117,18 @@ describe('configure-git-credential-manager hook', function () {
     })
   })
 
+  describe('when command is autocomplete:options (the real completion path)', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', 'autocomplete:options', 'apps']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('autocomplete:options')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
   describe('when no command argument is provided', function () {
     beforeEach(function () {
       process.argv = ['node', 'heroku']
