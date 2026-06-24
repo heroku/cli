@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.6.0",
+  "version": "11.7.0",
   "author": "Heroku",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -339,7 +339,7 @@
     },
     "update": {
       "node": {
-        "version": "22.22.3"
+        "version": "22.23.0"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
