@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo mkdir -p /build
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: packed-deb
           path: /home/runner/work/cli/cli/dist
@@ -83,12 +83,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: sudo mkdir -p /build
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: signed-deb
           path: /home/runner/work/cli/cli/dist
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: packed-tarballs
           path: /home/runner/work/cli/cli/dist
