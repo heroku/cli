@@ -8,10 +8,14 @@ import configureGitCredentialManagerHook from '../../../src/hooks/init/configure
 import Git from '../../../src/lib/git/git.js'
 
 const callHook = async (id: string) => {
-  const context = {}
+  // The hook reads `this.config.pjson.oclif.additionalVersionFlags`, so the bound
+  // `this` context must carry a real config to exercise the production code path
+  // (this.config IS set when oclif invokes the hook).
+  const config = {pjson: {oclif: {additionalVersionFlags: ['-v', 'version']}}}
+  const context = {config}
   const options = {
     argv: [],
-    config: {} as any,
+    config: config as any,
     context: {} as any,
     id,
   }
@@ -68,6 +72,30 @@ describe('configure-git-credential-manager hook', function () {
   describe('when command is --version', function () {
     beforeEach(function () {
       process.argv = ['node', 'heroku', '--version']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('version')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
+  describe('when command is the version command', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', 'version']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('version')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
+  describe('when command is -v', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', '-v']
     })
 
     it('does not configure the git credential helper', async function () {
