@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.7.1-beta.0](https://github.com/heroku/cli/compare/v11.7.0...v11.7.1-beta.0) (2026-06-24)
+
+
+### Miscellaneous Chores
+
+* **deps:** updates @heroku/mcp-server to v1.2.4 ([#3783](https://github.com/heroku/cli/issues/3783)) ([73bbaea](https://github.com/heroku/cli/commit/73bbaea008ddfe8102fd548d8816e4ab1450b561))
+
 ## [11.7.0](https://github.com/heroku/cli/compare/v11.6.0...v11.7.0) (2026-06-23)
 
 
