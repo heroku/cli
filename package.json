@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.6.0",
+  "version": "11.7.1",
   "author": "Heroku",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -12,7 +12,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/heroku-cli-util": "10.8.3",
     "@heroku/http-call": "^5.5.1",
-    "@heroku/mcp-server": "^1.2.0",
+    "@heroku/mcp-server": "^1.2.4",
     "@heroku/socksv5": "^0.0.9",
     "@inquirer/prompts": "^7.0",
     "@oclif/core": "^4.8.4",
@@ -340,7 +340,7 @@
     },
     "update": {
       "node": {
-        "version": "22.22.3"
+        "version": "22.23.1"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
