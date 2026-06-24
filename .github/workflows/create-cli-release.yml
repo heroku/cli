@@ -18,7 +18,7 @@ jobs:
       # final check to ensure package.json doesn't have a dist tag, ex: '-beta'
       isStableRelease: ${{ fromJSON(inputs.isStableCandidate) && !steps.getVersion.outputs.channel }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - id: getVersion
         uses: ./.github/actions/get-version-and-channel/
         with:
@@ -34,7 +34,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 22.x
         uses: actions/setup-node@v6
         with:
