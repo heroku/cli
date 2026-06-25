@@ -16,7 +16,7 @@ export interface AccountEntry {
 }
 
 export interface IAccountsWrapper {
-  add(name: string, username: string, password: string): void
+  add(name: string, username: string, password?: string): void
   current(heroku: APIClient): Promise<null | string>
   currentNetrc(): Promise<null | string>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
@@ -29,11 +29,14 @@ export interface IAccountsWrapper {
 export class AccountsWrapper implements IAccountsWrapper {
   private netrc: any
 
-  add(name: string, username: string, password: string): void {
+  add(name: string, username: string, password?: string): void {
     fs.mkdirSync(this.accountsDir(), {recursive: true})
 
-    // eslint-disable-next-line perfectionist/sort-objects
-    this.writeAccountFile(name, {username, password})
+    const content: Record<string, string> = {username}
+    if (password !== undefined) {
+      content.password = password
+    }
+    this.writeAccountFile(name, content)
   }
 
   async current(heroku: APIClient): Promise<null | string> {

@@ -119,6 +119,22 @@ describe('accounts', function () {
 
       expect(() => AccountsModule.add('test-user', 'username123', 'password123')).to.throw()
     })
+
+    it('should write only username when password is undefined (keychain-mode)', function () {
+      AccountsModule.add('test-user', 'username123')
+
+      expect(writeFileSyncStub.calledOnce).to.be.true
+      expect(writeFileSyncStub.firstCall.args[1]).to.equal('username: username123\n')
+      expect(writeFileSyncStub.firstCall.args[2]).to.equal('utf8')
+    })
+
+    it('should write username and password when password is provided (netrc-mode)', function () {
+      AccountsModule.add('test-user', 'username123', 'password123')
+
+      expect(writeFileSyncStub.calledOnce).to.be.true
+      expect(writeFileSyncStub.firstCall.args[1]).to.equal('username: username123\npassword: password123\n')
+      expect(writeFileSyncStub.firstCall.args[2]).to.equal('utf8')
+    })
   })
 
   describe('set()', function () {
