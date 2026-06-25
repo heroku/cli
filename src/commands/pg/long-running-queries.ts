@@ -19,8 +19,7 @@ WHERE
   AND state <> 'idle'
   AND now() - pg_stat_activity.query_start > interval '5 minutes'
   AND NOT (
-    state = 'idle in transaction'
-    AND usename = 'postgres'
+    usename = 'postgres'
     AND query LIKE '%pg_backup_start%'
   )
 ORDER BY
