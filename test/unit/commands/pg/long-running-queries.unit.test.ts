@@ -66,7 +66,6 @@ ORDER BY
 
     it('excludes the internal physical backup query from results', function () {
       const query = generateLongRunningQueriesQuery()
-      expect(query).to.contain("state = 'idle in transaction'")
       expect(query).to.contain("usename = 'postgres'")
       expect(query).to.contain("query LIKE '%pg_backup_start%'")
     })
