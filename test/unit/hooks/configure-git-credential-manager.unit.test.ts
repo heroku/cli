@@ -8,10 +8,12 @@ import configureGitCredentialManagerHook from '../../../src/hooks/init/configure
 import Git from '../../../src/lib/git/git.js'
 
 const callHook = async (id: string) => {
-  // The hook reads `this.config.pjson.oclif.additionalVersionFlags`, so the bound
-  // `this` context must carry a real config to exercise the production code path
-  // (this.config IS set when oclif invokes the hook).
-  const config = {pjson: {oclif: {additionalVersionFlags: ['-v', 'version']}}}
+  // The hook reads `this.config.pjson.oclif.additionalVersionFlags` and
+  // `.additionalHelpFlags`, so the bound `this` context must carry a real config to
+  // exercise the production code path (this.config IS set when oclif invokes the hook).
+  // The `--sentinel-help` flag below appears ONLY in additionalHelpFlags (not the
+  // hardcoded set), so a test using it proves the dynamic merge spread actually works.
+  const config = {pjson: {oclif: {additionalHelpFlags: ['-h', '--sentinel-help'], additionalVersionFlags: ['-v', 'version']}}}
   const context = {config}
   const options = {
     argv: [],
@@ -75,7 +77,7 @@ describe('configure-git-credential-manager hook', function () {
     })
 
     it('does not configure the git credential helper', async function () {
-      await callHook('version')
+      await callHook('--version')
 
       expect(configureStub.called).to.be.false
     })
@@ -99,7 +101,55 @@ describe('configure-git-credential-manager hook', function () {
     })
 
     it('does not configure the git credential helper', async function () {
-      await callHook('version')
+      await callHook('-v')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
+  describe('when command is --help', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', '--help']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('--help')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
+  describe('when command is the help command', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', 'help']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('help')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
+  describe('when command is -h', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', '-h']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('-h')
+
+      expect(configureStub.called).to.be.false
+    })
+  })
+
+  describe('when command is a flag present only in additionalHelpFlags', function () {
+    beforeEach(function () {
+      process.argv = ['node', 'heroku', '--sentinel-help']
+    })
+
+    it('does not configure the git credential helper', async function () {
+      await callHook('--sentinel-help')
 
       expect(configureStub.called).to.be.false
     })
