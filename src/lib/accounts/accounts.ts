@@ -36,6 +36,7 @@ export class AccountsWrapper implements IAccountsWrapper {
     if (password !== undefined) {
       content.password = password
     }
+
     this.writeAccountFile(name, content)
   }
 
