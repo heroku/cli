@@ -96,12 +96,16 @@ export class AccountsWrapper implements IAccountsWrapper {
 
     if (account.name) {
       if (config.credentialStore) {
+        // Keychain mode: only update login state, skip netrc
         const email = this.getAliasEmail(account.name)
-        if (email) {
-          await this.writeLoginState(dataDir, email)
+        if (!email) {
+          throw new Error(`We can't find the alias file for ${account.name}.`)
         }
+        await this.writeLoginState(dataDir, email)
+        return
       }
 
+      // Netrc mode: update both login state and netrc files
       const netrcInstance = await this.initNetrc()
       let current
       try {

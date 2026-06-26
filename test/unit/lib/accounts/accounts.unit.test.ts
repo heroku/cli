@@ -161,7 +161,7 @@ describe('accounts', function () {
         setNetrc(null as unknown as typeof fakeNetrc)
       })
 
-      it('calls writeLoginState with email from alias file and writes to netrc', async function () {
+      it('calls writeLoginState with email from alias file but does not write to netrc', async function () {
         const account = {name: 'production', username: 'prod@example.com'}
         existsSyncStub.withArgs('/user/home/.config/heroku').returns(false)
         existsSyncStub.withArgs(match(/production$/)).returns(true)
@@ -173,9 +173,9 @@ describe('accounts', function () {
         expect(writeLoginStateStub.calledOnce).to.be.true
         expect(writeLoginStateStub.firstCall.args[0]).to.equal('/data/heroku')
         expect(writeLoginStateStub.firstCall.args[1]).to.equal('prod@example.com')
-        expect(fakeNetrc.machines['api.heroku.com']).to.deep.equal({login: 'prod@example.com', password: 'secret'})
-        expect(fakeNetrc.machines['git.heroku.com']).to.deep.equal({login: 'prod@example.com', password: 'secret'})
-        expect(fakeNetrc.save.calledOnce).to.be.true
+        expect(fakeNetrc.machines['api.heroku.com']).to.be.undefined
+        expect(fakeNetrc.machines['git.heroku.com']).to.be.undefined
+        expect(fakeNetrc.save.called).to.be.false
       })
 
       it('throws error when alias file does not exist', async function () {
