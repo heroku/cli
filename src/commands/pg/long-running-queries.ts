@@ -18,6 +18,7 @@ WHERE
   pg_stat_activity.query <> ''::text
   AND state <> 'idle'
   AND now() - pg_stat_activity.query_start > interval '5 minutes'
+  AND backend_type <> 'walsender'
   AND NOT (
     usename = 'postgres'
     AND query LIKE '%pg_backup_start%'
