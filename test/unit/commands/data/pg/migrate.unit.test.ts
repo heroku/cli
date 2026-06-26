@@ -365,7 +365,7 @@ describe('data:pg:migrate', function () {
         '\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       // Verify the confirmation message is shown
       expect(stdout).to.contain('By continuing, we prepare the necessary steps for the migration.')
@@ -385,7 +385,7 @@ describe('data:pg:migrate', function () {
         '\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       const sourceDatabaseList = stdout.match(/(?<=Select the source database: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
       expect(stderr).to.equal('Configuring migration... done\n')
@@ -416,7 +416,7 @@ describe('data:pg:migrate', function () {
         '\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       const targetDatabaseList = stdout.match(/(?<=Select the destination database: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
       expect(stderr).to.equal('Configuring migration... done\n')
@@ -451,7 +451,7 @@ describe('data:pg:migrate', function () {
         '\n',         // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout.match(/Select the source database: \(Use arrow keys\)/g)?.length).to.equal(2)
@@ -580,7 +580,7 @@ describe('data:pg:migrate', function () {
         '\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       herokuApi.done()
       dataApi.done()
@@ -652,7 +652,7 @@ describe('data:pg:migrate', function () {
         '\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       herokuApi.done()
       dataApi.done()
@@ -724,7 +724,7 @@ describe('data:pg:migrate', function () {
         '\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
       herokuApi.done()
       dataApi.done()
@@ -832,7 +832,7 @@ describe('data:pg:migrate', function () {
         '\n',         // Select migration: > Choose the first ready migration
         '\u001B[A\n', // Confirm migration start: > Go back
         '\n',         // Select migration: > Choose the first ready migration
-        '\n', // Confirm migration start: > Confirm
+        '\n',         // Confirm migration start: > Confirm
         '\u001B[A\n', // Main menu: > Exit
       ]
 
@@ -931,7 +931,7 @@ describe('data:pg:migrate', function () {
         '\n',         // Select migration: > Choose the first ready migration
         '\u001B[A\n', // Confirm migration cancel: > Go back
         '\n',         // Select migration: > Choose the first ready migration
-        '\n', // Confirm migration cancel: > Confirm
+        '\n',         // Confirm migration cancel: > Confirm
         '\u001B[A\n', // Main menu: > Exit
       ]
 
@@ -939,6 +939,206 @@ describe('data:pg:migrate', function () {
 
       expect(stdout.match(/Select the migration to cancel: \(Use arrow keys\)/g)?.length).to.equal(2)
       expect(stdout.match(/Confirm to cancel migration: \(Use arrow keys\)/g)?.length).to.equal(2)
+    })
+  })
+
+  describe('interactive migration method selection', function () {
+    let herokuApi: nock.Scope
+    let dataApi: nock.Scope
+
+    beforeEach(function () {
+      herokuApi = nock('https://api.heroku.com')
+        .persist(true)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+        ])
+    })
+
+    afterEach(function () {
+      herokuApi.done()
+      dataApi.done()
+      nock.cleanAll()
+    })
+
+    it('allows user to select snapshot migration method', async function () {
+      dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',  // Select configure migration
+        '\n',  // Select source database
+        '\n',  // Select target database
+        '\n',  // Select snapshot method (first option, default)
+        '\n',  // Confirm migration
+        '\n',  // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).to.match(/Select migration method: Snapshot/)
+    })
+
+    it('allows user to select snapshot migration method', async function () {
+      dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'cdc',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',          // Select configure migration
+        '\n',          // Select source database
+        '\n',          // Select target database
+        '\u001B[B\n',  // Select streaming option from method selection
+        '\n',          // Confirm migration
+        '\n',          // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).to.match(/Select migration method: Streaming/)
+    })
+
+    it('allows user to go back from method selection to target selection', async function () {
+      dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',          // Select configure migration
+        '\n',          // Select source database
+        '\n',          // Select target database
+        '\u001B[A\n',  // Navigate down twice to "Go back", press Enter
+        '\u001B[A\n',  // Go back from target selection
+        '\u001B[A\n',  // Go back from source selection
+        '\u001B[A\n',  // Exit from main menu
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('')
+      expect(stdout).to.match(/Select migration method: Go back/)
+    })
+
+    it('skips method selection prompt when --method=snapshot flag is provided', async function () {
+      dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',  // Select configure migration
+        '\n',  // Select source database
+        '\n',  // Select target database
+        '\n',  // Confirm migration (no method selection prompt)
+        '\n',  // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, [
+        '--app=myapp',
+        '--method=snapshot',
+      ])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).not.to.contain('Select migration method')
+    })
+
+    it('skips method selection prompt when --method=streaming flag is provided', async function () {
+      dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'cdc',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',  // Select configure migration
+        '\n',  // Select source database
+        '\n',  // Select target database
+        '\n',  // Confirm migration (no method selection prompt)
+        '\n',  // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, [
+        '--app=myapp',
+        '--method=streaming',
+      ])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).not.to.contain('Select migration method')
     })
   })
 })
