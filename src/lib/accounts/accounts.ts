@@ -32,10 +32,9 @@ export class AccountsWrapper implements IAccountsWrapper {
   add(name: string, username: string, password?: string): void {
     fs.mkdirSync(this.accountsDir(), {recursive: true})
 
-    const content: Record<string, string> = {username}
-    if (password !== undefined) {
-      content.password = password
-    }
+    const content: Record<string, string> = password === undefined
+      ? {username}
+      : {username, password} // eslint-disable-line perfectionist/sort-objects
 
     this.writeAccountFile(name, content)
   }
