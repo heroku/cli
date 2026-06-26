@@ -101,6 +101,7 @@ export class AccountsWrapper implements IAccountsWrapper {
         if (!email) {
           throw new Error(`We can't find the alias file for ${account.name}.`)
         }
+
         await this.writeLoginState(dataDir, email)
         return
       }
