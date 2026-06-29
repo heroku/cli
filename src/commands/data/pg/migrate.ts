@@ -16,6 +16,7 @@ import {
   DatabaseStatus,
   ExtendedPostgresLevelInfo,
   InfoResponse,
+  MigrationMethod,
   MigrationResponse,
   MigrationStatus,
 } from '../../../lib/data/types.js'
@@ -31,7 +32,6 @@ export default class DataPgMigrate extends BaseCommand {
   static flags = {
     app: Flags.app({required: true}),
     method: Flags.string({
-      default: 'snapshot',
       hidden: true,
       options: ['snapshot', 'streaming'],
     }),
@@ -41,8 +41,8 @@ export default class DataPgMigrate extends BaseCommand {
   private appName: string | undefined
   private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
-  private migrationMethod: 'cdc' | 'full-load' = 'full-load'
   private migrationTargets: Array<MigrationResponse> = []
+  private selectedMigrationMethod?: MigrationMethod
 
   public async createAddon(...args: Parameters<typeof createAddon>): Promise<Heroku.AddOn> {
     return createAddon(...args)
@@ -56,7 +56,10 @@ export default class DataPgMigrate extends BaseCommand {
     const {flags} = await this.parse(DataPgMigrate)
     const {app, method} = flags
     this.appName = app
-    this.migrationMethod = method === 'streaming' ? 'cdc' : 'full-load'
+    // If --method flag is provided, convert and store
+    if (method !== undefined) {
+      this.selectedMigrationMethod = method === 'streaming' ? MigrationMethod.CDC : MigrationMethod.FULL_LOAD
+    }
 
     ux.stdout(heredoc`
 
@@ -179,35 +182,143 @@ export default class DataPgMigrate extends BaseCommand {
     let targetDatabaseId: string | undefined
     let targetDatabaseName: string | undefined
 
+    const confirmMigration = async (): Promise<string> => {
+      ux.stdout(color.info(heredoc`
+
+        By continuing, we prepare the necessary steps for the migration.
+        Your source database is available while we prepare the migration.
+        You'll receive an email when the preparation is complete or if there's an error.
+        You have 24 hours to begin the migration after the preparation is complete.
+        Preparing the migration deletes all the data on the destination database ${color.datastore(targetDatabaseName!)}.
+
+      `))
+      const {action} = await this.prompt<{action: string}>({
+        choices: [
+          {name: 'Confirm', value: '__confirm'},
+          {name: 'Go back', value: '__go_back'},
+        ],
+        message: 'Confirm migration configuration:',
+        name: 'action',
+        type: 'list',
+      })
+      return action
+    }
+
+    const selectMethod = async (): Promise<string> => {
+      ux.stdout(color.info(heredoc`
+
+        Migration methods:
+        · Snapshot: Copies the data from the source database to the destination database. Requires downtime on the source database depending on the size. Best for smaller databases or when a maintenance window is acceptable.
+        · Streaming: Replicates changes from the source database to the destination database continuously until you start the migration. Requires minimal downtime. Best for larger databases or when you need near-zero downtime.
+
+      `))
+
+      const {method} = await this.prompt<{method: string}>({
+        choices: [
+          {name: 'Snapshot', value: '__snapshot'},
+          {name: 'Streaming', value: '__streaming'},
+          new Separator(),
+          {name: 'Go back', value: '__go_back'},
+        ],
+        message: 'Select the migration method:',
+        name: 'method',
+        type: 'list',
+      })
+
+      return method
+    }
+
+    const selectSource = async (): Promise<string> => {
+      const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
+      for (const database of this.classicDatabases) {
+        const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
+        if (this.migrationTargets.some(migration => migration.source_id === database.id && this.isActiveMigration(migration))) {
+          choices.push({
+            disabled: 'already a source database for an active migration',
+            name: color.gray(name),
+            value: database.id,
+          })
+        } else {
+          choices.push({
+            name,
+            value: database.id,
+          })
+        }
+      }
+
+      choices.push(new Separator(), {name: 'Go back', value: '__go_back'})
+      sourceDatabaseId = (await this.prompt<{database: string}>({
+        choices,
+        message: 'Select the source database:',
+        name: 'database',
+        type: 'list',
+      })).database
+
+      return sourceDatabaseId
+    }
+
+    const selectTarget = async (): Promise<string> => {
+      const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
+      for (const database of this.advancedDatabases) {
+        const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
+        if (this.migrationTargets.some(migration => migration.target_id === database.id && this.isActiveMigration(migration))) {
+          choices.push({
+            disabled: 'already a destination database for an active migration',
+            name: color.gray(name),
+            value: database.id,
+          })
+        } else if (database.info?.status === DatabaseStatus.AVAILABLE) {
+          choices.push({
+            name,
+            value: database.id,
+          })
+        } else {
+          choices.push({
+            disabled: 'database isn\'t available',
+            name: color.gray(name),
+            value: database.id,
+          })
+        }
+      }
+
+      if (this.advancedDatabases.length === 0) {
+        choices.push({
+          disabled: true,
+          name: color.gray(`No Heroku Postgres Advanced databases available for migration on ${color.app(this.appName!)}`),
+          value: '__no_advanced_databases',
+        })
+      }
+
+      choices.push(
+        new Separator(),
+        {name: 'Create a new Advanced database', value: '__create_database'},
+        {name: 'Go back', value: '__go_back'},
+      )
+      targetDatabaseId = (await this.prompt<{database: string}>({
+        choices,
+        message: 'Select the destination database:',
+        name: 'database',
+        type: 'list',
+      })).database
+      targetDatabaseName = this.advancedDatabases.find(db => db.id === targetDatabaseId)?.name
+
+      return targetDatabaseId
+    }
+
     while (currentStep !== '__exit') {
       switch (currentStep) {
         case '__confirm_migration': {
-          ux.stdout(color.info(heredoc`
-
-          By continuing, we prepare the necessary steps for the migration.
-          Your source database is available while we prepare the migration.
-          You'll receive an email when the preparation is complete or if there's an error.
-          You have 24 hours to begin migration after the preparation is complete.
-          Your source database will be unavailable during the migration.
-          Preparing the migration deletes all the data on the destination database ${color.datastore(targetDatabaseName!)}.
-
-        `))
-          const {action} = await this.prompt<{action: string}>({
-            choices: [
-              {name: 'Confirm', value: '__confirm'},
-              {name: 'Go back', value: '__go_back'},
-            ],
-            message: 'Confirm migration configuration:',
-            name: 'action',
-            type: 'list',
-          })
+          const action = await confirmMigration()
           if (action === '__go_back') {
             currentStep = '__select_target'
           } else if (action === '__confirm') {
             ux.stdout('')
             ux.action.start('Configuring migration')
             await this.dataApi.post<MigrationResponse>(`/data/postgres/v1/${targetDatabaseId}/migrations`, {
-              body: {method: this.migrationMethod, source_id: sourceDatabaseId},
+              body: {
+                method: this.selectedMigrationMethod!,
+                source_id: sourceDatabaseId,
+              },
             })
             ux.action.stop()
             currentStep = '__exit'
@@ -216,95 +327,40 @@ export default class DataPgMigrate extends BaseCommand {
           break
         }
 
-        case '__select_source': {
-          const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
-          for (const database of this.classicDatabases) {
-            const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
-            if (this.migrationTargets.some(migration => migration.source_id === database.id && this.isActiveMigration(migration))) {
-              choices.push({
-                disabled: 'already a source database for an active migration',
-                name: color.gray(name),
-                value: database.id,
-              })
-            } else {
-              choices.push({
-                name,
-                value: database.id,
-              })
-            }
+        case '__select_method': {
+          const method = await selectMethod()
+          if (method === '__go_back') {
+            currentStep = '__select_target'
+          } else {
+            this.selectedMigrationMethod = method === '__snapshot' ? MigrationMethod.FULL_LOAD : MigrationMethod.CDC
+            currentStep = '__confirm_migration'
           }
 
-          choices.push(new Separator(), {name: 'Go back', value: '__go_back'})
-          sourceDatabaseId = (await this.prompt<{database: string}>({
-            choices,
-            message: 'Select the source database:',
-            name: 'database',
-            type: 'list',
-          })).database
+          break
+        }
 
+        case '__select_source': {
+          const sourceDatabaseId = await selectSource()
           currentStep = sourceDatabaseId === '__go_back' ? '__exit' : '__select_target'
 
           break
         }
 
         case '__select_target': {
-          const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
-          for (const database of this.advancedDatabases) {
-            const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
-            if (this.migrationTargets.some(migration => migration.target_id === database.id && this.isActiveMigration(migration))) {
-              choices.push({
-                disabled: 'already a destination database for an active migration',
-                name: color.gray(name),
-                value: database.id,
-              })
-            } else if (database.info?.status === DatabaseStatus.AVAILABLE) {
-              choices.push({
-                name,
-                value: database.id,
-              })
-            } else {
-              choices.push({
-                disabled: 'database isn\'t available',
-                name: color.gray(name),
-                value: database.id,
-              })
-            }
-          }
-
-          if (this.advancedDatabases.length === 0) {
-            choices.push({
-              disabled: true,
-              name: color.gray(`No Heroku Postgres Advanced databases available for migration on ${color.app(this.appName!)}`),
-              value: '__no_advanced_databases',
-            })
-          }
-
-          choices.push(
-            new Separator(),
-            {name: 'Create a new Advanced database', value: '__create_database'},
-            {name: 'Go back', value: '__go_back'},
-          )
-          targetDatabaseId = (await this.prompt<{database: string}>({
-            choices,
-            message: 'Select the destination database:',
-            name: 'database',
-            type: 'list',
-          })).database
-          targetDatabaseName = this.advancedDatabases.find(db => db.id === targetDatabaseId)?.name
-
+          await selectTarget()
           if (targetDatabaseId === '__go_back') {
             currentStep = '__select_source'
           } else if (targetDatabaseId === '__create_database') {
             const addon = await this.createTargetDatabase(sourceDatabaseId!)
             if (addon) {
-              targetDatabaseId = addon.id
+              targetDatabaseId = addon.id!
               targetDatabaseName = addon.name
-              currentStep = '__confirm_migration'
+              currentStep = this.selectedMigrationMethod === undefined ? '__select_method' : '__confirm_migration'
             } else {
               currentStep = '__select_target'
             }
           } else {
-            currentStep = '__confirm_migration'
+            currentStep = this.selectedMigrationMethod === undefined ? '__select_method' : '__confirm_migration'
           }
 
           break
