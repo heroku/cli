@@ -30,7 +30,14 @@ export default class Add extends Command {
     }
 
     const token = this.heroku.auth!
+    const config = AccountsModule.getStorageConfig()
 
-    AccountsModule.add(name, email, token)
+    if (config.credentialStore) {
+      // Keychain-mode: don't save token to cache file
+      AccountsModule.add(name, email)
+    } else {
+      // Netrc-mode: save token to cache file
+      AccountsModule.add(name, email, token)
+    }
   }
 }

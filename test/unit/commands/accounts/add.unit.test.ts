@@ -26,7 +26,7 @@ describe('accounts:add', function () {
   })
 
   describe('when the user is logged in', function () {
-    it('should call the accounts.add function with the account name, user email, and auth token', async function () {
+    it('should call the accounts.add function with the account name and user email', async function () {
       stubCredentialManager({
         getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
       })
@@ -35,6 +35,43 @@ describe('accounts:add', function () {
         .reply(200, {email: 'testEmail'})
 
       await runCommand(Cmd, ['testAccountName'])
+      expect(addStub.calledOnce).to.equal(true)
+      expect(addStub.args[0][0]).to.equal('testAccountName')
+      expect(addStub.args[0][1]).to.equal('testEmail')
+    })
+
+    it('should not pass token to add() when credentialStore is active (keychain-mode)', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
+      })
+
+      const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
+      getStorageConfigStub.returns({credentialStore: 'keychain' as any, useNetrc: false})
+
+      api.get('/account')
+        .reply(200, {email: 'testEmail'})
+
+      await runCommand(Cmd, ['testAccountName'])
+
+      expect(addStub.calledOnce).to.equal(true)
+      expect(addStub.args[0][0]).to.equal('testAccountName')
+      expect(addStub.args[0][1]).to.equal('testEmail')
+      expect(addStub.args[0][2]).to.be.undefined
+    })
+
+    it('should pass token to add() when credentialStore is not active (netrc-mode)', async function () {
+      stubCredentialManager({
+        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
+      })
+
+      const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
+      getStorageConfigStub.returns({credentialStore: null, useNetrc: true})
+
+      api.get('/account')
+        .reply(200, {email: 'testEmail'})
+
+      await runCommand(Cmd, ['testAccountName'])
+
       expect(addStub.calledOnce).to.equal(true)
       expect(addStub.args[0][0]).to.equal('testAccountName')
       expect(addStub.args[0][1]).to.equal('testEmail')
