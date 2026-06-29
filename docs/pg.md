@@ -132,7 +132,7 @@ DESCRIPTION
   list database backups
 ```
 
-_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/index.ts)_
+_See code: [src/commands/pg/backups/index.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/index.ts)_
 
 ## `heroku pg:backups:cancel [BACKUP_ID]`
 
@@ -156,7 +156,7 @@ DESCRIPTION
   cancel an in-progress backup or restore (default newest)
 ```
 
-_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/cancel.ts)_
+_See code: [src/commands/pg/backups/cancel.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/cancel.ts)_
 
 ## `heroku pg:backups:capture [DATABASE]`
 
@@ -184,7 +184,7 @@ DESCRIPTION
   capture a new backup
 ```
 
-_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/capture.ts)_
+_See code: [src/commands/pg/backups/capture.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/capture.ts)_
 
 ## `heroku pg:backups:delete BACKUP_ID`
 
@@ -211,7 +211,7 @@ EXAMPLES
    $ heroku pg:backup:delete --app APP_ID BACKUP_ID
 ```
 
-_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/delete.ts)_
+_See code: [src/commands/pg/backups/delete.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/delete.ts)_
 
 ## `heroku pg:backups:download [BACKUP_ID]`
 
@@ -236,7 +236,7 @@ DESCRIPTION
   downloads database backup
 ```
 
-_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/download.ts)_
+_See code: [src/commands/pg/backups/download.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/download.ts)_
 
 ## `heroku pg:backups:info [BACKUP_ID]`
 
@@ -260,7 +260,7 @@ DESCRIPTION
   get information about a specific backup
 ```
 
-_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/info.ts)_
+_See code: [src/commands/pg/backups/info.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/info.ts)_
 
 ## `heroku pg:backups:restore [BACKUP] [DATABASE]`
 
@@ -313,7 +313,7 @@ EXAMPLES
    $ heroku pg:backups:restore b101 HEROKU_POSTGRESQL_PINK --app my-heroku-app
 ```
 
-_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/restore.ts)_
+_See code: [src/commands/pg/backups/restore.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/restore.ts)_
 
 ## `heroku pg:backups:schedule [DATABASE]`
 
@@ -341,7 +341,7 @@ DESCRIPTION
   schedule daily backups for given database
 ```
 
-_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/schedule.ts)_
+_See code: [src/commands/pg/backups/schedule.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/schedule.ts)_
 
 ## `heroku pg:backups:schedules`
 
@@ -362,7 +362,7 @@ DESCRIPTION
   list backup schedule
 ```
 
-_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/schedules.ts)_
+_See code: [src/commands/pg/backups/schedules.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/schedules.ts)_
 
 ## `heroku pg:backups:unschedule [DATABASE]`
 
@@ -388,7 +388,7 @@ DESCRIPTION
   stop daily backups
 ```
 
-_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/unschedule.ts)_
+_See code: [src/commands/pg/backups/unschedule.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/unschedule.ts)_
 
 ## `heroku pg:backups:url [BACKUP_ID]`
 
@@ -412,7 +412,7 @@ DESCRIPTION
   get secret but publicly accessible URL of a backup
 ```
 
-_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/backups/url.ts)_
+_See code: [src/commands/pg/backups/url.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/backups/url.ts)_
 
 ## `heroku pg:bloat [DATABASE]`
 
@@ -438,7 +438,7 @@ DESCRIPTION
   show table and index bloat in your database ordered by most wasteful
 ```
 
-_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/bloat.ts)_
+_See code: [src/commands/pg/bloat.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/bloat.ts)_
 
 ## `heroku pg:blocking [DATABASE]`
 
@@ -464,7 +464,7 @@ DESCRIPTION
   display queries holding locks other queries are waiting to be released
 ```
 
-_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/blocking.ts)_
+_See code: [src/commands/pg/blocking.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/blocking.ts)_
 
 ## `heroku pg:cache-hit [DATABASE]`
 
@@ -493,7 +493,7 @@ EXAMPLES
   $ heroku pg:cache-hit --app example-app
 ```
 
-_See code: [src/commands/pg/cache-hit.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/cache-hit.ts)_
+_See code: [src/commands/pg/cache-hit.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/cache-hit.ts)_
 
 ## `heroku pg:calls [DATABASE]`
 
@@ -526,7 +526,7 @@ EXAMPLES
    $ heroku pg:calls --truncate --app example-app
 ```
 
-_See code: [src/commands/pg/calls.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/calls.ts)_
+_See code: [src/commands/pg/calls.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/calls.ts)_
 
 ## `heroku pg:connection-pooling:attach [DATABASE]`
 
@@ -556,7 +556,7 @@ EXAMPLES
   $ heroku pg:connection-pooling:attach postgresql-something-12345
 ```
 
-_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/connection-pooling/attach.ts)_
+_See code: [src/commands/pg/connection-pooling/attach.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/connection-pooling/attach.ts)_
 
 ## `heroku pg:copy SOURCE TARGET`
 
@@ -585,7 +585,7 @@ DESCRIPTION
   copy all data from source db to target
 ```
 
-_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/copy.ts)_
+_See code: [src/commands/pg/copy.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/copy.ts)_
 
 ## `heroku pg:credentials [DATABASE]`
 
@@ -612,7 +612,7 @@ DESCRIPTION
   show information on credentials in the database
 ```
 
-_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/credentials.ts)_
+_See code: [src/commands/pg/credentials.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/credentials.ts)_
 
 ## `heroku pg:credentials:create [DATABASE]`
 
@@ -642,7 +642,7 @@ EXAMPLES
    $ heroku pg:credentials:create postgresql-something-12345 --name new-cred-name
 ```
 
-_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/credentials/create.ts)_
+_See code: [src/commands/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/credentials/create.ts)_
 
 ## `heroku pg:credentials:destroy [DATABASE]`
 
@@ -673,7 +673,7 @@ EXAMPLES
    $ heroku pg:credentials:destroy postgresql-transparent-56874 --name cred-name -a woodstock-production
 ```
 
-_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/credentials/destroy.ts)_
+_See code: [src/commands/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/credentials/destroy.ts)_
 
 ## `heroku pg:credentials:repair-default [DATABASE]`
 
@@ -703,7 +703,7 @@ EXAMPLES
    $ heroku pg:credentials:repair-default postgresql-something-12345
 ```
 
-_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/credentials/repair-default.ts)_
+_See code: [src/commands/pg/credentials/repair-default.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/credentials/repair-default.ts)_
 
 ## `heroku pg:credentials:rotate [DATABASE]`
 
@@ -734,7 +734,7 @@ DESCRIPTION
   rotate the database credentials
 ```
 
-_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/credentials/rotate.ts)_
+_See code: [src/commands/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/credentials/rotate.ts)_
 
 ## `heroku pg:credentials:url [DATABASE]`
 
@@ -761,7 +761,7 @@ DESCRIPTION
   show information on a database credential
 ```
 
-_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/credentials/url.ts)_
+_See code: [src/commands/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/credentials/url.ts)_
 
 ## `heroku pg:diagnose [DATABASE|REPORT_ID]`
 
@@ -788,7 +788,7 @@ DESCRIPTION
   if REPORT_ID is specified instead, a previous report is displayed
 ```
 
-_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/diagnose.ts)_
+_See code: [src/commands/pg/diagnose.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/diagnose.ts)_
 
 ## `heroku pg:extensions [DATABASE]`
 
@@ -817,7 +817,7 @@ EXAMPLES
   $ heroku pg:extensions --app example-app
 ```
 
-_See code: [src/commands/pg/extensions.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/extensions.ts)_
+_See code: [src/commands/pg/extensions.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/extensions.ts)_
 
 ## `heroku pg:fdwsql PREFIX [DATABASE]`
 
@@ -847,7 +847,7 @@ EXAMPLES
   $ heroku pg:fdwsql example_prefix --app example-app
 ```
 
-_See code: [src/commands/pg/fdwsql.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/fdwsql.ts)_
+_See code: [src/commands/pg/fdwsql.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/fdwsql.ts)_
 
 ## `heroku pg:index-size [DATABASE]`
 
@@ -876,7 +876,7 @@ EXAMPLES
   $ heroku pg:index-size --app example-app
 ```
 
-_See code: [src/commands/pg/index-size.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/index-size.ts)_
+_See code: [src/commands/pg/index-size.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/index-size.ts)_
 
 ## `heroku pg:index-usage [DATABASE]`
 
@@ -905,7 +905,7 @@ EXAMPLES
   $ heroku pg:index-usage --app example-app
 ```
 
-_See code: [src/commands/pg/index-usage.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/index-usage.ts)_
+_See code: [src/commands/pg/index-usage.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/index-usage.ts)_
 
 ## `heroku pg:info [DATABASE]`
 
@@ -934,7 +934,7 @@ ALIASES
   $ heroku pg
 ```
 
-_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/info.ts)_
+_See code: [src/commands/pg/info.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/info.ts)_
 
 ## `heroku pg:kill PID [DATABASE]`
 
@@ -962,7 +962,7 @@ DESCRIPTION
   kill a query
 ```
 
-_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/kill.ts)_
+_See code: [src/commands/pg/kill.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/kill.ts)_
 
 ## `heroku pg:killall [DATABASE]`
 
@@ -988,7 +988,7 @@ DESCRIPTION
   terminates all connections for all credentials
 ```
 
-_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/killall.ts)_
+_See code: [src/commands/pg/killall.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/killall.ts)_
 
 ## `heroku pg:links [DATABASE]`
 
@@ -1014,7 +1014,7 @@ DESCRIPTION
   lists all databases and information on link
 ```
 
-_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/links/index.ts)_
+_See code: [src/commands/pg/links/index.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/links/index.ts)_
 
 ## `heroku pg:links:create REMOTE DATABASE`
 
@@ -1045,7 +1045,7 @@ EXAMPLES
    $ heroku pg:links:create HEROKU_REDIS_RED HEROKU_POSTGRESQL_CERULEAN
 ```
 
-_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/links/create.ts)_
+_See code: [src/commands/pg/links/create.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/links/create.ts)_
 
 ## `heroku pg:links:destroy DATABASE LINK`
 
@@ -1075,7 +1075,7 @@ EXAMPLES
    $ heroku pg:links:destroy HEROKU_POSTGRESQL_CERULEAN redis-symmetrical-100
 ```
 
-_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/links/destroy.ts)_
+_See code: [src/commands/pg/links/destroy.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/links/destroy.ts)_
 
 ## `heroku pg:locks [DATABASE]`
 
@@ -1102,7 +1102,7 @@ DESCRIPTION
   display queries with active locks
 ```
 
-_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/locks.ts)_
+_See code: [src/commands/pg/locks.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/locks.ts)_
 
 ## `heroku pg:long-running-queries [DATABASE]`
 
@@ -1131,7 +1131,7 @@ EXAMPLES
   $ heroku pg:long-running-queries --app example-app
 ```
 
-_See code: [src/commands/pg/long-running-queries.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/long-running-queries.ts)_
+_See code: [src/commands/pg/long-running-queries.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/long-running-queries.ts)_
 
 ## `heroku pg:mandelbrot [DATABASE]`
 
@@ -1160,7 +1160,7 @@ EXAMPLES
   $ heroku pg:mandelbrot --app example-app
 ```
 
-_See code: [src/commands/pg/mandelbrot.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/mandelbrot.ts)_
+_See code: [src/commands/pg/mandelbrot.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/mandelbrot.ts)_
 
 ## `heroku pg:outliers [DATABASE]`
 
@@ -1189,7 +1189,7 @@ DESCRIPTION
   show 10 queries that have longest execution time in aggregate
 ```
 
-_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/outliers.ts)_
+_See code: [src/commands/pg/outliers.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/outliers.ts)_
 
 ## `heroku pg:promote DATABASE`
 
@@ -1215,7 +1215,7 @@ DESCRIPTION
   sets DATABASE as your DATABASE_URL
 ```
 
-_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/promote.ts)_
+_See code: [src/commands/pg/promote.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/promote.ts)_
 
 ## `heroku pg:ps [DATABASE]`
 
@@ -1242,7 +1242,7 @@ DESCRIPTION
   view active queries with execution time
 ```
 
-_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/ps.ts)_
+_See code: [src/commands/pg/ps.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/ps.ts)_
 
 ## `heroku pg:psql [DATABASE]`
 
@@ -1275,7 +1275,7 @@ ALIASES
   $ heroku psql
 ```
 
-_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/psql.ts)_
+_See code: [src/commands/pg/psql.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/psql.ts)_
 
 ## `heroku pg:pull SOURCE TARGET`
 
@@ -1321,7 +1321,7 @@ EXAMPLES
    $ heroku pg:pull postgresql-swimmingly-100 postgres://myhost/mydb --app sushi
 ```
 
-_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/pull.ts)_
+_See code: [src/commands/pg/pull.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/pull.ts)_
 
 ## `heroku pg:push SOURCE TARGET`
 
@@ -1365,7 +1365,7 @@ EXAMPLES
     $ heroku pg:push postgres://myhost/mydb postgresql-swimmingly-100 --app sushi
 ```
 
-_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/push.ts)_
+_See code: [src/commands/pg/push.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/push.ts)_
 
 ## `heroku pg:records-rank [DATABASE]`
 
@@ -1394,7 +1394,7 @@ EXAMPLES
   $ heroku pg:records-rank --app example-app
 ```
 
-_See code: [src/commands/pg/records-rank.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/records-rank.ts)_
+_See code: [src/commands/pg/records-rank.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/records-rank.ts)_
 
 ## `heroku pg:reset [DATABASE]`
 
@@ -1422,7 +1422,7 @@ DESCRIPTION
   delete all data in DATABASE
 ```
 
-_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/reset.ts)_
+_See code: [src/commands/pg/reset.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/reset.ts)_
 
 ## `heroku pg:seq-scans [DATABASE]`
 
@@ -1451,7 +1451,7 @@ EXAMPLES
   $ heroku pg:seq-scans --app example-app
 ```
 
-_See code: [src/commands/pg/seq-scans.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/seq-scans.ts)_
+_See code: [src/commands/pg/seq-scans.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/seq-scans.ts)_
 
 ## `heroku pg:settings [DATABASE]`
 
@@ -1477,7 +1477,7 @@ DESCRIPTION
   show your current database settings
 ```
 
-_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/index.ts)_
+_See code: [src/commands/pg/settings/index.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/index.ts)_
 
 ## `heroku pg:settings:auto-explain [DATABASE] [VALUE]`
 
@@ -1506,7 +1506,7 @@ DESCRIPTION
   Restart your Heroku app and/or restart existing connections for logging to start taking place.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain.ts)_
+_See code: [src/commands/pg/settings/auto-explain.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain.ts)_
 
 ## `heroku pg:settings:auto-explain:log-analyze [DATABASE] [VALUE]`
 
@@ -1537,7 +1537,7 @@ DESCRIPTION
   impacts to your database and should be used with caution.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-analyze.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-analyze.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-analyze.ts)_
 
 ## `heroku pg:settings:auto-explain:log-buffers [DATABASE] [VALUE]`
 
@@ -1566,7 +1566,7 @@ DESCRIPTION
   pg:settings:auto-explain:log-analyze turned on.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-buffers.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-buffers.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-buffers.ts)_
 
 ## `heroku pg:settings:auto-explain:log-format [DATABASE] [VALUE]`
 
@@ -1595,7 +1595,7 @@ DESCRIPTION
   The allowed values are text, xml, json, and yaml. The default is text.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-format.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-format.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-format.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-format.ts)_
 
 ## `heroku pg:settings:auto-explain:log-min-duration [DATABASE] [VALUE]`
 
@@ -1624,7 +1624,7 @@ DESCRIPTION
   Setting this value to 0 will log all queries. Setting this value to -1 will disable logging entirely.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-min-duration.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-min-duration.ts)_
 
 ## `heroku pg:settings:auto-explain:log-nested-statements [DATABASE] [VALUE]`
 
@@ -1651,7 +1651,7 @@ DESCRIPTION
   Nested statements are included in the execution plan's log.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-nested-statements.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-nested-statements.ts)_
 
 ## `heroku pg:settings:auto-explain:log-triggers [DATABASE] [VALUE]`
 
@@ -1679,7 +1679,7 @@ DESCRIPTION
   This parameter can only be used in conjunction with pg:settings:auto-explain:log-analyze turned on.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-triggers.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-triggers.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-triggers.ts)_
 
 ## `heroku pg:settings:auto-explain:log-verbose [DATABASE] [VALUE]`
 
@@ -1707,7 +1707,7 @@ DESCRIPTION
   This is equivalent to calling EXPLAIN VERBOSE.
 ```
 
-_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/auto-explain/log-verbose.ts)_
+_See code: [src/commands/pg/settings/auto-explain/log-verbose.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/auto-explain/log-verbose.ts)_
 
 ## `heroku pg:settings:data-connector-details-logs [DATABASE] [VALUE]`
 
@@ -1738,7 +1738,7 @@ ALIASES
   $ heroku pg:settings:explain-data-connector-details
 ```
 
-_See code: [src/commands/pg/settings/data-connector-details-logs.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/data-connector-details-logs.ts)_
+_See code: [src/commands/pg/settings/data-connector-details-logs.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/data-connector-details-logs.ts)_
 
 ## `heroku pg:settings:explain-data-connector-details [DATABASE] [VALUE]`
 
@@ -1795,7 +1795,7 @@ DESCRIPTION
   Setting log_connections to false stops emitting log messages for all attempts to login to the database.
 ```
 
-_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/log-connections.ts)_
+_See code: [src/commands/pg/settings/log-connections.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/log-connections.ts)_
 
 ## `heroku pg:settings:log-lock-waits [DATABASE] [VALUE]`
 
@@ -1828,7 +1828,7 @@ DESCRIPTION
   transaction.
 ```
 
-_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/log-lock-waits.ts)_
+_See code: [src/commands/pg/settings/log-lock-waits.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/log-lock-waits.ts)_
 
 ## `heroku pg:settings:log-min-duration-statement [DATABASE] [VALUE]`
 
@@ -1858,7 +1858,7 @@ DESCRIPTION
   durations.
 ```
 
-_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/log-min-duration-statement.ts)_
+_See code: [src/commands/pg/settings/log-min-duration-statement.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/log-min-duration-statement.ts)_
 
 ## `heroku pg:settings:log-min-error-statement [DATABASE] [VALUE]`
 
@@ -1887,7 +1887,7 @@ DESCRIPTION
   Use this setting to prevent logging SQL queries that contain sensitive information. Default is "error".
 ```
 
-_See code: [src/commands/pg/settings/log-min-error-statement.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/log-min-error-statement.ts)_
+_See code: [src/commands/pg/settings/log-min-error-statement.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/log-min-error-statement.ts)_
 
 ## `heroku pg:settings:log-statement [DATABASE] [VALUE]`
 
@@ -1921,7 +1921,7 @@ DESCRIPTION
   all  - All statements are logged
 ```
 
-_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/log-statement.ts)_
+_See code: [src/commands/pg/settings/log-statement.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/log-statement.ts)_
 
 ## `heroku pg:settings:track-functions [DATABASE] [VALUE]`
 
@@ -1954,7 +1954,7 @@ DESCRIPTION
   not tracked
 ```
 
-_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/settings/track-functions.ts)_
+_See code: [src/commands/pg/settings/track-functions.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/settings/track-functions.ts)_
 
 ## `heroku pg:stats-reset [DATABASE]`
 
@@ -1983,7 +1983,7 @@ EXAMPLES
   $ heroku pg:stats-reset --app example-app
 ```
 
-_See code: [src/commands/pg/stats-reset.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/stats-reset.ts)_
+_See code: [src/commands/pg/stats-reset.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/stats-reset.ts)_
 
 ## `heroku pg:table_size [DATABASE]`
 
@@ -2042,7 +2042,7 @@ EXAMPLES
   $ heroku pg:table-indexes-size --app example-app
 ```
 
-_See code: [src/commands/pg/table-indexes-size.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/table-indexes-size.ts)_
+_See code: [src/commands/pg/table-indexes-size.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/table-indexes-size.ts)_
 
 ## `heroku pg:table-size [DATABASE]`
 
@@ -2074,7 +2074,7 @@ EXAMPLES
   $ heroku pg:table-size --app example-app
 ```
 
-_See code: [src/commands/pg/table-size.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/table-size.ts)_
+_See code: [src/commands/pg/table-size.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/table-size.ts)_
 
 ## `heroku pg:total_table_size [DATABASE]`
 
@@ -2133,7 +2133,7 @@ EXAMPLES
   $ heroku pg:total-index-size --app example-app
 ```
 
-_See code: [src/commands/pg/total-index-size.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/total-index-size.ts)_
+_See code: [src/commands/pg/total-index-size.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/total-index-size.ts)_
 
 ## `heroku pg:total-table-size [DATABASE]`
 
@@ -2165,7 +2165,7 @@ EXAMPLES
   $ heroku pg:total-table-size --app example-app
 ```
 
-_See code: [src/commands/pg/total-table-size.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/total-table-size.ts)_
+_See code: [src/commands/pg/total-table-size.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/total-table-size.ts)_
 
 ## `heroku pg:unfollow DATABASE`
 
@@ -2191,7 +2191,7 @@ DESCRIPTION
   stop a replica from following and make it a writeable database
 ```
 
-_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/unfollow.ts)_
+_See code: [src/commands/pg/unfollow.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/unfollow.ts)_
 
 ## `heroku pg:unused_indexes [DATABASE]`
 
@@ -2253,7 +2253,7 @@ EXAMPLES
   $ heroku pg:unused-indexes --app example-app
 ```
 
-_See code: [src/commands/pg/unused-indexes.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/unused-indexes.ts)_
+_See code: [src/commands/pg/unused-indexes.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/unused-indexes.ts)_
 
 ## `heroku pg:upgrade:cancel [DATABASE]`
 
@@ -2279,7 +2279,7 @@ DESCRIPTION
   cancels a scheduled upgrade. You can't cancel a version upgrade that's in progress.
 ```
 
-_See code: [src/commands/pg/upgrade/cancel.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/upgrade/cancel.ts)_
+_See code: [src/commands/pg/upgrade/cancel.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/upgrade/cancel.ts)_
 
 ## `heroku pg:upgrade:dryrun [DATABASE]`
 
@@ -2307,7 +2307,7 @@ DESCRIPTION
   follower database. Heroku sends the results of the test upgrade via email.
 ```
 
-_See code: [src/commands/pg/upgrade/dryrun.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/upgrade/dryrun.ts)_
+_See code: [src/commands/pg/upgrade/dryrun.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/upgrade/dryrun.ts)_
 
 ## `heroku pg:upgrade:prepare [DATABASE]`
 
@@ -2335,7 +2335,7 @@ DESCRIPTION
   window. To start a version upgrade on Essential-tier and follower databases, use heroku pg:upgrade:run instead.
 ```
 
-_See code: [src/commands/pg/upgrade/prepare.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/upgrade/prepare.ts)_
+_See code: [src/commands/pg/upgrade/prepare.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/upgrade/prepare.ts)_
 
 ## `heroku pg:upgrade:run [DATABASE]`
 
@@ -2381,7 +2381,7 @@ EXAMPLES
    $ heroku pg:upgrade:run DATABASE_URL --app myapp
 ```
 
-_See code: [src/commands/pg/upgrade/run.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/upgrade/run.ts)_
+_See code: [src/commands/pg/upgrade/run.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/upgrade/run.ts)_
 
 ## `heroku pg:upgrade:wait [DATABASE]`
 
@@ -2418,7 +2418,7 @@ EXAMPLES
    $ heroku pg:upgrade:wait postgresql-curved-12345 --app myapp --no-notify
 ```
 
-_See code: [src/commands/pg/upgrade/wait.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/upgrade/wait.ts)_
+_See code: [src/commands/pg/upgrade/wait.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/upgrade/wait.ts)_
 
 ## `heroku pg:user-connections [DATABASE]`
 
@@ -2447,7 +2447,7 @@ EXAMPLES
   $ heroku pg:user-connections --app example-app
 ```
 
-_See code: [src/commands/pg/user-connections.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/user-connections.ts)_
+_See code: [src/commands/pg/user-connections.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/user-connections.ts)_
 
 ## `heroku pg:vacuum-stats [DATABASE]`
 
@@ -2473,7 +2473,7 @@ DESCRIPTION
   show dead rows and whether an automatic vacuum is expected to be triggered
 ```
 
-_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/vacuum-stats.ts)_
+_See code: [src/commands/pg/vacuum-stats.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/vacuum-stats.ts)_
 
 ## `heroku pg:wait [DATABASE]`
 
@@ -2501,4 +2501,4 @@ DESCRIPTION
   blocks until database is available
 ```
 
-_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v11.7.1/src/commands/pg/wait.ts)_
+_See code: [src/commands/pg/wait.ts](https://github.com/heroku/cli/blob/v11.8.0-alpha.0/src/commands/pg/wait.ts)_

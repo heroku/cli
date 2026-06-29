@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.8.0-alpha.0](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0-alpha.0) (2026-06-29)
+
+
+### Features
+
+* skip caching token in keychain mode for accounts cache ([#3792](https://github.com/heroku/cli/issues/3792)) ([5d7d95b](https://github.com/heroku/cli/commit/5d7d95bafbcf088c9818690df769d3b8451be369))
+
 ## [11.7.1](https://github.com/heroku/cli/compare/v11.7.0...v11.7.1) (2026-06-24)
 
 
