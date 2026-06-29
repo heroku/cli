@@ -188,7 +188,7 @@ export default class DataPgMigrate extends BaseCommand {
         By continuing, we prepare the necessary steps for the migration.
         Your source database is available while we prepare the migration.
         You'll receive an email when the preparation is complete or if there's an error.
-        You have 24 hours to begin migration after the preparation is complete.
+        You have 24 hours to begin the migration after the preparation is complete.
         Preparing the migration deletes all the data on the destination database ${color.datastore(targetDatabaseName!)}.
 
       `))
@@ -208,8 +208,8 @@ export default class DataPgMigrate extends BaseCommand {
       ux.stdout(color.info(heredoc`
 
         Migration methods:
-        · Snapshot: Takes a point-in-time copy of your database. Requires downtime on the source. Best for smaller databases or when a maintenance window is acceptable.
-        · Streaming: Continuously replicates changes from source to target. Minimal downtime, you control when to cut over. Best for larger databases or when you need near-zero downtime.
+        · Snapshot: Copies the data from the source database to the destination database. Requires downtime on the source database depending on the size. Best for smaller databases or when a maintenance window is acceptable.
+        · Streaming: Replicates changes from the source database to the destination database continuously until you start the migration. Requires minimal downtime. Best for larger databases or when you need near-zero downtime.
 
       `))
 
@@ -220,7 +220,7 @@ export default class DataPgMigrate extends BaseCommand {
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
-        message: 'Select migration method:',
+        message: 'Select the migration method:',
         name: 'method',
         type: 'list',
       })
