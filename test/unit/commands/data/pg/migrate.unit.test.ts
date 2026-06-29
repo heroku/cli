@@ -993,7 +993,7 @@ describe('data:pg:migrate', function () {
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).to.match(/Select migration method: Snapshot/)
+      expect(stdout).to.match(/Select the migration method: Snapshot/)
     })
 
     it('allows user to select snapshot migration method', async function () {
@@ -1027,7 +1027,7 @@ describe('data:pg:migrate', function () {
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).to.match(/Select migration method: Streaming/)
+      expect(stdout).to.match(/Select the migration method: Streaming/)
     })
 
     it('allows user to go back from method selection to target selection', async function () {
@@ -1062,7 +1062,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/Select migration method: Go back/)
+      expect(stdout).to.match(/Select the migration method: Go back/)
     })
 
     it('skips method selection prompt when --method=snapshot flag is provided', async function () {
@@ -1100,7 +1100,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).not.to.contain('Select migration method')
+      expect(stdout).not.to.contain('Select the migration method')
     })
 
     it('skips method selection prompt when --method=streaming flag is provided', async function () {
