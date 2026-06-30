@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.8.0-alpha.1](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0-alpha.1) (2026-06-30)
+
+
+### Features
+
+* 'data:pg:migrate' interactive method selection (W-22585064) ([#3791](https://github.com/heroku/cli/issues/3791)) ([914fc06](https://github.com/heroku/cli/commit/914fc06e1dd76cd687ffa3b0973dc0356814a4ae))
+* skip caching token in keychain mode for accounts cache ([#3792](https://github.com/heroku/cli/issues/3792)) ([5d7d95b](https://github.com/heroku/cli/commit/5d7d95bafbcf088c9818690df769d3b8451be369))
+
+
+### Bug Fixes
+
+* update CLI to work with new heroku-cli-util table function ([2bcf845](https://github.com/heroku/cli/commit/2bcf8459967a17f4890c170d313fe448ea17f88b))
+
 ## [11.8.0-alpha.0](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0-alpha.0) (2026-06-29)
 
 
