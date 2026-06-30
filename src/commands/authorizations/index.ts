@@ -26,7 +26,7 @@ export default class AuthorizationsIndex extends Command {
         Description: {get: (v: any) => color.name(v.description)},
         ID: {get: (v: any) => v.id},
         Scope: {get: (v: any) => v.scope.join(',')},
-      }, {sort: {Description: 'asc'}})
+      }, {sort: 'Description'})
     }
   }
 }

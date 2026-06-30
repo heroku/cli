@@ -184,7 +184,7 @@ export default class Index extends Command {
 
       hux.styledHeader(header)
       const sortedReleases = releases.sort((a, b) => (b.version ?? 0) - (a.version ?? 0))
-      hux.table(sortedReleases, columns)
+      hux.table(sortedReleases, columns, {extended})
     }
   }
 }
