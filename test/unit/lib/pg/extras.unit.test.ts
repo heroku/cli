@@ -45,35 +45,43 @@ describe('lib/pg/extras', function () {
   })
 
   describe('ensurePGStatStatement', function () {
-    it('succeeds when pg_stat_statements is available', async function () {
-      execQueryStub.resolves('t')
+    it('returns the schema when pg_stat_statements is available', async function () {
+      execQueryStub.resolves('public\n')
 
-      await ensurePGStatStatement(mockDb())
+      const schema = await ensurePGStatStatement(mockDb())
 
+      expect(schema).to.equal('public')
       expect(execQueryStub.calledOnce).to.be.true
       expect(execQueryStub.firstCall.args[0]).to.include('pg_stat_statements')
       expect(uxErrorStub.called).to.be.false
     })
 
-    it('checks both public and heroku_ext schemas for pg_stat_statements', async function () {
-      execQueryStub.resolves('t')
+    it('queries the extension schema without filtering on a hardcoded schema', async function () {
+      execQueryStub.resolves('public\n')
 
       await ensurePGStatStatement(mockDb())
 
       const querySql = execQueryStub.firstCall.args[0]
       expect(querySql).to.include('pg_stat_statements')
-      expect(querySql).to.include("'public'")
-      expect(querySql).to.include("'heroku_ext'")
+      expect(querySql).to.include('quote_ident')
+      // No longer pins the lookup to specific schemas.
+      expect(querySql).to.not.include("IN ('public', 'heroku_ext')")
     })
 
-    it('detects pg_stat_statements when it is installed in the heroku_ext schema', async function () {
-      // Simulate a database where the extension lives in heroku_ext (standard for
-      // modern Heroku Postgres) and NOT in public. The check only succeeds if the
-      // query actually looks in heroku_ext, so this fails on the public-only bug.
-      execQueryStub.callsFake((query: string) => Promise.resolve(query.includes("'heroku_ext'") ? 't' : 'f'))
+    it('runs the availability query in tuples-only quiet mode', async function () {
+      execQueryStub.resolves('heroku_ext\n')
 
       await ensurePGStatStatement(mockDb())
 
+      expect(execQueryStub.firstCall.args[1]).to.deep.equal(['-t', '-q'])
+    })
+
+    it('returns the schema when the extension lives in heroku_ext', async function () {
+      execQueryStub.resolves('heroku_ext\n')
+
+      const schema = await ensurePGStatStatement(mockDb())
+
+      expect(schema).to.equal('heroku_ext')
       expect(uxErrorStub.called).to.be.false
     })
 
@@ -84,12 +92,19 @@ describe('lib/pg/extras', function () {
     })
 
     it('calls ux.error when pg_stat_statements is not available', async function () {
-      execQueryStub.resolves('f')
+      execQueryStub.resolves('\n')
 
       await ensurePGStatStatement(mockDb())
 
       expect(uxErrorStub.calledOnce).to.be.true
       expect(uxErrorStub.firstCall.args[1]).to.deep.equal({exit: 1})
+    })
+
+    it('surfaces the new install instructions when unavailable', async function () {
+      uxErrorStub.restore()
+      execQueryStub.resolves('\n')
+
+      await expect(ensurePGStatStatement(mockDb())).to.be.rejectedWith('The pg_stat_statements extension needs to be installed first.')
     })
   })
 
