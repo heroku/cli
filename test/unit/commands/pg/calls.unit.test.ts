@@ -134,6 +134,18 @@ SELECT * FROM users | 1.23 | 0.15 | 100 | 0.05`
 
       expect(execQueryStub.getCall(3).args[0]).to.contain('CASE WHEN length(query) <= 40')
     })
+
+    it('uses the detected custom schema in the query', async function () {
+      // ensurePGStatStatement can detect a non-default schema; the main query must
+      // interpolate that detected schema rather than hardcoding 'public'.
+      setupHelperStubs({newBlkTime: true, newTotalExecTime: true})
+      execQueryStub.onCall(0).resolves('stats\n')
+      execQueryStub.onCall(3).resolves('out')
+
+      await runCommand(Cmd, ['--app', 'my-app'])
+
+      expect(execQueryStub.getCall(3).args[0]).to.contain('FROM stats.pg_stat_statements')
+    })
   })
 
   describe('error handling', function () {
