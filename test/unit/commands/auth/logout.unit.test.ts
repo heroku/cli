@@ -9,13 +9,13 @@ import Git from '../../../../src/lib/git/git.js'
 describe('auth:logout', function () {
   let eraseCredentialsStub: sinon.SinonStub
   let removeCredentialHelperStub: sinon.SinonStub
-  let currentNetrcStub: sinon.SinonStub
+  let currentAccountStub: sinon.SinonStub
   let removeStub: sinon.SinonStub
 
   beforeEach(function () {
     eraseCredentialsStub = sinon.stub(Git.prototype, 'eraseCredentials').resolves()
     removeCredentialHelperStub = sinon.stub(Git.prototype, 'removeCredentialHelper').resolves()
-    currentNetrcStub = sinon.stub(AccountsModule, 'currentNetrc').resolves(null)
+    currentAccountStub = sinon.stub(AccountsModule, 'current').resolves(null)
     removeStub = sinon.stub(AccountsModule, 'remove').resolves()
   })
 
@@ -48,14 +48,14 @@ describe('auth:logout', function () {
     expect(error).to.be.undefined
   })
 
-  it('checks for cached netrc account', async function () {
+  it('checks for cached accounts', async function () {
     await runCommand(Logout, [])
 
-    expect(currentNetrcStub.calledOnce).to.be.true
+    expect(currentAccountStub.calledOnce).to.be.true
   })
 
-  it('removes cached netrc account when present', async function () {
-    currentNetrcStub.resolves('my-account')
+  it('removes cached account when present', async function () {
+    currentAccountStub.resolves('my-account')
 
     await runCommand(Logout, [])
 
@@ -63,8 +63,8 @@ describe('auth:logout', function () {
     expect(removeStub.firstCall.args[0]).to.equal('my-account')
   })
 
-  it('does not remove account when no cached netrc account', async function () {
-    currentNetrcStub.resolves(null)
+  it('does not remove account when no cached account', async function () {
+    currentAccountStub.resolves(null)
 
     await runCommand(Logout, [])
 

@@ -26,7 +26,7 @@ export default class ClientsIndex extends Command {
         id: {},
         redirect_uri: {},
       }, {
-        sort: {name: 'asc'},
+        sort: 'name',
       })
       /* eslint-enable perfectionist/sort-objects */
     }
