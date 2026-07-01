@@ -27,11 +27,11 @@ describe('pg:calls', function () {
   let execQueryStub: sinon.SinonStub
 
   // Drives the helper queries in generateCallsQuery:
-  //   call 0: ensurePGStatStatement -> availability ('t')
+  //   call 0: ensurePGStatStatement -> schema name ('public')
   //   call 1: newTotalExecTimeField -> server_version_num >= 130000
   //   call 2: newBlkTimeFields      -> server_version_num >= 170000
   function setupHelperStubs({newBlkTime, newTotalExecTime}: {newBlkTime: boolean; newTotalExecTime: boolean}) {
-    execQueryStub.onCall(0).resolves('t')
+    execQueryStub.onCall(0).resolves('public\n')
     execQueryStub.onCall(1).resolves(newTotalExecTime ? 't' : 'f')
     execQueryStub.onCall(2).resolves(newBlkTime ? 't' : 'f')
   }
@@ -55,7 +55,7 @@ to_char((total_exec_time/sum(total_exec_time) OVER()) * 100, 'FM90D0') || '%'  A
 to_char(calls, 'FM999G999G999G990') AS ncalls,
 interval '1 millisecond' * (shared_blk_read_time + shared_blk_write_time) AS sync_io_time,
 CASE WHEN length(query) <= 40 THEN query ELSE substr(query, 0, 39) || '…' END AS query
-FROM pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
+FROM public.pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
 ORDER BY calls DESC
 LIMIT 10`
 
@@ -71,7 +71,7 @@ to_char((total_exec_time/sum(total_exec_time) OVER()) * 100, 'FM90D0') || '%'  A
 to_char(calls, 'FM999G999G999G990') AS ncalls,
 interval '1 millisecond' * (shared_blk_read_time + shared_blk_write_time) AS sync_io_time,
 query AS query
-FROM pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
+FROM public.pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
 ORDER BY calls DESC
 LIMIT 10`
 
@@ -87,7 +87,7 @@ to_char((total_time/sum(total_time) OVER()) * 100, 'FM90D0') || '%'  AS prop_exe
 to_char(calls, 'FM999G999G999G990') AS ncalls,
 interval '1 millisecond' * (blk_read_time + blk_write_time) AS sync_io_time,
 CASE WHEN length(query) <= 40 THEN query ELSE substr(query, 0, 39) || '…' END AS query
-FROM pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
+FROM public.pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
 ORDER BY calls DESC
 LIMIT 10`
 
@@ -146,11 +146,11 @@ SELECT * FROM users | 1.23 | 0.15 | 100 | 0.05`
     it('errors when pg_stat_statements is not available', async function () {
       // ensurePGStatStatement surfaces its real "need to be installed" error directly;
       // the helpful install instructions propagate to the user instead of being swallowed.
-      execQueryStub.onCall(0).resolves('f')
+      execQueryStub.onCall(0).resolves('\n')
 
       const {error} = await runCommand(Cmd, ['--app', 'my-app'])
 
-      expect(error?.message).to.contain('pg_stat_statements extension need to be installed in the public schema first.')
+      expect(error?.message).to.contain('The pg_stat_statements extension needs to be installed first.')
     })
   })
 })
