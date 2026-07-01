@@ -412,6 +412,7 @@ urijs
 uxxxxxxxxx
 vcpu
 VERSINFO
+walsender
 webfactory
 withfig
 wrapline
