@@ -37,7 +37,7 @@ export const constructSortFilterTableOptions = (flags: Record<string, string>, t
       throw new Error(`Invalid sort key: ${sort}`)
     }
 
-    tableOptions.sort = {[lowerCaseSort]: 'asc'}
+    tableOptions.sort = lowerCaseSort
   }
 
   return tableOptions
