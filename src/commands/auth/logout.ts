@@ -14,7 +14,7 @@ export default class Logout extends Command {
     await this.parse(Logout)
 
     ux.action.start('Logging out')
-    const cachedNetrcAccount = await AccountsModule.currentNetrc()
+    const cachedAccount = await AccountsModule.current(this.heroku)
     await this.heroku.logout()
 
     const git = new Git()
@@ -25,8 +25,8 @@ export default class Logout extends Command {
       // ignore
     }
 
-    if (cachedNetrcAccount) {
-      await AccountsModule.remove(cachedNetrcAccount)
+    if (cachedAccount) {
+      await AccountsModule.remove(cachedAccount)
     }
 
     await this.config.runHook('recache', {type: 'logout'})
