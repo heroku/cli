@@ -90,11 +90,11 @@ export interface WorkerEnvelope {
 // the worker can reconstruct an Error instance. Other payloads pass
 // through unchanged.
 export interface SerializedError {
+  [key: string]: unknown
   _type: 'error'
   message: string
   name: string
   stack?: string
-  [key: string]: unknown
 }
 export type SerializedWorkerData = HerokulyticsData | SerializedError | Telemetry
 

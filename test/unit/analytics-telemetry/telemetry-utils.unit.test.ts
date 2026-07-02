@@ -142,7 +142,9 @@ describe('telemetry-utils', function () {
         exitState: 'successful',
         isTTY: true,
         isVersionOrHelp: false,
-        lifecycleHookCompletion: {command_not_found: false, init: true, postrun: true, prerun: true},
+        lifecycleHookCompletion: {
+          command_not_found: false, init: true, postrun: true, prerun: true,
+        },
         os: 'darwin',
         version: '1.0.0',
       }

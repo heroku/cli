@@ -7,7 +7,9 @@
 import type {RecordOpts} from './backboard-herokulytics-client.js'
 
 import {telemetryManager} from './telemetry-manager.js'
-import {CLIError, readWorkerEnvelope, telemetryDebug, TelemetryData} from './telemetry-utils.js'
+import {
+  CLIError, readWorkerEnvelope, TelemetryData, telemetryDebug,
+} from './telemetry-utils.js'
 
 // Set maximum lifetime for worker process (10 seconds)
 // This ensures the worker never hangs indefinitely due to network issues or other failures
