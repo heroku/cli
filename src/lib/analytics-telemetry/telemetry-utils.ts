@@ -77,6 +77,27 @@ export interface TelemetryGlobal {
 // All data types that can be sent via worker
 export type WorkerData = HerokulyticsData | TelemetryData
 
+// Envelope written to the worker's stdin. The worker runs in a separate
+// Node process, so any module-level state in this file (e.g. the CLI
+// version cached via setVersion) does not carry across. Fields the worker
+// needs to re-hydrate before initializing clients belong here.
+export interface WorkerEnvelope {
+  cliVersion: string
+  payload: SerializedWorkerData
+}
+
+// Errors are serialized to plain objects with an `_type: 'error'` tag so
+// the worker can reconstruct an Error instance. Other payloads pass
+// through unchanged.
+export interface SerializedError {
+  _type: 'error'
+  message: string
+  name: string
+  stack?: string
+  [key: string]: unknown
+}
+export type SerializedWorkerData = HerokulyticsData | SerializedError | Telemetry
+
 /**
  * Compute duration from a start time to now
  */
@@ -158,13 +179,16 @@ export function isTelemetryEnabled(): boolean {
 }
 
 /**
- * Serialize data for telemetry worker, handling Error objects specially
+ * Serialize data for the telemetry worker.
+ *
+ * Every payload is wrapped in a WorkerEnvelope. The worker relies on this
+ * shape unconditionally — see readWorkerEnvelope.
  */
 export function serializeTelemetryData(data: WorkerData): string {
-  // If it's an Error object, convert to plain object with all properties
+  let payload: SerializedWorkerData
   if (data instanceof Error) {
     const errorData = data as CLIError
-    return JSON.stringify({
+    payload = {
       // Include any other enumerable properties first
       ...data,
       // Then override with important properties to ensure they're captured
@@ -177,10 +201,23 @@ export function serializeTelemetryData(data: WorkerData): string {
       oclif: errorData.oclif,
       stack: errorData.stack,
       statusCode: errorData.statusCode,
-    })
+    }
+  } else {
+    payload = data
   }
 
-  return JSON.stringify(data)
+  const envelope: WorkerEnvelope = {cliVersion: getVersion(), payload}
+  return JSON.stringify(envelope)
+}
+
+/**
+ * Parse a worker envelope from stdin and restore module-level state
+ * (currently just the CLI version). Returns the inner payload.
+ */
+export function readWorkerEnvelope(input: string): SerializedWorkerData {
+  const envelope = JSON.parse(input) as WorkerEnvelope
+  setVersion(envelope.cliVersion)
+  return envelope.payload
 }
 
 /**

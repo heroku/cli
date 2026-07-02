@@ -4,8 +4,10 @@
  * This runs as a separate process to avoid blocking the main CLI
  */
 
+import type {RecordOpts} from './backboard-herokulytics-client.js'
+
 import {telemetryManager} from './telemetry-manager.js'
-import {telemetryDebug} from './telemetry-utils.js'
+import {CLIError, readWorkerEnvelope, telemetryDebug, TelemetryData} from './telemetry-utils.js'
 
 // Set maximum lifetime for worker process (10 seconds)
 // This ensures the worker never hangs indefinitely due to network issues or other failures
@@ -52,7 +54,7 @@ process.stdin.on('data', chunk => {
 
 process.stdin.on('end', async () => {
   try {
-    const parsed = JSON.parse(inputData)
+    const parsed = readWorkerEnvelope(inputData)
 
     // Check if this is Herokulytics data using explicit type discriminator
     if (parsed._type === 'herokulytics') {
@@ -64,8 +66,10 @@ process.stdin.on('end', async () => {
       const config = await Config.load()
       const client = new BackboardHerokulyticsClient(config)
 
-      // Send herokulytics data
-      await client.send(parsed)
+      // Send herokulytics data. The Command shape used at the send site
+      // is a subset of oclif's Command.Class; the client only reads
+      // `id`/`plugin` off it, so cast to unblock the type check.
+      await client.send(parsed as unknown as RecordOpts)
 
       exitWorker(0)
       return
@@ -73,9 +77,9 @@ process.stdin.on('end', async () => {
 
     // Otherwise, handle OTEL/Sentry telemetry data
     // If the data is an error, reconstruct it as an Error instance
-    let telemetryData = parsed
+    let telemetryData: TelemetryData = parsed
     if (parsed._type === 'error') {
-      const error = new Error(parsed.message)
+      const error = new Error(parsed.message) as CLIError
       error.name = parsed.name
       error.stack = parsed.stack
       // Copy over additional properties

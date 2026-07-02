@@ -116,4 +116,39 @@ describe('telemetry-utils', function () {
       expect(token1).to.equal(token2)
     })
   })
+
+  describe('worker envelope round-trip', function () {
+    it('carries the CLI version across a serialize/read cycle', function () {
+      telemetryUtils.setVersion('9.8.7')
+      const err = new Error('boom')
+      const wire = telemetryUtils.serializeTelemetryData(err)
+
+      telemetryUtils.setVersion('unknown')
+      const payload = telemetryUtils.readWorkerEnvelope(wire)
+
+      expect(telemetryUtils.getVersion()).to.equal('9.8.7')
+      expect(payload._type).to.equal('error')
+      expect((payload as {message: string}).message).to.equal('boom')
+    })
+
+    it('serializes non-error payloads unchanged inside the envelope', function () {
+      telemetryUtils.setVersion('1.0.0')
+      const otelData: telemetryUtils.Telemetry = {
+        _type: 'otel',
+        cliRunDuration: 0,
+        command: 'apps:info',
+        commandRunDuration: 0,
+        exitCode: 0,
+        exitState: 'successful',
+        isTTY: true,
+        isVersionOrHelp: false,
+        lifecycleHookCompletion: {command_not_found: false, init: true, postrun: true, prerun: true},
+        os: 'darwin',
+        version: '1.0.0',
+      }
+      const wire = telemetryUtils.serializeTelemetryData(otelData)
+      const payload = telemetryUtils.readWorkerEnvelope(wire)
+      expect(payload).to.deep.equal(otelData)
+    })
+  })
 })
