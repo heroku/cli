@@ -4,11 +4,9 @@
  * This runs as a separate process to avoid blocking the main CLI
  */
 
-import type {RecordOpts} from './backboard-herokulytics-client.js'
-
 import {telemetryManager} from './telemetry-manager.js'
 import {
-  CLIError, readWorkerEnvelope, TelemetryData, telemetryDebug,
+  CLIError, parseWorkerEnvelope, setVersion, TelemetryData, telemetryDebug,
 } from './telemetry-utils.js'
 
 // Set maximum lifetime for worker process (10 seconds)
@@ -56,7 +54,13 @@ process.stdin.on('data', chunk => {
 
 process.stdin.on('end', async () => {
   try {
-    const parsed = readWorkerEnvelope(inputData)
+    const envelope = parseWorkerEnvelope(inputData)
+    // Restore the CLI version in this worker's module scope so any client
+    // that lazily reads getVersion() (Sentry.init, OTEL tracer) sees the
+    // real version instead of 'unknown'. Must happen before the first
+    // client import below.
+    setVersion(envelope.cliVersion)
+    const parsed = envelope.payload
 
     // Check if this is Herokulytics data using explicit type discriminator
     if (parsed._type === 'herokulytics') {
@@ -68,10 +72,7 @@ process.stdin.on('end', async () => {
       const config = await Config.load()
       const client = new BackboardHerokulyticsClient(config)
 
-      // Send herokulytics data. The Command shape used at the send site
-      // is a subset of oclif's Command.Class; the client only reads
-      // `id`/`plugin` off it, so cast to unblock the type check.
-      await client.send(parsed as unknown as RecordOpts)
+      await client.send({argv: parsed.argv, Command: parsed.Command})
 
       exitWorker(0)
       return

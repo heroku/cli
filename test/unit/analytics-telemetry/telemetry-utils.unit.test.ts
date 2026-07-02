@@ -118,17 +118,26 @@ describe('telemetry-utils', function () {
   })
 
   describe('worker envelope round-trip', function () {
-    it('carries the CLI version across a serialize/read cycle', function () {
+    it('carries the CLI version alongside an error payload', function () {
       telemetryUtils.setVersion('9.8.7')
       const err = new Error('boom')
       const wire = telemetryUtils.serializeTelemetryData(err)
 
-      telemetryUtils.setVersion('unknown')
-      const payload = telemetryUtils.readWorkerEnvelope(wire)
+      const envelope = telemetryUtils.parseWorkerEnvelope(wire)
 
-      expect(telemetryUtils.getVersion()).to.equal('9.8.7')
-      expect(payload._type).to.equal('error')
-      expect((payload as {message: string}).message).to.equal('boom')
+      expect(envelope.cliVersion).to.equal('9.8.7')
+      expect(envelope.payload._type).to.equal('error')
+      expect((envelope.payload as {message: string}).message).to.equal('boom')
+    })
+
+    it('parseWorkerEnvelope does not mutate module state', function () {
+      telemetryUtils.setVersion('parent-version')
+      const wire = telemetryUtils.serializeTelemetryData(new Error('x'))
+
+      telemetryUtils.setVersion('local-sentinel')
+      telemetryUtils.parseWorkerEnvelope(wire)
+
+      expect(telemetryUtils.getVersion()).to.equal('local-sentinel')
     })
 
     it('serializes non-error payloads unchanged inside the envelope', function () {
@@ -149,8 +158,8 @@ describe('telemetry-utils', function () {
         version: '1.0.0',
       }
       const wire = telemetryUtils.serializeTelemetryData(otelData)
-      const payload = telemetryUtils.readWorkerEnvelope(wire)
-      expect(payload).to.deep.equal(otelData)
+      const envelope = telemetryUtils.parseWorkerEnvelope(wire)
+      expect(envelope.payload).to.deep.equal(otelData)
     })
   })
 })

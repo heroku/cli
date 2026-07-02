@@ -182,13 +182,17 @@ export function isTelemetryEnabled(): boolean {
  * Serialize data for the telemetry worker.
  *
  * Every payload is wrapped in a WorkerEnvelope. The worker relies on this
- * shape unconditionally — see readWorkerEnvelope.
+ * shape unconditionally — see parseWorkerEnvelope.
  */
 export function serializeTelemetryData(data: WorkerData): string {
-  let payload: SerializedWorkerData
+  const envelope: WorkerEnvelope = {cliVersion: getVersion(), payload: toSerializedPayload(data)}
+  return JSON.stringify(envelope)
+}
+
+function toSerializedPayload(data: WorkerData): SerializedWorkerData {
   if (data instanceof Error) {
     const errorData = data as CLIError
-    payload = {
+    return {
       // Include any other enumerable properties first
       ...data,
       // Then override with important properties to ensure they're captured
@@ -202,22 +206,34 @@ export function serializeTelemetryData(data: WorkerData): string {
       stack: errorData.stack,
       statusCode: errorData.statusCode,
     }
-  } else {
-    payload = data
   }
 
-  const envelope: WorkerEnvelope = {cliVersion: getVersion(), payload}
-  return JSON.stringify(envelope)
+  // Discriminate the remaining, non-Error variants of WorkerData by _type
+  // so a new variant becomes a compile error here rather than silently
+  // falling through.
+  switch (data._type) {
+    case 'herokulytics':
+    case 'otel': {
+      return data
+    }
+
+    default: {
+      const _exhaustive: never = data
+      return _exhaustive
+    }
+  }
 }
 
 /**
- * Parse a worker envelope from stdin and restore module-level state
- * (currently just the CLI version). Returns the inner payload.
+ * Parse a worker envelope from stdin. Pure — no side effects.
+ *
+ * The caller is responsible for applying the envelope's cliVersion via
+ * setVersion before any client (Sentry, OTEL) reads getVersion(). Keeping
+ * the parse and the state hydration in the caller makes the ordering
+ * visible at the call site.
  */
-export function readWorkerEnvelope(input: string): SerializedWorkerData {
-  const envelope = JSON.parse(input) as WorkerEnvelope
-  setVersion(envelope.cliVersion)
-  return envelope.payload
+export function parseWorkerEnvelope(input: string): WorkerEnvelope {
+  return JSON.parse(input) as WorkerEnvelope
 }
 
 /**
