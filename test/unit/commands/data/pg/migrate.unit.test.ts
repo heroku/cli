@@ -996,7 +996,7 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/Select the migration method: Snapshot/)
     })
 
-    it('allows user to select snapshot migration method', async function () {
+    it('allows user to select cdc streaming migration method', async function () {
       dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(404, {
@@ -1063,6 +1063,49 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('')
       expect(stdout).to.match(/Select the migration method: Go back/)
+    })
+
+    it('prompts for the migration method again after going back from confirmation', async function () {
+      dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {
+          id: 'not_found',
+          message: 'Add-on not found',
+        })
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',          // Select configure migration
+        '\n',          // Select source database
+        '\n',          // Select target database
+        '\u001B[B\n',  // Select streaming method (first selection)
+        '\u001B[A\n',  // Confirm migration configuration: > Go back
+        '\n',          // Select snapshot method (second selection, default)
+        '\n',          // Confirm migration
+        '\n',          // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      // The method prompt must be presented twice (once per pass), not skipped on
+      // the second pass. The "(Use arrow keys)" hint renders only on a prompt's
+      // first paint, so counting it yields one match per distinct prompt display.
+      expect(stdout.match(/Select the migration method: \(Use arrow keys\)/g)?.length).to.equal(2)
+      // The second selection (snapshot -> full-load) must be what gets submitted,
+      // which is asserted by the nock POST body matcher above requiring method=full-load
     })
 
     it('skips method selection prompt when --method=snapshot flag is provided', async function () {
