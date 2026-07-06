@@ -41,6 +41,7 @@ export default class DataPgMigrate extends BaseCommand {
   private appName: string | undefined
   private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
+  private methodProvidedViaFlag = false
   private migrationTargets: Array<MigrationResponse> = []
   private selectedMigrationMethod?: MigrationMethod
 
@@ -56,8 +57,10 @@ export default class DataPgMigrate extends BaseCommand {
     const {flags} = await this.parse(DataPgMigrate)
     const {app, method} = flags
     this.appName = app
-    // If --method flag is provided, convert and store
+    // If --method flag is provided, convert and store, and record that the method
+    // came from the flag so the interactive selection step is skipped throughout.
     if (method !== undefined) {
+      this.methodProvidedViaFlag = true
       this.selectedMigrationMethod = method === 'streaming' ? MigrationMethod.CDC : MigrationMethod.FULL_LOAD
     }
 
@@ -177,6 +180,13 @@ export default class DataPgMigrate extends BaseCommand {
   }
 
   private async configureMigration(): Promise<void> {
+    // When the method wasn't provided via the --method flag, clear any method
+    // selected during a previous migration in this session so a stale value can
+    // never reach the migration request if the interactive step is ever skipped.
+    if (!this.methodProvidedViaFlag) {
+      this.selectedMigrationMethod = undefined
+    }
+
     let currentStep = '__select_source'
     let sourceDatabaseId: string | undefined
     let targetDatabaseId: string | undefined
@@ -310,7 +320,7 @@ export default class DataPgMigrate extends BaseCommand {
         case '__confirm_migration': {
           const action = await confirmMigration()
           if (action === '__go_back') {
-            currentStep = '__select_target'
+            currentStep = this.methodProvidedViaFlag ? '__select_target' : '__select_method'
           } else if (action === '__confirm') {
             ux.stdout('')
             ux.action.start('Configuring migration')
@@ -355,12 +365,12 @@ export default class DataPgMigrate extends BaseCommand {
             if (addon) {
               targetDatabaseId = addon.id!
               targetDatabaseName = addon.name
-              currentStep = this.selectedMigrationMethod === undefined ? '__select_method' : '__confirm_migration'
+              currentStep = this.methodProvidedViaFlag ? '__confirm_migration' : '__select_method'
             } else {
               currentStep = '__select_target'
             }
           } else {
-            currentStep = this.selectedMigrationMethod === undefined ? '__select_method' : '__confirm_migration'
+            currentStep = this.methodProvidedViaFlag ? '__confirm_migration' : '__select_method'
           }
 
           break
