@@ -66,6 +66,9 @@ describe('analytics (error handling)', function () {
   })
 
   it('does not show an error on console when backboard has an error (with authorizationToken)', async function () {
+    const originalApiKey = process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_API_KEY
+
     const credentialManagerStub = stubCredentialManager({
       getAuth: () => Promise.resolve({account: 'test@example.com', token: 'test-token'}),
     })
@@ -94,10 +97,14 @@ describe('analytics (error handling)', function () {
     } finally {
       backboard.done()
       credentialManagerStub.restore()
+      if (originalApiKey !== undefined) process.env.HEROKU_API_KEY = originalApiKey
     }
   })
 
   it('does not show an error on console when backboard has an error (without authorizationToken)', async function () {
+    const originalApiKey = process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_API_KEY
+
     const credentialManagerStub = stubCredentialManager({
       getAuth: () => Promise.resolve({account: undefined, token: undefined}),
     })
@@ -126,6 +133,7 @@ describe('analytics (error handling)', function () {
     } finally {
       backboard.done()
       credentialManagerStub.restore()
+      if (originalApiKey !== undefined) process.env.HEROKU_API_KEY = originalApiKey
     }
   })
 

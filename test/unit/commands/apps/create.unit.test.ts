@@ -282,15 +282,15 @@ describe('apps:create', function () {
   })
 
   describe('git operations', function () {
-    it('creates a remote when in a git repository and --no-remote is not used', async function () {
-      api
-        .post('/apps', {})
-        .reply(200, {
-          name: 'foobar',
-          stack: {name: 'cedar-14'},
-          web_url: 'https://foobar.com',
-        })
+    beforeEach(function () {
+      fakePlatform.app.create.resolves({
+        name: 'foobar',
+        stack: {name: 'cedar-14'},
+        web_url: 'https://foobar.com',
+      })
+    })
 
+    it('creates a remote when in a git repository and --no-remote is not used', async function () {
       await runCommand(CreateCommand, [])
 
       expect(gitCreateRemoteStub.calledOnce).to.be.true
@@ -298,14 +298,6 @@ describe('apps:create', function () {
 
     it('does not create a remote when not in a git repository', async function () {
       const inGitRepoStub = stub(Git.prototype, 'inGitRepo').returns(false)
-
-      api
-        .post('/apps', {})
-        .reply(200, {
-          name: 'foobar',
-          stack: {name: 'cedar-14'},
-          web_url: 'https://foobar.com',
-        })
 
       try {
         await runCommand(CreateCommand, [])
@@ -316,42 +308,18 @@ describe('apps:create', function () {
     })
 
     it('does not create a remote when --no-remote is used', async function () {
-      api
-        .post('/apps', {})
-        .reply(200, {
-          name: 'foobar',
-          stack: {name: 'cedar-14'},
-          web_url: 'https://foobar.com',
-        })
-
       await runCommand(CreateCommand, ['--no-remote'])
 
       expect(gitCreateRemoteStub.called).to.be.false
     })
 
     it('configures git credential helper when creating a remote', async function () {
-      api
-        .post('/apps', {})
-        .reply(200, {
-          name: 'foobar',
-          stack: {name: 'cedar-14'},
-          web_url: 'https://foobar.com',
-        })
-
       await runCommand(CreateCommand, [])
 
       expect(configureCredentialHelperStub.calledOnce).to.be.true
     })
 
     it('does not configure git credential helper when --no-remote is used', async function () {
-      api
-        .post('/apps', {})
-        .reply(200, {
-          name: 'foobar',
-          stack: {name: 'cedar-14'},
-          web_url: 'https://foobar.com',
-        })
-
       await runCommand(CreateCommand, ['--no-remote'])
 
       expect(configureCredentialHelperStub.called).to.be.false
