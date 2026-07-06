@@ -1,10 +1,15 @@
+import type {AppWithPipelineCoupling} from '@heroku/sdk/resources/platform/pipeline/coupling'
+
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {AppWithPipelineCoupling} from '../api.js'
 import {getOwner, warnMixedOwnership} from './ownership.js'
+
+// hux.table requires its row type to satisfy Record<string, unknown>; the SDK
+// type doesn't carry that index signature, so widen it locally for table use.
+type IndexedAppWithPipelineCoupling = AppWithPipelineCoupling & Record<string, unknown>
 
 export default async function renderPipeline(
   heroku: APIClient,
@@ -24,7 +29,7 @@ export default async function renderPipeline(
 
   ux.stdout('')
   /* eslint-disable perfectionist/sort-objects */
-  const columns: Parameters<typeof hux.table<AppWithPipelineCoupling>>[1] = {
+  const columns: Parameters<typeof hux.table<IndexedAppWithPipelineCoupling>>[1] = {
     name: {
       get(row) {
         return color.app(row.name || '')
@@ -73,7 +78,7 @@ export default async function renderPipeline(
     .sort(sortByName)
   const apps = developmentApps.concat(reviewApps).concat(stagingApps).concat(productionApps)
 
-  hux.table(apps, columns)
+  hux.table(apps as IndexedAppWithPipelineCoupling[], columns)
 
   if (showOwnerWarning && pipeline.owner && owner) {
     warnMixedOwnership(pipelineApps, pipeline, owner)

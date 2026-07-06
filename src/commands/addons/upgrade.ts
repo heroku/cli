@@ -1,15 +1,17 @@
 import type {AddOn, Plan} from '@heroku-cli/schema'
 
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuAPIError} from '@heroku-cli/command/lib/api-client.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HTTP} from '@heroku/http-call'
+import {HerokuSDK} from '@heroku/sdk'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
 import {Args, ux} from '@oclif/core'
 
-import type {ExtendedAddon} from '../../lib/pg/types.js'
-
-import {addonResolver} from '../../lib/addons/resolve.js'
 import {formatPriceText} from '../../lib/addons/util.js'
+
+function isApiError(error: unknown): error is Error & {statusCode: number} {
+  return error instanceof Error && 'statusCode' in error && typeof (error as {statusCode?: unknown}).statusCode === 'number'
+}
 
 export default class Upgrade extends Command {
   static aliases = ['addons:downgrade']
@@ -79,25 +81,13 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
   }
 
   protected async getPlans(addonServiceName: string | undefined): Promise<Plan[]> {
+    if (!addonServiceName) {
+      return []
+    }
+
     try {
-      const plansResponse: HTTP<Plan[]> = await this.heroku.get(`/addon-services/${addonServiceName}/plans`)
-      const {body: plans} = plansResponse
-      plans.sort((a, b) => {
-        if (a?.price?.cents === b?.price?.cents) {
-          return 0
-        }
-
-        if (!a?.price?.cents || !b?.price?.cents || a.price.cents > b.price.cents) {
-          return 1
-        }
-
-        if (a.price.cents < b.price.cents) {
-          return -1
-        }
-
-        return 0
-      })
-      return plans
+      const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+      return (await platform.addOn.listPlans(addonServiceName)) as unknown as Plan[]
     } catch {
       return []
     }
@@ -109,43 +99,32 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
 
-    let resolvedAddon: ExtendedAddon | Required<AddOn>
+    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    let addonServiceName: string | undefined
+
+    let updatedAddon: Required<AddOn>
     try {
-      resolvedAddon = await addonResolver(this.heroku, app, addon)
+      updatedAddon = await platform.addOn.upgrade(addon, plan, {
+        appIdentity: app,
+        onResolved(resolved) {
+          addonServiceName = (resolved.addon_service as undefined | {name?: string})?.name
+          const resolvedPlan = resolved.plan as undefined | {name?: string}
+          const updatedPlanName = plan.includes(':') ? plan : `${addonServiceName}:${plan}`
+          ux.action.start(`Changing ${color.addon(resolved.name ?? '')} on ${color.app(resolved.app.name ?? '')} from ${color.blue(resolvedPlan?.name ?? '')} to ${color.blue(updatedPlanName)}`)
+        },
+      }) as Required<AddOn>
     } catch (error) {
-      if (error instanceof HerokuAPIError && error.http.statusCode === 422 && error.body.id === 'multiple_matches') {
-        throw new Error(this.buildApiErrorMessage(error.http.body.message, ctx))
+      if (error instanceof AddonAmbiguousError) {
+        // eslint-disable-next-line unicorn/prefer-type-error
+        throw new Error(this.buildApiErrorMessage(error.message, ctx))
       }
 
-      throw error
-    }
-
-    const {name: addonServiceName} = resolvedAddon.addon_service
-    const {name: appName} = resolvedAddon.app
-    const {name: addonName, plan: resolvedAddonPlan} = resolvedAddon ?? {}
-    const updatedPlanName = `${addonServiceName}:${plan}`
-    ux.action.start(`Changing ${color.addon(addonName ?? '')} on ${color.app(appName ?? '')} from ${color.blue(resolvedAddonPlan?.name ?? '')} to ${color.blue(updatedPlanName)}`)
-
-    try {
-      const patchResult: HTTP<Required<AddOn>> = await this.heroku.patch(
-        `/apps/${appName}/addons/${addonName}`,
-        {
-          body: {plan: {name: updatedPlanName}},
-          headers: {
-            'Accept-Expansion': 'plan', 'X-Heroku-Legacy-Provider-Messages': 'true',
-          },
-        },
-      )
-      resolvedAddon = patchResult.body
-    } catch (error) {
       let errorToThrow = error as Error
-      if (error instanceof HerokuAPIError) {
-        const {http} = error
-        if (http.statusCode === 422
-          && http.body.message
-          && http.body.message.startsWith('Couldn\'t find either the add-on')) {
+      if (isApiError(error)) {
+        const message = error.message || ''
+        if (error.statusCode === 422 && message.startsWith('Couldn\'t find either the add-on')) {
           const plans = await this.getPlans(addonServiceName)
-          errorToThrow = new Error(`${http.body.message}
+          errorToThrow = new Error(`${message}
 
 Here are the available plans for ${color.addon(addonServiceName || '')}:
 ${plans.map(plan => plan.name).join('\n')}\n\nSee more plan information with ${color.blue('heroku addons:plans ' + addonServiceName)}
@@ -156,11 +135,13 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
         ux.action.stop()
         throw errorToThrow
       }
+
+      throw errorToThrow
     }
 
-    ux.action.stop(`done${resolvedAddon.plan?.price ? `, ${formatPriceText(resolvedAddon.plan.price)}` : ''}`)
-    if (resolvedAddon.provision_message) {
-      ux.stdout(resolvedAddon.provision_message)
+    ux.action.stop(`done${updatedAddon.plan?.price ? `, ${formatPriceText(updatedAddon.plan.price)}` : ''}`)
+    if (updatedAddon.provision_message) {
+      ux.stdout(updatedAddon.provision_message)
     }
   }
 }

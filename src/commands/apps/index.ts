@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
@@ -37,22 +37,27 @@ export default class AppsIndex extends Command {
     let team = (!flags.personal && teamIdentifier) ? teamIdentifier : null
     const {all, json, space} = flags
     const internalRouting = flags['internal-routing']
+
+    const sdk = new HerokuSDK()
+    const {platform} = sdk
+
     if (space) {
-      const teamResponse = await this.heroku.get<Heroku.Team>(`/spaces/${space}`)
-      team = teamResponse.body.team.name
+      const spaceInfo = await platform.space.info(space)
+      team = spaceInfo.team?.name ?? null
     }
 
-    let path = '/users/~/apps'
-    if (team) path = `/teams/${team}/apps`
-    else if (all) path = '/apps'
-    const [appsResponse, userResponse] = await Promise.all([
-      this.heroku.get<Heroku.App>(path),
-      this.heroku.get<Heroku.Account>('/account'),
+    const [appsList, user] = await Promise.all([
+      (async () => {
+        if (team) return platform.teamApp.listByTeam(team)
+        if (all) return platform.app.list()
+        return platform.app.listOwnedAndCollaborated('~')
+      })(),
+      platform.account.info(),
     ])
-    let apps = appsResponse.body
-    const user = userResponse.body
 
-    apps = _.sortBy(apps, 'name')
+    let apps = appsList as App[]
+
+    apps.sort((a, b) => a.name.localeCompare(b.name))
     if (space) {
       apps = apps.filter((a: App) => a.space && (a.space.name === space || a.space.id === space))
     }
@@ -82,11 +87,11 @@ function annotateAppName(app: App) {
   return name
 }
 
-function listApps(apps: Heroku.App) {
+function listApps(apps: App[]) {
   apps.forEach((app: App) => ux.stdout(regionizeAppName(app)))
 }
 
-function print(apps: Heroku.App, user: Heroku.Account, space: string | undefined, team: null | string | undefined, _: any) {
+function print(apps: App[], user: {email?: string}, space: string | undefined, team: null | string | undefined, _: any) {
   if (apps.length === 0) {
     if (space) ux.stdout(`There are no apps in space ${color.space(space)}.`)
     else if (team) ux.stdout(`There are no apps in team ${color.team(team)}.`)
@@ -98,10 +103,10 @@ function print(apps: Heroku.App, user: Heroku.Account, space: string | undefined
     hux.styledHeader(`Apps in team ${color.team(team)}`)
     listApps(apps)
   } else {
-    apps = _.partition(apps, (app: App) => app.owner.email === user.email)
-    if (apps[0].length > 0) {
+    const [ownedApps, collabApps] = _.partition(apps, (app: App) => app.owner.email === user.email)
+    if (ownedApps.length > 0) {
       hux.styledHeader(`${color.user(user.email!)} Apps`)
-      listApps(apps[0])
+      listApps(ownedApps)
     }
 
     const columns = {
@@ -110,9 +115,9 @@ function print(apps: Heroku.App, user: Heroku.Account, space: string | undefined
       Email: {get: ({owner}: any) => color.user(owner.email)},
     }
 
-    if (apps[1].length > 0) {
+    if (collabApps.length > 0) {
       ux.stdout()
-      hux.table(apps[1], columns, {title: 'Collaborated Apps\n', titleOptions: {bold: true}})
+      hux.table(collabApps, columns, {title: 'Collaborated Apps\n', titleOptions: {bold: true}})
     }
   }
 }

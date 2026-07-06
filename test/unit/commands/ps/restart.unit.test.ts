@@ -1,27 +1,33 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/ps/restart.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('ps:restart', function () {
+  let sdkMock: MockSDK
+
+  afterEach(function () {
+    sdkMock.restore()
+  })
+
   it('restarts all dynos', async function () {
-    nock('https://api.heroku.com')
-      .delete('/apps/myapp/dynos')
-      .reply(202)
+    const restartStub = stub().resolves()
+    sdkMock = mockSDKPlatform({dyno: {restart: restartStub}})
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
     expectOutput(stderr, 'Restarting all dynos on ⬢ myapp... done')
+    expect(restartStub.calledOnceWith('myapp')).to.be.true
   })
 
   it('restarts web dynos', async function () {
-    nock('https://api.heroku.com')
-      .delete('/apps/myapp/formations/web')
-      .reply(202)
+    const restartStub = stub().resolves()
+    sdkMock = mockSDKPlatform({dyno: {restart: restartStub}})
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
@@ -30,12 +36,12 @@ describe('ps:restart', function () {
       'web',
     ])
     expectOutput(stderr, 'Restarting all web dynos on ⬢ myapp... done')
+    expect(restartStub.calledOnceWith('myapp', {type: 'web'})).to.be.true
   })
 
   it('restarts a specific dyno', async function () {
-    nock('https://api.heroku.com')
-      .delete('/apps/myapp/dynos/web.1')
-      .reply(202)
+    const restartStub = stub().resolves()
+    sdkMock = mockSDKPlatform({dyno: {restart: restartStub}})
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
@@ -44,12 +50,12 @@ describe('ps:restart', function () {
       'web.1',
     ])
     expectOutput(stderr, 'Restarting dyno web.1 on ⬢ myapp... done')
+    expect(restartStub.calledOnceWith('myapp', {dyno: 'web.1'})).to.be.true
   })
 
   it('emits a warning when passing dyno as an arg', async function () {
-    nock('https://api.heroku.com')
-      .delete('/apps/myapp/dynos/web.1')
-      .reply(202)
+    const restartStub = stub().resolves()
+    sdkMock = mockSDKPlatform({dyno: {restart: restartStub}})
 
     const {stderr} = await runCommand(Cmd, [
       '--app',
@@ -58,5 +64,6 @@ describe('ps:restart', function () {
     ])
     expect(ansis.strip(stderr)).to.include('DYNO is a deprecated argument.')
     expect(stderr).to.include('Restarting dyno web.1 on ⬢ myapp... done')
+    expect(restartStub.calledOnceWith('myapp', {dyno: 'web.1'})).to.be.true
   })
 })

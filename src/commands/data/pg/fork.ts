@@ -156,7 +156,7 @@ export default class Fork extends BaseCommand {
       const actionStartMessage = recoveryTime
         ? `Creating a fork for ${color.addon(addon.name)} on ${color.app(app)} ${rollbackMessage}`
         : `Creating a fork for ${color.addon(addon.name)} on ${color.app(app)}`
-      await createAddon(this.heroku, app, addon.plan.name!, confirm, wait, {
+      await createAddon(app, addon.plan.name!, confirm, wait, {
         actionStartMessage, actionStopMessage: 'done', as, config, name,
       })
 

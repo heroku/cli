@@ -1,27 +1,37 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import {SinonStub, stub} from 'sinon'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
+type FakePlatform = {
+  domain: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {list: sinon.stub()},
+  }
+}
+
 describe('domains', function () {
   let confirmStub: SinonStub
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     confirmStub = stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
       .resolves(true)
   })
 
   afterEach(function () {
-    api.done()
-    confirmStub.restore()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   const herokuOnlyDomainsResponse = [
@@ -114,16 +124,17 @@ describe('domains', function () {
   ]
 
   it('does not show the custom domain header if there are no custom domains', async function () {
-    api.get('/apps/myapp/domains').reply(200, herokuOnlyDomainsResponse)
+    fakePlatform.domain.list.resolves(herokuOnlyDomainsResponse)
 
     const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     expect(stdout).to.contain('=== ⬢ myapp Heroku Domain\n\nmyapp.herokuapp.com')
     expect(stdout).to.contain('myapp.herokuapp.com')
     expect(stdout).to.not.contain('=== ⬢ myapp Custom Domains')
+    expect(fakePlatform.domain.list.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('shows a list of domains and their DNS targets when there are custom domains', async function () {
-    api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
+    fakePlatform.domain.list.resolves(herokuAndCustomDomainsResponse)
 
     const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     const actual = removeAllWhitespace(stdout)
@@ -137,7 +148,7 @@ describe('domains', function () {
   })
 
   it('shows the SNI endpoint column when multiple sni endpoints are enabled', async function () {
-    api.get('/apps/myapp/domains').reply(200, herokuDomainWithSniEndpoint)
+    fakePlatform.domain.list.resolves(herokuDomainWithSniEndpoint)
 
     const {stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     const actual = removeAllWhitespace(stdout)
@@ -146,25 +157,23 @@ describe('domains', function () {
   })
 
   it('shows warning message for over 100 domains', async function () {
-    api.get('/apps/myapp/domains').reply(200, () => {
-      const domainData = {
-        acm_status: null,
-        acm_status_reason: null,
-        app: {
-          id: '01234567-89ab-cdef-0123-456789abcdef',
-          name: 'myapp',
-        },
-        cname: null,
-        created_at: '2012-01-01T12:00:00Z',
-        hostname: 'example.com',
-        id: '11434567-89ab-cdef-0123-456789abcdef',
-        kind: 'custom',
-        status: 'succeeded',
-        updated_at: '2012-01-01T12:00:00Z',
-      }
+    const domainData = {
+      acm_status: null,
+      acm_status_reason: null,
+      app: {
+        id: '01234567-89ab-cdef-0123-456789abcdef',
+        name: 'myapp',
+      },
+      cname: null,
+      created_at: '2012-01-01T12:00:00Z',
+      hostname: 'example.com',
+      id: '11434567-89ab-cdef-0123-456789abcdef',
+      kind: 'custom',
+      status: 'succeeded',
+      updated_at: '2012-01-01T12:00:00Z',
+    }
 
-      return new Array(1000).fill(domainData) // eslint-disable-line unicorn/no-new-array
-    })
+    fakePlatform.domain.list.resolves(new Array(1000).fill(domainData)) // eslint-disable-line unicorn/no-new-array
 
     const {stderr, stdout} = await runCommand(DomainsIndex, ['--app', 'myapp'])
     expect(stdout).to.contain('=== ⬢ myapp Heroku Domain')
@@ -172,7 +181,7 @@ describe('domains', function () {
   })
 
   it('passes no-wrap option through to table rendering', async function () {
-    api.get('/apps/myapp/domains').reply(200, herokuAndCustomDomainsResponse)
+    fakePlatform.domain.list.resolves(herokuAndCustomDomainsResponse)
     const tableStub = stub(hux, 'table')
 
     await runCommand(DomainsIndex, ['--app', 'myapp', '--no-wrap'])

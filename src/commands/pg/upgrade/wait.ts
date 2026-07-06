@@ -1,12 +1,14 @@
+import type {DatabaseUpgradeWaitResult} from '@heroku/sdk/resources/data/database'
+
 import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import {HerokuSDK} from '@heroku/sdk'
+import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import tsheredoc from 'tsheredoc'
 
 import notify from '../../../lib/notify.js'
-import {PgUpgradeStatus} from '../../../lib/pg/types.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -49,28 +51,30 @@ export default class Wait extends Command {
     const dbName = args.database
     const pgDebug = debug('pg')
 
+    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
     const waitFor = async (db: pg.ExtendedAddonAttachment['addon']) => {
       const interval = (!waitInterval || waitInterval < 0) ? 5 : waitInterval
-      let status
+      let status: DatabaseUpgradeWaitResult
       let waiting = false
       let retries = 20
       const notFoundMessage = 'Waiting to provision...'
 
       while (true) {
         try {
-          ({body: status} = await this.heroku.get<PgUpgradeStatus>(
-            `/client/v11/databases/${db.id}/upgrade/wait_status`,
-            {hostname: utils.pg.host()},
-          ))
-        } catch (error) {
-          if (error instanceof HTTPError && (!retries || error.statusCode !== 404)) {
-            const httpError = error as HTTPError
-            pgDebug(httpError)
-            throw httpError
+          status = await data.database.upgradeWaitStatus(app, db.name)
+        } catch (error: any) {
+          if (!retries || error.statusCode !== 404) {
+            pgDebug(error)
+            throw error
           }
 
           retries--
-          status = {message: notFoundMessage, 'waiting?': true}
+          status = {
+            'error?': false,
+            message: notFoundMessage,
+            step: '',
+            'waiting?': true,
+          }
         }
 
         let message = formatResponseWithCommands(status.message)

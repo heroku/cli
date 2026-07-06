@@ -3,29 +3,18 @@ import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {expect} from 'chai'
-import nock from 'nock'
-import {restore, stub} from 'sinon'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/index.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 describe('addons', function () {
-  let api: nock.Scope
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com', {
-      reqheaders: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-        'Accept-Expansion': 'addon_service,plan',
-      },
-    })
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
-    restore()
+    sdkMock?.restore()
   })
 
   describe('--all', function () {
@@ -38,13 +27,15 @@ describe('addons', function () {
     })
 
     context('with add-ons', function () {
-      beforeEach(function () {
-        api
-          .get('/addons')
-          .reply(200, addons)
-      })
-
       it('prints add-ons in a table', async function () {
+        const listStub = stub().resolves(addons)
+        const fakePlatform = {
+          addOn: {list: listStub, listByApp: stub()},
+          addOnAttachment: {list: stub(), listByApp: stub()},
+          withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+        }
+        sdkMock = mockSDKPlatform(fakePlatform)
+
         const {stdout} = await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
@@ -57,20 +48,44 @@ describe('addons', function () {
         expect(actual).to.include(expected)
       })
       it('orders by app, then by add-on name', async function () {
+        const listStub = stub().resolves(addons)
+        const fakePlatform = {
+          addOn: {list: listStub, listByApp: stub()},
+          addOnAttachment: {list: stub(), listByApp: stub()},
+          withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+        }
+        sdkMock = mockSDKPlatform(fakePlatform)
+
         const {stdout} = await runCommand(Cmd, [])
         expect(stdout.indexOf('acme-inc-api')).to.be.lt(stdout.indexOf('acme-inc-www'))
         expect(stdout.indexOf('www-db')).to.be.lt(stdout.indexOf('www-redis'))
       })
       it('passes no-wrap option through to table rendering', async function () {
+        const listStub = stub().resolves(addons)
+        const fakePlatform = {
+          addOn: {list: listStub, listByApp: stub()},
+          addOnAttachment: {list: stub(), listByApp: stub()},
+          withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+        }
+        sdkMock = mockSDKPlatform(fakePlatform)
         const tableStub = stub(hux, 'table')
 
         await runCommand(Cmd, ['--all', '--no-wrap'])
 
         const callArgs = tableStub.firstCall.args
         expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
+        tableStub.restore()
       })
       context('--json', function () {
         it('prints the output in json format', async function () {
+          const listStub = stub().resolves(addons)
+          const fakePlatform = {
+            addOn: {list: listStub, listByApp: stub()},
+            addOnAttachment: {list: stub(), listByApp: stub()},
+            withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+          }
+          sdkMock = mockSDKPlatform(fakePlatform)
+
           const {stdout} = await runCommand(Cmd, [
             '--json',
           ])
@@ -79,14 +94,16 @@ describe('addons', function () {
       })
     })
     context('with a grandfathered add-on', function () {
-      beforeEach(function () {
-        const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 10_000}
-        api
-          .get('/addons')
-          .reply(200, [addon])
-      })
       it('prints add-ons in a table with the grandfathered price', async function () {
+        const addon = structuredClone({...fixtures.addons['dwh-db'], billed_price: {cents: 10_000}})
+        const listStub = stub().resolves([addon])
+        const fakePlatform = {
+          addOn: {list: listStub, listByApp: stub()},
+          addOnAttachment: {list: stub(), listByApp: stub()},
+          withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+        }
+        sdkMock = mockSDKPlatform(fakePlatform)
+
         const {stdout} = await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
@@ -98,14 +115,16 @@ describe('addons', function () {
       })
     })
     context('with a contract add-on', function () {
-      beforeEach(function () {
-        const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 0, contract: true}
-        api
-          .get('/addons')
-          .reply(200, [addon])
-      })
       it('prints add-ons in a table with contract', async function () {
+        const addon = structuredClone({...fixtures.addons['dwh-db'], billed_price: {cents: 0, contract: true}})
+        const listStub = stub().resolves([addon])
+        const fakePlatform = {
+          addOn: {list: listStub, listByApp: stub()},
+          addOnAttachment: {list: stub(), listByApp: stub()},
+          withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+        }
+        sdkMock = mockSDKPlatform(fakePlatform)
+
         const {stdout} = await runCommand(Cmd, [])
         const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`
@@ -118,22 +137,29 @@ describe('addons', function () {
     })
 
     it('prints message when there are no add-ons', async function () {
-      nock('https://api.heroku.com')
-        .get('/addons')
-        .reply(200, [])
+      const listStub = stub().resolves([])
+      const fakePlatform = {
+        addOn: {list: listStub, listByApp: stub()},
+        addOnAttachment: {list: stub(), listByApp: stub()},
+        withHeaders: stub().returns({addOn: {listByApp: stub()}}),
+      }
+      sdkMock = mockSDKPlatform(fakePlatform)
+
       const {stdout} = await runCommand(Cmd, [])
       expectOutput(stdout, 'No add-ons.')
     })
   })
 
   describe('--app', function () {
-    function mockAPI(appName: string, addons: Heroku.AddOn[] = [], attachments: Heroku.AddOnAttachment[] = []) {
-      api
-        .get(`/apps/${appName}/addons`)
-        .reply(200, addons)
-      nock('https://api.heroku.com')
-        .get('/addon-attachments')
-        .reply(200, attachments)
+    function setupMock(appName: string, addons: Heroku.AddOn[] = [], attachments: Heroku.AddOnAttachment[] = []) {
+      const listByAppStub = stub().resolves(addons)
+      const allAttachmentsStub = stub().resolves(attachments)
+      const fakePlatform = {
+        addOn: {list: stub(), listByApp: listByAppStub},
+        addOnAttachment: {list: allAttachmentsStub, listByApp: stub()},
+        withHeaders: stub().returns({addOn: {listByApp: listByAppStub}}),
+      }
+      sdkMock = mockSDKPlatform(fakePlatform)
     }
 
     async function run(app: string, cb: (result: {stderr: string, stdout: string}) => any) {
@@ -146,14 +172,14 @@ describe('addons', function () {
 
     it('prints message when there are no add-ons', function () {
       const appName = 'acme-inc-www'
-      mockAPI(appName)
+      setupMock(appName)
       return run(appName, function ({stdout}) {
         expectOutput(stdout, 'No add-ons for app acme-inc-www.')
       })
     })
     context('with add-ons', function () {
       it('prints add-ons in a table with attachments', function () {
-        mockAPI('acme-inc-www', [
+        setupMock('acme-inc-www', [
           fixtures.addons['www-db'], fixtures.addons['www-redis'],
         ], [
           fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-www::REDIS'],
@@ -172,7 +198,7 @@ describe('addons', function () {
         })
       })
       it('shows attachments to foreign apps for owned add-ons', function () {
-        mockAPI('acme-inc-www', [fixtures.addons['www-db']], [
+        setupMock('acme-inc-www', [fixtures.addons['www-db']], [
           fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
         ])
         return run('acme-inc-www', function ({stdout}) {
@@ -188,7 +214,7 @@ describe('addons', function () {
         })
       })
       it('shows add-ons owned by foreign apps if attached to targeted app', function () {
-        mockAPI('acme-inc-dwh', [fixtures.addons['www-db']], [
+        setupMock('acme-inc-dwh', [fixtures.addons['www-db']], [
           fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
         ])
         return run('acme-inc-dwh', function ({stdout}) {
@@ -204,14 +230,14 @@ describe('addons', function () {
         })
       })
       it("doesn't show attachments that are not related to the targeted app", function () {
-        mockAPI('acme-inc-dwh', [], [fixtures.attachments['acme-inc-www::DATABASE']])
+        setupMock('acme-inc-dwh', [], [fixtures.attachments['acme-inc-www::DATABASE']])
         return run('acme-inc-dwh', function ({stdout}) {
           expectOutput(stdout, 'No add-ons for app acme-inc-dwh.')
         })
       })
       describe('attachment app info', function () {
         beforeEach(function () {
-          mockAPI('acme-inc-dwh', [fixtures.addons['www-db']], [
+          setupMock('acme-inc-dwh', [fixtures.addons['www-db']], [
             fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
           ])
         })
@@ -231,7 +257,7 @@ describe('addons', function () {
       describe('sorting', function () {
         context('add-ons', function () {
           it('sorts owned add-ons first, foreign add-ons second', function () {
-            mockAPI('acme-inc-dwh', [
+            setupMock('acme-inc-dwh', [
               fixtures.addons['dwh-db'], fixtures.addons['www-db'],
             ], [
               fixtures.attachments['acme-inc-dwh::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
@@ -241,7 +267,7 @@ describe('addons', function () {
             })
           })
           it('sorts add-ons of same ownership by service', function () {
-            mockAPI('acme-inc-www', [
+            setupMock('acme-inc-www', [
               fixtures.addons['www-redis'], fixtures.addons['www-db'],
             ], [
               fixtures.attachments['acme-inc-www::REDIS'], fixtures.attachments['acme-inc-www::DATABASE'],
@@ -251,7 +277,7 @@ describe('addons', function () {
             })
           })
           it('sorts add-ons of same ownership and service by plan', function () {
-            mockAPI('acme-inc-dwh', [
+            setupMock('acme-inc-dwh', [
               fixtures.addons['dwh-db'], fixtures.addons['dwh-test-db'],
             ], [
               fixtures.attachments['acme-inc-dwh::DATABASE'], fixtures.attachments['acme-inc-dwh::TEST'],
@@ -261,7 +287,7 @@ describe('addons', function () {
             })
           })
           it('sorts add-ons of same ownership and service and plan by name', function () {
-            mockAPI('acme-inc-dwh', [
+            setupMock('acme-inc-dwh', [
               fixtures.addons['dwh-db-2'], fixtures.addons['dwh-db'],
             ], [
               fixtures.attachments['acme-inc-dwh::DATABASE'], fixtures.attachments['acme-inc-dwh::DATABASE_FOLLOWER'],
@@ -273,7 +299,7 @@ describe('addons', function () {
         })
         context('attachments', function () {
           it('sorts local attachments first', function () {
-            mockAPI('acme-inc-dwh', [
+            setupMock('acme-inc-dwh', [
               fixtures.addons['www-db'],
             ], [
               fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-dwh::WWW_DB'],
@@ -283,7 +309,7 @@ describe('addons', function () {
             })
           })
           it('sorts local attachments by name', function () {
-            mockAPI('acme-inc-www', [fixtures.addons['www-db']], [
+            setupMock('acme-inc-www', [fixtures.addons['www-db']], [
               fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'], fixtures.attachments['acme-inc-www::DATABASE'],
             ])
             return run('acme-inc-www', function ({stdout}) {
@@ -291,7 +317,7 @@ describe('addons', function () {
             })
           })
           it('sorts foreign attachments by app', function () {
-            mockAPI('acme-inc-api', [fixtures.addons['www-db']], [
+            setupMock('acme-inc-api', [fixtures.addons['www-db']], [
               fixtures.attachments['acme-inc-api::WWW_DB'], fixtures.attachments['acme-inc-dwh::WWW_DB'], fixtures.attachments['acme-inc-www::DATABASE'],
             ])
             return run('acme-inc-api', function ({stdout}) {
@@ -299,7 +325,7 @@ describe('addons', function () {
             })
           })
           it('sorts foreign attachments for same app by name', function () {
-            mockAPI('acme-inc-api', [fixtures.addons['www-db']], [
+            setupMock('acme-inc-api', [fixtures.addons['www-db']], [
               fixtures.attachments['acme-inc-api::WWW_DB'], fixtures.attachments['acme-inc-www::DATABASE'], fixtures.attachments['acme-inc-www::HEROKU_POSTGRESQL_RED'],
             ])
             return run('acme-inc-api', function ({stdout}) {
@@ -310,16 +336,9 @@ describe('addons', function () {
       })
     })
     context('with a grandfathered add-on', function () {
-      beforeEach(function () {
-        const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 10_000}
-        mockAPI('acme-inc-dwh', [
-          addon,
-        ], [
-          fixtures.attachments['acme-inc-dwh::DATABASE'],
-        ])
-      })
       it('prints add-ons in a table with the grandfathered price', function () {
+        const addon = structuredClone({...fixtures.addons['dwh-db'], billed_price: {cents: 10_000}})
+        setupMock('acme-inc-dwh', [addon], [fixtures.attachments['acme-inc-dwh::DATABASE']])
         return run('acme-inc-dwh', function ({stdout}) {
           const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
@@ -333,16 +352,9 @@ describe('addons', function () {
       })
     })
     context('with a contract add-on', function () {
-      beforeEach(function () {
-        const addon = fixtures.addons['dwh-db']
-        addon.billed_price = {cents: 0, contract: true}
-        mockAPI('acme-inc-dwh', [
-          addon,
-        ], [
-          fixtures.attachments['acme-inc-dwh::DATABASE'],
-        ])
-      })
       it('prints add-ons in a table with contract', function () {
+        const addon = structuredClone({...fixtures.addons['dwh-db'], billed_price: {cents: 0, contract: true}})
+        setupMock('acme-inc-dwh', [addon], [fixtures.attachments['acme-inc-dwh::DATABASE']])
         return run('acme-inc-dwh', function ({stdout}) {
           const actual = removeAllWhitespace(stdout)
           const expectedHeader = removeAllWhitespace(`
@@ -357,7 +369,7 @@ describe('addons', function () {
     })
 
     it('prints add-on line for attachment when add-on info is missing from API (e.g. no permissions on billing app)', function () {
-      mockAPI('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
+      setupMock('acme-inc-api', [], [fixtures.attachments['acme-inc-api::WWW_DB']])
       return run('acme-inc-api', function ({stdout}) {
         const actual = removeAllWhitespace(stdout)
         const expectedHeader = removeAllWhitespace(`

@@ -3,16 +3,16 @@ import chaiAsPromised from 'chai-as-promised'
 import nock from 'nock'
 import path from 'node:path'
 
-globalThis.setInterval = () => ({unref() {}})
-const tm = globalThis.setTimeout
-globalThis.setTimeout = cb => tm(cb)
-
 process.env.TS_NODE_PROJECT = path.resolve('test/tsconfig.json')
 // Env var used to prevent some expensive
 // prerun and postrun hooks from initializing
 process.env.IS_HEROKU_TEST_ENV = 'true'
 
 process.env.HEROKU_SKIP_NEW_VERSION_CHECK = 'true'
+
+// Provide a fake API key so @heroku/sdk's token provider doesn't throw
+// during tests (nock intercepts all HTTP calls regardless)
+process.env.HEROKU_API_KEY = process.env.HEROKU_API_KEY || 'test-fake-token'
 
 process.env.HEROKU_DATA_CONTROL_PLANE = 'test-control-plane'
 

@@ -4,6 +4,7 @@ import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/pipelines/promote.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('pipelines:promote', function () {
   const pipeline = {
@@ -27,11 +28,6 @@ describe('pipelines:promote', function () {
     id: '456-target-app-789',
     name: 'example-production-eu',
     pipeline,
-  }
-
-  const targetReleaseWithOutput = {
-    id: '123-target-release-456',
-    output_stream_url: 'https://busl.example/release',
   }
 
   const sourceCoupling = {
@@ -61,7 +57,14 @@ describe('pipelines:promote', function () {
     status: 'pending',
   }
 
+  const allApps = [
+    {...sourceApp, pipelineCoupling: sourceCoupling},
+    {...targetApp1, pipelineCoupling: targetCoupling1},
+    {...targetApp2, pipelineCoupling: targetCoupling2},
+  ]
+
   let api: nock.Scope
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
@@ -70,192 +73,132 @@ describe('pipelines:promote', function () {
   afterEach(function () {
     api.done()
     nock.cleanAll()
+    sdkMock.restore()
     restore()
   })
 
-  function mockPromotionTargets() {
-    let pollCount = 0
-    api
-      .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
-      .thrice()
-      .reply(function () {
-        pollCount++
-
-        return [
-          200,
-          [
-            {
-              app: {id: targetApp1.id},
-              error_message: null,
-              status: 'successful',
-            },
-            {
-              app: {id: targetApp2.id},
-              error_message: pollCount > 1 ? 'Because reasons' : null,
-              // Return failed on the second poll loop
-              status: pollCount > 1 ? 'failed' : 'pending',
-            },
-          ],
-        ]
-      })
+  function setupMocks() {
+    // getCoupling still uses this.heroku
+    api.get(`/apps/${sourceApp.name}/pipeline-couplings`).reply(200, sourceCoupling)
+    // listApps goes through SDK
+    sdkMock = mockSDKPlatform({pipelineCoupling: {listApps: stub().resolves(allApps)}})
   }
 
-  function setupNock() {
-    api
-      .get(`/apps/${sourceApp.name}/pipeline-couplings`)
-      .reply(200, sourceCoupling)
-      .get(`/pipelines/${pipeline.id}/pipeline-couplings`)
-      .reply(200, [sourceCoupling, targetCoupling1, targetCoupling2])
-      .post('/filters/apps')
-      .reply(200, [sourceApp, targetApp1, targetApp2])
+  function stubPromote(targets: any[]) {
+    return stub(Cmd, 'promotePipeline').resolves({
+      promotion,
+      targets,
+    } as any)
   }
 
   it('promotes to all apps in the next stage', async function () {
-    setupNock()
-    mockPromotionTargets()
-
-    api
-      .post('/pipeline-promotions', {
-        pipeline: {id: pipeline.id},
-        source: {app: {id: sourceApp.id}},
-        targets: [
-          {app: {id: targetApp1.id}},
-          {app: {id: targetApp2.id}},
-        ],
-      })
-      .reply(201, promotion)
+    setupMocks()
+    const promoteStub = stubPromote([
+      {
+        app: {id: targetApp1.id},
+        error_message: null,
+        status: 'succeeded',
+      },
+      {
+        app: {id: targetApp2.id},
+        error_message: 'Because reasons',
+        status: 'failed',
+      },
+    ])
 
     const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
 
+    expect(promoteStub.calledOnce).to.be.true
+    expect(promoteStub.firstCall.args[1]).to.deep.equal({
+      pipeline: {id: pipeline.id},
+      source: {app: {id: sourceApp.id}},
+      targets: [
+        {app: {id: targetApp1.id}},
+        {app: {id: targetApp2.id}},
+      ],
+    })
     expect(stdout).to.contain('failed')
     expect(stdout).to.contain('Because reasons')
   })
 
   context('passing a `to` flag', function () {
     it('can promote by app name', async function () {
-      setupNock()
-      mockPromotionTargets()
-
-      api
-        .post('/pipeline-promotions', {
-          pipeline: {id: pipeline.id},
-          source: {app: {id: sourceApp.id}},
-          targets: [
-            {app: {id: targetApp1.id}},
-          ],
-        })
-        .reply(201, promotion)
+      setupMocks()
+      const promoteStub = stubPromote([
+        {
+          app: {id: targetApp1.id},
+          error_message: 'Because reasons',
+          status: 'failed',
+        },
+      ])
 
       const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`, `--to=${targetApp1.name}`])
 
+      expect(promoteStub.firstCall.args[1].targets).to.deep.equal([{app: {id: targetApp1.id}}])
       expect(stdout).to.contain('failed')
       expect(stdout).to.contain('Because reasons')
     })
 
     it('can promote by app id', async function () {
-      setupNock()
-      mockPromotionTargets()
-
-      api
-        .post('/pipeline-promotions', {
-          pipeline: {id: pipeline.id},
-          source: {app: {id: sourceApp.id}},
-          targets: [
-            {app: {id: targetApp1.id}},
-          ],
-        })
-        .reply(201, promotion)
+      setupMocks()
+      const promoteStub = stubPromote([
+        {
+          app: {id: targetApp1.id},
+          error_message: 'Because reasons',
+          status: 'failed',
+        },
+      ])
 
       const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`, `--to=${targetApp1.id}`])
 
+      expect(promoteStub.firstCall.args[1].targets).to.deep.equal([{app: {id: targetApp1.id}}])
       expect(stdout).to.contain('failed')
       expect(stdout).to.contain('Because reasons')
     })
   })
 
   context('with release phase', function () {
-    it('streams the release command output', async function () {
-      setupNock()
-
-      let pollCount = 0
-
-      api
-        .post('/pipeline-promotions', {
-          pipeline: {id: pipeline.id},
-          source: {app: {id: sourceApp.id}},
-          targets: [
-            {app: {id: targetApp1.id}},
-            {app: {id: targetApp2.id}},
-          ],
+    it('streams the release command output to stdout', async function () {
+      setupMocks()
+      const streamBody = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('Release Command Output'))
+          controller.close()
+        },
+      })
+      const promoteStub = stub(Cmd, 'promotePipeline').callsFake(async (_ctx, _body, options) => {
+        await options!.onReleaseStream!({
+          stream: streamBody,
+          target: {
+            app: {id: targetApp1.id}, error_message: null, id: 'target-1', pipeline_promotion: {id: 'promo-1'}, release: {id: 'release-1'}, status: 'pending',
+          },
         })
-        .reply(201, promotion)
-        .get(`/apps/${targetApp1.id}/releases/${targetReleaseWithOutput.id}`)
-        .reply(200, targetReleaseWithOutput)
-        .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
-        .twice()
-        .reply(200, function () {
-          pollCount++
-
-          return [{
+        return {
+          promotion,
+          targets: [{
             app: {id: targetApp1.id},
             error_message: null,
-            release: {id: targetReleaseWithOutput.id},
-            status: pollCount > 1 ? 'successful' : 'pending',
-          }]
-        })
-
-      nock('https://busl.example')
-        .get('/release')
-        .reply(200, 'Release Command Output')
+            status: 'succeeded',
+          }],
+        } as any
+      })
 
       const {stdout} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
 
+      expect(promoteStub.calledOnce).to.be.true
       expect(stdout).to.contain('Running release command')
       expect(stdout).to.contain('Release Command Output')
-      expect(stdout).to.contain('successful')
+      expect(stdout).to.contain('succeeded')
     })
   })
 
   context('with release phase that errors', function () {
-    it('attempts stream and returns error', async function () {
-      stub(Cmd, 'sleep').resolves()
-
-      setupNock()
-
-      let pollCount = 0
-
-      api
-        .post('/pipeline-promotions', {
-          pipeline: {id: pipeline.id},
-          source: {app: {id: sourceApp.id}},
-          targets: [
-            {app: {id: targetApp1.id}},
-            {app: {id: targetApp2.id}},
-          ],
-        })
-        .reply(201, promotion)
-        .get(`/apps/${targetApp1.id}/releases/${targetReleaseWithOutput.id}`)
-        .reply(200, targetReleaseWithOutput)
-        .get(`/pipeline-promotions/${promotion.id}/promotion-targets`)
-        .reply(200, function () {
-          pollCount++
-
-          return [{
-            app: {id: targetApp1.id},
-            error_message: null,
-            release: {id: targetReleaseWithOutput.id},
-            status: pollCount > 1 ? 'successful' : 'pending',
-          }]
-        })
-
-      nock('https://busl.example')
-        .get('/release')
-        .times(100)
-        .reply(404, 'Release Command Output')
+    it('surfaces the SDK stream error', async function () {
+      setupMocks()
+      stub(Cmd, 'promotePipeline').rejects(new Error('stream release output not available'))
 
       const {error} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
 
-      expect(error?.oclif?.exit).to.equal(2)
       expect(error?.message).to.equal('stream release output not available')
     })
   })

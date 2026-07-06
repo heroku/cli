@@ -2,24 +2,27 @@ import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
-
-import ansis from 'ansis'
 
 describe('pg:upgrade:cancel', function () {
   let addon: Heroku.AddOn
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
   let api: nock.Scope
-  let dataApi: nock.Scope
+  let sdkMock: MockSDK
+  let infoStub: ReturnType<typeof stub>
+  let cancelUpgradeStub: ReturnType<typeof stub>
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -29,14 +32,19 @@ describe('pg:upgrade:cancel', function () {
   beforeEach(async function () {
     addon = fixtures.addons['dwh-db']
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
+
+    infoStub = stub()
+    cancelUpgradeStub = stub()
+    sdkMock = mockSDKData({
+      database: {cancelUpgrade: cancelUpgradeStub, describe: infoStub},
+    })
   })
 
   afterEach(async function () {
+    sdkMock.restore()
     api.done()
-    dataApi.done()
     nock.cleanAll()
   })
 
@@ -84,15 +92,13 @@ describe('pg:upgrade:cancel', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {
-        following: 'postgres://xxx.com:5432/abcdefghijklmn',
-        leader: {
-          addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
-          name: 'postgresql-leader',
-        },
-      })
+    infoStub.resolves({
+      following: 'postgres://xxx.com:5432/abcdefghijklmn',
+      leader: {
+        addon_id: '5ba2ba8b-07a9-4a65-a808-585a50e37f98',
+        name: 'postgresql-leader',
+      },
+    })
     const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -108,12 +114,8 @@ describe('pg:upgrade:cancel', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
-      .reply(200, {message: 'You canceled the upgrade.'})
+    infoStub.resolves({})
+    cancelUpgradeStub.resolves({message: 'You canceled the upgrade.'})
 
     const message = heredoc(`
       Destructive action
@@ -140,12 +142,8 @@ describe('pg:upgrade:cancel', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
-      .reply(422, {id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade."})
+    infoStub.resolves({})
+    cancelUpgradeStub.rejects({id: 'bad_request', message: "You haven't scheduled an upgrade on your database. Run `pg:upgrade:prepare` to schedule an upgrade.", statusCode: 422})
 
     const {error, stderr} = await runCommand(Cmd, [
       '--app',
@@ -168,12 +166,8 @@ describe('pg:upgrade:cancel', function () {
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon}])
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/cancel`)
-      .reply(422, {id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress."})
+    infoStub.resolves({})
+    cancelUpgradeStub.rejects({id: 'bad_request', message: "You can't cancel the upgrade because it's currently in progress.", statusCode: 422})
 
     const {error, stderr} = await runCommand(Cmd, [
       '--app',

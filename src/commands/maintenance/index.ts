@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class MaintenanceIndex extends Command {
@@ -12,8 +12,8 @@ export default class MaintenanceIndex extends Command {
 
   async run() {
     const {flags} = await this.parse(MaintenanceIndex)
-    const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
-    const app = appResponse.body
+    const {platform} = new HerokuSDK()
+    const app = await platform.app.info(flags.app)
     ux.stdout(app.maintenance ? 'on' : 'off')
   }
 }

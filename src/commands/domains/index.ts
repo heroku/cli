@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import {orderBy} from 'natural-orderby'
 import Uri from 'urijs'
 
 import parseKeyValue from '../../lib/utils/key-value-parser.js'
-import {paginateRequest} from '../../lib/utils/paginator.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 export default class DomainsIndex extends Command {
@@ -175,7 +175,8 @@ www.example.com  CNAME            www.example.herokudns.com`]
 
   async run() {
     const {flags} = await this.parse(DomainsIndex)
-    const domains = await paginateRequest<Heroku.Domain>(this.heroku, `/apps/${flags.app}/domains`, 1000)
+    const {platform} = new HerokuSDK()
+    const domains = await platform.domain.list(flags.app) as Heroku.Domain[]
     const herokuDomain = domains.find((domain: Heroku.Domain) => domain.kind === 'heroku')
     let customDomains = domains.filter((domain: Heroku.Domain) => domain.kind === 'custom')
     let displayTotalDomains = false

@@ -1,28 +1,23 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
 const heredoc = tsheredoc.default
 
 describe('pg:backups', function () {
-  let pg: nock.Scope
+  let sdkMock: MockSDK
   let transfers: BackupTransfer[]
 
-  beforeEach(function () {
-    pg = nock('https://api.data.heroku.com')
-    pg.get('/client/v11/apps/myapp/transfers')
-      .reply(200, transfers)
-  })
-
   afterEach(function () {
-    nock.cleanAll()
-    pg.done()
+    sdkMock.restore()
+    restore()
   })
 
   describe('with no backups/restores/copies', function () {
@@ -31,6 +26,7 @@ describe('pg:backups', function () {
     })
 
     it('shows empty message', async function () {
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -105,6 +101,7 @@ describe('pg:backups', function () {
     })
 
     it('shows backups', async function () {
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -149,6 +146,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows restore', async function () {
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -191,6 +189,7 @@ No copies found. Use heroku pg:copy to copy a database to another
     })
 
     it('shows copy', async function () {
+      sdkMock = mockSDKData({transfer: {listByApp: stub().resolves(transfers)}})
       const {stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',

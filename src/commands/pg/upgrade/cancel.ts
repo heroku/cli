@@ -1,10 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/types.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
@@ -36,7 +37,8 @@ export default class Upgrade extends Command {
     if (utils.pg.isEssentialDatabase(db))
       ux.error(`You can't use ${color.code('pg:upgrade:cancel')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
 
-    const {body: replica} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
+    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
+    const replica = await data.database.describe(app, db.name)
     if (replica.following)
       ux.error(`You can't use ${color.code('pg:upgrade:cancel')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)
 
@@ -49,11 +51,14 @@ export default class Upgrade extends Command {
 
     try {
       ux.action.start(`Cancelling upgrade on ${color.addon(db.name)}`)
-      const response = await this.heroku.post<PgUpgradeResponse>(`/client/v11/databases/${db.id}/upgrade/cancel`, {body: {}, hostname: utils.pg.host()})
-      ux.action.stop('done\n' + formatResponseWithCommands(response.body.message))
-    } catch (error) {
-      const response = error as PgUpgradeError
-      ux.error(formatResponseWithCommands(response.body.message) + `\n\nError ID: ${response.body.id}`)
+      const response = await data.database.cancelUpgrade(app, db.name)
+      ux.action.stop('done\n' + formatResponseWithCommands(response.message))
+    } catch (error: any) {
+      if (error.id && error.message) {
+        ux.error(formatResponseWithCommands(error.message) + `\n\nError ID: ${error.id}`)
+      } else {
+        throw error
+      }
     }
   }
 }

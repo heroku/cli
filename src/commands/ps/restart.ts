@@ -1,8 +1,9 @@
 
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -44,32 +45,24 @@ export default class Restart extends Command {
     const {app} = flags
     const dyno = flags['dyno-name'] || args.dyno
     const type = flags['process-type']
-    let msg = 'Restarting'
-    let restartUrl
+
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
 
     if (type) {
-      msg += ` all ${color.info(type)} dynos`
-      restartUrl = `/apps/${app}/formations/${encodeURIComponent(type)}`
+      ux.action.start(`Restarting all ${color.info(type)} dynos on ${color.app(app)}`)
+      await platform.dyno.restart(app, {type})
     } else if (dyno) {
       if (args.dyno) {
         ux.warn(`DYNO is a deprecated argument. Use ${color.code('--dyno-name')} or ${color.code('--process-type')} instead.`)
       }
 
-      msg += ` dyno ${color.name(dyno)}`
-      restartUrl = `/apps/${app}/dynos/${encodeURIComponent(dyno)}`
+      ux.action.start(`Restarting dyno ${color.name(dyno)} on ${color.app(app)}`)
+      await platform.dyno.restart(app, {dyno})
     } else {
-      msg += ' all dynos'
-      restartUrl = `/apps/${app}/dynos`
+      ux.action.start(`Restarting all dynos on ${color.app(app)}`)
+      await platform.dyno.restart(app)
     }
 
-    msg += ` on ${color.app(app)}`
-
-    ux.action.start(msg)
-    await this.heroku.delete<Heroku.Dyno>(restartUrl, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
     ux.action.stop()
   }
 }

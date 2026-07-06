@@ -1,9 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
+import {stub} from 'sinon'
 
 import DataMaintenancesIndex from '../../../../../src/commands/data/maintenances/index.js'
 import {Maintenance, MaintenanceStatus} from '../../../../../src/lib/data/types.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const appId = '30f93b8f-c592-4004-8d8a-3efb20395484'
@@ -65,26 +67,22 @@ const maintenances = [redisAddonMaintenance, postgresAddonMaintenance]
 
 describe('data:maintenances', function () {
   let herokuApi: nock.Scope
-  let dataApi: nock.Scope
-
-  beforeEach(function () {
-    herokuApi = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
     herokuApi.done()
-    dataApi.done()
     nock.cleanAll()
+    sdkMock?.restore()
   })
 
   it('shows a list of maintenances for a given app', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .get('/apps/test-app')
       .reply(200, app)
-    dataApi
-      .get(`/data/maintenances/v1/apps/${appId}`)
-      .reply(200, {maintenances})
+
+    const infoByAppStub = stub().resolves({maintenances})
+    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app'])
     const actualStdout = removeAllWhitespace(stdout)
@@ -96,12 +94,13 @@ describe('data:maintenances', function () {
   })
 
   it('includes extended columns', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .get('/apps/test-app')
       .reply(200, app)
-    dataApi
-      .get(`/data/maintenances/v1/apps/${appId}`)
-      .reply(200, {maintenances})
+
+    const infoByAppStub = stub().resolves({maintenances})
+    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
 
     const {stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app', '--extended', '--sort=Addon'])
     const actualStdout = removeAllWhitespace(stdout)
@@ -111,12 +110,13 @@ describe('data:maintenances', function () {
   })
 
   it('only includes specified columns', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .get('/apps/test-app')
       .reply(200, app)
-    dataApi
-      .get(`/data/maintenances/v1/apps/${appId}`)
-      .reply(200, {maintenances})
+
+    const infoByAppStub = stub().resolves({maintenances})
+    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
 
     const {stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app', '--extended', '--columns=addon,attachments'])
     const actualStdout = removeAllWhitespace(stdout)
@@ -126,12 +126,13 @@ describe('data:maintenances', function () {
   })
 
   it('shows a list of maintenances for a given app with the json flag', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .get('/apps/test-app')
       .reply(200, app)
-    dataApi
-      .get(`/data/maintenances/v1/apps/${appId}`)
-      .reply(200, {maintenances})
+
+    const infoByAppStub = stub().resolves({maintenances})
+    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
 
     const {stderr, stdout} = await runCommand(DataMaintenancesIndex, ['--app=test-app', '--json'])
 
@@ -140,6 +141,7 @@ describe('data:maintenances', function () {
   })
 
   it('shows an error if the app is not found', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .get('/apps/test-app')
       .reply(404, {
@@ -147,18 +149,22 @@ describe('data:maintenances', function () {
         message: "Couldn't find that app.",
       })
 
+    const infoByAppStub = stub().resolves({maintenances: []})
+    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
+
     const {error} = await runCommand(DataMaintenancesIndex, ['--app=test-app'])
     const {message} = error as {message: string}
     expect(message).to.contain("Couldn't find that app.\n\nError ID: not_found")
   })
 
   it('shows an error message if there are no maintenances', async function () {
+    herokuApi = nock('https://api.heroku.com')
     herokuApi
       .get('/apps/test-app')
       .reply(200, app)
-    dataApi
-      .get(`/data/maintenances/v1/apps/${appId}`)
-      .reply(200, {maintenances: []})
+
+    const infoByAppStub = stub().resolves({maintenances: []})
+    sdkMock = mockSDKData({maintenance: {infoByApp: infoByAppStub}})
 
     const {error} = await runCommand(DataMaintenancesIndex, ['--app=test-app'])
     const {message} = error as {message: string}

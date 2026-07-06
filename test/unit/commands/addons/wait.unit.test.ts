@@ -1,37 +1,45 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import _ from 'lodash'
-import lolex from 'lolex'
 import nock from 'nock'
-import {createSandbox} from 'sinon'
+import {createSandbox, type SinonFakeTimers, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/wait.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
-let clock: any
-const expansionHeaders = {'Accept-Expansion': 'addon_service,plan'}
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('addons:wait', function () {
   let sandbox: any
+  let clock: SinonFakeTimers
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     sandbox = createSandbox()
     nock.cleanAll()
-    clock = lolex.install()
-    clock.setTimeout = function (fn: any) {
-      process.nextTick(fn)
-    }
+    // Fake only Date so the >5s notifier threshold can be advanced
+    // synchronously without faking setTimeout (the SDK's polling loop
+    // needs real setTimeout to drive the test forward).
+    clock = sandbox.useFakeTimers({shouldAdvanceTime: true, toFake: ['Date']})
   })
 
   afterEach(function () {
-    clock.uninstall()
     sandbox.restore()
+    sdkMock?.restore()
+    nock.cleanAll()
   })
   context('waiting for an individual add-on to provision', function () {
     context('when the add-on is provisioned', function () {
       beforeEach(function () {
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
+        // resolveAddon uses this.heroku to POST /actions/addons/resolve
+        nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-db', app: null})
           .reply(200, [fixtures.addons['www-db']])
+        // No SDK polling needed since www-db is already provisioned
+        const infoByAppStub = stub().resolves(fixtures.addons['www-db'])
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
       })
       it('prints output indicating that it is done', async function () {
         const {stderr, stdout} = await runCommand(Cmd, [
@@ -43,18 +51,23 @@ describe('addons:wait', function () {
     })
     context('for an add-on that is still provisioning', function () {
       it('waits until the add-on is provisioned, then shows config vars', async function () {
+        // resolveAddon uses this.heroku
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, fixtures.addons['www-redis'])
+
+        // waitForAddonProvisioning uses SDK for polling
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
         provisionedAddon.config_vars = ['REDIS_URL']
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, provisionedAddon)
+        const infoByAppStub = stub()
+          .onFirstCall().resolves(fixtures.addons['www-redis'])
+          .onSecondCall().resolves(provisionedAddon)
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -72,12 +85,16 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
+
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
         provisionedAddon.config_vars = ['REDIS_URL']
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, () => provisionedAddon)
+        const infoByAppStub = stub().resolves(provisionedAddon)
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -92,15 +109,19 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
+
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
         provisionedAddon.config_vars = ['REDIS_URL']
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, () => {
-            clock.tick(5000)
-            return provisionedAddon
-          })
+        const infoByAppStub = stub().callsFake(() => {
+          clock.tick(5000)
+          return Promise.resolve(provisionedAddon)
+        })
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -117,14 +138,16 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
-        nock('https://api.heroku.com')
-          .get('/addons/www-redis')
-          .reply(200, fixtures.addons['www-redis'])
+
+        // waitForAddonProvisioning uses SDK - returns deprovisioned
         const deprovisionedAddon = _.clone(fixtures.addons['www-redis'])
         deprovisionedAddon.state = 'deprovisioned'
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, deprovisionedAddon)
+        const infoByAppStub = stub().resolves(deprovisionedAddon)
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         await runCommand(Cmd, ['www-redis'])
           .catch(error => {
             expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned')
@@ -136,13 +159,15 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
-          .get('/addons/www-redis')
-          .reply(200, fixtures.addons['www-redis'])
+
         const deprovisionedAddon = _.clone(fixtures.addons['www-redis'])
         deprovisionedAddon.state = 'deprovisioned'
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, deprovisionedAddon)
+        const infoByAppStub = stub().resolves(deprovisionedAddon)
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         const {error} = await runCommand(Cmd, [
           'www-redis',
         ])
@@ -153,13 +178,24 @@ Created www-redis as REDIS_URL
   context('waiting for an individual add-on to deprovision', function () {
     context('for an add-on that is still deprovisioning', function () {
       it('waits until the add-on is deprovisioned', async function () {
+        // resolveAddon uses this.heroku
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis-2', app: null})
           .reply(200, [fixtures.addons['www-redis-2']])
+        // waitForAddonDeprovisioning uses this.heroku for polling
+        nock('https://api.heroku.com')
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(200, fixtures.addons['www-redis-2'])
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        // SDK mock needed since waitForAddonProvisioning is imported
+        const infoByAppStub = stub()
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -181,6 +217,13 @@ Destroying www-redis-2... done
           .reply(200, [deprovisioningAddon])
           .get('/apps/acme-inc-www/addons/www-redis-3')
           .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        const infoByAppStub = stub()
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -205,6 +248,13 @@ Destroying www-redis-2... done
           })
           .get('/apps/acme-inc-www/addons/www-redis-4')
           .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        const infoByAppStub = stub()
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -228,33 +278,45 @@ Destroying www-redis-2... done
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         redis2Addon.state = 'deprovisioning'
+
+        // this.heroku.get for listing addons by app
         nock('https://api.heroku.com')
           .get('/apps/acme-inc-www/addons')
           .reply(200, [ignoredAddon, wwwAddon, redisAddon, redis2Addon])
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-db')
-          .reply(200, wwwAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, redisAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
+
+        // waitForAddonDeprovisioning uses this.heroku for polling
+        nock('https://api.heroku.com')
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(200, redis2Addon)
+          .get('/apps/acme-inc-www/addons/www-redis-2')
+          .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        // waitForAddonProvisioning uses SDK
         const provisionedWwwAddon = _.clone(fixtures.addons['www-db'])
         provisionedWwwAddon.state = 'provisioned'
         provisionedWwwAddon.config_vars = ['WWW_URL']
         const provisionedRedisAddon = _.clone(fixtures.addons['www-redis'])
         provisionedRedisAddon.state = 'provisioned'
         provisionedRedisAddon.config_vars = ['REDIS_URL']
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, provisionedRedisAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-db')
-          .reply(200, provisionedWwwAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis-2')
-          .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        const callCounts: Record<string, number> = {}
+        const infoByAppStub = stub().callsFake((_app: string, name: string) => {
+          callCounts[name] = (callCounts[name] || 0) + 1
+          if (name === 'www-db') {
+            return Promise.resolve(callCounts[name] === 1 ? wwwAddon : provisionedWwwAddon)
+          }
+
+          if (name === 'www-redis') {
+            return Promise.resolve(callCounts[name] === 1 ? redisAddon : provisionedRedisAddon)
+          }
+
+          return Promise.resolve(null)
+        })
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',
@@ -284,33 +346,45 @@ Created www-redis as REDIS_URL
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         redis2Addon.state = 'deprovisioning'
+
+        // this.heroku.get for listing all addons
         nock('https://api.heroku.com')
           .get('/addons')
           .reply(200, [ignoredAddon, wwwAddon, redisAddon, redis2Addon])
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-db')
-          .reply(200, wwwAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, redisAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
+
+        // waitForAddonDeprovisioning uses this.heroku for polling
+        nock('https://api.heroku.com')
           .get('/apps/acme-inc-www/addons/www-redis-2')
           .reply(200, redis2Addon)
+          .get('/apps/acme-inc-www/addons/www-redis-2')
+          .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        // waitForAddonProvisioning uses SDK
         const provisionedWwwAddon = _.clone(fixtures.addons['www-db'])
         provisionedWwwAddon.state = 'provisioned'
         provisionedWwwAddon.config_vars = ['WWW_URL']
         const provisionedRedisAddon = _.clone(fixtures.addons['www-redis'])
         provisionedRedisAddon.state = 'provisioned'
         provisionedRedisAddon.config_vars = ['REDIS_URL']
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis')
-          .reply(200, provisionedRedisAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-db')
-          .reply(200, provisionedWwwAddon)
-        nock('https://api.heroku.com', {reqheaders: expansionHeaders})
-          .get('/apps/acme-inc-www/addons/www-redis-2')
-          .reply(404, {id: 'not_found', message: 'Not found.'})
+
+        const callCounts: Record<string, number> = {}
+        const infoByAppStub = stub().callsFake((_app: string, name: string) => {
+          callCounts[name] = (callCounts[name] || 0) + 1
+          if (name === 'www-db') {
+            return Promise.resolve(callCounts[name] === 1 ? wwwAddon : provisionedWwwAddon)
+          }
+
+          if (name === 'www-redis') {
+            return Promise.resolve(callCounts[name] === 1 ? redisAddon : provisionedRedisAddon)
+          }
+
+          return Promise.resolve(null)
+        })
+        sdkMock = mockSDKPlatform({
+          addOn: {infoByApp: infoByAppStub},
+          withHeaders: stub().returns({addOn: {infoByApp: infoByAppStub}}),
+        })
+
         const {stderr, stdout} = await runCommand(Cmd, [
           '--wait-interval',
           '1',

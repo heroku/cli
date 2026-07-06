@@ -73,7 +73,7 @@ describe('data:pg:create', function () {
         .post('/apps/myapp/addons', {
           attachment: {},
           config: {level: '4G-Performance'},
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
       const dataApi = nock('https://api.data.heroku.com')
@@ -105,7 +105,7 @@ describe('data:pg:create', function () {
         .post('/apps/myapp/addons', {
           attachment: {},
           config: {level: '4G-Performance'},
-          plan: {name: 'heroku-postgresql:advanced-private'},
+          plan: 'heroku-postgresql:advanced-private',
         })
         .reply(200, createAddonResponse)
 
@@ -131,7 +131,7 @@ describe('data:pg:create', function () {
         .post('/apps/myapp/addons', {
           attachment: {},
           config: {level: '4G-Performance'},
-          plan: {name: 'heroku-postgresql:advanced-shield'},
+          plan: 'heroku-postgresql:advanced-shield',
         })
         .reply(200, createAddonResponse)
 
@@ -187,7 +187,7 @@ describe('data:pg:create', function () {
             level: '4G-Performance',
           },
           confirm: 'myapp',
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
 
@@ -214,7 +214,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
 
@@ -284,7 +284,7 @@ describe('data:pg:create', function () {
             'high-availability': false,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
 
@@ -321,7 +321,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
 
@@ -374,7 +374,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
 
@@ -450,7 +450,7 @@ describe('data:pg:create', function () {
             'high-availability': true,
             level: levelsResponse.items[0].name,
           },
-          plan: {name: 'heroku-postgresql:advanced'},
+          plan: 'heroku-postgresql:advanced',
         })
         .reply(200, createAddonResponse)
 

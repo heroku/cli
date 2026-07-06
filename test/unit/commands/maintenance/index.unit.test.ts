@@ -1,25 +1,20 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import Maintenance from '../../../../src/commands/maintenance/index.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('maintenance', function () {
-  let api: nock.Scope
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sdkMock.restore()
+    restore()
   })
 
   it('shows that maintenance is on', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, {maintenance: true})
+    sdkMock = mockSDKPlatform({app: {info: stub().resolves({maintenance: true})}})
 
     const {stderr, stdout} = await runCommand(Maintenance, ['-a', 'myapp'])
 
@@ -28,9 +23,7 @@ describe('maintenance', function () {
   })
 
   it('shows that maintenance is off', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, {maintenance: false})
+    sdkMock = mockSDKPlatform({app: {info: stub().resolves({maintenance: false})}})
 
     const {stderr, stdout} = await runCommand(Maintenance, ['-a', 'myapp'])
 

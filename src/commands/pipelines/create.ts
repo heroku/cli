@@ -1,20 +1,22 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {PipelineCreateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
-import {
-  createCoupling,
-  createPipeline,
-  getAccountInfo,
-  getTeam,
-  Owner,
-} from '../../lib/api.js'
 import {getGenerationByAppId} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
+
+// The Heroku API accepts an undocumented `generation` field on POST /pipelines
+// that is not declared in heroku/api's schema, so the @heroku/types
+// PipelineCreateOpts shape doesn't include it.
+type PipelineCreateBody = PipelineCreateOpts & {
+  generation?: {name: string}
+}
 
 export default class Create extends Command {
   static args = {
@@ -54,7 +56,6 @@ export default class Create extends Command {
 
     let name
     let stage
-    let owner: Owner
     const guesses = infer(app)
     const questions: (InputQuestion | ListQuestion)[] = []
 
@@ -83,12 +84,13 @@ export default class Create extends Command {
 
     const ownerType = teamName ? 'team' : 'user'
 
-    // If team or org is not specified, we assign ownership to the user creating
-    const response = teamName ? await getTeam(this.heroku, teamName) : await getAccountInfo(this.heroku)
-    owner = response.body
-    const ownerID = owner.id
+    const {platform} = new HerokuSDK()
 
-    owner = {id: ownerID, type: ownerType}
+    // If team or org is not specified, we assign ownership to the user creating
+    const ownerRecord = teamName
+      ? await platform.team.info(teamName)
+      : await platform.account.infoByUser('~')
+    const ownerID = ownerRecord.id!
 
     const answers: Answers = await inquirer.prompt(questions)
     if (answers.name) name = answers.name
@@ -96,11 +98,20 @@ export default class Create extends Command {
 
     ux.action.start(`Creating ${name} pipeline`)
     const generation = await getGenerationByAppId(app, this.heroku)
-    const {body: pipeline} = await createPipeline(this.heroku, name, owner, generation)
+    const body: PipelineCreateBody = {
+      generation: {name: generation ?? 'cedar'},
+      name,
+      owner: {id: ownerID, type: ownerType},
+    }
+    const pipeline = await platform.pipeline.create(body)
     ux.action.stop()
 
     ux.action.start(`Adding ${color.app(app)} to ${color.pipeline(pipeline.name || '')} pipeline as ${stage}`)
-    await createCoupling(this.heroku, pipeline, app, stage)
+    await platform.pipelineCoupling.create({
+      app,
+      pipeline: pipeline.id!,
+      stage,
+    })
     ux.action.stop()
   }
 }

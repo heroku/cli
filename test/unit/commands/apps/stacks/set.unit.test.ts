@@ -1,6 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Set from '../../../../../src/commands/apps/stacks/set.js'
 
@@ -29,34 +30,41 @@ const completedUpgradeApp = {
   },
 }
 
+type FakePlatform = {
+  app: {update: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {update: sinon.stub()},
+  }
+}
+
 describe('stack:set', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('sets the stack', async function () {
-    api
-      .patch(`/apps/${APP}`, {build_stack: TO_STACK})
-      .reply(200, pendingUpgradeApp)
+    fakePlatform.app.update.resolves(pendingUpgradeApp)
 
     const {stderr, stdout} = await runCommand(Set, [`--app=${APP}`, TO_STACK])
 
     expect(stderr).to.contain(`Setting stack to ${TO_STACK}`)
     expect(stderr).to.contain('... done')
     expect(stdout).to.equal(`You will need to redeploy ⬢ ${APP} for the change to take effect.\nRun git push heroku ${MAIN_REMOTE} to trigger a new build on ⬢ ${APP}.\n`)
+    expect(fakePlatform.app.update.calledOnceWithExactly(APP, {build_stack: TO_STACK})).to.equal(true)
   })
 
   it('sets the stack on a different remote', async function () {
-    api
-      .patch(`/apps/${APP}`, {build_stack: TO_STACK})
-      .reply(200, pendingUpgradeApp)
+    fakePlatform.app.update.resolves(pendingUpgradeApp)
 
     const {stderr, stdout} = await runCommand(Set, [`--app=${APP}`, '--remote=staging', TO_STACK])
 
@@ -66,9 +74,7 @@ describe('stack:set', function () {
   })
 
   it('does not show the redeploy message if the stack was immediately updated by API', async function () {
-    api
-      .patch(`/apps/${APP}`, {build_stack: TO_STACK})
-      .reply(200, completedUpgradeApp)
+    fakePlatform.app.update.resolves(completedUpgradeApp)
 
     const {stderr, stdout} = await runCommand(Set, [`--app=${APP}`, TO_STACK])
 

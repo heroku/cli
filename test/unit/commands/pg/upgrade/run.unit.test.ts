@@ -6,10 +6,12 @@ import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/run.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
+import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
@@ -19,7 +21,9 @@ describe('pg:upgrade:run', function () {
   let uxWarnStub: sinon.SinonStub
   let uxPromptStub: sinon.SinonStub
   let api: nock.Scope
-  let dataApi: nock.Scope
+  let sdkMock: MockSDK
+  let infoStub: ReturnType<typeof stub>
+  let runUpgradeStub: ReturnType<typeof stub>
 
   before(function () {
     uxWarnStub = sinon.stub(ux, 'warn')
@@ -28,14 +32,20 @@ describe('pg:upgrade:run', function () {
 
   beforeEach(async function () {
     api = nock('https://api.heroku.com')
-    dataApi = nock('https://api.data.heroku.com')
     hobbyAddon = fixtures.addons['www-db']
     addon = fixtures.addons['dwh-db']
     uxWarnStub.resetHistory()
     uxPromptStub.resetHistory()
+
+    infoStub = stub()
+    runUpgradeStub = stub()
+    sdkMock = mockSDKData({
+      database: {describe: infoStub, runUpgrade: runUpgradeStub},
+    })
   })
 
   afterEach(async function () {
+    sdkMock.restore()
     nock.cleanAll()
     api.done()
   })
@@ -67,12 +77,8 @@ describe('pg:upgrade:run', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {following: 'postgres://db1'})
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/run`)
-      .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait`.'})
+    infoStub.resolves({following: 'postgres://db1'})
+    runUpgradeStub.resolves({message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait`.'})
 
     const message = heredoc(`
       Destructive action
@@ -104,11 +110,8 @@ describe('pg:upgrade:run', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200, {following: 'postgres://db1'})
-      .post(`/client/v11/databases/${addon.id}/upgrade/run`)
-      .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait`.'})
+    infoStub.resolves({following: 'postgres://db1'})
+    runUpgradeStub.resolves({message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait`.'})
 
     const message = heredoc(`
       Destructive action
@@ -142,11 +145,8 @@ describe('pg:upgrade:run', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${essentialAddon.id}`)
-      .reply(200)
-      .post(`/client/v11/databases/${essentialAddon.id}/upgrade/run`)
-      .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
+    infoStub.resolves({})
+    runUpgradeStub.resolves({message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
 
     const message = heredoc(`
       Destructive action
@@ -176,12 +176,8 @@ describe('pg:upgrade:run', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/run`)
-      .reply(400, {id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade."})
+    infoStub.resolves({})
+    runUpgradeStub.rejects({id: 'bad_request', message: "You haven't scheduled a version upgrade on your database. Run `heroku pg:upgrade:prepare` to schedule an upgrade.", statusCode: 400})
 
     const {error} = await runCommand(Cmd, [
       '--app',
@@ -203,12 +199,8 @@ describe('pg:upgrade:run', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/run`)
-      .reply(400, {id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.'})
+    infoStub.resolves({})
+    runUpgradeStub.rejects({id: 'bad_request', message: 'Your database is not ready for upgrade. Please try running your upgrade later. You can check the status of your upgrade with `heroku pg:upgrade:wait`.', statusCode: 400})
 
     const {error} = await runCommand(Cmd, [
       '--app',
@@ -230,12 +222,8 @@ describe('pg:upgrade:run', function () {
     api
       .get('/apps/myapp/config-vars')
       .reply(200, {DATABASE_URL: 'postgres://db1'})
-    dataApi
-      .get(`/client/v11/databases/${addon.id}`)
-      .reply(200)
-    dataApi
-      .post(`/client/v11/databases/${addon.id}/upgrade/run`)
-      .reply(200, {message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
+    infoStub.resolves({})
+    runUpgradeStub.resolves({message: 'Started the upgrade. You can monitor the progress with `heroku pg:upgrade:wait.`'})
 
     const message = heredoc(`
       Destructive action

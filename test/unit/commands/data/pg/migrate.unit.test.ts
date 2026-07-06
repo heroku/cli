@@ -587,10 +587,10 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout).to.contain('→ Configure Leader Pool')
       expect(createAddonStub.calledOnce).to.be.true
-      expect(createAddonStub.args[0][1]).to.equal(premiumDbAttachment.addon.app.name)
+      expect(createAddonStub.args[0][0]).to.equal(premiumDbAttachment.addon.app.name)
       // Verify the service plan is correct (no private or shield networking)
-      expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced')
-      expect(createAddonStub.args[0][5]).to.deep.include({
+      expect(createAddonStub.args[0][1]).to.equal('heroku-postgresql:advanced')
+      expect(createAddonStub.args[0][4]).to.deep.include({
         config: {
           from: premiumDbAttachment.addon.id,
           'high-availability': true,
@@ -659,10 +659,10 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout).to.contain('→ Configure Leader Pool')
       expect(createAddonStub.calledOnce)
-      expect(createAddonStub.args[0][1]).to.equal(privateDbAttachment.addon.app.name)
+      expect(createAddonStub.args[0][0]).to.equal(privateDbAttachment.addon.app.name)
       // Verify the service plan is correct (private networking)
-      expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-private')
-      expect(createAddonStub.args[0][5]).to.deep.include({
+      expect(createAddonStub.args[0][1]).to.equal('heroku-postgresql:advanced-private')
+      expect(createAddonStub.args[0][4]).to.deep.include({
         config: {
           from: privateDbAttachment.addon.id,
           'high-availability': true,
@@ -731,10 +731,10 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout).to.contain('→ Configure Leader Pool')
       expect(createAddonStub.calledOnce)
-      expect(createAddonStub.args[0][1]).to.equal(shieldDbAttachment.addon.app.name)
+      expect(createAddonStub.args[0][0]).to.equal(shieldDbAttachment.addon.app.name)
       // Verify the service plan is correct (shield networking)
-      expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-shield')
-      expect(createAddonStub.args[0][5]).to.deep.include({
+      expect(createAddonStub.args[0][1]).to.equal('heroku-postgresql:advanced-shield')
+      expect(createAddonStub.args[0][4]).to.deep.include({
         config: {
           from: shieldDbAttachment.addon.id,
           'high-availability': true,

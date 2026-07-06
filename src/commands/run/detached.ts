@@ -5,10 +5,11 @@ import {ux} from '@oclif/core/ux'
 
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher} from '../../lib/run/helpers.js'
-import {LogDisplayer} from '../../lib/run/log-displayer.js'
+import {displayLogs} from '../../lib/run/log-displayer.js'
 
 export default class RunDetached extends Command {
   static description = 'run a detached dyno, where output is sent to your logs'
+  public static displayLogs = displayLogs
   static examples = [
     color.command('heroku run:detached ls'),
   ]
@@ -48,8 +49,7 @@ export default class RunDetached extends Command {
     await dyno.start()
 
     if (flags.tail) {
-      const displayer = new LogDisplayer(this.heroku)
-      await displayer.display({
+      await RunDetached.displayLogs({
         app: flags.app,
         dyno: dyno.dyno?.name,
         tail: true,

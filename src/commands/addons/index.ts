@@ -1,11 +1,25 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
+
+// The Platform expands nested addon_service and plan when this header is set.
+const ADDON_EXPANSION_HEADERS = {
+  Accept: 'application/vnd.heroku+json; version=3.sdk',
+  'Accept-Expansion': 'addon_service,plan',
+}
+
+// SDK resource types use required fields while @heroku-cli/schema uses
+// optional fields for the same shapes. This cast bridges the gap until
+// the codebase fully migrates off @heroku-cli/schema.
+function asSchemaBased<T>(value: unknown): T {
+  return value as T
+}
 
 const topic = 'addons'
 
@@ -58,43 +72,38 @@ export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string
 }
 
 async function addonGetter(api: APIClient, app?: string) {
-  let attachmentsResponse: null | ReturnType<typeof api.get<Heroku.AddOnAttachment>> = null
-  let addonsResponse: ReturnType<typeof api.get<Heroku.AddOn[]>>
+  const {platform} = new HerokuSDK()
+  // Apply Accept-Expansion only on add-on list calls (the global list
+  // endpoint rejects it; the attachments endpoints don't need it).
+  const platformWithExpansion = platform.withHeaders(ADDON_EXPANSION_HEADERS)
+  let attachmentsResponse: null | Promise<Heroku.AddOnAttachment[]> = null
+  let addonsResponse: Promise<Heroku.AddOn[]>
   if (app) { // don't display attachments globally
-    addonsResponse = api.get<Heroku.AddOn[]>(`/apps/${app}/addons`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-        'Accept-Expansion': 'addon_service,plan',
-      },
-    })
+    addonsResponse = platformWithExpansion.addOn.listByApp(app).then(asSchemaBased<Heroku.AddOn[]>)
     const sudoHeaders = JSON.parse(process.env.HEROKU_HEADERS || '{}')
     // eslint-disable-next-line unicorn/prefer-ternary
     if (sudoHeaders['X-Heroku-Sudo'] && !sudoHeaders['X-Heroku-Sudo-User']) {
       // because the root /addon-attachments endpoint won't include relevant
       // attachments when sudo-ing for another app, we will use the more
       // specific API call and sacrifice listing foreign attachments.
-      attachmentsResponse = api.get<Heroku.AddOnAttachment>(`/apps/${app}/addon-attachments`)
+      attachmentsResponse = platform.addOnAttachment.listByApp(app).then(asSchemaBased<Heroku.AddOnAttachment[]>)
     } else {
       // In order to display all foreign attachments, we'll get out entire
       // attachment list
-      attachmentsResponse = api.get<Heroku.AddOnAttachment>('/addon-attachments')
+      attachmentsResponse = platform.addOnAttachment.list().then(asSchemaBased<Heroku.AddOnAttachment[]>)
     }
   } else {
-    addonsResponse = api.get<Heroku.AddOn[]>('/addons', {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-        'Accept-Expansion': 'addon_service,plan',
-      },
-    })
+    // The global /addons endpoint doesn't support Accept-Expansion.
+    addonsResponse = platform.addOn.list().then(asSchemaBased<Heroku.AddOn[]>)
   }
 
   // Get addons and attachments in parallel
-  const [{body: addonsRaw}, potentialAttachments] = await Promise.all([addonsResponse, attachmentsResponse])
+  const [addonsRaw, potentialAttachments] = await Promise.all([addonsResponse, attachmentsResponse])
   function isRelevantToApp(addon: Heroku.AddOn) {
     return !app || addon.app?.name === app || _.some(addon.attachments, att => att.app.name === app)
   }
 
-  const groupedAttachments = _.groupBy<Heroku.AddOnAttachment>(potentialAttachments?.body, 'addon.id')
+  const groupedAttachments = _.groupBy<Heroku.AddOnAttachment>(potentialAttachments ?? [], 'addon.id')
   const addons: Heroku.AddOn[] = []
   addonsRaw.forEach((addon: Heroku.AddOn) => {
     addon.attachments = groupedAttachments[addon.id as string]  || []
@@ -114,7 +123,7 @@ async function addonGetter(api: APIClient, app?: string) {
   // if the attachment looks relevant to the app, and then render whatever
   for (const atts of _.values(groupedAttachments)) {
     const inaccessibleAddon = {
-      addon_service: {}, app: atts[0].addon.app, attachments: atts, name: atts[0].addon.name, plan: {},
+      addon_service: {}, app: atts[0].addon!.app, attachments: atts, name: atts[0].addon!.name, plan: {},
     }
     if (isRelevantToApp(inaccessibleAddon)) {
       addons.push(inaccessibleAddon)

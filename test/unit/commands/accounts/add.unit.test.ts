@@ -12,8 +12,15 @@ describe('accounts:add', function () {
   let api: nock.Scope
   let addStub: SinonStub
   let listStub: SinonStub
+  let originalApiKey: string | undefined
 
   beforeEach(function () {
+    // Tests here rely on the stubbed credential manager for auth; HEROKU_API_KEY
+    // from test/helpers/init.mjs would otherwise take precedence in APIClient
+    // and defeat the stubs.
+    originalApiKey = process.env.HEROKU_API_KEY
+    delete process.env.HEROKU_API_KEY
+
     listStub = stub(AccountsModule, 'list').resolves([])
     addStub = stub(AccountsModule, 'add')
     api = nock('https://api.heroku.com')
@@ -23,6 +30,7 @@ describe('accounts:add', function () {
     restore()
     api.done()
     nock.cleanAll()
+    if (originalApiKey !== undefined) process.env.HEROKU_API_KEY = originalApiKey
   })
 
   describe('when the user is logged in', function () {

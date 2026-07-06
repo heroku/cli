@@ -4,14 +4,12 @@ import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../src/commands/logs.js'
-import {LogDisplayer} from '../../../src/lib/run/log-displayer.js'
 
 describe('logs', function () {
   let logDisplayerStub: SinonStub
 
   beforeEach(async function () {
-    // Stub only the display method
-    logDisplayerStub = stub(LogDisplayer.prototype, 'display').resolves()
+    logDisplayerStub = stub(Cmd, 'displayLogs').resolves()
   })
 
   afterEach(function () {

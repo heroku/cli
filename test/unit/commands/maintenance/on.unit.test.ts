@@ -1,29 +1,26 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import On from '../../../../src/commands/maintenance/on.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('maintenance:on', function () {
-  let api: nock.Scope
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sdkMock.restore()
+    restore()
   })
 
   it('turns maintenance mode on', async function () {
-    api
-      .patch('/apps/myapp', {maintenance: true})
-      .reply(200)
+    const enableStub = stub().resolves()
+    sdkMock = mockSDKPlatform({app: {enableMaintenance: enableStub}})
 
     const {stderr, stdout} = await runCommand(On, ['-a', 'myapp'])
 
     expect(stdout).to.be.empty
     expect(stderr).to.contain('Enabling maintenance mode for ⬢ myapp... done')
+    expect(enableStub.calledOnceWith('myapp')).to.be.true
   })
 })

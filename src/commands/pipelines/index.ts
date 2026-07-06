@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class Pipelines extends Command {
@@ -15,7 +15,8 @@ export default class Pipelines extends Command {
   async run() {
     const {flags} = await this.parse(Pipelines)
 
-    const {body: pipelines} = await this.heroku.get<Heroku.Pipeline[]>('/pipelines')
+    const {platform} = new HerokuSDK()
+    const pipelines = await platform.pipeline.list()
 
     if (flags.json) {
       hux.styledJSON(pipelines)

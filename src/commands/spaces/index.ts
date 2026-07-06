@@ -1,5 +1,6 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {getGeneration} from '../../lib/apps/generation.js'
@@ -47,11 +48,10 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
     const {json, team} = flags
-    let {body: spaces} = await this.heroku.get<SpaceArray>('/spaces', {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const {platform} = new HerokuSDK()
+    let spaces = await platform
+      .withHeaders({Accept: 'application/vnd.heroku+json; version=3.sdk'})
+      .space.list() as SpaceArray
     if (team) {
       spaces = spaces.filter(s => s.team.name === team)
     }
