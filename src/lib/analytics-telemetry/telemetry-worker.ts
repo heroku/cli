@@ -5,7 +5,9 @@
  */
 
 import {telemetryManager} from './telemetry-manager.js'
-import {telemetryDebug} from './telemetry-utils.js'
+import {
+  CLIError, parseWorkerEnvelope, setVersion, TelemetryData, telemetryDebug,
+} from './telemetry-utils.js'
 
 // Set maximum lifetime for worker process (10 seconds)
 // This ensures the worker never hangs indefinitely due to network issues or other failures
@@ -52,7 +54,13 @@ process.stdin.on('data', chunk => {
 
 process.stdin.on('end', async () => {
   try {
-    const parsed = JSON.parse(inputData)
+    const envelope = parseWorkerEnvelope(inputData)
+    // Restore the CLI version in this worker's module scope so any client
+    // that lazily reads getVersion() (Sentry.init, OTEL tracer) sees the
+    // real version instead of 'unknown'. Must happen before the first
+    // client import below.
+    setVersion(envelope.cliVersion)
+    const parsed = envelope.payload
 
     // Check if this is Herokulytics data using explicit type discriminator
     if (parsed._type === 'herokulytics') {
@@ -64,8 +72,7 @@ process.stdin.on('end', async () => {
       const config = await Config.load()
       const client = new BackboardHerokulyticsClient(config)
 
-      // Send herokulytics data
-      await client.send(parsed)
+      await client.send({argv: parsed.argv, Command: parsed.Command})
 
       exitWorker(0)
       return
@@ -73,9 +80,9 @@ process.stdin.on('end', async () => {
 
     // Otherwise, handle OTEL/Sentry telemetry data
     // If the data is an error, reconstruct it as an Error instance
-    let telemetryData = parsed
+    let telemetryData: TelemetryData = parsed
     if (parsed._type === 'error') {
-      const error = new Error(parsed.message)
+      const error = new Error(parsed.message) as CLIError
       error.name = parsed.name
       error.stack = parsed.stack
       // Copy over additional properties
