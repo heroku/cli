@@ -93,6 +93,7 @@ async function configureGitRemote(context: Interfaces.ParserOutput, app: App) {
   const remoteUrl = git.httpGitUrl(app.name || '')
   if (!context.flags['no-remote'] && git.inGitRepo()) {
     await git.createRemote(context.flags.remote || 'heroku', remoteUrl)
+    await git.configureCredentialHelper()
   }
 
   return remoteUrl

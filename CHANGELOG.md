@@ -4,6 +4,138 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.8.0](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0) (2026-07-01)
+
+
+### Features
+
+* 'data:pg:migrate' interactive method selection (W-22585064) ([#3791](https://github.com/heroku/cli/issues/3791)) ([914fc06](https://github.com/heroku/cli/commit/914fc06e1dd76cd687ffa3b0973dc0356814a4ae))
+* skip caching token in keychain mode for accounts cache ([#3792](https://github.com/heroku/cli/issues/3792)) ([5d7d95b](https://github.com/heroku/cli/commit/5d7d95bafbcf088c9818690df769d3b8451be369))
+
+
+### Bug Fixes
+
+* remove keychain accounts cache on logout ([#3797](https://github.com/heroku/cli/issues/3797)) ([70cbd44](https://github.com/heroku/cli/commit/70cbd44fcac9b7d3cd21d8d62b713e63e2030924))
+* update CLI to work with changes to heroku-cli-util table function ([#3796](https://github.com/heroku/cli/issues/3796)) ([a523792](https://github.com/heroku/cli/commit/a523792944869e4ea9fe217c080619e1819b43ae))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump @heroku/mcp-server to 1.2.5 and update undici ([#3794](https://github.com/heroku/cli/issues/3794)) ([f5dab06](https://github.com/heroku/cli/commit/f5dab067f0b760a4efd9deee9760b6075a7d913e))
+* **deps:** bump @heroku/mcp-server to 1.2.5, update undici ([09ca009](https://github.com/heroku/cli/commit/09ca0096ae32a27809d688e5e783466fe27d2401))
+
+## [11.7.1](https://github.com/heroku/cli/compare/v11.7.0...v11.7.1) (2026-06-24)
+
+
+### Miscellaneous Chores
+
+* **deps:** updates @heroku/mcp-server to v1.2.4 ([#3783](https://github.com/heroku/cli/issues/3783)) ([73bbaea](https://github.com/heroku/cli/commit/73bbaea008ddfe8102fd548d8816e4ab1450b561))
+
+## [11.7.0](https://github.com/heroku/cli/compare/v11.6.0...v11.7.0) (2026-06-23)
+
+
+### Features
+
+* migrate extra pg commands from pg-extras plugin to cli ([#3782](https://github.com/heroku/cli/issues/3782)) ([38a4604](https://github.com/heroku/cli/commit/38a4604e46a3385578a223cd88c6d7c784119e53))
+
+
+### Bug Fixes
+
+* revert whoami status code fix ([#3785](https://github.com/heroku/cli/issues/3785)) ([1706012](https://github.com/heroku/cli/commit/1706012f6e37253677efffff35d866c8097648c2))
+
+## [11.6.0](https://github.com/heroku/cli/compare/v11.5.0...v11.6.0) (2026-06-17)
+
+
+### Features
+
+* add alias files for keychain accounts ([e1c572c](https://github.com/heroku/cli/commit/e1c572c942386b519b6ab63aac52c5ed56060d05))
+* add getAliasEmail helper method ([bb53b87](https://github.com/heroku/cli/commit/bb53b87479d3009518c02420027da1dc7b8ddace))
+* add listAliasFiles helper method ([01da5e4](https://github.com/heroku/cli/commit/01da5e44ae9c7257fddb27566fb3b3c02f7c8444))
+* adds alias support for keychain-based accounts ([#3752](https://github.com/heroku/cli/issues/3752)) ([c5d1a45](https://github.com/heroku/cli/commit/c5d1a450601405b44b23648593b498bf61de2b20))
+* adds credential manager functionality to the CLI ([#3758](https://github.com/heroku/cli/issues/3758)) ([ad0466e](https://github.com/heroku/cli/commit/ad0466e1512b902ee454fc55d4a5abdf87eaab12))
+* implement heroku git:credentials as a git credential helper ([#3683](https://github.com/heroku/cli/issues/3683)) ([781e99e](https://github.com/heroku/cli/commit/781e99e1b9c56339b1245e30087aa9b312c10e69))
+* prevent duplicate aliases for same email in accounts:add ([c094aa6](https://github.com/heroku/cli/commit/c094aa61670a0beaa15d3c8a31e0839f082c50d5))
+* remove alias files for keychain and netrc accounts ([0d3b417](https://github.com/heroku/cli/commit/0d3b4175391b48ae84a712f9f86743a85ff2efbd))
+* remove cached netrc account on logout ([#3710](https://github.com/heroku/cli/issues/3710)) ([b07137b](https://github.com/heroku/cli/commit/b07137bed5282a1618ae7e2b1e7f603eeb9a70be))
+* update accounts and accounts:current commands to use the credential manager ([#3689](https://github.com/heroku/cli/issues/3689)) ([e753d06](https://github.com/heroku/cli/commit/e753d06407fe8ebf6f87b25131d6198d78e824e8))
+* update accounts:add description for clarity ([a34d687](https://github.com/heroku/cli/commit/a34d687ecee13d4db831ef39011c9698d676bcb3))
+* update accounts:add to use the credential manager ([#3699](https://github.com/heroku/cli/issues/3699)) ([49e3938](https://github.com/heroku/cli/commit/49e3938f44ec52451870cf24c692d440a7a69701))
+* update accounts:remove to work with credential manager ([#3701](https://github.com/heroku/cli/issues/3701)) ([89d7b14](https://github.com/heroku/cli/commit/89d7b148df950429f902691c8348afc5bba07454))
+* update accounts:set to work with keychain managers ([#3696](https://github.com/heroku/cli/issues/3696)) ([1f896aa](https://github.com/heroku/cli/commit/1f896aab4b23fb312d444420a06ed9d839ec8cf4))
+* update list() to merge keychain accounts with alias files ([940bb6f](https://github.com/heroku/cli/commit/940bb6f89326e26e176b199db8fe0defa141c29d))
+* update remove() to resolve alias before keychain removal ([92e2fe1](https://github.com/heroku/cli/commit/92e2fe133ca2d52f4c0b744c0096be2196fb106b))
+* update set() to handle aliased keychain accounts ([114d3a7](https://github.com/heroku/cli/commit/114d3a7740c7f1c10e1425c5d9c7613811182658))
+
+
+### Bug Fixes
+
+* allow switching to netrc mode with keychain-created aliases ([386bd16](https://github.com/heroku/cli/commit/386bd163b31cb2899d7d17332e79b0e68d63a5c0))
+* fix linting errors in accounts lib file ([a8368d6](https://github.com/heroku/cli/commit/a8368d696dc91552ffef901da286e003a3091596))
+* fix whoami and update heroku-cli-command and heroku-cli-util ([#3719](https://github.com/heroku/cli/issues/3719)) ([7db768f](https://github.com/heroku/cli/commit/7db768f21f0dbe04d8d422f93919bc4f6f9156c5))
+* improves consistency between keychain and netrc accounts actions ([#3762](https://github.com/heroku/cli/issues/3762)) ([76d24b8](https://github.com/heroku/cli/commit/76d24b88247091325a59d37d77683a512e6f1724))
+* make getAliasEmail test cross-platform compatible ([0f5b958](https://github.com/heroku/cli/commit/0f5b958f4782cf2ec5b5cb53812bdd636cb436e9))
+* prevent cross-mode account removal with helpful error messages ([efa00a3](https://github.com/heroku/cli/commit/efa00a3e473eb2bb9be5a96f0412dced0851ec89))
+* prevent password from being written to keychain alias files ([4b0e92d](https://github.com/heroku/cli/commit/4b0e92d1045dc649c5b5d92b649fa9d8d613e267))
+* remove support for non-aliased accounts from heroku accounts and accounts:current commands ([9509171](https://github.com/heroku/cli/commit/950917138576dfae869bf5ef2930d9a159e7808b))
+* restore git configuration on logout ([#3697](https://github.com/heroku/cli/issues/3697)) ([5479fa5](https://github.com/heroku/cli/commit/5479fa53c75b152aece718999deee50b94b1f5ce))
+* update accounts:remove to check for email or alias to validate current account ([969afab](https://github.com/heroku/cli/commit/969afabbfaa46bfdaf37cac7eab854440fbcd601))
+* update error text for accounts commands ([a15d8bd](https://github.com/heroku/cli/commit/a15d8bd1f8b86b802b9c74efccf3de1136cc3483))
+* update error text for accounts commands ([#3756](https://github.com/heroku/cli/issues/3756)) ([35350e8](https://github.com/heroku/cli/commit/35350e89b86080fd415ad0c4c20928695fbac42b))
+* use HEROKU_CLI_CHANNEL in Direwolf test trigger ([#3765](https://github.com/heroku/cli/issues/3765)) ([62be38b](https://github.com/heroku/cli/commit/62be38b378e29a97246cc41c500d633fa8bf407c))
+
+
+### Miscellaneous Chores
+
+* fix linting errors ([7df4bf0](https://github.com/heroku/cli/commit/7df4bf076497d70c4c0ab3ae672598853f761247))
+* merge in main to feature branch ([#3747](https://github.com/heroku/cli/issues/3747)) ([8c100fd](https://github.com/heroku/cli/commit/8c100fd4667a88e414a4c9379ff896792ef07498))
+* merge main ([#3737](https://github.com/heroku/cli/issues/3737)) ([cb751e6](https://github.com/heroku/cli/commit/cb751e6a23d11baf44cd6111f7a1741e8477c06d))
+* merge main ([#3757](https://github.com/heroku/cli/issues/3757)) ([07a78a3](https://github.com/heroku/cli/commit/07a78a3d8023bd56c9b2935d98ffad61925be803))
+* update CLI analytics to use heroku credential manager ([#3685](https://github.com/heroku/cli/issues/3685)) ([5f86e4c](https://github.com/heroku/cli/commit/5f86e4cf9a6b8ca74d6ef0650abbae1f940fab7d))
+
+
+### Code Refactoring
+
+* add accountsDir() helper to reduce code duplication ([efff0f5](https://github.com/heroku/cli/commit/efff0f5acd9cd4554ba74eb96d611abd9f44c830))
+* always write to netrc and remove non-aliased account support from accounts:set ([1a6fdb1](https://github.com/heroku/cli/commit/1a6fdb1fd70d37fb40bd44e8761b1868cc7df59f))
+* clean up accounts commands and lib function ([b2619ac](https://github.com/heroku/cli/commit/b2619ac45d8ee85469851c90274105515c7c9f09))
+* extract Ruby symbol conversion to helper method ([dae3901](https://github.com/heroku/cli/commit/dae390196a0c3654cc8be22126bb48bedb022ed0))
+* remove cross-mode validation from accounts management ([aba7fa5](https://github.com/heroku/cli/commit/aba7fa5cb213ef6b54a078b1d28beafefe9b79b3))
+* simplify account lookup in set command ([c540bec](https://github.com/heroku/cli/commit/c540bec1ab5829e683f5296baa0806b427439605))
+* simplify accounts add to always write username and password ([5be6ed5](https://github.com/heroku/cli/commit/5be6ed5987146486e18bda5570d92ea461686b80))
+* simplify add() method with writeAccountFile helper ([b15db3a](https://github.com/heroku/cli/commit/b15db3ae0abf1ad92b20d14fb62c72039b1488c2))
+
+
+### Tests
+
+* fix accounts, apps, auth, buildpacks, container, git, and ps-exec tests ([391b6a6](https://github.com/heroku/cli/commit/391b6a6cff1cb754697db642f1c11464a8de6de3))
+* update analytics tests to use the credential manager ([#3688](https://github.com/heroku/cli/issues/3688)) ([4fde394](https://github.com/heroku/cli/commit/4fde394ac2351504a727829fd86fd647136afbc8))
+
+## [11.5.0](https://github.com/heroku/cli/compare/v11.4.0...v11.5.0) (2026-06-11)
+
+
+### Features
+
+* add hidden --method flag to data:pg:migrate ([#3743](https://github.com/heroku/cli/issues/3743)) ([665b189](https://github.com/heroku/cli/commit/665b1896d50f399cc20cfe39500b603665bc814a))
+
+
+### Bug Fixes
+
+* 'run:inside' args ordering (W-22693654) ([#3727](https://github.com/heroku/cli/issues/3727)) ([355113e](https://github.com/heroku/cli/commit/355113e8253b8547ea86be4ef540287ea263af80))
+* add missing warning to 'data:pg:migrate' (W-22544849) ([#3716](https://github.com/heroku/cli/issues/3716)) ([400fc6e](https://github.com/heroku/cli/commit/400fc6e26eb7b7fdd634e0e4465fc5c19762303a))
+* call _heroku.pg_stat_statements_reset() on Essential and Advanced plans ([#3751](https://github.com/heroku/cli/issues/3751)) ([5414e36](https://github.com/heroku/cli/commit/5414e3621ae732124bafcc9fdd1eabb56fc81c9d))
+* inherit secrets in reusable workflow ([#3711](https://github.com/heroku/cli/issues/3711)) ([5dd58af](https://github.com/heroku/cli/commit/5dd58af6c14f55ab85fe8584598718ebee03ae4b))
+* pass empty string to rl.write in repl finally block (W-22295448) ([#3721](https://github.com/heroku/cli/issues/3721)) ([ebdf082](https://github.com/heroku/cli/commit/ebdf082ed317cb74a59945c60dc274615b735b81))
+
+
+### Miscellaneous Chores
+
+* add CLAUDE.md and Copilot instructions pointing to AGENTS.md ([#3724](https://github.com/heroku/cli/issues/3724)) ([8abed2f](https://github.com/heroku/cli/commit/8abed2faad739a1897734fe414cc2e1b70ea245a))
+* consolidate release for trusted publishing ([#3744](https://github.com/heroku/cli/issues/3744)) ([0e81dd8](https://github.com/heroku/cli/commit/0e81dd8429cecba42ea31c64cbbaac9db2bd2f87))
+* inline npm publish workflow ([#3750](https://github.com/heroku/cli/issues/3750)) ([5618ee2](https://github.com/heroku/cli/commit/5618ee2e161f71594305de28965d672cf4eba8f3))
+* pass PR title via env in pr-title-check workflow ([#3763](https://github.com/heroku/cli/issues/3763)) ([96310c3](https://github.com/heroku/cli/commit/96310c372b3431aa0c6b4c9313d035b40c7cd0bd))
+* remove unused workflow file ([#3712](https://github.com/heroku/cli/issues/3712)) ([8860aa4](https://github.com/heroku/cli/commit/8860aa412261f05fae3df19438cfd50a5f4ae67f))
+* upload arm64 win installer to Stampy unsigned bucket (W-22733412) ([#3734](https://github.com/heroku/cli/issues/3734)) ([e171ad5](https://github.com/heroku/cli/commit/e171ad5f670bb4d7aae80d625ae5bf65d77cd1ff))
+
 ## [11.4.0](https://github.com/heroku/cli/compare/v11.3.0...v11.4.0) (2026-05-13)
 
 

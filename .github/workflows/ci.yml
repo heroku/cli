@@ -7,6 +7,7 @@ on:
     branches:
       - main
       - v11.0.0
+      - feat/credential-mgr-integration
       # Add any long-lived feature branches here
   pull_request:
   workflow_dispatch:

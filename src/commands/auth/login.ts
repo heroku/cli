@@ -2,6 +2,8 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 
+import Git from '../../lib/git/git.js'
+
 export default class Login extends Command {
   static aliases = ['login']
   static description = 'login with your Heroku credentials'
@@ -19,6 +21,15 @@ export default class Login extends Command {
     await this.heroku.login({browser: flags.browser, expiresIn: flags['expires-in'], method})
     const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
     this.log(`Logged in as ${color.user(account.email!)}`)
+
+    const git = new Git()
+    try {
+      await git.configureCredentialHelper()
+      await git.eraseCredentials()
+    } catch {
+      // ignore
+    }
+
     await this.config.runHook('recache', {type: 'login'})
   }
 }

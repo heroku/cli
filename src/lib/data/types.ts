@@ -34,6 +34,11 @@ export enum MigrationStatus {
   UNKNOWN = 'unknown',
 }
 
+export enum MigrationMethod {
+  CDC = 'cdc',
+  FULL_LOAD = 'full-load',
+}
+
 export enum PoolStatus {
   AVAILABLE = 'available',
   MODIFYING = 'modifying',

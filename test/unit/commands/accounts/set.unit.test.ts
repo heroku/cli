@@ -11,24 +11,26 @@ describe('accounts:set', function () {
 
   beforeEach(function () {
     listStub = stub(AccountsModule, 'list')
-    setStub = stub(AccountsModule, 'set')
+    setStub = stub(AccountsModule, 'set').resolves()
   })
 
   afterEach(function () {
     restore()
   })
 
-  it('calls the set function with the account name when the account exists', async function () {
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
+  it('calls set with the account name and dataDir when matched by name', async function () {
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
     await runCommand(Cmd, ['test-account-2'])
-    expect(setStub.calledWith('test-account-2'))
+    expect(setStub.calledOnce).to.be.true
+    expect(setStub.firstCall.args[0]).to.deep.equal({name: 'test-account-2', username: 'user2'})
+    expect(setStub.firstCall.args[1].toLowerCase()).to.contain('local')
+    expect(setStub.firstCall.args[1]).to.contain('heroku')
   })
 
-  it('should return an error if the selected account name is not included in the account list', async function () {
-    listStub.returns([{name: 'test-account'}, {name: 'test-account-2'}])
-    await runCommand(Cmd, ['test-account-3'])
-      .catch((error: Error) => {
-        expect(error.message).to.contain('test-account-3 does not exist in your accounts cache.')
-      })
+  it('returns an error if the account is not in the list', async function () {
+    listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
+
+    const {error} = await runCommand(Cmd, ['test-account-3'])
+    expect(error?.message).to.contain('test-account-3 doesn\'t exist in your accounts cache.')
   })
 })

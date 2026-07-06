@@ -18,7 +18,11 @@ armel
 armhf
 armv
 atleti
+attname
+attnum
+attrelid
 atts
+atttypid
 auths
 authtoken
 autodeploy
@@ -29,10 +33,12 @@ autoloaded
 autoscale
 autovacuum
 awscli
+badheaders
 barsize
 baseport
 bindkey
 binrun
+blks
 blocklisted
 boop
 Bpcy
@@ -96,9 +102,11 @@ eventsource
 execa
 expialidocious
 extnamespace
+extwlist
 favorited
 favoriteid
 favoriting
+fdwsql
 filebase
 filesize
 FIRPRIVATESPACES
@@ -130,6 +138,8 @@ Icann
 infile
 iname
 indexrelid
+indexrelname
+indisunique
 indrelid
 inreplace
 iotta
@@ -279,6 +289,7 @@ pico
 pinentry
 pipefail
 pjson
+plpgsql
 printenv
 pooler
 portfinder
@@ -314,6 +325,7 @@ rediss
 regionize
 rejairieja
 relid
+relkind
 reloptions
 relopts
 relname
@@ -360,6 +372,7 @@ splunkhec
 sshdir
 sslmode
 stampy
+statio
 strftime
 stubber
 supersecretkey
@@ -382,6 +395,7 @@ transactionid
 trimline
 tsheredoc
 twofactor
+typname
 uncolorized
 undefinedcommand
 undeployed
@@ -407,9 +421,11 @@ wrapline
 writeout
 wubalubadubdub
 xact
+xgen
 xlarge
 xvzf
 yargs
 yetanotherapp
+ygen
 yourdomain
 ztestdomain7

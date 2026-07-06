@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {createSandbox, SinonSandbox} from 'sinon'
@@ -10,7 +11,7 @@ describe('container:login', function () {
 
   beforeEach(function () {
     sandbox = createSandbox()
-    process.env.HEROKU_API_KEY = 'heroku_token'
+    sandbox.stub(APIClient.prototype, 'auth').get(() => 'heroku_token')
   })
 
   afterEach(function () {

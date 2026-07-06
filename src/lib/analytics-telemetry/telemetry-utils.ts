@@ -77,6 +77,27 @@ export interface TelemetryGlobal {
 // All data types that can be sent via worker
 export type WorkerData = HerokulyticsData | TelemetryData
 
+// Envelope written to the worker's stdin. The worker runs in a separate
+// Node process, so any module-level state in this file (e.g. the CLI
+// version cached via setVersion) does not carry across. Fields the worker
+// needs to re-hydrate before initializing clients belong here.
+export interface WorkerEnvelope {
+  cliVersion: string
+  payload: SerializedWorkerData
+}
+
+// Errors are serialized to plain objects with an `_type: 'error'` tag so
+// the worker can reconstruct an Error instance. Other payloads pass
+// through unchanged.
+export interface SerializedError {
+  [key: string]: unknown
+  _type: 'error'
+  message: string
+  name: string
+  stack?: string
+}
+export type SerializedWorkerData = HerokulyticsData | SerializedError | Telemetry
+
 /**
  * Compute duration from a start time to now
  */
@@ -158,13 +179,20 @@ export function isTelemetryEnabled(): boolean {
 }
 
 /**
- * Serialize data for telemetry worker, handling Error objects specially
+ * Serialize data for the telemetry worker.
+ *
+ * Every payload is wrapped in a WorkerEnvelope. The worker relies on this
+ * shape unconditionally — see parseWorkerEnvelope.
  */
 export function serializeTelemetryData(data: WorkerData): string {
-  // If it's an Error object, convert to plain object with all properties
+  const envelope: WorkerEnvelope = {cliVersion: getVersion(), payload: toSerializedPayload(data)}
+  return JSON.stringify(envelope)
+}
+
+function toSerializedPayload(data: WorkerData): SerializedWorkerData {
   if (data instanceof Error) {
     const errorData = data as CLIError
-    return JSON.stringify({
+    return {
       // Include any other enumerable properties first
       ...data,
       // Then override with important properties to ensure they're captured
@@ -177,10 +205,35 @@ export function serializeTelemetryData(data: WorkerData): string {
       oclif: errorData.oclif,
       stack: errorData.stack,
       statusCode: errorData.statusCode,
-    })
+    }
   }
 
-  return JSON.stringify(data)
+  // Discriminate the remaining, non-Error variants of WorkerData by _type
+  // so a new variant becomes a compile error here rather than silently
+  // falling through.
+  switch (data._type) {
+    case 'herokulytics':
+    case 'otel': {
+      return data
+    }
+
+    default: {
+      const _exhaustive: never = data
+      return _exhaustive
+    }
+  }
+}
+
+/**
+ * Parse a worker envelope from stdin. Pure — no side effects.
+ *
+ * The caller is responsible for applying the envelope's cliVersion via
+ * setVersion before any client (Sentry, OTEL) reads getVersion(). Keeping
+ * the parse and the state hydration in the caller makes the ordering
+ * visible at the call site.
+ */
+export function parseWorkerEnvelope(input: string): WorkerEnvelope {
+  return JSON.parse(input) as WorkerEnvelope
 }
 
 /**

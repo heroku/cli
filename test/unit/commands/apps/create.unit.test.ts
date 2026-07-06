@@ -1,11 +1,13 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
+import nock from 'nock'
 import {execSync} from 'node:child_process'
 import * as sinon from 'sinon'
-import {SinonStub} from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import CreateCommand from '../../../../src/commands/apps/create.js'
+import Git from '../../../../src/lib/git/git.js'
 
 type FakePlatform = {
   addOn: {create: sinon.SinonStub}
@@ -27,14 +29,29 @@ function buildFakePlatform(): FakePlatform {
 
 describe('apps:create', function () {
   let fakePlatform: FakePlatform
+  let api: nock.Scope
+  let configureCredentialHelperStub: SinonStub
+  let gitCreateRemoteStub: SinonStub
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
     sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+
+    api = nock('https://api.heroku.com')
+
+    configureCredentialHelperStub = stub(Git.prototype, 'configureCredentialHelper').resolves()
+    gitCreateRemoteStub = stub(Git.prototype, 'createRemote').resolves()
   })
 
   afterEach(function () {
     sinon.restore()
+
+    api.done()
+    nock.cleanAll()
+
+    configureCredentialHelperStub.restore()
+    gitCreateRemoteStub.restore()
+
     // Clean up any heroku git remotes created by the tests
     try {
       const remotes = execSync('git remote', {encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore']})
@@ -262,5 +279,82 @@ describe('apps:create', function () {
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, stack is test')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     expect(fakePlatform.app.create.firstCall.args[0]).to.include({stack: 'test'})
+  })
+
+  describe('git operations', function () {
+    it('creates a remote when in a git repository and --no-remote is not used', async function () {
+      api
+        .post('/apps', {})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'cedar-14'},
+          web_url: 'https://foobar.com',
+        })
+
+      await runCommand(CreateCommand, [])
+
+      expect(gitCreateRemoteStub.calledOnce).to.be.true
+    })
+
+    it('does not create a remote when not in a git repository', async function () {
+      const inGitRepoStub = stub(Git.prototype, 'inGitRepo').returns(false)
+
+      api
+        .post('/apps', {})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'cedar-14'},
+          web_url: 'https://foobar.com',
+        })
+
+      try {
+        await runCommand(CreateCommand, [])
+        expect(gitCreateRemoteStub.called).to.be.false
+      } finally {
+        inGitRepoStub.restore()
+      }
+    })
+
+    it('does not create a remote when --no-remote is used', async function () {
+      api
+        .post('/apps', {})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'cedar-14'},
+          web_url: 'https://foobar.com',
+        })
+
+      await runCommand(CreateCommand, ['--no-remote'])
+
+      expect(gitCreateRemoteStub.called).to.be.false
+    })
+
+    it('configures git credential helper when creating a remote', async function () {
+      api
+        .post('/apps', {})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'cedar-14'},
+          web_url: 'https://foobar.com',
+        })
+
+      await runCommand(CreateCommand, [])
+
+      expect(configureCredentialHelperStub.calledOnce).to.be.true
+    })
+
+    it('does not configure git credential helper when --no-remote is used', async function () {
+      api
+        .post('/apps', {})
+        .reply(200, {
+          name: 'foobar',
+          stack: {name: 'cedar-14'},
+          web_url: 'https://foobar.com',
+        })
+
+      await runCommand(CreateCommand, ['--no-remote'])
+
+      expect(configureCredentialHelperStub.called).to.be.false
+    })
   })
 })

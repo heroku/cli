@@ -213,7 +213,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
         } else {
           hux.table(customDomains, tableConfig, {
             ...huxTableNoWrapOptions(flags['no-wrap']),
-            sort: flags.sort ? {[sortProperty]: 'asc'} : undefined,
+            sort: flags.sort,
           })
         }
       }
