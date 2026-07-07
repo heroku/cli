@@ -126,7 +126,11 @@ export default class Dyno extends Duplex {
   }
 
   async _doStart(retries = 2): Promise<HTTP<unknown> | undefined> {
-    const command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
+    // The space before `;` keeps the first whitespace-delimited token a bare
+    // process type (e.g. `web`), which the runtime resolves against the app's
+    // Procfile/formation. Without it the token becomes `web;` and resolution
+    // fails, so the dyno runs `web` literally (`command not found`). See W-15930593.
+    const command = this.opts['exit-code'] ? `${this.opts.command} ; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
 
     try {
       const dyno = await this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
