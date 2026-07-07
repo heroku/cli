@@ -245,6 +245,67 @@ describe('Dyno', function () {
     })
   })
 
+  describe('_doStart', function () {
+    it('appends the exit-status sentinel with a space so the first token stays a bare process type', async function () {
+      const post = mockHeroku.post as sinon.SinonStub
+      post.resolves({body: {name: 'run.1234'}})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'web',
+        'exit-code': true,
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+
+      await dyno._doStart()
+
+      const {command} = post.firstCall.args[1].body
+      // The runtime resolves Procfile process types off the first whitespace-delimited
+      // token, so it must remain `web` (not `web;`) for `--exit-code` to work.
+      expect(command.split(/\s+/)[0]).to.equal('web')
+      expect(command).to.equal('web ; echo "￿ heroku-command-exit-status: $?"')
+    })
+
+    it('keeps the first token bare for multi-arg commands', async function () {
+      const post = mockHeroku.post as sinon.SinonStub
+      post.resolves({body: {name: 'run.1234'}})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'rake db:migrate',
+        'exit-code': true,
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+
+      await dyno._doStart()
+
+      const {command} = post.firstCall.args[1].body
+      expect(command.split(/\s+/)[0]).to.equal('rake')
+      expect(command).to.equal('rake db:migrate ; echo "￿ heroku-command-exit-status: $?"')
+    })
+
+    it('does not wrap the command without exit-code', async function () {
+      const post = mockHeroku.post as sinon.SinonStub
+      post.resolves({body: {name: 'run.1234'}})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'web',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+
+      await dyno._doStart()
+
+      expect(post.firstCall.args[1].body.command).to.equal('web')
+    })
+  })
+
   describe('_readData', function () {
     it('parses exit code from output', function () {
       const opts: DynoOpts = {
