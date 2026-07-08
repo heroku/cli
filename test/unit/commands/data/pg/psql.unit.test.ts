@@ -270,7 +270,7 @@ describe('data:pg:psql', function () {
         'test.sql',
       ])
       const {message, oclif} = error as CLIError
-      expect(message).to.eq("You can't use the --file flag on private networked Advanced databases.")
+      expect(message).to.eq("You can't use the --file flag on private networked databases.")
       expect(oclif.exit).to.eq(1)
 
       expect(psqlServiceExecFileStub.called).to.be.false
@@ -315,6 +315,134 @@ describe('data:pg:psql', function () {
 
       expect(stdout).to.equal('')
       expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+    })
+  })
+
+  describe('classic shield tier', function () {
+    beforeEach(function () {
+      stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+      psqlServiceExecQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
+      psqlServiceExecFileStub = stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
+      psqlServiceInteractiveStub = stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
+      runThroughOneOffDynoSpy = stub(DataPgPsql.prototype, 'runThroughOneOffDyno').resolves()
+    })
+
+    const db = {
+      attachment: {
+        addon: {
+          name: 'postgres-1',
+          plan: {
+            name: 'heroku-postgresql:shield-0',
+          },
+        },
+        app: {name: 'myapp'}, config_vars: ['DATABASE_URL'],
+        name: 'DATABASE',
+      }, connStringVar: 'DATABASE_URL', database: 'mydb', host: 'localhost', password: 'pass', port: 5432,
+      user: 'jeff',
+    } as unknown as pg.ConnectionDetails
+
+    it("errors out with '--file' option", async function () {
+      const {error, stdout} = await runCommand(DataPgPsql, [
+        'DATABASE',
+        '--app',
+        'myapp',
+        '--file',
+        'test.sql',
+      ])
+      const {message, oclif} = error as CLIError
+      expect(message).to.eq("You can't use the --file flag on private networked databases.")
+      expect(oclif.exit).to.eq(1)
+
+      expect(psqlServiceExecFileStub.called).to.be.false
+      expect(stdout).to.equal('')
+    })
+
+    it('runs psql command on a one-off dyno', async function () {
+      const expectedOptions: Partial<DynoOpts> = {
+        app: 'myapp',
+        attach: true,
+        command: 'psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL',
+        env: "PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
+        'exit-code': true,
+      }
+
+      const {stdout} = await runCommand(DataPgPsql, [
+        'DATABASE',
+        '--app',
+        'myapp',
+        '--command',
+        'SELECT 1',
+      ])
+
+      expect(stdout).to.equal('')
+      expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+    })
+
+    it('runs an interactive psql session on a one-off dyno', async function () {
+      const expectedOptions: Partial<DynoOpts> = {
+        app: 'myapp',
+        attach: true,
+        command: 'psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL',
+        env: "PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
+        'exit-code': true,
+      }
+
+      const {stdout} = await runCommand(DataPgPsql, [
+        'DATABASE',
+        '--app',
+        'myapp',
+      ])
+
+      expect(stdout).to.equal('')
+      expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+    })
+  })
+
+  describe('classic private tier', function () {
+    beforeEach(function () {
+      stub(utils.pg.DatabaseResolver.prototype, 'getDatabase').resolves(db)
+      psqlServiceExecQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
+      psqlServiceExecFileStub = stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
+      psqlServiceInteractiveStub = stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
+      runThroughOneOffDynoSpy = stub(DataPgPsql.prototype, 'runThroughOneOffDyno').resolves()
+    })
+
+    const db = {
+      attachment: {
+        addon: {
+          name: 'postgres-1',
+          plan: {
+            name: 'heroku-postgresql:private-0',
+          },
+        }, app: {name: 'myapp'}, config_vars: ['DATABASE_URL'],
+        name: 'DATABASE',
+      }, database: 'mydb', host: 'localhost', password: 'pass', port: 5432, user: 'jeff',
+    } as unknown as pg.ConnectionDetails
+
+    it('connects through the bastion PsqlService, not a one-off dyno', async function () {
+      await runCommand(DataPgPsql, [
+        'DATABASE',
+        '--app',
+        'myapp',
+        '--command',
+        'SELECT 1',
+      ])
+
+      expect(psqlServiceExecQueryStub.calledOnce).to.be.true
+      expect(runThroughOneOffDynoSpy.called).to.be.false
+    })
+
+    it('allows the --file flag (streamed locally through the tunnel)', async function () {
+      await runCommand(DataPgPsql, [
+        'DATABASE',
+        '--app',
+        'myapp',
+        '--file',
+        'test.sql',
+      ])
+
+      expect(psqlServiceExecFileStub.calledOnce).to.be.true
+      expect(runThroughOneOffDynoSpy.called).to.be.false
     })
   })
 })

@@ -1,11 +1,17 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import Dyno, {DynoOpts} from '../../../lib/run/dyno.js'
 
 const heredoc = tsheredoc.default
+
+function runsThroughOneOffDyno(addon: pg.ExtendedAddonAttachment['addon']): boolean {
+  const tier = addon.plan.name.split(':', 2)[1] ?? ''
+  return utils.pg.isAdvancedPrivateDatabase(addon)
+    || (utils.pg.isLegacyDatabase(addon) && tier.includes('shield'))
+}
 
 export default class DataPgPsql extends Command {
   static args = {
@@ -46,9 +52,9 @@ export default class DataPgPsql extends Command {
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const db = await dbResolver.getDatabase(app, databaseArg)
 
-    if (utils.pg.isAdvancedPrivateDatabase(db.attachment!.addon)) {
+    if (runsThroughOneOffDyno(db.attachment!.addon)) {
       if (file)
-        ux.error('You can\'t use the --file flag on private networked Advanced databases.', {exit: 1})
+        ux.error('You can\'t use the --file flag on private networked databases.', {exit: 1})
 
       let psqlCommand: string
 
