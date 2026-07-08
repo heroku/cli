@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.8.1](https://github.com/heroku/cli/compare/v11.8.0...v11.8.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* consolidate pg_stat_statements handling ([#3799](https://github.com/heroku/cli/issues/3799)) ([e36b494](https://github.com/heroku/cli/commit/e36b49472b67f5fdcaf5332764d996fe1994ecfd))
+* keep process type resolvable with heroku run --exit-code ([#3804](https://github.com/heroku/cli/issues/3804)) ([6383b03](https://github.com/heroku/cli/commit/6383b03e21b4bb088bc39f13fafb8a3c680f53a2))
+* migration method selection navigation bug (W-23306091) ([#3802](https://github.com/heroku/cli/issues/3802)) ([8562909](https://github.com/heroku/cli/commit/85629096f63f5e646975d90475ad18e36c8fb53e))
+* restore Sentry release tag from spawned telemetry worker ([#3801](https://github.com/heroku/cli/issues/3801)) ([407a7e0](https://github.com/heroku/cli/commit/407a7e04901844e91b91aeeea70fbdd5085304a5))
+
+
+### Code Refactoring
+
+* trim exit-code command comment ([7a2cfed](https://github.com/heroku/cli/commit/7a2cfed35c292ccd14a476c88c90949ec1c2c798))
+
 ## [11.8.0](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0) (2026-07-01)
 
 
