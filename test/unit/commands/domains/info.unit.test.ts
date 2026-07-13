@@ -1,19 +1,30 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsInfo from '../../../../src/commands/domains/info.js'
 
+type FakePlatform = {
+  domain: {info: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {info: stub()},
+  }
+}
+
 describe('domains:info', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    restore()
   })
 
   const domainInfoResponse = {
@@ -33,9 +44,7 @@ describe('domains:info', function () {
   }
 
   it('shows detailed information about a domain', async function () {
-    api
-      .get('/apps/myapp/domains/www.example.com')
-      .reply(200, domainInfoResponse)
+    fakePlatform.domain.info.resolves(domainInfoResponse)
 
     const {stdout} = await runCommand(DomainsInfo, ['www.example.com', '--app', 'myapp'])
 

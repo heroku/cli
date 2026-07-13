@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 export default class DomainsInfo extends Command {
@@ -19,7 +19,8 @@ export default class DomainsInfo extends Command {
 
   async run() {
     const {args, flags} = await this.parse(DomainsInfo)
-    const {body: res} = await this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${args.hostname}`)
+    const {platform} = new HerokuSDK()
+    const res = await platform.domain.info(flags.app, args.hostname)
     const domain = {
       ...res,
       app: res.app && res.app.name,

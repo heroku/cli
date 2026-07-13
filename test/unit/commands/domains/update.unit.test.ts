@@ -1,19 +1,30 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsUpdate from '../../../../src/commands/domains/update.js'
 
+type FakePlatform = {
+  domain: {update: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {update: stub()},
+  }
+}
+
 describe('domains:update', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    restore()
   })
 
   const responseBody = {
@@ -32,9 +43,7 @@ describe('domains:update', function () {
   }
 
   it('updates the domain to use a different certificate', async function () {
-    api
-      .patch('/apps/myapp/domains/example.com', {sni_endpoint: 'sniendpoint-id'})
-      .reply(200, responseBody)
+    fakePlatform.domain.update.resolves(responseBody)
 
     const {stderr} = await runCommand(DomainsUpdate, ['example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
 
