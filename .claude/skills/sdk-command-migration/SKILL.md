@@ -12,6 +12,8 @@ description: >
 
 Apply once per command in `src/commands/`. Each application produces one PR-ready unit of work containing two commits: the source migration and the test rewrite.
 
+> For the conceptual guide and decision rules — SDK method selection, business-logic placement, the return-value contract and its carve-outs, and backwards-compat rules — see [`GUIDE.md`](./GUIDE.md).
+
 ## When to Use
 
 **Invoke when:**
@@ -28,10 +30,24 @@ Apply once per command in `src/commands/`. Each application produces one PR-read
 
 - TypeScript with NodeNext ESM, `module: "NodeNext"`, target `ES2022`.
 - oclif 4 command framework.
-- `@heroku/sdk` published beta (currently `^0.1.0-beta`); the bare entry exports `HerokuSDK` and `HerokuSDKOptions`. `@heroku/types` (the route metadata package) is `^3.0.0-beta`.
+- `@heroku/sdk` published beta (currently `^0.5.0-beta`); the bare entry exports `HerokuSDK` and `HerokuSDKOptions`. `@heroku/types` (the route metadata package) is `^3.0.0-beta`.
 - `@heroku/heroku-fetch` is a direct dependency exporting `HerokuApiClient`. The SDK uses it internally; commands also use it directly for CLI-only escape hatches (see "CLI-only escape hatches" below).
 - **`@heroku-cli/schema` is deprecated.** Replace `import * as Heroku from '@heroku-cli/schema'` with imports from `@heroku/types/3.sdk` (entity types: `App`, `AddOn`, `Collaborator`, `Dyno`, etc.) and from the SDK composite resource files (`AppInfo`, `PipelineCouplingDetail`, etc., from `@heroku/sdk/resources/<service>/<resource>/<file>`). See "Replacing @heroku-cli/schema" below.
 - Tests use `mocha` + `chai` + `chai-as-promised` + `sinon`. Existing tests use `nock` to intercept HTTP; the rewrite drops `nock` in favor of direct SDK stubbing.
+
+## Design Principles
+
+Three rules shape every migration. They come up throughout the process below and are worth internalizing before starting. See [`GUIDE.md`](./GUIDE.md) sections 4-6 for the fuller reasoning behind each.
+
+
+**Business logic sits in three tiers.** The SDK owns cross-endpoint orchestration, retries, soft-fail, and hostname resolution — push fan-outs down into a composite method rather than reimplementing them in the CLI. Shared CLI helpers (`src/lib/...`) take `platform`/`data` as a parameter and leave SDK construction to their caller. The command class `run()` owns flag parsing, the single `new HerokuSDK()`, and output rendering via `hux`/`ux`. The `run()` boundary is also where CLI snake_case output meets SDK camelCase — translate at the output sites, not inside helpers.
+
+**Exactly one `new HerokuSDK()` per `run()`.** Helpers accept `platform: Platform` (or `data: HerokuSDK['data']`) as a parameter and never instantiate their own SDK. A second instance still test-stubs correctly (the stub is on `HerokuSDK.prototype`), but both instances' calls hit the same stub — so `calledOnceWithExactly(...)` assertions fail with "called twice," and the usual response is to loosen routing assertions to paper over a structural problem. If the codemod's insertion or a helper's `new HerokuSDK()` puts you at two instances, thread `platform` through as a parameter instead. See Step 1.2a for the conversion pattern.
+
+**`run()` returns the SDK-shaped data it fetched or produced.** This keeps commands composable — other commands and tests can call `run()` and assert on its behavior without scraping stdout. Prefer returning the SDK result (or a small object built from it) over `void`. When you migrate a command that currently returns `void`, backfill the return value as part of the same PR unless the command is one of the documented carve-outs:
+- **Streaming commands** (e.g., `logs --tail`) — under tail, the stream never ends; there's nothing serializable to return.
+- **Interactive TTY commands** (e.g., `run:inside`, `redis:cli`) — call `process.exit()` / `ux.exit()`, which oclif catches as `EEXIT`; control never returns normally.
+- **Progressive-stdout commands** (e.g., a backup download printing progress) — return a summary of the finished operation rather than the streaming progress itself.
 
 ## Process
 
@@ -471,11 +487,11 @@ Expected: empty. New errors mean the migration introduced a regression.
 
 ### Step V3: Push and open PR
 
-**Base branch is `feat/heroku-sdk-integration`, not `main`.** All SDK-migration work stacks onto the integration branch until that branch lands. Opening against `main` would surface ~120 files of integration-branch noise to reviewers; opening against `feat/heroku-sdk-integration` shows only the per-command diff (~4 files). When the integration branch eventually merges, GitHub automatically updates the open child PRs to target `main` with the same minimal diff.
+**Base branch is `v12.0.0`, not `main`.** All SDK-migration work stacks onto the v12 branch until that branch lands. Opening against `main` would surface the whole integration diff to reviewers; opening against `v12.0.0` shows only the per-command diff (~4 files). When the v12 branch eventually merges, GitHub automatically updates the open child PRs to target `main` with the same minimal diff.
 
 ```bash
 git push -u origin <branch>
-gh pr create --draft --base feat/heroku-sdk-integration \
+gh pr create --draft --base v12.0.0 \
   --title "refactor: use @heroku/sdk for <command> command" \
   --body "$(cat <<'EOF'
 ## Summary
@@ -504,6 +520,9 @@ Each PR migrates exactly one command. Don't bundle multiple command migrations �
 
 Before opening the PR:
 
+- [ ] Exactly one `new HerokuSDK()` per `run()`. Helpers accept `platform`/`data` as a parameter; no helper instantiates its own SDK. (See Design Principles.)
+- [ ] `run()` returns the SDK-shaped data it fetched or produced, or the command matches a documented carve-out (streaming, interactive-TTY, progressive-stdout). Backfill the return value if the command previously returned `void`.
+- [ ] Business logic sits in the right tier: cross-endpoint orchestration in the SDK (composite methods), reused logic in `src/lib/...` helpers, flag parsing / SDK construction / output rendering in `run()`. Snake_case renames happen at the output boundary, not threaded through helpers.
 - [ ] No `this.heroku.<verb>` calls remain in the migrated file. (Escape-hatch calls go through `HerokuApiClient` per Step 1.2b — never via `this.heroku`.)
 - [ ] No bare `heroku.<verb>(...)` calls remain in helper functions (helper-threading shape — see Step 1.2a).
 - [ ] No `// TODO(sdk-migration):` markers remain.
@@ -521,7 +540,7 @@ Before opening the PR:
 - [ ] Lint clean on changed files.
 - [ ] One source file changed per source commit; commit messages follow the convention. A `package.json`/`package-lock.json` bump (route-metadata gap from Step 1.2, or a new direct dep like `@heroku/heroku-fetch` for the escape hatch from Step 1.2b) is allowed in the source commit and should be called out in the commit body.
 - [ ] No incidental edits to other unrelated files (type defs, sibling commands).
-- [ ] PR opened with `--base feat/heroku-sdk-integration`, not `main` (Step V3).
+- [ ] PR opened with `--base v12.0.0`, not `main` (Step V3).
 
 ---
 
@@ -535,4 +554,4 @@ Before opening the PR:
 - **Escape hatch:** a direct `HerokuApiClient` call from `@heroku/heroku-fetch` for endpoints/variants the SDK doesn't expose. Sanctioned for CLI-only concerns like `?extended=true` query variants — see Step 1.2b.
 - **Pre-flight baseline:** the snapshot of `tsc`/test state captured before any migration work, used to filter pre-existing noise out of post-migration verification.
 - **Codemod:** `scripts/codemods/sdk-migration/migrate-command.ts` — the deterministic transform run in Task 1, Step 1.1.
-- **Integration branch:** `feat/heroku-sdk-integration` — the base branch for all per-command migration PRs until the integration lands. See Step V3.
+- **Integration branch:** `v12.0.0` — the base branch for all per-command migration PRs until the integration lands. See Step V3.
