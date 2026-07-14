@@ -92,6 +92,7 @@ dynosize
 ECCN
 echoerr
 Edmonds
+EEXIT
 elif
 EOFCOMMENT
 EOFTABLE
@@ -408,6 +409,7 @@ unref
 unschedules
 unscheduling
 unsetting
+unstubbed
 usename
 userid
 usesysid
