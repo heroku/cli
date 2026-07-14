@@ -39,6 +39,16 @@ A command is complex if any of the following applies. Everything else is simple.
 
 Simple, restated positively: the codemod ran clean, every replacement is a 1:1 route-derived method, types come only from `@heroku/types/3.sdk`, no helpers changed, no lockfile bump, and `run()` already returns a value (or matches a documented carve-out).
 
+### Reading the topic work item
+
+A topic WI covers many commands and turns into several PRs. When you pick up one command, the WI tells you two things worth checking first: how complex the command is, and whether an SDK extension needs to land before you can migrate.
+
+Each command in the WI has a line like `<file> (<tag>) → <SDK target>`. Read the tag for intent, not for exact wording:
+- "mechanical swap to existing route method" (or similar) means **simple**.
+- "new SDK extension needed" (or similar) means **complex**, and the WI names the extension.
+
+If the tag doesn't clearly fit one of those, stop and ask. If it's complex, confirm the extension is installed before running the codemod. [`SKILL.md` Step P0](./SKILL.md#step-p0-read-the-work-item) has the exact commands.
+
 ---
 
 ## 2. The codemod

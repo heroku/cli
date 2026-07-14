@@ -64,6 +64,30 @@ Each step is required. Do not skip.
 
 Run these once per command, before any code change. They prevent the most common surprises.
 
+### Step P0: Read the work item
+
+If the invocation cites a work item, read it before touching code. Topic WIs cover many commands, so find the line for yours and check whether it names a prerequisite. If there's no WI, skip this step.
+
+**Find your command's line.** Each command in the WI has a line shaped like `<file> (<tag>) → <SDK target>. Currently: ... SDK owns: ... CLI owns: ...`. Find the one whose `<file>` matches your target (e.g., `add.ts` for `domains/add`).
+
+**Read the tag for intent, not exact wording.** The vocabulary is still settling — match on meaning:
+- Mechanical / 1:1 swap / call-site swap / existing route method → **simple**. The codemod handles it.
+- New SDK extension needed / new composite / needs extension → **complex**. An extension in `@heroku/sdk` has to land first; the WI names it in its "SDK-side design work" section.
+- Already migrated → **skip**. Confirm the file already imports `@heroku/sdk` and stop.
+- Anything you can't confidently place → stop and ask.
+
+**Complex commands: verify the extension exists before running the codemod.**
+
+```bash
+ls node_modules/@heroku/sdk/dist/resources/platform/<resource>/ 2>/dev/null
+```
+
+Files other than `index.{js,d.ts}` are extensions. If the one the WI named is missing, stop and confirm with the user — don't migrate against a method that doesn't exist yet. Cross-topic prerequisites (a paragraph like "Coordination with the <other> topic") count the same as first-party ones.
+
+Mechanical commands don't need this check — the codemod fails loudly if a route-derived method is missing.
+
+Remember the tier you extracted here — you'll use it at [Step V3](#step-v3-push-and-open-pr) to decide the PR's scope against the batching rules in [`GUIDE.md` §1](./GUIDE.md#what-counts-as-complex).
+
 ### Steps P1+P2: Working tree, SDK probe, and baselines
 
 ```bash
