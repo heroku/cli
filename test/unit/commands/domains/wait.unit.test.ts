@@ -1,42 +1,45 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsWait from '../../../../src/commands/domains/wait.js'
 
+type FakePlatform = {
+  domain: {wait: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {wait: stub()},
+  }
+}
+
 describe('domains:wait', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    restore()
   })
 
   it('waits on domain status succeeded', async function () {
-    api
-      .get('/apps/myapp/domains/example.com')
-      .reply(200, {hostname: 'example.com', id: 123, status: 'pending'})
-      .get('/apps/myapp/domains/123')
-      .reply(200, {hostname: 'example.com', id: 123, status: 'succeeded'})
+    fakePlatform.domain.wait.resolves({hostname: 'example.com', id: 123, status: 'succeeded'})
 
     const {stderr} = await runCommand(DomainsWait, ['example.com', '--app', 'myapp'])
 
-    expect(stderr).to.contain('Waiting for example.com... done')
+    expect(stderr).to.contain('Waiting for domains... done')
   })
 
   it('waits on domains when no hostname is provided', async function () {
-    api
-      .get('/apps/myapp/domains')
-      .reply(200, [{hostname: 'example.com', id: 123, status: 'pending'}])
-      .get('/apps/myapp/domains/123')
-      .reply(200, {hostname: 'example.com', id: 123, status: 'succeeded'})
+    fakePlatform.domain.wait.resolves({hostname: 'example.com', id: 123, status: 'succeeded'})
 
     const {stderr} = await runCommand(DomainsWait, ['--app', 'myapp'])
 
-    expect(stderr).to.contain('Waiting for example.com... done')
+    expect(stderr).to.contain('Waiting for domains... done')
   })
 })
