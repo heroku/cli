@@ -14,11 +14,30 @@ If you just want the exact commands and the commit/PR mechanics, [`SKILL.md`](./
 
 These rules keep each migration reviewable and easy to unwind if something slips through. [`SKILL.md`](./SKILL.md) is written to follow them.
 
-- One command per PR. Don't bundle multiple command migrations. One command at a time keeps the review small and keeps a later bisect useful when a regression turns up.
-- Two commits per command, the source migration first and then the test rewrite. Commit messages:
+- Batch by complexity, not by count alone. A PR can hold:
+  - **Up to 5 commands** when every command in the batch is simple (see [What counts as complex](#what-counts-as-complex) below).
+  - **2-3 commands** when the batch mixes simple commands with one complex command. Put the complex command's commits last so a reviewer scanning the diff top-to-bottom hits the mechanical work first.
+  - **1 command** when the command is complex, or when you're unsure. Bias toward a solo PR when in doubt.
+
+  The bisect story stays workable because a mixed PR is still small and a complex PR is always alone.
+- Two commits per command in the PR, source migration first then the test rewrite. In a multi-command batch, keep each command's pair contiguous. Commit messages:
   - `refactor: use @heroku/sdk for <command> command`
   - `test(<command>): stub @heroku/sdk directly, drop nock`
 - Open PRs against `v12.0.0`, not `main`. This work is part of the v12 release, so nothing merges to `main` yet.
+
+### What counts as complex
+
+A command is complex if any of the following applies. Everything else is simple.
+
+- The codemod left a `// TODO(sdk-migration):` marker: ambiguous route, dynamic path, unrecognized body shape, extra options arg, or no matching SDK route. See [Where you need to step in](#where-you-need-to-step-in).
+- The migration touches helper-threaded APIClient calls (the codemod reported "no change" and you rewrote helpers by hand). See [Helper-threaded APIClient calls](#helper-threaded-apiclient-calls).
+- The command uses a composite extension method (`platform.app.describe`, `addOn.create` with the rich options shape, `pipelineCoupling.infoByApp`, etc.). Extensions need `{extensions: [...]}` registration, a parameterized `Platform` alias, and usually a camelCase→snake_case rename at the output boundary. See [SDK method selection](#3-sdk-method-selection).
+- The command uses the `HerokuApiClient` escape hatch. See [CLI-only escape hatch](#cli-only-escape-hatch-see-skillmdstep-12b-cli-only-escape-hatches-via-herokuapiclient).
+- The PR requires a `@heroku/types` or `package-lock.json` bump (metadata-gap workaround or a new direct dependency). See [Metadata-gap workarounds](#metadata-gap-workarounds).
+- The command backfills a `void` return, or a strict-null finding widens a helper's parameter/return type upstream of `run()`. See [run() return value](#5-run-return-value) and [Backwards-compatibility rules](#7-backwards-compatibility-rules).
+- The change touches `src/lib/`, or the diff on the command file is more than ~50 lines. Shared-helper edits ripple to sibling commands, so isolate them.
+
+Simple, restated positively: the codemod ran clean, every replacement is a 1:1 route-derived method, types come only from `@heroku/types/3.sdk`, no helpers changed, no lockfile bump, and `run()` already returns a value (or matches a documented carve-out).
 
 ---
 
@@ -308,4 +327,5 @@ One gap against this guide: `apps:info`'s `run()` still returns void. Per [run()
 - [ ] Namespace convention followed: `data.*` for data-plane, `platform.*` for platform-plane.
 - [ ] Backwards-compat preserved: identical stdout/stderr/exit-codes/JSON keys; no silent null coalescing; no new truthiness gates.
 - [ ] Tests rewritten: `nock` removed, SDK stubbed via `HerokuSDK.prototype.platform`; escape hatch (if any) stubs `HerokuApiClient.prototype.get` with a duck-typed `{json}` return.
-- [ ] tsc clean vs. baseline; eslint clean on changed files; two commits; PR against `v12.0.0`.
+- [ ] tsc clean vs. baseline; eslint clean on changed files; two commits per command in the PR; PR against `v12.0.0`.
+- [ ] Batch respects the cap: ≤5 simple, 2-3 mixed with one complex, or 1 complex alone. See [What counts as complex](#what-counts-as-complex).

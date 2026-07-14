@@ -10,7 +10,7 @@ description: >
 
 # SDK Command Migration
 
-Apply once per command in `src/commands/`. Each application produces one PR-ready unit of work containing two commits: the source migration and the test rewrite.
+Apply once per command in `src/commands/`. Each application produces two commits — the source migration and the test rewrite — which land in a PR alongside other commands' commits according to the batching rules below.
 
 > For the conceptual guide and decision rules — SDK method selection, business-logic placement, the return-value contract and its carve-outs, and backwards-compat rules — see [`GUIDE.md`](./GUIDE.md).
 
@@ -22,9 +22,10 @@ Apply once per command in `src/commands/`. Each application produces one PR-read
 - The user invokes `/sdk-command-migration` directly.
 
 **Do NOT invoke for:**
-- Multi-command refactors — each command gets its own application.
 - Commands that import from `@heroku/sdk/compositions/*` (the subpath was removed in 0.4 — needs separate migration).
 - Helpers/libraries shared by multiple commands — migrate the helper in its own commit and link from the command commits.
+
+**Batching:** apply the skill once per command; then bundle up to 5 simple commands, or 2-3 commands including one complex one, into a single PR. A complex command ships alone. See [`GUIDE.md` §1](./GUIDE.md#1-guidelines) for the full definition and [Step V3](#step-v3-push-and-open-pr) for the PR mechanics.
 
 ## Tech Stack
 
@@ -487,32 +488,42 @@ Expected: empty. New errors mean the migration introduced a regression.
 
 ### Step V3: Push and open PR
 
-**Base branch is `v12.0.0`, not `main`.** All SDK-migration work stacks onto the v12 branch until that branch lands. Opening against `main` would surface the whole integration diff to reviewers; opening against `v12.0.0` shows only the per-command diff (~4 files). When the v12 branch eventually merges, GitHub automatically updates the open child PRs to target `main` with the same minimal diff.
+**Base branch is `v12.0.0`, not `main`.** All SDK-migration work stacks onto the v12 branch until that branch lands. Opening against `main` would surface the whole integration diff to reviewers; opening against `v12.0.0` shows only the per-command diff. When the v12 branch eventually merges, GitHub automatically updates the open child PRs to target `main` with the same minimal diff.
+
+**Batch scope.** A PR may include:
+- up to 5 commands when every command is simple,
+- 2-3 commands when the batch includes one complex command (put its two commits last),
+- 1 command when the command is complex or when you're unsure.
+
+See [`GUIDE.md` §1](./GUIDE.md#what-counts-as-complex) for the definition of complex. If any command in the batch trips a complexity criterion after you've already committed, split it out before opening the PR.
 
 ```bash
 git push -u origin <branch>
 gh pr create --draft --base v12.0.0 \
-  --title "refactor: use @heroku/sdk for <command> command" \
+  --title "refactor: use @heroku/sdk for <commands>" \
   --body "$(cat <<'EOF'
 ## Summary
-...
+Migrates the following commands to @heroku/sdk:
+- <command-a>
+- <command-b>
+
 ## Test plan
 - [x] tsc clean vs. baseline
 - [x] eslint clean
-- [x] mocha for the migrated test file passes
+- [x] mocha for each migrated test file passes
 - [x] mocha for sibling tests in the same dir passes
-- [ ] Manual smoke test against a real app (list the flag combinations to exercise)
+- [ ] Manual smoke test against a real app (list the flag combinations to exercise, per command)
 EOF
 )"
 ```
 
-The PR contains exactly two commits per command:
+The PR contains exactly two commits per migrated command, contiguous per command:
 - `refactor: use @heroku/sdk for <command> command`
 - `test(<command>): stub @heroku/sdk directly, drop nock`
 
-If the source migration uses the `HerokuApiClient` escape hatch (Step 1.2b), append `and @heroku/heroku-fetch` to the test commit subject: `test(<command>): stub @heroku/sdk and @heroku/heroku-fetch directly, drop nock`.
+If a source migration uses the `HerokuApiClient` escape hatch (Step 1.2b), append `and @heroku/heroku-fetch` to that command's test commit subject: `test(<command>): stub @heroku/sdk and @heroku/heroku-fetch directly, drop nock`.
 
-Each PR migrates exactly one command. Don't bundle multiple command migrations — review surface stays small and bisect remains useful if a regression slips through.
+For a single-command PR, keep the title in the `refactor: use @heroku/sdk for <command> command` form. For a multi-command batch, use `refactor: use @heroku/sdk for <commands>` (or list the two or three commands explicitly if they fit).
 
 ---
 
@@ -540,6 +551,7 @@ Before opening the PR:
 - [ ] Lint clean on changed files.
 - [ ] One source file changed per source commit; commit messages follow the convention. A `package.json`/`package-lock.json` bump (route-metadata gap from Step 1.2, or a new direct dep like `@heroku/heroku-fetch` for the escape hatch from Step 1.2b) is allowed in the source commit and should be called out in the commit body.
 - [ ] No incidental edits to other unrelated files (type defs, sibling commands).
+- [ ] Batch scope respected: ≤5 simple commands, 2-3 mixed with one complex, or 1 complex alone. See [`GUIDE.md` §1](./GUIDE.md#what-counts-as-complex).
 - [ ] PR opened with `--base v12.0.0`, not `main` (Step V3).
 
 ---
