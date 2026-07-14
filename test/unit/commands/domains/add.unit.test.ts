@@ -57,6 +57,23 @@ describe('domains:add', function () {
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
+          resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,
+          sniEndpoint: 'my-cert',
+          wait: undefined,
+        })).to.equal(true)
+      })
+
+      it('adds the domain to the app with the --wait flag', async function () {
+        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
+
+        const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert', '--wait'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
+          resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,
+          sniEndpoint: 'my-cert',
+          wait: true,
+        })).to.equal(true)
       })
     })
 
@@ -94,10 +111,19 @@ describe('domains:add', function () {
       })
 
       it('adds the domain to the app', async function () {
-        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
+        fakePlatform.domain.add.callsFake(async (_app, _hostname, options) => {
+          await options.resolveSniEndpoint(certsResponse)
+          return domainsResponseWithEndpoint
+        })
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
+          resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,
+          sniEndpoint: undefined,
+          wait: undefined,
+        })).to.equal(true)
+        expect(promptForCertStub.calledOnce).to.equal(true)
       })
     })
   })

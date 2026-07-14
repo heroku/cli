@@ -33,5 +33,6 @@ describe('domains:clear', function () {
     const {stderr} = await runCommand(DomainsClear, ['--app', 'myapp'])
 
     expect(stderr).to.contain('Removing all domains from ⬢ myapp... done')
+    expect(fakePlatform.domain.clear.calledOnceWithExactly('myapp')).to.equal(true)
   })
 })

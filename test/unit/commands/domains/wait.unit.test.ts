@@ -28,18 +28,20 @@ describe('domains:wait', function () {
   })
 
   it('waits on domain status succeeded', async function () {
-    fakePlatform.domain.wait.resolves({hostname: 'example.com', id: 123, status: 'succeeded'})
+    fakePlatform.domain.wait.resolves([{hostname: 'example.com', id: 123, status: 'succeeded'}])
 
     const {stderr} = await runCommand(DomainsWait, ['example.com', '--app', 'myapp'])
 
     expect(stderr).to.contain('Waiting for domains... done')
+    expect(fakePlatform.domain.wait.calledOnceWithExactly('myapp', {hostname: 'example.com'})).to.equal(true)
   })
 
   it('waits on domains when no hostname is provided', async function () {
-    fakePlatform.domain.wait.resolves({hostname: 'example.com', id: 123, status: 'succeeded'})
+    fakePlatform.domain.wait.resolves([{hostname: 'example.com', id: 123, status: 'succeeded'}])
 
     const {stderr} = await runCommand(DomainsWait, ['--app', 'myapp'])
 
     expect(stderr).to.contain('Waiting for domains... done')
+    expect(fakePlatform.domain.wait.calledOnceWithExactly('myapp', {hostname: undefined})).to.equal(true)
   })
 })

@@ -47,6 +47,7 @@ describe('domains:info', function () {
     fakePlatform.domain.info.resolves(domainInfoResponse)
 
     const {stdout} = await runCommand(DomainsInfo, ['www.example.com', '--app', 'myapp'])
+    expect(fakePlatform.domain.info.calledOnceWithExactly('myapp', 'www.example.com')).to.equal(true)
 
     expect(stdout).to.contain('acm_status:        pending')
     expect(stdout).to.contain('acm_status_reason: Failing CCA check')

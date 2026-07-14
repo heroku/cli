@@ -48,5 +48,6 @@ describe('domains:update', function () {
     const {stderr} = await runCommand(DomainsUpdate, ['example.com', '--cert', 'sniendpoint-id', '--app', 'myapp'])
 
     expect(stderr).to.contain('Updating example.com to use sniendpoint-id certificate... done')
+    expect(fakePlatform.domain.update.calledOnceWithExactly('myapp', 'example.com', {sni_endpoint: 'sniendpoint-id'})).to.equal(true)
   })
 })

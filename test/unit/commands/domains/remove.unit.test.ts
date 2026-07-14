@@ -33,5 +33,6 @@ describe('domains:remove', function () {
     const {stderr} = await runCommand(DomainsRemove, ['example.com', '--app', 'myapp'])
 
     expect(stderr).to.contain('Removing example.com from ⬢ myapp... done')
+    expect(fakePlatform.domain.delete.calledOnceWithExactly('myapp', 'example.com')).to.equal(true)
   })
 })
