@@ -1,13 +1,30 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import {SinonStub, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsAdd from '../../../../src/commands/domains/add.js'
 
+type FakePlatform = {
+  domain: {add: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {add: stub()},
+  }
+}
+
 describe('domains:add', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
   afterEach(function () {
-    nock.cleanAll()
+    restore()
   })
 
   const domainsResponse = {
@@ -36,12 +53,7 @@ describe('domains:add', function () {
 
     describe('using the --cert flag', function () {
       it('adds the domain to the app', async function () {
-        nock('https://api.heroku.com')
-          .post('/apps/myapp/domains', {
-            hostname: 'example.com',
-            sni_endpoint: 'my-cert',
-          })
-          .reply(200, domainsResponseWithEndpoint)
+        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
@@ -82,14 +94,7 @@ describe('domains:add', function () {
       })
 
       it('adds the domain to the app', async function () {
-        nock('https://api.heroku.com')
-          .post('/apps/myapp/domains', {
-            hostname: 'example.com',
-            sni_endpoint: 'my-cert',
-          })
-          .reply(200, domainsResponseWithEndpoint)
-          .get('/apps/myapp/sni-endpoints')
-          .reply(200, certsResponse)
+        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
