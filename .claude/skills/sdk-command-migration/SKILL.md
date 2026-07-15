@@ -88,6 +88,32 @@ Mechanical commands don't need this check — the codemod fails loudly if a rout
 
 Remember the tier you extracted here — you'll use it at [Step V3](#step-v3-push-and-open-pr) to decide the PR's scope against the batching rules in [`GUIDE.md` §1](./GUIDE.md#what-counts-as-complex).
 
+### Step P0b: Inspect related in-flight branches
+
+Prerequisites and collisions often live in other people's unmerged branches — an SDK extension mid-flight, a shared helper being reshaped, your command already half-migrated. Survey them read-only and read the diffs, so the plan accounts for the dependency before it collides in review.
+
+Only in-flight branches matter, so the listing below drops anything untouched for more than ~3 weeks and shows the rest newest-first:
+
+```bash
+cutoff=$(date -v-3w +%F 2>/dev/null || date -d '3 weeks ago' +%F)   # 3 weeks ago (macOS, then GNU/Linux)
+git for-each-ref --sort=-committerdate refs/heads refs/remotes \
+  --format='%(committerdate:short)  %(refname:short)' \
+  | awk -v cutoff="$cutoff" '$1 >= cutoff'                          # keep only branches touched since the cutoff
+```
+
+For each recent branch that might touch your command, its extension, or a shared helper:
+
+```bash
+git ls-tree -r --name-only <branch> | grep -E '<resource>|<command-path>'   # does it touch your files?
+git diff main...<branch> -- src/commands/<command-path>.ts src/lib/<helper>  # what does it change?
+git show <branch>:src/lib/types/<resource>.d.ts 2>/dev/null || echo '(not present)'  # is the extension type you'd add already there?
+```
+
+Act on what you find:
+- **Prerequisite** your command depends on, living only in an unmerged branch → treat like a missing extension (P0/P4): stop and confirm ordering, don't duplicate it.
+- **Collision** (another branch migrating your command or reshaping your helper) → rebase onto it rather than migrate in parallel; note the dependency in the PR body.
+- **Semantic mismatch** (a renamed field, reshaped composite, moved type) → adopt their naming now so the branches merge clean.
+
 ### Steps P1+P2: Working tree, SDK probe, and baselines
 
 ```bash
@@ -561,6 +587,7 @@ Before opening the PR:
 - [ ] No `this.heroku.<verb>` calls remain in the migrated file. (Escape-hatch calls go through `HerokuApiClient` per Step 1.2b — never via `this.heroku`.)
 - [ ] No bare `heroku.<verb>(...)` calls remain in helper functions (helper-threading shape — see Step 1.2a).
 - [ ] No `// TODO(sdk-migration):` markers remain.
+- [ ] In-flight branches surveyed (Step P0b) — prerequisite/colliding work accounted for, cross-branch dependency noted in the PR body.
 - [ ] Composite resource methods checked (Step P4) before falling back to per-call replacements when the command had a `Promise.all` over multiple endpoints.
 - [ ] If a composite method is used (e.g., `platform.app.describe`), the corresponding extension (`appExtensions`, `addOnExtensions`, etc.) is imported from `@heroku/sdk/extensions/<service>` and passed to the `HerokuSDK` constructor via `{extensions: [...]}`. Without this, the method is `undefined` at runtime — but stub-based tests will pass anyway. Verify by reading a sibling command's wiring or smoke-testing against a real app.
 - [ ] No `import * as Heroku from '@heroku-cli/schema'` (deprecated). Entity types come from `@heroku/types/3.sdk`; composite return types from `@heroku/sdk/resources/<service>/<resource>/<file>`; CLI-only field gaps captured by extension types in `src/lib/types/` (Step 1.2c).
