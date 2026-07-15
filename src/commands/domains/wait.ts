@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {domainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
@@ -16,12 +17,12 @@ export default class DomainsWait extends Command {
 
   async run() {
     const {args, flags} = await this.parse(DomainsWait)
-
-    ux.action.start('Waiting for domains')
-
     const {platform} = new HerokuSDK({extensions: [domainExtensions]})
-    await platform.domain.wait(flags.app, {hostname: args.hostname})
 
+    const target = args.hostname ? color.name(args.hostname) : 'all pending domains'
+
+    ux.action.start(`Waiting for ${target}`)
+    await platform.domain.wait(flags.app, {hostname: args.hostname})
     ux.action.stop()
   }
 }

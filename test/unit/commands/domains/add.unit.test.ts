@@ -117,6 +117,7 @@ describe('domains:add', function () {
         })
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... resolving SNI endpoint')
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
         expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
           resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,

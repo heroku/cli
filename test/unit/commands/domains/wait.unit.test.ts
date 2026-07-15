@@ -32,7 +32,7 @@ describe('domains:wait', function () {
 
     const {stderr} = await runCommand(DomainsWait, ['example.com', '--app', 'myapp'])
 
-    expect(stderr).to.contain('Waiting for domains... done')
+    expect(stderr).to.contain('Waiting for example.com... done')
     expect(fakePlatform.domain.wait.calledOnceWithExactly('myapp', {hostname: 'example.com'})).to.equal(true)
   })
 
@@ -41,7 +41,7 @@ describe('domains:wait', function () {
 
     const {stderr} = await runCommand(DomainsWait, ['--app', 'myapp'])
 
-    expect(stderr).to.contain('Waiting for domains... done')
+    expect(stderr).to.contain('Waiting for all pending domains... done')
     expect(fakePlatform.domain.wait.calledOnceWithExactly('myapp', {hostname: undefined})).to.equal(true)
   })
 })

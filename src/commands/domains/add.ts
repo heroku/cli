@@ -1,5 +1,6 @@
+import type {SniEndpoint} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {domainExtensions} from '@heroku/sdk/extensions/platform'
@@ -26,18 +27,18 @@ export default class DomainsAdd extends Command {
     remote: flags.remote(),
     wait: flags.boolean(),
   }
-  certSelect = async (certs: Array<Heroku.SniEndpoint>, inquirer: any) => {
+  certSelect = async (certs: Array<SniEndpoint>, inquirer: any) => {
     const nullCertChoice = {
       name: 'No SNI Endpoint',
       value: null,
     }
 
-    const certChoices = certs.map((cert: Heroku.SniEndpoint) => {
-      const certName = cert.displayName || cert.name
-      const domainsLength = cert.ssl_cert.cert_domains.length
+    const certChoices = certs.map((cert: SniEndpoint) => {
+      const certName = cert.display_name || cert.name
+      const domainsLength = cert.ssl_cert.cert_domains?.length
 
       if (domainsLength) {
-        let domainsList = cert.ssl_cert.cert_domains.slice(0, 4).join(', ')
+        let domainsList = cert.ssl_cert.cert_domains?.slice(0, 4).join(', ')
 
         if (domainsLength > 5) {
           domainsList = `${domainsList} (...and ${domainsLength - 4} more)`
@@ -79,11 +80,18 @@ export default class DomainsAdd extends Command {
     const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
+    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
+
     ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
 
-    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
     const domain = await platform.domain.add(flags.app, hostname, {
-      resolveSniEndpoint: async certs => this.certSelect(certs, inquirer),
+      resolveSniEndpoint: async (certs: SniEndpoint[]) => {
+        ux.action.stop('resolving SNI endpoint')
+        const certSelection = await this.certSelect(certs, inquirer)
+        ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
+
+        return certSelection
+      },
       sniEndpoint: flags.cert,
       wait: flags.wait,
     })

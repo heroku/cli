@@ -14,9 +14,9 @@ export default class DomainsClear extends Command {
 
   async run() {
     const {flags} = await this.parse(DomainsClear)
+    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
 
     ux.action.start(`Removing all domains from ${color.app(flags.app)}`)
-    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
     await platform.domain.clear(flags.app)
     ux.action.stop()
   }
