@@ -101,6 +101,7 @@ export default class DomainsAdd extends Command {
     } else {
       ux.stdout(`Configure your app's DNS provider to point to the DNS Target ${color.name(domain.cname || '')}.
     For help, see ${color.info('https://devcenter.heroku.com/articles/custom-domains')}`)
+
       if (!flags.wait && domain.status !== 'succeeded' && domain.status !== 'none') {
         ux.stdout('')
         ux.stdout(`The domain ${color.name(hostname)} has been enqueued for addition`)
