@@ -92,11 +92,13 @@ Remember the tier you extracted here — you'll use it at [Step V3](#step-v3-pus
 
 Prerequisites and collisions often live in other people's unmerged branches — an SDK extension mid-flight, a shared helper being reshaped, your command already half-migrated. Survey them read-only and read the diffs, so the plan accounts for the dependency before it collides in review.
 
-Only in-flight branches matter; skip anything untouched for ~3 weeks. List newest-first:
+Only in-flight branches matter, so the listing below drops anything untouched for more than ~3 weeks and shows the rest newest-first:
 
 ```bash
-git branch -a --sort=-committerdate \
-  --format='%(committerdate:short)  %(refname:short)' | head -40
+cutoff=$(date -v-3w +%F 2>/dev/null || date -d '3 weeks ago' +%F)   # 3 weeks ago (macOS, then GNU/Linux)
+git for-each-ref --sort=-committerdate refs/heads refs/remotes \
+  --format='%(committerdate:short)  %(refname:short)' \
+  | awk -v cutoff="$cutoff" '$1 >= cutoff'                          # keep only branches touched since the cutoff
 ```
 
 For each recent branch that might touch your command, its extension, or a shared helper:
@@ -104,7 +106,7 @@ For each recent branch that might touch your command, its extension, or a shared
 ```bash
 git ls-tree -r --name-only <branch> | grep -E '<resource>|<command-path>'   # does it touch your files?
 git diff main...<branch> -- src/commands/<command-path>.ts src/lib/<helper>  # what does it change?
-git show <branch>:src/lib/types/<resource>.d.ts                             # is the extension type you'd add already there?
+git show <branch>:src/lib/types/<resource>.d.ts 2>/dev/null || echo '(not present)'  # is the extension type you'd add already there?
 ```
 
 Act on what you find:
