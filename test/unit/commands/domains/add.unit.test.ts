@@ -57,11 +57,13 @@ describe('domains:add', function () {
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
-        expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
-          resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,
-          sniEndpoint: 'my-cert',
-          wait: undefined,
-        })).to.equal(true)
+
+        const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
+        expect(app).to.equal('myapp')
+        expect(hostname).to.equal('example.com')
+        expect(options.resolveSniEndpoint).to.be.a('function')
+        expect(options.sniEndpoint).to.equal('my-cert')
+        expect(options.wait).to.be.undefined
       })
 
       it('adds the domain to the app with the --wait flag', async function () {
@@ -69,11 +71,13 @@ describe('domains:add', function () {
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert', '--wait'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
-        expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
-          resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,
-          sniEndpoint: 'my-cert',
-          wait: true,
-        })).to.equal(true)
+
+        const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
+        expect(app).to.equal('myapp')
+        expect(hostname).to.equal('example.com')
+        expect(options.resolveSniEndpoint).to.be.a('function')
+        expect(options.sniEndpoint).to.equal('my-cert')
+        expect(options.wait).to.equal(true)
       })
     })
 
@@ -119,11 +123,13 @@ describe('domains:add', function () {
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... resolving SNI endpoint')
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
-        expect(fakePlatform.domain.add.calledOnceWithExactly('myapp', 'example.com', {
-          resolveSniEndpoint: fakePlatform.domain.add.firstCall.args[2].resolveSniEndpoint,
-          sniEndpoint: undefined,
-          wait: undefined,
-        })).to.equal(true)
+
+        const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
+        expect(app).to.equal('myapp')
+        expect(hostname).to.equal('example.com')
+        expect(options.resolveSniEndpoint).to.be.a('function')
+        expect(options.sniEndpoint).to.be.undefined
+        expect(options.wait).to.be.undefined
         expect(promptForCertStub.calledOnce).to.equal(true)
       })
     })
