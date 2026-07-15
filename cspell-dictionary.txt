@@ -60,6 +60,7 @@ codemodparam
 codemods
 collab
 commandsstop
+committerdate
 compadd
 compaudit
 compdef
