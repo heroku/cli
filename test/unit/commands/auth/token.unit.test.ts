@@ -1,33 +1,40 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import {restore, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Token from '../../../../src/commands/auth/token.js'
 
+type FakePlatform = {
+  oauthAuthorization: {list: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {list: stub()},
+  }
+}
+
 describe('auth:token', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     stub(APIClient.prototype, 'auth').get(() => 'foobar')
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
     restore()
   })
 
   it('shows auth token', async function () {
-    api
-      .get('/oauth/authorizations')
-      .reply(200, [
-        {access_token: {token: 'somethingelse'}},
-        {access_token: {expires_in: 60, token: 'foobar'}, user: {email: 'foo@bar.com'}},
-        {},
-      ])
+    fakePlatform.oauthAuthorization.list.resolves([
+      {access_token: {token: 'somethingelse'}},
+      {access_token: {expires_in: 60, token: 'foobar'}, user: {email: 'foo@bar.com'}},
+      {},
+    ])
 
     const {stderr, stdout} = await runCommand(Token, [])
 
@@ -36,13 +43,11 @@ describe('auth:token', function () {
   })
 
   it('shows "long-term" token generation warning for non-internal users', async function () {
-    api
-      .get('/oauth/authorizations')
-      .reply(200, [
-        {access_token: {token: 'somethingelse'}},
-        {access_token: {expires_in: 60, token: 'foobar'}, user: {email: 'foo@bar.com'}},
-        {},
-      ])
+    fakePlatform.oauthAuthorization.list.resolves([
+      {access_token: {token: 'somethingelse'}},
+      {access_token: {expires_in: 60, token: 'foobar'}, user: {email: 'foo@bar.com'}},
+      {},
+    ])
 
     const {stderr, stdout} = await runCommand(Token, [])
 
@@ -53,13 +58,11 @@ describe('auth:token', function () {
   })
 
   it('shows AT2 token generation warning for internal users', async function () {
-    api
-      .get('/oauth/authorizations')
-      .reply(200, [
-        {access_token: {token: 'somethingelse'}},
-        {access_token: {expires_in: 60, token: 'foobar'}, user: {email: 'foo@heroku.com'}},
-        {},
-      ])
+    fakePlatform.oauthAuthorization.list.resolves([
+      {access_token: {token: 'somethingelse'}},
+      {access_token: {expires_in: 60, token: 'foobar'}, user: {email: 'foo@heroku.com'}},
+      {},
+    ])
 
     const {stderr, stdout} = await runCommand(Token, [])
 
