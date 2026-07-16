@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
@@ -11,26 +11,28 @@ export default class AuthToken extends Command {
 By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create`
   static promptFlagActive = false
 
-  async run() {
+  async run(): Promise<string> {
+    const {platform} = new HerokuSDK()
     const {formatRelative} = await lazyModuleLoader.loadDateFns()
 
     this.parse(AuthToken)
     if (!this.heroku.auth) this.error('not logged in')
     try {
-      const {body: tokens} = await this.heroku.get<Heroku.OAuthAuthorization>('/oauth/authorizations', {retryAuth: false})
-      const token = tokens.find((t: any) => t.access_token && t.access_token.token === this.heroku.auth)
+      const tokens = await platform.oauthAuthorization.list()
+      const token = tokens.find(t => t.access_token && t.access_token.token === this.heroku.auth)
       const isInternal = token ? token.user.email.includes('@heroku.com') : false
-      if (token && token.access_token.expires_in) {
+      if (token?.access_token?.expires_in) {
         const d = new Date()
         d.setSeconds(d.getSeconds() + token.access_token.expires_in)
         this.warn(`token will expire ${formatRelative(d, new Date())}\n${isInternal
           ? 'All tokens expire one year after we generate it.'
           : `To generate a token that expires in one year, use ${color.code('heroku authorizations:create')}.`}`)
       }
-    } catch (error: any) {
-      this.warn(error)
+    } catch (error: unknown) {
+      this.warn(error as Error)
     }
 
     ux.stdout(this.heroku.auth)
+    return this.heroku.auth
   }
 }
