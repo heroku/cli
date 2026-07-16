@@ -6,7 +6,6 @@ import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
-import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
 type FakePlatform = {
   account: {info: SinonStub}
@@ -25,7 +24,7 @@ describe('accounts:add', function () {
   let originalApiKey: string | undefined
 
   beforeEach(function () {
-    // Tests here rely on the stubbed credential manager for auth; HEROKU_API_KEY
+    // Tests here rely on the stubbed APIClient for auth; HEROKU_API_KEY
     // from test/helpers/init.mjs would otherwise take precedence in APIClient
     // and defeat the stubs.
     originalApiKey = process.env.HEROKU_API_KEY
@@ -45,10 +44,6 @@ describe('accounts:add', function () {
 
   describe('when the user is logged in', function () {
     it('should call the accounts.add function with the account name and user email', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
-      })
-
       fakePlatform.account.info.resolves({email: 'testEmail'})
 
       await runCommand(Cmd, ['testAccountName'])
@@ -58,10 +53,6 @@ describe('accounts:add', function () {
     })
 
     it('should not pass token to add() when credentialStore is active (keychain-mode)', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
-      })
-
       const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
       getStorageConfigStub.returns({credentialStore: 'keychain' as any, useNetrc: false})
 
@@ -76,10 +67,6 @@ describe('accounts:add', function () {
     })
 
     it('should pass token to add() when credentialStore is not active (netrc-mode)', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
-      })
-
       const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
       getStorageConfigStub.returns({credentialStore: null, useNetrc: true})
 
@@ -94,10 +81,6 @@ describe('accounts:add', function () {
     })
 
     it('should error if the account name already exists', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
-      })
-
       listStub.resolves([{name: 'testAccountName', username: 'testEmail'}])
 
       try {
@@ -108,10 +91,6 @@ describe('accounts:add', function () {
     })
 
     it('should error if the email already has an alias', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
-      })
-
       fakePlatform.account.info.resolves({email: 'testEmail'})
 
       listStub.resolves([{name: 'existingAlias', username: 'testEmail'}])
