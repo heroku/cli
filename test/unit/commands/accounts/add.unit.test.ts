@@ -101,5 +101,17 @@ describe('accounts:add', function () {
         expect((error as Error).message).to.contain('testEmail already has an alias: existingAlias')
       }
     })
+
+    it('should error if the user is not logged in', async function () {
+      fakePlatform.account.info.throws(new Error('Not logged in'))
+
+      try {
+        await runCommand(Cmd, ['testAccountName'])
+      }
+      catch (error: unknown) {
+        expect((error as Error).message).to.contain('Not logged in')
+        expect(addStub.called).to.equal(false)
+      }
+    })
   })
 })
