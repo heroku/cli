@@ -1,25 +1,38 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsClear from '../../../../src/commands/domains/clear.js'
 
+type FakePlatform = {
+  domain: {clear: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {clear: stub()},
+  }
+}
+
 describe('domains:clear', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    restore()
   })
 
   it('clears domains all domains', async function () {
-    api
-      .get('/apps/myapp/domains')
-      .reply(200, [{hostname: 'example.com', kind: 'custom'}])
-      .delete('/apps/myapp/domains/example.com')
-      .reply(200, {})
+    fakePlatform.domain.clear.resolves({})
 
     const {stderr} = await runCommand(DomainsClear, ['--app', 'myapp'])
 
     expect(stderr).to.contain('Removing all domains from ⬢ myapp... done')
+    expect(fakePlatform.domain.clear.calledOnceWithExactly('myapp')).to.equal(true)
   })
 })

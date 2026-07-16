@@ -1,16 +1,13 @@
+import type {SniEndpoint} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {domainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
-import waitForDomain from '../../lib/domains/wait-for-domain.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-
-interface DomainCreatePayload {
-  hostname: string;
-  sni_endpoint: null | string;
-}
 
 type CertChoice = {
   name: string;
@@ -30,18 +27,18 @@ export default class DomainsAdd extends Command {
     remote: flags.remote(),
     wait: flags.boolean(),
   }
-  certSelect = async (certs: Array<Heroku.SniEndpoint>, inquirer: any) => {
+  certSelect = async (certs: Array<SniEndpoint>, inquirer: any) => {
     const nullCertChoice = {
       name: 'No SNI Endpoint',
       value: null,
     }
 
-    const certChoices = certs.map((cert: Heroku.SniEndpoint) => {
-      const certName = cert.displayName || cert.name
-      const domainsLength = cert.ssl_cert.cert_domains.length
+    const certChoices = certs.map((cert: SniEndpoint) => {
+      const certName = cert.display_name || cert.name
+      const domainsLength = cert.ssl_cert.cert_domains?.length
 
       if (domainsLength) {
-        let domainsList = cert.ssl_cert.cert_domains.slice(0, 4).join(', ')
+        let domainsList = cert.ssl_cert.cert_domains?.slice(0, 4).join(', ')
 
         if (domainsLength > 5) {
           domainsList = `${domainsList} (...and ${domainsLength - 4} more)`
@@ -83,58 +80,36 @@ export default class DomainsAdd extends Command {
     const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
-    const domainCreatePayload: DomainCreatePayload = {
-      hostname,
-      sni_endpoint: null,
-    }
+    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
 
-    let certs: Array<Heroku.SniEndpoint> = []
+    ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
 
-    ux.action.start(`Adding ${color.name(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
-    if (flags.cert) {
-      domainCreatePayload.sni_endpoint = flags.cert
+    const domain = await platform.domain.add(flags.app, hostname, {
+      resolveSniEndpoint: async (certs: SniEndpoint[]) => {
+        ux.action.stop('resolving SNI endpoint')
+        const certSelection = await this.certSelect(certs, inquirer)
+        ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
+
+        return certSelection
+      },
+      sniEndpoint: flags.cert,
+      wait: flags.wait,
+    })
+
+    if (flags.json) {
+      hux.styledJSON(domain)
     } else {
-      const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
-
-      certs = [...body]
-    }
-
-    if (certs.length > 1) {
-      ux.action.stop('resolving SNI endpoint')
-      const certSelection = await this.certSelect(certs, inquirer)
-
-      if (certSelection) {
-        domainCreatePayload.sni_endpoint = certSelection
-      }
-
-      ux.action.start(`Adding ${color.name(domainCreatePayload.hostname)} to ${color.app(flags.app)}`)
-    }
-
-    try {
-      const {body: domain} = await this.heroku.post<Heroku.Domain>(`/apps/${flags.app}/domains`, {
-        body: domainCreatePayload,
-      })
-
-      if (flags.json) {
-        hux.styledJSON(domain)
-      } else {
-        ux.stdout(`Configure your app's DNS provider to point to the DNS Target ${color.name(domain.cname || '')}.
+      ux.stdout(`Configure your app's DNS provider to point to the DNS Target ${color.name(domain.cname || '')}.
     For help, see ${color.info('https://devcenter.heroku.com/articles/custom-domains')}`)
-        if (domain.status !== 'none') {
-          if (flags.wait) {
-            await waitForDomain(flags.app, this.heroku, domain)
-          } else {
-            ux.stdout('')
-            ux.stdout(`The domain ${color.name(hostname)} has been enqueued for addition`)
-            const command = `heroku domains:wait ${quote(hostname)}`
-            ux.stdout(`Run ${color.code(command)} to wait for completion`)
-          }
-        }
+
+      if (!flags.wait && domain.status !== 'succeeded' && domain.status !== 'none') {
+        ux.stdout('')
+        ux.stdout(`The domain ${color.name(hostname)} has been enqueued for addition`)
+        const command = `heroku domains:wait ${quote(hostname)}`
+        ux.stdout(`Run ${color.code(command)} to wait for completion`)
       }
-    } catch (error: any) {
-      ux.error(error)
-    } finally {
-      ux.action.stop()
     }
+
+    ux.action.stop()
   }
 }

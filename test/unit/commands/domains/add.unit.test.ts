@@ -1,13 +1,30 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import {SinonStub, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsAdd from '../../../../src/commands/domains/add.js'
 
+type FakePlatform = {
+  domain: {add: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {add: stub()},
+  }
+}
+
 describe('domains:add', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
   afterEach(function () {
-    nock.cleanAll()
+    restore()
   })
 
   const domainsResponse = {
@@ -36,15 +53,31 @@ describe('domains:add', function () {
 
     describe('using the --cert flag', function () {
       it('adds the domain to the app', async function () {
-        nock('https://api.heroku.com')
-          .post('/apps/myapp/domains', {
-            hostname: 'example.com',
-            sni_endpoint: 'my-cert',
-          })
-          .reply(200, domainsResponseWithEndpoint)
+        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+
+        const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
+        expect(app).to.equal('myapp')
+        expect(hostname).to.equal('example.com')
+        expect(options.resolveSniEndpoint).to.be.a('function')
+        expect(options.sniEndpoint).to.equal('my-cert')
+        expect(options.wait).to.be.undefined
+      })
+
+      it('adds the domain to the app with the --wait flag', async function () {
+        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
+
+        const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert', '--wait'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+
+        const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
+        expect(app).to.equal('myapp')
+        expect(hostname).to.equal('example.com')
+        expect(options.resolveSniEndpoint).to.be.a('function')
+        expect(options.sniEndpoint).to.equal('my-cert')
+        expect(options.wait).to.equal(true)
       })
     })
 
@@ -82,17 +115,22 @@ describe('domains:add', function () {
       })
 
       it('adds the domain to the app', async function () {
-        nock('https://api.heroku.com')
-          .post('/apps/myapp/domains', {
-            hostname: 'example.com',
-            sni_endpoint: 'my-cert',
-          })
-          .reply(200, domainsResponseWithEndpoint)
-          .get('/apps/myapp/sni-endpoints')
-          .reply(200, certsResponse)
+        fakePlatform.domain.add.callsFake(async (_app, _hostname, options) => {
+          await options.resolveSniEndpoint(certsResponse)
+          return domainsResponseWithEndpoint
+        })
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... resolving SNI endpoint')
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+
+        const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
+        expect(app).to.equal('myapp')
+        expect(hostname).to.equal('example.com')
+        expect(options.resolveSniEndpoint).to.be.a('function')
+        expect(options.sniEndpoint).to.be.undefined
+        expect(options.wait).to.be.undefined
+        expect(promptForCertStub.calledOnce).to.equal(true)
       })
     })
   })

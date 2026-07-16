@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {domainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
-
-import waitForDomain from '../../lib/domains/wait-for-domain.js'
+import {ux} from '@oclif/core/ux'
 
 export default class DomainsWait extends Command {
   static args = {
@@ -16,18 +17,12 @@ export default class DomainsWait extends Command {
 
   async run() {
     const {args, flags} = await this.parse(DomainsWait)
+    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
 
-    let domains
-    if (args.hostname) {
-      const {body: domain} = await this.heroku.get<Heroku.Domain>(`/apps/${flags.app}/domains/${args.hostname}`)
-      domains = [domain]
-    } else {
-      const {body: apiDomains} = await this.heroku.get<Array<Heroku.Domain>>(`/apps/${flags.app}/domains`)
-      domains = apiDomains.filter(domain => domain.status === 'pending')
-    }
+    const target = args.hostname ? color.name(args.hostname) : 'all pending domains'
 
-    for (const domain of domains) {
-      await waitForDomain(flags.app, this.heroku, domain)
-    }
+    ux.action.start(`Waiting for ${target}`)
+    await platform.domain.wait(flags.app, {hostname: args.hostname})
+    ux.action.stop()
   }
 }

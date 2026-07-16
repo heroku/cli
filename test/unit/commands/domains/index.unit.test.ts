@@ -2,20 +2,19 @@ import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import * as sinon from 'sinon'
-import {SinonStub, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsIndex from '../../../../src/commands/domains/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 type FakePlatform = {
-  domain: {list: sinon.SinonStub}
+  domain: {list: SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    domain: {list: sinon.stub()},
+    domain: {list: stub()},
   }
 }
 
@@ -25,13 +24,13 @@ describe('domains', function () {
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     confirmStub = stub(DomainsIndex.prototype, 'confirmDisplayAllDomains')
       .resolves(true)
   })
 
   afterEach(function () {
-    sinon.restore()
+    restore()
   })
 
   const herokuOnlyDomainsResponse = [

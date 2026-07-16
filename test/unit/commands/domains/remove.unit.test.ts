@@ -1,28 +1,38 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DomainsRemove from '../../../../src/commands/domains/remove.js'
 
+type FakePlatform = {
+  domain: {delete: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    domain: {delete: stub()},
+  }
+}
+
 describe('domains:remove', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    restore()
   })
 
   it('removes a single domain provided by an argument', async function () {
-    api
-      .delete('/apps/myapp/domains/example.com')
-      .reply(200, {})
+    fakePlatform.domain.delete.resolves({})
 
     const {stderr} = await runCommand(DomainsRemove, ['example.com', '--app', 'myapp'])
 
     expect(stderr).to.contain('Removing example.com from ⬢ myapp... done')
+    expect(fakePlatform.domain.delete.calledOnceWithExactly('myapp', 'example.com')).to.equal(true)
   })
 })
