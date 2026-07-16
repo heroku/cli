@@ -1,21 +1,32 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import {SinonStub, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Login from '../../../../src/commands/auth/login.js'
 import Git from '../../../../src/lib/git/git.js'
 
+type FakePlatform = {
+  account: {info: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    account: {info: stub()},
+  }
+}
+
 describe('auth:login', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   let configureCredentialHelperStub: SinonStub
   let eraseCredentialsStub: SinonStub
   let loginStub: SinonStub
   let savedApiKey: string | undefined
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
 
     savedApiKey = process.env.HEROKU_API_KEY
     delete process.env.HEROKU_API_KEY
@@ -26,22 +37,15 @@ describe('auth:login', function () {
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
-
     if (savedApiKey !== undefined) {
       process.env.HEROKU_API_KEY = savedApiKey
     }
 
-    configureCredentialHelperStub.restore()
-    eraseCredentialsStub.restore()
-    loginStub.restore()
+    restore()
   })
 
   it('displays the logged in user', async function () {
-    api
-      .get('/account')
-      .reply(200, {email: 'user@example.com'})
+    fakePlatform.account.info.resolves({email: 'user@example.com'})
 
     const {stdout} = await runCommand(Login, [])
 
@@ -49,11 +53,9 @@ describe('auth:login', function () {
   })
 
   it('configures git credential helper after successful login', async function () {
-    api
-      .get('/account')
-      .reply(200, {
-        email: 'user@example.com',
-      })
+    fakePlatform.account.info.resolves({
+      email: 'user@example.com',
+    })
 
     await runCommand(Login, [])
 
@@ -61,11 +63,9 @@ describe('auth:login', function () {
   })
 
   it('rejects stale git credentials after successful login', async function () {
-    api
-      .get('/account')
-      .reply(200, {
-        email: 'user@example.com',
-      })
+    fakePlatform.account.info.resolves({
+      email: 'user@example.com',
+    })
 
     await runCommand(Login, [])
 
@@ -84,11 +84,9 @@ describe('auth:login', function () {
   it('does not fail login if git credential helper configuration fails', async function () {
     configureCredentialHelperStub.rejects(new Error('Git not found'))
 
-    api
-      .get('/account')
-      .reply(200, {
-        email: 'user@example.com',
-      })
+    fakePlatform.account.info.resolves({
+      email: 'user@example.com',
+    })
 
     const {error} = await runCommand(Login, [])
 
@@ -99,11 +97,9 @@ describe('auth:login', function () {
   it('does not fail login if git credential deletion fails', async function () {
     eraseCredentialsStub.rejects(new Error('Git not found'))
 
-    api
-      .get('/account')
-      .reply(200, {
-        email: 'user@example.com',
-      })
+    fakePlatform.account.info.resolves({
+      email: 'user@example.com',
+    })
 
     const {error} = await runCommand(Login, [])
 
