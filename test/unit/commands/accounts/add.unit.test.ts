@@ -107,8 +107,7 @@ describe('accounts:add', function () {
 
       try {
         await runCommand(Cmd, ['testAccountName'])
-      }
-      catch (error: unknown) {
+      } catch (error: unknown) {
         expect((error as Error).message).to.contain('Not logged in')
         expect(addStub.called).to.equal(false)
       }
