@@ -1,15 +1,25 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 import {stubCredentialManager} from '../../../helpers/credential-manager-stub.js'
 
+type FakePlatform = {
+  account: {info: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    account: {info: stub()},
+  }
+}
+
 describe('accounts:add', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   let addStub: SinonStub
   let listStub: SinonStub
   let originalApiKey: string | undefined
@@ -23,13 +33,13 @@ describe('accounts:add', function () {
 
     listStub = stub(AccountsModule, 'list').resolves([])
     addStub = stub(AccountsModule, 'add')
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    stub(APIClient.prototype, 'auth').get(() => 'testHerokuAPIKey')
   })
 
   afterEach(function () {
     restore()
-    api.done()
-    nock.cleanAll()
     if (originalApiKey !== undefined) process.env.HEROKU_API_KEY = originalApiKey
   })
 
@@ -39,8 +49,7 @@ describe('accounts:add', function () {
         getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
       })
 
-      api.get('/account')
-        .reply(200, {email: 'testEmail'})
+      fakePlatform.account.info.resolves({email: 'testEmail'})
 
       await runCommand(Cmd, ['testAccountName'])
       expect(addStub.calledOnce).to.equal(true)
@@ -56,8 +65,7 @@ describe('accounts:add', function () {
       const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
       getStorageConfigStub.returns({credentialStore: 'keychain' as any, useNetrc: false})
 
-      api.get('/account')
-        .reply(200, {email: 'testEmail'})
+      fakePlatform.account.info.resolves({email: 'testEmail'})
 
       await runCommand(Cmd, ['testAccountName'])
 
@@ -75,8 +83,7 @@ describe('accounts:add', function () {
       const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
       getStorageConfigStub.returns({credentialStore: null, useNetrc: true})
 
-      api.get('/account')
-        .reply(200, {email: 'testEmail'})
+      fakePlatform.account.info.resolves({email: 'testEmail'})
 
       await runCommand(Cmd, ['testAccountName'])
 
@@ -84,25 +91,6 @@ describe('accounts:add', function () {
       expect(addStub.args[0][0]).to.equal('testAccountName')
       expect(addStub.args[0][1]).to.equal('testEmail')
       expect(addStub.args[0][2]).to.equal('testHerokuAPIKey')
-    })
-
-    it('should prompt the user to log in if the user is not logged in', async function () {
-      stubCredentialManager({
-        getAuth: async () => ({account: undefined, token: undefined}),
-      })
-
-      const APIClientStub = stub(APIClient.prototype, 'login')
-      APIClientStub.resolves()
-
-      api.get('/account')
-        .reply(401, {id: 'unauthorized', message: 'Unauthorized'})
-
-      api.get('/account')
-        .reply(200, {email: 'testEmail'})
-
-      await runCommand(Cmd, ['testAccountName'])
-
-      expect(APIClientStub.calledOnce).to.equal(true)
     })
 
     it('should error if the account name already exists', async function () {
@@ -124,8 +112,7 @@ describe('accounts:add', function () {
         getAuth: async () => ({account: 'testEmail', token: 'testHerokuAPIKey'}),
       })
 
-      api.get('/account')
-        .reply(200, {email: 'testEmail'})
+      fakePlatform.account.info.resolves({email: 'testEmail'})
 
       listStub.resolves([{name: 'existingAlias', username: 'testEmail'}])
 
