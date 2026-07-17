@@ -9,7 +9,7 @@ export default class TwoFactor extends Command {
   static aliases = ['2fa', 'twofactor']
   static description = 'check 2fa status'
 
-  async run(): Promise<Account> {
+  async run(): Promise<boolean> {
     const {platform} = new HerokuSDK()
     const account = await platform.account.info()
     if (account.two_factor_authentication) {
@@ -18,6 +18,6 @@ export default class TwoFactor extends Command {
       ux.stdout(`Two-factor authentication is ${color.failure('not enabled')}`)
     }
 
-    return account
+    return account.two_factor_authentication
   }
 }
