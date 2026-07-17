@@ -1,6 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/certs/index.js'
@@ -14,23 +15,41 @@ import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  sniEndpoint: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    sniEndpoint: {list: sinon.stub()},
+  }
+}
+
 describe('heroku certs', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
+  })
+
   it('warns about no SSL certificates if the app has no certs', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
+    fakePlatform.sniEndpoint.list.resolves([])
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
     expectOutput(stderr, '')
     expectOutput(stdout, heredoc(`
       ⬢ example has no SSL certificates.
       Use heroku certs:add CRT KEY to add one.
     `))
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('# shows ACM for the type when acm true', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointAcm])
+    fakePlatform.sniEndpoint.list.resolves([endpointAcm])
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr, '')
@@ -42,9 +61,7 @@ describe('heroku certs', function () {
   })
 
   it('# shows certs with common names stacked and stable matches', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointStables])
+    fakePlatform.sniEndpoint.list.resolves([endpointStables])
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr, '')
@@ -56,11 +73,7 @@ describe('heroku certs', function () {
   })
 
   it('# shows certs with common names stacked and stable matches (bugfix)', async function () {
-    nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
-    })
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointWildcardBug])
+    fakePlatform.sniEndpoint.list.resolves([endpointWildcardBug])
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr, '')
@@ -72,11 +85,7 @@ describe('heroku certs', function () {
   })
 
   it('# shows certs with common names stacked and stable matches wildcard', async function () {
-    nock('https://api.heroku.com', {
-      reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
-    })
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointWildcard])
+    fakePlatform.sniEndpoint.list.resolves([endpointWildcard])
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr, '')
@@ -88,9 +97,7 @@ describe('heroku certs', function () {
   })
 
   it('# shows certs with common names stacked and just stable cname matches', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpointStables])
+    fakePlatform.sniEndpoint.list.resolves([endpointStables])
     const {stderr, stdout} = await runCommand(Cmd, ['--app', 'example'])
 
     expectOutput(stderr, '')
