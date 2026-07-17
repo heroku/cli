@@ -11,7 +11,7 @@ export default class AuthToken extends Command {
 By default, the CLI auth token is only valid for 1 year. To generate a long-lived token, use heroku authorizations:create`
   static promptFlagActive = false
 
-  async run(): Promise<string> {
+  async run() {
     const {platform} = new HerokuSDK()
     const {formatRelative} = await lazyModuleLoader.loadDateFns()
 
@@ -33,6 +33,5 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
     }
 
     ux.stdout(this.heroku.auth)
-    return this.heroku.auth
   }
 }

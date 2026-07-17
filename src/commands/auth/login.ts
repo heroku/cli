@@ -1,5 +1,3 @@
-import type {Account} from '@heroku/types/3.sdk'
-
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
@@ -16,7 +14,7 @@ export default class Login extends Command {
     sso: flags.boolean({char: 's', description: 'login for enterprise users under SSO', hidden: true}),
   }
 
-  async run(): Promise<Account> {
+  async run() {
     const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Login)
     let method: 'interactive' | undefined
@@ -34,6 +32,5 @@ export default class Login extends Command {
     }
 
     await this.config.runHook('recache', {type: 'login'})
-    return account
   }
 }
