@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import AccountsModule from '../../lib/accounts/accounts.js'
@@ -13,6 +13,7 @@ export default class Add extends Command {
   static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args} = await this.parse(Add)
     const {name} = args
     const accounts = await AccountsModule.list()
@@ -21,7 +22,7 @@ export default class Add extends Command {
       ux.error(`${name} already exists`)
     }
 
-    const {body: account} = await this.heroku.get<Heroku.Account>('/account')
+    const account = await platform.account.info()
     const email = account.email!
 
     const existingAlias = accounts.find(account => account.name && account.username === email)
