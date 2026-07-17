@@ -1,5 +1,3 @@
-import type {Account} from '@heroku/types/3.sdk'
-
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
