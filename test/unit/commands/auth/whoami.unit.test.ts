@@ -1,51 +1,56 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import {restore, stub} from 'sinon'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Whoami from '../../../../src/commands/auth/whoami.js'
 
+type FakePlatform = {
+  account: {info: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    account: {info: stub()},
+  }
+}
+
 describe('auth:whoami', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     stub(APIClient.prototype, 'auth').get(() => 'foobar')
   })
 
   afterEach(function () {
     delete process.env.HEROKU_API_KEY
-    api.done()
-    nock.cleanAll()
     restore()
   })
 
   it('shows user email when logged in', async function () {
-    api
-      .get('/account')
-      .reply(200, {email: 'gandalf@example.com'})
+    fakePlatform.account.info.resolves({email: 'gandalf@example.com'})
 
     const {stdout} = await runCommand(Whoami, [])
 
     expect(stdout).to.equal('gandalf@example.com\n')
+    expect(fakePlatform.account.info.calledOnce).to.equal(true)
   })
 
   it('exits with status 100 when not logged in', async function () {
-    api
-      .get('/account')
-      .reply(401)
+    const error = Object.assign(new Error('Unauthorized'), {statusCode: 401})
+    fakePlatform.account.info.rejects(error)
 
-    const {error} = await runCommand(Whoami, [])
+    const {error: cmdError} = await runCommand(Whoami, [])
 
-    expect(error?.oclif?.exit).to.equal(100)
+    expect(cmdError?.oclif?.exit).to.equal(100)
   })
 
   it('shows a warning when the HEROKU_API_KEY env var is set', async function () {
     process.env.HEROKU_API_KEY = 'foobar'
-    api
-      .get('/account')
-      .reply(200, {email: 'gandalf@example.com'})
+    fakePlatform.account.info.resolves({email: 'gandalf@example.com'})
 
     const {stderr, stdout} = await runCommand(Whoami, [])
 

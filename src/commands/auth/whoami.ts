@@ -1,5 +1,7 @@
+import type {Account} from '@heroku/types/3.sdk'
+
 import {Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {HerokuSDK} from '@heroku/sdk'
 
 export default class AuthWhoami extends Command {
   static aliases = ['whoami']
@@ -11,14 +13,17 @@ export default class AuthWhoami extends Command {
     this.error('not logged in', {exit: 100})
   }
 
-  async run() {
+  async run(): Promise<Account> {
+    const {platform} = new HerokuSDK()
+
     if (process.env.HEROKU_API_KEY) this.warn('HEROKU_API_KEY is set')
     if (!this.heroku.auth) this.notloggedin()
     try {
-      const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
+      const account = await platform.account.info()
       this.log(account.email)
-    } catch (error: any) {
-      if (error.statusCode === 401) this.notloggedin()
+      return account
+    } catch (error: unknown) {
+      if ((error as {statusCode?: number}).statusCode === 401) this.notloggedin()
       throw error
     }
   }

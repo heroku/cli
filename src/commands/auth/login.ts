@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 
 import Git from '../../lib/git/git.js'
 
@@ -15,11 +15,12 @@ export default class Login extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Login)
     let method: 'interactive' | undefined
     if (flags.interactive) method = 'interactive'
     await this.heroku.login({browser: flags.browser, expiresIn: flags['expires-in'], method})
-    const {body: account} = await this.heroku.get<Heroku.Account>('/account', {retryAuth: false})
+    const account = await platform.account.info()
     this.log(`Logged in as ${color.user(account.email!)}`)
 
     const git = new Git()
