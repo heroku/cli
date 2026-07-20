@@ -5,6 +5,17 @@ import * as sinon from 'sinon'
 
 import Dyno, {DynoOpts} from '../../../../src/lib/run/dyno.js'
 
+function buildSshDyno(mockHeroku: APIClient): Dyno {
+  const opts: DynoOpts = {
+    app: 'my-app',
+    command: 'bash',
+    dyno: 'run.1234',
+    heroku: mockHeroku,
+    showStatus: false,
+  }
+  return new Dyno(opts)
+}
+
 describe('Dyno', function () {
   let sandbox: sinon.SinonSandbox
   let mockHeroku: APIClient
@@ -327,6 +338,137 @@ describe('Dyno', function () {
     })
   })
 
+  describe('_doStart', function () {
+    let runStub: sinon.SinonStub
+    let attachStub: sinon.SinonStub
+
+    beforeEach(function () {
+      runStub = sandbox.stub()
+      const fakePlatform = {
+        dyno: {run: runStub, waitForInfo: sandbox.stub()},
+      }
+      sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+      // The attach path opens a real socket; stub it so the test never
+      // dials a network endpoint.
+      attachStub = sandbox.stub(Dyno.prototype, 'attach' as keyof Dyno).resolves()
+    })
+
+    it('calls platform.dyno.run with the app, command, and mapped options for a one-off dyno', async function () {
+      runStub.resolves({
+        attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
+        name: 'run.1234',
+        size: 'Standard-1X',
+        state: 'starting',
+      })
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: true,
+        command: 'bash',
+        env: 'FOO=bar',
+        'exit-code': true,
+        heroku: mockHeroku,
+        'no-tty': true,
+        showStatus: false,
+        size: 'Standard-1X',
+        type: 'run',
+      }
+      const dyno = new Dyno(opts)
+      await dyno._doStart()
+
+      expect(runStub.calledOnce).to.equal(true)
+      const [appId, command, options] = runStub.firstCall.args
+      expect(appId).to.equal('my-app')
+      expect(command).to.equal('bash')
+      expect(options).to.include({
+        attach: true,
+        exitCode: true,
+        forceNoTTY: true,
+        size: 'Standard-1X',
+        type: 'run',
+      })
+      expect(options.env).to.have.property('FOO', 'bar')
+      expect(options.env).to.have.property('TERM')
+    })
+
+    it('passes options.dyno for the exec-inside variant', async function () {
+      runStub.resolves({name: 'web.1', size: 'Standard-1X', state: 'up'})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        command: 'bash',
+        dyno: 'web.1',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+      await dyno._doStart()
+
+      expect(runStub.calledOnce).to.equal(true)
+      const options = runStub.firstCall.args[2]
+      expect(options.dyno).to.equal('web.1')
+    })
+
+    it('stores the returned dyno on this.dyno and calls attach() when opts.attach is true', async function () {
+      const returned = {
+        attach_url: 'rendezvous://x:5000',
+        name: 'run.1234',
+        size: 'Standard-1X',
+        state: 'starting',
+      }
+      runStub.resolves(returned)
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: true,
+        command: 'bash',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+      await dyno._doStart()
+
+      expect(dyno.dyno).to.deep.equal(returned)
+      expect(attachStub.calledOnce).to.equal(true)
+    })
+
+    it('does not call attach() when opts.attach is false and opts.dyno is unset', async function () {
+      runStub.resolves({
+        name: 'run.1234',
+        size: 'Standard-1X',
+        state: 'starting',
+      })
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'bash',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+      await dyno._doStart()
+
+      expect(attachStub.called).to.equal(false)
+    })
+
+    it('propagates non-409 errors from platform.dyno.run', async function () {
+      const failure = new Error('platform down')
+      runStub.rejects(failure)
+      const opts: DynoOpts = {
+        app: 'my-app',
+        command: 'bash',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+      let caught: unknown
+      try {
+        await dyno._doStart()
+      } catch (error) {
+        caught = error
+      }
+
+      expect(caught).to.equal(failure)
+    })
+  })
+
   describe('_ssh', function () {
     let waitForInfoStub: sinon.SinonStub
     let connectStub: sinon.SinonStub
@@ -334,7 +476,7 @@ describe('Dyno', function () {
     beforeEach(function () {
       waitForInfoStub = sandbox.stub()
       const fakePlatform = {
-        dyno: {waitForInfo: waitForInfoStub},
+        dyno: {run: sandbox.stub(), waitForInfo: waitForInfoStub},
       }
       sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
       // _connect opens a TLS socket; stub it so the test never tries
@@ -342,21 +484,10 @@ describe('Dyno', function () {
       connectStub = sandbox.stub(Dyno.prototype, '_connect' as keyof Dyno).resolves('connected')
     })
 
-    function buildSshDyno(): Dyno {
-      const opts: DynoOpts = {
-        app: 'my-app',
-        command: 'bash',
-        dyno: 'run.1234',
-        heroku: mockHeroku,
-        showStatus: false,
-      }
-      return new Dyno(opts)
-    }
-
     it('calls waitForInfo with the runnable-state filter and forwards app+dyno args', async function () {
       waitForInfoStub.resolves({name: 'run.1234', size: 'Standard-1X', state: 'up'})
 
-      const dyno = buildSshDyno()
+      const dyno = buildSshDyno(mockHeroku)
       await dyno._ssh()
 
       expect(waitForInfoStub.calledOnce).to.equal(true)
@@ -376,7 +507,7 @@ describe('Dyno', function () {
         return finalDyno
       })
 
-      const dyno = buildSshDyno()
+      const dyno = buildSshDyno(mockHeroku)
       await dyno._ssh()
 
       expect(dyno.dyno).to.deep.equal(finalDyno)
@@ -385,7 +516,7 @@ describe('Dyno', function () {
     it('connects after the dyno reaches a runnable state', async function () {
       waitForInfoStub.resolves({name: 'run.1234', size: 'Standard-1X', state: 'starting'})
 
-      const dyno = buildSshDyno()
+      const dyno = buildSshDyno(mockHeroku)
       const result = await dyno._ssh()
 
       expect(connectStub.calledOnce).to.equal(true)
@@ -396,7 +527,7 @@ describe('Dyno', function () {
       const failure = new Error('platform unreachable')
       waitForInfoStub.rejects(failure)
 
-      const dyno = buildSshDyno()
+      const dyno = buildSshDyno(mockHeroku)
       let caught: unknown
       try {
         await dyno._ssh()
