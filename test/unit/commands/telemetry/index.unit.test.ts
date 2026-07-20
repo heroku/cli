@@ -1,36 +1,55 @@
+import type {TelemetryDrain} from '@heroku/types/3.sdk'
+
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/index.js'
-import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  telemetryDrain: {
+    listByApp: SinonStub
+    listBySpace: SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    telemetryDrain: {
+      listByApp: stub(),
+      listBySpace: stub(),
+    },
+  }
+}
+
 describe('telemetry:index', function () {
   let appId: string
   let spaceId: string
-  let appTelemetryDrains: TelemetryDrains
-  let spaceTelemetryDrains: TelemetryDrains
+  let appTelemetryDrains: TelemetryDrain[]
+  let spaceTelemetryDrains: TelemetryDrain[]
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     appId = appTelemetryDrain1.owner.id
     spaceId = spaceTelemetryDrain1.owner.id
     spaceTelemetryDrains = [spaceTelemetryDrain1]
     appTelemetryDrains = [appTelemetryDrain1, appTelemetryDrain2]
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    return nock.cleanAll()
+    restore()
   })
 
   it('shows space telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/spaces/${spaceId}/telemetry-drains`)
-      .reply(200, spaceTelemetryDrains)
+    fakePlatform.telemetryDrain.listBySpace.resolves(spaceTelemetryDrains)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -46,9 +65,7 @@ describe('telemetry:index', function () {
   })
 
   it('shows app telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appId}/telemetry-drains`)
-      .reply(200, appTelemetryDrains)
+    fakePlatform.telemetryDrain.listByApp.resolves(appTelemetryDrains)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -67,9 +84,7 @@ describe('telemetry:index', function () {
   })
 
   it('shows a message when there are no telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appId}/telemetry-drains`)
-      .reply(200, [])
+    fakePlatform.telemetryDrain.listByApp.resolves([])
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
