@@ -21,6 +21,7 @@ manage apps on Heroku
 * [`heroku apps:stacks:set STACK`](#heroku-appsstacksset-stack)
 * [`heroku apps:transfer RECIPIENT`](#heroku-appstransfer-recipient)
 * [`heroku apps:unlock`](#heroku-appsunlock)
+* [`heroku apps:url:set [URL]`](#heroku-appsurlset-url)
 
 ## `heroku apps`
 
@@ -503,3 +504,33 @@ ALIASES
 ```
 
 _See code: [src/commands/apps/unlock.ts](https://github.com/heroku/cli/blob/v11.8.1/src/commands/apps/unlock.ts)_
+
+## `heroku apps:url:set [URL]`
+
+set the app's canonical web URL (shown in the dashboard, apps:info, and build output)
+
+```
+USAGE
+  $ heroku apps:url:set [URL] -a <value> [--prompt] [-r <value>] [--reset]
+
+ARGUMENTS
+  URL  canonical https:// URL to display for the app
+
+FLAGS
+  -a, --app=<value>     (required) app to run command against
+  -r, --remote=<value>  git remote of app to use
+      --reset           clear the override and revert to the default URL
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
+DESCRIPTION
+  set the app's canonical web URL (shown in the dashboard, apps:info, and build output)
+
+EXAMPLES
+   $ heroku apps:url:set https://www.example.com/ --app myapp
+
+   $ heroku apps:url:set --reset --app myapp
+```
+
+_See code: [src/commands/apps/url/set.ts](https://github.com/heroku/cli/blob/v11.8.1/src/commands/apps/url/set.ts)_
