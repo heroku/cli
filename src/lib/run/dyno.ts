@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {APIClient, type IOptions} from '@heroku-cli/command'
 import {type Notification, notify} from '@heroku-cli/notifications'
-import {Dyno as APIDyno} from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
+import {Dyno as SDKDyno} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 import {spawn} from 'node:child_process'
@@ -32,6 +32,7 @@ export interface DynoOpts {
   'no-tty'?: boolean
   notificationSubtitle?: string
   notify?: boolean
+  sdk?: HerokuSDK<readonly [typeof dynoExtensions]>
   showStatus?: boolean
   size?: string
   type?: string
@@ -44,7 +45,7 @@ interface HerokuApiClientRun extends APIClient {
 }
 
 export default class Dyno extends Duplex {
-  dyno?: APIDyno
+  dyno?: Partial<SDKDyno>
   heroku: HerokuApiClientRun
   input: any
   legacyUri?: {[key: string]: any}
@@ -63,7 +64,7 @@ export default class Dyno extends Duplex {
     this.cork()
     this.opts = opts
     this.heroku = opts.heroku
-    this.sdk = new HerokuSDK({extensions: [dynoExtensions]})
+    this.sdk = opts.sdk ?? new HerokuSDK({extensions: [dynoExtensions]})
 
     if (this.opts.showStatus === undefined) {
       this.opts.showStatus = true
@@ -136,7 +137,7 @@ export default class Dyno extends Duplex {
         size: this.opts.size,
         type: this.opts.type,
       })
-      this.dyno = dyno as APIDyno
+      this.dyno = dyno
 
       // Show status after dyno is created (after any 2FA prompt)
       if (this.opts.showStatus) {
@@ -433,13 +434,13 @@ export default class Dyno extends Duplex {
     const dyno = await platform.dyno.waitForInfo(this.opts.app, this.opts.dyno!, {
       attempts: 60,
       onPoll: polled => {
-        this.dyno = polled as APIDyno
+        this.dyno = polled
         if (this.opts.showStatus) {
           ux.action.status = this._status(polled.state)
         }
       },
       states: ['starting', 'up'],
-    }) as APIDyno
+    })
     // `this.dyno` was already updated by the final `onPoll` (the
     // helper fires onPoll before the state check returns), but the
     // helper's return value is the canonical reference; assign it
