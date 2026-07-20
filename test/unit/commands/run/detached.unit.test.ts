@@ -1,12 +1,12 @@
 /* eslint-disable n/no-unsupported-features/node-builtins */
 
 import {runCommand} from '@heroku-cli/test-utils'
-import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
 import RunDetached from '../../../../src/commands/run/detached.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 type FakePlatform = {
   dyno: {run: sinon.SinonStub}
@@ -20,16 +20,17 @@ function buildFakePlatform(): FakePlatform {
 
 describe('run:detached', function () {
   let fakePlatform: FakePlatform
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    sdkMock = mockSDKPlatform(fakePlatform)
     nock.cleanAll()
     nock.disableNetConnect()
   })
 
   afterEach(function () {
-    sinon.restore()
+    sdkMock.restore()
     nock.enableNetConnect()
   })
 

@@ -1,10 +1,10 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
 import Run from '../../../../src/commands/run/index.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 type FakePlatform = {
   account: {info: sinon.SinonStub}
@@ -21,7 +21,7 @@ function buildFakePlatform(): FakePlatform {
 describe('run', function () {
   const originalProcessArgv = [...process.argv]
   let fakePlatform: FakePlatform
-  let sandbox: sinon.SinonSandbox
+  let sdkMock: MockSDK
 
   const runWithCliArgv = async (args: string[]) => {
     process.argv = [
@@ -35,9 +35,8 @@ describe('run', function () {
   }
 
   beforeEach(function () {
-    sandbox = sinon.createSandbox()
     fakePlatform = buildFakePlatform()
-    sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform as unknown as HerokuSDK['platform'])
+    sdkMock = mockSDKPlatform(fakePlatform)
     nock.cleanAll()
     nock.disableNetConnect()
   })
@@ -45,7 +44,7 @@ describe('run', function () {
   afterEach(function () {
     nock.enableNetConnect()
     process.argv = [...originalProcessArgv]
-    sandbox.restore()
+    sdkMock.restore()
   })
 
   it('requires a command', async function () {
@@ -53,12 +52,11 @@ describe('run', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    await runCommand(Run, [
+    const {error} = await runCommand(Run, [
       '--app',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.include('Usage: heroku run COMMAND')
-    })
+    ])
+    expect(error?.message).to.include('Usage: heroku run COMMAND')
   })
 
   it('creates and attaches to a dyno', async function () {
@@ -109,15 +107,14 @@ describe('run', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       '--app',
       'myapp',
       '--exit-code',
       'false',
-    ]).catch(error => {
-      // Expected to fail with exit code 1 or connection error
-      expect(error).to.exist
-    })
+    ])
+    // Expected to fail with exit code 1 or connection error
+    expect(error).to.exist
   })
 
   it('respects --no-launcher flag', async function () {

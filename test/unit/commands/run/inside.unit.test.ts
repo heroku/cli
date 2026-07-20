@@ -1,10 +1,10 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
 import RunInside from '../../../../src/commands/run/inside.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 type FakePlatform = {
   dyno: {run: sinon.SinonStub}
@@ -18,6 +18,7 @@ function buildFakePlatform(): FakePlatform {
 
 describe('run:inside', function () {
   let fakePlatform: FakePlatform
+  let sdkMock: MockSDK
   const originalProcessArgv = [...process.argv]
 
   const runWithCliArgv = async (args: string[]) => {
@@ -33,13 +34,13 @@ describe('run:inside', function () {
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    sdkMock = mockSDKPlatform(fakePlatform)
     nock.cleanAll()
     nock.disableNetConnect()
   })
 
   afterEach(function () {
-    sinon.restore()
+    sdkMock.restore()
     nock.enableNetConnect()
     process.argv = [...originalProcessArgv]
   })
@@ -49,13 +50,12 @@ describe('run:inside', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       '--app',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.include('Missing')
-      expect(error.message).to.include('dyno_name')
-    })
+    ])
+    expect(error?.message).to.include('Missing')
+    expect(error?.message).to.include('dyno_name')
   })
 
   it('runs a command inside an existing dyno', async function () {
@@ -108,16 +108,15 @@ describe('run:inside', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'false',
       '--app',
       'myapp',
       '--exit-code',
-    ]).catch(error => {
-      // Expected to fail with exit code 1 or connection error
-      expect(error).to.exist
-    })
+    ])
+    // Expected to fail with exit code 1 or connection error
+    expect(error).to.exist
   })
 
   it('respects --no-launcher flag', async function () {
