@@ -1,38 +1,54 @@
+import type {TelemetryDrain} from '@heroku/types/3.sdk'
+
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/remove.js'
-import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  telemetryDrain: {
+    delete: SinonStub
+    removeDrains: SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    telemetryDrain: {
+      delete: stub(),
+      removeDrains: stub(),
+    },
+  }
+}
+
 describe('telemetry:remove', function () {
   let appId: string
   let spaceId: string
-  let appTelemetryDrains: TelemetryDrains
-  let spaceTelemetryDrains: TelemetryDrains
+  let appTelemetryDrains: TelemetryDrain[]
+  let spaceTelemetryDrains: TelemetryDrain[]
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     appId = appTelemetryDrain1.owner.id
     spaceId = spaceTelemetryDrain1.owner.id
     appTelemetryDrains = [appTelemetryDrain1, appTelemetryDrain2]
     spaceTelemetryDrains = [spaceTelemetryDrain1]
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    return nock.cleanAll()
+    restore()
   })
 
   it('deletes a space telemetry drain', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
-      .reply(200, spaceTelemetryDrain1)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .delete(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.telemetryDrain.delete.resolves(spaceTelemetryDrain1)
 
     const {stderr} = await runCommand(Cmd, [
       spaceTelemetryDrain1.id,
@@ -43,12 +59,7 @@ describe('telemetry:remove', function () {
   })
 
   it('deletes an app telemetry drains', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/telemetry-drains/${appTelemetryDrain1.id}`)
-      .reply(200, appTelemetryDrain1)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .delete(`/telemetry-drains/${appTelemetryDrain1.id}`)
-      .reply(200, appTelemetryDrain1)
+    fakePlatform.telemetryDrain.delete.resolves(appTelemetryDrain1)
 
     const {stderr} = await runCommand(Cmd, [
       appTelemetryDrain1.id,
@@ -59,15 +70,7 @@ describe('telemetry:remove', function () {
   })
 
   it('deletes all drains from an app', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appId}/telemetry-drains`)
-      .reply(200, appTelemetryDrains)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .delete(`/telemetry-drains/${appTelemetryDrain1.id}`)
-      .reply(200, appTelemetryDrain1)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .delete(`/telemetry-drains/${appTelemetryDrain2.id}`)
-      .reply(200, appTelemetryDrain2)
+    fakePlatform.telemetryDrain.removeDrains.resolves([appTelemetryDrain1, appTelemetryDrain2])
 
     const {stderr} = await runCommand(Cmd, [
       '--app', appId,
@@ -78,12 +81,7 @@ describe('telemetry:remove', function () {
   })
 
   it('deletes all drains from a space', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/spaces/${spaceId}/telemetry-drains`)
-      .reply(200, spaceTelemetryDrains)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .delete(`/telemetry-drains/${spaceTelemetryDrain1.id}`)
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.telemetryDrain.removeDrains.resolves([spaceTelemetryDrain1])
 
     const {stderr} = await runCommand(Cmd, [
       '--space', spaceId,
