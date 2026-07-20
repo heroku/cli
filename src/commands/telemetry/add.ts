@@ -1,11 +1,12 @@
+import type {TelemetryDrainCreateOpts} from '@heroku/types/3.sdk'
+
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {App, Space} from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {validateAndFormatSignals} from '../../lib/telemetry/util.js'
-import {TelemetryDrain} from '../../lib/types/telemetry.js'
 
 const heredoc = tsheredoc.default
 
@@ -32,6 +33,7 @@ export default class Add extends Command {
     const {args, flags} = await this.parse(Add)
     const {app, headers, signals, space, transport} = flags
     const {endpoint} = args
+    const {platform} = new HerokuSDK()
 
     // Allow splunk, but do not show splunk in error message until splunk transport is accepted as a feature
     // When splunk transport is accepted as a feature, and options are added for the transport flag, this section should be removed
@@ -43,12 +45,10 @@ export default class Add extends Command {
 
     let id
     if (app) {
-      const {body: herokuApp} = await this.heroku.get<App>(`/apps/${app}`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      })
+      const herokuApp = await platform.app.info(app)
       id = herokuApp.id
     } else {
-      const {body: herokuSpace} = await this.heroku.get<Space>(`/spaces/${space}`)
+      const herokuSpace = await platform.space.info(space)
       id = herokuSpace.id
     }
 
@@ -64,14 +64,9 @@ export default class Add extends Command {
         type: app ? 'app' : 'space',
       },
       signals: validateAndFormatSignals(signals),
-    }
+    } as TelemetryDrainCreateOpts
 
-    const {body: drain} = await this.heroku.post<TelemetryDrain>('/telemetry-drains', {
-      body: drainConfig,
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const drain = await platform.telemetryDrain.create(drainConfig)
 
     ux.stdout(`successfully added drain ${drain.exporter.endpoint}`)
   }

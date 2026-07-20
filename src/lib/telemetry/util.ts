@@ -1,9 +1,8 @@
-import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, hux} from '@heroku/heroku-cli-util'
-import {ux} from '@oclif/core/ux'
+import type {TelemetryDrain} from '@heroku/types/3.sdk'
 
-import {TelemetryDrain} from '../types/telemetry.js'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {ux} from '@oclif/core/ux'
 
 interface TelemetryDisplayObject {
   App?: string
@@ -14,7 +13,9 @@ interface TelemetryDisplayObject {
   Transport: string
 }
 
-export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, heroku: APIClient) {
+export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain) {
+  const {platform} = new HerokuSDK()
+
   hux.styledHeader(telemetryDrain.id)
 
   // Start with an empty object
@@ -22,18 +23,10 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, hero
 
   // Add App or Space first
   if (telemetryDrain.owner.type === 'space') {
-    const {body: space} = await heroku.get<Heroku.Space>(`/spaces/${telemetryDrain.owner.id}`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const space = await platform.space.info(telemetryDrain.owner.id)
     displayObject.Space = color.space(space.name || '')
   } else {
-    const {body: app} = await heroku.get<Heroku.App>(`/apps/${telemetryDrain.owner.id}`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const app = await platform.app.info(telemetryDrain.owner.id)
     displayObject.App = color.app(app.name || '')
   }
 
@@ -49,9 +42,9 @@ export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, hero
   hux.styledObject(displayObject, ['App', 'Space', 'Signals', 'Endpoint', 'Transport', 'Headers'])
 }
 
-export function validateAndFormatSignals(signalInput: string | undefined): string[] {
+export function validateAndFormatSignals(signalInput: string | undefined): Array<'logs' | 'metrics' | 'traces'> {
   const signalOptions = ['traces', 'metrics', 'logs']
-  if (!signalInput || signalInput === 'all') return signalOptions
+  if (!signalInput || signalInput === 'all') return signalOptions as Array<'logs' | 'metrics' | 'traces'>
   const signalArray = signalInput.split(',')
   for (const signal of signalArray) {
     if (!signalOptions.includes(signal)) {
@@ -59,5 +52,5 @@ export function validateAndFormatSignals(signalInput: string | undefined): strin
     }
   }
 
-  return signalArray
+  return signalArray as Array<'logs' | 'metrics' | 'traces'>
 }

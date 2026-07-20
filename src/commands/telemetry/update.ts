@@ -1,10 +1,12 @@
+import type {TelemetryDrainUpdateOpts} from '@heroku/types/3.sdk'
+
 import {Command, flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {displayTelemetryDrain, validateAndFormatSignals} from '../../lib/telemetry/util.js'
-import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry.js'
 
 const heredoc = tsheredoc.default
 
@@ -26,6 +28,7 @@ export default class Update extends Command {
     const {args, flags} = await this.parse(Update)
     const {telemetry_drain_id} = args
     const {endpoint, headers, signals, transport} = flags
+    const {platform} = new HerokuSDK()
     if (!(endpoint || headers || signals || transport)) {
       ux.error(heredoc(`
         Requires either --signals, --endpoint, --transport or HEADERS to be provided.
@@ -33,13 +36,13 @@ export default class Update extends Command {
       `))
     }
 
-    const drainConfig: TelemetryDrainWithOptionalKeys = {}
+    const drainConfig: TelemetryDrainUpdateOpts = {}
     if (signals) {
       drainConfig.signals = validateAndFormatSignals(signals)
     }
 
     if (headers || endpoint || transport) {
-      const exporter: TelemetryExporterWithOptionalKeys = {}
+      const exporter: NonNullable<TelemetryDrainUpdateOpts['exporter']> = {} as any
       if (headers) {
         exporter.headers = JSON.parse(headers)
       }
@@ -56,14 +59,9 @@ export default class Update extends Command {
     }
 
     ux.action.start(`Updating telemetry drain ${telemetry_drain_id}`)
-    const {body: telemetryDrain} = await this.heroku.patch<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
-      body: drainConfig,
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const telemetryDrain = await platform.telemetryDrain.update(telemetry_drain_id, drainConfig)
     ux.action.stop()
 
-    await displayTelemetryDrain(telemetryDrain, this.heroku)
+    await displayTelemetryDrain(telemetryDrain)
   }
 }
