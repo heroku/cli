@@ -467,6 +467,27 @@ describe('Dyno', function () {
 
       expect(caught).to.equal(failure)
     })
+
+    it('propagates 409 errors without local retry (SDK owns the 409 retry loop)', async function () {
+      const failure = Object.assign(new Error('release not found yet'), {statusCode: 409})
+      runStub.rejects(failure)
+      const opts: DynoOpts = {
+        app: 'my-app',
+        command: 'bash',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+      let caught: unknown
+      try {
+        await dyno._doStart()
+      } catch (error) {
+        caught = error
+      }
+
+      expect(caught).to.equal(failure)
+      expect(runStub.calledOnce).to.equal(true)
+    })
   })
 
   describe('_ssh', function () {
