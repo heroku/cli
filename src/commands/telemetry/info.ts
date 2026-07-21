@@ -19,6 +19,6 @@ export default class Info extends Command {
     const {platform} = new HerokuSDK()
 
     const telemetryDrain = await platform.telemetryDrain.info(telemetry_drain_id)
-    await displayTelemetryDrain(telemetryDrain)
+    await displayTelemetryDrain(telemetryDrain, platform)
   }
 }

@@ -62,6 +62,6 @@ export default class Update extends Command {
     const telemetryDrain = await platform.telemetryDrain.update(telemetry_drain_id, drainConfig)
     ux.action.stop()
 
-    await displayTelemetryDrain(telemetryDrain)
+    await displayTelemetryDrain(telemetryDrain, platform)
   }
 }

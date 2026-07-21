@@ -4,6 +4,8 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
+type Platform = HerokuSDK['platform']
+
 interface TelemetryDisplayObject {
   App?: string
   Endpoint: string
@@ -13,9 +15,7 @@ interface TelemetryDisplayObject {
   Transport: string
 }
 
-export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain) {
-  const {platform} = new HerokuSDK()
-
+export async function displayTelemetryDrain(telemetryDrain: TelemetryDrain, platform: Platform) {
   hux.styledHeader(telemetryDrain.id)
 
   // Start with an empty object
