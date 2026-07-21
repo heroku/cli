@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 
@@ -38,6 +39,7 @@ export default class Run extends Command {
     const {argv, flags} = await this.parse(Run)
     const command = revertSortedArgs(process.argv, argv as string[])
     const builtCommand = await buildCommandWithLauncher(this.heroku, flags.app, command, flags['no-launcher'])
+    const sdk = new HerokuSDK({extensions: [dynoExtensions]})
     const opts = {
       app: flags.app,
       attach: true,
@@ -48,6 +50,7 @@ export default class Run extends Command {
       listen: flags.listen,
       'no-tty': flags['no-tty'],
       notify: !flags['no-notify'],
+      sdk,
       size: flags.size,
       type: flags.type,
     }
@@ -56,7 +59,7 @@ export default class Run extends Command {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
 
-    await this.heroku.get<Heroku.Account>('/account')
+    await sdk.platform.account.info()
     const dyno = new Dyno(opts)
     try {
       await dyno.start()
