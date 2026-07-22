@@ -119,15 +119,45 @@ describe('git', function () {
     expect(git.url('foo')).to.equal('https://git.heroku.com/foo.git')
   })
 
-  it('configures git credential helper globally for the Heroku Git host', async function () {
+  it('configures git credential helper globally when the key is absent', async function () {
+    // `git config --global --get` exits non-zero when the key is absent, so
+    // `exec` throws and the helper treats it as an empty existing value.
+    const err: any = new Error('not found')
+    err.code = 1
+    execFileStub.onFirstCall().rejects(err)
     execFileStub.resolves({stderr: '', stdout: ''})
+
+    await git.configureCredentialHelper()
+
+    expect(execFileStub.calledTwice).to.be.true
+    expect(execFileStub.firstCall.args).to.deep.equal(['git', ['config', '--global', '--get', 'credential.https://git.heroku.com.helper']])
+    const [cmd, args] = execFileStub.secondCall.args
+    expect(cmd).to.equal('git')
+    expect(args).to.deep.equal(['config', '--global', 'credential.https://git.heroku.com.helper', '!heroku git:credentials'])
+  })
+
+  it('overwrites the git credential helper when it is set to a different value', async function () {
+    execFileStub.onFirstCall().resolves({stderr: '', stdout: '!some-other-helper'})
+    execFileStub.resolves({stderr: '', stdout: ''})
+
+    await git.configureCredentialHelper()
+
+    expect(execFileStub.calledTwice).to.be.true
+    expect(execFileStub.firstCall.args).to.deep.equal(['git', ['config', '--global', '--get', 'credential.https://git.heroku.com.helper']])
+    const [cmd, args] = execFileStub.secondCall.args
+    expect(cmd).to.equal('git')
+    expect(args).to.deep.equal(['config', '--global', 'credential.https://git.heroku.com.helper', '!heroku git:credentials'])
+  })
+
+  it('skips the write when the git credential helper is already configured', async function () {
+    execFileStub.resolves({stderr: '', stdout: '!heroku git:credentials'})
 
     await git.configureCredentialHelper()
 
     expect(execFileStub.calledOnce).to.be.true
     const [cmd, args] = execFileStub.firstCall.args
     expect(cmd).to.equal('git')
-    expect(args).to.deep.equal(['config', '--global', 'credential.https://git.heroku.com.helper', '!heroku git:credentials'])
+    expect(args).to.deep.equal(['config', '--global', '--get', 'credential.https://git.heroku.com.helper'])
   })
 
   it('removes git credential helper from global config', async function () {
