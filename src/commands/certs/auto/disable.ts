@@ -1,5 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -16,7 +18,8 @@ export default class Disable extends Command {
   }
   static topic = 'certs'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<App> {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Disable)
     const {app, confirm} = flags
 
@@ -32,7 +35,9 @@ export default class Disable extends Command {
     await new ConfirmCommand().confirm(app, confirm, warning)
 
     ux.action.start('Disabling Automatic Certificate Management')
-    await this.heroku.delete(`/apps/${app}/acm`)
+    const disabledApp = await platform.app.disableACM(app)
     ux.action.stop()
+
+    return disabledApp
   }
 }

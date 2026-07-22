@@ -1,21 +1,31 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import {SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/certs/generate.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 
+type FakePlatform = {
+  sniEndpoint: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    sniEndpoint: {list: sinon.stub()},
+  }
+}
+
 describe('heroku certs:generate', function () {
   let promptForOwnerInfoStub: SinonStub
   let spawnOpenSSLStub: SinonStub
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    api
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [endpoint])
+    fakePlatform = buildFakePlatform()
+    fakePlatform.sniEndpoint.list.resolves([endpoint])
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
 
     promptForOwnerInfoStub = stub(Cmd.prototype, 'promptForOwnerInfo')
     promptForOwnerInfoStub.returns(Promise.resolve({}))
@@ -25,10 +35,7 @@ describe('heroku certs:generate', function () {
   })
 
   afterEach(function () {
-    promptForOwnerInfoStub.restore()
-    spawnOpenSSLStub.restore()
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('# with certificate prompts emitted if no parts of subject provided', async function () {
@@ -127,13 +134,11 @@ describe('heroku certs:generate', function () {
     expect(stdout).to.equal('')
     expect(stderr).to.equal('Your key and certificate signing request have been generated.\nSubmit the CSR in \'example.org.csr\' to your preferred certificate authority.\nWhen you\'ve received your certificate, run:\n$ heroku certs:update CERTFILE example.org.key\n')
     expect(spawnOpenSSLStub.calledWith(['req', '-new', '-newkey', 'rsa:2048', '-nodes', '-keyout', 'example.org.key', '-out', 'example.org.csr', '-subj', '/CN=example.org'])).to.be.true
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('# suggests next step should be certs:update when domain is known in ssl', async function () {
-    nock.cleanAll()
-    nock('https://api.heroku.com')
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
+    fakePlatform.sniEndpoint.list.resolves([])
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',

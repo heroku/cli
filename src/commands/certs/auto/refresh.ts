@@ -1,4 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class Refresh extends Command {
@@ -9,11 +11,14 @@ export default class Refresh extends Command {
   }
   static topic = 'certs'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<App> {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Refresh)
 
     ux.action.start('Refreshing Automatic Certificate Management')
-    await this.heroku.patch(`/apps/${flags.app}/acm`, {body: {acm_refresh: true}})
+    const refreshedApp = await platform.app.refreshACM(flags.app, {acm_refresh: true})
     ux.action.stop()
+
+    return refreshedApp
   }
 }
