@@ -42,19 +42,24 @@ export default class Add extends Command {
     const {platform} = new HerokuSDK({extensions: [sniEndpointExtensions]})
 
     ux.action.start(`Adding SSL certificate to ${color.app(app)}`)
-    const sniEndpoint = await platform.sniEndpoint.createAndAssociate(
-      app,
-      files.crt.toString(),
-      files.key.toString(),
-      {
-        resolveDomains: async (candidates: string[]) => {
-          hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
-          const {domains} = await this.selectDomains(candidates, inquirer)
-          return domains
+    let sniEndpoint: SniEndpoint
+    try {
+      sniEndpoint = await platform.sniEndpoint.createAndAssociate(
+        app,
+        files.crt.toString(),
+        files.key.toString(),
+        {
+          resolveDomains: async (candidates: string[]) => {
+            ux.action.stop()
+            hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
+            const {domains} = await this.selectDomains(candidates, inquirer)
+            return domains
+          },
         },
-      },
-    ) as SniEndpoint
-    ux.action.stop()
+      ) as SniEndpoint
+    } finally {
+      ux.action.stop()
+    }
 
     displayCertificateDetails(sniEndpoint)
     return sniEndpoint

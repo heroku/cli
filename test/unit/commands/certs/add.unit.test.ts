@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import {SinonStub} from 'sinon'
@@ -86,6 +87,50 @@ describe('heroku certs:add', function () {
     expect(stubbedSelectDomains.firstCall.args[0]).to.eql(['biz.example.com'])
     expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout).to.contain('=== Almost done! Which of these domains on this application would you like this certificate associated with?')
+  })
+
+  it('# stops the action spinner before the domain prompt renders', async function () {
+    // Stub `start` to a no-op so the only recorded `stop` calls are the ones
+    // the command makes explicitly (ux.action.start internally calls stop to
+    // clear any prior action, which would otherwise pollute the count).
+    sinon.stub(ux.action, 'start')
+    const uxActionStop = sinon.stub(ux.action, 'stop')
+    let stopCallCountWhenPrompted = -1
+    stubbedSelectDomains.callsFake(async () => {
+      stopCallCountWhenPrompted = uxActionStop.callCount
+      return stubbedSelectDomainsReturnValue
+    })
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _crt, _key, opts) => {
+      await opts.resolveDomains(['biz.example.com'])
+      return endpointStables
+    })
+
+    await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+      'key_file',
+    ])
+
+    expect(stubbedSelectDomains.calledOnce).to.equal(true)
+    expect(uxActionStop.calledBefore(stubbedSelectDomains)).to.equal(true)
+    expect(stopCallCountWhenPrompted).to.be.at.least(1)
+  })
+
+  it('# stops the action spinner even when the SDK resolves without invoking the callback', async function () {
+    sinon.stub(ux.action, 'start')
+    const uxActionStop = sinon.stub(ux.action, 'stop')
+    fakePlatform.sniEndpoint.createAndAssociate.resolves(endpointStables)
+
+    await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+      'key_file',
+    ])
+
+    expect(stubbedSelectDomains.called).to.equal(false)
+    expect(uxActionStop.called).to.equal(true)
   })
 
   it('# does not prompt when the SDK resolves without invoking the callback', async function () {
