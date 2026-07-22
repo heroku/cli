@@ -54,7 +54,7 @@ describe('tableUtils', function () {
     context('sort flag', function () {
       it('adds a sort option for a valid column key', function () {
         const result = constructSortFilterTableOptions({sort: 'name'}, tableColumns)
-        expect(result).to.deep.include({sort: {name: 'asc'}})
+        expect(result).to.deep.include({sort: 'name'})
       })
 
       it('throws when sort key is not a valid column', function () {
@@ -69,7 +69,7 @@ describe('tableUtils', function () {
     it('applies both filter and sort when both flags are valid', function () {
       const result = constructSortFilterTableOptions({filter: 'status=active', sort: 'name'}, tableColumns)
       expect(result).to.have.property('filter').that.is.a('function')
-      expect(result).to.deep.include({sort: {name: 'asc'}})
+      expect(result).to.deep.include({sort: 'name'})
     })
   })
 

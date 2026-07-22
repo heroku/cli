@@ -1,11 +1,11 @@
 import {APIClient} from '@heroku-cli/command'
 import {HTTP} from '@heroku/http-call'
-import {Command, Interfaces} from '@oclif/core'
+import {Interfaces} from '@oclif/core'
 import fs from 'fs-extra'
 import path from 'node:path'
 
 import HerokulyticsConfig from './herokulytics-config.js'
-import {telemetryDebug} from './telemetry-utils.js'
+import {HerokulyticsData, telemetryDebug} from './telemetry-utils.js'
 
 export interface AnalyticsInterface {
   event: string;
@@ -25,9 +25,13 @@ export interface AnalyticsInterface {
   source: string;
 }
 
+// The client only reads {id, plugin} off Command, and every producer of
+// RecordOpts (the prerun hook, the worker) builds exactly this shape.
+// Widening to oclif's Command.Class hid a divergence risk without buying
+// any real type information.
 export interface RecordOpts {
   argv: string[];
-  Command: Command.Class;
+  Command: HerokulyticsData['Command'];
 }
 
 export default class BackboardHerokulyticsClient {

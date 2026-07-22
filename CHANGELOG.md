@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.8.1](https://github.com/heroku/cli/compare/v11.8.0...v11.8.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* consolidate pg_stat_statements handling ([#3799](https://github.com/heroku/cli/issues/3799)) ([e36b494](https://github.com/heroku/cli/commit/e36b49472b67f5fdcaf5332764d996fe1994ecfd))
+* keep process type resolvable with heroku run --exit-code ([#3804](https://github.com/heroku/cli/issues/3804)) ([6383b03](https://github.com/heroku/cli/commit/6383b03e21b4bb088bc39f13fafb8a3c680f53a2))
+* migration method selection navigation bug (W-23306091) ([#3802](https://github.com/heroku/cli/issues/3802)) ([8562909](https://github.com/heroku/cli/commit/85629096f63f5e646975d90475ad18e36c8fb53e))
+* restore Sentry release tag from spawned telemetry worker ([#3801](https://github.com/heroku/cli/issues/3801)) ([407a7e0](https://github.com/heroku/cli/commit/407a7e04901844e91b91aeeea70fbdd5085304a5))
+
+
+### Code Refactoring
+
+* trim exit-code command comment ([7a2cfed](https://github.com/heroku/cli/commit/7a2cfed35c292ccd14a476c88c90949ec1c2c798))
+
+## [11.8.0](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0) (2026-07-01)
+
+
+### Features
+
+* 'data:pg:migrate' interactive method selection (W-22585064) ([#3791](https://github.com/heroku/cli/issues/3791)) ([914fc06](https://github.com/heroku/cli/commit/914fc06e1dd76cd687ffa3b0973dc0356814a4ae))
+* skip caching token in keychain mode for accounts cache ([#3792](https://github.com/heroku/cli/issues/3792)) ([5d7d95b](https://github.com/heroku/cli/commit/5d7d95bafbcf088c9818690df769d3b8451be369))
+
+
+### Bug Fixes
+
+* remove keychain accounts cache on logout ([#3797](https://github.com/heroku/cli/issues/3797)) ([70cbd44](https://github.com/heroku/cli/commit/70cbd44fcac9b7d3cd21d8d62b713e63e2030924))
+* update CLI to work with changes to heroku-cli-util table function ([#3796](https://github.com/heroku/cli/issues/3796)) ([a523792](https://github.com/heroku/cli/commit/a523792944869e4ea9fe217c080619e1819b43ae))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump @heroku/mcp-server to 1.2.5 and update undici ([#3794](https://github.com/heroku/cli/issues/3794)) ([f5dab06](https://github.com/heroku/cli/commit/f5dab067f0b760a4efd9deee9760b6075a7d913e))
+* **deps:** bump @heroku/mcp-server to 1.2.5, update undici ([09ca009](https://github.com/heroku/cli/commit/09ca0096ae32a27809d688e5e783466fe27d2401))
+
 ## [11.7.1](https://github.com/heroku/cli/compare/v11.7.0...v11.7.1) (2026-06-24)
 
 

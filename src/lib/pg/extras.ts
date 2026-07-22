@@ -6,21 +6,24 @@ interface Plan {
   plan: Heroku.AddOn['plan']
 }
 
-export async function ensurePGStatStatement(db: pg.ConnectionDetails): Promise<void> {
+export async function ensurePGStatStatement(db: pg.ConnectionDetails): Promise<string> {
   const query = `
-SELECT exists(
-  SELECT 1 FROM pg_extension e LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
-  WHERE e.extname='pg_stat_statements' AND n.nspname IN ('public', 'heroku_ext')
-) AS available`
+SELECT quote_ident(n.nspname)
+FROM pg_extension e
+  JOIN pg_namespace n ON n.oid = e.extnamespace
+WHERE e.extname = 'pg_stat_statements'`
   const psqlService = new utils.pg.PsqlService(db)
-  const output = await psqlService.execQuery(query)
+  const output = await psqlService.execQuery(query, ['-t', '-q'])
+  const schema = output.split('\n')[0].trim()
 
-  if (!output.includes('t')) {
-    ux.error(`pg_stat_statements extension need to be installed in the public schema first.
+  if (!schema) {
+    ux.error(`The pg_stat_statements extension needs to be installed first.
 You can install it by running:
 
     CREATE EXTENSION pg_stat_statements;`, {exit: 1})
   }
+
+  return schema
 }
 
 export async function ensureEssentialTierPlan(db: pg.ConnectionDetails): Promise<void> {

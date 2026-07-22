@@ -9,7 +9,7 @@ import {nls} from '../../nls.js'
 const heredoc = tsheredoc.default
 
 export async function generateCallsQuery(db: pg.ConnectionDetails, flags: {truncate?: boolean}): Promise<string> {
-  await ensurePGStatStatement(db)
+  const schema = await ensurePGStatStatement(db)
 
   const truncatedQueryString = flags.truncate
     ? 'CASE WHEN length(query) <= 40 THEN query ELSE substr(query, 0, 39) || \'…\' END'
@@ -28,7 +28,7 @@ to_char((${totalExecTimeField}/sum(${totalExecTimeField}) OVER()) * 100, 'FM90D0
 to_char(calls, 'FM999G999G999G990') AS ncalls,
 interval '1 millisecond' * (${blkReadField} + ${blkWriteField}) AS sync_io_time,
 ${truncatedQueryString} AS query
-FROM pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
+FROM ${schema}.pg_stat_statements WHERE userid = (SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1)
 ORDER BY calls DESC
 LIMIT 10
 `.trim()

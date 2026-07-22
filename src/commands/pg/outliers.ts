@@ -3,6 +3,7 @@ import {utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {ensurePGStatStatement} from '../../lib/pg/extras.js'
 import {fetchVersion} from '../../lib/pg/psql.js'
 import {nls} from '../../nls.js'
 
@@ -23,26 +24,7 @@ export default class Outliers extends Command {
   static topic = 'pg'
   private psqlService: InstanceType<typeof utils.pg.PsqlService> | undefined
 
-  protected async ensurePGStatStatement() {
-    const query = heredoc`
-      SELECT exists(
-        SELECT 1
-        FROM pg_extension e
-          LEFT JOIN pg_namespace n ON n.oid = e.extnamespace
-        WHERE e.extname = 'pg_stat_statements' AND n.nspname IN ('public', 'heroku_ext')
-      ) AS available;
-    `
-    const output = await this.psqlService!.execQuery(query)
-
-    if (!output.includes('t')) {
-      ux.error(heredoc`
-        pg_stat_statements extension need to be installed first.
-        You can install it by running: CREATE EXTENSION pg_stat_statements WITH SCHEMA heroku_ext;
-      `)
-    }
-  }
-
-  protected outliersQuery(version: string | undefined, limit: number, truncate: boolean) {
+  protected outliersQuery(version: string | undefined, limit: number, truncate: boolean, schema: string) {
     const truncatedQueryString = truncate
       ? heredoc`
       CASE WHEN length(query) <= 40 THEN query ELSE substr(query, 0, 39) || '…' END
@@ -69,7 +51,7 @@ export default class Outliers extends Command {
           to_char(calls, 'FM999G999G999G990') AS ncalls,
           interval '1 millisecond' * (${blkReadTimeField} + ${blkWriteTimeField}) AS sync_io_time,
           ${truncatedQueryString} AS query
-        FROM pg_stat_statements
+        FROM ${schema}.pg_stat_statements
         WHERE userid = (
           SELECT usesysid FROM pg_user WHERE usename = current_user LIMIT 1
         )
@@ -86,12 +68,12 @@ export default class Outliers extends Command {
     const db = await dbResolver.getDatabase(app, args.database)
     this.psqlService = new utils.pg.PsqlService(db)
     const version = await fetchVersion(db)
-    await this.ensurePGStatStatement()
+    const schema = await ensurePGStatStatement(db)
 
     if (reset) {
       const resetFn = utils.pg.isEssentialDatabase(db.attachment!.addon) || utils.pg.isAdvancedDatabase(db.attachment!.addon)
         ? '_heroku.pg_stat_statements_reset()'
-        : 'pg_stat_statements_reset()'
+        : `${schema}.pg_stat_statements_reset()`
       await this.psqlService.execQuery(`SELECT ${resetFn};`)
       return
     }
@@ -105,7 +87,7 @@ export default class Outliers extends Command {
       }
     }
 
-    const query = this.outliersQuery(version, limit, truncate)
+    const query = this.outliersQuery(version, limit, truncate, schema)
     const output = await this.psqlService.execQuery(query)
     ux.stdout(output)
   }

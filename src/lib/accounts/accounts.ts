@@ -16,7 +16,7 @@ export interface AccountEntry {
 }
 
 export interface IAccountsWrapper {
-  add(name: string, username: string, password: string): void
+  add(name: string, username: string, password?: string): void
   current(heroku: APIClient): Promise<null | string>
   currentNetrc(): Promise<null | string>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
@@ -29,11 +29,14 @@ export interface IAccountsWrapper {
 export class AccountsWrapper implements IAccountsWrapper {
   private netrc: any
 
-  add(name: string, username: string, password: string): void {
+  add(name: string, username: string, password?: string): void {
     fs.mkdirSync(this.accountsDir(), {recursive: true})
 
-    // eslint-disable-next-line perfectionist/sort-objects
-    this.writeAccountFile(name, {username, password})
+    const content: Record<string, string> = password === undefined
+      ? {username}
+      : {username, password} // eslint-disable-line perfectionist/sort-objects
+
+    this.writeAccountFile(name, content)
   }
 
   async current(heroku: APIClient): Promise<null | string> {
@@ -92,12 +95,17 @@ export class AccountsWrapper implements IAccountsWrapper {
 
     if (account.name) {
       if (config.credentialStore) {
+        // Keychain mode: only update login state, skip netrc
         const email = this.getAliasEmail(account.name)
-        if (email) {
-          await this.writeLoginState(dataDir, email)
+        if (!email) {
+          throw new Error(`We can't find the alias file for ${account.name}.`)
         }
+
+        await this.writeLoginState(dataDir, email)
+        return
       }
 
+      // Netrc mode: update both login state and netrc files
       const netrcInstance = await this.initNetrc()
       let current
       try {
