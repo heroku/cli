@@ -1,6 +1,15 @@
+// shouldHandleArgs(commandText, command, getFakePlatform, {args?, flags?, stderr?, stdout?})
+//
+// `getFakePlatform` is a getter the caller supplies that returns the fake platform its own
+// `beforeEach` already built and wired onto `HerokuSDK.prototype` (via
+// `sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)`). This harness only
+// configures the command-specific stubs (`sniEndpoint.list`, `domain.info`, and — when present —
+// `sniEndpoint.info`) inside each `it` to reproduce the scenario under test. It stubs nothing on
+// `HerokuSDK.prototype` itself.
+import type {SinonStub} from 'sinon'
+
 import {expectOutput, type GenericCmd, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
@@ -17,10 +26,15 @@ import {
 
 const heredoc = tsheredoc.default
 
+export type FakePlatform = {
+  domain: {info: SinonStub},
+  sniEndpoint: {info?: SinonStub, list: SinonStub},
+}
+
 export const shouldHandleArgs = (
   commandText: string,
   command: GenericCmd,
-  callback: (err: Error | null, path: string, endpoint: Partial<SniEndpoint>) => nock.Scope,
+  getFakePlatform: () => FakePlatform,
   options: {
     args?: string[],
     flags?: {[key: string]: string},
@@ -40,15 +54,9 @@ export const shouldHandleArgs = (
   const additionalArgs: string[] = options.args || []
 
   describe(`${commandText}`, function () {
-    beforeEach(function () {
-      nock.cleanAll()
-    })
-
     it('allows an --endpoint to be specified using --name', async function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [endpoint])
-      callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
+      const fakePlatform = getFakePlatform()
+      fakePlatform.sniEndpoint.list.resolves([endpoint])
       const {stderr, stdout} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
@@ -59,14 +67,10 @@ export const shouldHandleArgs = (
     })
 
     it('errors out for --endpoint when there are multiple', async function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [endpoint, endpointCname])
-        .get('/apps/example/domains/456789ab-cdef-0123-4567-89abcdef0123')
-        .reply(200, endpointDomain)
-        .get('/apps/example/domains/01234567-89ab-cdef-0123-456789abcdef')
-        .reply(200, endpointCnameDomain)
-      callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
+      const fakePlatform = getFakePlatform()
+      fakePlatform.sniEndpoint.list.resolves([endpoint, endpointCname])
+      fakePlatform.domain.info.withArgs('example', '456789ab-cdef-0123-4567-89abcdef0123').resolves(endpointDomain)
+      fakePlatform.domain.info.withArgs('example', '01234567-89ab-cdef-0123-456789abcdef').resolves(endpointCnameDomain)
       const {error} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
@@ -77,12 +81,9 @@ export const shouldHandleArgs = (
     })
 
     it('allows an endpoint to be specified using --endpoint', async function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [endpoint])
-        .get('/apps/example/domains/456789ab-cdef-0123-4567-89abcdef0123')
-        .reply(200, endpointDomain)
-      callback(null, '/apps/example/sni-endpoints/tokyo-1050', endpoint)
+      const fakePlatform = getFakePlatform()
+      fakePlatform.sniEndpoint.list.resolves([endpoint])
+      fakePlatform.domain.info.withArgs('example', '456789ab-cdef-0123-4567-89abcdef0123').resolves(endpointDomain)
       const {stderr, stdout} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
@@ -93,11 +94,9 @@ export const shouldHandleArgs = (
     })
 
     it('errors out if there is no match for --endpoint', async function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [endpoint2])
-        .get('/apps/example/domains/89abcdef-0123-4567-89ab-cdef01234567')
-        .reply(200, endpoint2Domain)
+      const fakePlatform = getFakePlatform()
+      fakePlatform.sniEndpoint.list.resolves([endpoint2])
+      fakePlatform.domain.info.withArgs('example', '89abcdef-0123-4567-89ab-cdef01234567').resolves(endpoint2Domain)
       const {error} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',
@@ -108,9 +107,8 @@ export const shouldHandleArgs = (
     })
 
     it('errors out if more than one matches --name', async function () {
-      nock('https://api.heroku.com')
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [endpoint, endpointHeroku])
+      const fakePlatform = getFakePlatform()
+      fakePlatform.sniEndpoint.list.resolves([endpoint, endpointHeroku])
       const {error} = await runCommand(command, [...additionalArgs,
         '--app',
         'example',

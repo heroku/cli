@@ -1,5 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {SniEndpoint} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -19,10 +21,11 @@ export default class Remove extends Command {
   }
   static topic = 'certs'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<SniEndpoint> {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Remove)
     const {app, confirm} = flags
-    const sniEndpoint = await getEndpoint(flags, this.heroku)
+    const sniEndpoint = await getEndpoint(flags, platform)
     await new ConfirmCommand().confirm(
       app,
       confirm,
@@ -32,10 +35,9 @@ export default class Remove extends Command {
       `,
     )
     ux.action.start(`Removing SSL certificate ${sniEndpoint.name} from ${color.app(app)}`)
-    await this.heroku.request(
-      `/apps/${app}/sni-endpoints/${sniEndpoint.name}`,
-      {method: 'DELETE'},
-    )
+    const deletedEndpoint = await platform.sniEndpoint.delete(app, sniEndpoint.name)
     ux.action.stop()
+
+    return deletedEndpoint
   }
 }

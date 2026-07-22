@@ -1,27 +1,27 @@
-import {APIClient} from '@heroku-cli/command'
-import {HTTP} from '@heroku/http-call'
+import {HerokuSDK} from '@heroku/sdk'
 
 import {Domain} from '../types/domain.js'
-import {SniEndpoint} from '../types/sni-endpoint.js'
 
-export default async function getEndpoint(flags: {app: string; endpoint: string | undefined; name: string | undefined}, heroku: APIClient) {
+type Platform = HerokuSDK['platform']
+
+export default async function getEndpoint(flags: {app: string; endpoint: string | undefined; name: string | undefined}, platform: Platform) {
   if (flags.endpoint && flags.name) {
     throw new Error('Specified both --name and --endpoint, please use just one')
   }
 
-  let {body: sniEndpoints} = await heroku.get<SniEndpoint[]>(`/apps/${flags.app}/sni-endpoints`)
+  let sniEndpoints = await platform.sniEndpoint.list(flags.app)
 
   if (sniEndpoints.length === 0) {
     throw new Error(`${flags.app} has no SSL certificates`)
   }
 
   if (flags.endpoint) {
-    const promises: Promise<HTTP<Domain>>[] = []
+    const promises: Promise<Domain>[] = []
     for (const endpoint of sniEndpoints) {
-      for (const domain of endpoint.domains) promises.push(heroku.get<Domain>(`/apps/${flags.app}/domains/${domain}`))
+      for (const domain of endpoint.domains) promises.push(platform.domain.info(flags.app, domain) as Promise<Domain>)
     }
 
-    const domains = (await Promise.all(promises)).map(({body: domain}) => domain)
+    const domains = await Promise.all(promises)
 
     sniEndpoints = sniEndpoints.filter(endpoint =>
       // This was modified from `endpoint.cname === flags.endpoint` because `cname` doesn't exist anymore in the SniEndpoint serialization.
