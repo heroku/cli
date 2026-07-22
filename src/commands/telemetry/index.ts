@@ -1,8 +1,9 @@
+import type {TelemetryDrain} from '@heroku/types/3.sdk'
+
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
-
-import {TelemetryDrains} from '../../lib/types/telemetry.js'
 
 export default class Index extends Command {
   static description = 'list telemetry drains'
@@ -13,7 +14,7 @@ export default class Index extends Command {
   }
   static topic = 'telemetry'
 
-  protected display(telemetryDrains: TelemetryDrains, owner: string | undefined) {
+  protected display(telemetryDrains: TelemetryDrain[], owner: string | undefined) {
     if (telemetryDrains.length === 0) {
       ux.stdout(`There are no telemetry drains in ${owner}`)
     } else {
@@ -22,9 +23,9 @@ export default class Index extends Command {
       hux.table(
         telemetryDrains,
         {
-          ID: {get: telemetryDrain => telemetryDrain.id},
-          Signals: {get: telemetryDrain => telemetryDrain.signals},
-          Endpoint: {get: telemetryDrain => telemetryDrain.exporter.endpoint},
+          ID: {get: (telemetryDrain: any) => telemetryDrain.id},
+          Signals: {get: (telemetryDrain: any) => telemetryDrain.signals},
+          Endpoint: {get: (telemetryDrain: any) => telemetryDrain.exporter.endpoint},
         },
       )
       /* eslint-enable perfectionist/sort-objects */
@@ -34,21 +35,12 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
     const {app, space} = flags
-    let drains: TelemetryDrains = []
+    const {platform} = new HerokuSDK()
+    let drains: TelemetryDrain[] = []
     if (app) {
-      const {body: appTelemetryDrains} =  await this.heroku.get<TelemetryDrains>(`/apps/${app}/telemetry-drains`, {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      })
-      drains = appTelemetryDrains
+      drains = await platform.telemetryDrain.listByApp(app)
     } else if (space) {
-      const {body: spaceTelemetryDrains} =  await this.heroku.get<TelemetryDrains>(`/spaces/${space}/telemetry-drains`, {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      })
-      drains = spaceTelemetryDrains
+      drains = await platform.telemetryDrain.listBySpace(space)
     }
 
     this.display(drains, app || space)

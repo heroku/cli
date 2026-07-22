@@ -1,6 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/telemetry/add.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
@@ -16,15 +17,32 @@ const splunkDrainAppId = splunkAppTelemetryDrain.owner.id
 const spaceId = spaceTelemetryDrain1.owner.id
 const testEndpoint = appTelemetryDrain1.exporter.endpoint
 
+type FakePlatform = {
+  app: {info: SinonStub}
+  space: {info: SinonStub}
+  telemetryDrain: {create: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: stub()},
+    space: {info: stub()},
+    telemetryDrain: {create: stub()},
+  }
+}
+
 describe('telemetry:add', function () {
   let space: SpaceWithOutboundIps
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     space = spaceFixtures.spaces['non-shield-space']
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    return nock.cleanAll()
+    restore()
   })
 
   it('returns an error if an app, remote, or space is not set', async function () {
@@ -56,12 +74,8 @@ describe('telemetry:add', function () {
   })
 
   it('successfully creates a telemetry drain for an app', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appId}`)
-      .reply(200, firApp)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .post('/telemetry-drains')
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.app.info.resolves(firApp)
+    fakePlatform.telemetryDrain.create.resolves(spaceTelemetryDrain1)
 
     const {stdout} = await runCommand(Cmd, [
       testEndpoint,
@@ -74,15 +88,12 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout, `successfully added drain ${testEndpoint}`)
+    expect(fakePlatform.telemetryDrain.create.calledOnce).to.equal(true)
   })
 
   it('successfully creates a telemetry drain for a space', async function () {
-    nock('https://api.heroku.com')
-      .get(`/spaces/${spaceId}`)
-      .reply(200, space)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .post('/telemetry-drains')
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.space.info.resolves(space)
+    fakePlatform.telemetryDrain.create.resolves(spaceTelemetryDrain1)
 
     const {stdout} = await runCommand(Cmd, [
       testEndpoint,
@@ -95,12 +106,11 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout, `successfully added drain ${testEndpoint}`)
+    expect(fakePlatform.telemetryDrain.create.calledOnce).to.equal(true)
   })
 
   it('does not accept options other than logs, metrics, traces, or all for the --signal flag', async function () {
-    nock('https://api.heroku.com')
-      .get(`/spaces/${spaceId}`)
-      .reply(200, space)
+    fakePlatform.space.info.resolves(space)
     try {
       await runCommand(Cmd, [
         testEndpoint,
@@ -118,9 +128,7 @@ describe('telemetry:add', function () {
   })
 
   it('returns an error when the --signal flag is set to "all" in combination with other options', async function () {
-    nock('https://api.heroku.com')
-      .get(`/spaces/${spaceId}`)
-      .reply(200, space)
+    fakePlatform.space.info.resolves(space)
     try {
       await runCommand(Cmd, [
         testEndpoint,
@@ -138,23 +146,8 @@ describe('telemetry:add', function () {
   })
 
   it('successfully creates a telemetry drain for an app with grpc', async function () {
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${grpcDrainAppId}`)
-      .reply(200, firApp)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .post('/telemetry-drains', {
-        exporter: {
-          endpoint: testEndpoint,
-          headers: {},
-          type: 'otlp',
-        },
-        owner: {
-          id: grpcDrainAppId,
-          type: 'app',
-        },
-        signals: ['traces', 'metrics', 'logs'],
-      })
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.app.info.resolves(firApp)
+    fakePlatform.telemetryDrain.create.resolves(spaceTelemetryDrain1)
 
     const {stdout} = await runCommand(Cmd, [
       testEndpoint,
@@ -165,27 +158,13 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout, `successfully added drain ${testEndpoint}`)
+    expect(fakePlatform.telemetryDrain.create.calledOnce).to.equal(true)
   })
 
   it('successfully creates a telemetry drain for an app with http transport (default)', async function () {
     const httpApp = {...firApp, id: appId}
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appId}`)
-      .reply(200, httpApp)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .post('/telemetry-drains', {
-        exporter: {
-          endpoint: testEndpoint,
-          headers: {},
-          type: 'otlphttp',
-        },
-        owner: {
-          id: appId,
-          type: 'app',
-        },
-        signals: ['traces', 'metrics', 'logs'],
-      })
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.app.info.resolves(httpApp)
+    fakePlatform.telemetryDrain.create.resolves(spaceTelemetryDrain1)
 
     const {stdout} = await runCommand(Cmd, [
       testEndpoint,
@@ -196,6 +175,7 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout, `successfully added drain ${testEndpoint}`)
+    expect(fakePlatform.telemetryDrain.create.calledOnce).to.equal(true)
   })
 
   it('returns an error for invalid transport option', async function () {
@@ -215,23 +195,8 @@ describe('telemetry:add', function () {
 
   it('uses default http transport when no transport is specified', async function () {
     const defaultApp = {...firApp, id: appId}
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appId}`)
-      .reply(200, defaultApp)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .post('/telemetry-drains', {
-        exporter: {
-          endpoint: testEndpoint,
-          headers: {},
-          type: 'otlphttp',
-        },
-        owner: {
-          id: appId,
-          type: 'app',
-        },
-        signals: ['traces', 'metrics', 'logs'],
-      })
-      .reply(200, spaceTelemetryDrain1)
+    fakePlatform.app.info.resolves(defaultApp)
+    fakePlatform.telemetryDrain.create.resolves(spaceTelemetryDrain1)
 
     const {stdout} = await runCommand(Cmd, [
       testEndpoint,
@@ -240,30 +205,14 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout, `successfully added drain ${testEndpoint}`)
+    expect(fakePlatform.telemetryDrain.create.calledOnce).to.equal(true)
   })
 
   it('successfully creates a telemetry drain splunk transport', async function () {
     const splunkEndpoint = splunkAppTelemetryDrain.exporter.endpoint
     const splunkApp = {...firApp, id: splunkDrainAppId}
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${splunkDrainAppId}`)
-      .reply(200, splunkApp)
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .post('/telemetry-drains', {
-        exporter: {
-          endpoint: splunkEndpoint,
-          headers: {
-            Authorization: 'Splunk your-hec-token',
-          },
-          type: 'splunk',
-        },
-        owner: {
-          id: splunkDrainAppId,
-          type: 'app',
-        },
-        signals: ['traces', 'metrics', 'logs'],
-      })
-      .reply(200, splunkAppTelemetryDrain)
+    fakePlatform.app.info.resolves(splunkApp)
+    fakePlatform.telemetryDrain.create.resolves(splunkAppTelemetryDrain)
 
     const {stdout} = await runCommand(Cmd, [
       splunkEndpoint,
@@ -276,5 +225,6 @@ describe('telemetry:add', function () {
     ])
 
     expectOutput(stdout, `successfully added drain ${splunkEndpoint}`)
+    expect(fakePlatform.telemetryDrain.create.calledOnce).to.equal(true)
   })
 })

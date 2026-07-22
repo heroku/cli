@@ -2,11 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {APIClient, type IOptions} from '@heroku-cli/command'
 import {type Notification, notify} from '@heroku-cli/notifications'
-import {Dyno as APIDyno} from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HTTP} from '@heroku/http-call'
 import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
+import {Dyno as SDKDyno} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 import {spawn} from 'node:child_process'
@@ -33,6 +32,7 @@ export interface DynoOpts {
   'no-tty'?: boolean
   notificationSubtitle?: string
   notify?: boolean
+  sdk?: HerokuSDK<readonly [typeof dynoExtensions]>
   showStatus?: boolean
   size?: string
   type?: string
@@ -45,13 +45,14 @@ interface HerokuApiClientRun extends APIClient {
 }
 
 export default class Dyno extends Duplex {
-  dyno?: APIDyno
+  dyno?: Partial<SDKDyno>
   heroku: HerokuApiClientRun
   input: any
   legacyUri?: {[key: string]: any}
   p: any
   reject?: (reason?: any) => void
   resolve?: (value?: unknown) => void
+  sdk: HerokuSDK<readonly [typeof dynoExtensions]>
   unpipeStdin: any
   uri?: URL
   useSSH: any
@@ -63,6 +64,7 @@ export default class Dyno extends Duplex {
     this.cork()
     this.opts = opts
     this.heroku = opts.heroku
+    this.sdk = opts.sdk ?? new HerokuSDK({extensions: [dynoExtensions]})
 
     if (this.opts.showStatus === undefined) {
       this.opts.showStatus = true
@@ -124,25 +126,18 @@ export default class Dyno extends Duplex {
     })
   }
 
-  async _doStart(retries = 2): Promise<HTTP<unknown> | undefined> {
-    const command = this.opts['exit-code'] ? `${this.opts.command}; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
-
+  async _doStart(): Promise<void> {
     try {
-      const dyno = await this.heroku.post(this.opts.dyno ? `/apps/${this.opts.app}/dynos/${this.opts.dyno}` : `/apps/${this.opts.app}/dynos`, {
-        body: {
-          attach: this.opts.attach,
-          command,
-          env: this._env(),
-          force_no_tty: this.opts['no-tty'],
-          size: this.opts.size,
-          type: this.opts.type,
-        },
-        headers: {
-          Accept: this.opts.dyno ? 'application/vnd.heroku+json; version=3.run-inside' : 'application/vnd.heroku+json; version=3',
-        },
+      const dyno = await this.sdk.platform.dyno.run(this.opts.app, this.opts.command, {
+        attach: this.opts.attach,
+        dyno: this.opts.dyno,
+        env: this._env(),
+        exitCode: this.opts['exit-code'],
+        forceNoTTY: this.opts['no-tty'],
+        size: this.opts.size,
+        type: this.opts.type,
       })
-      // @ts-ignore
-      this.dyno = dyno.body
+      this.dyno = dyno
 
       // Show status after dyno is created (after any 2FA prompt)
       if (this.opts.showStatus) {
@@ -150,9 +145,7 @@ export default class Dyno extends Duplex {
       }
 
       if (this.opts.attach || this.opts.dyno) {
-        // @ts-ignore
         if (this.dyno.name && this.opts.dyno === undefined) {
-          // @ts-ignore
           this.opts.dyno = this.dyno.name
         }
 
@@ -160,18 +153,6 @@ export default class Dyno extends Duplex {
       } else if (this.opts.showStatus) {
         ux.action.stop(this._status('done'))
       }
-    } catch (error: any) {
-      // Currently the runtime API sends back a 409 in the event the
-      // release isn't found yet. API just forwards this response back to
-      // the client, so we'll need to retry these. This usually
-      // happens when you create an app and immediately try to run a
-      // one-off dyno. No pause between attempts since this is
-      // typically a very short-lived condition.
-      if (error.statusCode === 409 && retries > 0) {
-        return this._doStart(retries - 1)
-      }
-
-      throw error
     } finally {
       ux.action.stop()
     }
@@ -449,17 +430,17 @@ export default class Dyno extends Duplex {
     // (`down` → `idle` → `starting`) was effectively uncapped. The
     // single shared budget here trades that for a hard ceiling;
     // 60s is comfortably above typical shielded-space provisioning.
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = this.sdk
     const dyno = await platform.dyno.waitForInfo(this.opts.app, this.opts.dyno!, {
       attempts: 60,
       onPoll: polled => {
-        this.dyno = polled as APIDyno
+        this.dyno = polled
         if (this.opts.showStatus) {
           ux.action.status = this._status(polled.state)
         }
       },
       states: ['starting', 'up'],
-    }) as APIDyno
+    })
     // `this.dyno` was already updated by the final `onPoll` (the
     // helper fires onPoll before the state check returns), but the
     // helper's return value is the canonical reference; assign it

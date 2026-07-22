@@ -1,9 +1,8 @@
-
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {telemetryDrainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import {TelemetryDrain} from '../../lib/types/telemetry.js'
 
 const heredoc = tsheredoc.default
 
@@ -18,16 +17,8 @@ export default class Remove extends Command {
   }
   static topic = 'telemetry'
 
-  protected async removeDrain(telemetry_drain_id: string) {
-    const {body: telemetryDrain} = await this.heroku.delete<TelemetryDrain>(`/telemetry-drains/${telemetry_drain_id}`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
-    return telemetryDrain
-  }
-
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK({extensions: [telemetryDrainExtensions]})
     const {args, flags} = await this.parse(Remove)
     const {app, space} = flags
     const {telemetry_drain_id} = args
@@ -40,29 +31,13 @@ export default class Remove extends Command {
 
     if (telemetry_drain_id) {
       ux.action.start(`Removing telemetry drain ${telemetry_drain_id}`)
-      await this.removeDrain(telemetry_drain_id)
+      await platform.telemetryDrain.delete(telemetry_drain_id)
     } else if (app) {
       ux.action.start(`Removing all telemetry drains from app ${app}`)
-      const {body: telemetryDrains} = await this.heroku.get<TelemetryDrain[]>(`/apps/${app}/telemetry-drains`, {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      })
-
-      for (const telemetryDrain of telemetryDrains) {
-        await this.removeDrain(telemetryDrain.id)
-      }
+      await platform.telemetryDrain.removeDrains({app})
     } else if (space) {
       ux.action.start(`Removing all telemetry drains from space ${space}`)
-      const {body: telemetryDrains} = await this.heroku.get<TelemetryDrain[]>(`/spaces/${space}/telemetry-drains`, {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      })
-
-      for (const telemetryDrain of telemetryDrains) {
-        await this.removeDrain(telemetryDrain.id)
-      }
+      await platform.telemetryDrain.removeDrains({space})
     }
 
     ux.action.stop()
