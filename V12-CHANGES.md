@@ -2,7 +2,7 @@
 
 ## Domains commands
 
-- `domains:wait` now shows a single spinner for multiple pending domains: `Waiting for all pending domains... done`
+- `domains:wait` now shows a single spinner for multiple pending domains: `Waiting for all pending domains for app ${app}... done`
 - `domains:add --wait` no longer shows `Waiting for ${hostname)... done`
 
 ## Run commands

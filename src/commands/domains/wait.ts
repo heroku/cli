@@ -19,7 +19,7 @@ export default class DomainsWait extends Command {
     const {args, flags} = await this.parse(DomainsWait)
     const {platform} = new HerokuSDK({extensions: [domainExtensions]})
 
-    const target = args.hostname ? color.name(args.hostname) : 'all pending domains'
+    const target = args.hostname ? color.name(args.hostname) : `all pending domains for app ${flags.app}`
 
     ux.action.start(`Waiting for ${target}`)
     await platform.domain.wait(flags.app, {hostname: args.hostname})
