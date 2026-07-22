@@ -1,6 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/update.js'
@@ -8,20 +9,34 @@ import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  app: {info: SinonStub}
+  telemetryDrain: {update: SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: stub()},
+    telemetryDrain: {update: stub()},
+  }
+}
+
 describe('telemetry:update', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
   afterEach(function () {
-    return nock.cleanAll()
+    restore()
   })
 
   it('updates a telemetry drain with one field', async function () {
     const updatedAppTelemetryDrain = {...appTelemetryDrain1, signals: ['logs']}
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .patch(`/telemetry-drains/${appTelemetryDrain1.id}`, {signals: ['logs']})
-      .reply(200, updatedAppTelemetryDrain)
-
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appTelemetryDrain1.owner.id}`)
-      .reply(200, {id: appTelemetryDrain1.owner.id, name: 'myapp'})
+    fakePlatform.telemetryDrain.update.resolves(updatedAppTelemetryDrain)
+    fakePlatform.app.info.resolves({id: appTelemetryDrain1.owner.id, name: 'myapp'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       appTelemetryDrain1.id,
@@ -54,19 +69,8 @@ describe('telemetry:update', function () {
       },
       signals: ['logs'],
     }
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .patch(`/telemetry-drains/${appTelemetryDrain1.id}`, {
-        exporter: {
-          endpoint: 'https://api-new.honeycomb.io/',
-          type: 'otlp',
-        },
-        signals: ['logs'],
-      })
-      .reply(200, updatedAppTelemetryDrain)
-
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get(`/apps/${appTelemetryDrain1.owner.id}`)
-      .reply(200, {id: appTelemetryDrain1.owner.id, name: 'myapp'})
+    fakePlatform.telemetryDrain.update.resolves(updatedAppTelemetryDrain)
+    fakePlatform.app.info.resolves({id: appTelemetryDrain1.owner.id, name: 'myapp'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       appTelemetryDrain1.id,
