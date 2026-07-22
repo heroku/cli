@@ -1,10 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
-import redisApi, {RedisApiResponse} from '../../lib/redis/api.js'
 
 const heredoc = tsheredoc.default
 
@@ -25,7 +26,9 @@ export default class Upgrade extends Command {
     const {args, flags} = await this.parse(Upgrade)
     const {app, confirm, version} = flags
     const {database} = args
-    const addon = await redisApi(app, database, false, this.heroku).getRedisAddon()
+
+    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(app, {database})
     const warning = heredoc(`
       WARNING: Irreversible action.
       Redis database will be upgraded to ${color.code(version)}. This cannot be undone.
@@ -35,8 +38,7 @@ export default class Upgrade extends Command {
     await confirmCommand.confirm(app, confirm, warning)
 
     ux.action.start(`Requesting upgrade of ${color.addon(addon.name || '')} to ${version}`)
-    const {body: response} = await redisApi(app, database, false, this.heroku)
-      .request<RedisApiResponse>(`/redis/v0/databases/${addon.id}/upgrade`, 'POST', {version})
+    const response = await data.redis.upgrade(addon.id!, {version})
     ux.action.stop(response.message)
   }
 }

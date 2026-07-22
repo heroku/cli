@@ -1,8 +1,10 @@
+import type {RedisInfoResult} from '@heroku/types/data'
 import type {Socket} from 'node:net'
 import type {Duplex, Writable} from 'node:stream'
 
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import * as net from 'node:net'
 import * as readline from 'node:readline'
@@ -12,10 +14,7 @@ import portfinder from 'portfinder'
 import Parser from 'redis-parser'
 import {Client} from 'ssh2'
 
-import type {RedisFormationResponse} from '../../lib/redis/api.js'
-
 import ConfirmCommand from '../../lib/confirm-command.js'
-import apiFactory from '../../lib/redis/api.js'
 
 const REPLY_OK = 'OK'
 
@@ -187,10 +186,15 @@ export default class Cli extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Cli)
-    const api = apiFactory(flags.app, args.database, false, this.heroku)
-    const addon = await api.getRedisAddon()
-    const configVars = await getRedisConfigVars(addon, this.heroku)
-    const {body: redis} = await api.request<RedisFormationResponse>(`/redis/v0/databases/${addon.id}`)
+    const {data, platform} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(flags.app, {database: args.database})
+    const appConfig = await platform.configVar.infoForApp(flags.app)
+    const configVars: Record<string, unknown> = {}
+    for (const configVar of addon.config_vars || []) {
+      configVars[configVar] = appConfig[configVar]
+    }
+
+    const redis = await data.redis.info(addon.id!)
     if (redis.plan.startsWith('shield-')) {
       ux.error('\n      Using redis:cli on Heroku Redis shield plans is not supported.\n      Please see Heroku DevCenter for more details: https://devcenter.heroku.com/articles/shield-private-space#shield-features\n      ', {exit: 1})
     }
@@ -208,7 +212,7 @@ export default class Cli extends Command {
     return this.maybeTunnel(redis, configVars)
   }
 
-  private async maybeTunnel(redis: RedisFormationResponse, config: Record<string, unknown>) {
+  private async maybeTunnel(redis: RedisInfoResult, config: Record<string, unknown>) {
     const bastions = match(config, /_BASTIONS/)
     const hobby = redis.plan.indexOf('hobby') === 0
     const preferNativeTls = redis.prefer_native_tls
@@ -224,14 +228,4 @@ export default class Cli extends Command {
     const client = this.createDirectConnection(uri, {portOffset, useTls})
     return redisCLI(uri, client)
   }
-}
-
-async function getRedisConfigVars(addon: Required<Heroku.AddOn>, heroku: APIClient): Promise<Record<string, unknown>> {
-  const {body: config} = await heroku.get<Record<string, unknown>>(`/apps/${addon.billing_entity.name}/config-vars`)
-  const redisConfigVars: Record<string, unknown> = {}
-  for (const configVar of addon.config_vars) {
-    redisConfigVars[configVar] = config[configVar]
-  }
-
-  return redisConfigVars
 }

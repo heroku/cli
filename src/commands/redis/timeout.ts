@@ -1,13 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-
-import redisApi from '../../lib/redis/api.js'
-
-type RedisConfigResponse = {
-  timeout: {
-    value: number
-  }
-}
 
 export default class Timeout extends Command {
   static args = {
@@ -27,10 +21,11 @@ export default class Timeout extends Command {
     const {args, flags} = await this.parse(Timeout)
     const {app, seconds} = flags
     const {database} = args
-    const addon = await redisApi(app, database, false, this.heroku).getRedisAddon()
-    const {body: response} = await redisApi(app, database, false, this.heroku)
-      .request<RedisConfigResponse>(`/redis/v0/databases/${addon.id}/config`, 'PATCH', {timeout: seconds})
-    ux.stdout(`Timeout for ${addon.name} (${addon.config_vars.join(', ')}) set to ${response.timeout.value} seconds.`)
+
+    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(app, {database})
+    const response = await data.redis.updateConfig(addon.name!, {timeout: seconds} as never)
+    ux.stdout(`Timeout for ${addon.name} (${addon.config_vars!.join(', ')}) set to ${response.timeout.value} seconds.`)
     if (response.timeout.value === 0) {
       ux.stdout('Connections to the Redis instance can idle indefinitely.')
     } else {

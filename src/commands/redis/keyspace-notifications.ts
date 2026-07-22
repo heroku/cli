@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
-
-import redisApi, {RedisFormationConfigResponse} from '../../lib/redis/api.js'
 
 const heredoc = tsheredoc.default
 
@@ -40,11 +40,10 @@ export default class KeyspaceNotifications extends Command {
     const {args, flags} = await this.parse(KeyspaceNotifications)
     const {app, config} = flags
     const {database} = args
-    const api = redisApi(app, database, false, this.heroku)
 
-    const addon = await api.getRedisAddon()
-
-    const {body: updated_config} = await api.request<RedisFormationConfigResponse>(`/redis/v0/databases/${addon.name}/config`, 'PATCH', {notify_keyspace_events: config})
-    this.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${updated_config.notify_keyspace_events.value}'.`)
+    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(app, {database})
+    const updatedConfig = await data.redis.updateConfig(addon.name!, {notify_keyspace_events: config} as never)
+    this.log(`Keyspace notifications for ${addon.name} (${addon.config_vars!.join(', ')}) set to '${updatedConfig.notify_keyspace_events.value}'.`)
   }
 }

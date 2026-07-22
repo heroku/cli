@@ -1,8 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-
-import apiFactory from '../../lib/redis/api.js'
 
 export default class Promote extends Command {
   static args = {
@@ -17,25 +16,29 @@ export default class Promote extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Promote)
-    const api = apiFactory(flags.app, args.database, false, this.heroku)
-    const {body: addonsList} = await this.heroku.get<Required<Heroku.AddOn>[]>(`/apps/${flags.app}/addons`)
-    const addon = await api.getRedisAddon(addonsList)
-    const redisFilter = api.makeAddonsFilter('REDIS_URL')
-    const redis = redisFilter(addonsList) as Required<Heroku.AddOn>[]
-    if (redis.length === 1 && redis[0].config_vars.filter((c: string) => c.endsWith('_URL')).length === 1) {
-      const attachment = redis[0]
-      await this.heroku.post('/addon-attachments', {
-        body: {
-          addon: {name: attachment.name}, app: {name: flags.app}, confirm: flags.app,
-        },
+    const {app} = flags
+    const {database} = args
+
+    const {data, platform} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(app, {database})
+
+    const addons = await platform.addOn.listByApp(app)
+    const redisWithUrl = addons.filter(a => {
+      const service = a.addon_service?.name
+      if (!service || !service.startsWith('heroku-redis')) return false
+      return (a.config_vars || []).some(cv => cv.toUpperCase().includes('REDIS_URL'))
+    })
+
+    if (redisWithUrl.length === 1 && (redisWithUrl[0].config_vars || []).filter(c => c.endsWith('_URL')).length === 1) {
+      const attachment = redisWithUrl[0]
+      await platform.addOnAttachment.create({
+        addon: attachment.name!, app, confirm: app,
       })
     }
 
-    ux.stdout(`Promoting ${addon.name} to REDIS_URL on ${flags.app}`)
-    await this.heroku.post('/addon-attachments', {
-      body: {
-        addon: {name: addon.name}, app: {name: flags.app}, confirm: flags.app, name: 'REDIS',
-      },
+    ux.stdout(`Promoting ${addon.name} to REDIS_URL on ${app}`)
+    await platform.addOnAttachment.create({
+      addon: addon.name!, app, confirm: app, name: 'REDIS',
     })
   }
 }
