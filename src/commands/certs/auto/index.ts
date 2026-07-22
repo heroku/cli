@@ -1,11 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
+import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {displayCertificateDetails} from '../../../lib/certs/certificate-details.js'
-import {waitForCertIssuedOnDomains} from '../../../lib/domains/domains.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Domain} from '../../../lib/types/domain.js'
 import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
@@ -48,18 +49,19 @@ export default class Index extends Command {
   }
   static topic = 'certs'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<Domain[]> {
     const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
 
     const {flags} = await this.parse(Index)
-    const [{body: app}, {body: sniEndpoints}] = await Promise.all([
-      this.heroku.get<Required<Heroku.App>>(`/apps/${flags.app}`),
-      this.heroku.get<SniEndpoint[]>(`/apps/${flags.app}/sni-endpoints`),
-    ])
+    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const [app, sniEndpoints] = await Promise.all([
+      platform.app.info(flags.app),
+      platform.sniEndpoint.list(flags.app),
+    ]) as [App, SniEndpoint[]]
 
     if (!app.acm) {
       hux.styledHeader(`Automatic Certificate Management is ${color.inactive('disabled')} on ${color.app(flags.app)}`)
-      return
+      return []
     }
 
     hux.styledHeader(`Automatic Certificate Management is ${color.success('enabled')} on ${color.app(flags.app)}`)
@@ -70,10 +72,16 @@ export default class Index extends Command {
     }
 
     if (flags.wait) {
-      await waitForCertIssuedOnDomains(this.heroku, flags.app).catch(() => {})
+      ux.action.start('Waiting until the certificate is issued to all domains')
+      try {
+        await platform.app.waitForACMCertificates(flags.app)
+        ux.action.stop()
+      } catch {
+        ux.action.stop(color.failure('!'))
+      }
     }
 
-    let {body: domains} = await this.heroku.get<Domain[]>(`/apps/${flags.app}/domains`)
+    let domains = await platform.domain.list(flags.app) as Domain[]
 
     domains = domains.filter(domain => domain.kind === 'custom')
 
@@ -121,5 +129,7 @@ export default class Index extends Command {
     if (message) {
       hux.styledHeader(message)
     }
+
+    return domains
   }
 }
