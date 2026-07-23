@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args} from '@oclif/core'
-
-import redisApi, {RedisFormationResponse} from '../../lib/redis/api.js'
 
 export default class Credentials extends Command {
   static args = {
@@ -20,13 +20,14 @@ export default class Credentials extends Command {
     const {app, reset} = flags
     const {database} = args
 
-    const addon = await redisApi(app, database, false, this.heroku).getRedisAddon()
+    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(app, {database})
 
     if (reset) {
       this.log(`Resetting credentials for ${addon.name}`)
-      await redisApi(app, database, false, this.heroku).request(`/redis/v0/databases/${addon.name}/credentials_rotation`, 'POST', {})
+      await data.redis.rotateCredentials(addon.name!)
     } else {
-      const {body: redis} = await redisApi(app, database, false, this.heroku).request<RedisFormationResponse>(`/redis/v0/databases/${addon.name}`)
+      const redis = await data.redis.info(addon.name!)
       this.log(redis.resource_url)
     }
   }

@@ -1,6 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/redis/credentials.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
@@ -10,47 +11,39 @@ describe('heroku redis:credentials should handle standard arg behavior', functio
 })
 
 describe('heroku redis:credentials', function () {
+  const addon = {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'}
+
   afterEach(function () {
-    nock.cleanAll()
+    restore()
   })
 
   it('displays the redis credentials', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/apps/example/addons').reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
-      ])
-
-    const redis = nock('https://api.data.heroku.com')
-      .get('/redis/v0/databases/redis-haiku').reply(200, {
-        info: [{name: 'Foo', values: ['Bar', 'Biz']}],
-        resource_url: 'redis://foobar:password@hostname:8649',
-      })
+    const resolveByApp = stub().resolves(addon)
+    const info = stub().resolves({resource_url: 'redis://foobar:password@hostname:8649'})
+    stub(HerokuSDK.prototype, 'data').get(() => ({redis: {info, resolveByApp}}))
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'example',
     ])
-    api.done()
-    redis.done()
+
+    expect(resolveByApp.calledOnceWithExactly('example', {database: undefined})).to.equal(true)
+    expect(info.calledOnceWithExactly('redis-haiku')).to.equal(true)
     expect(stdout).to.include('redis://foobar:password@hostname:8649')
   })
 
   it('resets the redis credentials', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/apps/example/addons').reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
-      ])
-
-    const redis = nock('https://api.data.heroku.com')
-      .post('/redis/v0/databases/redis-haiku/credentials_rotation').reply(200, {})
+    const resolveByApp = stub().resolves(addon)
+    const rotateCredentials = stub().resolves({})
+    stub(HerokuSDK.prototype, 'data').get(() => ({redis: {resolveByApp, rotateCredentials}}))
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--reset',
     ])
-    api.done()
-    redis.done()
+
+    expect(rotateCredentials.calledOnceWithExactly('redis-haiku')).to.equal(true)
     expect(stdout).to.include('Resetting credentials for redis-haiku')
   })
 })

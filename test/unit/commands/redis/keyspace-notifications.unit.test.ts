@@ -1,6 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/redis/keyspace-notifications.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
@@ -10,20 +11,18 @@ describe('heroku redis:keyspace-notifications should handle standard arg behavio
 })
 
 describe('heroku redis:keyspace-notifications', function () {
+  const addon = {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'}
+
   afterEach(function () {
-    nock.cleanAll()
+    restore()
   })
 
   it('# sets the keyspace notify events', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/apps/example/addons').reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
-      ])
-
-    const redis = nock('https://api.data.heroku.com')
-      .patch('/redis/v0/databases/redis-haiku/config', {notify_keyspace_events: 'AKE'}).reply(200, {
-        notify_keyspace_events: {default: '', desc: 'Enables keyspace notifications.', value: 'AKE'},
-      })
+    const resolveByApp = stub().resolves(addon)
+    const updateConfig = stub().resolves({
+      notify_keyspace_events: {default: '', desc: 'Enables keyspace notifications.', value: 'AKE'},
+    })
+    stub(HerokuSDK.prototype, 'data').get(() => ({redis: {resolveByApp, updateConfig}}))
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -31,8 +30,9 @@ describe('heroku redis:keyspace-notifications', function () {
       '--config',
       'AKE',
     ])
-    api.done()
-    redis.done()
+
+    expect(resolveByApp.calledOnceWithExactly('example', {database: undefined})).to.equal(true)
+    expect(updateConfig.calledOnceWithExactly('redis-haiku', {notify_keyspace_events: 'AKE'})).to.equal(true)
     expect(stdout).to.equal("Keyspace notifications for redis-haiku (REDIS_FOO, REDIS_BAR) set to 'AKE'.\n")
     expect(stderr).to.equal('')
   })
