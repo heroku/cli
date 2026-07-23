@@ -9,7 +9,6 @@ import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {waitForStates} from '../../lib/ci/test-run.js'
 import Git from '../../lib/git/git.js'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
 import Dyno from '../../lib/run/dyno.js'
 
 // Default command. Run setup, source profile.d scripts and open a bash session
@@ -38,11 +37,8 @@ export default class Debug extends Command {
     const {flags} = await this.parse(Debug)
     const pipeline = await getPipeline(flags, this.heroku)
 
-    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
-
-    const pipelineRepository = await kolkrabbi.getPipelineRepository(pipeline.id)
-    const organization = pipelineRepository.organization
-      && pipelineRepository.organization.name
+    const {body: fullPipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${pipeline.id}`, {headers: {Accept: 'application/vnd.heroku+json; version=3.pipelines'}})
+    const organization = fullPipeline.owner?.type === 'team' ? (fullPipeline.owner.name ?? fullPipeline.owner.id) : undefined
 
     const git = new Git()
     const commit = await git.readCommit('HEAD')

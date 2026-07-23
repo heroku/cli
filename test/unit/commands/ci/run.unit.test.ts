@@ -87,6 +87,8 @@ describe('ci:run', function () {
         .reply(200, [
           {id: pipeline.id},
         ])
+        .get(`/pipelines/${pipeline.id}`)
+        .reply(200, {id: pipeline.id, owner: {id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b', type: 'user'}})
         .post('/test-runs')
         .reply(200, newTestRun)
         .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
@@ -118,22 +120,49 @@ describe('ci:run', function () {
         .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
         .reply(200, 'New Test output')
 
-      nock('https://kolkrabbi.heroku.com')
-        .get(`/pipelines/${pipeline.id}/repository`)
-        .reply(200, {
-          ci: true,
-          organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
-          owner: {
-            github: {user_id: 306_015},
-            heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
-            id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
+      const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
+
+      expect(stdout).to.equal('New Test setup outputNew Test output\n✓ #11 my-test-branch:668a5ce succeeded\n')
+    })
+
+    it('derives the organization from a team-owned pipeline', async function () {
+      api
+        .get(`/pipelines?eq[name]=${pipeline.name}`)
+        .reply(200, [
+          {id: pipeline.id},
+        ])
+        .get(`/pipelines/${pipeline.id}`)
+        .reply(200, {id: pipeline.id, owner: {id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b', name: 'my-team', type: 'team'}})
+        .post('/test-runs', body => body.organization === 'my-team')
+        .reply(200, newTestRun)
+        .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
+        .reply(200, newTestRun)
+        .get(`/test-runs/${newTestRun.id}/test-nodes`)
+        .times(2)
+        .reply(200, [
+          {
+            commit_branch: newTestRun.commit_branch,
+            commit_message: newTestRun.commit_message,
+            commit_sha: newTestRun.commit_sha,
+            exit_code: 0,
+            id: newTestRun.id,
+            number: newTestRun.number,
+            output_stream_url: `https://test-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+            pipeline: {id: pipeline.id},
+            setup_stream_url: `https://test-setup-output.heroku.com/streams/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`,
+            status: newTestRun.status,
           },
-          repository: {
-            id: 138_865_824,
-            name: 'raulb/atleti',
-            type: 'github',
-          },
-        })
+        ])
+        .post('/sources')
+        .reply(200, {source_blob: {get_url: 'https://aws-geturl', put_url: 'https://aws-puturl'}})
+
+      nock('https://test-setup-output.heroku.com/streams')
+        .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
+        .reply(200, 'New Test setup output')
+
+      nock('https://test-output.heroku.com/streams')
+        .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
+        .reply(200, 'New Test output')
 
       const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
 
@@ -147,6 +176,8 @@ describe('ci:run', function () {
           .reply(200, [
             {id: pipeline.id},
           ])
+          .get(`/pipelines/${pipeline.id}`)
+          .reply(200, {id: pipeline.id, owner: {id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b', type: 'user'}})
           .post('/test-runs')
           .reply(200, newTestRun)
           .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
@@ -177,23 +208,6 @@ describe('ci:run', function () {
         nock('https://test-output.heroku.com/streams')
           .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
           .reply(200, 'New Test output')
-
-        nock('https://kolkrabbi.heroku.com')
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, {
-            ci: true,
-            organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
-            owner: {
-              github: {user_id: 306_015},
-              heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
-              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-            },
-            repository: {
-              id: 138_865_824,
-              name: 'raulb/atleti',
-              type: 'github',
-            },
-          })
 
         const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
 
