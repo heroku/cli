@@ -11,11 +11,7 @@ import {parseWaitInterval} from '../../lib/reviewapps/wait-review-app.js'
 const heredoc = tsheredoc.default
 
 export default class ReviewappsCreate extends Command {
-  static description = heredoc`
-    Create a new review app for a pipeline branch.
-
-    The branch must exist in the pipeline's connected GitHub repository.
-  `
+  static description = `create a review app from a pipeline's connected repository`
   static examples = [
     color.command('heroku reviewapps:create -p my-pipeline -b my-branch --wait'),
   ]
