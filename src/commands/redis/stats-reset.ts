@@ -30,8 +30,7 @@ export default class StatsReset extends Command {
     const addon = await data.redis.resolveByApp(app, {database})
     const warning = heredoc(`
       WARNING: Irreversible action.
-      All stats covered by RESETSTAT will be reset on ${color.addon(addon.name || '')}.
-    `)
+      All stats covered by RESETSTAT will be reset on ${color.addon(addon.name || '')}.`)
 
     const confirmCommand = new ConfirmCommand()
     await confirmCommand.confirm(app, confirm, warning)
