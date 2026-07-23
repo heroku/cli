@@ -1,13 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HTTPError} from '@heroku/http-call'
+import {NotFoundError} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
+import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-
-import redisApi, {RedisFormationWaitResponse} from '../../lib/redis/api.js'
-
-const wait = (ms: number) => new Promise(resolve => {
-  setTimeout(resolve, ms)
-})
 
 export default class Wait extends Command {
   static args = {
@@ -25,44 +21,25 @@ export default class Wait extends Command {
     const {args, flags} = await this.parse(Wait)
     const {app, 'wait-interval': waitInterval} = flags
     const {database} = args
-    const api = redisApi(app, database, false, this.heroku)
-    const addon = await api.getRedisAddon()
 
-    const waitFor = async () => {
-      let interval = waitInterval && Number.parseInt(waitInterval, 10)
-      if (!interval || interval < 0)
-        interval = 5
-      let status: RedisFormationWaitResponse
-      let waiting = false
-      while (true) {
-        try {
-          status = await api.request<RedisFormationWaitResponse>(`/redis/v0/databases/${addon.name}/wait`).then(response => response.body)
-        } catch (error) {
-          const httpError = error as HTTPError
-          if (httpError.statusCode !== 404)
-            throw httpError
-          status = {message: 'not found', 'waiting?': true}
-        }
+    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const addon = await data.redis.resolveByApp(app, {database})
 
-        if (!status['waiting?']) {
-          if (waiting) {
-            ux.action.stop(status.message)
-          }
+    let intervalSeconds = waitInterval && Number.parseInt(waitInterval, 10)
+    if (!intervalSeconds || intervalSeconds < 0) intervalSeconds = 5
 
-          return
-        }
-
-        if (!waiting) {
-          waiting = true
-          ux.action.start(`Waiting for database ${color.datastore(addon.name)}`, status.message)
-        }
-
-        ux.action.status = status.message
-
-        await wait(interval * 1000)
-      }
+    let firstStatus
+    try {
+      firstStatus = await data.redis.wait(addon.name!)
+    } catch (error) {
+      if (!(error instanceof NotFoundError)) throw error
+      firstStatus = {message: 'not found', 'waiting?': true}
     }
 
-    await waitFor()
+    if (!firstStatus['waiting?']) return
+
+    ux.action.start(`Waiting for database ${color.datastore(addon.name!)}`, firstStatus.message)
+    const result = await data.redis.waitForReady(addon.name!, {intervalMs: intervalSeconds * 1000})
+    ux.action.stop(result.message)
   }
 }

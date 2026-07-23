@@ -1,7 +1,8 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/upgrade.js'
@@ -10,23 +11,17 @@ import * as fixtures from '../../../fixtures/addons/fixtures.js'
 const heredoc = tsheredoc.default
 
 describe('heroku redis:upgrade', function () {
-  beforeEach(function () {
-    nock.cleanAll()
+  afterEach(function () {
+    restore()
   })
 
   it('# upgrades the redis version', async function () {
-    const redisAddon =  fixtures.addons['www-redis']
-    nock('https://api.heroku.com:443')
-      .get('/apps/example/addons')
-      .reply(200, [
-        redisAddon,
-      ])
-    nock('https://api.data.heroku.com:443')
-      .post(`/redis/v0/databases/${redisAddon.id}/upgrade`, {version: '6.2'})
-      .reply(200, {
-        message: 'Upgrading version now!',
-      })
-    const {stderr, stdout} = await runCommand(Cmd, [
+    const redisAddon = fixtures.addons['www-redis']
+    const resolveByApp = stub().resolves(redisAddon)
+    const upgrade = stub().resolves({message: 'Upgrading version now!'})
+    stub(HerokuSDK.prototype, 'data').get(() => ({redis: {resolveByApp, upgrade}}))
+
+    const {stderr} = await runCommand(Cmd, [
       '--app',
       'example',
       '--confirm',
@@ -34,6 +29,8 @@ describe('heroku redis:upgrade', function () {
       '--version',
       '6.2',
     ])
+
+    expect(upgrade.calledOnceWithExactly(redisAddon.id, {version: '6.2'})).to.equal(true)
     expectOutput(stderr, heredoc(`
       Requesting upgrade of ${redisAddon.name} to 6.2... Upgrading version now!
     `))

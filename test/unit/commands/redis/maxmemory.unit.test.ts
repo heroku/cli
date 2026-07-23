@@ -1,7 +1,8 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/maxmemory.js'
@@ -14,27 +15,28 @@ describe('heroku redis:maxmemory should handle standard arg behavior', function 
 })
 
 describe('heroku redis:maxmemory', function () {
-  beforeEach(function () {
-    nock.cleanAll()
+  const addon = {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'}
+
+  afterEach(function () {
+    restore()
   })
 
   it('# sets the key eviction policy', async function () {
-    nock('https://api.heroku.com:443')
-      .get('/apps/example/addons')
-      .reply(200, [
-        {addon_service: {name: 'heroku-redis'}, config_vars: ['REDIS_FOO', 'REDIS_BAR'], name: 'redis-haiku'},
-      ])
-    nock('https://api.data.heroku.com:443')
-      .patch('/redis/v0/databases/redis-haiku/config', {maxmemory_policy: 'noeviction'})
-      .reply(200, {
-        maxmemory_policy: {value: 'noeviction', values: {noeviction: 'return errors when memory limit is reached'}},
-      })
+    const resolveByApp = stub().resolves(addon)
+    const updateConfig = stub().resolves({
+      maxmemory_policy: {value: 'noeviction', values: {noeviction: 'return errors when memory limit is reached'}},
+    })
+    stub(HerokuSDK.prototype, 'data').get(() => ({redis: {resolveByApp, updateConfig}}))
+
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
       '--policy',
       'noeviction',
     ])
+
+    expect(resolveByApp.calledOnceWithExactly('example', {database: undefined})).to.equal(true)
+    expect(updateConfig.calledOnceWithExactly('redis-haiku', {maxmemory_policy: 'noeviction'})).to.equal(true)
     expectOutput(stderr, '')
     expectOutput(stdout, heredoc(`
       Maxmemory policy for redis-haiku (REDIS_FOO, REDIS_BAR) set to noeviction.
