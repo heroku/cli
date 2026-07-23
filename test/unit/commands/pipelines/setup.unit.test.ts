@@ -9,38 +9,38 @@ import SetupCommand from '../../../../src/commands/pipelines/setup.js'
 
 describe('pipelines:setup', function () {
   let api: nock.Scope
-  let kolkrabbiApi: nock.Scope
-  let githubApi: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
-    githubApi = nock('https://api.github.com')
   })
 
   afterEach(function () {
     api.done()
-    kolkrabbiApi.done()
-    githubApi.done()
     nock.cleanAll()
     restore()
   })
 
-  it('errors if the user is not linked to GitHub', async function () {
-    kolkrabbiApi
-      .get('/account/github/token')
-      .replyWithError('')
+  it('errors if the repo cannot be accessed', async function () {
+    stub(SetupCommand, 'open').resolves()
+    const promptStub = stub()
+    promptStub.onFirstCall().resolves('my-pipeline')
+    promptStub.onSecondCall().resolves('my-org/my-repo')
+    stub(hux, 'prompt').callsFake(promptStub)
+    stub(hux, 'confirm').callsFake(stub().resolves(true))
+
+    api
+      .get('/repos/my-org/my-repo')
+      .reply(404, {})
 
     const {error} = await runCommand(SetupCommand, [])
 
-    expect(error?.message).to.equal('Account not connected to GitHub.')
+    expect(error?.message).to.contain('Couldn\'t access that repo')
   })
 
   context('with an account connected to GitHub', function () {
     const archiveURL = 'https://example.com/archive.tar.gz'
     const pipeline = {id: '123-pipeline', name: 'my-pipeline'}
-    const repo = {default_branch: 'main', id: 123, name: 'my-org/my-repo'}
-    const kolkrabbiAccount = {github: {token: '123-abc'}}
+    const repo = {default_branch: 'main', full_name: 'my-org/my-repo', id: 123, name: 'my-repo'}
     const prodApp = {id: '123-prod-app', name: pipeline.name}
     const stagingApp = {id: '123-staging-app', name: `${pipeline.name}-staging`}
 
@@ -68,18 +68,22 @@ describe('pipelines:setup', function () {
       return api
     }
 
-    function setupKolkrabbiNock() {
-      return kolkrabbiApi
-        .get('/account/github/token')
-        .reply(200, kolkrabbiAccount)
-        .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
-        .reply(200, {
-          archive_link: archiveURL,
+    function setupRepoNock() {
+      return api
+        .get(`/repos/${repo.full_name}`)
+        .reply(200, repo)
+        .post(`/pipelines/${pipeline.id}/repo`, {repo_url: `https://github.com/${repo.full_name}`})
+        .reply(201, {id: '123-repo'})
+        .get(`/repos/${repo.full_name}/archives/${repo.default_branch}`)
+        .reply(200, {archive_link: archiveURL})
+        .post(`/pipelines/${pipeline.id}/review-app-config`, {
+          automatic_review_apps: true,
+          destroy_stale_apps: true,
+          pipeline: pipeline.id,
+          repo: repo.full_name,
+          wait_for_ci: true,
         })
-        .post(`/pipelines/${pipeline.id}/repository`)
         .reply(201, {})
-        .patch(`/apps/${stagingApp.id}/github`)
-        .reply(200, {})
     }
 
     context('when pipeline name is too long', function () {
@@ -100,9 +104,9 @@ describe('pipelines:setup', function () {
           confirmStub = stub()
         })
 
-        it('creates apps in the personal account with CI enabled', async function () {
+        it('creates apps in the personal account', async function () {
           promptStub.onFirstCall().resolves(pipeline.name)
-          promptStub.onSecondCall().resolves(repo.name)
+          promptStub.onSecondCall().resolves(repo.full_name)
           confirmStub.resolves(true)
 
           stub(hux, 'prompt').callsFake(promptStub)
@@ -110,14 +114,7 @@ describe('pipelines:setup', function () {
           stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
-          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
-
-          const kolkrabbi = setupKolkrabbiNock()
-          kolkrabbi
-            .patch(`/pipelines/${pipeline.id}/repository`, {
-              ci: true,
-            })
-            .reply(200)
+          setupRepoNock()
 
           await runCommand(SetupCommand, [])
 
@@ -127,7 +124,7 @@ describe('pipelines:setup', function () {
 
         it('downcases capitalized pipeline names', async function () {
           promptStub.reset()
-          promptStub.onFirstCall().resolves(repo.name)
+          promptStub.onFirstCall().resolves(repo.full_name)
           confirmStub.resolves(true)
 
           stub(hux, 'prompt').callsFake(promptStub)
@@ -135,14 +132,7 @@ describe('pipelines:setup', function () {
           stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
-          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
-
-          const kolkrabbi = setupKolkrabbiNock()
-          kolkrabbi
-            .patch(`/pipelines/${pipeline.id}/repository`, {
-              ci: true,
-            })
-            .reply(200)
+          setupRepoNock()
 
           await runCommand(SetupCommand, [pipeline.name.toUpperCase()])
 
@@ -157,16 +147,9 @@ describe('pipelines:setup', function () {
           stub(SetupCommand, 'open').resolves()
 
           setupApiNock()
-          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
+          setupRepoNock()
 
-          const kolkrabbi = setupKolkrabbiNock()
-          kolkrabbi
-            .patch(`/pipelines/${pipeline.id}/repository`, {
-              ci: true,
-            })
-            .reply(200)
-
-          await runCommand(SetupCommand, ['--yes', pipeline.name, repo.name])
+          await runCommand(SetupCommand, ['--yes', pipeline.name, repo.full_name])
 
           // Since we're passing the `yes` flag here, we should always return default settings and
           // thus never actually call cli.prompt
@@ -184,9 +167,9 @@ describe('pipelines:setup', function () {
           confirmStub = stub()
         })
 
-        it('creates apps in a team with CI enabled', async function () {
+        it('creates apps in a team', async function () {
           promptStub.onFirstCall().resolves(pipeline.name)
-          promptStub.onSecondCall().resolves(repo.name)
+          promptStub.onSecondCall().resolves(repo.full_name)
           confirmStub.resolves(true)
 
           stub(hux, 'prompt').callsFake(promptStub)
@@ -214,15 +197,7 @@ describe('pipelines:setup', function () {
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
-          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
-
-          const kolkrabbi = setupKolkrabbiNock()
-          kolkrabbi
-            .patch(`/pipelines/${pipeline.id}/repository`, {
-              ci: true,
-              organization: team,
-            })
-            .reply(200)
+          setupRepoNock()
 
           await runCommand(SetupCommand, ['--team', team])
 
@@ -266,17 +241,13 @@ describe('pipelines:setup', function () {
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
-          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
-
-          kolkrabbiApi
-            .get('/account/github/token')
-            .reply(200, kolkrabbiAccount)
-            .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
-            .reply(200, {
-              archive_link: archiveURL,
-            })
-            .post(`/pipelines/${pipeline.id}/repository`)
-            .reply(201, {})
+          api
+            .get(`/repos/${repo.full_name}`)
+            .reply(200, repo)
+            .post(`/pipelines/${pipeline.id}/repo`, {repo_url: `https://github.com/${repo.full_name}`})
+            .reply(201, {id: '123-repo'})
+            .get(`/repos/${repo.full_name}/archives/${repo.default_branch}`)
+            .reply(200, {archive_link: archiveURL})
 
           const {error} = await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
 
@@ -321,17 +292,13 @@ describe('pipelines:setup', function () {
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
 
-          githubApi.get(`/repos/${repo.name}`).reply(200, repo)
-
-          kolkrabbiApi
-            .get('/account/github/token')
-            .reply(200, kolkrabbiAccount)
-            .get(`/github/repos/${repo.name}/tarball/${repo.default_branch}`)
-            .reply(200, {
-              archive_link: archiveURL,
-            })
-            .post(`/pipelines/${pipeline.id}/repository`)
-            .reply(201, {})
+          api
+            .get(`/repos/${repo.full_name}`)
+            .reply(200, repo)
+            .post(`/pipelines/${pipeline.id}/repo`, {repo_url: `https://github.com/${repo.full_name}`})
+            .reply(201, {id: '123-repo'})
+            .get(`/repos/${repo.full_name}/archives/${repo.default_branch}`)
+            .reply(200, {archive_link: archiveURL})
 
           const {error} = await runCommand(SetupCommand, ['my-pipeline', 'my-org/my-repo', '--team', team])
 

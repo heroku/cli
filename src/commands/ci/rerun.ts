@@ -3,7 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
@@ -43,10 +42,10 @@ export default class CiReRun extends Command {
     const sourceBlobUrl = await createSourceBlob(sourceTestRun.commit_sha, this)
     ux.action.stop()
 
-    const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
+    const {body: fullPipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${pipeline.id}`, {headers: {Accept: 'application/vnd.heroku+json; version=3.pipelines'}})
 
     ux.action.start('Starting test run')
-    const organization = pipelineRepository.organization && pipelineRepository.organization.name
+    const organization = fullPipeline.owner?.type === 'team' ? (fullPipeline.owner.name ?? fullPipeline.owner.id) : undefined
 
     const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {
       body: {

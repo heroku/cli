@@ -5,11 +5,7 @@ import debug from 'debug'
 import openBrowser from 'open'
 
 import {createPipeline, getAccountInfo, getTeam} from '../../lib/api.js'
-import GitHubAPI from '../../lib/pipelines/github-api.js'
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
 import createApps from '../../lib/pipelines/setup/create-apps.js'
-import getCISettings from '../../lib/pipelines/setup/get-ci-settings.js'
-import getGitHubToken from '../../lib/pipelines/setup/get-github-token.js'
 import getNameAndRepo from '../../lib/pipelines/setup/get-name-and-repo.js'
 import getRepo from '../../lib/pipelines/setup/get-repo.js'
 import getSettings from '../../lib/pipelines/setup/get-settings.js'
@@ -55,17 +51,13 @@ export default class Setup extends Command {
       return
     }
 
-    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
-    const github = new GitHubAPI(this.config.userAgent, await getGitHubToken(kolkrabbi))
-
     const {team, yes} = flags
 
     const {name: pipelineName, repo: repoName} = await getNameAndRepo(args)
     const stagingAppName = pipelineName + STAGING_APP_INDICATOR
-    const repo = await getRepo(github, repoName)
-    const settings = await getSettings(yes, repo.default_branch)
+    const repo = await getRepo(this.heroku, repoName)
+    const settings = await getSettings(yes)
 
-    const ciSettings = await getCISettings(yes, team)
     const ownerType = team ? 'team' : 'user'
 
     // If team or org is not specified, we assign ownership to the user creating
@@ -79,10 +71,16 @@ export default class Setup extends Command {
     ux.action.stop()
 
     ux.action.start('Linking to repo')
-    await kolkrabbi.createPipelineRepository(pipeline.id, repo.id)
+    await this.heroku.post(`/pipelines/${pipeline.id}/repo`, {
+      body: {repo_url: `https://github.com/${repo.full_name}`},
+      headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
+    })
     ux.action.stop()
 
-    const archiveURL = await kolkrabbi.getArchiveURL(repoName, repo.default_branch)
+    const {body: archive} = await this.heroku.get<{archive_link: string}>(`/repos/${repo.full_name}/archives/${repo.default_branch}`, {
+      headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
+    })
+    const archiveURL = archive.archive_link
 
     const appSetupsResult: any = await createApps(this.heroku, archiveURL, pipeline, pipelineName, stagingAppName, team)
     const appSetups = appSetupsResult.map((result: any) => result.body)
@@ -91,9 +89,7 @@ export default class Setup extends Command {
     await pollAppSetups(this.heroku, appSetups)
     ux.action.stop()
 
-    const stagingApp = appSetups.find((appSetup: any) => appSetup.app.name === stagingAppName).app
-
-    const setup = setupPipeline(kolkrabbi, stagingApp.id, settings, pipeline.id, ciSettings)
+    const setup = setupPipeline(this.heroku, settings, pipeline.id, repo.full_name)
 
     ux.action.start('Configuring pipeline')
     try {

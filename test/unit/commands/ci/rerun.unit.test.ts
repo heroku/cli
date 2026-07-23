@@ -94,6 +94,8 @@ describe('ci:rerun', function () {
           ])
           .get(`/pipelines/${pipeline.id}/test-runs`)
           .reply(200, [oldTestRun])
+          .get(`/pipelines/${pipeline.id}`)
+          .reply(200, {id: pipeline.id, owner: {id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b', type: 'user'}})
           .post('/test-runs')
           .reply(200, newTestRun)
           .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
@@ -124,23 +126,6 @@ describe('ci:rerun', function () {
         nock('https://test-output.heroku.com/streams')
           .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
           .reply(200, 'New Test output')
-
-        nock('https://kolkrabbi.heroku.com')
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, {
-            ci: true,
-            organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
-            owner: {
-              github: {user_id: 306_015},
-              heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
-              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-            },
-            repository: {
-              id: 138_865_824,
-              name: 'raulb/atleti',
-              type: 'github',
-            },
-          })
 
         const {stdout} = await runCommand(Cmd, [`--pipeline=${pipeline.name}`])
 
@@ -157,6 +142,8 @@ describe('ci:rerun', function () {
           ])
           .get(`/pipelines/${pipeline.id}/test-runs/${oldTestRun.number}`)
           .reply(200, oldTestRun)
+          .get(`/pipelines/${pipeline.id}`)
+          .reply(200, {id: pipeline.id, owner: {id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b', type: 'user'}})
           .post('/test-runs')
           .reply(200, newTestRun)
           .get(`/pipelines/${pipeline.id}/test-runs/${newTestRun.number}`)
@@ -187,23 +174,6 @@ describe('ci:rerun', function () {
         nock('https://test-output.heroku.com/streams')
           .get(`/${newTestRun.id.slice(0, 3)}/test-runs/${newTestRun.id}`)
           .reply(200, 'New Test output')
-
-        nock('https://kolkrabbi.heroku.com')
-          .get(`/pipelines/${pipeline.id}/repository`)
-          .reply(200, {
-            ci: true,
-            organization: {id: 'e037ed63-5781-48ee-b2b7-8c55c571b63e'},
-            owner: {
-              github: {user_id: 306_015},
-              heroku: {user_id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b'},
-              id: '463147bf-d572-41cf-bbf4-11ebc1c0bc3b',
-            },
-            repository: {
-              id: 138_865_824,
-              name: 'raulb/atleti',
-              type: 'github',
-            },
-          })
 
         const {stdout} = await runCommand(Cmd, [`${oldTestRun.number}`, `--pipeline=${pipeline.name}`])
 
