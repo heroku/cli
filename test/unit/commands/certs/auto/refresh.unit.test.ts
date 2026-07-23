@@ -1,20 +1,37 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import nock from 'nock'
+import {HerokuSDK} from '@heroku/sdk'
+import {expect} from 'chai'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  app: {refreshACM: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {refreshACM: sinon.stub()},
+  }
+}
+
 describe('heroku certs:auto:refresh', function () {
+  let fakePlatform: FakePlatform
+
   beforeEach(function () {
-    nock.cleanAll()
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
   })
 
   it('refreshes acm', async function () {
-    nock('https://api.heroku.com')
-      .patch('/apps/example/acm', {acm_refresh: true})
-      .reply(200, {acm: true, acm_refresh: true})
+    fakePlatform.app.refreshACM.resolves({acm: true, acm_refresh: true})
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'example',
@@ -22,6 +39,7 @@ describe('heroku certs:auto:refresh', function () {
     expectOutput(stderr, heredoc(`
       Refreshing Automatic Certificate Management... done
     `))
-    expectOutput((stdout), '')
+    expectOutput(stdout, '')
+    expect(fakePlatform.app.refreshACM.calledOnceWithExactly('example', {acm_refresh: true})).to.equal(true)
   })
 })

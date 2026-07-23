@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
 
@@ -90,7 +91,8 @@ export default class Generate extends Command {
     return false
   }
 
-  public async run(): Promise<void> {
+  public async run() {
+    const {platform} = new HerokuSDK()
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(Generate)
@@ -106,8 +108,8 @@ export default class Generate extends Command {
     const {domain} = args
     const keysize = flags.keysize || 2048
     const keyfile = `${domain}.key`
-    const {body: certs} = await this.heroku.get<SniEndpoint[]>(`/apps/${app}/sni-endpoints`)
-    const command = getCommand(certs, domain)
+    const certs = await platform.sniEndpoint.list(app)
+    const command = getCommand(certs as SniEndpoint[], domain)
     if (selfsigned) {
       const crtfile = `${domain}.crt`
       await this.spawnOpenSSL(['req', '-new', '-newkey', `rsa:${keysize}`, '-nodes', '-keyout', keyfile, '-out', crtfile, '-subj', subject, '-x509'])
@@ -122,6 +124,8 @@ export default class Generate extends Command {
       console.error('When you\'ve received your certificate, run:')
       console.error(`$ heroku certs:${command} CERTFILE ${keyfile}`)
     }
+
+    return certs
   }
 
   protected async spawnOpenSSL(args: ReadonlyArray<string>) {

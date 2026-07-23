@@ -1,11 +1,11 @@
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {sniEndpointExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
-import {waitForDomains} from '../../lib/certs/domains.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
@@ -32,47 +32,42 @@ export default class Add extends Command {
   static strict = true
   static topic = 'certs'
 
-  async configureDomains(app: string, heroku: APIClient, cert: SniEndpoint, inquirer: any) {
-    const certDomains = cert.ssl_cert.cert_domains
-    const apiDomains = await waitForDomains(app, heroku)
-    const appDomains = apiDomains?.map((domain: Heroku.Domain) => domain.hostname as string)
-    const matchedDomains = matchDomains(certDomains, appDomains ?? [])
-    if (matchedDomains.length > 0) {
-      hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
-      const selections = await this.selectDomains(matchedDomains, inquirer)
-      await Promise.all(selections?.domains.map((domain: string) => heroku.patch(`/apps/${app}/domains/${domain}`, {
-        body: {sni_endpoint: cert.name},
-      })))
-    }
-  }
-
-  getDomainsToAssociate(sniEndpoint: SniEndpoint, inquirer: any) {
-    return inquirer.prompt([{
-      choices: sniEndpoint.ssl_cert.cert_domains,
-      message: 'Select domains',
-      name: 'domains',
-      type: 'checkbox',
-    }])
-  }
-
-  public async run(): Promise<void> {
+  public async run(): Promise<SniEndpoint> {
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(Add)
     const {app} = flags
     const certManager = new CertAndKeyManager()
     const files = await certManager.getCertAndKey(args)
+    const {platform} = new HerokuSDK({extensions: [sniEndpointExtensions]})
+
     ux.action.start(`Adding SSL certificate to ${color.app(app)}`)
-    const {body: sniEndpoint} = await this.heroku.post<SniEndpoint>(`/apps/${app}/sni-endpoints`, {
-      body: {
-        certificate_chain: files.crt.toString(),
-        private_key: files.key.toString(),
-      },
-    })
-    ux.action.stop()
+    let sniEndpoint: SniEndpoint
+    try {
+      sniEndpoint = await platform.sniEndpoint.createAndAssociate(
+        app,
+        files.crt.toString(),
+        files.key.toString(),
+        {
+          resolveDomains: async (candidates: string[]) => {
+            ux.action.stop()
+            hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')
+            const {domains} = await this.selectDomains(candidates, inquirer)
+            return domains
+          },
+        },
+      ) as SniEndpoint
+      ux.action.stop()
+    } catch (error) {
+      // Stop with a failure marker instead of the default 'done' so a failed
+      // create/wait doesn't print a success spinner right before the error.
+      // No-op if resolveDomains already stopped the spinner.
+      ux.action.stop(color.red('!'))
+      throw error
+    }
 
     displayCertificateDetails(sniEndpoint)
-    await this.configureDomains(app, this.heroku, sniEndpoint, inquirer)
+    return sniEndpoint
   }
 
   async selectDomains(domainOptions: string[], inquirer: any) {
@@ -83,41 +78,4 @@ export default class Add extends Command {
       type: 'checkbox',
     }])
   }
-}
-
-function splitDomains(domains: string[]): [string, string][] {
-  return domains.map(domain => [domain.slice(0, 1), domain.slice(1)])
-}
-
-function createMatcherFromSplitDomain([firstChar, rest]: [string, string]) {
-  const matcherContents = []
-  if (firstChar === '*') {
-    matcherContents.push(String.raw`^[\w\-]+`)
-  } else {
-    matcherContents.push(firstChar)
-  }
-
-  const escapedRest = rest.replaceAll('.', String.raw`\.`)
-
-  matcherContents.push(escapedRest)
-
-  return new RegExp(matcherContents.join(''))
-}
-
-function matchDomains(certDomains: string[], appDomains: string[]) {
-  const splitCertDomains = splitDomains(certDomains)
-  const matchers = splitCertDomains.map(splitDomain => createMatcherFromSplitDomain(splitDomain))
-
-  if (splitCertDomains.some(domain => (domain[0] === '*'))) {
-    const matchedDomains: string[] = []
-    for (const appDomain of appDomains) {
-      if (matchers.some(matcher => matcher.test(appDomain))) {
-        matchedDomains.push(appDomain)
-      }
-    }
-
-    return matchedDomains
-  }
-
-  return certDomains.filter(domain => appDomains.includes(domain))
 }

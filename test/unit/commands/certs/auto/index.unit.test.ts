@@ -1,7 +1,8 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import {createSandbox} from 'sinon'
+import * as sinon from 'sinon'
+import {createSandbox, SinonStub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/index.js'
@@ -28,44 +29,54 @@ const selfSigned = {
   },
 }
 
+type FakePlatform = {
+  app: {info: SinonStub, waitForACMCertificates: SinonStub},
+  domain: {list: SinonStub},
+  sniEndpoint: {list: SinonStub},
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: sinon.stub(), waitForACMCertificates: sinon.stub()},
+    domain: {list: sinon.stub()},
+    sniEndpoint: {list: sinon.stub()},
+  }
+}
+
 describe('heroku certs:auto', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('displays enabled status message', async function () {
     const now = new Date().toISOString()
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [letsEncrypt])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-san-test.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([letsEncrypt])
+    fakePlatform.domain.list.resolves([{
+      acm_status: null,
+      cname: null,
+      hostname: 'tokyo-1050.herokuapp.com',
+      kind: 'heroku',
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-san-test.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -91,62 +102,61 @@ describe('heroku certs:auto', function () {
       heroku-san-test.heroku-cli-sni-test.com OK     less than a minute`))
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays partially enabled status message', async function () {
     const now = new Date().toISOString()
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [letsEncrypt])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-san-test.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'in-progress',
-        cname: 'heroku-in-prog.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-in-prog.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'verified', cname: 'heroku-verified.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-verified.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'dns-verified',
-        cname: 'heroku-dns-verified.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-dns-verified.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failing',
-        cname: 'heroku-missing.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-missing.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: null, cname: 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-unknown.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([letsEncrypt])
+    fakePlatform.domain.list.resolves([{
+      acm_status: null,
+      cname: null,
+      hostname: 'tokyo-1050.herokuapp.com',
+      kind: 'heroku',
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-san-test.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'in-progress',
+      cname: 'heroku-in-prog.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-in-prog.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'verified', cname: 'heroku-verified.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-verified.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'dns-verified',
+      cname: 'heroku-dns-verified.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-dns-verified.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'failing',
+      cname: 'heroku-missing.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-missing.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: null, cname: 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-unknown.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -182,48 +192,47 @@ describe('heroku certs:auto', function () {
     expect(stderr).to.equal('')
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('does not have a false positive check with non-ACM lets encrypt certs', async function () {
     const now = new Date().toISOString()
     const sslCert = {...letsEncrypt.ssl_cert, acm: false}
     const acmFalse = {...letsEncrypt, ssl_cert: sslCert}
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [acmFalse])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-san-test.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failing',
-        cname: 'heroku-missing.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-missing.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: null,
-        cname: 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-unknown.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([acmFalse])
+    fakePlatform.domain.list.resolves([{
+      acm_status: null,
+      cname: null,
+      hostname: 'tokyo-1050.herokuapp.com',
+      kind: 'heroku',
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-san-test.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'failing',
+      cname: 'heroku-missing.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-missing.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: null,
+      cname: 'heroku-unknown.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-unknown.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -244,40 +253,39 @@ describe('heroku certs:auto', function () {
     `))
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays partially enabled status with failed message', async function () {
     const now = new Date().toISOString()
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [letsEncrypt])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-san-test.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failed',
-        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-failed.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([letsEncrypt])
+    fakePlatform.domain.list.resolves([{
+      acm_status: null,
+      cname: null,
+      hostname: 'tokyo-1050.herokuapp.com',
+      kind: 'heroku',
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-san-test.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'failed',
+      cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-failed.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -309,40 +317,39 @@ describe('heroku certs:auto', function () {
     `))
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays partially enabled status with failing message', async function () {
     const now = new Date().toISOString()
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [letsEncrypt])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-san-test.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failing',
-        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-failed.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([letsEncrypt])
+    fakePlatform.domain.list.resolves([{
+      acm_status: null,
+      cname: null,
+      hostname: 'tokyo-1050.herokuapp.com',
+      kind: 'heroku',
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-san-test.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-san-test.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'failing',
+      cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-failed.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -374,14 +381,14 @@ describe('heroku certs:auto', function () {
     `))
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays disabled status message', async function () {
-    api
-      .get('/apps/example')
-      .reply(200, {acm: false})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [letsEncrypt])
+    fakePlatform.app.info.resolves({acm: false})
+    fakePlatform.sniEndpoint.list.resolves([letsEncrypt])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -390,34 +397,33 @@ describe('heroku certs:auto', function () {
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.called).to.equal(false)
   })
 
   it('displays message that there are no certificates', async function () {
     const now = new Date().toISOString()
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: null,
-        cname: null,
-        hostname: 'tokyo-1050.herokuapp.com',
-        kind: 'heroku',
-      }, {
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failing',
-        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-failing.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([])
+    fakePlatform.domain.list.resolves([{
+      acm_status: null,
+      cname: null,
+      hostname: 'tokyo-1050.herokuapp.com',
+      kind: 'heroku',
+    }, {
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'failing',
+      cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-failing.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -434,20 +440,19 @@ describe('heroku certs:auto', function () {
     `))
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('displays message that there are no domains', async function () {
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
-      .get('/apps/example/domains')
-      .reply(200, [
-        {
-          acm_status: null, cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku',
-        },
-      ])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([])
+    fakePlatform.domain.list.resolves([
+      {
+        acm_status: null, cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku',
+      },
+    ])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -460,14 +465,14 @@ describe('heroku certs:auto', function () {
 
       === Add a custom domain to your app by running: heroku domains:add <yourdomain.com>\n
     `)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('does not displays message that there are no certificates', async function () {
-    api
-      .get('/apps/example')
-      .reply(200, {acm: false})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [])
+    fakePlatform.app.info.resolves({acm: false})
+    fakePlatform.sniEndpoint.list.resolves([])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -476,16 +481,15 @@ describe('heroku certs:auto', function () {
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.called).to.equal(false)
   })
 
   it('displays message that there are no ACM certificates', async function () {
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [selfSigned])
-      .get('/apps/example/domains')
-      .reply(200, [])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([selfSigned])
+    fakePlatform.domain.list.resolves([])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -498,14 +502,14 @@ describe('heroku certs:auto', function () {
 
       === Add a custom domain to your app by running: heroku domains:add <yourdomain.com>\n
     `)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   it('does not displays message that there are not acm certificates', async function () {
-    api
-      .get('/apps/example')
-      .reply(200, {acm: false})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [selfSigned])
+    fakePlatform.app.info.resolves({acm: false})
+    fakePlatform.sniEndpoint.list.resolves([selfSigned])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -514,30 +518,29 @@ describe('heroku certs:auto', function () {
 
     expect(stderr).to.equal('')
     expect(stdout).to.equal('=== Automatic Certificate Management is disabled on ⬢ example\n\n')
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.called).to.equal(false)
   })
 
   it('shows acm_status_reason', async function () {
     const now = new Date().toISOString()
-    api
-      .get('/apps/example')
-      .reply(200, {acm: true})
-      .get('/apps/example/sni-endpoints')
-      .reply(200, [letsEncrypt])
-      .get('/apps/example/domains')
-      .reply(200, [{
-        acm_status: 'ok',
-        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-acm.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }, {
-        acm_status: 'failed',
-        acm_status_reason: 'uh oh something failed',
-        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-        hostname: 'heroku-failed.heroku-cli-sni-test.com',
-        kind: 'custom',
-        updated_at: now,
-      }])
+    fakePlatform.app.info.resolves({acm: true})
+    fakePlatform.sniEndpoint.list.resolves([letsEncrypt])
+    fakePlatform.domain.list.resolves([{
+      acm_status: 'ok',
+      cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-acm.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }, {
+      acm_status: 'failed',
+      acm_status_reason: 'uh oh something failed',
+      cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+      hostname: 'heroku-failed.heroku-cli-sni-test.com',
+      kind: 'custom',
+      updated_at: now,
+    }])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -568,6 +571,9 @@ describe('heroku certs:auto', function () {
     `))
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expected)
+    expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+    expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
   })
 
   context('--wait', function () {
@@ -586,87 +592,39 @@ describe('heroku certs:auto', function () {
 
     it('waits until certs are issued and displays the domains details', async function () {
       const now = commandExecutedTime
-      api
-        .get('/apps/example')
-        .reply(200, {acm: true})
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'failing',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'failing',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
+      fakePlatform.app.info.resolves({acm: true})
+      fakePlatform.sniEndpoint.list.resolves([])
+      fakePlatform.app.waitForACMCertificates.resolves([{
+        acm_status: 'cert issued',
+        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+        hostname: 'heroku-acm.heroku-cli-sni-test.com',
+        kind: 'custom',
+        updated_at: now,
+      }, {
+        acm_status: 'cert issued',
+        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+        hostname: 'heroku-failing.heroku-cli-sni-test.com',
+        kind: 'custom',
+        updated_at: now,
+      }])
+      fakePlatform.domain.list.resolves([{
+        acm_status: null,
+        cname: null,
+        hostname: 'tokyo-1050.herokuapp.com',
+        kind: 'heroku',
+      }, {
+        acm_status: 'cert issued',
+        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+        hostname: 'heroku-acm.heroku-cli-sni-test.com',
+        kind: 'custom',
+        updated_at: now,
+      }, {
+        acm_status: 'cert issued',
+        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+        hostname: 'heroku-failing.heroku-cli-sni-test.com',
+        kind: 'custom',
+        updated_at: now,
+      }])
 
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
@@ -686,98 +644,44 @@ describe('heroku certs:auto', function () {
       const actual = removeAllWhitespace(stdout)
       expect(actual).to.include(expectedHeader)
       expect(actual).to.include(expected)
+      expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.app.waitForACMCertificates.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
+      sinon.assert.callOrder(fakePlatform.app.waitForACMCertificates, fakePlatform.domain.list)
     })
 
     it('waits until certs are issued or failed and displays the domains details ignoring errors while waiting', async function () {
       const now = new Date().toISOString()
-      api
-        .get('/apps/example')
-        .reply(200, {acm: true})
-        .get('/apps/example/sni-endpoints')
-        .reply(200, [])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'failing',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'failing',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'failed',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
-        .get('/apps/example/domains')
-        .reply(200, [{
-          acm_status: null,
-          cname: null,
-          hostname: 'tokyo-1050.herokuapp.com',
-          kind: 'heroku',
-        }, {
-          acm_status: 'cert issued',
-          cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-acm.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }, {
-          acm_status: 'failed',
-          cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
-          hostname: 'heroku-failing.heroku-cli-sni-test.com',
-          kind: 'custom',
-          updated_at: now,
-        }])
+      fakePlatform.app.info.resolves({acm: true})
+      fakePlatform.sniEndpoint.list.resolves([])
+      fakePlatform.app.waitForACMCertificates.rejects(new Error('ACM not enabled for some domains'))
+      fakePlatform.domain.list.resolves([{
+        acm_status: null,
+        cname: null,
+        hostname: 'tokyo-1050.herokuapp.com',
+        kind: 'heroku',
+      }, {
+        acm_status: 'cert issued',
+        cname: 'heroku-acm.heroku-cli-sni-test.com.herokudns.com',
+        hostname: 'heroku-acm.heroku-cli-sni-test.com',
+        kind: 'custom',
+        updated_at: now,
+      }, {
+        acm_status: 'failed',
+        cname: 'heroku-failed.heroku-cli-sni-test.com.herokudns.com',
+        hostname: 'heroku-failing.heroku-cli-sni-test.com',
+        kind: 'custom',
+        updated_at: now,
+      }])
 
-      const {stderr, stdout} = await runCommand(Cmd, [
+      const {error, stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'example',
         '--wait',
       ])
 
+      expect(error).to.equal(undefined)
       expect(stderr).to.equal(heredoc`
         Waiting until the certificate is issued to all domains... !
       `)
@@ -793,6 +697,10 @@ describe('heroku certs:auto', function () {
       `))
       expect(actual).to.include(expectedHeader)
       expect(actual).to.include(expected)
+      expect(fakePlatform.app.info.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.sniEndpoint.list.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.app.waitForACMCertificates.calledOnceWithExactly('example')).to.equal(true)
+      expect(fakePlatform.domain.list.calledOnceWithExactly('example')).to.equal(true)
     })
   })
 })
