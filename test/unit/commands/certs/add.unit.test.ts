@@ -133,6 +133,23 @@ describe('heroku certs:add', function () {
     expect(uxActionStop.called).to.equal(true)
   })
 
+  it('# stops the spinner with a failure marker (not "done") and surfaces the error when the SDK rejects', async function () {
+    fakePlatform.sniEndpoint.createAndAssociate.rejects(new Error('boom'))
+
+    const {error, stderr} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+      'key_file',
+    ])
+
+    expect(error).to.be.an('error')
+    expect(error?.message).to.equal('boom')
+    // The failed create must not print a success spinner before the error.
+    expect(stderr).to.not.contain('Adding SSL certificate to ⬢ example... done')
+    expect(stderr).to.contain('Adding SSL certificate to ⬢ example... !')
+  })
+
   it('# does not prompt when the SDK resolves without invoking the callback', async function () {
     fakePlatform.sniEndpoint.createAndAssociate.resolves(endpointStables)
 

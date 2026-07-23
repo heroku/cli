@@ -57,8 +57,13 @@ export default class Add extends Command {
           },
         },
       ) as SniEndpoint
-    } finally {
       ux.action.stop()
+    } catch (error) {
+      // Stop with a failure marker instead of the default 'done' so a failed
+      // create/wait doesn't print a success spinner right before the error.
+      // No-op if resolveDomains already stopped the spinner.
+      ux.action.stop(color.red('!'))
+      throw error
     }
 
     displayCertificateDetails(sniEndpoint)
