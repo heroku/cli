@@ -1,22 +1,34 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
-import nock from 'nock'
 import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/container/pull.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
+type FakePlatform = {
+  app: {info: sinon.SinonStub}
+}
+
+function buildFakePlatform(sandbox: sinon.SinonSandbox): FakePlatform {
+  return {
+    app: {info: sandbox.stub()},
+  }
+}
+
 describe('container pull', function () {
   let sandbox: sinon.SinonSandbox
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     sandbox = sinon.createSandbox()
+    fakePlatform = buildFakePlatform(sandbox)
+    sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    return sandbox.restore()
+    sandbox.restore()
   })
 
   it('requires a process type', async function () {
@@ -30,9 +42,7 @@ describe('container pull', function () {
   })
 
   it('exits when the app stack is not container', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .get('/apps/testapp')
-      .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
+    fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'heroku-24'}})
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -44,13 +54,10 @@ describe('container pull', function () {
     expect(oclif.exit).to.equal(1)
 
     expect(stdout).to.equal('')
-    api.done()
   })
 
   it('pulls from the docker registry', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .get('/apps/testapp')
-      .reply(200, {name: 'testapp', stack: {name: 'container'}})
+    fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
     const pull = sandbox.stub(DockerHelper.prototype, 'pullImage')
       .withArgs('registry.heroku.com/testapp/web')
     const {stdout} = await runCommand(Cmd, [
@@ -60,7 +67,6 @@ describe('container pull', function () {
     ])
     expect(stdout).to.contain('Pulling web as registry.heroku.com/testapp/web')
     sandbox.assert.calledOnce(pull)
-    api.done()
   })
 
   context('when HEROKU_HOST is set to an invalid domain', function () {
@@ -80,9 +86,7 @@ describe('container pull', function () {
     })
 
     it('rejects invalid HEROKU_HOST and uses default registry', async function () {
-      const api = nock('https://api.heroku.com:443')
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
       const pull = sandbox.stub(DockerHelper.prototype, 'pullImage')
         .withArgs('registry.heroku.com/testapp/web')
 
@@ -94,7 +98,6 @@ describe('container pull', function () {
 
       expect(stderr).to.contain("Invalid HEROKU_HOST 'attacker.com'")
       sandbox.assert.calledOnce(pull)
-      api.done()
     })
   })
 })

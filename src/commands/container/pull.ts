@@ -1,6 +1,6 @@
 import {Command, flags, vars} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 
 import {debug} from '../../lib/container/debug.js'
 import {DockerHelper} from '../../lib/container/docker-helper.js'
@@ -24,6 +24,7 @@ export default class Pull extends Command {
   dockerHelper = new DockerHelper()
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {argv, flags} = await this.parse(Pull)
     const {app, verbose} = flags
 
@@ -31,7 +32,7 @@ export default class Pull extends Command {
       this.error(`Error: Requires one or more process types\n${Pull.examples.join('\n')}`)
     }
 
-    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    const appBody = await platform.app.info(app)
     ensureContainerStack(appBody, 'pull')
 
     const registry = `registry.${vars.host}`

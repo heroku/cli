@@ -1,6 +1,6 @@
 import {Command, flags, vars} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
@@ -26,6 +26,7 @@ export default class Run extends Command {
   dockerHelper = new DockerHelper()
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {argv, flags} = await this.parse(Run)
     const {app, port, verbose} = flags
 
@@ -37,7 +38,7 @@ export default class Run extends Command {
       debug.enabled = true
     }
 
-    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+    const appBody = await platform.app.info(app)
     ensureContainerStack(appBody, 'run')
 
     const processType = argv.shift() as string
