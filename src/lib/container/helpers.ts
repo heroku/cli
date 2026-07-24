@@ -1,5 +1,5 @@
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 const stackLabelMap: {[key: string]: string} = {
@@ -8,11 +8,11 @@ const stackLabelMap: {[key: string]: string} = {
 
 /**
  * Ensure that the given app is a container app.
- * @param app {Heroku.App} heroku app
+ * @param app {App} heroku app
  * @param cmd {String} command name
  * @returns {null} null
  */
-export function ensureContainerStack(app: Heroku.App, cmd: string): void {
+export function ensureContainerStack(app: App, cmd: string): void {
   const buildStack = app.build_stack?.name
   const appStack = app.stack?.name
   const allowedStack = 'container'
