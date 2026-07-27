@@ -18,8 +18,8 @@ class Backups {
     this.heroku = heroku
   }
 
-  protected displayLogs(logs: BackupTransfer['logs']) {
-    for (const log of logs) {
+  protected displayLogs(logs: BackupTransfer['logs'] | undefined) {
+    for (const log of (logs ?? [])) {
       if (this.logsAlreadyShown.has(log.created_at + log.message)) {
         continue
       }
