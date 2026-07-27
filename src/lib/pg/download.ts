@@ -1,8 +1,8 @@
 import cliProgress from 'cli-progress'
 import fs from 'fs-extra'
+import {HttpsProxyAgent} from 'https-proxy-agent'
 import https from 'node:https'
 import Path from 'node:path'
-import {HttpsProxyAgent} from 'https-proxy-agent'
 
 type downloadOptions = {
   progress: boolean
