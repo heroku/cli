@@ -1,4 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
@@ -17,6 +18,7 @@ export default class Remove extends Command {
       char: 'i',
       description: 'the 1-based index of the URL to remove from the list of URLs',
     }),
+    json: Flags.boolean({char: 'j', description: 'output in json format'}),
     remote: Flags.remote(),
   }
 
@@ -51,10 +53,14 @@ export default class Remove extends Command {
     }
 
     if (buildpacks.length === 1) {
-      await buildpackCommand.clear(flags.app, 'remove', 'removed')
+      await buildpackCommand.clear(flags.app, 'remove', 'removed', flags.json)
     } else {
       const buildpackUpdates = await buildpackCommand.mutate(flags.app, buildpacks, spliceIndex, args.buildpack as string, 'remove')
-      buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'removed')
+      if (flags.json) {
+        hux.styledJSON(buildpackUpdates)
+      } else {
+        buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'removed')
+      }
     }
   }
 }

@@ -262,4 +262,35 @@ Run git push heroku main to create a new release using these buildpacks.
       expect(error?.message).to.include('Usage: heroku buildpacks:remove [BUILDPACK_URL]. Must specify a buildpack to remove, either by index or URL.')
     })
   })
+
+  describe('--json', function () {
+    it('# outputs remaining buildpacks as JSON after removal', async function () {
+      Stubber.get(api, [
+        'https://github.com/heroku/heroku-buildpack-java',
+        'https://github.com/heroku/heroku-buildpack-ruby',
+      ])
+      Stubber.put(api, [
+        'https://github.com/heroku/heroku-buildpack-java',
+      ])
+
+      const {stderr, stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example', '--json'])
+
+      expect(stderr).to.equal('')
+      const parsed = JSON.parse(stdout)
+      expect(parsed).to.be.an('array')
+      expect(parsed).to.have.lengthOf(1)
+      expect(parsed[0].buildpack.url).to.equal('https://github.com/heroku/heroku-buildpack-java')
+    })
+
+    it('# outputs empty array as JSON when last buildpack is removed', async function () {
+      Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
+      Stubber.put(api)
+
+      const {stdout} = await runCommand(BuildpacksRemove, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example', '--json'])
+
+      const parsed = JSON.parse(stdout)
+      expect(parsed).to.be.an('array')
+      expect(parsed).to.have.lengthOf(0)
+    })
+  })
 })

@@ -9,6 +9,7 @@ export default class Index extends Command {
   static description = 'list the buildpacks on an app'
   static flags = {
     app: Flags.app({required: true}),
+    json: Flags.boolean({char: 'j', description: 'output in json format'}),
     remote: Flags.remote(),
   }
 
@@ -22,7 +23,9 @@ export default class Index extends Command {
     })
     const isFirApp = getGeneration(app) === 'fir'
     const buildpacks = await buildpacksCommand.fetch(flags.app, isFirApp)
-    if (buildpacks.length === 0) {
+    if (flags.json) {
+      hux.styledJSON(buildpacks)
+    } else if (buildpacks.length === 0) {
       this.log(`${color.app(flags.app)} has no Buildpacks.`)
     } else {
       const pluralizedBuildpacks = buildpacks.length > 1 ? 'Buildpacks' : 'Buildpack'
