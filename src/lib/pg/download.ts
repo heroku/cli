@@ -2,6 +2,7 @@ import cliProgress from 'cli-progress'
 import fs from 'fs-extra'
 import https from 'node:https'
 import Path from 'node:path'
+import {HttpsProxyAgent} from 'https-proxy-agent'
 
 type downloadOptions = {
   progress: boolean
@@ -30,7 +31,9 @@ export default function download(url: string, path: string, opts: downloadOption
   return new Promise((resolve, reject) => {
     fs.mkdirSync(Path.dirname(path), {recursive: true})
     const file = fs.createWriteStream(path)
-    https.get(url, (rsp: any) => {
+    const proxy = process.env.https_proxy || process.env.HTTPS_PROXY
+    const options: https.RequestOptions = proxy ? {agent: new HttpsProxyAgent(proxy)} : {}
+    https.get(url, options, (rsp: any) => {
       if (tty && opts.progress) showProgress(rsp)
       rsp.pipe(file)
         .on('error', reject)
