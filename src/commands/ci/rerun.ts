@@ -3,6 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
+import {gitService} from '../../lib/ci/git.js'
 import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
@@ -25,6 +26,11 @@ export default class CiReRun extends Command {
 
   async run() {
     const {args, flags} = await this.parse(CiReRun)
+
+    if (!gitService.inGitRepo()) {
+      this.error('Not in a git repository. ci:rerun must be run from within your app\'s git repo.')
+    }
+
     const pipeline = await getPipeline(flags, this.heroku)
 
     let sourceTestRun: Heroku.TestRun

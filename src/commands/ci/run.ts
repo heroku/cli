@@ -23,6 +23,11 @@ export default class CiRun extends Command {
 
   async run() {
     const {flags} = await this.parse(CiRun)
+
+    if (!gitService.inGitRepo()) {
+      this.error('Not in a git repository. ci:run must be run from within your app\'s git repo.')
+    }
+
     const pipeline = await getPipeline(flags, this.heroku)
     const commit = await gitService.readCommit('HEAD')
 
