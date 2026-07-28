@@ -1,5 +1,6 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import {createSandbox, SinonSandbox, SinonStub} from 'sinon'
@@ -8,12 +9,12 @@ import Cmd from '../../../../src/commands/container/run.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 type FakePlatform = {
-  app: {info: SinonStub}
+  container: {ensureContainerStack: SinonStub}
 }
 
 function buildFakePlatform(sandbox: SinonSandbox): FakePlatform {
   return {
-    app: {info: sandbox.stub()},
+    container: {ensureContainerStack: sandbox.stub()},
   }
 }
 
@@ -38,7 +39,7 @@ describe('container run', function () {
     beforeEach(function () {
       originalHost = process.env.HEROKU_HOST
       process.env.HEROKU_HOST = 'attacker.com'
-      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     afterEach(function () {
@@ -78,7 +79,12 @@ describe('container run', function () {
   })
 
   it('exits when the app stack is not "container"', async function () {
-    fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'heroku-24'}})
+    fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+      build_stack: {name: 'heroku-24'},
+      id: 'test-id',
+      name: 'testapp',
+      stack: {id: 'test-id', name: 'heroku-24'},
+    }))
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -92,7 +98,7 @@ describe('container run', function () {
 
   context('when the app is a container app', function () {
     beforeEach(function () {
-      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('runs a container', async function () {

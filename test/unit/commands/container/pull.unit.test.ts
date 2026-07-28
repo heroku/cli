@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -8,12 +9,12 @@ import Cmd from '../../../../src/commands/container/pull.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 type FakePlatform = {
-  app: {info: sinon.SinonStub}
+  container: {ensureContainerStack: sinon.SinonStub}
 }
 
 function buildFakePlatform(sandbox: sinon.SinonSandbox): FakePlatform {
   return {
-    app: {info: sandbox.stub()},
+    container: {ensureContainerStack: sandbox.stub()},
   }
 }
 
@@ -42,7 +43,12 @@ describe('container pull', function () {
   })
 
   it('exits when the app stack is not container', async function () {
-    fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'heroku-24'}})
+    fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+      build_stack: {name: 'heroku-24'},
+      id: 'test-id',
+      name: 'testapp',
+      stack: {id: 'test-id', name: 'heroku-24'},
+    }))
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -57,7 +63,7 @@ describe('container pull', function () {
   })
 
   it('pulls from the docker registry', async function () {
-    fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
+    fakePlatform.container.ensureContainerStack.resolves()
     const pull = sandbox.stub(DockerHelper.prototype, 'pullImage')
       .withArgs('registry.heroku.com/testapp/web')
     const {stdout} = await runCommand(Cmd, [
@@ -86,7 +92,7 @@ describe('container pull', function () {
     })
 
     it('rejects invalid HEROKU_HOST and uses default registry', async function () {
-      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
       const pull = sandbox.stub(DockerHelper.prototype, 'pullImage')
         .withArgs('registry.heroku.com/testapp/web')
 

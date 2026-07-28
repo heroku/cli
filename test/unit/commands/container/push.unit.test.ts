@@ -1,6 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -9,12 +10,12 @@ import Cmd from '../../../../src/commands/container/push.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
 type FakePlatform = {
-  app: {info: sinon.SinonStub}
+  container: {ensureContainerStack: sinon.SinonStub}
 }
 
 function buildFakePlatform(sandbox: sinon.SinonSandbox): FakePlatform {
   return {
-    app: {info: sandbox.stub()},
+    container: {ensureContainerStack: sandbox.stub()},
   }
 }
 
@@ -38,7 +39,7 @@ describe('container push', function () {
     beforeEach(function () {
       originalHost = process.env.HEROKU_HOST
       process.env.HEROKU_HOST = 'attacker.com'
-      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     afterEach(function () {
@@ -71,7 +72,12 @@ describe('container push', function () {
 
   context('when the app stack is not "container"', function () {
     beforeEach(function () {
-      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'heroku-24'}})
+      fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+        build_stack: {name: 'heroku-24'},
+        id: 'test-id',
+        name: 'testapp',
+        stack: {id: 'test-id', name: 'heroku-24'},
+      }))
     })
 
     it('exits', async function () {
@@ -88,7 +94,7 @@ describe('container push', function () {
 
   context('when the app build_stack is container', function () {
     beforeEach(function () {
-      fakePlatform.app.info.resolves({build_stack: {name: 'container'}, name: 'testapp', stack: {name: 'heroku-24'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('allows push to the docker registry', async function () {
@@ -116,7 +122,7 @@ describe('container push', function () {
 
   context('when the app is a container app', function () {
     beforeEach(function () {
-      fakePlatform.app.info.resolves({name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('gets a build error', async function () {

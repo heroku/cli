@@ -1,6 +1,7 @@
 import {Command, flags, vars} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
+import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
@@ -30,7 +31,7 @@ export default class Push extends Command {
   dockerHelper = new DockerHelper()
 
   async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
     const {argv: processTypes, flags} = await this.parse(Push)
     const {app, arg, 'context-path': contextPath, recursive, verbose} = flags
 
@@ -46,8 +47,7 @@ export default class Push extends Command {
       ux.error('Requires exactly one target process type, or --recursive option', {exit: 1})
     }
 
-    const appBody = await platform.app.info(app)
-    ensureContainerStack(appBody, 'push')
+    await ensureContainerStack(platform, app, 'push')
 
     const registry = `registry.${vars.host}`
     const dockerfiles = this.dockerHelper.getDockerfiles(process.cwd(), recursive)
