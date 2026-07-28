@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {ensureContainerStack} from '../../lib/container/helpers.js'
@@ -20,6 +21,7 @@ export default class Rm extends Command {
   static usage = 'container:rm -a APP [-v] PROCESS_TYPE...'
 
   async run() {
+    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
     const {argv, flags} = await this.parse(Rm)
     const {app} = flags
 
@@ -27,18 +29,15 @@ export default class Rm extends Command {
       this.error(`Error: Requires one or more process types\n${Rm.examples.join('\n')}`)
     }
 
-    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    ensureContainerStack(appBody, 'rm')
+    await ensureContainerStack(platform, app, 'rm')
 
-    for (const process of argv as string[]) {
-      ux.action.start(`Removing container ${process} for ${color.app(app)}`)
-      await this.heroku.patch(`/apps/${app}/formation/${process}`, {
-        body: {docker_image: null},
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.docker-releases',
-        },
-      })
-      ux.action.stop()
-    }
+    const processTypes = argv as string[]
+    const processTypesDisplayList = processTypes.length > 3
+      ? `${processTypes.slice(0, 3).join(', ')} and ${processTypes.length - 3} more`
+      : processTypes.join(', ')
+
+    ux.action.start(`Removing container ${color.name(processTypesDisplayList)} for ${color.app(app)}`)
+    await platform.container.removeProcessTypes(app, processTypes)
+    ux.action.stop()
   }
 }
