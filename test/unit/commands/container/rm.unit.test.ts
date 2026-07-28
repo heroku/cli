@@ -1,19 +1,38 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/container/rm.js'
 
+type FakePlatform = {
+  container: {
+    ensureContainerStack: SinonStub
+    removeProcessTypes: SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    container: {
+      ensureContainerStack: stub(),
+      removeProcessTypes: stub(),
+    },
+  }
+}
+
 describe('container removal', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com:443')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
+    restore()
   })
 
   it('requires a container to be specified', async function () {
@@ -27,9 +46,14 @@ describe('container removal', function () {
   })
 
   it('exits when the app stack is not "container"', async function () {
-    api
-      .get('/apps/testapp')
-      .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
+    fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+
+      build_stack: {id: 'heroku-24', name: 'heroku-24'},
+      id: 'app-id',
+      name: 'testapp',
+      stack: {id: 'heroku-24', name: 'heroku-24'},
+    }))
+
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -42,22 +66,11 @@ describe('container removal', function () {
   })
 
   context('when the app is a container app', function () {
-    let apiV3DockerRelease: nock.Scope
-
     beforeEach(function () {
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
-      apiV3DockerRelease = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.docker-releases'}})
-    })
-    afterEach(function () {
-      apiV3DockerRelease.done()
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('removes one container', async function () {
-      apiV3DockerRelease
-        .patch('/apps/testapp/formation/web')
-        .reply(200, {})
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -65,14 +78,10 @@ describe('container removal', function () {
       ])
       expectOutput(stdout, '')
       expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
+      expect(fakePlatform.container.removeProcessTypes.calledOnceWith('testapp', ['web'])).to.equal(true)
     })
 
     it('removes two containers', async function () {
-      apiV3DockerRelease
-        .patch('/apps/testapp/formation/web')
-        .reply(200, {})
-        .patch('/apps/testapp/formation/worker')
-        .reply(200, {})
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -80,8 +89,8 @@ describe('container removal', function () {
         'worker',
       ])
       expectOutput(stdout, '')
-      expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
-      expect(stderr).to.contain('Removing container worker for ⬢ testapp... done')
+      expect(stderr).to.contain('Removing container web, worker for ⬢ testapp... done')
+      expect(fakePlatform.container.removeProcessTypes.calledOnceWith('testapp', ['web', 'worker'])).to.equal(true)
     })
   })
 })

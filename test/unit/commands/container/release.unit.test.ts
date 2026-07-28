@@ -1,24 +1,51 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import {createSandbox, SinonSandbox} from 'sinon'
+import {createSandbox, SinonSandbox, SinonStub} from 'sinon'
 
 import Cmd from '../../../../src/commands/container/release.js'
 
+type FakePlatform = {
+  container: {
+    ensureContainerStack: SinonStub
+    releaseImages: SinonStub
+  }
+  release: {
+    info: SinonStub
+  }
+}
+
+function buildFakePlatform(sandbox: SinonSandbox): FakePlatform {
+  return {
+    container: {
+      ensureContainerStack: sandbox.stub().resolves(),
+      releaseImages: sandbox.stub().resolves({
+        newRelease: {id: 'new-release', status: 'succeeded'},
+        oldRelease: {id: 'old-release', status: 'succeeded'},
+      }),
+    },
+    release: {
+      info: sandbox.stub().resolves({status: 'succeeded'}),
+    },
+  }
+}
+
 describe('container release', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   let sandbox: SinonSandbox
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com:443')
     sandbox = createSandbox()
+    fakePlatform = buildFakePlatform(sandbox)
+    sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    return sandbox.restore()
+    sandbox.restore()
   })
 
   it('has no process type specified', async function () {
@@ -32,9 +59,14 @@ describe('container release', function () {
   })
 
   it('exits when the app stack is not "container"', async function () {
-    api
-      .get('/apps/testapp')
-      .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
+    fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+
+      build_stack: {id: 'heroku-24', name: 'heroku-24'},
+      id: 'app-id',
+      name: 'testapp',
+      stack: {id: 'heroku-24', name: 'heroku-24'},
+    }))
+
     const {error} = await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -53,9 +85,6 @@ describe('container release', function () {
     beforeEach(function () {
       originalHost = process.env.HEROKU_HOST
       process.env.HEROKU_HOST = 'attacker.com'
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
       registry = nock('https://registry.heroku.com:443')
     })
 
@@ -70,17 +99,6 @@ describe('container release', function () {
     })
 
     it('rejects invalid host and sends request to registry.heroku.com', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id'}])
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -97,28 +115,24 @@ describe('container release', function () {
 
   context('when the app is a container app', function () {
     let registry: nock.Scope
+
     beforeEach(function () {
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
       registry = nock('https://registry.heroku.com:443')
     })
 
+    afterEach(function () {
+      registry.done()
+    })
+
     it('releases a single process type, no previous release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id'},
+        oldRelease: undefined,
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -126,23 +140,18 @@ describe('container release', function () {
       ])
       expect(stderr).to.contain('Releasing images web to testapp... done')
       expect(stdout).to.equal('')
+      expect(fakePlatform.container.releaseImages.calledOnce).to.equal(true)
     })
 
     it('releases a single process type, with a previous release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id'},
+        oldRelease: {id: 'old_release_id'},
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -150,23 +159,18 @@ describe('container release', function () {
       ])
       expect(stderr).to.contain('Releasing images web to testapp... done')
       expect(stdout).to.equal('')
+      expect(fakePlatform.container.releaseImages.calledOnce).to.equal(true)
     })
 
     it('retrieves data from a v1 schema version, no previous release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id', status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'succeeded'},
+        oldRelease: undefined,
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {history: [{v1Compatibility: '{"id":"image_id"}'}], schemaVersion: 1})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -174,23 +178,18 @@ describe('container release', function () {
       ])
       expect(stderr).to.contain('Releasing images web to testapp... done')
       expect(stdout).to.equal('')
+      expect(fakePlatform.container.releaseImages.firstCall.args[1][0].docker_image).to.equal('image_id')
     })
 
     it('retrieves data from a v1 schema version, with a previous release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id', status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'succeeded'},
+        oldRelease: {id: 'old_release_id', status: 'succeeded'},
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {history: [{v1Compatibility: '{"id":"image_id"}'}], schemaVersion: 1})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -198,25 +197,20 @@ describe('container release', function () {
       ])
       expect(stderr).to.contain('Releasing images web to testapp... done')
       expect(stdout).to.equal('')
+      expect(fakePlatform.container.releaseImages.firstCall.args[1][0].docker_image).to.equal('image_id')
     })
 
     it('releases multiple process types, no previous release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'web_image_id', type: 'web'}, {docker_image: 'worker_image_id', type: 'worker'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id', status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'succeeded'},
+        oldRelease: undefined,
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'web_image_id'}, schemaVersion: 2})
         .get('/v2/testapp/worker/manifests/latest')
         .reply(200, {config: {digest: 'worker_image_id'}, schemaVersion: 2})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -225,25 +219,23 @@ describe('container release', function () {
       ])
       expect(stderr).to.contain('Releasing images web,worker to testapp... done')
       expect(stdout).to.equal('')
+      expect(fakePlatform.container.releaseImages.firstCall.args[1]).to.deep.equal([
+        {docker_image: 'web_image_id', type: 'web'},
+        {docker_image: 'worker_image_id', type: 'worker'},
+      ])
     })
 
     it('releases multiple process types, with a previous release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'web_image_id', type: 'web'}, {docker_image: 'worker_image_id', type: 'worker'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id', status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'succeeded'},
+        oldRelease: {id: 'old_release_id', status: 'succeeded'},
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'web_image_id'}, schemaVersion: 2})
         .get('/v2/testapp/worker/manifests/latest')
         .reply(200, {config: {digest: 'worker_image_id'}, schemaVersion: 2})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -252,53 +244,43 @@ describe('container release', function () {
       ])
       expect(stderr).to.contain('Releasing images web,worker to testapp... done')
       expect(stdout).to.equal('')
+      expect(fakePlatform.container.releaseImages.firstCall.args[1]).to.deep.equal([
+        {docker_image: 'web_image_id', type: 'web'},
+        {docker_image: 'worker_image_id', type: 'worker'},
+      ])
     })
 
     it('releases with previous release and immediately successful release phase', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id', status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'succeeded'},
+        oldRelease: {id: 'old_release_id', status: 'succeeded'},
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
       ])
-      expect(stdout).to.equal('')
       expect(stderr).to.contain('Releasing images web to testapp... done')
+      expect(stdout).to.equal('')
     })
 
     it('releases with previous release and pending then successful release phase', async function () {
       const busl = nock('https://busl.test:443')
         .get('/streams/release.log')
         .reply(200, 'Release Output Content')
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'failed'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {
           id: 'release_id',
           output_stream_url: 'https://busl.test/streams/release.log',
           status: 'pending',
-        }])
-        .get('/apps/testapp/releases/release_id')
-        .reply(200, [{status: 'succeeded'}])
+        },
+        oldRelease: {id: 'old_release_id', status: 'failed'},
+      })
+      fakePlatform.release.info.resolves({status: 'succeeded'})
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -312,22 +294,16 @@ describe('container release', function () {
       expect(stdout).to.contain('Running release command...')
       expect(stdout).to.contain('Release Output Content')
       expect(stderr).to.contain('Releasing images web to testapp...')
+      expect(fakePlatform.release.info.calledOnceWith('testapp', 'release_id')).to.equal(true)
 
       busl.done()
     })
 
     it('releases with previous release and immediately failed release phase', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'release_id', status: 'failed'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'failed'},
+        oldRelease: {id: 'old_release_id', status: 'succeeded'},
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -350,23 +326,15 @@ describe('container release', function () {
       const busl = nock('https://busl.test:443')
         .get('/streams/release.log')
         .reply(200, 'Release Output Content')
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {
           id: 'release_id',
           output_stream_url: 'https://busl.test/streams/release.log',
           status: 'pending',
-        }])
-        .get('/apps/testapp/releases/release_id')
-        .reply(200, {status: 'failed'})
+        },
+        oldRelease: {id: 'old_release_id', status: 'succeeded'},
+      })
+      fakePlatform.release.info.resolves({status: 'failed'})
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -389,51 +357,36 @@ describe('container release', function () {
     })
 
     it('releases with no previous release and immediately successful release phase', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'succeeded'},
+        oldRelease: undefined,
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
 
-      const {stderr} = await runCommand(Cmd, [
+      const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
         'web',
       ])
-
       expect(stderr).to.contain('Releasing images web to testapp... done')
+      expect(stdout).to.equal('')
     })
 
     it('releases with no previous release and pending then successful release phase', async function () {
       const busl = nock('https://busl.test:443')
         .get('/streams/release.log')
         .reply(200, 'Release Output Content')
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {
           id: 'release_id',
           output_stream_url: 'https://busl.test/streams/release.log',
           status: 'pending',
-        }])
-        .get('/apps/testapp/releases/release_id')
-        .reply(200, [{status: 'succeeded'}])
+        },
+        oldRelease: undefined,
+      })
+      fakePlatform.release.info.resolves({status: 'succeeded'})
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -452,17 +405,10 @@ describe('container release', function () {
     })
 
     it('releases with no previous release and immediately failed release phase', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{status: 'failed'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'release_id', status: 'failed'},
+        oldRelease: undefined,
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -476,7 +422,6 @@ describe('container release', function () {
       const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal('Error: release command failed')
       expect(oclif.exit).to.equal(1)
-
       expect(stderr).to.contain('Releasing images web to testapp... done')
     })
 
@@ -484,23 +429,15 @@ describe('container release', function () {
       const busl = nock('https://busl.test:443')
         .get('/streams/release.log')
         .reply(200, 'Release Output Content')
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [])
-        .get('/apps/testapp/releases')
-        .reply(200, [{
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {
           id: 'release_id',
           output_stream_url: 'https://busl.test/streams/release.log',
           status: 'pending',
-        }])
-        .get('/apps/testapp/releases/release_id')
-        .reply(200, {status: 'failed'})
+        },
+        oldRelease: undefined,
+      })
+      fakePlatform.release.info.resolves({status: 'failed'})
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
@@ -514,7 +451,6 @@ describe('container release', function () {
       const {message, oclif} = error as unknown as Errors.CLIError
       expect(message).to.equal('Error: release command failed')
       expect(oclif.exit).to.equal(1)
-
       expect(stdout).to.contain('Running release command...')
       expect(stdout).to.contain('Release Output Content')
       expect(stderr).to.contain('Releasing images web to testapp...')
@@ -523,20 +459,14 @@ describe('container release', function () {
     })
 
     it('has release phase but no new release', async function () {
-      api
-        .patch('/apps/testapp/formation', {
-          updates: [
-            {docker_image: 'image_id', type: 'web'},
-          ],
-        })
-        .reply(200, {})
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
-        .get('/apps/testapp/releases')
-        .reply(200, [{id: 'old_release_id', status: 'succeeded'}])
+      fakePlatform.container.releaseImages.resolves({
+        newRelease: {id: 'old_release_id', status: 'succeeded'},
+        oldRelease: {id: 'old_release_id', status: 'succeeded'},
+      })
       registry
         .get('/v2/testapp/web/manifests/latest')
         .reply(200, {config: {digest: 'image_id'}, schemaVersion: 2})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'testapp',
@@ -544,6 +474,7 @@ describe('container release', function () {
       ])
       expect(stderr).to.not.contain('Running release command...')
       expect(stdout).to.equal('')
+      expect(fakePlatform.release.info.called).to.equal(false)
     })
   })
 })
