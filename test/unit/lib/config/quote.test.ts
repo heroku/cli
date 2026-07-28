@@ -8,7 +8,7 @@ describe('quote', function () {
     ['ab$c', "'ab$c'"],
     ['a\'bc', '"a\'bc"'],
     ['a\nb\nc', String.raw`"a\nb\nc"`],
-    [String.raw`foo\nb:ar\bz`, String.raw`'foo\\nb:ar\\bz'`],
+    [String.raw`foo\nb:ar\bz`, String.raw`'foo\nb:ar\bz'`],
   ]) {
     it(`${a}===${b}`, function () {
       expect(quote(a)).to.eq(b)
