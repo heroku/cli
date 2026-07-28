@@ -9,7 +9,7 @@ export function quote(s: string): string {
         .replaceAll(/(["\\$`!])/g, String.raw`\$1`)
         .replaceAll('\n', String.raw`\n`)
       + '"'
-    return "'" + s.replaceAll(/(['\\])/g, String.raw`\$1`) + "'"
+    return "'" + s + "'"
   }
 
   return s
@@ -19,7 +19,7 @@ export function parse(a: string): string {
   if (a.startsWith('"')) {
     a = a.replaceAll(String.raw`\n`, '\n')
   } else if (a.startsWith("'")) {
-    a = a.replaceAll('\\\\', '\\')
+    // single-quoted strings are literal in POSIX sh — no unescaping needed
   }
 
   const parsed = shell.parse(a)

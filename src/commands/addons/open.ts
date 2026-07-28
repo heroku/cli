@@ -139,7 +139,7 @@ export default class Open extends Command {
 
   private async writeSudoTemplate(app: string, addon: string, sso:AddonSso): Promise<string> {
     const ssoPath = path.join(os.tmpdir(), 'heroku-sso.html')
-    const html = `<!DOCTYPE HTML>\n<html lang="en">\n  <head>\n    <meta charset="utf-8">\n    <title>Heroku Add-ons SSO</title>\n    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>\n  </head>\n\n  <body>\n    <h3>Opening ${addon}${app ? ` on ${app}` : ''}...</h3>\n    <form method="POST" action="${sso.action}">\n    </form>\n\n    <script>\n      var params = ${JSON.stringify(sso.params)}\n      var form = document.forms[0]\n      $(document).ready(function() {\n        $.each(params, function(key, value) {\n          $('<input>').attr({ type: 'hidden', name: key, value: value })\n            .appendTo(form)\n        })\n        form.submit()\n      })\n    </script>\n  </body>\n</html>`
+    const html = `<!DOCTYPE HTML>\n<html lang="en">\n  <head>\n    <meta charset="utf-8">\n    <title>Heroku Add-ons SSO</title>\n  </head>\n\n  <body>\n    <h3>Opening ${addon}${app ? ` on ${app}` : ''}...</h3>\n    <form method="POST" action="${sso.action}">\n    </form>\n\n    <script>\n      document.addEventListener('DOMContentLoaded', function() {\n        var params = ${JSON.stringify(sso.params)}\n        var form = document.forms[0]\n        Object.keys(params).forEach(function(key) {\n          var input = document.createElement('input')\n          input.type = 'hidden'\n          input.name = key\n          input.value = params[key]\n          form.appendChild(input)\n        })\n        form.submit()\n      })\n    </script>\n  </body>\n</html>`
     await fs.writeFile(ssoPath, html)
     return ssoPath
   }
