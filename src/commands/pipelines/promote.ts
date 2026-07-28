@@ -117,6 +117,7 @@ export default class Promote extends Command {
       ux.stdout('\nPromotion successful')
     } else {
       ux.warn('\nPromotion to some apps failed')
+      process.exitCode = 1
     }
 
     hux.styledObject(styledTargets)

@@ -30,14 +30,16 @@ const getAttachmentInfo = async function (heroku: APIClient, db: string, app: st
   const {body: config} = await heroku.get<Heroku.ConfigVars>(`/apps/${attachment.app.name}/config-vars`)
   const formattedConfig = Object.fromEntries(Object.entries(config).map(([k, v]) => [k.toUpperCase(), v]))
 
+  const addonName = attachment.name
+    .replace(/^HEROKU_POSTGRESQL_/, '')
+    .replace(/_URL$/, '')
   return {
     attachment: {
       ...attachment,
       addon,
     },
-    confirm: app,
-    name: attachment.name.replace(/^HEROKU_POSTGRESQL_/, '')
-      .replace(/_URL$/, ''),
+    confirm: addonName,
+    name: addonName,
     url: formattedConfig[attachment.name.toUpperCase() + '_URL'],
   }
 }
