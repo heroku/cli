@@ -4,7 +4,6 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
 import {gitService} from '../../lib/ci/git.js'
-import * as Kolkrabbi from '../../lib/ci/interfaces/kolkrabbi.js'
 import {getPipeline} from '../../lib/ci/pipelines.js'
 import {createSourceBlob} from '../../lib/ci/source.js'
 import {displayAndExit} from '../../lib/ci/test-run.js'
@@ -31,8 +30,8 @@ export default class CiRun extends Command {
     ux.action.stop()
 
     ux.action.start('Starting test run')
-    const {body: pipelineRepository} = await this.heroku.get<Kolkrabbi.KolkrabbiApiPipelineRepositories>(`https://kolkrabbi.heroku.com/pipelines/${pipeline.id}/repository`)
-    const organization = pipelineRepository.organization && pipelineRepository.organization.name
+    const {body: fullPipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${pipeline.id}`, {headers: {Accept: 'application/vnd.heroku+json; version=3.pipelines'}})
+    const organization = fullPipeline.owner?.type === 'team' ? (fullPipeline.owner.name ?? fullPipeline.owner.id) : undefined
     const {body: testRun} = await this.heroku.post<Heroku.TestRun>('/test-runs', {
       body: {
         commit_branch: commit.branch,

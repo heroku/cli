@@ -48,7 +48,7 @@ describe('pipelines:diff', function () {
   }
 
   const targetGithubApp = {
-    repo: 'heroku/example-app',
+    full_name: 'heroku/example-app',
   }
 
   const downstreamApp1 = {
@@ -80,7 +80,7 @@ describe('pipelines:diff', function () {
   }
 
   const downstreamApp1Github = {
-    repo: 'heroku/example-app',
+    full_name: 'heroku/example-app',
   }
 
   const downstreamApp2 = {
@@ -112,23 +112,23 @@ describe('pipelines:diff', function () {
   }
 
   const downstreamApp2Github = {
-    repo: 'heroku/some-other-app',
+    full_name: 'heroku/some-other-app',
+  }
+
+  const repositoriesApiHeaders = {
+    reqheaders: {
+      accept: 'application/vnd.heroku+json; version=3.repositories-api',
+    },
   }
 
   let api: nock.Scope
-  let kolkrabbiApi: nock.Scope
-  let githubApi: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
-    githubApi = nock('https://api.github.com')
   })
 
   afterEach(function () {
     api.done()
-    kolkrabbiApi.done()
-    githubApi.done()
     nock.cleanAll()
   })
 
@@ -173,13 +173,11 @@ describe('pipelines:diff', function () {
         .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
-
-      kolkrabbiApi
-        .get(`/apps/${targetApp.id}/github`)
+        .get(`/apps/${targetApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(404, {message: 'Not found.'})
-        .get(`/apps/${downstreamApp1.id}/github`)
+        .get(`/apps/${downstreamApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamApp2.id}/github`)
+        .get(`/apps/${downstreamApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
 
       const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
@@ -197,13 +195,11 @@ describe('pipelines:diff', function () {
         .reply(200, [targetApp, downstreamApp1, downstreamApp2])
         .get(`/pipelines/${targetCoupling.pipeline.id}`)
         .reply(200, pipelineWithGeneration)
-
-      kolkrabbiApi
-        .get(`/apps/${targetApp.id}/github`)
+        .get(`/apps/${targetApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, targetGithubApp)
-        .get(`/apps/${downstreamApp1.id}/github`)
+        .get(`/apps/${downstreamApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamApp2.id}/github`)
+        .get(`/apps/${downstreamApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
 
       const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
@@ -223,13 +219,11 @@ describe('pipelines:diff', function () {
         .reply(200, pipelineWithGeneration)
         .get(`/apps/${targetApp.id}/releases`)
         .reply(200, [])
-
-      kolkrabbiApi
-        .get(`/apps/${targetApp.id}/github`)
+        .get(`/apps/${targetApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, targetGithubApp)
-        .get(`/apps/${downstreamApp1.id}/github`)
+        .get(`/apps/${downstreamApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamApp2.id}/github`)
+        .get(`/apps/${downstreamApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
 
       const {error} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
@@ -263,16 +257,12 @@ describe('pipelines:diff', function () {
         .reply(200, {commit: 'COMMIT-HASH'})
         .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
         .reply(200, {commit: 'COMMIT-HASH'})
-
-      kolkrabbiApi
-        .get(`/apps/${targetApp.id}/github`)
+        .get(`/apps/${targetApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, targetGithubApp)
-        .get(`/apps/${downstreamApp1.id}/github`)
+        .get(`/apps/${downstreamApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamApp2.id}/github`)
+        .get(`/apps/${downstreamApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
-        .get('/account/github/token')
-        .reply(200, {github: {token: 'github-token'}})
 
       const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
 
@@ -303,19 +293,13 @@ describe('pipelines:diff', function () {
         .reply(200, {commit: hashes[0]})
         .get(`/apps/${downstreamApp1.id}/slugs/${downstreamSlugId}`)
         .reply(200, {commit: hashes[1]})
-
-      kolkrabbiApi
-        .get(`/apps/${targetApp.id}/github`)
+        .get(`/apps/${targetApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, targetGithubApp)
-        .get(`/apps/${downstreamApp1.id}/github`)
+        .get(`/apps/${downstreamApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamApp2.id}/github`)
+        .get(`/apps/${downstreamApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
-        .get('/account/github/token')
-        .reply(200, {github: {token: 'github-token'}})
-
-      githubApi
-        .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
+        .get(`/pipelines/${pipeline.id}/repo/compare?base=${hashes[1]}&head=${hashes[0]}`, undefined, repositoriesApiHeaders)
         .reply(404)
 
       const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetApp.name}`])
@@ -349,16 +333,12 @@ describe('pipelines:diff', function () {
         .reply(200, [{commit: 'COMMIT-HASH'}])
         .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
         .reply(200, [{commit: 'COMMIT-HASH'}])
-
-      kolkrabbiApi
-        .get(`/apps/${targetFirApp.id}/github`)
+        .get(`/apps/${targetFirApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, targetGithubApp)
-        .get(`/apps/${downstreamFirApp1.id}/github`)
+        .get(`/apps/${downstreamFirApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamFirApp2.id}/github`)
+        .get(`/apps/${downstreamFirApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
-        .get('/account/github/token')
-        .reply(200, {github: {token: 'github-token'}})
 
       const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetFirApp.name}`])
 
@@ -389,19 +369,13 @@ describe('pipelines:diff', function () {
         .reply(200, [{commit: hashes[0]}])
         .get(`/apps/${downstreamFirApp1.id}/oci-images/${downstreamOciImageId}`)
         .reply(200, [{commit: hashes[1]}])
-
-      kolkrabbiApi
-        .get(`/apps/${targetFirApp.id}/github`)
+        .get(`/apps/${targetFirApp.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, targetGithubApp)
-        .get(`/apps/${downstreamFirApp1.id}/github`)
+        .get(`/apps/${downstreamFirApp1.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp1Github)
-        .get(`/apps/${downstreamFirApp2.id}/github`)
+        .get(`/apps/${downstreamFirApp2.id}/repo`, undefined, repositoriesApiHeaders)
         .reply(200, downstreamApp2Github)
-        .get('/account/github/token')
-        .reply(200, {github: {token: 'github-token'}})
-
-      githubApi
-        .get(`/repos/${targetGithubApp.repo}/compare/${hashes[1]}...${hashes[0]}`)
+        .get(`/pipelines/${firPipeline.id}/repo/compare?base=${hashes[1]}&head=${hashes[0]}`, undefined, repositoriesApiHeaders)
         .reply(404)
 
       const {stdout} = await runCommand(PipelinesDiff, [`--app=${targetFirApp.name}`])

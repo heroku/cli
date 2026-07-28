@@ -1,13 +1,23 @@
+import {APIClient} from '@heroku-cli/command'
 import {ux} from '@oclif/core/ux'
 
-export default function setupPipeline(kolkrabbi: any, app: any, settings: any, pipelineID: any, ciSettings: any = {}) {
-  const promises = [kolkrabbi.updateAppLink(app, settings)]
-
-  if (ciSettings.ci) {
-    promises.push(kolkrabbi.updatePipelineRepository(pipelineID, ciSettings))
+export default async function setupPipeline(heroku: APIClient, settings: any, pipelineID: string, repoFullName: string) {
+  if (!settings.pull_requests?.enabled) {
+    return
   }
 
-  return Promise.all(promises).then(([appLink]) => appLink, error => {
-    ux.error(error.body.message || error.message)
-  })
+  try {
+    await heroku.post(`/pipelines/${pipelineID}/review-app-config`, {
+      body: {
+        automatic_review_apps: settings.pull_requests.auto_deploy,
+        destroy_stale_apps: settings.pull_requests.auto_destroy,
+        pipeline: pipelineID,
+        repo: repoFullName,
+        wait_for_ci: settings.wait_for_ci,
+      },
+      headers: {Accept: 'application/vnd.heroku+json; version=3.review-apps'},
+    })
+  } catch (error: any) {
+    ux.error(error.body?.message || error.message)
+  }
 }
