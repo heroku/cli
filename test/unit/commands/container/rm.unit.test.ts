@@ -77,7 +77,7 @@ describe('container removal', function () {
         'web',
       ])
       expectOutput(stdout, '')
-      expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
+      expect(stderr).to.contain('Removing containers web from ⬢ testapp... done')
       expect(fakePlatform.container.removeProcessTypes.calledOnceWith('testapp', ['web'])).to.equal(true)
     })
 
@@ -89,7 +89,7 @@ describe('container removal', function () {
         'worker',
       ])
       expectOutput(stdout, '')
-      expect(stderr).to.contain('Removing container web, worker for ⬢ testapp... done')
+      expect(stderr).to.contain('Removing containers web, worker from ⬢ testapp... done')
       expect(fakePlatform.container.removeProcessTypes.calledOnceWith('testapp', ['web', 'worker'])).to.equal(true)
     })
   })

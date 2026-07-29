@@ -12,7 +12,7 @@
 
 ## Container commands
 
-- `container:rm` now shows a single spinner for batch removal (for example: `Removing container web, worker, clock and 2 more for example-app... done`)
+- `container:rm` now shows a single spinner for batch removal (for example: `Removing containers web, worker, clock from example-app... done`)
 
 ## Run commands
 
