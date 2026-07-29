@@ -41,7 +41,7 @@ describe('domains:wait', function () {
 
     const {stderr} = await runCommand(DomainsWait, ['--app', 'myapp'])
 
-    expect(stderr).to.contain('Waiting for all pending domains... done')
+    expect(stderr).to.contain('Waiting for all pending domains for app myapp... done')
     expect(fakePlatform.domain.wait.calledOnceWithExactly('myapp', {hostname: undefined})).to.equal(true)
   })
 })
