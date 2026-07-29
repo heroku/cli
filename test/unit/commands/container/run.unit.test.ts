@@ -1,25 +1,36 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
-import nock from 'nock'
-import {createSandbox, SinonSandbox} from 'sinon'
+import {createSandbox, SinonSandbox, SinonStub} from 'sinon'
 
 import Cmd from '../../../../src/commands/container/run.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
+type FakePlatform = {
+  container: {ensureContainerStack: SinonStub}
+}
+
+function buildFakePlatform(sandbox: SinonSandbox): FakePlatform {
+  return {
+    container: {ensureContainerStack: sandbox.stub()},
+  }
+}
+
 describe('container run', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   let sandbox: SinonSandbox
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com:443')
     process.env.HEROKU_API_KEY = 'heroku_token'
     sandbox = createSandbox()
+    fakePlatform = buildFakePlatform(sandbox)
+    sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    return sandbox.restore()
+    sandbox.restore()
   })
 
   context('when HEROKU_HOST is set to an invalid domain', function () {
@@ -28,9 +39,7 @@ describe('container run', function () {
     beforeEach(function () {
       originalHost = process.env.HEROKU_HOST
       process.env.HEROKU_HOST = 'attacker.com'
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     afterEach(function () {
@@ -70,9 +79,12 @@ describe('container run', function () {
   })
 
   it('exits when the app stack is not "container"', async function () {
-    api
-      .get('/apps/testapp')
-      .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
+    fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+      build_stack: {name: 'heroku-24'},
+      id: 'test-id',
+      name: 'testapp',
+      stack: {id: 'test-id', name: 'heroku-24'},
+    }))
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',
@@ -86,9 +98,7 @@ describe('container run', function () {
 
   context('when the app is a container app', function () {
     beforeEach(function () {
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('runs a container', async function () {

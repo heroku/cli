@@ -1,26 +1,36 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
-import nock from 'nock'
 import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/container/push.js'
 import {DockerHelper} from '../../../../src/lib/container/docker-helper.js'
 
+type FakePlatform = {
+  container: {ensureContainerStack: sinon.SinonStub}
+}
+
+function buildFakePlatform(sandbox: sinon.SinonSandbox): FakePlatform {
+  return {
+    container: {ensureContainerStack: sandbox.stub()},
+  }
+}
+
 describe('container push', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   let sandbox: sinon.SinonSandbox
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com:443')
     sandbox = sinon.createSandbox()
-    return nock.cleanAll()
+    fakePlatform = buildFakePlatform(sandbox)
+    sandbox.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    return sandbox.restore()
+    sandbox.restore()
   })
 
   context('when HEROKU_HOST is set to an invalid domain', function () {
@@ -29,9 +39,7 @@ describe('container push', function () {
     beforeEach(function () {
       originalHost = process.env.HEROKU_HOST
       process.env.HEROKU_HOST = 'attacker.com'
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     afterEach(function () {
@@ -64,9 +72,12 @@ describe('container push', function () {
 
   context('when the app stack is not "container"', function () {
     beforeEach(function () {
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'heroku-24'}})
+      fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
+        build_stack: {name: 'heroku-24'},
+        id: 'test-id',
+        name: 'testapp',
+        stack: {id: 'test-id', name: 'heroku-24'},
+      }))
     })
 
     it('exits', async function () {
@@ -83,9 +94,7 @@ describe('container push', function () {
 
   context('when the app build_stack is container', function () {
     beforeEach(function () {
-      api
-        .get('/apps/testapp')
-        .reply(200, {build_stack: {name: 'container'}, name: 'testapp', stack: {name: 'heroku-24'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('allows push to the docker registry', async function () {
@@ -113,9 +122,7 @@ describe('container push', function () {
 
   context('when the app is a container app', function () {
     beforeEach(function () {
-      api
-        .get('/apps/testapp')
-        .reply(200, {name: 'testapp', stack: {name: 'container'}})
+      fakePlatform.container.ensureContainerStack.resolves()
     })
 
     it('gets a build error', async function () {

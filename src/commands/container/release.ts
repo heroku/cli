@@ -1,6 +1,7 @@
 import {Command, flags, vars} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
@@ -29,6 +30,7 @@ export default class ContainerRelease extends Command {
   static usage = 'container:release'
 
   async run() {
+    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
     const {argv, flags} = await this.parse(ContainerRelease)
     const {app, verbose} = flags
 
@@ -40,8 +42,7 @@ export default class ContainerRelease extends Command {
       debug.enabled = true
     }
 
-    const {body: appBody} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
-    ensureContainerStack(appBody, 'release')
+    await ensureContainerStack(platform, app, 'release')
 
     const updateData: any[] = []
     for (const process of argv) {
@@ -77,25 +78,11 @@ export default class ContainerRelease extends Command {
       })
     }
 
-    const {body: oldReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
-    })
-    const oldRelease = oldReleases[0]
-
     ux.action.start(`Releasing images ${argv.join(',')} to ${app}`)
-    await this.heroku.patch(`/apps/${app}/formation`, {
-      body: {updates: updateData}, headers: {
-        Accept: 'application/vnd.heroku+json; version=3.docker-releases',
-      },
-    })
+    const {newRelease: release, oldRelease} = await platform.container.releaseImages(app, updateData)
     ux.action.stop()
 
-    const {body: updatedReleases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
-    })
-    const release = updatedReleases[0]
-
-    if ((!oldRelease && !release) || (oldRelease && (oldRelease.id === release.id))) {
+    if (!release || (oldRelease?.id === release.id)) {
       return
     }
 
@@ -104,7 +91,7 @@ export default class ContainerRelease extends Command {
     } else if ((release.status === 'pending') && release.output_stream_url) {
       ux.stdout('Running release command...')
       await streamer(release.output_stream_url, process.stdout)
-      const {body: finishedRelease} = await this.heroku.request<Heroku.Release>(`/apps/${app}/releases/${release.id}`)
+      const finishedRelease = await platform.release.info(app, release.id)
       if (finishedRelease.status === 'failed') {
         ux.error('Error: release command failed', {exit: 1})
       }
