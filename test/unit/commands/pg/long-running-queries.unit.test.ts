@@ -45,6 +45,11 @@ WHERE
   pg_stat_activity.query <> ''::text
   AND state <> 'idle'
   AND now() - pg_stat_activity.query_start > interval '5 minutes'
+  AND backend_type <> 'walsender'
+  AND NOT (
+    usename = 'postgres'
+    AND query LIKE '%pg_backup_start%'
+  )
 ORDER BY
   now() - pg_stat_activity.query_start DESC;`
 
@@ -57,6 +62,17 @@ ORDER BY
       expect(query).to.contain('now() - pg_stat_activity.query_start')
       expect(query).to.contain("state <> 'idle'")
       expect(query).to.contain("interval '5 minutes'")
+    })
+
+    it('excludes the internal physical backup query from results', function () {
+      const query = generateLongRunningQueriesQuery()
+      expect(query).to.contain("usename = 'postgres'")
+      expect(query).to.contain("query LIKE '%pg_backup_start%'")
+    })
+
+    it('excludes walsender backends from results', function () {
+      const query = generateLongRunningQueriesQuery()
+      expect(query).to.contain("backend_type <> 'walsender'")
     })
   })
 
