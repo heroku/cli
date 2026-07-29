@@ -32,7 +32,7 @@ export default class Rm extends Command {
     await ensureContainerStack(platform, app, 'rm')
 
     const processTypes = argv as string[]
-    ux.action.start(`Removing containers ${color.name(processTypes.join(', '))} from ${color.app(app)}`)
+    ux.action.start(`Removing containers ${processTypes.join(', ')} from ${color.app(app)}`)
     await platform.container.removeProcessTypes(app, processTypes)
     ux.action.stop()
   }
