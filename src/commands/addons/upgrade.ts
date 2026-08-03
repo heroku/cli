@@ -9,6 +9,8 @@ import {Args, ux} from '@oclif/core'
 
 import {formatPriceText} from '../../lib/addons/util.js'
 
+type Platform = HerokuSDK<readonly [typeof addOnExtensions]>['platform']
+
 function isApiError(error: unknown): error is Error & {statusCode: number} {
   return error instanceof Error && 'statusCode' in error && typeof (error as {statusCode?: unknown}).statusCode === 'number'
 }
@@ -80,20 +82,19 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     return {addon, plan}
   }
 
-  protected async getPlans(addonServiceName: string | undefined): Promise<Plan[]> {
+  protected async getPlans(addonServiceName: string | undefined, platform: Platform): Promise<Plan[]> {
     if (!addonServiceName) {
       return []
     }
 
     try {
-      const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
       return (await platform.addOn.listPlans(addonServiceName)) as unknown as Plan[]
     } catch {
       return []
     }
   }
 
-  public async run(): Promise<void> {
+  public async run(): Promise<Required<AddOn>> {
     const ctx = await this.parse(Upgrade)
     const {args, flags: {app}} = ctx
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
@@ -123,7 +124,7 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
       if (isApiError(error)) {
         const message = error.message || ''
         if (error.statusCode === 422 && message.startsWith('Couldn\'t find either the add-on')) {
-          const plans = await this.getPlans(addonServiceName)
+          const plans = await this.getPlans(addonServiceName, platform)
           errorToThrow = new Error(`${message}
 
 Here are the available plans for ${color.addon(addonServiceName || '')}:
@@ -143,5 +144,7 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`)
     if (updatedAddon.provision_message) {
       ux.stdout(updatedAddon.provision_message)
     }
+
+    return updatedAddon
   }
 }

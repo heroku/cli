@@ -41,6 +41,7 @@ describe('addons:upgrade', function () {
     ])
     expect(stdout).to.equal('provision msg\n')
     expect(stderr).to.contain('Changing kafka-swiftly-123 on ⬢ myapp from premium-0 to heroku-kafka:hobby... done, free')
+    expect(upgradeStub.calledOnce).to.be.true
   })
 
   it('displays hourly and monthly price when upgrading an add-on', async function () {
