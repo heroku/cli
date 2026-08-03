@@ -1,5 +1,5 @@
-import {AddOnAttachment} from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
+import {AddonNotFoundError} from '@heroku/sdk/resources/platform/add-on'
 import {expect} from 'chai'
 import nock from 'nock'
 import fs from 'node:fs/promises'
@@ -7,28 +7,33 @@ import path from 'node:path'
 import {SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/addons/open.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('The addons:open command', function () {
   let urlOpenerStub: SinonStub
+  let sdkMock: MockSDK
+  let resolveByAttachmentStub: SinonStub
+  let resolveStub: SinonStub
 
   beforeEach(function () {
     urlOpenerStub = stub(Cmd, 'urlOpener').callsFake(async () => {})
+    resolveByAttachmentStub = stub()
+    resolveStub = stub()
+    sdkMock = mockSDKPlatform({
+      addOn: {resolve: resolveStub, resolveByAttachment: resolveByAttachmentStub},
+    })
   })
 
   afterEach(function () {
     urlOpenerStub.reset()
     urlOpenerStub.restore()
+    sdkMock.restore()
     nock.cleanAll()
   })
 
   it('should only print the url when --show-url is used', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .post('/actions/addon-attachments/resolve', {addon_attachment: 'db2', app: 'myApp'})
-      .reply(404, {addon_attachment: 'db2', addon_service: undefined, app: 'myApp'})
-      .post('/actions/addons/resolve', {addon: 'db2', app: 'myApp'})
-      .reply(200, [{addon_service: undefined, id: 'db2', web_url: 'http://db2'}])
-      .get('/addons/db2/addon-attachments')
-      .reply(200, [])
+    resolveByAttachmentStub.rejects(new AddonNotFoundError())
+    resolveStub.resolves({id: 'db2', web_url: 'http://db2'})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -37,24 +42,13 @@ describe('The addons:open command', function () {
       'db2',
     ])
     expect(stdout).to.equal('http://db2\n')
-    return api.done()
+    expect(resolveByAttachmentStub.calledWith('myApp', 'db2')).to.be.true
+    expect(resolveStub.calledWith('db2', {appIdentity: 'myApp'})).to.be.true
   })
 
   it('should open an attached addon, by slug, with the correct `context_app`.', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .post('/actions/addon-attachments/resolve', {addon_attachment: 'slowdb', app: 'myapp-2'})
-      .reply(404, {resource: 'add_on attachment'})
-      .post('/actions/addons/resolve', {addon: 'slowdb', app: 'myapp-2'})
-      .reply(404, {resource: 'add_on'})
-      .post('/actions/addons/resolve', {addon: 'slowdb', app: null})
-      .reply(200, [{id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-slowdb'}])
-      .get('/addons/c7c9cf20-ec87-11e5-aea4-0002a5d5c51b/addon-attachments')
-      .reply(200, [
-        {app: {name: 'myapp'}, web_url: 'http://myapp-slowdb'}, {
-          app: {name: 'myapp-2'},
-          web_url: 'http://myapp-2-slowdb',
-        },
-      ])
+    resolveByAttachmentStub.resolves({id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-2-slowdb'})
+
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp-2',
@@ -62,7 +56,7 @@ describe('The addons:open command', function () {
     ])
     expect(urlOpenerStub.calledWith('http://myapp-2-slowdb')).to.be.true
     expect(stdout).to.equal('Opening http://myapp-2-slowdb...\n')
-    return api.done()
+    expect(resolveByAttachmentStub.calledWith('myapp-2', 'slowdb')).to.be.true
   })
 
   describe('should open the specified addon', function () {
@@ -71,10 +65,7 @@ describe('The addons:open command', function () {
     })
 
     it('url via the standard happy path.', async function () {
-      const responseBody: AddOnAttachment[] = [{name: 'REDIS', web_url: 'https://heroku.com'}]
-      const api = nock('https://api.heroku.com:443')
-        .post('/actions/addon-attachments/resolve', {addon_attachment: 'redis-321', app: 'myApp'})
-        .reply(201, responseBody)
+      resolveByAttachmentStub.resolves({name: 'REDIS', web_url: 'https://heroku.com'})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -83,14 +74,11 @@ describe('The addons:open command', function () {
       ])
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
       expect(stdout).to.equal('Opening https://heroku.com...\n')
-      return api.done()
+      expect(resolveByAttachmentStub.calledWith('myApp', 'redis-321')).to.be.true
     })
 
     it('url when "::" exists in the addon_attachment.', async function () {
-      const responseBody: AddOnAttachment[] = [{name: 'REDIS', web_url: 'https://heroku.com'}]
-      const api = nock('https://api.heroku.com:443')
-        .post('/actions/addon-attachments/resolve', {addon_attachment: 'redis::321', app: null})
-        .reply(201, responseBody)
+      resolveByAttachmentStub.resolves({name: 'REDIS', web_url: 'https://heroku.com'})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -99,7 +87,7 @@ describe('The addons:open command', function () {
       ])
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
       expect(stdout).to.equal('Opening https://heroku.com...\n')
-      return api.done()
+      expect(resolveByAttachmentStub.calledWith('myApp', 'redis::321')).to.be.true
     })
 
     it('url using sudo via sso.', async function () {
