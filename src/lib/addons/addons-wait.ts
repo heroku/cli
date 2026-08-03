@@ -4,14 +4,15 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
-export const waitForAddonProvisioning = async function (addon: Heroku.AddOn, interval: number) {
+type Platform = HerokuSDK['platform']
+
+export const waitForAddonProvisioning = async function (platform: Platform, addon: Heroku.AddOn, interval: number) {
   const app = addon.app?.name || ''
   const addonName = addon.name
   let addonBody = {...addon}
 
   ux.action.start(`Creating ${color.addon(addonName || '')}`)
 
-  const {platform} = new HerokuSDK()
   const platformWithExpansion = platform.withHeaders({'Accept-Expansion': 'addon_service,plan'})
   while (addonBody.state === 'provisioning') {
     // eslint-disable-next-line no-promise-executor-return
@@ -46,6 +47,40 @@ export const waitForAddonDeprovisioning = async function (api: APIClient, addon:
     }).then(response => {
       addonResponse = response?.body
     }).catch(error => {
+      // Not ideal, but API deletes the record returning a 404 when deprovisioned.
+      if (error.statusCode === 404 || error.http?.statusCode === 404) {
+        addonResponse.state = 'deprovisioned'
+      } else {
+        throw error
+      }
+    })
+  }
+
+  ux.action.stop()
+  return addonResponse
+}
+
+export const pollAddonUntilDeprovisioned = async function (platform: Platform, addon: Heroku.AddOn, interval: number) {
+  const app = addon.app?.name || ''
+  const addonName = addon.name || ''
+  let addonResponse = {...addon}
+
+  ux.action.start(`Destroying ${color.addon(addonName)}`)
+
+  const platformWithExpansion = platform.withHeaders({'Accept-Expansion': 'addon_service,plan'})
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  while (addonResponse.state === 'deprovisioning') {
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise(resolve => setTimeout(resolve, interval * 1000))
+
+    // eslint-disable-next-line no-await-in-loop
+    await (app
+      ? platformWithExpansion.addOn.infoByApp(app, addonName)
+      : platformWithExpansion.addOn.info(addonName)
+    ).then(response => {
+      addonResponse = response as unknown as Heroku.AddOn
+    }).catch((error: {http?: {statusCode?: number}, statusCode?: number}) => {
       // Not ideal, but API deletes the record returning a 404 when deprovisioned.
       if (error.statusCode === 404 || error.http?.statusCode === 404) {
         addonResponse.state = 'deprovisioned'
