@@ -1,6 +1,6 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
-import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
+import {NotAContainerAppError, type RemoveProcessTypesOpts} from '@heroku/sdk/extensions/platform'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -68,6 +68,12 @@ describe('container removal', function () {
   context('when the app is a container app', function () {
     beforeEach(function () {
       fakePlatform.container.ensureContainerStack.resolves()
+      fakePlatform.container.removeProcessTypes.callsFake(async (_app: string, processTypes: string[], options?: RemoveProcessTypesOpts) => {
+        for (const processType of processTypes) {
+          options?.onProgress?.onStart?.(processType)
+          options?.onProgress?.onStop?.(processType)
+        }
+      })
     })
 
     it('removes one container', async function () {
@@ -77,7 +83,7 @@ describe('container removal', function () {
         'web',
       ])
       expectOutput(stdout, '')
-      expect(stderr).to.contain('Removing containers web from ⬢ testapp... done')
+      expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
       expect(fakePlatform.container.removeProcessTypes.calledOnceWith('testapp', ['web'])).to.equal(true)
     })
 
@@ -89,7 +95,8 @@ describe('container removal', function () {
         'worker',
       ])
       expectOutput(stdout, '')
-      expect(stderr).to.contain('Removing containers web, worker from ⬢ testapp... done')
+      expect(stderr).to.contain('Removing container web for ⬢ testapp... done')
+      expect(stderr).to.contain('Removing container worker for ⬢ testapp... done')
       expect(fakePlatform.container.removeProcessTypes.calledOnceWith('testapp', ['web', 'worker'])).to.equal(true)
     })
   })
