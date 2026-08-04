@@ -117,6 +117,37 @@ describe('The addons:open command', function () {
       expect(resolveStub.calledWith('postgresql-rugged-40855', {appIdentity: 'myApp'})).to.be.true
     })
 
+    it('falls through to a direct resolve when resolveByAttachment throws a plain 404', async function () {
+      // resolveByAttachment can surface a non-AddonNotFoundError 404 (statusCode
+      // 404). isNotFound() must recognize it so we swallow it and resolve the
+      // add-on directly rather than rethrowing.
+      resolveByAttachmentStub.rejects(Object.assign(new Error('Not Found'), {statusCode: 404}))
+      resolveStub.resolves({name: 'db2', web_url: 'http://db2'})
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'db2',
+      ])
+      expect(stdout).to.equal('http://db2\n')
+      expect(resolveStub.calledWith('db2', {appIdentity: 'myApp'})).to.be.true
+    })
+
+    it('rethrows non-404 errors from resolveByAttachment', async function () {
+      // Anything that is neither AddonNotFoundError nor a 404 must propagate.
+      resolveByAttachmentStub.rejects(Object.assign(new Error('Boom'), {statusCode: 500}))
+
+      const {error} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'db2',
+      ])
+      expect(error?.message).to.equal('Boom')
+      expect(resolveStub.called).to.be.false
+    })
+
     it('url using sudo via sso.', async function () {
       process.env.HEROKU_SUDO = 'true'
       const api = nock('https://api.heroku.com:443')
