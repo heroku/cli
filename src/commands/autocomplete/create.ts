@@ -152,7 +152,7 @@ ${AC_LIB_PATH}/zsh
 $fpath
 );
 autoload -Uz compinit;
-compinit;
+(( \${+functions[compdef]} )) || compinit;
 `
   }
 
