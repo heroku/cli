@@ -137,7 +137,11 @@ describe('The addons:open command', function () {
       expect(stdout).to.equal(`Opening ${lastArg}...\n`)
 
       const file = await fs.readFile(normalizedPath.replace(`file:${path.sep}${path.sep}`, ''))
-      expect(file.toString().includes('Opening db2 on myapp...')).to.be.true
+      const html = file.toString()
+      expect(html.includes('Opening db2 on myapp...')).to.be.true
+      expect(html.includes('googleapis.com')).to.be.false
+      expect(html.includes('DOMContentLoaded')).to.be.true
+      expect(html.includes('form.submit()')).to.be.true
       return api.done()
     })
   })
