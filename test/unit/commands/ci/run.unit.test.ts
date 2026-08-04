@@ -29,6 +29,26 @@ describe('ci:run', function () {
     }
   })
 
+  describe('when not in a git repository', function () {
+    let sandbox: ReturnType<typeof createSandbox>
+
+    beforeEach(function () {
+      sandbox = createSandbox()
+      sandbox.stub(gitService, 'inGitRepo').returns(false as any)
+    })
+
+    afterEach(function () {
+      sandbox.restore()
+    })
+
+    it('errors with a clear message', async function () {
+      const {error} = await runCommand(Cmd, ['--pipeline=my-pipeline'])
+      expect(error).to.exist
+      expect(error?.message).to.contain('Not in a git repository')
+      expect(error?.message).to.contain('ci:run must be run from within your app\'s git repo')
+    })
+  })
+
   describe('when specifying a pipeline', function () {
     const pipeline = {id: '14402644-c207-43aa-9bc1-974a34914010', name: 'pipeline'}
     const ghRepository = {
@@ -53,6 +73,7 @@ describe('ci:run', function () {
       sandbox = createSandbox()
 
       // Stub gitService methods
+      sandbox.stub(gitService, 'inGitRepo').returns(true)
       sandbox.stub(gitService, 'readCommit').resolves({branch: ghRepository.branch, message: `pushed to ${ghRepository.branch}`, ref: ghRepository.ref})
       sandbox.stub(gitService, 'githubRepository').resolves({repo: ghRepository.repo, user: ghRepository.user} as any)
       sandbox.stub(gitService, 'createArchive').resolves('new-archive.tgz')
