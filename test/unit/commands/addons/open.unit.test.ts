@@ -14,13 +14,18 @@ describe('The addons:open command', function () {
   let sdkMock: MockSDK
   let resolveByAttachmentStub: SinonStub
   let resolveStub: SinonStub
+  let listByAddOnStub: SinonStub
 
   beforeEach(function () {
     urlOpenerStub = stub(Cmd, 'urlOpener').callsFake(async () => {})
     resolveByAttachmentStub = stub()
     resolveStub = stub()
+    // Default to no attachments so the command falls back to the add-on's own
+    // web_url; tests exercising the context-scoped URL override this.
+    listByAddOnStub = stub().resolves([])
     sdkMock = mockSDKPlatform({
       addOn: {resolve: resolveStub, resolveByAttachment: resolveByAttachmentStub},
+      addOnAttachment: {listByAddOn: listByAddOnStub},
     })
   })
 
@@ -47,10 +52,17 @@ describe('The addons:open command', function () {
   })
 
   it('should open an attached addon, by slug, with the correct `context_app`.', async function () {
-    // resolveByAttachment returns only the add-on identity, not its web_url;
-    // the command resolves the add-on to get the dashboard URL.
+    // Restored pre-SDK intent: for a SHARED add-on attached to more than one
+    // app, opening from a non-billing app must use that attachment's
+    // context-scoped web_url — NOT the add-on's own (billing-app) dashboard.
+    // Regression guard: reading web_url straight off the resolved add-on would
+    // open http://myapp-slowdb (the billing app) instead of http://myapp-2-slowdb.
     resolveByAttachmentStub.resolves({id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', name: 'slowdb'})
-    resolveStub.resolves({name: 'slowdb', web_url: 'http://myapp-2-slowdb'})
+    resolveStub.resolves({id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', name: 'slowdb', web_url: 'http://myapp-slowdb'})
+    listByAddOnStub.resolves([
+      {app: {name: 'myapp'}, web_url: 'http://myapp-slowdb'},
+      {app: {name: 'myapp-2'}, web_url: 'http://myapp-2-slowdb'},
+    ])
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -60,7 +72,7 @@ describe('The addons:open command', function () {
     expect(urlOpenerStub.calledWith('http://myapp-2-slowdb')).to.be.true
     expect(stdout).to.equal('Opening http://myapp-2-slowdb...\n')
     expect(resolveByAttachmentStub.calledWith('myapp-2', 'slowdb')).to.be.true
-    expect(resolveStub.calledWith('slowdb', {appIdentity: 'myapp-2'})).to.be.true
+    expect(listByAddOnStub.calledWith('c7c9cf20-ec87-11e5-aea4-0002a5d5c51b')).to.be.true
   })
 
   describe('should open the specified addon', function () {
@@ -146,6 +158,53 @@ describe('The addons:open command', function () {
       ])
       expect(error?.message).to.equal('Boom')
       expect(resolveStub.called).to.be.false
+    })
+
+    it('falls back to the add-on web_url when no attachment matches the requested app', async function () {
+      // The add-on has attachments, but none for the requested app (edge case:
+      // resolved globally). Keep the add-on's own dashboard URL.
+      resolveByAttachmentStub.rejects(new AddonNotFoundError())
+      resolveStub.resolves({id: 'redis-uuid', name: 'REDIS', web_url: 'https://dashboard/REDIS'})
+      listByAddOnStub.resolves([{app: {name: 'some-other-app'}, web_url: 'https://dashboard/other'}])
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'redis-321',
+      ])
+      expect(stdout).to.equal('https://dashboard/REDIS\n')
+      expect(listByAddOnStub.calledWith('redis-uuid')).to.be.true
+    })
+
+    it('opens the add-on dashboard when listing its attachments 404s', async function () {
+      // A 404 enumerating attachments must not block opening; fall back to the
+      // add-on's own web_url.
+      resolveByAttachmentStub.rejects(new AddonNotFoundError())
+      resolveStub.resolves({id: 'redis-uuid', name: 'REDIS', web_url: 'https://dashboard/REDIS'})
+      listByAddOnStub.rejects(Object.assign(new Error('Not Found'), {statusCode: 404}))
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'redis-321',
+      ])
+      expect(stdout).to.equal('https://dashboard/REDIS\n')
+    })
+
+    it('rethrows non-404 errors raised while listing attachments', async function () {
+      resolveByAttachmentStub.rejects(new AddonNotFoundError())
+      resolveStub.resolves({id: 'redis-uuid', name: 'REDIS', web_url: 'https://dashboard/REDIS'})
+      listByAddOnStub.rejects(Object.assign(new Error('Boom'), {statusCode: 500}))
+
+      const {error} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'redis-321',
+      ])
+      expect(error?.message).to.equal('Boom')
     })
 
     it('url using sudo via sso.', async function () {

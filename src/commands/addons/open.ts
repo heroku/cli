@@ -122,7 +122,28 @@ export default class Open extends Command {
     // scoped to the attached add-on; otherwise resolve the identifier directly.
     const addonIdentity = attachment?.name ?? addon
     const resolvedAddon = await platform.addOn.resolve(addonIdentity, {appIdentity: app})
-    const webUrl = resolvedAddon.web_url as string
+
+    // `AddOn.web_url` is the add-on's own (billing-app) dashboard. For a shared
+    // add-on opened from a non-billing app we want the attachment's `web_url`,
+    // which is scoped to the attached app's context (matching pre-SDK behavior).
+    // Look up the add-on's attachments and prefer the one tied to the requested
+    // app; fall back to the add-on's own URL when none matches.
+    let webUrl = resolvedAddon.web_url as string
+    if (app && resolvedAddon.id) {
+      try {
+        const attachments = await platform.addOnAttachment.listByAddOn(resolvedAddon.id)
+        const contextAttachment = attachments.find(({app: attachedApp}) => attachedApp?.name === app)
+        if (contextAttachment?.web_url) {
+          webUrl = contextAttachment.web_url
+        }
+      } catch (error) {
+        // Failing to enumerate attachments shouldn't block opening; keep the
+        // add-on's dashboard URL. Rethrow anything that isn't a 404.
+        if (!isNotFound(error)) {
+          throw error
+        }
+      }
+    }
 
     if (flags['show-url']) {
       ux.stdout(webUrl)
