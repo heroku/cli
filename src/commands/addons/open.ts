@@ -116,13 +116,13 @@ export default class Open extends Command {
       }
     }
 
-    let webUrl: string
-    if (attachment) {
-      webUrl = attachment.web_url as string
-    } else {
-      const resolvedAddon = await platform.addOn.resolve(addon, {appIdentity: app})
-      webUrl = resolvedAddon.web_url as string
-    }
+    // `resolveByAttachment` returns only the add-on's identity ({id, name, app}),
+    // not its `web_url`, so resolve the add-on itself to get the dashboard URL.
+    // Prefer the attachment's add-on name when we found one so the lookup stays
+    // scoped to the attached add-on; otherwise resolve the identifier directly.
+    const addonIdentity = attachment?.name ?? addon
+    const resolvedAddon = await platform.addOn.resolve(addonIdentity, {appIdentity: app})
+    const webUrl = resolvedAddon.web_url as string
 
     if (flags['show-url']) {
       ux.stdout(webUrl)

@@ -47,7 +47,10 @@ describe('The addons:open command', function () {
   })
 
   it('should open an attached addon, by slug, with the correct `context_app`.', async function () {
-    resolveByAttachmentStub.resolves({id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', web_url: 'http://myapp-2-slowdb'})
+    // resolveByAttachment returns only the add-on identity, not its web_url;
+    // the command resolves the add-on to get the dashboard URL.
+    resolveByAttachmentStub.resolves({id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b', name: 'slowdb'})
+    resolveStub.resolves({name: 'slowdb', web_url: 'http://myapp-2-slowdb'})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -57,6 +60,7 @@ describe('The addons:open command', function () {
     expect(urlOpenerStub.calledWith('http://myapp-2-slowdb')).to.be.true
     expect(stdout).to.equal('Opening http://myapp-2-slowdb...\n')
     expect(resolveByAttachmentStub.calledWith('myapp-2', 'slowdb')).to.be.true
+    expect(resolveStub.calledWith('slowdb', {appIdentity: 'myapp-2'})).to.be.true
   })
 
   describe('should open the specified addon', function () {
@@ -65,7 +69,8 @@ describe('The addons:open command', function () {
     })
 
     it('url via the standard happy path.', async function () {
-      resolveByAttachmentStub.resolves({name: 'REDIS', web_url: 'https://heroku.com'})
+      resolveByAttachmentStub.resolves({name: 'REDIS'})
+      resolveStub.resolves({name: 'REDIS', web_url: 'https://heroku.com'})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -75,10 +80,13 @@ describe('The addons:open command', function () {
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
       expect(stdout).to.equal('Opening https://heroku.com...\n')
       expect(resolveByAttachmentStub.calledWith('myApp', 'redis-321')).to.be.true
+      // Resolves by the attachment's add-on name, keeping the lookup scoped.
+      expect(resolveStub.calledWith('REDIS', {appIdentity: 'myApp'})).to.be.true
     })
 
     it('url when "::" exists in the addon_attachment.', async function () {
-      resolveByAttachmentStub.resolves({name: 'REDIS', web_url: 'https://heroku.com'})
+      resolveByAttachmentStub.resolves({name: 'REDIS'})
+      resolveStub.resolves({name: 'REDIS', web_url: 'https://heroku.com'})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -88,6 +96,25 @@ describe('The addons:open command', function () {
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
       expect(stdout).to.equal('Opening https://heroku.com...\n')
       expect(resolveByAttachmentStub.calledWith('myApp', 'redis::321')).to.be.true
+    })
+
+    it('resolves the add-on for its web_url even when resolveByAttachment omits it (regression: addons:open printed a blank line)', async function () {
+      // The SDK's resolveByAttachment returns only the add-on identity
+      // ({id, name, app}) — no web_url. Regression guard: the command must
+      // NOT read web_url off the attachment (that yields undefined → blank
+      // output); it must resolve the add-on to obtain the dashboard URL.
+      resolveByAttachmentStub.resolves({app: {name: 'myApp'}, id: 'db-uuid', name: 'postgresql-rugged-40855'})
+      resolveStub.resolves({name: 'postgresql-rugged-40855', web_url: 'https://addons-sso.heroku.com/apps/x/addons/y'})
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'postgresql-rugged-40855',
+      ])
+      expect(stdout).to.equal('https://addons-sso.heroku.com/apps/x/addons/y\n')
+      expect(resolveByAttachmentStub.calledWith('myApp', 'postgresql-rugged-40855')).to.be.true
+      expect(resolveStub.calledWith('postgresql-rugged-40855', {appIdentity: 'myApp'})).to.be.true
     })
 
     it('url using sudo via sso.', async function () {
