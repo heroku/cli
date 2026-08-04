@@ -233,6 +233,28 @@ Destroying www-redis-2... done
         expect(notifySpy.called).to.be.true
         expect(notifySpy.calledOnce).to.be.true
       })
+      it('rethrows non-404 errors raised while polling for deprovisioning', async function () {
+        // pollAddonUntilDeprovisioned treats a 404 as "deprovisioned"; any
+        // other error (e.g. a transient 500) must propagate, not be swallowed.
+        const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
+
+        const resolveStub = stub().resolves(deprovisioningAddon)
+        const serverError = Object.assign(new Error('Internal Server Error'), {statusCode: 500})
+        const infoByAppStub = stub()
+          .onFirstCall().resolves(_.clone(deprovisioningAddon))
+          .onSecondCall().rejects(serverError)
+        sdkMock = mockSDKPlatform({
+          addOn: {resolve: resolveStub},
+          withHeaders: stub().returns({addOn: {info: infoByAppStub, infoByApp: infoByAppStub}}),
+        })
+
+        const {error} = await runCommand(Cmd, [
+          '--wait-interval',
+          '1',
+          'www-redis-2',
+        ])
+        expect(error?.message).to.equal('Internal Server Error')
+      })
     })
   })
   context('waiting for add-ons', function () {
