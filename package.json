@@ -36,7 +36,7 @@
     "@sentry/node": "^10.27",
     "@sentry/opentelemetry": "^10.27.0",
     "@types/js-yaml": "^3.12.5",
-    "ansi-escapes": "^4.3.2",
+    "ansi-escapes": "^7.3.0",
     "ansis": "^4",
     "bytes": "^3.1.2",
     "chrono-node": "^2.7.6",
