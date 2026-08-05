@@ -1,4 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
 
@@ -6,12 +7,13 @@ export default class Clear extends Command {
   static description = 'clear all buildpacks set on the app'
   static flags = {
     app: Flags.app({required: true}),
+    json: Flags.boolean({char: 'j', description: 'output in json format'}),
     remote: Flags.remote(),
   }
 
   async run() {
     const {flags} = await this.parse(Clear)
     const buildpackCommand = new BuildpackCommand(this.heroku)
-    await buildpackCommand.clear(flags.app, 'clear', 'cleared')
+    await buildpackCommand.clear(flags.app, 'clear', 'cleared', flags.json)
   }
 }

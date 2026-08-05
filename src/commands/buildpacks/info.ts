@@ -1,4 +1,4 @@
-import {Command} from '@heroku-cli/command'
+import {Command, flags as Flags} from '@heroku-cli/command'
 import {BuildpackRegistry} from '@heroku/buildpack-registry'
 import {hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
@@ -12,9 +12,12 @@ export default class Info extends Command {
     }),
   }
   static description = 'fetch info about a buildpack'
+  static flags = {
+    json: Flags.boolean({char: 'j', description: 'output in json format'}),
+  }
 
   async run() {
-    const {args} = await this.parse(Info)
+    const {args, flags} = await this.parse(Info)
     const registry = new BuildpackRegistry()
 
     const validationResult = BuildpackRegistry.isValidBuildpackSlug(args.buildpack)
@@ -32,8 +35,12 @@ export default class Info extends Command {
         }
       },
       Ok(buildpack: unknown) {
-        hux.styledHeader(args.buildpack)
-        hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+        if (flags.json) {
+          hux.styledJSON(buildpack)
+        } else {
+          hux.styledHeader(args.buildpack)
+          hux.styledObject(buildpack, ['description', 'category', 'license', 'support', 'source', 'readme'])
+        }
       },
     }, result as any)
   }
