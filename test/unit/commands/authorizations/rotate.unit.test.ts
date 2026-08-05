@@ -1,26 +1,35 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import AuthorizationsRotate from '../../../../src/commands/authorizations/rotate.js'
 
+type FakePlatform = {
+  oauthAuthorization: {regenerate: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {regenerate: sinon.stub()},
+  }
+}
+
 describe('authorizations:rotate', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('rotates and prints the authentication', async function () {
-    api
-      .post(`/oauth/authorizations/${authorizationID}/actions/regenerate-tokens`)
-      .reply(200, {access_token: {token: 'secrettoken'}, scope: ['global', 'app']})
+    fakePlatform.oauthAuthorization.regenerate.resolves({access_token: {token: 'secrettoken'}, scope: ['global', 'app']})
 
     const {stderr, stdout} = await runCommand(AuthorizationsRotate, [authorizationID])
 
@@ -28,5 +37,6 @@ describe('authorizations:rotate', function () {
     expect(stdout).to.contain('Scope:  global,app\n')
     expect(stdout).to.contain('Token:  secrettoken\n')
     expect(stderr).to.contain('Rotating OAuth Authorization... done')
+    expect(fakePlatform.oauthAuthorization.regenerate.calledOnceWithExactly(authorizationID)).to.equal(true)
   })
 })

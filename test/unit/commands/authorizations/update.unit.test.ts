@@ -1,37 +1,40 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import AuthorizationsUpdate from '../../../../src/commands/authorizations/update.js'
 
+type FakePlatform = {
+  oauthAuthorization: {update: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {update: sinon.stub()},
+  }
+}
+
 describe('authorizations:update', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('updates the authorization', async function () {
-    api
-      .patch(
-        `/oauth/authorizations/${authorizationID}`,
-        {client: {id: '100', secret: 'secret'}, description: 'awesome'},
-      )
-      .reply(
-        200,
-        {
-          access_token: {token: 'secrettoken'},
-          description: 'awesome',
-          id: '100',
-          scope: ['global'],
-        },
-      )
+    fakePlatform.oauthAuthorization.update.resolves({
+      access_token: {token: 'secrettoken'},
+      description: 'awesome',
+      id: '100',
+      scope: ['global'],
+    })
 
     const {stdout} = await runCommand(AuthorizationsUpdate, [authorizationID, '--client-id', '100', '--client-secret', 'secret', '--description', 'awesome'])
 
@@ -40,5 +43,9 @@ describe('authorizations:update', function () {
       + 'Description: awesome\n'
       + 'Scope:       global\n'
       + 'Token:       secrettoken\n')
+    expect(fakePlatform.oauthAuthorization.update.calledOnceWithExactly(
+      authorizationID,
+      {client: {id: '100', secret: 'secret'}, description: 'awesome'},
+    )).to.equal(true)
   })
 })

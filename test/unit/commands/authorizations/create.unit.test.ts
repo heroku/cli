@@ -1,50 +1,65 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import AuthorizationsCreate from '../../../../src/commands/authorizations/create.js'
 
+type FakePlatform = {
+  oauthAuthorization: {create: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {create: sinon.stub()},
+  }
+}
+
 describe('authorizations:create', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('creates the authorization', async function () {
-    api
-      .post('/oauth/authorizations', {description: 'awesome'})
-      .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
+    fakePlatform.oauthAuthorization.create.resolves({access_token: {token: 'secrettoken'}, scope: ['global']})
 
     const {stdout} = await runCommand(AuthorizationsCreate, ['--description', 'awesome'])
 
     expect(stdout).to.contain('Client: <none>\n')
     expect(stdout).to.contain('Scope:  global\n')
     expect(stdout).to.contain('Token:  secrettoken\n')
+    expect(fakePlatform.oauthAuthorization.create.calledOnceWithExactly({
+      description: 'awesome',
+      expires_in: undefined,
+      scope: undefined,
+    })).to.equal(true)
   })
 
   context('with short flag', function () {
     it('only prints token', async function () {
-      api
-        .post('/oauth/authorizations', {expires_in: '10000'})
-        .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
+      fakePlatform.oauthAuthorization.create.resolves({access_token: {token: 'secrettoken'}, scope: ['global']})
 
       const {stdout} = await runCommand(AuthorizationsCreate, ['--expires-in', '10000', '--short'])
 
       expect(stdout).to.equal('secrettoken\n')
+      expect(fakePlatform.oauthAuthorization.create.calledOnceWithExactly({
+        description: undefined,
+        expires_in: '10000',
+        scope: undefined,
+      })).to.equal(true)
     })
   })
 
   context('with json flag', function () {
     it('prints json', async function () {
-      api
-        .post('/oauth/authorizations', {})
-        .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
+      fakePlatform.oauthAuthorization.create.resolves({access_token: {token: 'secrettoken'}, scope: ['global']})
 
       const {stdout} = await runCommand(AuthorizationsCreate, ['--json'])
 

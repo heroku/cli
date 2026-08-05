@@ -1,30 +1,40 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import AuthorizationsRevoke from '../../../../src/commands/authorizations/revoke.js'
 
+type FakePlatform = {
+  oauthAuthorization: {delete: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {delete: sinon.stub()},
+  }
+}
+
 describe('authorizations:revoke', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('revokes the authorization', async function () {
-    api
-      .delete(`/oauth/authorizations/${authorizationID}`)
-      .reply(200, {description: 'Example Auth'})
+    fakePlatform.oauthAuthorization.delete.resolves({description: 'Example Auth'})
 
     const {stderr} = await runCommand(AuthorizationsRevoke, [authorizationID])
 
     expect(stderr).to.contain('done, revoked authorization from Example Auth')
+    expect(fakePlatform.oauthAuthorization.delete.calledOnceWithExactly(authorizationID)).to.equal(true)
   })
 
   context('without an ID argument', function () {
