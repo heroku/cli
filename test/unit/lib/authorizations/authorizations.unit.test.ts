@@ -1,5 +1,5 @@
-import * as Heroku from '@heroku-cli/schema'
 import {captureOutput} from '@heroku-cli/test-utils'
+import {OauthAuthorization} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
@@ -10,11 +10,11 @@ describe('display', function () {
   const authDesc = 'a cool auth'
 
   context('with an auth', function () {
-    const auth: Heroku.OAuthAuthorization = {
+    const auth = {
       description: authDesc,
       id: authId,
       scope: ['global', 'app'],
-    }
+    } as OauthAuthorization
 
     it('prints the styled authorization', async function () {
       const {stdout} = await captureOutput(async () => {
@@ -36,7 +36,7 @@ describe('display', function () {
 
   context('with an auth access token', function () {
     const updatedAt = new Date(0)
-    const auth: Heroku.OAuthAuthorization = {
+    const auth = {
       access_token: {
         expires_in: 10_000,
         token: '1234abcd-129f-42d2-854b-EfGhIjKlMn12',
@@ -45,7 +45,7 @@ describe('display', function () {
       id: authId,
       scope: ['global', 'app'],
       updated_at: `${updatedAt}`,
-    }
+    } as OauthAuthorization
 
     it('prints the styled authorization with access token info', async function () {
       const {stdout} = await captureOutput(async () => {
@@ -70,16 +70,16 @@ describe('display', function () {
   })
 
   context('with a client', function () {
-    const client: Heroku.OAuthClient = {
+    const client = {
       name: 'a cool client',
       redirect_uri: 'https://myapp.com',
     }
 
-    const auth: Heroku.OAuthAuthorization = {
+    const auth = {
       client,
       description: authDesc,
       id: authId,
-    }
+    } as OauthAuthorization
 
     it('prints the styled authorization with client info', async function () {
       const {stdout} = await captureOutput(async () => {
