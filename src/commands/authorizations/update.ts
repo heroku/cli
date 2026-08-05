@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {HerokuSDK} from '@heroku/sdk'
+import {OauthAuthorizationUpdateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 
 import {display} from '../../lib/authorizations/authorizations.js'
@@ -16,6 +17,7 @@ export default class AuthorizationsUpdate extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(AuthorizationsUpdate)
 
     ux.action.start('Updating OAuth Authorization')
@@ -28,15 +30,10 @@ export default class AuthorizationsUpdate extends Command {
       }
     }
 
-    const {body: authentication} = await this.heroku.patch<Heroku.OAuthAuthorization>(
-      `/oauth/authorizations/${args.id}`,
-      {
-        body: {
-          client,
-          description: flags.description,
-        },
-      },
-    )
+    const authentication = await platform.oauthAuthorization.update(args.id, {
+      client,
+      description: flags.description,
+    } as OauthAuthorizationUpdateOpts)
 
     ux.action.stop()
 

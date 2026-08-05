@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 export default class AuthorizationsRevoke extends Command {
@@ -14,10 +14,11 @@ export default class AuthorizationsRevoke extends Command {
   ]
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args} = await this.parse(AuthorizationsRevoke)
 
     ux.action.start('Revoking OAuth Authorization')
-    const {body: auth} = await this.heroku.delete<Heroku.OAuthAuthorization>(`/oauth/authorizations/${encodeURIComponent(args.id)}`)
+    const auth = await platform.oauthAuthorization.delete(args.id)
     ux.action.stop(`done, revoked authorization from ${color.cyan(auth.description)}`)
   }
 }

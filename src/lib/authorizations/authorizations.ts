@@ -1,8 +1,8 @@
-import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {OauthAuthorization} from '@heroku/types/3.sdk'
 import {addSeconds, formatDistanceToNow} from 'date-fns'
 
-export function display(auth: Heroku.OAuthAuthorization) {
+export function display(auth: OauthAuthorization) {
   interface StyledObject {
     Client?: string;
     Description: string | undefined;
