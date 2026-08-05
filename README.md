@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/heroku-cli-badge.png)](https://mseep.ai/app/heroku-cli)
+
 <div align="center">
   <img src="assets/Heroku-Logo-Mark-Light-RGB.svg" alt="Heroku logo" width="100">
   <p>&nbsp;</p>
