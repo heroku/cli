@@ -11,9 +11,7 @@ import os from 'node:os'
 import path from 'node:path'
 import open from 'open'
 
-function isNotFound(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && 'statusCode' in error && (error as {statusCode: unknown}).statusCode === 404
-}
+import {isNotFound} from '../../lib/addons/addons-wait.js'
 
 export interface AddonSso {
   /**

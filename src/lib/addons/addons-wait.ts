@@ -6,6 +6,20 @@ import {ux} from '@oclif/core/ux'
 
 type Platform = HerokuSDK['platform']
 
+/**
+ * Whether an error represents a 404 not-found. Some SDK/heroku-fetch errors
+ * expose a top-level `statusCode`, others nest it under `http.statusCode`, so
+ * check both. Shared with `commands/addons/open.ts` to keep the checks in sync.
+ */
+export const isNotFound = function (error: unknown): boolean {
+  if (typeof error !== 'object' || error === null) {
+    return false
+  }
+
+  const {http, statusCode} = error as {http?: {statusCode?: number}, statusCode?: number}
+  return statusCode === 404 || http?.statusCode === 404
+}
+
 export const waitForAddonProvisioning = async function (platform: Platform, addon: Heroku.AddOn, interval: number) {
   const app = addon.app?.name || ''
   const addonName = addon.name
@@ -46,9 +60,9 @@ export const waitForAddonDeprovisioning = async function (api: APIClient, addon:
       headers: {'Accept-Expansion': 'addon_service,plan'},
     }).then(response => {
       addonResponse = response?.body
-    }).catch(error => {
+    }).catch((error: unknown) => {
       // Not ideal, but API deletes the record returning a 404 when deprovisioned.
-      if (error.statusCode === 404 || error.http?.statusCode === 404) {
+      if (isNotFound(error)) {
         addonResponse.state = 'deprovisioned'
       } else {
         throw error
@@ -80,9 +94,9 @@ export const pollAddonUntilDeprovisioned = async function (platform: Platform, a
       : platformWithExpansion.addOn.info(addonName)
     ).then(response => {
       addonResponse = response as unknown as Heroku.AddOn
-    }).catch((error: {http?: {statusCode?: number}, statusCode?: number}) => {
+    }).catch((error: unknown) => {
       // Not ideal, but API deletes the record returning a 404 when deprovisioned.
-      if (error.statusCode === 404 || error.http?.statusCode === 404) {
+      if (isNotFound(error)) {
         addonResponse.state = 'deprovisioned'
       } else {
         throw error

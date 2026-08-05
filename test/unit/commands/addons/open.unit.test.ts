@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {NotFoundError} from '@heroku/heroku-fetch'
 import {AddonNotFoundError} from '@heroku/sdk/resources/platform/add-on'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -133,7 +134,7 @@ describe('The addons:open command', function () {
       // resolveByAttachment can surface a non-AddonNotFoundError 404 (statusCode
       // 404). isNotFound() must recognize it so we swallow it and resolve the
       // add-on directly rather than rethrowing.
-      resolveByAttachmentStub.rejects(Object.assign(new Error('Not Found'), {statusCode: 404}))
+      resolveByAttachmentStub.rejects(new NotFoundError(new Response('', {status: 404})))
       resolveStub.resolves({name: 'db2', web_url: 'http://db2'})
 
       const {stdout} = await runCommand(Cmd, [
@@ -182,7 +183,7 @@ describe('The addons:open command', function () {
       // add-on's own web_url.
       resolveByAttachmentStub.rejects(new AddonNotFoundError())
       resolveStub.resolves({id: 'redis-uuid', name: 'REDIS', web_url: 'https://dashboard/REDIS'})
-      listByAddOnStub.rejects(Object.assign(new Error('Not Found'), {statusCode: 404}))
+      listByAddOnStub.rejects(new NotFoundError(new Response('', {status: 404})))
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
