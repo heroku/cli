@@ -175,8 +175,28 @@ export class AccountsWrapper implements IAccountsWrapper {
     if (!this.netrc) {
       const NetrcModule = await import('netrc-parser')
       const NetrcClass = (NetrcModule as any).Netrc || (NetrcModule as any).default.constructor
-      this.netrc = new NetrcClass()
-      await this.netrc.load()
+
+      const homeNetrc = new NetrcClass()
+      await homeNetrc.load()
+
+      // Check for a project-local .netrc in the current working directory.
+      // If present, merge its machine entries into the home netrc, giving
+      // local credentials priority over global ones.
+      const cwdNetrcPath = path.join(process.cwd(), '.netrc')
+      if (fs.existsSync(cwdNetrcPath)) {
+        const cwdNetrc = new NetrcClass(cwdNetrcPath)
+        await cwdNetrc.load()
+        for (const host of Object.keys(cwdNetrc.machines)) {
+          const machine = cwdNetrc.machines[host]
+          const props: Record<string, string> = {}
+          if (machine.login) props.login = machine.login
+          if (machine.password) props.password = machine.password
+          if (machine.account) props.account = machine.account
+          homeNetrc.machines[host] = props
+        }
+      }
+
+      this.netrc = homeNetrc
     }
 
     return this.netrc
