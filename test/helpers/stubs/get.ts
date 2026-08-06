@@ -75,6 +75,42 @@ export function teamAppCollaboratorsWithPermissions() {
     ])
 }
 
+export function teamServiceAccountApp() {
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {
+      accept: 'application/vnd.heroku+json; version=3',
+      'user-agent': /heroku-cli\/.*/,
+    },
+  })
+    .get('/apps/myapp')
+    .reply(200, {
+      locked: false,
+      name: 'myapp',
+      owner: {email: 'myteam+service@herokumanager.com'},
+    })
+}
+
+export function ownerlessApp() {
+  return nock('https://api.heroku.com:443')
+    .get('/apps/myapp')
+    .reply(200, {
+      name: 'myapp',
+      owner: null,
+    })
+}
+
+export function appCollaboratorsWithPermissions() {
+  return nock('https://api.heroku.com:443')
+    .get('/apps/myapp/collaborators')
+    .reply(200, [
+      {
+        permissions: [{name: 'deploy'}, {name: 'view'}],
+        role: 'member',
+        user: {email: 'bob@heroku.com'},
+      },
+    ])
+}
+
 export function teamFeatures(features: any) {
   return nock('https://api.heroku.com:443', {
     reqheaders: {Accept: 'application/vnd.heroku+json; version=3'},
@@ -129,6 +165,12 @@ export function teamMembers(members = [
   return nock('https://api.heroku.com:443')
     .get('/teams/myteam/members')
     .reply(200, members)
+}
+
+export function emptyTeamMembers(teamName: string) {
+  return nock('https://api.heroku.com:443')
+    .get(`/teams/${teamName}/members`)
+    .reply(200, [])
 }
 
 export function personalApp() {

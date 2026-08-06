@@ -54,7 +54,7 @@ export default class AccessIndex extends Command {
     if (json)
       printJSON(collaborators)
     else
-      printAccess(app, collaborators, _)
+      printAccess(collaborators, _)
   }
 }
 
@@ -83,8 +83,8 @@ function buildTableColumns(showPermissions: boolean) {
   return baseColumns
 }
 
-function printAccess(app: Heroku.App, collaborators: any[], _: any) {
-  const showPermissions = isTeamApp(app.owner?.email)
+function printAccess(collaborators: any[], _: any) {
+  const showPermissions = collaborators.some((c: any) => c.permissions !== undefined)
   collaborators = _.chain(collaborators)
     .sortBy((c: any) => c.email || c.user.email)
     .reject((c: any) => /herokumanager\.com$/.test(c.user.email))
