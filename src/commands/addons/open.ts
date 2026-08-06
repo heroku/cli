@@ -4,7 +4,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {HTTP} from '@heroku/http-call'
 import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {AddonNotFoundError, type ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
+import {AddonNotFoundError, type ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on'
 import {Args, ux} from '@oclif/core'
 import fs from 'node:fs/promises'
 import os from 'node:os'
@@ -101,46 +101,30 @@ export default class Open extends Command {
 
     const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
 
-    let attachment: null | ResolvedAddOn = null
+    let attachment: null | ResolvedAddOnAttachment = null
     try {
-      attachment = await platform.addOn.resolveByAttachment(app, addon)
+      attachment = await platform.addOn.describeAttachment(app, addon)
     } catch (error) {
       // Swallow not-found so we fall through to a direct add-on resolve.
-      // `resolveByAttachment` throws `AddonNotFoundError` (statusCode 404),
-      // and the underlying attachment resolution can surface other 404s;
-      // rethrow anything that isn't a 404.
+      // `describeAttachment` throws `AddonNotFoundError` when no attachment
+      // matches, and the underlying attachment resolution can surface other
+      // 404s; rethrow anything that isn't a 404.
       if (!(error instanceof AddonNotFoundError) && !isNotFound(error)) {
         throw error
       }
     }
 
-    // `resolveByAttachment` returns only the add-on's identity ({id, name, app}),
-    // not its `web_url`, so resolve the add-on itself to get the dashboard URL.
-    // Prefer the attachment's add-on name when we found one so the lookup stays
-    // scoped to the attached add-on; otherwise resolve the identifier directly.
-    const addonIdentity = attachment?.name ?? addon
-    const resolvedAddon = await platform.addOn.resolve(addonIdentity, {appIdentity: app})
-
-    // `AddOn.web_url` is the add-on's own (billing-app) dashboard. For a shared
-    // add-on opened from a non-billing app we want the attachment's `web_url`,
-    // which is scoped to the attached app's context (matching pre-SDK behavior).
-    // Look up the add-on's attachments and prefer the one tied to the requested
-    // app; fall back to the add-on's own URL when none matches.
-    let webUrl = resolvedAddon.web_url as string
-    if (app && resolvedAddon.id) {
-      try {
-        const attachments = await platform.addOnAttachment.listByAddOn(resolvedAddon.id)
-        const contextAttachment = attachments.find(({app: attachedApp}) => attachedApp?.name === app)
-        if (contextAttachment?.web_url) {
-          webUrl = contextAttachment.web_url
-        }
-      } catch (error) {
-        // Failing to enumerate attachments shouldn't block opening; keep the
-        // add-on's dashboard URL. Rethrow anything that isn't a 404.
-        if (!isNotFound(error)) {
-          throw error
-        }
-      }
+    let webUrl: string
+    if (attachment?.web_url) {
+      // Context-scoped URL: the dashboard for this add-on *from this app*
+      // (differs from the add-on's own billing-app `web_url`).
+      webUrl = attachment.web_url
+    } else {
+      // No attachment (app-less invocation or a bare add-on identity), or an
+      // add-on with no web dashboard: fall back to resolving the add-on for
+      // its own (billing-app) web_url.
+      const resolvedAddon = await platform.addOn.resolve(addon, {appIdentity: app})
+      webUrl = resolvedAddon.web_url as string
     }
 
     if (flags['show-url']) {
