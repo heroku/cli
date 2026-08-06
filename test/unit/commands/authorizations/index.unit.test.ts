@@ -1,20 +1,31 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Authorizations from '../../../../src/commands/authorizations/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  oauthAuthorization: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {list: sinon.stub()},
+  }
+}
+
 describe('authorizations', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   const exampleAuthorization1 = {
@@ -29,9 +40,7 @@ describe('authorizations', function () {
   }
 
   it('lists the authorizations alphabetically by description', async function () {
-    api
-      .get('/oauth/authorizations')
-      .reply(200, [exampleAuthorization1, exampleAuthorization2])
+    fakePlatform.oauthAuthorization.list.resolves([exampleAuthorization1, exampleAuthorization2])
 
     const {stdout} = await runCommand(Authorizations, [])
 
@@ -44,9 +53,7 @@ describe('authorizations', function () {
 
   context('with json flag', function () {
     it('lists the authorizations alphabetically as json', async function () {
-      api
-        .get('/oauth/authorizations')
-        .reply(200, [exampleAuthorization1, exampleAuthorization2])
+      fakePlatform.oauthAuthorization.list.resolves([exampleAuthorization1, exampleAuthorization2])
 
       const {stdout} = await runCommand(Authorizations, ['--json'])
 
@@ -58,9 +65,7 @@ describe('authorizations', function () {
 
   context('without authorizations', function () {
     it('shows no authorizations message', async function () {
-      api
-        .get('/oauth/authorizations')
-        .reply(200, [])
+      fakePlatform.oauthAuthorization.list.resolves([])
 
       const {stdout} = await runCommand(Authorizations, [])
 

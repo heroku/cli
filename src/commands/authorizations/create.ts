@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions.js'
-import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {display} from '../../lib/authorizations/authorizations.js'
@@ -21,22 +21,21 @@ export default class AuthorizationsCreate extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(AuthorizationsCreate)
 
     ux.action.start('Creating OAuth Authorization')
 
-    const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>('/oauth/authorizations', {
-      body: {
-        description: flags.description,
-        expires_in: flags['expires-in'],
-        scope: flags.scope ? flags.scope.split(',') : undefined,
-      },
+    const auth = await platform.oauthAuthorization.create({
+      description: flags.description,
+      expires_in: flags['expires-in'],
+      scope: flags.scope ? flags.scope.split(',') : undefined,
     })
 
     ux.action.stop()
 
     if (flags.short) {
-      ux.stdout(auth.access_token && auth.access_token.token)
+      ux.stdout(auth.access_token?.token)
     } else if (flags.json) {
       hux.styledJSON(auth)
     } else {

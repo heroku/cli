@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class AuthorizationsIndex extends Command {
@@ -13,9 +13,10 @@ export default class AuthorizationsIndex extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(AuthorizationsIndex)
 
-    const {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>('/oauth/authorizations')
+    const authorizations = await platform.oauthAuthorization.list()
 
     if (flags.json) {
       hux.styledJSON(authorizations.sort((a, b) => a.description.localeCompare(b.description)))

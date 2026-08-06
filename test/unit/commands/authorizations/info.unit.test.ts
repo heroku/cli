@@ -1,20 +1,31 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import {formatDistanceToNow} from 'date-fns'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import AuthorizationsInfo from '../../../../src/commands/authorizations/info.js'
 
+type FakePlatform = {
+  oauthAuthorization: {info: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    oauthAuthorization: {info: sinon.stub()},
+  }
+}
+
 describe('authorizations:info', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   const authorizationID = '4UTHOri24tIoN-iD-3X4mPl3'
@@ -31,9 +42,7 @@ describe('authorizations:info', function () {
   }
 
   it('shows the authorization', async function () {
-    api
-      .get(`/oauth/authorizations/${authorizationID}`)
-      .reply(200, authorization)
+    fakePlatform.oauthAuthorization.info.resolves(authorization)
 
     const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID])
 
@@ -43,12 +52,11 @@ describe('authorizations:info', function () {
       + 'Scope:       global\n'
       + 'Token:       secrettoken\n'
       + `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`)
+    expect(fakePlatform.oauthAuthorization.info.calledOnceWithExactly(authorizationID)).to.equal(true)
   })
 
   it('shows expires in', async function () {
-    api
-      .get(`/oauth/authorizations/${authorizationID}`)
-      .reply(200, authorizationWithExpiration)
+    fakePlatform.oauthAuthorization.info.resolves(authorizationWithExpiration)
 
     const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID])
 
@@ -57,9 +65,7 @@ describe('authorizations:info', function () {
 
   describe('with json flag', function () {
     it('shows the authorization as json', async function () {
-      api
-        .get(`/oauth/authorizations/${authorizationID}`)
-        .reply(200, authorization)
+      fakePlatform.oauthAuthorization.info.resolves(authorization)
 
       const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID, '--json'])
 
