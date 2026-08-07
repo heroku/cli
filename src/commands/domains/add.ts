@@ -85,6 +85,15 @@ export default class DomainsAdd extends Command {
     ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
 
     const domain = await platform.domain.add(flags.app, hostname, {
+      poller: {
+        onStart(domain) {
+          // Stop the current spinner
+          ux.action.stop()
+          // Start a new spinner
+          ux.action.start(`Waiting for ${color.name(domain.hostname || 'domain')}`)
+        },
+        onStop: () => ux.action.stop(),
+      },
       resolveSniEndpoint: async (certs: SniEndpoint[]) => {
         ux.action.stop('resolving SNI endpoint')
         const certSelection = await this.certSelect(certs, inquirer)

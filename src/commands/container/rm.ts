@@ -34,7 +34,7 @@ export default class Rm extends Command {
     const processTypes = argv as string[]
 
     await platform.container.removeProcessTypes(app, processTypes, {
-      onProgress: {
+      poller: {
         onStart(processType) {
           ux.action.start(`Removing container ${processType} for ${color.app(app)}`)
         },
