@@ -90,7 +90,7 @@ export default class DomainsAdd extends Command {
           // Stop the current spinner
           ux.action.stop()
           // Start a new spinner
-          ux.action.start(`Waiting for ${color.name(domain.hostname || 'domain')}`)
+          ux.action.start(`Waiting for ${color.name(domain.hostname)}`)
         },
         onStop: () => ux.action.stop(),
       },

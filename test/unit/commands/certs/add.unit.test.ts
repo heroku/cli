@@ -181,7 +181,9 @@ describe('heroku certs:add', function () {
       'key_file',
     ])
 
-    expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done')
-    expect(stderr).to.contain('Waiting for stable domains to be created... done')
+    const addingIndex = stderr.indexOf('Adding SSL certificate to ⬢ example... done')
+    const waitingIndex = stderr.indexOf('Waiting for stable domains to be created... done')
+    expect(addingIndex).to.be.greaterThan(-1)
+    expect(waitingIndex).to.be.greaterThan(addingIndex)
   })
 })

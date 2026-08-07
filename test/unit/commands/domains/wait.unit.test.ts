@@ -60,4 +60,23 @@ describe('domains:wait', function () {
     expect(options.hostname).to.equal(undefined)
     expect(options.poller).to.be.an('object')
   })
+
+  it('waits on multiple domains when no hostname is provided', async function () {
+    fakePlatform.domain.wait.callsFake(async (_app: string, opts?: WaitForReadyOptions) => {
+      for (const hostname of ['example1.com', 'example2.com']) {
+        opts?.poller?.onStart?.({hostname} as Domain)
+        opts?.poller?.onStop?.({hostname} as Domain)
+      }
+
+      return [
+        {hostname: 'example1.com', id: 123, status: 'succeeded'},
+        {hostname: 'example2.com', id: 456, status: 'succeeded'},
+      ]
+    })
+
+    const {stderr} = await runCommand(DomainsWait, ['--app', 'myapp'])
+
+    expect(stderr).to.contain('Waiting for example1.com... done')
+    expect(stderr).to.contain('Waiting for example2.com... done')
+  })
 })
