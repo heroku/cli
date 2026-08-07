@@ -165,4 +165,22 @@ describe('heroku certs:add', function () {
     expect(stdout).to.contain('Certificate details:')
     expect(stdout).to.contain('Common Name(s): foo.example.org')
   })
+
+  it('# waits for domains to be ready', async function () {
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _crt, _key, opts) => {
+      opts.onDomainPoll.onStart()
+      opts.onDomainPoll.onStop()
+      return endpointStables
+    })
+
+    const {stderr} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+      'key_file',
+    ])
+
+    expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done')
+    expect(stderr).to.contain('Waiting for stable domains to be created... done')
+  })
 })

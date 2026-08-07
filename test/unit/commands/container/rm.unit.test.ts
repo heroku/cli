@@ -70,8 +70,8 @@ describe('container removal', function () {
       fakePlatform.container.ensureContainerStack.resolves()
       fakePlatform.container.removeProcessTypes.callsFake(async (_app: string, processTypes: string[], options?: RemoveProcessTypesOpts) => {
         for (const processType of processTypes) {
-          options?.onProgress?.onStart?.(processType)
-          options?.onProgress?.onStop?.(processType)
+          options?.poller?.onStart?.(processType)
+          options?.poller?.onStop?.(processType)
         }
       })
     })
