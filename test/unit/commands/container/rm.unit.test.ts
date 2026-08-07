@@ -68,10 +68,10 @@ describe('container removal', function () {
   context('when the app is a container app', function () {
     beforeEach(function () {
       fakePlatform.container.ensureContainerStack.resolves()
-      fakePlatform.container.removeProcessTypes.callsFake(async (_app: string, processTypes: string[], options?: RemoveProcessTypesOpts) => {
+      fakePlatform.container.removeProcessTypes.callsFake(async (_app: string, processTypes: string[], opts?: RemoveProcessTypesOpts) => {
         for (const processType of processTypes) {
-          options?.poller?.onStart?.(processType)
-          options?.poller?.onStop?.(processType)
+          opts?.poller?.onStart?.(processType)
+          opts?.poller?.onStop?.(processType)
         }
       })
     })

@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {CreateAndAssociateOptions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -167,9 +168,9 @@ describe('heroku certs:add', function () {
   })
 
   it('# waits for domains to be ready', async function () {
-    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app, _crt, _key, opts) => {
-      opts.onDomainPoll.onStart()
-      opts.onDomainPoll.onStop()
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app: string, _crt: string, _key: string, opts: CreateAndAssociateOptions) => {
+      opts?.domainPoller?.onStart?.()
+      opts?.domainPoller?.onStop?.()
       return endpointStables
     })
 

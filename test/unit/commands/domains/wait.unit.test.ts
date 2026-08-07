@@ -30,9 +30,9 @@ describe('domains:wait', function () {
   })
 
   it('waits on domain status succeeded', async function () {
-    fakePlatform.domain.wait.callsFake(async (_app: string, options?: WaitForReadyOptions) => {
-      options?.poller?.onStart?.({hostname: options?.hostname} as Domain)
-      options?.poller?.onStop?.({hostname: options?.hostname} as Domain)
+    fakePlatform.domain.wait.callsFake(async (_app: string, opts?: WaitForReadyOptions) => {
+      opts?.poller?.onStart?.({hostname: opts?.hostname} as Domain)
+      opts?.poller?.onStop?.({hostname: opts?.hostname} as Domain)
       return [{hostname: 'example.com', id: 123, status: 'succeeded'}]
     })
 
@@ -46,9 +46,9 @@ describe('domains:wait', function () {
   })
 
   it('waits on domains when no hostname is provided', async function () {
-    fakePlatform.domain.wait.callsFake(async (_app: string, options?: WaitForReadyOptions) => {
-      options?.poller?.onStart?.({hostname: 'example.com'} as Domain)
-      options?.poller?.onStop?.({hostname: 'example.com'} as Domain)
+    fakePlatform.domain.wait.callsFake(async (_app: string, opts?: WaitForReadyOptions) => {
+      opts?.poller?.onStart?.({hostname: 'example.com'} as Domain)
+      opts?.poller?.onStop?.({hostname: 'example.com'} as Domain)
       return [{hostname: 'example.com', id: 123, status: 'succeeded'}]
     })
 

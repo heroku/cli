@@ -69,9 +69,9 @@ describe('domains:add', function () {
       })
 
       it('adds the domain to the app with the --wait flag', async function () {
-        fakePlatform.domain.add.callsFake(async (_app: string, hostname: string, options?: CreateAndWaitOptions) => {
-          options?.poller?.onStart?.({hostname} as Domain)
-          options?.poller?.onStop?.({hostname} as Domain)
+        fakePlatform.domain.add.callsFake(async (_app: string, hostname: string, opts?: CreateAndWaitOptions) => {
+          opts?.poller?.onStart?.({hostname} as Domain)
+          opts?.poller?.onStop?.({hostname} as Domain)
           return domainsResponseWithEndpoint
         })
 
