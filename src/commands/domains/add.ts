@@ -104,6 +104,7 @@ export default class DomainsAdd extends Command {
       sniEndpoint: flags.cert,
       wait: flags.wait,
     })
+    ux.action.stop()
 
     if (flags.json) {
       hux.styledJSON(domain)
@@ -118,7 +119,5 @@ export default class DomainsAdd extends Command {
         ux.stdout(`Run ${color.code(command)} to wait for completion`)
       }
     }
-
-    ux.action.stop()
   }
 }
