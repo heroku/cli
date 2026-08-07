@@ -22,9 +22,9 @@ export default class DomainsWait extends Command {
     await platform.domain.wait(flags.app, {
       hostname: args.hostname,
       poller: {
-        onStart: (domain) => ux.action.start(`Waiting for ${color.name(domain.hostname || 'domain')}`),
+        onStart: domain => ux.action.start(`Waiting for ${color.name(domain.hostname || 'domain')}`),
         onStop: () => ux.action.stop(),
-      }
+      },
     })
   }
 }
