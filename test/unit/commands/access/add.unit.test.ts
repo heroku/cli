@@ -3,7 +3,9 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/access/add.js'
-import {personalApp, teamApp, teamFeatures} from '../../../helpers/stubs/get.js'
+import {
+  personalApp, teamApp, teamAppWithoutOwner, teamFeatures,
+} from '../../../helpers/stubs/get.js'
 import {collaborators, teamAppCollaborators} from '../../../helpers/stubs/post.js'
 
 let apiGet: nock.Scope
@@ -84,6 +86,36 @@ describe('heroku access:add', function () {
       apiPost.done()
       expect('').to.eq(stdout)
       expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp... done\n')
+    })
+  })
+
+  context('with a team app whose owner is missing from the response', function () {
+    beforeEach(function () {
+      apiGet = teamAppWithoutOwner()
+      apiPost = teamAppCollaborators('gandalf@heroku.com', ['deploy', 'view'])
+      apiGetOrgFeatures = teamFeatures([{name: 'org-access-controls'}])
+    })
+
+    afterEach(function () {
+      nock.cleanAll()
+    })
+
+    // Team detection and the team-features lookup both key off the authoritative
+    // `team` field/name the API sends, not the owner email — so permissions are
+    // honored even when `owner` is absent from the response.
+    it('adds user to the app with permissions', async function () {
+      const {stderr, stdout} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--permissions',
+        'deploy',
+        'gandalf@heroku.com',
+      ])
+      apiGet.done()
+      apiGetOrgFeatures.done()
+      apiPost.done()
+      expect('').to.eq(stdout)
+      expect(stderr).to.equal('Adding gandalf@heroku.com access to the app ⬢ myapp with deploy, view permissions... done\n')
     })
   })
 

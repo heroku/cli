@@ -7,7 +7,6 @@ import {
   appCollaborators,
   appCollaboratorsWithPermissions,
   appPermissions,
-  emptyTeamMembers,
   ownerlessApp,
   personalApp,
   teamApp,
@@ -63,10 +62,11 @@ describe('heroku access', function () {
     // The owner email (myteam+service@herokumanager.com) looks team-ish, but the
     // Platform API treats service accounts as non-team, so it sends no permissions.
     // The permissions column must track what the API actually sent, not the email.
+    // A service-account-owned app is not a team app per the API (it sends no
+    // `team` and no permissions), so detection keyed on `app.team` matches the
+    // API and the permissions column stays hidden.
     it('does not show the permissions column', async function () {
       const apiGetServiceAccountApp = teamServiceAccountApp()
-      const apiGetOrgMembers = emptyTeamMembers('myteam+service')
-      const apiGetAppPermissions = appPermissions()
       const apiGetAppCollaborators = appCollaborators()
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
@@ -76,8 +76,6 @@ describe('heroku access', function () {
       expect(stdout.toLowerCase()).to.not.contain('permissions')
       expect('').to.eq(stderr)
       apiGetServiceAccountApp.done()
-      apiGetOrgMembers.done()
-      apiGetAppPermissions.done()
       apiGetAppCollaborators.done()
     })
   })

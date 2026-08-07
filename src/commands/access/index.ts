@@ -5,7 +5,7 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
-import {getOwner, isTeamApp} from '../../lib/team-utils.js'
+import {getOwner} from '../../lib/team-utils.js'
 
 type AdminWithPermissions = Heroku.TeamMember & {
   permissions?: Heroku.TeamAppPermission[],
@@ -33,8 +33,8 @@ export default class AccessIndex extends Command {
     const {app: appName, json} = flags
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     let {body: collaborators} = await this.heroku.get<Heroku.TeamAppCollaborator[]>(`/apps/${appName}/collaborators`)
-    if (isTeamApp(app.owner?.email)) {
-      const teamName = getOwner(app.owner?.email)
+    if (app.team) {
+      const teamName = app.team.name ?? getOwner(app.owner?.email)
       try {
         const {body: members} = await this.heroku.get<Heroku.TeamMember[]>(`/teams/${teamName}/members`)
         let admins: AdminWithPermissions[] = members.filter(member => member.role === 'admin')

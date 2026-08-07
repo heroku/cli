@@ -53,6 +53,23 @@ export function teamApp(locked = false) {
       locked,
       name: 'myapp',
       owner: {email: 'myteam@herokumanager.com'},
+      team: {id: '01234567-89ab-cdef-0123-456789abcdef', name: 'myteam'},
+    })
+}
+
+export function teamAppWithoutOwner(locked = false) {
+  return nock('https://api.heroku.com:443', {
+    reqheaders: {
+      accept: 'application/vnd.heroku+json; version=3',
+      'user-agent': /heroku-cli\/.*/,
+    },
+  })
+    .get('/apps/myapp')
+    .reply(200, {
+      locked,
+      name: 'myapp',
+      owner: null,
+      team: {id: '01234567-89ab-cdef-0123-456789abcdef', name: 'myteam'},
     })
 }
 
@@ -165,12 +182,6 @@ export function teamMembers(members = [
   return nock('https://api.heroku.com:443')
     .get('/teams/myteam/members')
     .reply(200, members)
-}
-
-export function emptyTeamMembers(teamName: string) {
-  return nock('https://api.heroku.com:443')
-    .get(`/teams/${teamName}/members`)
-    .reply(200, [])
 }
 
 export function personalApp() {
