@@ -5,7 +5,6 @@ import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import createAddon from '../../lib/addons/create-addon.js'
-import * as util from '../../lib/addons/util.js'
 import notify from '../../lib/notify.js'
 
 const heredoc = tsheredoc.default

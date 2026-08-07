@@ -1,15 +1,17 @@
 
 import {Command, flags} from '@heroku-cli/command'
-import {AddOnAttachment} from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HTTP, HTTPError} from '@heroku/http-call'
+import {HTTP} from '@heroku/http-call'
+import {HerokuSDK} from '@heroku/sdk'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {AddonNotFoundError, type ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on'
 import {Args, ux} from '@oclif/core'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import open from 'open'
 
-import {attachmentResolver, resolveAddon} from '../../lib/addons/resolve.js'
+import {isNotFound} from '../../lib/addons/addons-wait.js'
 
 export interface AddonSso {
   /**
@@ -97,20 +99,31 @@ export default class Open extends Command {
       return this.sudo(app, addon)
     }
 
-    let attachment: AddOnAttachment | null | void = null
+    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+
+    let attachment: null | ResolvedAddOnAttachment = null
     try {
-      attachment = await attachmentResolver(this.heroku, app, addon)
+      attachment = await platform.addOn.describeAttachment(app, addon)
     } catch (error) {
-      if (error instanceof HTTPError && error.statusCode !== 404) {
+      // Swallow not-found so we fall through to a direct add-on resolve.
+      // `describeAttachment` throws `AddonNotFoundError` when no attachment
+      // matches, and the underlying attachment resolution can surface other
+      // 404s; rethrow anything that isn't a 404.
+      if (!(error instanceof AddonNotFoundError) && !isNotFound(error)) {
         throw error
       }
     }
 
     let webUrl: string
-    if (attachment) {
-      webUrl = attachment.web_url as string
+    if (attachment?.web_url) {
+      // Context-scoped URL: the dashboard for this add-on *from this app*
+      // (differs from the add-on's own billing-app `web_url`).
+      webUrl = attachment.web_url
     } else {
-      const resolvedAddon = await resolveAddon(this.heroku, app, addon)
+      // No attachment (app-less invocation or a bare add-on identity), or an
+      // add-on with no web dashboard: fall back to resolving the add-on for
+      // its own (billing-app) web_url.
+      const resolvedAddon = await platform.addOn.resolve(addon, {appIdentity: app})
       webUrl = resolvedAddon.web_url as string
     }
 

@@ -1,6 +1,9 @@
+import type {AddOnAttachment, AddOnConfig} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {trapConfirmationRequired} from '../../lib/addons/util.js'
@@ -19,10 +22,11 @@ export default class Attach extends Command {
   }
   static topic = 'addons'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<AddOnAttachment> {
     const {args,  flags} = await this.parse(Attach)
     const {app, as, confirm, credential} = flags
-    const {body: addon} = await this.heroku.get<Heroku.AddOn>(`/addons/${encodeURIComponent(args.addon_name)}`)
+    const {platform} = new HerokuSDK()
+    const addon = await platform.addOn.info(args.addon_name)
     const createAttachment = async (confirmed?: string) =>  {
       let namespace: string | undefined
       if (credential && credential !== 'default') {
@@ -30,12 +34,12 @@ export default class Attach extends Command {
       }
 
       const body = {
-        addon: {name: addon.name}, app: {name: app}, confirm: confirmed, name: as, namespace,
+        addon: addon.name!, app, confirm: confirmed, name: as, namespace,
       }
 
       try {
         ux.action.start(`Attaching ${credential ? color.name(credential) + ' of ' : ''}${color.datastore(addon.name || '')}${as ? ' as ' + color.attachment(as) : ''} to ${color.app(app)}`)
-        const {body: attachment} = await this.heroku.post<Heroku.AddOnAttachment>('/addon-attachments', {body})
+        const attachment = await platform.addOnAttachment.create(body)
         ux.action.stop()
 
         return attachment
@@ -46,17 +50,21 @@ export default class Attach extends Command {
     }
 
     if (credential && credential !== 'default') {
-      const {body: credentialConfig} = await this.heroku.get<Heroku.AddOnConfig[]>(`/addons/${addon.name}/config/credential:${encodeURIComponent(credential)}`)
+      const client = new HerokuApiClient()
+      const response = await client.get(`/addons/${addon.name}/config/credential:${encodeURIComponent(credential)}`)
+      const credentialConfig = await response.json() as AddOnConfig[]
       if (credentialConfig.length === 0) {
         throw new Error(`Could not find credential ${color.name(credential)} for database ${color.datastore(addon.name || '')}`)
       }
     }
 
-    const attachment = await trapConfirmationRequired<Heroku.AddOnAttachment>(app, confirm, (confirmed?: string) => createAttachment(confirmed))
+    const attachment = await trapConfirmationRequired<AddOnAttachment>(app, confirm, (confirmed?: string) => createAttachment(confirmed))
     ux.action.start(`Setting ${color.attachment(attachment.name || '')} config vars and restarting ${color.app(app)}`)
-    const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-      headers: {Range: 'version ..; max=1, order=desc'}, partial: true,
-    })
+    const releases = await platform
+      .withHeaders({Range: 'version ..; max=1, order=desc'})
+      .release.list(app)
     ux.action.stop(`done, v${releases[0].version}`)
+
+    return attachment
   }
 }

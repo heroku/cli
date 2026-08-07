@@ -1,10 +1,14 @@
+import type {AddOn} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color, pg, utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {AddonProvisioningFailedError} from '@heroku/sdk/resources/platform/add-on'
 import {Args} from '@oclif/core'
+import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
-import destroyAddon from '../../lib/addons/destroy-addon.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import notify from '../../lib/notify.js'
 
@@ -26,11 +30,12 @@ export default class Destroy extends Command {
   static strict = false
   static topic = 'addons'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<AddOn[]> {
     const {argv, flags} = await this.parse(Destroy)
     const {app, confirm, wait} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
     const addonResolver = new utils.AddonResolver(this.heroku)
+    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
 
     const addons = await Promise.all(argv.map((name: string) => addonResolver.resolve(name as string, app)))
     for (const addon of addons) {
@@ -41,24 +46,75 @@ export default class Destroy extends Command {
       }
     }
 
-    for (const addonApps of Object.entries(_.groupBy<Heroku.AddOn>(addons, 'app.name'))) {
+    const destroyed: AddOn[] = []
+    for (const addonApps of Object.entries(_.groupBy(addons, 'app.name'))) {
       const currentAddons = addonApps[1]
       const appName = addonApps[0]
       await new ConfirmCommand().confirm(appName, confirm)
       for (const addon of currentAddons) {
+        const addonName = addon.name ?? ''
+        const appIdentity = addon.app?.name ?? ''
         try {
-          await destroyAddon(this.heroku, addon, force, wait)
-          if (wait) {
-            Destroy.notifier(`heroku addons:destroy ${addon.name}`, 'Add-on successfully deprovisioned')
-          }
-        } catch (error) {
-          if (wait) {
-            Destroy.notifier(`heroku addons:destroy ${addon.name}`, 'Add-on failed to deprovision', false)
+          ux.action.start(`Destroying ${color.addon(addonName)} on ${color.app(appIdentity)}`)
+          const result = await platform.addOn.destroyAndWait(appIdentity, addonName, {
+            force,
+            onDeprovisioning() {
+              // Two-phase UX: stop the "Destroying … on <app>" spinner as pending,
+              // then surface a dedicated wait spinner while the SDK polls.
+              ux.action.stop(color.info('pending'))
+              ux.stdout(`Waiting for ${color.addon(addonName)}...`)
+              ux.action.start(`Destroying ${color.addon(addonName)}`)
+            },
+            wait,
+          })
+
+          const resultState = result.state as string
+          if (resultState === 'deprovisioning') {
+            // Async deprovisioning without --wait: leave the destruction running in the background.
+            ux.action.stop(color.info('pending'))
+            ux.stdout(`${color.addon(addonName)} is being destroyed in the background. The app will restart when complete...`)
+            ux.stdout(`Run ${color.code('heroku addons:info ' + addonName)} to check destruction progress`)
+          } else if (resultState === 'deprovisioned') {
+            ux.action.stop()
+          } else {
+            // A synchronous delete that settled into an unexpected terminal state.
+            ux.action.stop()
+            throw new AddonProvisioningFailedError(result)
           }
 
-          throw error
+          if (wait) {
+            Destroy.notifier(`heroku addons:destroy ${addonName}`, 'Add-on successfully deprovisioned')
+          }
+
+          destroyed.push(result)
+        } catch (error) {
+          if (wait) {
+            Destroy.notifier(`heroku addons:destroy ${addonName}`, 'Add-on failed to deprovision', false)
+          }
+
+          throw this.toDestroyError(addon, error)
         }
       }
     }
+
+    return destroyed
+  }
+
+  // The SDK's destroyAndWait surfaces platform/HTTP errors verbatim; the CLI owns the
+  // friendly "can't destroy your database" / "add-on was unable to be destroyed" copy.
+  private toDestroyError(addon: pg.ExtendedAddon, error: unknown): Error {
+    const isAdvancedDatabase = utils.pg.isAdvancedDatabase(addon)
+
+    if (error instanceof AddonProvisioningFailedError) {
+      const {state} = error.addon
+      return isAdvancedDatabase
+        ? new Error(`You can't destroy a database with a ${state} status.`)
+        : new Error(`The add-on was unable to be destroyed, with status ${state}.`)
+    }
+
+    const errorMessage = (error instanceof Error ? error.message : undefined) ?? error
+    return isAdvancedDatabase
+      ? new Error(`We can't destroy your database due to an error: ${errorMessage}. Try again or open a ticket with Heroku Support: https://help.heroku.com/`)
+      : new Error(`The add-on was unable to be destroyed: ${errorMessage}.`)
   }
 }
