@@ -1,5 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {CreateAndWaitOptions} from '@heroku/sdk/extensions/platform'
+import {Domain} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
 
@@ -67,10 +69,15 @@ describe('domains:add', function () {
       })
 
       it('adds the domain to the app with the --wait flag', async function () {
-        fakePlatform.domain.add.resolves(domainsResponseWithEndpoint)
+        fakePlatform.domain.add.callsFake(async (_app: string, hostname: string, opts?: CreateAndWaitOptions) => {
+          opts?.poller?.onStart?.({hostname} as Domain)
+          opts?.poller?.onStop?.({hostname} as Domain)
+          return domainsResponseWithEndpoint
+        })
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp', '--cert', 'my-cert', '--wait'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(stderr).to.contain('Waiting for example.com... done')
 
         const [app, hostname, options] = fakePlatform.domain.add.firstCall.args
         expect(app).to.equal('myapp')

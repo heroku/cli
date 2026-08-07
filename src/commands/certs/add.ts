@@ -49,6 +49,15 @@ export default class Add extends Command {
         files.crt.toString(),
         files.key.toString(),
         {
+          domainPoller: {
+            onStart() {
+              // Stop the current spinner
+              ux.action.stop()
+              // Start a new spinner
+              ux.action.start('Waiting for stable domains to be created')
+            },
+            onStop: () => ux.action.stop(),
+          },
           resolveDomains: async (candidates: string[]) => {
             ux.action.stop()
             hux.styledHeader('Almost done! Which of these domains on this application would you like this certificate associated with?')

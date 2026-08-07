@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {CreateAndAssociateOptions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -164,5 +165,25 @@ describe('heroku certs:add', function () {
     expect(stderr).to.contain('Adding SSL certificate to ⬢ example... done\n')
     expect(stdout).to.contain('Certificate details:')
     expect(stdout).to.contain('Common Name(s): foo.example.org')
+  })
+
+  it('# waits for domains to be ready', async function () {
+    fakePlatform.sniEndpoint.createAndAssociate.callsFake(async (_app: string, _crt: string, _key: string, opts: CreateAndAssociateOptions) => {
+      opts?.domainPoller?.onStart?.()
+      opts?.domainPoller?.onStop?.()
+      return endpointStables
+    })
+
+    const {stderr} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      'pem_file',
+      'key_file',
+    ])
+
+    const addingIndex = stderr.indexOf('Adding SSL certificate to ⬢ example... done')
+    const waitingIndex = stderr.indexOf('Waiting for stable domains to be created... done')
+    expect(addingIndex).to.be.greaterThan(-1)
+    expect(waitingIndex).to.be.greaterThan(addingIndex)
   })
 })
