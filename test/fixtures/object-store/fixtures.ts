@@ -136,3 +136,33 @@ export const attachmentsResponse: Required<Heroku.AddOnAttachment>[] = [
 ]
 
 export const emptyAttachmentsResponse: Required<Heroku.AddOnAttachment>[] = []
+
+export const defaultCredential = {
+  capabilities: ['read', 'write', 'list', 'delete'],
+  config_namespace: null,
+  config_vars: {},
+  credentials_rotated_at: null,
+  default: true,
+  id: '11111111-1111-1111-1111-111111111111',
+  key_prefix: '',
+  name: 'default',
+  session_ttl_hours: 12,
+  sessions_revoked_before: null,
+  state: 'operational',
+}
+
+export const reportsCredential = {
+  capabilities: ['read', 'list'],
+  config_namespace: 'credential:reports',
+  config_vars: {},
+  credentials_rotated_at: null,
+  default: false,
+  id: '22222222-2222-2222-2222-222222222222',
+  key_prefix: 'reports/',
+  name: 'reports',
+  session_ttl_hours: 12,
+  sessions_revoked_before: null,
+  state: 'operational',
+}
+
+export const credentialsResponse = [defaultCredential, reportsCredential]

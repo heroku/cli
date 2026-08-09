@@ -301,6 +301,9 @@
       "object-store:attachments": {
         "description": "manage object store attachments"
       },
+      "object-store:credentials": {
+        "description": "manage object store scoped credentials"
+      },
       "orgs": {
         "description": "manage organizations"
       },
