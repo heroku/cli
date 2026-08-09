@@ -295,6 +295,12 @@
       "members": {
         "description": "manage organization members"
       },
+      "object-store": {
+        "description": "manage Heroku Object Store"
+      },
+      "object-store:attachments": {
+        "description": "manage object store attachments"
+      },
       "orgs": {
         "description": "manage organizations"
       },
