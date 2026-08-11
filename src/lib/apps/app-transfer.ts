@@ -1,46 +1,27 @@
-import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
+
+type Platform = HerokuSDK<readonly [typeof appExtensions]>['platform']
 
 type Options = {
   appName: string,
   bulk: boolean,
-  heroku: APIClient,
   personalToPersonal: boolean,
+  platform: Platform,
   recipient: string,
 }
 
-const getRequestOpts = (options: Options) => {
-  const {appName, bulk, personalToPersonal, recipient} = options
-  const isPersonalToPersonal = personalToPersonal || personalToPersonal === undefined
-  const requestOpts = isPersonalToPersonal
-    ? {
-      body: {app: appName, recipient},
-      method: 'POST',
-      path: '/account/app-transfers',
-      transferMsg: `Initiating transfer of ${color.app(appName)}`,
-    }
-    : {
-      body: {owner: recipient},
-      method: 'PATCH',
-      path: `/teams/apps/${appName}`,
-      transferMsg: `Transferring ${color.app(appName)}`,
-    }
-  if (!bulk) requestOpts.transferMsg += ` to ${isPersonalToPersonal ? color.user(recipient) : color.team(recipient)}`
-  return requestOpts
-}
-
 export const appTransfer = async (options: Options) => {
-  const {body, method, path, transferMsg} = getRequestOpts(options)
+  const {appName, bulk, personalToPersonal, platform, recipient} = options
+  const isPersonalToPersonal = personalToPersonal || personalToPersonal === undefined
+  let transferMsg = isPersonalToPersonal
+    ? `Initiating transfer of ${color.app(appName)}`
+    : `Transferring ${color.app(appName)}`
+  if (!bulk) transferMsg += ` to ${isPersonalToPersonal ? color.user(recipient) : color.team(recipient)}`
   ux.action.start(transferMsg)
-  const {body: request} = await options.heroku.request<Heroku.TeamApp>(
-    path,
-    {
-      body,
-      method,
-    },
-  )
+  const request = await platform.app.transfer(appName, recipient, {personalToPersonal: isPersonalToPersonal}) as {state?: string}
   const message = request.state === 'pending' ? 'email sent' : undefined
   ux.action.stop(message)
 }

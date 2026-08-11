@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
+import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -33,7 +35,7 @@ export default class AppsTransfer extends Command {
   }
   static topic = 'apps'
 
-  getAppsToTransfer(apps: Heroku.App[], inquirer: any) {
+  getAppsToTransfer(apps: App[], inquirer: any) {
     return inquirer.prompt([{
       choices: apps.map(app => ({
         name: `${color.app(app.name ?? '')} (${getOwner(app.owner?.email ?? '')})`, value: {name: app.name, owner: app.owner?.email},
@@ -47,12 +49,13 @@ export default class AppsTransfer extends Command {
 
   public async run() {
     const inquirer = await lazyModuleLoader.loadInquirer()
+    const {platform} = new HerokuSDK({extensions: [appExtensions]})
 
     const {args, flags} = await this.parse(AppsTransfer)
     const {app, bulk, confirm, locked} = flags
     const {recipient} = args
     if (bulk) {
-      const {body: allApps} = await this.heroku.get<Heroku.App[]>('/apps')
+      const allApps = await platform.app.list()
       const selectedApps = await this.getAppsToTransfer(allApps.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')), inquirer)
       ux.warn(`Transferring applications to ${color.name(recipient)}...\n`)
       for (const app of selectedApps.choices) {
@@ -60,8 +63,8 @@ export default class AppsTransfer extends Command {
           await appTransfer({
             appName: app.name,
             bulk: true,
-            heroku: this.heroku,
             personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
+            platform,
             recipient,
           })
         } catch (error) {
@@ -70,7 +73,7 @@ export default class AppsTransfer extends Command {
         }
       }
     } else {
-      const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${app}`)
+      const appInfo = await platform.app.info(app)
       const appName = appInfo.name ?? app ?? ''
       if (isValidEmail(recipient) && isTeamApp(appInfo.owner?.email)) {
         await new ConfirmCommand().confirm(appName, confirm, 'All collaborators will be removed from this app')
@@ -79,8 +82,8 @@ export default class AppsTransfer extends Command {
       await appTransfer({
         appName,
         bulk,
-        heroku: this.heroku,
         personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
+        platform,
         recipient,
       })
       if (locked) {
