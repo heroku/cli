@@ -1,39 +1,48 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
 import childProcess from 'node:child_process'
-import {restore, stub} from 'sinon'
+import * as sinon from 'sinon'
 
 import OpenCommand from '../../../../src/commands/apps/open.js'
 
+type FakePlatform = {
+  app: {info: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: sinon.stub()},
+  }
+}
+
 describe('apps:open', function () {
   const app = {
-    web_url: 'https://myapp.herokuapp.com',
+    name: 'myapp',
+    web_url: 'https://myapp.herokuapp.com/',
   }
-  let api: nock.Scope
+
+  let fakePlatform: FakePlatform
+  let spawnStub: sinon.SinonStub
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-  })
-
-  afterEach(function () {
-    api.done()
-    nock.cleanAll()
-    restore()
-  })
-
-  it('opens the url', async function () {
-    const spawnStub = stub(childProcess, 'spawn').returns({
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    spawnStub = sinon.stub(childProcess, 'spawn').returns({
       on(event: string, cb: CallableFunction) {
         if (event === 'exit') {
           cb()
         }
       }, unref() {},
     } as any)
+  })
 
-    api
-      .get('/apps/myapp')
-      .reply(200, app)
+  afterEach(function () {
+    sinon.restore()
+  })
+
+  it('opens the url', async function () {
+    fakePlatform.app.info.resolves(app)
 
     await runCommand(OpenCommand, ['-a', 'myapp'])
 
@@ -42,20 +51,11 @@ describe('apps:open', function () {
     // For windows-based platforms this arg is an array that contains an encoded command that includes the url
     const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
     expect(hasCorrectUrl).to.be.true
+    expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('opens the url with path', async function () {
-    const spawnStub = stub(childProcess, 'spawn').returns({
-      on(event: string, cb: CallableFunction) {
-        if (event === 'exit') {
-          cb()
-        }
-      }, unref() {},
-    } as any)
-
-    api
-      .get('/apps/myapp')
-      .reply(200, app)
+    fakePlatform.app.info.resolves(app)
 
     await runCommand(OpenCommand, ['-a', 'myapp', '/mypath'])
 

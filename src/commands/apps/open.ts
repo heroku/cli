@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import open from 'open'
 
@@ -21,12 +21,13 @@ export default class AppsOpen extends Command {
   static topic = 'apps'
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(AppsOpen)
-    const appResponse = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
-    const app = appResponse.body
+    const app = await platform.app.info(flags.app)
     const path = args.path || ''
-    const url = new URL(path, app.web_url)
+    const url = new URL(path, app.web_url as string)
     ux.stdout(`Opening ${color.info(url.toString())}...`)
     await open(url.toString())
+    return app
   }
 }
