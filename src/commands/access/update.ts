@@ -3,8 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {isTeamApp} from '../../lib/team-utils.js'
-
 export default class Update extends Command {
   static args = {
     email: Args.string({description: 'email address of the team member', required: true}),
@@ -27,7 +25,7 @@ export default class Update extends Command {
     let permissions = flags.permissions.split(',')
 
     const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    if (!isTeamApp(appInfo?.owner?.email))
+    if (!appInfo?.team)
       this.error(`Error: cannot update permissions. The app ${color.app(appName)} is not owned by a team`)
     permissions.push('view')
     permissions = [...new Set(permissions.sort())]
