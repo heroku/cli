@@ -1,9 +1,32 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Errors from '../../../../src/commands/apps/errors.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+
+type FakeMetrics = {
+  formationMetric: {errors: sinon.SinonStub}
+  routerMetric: {errors: sinon.SinonStub}
+}
+
+type FakePlatform = {
+  formation: {list: sinon.SinonStub}
+}
+
+function buildFakeMetrics(): FakeMetrics {
+  return {
+    formationMetric: {errors: sinon.stub()},
+    routerMetric: {errors: sinon.stub()},
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    formation: {list: sinon.stub()},
+  }
+}
 
 const formation = [
   {
@@ -35,56 +58,59 @@ const errors = {
 const APP = 'myapp'
 
 describe('apps:errors', function () {
-  let api: nock.Scope
-  let metricsApi: nock.Scope
+  let fakeMetrics: FakeMetrics
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    metricsApi = nock('https://api.metrics.herokai.com')
+    fakeMetrics = buildFakeMetrics()
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'metrics').get(() => fakeMetrics)
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows no errors', async function () {
-    api
-      .get(`/apps/${APP}/formation`)
-      .reply(200, formation)
-
-    metricsApi
-      .get(`/apps/${APP}/router-metrics/errors`)
-      .query(params => params.process_type === 'web' && params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/node/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/web/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
+    fakePlatform.formation.list.resolves(formation)
+    fakeMetrics.routerMetric.errors.resolves({data: {}})
+    fakeMetrics.formationMetric.errors.callsFake(async () => ({data: {}}))
 
     const {stderr, stdout} = await runCommand(Errors, ['--app', APP])
 
     expect(stdout).to.equal('No errors on ⬢ myapp in the last 24 hours\n')
     expect(stderr).to.be.equal('')
+
+    // Pin the SDK call arguments so a regression that drops process_type,
+    // changes the step, or passes the wrong app can't slip through green.
+    // start_time/end_time are Date.now()-derived, so match their shape only.
+    expect(fakePlatform.formation.list.calledOnceWithExactly(APP)).to.equal(true)
+    expect(fakeMetrics.routerMetric.errors.calledWith(
+      APP,
+      sinon.match({
+        end_time: sinon.match.string, process_type: 'web', start_time: sinon.match.string, step: '1h',
+      }),
+    )).to.equal(true)
+    // formationMetric is called per formation type (node, web) with (app, type, opts).
+    expect(fakeMetrics.formationMetric.errors.calledWith(
+      APP,
+      'web',
+      sinon.match({end_time: sinon.match.string, start_time: sinon.match.string, step: '1h'}),
+    )).to.equal(true)
+    expect(fakeMetrics.formationMetric.errors.calledWith(APP, 'node', sinon.match.object)).to.equal(true)
   })
 
   it('traps bad request', async function () {
-    api
-      .get(`/apps/${APP}/formation`)
-      .reply(200, formation)
+    fakePlatform.formation.list.resolves(formation)
+    fakeMetrics.routerMetric.errors.resolves({data: {}})
+    fakeMetrics.formationMetric.errors.callsFake(async (app: string, type: string) => {
+      if (type === 'web') {
+        throw Object.assign(new Error('invalid process_type provided (valid examples: web, worker, etc); '), {statusCode: 400})
+      }
 
-    metricsApi
-      .get(`/apps/${APP}/router-metrics/errors`)
-      .query(params => params.process_type === 'web' && params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/node/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/web/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(400, {id: 'bad_request', message: 'invalid process_type provided (valid examples: web, worker, etc); '})
+      return {data: {}}
+    })
 
     const {stderr, stdout} = await runCommand(Errors, ['--app', APP])
 
@@ -95,20 +121,15 @@ describe('apps:errors', function () {
   it('propagates other bad request', async function () {
     const ERROR_MESSAGE = 'ack!'
 
-    api
-      .get(`/apps/${APP}/formation`)
-      .reply(200, formation)
+    fakePlatform.formation.list.resolves(formation)
+    fakeMetrics.routerMetric.errors.resolves({data: {}})
+    fakeMetrics.formationMetric.errors.callsFake(async (app: string, type: string) => {
+      if (type === 'web') {
+        throw Object.assign(new Error(ERROR_MESSAGE), {statusCode: 400})
+      }
 
-    metricsApi
-      .get(`/apps/${APP}/router-metrics/errors`)
-      .query(params => params.process_type === 'web' && params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/node/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/web/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(400, {id: 'bad_request', message: ERROR_MESSAGE})
+      return {data: {}}
+    })
 
     const {error} = await runCommand(Errors, ['--app', APP])
 
@@ -116,20 +137,10 @@ describe('apps:errors', function () {
   })
 
   it('shows errors', async function () {
-    api
-      .get(`/apps/${APP}/formation`)
-      .reply(200, formation)
-
-    metricsApi
-      .get(`/apps/${APP}/router-metrics/errors`)
-      .query(params => params.process_type === 'web' && params.step === '1h')
-      .reply(200, errors.router)
-      .get(`/apps/${APP}/formation/node/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/web/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {R14: [1]}})
+    fakePlatform.formation.list.resolves(formation)
+    fakeMetrics.routerMetric.errors.resolves(errors.router)
+    fakeMetrics.formationMetric.errors.callsFake(async (app: string, type: string) =>
+      (type === 'web' ? {data: {R14: [1]}} : {data: {}}))
 
     const {stderr, stdout} = await runCommand(Errors, ['--app', APP])
 
@@ -144,20 +155,9 @@ describe('apps:errors', function () {
   })
 
   it('shows errors as json', async function () {
-    api
-      .get(`/apps/${APP}/formation`)
-      .reply(200, formation)
-
-    metricsApi
-      .get(`/apps/${APP}/router-metrics/errors`)
-      .query(params => params.process_type === 'web' && params.step === '1h')
-      .reply(200, errors.router)
-      .get(`/apps/${APP}/formation/node/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
-      .get(`/apps/${APP}/formation/web/metrics/errors`)
-      .query(params => params.step === '1h')
-      .reply(200, {data: {}})
+    fakePlatform.formation.list.resolves(formation)
+    fakeMetrics.routerMetric.errors.resolves(errors.router)
+    fakeMetrics.formationMetric.errors.callsFake(async () => ({data: {}}))
 
     const {stderr, stdout} = await runCommand(Errors, ['--app', APP, '--json'])
 

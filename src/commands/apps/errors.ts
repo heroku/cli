@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
+import {HerokuSDK} from '@heroku/sdk'
+import {Formation} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 import errorInfo from '../../lib/apps/error-info.js'
@@ -74,12 +74,15 @@ export default class Errors extends Command {
   }
 
   async run() {
+    const {metrics, platform} = new HerokuSDK()
     const {flags} = await this.parse(Errors)
 
     const hours = Number.parseInt(flags.hours, 10)
     const NOW = new Date().toISOString()
     const YESTERDAY = new Date(Date.now() - (hours * 60 * 60 * 1000)).toISOString()
-    const DATE_QUERY = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
+    const start_time = YESTERDAY
+    const end_time = NOW
+    const step = '1h'
 
     async function getAllDynoErrors(types: string[]) {
       const values = await Promise.all(types.map(dynoErrors))
@@ -91,34 +94,30 @@ export default class Errors extends Command {
       return memo
     }
 
-    const routerErrors = () => this.heroku.get<AppErrors>(
-      `/apps/${flags.app}/router-metrics/errors?${DATE_QUERY}&process_type=web`,
+    const routerErrors = () => metrics.routerMetric.errors(
+      flags.app,
       {
-        hostname: 'api.metrics.herokai.com',
+        end_time, process_type: 'web', start_time, step,
       },
-    ).then(({body}) => sumErrors(body))
+    ).then(body => sumErrors(body as unknown as AppErrors))
 
-    const dynoErrors = (type: string) => this.heroku.get<AppErrors>(
-      `/apps/${flags.app}/formation/${type}/metrics/errors?${DATE_QUERY}`,
-      {
-        hostname: 'api.metrics.herokai.com',
-      },
-    ).catch(error => {
-      const {http} = error
+    const dynoErrors = (type: string) => metrics.formationMetric.errors(
+      flags.app,
+      type,
+      {end_time, start_time, step},
+    ).catch((error: unknown) => {
+      const e = error as {message?: string; statusCode?: number}
       // eslint-disable-next-line prefer-regex-literals
       const match = new RegExp('^invalid process_type provided', 'i')
-      if (http && http.statusCode === 400 && http.body && http.body.message && match.test(http.body.message)) {
-        return {body: {data: {}}}
+      if (e?.statusCode === 400 && e.message && match.test(e.message)) {
+        return {data: {}} as AppErrors
       }
 
       throw error
-    }).then(rsp => {
-      const {body} = rsp as HTTP<AppErrors>
-      return sumErrors(body)
-    })
+    }).then(body => sumErrors(body as unknown as AppErrors))
 
-    const {body: formation} = await this.heroku.get<Heroku.Formation>(`/apps/${flags.app}/formation`)
-    const types = formation.map((p: Heroku.Formation) => p.type)
+    const formation = await platform.formation.list(flags.app)
+    const types = formation.map((p: Formation) => p.type)
     const showDyno = flags.dyno || !flags.router
     const showRouter = flags.router || !flags.dyno
 
