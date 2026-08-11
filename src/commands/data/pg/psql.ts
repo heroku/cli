@@ -1,17 +1,11 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {Args, ux} from '@oclif/core'
+import {color, utils} from '@heroku/heroku-cli-util'
+import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import Dyno, {DynoOpts} from '../../../lib/run/dyno.js'
+import {runPsqlThroughOneOffDyno} from '../../../lib/pg/one-off-dyno.js'
 
 const heredoc = tsheredoc.default
-
-function runsThroughOneOffDyno(addon: pg.ExtendedAddonAttachment['addon']): boolean {
-  const tier = addon.plan.name.split(':', 2)[1] ?? ''
-  return utils.pg.isAdvancedPrivateDatabase(addon)
-    || (utils.pg.isLegacyDatabase(addon) && tier.includes('shield'))
-}
 
 export default class DataPgPsql extends Command {
   static args = {
@@ -48,39 +42,19 @@ export default class DataPgPsql extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(DataPgPsql)
     const {database: databaseArg} = args
-    const {app, 'channel-binding': channelBinding, command, file} = flags
+    const {'channel-binding': channelBinding, command, file} = flags
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const db = await dbResolver.getDatabase(app, databaseArg)
+    const db = await dbResolver.getDatabase(flags.app, databaseArg)
 
-    if (runsThroughOneOffDyno(db.attachment!.addon)) {
-      if (file)
-        ux.error('You can\'t use the --file flag on private networked databases.', {exit: 1})
-
-      let psqlCommand: string
-
-      if (command) {
-        psqlCommand = `psql -c "${command.replaceAll('"', String.raw`\"`)}" --set sslmode=require `
-          + `--set channel_binding=${channelBinding} $${db.attachment!.name}_URL`
-      } else {
-        const prompt = `${db.attachment!.app.name}::${db.attachment!.name}%R%# `
-        psqlCommand = `psql --set PROMPT1="${prompt}" --set PROMPT2="${prompt}" --set sslmode=require `
-          + `--set channel_binding=${channelBinding} $${db.attachment!.name}_URL`
-      }
-
-      const opts = {
-        app,
-        attach: true,
-        command: psqlCommand,
-        env: `PGAPPNAME='psql ${command ? 'non-' : ''}interactive';PGSSLMODE=require;PGCHANNELBINDING=${channelBinding}`,
-        'exit-code': true,
+    if (utils.pg.isPrivateNetworkDatabase(db.attachment!.addon)) {
+      return runPsqlThroughOneOffDyno({
+        channelBinding: channelBinding as 'disable' | 'require',
+        command,
+        db,
+        file,
         heroku: this.heroku,
-        'no-tty': false,
         notificationSubtitle: 'heroku data:pg:psql',
-        notify: false,
-        showStatus: false,
-      }
-
-      return this.runThroughOneOffDyno(opts)
+      })
     }
 
     const psqlService = new utils.pg.PsqlService(db)
@@ -100,19 +74,5 @@ export default class DataPgPsql extends Command {
       process.stdout.write(output)
     } else
       await psqlService.interactiveSession(cmdArgs)
-  }
-
-  public async runThroughOneOffDyno(opts: DynoOpts): Promise<void> {
-    const dyno = new Dyno(opts)
-    try {
-      await dyno.start()
-    } catch (error: unknown) {
-      const dynoError = error as Error & {exitCode?: number}
-      if (dynoError.exitCode) {
-        ux.error(dynoError.message, {code: String(dynoError.exitCode), exit: dynoError.exitCode})
-      } else {
-        throw error
-      }
-    }
   }
 }

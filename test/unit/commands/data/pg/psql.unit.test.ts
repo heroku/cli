@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {runCommand} from '@heroku-cli/test-utils'
 import {pg, utils} from '@heroku/heroku-cli-util'
 import {CLIError} from '@oclif/core/errors'
@@ -7,15 +8,18 @@ import {restore, SinonSpy, stub} from 'sinon'
 import type {DynoOpts} from '../../../../../src/lib/run/dyno.js'
 
 import DataPgPsql from '../../../../../src/commands/data/pg/psql.js'
+import Dyno from '../../../../../src/lib/run/dyno.js'
 
 describe('data:pg:psql', function () {
   let psqlServiceExecQueryStub: SinonSpy
   let psqlServiceExecFileStub: SinonSpy
   let psqlServiceInteractiveStub: SinonSpy
-  let runThroughOneOffDynoSpy: SinonSpy
+  let dynoStartStub: SinonSpy
+  let capturedDynoOpts: DynoOpts | undefined
 
   afterEach(function () {
     restore()
+    capturedDynoOpts = undefined
   })
 
   describe('non-advanced tiers', function () {
@@ -241,7 +245,11 @@ describe('data:pg:psql', function () {
       psqlServiceExecQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
       psqlServiceExecFileStub = stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
       psqlServiceInteractiveStub = stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
-      runThroughOneOffDynoSpy = stub(DataPgPsql.prototype, 'runThroughOneOffDyno').resolves()
+      dynoStartStub = stub(Dyno.prototype, 'start').callsFake(function () {
+        // @ts-ignore
+        capturedDynoOpts = this.opts
+        return Promise.resolve()
+      })
     })
 
     const db = {
@@ -274,18 +282,11 @@ describe('data:pg:psql', function () {
       expect(oclif.exit).to.eq(1)
 
       expect(psqlServiceExecFileStub.called).to.be.false
+      expect(dynoStartStub.called).to.be.false
       expect(stdout).to.equal('')
     })
 
     it('runs psql command on a one-off dyno', async function () {
-      const expectedOptions: Partial<DynoOpts> = {
-        app: 'myapp',
-        attach: true,
-        command: 'psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL',
-        env: "PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
-        'exit-code': true,
-      }
-
       const {stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
@@ -295,18 +296,18 @@ describe('data:pg:psql', function () {
       ])
 
       expect(stdout).to.equal('')
-      expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+      expect(dynoStartStub.calledOnce).to.be.true
+      expect(capturedDynoOpts).to.include({
+        app: 'myapp',
+        attach: true,
+        command: 'psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL',
+        env: "PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
+        'exit-code': true,
+        notificationSubtitle: 'heroku data:pg:psql',
+      })
     })
 
     it('runs an interactive psql session on a one-off dyno', async function () {
-      const expectedOptions: Partial<DynoOpts> = {
-        app: 'myapp',
-        attach: true,
-        command: 'psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL',
-        env: "PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
-        'exit-code': true,
-      }
-
       const {stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
@@ -314,7 +315,14 @@ describe('data:pg:psql', function () {
       ])
 
       expect(stdout).to.equal('')
-      expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+      expect(dynoStartStub.calledOnce).to.be.true
+      expect(capturedDynoOpts).to.include({
+        app: 'myapp',
+        attach: true,
+        command: 'psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL',
+        env: "PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
+        'exit-code': true,
+      })
     })
   })
 
@@ -324,7 +332,11 @@ describe('data:pg:psql', function () {
       psqlServiceExecQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
       psqlServiceExecFileStub = stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
       psqlServiceInteractiveStub = stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
-      runThroughOneOffDynoSpy = stub(DataPgPsql.prototype, 'runThroughOneOffDyno').resolves()
+      dynoStartStub = stub(Dyno.prototype, 'start').callsFake(function () {
+        // @ts-ignore
+        capturedDynoOpts = this.opts
+        return Promise.resolve()
+      })
     })
 
     const db = {
@@ -354,18 +366,11 @@ describe('data:pg:psql', function () {
       expect(oclif.exit).to.eq(1)
 
       expect(psqlServiceExecFileStub.called).to.be.false
+      expect(dynoStartStub.called).to.be.false
       expect(stdout).to.equal('')
     })
 
     it('runs psql command on a one-off dyno', async function () {
-      const expectedOptions: Partial<DynoOpts> = {
-        app: 'myapp',
-        attach: true,
-        command: 'psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL',
-        env: "PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
-        'exit-code': true,
-      }
-
       const {stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
@@ -375,18 +380,17 @@ describe('data:pg:psql', function () {
       ])
 
       expect(stdout).to.equal('')
-      expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+      expect(dynoStartStub.calledOnce).to.be.true
+      expect(capturedDynoOpts).to.include({
+        app: 'myapp',
+        attach: true,
+        command: 'psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL',
+        env: "PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
+        'exit-code': true,
+      })
     })
 
     it('runs an interactive psql session on a one-off dyno', async function () {
-      const expectedOptions: Partial<DynoOpts> = {
-        app: 'myapp',
-        attach: true,
-        command: 'psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL',
-        env: "PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
-        'exit-code': true,
-      }
-
       const {stdout} = await runCommand(DataPgPsql, [
         'DATABASE',
         '--app',
@@ -394,7 +398,14 @@ describe('data:pg:psql', function () {
       ])
 
       expect(stdout).to.equal('')
-      expect(runThroughOneOffDynoSpy.args[0][0]).to.include(expectedOptions)
+      expect(dynoStartStub.calledOnce).to.be.true
+      expect(capturedDynoOpts).to.include({
+        app: 'myapp',
+        attach: true,
+        command: 'psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL',
+        env: "PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
+        'exit-code': true,
+      })
     })
   })
 
@@ -404,7 +415,7 @@ describe('data:pg:psql', function () {
       psqlServiceExecQueryStub = stub(utils.pg.PsqlService.prototype, 'execQuery').resolves('')
       psqlServiceExecFileStub = stub(utils.pg.PsqlService.prototype, 'execFile').resolves('')
       psqlServiceInteractiveStub = stub(utils.pg.PsqlService.prototype, 'interactiveSession').resolves('')
-      runThroughOneOffDynoSpy = stub(DataPgPsql.prototype, 'runThroughOneOffDyno').resolves()
+      dynoStartStub = stub(Dyno.prototype, 'start').resolves()
     })
 
     const db = {
@@ -429,7 +440,7 @@ describe('data:pg:psql', function () {
       ])
 
       expect(psqlServiceExecQueryStub.calledOnce).to.be.true
-      expect(runThroughOneOffDynoSpy.called).to.be.false
+      expect(dynoStartStub.called).to.be.false
     })
 
     it('allows the --file flag (streamed locally through the tunnel)', async function () {
@@ -442,7 +453,7 @@ describe('data:pg:psql', function () {
       ])
 
       expect(psqlServiceExecFileStub.calledOnce).to.be.true
-      expect(runThroughOneOffDynoSpy.called).to.be.false
+      expect(dynoStartStub.called).to.be.false
     })
   })
 })

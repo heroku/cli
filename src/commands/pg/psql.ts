@@ -1,8 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
+import tsheredoc from 'tsheredoc'
 
+import {runPsqlThroughOneOffDyno} from '../../lib/pg/one-off-dyno.js'
 import {nls} from '../../nls.js'
+
+const heredoc = tsheredoc.default
 
 export default class Psql extends Command {
   static aliases = ['psql']
@@ -12,6 +16,14 @@ export default class Psql extends Command {
   static description = 'open a psql shell to the database'
   static flags = {
     app: flags.app({required: true}),
+    'channel-binding': flags.string({
+      default: 'require',
+      description: heredoc('override the default channel binding behavior (required). '
+        + 'Can be "disable" to disable channel binding if you run into compatibility issues with your libpq version '
+        + 'or if it was compiled without SSL support.'),
+      hidden: true,
+      options: ['disable', 'require'],
+    }),
     command: flags.string({char: 'c', description: 'SQL command to run'}),
     credential: flags.string({description: 'credential to use'}),
     file: flags.string({char: 'f', description: 'SQL file to run'}),
@@ -20,7 +32,7 @@ export default class Psql extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Psql)
-    const {app, command, credential, file} = flags
+    const {app, 'channel-binding': channelBinding, command, credential, file} = flags
     const namespace = credential ? `credential:${credential}` : undefined
     let db
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
@@ -34,17 +46,34 @@ export default class Psql extends Command {
       throw error
     }
 
+    if (utils.pg.isPrivateNetworkDatabase(db.attachment!.addon)) {
+      return runPsqlThroughOneOffDyno({
+        channelBinding: channelBinding as 'disable' | 'require',
+        command,
+        db,
+        file,
+        heroku: this.heroku,
+        notificationSubtitle: 'heroku pg:psql',
+      })
+    }
+
     const psqlService = new utils.pg.PsqlService(db)
 
     console.error(`--> Connecting to ${color.datastore(db.attachment!.addon.name)}`)
+
+    const cmdArgs = [
+      '--set',
+      `channel_binding=${channelBinding}`,
+    ]
+
     if (command) {
-      const output = await psqlService.execQuery(command)
+      const output = await psqlService.execQuery(command, cmdArgs)
       process.stdout.write(output)
     } else if (file) {
-      const output = await psqlService.execFile(file)
+      const output = await psqlService.execFile(file, cmdArgs)
       process.stdout.write(output)
     } else {
-      await psqlService.interactiveSession()
+      await psqlService.interactiveSession(cmdArgs)
     }
   }
 }
