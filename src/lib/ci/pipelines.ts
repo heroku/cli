@@ -43,10 +43,7 @@ export class PipelineService {
     let pipeline
 
     // Resolve app from --remote flag or heroku.remote git config when --pipeline and --app are absent
-    let resolvedApp = flags.app
-    if (!flags.pipeline && !resolvedApp) {
-      resolvedApp = this.resolveAppFromRemote(flags.remote) ?? null
-    }
+    const resolvedApp = flags.app ?? this.resolveAppFromRemote(flags.remote) ?? null
 
     if (!flags.pipeline && !resolvedApp) {
       ux.error('Required flag:  --pipeline PIPELINE or --app APP')

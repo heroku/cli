@@ -1,7 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
 import {expect} from 'chai'
 import nock from 'nock'
-import {createSandbox} from 'sinon'
 
 import {getPipeline, PipelineService} from '../../../../src/lib/ci/pipelines.js'
 import {getHerokuAPI} from '../../../helpers/test-instances.js'
@@ -49,16 +48,6 @@ describe('pipelines.ts', function () {
     })
 
     describe('remote inference', function () {
-      let sandbox: ReturnType<typeof createSandbox>
-
-      beforeEach(function () {
-        sandbox = createSandbox()
-      })
-
-      afterEach(function () {
-        sandbox.restore()
-      })
-
       it('resolves the pipeline via --remote flag when --pipeline and --app are absent', async function () {
         const app = 'my-heroku-app'
         const coupling = {pipeline: PIPELINE}
