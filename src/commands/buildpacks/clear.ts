@@ -1,5 +1,4 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
-import {hux} from '@heroku/heroku-cli-util'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
 
