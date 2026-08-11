@@ -227,6 +227,45 @@ describe('pg:promote when argument is database', function () {
     `))
   })
 
+  it('promotes the db with a custom attachment name when --as is provided', async function () {
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [
+        {
+          addon: {name: 'postgres-2'},
+          name: 'DATABASE',
+          namespace: null,
+        },
+        {
+          addon: {name: 'postgres-2'},
+          name: 'RED',
+          namespace: null,
+        },
+      ])
+      .post('/addon-attachments', {
+        addon: {name: addon.name},
+        app: {name: 'myapp'},
+        confirm: 'myapp',
+        name: 'CUSTOM_DB',
+        namespace: null,
+      })
+      .reply(201)
+
+    const {stderr} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--as',
+      'CUSTOM_DB',
+      'DATABASE',
+    ])
+    expectOutput(stderr, heredoc(`
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${addon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
+    `))
+  })
+
   it('does not promote the db if is already is DATABASE', async function () {
     nock('https://api.heroku.com')
       .get('/apps/myapp/formation')

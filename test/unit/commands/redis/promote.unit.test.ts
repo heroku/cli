@@ -49,6 +49,43 @@ describe('heroku redis:promote', function () {
     expect(stderr).to.equal('')
   })
 
+  it('# promotes with a custom attachment name when --as is provided', async function () {
+    const app = nock('https://api.heroku.com:443')
+      .get('/apps/example/addons')
+      .reply(200, [
+        {
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['REDIS_URL', 'HEROKU_REDIS_SILVER_URL'],
+          name: 'redis-silver-haiku',
+        }, {
+          addon_service: {name: 'heroku-redis'},
+          config_vars: ['HEROKU_REDIS_GOLD_URL'],
+          name: 'redis-gold-haiku',
+        },
+      ])
+
+    const attach = nock('https://api.heroku.com:443')
+      .post('/addon-attachments', {
+        addon: {name: 'redis-gold-haiku'},
+        app: {name: 'example'},
+        confirm: 'example',
+        name: 'CUSTOM_REDIS',
+      })
+      .reply(200, {})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      '--as',
+      'CUSTOM_REDIS',
+      'redis-gold-haiku',
+    ])
+    app.done()
+    attach.done()
+    expect(stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
+    expect(stderr).to.equal('')
+  })
+
   it('# promotes and replaces attachment of existing REDIS_URL if necessary', async function () {
     const app = nock('https://api.heroku.com:443')
       .get('/apps/example/addons')

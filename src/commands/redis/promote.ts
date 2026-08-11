@@ -11,14 +11,16 @@ export default class Promote extends Command {
   static description = 'sets DATABASE as your REDIS_URL'
   static flags = {
     app: flags.app({required: true}),
+    as: flags.string({description: 'name for the Key-Value Store attachment'}),
     remote: flags.remote(),
   }
   static topic = 'redis'
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Promote)
-    const api = apiFactory(flags.app, args.database, false, this.heroku)
-    const {body: addonsList} = await this.heroku.get<Required<Heroku.AddOn>[]>(`/apps/${flags.app}/addons`)
+    const {app, as} = flags
+    const api = apiFactory(app, args.database, false, this.heroku)
+    const {body: addonsList} = await this.heroku.get<Required<Heroku.AddOn>[]>(`/apps/${app}/addons`)
     const addon = await api.getRedisAddon(addonsList)
     const redisFilter = api.makeAddonsFilter('REDIS_URL')
     const redis = redisFilter(addonsList) as Required<Heroku.AddOn>[]
@@ -26,15 +28,15 @@ export default class Promote extends Command {
       const attachment = redis[0]
       await this.heroku.post('/addon-attachments', {
         body: {
-          addon: {name: attachment.name}, app: {name: flags.app}, confirm: flags.app,
+          addon: {name: attachment.name}, app: {name: app}, confirm: app,
         },
       })
     }
 
-    ux.stdout(`Promoting ${addon.name} to REDIS_URL on ${flags.app}`)
+    ux.stdout(`Promoting ${addon.name} to REDIS_URL on ${app}`)
     await this.heroku.post('/addon-attachments', {
       body: {
-        addon: {name: addon.name}, app: {name: flags.app}, confirm: flags.app, name: 'REDIS',
+        addon: {name: addon.name}, app: {name: app}, confirm: app, name: as || 'REDIS',
       },
     })
   }
