@@ -166,3 +166,28 @@ export const reportsCredential = {
 }
 
 export const credentialsResponse = [defaultCredential, reportsCredential]
+
+export const objectStoreInfoResponse = {
+  addon_name: addon.name,
+  created_at: '2025-01-01T12:00:00Z',
+  id: addon.id,
+  kind: 'standard',
+  plan: 'standard',
+  region: 'virginia',
+  session_ttl_hours: 12,
+  status: 'Available',
+  storage: {
+    objects_count: 7,
+    stored_bytes: 2048,
+    updated_at: '2025-01-01T12:00:00Z',
+  },
+}
+
+export const objectStoreInfoNoMetricsResponse = {
+  ...objectStoreInfoResponse,
+  storage: {
+    objects_count: null,
+    stored_bytes: null,
+    updated_at: null,
+  },
+}

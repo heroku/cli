@@ -16,3 +16,23 @@ export interface ObjectStoreCredentialInfo extends Record<string, unknown> {
 }
 
 export const OBJECT_STORE_CAPABILITIES = ['read', 'write', 'list', 'delete'] as const
+
+// The store-level shape shogun's Tenant serializer returns, proxied verbatim by
+// data-api at GET /object-stores/:id. Describes the store itself; per-credential
+// detail lives on the credential roster (/object-stores/:id/credentials).
+export interface ObjectStoreInfo extends Record<string, unknown> {
+  addon_name: string
+  created_at: string
+  id: string
+  kind: string
+  plan: string
+  region: string
+  session_ttl_hours: number
+  status: string
+  // Bucket footprint from daily CloudWatch metrics; null until first collected.
+  storage: {
+    objects_count: null | number
+    stored_bytes: null | number
+    updated_at: null | string
+  }
+}
