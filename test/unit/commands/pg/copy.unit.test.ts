@@ -79,7 +79,7 @@ describe('pg:copy', function () {
         '--app',
         'myapp',
         '--confirm',
-        'myapp',
+        'RED',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
       ])
@@ -92,7 +92,7 @@ describe('pg:copy', function () {
         '--app',
         'myapp',
         '--confirm',
-        'myapp',
+        'RED',
         'postgres://boop.com:5678/bar',
         'HEROKU_POSTGRESQL_RED_URL',
       ])
@@ -133,7 +133,7 @@ describe('pg:copy', function () {
         '--app',
         'myapp',
         '--confirm',
-        'myapp',
+        'BLUE',
         'HEROKU_POSTGRESQL_RED_URL',
         'myotherapp::DATABASE_URL',
       ])
@@ -179,7 +179,7 @@ describe('pg:copy', function () {
         '--app',
         'myapp',
         '--confirm',
-        'myapp',
+        'ATTACHED_BLUE',
         'HEROKU_POSTGRESQL_RED_URL',
         'ATTACHED_BLUE',
       ])
@@ -220,13 +220,37 @@ describe('pg:copy', function () {
         '--app',
         'mylowercaseapp',
         '--confirm',
-        'mylowercaseapp',
+        'BLUE',
         'lowercase_database_URL',
         'myotherapp::DATABASE_URL',
       ])
       expect(stdout).to.equal('')
       expect(stderr).to.include('Starting copy of lowercase_database to BLUE... done\n')
       expect(stderr).to.include(copyingText)
+    })
+  })
+  context('confirmation uses addon name not app name', function () {
+    beforeEach(function () {
+      api.get('/addons/postgres-1')
+        .reply(200, addon)
+      api.post('/actions/addon-attachments/resolve', {
+        addon_attachment: 'HEROKU_POSTGRESQL_RED_URL', app: 'myapp',
+      })
+        .reply(200, [attachment])
+      api.get('/apps/myapp/config-vars')
+        .reply(200, myappConfig)
+    })
+    it('rejects confirmation when app name is given instead of addon name', async function () {
+      const {error} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--confirm',
+        'myapp',
+        'postgres://foo.com/bar',
+        'HEROKU_POSTGRESQL_RED_URL',
+      ])
+      expect(error?.message).to.include('Confirmation')
+      expect(error?.message).to.include('did not match')
     })
   })
   context('fails', function () {
@@ -256,7 +280,7 @@ describe('pg:copy', function () {
         '--app',
         'myapp',
         '--confirm',
-        'myapp',
+        'RED',
         'postgres://foo.com/bar',
         'HEROKU_POSTGRESQL_RED_URL',
       ])

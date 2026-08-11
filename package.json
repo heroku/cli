@@ -1,7 +1,7 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.8.1",
+  "version": "11.9.0",
   "author": "Heroku",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
@@ -47,7 +47,6 @@
     "eventsource": "^4",
     "execa": "^9.6.1",
     "filesize": "^10.1",
-    "foreman": "^3.0.1",
     "fs-extra": "^11.3.0",
     "glob": "^13.0.2",
     "got": "^13.0.0",
@@ -183,7 +182,8 @@
       "init": [
         "./dist/hooks/init/version",
         "./dist/hooks/init/terms-of-service",
-        "./dist/hooks/init/setup-otel-telemetry"
+        "./dist/hooks/init/setup-otel-telemetry",
+        "./dist/hooks/init/configure-git-credential-manager"
       ],
       "postrun": [
         "./dist/hooks/postrun/send-otel-telemetry"
@@ -339,7 +339,7 @@
     },
     "update": {
       "node": {
-        "version": "22.23.1"
+        "version": "22.23.2"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
