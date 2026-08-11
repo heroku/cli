@@ -1,38 +1,50 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import {createSandbox} from 'sinon'
 
 import Destroy from '../../../../src/commands/apps/destroy.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
 
+type FakePlatform = {
+  app: {delete: sinon.SinonStub; info: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {delete: sinon.stub(), info: sinon.stub()},
+  }
+}
+
 describe('apps:destroy', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('deletes the app', async function () {
-    api
-      .get('/apps/myapp').reply(200, {name: 'myapp'})
-      .delete('/apps/myapp').reply(200)
+    fakePlatform.app.info.resolves({name: 'myapp'})
+    fakePlatform.app.delete.resolves({name: 'myapp'})
 
     const {stderr, stdout} = await runCommand(Destroy, ['--app', 'myapp', '--confirm', 'myapp'])
 
     expect(stdout).to.equal('')
     expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
+    expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
+    expect(fakePlatform.app.delete.calledOnceWithExactly('myapp')).to.equal(true)
+    expect(fakePlatform.app.info.calledBefore(fakePlatform.app.delete)).to.equal(true)
   })
 
   it('deletes the app via arg', async function () {
-    api
-      .get('/apps/myapp').reply(200, {name: 'myapp'})
-      .delete('/apps/myapp').reply(200)
+    fakePlatform.app.info.resolves({name: 'myapp'})
+    fakePlatform.app.delete.resolves({name: 'myapp'})
 
     const {stderr, stdout} = await runCommand(Destroy, ['myapp', '--confirm', 'myapp'])
 
@@ -54,9 +66,8 @@ describe('apps:destroy', function () {
     })
 
     it('removes duplicate git remotes without error (issue #3677)', async function () {
-      api
-        .get('/apps/myapp').reply(200, {name: 'myapp'})
-        .delete('/apps/myapp').reply(200)
+      fakePlatform.app.info.resolves({name: 'myapp'})
+      fakePlatform.app.delete.resolves({name: 'myapp'})
 
       const rmRemoteCalls: string[] = []
 
@@ -84,9 +95,8 @@ describe('apps:destroy', function () {
     })
 
     it('removes multiple different remotes', async function () {
-      api
-        .get('/apps/myapp').reply(200, {name: 'myapp'})
-        .delete('/apps/myapp').reply(200)
+      fakePlatform.app.info.resolves({name: 'myapp'})
+      fakePlatform.app.delete.resolves({name: 'myapp'})
 
       const rmRemoteCalls: string[] = []
 
