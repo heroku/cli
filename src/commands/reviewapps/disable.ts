@@ -3,8 +3,6 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
-import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
-
 export default class ReviewappsDisable extends Command {
   static description = 'disable review apps and/or settings on an existing pipeline'
   static examples = [
@@ -81,27 +79,16 @@ export default class ReviewappsDisable extends Command {
       settings.wait_for_ci = false
     }
 
-    const kolkrabbi = new KolkrabbiAPI(this.config.userAgent, () => this.heroku.auth)
-
     ux.action.start('Configuring pipeline')
 
     const {body: pipeline} = await this.heroku.get<Heroku.Pipeline>(`/pipelines/${flags.pipeline}`)
 
     settings.pipeline = pipeline.id
 
-    try {
-      const {body: feature} = await this.heroku.get<Heroku.AccountFeature>('/account/features/dashboard-repositories-api')
-
-      if (feature.enabled) {
-        const {body: repo} = await this.heroku.get<{full_name: string}>(`/pipelines/${pipeline.id}/repo`, {
-          headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
-        })
-        settings.repo = repo.full_name
-      }
-    } catch {
-      const {repository} = await kolkrabbi.getPipelineRepository(pipeline.id)
-      settings.repo = repository.name
-    }
+    const {body: repo} = await this.heroku.get<{full_name: string}>(`/pipelines/${pipeline.id}/repo`, {
+      headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'},
+    })
+    settings.repo = repo.full_name
 
     // eslint-disable-next-line unicorn/prefer-ternary
     if (flags.autodeploy || flags['no-autodeploy'] || flags.autodestroy || flags['no-autodestroy'] || flags['wait-for-ci'] || flags['no-wait-for-ci']) {

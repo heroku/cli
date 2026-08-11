@@ -6,68 +6,39 @@ import PipelinesConnect from '../../../../src/commands/pipelines/connect.js'
 
 describe('pipelines:connect', function () {
   let api: nock.Scope
-  let kolkrabbiApi: nock.Scope
-  let githubApi: nock.Scope
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
-    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
-    githubApi = nock('https://api.github.com')
   })
 
   afterEach(function () {
     api.done()
-    kolkrabbiApi.done()
-    githubApi.done()
     nock.cleanAll()
-  })
-
-  describe('when the user is not linked to GitHub', function () {
-    it('displays an error', async function () {
-      kolkrabbiApi
-        .get('/account/github/token')
-        .reply(401, {})
-
-      const {error} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
-
-      expect(error?.message).to.equal('Account not connected to GitHub.')
-    })
   })
 
   describe('with an account connected to GitHub', function () {
     it('shows success', async function () {
-      const kolkrabbiAccount = {
-        github: {
-          token: '123-abc',
-        },
-      }
       const pipeline = {
         id: 123,
         name: 'my-pipeline',
       }
 
-      kolkrabbiApi
-        .get('/account/github/token')
-        .reply(200, kolkrabbiAccount)
-        .post(`/pipelines/${pipeline.id}/repository`)
-        .reply(201, {})
-
       const repo = {
         default_branch: 'main',
+        full_name: 'my-org/my-repo',
         id: 1235,
-        name: 'my-org/my-repo',
       }
 
-      githubApi
-        .get(`/repos/${repo.name}`)
-        .reply(200, {repo})
-
       api
+        .get(`/repos/${repo.full_name}`)
+        .reply(200, repo)
         .get(`/pipelines/${pipeline.name}`)
         .reply(200, {
           id: pipeline.id,
           name: pipeline.name,
         })
+        .post(`/pipelines/${pipeline.id}/repo`, {repo_url: `https://github.com/${repo.full_name}`})
+        .reply(201, {})
 
       const {stderr, stdout} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
 
@@ -77,31 +48,21 @@ describe('pipelines:connect', function () {
   })
 
   describe('with an account connected to GitHub experiencing request failures', function () {
-    it('shows an error if GitHub request fails', async function () {
-      const kolkrabbiAccount = {
-        github: {
-          token: '123-abc',
-        },
-      }
-
-      kolkrabbiApi
-        .get('/account/github/token')
-        .reply(200, kolkrabbiAccount)
-
+    it('shows an error if the repo request fails', async function () {
       const repo = {
         default_branch: 'main',
+        full_name: 'my-org/my-repo',
         id: 1235,
-        name: 'my-org/my-repo',
       }
 
-      githubApi
-        .get(`/repos/${repo.name}`)
+      api
+        .get(`/repos/${repo.full_name}`)
         .reply(401, {})
 
       const {error} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
 
       expect(error?.message).to.contain('Couldn\'t access that repo')
-      expect(error?.message).not.to.contain(repo.name)
+      expect(error?.message).not.to.contain(repo.full_name)
       expect((error as any)?.statusCode).to.equal(401)
     })
   })

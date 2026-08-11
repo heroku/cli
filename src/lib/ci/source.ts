@@ -47,7 +47,7 @@ export async function createSourceBlob(ref: any, command: Command) {
     const githubRepository = await gitService.githubRepository()
     const {repo, user} = githubRepository
 
-    const {body: archiveLink} = await command.heroku.get<any>(`https://kolkrabbi.heroku.com/github/repos/${user}/${repo}/tarball/${ref}`)
+    const {body: archiveLink} = await command.heroku.get<{archive_link: string}>(`/repos/${user}/${repo}/archives/${ref}`, {headers: {Accept: 'application/vnd.heroku+json; version=3.repositories-api'}})
     if (await command.heroku.request(archiveLink.archive_link, {method: 'HEAD'})) {
       return archiveLink.archive_link
     }
