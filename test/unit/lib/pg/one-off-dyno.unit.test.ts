@@ -44,12 +44,8 @@ describe('runPsqlThroughOneOffDyno', function () {
 
     await runPsqlThroughOneOffDyno({command: 'SELECT 1', db, heroku})
 
-    expect(capturedOpts?.command).to.equal(
-      'psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL',
-    )
-    expect(capturedOpts?.env).to.equal(
-      "PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
-    )
+    expect(capturedOpts?.command).to.equal('psql -c "SELECT 1" --set sslmode=require --set channel_binding=require $DATABASE_URL')
+    expect(capturedOpts?.env).to.equal("PGAPPNAME='psql non-interactive';PGSSLMODE=require;PGCHANNELBINDING=require")
     expect(capturedOpts?.app).to.equal('myapp')
     expect(capturedOpts?.attach).to.be.true
     expect(capturedOpts?.['exit-code']).to.be.true
@@ -64,12 +60,8 @@ describe('runPsqlThroughOneOffDyno', function () {
 
     await runPsqlThroughOneOffDyno({db, heroku})
 
-    expect(capturedOpts?.command).to.equal(
-      'psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL',
-    )
-    expect(capturedOpts?.env).to.equal(
-      "PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require",
-    )
+    expect(capturedOpts?.command).to.equal('psql --set PROMPT1="myapp::DATABASE%R%# " --set PROMPT2="myapp::DATABASE%R%# " --set sslmode=require --set channel_binding=require $DATABASE_URL')
+    expect(capturedOpts?.env).to.equal("PGAPPNAME='psql interactive';PGSSLMODE=require;PGCHANNELBINDING=require")
   })
 
   it('escapes embedded double quotes in --command', async function () {
@@ -81,9 +73,7 @@ describe('runPsqlThroughOneOffDyno', function () {
 
     await runPsqlThroughOneOffDyno({command: 'SELECT "col"', db, heroku})
 
-    expect(capturedOpts?.command).to.equal(
-      String.raw`psql -c "SELECT \"col\"" --set sslmode=require --set channel_binding=require $DATABASE_URL`,
-    )
+    expect(capturedOpts?.command).to.equal(String.raw`psql -c "SELECT \"col\"" --set sslmode=require --set channel_binding=require $DATABASE_URL`)
   })
 
   it('honors --channel-binding=disable in both command and env', async function () {
@@ -93,7 +83,9 @@ describe('runPsqlThroughOneOffDyno', function () {
       return Promise.resolve()
     })
 
-    await runPsqlThroughOneOffDyno({channelBinding: 'disable', command: 'SELECT 1', db, heroku})
+    await runPsqlThroughOneOffDyno({
+      channelBinding: 'disable', command: 'SELECT 1', db, heroku,
+    })
 
     expect(capturedOpts?.command).to.contain('--set channel_binding=disable')
     expect(capturedOpts?.env).to.contain('PGCHANNELBINDING=disable')
