@@ -6,13 +6,24 @@ import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import {appTransfer} from '../../lib/apps/app-transfer.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
 import AppsLock from './lock.js'
 
 const heredoc = tsheredoc.default
+
+type Platform = HerokuSDK<readonly [typeof appExtensions]>['platform']
+
+type TransferAppOptions = {appName: string; bulk: boolean; personalToPersonal: boolean; platform: Platform; recipient: string}
+
+async function transferApp({appName, bulk, personalToPersonal, platform, recipient}: TransferAppOptions) {
+  let transferMsg = personalToPersonal ? `Initiating transfer of ${color.app(appName)}` : `Transferring ${color.app(appName)}`
+  if (!bulk) transferMsg += ` to ${personalToPersonal ? color.user(recipient) : color.team(recipient)}`
+  ux.action.start(transferMsg)
+  const result = await platform.app.transfer(appName, recipient, {personalToPersonal}) as {state?: string}
+  ux.action.stop(result.state === 'pending' ? 'email sent' : undefined)
+}
 
 export default class AppsTransfer extends Command {
   static args = {
@@ -60,12 +71,8 @@ export default class AppsTransfer extends Command {
       ux.warn(`Transferring applications to ${color.name(recipient)}...\n`)
       for (const app of selectedApps.choices) {
         try {
-          await appTransfer({
-            appName: app.name,
-            bulk: true,
-            personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner),
-            platform,
-            recipient,
+          await transferApp({
+            appName: app.name, bulk: true, personalToPersonal: isValidEmail(recipient) && !isTeamApp(app.owner), platform, recipient,
           })
         } catch (error) {
           const {message} = error as {message: string}
@@ -79,12 +86,8 @@ export default class AppsTransfer extends Command {
         await new ConfirmCommand().confirm(appName, confirm, 'All collaborators will be removed from this app')
       }
 
-      await appTransfer({
-        appName,
-        bulk,
-        personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email),
-        platform,
-        recipient,
+      await transferApp({
+        appName, bulk, personalToPersonal: isValidEmail(recipient) && !isTeamApp(appInfo.owner?.email), platform, recipient,
       })
       if (locked) {
         await AppsLock.run(['--app', appName], this.config)

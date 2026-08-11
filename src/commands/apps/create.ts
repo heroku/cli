@@ -176,7 +176,7 @@ ${color.command('heroku apps:create --region eu')}`]
       return this.runFromManifest(context, platform)
     }
 
-    await runFromFlags(context, platform, this.config)
+    return runFromFlags(context, platform, this.config)
   }
 
   async runFromManifest(context: Interfaces.ParserOutput, platform: Platform) {

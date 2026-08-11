@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {expect} from 'chai'
 import nock from 'nock'
 import {execSync} from 'node:child_process'
@@ -24,10 +25,11 @@ describe('apps:create', function () {
   let api: nock.Scope
   let configureCredentialHelperStub: SinonStub
   let gitCreateRemoteStub: SinonStub
+  let platformGetterStub: SinonStub
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    platformGetterStub = sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform) as unknown as SinonStub
 
     api = nock('https://api.heroku.com')
 
@@ -71,6 +73,19 @@ describe('apps:create', function () {
     const input = fakePlatform.app.createAndSetup.firstCall.args[0]
     expect(input.addons).to.equal(undefined)
     expect(input.buildpack).to.equal(undefined)
+  })
+
+  it('resolves run() to the created app on the flags path', async function () {
+    const app = {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    }
+    fakePlatform.app.createAndSetup.resolves(app)
+
+    const {result} = await runCommand(CreateCommand, [])
+
+    expect(result).to.deep.equal(app)
   })
 
   it('creates an app with feature flags', async function () {
@@ -283,6 +298,28 @@ describe('apps:create', function () {
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, stack is test')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({stack: 'test'}))).to.equal(true)
+  })
+
+  it('wires appExtensions into the real SDK so createAndSetup is invoked', async function () {
+    // Opt out of the shared HerokuSDK.prototype.platform getter stub for this
+    // test so the real `mergeExtensions` runs against the constructed SDK.
+    // Instead of faking the whole platform, stub the extension bundle's factory
+    // (the same `appExtensions` specifier create.ts imports). If create.ts ever
+    // stops passing `{extensions: [appExtensions]}` to `new HerokuSDK(...)`, the
+    // factory is never invoked, createAndSetup is never wired in, and this test
+    // fails.
+    platformGetterStub.restore()
+
+    const createAndSetupStub = sinon.stub().resolves({
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    })
+    sinon.stub(appExtensions, 'factory').returns({createAndSetup: createAndSetupStub} as never)
+
+    await runCommand(CreateCommand, [])
+
+    expect(createAndSetupStub.calledOnce).to.equal(true)
   })
 
   describe('git operations', function () {
