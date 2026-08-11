@@ -1,6 +1,8 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
+import nock from 'nock'
 import * as sinon from 'sinon'
 
 import AppsDiff from '../../../../src/commands/apps/diff.js'
@@ -62,6 +64,47 @@ describe('apps:diff', function () {
 
   afterEach(function () {
     sinon.restore()
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue real HTTP requests. The command must forward the
+    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
+    // HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    sinon.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    // diff fans out GET requests across both apps; intercept every endpoint it
+    // touches with empty payloads. `persist()` covers the two apps sharing a
+    // path shape. The first release lookup records the auth header.
+    const diffAPI = nock('https://api.heroku.com:443')
+      .persist()
+      .get('/apps/myapp-one/releases')
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [200, []]
+      })
+      .get('/apps/myapp-two/releases').reply(200, [])
+      .get('/apps/myapp-one/config-vars').reply(200, {})
+      .get('/apps/myapp-two/config-vars').reply(200, {})
+      .get('/apps/myapp-one').reply(200, {name: 'myapp-one', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-two').reply(200, {name: 'myapp-two', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-one/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-two/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-one/addons').reply(200, [])
+      .get('/apps/myapp-two/addons').reply(200, [])
+      .get('/apps/myapp-one/features').reply(200, [])
+      .get('/apps/myapp-two/features').reply(200, [])
+
+    await runCommand(AppsDiff, [app1Name, app2Name])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+    diffAPI.done()
   })
 
   it('prints table with no diff rows when both apps are identical', async function () {

@@ -128,7 +128,7 @@ export default class AppsDiff extends Command {
   static topic = 'apps'
 
   public async run(): Promise<DiffRow[]> {
-    const {platform} = new HerokuSDK()
+    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
     const {args} = await this.parse(AppsDiff)
     const {app1, app2} = args
 

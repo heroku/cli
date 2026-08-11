@@ -74,7 +74,7 @@ export default class Errors extends Command {
   }
 
   async run() {
-    const {metrics, platform} = new HerokuSDK()
+    const {metrics, platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
     const {flags} = await this.parse(Errors)
 
     const hours = Number.parseInt(flags.hours, 10)

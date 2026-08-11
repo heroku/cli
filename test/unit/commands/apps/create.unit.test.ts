@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
@@ -298,6 +299,31 @@ describe('apps:create', function () {
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, stack is test')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
     expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({stack: 'test'}))).to.equal(true)
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and actually issue an HTTP request. The CLI resolves the
+    // token into `this.heroku.auth` during Command.init(); the command must
+    // forward it as `clientOptions.token`, which heroku-fetch turns into the
+    // outgoing `Authorization: Bearer <token>` header. Pin `this.heroku.auth`
+    // to a sentinel distinct from the test env's HEROKU_API_KEY so this test
+    // fails if the command drops `clientOptions: {token: this.heroku.auth}`
+    // (the SDK would then fall back to the env token, flipping the header).
+    platformGetterStub.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    api
+      .post('/apps')
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [201, {name: 'foobar', stack: {name: 'cedar-14'}, web_url: 'https://foobar.com'}]
+      })
+
+    await runCommand(CreateCommand, ['--no-remote'])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
   })
 
   it('wires appExtensions into the real SDK so createAndSetup is invoked', async function () {

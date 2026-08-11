@@ -21,7 +21,7 @@ export default class AppsOpen extends Command {
   static topic = 'apps'
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
     const {args, flags} = await this.parse(AppsOpen)
     const app = await platform.app.info(flags.app)
     const path = args.path || ''

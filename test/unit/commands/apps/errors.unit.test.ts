@@ -1,6 +1,8 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
+import nock from 'nock'
 import * as sinon from 'sinon'
 
 import Errors from '../../../../src/commands/apps/errors.js'
@@ -70,6 +72,41 @@ describe('apps:errors', function () {
 
   afterEach(function () {
     sinon.restore()
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform/metrics getter stubs so the real SDK and
+    // its clients run and issue real HTTP requests. The command must forward
+    // the CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header on every service (platform + metrics share the one client
+    // options). Pin `this.heroku.auth` to a sentinel distinct from the test
+    // env's HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    sinon.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    const platformAPI = nock('https://api.heroku.com:443')
+      .get(`/apps/${APP}/formation`)
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [200, formation]
+      })
+    // The metrics client hits a distinct host; both services derive the bearer
+    // token from the same client options, so intercepting them with empty data
+    // keeps the run from erroring.
+    const metricsAPI = nock('https://api.metrics.heroku.com:443')
+      .persist()
+      .get(new RegExp(`^/apps/${APP}/`))
+      .reply(200, {data: {}})
+
+    await runCommand(Errors, ['--app', APP])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+    platformAPI.done()
+    metricsAPI.done()
   })
 
   it('shows no errors', async function () {

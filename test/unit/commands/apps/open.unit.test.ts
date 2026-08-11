@@ -1,6 +1,8 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
+import nock from 'nock'
 import childProcess from 'node:child_process'
 import * as sinon from 'sinon'
 
@@ -52,6 +54,39 @@ describe('apps:open', function () {
     const hasCorrectUrl = urlArgArray.includes('https://myapp.herokuapp.com/') || urlArgArray.includes('UwB0AGEAcgB0ACAAIgBoAHQAdABwAHMAOgAvAC8AbQB5AGEAcABwAC4AaABlAHIAbwBrAHUAYQBwAHAALgBjAG8AbQAvACIA')
     expect(hasCorrectUrl).to.be.true
     expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue a real HTTP request. The command must forward the
+    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
+    // HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    sinon.restore()
+    sinon.stub(childProcess, 'spawn').returns({
+      on(event: string, cb: CallableFunction) {
+        if (event === 'exit') {
+          cb()
+        }
+      }, unref() {},
+    } as any)
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    const infoAPI = nock('https://api.heroku.com:443')
+      .get('/apps/myapp')
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [200, app]
+      })
+
+    await runCommand(OpenCommand, ['-a', 'myapp'])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+    infoAPI.done()
   })
 
   it('opens the url with path', async function () {

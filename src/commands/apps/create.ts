@@ -170,7 +170,7 @@ ${color.command('heroku apps:create --region eu')}`]
   async run() {
     const context = await this.parse(Create)
     const {flags} = context
-    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}, extensions: [appExtensions]})
 
     if (flags.manifest) {
       return this.runFromManifest(context, platform)

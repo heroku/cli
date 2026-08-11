@@ -20,7 +20,7 @@ export default class Destroy extends Command {
   static hiddenAliases = ['destroy', 'apps:delete']
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
     const {args, flags} = await this.parse(Destroy)
 
     const app = args.app || flags.app

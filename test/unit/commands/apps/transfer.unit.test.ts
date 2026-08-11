@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
@@ -209,6 +210,40 @@ describe('heroku apps:transfer', function () {
         sinon.match({personalToPersonal: false}),
       )).to.equal(true)
       lockedAPI.done()
+    })
+  })
+
+  context('auth token threading', function () {
+    // Does NOT stub the HerokuSDK.platform getter, so the real SDK + platform
+    // client run and issue a real HTTP request. The command must forward the
+    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
+    // HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    it('threads the CLI auth token into the SDK client options', async function () {
+      sinon.restore()
+      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+      let authHeader: string | undefined
+      const infoAPI = nock('https://api.heroku.com:443')
+        .get('/apps/myapp')
+        .reply(function () {
+          authHeader = this.req.headers.authorization as unknown as string
+          return [200, {name: 'myapp', owner: {email: 'frodo@heroku.com'}}]
+        })
+        .post('/account/app-transfers')
+        .reply(201, {state: 'pending'})
+
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        'gandalf@heroku.com',
+      ])
+
+      expect(authHeader).to.equal('Bearer cli-keychain-token')
+      infoAPI.done()
     })
   })
 

@@ -60,7 +60,7 @@ export default class AppsTransfer extends Command {
 
   public async run() {
     const inquirer = await lazyModuleLoader.loadInquirer()
-    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}, extensions: [appExtensions]})
 
     const {args, flags} = await this.parse(AppsTransfer)
     const {app, bulk, confirm, locked} = flags

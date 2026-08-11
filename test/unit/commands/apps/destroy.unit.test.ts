@@ -1,6 +1,8 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
+import nock from 'nock'
 import * as sinon from 'sinon'
 import {createSandbox} from 'sinon'
 
@@ -50,6 +52,35 @@ describe('apps:destroy', function () {
 
     expect(stdout).to.equal('')
     expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue a real HTTP request. The command must forward the
+    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
+    // HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    sinon.restore()
+    sinon.stub(gitService, 'listRemotes').resolves(new Map())
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    const destroyAPI = nock('https://api.heroku.com:443')
+      .get('/apps/myapp')
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [200, {name: 'myapp'}]
+      })
+      .delete('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+
+    await runCommand(Destroy, ['--app', 'myapp', '--confirm', 'myapp'])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+    destroyAPI.done()
   })
 
   it('errors without an app', async function () {
