@@ -52,4 +52,14 @@ describe('buildpacks:clear', function () {
     expect(stdout).to.equal('Buildpacks cleared.\n')
     expect(unwrap(stderr)).to.equal('Warning: The LANGUAGE_PACK_URL config var is still set and will be used for the next release\n')
   })
+
+  it('# outputs empty array as JSON when --json flag is set', async function () {
+    Stubber.put(api)
+
+    const {stdout} = await runCommand(Clear, ['-a', 'example', '--json'])
+
+    const parsed = JSON.parse(stdout)
+    expect(parsed).to.be.an('array')
+    expect(parsed).to.have.lengthOf(0)
+  })
 })

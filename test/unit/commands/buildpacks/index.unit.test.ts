@@ -298,4 +298,29 @@ describe('buildpacks', function () {
     expect(stderr).to.equal('')
     expect(stdout).to.equal(`⬢ ${firApp.name} has no Buildpacks.\n`)
   })
+
+  it('# outputs buildpacks as JSON when --json flag is set', async function () {
+    api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
+    Stubber.get(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
+
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name, '--json'])
+
+    expect(stderr).to.equal('')
+    const parsed = JSON.parse(stdout)
+    expect(parsed).to.be.an('array')
+    expect(parsed).to.have.lengthOf(1)
+    expect(parsed[0].buildpack.url).to.equal('https://github.com/heroku/heroku-buildpack-ruby')
+  })
+
+  it('# outputs empty array as JSON when no buildpacks and --json flag is set', async function () {
+    api.get(`/apps/${cedarApp.name}`).reply(200, cedarApp)
+    Stubber.get(api)
+
+    const {stderr, stdout} = await runCommand(Buildpacks, ['-a', cedarApp.name, '--json'])
+
+    expect(stderr).to.equal('')
+    const parsed = JSON.parse(stdout)
+    expect(parsed).to.be.an('array')
+    expect(parsed).to.have.lengthOf(0)
+  })
 })
