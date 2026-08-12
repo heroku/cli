@@ -28,7 +28,7 @@ export default class CiReRun extends Command {
     const {args, flags} = await this.parse(CiReRun)
 
     if (!gitService.inGitRepo()) {
-      this.error('Not in a git repository. ci:rerun must be run from within your app\'s git repo.')
+      this.error(`You can't run ${color.command('heroku ci:rerun')} outside of your app's git repository.`)
     }
 
     const pipeline = await getPipeline(flags, this.heroku)

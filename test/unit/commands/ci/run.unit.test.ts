@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import {got} from 'got'
 import nock from 'nock'
@@ -44,8 +45,7 @@ describe('ci:run', function () {
     it('errors with a clear message', async function () {
       const {error} = await runCommand(Cmd, ['--pipeline=my-pipeline'])
       expect(error).to.exist
-      expect(error?.message).to.contain('Not in a git repository')
-      expect(error?.message).to.contain('ci:run must be run from within your app\'s git repo')
+      expect(ansis.strip(error?.message ?? '')).to.contain('You can\'t run  $ heroku ci:run  outside of your app\'s git repository.')
     })
   })
 
