@@ -14,6 +14,7 @@ import {ConfigVarUpdateOpts} from '@heroku/types/3.sdk'
 import {Args, Interfaces, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
+import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import Git from '../../lib/git/git.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {App} from '../../lib/types/app.js'
@@ -170,7 +171,7 @@ ${color.command('heroku apps:create --region eu')}`]
   async run() {
     const context = await this.parse(Create)
     const {flags} = context
-    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}, extensions: [appExtensions]})
+    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku), extensions: [appExtensions]})
 
     if (flags.manifest) {
       return this.runFromManifest(context, platform)

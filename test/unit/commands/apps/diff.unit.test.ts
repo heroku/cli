@@ -107,6 +107,48 @@ describe('apps:diff', function () {
     diffAPI.done()
   })
 
+  it('threads the CLI-resolved API host into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue real HTTP requests. The command must forward
+    // `vars.apiUrl` as `clientOptions.baseUrl`; `vars.apiUrl` honors HEROKU_HOST
+    // exactly as the rest of the CLI does. Point HEROKU_HOST at an allow-listed
+    // staging host (so `vars` does NOT fall back to production) and intercept
+    // the staging API instead of api.heroku.com. If the command dropped
+    // `clientOptions.baseUrl`, the SDK would hit api.heroku.com, these staging
+    // scopes would never match, and nock.disableNetConnect() would throw.
+    const originalHerokuHost = process.env.HEROKU_HOST
+    process.env.HEROKU_HOST = 'staging.herokudev.com'
+    sinon.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    const stagingAPI = nock('https://api.staging.herokudev.com:443')
+      .persist()
+      .get('/apps/myapp-one/releases').reply(200, [])
+      .get('/apps/myapp-two/releases').reply(200, [])
+      .get('/apps/myapp-one/config-vars').reply(200, {})
+      .get('/apps/myapp-two/config-vars').reply(200, {})
+      .get('/apps/myapp-one').reply(200, {name: 'myapp-one', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-two').reply(200, {name: 'myapp-two', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-one/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-two/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-one/addons').reply(200, [])
+      .get('/apps/myapp-two/addons').reply(200, [])
+      .get('/apps/myapp-one/features').reply(200, [])
+      .get('/apps/myapp-two/features').reply(200, [])
+
+    try {
+      await runCommand(AppsDiff, [app1Name, app2Name])
+
+      stagingAPI.done()
+    } finally {
+      if (originalHerokuHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHerokuHost
+      }
+    }
+  })
+
   it('prints table with no diff rows when both apps are identical', async function () {
     fakePlatform.release.list.callsFake(async (app: string) => releasesWithSlug(app === app1Name ? slugId1 : slugId2))
     fakePlatform.slug.info.resolves(slugBody(sameChecksum))

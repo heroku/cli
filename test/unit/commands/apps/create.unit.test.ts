@@ -326,6 +326,37 @@ describe('apps:create', function () {
     expect(authHeader).to.equal('Bearer cli-keychain-token')
   })
 
+  it('threads the CLI-resolved API host into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue an HTTP request. The command must forward
+    // `vars.apiUrl` as `clientOptions.baseUrl`; `vars.apiUrl` honors HEROKU_HOST
+    // exactly as the rest of the CLI does. Point HEROKU_HOST at an allow-listed
+    // staging host (so `vars` does NOT fall back to production) and intercept
+    // the staging API instead of api.heroku.com. If the command dropped
+    // `clientOptions.baseUrl`, the SDK would hit api.heroku.com, this staging
+    // scope would never match, and nock.disableNetConnect() would throw.
+    const originalHerokuHost = process.env.HEROKU_HOST
+    process.env.HEROKU_HOST = 'staging.herokudev.com'
+    platformGetterStub.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    const stagingAPI = nock('https://api.staging.herokudev.com:443')
+      .post('/apps')
+      .reply(201, {name: 'foobar', stack: {name: 'cedar-14'}, web_url: 'https://foobar.com'})
+
+    try {
+      await runCommand(CreateCommand, ['--no-remote'])
+
+      stagingAPI.done()
+    } finally {
+      if (originalHerokuHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHerokuHost
+      }
+    }
+  })
+
   it('wires appExtensions into the real SDK so createAndSetup is invoked', async function () {
     // Opt out of the shared HerokuSDK.prototype.platform getter stub for this
     // test so the real `mergeExtensions` runs against the constructed SDK.

@@ -83,6 +83,40 @@ describe('apps:destroy', function () {
     destroyAPI.done()
   })
 
+  it('threads the CLI-resolved API host into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue real HTTP requests. The command must forward
+    // `vars.apiUrl` as `clientOptions.baseUrl`; `vars.apiUrl` honors HEROKU_HOST
+    // exactly as the rest of the CLI does. Point HEROKU_HOST at an allow-listed
+    // staging host (so `vars` does NOT fall back to production) and intercept
+    // the staging API instead of api.heroku.com. If the command dropped
+    // `clientOptions.baseUrl`, the SDK would hit api.heroku.com, this staging
+    // scope would never match, and nock.disableNetConnect() would throw.
+    const originalHerokuHost = process.env.HEROKU_HOST
+    process.env.HEROKU_HOST = 'staging.herokudev.com'
+    sinon.restore()
+    sinon.stub(gitService, 'listRemotes').resolves(new Map())
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    const stagingAPI = nock('https://api.staging.herokudev.com:443')
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+      .delete('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+
+    try {
+      await runCommand(Destroy, ['--app', 'myapp', '--confirm', 'myapp'])
+
+      stagingAPI.done()
+    } finally {
+      if (originalHerokuHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHerokuHost
+      }
+    }
+  })
+
   it('errors without an app', async function () {
     const {error} = await runCommand(Destroy, [])
 

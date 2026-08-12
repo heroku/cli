@@ -3,6 +3,8 @@ import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
+import {sdkClientOptions} from '../../lib/apps/client-options.js'
+
 type Platform = InstanceType<typeof HerokuSDK>['platform']
 
 interface DiffRow {
@@ -128,7 +130,7 @@ export default class AppsDiff extends Command {
   static topic = 'apps'
 
   public async run(): Promise<DiffRow[]> {
-    const {platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
+    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
     const {args} = await this.parse(AppsDiff)
     const {app1, app2} = args
 

@@ -4,6 +4,7 @@ import {HerokuSDK} from '@heroku/sdk'
 import {Formation} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
+import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import errorInfo from '../../lib/apps/error-info.js'
 import {AppErrors} from '../../lib/types/app-errors.js'
 
@@ -74,7 +75,8 @@ export default class Errors extends Command {
   }
 
   async run() {
-    const {metrics, platform} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
+    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
+    const {metrics} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
     const {flags} = await this.parse(Errors)
 
     const hours = Number.parseInt(flags.hours, 10)

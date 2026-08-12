@@ -109,6 +109,41 @@ describe('apps:errors', function () {
     metricsAPI.done()
   })
 
+  it('threads the CLI-resolved API host into the SDK platform client while metrics keeps its own host', async function () {
+    // Prove the two-instance split: the platform HerokuSDK is built from
+    // sdkClientOptions (which sets baseUrl from vars.apiUrl → honors
+    // HEROKU_HOST), while the metrics HerokuSDK gets {token} only and resolves
+    // its own host. Point HEROKU_HOST at an allow-listed staging host so the
+    // platform call must land on api.staging.herokudev.com, while metrics must
+    // stay on api.metrics.heroku.com. nock.disableNetConnect() is active, so a
+    // wrong host throws and fails the test either way the split could break.
+    const originalHost = process.env.HEROKU_HOST
+    process.env.HEROKU_HOST = 'staging.herokudev.com'
+    try {
+      sinon.restore()
+      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+      const platformAPI = nock('https://api.staging.herokudev.com:443')
+        .get(`/apps/${APP}/formation`)
+        .reply(200, formation)
+      const metricsAPI = nock('https://api.metrics.heroku.com:443')
+        .persist()
+        .get(new RegExp(`^/apps/${APP}/`))
+        .reply(200, {data: {}})
+
+      await runCommand(Errors, ['--app', APP])
+
+      platformAPI.done()
+      expect(metricsAPI.isDone()).to.equal(true)
+    } finally {
+      if (originalHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHost
+      }
+    }
+  })
+
   it('shows no errors', async function () {
     fakePlatform.formation.list.resolves(formation)
     fakeMetrics.routerMetric.errors.resolves({data: {}})
