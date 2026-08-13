@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 
 import Cmd from '../../../../src/commands/access/update.js'
-import {personalApp, teamApp} from '../../../helpers/stubs/get.js'
+import {personalApp, teamApp, teamAppWithoutOwner} from '../../../helpers/stubs/get.js'
 import {appCollaboratorWithPermissions} from '../../../helpers/stubs/patch.js'
 
 describe('heroku access:update', function () {
@@ -35,6 +35,28 @@ describe('heroku access:update', function () {
         'myapp',
         '--permissions',
         'deploy,view',
+        'gandalf@heroku.com',
+      ])
+      expect('').to.eq(stdout)
+      expect(stderr).to.equal('Updating gandalf@heroku.com in application ⬢ myapp with deploy,view permissions... done\n')
+    })
+  })
+
+  context('with a team app whose owner is missing from the response', function () {
+    afterEach(function () {
+      return nock.cleanAll()
+    })
+
+    // Team detection keys off the authoritative `team` field the API sends, not
+    // the owner email — so a real team app updates even when `owner` is absent.
+    it('updates the app permissions', async function () {
+      teamAppWithoutOwner()
+      appCollaboratorWithPermissions({email: 'gandalf@heroku.com', permissions: ['deploy', 'view']})
+      const {stderr, stdout} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--permissions',
+        'deploy',
         'gandalf@heroku.com',
       ])
       expect('').to.eq(stdout)

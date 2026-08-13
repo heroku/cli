@@ -201,4 +201,19 @@ buildpack  namespace/name of the buildpack
 See more help with --help`)
     })
   })
+
+  describe('--json', function () {
+    it('# outputs set buildpacks as JSON', async function () {
+      Stubber.get(api)
+      Stubber.put(api, ['https://github.com/heroku/heroku-buildpack-ruby'])
+
+      const {stderr, stdout} = await runCommand(BuildpacksSet, ['https://github.com/heroku/heroku-buildpack-ruby', '-a', 'example', '--json'])
+
+      expect(stderr).to.equal('')
+      const parsed = JSON.parse(stdout)
+      expect(parsed).to.be.an('array')
+      expect(parsed).to.have.lengthOf(1)
+      expect(parsed[0].buildpack.url).to.equal('https://github.com/heroku/heroku-buildpack-ruby')
+    })
+  })
 })

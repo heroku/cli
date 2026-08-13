@@ -3,7 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
-import {getOwner, isTeamApp} from '../../lib/team-utils.js'
+import {getOwner} from '../../lib/team-utils.js'
 
 export default class AccessAdd extends Command {
   static args = {
@@ -27,8 +27,8 @@ export default class AccessAdd extends Command {
     const {body: appInfo} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
     let output = `Adding ${color.user(email)} access to the app ${color.app(appName)}`
     let teamFeatures: Heroku.TeamFeature[] = []
-    if (isTeamApp(appInfo?.owner?.email)) {
-      const teamName = getOwner(appInfo?.owner?.email)
+    if (appInfo?.team) {
+      const teamName = appInfo.team.name ?? getOwner(appInfo?.owner?.email)
       const teamFeaturesRequest = await this.heroku.get<Heroku.TeamFeature[]>(`/teams/${teamName}/features`)
       teamFeatures = teamFeaturesRequest.body
     }

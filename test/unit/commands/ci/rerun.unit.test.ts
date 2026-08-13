@@ -1,4 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import {got} from 'got'
 import nock from 'nock'
@@ -27,6 +28,25 @@ describe('ci:rerun', function () {
     } catch (error: any) {
       expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
     }
+  })
+
+  describe('when not in a git repository', function () {
+    let sandbox: ReturnType<typeof createSandbox>
+
+    beforeEach(function () {
+      sandbox = createSandbox()
+      sandbox.stub(gitService, 'inGitRepo').returns(false as any)
+    })
+
+    afterEach(function () {
+      sandbox.restore()
+    })
+
+    it('errors with a clear message', async function () {
+      const {error} = await runCommand(Cmd, ['--pipeline=my-pipeline'])
+      expect(error).to.exist
+      expect(ansis.strip(error?.message ?? '')).to.contain('You can\'t run  $ heroku ci:rerun  outside of your app\'s git repository.')
+    })
   })
 
   describe('when specifying a pipeline', function () {
@@ -58,6 +78,7 @@ describe('ci:rerun', function () {
       sandbox = createSandbox()
 
       // Stub gitService methods
+      sandbox.stub(gitService, 'inGitRepo').returns(true)
       sandbox.stub(gitService, 'githubRepository').resolves({repo: ghRepository.repo, user: ghRepository.user} as any)
       sandbox.stub(gitService, 'createArchive').resolves('new-archive.tgz')
 

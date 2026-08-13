@@ -1,4 +1,4 @@
-import {APIClient} from '@heroku-cli/command'
+import {APIClient, configRemote, getGitRemotes} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {ux} from '@oclif/core/ux'
 import inquirer from 'inquirer'
@@ -39,10 +39,13 @@ export class PipelineService {
     }
   }
 
-  async getPipeline(flags: {app: null | string; pipeline: null | string}) {
+  async getPipeline(flags: {app: null | string; pipeline: null | string; remote?: null | string}) {
     let pipeline
 
-    if ((!flags.pipeline) && (!flags.app)) {
+    // Resolve app from --remote flag or heroku.remote git config when --pipeline and --app are absent
+    const resolvedApp = flags.app ?? this.resolveAppFromRemote(flags.remote) ?? null
+
+    if (!flags.pipeline && !resolvedApp) {
       ux.error('Required flag:  --pipeline PIPELINE or --app APP')
     }
 
@@ -53,11 +56,11 @@ export class PipelineService {
         pipeline = pipeline.pipeline
       } // in case prompt returns an object like { pipeline: { ... } }
     } else {
-      const {body: coupling} = await this.herokuAPI.get<Heroku.PipelineCoupling>(`/apps/${flags.app}/pipeline-couplings`)
+      const {body: coupling} = await this.herokuAPI.get<Heroku.PipelineCoupling>(`/apps/${resolvedApp}/pipeline-couplings`)
       if ((coupling) && (coupling.pipeline)) {
         pipeline = coupling.pipeline
       } else {
-        ux.error(`No pipeline found with application ${flags.app}`)
+        ux.error(`No pipeline found with application ${resolvedApp}`)
       }
     }
 
@@ -73,6 +76,17 @@ export class PipelineService {
     }]
 
     return inquirer.prompt(questions)
+  }
+
+  /**
+   * Resolves an app name from a git remote name or heroku.remote git config.
+   * Returns undefined if no matching heroku git remote is found.
+   */
+  protected resolveAppFromRemote(remote: null | string | undefined): string | undefined {
+    const remoteName = remote || configRemote()
+    if (!remoteName) return undefined
+    const gitRemotes = getGitRemotes(remoteName)
+    return gitRemotes.length > 0 ? gitRemotes[0].app : undefined
   }
 }
 
