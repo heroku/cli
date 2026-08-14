@@ -59,4 +59,27 @@ describe('buildpacks:info', function () {
 
     expect(error?.message).to.include('Problems finding buildpack info: some error')
   })
+
+  it('outputs buildpack info as JSON when --json flag is set', async function () {
+    registryApi
+      .get('/buildpacks/heroku%2Fruby')
+      .reply(200, Fixture.buildpack({
+        name: 'ruby',
+        source: {
+          owner: 'heroku',
+          repo: 'heroku-buildpack-ruby',
+          type: 'github',
+        },
+      }))
+      .get('/buildpacks/heroku%2Fruby/revisions')
+      .reply(200, [Fixture.revision()])
+      .get('/buildpacks/heroku%2Fruby/readme')
+      .reply(200, Fixture.readme())
+
+    const {stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby', '--json'])
+
+    const parsed = JSON.parse(stdout)
+    expect(parsed).to.be.an('object')
+    expect(parsed).to.have.property('description')
+  })
 })

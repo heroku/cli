@@ -18,6 +18,7 @@ export default class Promote extends Command {
   static description = 'sets DATABASE as your DATABASE_URL'
   static flags = {
     app: flags.app({required: true}),
+    as: flags.string({description: 'name for the database attachment'}),
     force: flags.boolean({char: 'f'}),
     remote: flags.remote(),
   }
@@ -25,7 +26,7 @@ export default class Promote extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Promote)
-    const {app, force} = flags
+    const {app, as, force} = flags
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const attachment = await dbResolver.getAttachment(app, database)
@@ -87,7 +88,7 @@ export default class Promote extends Command {
         addon: {name: attachment.addon.name},
         app: {name: app},
         confirm: app,
-        name: 'DATABASE',
+        name: as || 'DATABASE',
         namespace: attachment.namespace || null,
       },
     })

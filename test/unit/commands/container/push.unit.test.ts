@@ -319,6 +319,28 @@ describe('container push', function () {
       sandbox.assert.calledOnce(push)
     })
 
+    it('passes --no-cache to buildImage when flag is set', async function () {
+      const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
+        .returns(['/path/to/Dockerfile'])
+      const build = sandbox.stub(DockerHelper.prototype, 'buildImage')
+      const push = sandbox.stub(DockerHelper.prototype, 'pushImage')
+        .withArgs('registry.heroku.com/testapp/web')
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        'testapp',
+        '--no-cache',
+        'web',
+      ])
+
+      expect(stdout).to.contain('Building web (/path/to/Dockerfile)')
+      expect(stdout).to.contain('Pushing web (/path/to/Dockerfile)')
+      sandbox.assert.calledOnce(dockerfiles)
+      sandbox.assert.calledOnce(build)
+      expect(build.getCall(0).args[0].noCache).to.equal(true)
+      sandbox.assert.calledOnce(push)
+    })
+
     it('does not find an image to push', async function () {
       const dockerfiles = sandbox.stub(DockerHelper.prototype, 'getDockerfiles')
         .returns([])

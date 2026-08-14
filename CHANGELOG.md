@@ -4,6 +4,61 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.9.0](https://github.com/heroku/cli/compare/v11.8.1...v11.9.0) (2026-08-04)
+
+
+### Features
+
+* add credential manager configuration to the oclif init hook ([#3786](https://github.com/heroku/cli/issues/3786)) ([8f0bb4d](https://github.com/heroku/cli/commit/8f0bb4debe2296ad201efd5730697f93756c1ffd))
+
+
+### Bug Fixes
+
+* autocomplete zsh setup guards compinit to prevent double-init ([#3839](https://github.com/heroku/cli/issues/3839)) ([b3d629c](https://github.com/heroku/cli/commit/b3d629c6f9ddd4ec23249a82b0e556fd7909ab7c)), closes [#1686](https://github.com/heroku/cli/issues/1686)
+* config:get --shell does not double-escape backslashes in single-quoted output ([#3833](https://github.com/heroku/cli/issues/3833)) ([bbf0d22](https://github.com/heroku/cli/commit/bbf0d2262919d8dd58aea7c2ed94daa370c21399)), closes [#1384](https://github.com/heroku/cli/issues/1384)
+* pg:backups:capture -v null guard on undefined logs ([#3832](https://github.com/heroku/cli/issues/3832)) ([3c8a567](https://github.com/heroku/cli/commit/3c8a5678d18cf47657c88a23c056075e47129ad3))
+* pg:backups:download respects HTTPS_PROXY env var ([#3836](https://github.com/heroku/cli/issues/3836)) ([288f302](https://github.com/heroku/cli/commit/288f302eb6e93b8fe0f2c8c130815a845a216571)), closes [#1531](https://github.com/heroku/cli/issues/1531)
+* pg:copy confirmation prompt shows addon name not app name ([#3834](https://github.com/heroku/cli/issues/3834)) ([44c5786](https://github.com/heroku/cli/commit/44c5786449e9764da70c6a122ce34ae08ed14293))
+* pipelines:promote exits non-zero on partial failure ([#3835](https://github.com/heroku/cli/issues/3835)) ([30842f8](https://github.com/heroku/cli/commit/30842f8f42adc208cf87a341ca681a1a3b4a2a4c)), closes [#1600](https://github.com/heroku/cli/issues/1600)
+* remove GitHub org/repo in error messages ([#3808](https://github.com/heroku/cli/issues/3808)) ([1419e2a](https://github.com/heroku/cli/commit/1419e2a20edf567776c69966d3cb60e1d92bf9f4))
+* replace jQuery CDN dependency in addons:open SSO template with vanilla JS ([#3837](https://github.com/heroku/cli/issues/3837)) ([1df4b3d](https://github.com/heroku/cli/commit/1df4b3df198329a145521f676dc5a2ccc514196d)), closes [#1541](https://github.com/heroku/cli/issues/1541)
+* vendor node-foreman and replace util._extend with Object.assign ([#3838](https://github.com/heroku/cli/issues/3838)) ([a0b3316](https://github.com/heroku/cli/commit/a0b33160eb8c3173d5e01474b75a2221773cc503)), closes [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736)
+
+## [11.9.0](https://github.com/heroku/cli/compare/v11.8.1...v11.9.0) (2026-08-04)
+
+
+### Features
+
+* add credential manager configuration to the oclif init hook ([#3786](https://github.com/heroku/cli/issues/3786)) ([8f0bb4d](https://github.com/heroku/cli/commit/8f0bb4debe2296ad201efd5730697f93756c1ffd))
+
+
+### Bug Fixes
+
+* autocomplete zsh setup guards compinit to prevent double-init ([#3839](https://github.com/heroku/cli/issues/3839)) ([b3d629c](https://github.com/heroku/cli/commit/b3d629c6f9ddd4ec23249a82b0e556fd7909ab7c)), closes [#1686](https://github.com/heroku/cli/issues/1686)
+* config:get --shell does not double-escape backslashes in single-quoted output ([#3833](https://github.com/heroku/cli/issues/3833)) ([bbf0d22](https://github.com/heroku/cli/commit/bbf0d2262919d8dd58aea7c2ed94daa370c21399)), closes [#1384](https://github.com/heroku/cli/issues/1384)
+* pg:backups:capture -v null guard on undefined logs ([#3832](https://github.com/heroku/cli/issues/3832)) ([3c8a567](https://github.com/heroku/cli/commit/3c8a5678d18cf47657c88a23c056075e47129ad3))
+* pg:backups:download respects HTTPS_PROXY env var ([#3836](https://github.com/heroku/cli/issues/3836)) ([288f302](https://github.com/heroku/cli/commit/288f302eb6e93b8fe0f2c8c130815a845a216571)), closes [#1531](https://github.com/heroku/cli/issues/1531)
+* pg:copy confirmation prompt shows addon name not app name ([#3834](https://github.com/heroku/cli/issues/3834)) ([44c5786](https://github.com/heroku/cli/commit/44c5786449e9764da70c6a122ce34ae08ed14293))
+* pipelines:promote exits non-zero on partial failure ([#3835](https://github.com/heroku/cli/issues/3835)) ([30842f8](https://github.com/heroku/cli/commit/30842f8f42adc208cf87a341ca681a1a3b4a2a4c)), closes [#1600](https://github.com/heroku/cli/issues/1600)
+* remove GitHub org/repo in error messages ([#3808](https://github.com/heroku/cli/issues/3808)) ([1419e2a](https://github.com/heroku/cli/commit/1419e2a20edf567776c69966d3cb60e1d92bf9f4))
+* replace jQuery CDN dependency in addons:open SSO template with vanilla JS ([#3837](https://github.com/heroku/cli/issues/3837)) ([1df4b3d](https://github.com/heroku/cli/commit/1df4b3df198329a145521f676dc5a2ccc514196d)), closes [#1541](https://github.com/heroku/cli/issues/1541)
+* vendor node-foreman and replace util._extend with Object.assign ([#3838](https://github.com/heroku/cli/issues/3838)) ([a0b3316](https://github.com/heroku/cli/commit/a0b33160eb8c3173d5e01474b75a2221773cc503)), closes [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736) [#3736](https://github.com/heroku/cli/issues/3736)
+
+## [11.8.1](https://github.com/heroku/cli/compare/v11.8.0...v11.8.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* consolidate pg_stat_statements handling ([#3799](https://github.com/heroku/cli/issues/3799)) ([e36b494](https://github.com/heroku/cli/commit/e36b49472b67f5fdcaf5332764d996fe1994ecfd))
+* keep process type resolvable with heroku run --exit-code ([#3804](https://github.com/heroku/cli/issues/3804)) ([6383b03](https://github.com/heroku/cli/commit/6383b03e21b4bb088bc39f13fafb8a3c680f53a2))
+* migration method selection navigation bug (W-23306091) ([#3802](https://github.com/heroku/cli/issues/3802)) ([8562909](https://github.com/heroku/cli/commit/85629096f63f5e646975d90475ad18e36c8fb53e))
+* restore Sentry release tag from spawned telemetry worker ([#3801](https://github.com/heroku/cli/issues/3801)) ([407a7e0](https://github.com/heroku/cli/commit/407a7e04901844e91b91aeeea70fbdd5085304a5))
+
+
+### Code Refactoring
+
+* trim exit-code command comment ([7a2cfed](https://github.com/heroku/cli/commit/7a2cfed35c292ccd14a476c88c90949ec1c2c798))
+
 ## [11.8.0](https://github.com/heroku/cli/compare/v11.7.1...v11.8.0) (2026-07-01)
 
 

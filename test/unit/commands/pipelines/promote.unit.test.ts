@@ -75,6 +75,7 @@ describe('pipelines:promote', function () {
     nock.cleanAll()
     sdkMock.restore()
     restore()
+    process.exitCode = 0
   })
 
   function setupMocks() {
@@ -119,6 +120,7 @@ describe('pipelines:promote', function () {
     })
     expect(stdout).to.contain('failed')
     expect(stdout).to.contain('Because reasons')
+    expect(process.exitCode).to.equal(1)
   })
 
   context('passing a `to` flag', function () {

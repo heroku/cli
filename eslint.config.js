@@ -34,6 +34,6 @@ export default [
   },
   // Ignore patterns (in addition to shared ignores)
   {
-    ignores: ['**/test/**/*.js', '**/*.d.ts', '.github/**', 'tmp/**/*', 'scripts/codemods/**'],
+    ignores: ['**/test/**/*.js', '**/*.d.ts', '.github/**', 'tmp/**/*', 'scripts/codemods/**', 'src/lib/local/foreman/**'],
   },
 ]
