@@ -1,52 +1,77 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+import * as sinon from 'sinon'
 import {createSandbox, SinonSandbox} from 'sinon'
 
 import Cmd from '../../../../src/commands/apps/transfer.js'
-import {apps, personalApp, teamApp} from '../../../helpers/stubs/get.js'
-import {teamAppTransfer} from '../../../helpers/stubs/patch.js'
-import {personalToPersonal} from '../../../helpers/stubs/post.js'
+import ConfirmCommand from '../../../../src/lib/confirm-command.js'
+
+type FakePlatform = {
+  app: {
+    info: sinon.SinonStub
+    list: sinon.SinonStub
+    transfer: sinon.SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {info: sinon.stub(), list: sinon.stub(), transfer: sinon.stub()},
+  }
+}
 
 describe('heroku apps:transfer', function () {
+  let fakePlatform: FakePlatform
   let sandbox: SinonSandbox
 
   beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     sandbox = createSandbox()
-    apps()
   })
 
   afterEach(function () {
     sandbox.restore()
+    sinon.restore()
     return nock.cleanAll()
   })
 
   context('when transferring in bulk', function () {
     it('transfers selected apps to a team', async function () {
+      // getAppsToTransfer is stubbed, so app.list's return is ignored — but it's
+      // still awaited, so it must resolve.
+      fakePlatform.app.list.resolves([])
       const promptStub = sandbox.stub().resolves({choices: [{name: 'myapp', owner: 'foo@foo.com'}]})
       sandbox.stub(Cmd.prototype, 'getAppsToTransfer').callsFake(promptStub)
+      // recipient 'team' isn't a valid email → personalToPersonal false → team-transfer
+      // presentation; a non-pending state prints 'done'.
+      fakePlatform.app.transfer.resolves({state: 'transferred'})
 
-      const api = teamAppTransfer()
       const {stderr} = await runCommand(Cmd, [
         '--bulk',
         'team',
       ])
-      api.done()
       expect(ansis.strip(stderr)).to.include('Warning: Transferring applications to team...')
       expect(ansis.strip(stderr)).to.include('Transferring ⬢ myapp... done')
     })
 
     it('transfers selected apps to a personal account', async function () {
+      fakePlatform.app.list.resolves([])
       const promptStub = sandbox.stub().resolves({choices: [{name: 'myapp', owner: 'foo@foo.com'}]})
       sandbox.stub(Cmd.prototype, 'getAppsToTransfer').callsFake(promptStub)
+      // personal recipient + personal-owned app → personal-transfer presentation;
+      // a pending state prints 'email sent'.
+      fakePlatform.app.transfer.resolves({state: 'pending'})
 
-      const api = personalToPersonal()
       const {stderr} = await runCommand(Cmd, [
         '--bulk',
         'gandalf@heroku.com',
       ])
-      api.done()
       expect(ansis.strip(stderr)).to.include('Warning: Transferring applications to gandalf@heroku.com...')
       expect(ansis.strip(stderr)).to.include('Initiating transfer of ⬢ myapp... email sent')
     })
@@ -54,11 +79,13 @@ describe('heroku apps:transfer', function () {
 
   context('when it is a personal app', function () {
     beforeEach(function () {
-      personalApp()
+      // Personal email owner → isTeamApp(owner) is false, mirroring the old personalApp() fixture.
+      fakePlatform.app.info.resolves({name: 'myapp', owner: {email: 'gandalf@heroku.com'}})
     })
 
     it('transfers the app to a personal account', async function () {
-      const api = personalToPersonal()
+      fakePlatform.app.transfer.resolves({state: 'pending'})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -66,11 +93,17 @@ describe('heroku apps:transfer', function () {
       ])
       expect('').to.eq(stdout)
       expect(ansis.strip(stderr)).to.include('Initiating transfer of ⬢ myapp to gandalf@heroku.com... email sent')
-      api.done()
+      // isValidEmail(recipient) && !isTeamApp(owner) → personalToPersonal true.
+      expect(fakePlatform.app.transfer.calledWith(
+        'myapp',
+        'gandalf@heroku.com',
+        sinon.match({personalToPersonal: true}),
+      )).to.equal(true)
     })
 
     it('transfers the app to a team', async function () {
-      const api = teamAppTransfer()
+      fakePlatform.app.transfer.resolves({state: 'transferred'})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -78,17 +111,25 @@ describe('heroku apps:transfer', function () {
       ])
       expect('').to.eq(stdout)
       expect(stderr).to.eq('Transferring ⬢ myapp to team... done\n')
-      api.done()
+      // recipient 'team' isn't a valid email → personalToPersonal false.
+      expect(fakePlatform.app.transfer.calledWith(
+        'myapp',
+        'team',
+        sinon.match({personalToPersonal: false}),
+      )).to.equal(true)
     })
   })
 
   context('when it is an org app', function () {
     beforeEach(function () {
-      teamApp()
+      // Team email owner (@herokumanager.com) → isTeamApp(owner) is true, mirroring the old teamApp() fixture.
+      fakePlatform.app.info.resolves({name: 'myapp', owner: {email: 'myteam@herokumanager.com'}})
     })
 
-    it('transfers the app to a personal account confirming app name', async function () {
-      const api = teamAppTransfer()
+    it('ignores the --confirm flag when the recipient is not a valid email', async function () {
+      const confirmSpy = sandbox.spy(ConfirmCommand.prototype, 'confirm')
+      fakePlatform.app.transfer.resolves({state: 'transferred'})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -98,11 +139,39 @@ describe('heroku apps:transfer', function () {
       ])
       expect('').to.eq(stdout)
       expect(stderr).to.eq('Transferring ⬢ myapp to team... done\n')
-      api.done()
+      // recipient 'team' isn't a valid email → the confirm guard never fires.
+      expect(confirmSpy.called).to.equal(false)
+      expect(fakePlatform.app.transfer.calledWith(
+        'myapp',
+        'team',
+        sinon.match({personalToPersonal: false}),
+      )).to.equal(true)
+    })
+
+    it('confirms before transferring a team app to a personal recipient', async function () {
+      const confirmSpy = sandbox.spy(ConfirmCommand.prototype, 'confirm')
+      fakePlatform.app.transfer.resolves({state: 'pending'})
+
+      const {stderr} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--confirm',
+        'myapp',
+        'gandalf@heroku.com',
+      ])
+      expect(confirmSpy.calledOnceWith('myapp', 'myapp', 'All collaborators will be removed from this app')).to.equal(true)
+      // recipient is styled with color.team even though it's an email → strip ANSI.
+      expect(ansis.strip(stderr)).to.include('Transferring ⬢ myapp to gandalf@heroku.com... email sent')
+      expect(fakePlatform.app.transfer.calledWith(
+        'myapp',
+        'gandalf@heroku.com',
+        sinon.match({personalToPersonal: false}),
+      )).to.equal(true)
     })
 
     it('transfers the app to a team', async function () {
-      const api = teamAppTransfer()
+      fakePlatform.app.transfer.resolves({state: 'transferred'})
+
       const {stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -110,11 +179,17 @@ describe('heroku apps:transfer', function () {
       ])
       expect('').to.eq(stdout)
       expect(stderr).to.eq('Transferring ⬢ myapp to team... done\n')
-      api.done()
+      // team-owned app → personalToPersonal is always false.
+      expect(fakePlatform.app.transfer.calledWith(
+        'myapp',
+        'team',
+        sinon.match({personalToPersonal: false}),
+      )).to.equal(true)
     })
 
     it('transfers and locks the app if --locked is passed', async function () {
-      const api = teamAppTransfer()
+      fakePlatform.app.transfer.resolves({state: 'transferred'})
+      // AppsLock is a separate command still on raw this.heroku, so it keeps nock.
       const lockedAPI = nock('https://api.heroku.com:443')
         .get('/teams/apps/myapp')
         .reply(200, {locked: false, name: 'myapp'})
@@ -128,8 +203,123 @@ describe('heroku apps:transfer', function () {
       ])
       expect('').to.eq(stdout)
       expect(stderr).to.eq('Transferring ⬢ myapp to team... done\nLocking ⬢ myapp... done\n')
-      api.done()
+      // team-owned app → personalToPersonal is always false.
+      expect(fakePlatform.app.transfer.calledWith(
+        'myapp',
+        'team',
+        sinon.match({personalToPersonal: false}),
+      )).to.equal(true)
       lockedAPI.done()
+    })
+  })
+
+  context('auth token threading', function () {
+    // Does NOT stub the HerokuSDK.platform getter, so the real SDK + platform
+    // client run and issue a real HTTP request. The command must forward the
+    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
+    // HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    it('threads the CLI auth token into the SDK client options', async function () {
+      sinon.restore()
+      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+      let authHeader: string | undefined
+      const infoAPI = nock('https://api.heroku.com:443')
+        .get('/apps/myapp')
+        .reply(function () {
+          authHeader = this.req.headers.authorization as unknown as string
+          return [200, {name: 'myapp', owner: {email: 'frodo@heroku.com'}}]
+        })
+        .post('/account/app-transfers')
+        .reply(201, {state: 'pending'})
+
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        'gandalf@heroku.com',
+      ])
+
+      expect(authHeader).to.equal('Bearer cli-keychain-token')
+      infoAPI.done()
+    })
+
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue real HTTP requests. The command must forward
+    // `vars.apiUrl` as `clientOptions.baseUrl`; `vars.apiUrl` honors HEROKU_HOST
+    // exactly as the rest of the CLI does. Point HEROKU_HOST at an allow-listed
+    // staging host (so `vars` does NOT fall back to production) and intercept
+    // the staging API instead of api.heroku.com. If the command dropped
+    // `clientOptions.baseUrl`, the SDK would hit api.heroku.com, this staging
+    // scope would never match, and nock.disableNetConnect() would throw.
+    it('threads the CLI-resolved API host into the SDK client options', async function () {
+      const originalHerokuHost = process.env.HEROKU_HOST
+      process.env.HEROKU_HOST = 'staging.herokudev.com'
+      sinon.restore()
+      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+      const stagingAPI = nock('https://api.staging.herokudev.com:443')
+        .get('/apps/myapp')
+        .reply(200, {name: 'myapp', owner: {email: 'frodo@heroku.com'}})
+        .post('/account/app-transfers')
+        .reply(201, {state: 'pending'})
+
+      try {
+        await runCommand(Cmd, [
+          '--app',
+          'myapp',
+          'gandalf@heroku.com',
+        ])
+
+        stagingAPI.done()
+      } finally {
+        if (originalHerokuHost === undefined) {
+          delete process.env.HEROKU_HOST
+        } else {
+          process.env.HEROKU_HOST = originalHerokuHost
+        }
+      }
+    })
+  })
+
+  context('extension wiring', function () {
+    // Unlike the other tests, this one does NOT stub the HerokuSDK.platform
+    // getter. Instead it stubs appExtensions.factory (the same bundle
+    // transfer.ts passes to `new HerokuSDK({extensions: [appExtensions]})`)
+    // so the real merge plumbing runs. If the command stops passing
+    // {extensions: [appExtensions]}, the factory is never invoked, the
+    // transfer method is never wired in, and this test fails.
+    it('wires appExtensions into the platform namespace', async function () {
+      // Neutralize the beforeEach getter stub so the real getter runs.
+      sinon.restore()
+
+      const transferStub = sinon.stub().resolves({state: 'pending'})
+      sinon.stub(appExtensions, 'factory').returns({
+        createAndSetup: sinon.stub(),
+        transfer: transferStub,
+      } as never)
+
+      // transfer's single-app path calls the real platform.app.info(app)
+      // before transfer; intercept just that one GET so a personal-owned
+      // app + valid-email recipient makes personalToPersonal true.
+      const infoAPI = nock('https://api.heroku.com:443')
+        .get('/apps/myapp')
+        .reply(200, {name: 'myapp', owner: {email: 'frodo@heroku.com'}})
+
+      await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        'gandalf@heroku.com',
+      ])
+
+      expect(transferStub.calledWith(
+        'myapp',
+        'gandalf@heroku.com',
+        sinon.match({personalToPersonal: true}),
+      )).to.equal(true)
+      infoAPI.done()
     })
   })
 })

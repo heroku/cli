@@ -1,7 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
+import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import {gitService} from '../../lib/ci/git.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 
@@ -19,16 +21,17 @@ export default class Destroy extends Command {
   static hiddenAliases = ['destroy', 'apps:delete']
 
   async run() {
+    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
     const {args, flags} = await this.parse(Destroy)
 
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:destroy APPNAME')
 
     // this appears to report errors if app not found
-    await this.heroku.get(`/apps/${app}`)
+    await platform.app.info(app)
     await new ConfirmCommand().confirm(app, flags.confirm, `This will delete ${color.app(app)} including all add-ons.`)
     ux.action.start(`Destroying ${color.app(app)} (including all add-ons)`)
-    await this.heroku.delete(`/apps/${app}`)
+    const deletedApp = await platform.app.delete(app)
 
     /**
      * It is possible to have as many git remotes as
@@ -47,5 +50,7 @@ export default class Destroy extends Command {
     }
 
     ux.action.stop()
+
+    return deletedApp
   }
 }

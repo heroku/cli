@@ -1,3 +1,5 @@
+import type {CreateAndSetupInput} from '@heroku/sdk/resources/platform/app'
+
 import {Command, flags} from '@heroku-cli/command'
 import {
   BuildpackCompletion,
@@ -7,19 +9,19 @@ import {
 } from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import {
-  AppCreateOpts, ConfigVarUpdateOpts, TeamAppCreateOpts,
-} from '@heroku/types/3.sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
+import {ConfigVarUpdateOpts} from '@heroku/types/3.sdk'
 import {Args, Interfaces, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
+import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import Git from '../../lib/git/git.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {App} from '../../lib/types/app.js'
 
 const git = new Git()
 
-type Platform = HerokuSDK['platform']
+type Platform = HerokuSDK<readonly [typeof appExtensions]>['platform']
 
 function createText(name: string, space: string) {
   let text = `Creating ${name ? color.app(name) : 'app'}`
@@ -30,9 +32,18 @@ function createText(name: string, space: string) {
   return text
 }
 
-async function createApp(context: Interfaces.ParserOutput, platform: Platform, name: string, stack: string) {
+function buildCreateInput(
+  context: Interfaces.ParserOutput,
+  name: string,
+  stack: string,
+  extras: {addons?: {as?: string, plan: string}[], buildpack?: string, configVars?: ConfigVarUpdateOpts},
+): CreateAndSetupInput {
   const {flags} = context
-  const params = {
+  return {
+    addons: extras.addons,
+    buildpack: extras.buildpack,
+    configVars: extras.configVars,
+    // 4 fields the closed CreateAndSetupInput type omits; forwarded at runtime by the SDK's ...createParams spread.
     feature_flags: flags.features,
     internal_routing: flags['internal-routing'],
     kernel: flags.kernel,
@@ -42,14 +53,12 @@ async function createApp(context: Interfaces.ParserOutput, platform: Platform, n
     space: flags.space,
     stack,
     team: flags.team,
-  }
+  } as CreateAndSetupInput
+}
 
-  const app = (params.space || params.team)
-    ? await platform.teamApp.create(params as TeamAppCreateOpts) as App
-    : await platform.app.create(params as AppCreateOpts)
-
+function buildCreateStatus(app: App, name: string, region: string | undefined, stack: string): string {
   let status = name ? 'done' : `done, ${color.app(app.name || '')}`
-  if (flags.region) {
+  if (region) {
     status += `, region is ${color.info(app.region?.name || '')}`
   }
 
@@ -57,30 +66,7 @@ async function createApp(context: Interfaces.ParserOutput, platform: Platform, n
     status += `, stack is ${color.info(app.stack?.name || '')}`
   }
 
-  ux.action.stop(status)
-
-  return app
-}
-
-async function addAddons(platform: Platform, app: App, addons: {as?: string, plan: string}[]) {
-  for (const addon of addons) {
-    const body = {
-      attachment: addon.as ? {name: addon.as} : undefined,
-      plan: addon.plan,
-    }
-
-    ux.action.start(`Adding ${color.addon(addon.plan)}`)
-    await platform.addOn.create(app.name!, body)
-    ux.action.stop()
-  }
-}
-
-async function addConfigVars(platform: Platform, app: App, configVars: ConfigVarUpdateOpts) {
-  if (Object.keys(configVars).length > 0) {
-    ux.action.start('Setting config vars')
-    await platform.configVar.update(app.name!, configVars)
-    ux.action.stop()
-  }
+  return status
 }
 
 function addonsFromPlans(plans: string[]) {
@@ -115,30 +101,17 @@ async function runFromFlags(context: Interfaces.ParserOutput, platform: Platform
 
   const name = flags.app || args.app || process.env.HEROKU_APP
 
-  async function addBuildpack(app: App, buildpack: string) {
-    ux.action.start(`Setting buildpack to ${color.info(buildpack)}`)
-    await platform.buildpackInstallation.update(app.name!, {updates: [{buildpack}]})
-    ux.action.stop()
-  }
-
   ux.action.start(createText(name, flags.space))
-  const app = await createApp(context, platform, name, flags.stack)
-  ux.action.stop()
-
-  if (flags.addons) {
-    const plans = flags.addons.split(',')
-    const addons = addonsFromPlans(plans)
-    await addAddons(platform, app, addons)
-  }
-
-  if (flags.buildpack) {
-    await addBuildpack(app, flags.buildpack)
-  }
+  const addons = flags.addons ? addonsFromPlans(flags.addons.split(',')) : undefined
+  const app = await platform.app.createAndSetup(buildCreateInput(context, name, flags.stack, {addons, buildpack: flags.buildpack}))
+  ux.action.stop(buildCreateStatus(app, name, flags.region, flags.stack))
 
   const remoteUrl = await configureGitRemote(context, app)
 
   await config.runHook('recache', {app: app.name, type: 'app'})
   printAppSummary(context, app, remoteUrl)
+
+  return app
 }
 
 export default class Create extends Command {
@@ -198,13 +171,13 @@ ${color.command('heroku apps:create --region eu')}`]
   async run() {
     const context = await this.parse(Create)
     const {flags} = context
-    const {platform} = new HerokuSDK()
+    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku), extensions: [appExtensions]})
 
     if (flags.manifest) {
       return this.runFromManifest(context, platform)
     }
 
-    await runFromFlags(context, platform, this.config)
+    return runFromFlags(context, platform, this.config)
   }
 
   async runFromManifest(context: Interfaces.ParserOutput, platform: Platform) {
@@ -215,18 +188,16 @@ ${color.command('heroku apps:create --region eu')}`]
     const manifest = await this.readManifest()
     ux.action.stop()
 
-    ux.action.start(createText(name, flags.space))
-    const app = await createApp(context, platform, name, 'container')
-    ux.action.stop()
-
     const setup = (manifest as any)?.setup ?? {}
-    const addons = setup.addons || []
-    const configVars = setup.config || {}
 
-    await addAddons(platform, app, addons)
-    await addConfigVars(platform, app, configVars)
+    ux.action.start(createText(name, flags.space))
+    const app = await platform.app.createAndSetup(buildCreateInput(context, name, 'container', {addons: setup.addons || [], configVars: setup.config || {}}))
+    ux.action.stop(buildCreateStatus(app, name, flags.region, 'container'))
+
     const remoteUrl = await configureGitRemote(context, app)
 
     printAppSummary(context, app, remoteUrl)
+
+    return app
   }
 }

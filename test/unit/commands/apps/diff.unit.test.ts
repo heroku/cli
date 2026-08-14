@@ -1,86 +1,125 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import {
-  createSandbox, SinonSandbox, SinonStub,
-} from 'sinon'
+import nock from 'nock'
+import * as sinon from 'sinon'
+import {SinonStub} from 'sinon'
 
 import AppsDiff from '../../../../src/commands/apps/diff.js'
+
+type FakePlatform = {
+  app: {diff: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {diff: sinon.stub()},
+  }
+}
 
 describe('apps:diff', function () {
   const app1Name = 'myapp-one'
   const app2Name = 'myapp-two'
-  const slugId1 = 'slug-id-1'
-  const slugId2 = 'slug-id-2'
   const sameChecksum = 'SHA256:same-checksum-for-both-apps'
-  const releasesWithSlug = (slugId: string) => [{slug: {id: slugId}, status: 'succeeded'}]
-  const slugBody = (checksum: string) => ({checksum, id: 'slug-1'})
-  const appStack = (stackName: string) => ({id: 'app-id', name: 'myapp', stack: {name: stackName}})
-  const emptyBuildpacks: Array<{buildpack: {url: string}}> = []
-  const emptyAddons: Array<{addon_service: {name: string}}> = []
-  const emptyFeatures: Array<{enabled: boolean; name: string;}> = []
 
-  let sandbox: SinonSandbox
-  let requestStub: SinonStub
-  let getStub: SinonStub
-
-  function httpStatusError(statusCode: number): Error & {http: {statusCode: number}} {
-    const e = new Error(`HTTP ${statusCode}`) as Error & {http: {statusCode: number}}
-    e.http = {statusCode}
-    return e
-  }
+  let fakePlatform: FakePlatform
+  let platformGetterStub: SinonStub
 
   beforeEach(function () {
-    sandbox = createSandbox()
-    requestStub = sandbox.stub(APIClient.prototype, 'request')
-    getStub = sandbox.stub(APIClient.prototype, 'get')
+    fakePlatform = buildFakePlatform()
+    platformGetterStub = sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform) as unknown as SinonStub
   })
 
   afterEach(function () {
-    sandbox.restore()
+    sinon.restore()
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue real HTTP requests. The command must forward the
+    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
+    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
+    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
+    // HEROKU_API_KEY so this fails if the command drops
+    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
+    // env token, flipping the header).
+    platformGetterStub.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    // diff fans out GET requests across both apps; intercept every endpoint it
+    // touches with empty payloads. `persist()` covers the two apps sharing a
+    // path shape. The first release lookup records the auth header.
+    const diffAPI = nock('https://api.heroku.com:443')
+      .persist()
+      .get('/apps/myapp-one/releases')
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [200, []]
+      })
+      .get('/apps/myapp-two/releases').reply(200, [])
+      .get('/apps/myapp-one/config-vars').reply(200, {})
+      .get('/apps/myapp-two/config-vars').reply(200, {})
+      .get('/apps/myapp-one').reply(200, {name: 'myapp-one', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-two').reply(200, {name: 'myapp-two', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-one/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-two/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-one/addons').reply(200, [])
+      .get('/apps/myapp-two/addons').reply(200, [])
+      .get('/apps/myapp-one/features').reply(200, [])
+      .get('/apps/myapp-two/features').reply(200, [])
+
+    await runCommand(AppsDiff, [app1Name, app2Name])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+    diffAPI.done()
+  })
+
+  it('threads the CLI-resolved API host into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue real HTTP requests. The command must forward
+    // `vars.apiUrl` as `clientOptions.baseUrl`; `vars.apiUrl` honors HEROKU_HOST
+    // exactly as the rest of the CLI does. Point HEROKU_HOST at an allow-listed
+    // staging host (so `vars` does NOT fall back to production) and intercept
+    // the staging API instead of api.heroku.com. If the command dropped
+    // `clientOptions.baseUrl`, the SDK would hit api.heroku.com, these staging
+    // scopes would never match, and nock.disableNetConnect() would throw.
+    const originalHerokuHost = process.env.HEROKU_HOST
+    process.env.HEROKU_HOST = 'staging.herokudev.com'
+    platformGetterStub.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    const stagingAPI = nock('https://api.staging.herokudev.com:443')
+      .persist()
+      .get('/apps/myapp-one/releases').reply(200, [])
+      .get('/apps/myapp-two/releases').reply(200, [])
+      .get('/apps/myapp-one/config-vars').reply(200, {})
+      .get('/apps/myapp-two/config-vars').reply(200, {})
+      .get('/apps/myapp-one').reply(200, {name: 'myapp-one', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-two').reply(200, {name: 'myapp-two', stack: {name: 'heroku-24'}})
+      .get('/apps/myapp-one/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-two/buildpack-installations').reply(200, [])
+      .get('/apps/myapp-one/addons').reply(200, [])
+      .get('/apps/myapp-two/addons').reply(200, [])
+      .get('/apps/myapp-one/features').reply(200, [])
+      .get('/apps/myapp-two/features').reply(200, [])
+
+    try {
+      await runCommand(AppsDiff, [app1Name, app2Name])
+
+      stagingAPI.done()
+    } finally {
+      if (originalHerokuHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHerokuHost
+      }
+    }
   })
 
   it('prints table with no diff rows when both apps are identical', async function () {
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      const slugId = url.includes(app1Name) ? slugId1 : slugId2
-      return {body: releasesWithSlug(slugId)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        return {body: slugBody(sameChecksum)}
-      }
-
-      if (url.includes('/config-vars')) {
-        return {body: {}}
-      }
-
-      if (url.includes('/buildpack-installations')) {
-        return {body: emptyBuildpacks}
-      }
-
-      if (url.includes('/addons')) {
-        return {body: emptyAddons}
-      }
-
-      if (url.includes('/features')) {
-        return {body: emptyFeatures}
-      }
-
-      if (new RegExp(`/apps/${app1Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      if (new RegExp(`/apps/${app2Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
+    fakePlatform.app.diff.resolves([])
 
     const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -89,53 +128,13 @@ describe('apps:diff', function () {
     expect(stdout).to.include(app1Name)
     expect(stdout).to.include(app2Name)
     expect(stdout.trim()).to.not.include('slug (checksum)')
+    expect(fakePlatform.app.diff.calledOnceWith(app1Name, app2Name)).to.equal(true)
   })
 
   it('includes slug (checksum) row when checksums differ', async function () {
-    const checksum1 = 'SHA256:aaaaaaaa'
-    const checksum2 = 'SHA256:bbbbbbbb'
-
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      const slugId = url.includes(app1Name) ? slugId1 : slugId2
-      return {body: releasesWithSlug(slugId)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        const checksum = url.includes(app1Name) ? checksum1 : checksum2
-        return {body: slugBody(checksum)}
-      }
-
-      if (url.includes('/config-vars')) {
-        return {body: {}}
-      }
-
-      if (url.includes('/buildpack-installations')) {
-        return {body: emptyBuildpacks}
-      }
-
-      if (url.includes('/addons')) {
-        return {body: emptyAddons}
-      }
-
-      if (url.includes('/features')) {
-        return {body: emptyFeatures}
-      }
-
-      if (new RegExp(`/apps/${app1Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      if (new RegExp(`/apps/${app2Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
+    fakePlatform.app.diff.resolves([
+      {app1: 'SHA256:aaaaaaaa', app2: 'SHA256:bbbbbbbb', prop: 'slug (checksum)'},
+    ])
 
     const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -143,53 +142,14 @@ describe('apps:diff', function () {
     expect(stdout).to.include('slug (checksum)')
     expect(stdout).to.include('SHA256:aaaaaaaa')
     expect(stdout).to.include('SHA256:bbbbbbbb')
+    expect(fakePlatform.app.diff.calledWith(app1Name, app2Name)).to.equal(true)
   })
 
   it('includes config and stack diff rows when they differ', async function () {
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      const slugId = url.includes(app1Name) ? slugId1 : slugId2
-      return {body: releasesWithSlug(slugId)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        return {body: slugBody(sameChecksum)}
-      }
-
-      if (url.includes('/config-vars')) {
-        return {
-          body: url.includes(app1Name)
-            ? {BAR: 'same', FOO: 'a'}
-            : {BAR: 'same', FOO: 'b'},
-        }
-      }
-
-      if (url.includes('/buildpack-installations')) {
-        return {body: emptyBuildpacks}
-      }
-
-      if (url.includes('/addons')) {
-        return {body: emptyAddons}
-      }
-
-      if (url.includes('/features')) {
-        return {body: emptyFeatures}
-      }
-
-      if (new RegExp(`/apps/${app1Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      if (new RegExp(`/apps/${app2Name}$`).test(url)) {
-        return {body: appStack('heroku-24')}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
+    fakePlatform.app.diff.resolves([
+      {app1: 'a', app2: 'b', prop: 'config (FOO)'},
+      {app1: 'heroku-22', app2: 'heroku-24', prop: 'stack'},
+    ])
 
     const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -198,57 +158,15 @@ describe('apps:diff', function () {
     expect(stdout).to.include('stack')
     expect(stdout).to.include('heroku-22')
     expect(stdout).to.include('heroku-24')
+    expect(fakePlatform.app.diff.calledWith(app1Name, app2Name)).to.equal(true)
   })
 
-  it('throws App not found when one app returns 404 on releases', async function () {
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      if (url.includes(app1Name)) {
-        throw httpStatusError(404)
-      }
-
-      return {body: releasesWithSlug(slugId2)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        return {body: slugBody(sameChecksum)}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
-
-    const {error} = await runCommand(AppsDiff, [app1Name, app2Name])
-
-    expect(error).to.not.be.undefined
-    expect(error!.message).to.include('App not found')
-    expect(error!.message).to.include(app1Name)
-  })
-
-  it('throws App not found when slug returns 404', async function () {
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      const slugId = url.includes(app1Name) ? slugId1 : slugId2
-      return {body: releasesWithSlug(slugId)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/') && url.includes(app1Name)) {
-        throw httpStatusError(404)
-      }
-
-      if (url.includes('/slugs/')) {
-        return {body: slugBody(sameChecksum)}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
+  it('propagates App not found when the SDK diff rejects', async function () {
+    // The composite platform.app.diff owns the internal fan-out (releases,
+    // slug, config, etc.) and its own 404 handling; the CLI can no longer
+    // distinguish which endpoint 404'd. Assert only that the command surfaces
+    // the SDK's error unchanged.
+    fakePlatform.app.diff.rejects(new Error(`App not found: ${app1Name}`))
 
     const {error} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -258,49 +176,13 @@ describe('apps:diff', function () {
   })
 
   it('truncates long values to 56 chars with ellipsis', async function () {
+    // trunc() lives in the CLI now, so this is the key CLI-owned presentation
+    // test. The SDK returns the full checksum; the command must clamp it.
     const longChecksum = 'SHA256:' + 'a'.repeat(60)
 
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      const slugId = url.includes(app1Name) ? slugId1 : slugId2
-      return {body: releasesWithSlug(slugId)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        const checksum = url.includes(app1Name) ? longChecksum : sameChecksum
-        return {body: slugBody(checksum)}
-      }
-
-      if (url.includes('/config-vars')) {
-        return {body: {}}
-      }
-
-      if (url.includes('/buildpack-installations')) {
-        return {body: emptyBuildpacks}
-      }
-
-      if (url.includes('/addons')) {
-        return {body: emptyAddons}
-      }
-
-      if (url.includes('/features')) {
-        return {body: emptyFeatures}
-      }
-
-      if (new RegExp(`/apps/${app1Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      if (new RegExp(`/apps/${app2Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
+    fakePlatform.app.diff.resolves([
+      {app1: longChecksum, app2: sameChecksum, prop: 'slug (checksum)'},
+    ])
 
     const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -311,48 +193,9 @@ describe('apps:diff', function () {
   })
 
   it('shows add-on only on second app', async function () {
-    const addons2 = [{addon_service: {name: 'heroku-postgresql'}}]
-
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      const slugId = url.includes(app1Name) ? slugId1 : slugId2
-      return {body: releasesWithSlug(slugId)}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        return {body: slugBody(sameChecksum)}
-      }
-
-      if (url.includes('/config-vars')) {
-        return {body: {}}
-      }
-
-      if (url.includes('/buildpack-installations')) {
-        return {body: emptyBuildpacks}
-      }
-
-      if (url.includes('/addons')) {
-        return {body: url.includes(app1Name) ? emptyAddons : addons2}
-      }
-
-      if (url.includes('/features')) {
-        return {body: emptyFeatures}
-      }
-
-      if (new RegExp(`/apps/${app1Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      if (new RegExp(`/apps/${app2Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
+    fakePlatform.app.diff.resolves([
+      {app1: 'false', app2: 'true', prop: 'add-on (heroku-postgresql)'},
+    ])
 
     const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
 
@@ -360,55 +203,5 @@ describe('apps:diff', function () {
     expect(stdout).to.include('add-on (heroku-postgresql)')
     expect(stdout).to.include('false')
     expect(stdout).to.include('true')
-  })
-
-  it('shows no slug row when both apps have no release slug', async function () {
-    const releasesNoSlug = [{status: 'succeeded'}]
-
-    requestStub.callsFake(async (url: string) => {
-      if (!url.includes('/releases')) {
-        throw new Error(`unexpected request ${url}`)
-      }
-
-      return {body: releasesNoSlug}
-    })
-
-    getStub.callsFake(async (url: string) => {
-      if (url.includes('/slugs/')) {
-        throw new Error(`unexpected slug GET ${url}`)
-      }
-
-      if (url.includes('/config-vars')) {
-        return {body: {}}
-      }
-
-      if (url.includes('/buildpack-installations')) {
-        return {body: emptyBuildpacks}
-      }
-
-      if (url.includes('/addons')) {
-        return {body: emptyAddons}
-      }
-
-      if (url.includes('/features')) {
-        return {body: emptyFeatures}
-      }
-
-      if (new RegExp(`/apps/${app1Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      if (new RegExp(`/apps/${app2Name}$`).test(url)) {
-        return {body: appStack('heroku-22')}
-      }
-
-      throw new Error(`unexpected GET ${url}`)
-    })
-
-    const {error, stdout} = await runCommand(AppsDiff, [app1Name, app2Name])
-
-    expect(error).to.be.undefined
-    expect(stdout).to.include('property')
-    expect(stdout.trim()).to.not.include('slug (checksum)')
   })
 })

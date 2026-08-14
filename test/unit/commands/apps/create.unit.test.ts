@@ -1,5 +1,7 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {expect} from 'chai'
 import nock from 'nock'
 import {execSync} from 'node:child_process'
@@ -10,20 +12,12 @@ import CreateCommand from '../../../../src/commands/apps/create.js'
 import Git from '../../../../src/lib/git/git.js'
 
 type FakePlatform = {
-  addOn: {create: sinon.SinonStub}
-  app: {create: sinon.SinonStub}
-  buildpackInstallation: {update: sinon.SinonStub}
-  configVar: {update: sinon.SinonStub}
-  teamApp: {create: sinon.SinonStub}
+  app: {createAndSetup: sinon.SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    addOn: {create: sinon.stub()},
-    app: {create: sinon.stub()},
-    buildpackInstallation: {update: sinon.stub()},
-    configVar: {update: sinon.stub()},
-    teamApp: {create: sinon.stub()},
+    app: {createAndSetup: sinon.stub()},
   }
 }
 
@@ -32,10 +26,11 @@ describe('apps:create', function () {
   let api: nock.Scope
   let configureCredentialHelperStub: SinonStub
   let gitCreateRemoteStub: SinonStub
+  let platformGetterStub: SinonStub
 
   beforeEach(function () {
     fakePlatform = buildFakePlatform()
-    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    platformGetterStub = sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform) as unknown as SinonStub
 
     api = nock('https://api.heroku.com')
 
@@ -64,7 +59,7 @@ describe('apps:create', function () {
   })
 
   it('creates an app', async function () {
-    fakePlatform.app.create.resolves({
+    fakePlatform.app.createAndSetup.resolves({
       name: 'foobar',
       stack: {name: 'cedar-14'},
       web_url: 'https://foobar.com',
@@ -74,11 +69,28 @@ describe('apps:create', function () {
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
-    expect(fakePlatform.app.create.calledOnce).to.equal(true)
+    expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+
+    const input = fakePlatform.app.createAndSetup.firstCall.args[0]
+    expect(input.addons).to.equal(undefined)
+    expect(input.buildpack).to.equal(undefined)
+  })
+
+  it('resolves run() to the created app on the flags path', async function () {
+    const app = {
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    }
+    fakePlatform.app.createAndSetup.resolves(app)
+
+    const {result} = await runCommand(CreateCommand, [])
+
+    expect(result).to.deep.equal(app)
   })
 
   it('creates an app with feature flags', async function () {
-    fakePlatform.app.create.resolves({
+    fakePlatform.app.createAndSetup.resolves({
       name: 'foobar',
       stack: {name: 'cedar-14'},
       web_url: 'https://foobar.com',
@@ -88,11 +100,27 @@ describe('apps:create', function () {
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
-    expect(fakePlatform.app.create.firstCall.args[0]).to.include({feature_flags: 'feature-1,feature-2'})
+    expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+    expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({feature_flags: 'feature-1,feature-2'}))).to.equal(true)
+  })
+
+  it('threads kernel and locked pass-through flags to createAndSetup', async function () {
+    fakePlatform.app.createAndSetup.resolves({
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    })
+
+    const {stderr, stdout} = await runCommand(CreateCommand, ['--kernel', 'my-kernel', '--locked'])
+
+    expect(stderr).to.contain('Creating app... done, ⬢ foobar')
+    expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
+    expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+    expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({kernel: 'my-kernel', locked: true}))).to.equal(true)
   })
 
   it('creates an app in a space', async function () {
-    fakePlatform.teamApp.create.resolves({
+    fakePlatform.app.createAndSetup.resolves({
       name: 'foobar',
       stack: {name: 'cedar-14'},
       web_url: 'https://foobar.com',
@@ -102,12 +130,12 @@ describe('apps:create', function () {
 
     expect(stderr).to.contain('Creating app in space my-space-name... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
-    expect(fakePlatform.teamApp.create.firstCall.args[0]).to.include({space: 'my-space-name'})
-    expect(fakePlatform.app.create.called).to.equal(false)
+    expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+    expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({space: 'my-space-name'}))).to.equal(true)
   })
 
   it('creates an Internal Web App in a space', async function () {
-    fakePlatform.teamApp.create.resolves({
+    fakePlatform.app.createAndSetup.resolves({
       internal_routing: true,
       name: 'foobar',
       stack: {name: 'cedar-14'},
@@ -118,10 +146,11 @@ describe('apps:create', function () {
 
     expect(stderr).to.contain('Creating app in space my-space-name... done, ⬢ foobar')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
-    expect(fakePlatform.teamApp.create.firstCall.args[0]).to.include({
+    expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+    expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({
       internal_routing: true,
       space: 'my-space-name',
-    })
+    }))).to.equal(true)
   })
 
   it('does not create an Internal Web App outside of a space', async function () {
@@ -129,8 +158,7 @@ describe('apps:create', function () {
 
     expect(error).to.be.an.instanceof(Error)
     expect(error?.message).to.equal('Space name required.\nInternal Web Apps are only available for Private Spaces.\nUSAGE: heroku apps:create --space my-space --internal-routing')
-    expect(fakePlatform.app.create.called).to.equal(false)
-    expect(fakePlatform.teamApp.create.called).to.equal(false)
+    expect(fakePlatform.app.createAndSetup.called).to.equal(false)
   })
 
   it('creates an app & returns as json', async function () {
@@ -140,7 +168,7 @@ describe('apps:create', function () {
       web_url: 'https://foobar.com',
     }
 
-    fakePlatform.app.create.resolves(json)
+    fakePlatform.app.createAndSetup.resolves(json)
 
     const {stderr, stdout} = await runCommand(CreateCommand, ['--json'])
 
@@ -175,14 +203,12 @@ describe('apps:create', function () {
       readManifestStub.restore()
     })
 
-    it('sets config vars when manifest flag is present', async function () {
-      fakePlatform.app.create.resolves({
+    it('passes manifest addons and config vars to createAndSetup', async function () {
+      fakePlatform.app.createAndSetup.resolves({
         name: appName,
-        stack: {name: 'cedar-14'},
+        stack: {name: 'container'},
         web_url: 'https://foobar.com',
       })
-      fakePlatform.addOn.create.resolves({})
-      fakePlatform.configVar.update.resolves({})
 
       // Override channel using environment variable for this test
       process.env.HEROKU_UPDATE_CHANNEL = 'beta'
@@ -191,15 +217,14 @@ describe('apps:create', function () {
 
       expect(stderr).to.contain('Reading heroku.yml manifest... done')
       expect(stderr).to.contain('Creating ⬢ foo... done')
-      expect(stderr).to.contain('Adding heroku-postgresql... done')
-      expect(stderr).to.contain('Setting config vars... done')
       expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
-      expect(fakePlatform.app.create.firstCall.args[0]).to.include({name: 'foo', stack: 'container'})
-      expect(fakePlatform.addOn.create.calledOnceWithExactly(appName, {
-        attachment: {name: 'DATABASE'},
-        plan: 'heroku-postgresql',
-      })).to.equal(true)
-      expect(fakePlatform.configVar.update.calledOnceWithExactly(appName, {S3_BUCKET: 'my-example-bucket'})).to.equal(true)
+      expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+      expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({
+        addons: sinon.match.array.deepEquals([{as: 'DATABASE', plan: 'heroku-postgresql'}]),
+        configVars: sinon.match({S3_BUCKET: 'my-example-bucket'}),
+        name: 'foo',
+        stack: 'container',
+      }))).to.equal(true)
 
       delete process.env.HEROKU_UPDATE_CHANNEL
     })
@@ -209,51 +234,46 @@ describe('apps:create', function () {
     const appName = 'foo'
     const addon = 'foobar, secondPlan'
 
-    it('adds addon if addons flag is present', async function () {
-      fakePlatform.app.create.resolves({
+    it('threads addons through to createAndSetup when addons flag is present', async function () {
+      fakePlatform.app.createAndSetup.resolves({
         name: appName,
         stack: {name: 'cedar-14'},
         web_url: 'https://foobar.com',
       })
-      fakePlatform.addOn.create.resolves({})
 
       const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon])
 
       expect(stderr).to.contain('Creating ⬢ foo... done')
-      expect(stderr).to.contain('Adding foobar... done')
-      expect(stderr).to.contain('Adding secondPlan... done')
       expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
-      expect(fakePlatform.addOn.create.callCount).to.equal(2)
-      expect(fakePlatform.addOn.create.firstCall.args).to.deep.equal([appName, {attachment: undefined, plan: 'foobar'}])
-      expect(fakePlatform.addOn.create.secondCall.args).to.deep.equal([appName, {attachment: undefined, plan: 'secondPlan'}])
+      expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+      expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({
+        addons: sinon.match.array.deepEquals([{plan: 'foobar'}, {plan: 'secondPlan'}]),
+      }))).to.equal(true)
     })
 
-    it('sets buildpack if buildpack flag is present', async function () {
+    it('threads buildpack through to createAndSetup when buildpack flag is present', async function () {
       const exampleBuildpack = 'https://github.com/some/buildpack.git'
 
-      fakePlatform.app.create.resolves({
+      fakePlatform.app.createAndSetup.resolves({
         name: appName,
         stack: {name: 'cedar-14'},
         web_url: 'https://foobar.com',
       })
-      fakePlatform.addOn.create.resolves({})
-      fakePlatform.buildpackInstallation.update.resolves([])
 
       const {stderr, stdout} = await runCommand(CreateCommand, ['--app', appName, '--addons', addon, '--buildpack', exampleBuildpack])
 
       expect(stderr).to.contain('Creating ⬢ foo... done')
-      expect(stderr).to.contain('Adding foobar... done')
-      expect(stderr).to.contain('Adding secondPlan... done')
-      expect(stderr).to.contain('Setting buildpack to https://github.com/some/buildpack.git')
       expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foo.git\n')
-      expect(fakePlatform.buildpackInstallation.update.calledOnceWithExactly(appName, {
-        updates: [{buildpack: exampleBuildpack}],
-      })).to.equal(true)
+      expect(fakePlatform.app.createAndSetup.calledOnce).to.equal(true)
+      expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({
+        addons: sinon.match.array.deepEquals([{plan: 'foobar'}, {plan: 'secondPlan'}]),
+        buildpack: exampleBuildpack,
+      }))).to.equal(true)
     })
   })
 
   it('creates an app in the region', async function () {
-    fakePlatform.app.create.resolves({
+    fakePlatform.app.createAndSetup.resolves({
       name: 'foobar',
       region: {name: 'eu'},
       stack: {name: 'cedar-14'},
@@ -264,11 +284,11 @@ describe('apps:create', function () {
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, region is eu')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
-    expect(fakePlatform.app.create.firstCall.args[0]).to.include({region: 'eu'})
+    expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({region: 'eu'}))).to.equal(true)
   })
 
   it('creates an with stack', async function () {
-    fakePlatform.app.create.resolves({
+    fakePlatform.app.createAndSetup.resolves({
       name: 'foobar',
       stack: {name: 'test'},
       web_url: 'https://foobar.com',
@@ -278,12 +298,90 @@ describe('apps:create', function () {
 
     expect(stderr).to.contain('Creating app... done, ⬢ foobar, stack is test')
     expect(stdout).to.equal('https://foobar.com | https://git.heroku.com/foobar.git\n')
-    expect(fakePlatform.app.create.firstCall.args[0]).to.include({stack: 'test'})
+    expect(fakePlatform.app.createAndSetup.calledWith(sinon.match({stack: 'test'}))).to.equal(true)
+  })
+
+  it('threads the CLI auth token into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and actually issue an HTTP request. The CLI resolves the
+    // token into `this.heroku.auth` during Command.init(); the command must
+    // forward it as `clientOptions.token`, which heroku-fetch turns into the
+    // outgoing `Authorization: Bearer <token>` header. Pin `this.heroku.auth`
+    // to a sentinel distinct from the test env's HEROKU_API_KEY so this test
+    // fails if the command drops `clientOptions: {token: this.heroku.auth}`
+    // (the SDK would then fall back to the env token, flipping the header).
+    platformGetterStub.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    let authHeader: string | undefined
+    api
+      .post('/apps')
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [201, {name: 'foobar', stack: {name: 'cedar-14'}, web_url: 'https://foobar.com'}]
+      })
+
+    await runCommand(CreateCommand, ['--no-remote'])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+  })
+
+  it('threads the CLI-resolved API host into the SDK client options', async function () {
+    // Opt out of the shared platform getter stub so the real SDK + platform
+    // client run and issue an HTTP request. The command must forward
+    // `vars.apiUrl` as `clientOptions.baseUrl`; `vars.apiUrl` honors HEROKU_HOST
+    // exactly as the rest of the CLI does. Point HEROKU_HOST at an allow-listed
+    // staging host (so `vars` does NOT fall back to production) and intercept
+    // the staging API instead of api.heroku.com. If the command dropped
+    // `clientOptions.baseUrl`, the SDK would hit api.heroku.com, this staging
+    // scope would never match, and nock.disableNetConnect() would throw.
+    const originalHerokuHost = process.env.HEROKU_HOST
+    process.env.HEROKU_HOST = 'staging.herokudev.com'
+    platformGetterStub.restore()
+    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+
+    const stagingAPI = nock('https://api.staging.herokudev.com:443')
+      .post('/apps')
+      .reply(201, {name: 'foobar', stack: {name: 'cedar-14'}, web_url: 'https://foobar.com'})
+
+    try {
+      await runCommand(CreateCommand, ['--no-remote'])
+
+      stagingAPI.done()
+    } finally {
+      if (originalHerokuHost === undefined) {
+        delete process.env.HEROKU_HOST
+      } else {
+        process.env.HEROKU_HOST = originalHerokuHost
+      }
+    }
+  })
+
+  it('wires appExtensions into the real SDK so createAndSetup is invoked', async function () {
+    // Opt out of the shared HerokuSDK.prototype.platform getter stub for this
+    // test so the real `mergeExtensions` runs against the constructed SDK.
+    // Instead of faking the whole platform, stub the extension bundle's factory
+    // (the same `appExtensions` specifier create.ts imports). If create.ts ever
+    // stops passing `{extensions: [appExtensions]}` to `new HerokuSDK(...)`, the
+    // factory is never invoked, createAndSetup is never wired in, and this test
+    // fails.
+    platformGetterStub.restore()
+
+    const createAndSetupStub = sinon.stub().resolves({
+      name: 'foobar',
+      stack: {name: 'cedar-14'},
+      web_url: 'https://foobar.com',
+    })
+    sinon.stub(appExtensions, 'factory').returns({createAndSetup: createAndSetupStub} as never)
+
+    await runCommand(CreateCommand, [])
+
+    expect(createAndSetupStub.calledOnce).to.equal(true)
   })
 
   describe('git operations', function () {
     beforeEach(function () {
-      fakePlatform.app.create.resolves({
+      fakePlatform.app.createAndSetup.resolves({
         name: 'foobar',
         stack: {name: 'cedar-14'},
         web_url: 'https://foobar.com',

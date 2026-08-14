@@ -127,6 +127,7 @@ GUSINFO
 hamurai
 herokai
 herokuapp
+herokudev
 herokudns
 herokulytics
 herokumanager
