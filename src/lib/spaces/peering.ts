@@ -1,5 +1,5 @@
-import {Peering, PeeringInfo} from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {Peering, PeeringInfo} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 import {displayCIDR, peeringStatus} from './format.js'
@@ -25,7 +25,7 @@ export function displayPeeringsAsJSON(peerings: Peering[]) {
 export function displayPeerings(space: string, peerings: Peering[]) {
   hux.styledHeader(`${space} Peerings`)
   /* eslint-disable perfectionist/sort-objects */
-  hux.table<Peering>(peerings, {
+  hux.table(peerings, {
     pcx_id: {
       header: 'PCX ID',
     },

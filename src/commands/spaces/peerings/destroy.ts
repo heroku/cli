@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -28,6 +29,7 @@ export default class Destroy extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Destroy)
 
     const pcxID = flags.pcxid || args.pcxid
@@ -43,7 +45,7 @@ export default class Destroy extends Command {
       This command will attempt to destroy the peering connection ${color.warning(pcxID)}
     `))
     ux.action.start(`Tearing down peering connection ${color.name(pcxID)}`)
-    await this.heroku.delete(`/spaces/${flags.space}/peerings/${pcxID}`)
+    await platform.peering.destroy(flags.space, pcxID)
     ux.action.stop()
   }
 }

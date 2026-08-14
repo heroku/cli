@@ -1,30 +1,48 @@
-import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {Peering} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../../src/commands/spaces/peerings/index.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  peering: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    peering: {list: sinon.stub()},
+  }
+}
+
 describe('spaces:peerings', function () {
-  let peerings: Heroku.Peering[]
+  let fakePlatform: FakePlatform
+  let peerings: Peering[]
 
   beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     peerings = [{
       aws_account_id: '012345678910',
       aws_region: 'us-west-2',
       aws_vpc_id: 'vpc-1234568a',
+      cidr_block: '10.0.0.0/16',
       cidr_blocks: ['10.0.0.0/16'],
+      expires: '',
       pcx_id: 'pcx-12345',
       status: 'active',
       type: 'heroku-managed',
     }]
   })
 
+  afterEach(function () {
+    sinon.restore()
+  })
+
   it('shows space peerings', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/peerings')
-      .reply(200, peerings)
+    fakePlatform.peering.list.resolves(peerings)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -38,12 +56,11 @@ describe('spaces:peerings', function () {
 
     expect(actual).to.include(expectedHeader)
     expect(actual).to.include(expectedData)
+    expect(fakePlatform.peering.list.calledOnceWithExactly('my-space')).to.equal(true)
   })
 
   it('shows peerings --json', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/peerings')
-      .reply(200, peerings)
+    fakePlatform.peering.list.resolves(peerings)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
