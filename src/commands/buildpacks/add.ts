@@ -1,4 +1,5 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
+import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import {BuildpackCommand} from '../../lib/buildpacks/buildpacks.js'
@@ -17,6 +18,7 @@ export default class Add extends Command {
       char: 'i',
       description: 'the 1-based index of the URL in the list of URLs',
     }),
+    json: Flags.boolean({char: 'j', description: 'output in json format'}),
     remote: Flags.remote(),
   }
 
@@ -41,6 +43,10 @@ export default class Add extends Command {
     }
 
     const buildpackUpdates = await buildpackCommand.mutate(flags.app, buildpacks, spliceIndex, args.buildpack, 'add')
-    buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'added')
+    if (flags.json) {
+      hux.styledJSON(buildpackUpdates)
+    } else {
+      buildpackCommand.displayUpdate(flags.app, flags.remote || '', buildpackUpdates, 'added')
+    }
   }
 }

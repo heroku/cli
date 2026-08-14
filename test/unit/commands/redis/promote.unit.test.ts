@@ -1,3 +1,4 @@
+/* eslint-disable mocha/max-top-level-suites */
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
@@ -47,6 +48,45 @@ describe('heroku redis:promote', function () {
       app: 'example',
       confirm: 'example',
       name: 'REDIS',
+    })).to.equal(true)
+    expect(stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
+    expect(stderr).to.equal('')
+  })
+
+  it('# promotes with a custom attachment name when --as is provided', async function () {
+    const silver = {
+      addon_service: {name: 'heroku-redis'},
+      config_vars: ['REDIS_URL', 'HEROKU_REDIS_SILVER_URL'],
+      name: 'redis-silver-haiku',
+    }
+    const gold = {
+      addon_service: {name: 'heroku-redis'},
+      config_vars: ['HEROKU_REDIS_GOLD_URL'],
+      name: 'redis-gold-haiku',
+    }
+
+    const resolveByApp = stub().resolves(gold)
+    const listByApp = stub().resolves([silver, gold])
+    const create = stub().resolves({})
+    stub(HerokuSDK.prototype, 'data').get(() => ({redis: {resolveByApp}}))
+    stub(HerokuSDK.prototype, 'platform').get(() => ({
+      addOn: {listByApp},
+      addOnAttachment: {create},
+    }))
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'example',
+      '--as',
+      'CUSTOM_REDIS',
+      'redis-gold-haiku',
+    ])
+
+    expect(create.calledOnceWithExactly({
+      addon: 'redis-gold-haiku',
+      app: 'example',
+      confirm: 'example',
+      name: 'CUSTOM_REDIS',
     })).to.equal(true)
     expect(stdout).to.equal('Promoting redis-gold-haiku to REDIS_URL on example\n')
     expect(stderr).to.equal('')

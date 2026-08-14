@@ -10,13 +10,14 @@ export default class Promote extends Command {
   static description = 'sets DATABASE as your REDIS_URL'
   static flags = {
     app: flags.app({required: true}),
+    as: flags.string({description: 'name for the Key-Value Store attachment'}),
     remote: flags.remote(),
   }
   static topic = 'redis'
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Promote)
-    const {app} = flags
+    const {app, as} = flags
     const {database} = args
 
     const {data, platform} = new HerokuSDK({extensions: [redisExtensions]})
@@ -38,7 +39,7 @@ export default class Promote extends Command {
 
     ux.stdout(`Promoting ${addon.name} to REDIS_URL on ${app}`)
     await platform.addOnAttachment.create({
-      addon: addon.name!, app, confirm: app, name: 'REDIS',
+      addon: addon.name!, app, confirm: app, name: as || 'REDIS',
     })
   }
 }

@@ -375,5 +375,48 @@ describe('DockerHelper', function () {
       const options = eventStub.getCall(0).args[2]
       expect(eventStub.calledWith('docker', argsArray, options)).to.equal(true)
     })
+
+    it('includes the --no-cache flag when noCache is true', async function () {
+      const argsArray = [
+        'build',
+        '-f',
+        'dockerfile',
+        '-t',
+        'registry.heroku.com/test-app/web',
+        '--no-cache',
+        '.',
+      ]
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await helper.buildImage({
+        buildArgs: [],
+        dockerfile: 'dockerfile',
+        noCache: true,
+        resource: 'registry.heroku.com/test-app/web',
+      })
+      const actualArgs = eventStub.getCall(0).args[1]
+      expect(actualArgs).to.deep.equal(argsArray)
+    })
+
+    it('does not include the --no-cache flag when noCache is false', async function () {
+      const argsArray = [
+        'build',
+        '-f',
+        'dockerfile',
+        '-t',
+        'registry.heroku.com/test-app/web',
+        '.',
+      ]
+      const eventStub = sandbox.stub(childProcess, 'spawn').callsFake(eventMock)
+
+      await helper.buildImage({
+        buildArgs: [],
+        dockerfile: 'dockerfile',
+        noCache: false,
+        resource: 'registry.heroku.com/test-app/web',
+      })
+      const actualArgs = eventStub.getCall(0).args[1]
+      expect(actualArgs).to.deep.equal(argsArray)
+    })
   })
 })

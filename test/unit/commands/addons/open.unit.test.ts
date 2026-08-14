@@ -183,11 +183,15 @@ describe('The addons:open command', function () {
       ])
       const {lastArg} = urlOpenerStub.getCall(0)
       const normalizedPath = String(lastArg).replaceAll('/', path.sep)
-      expect(lastArg.startsWith('file:')).to.be.true
+      expect(lastArg).to.match(/^file:/)
       expect(stdout).to.equal(`Opening ${lastArg}...\n`)
 
       const file = await fs.readFile(normalizedPath.replace(`file:${path.sep}${path.sep}`, ''))
-      expect(file.toString().includes('Opening db2 on myapp...')).to.be.true
+      const html = file.toString()
+      expect(html).to.contain('Opening db2 on myapp...')
+      expect(html).not.to.contain('googleapis.com')
+      expect(html).to.contain('DOMContentLoaded')
+      expect(html).to.contain('form.submit()')
       return api.done()
     })
   })

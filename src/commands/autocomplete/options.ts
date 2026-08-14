@@ -134,7 +134,7 @@ export default class Options extends AutocompleteBase {
       // variable arg (strict: false)
       if (!Klass.strict) {
         cacheKey = cmdArgs[0] && cmdArgs[0].name.toLowerCase()
-        cacheCompletion = this.findCompletion(cacheKey, id)
+        cacheCompletion = this.findCompletion(id, cacheKey)
         if (!cacheCompletion) this.throwError(`Cannot complete variable arg position for ${id}`)
       } else if (argsIndex > cmdArgs.length - 1) {
         this.throwError(`Cannot complete arg position ${argsIndex} for ${id}`)
@@ -146,7 +146,7 @@ export default class Options extends AutocompleteBase {
 
     // try to auto-populate the completion object
     if (!cacheCompletion) {
-      cacheCompletion = this.findCompletion(cacheKey, id)
+      cacheCompletion = this.findCompletion(id, cacheKey)
     }
 
     return {cacheCompletion, cacheKey}

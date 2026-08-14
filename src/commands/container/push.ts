@@ -22,6 +22,7 @@ export default class Push extends Command {
     app: flags.app({required: true}),
     arg: flags.string({description: 'set build-time variables'}),
     'context-path': flags.string({description: 'path to use as build context (defaults to Dockerfile dir)'}),
+    'no-cache': flags.boolean({description: 'don\'t use cache when building the image'}),
     recursive: flags.boolean({char: 'R', description: 'pushes Dockerfile.<process> found in current and subdirectories'}),
     remote: flags.remote({char: 'r'}),
     verbose: flags.boolean({char: 'v'}),
@@ -33,7 +34,7 @@ export default class Push extends Command {
   async run(): Promise<void> {
     const {platform} = new HerokuSDK({extensions: [containerExtensions]})
     const {argv: processTypes, flags} = await this.parse(Push)
-    const {app, arg, 'context-path': contextPath, recursive, verbose} = flags
+    const {app, arg, 'context-path': contextPath, 'no-cache': noCache, recursive, verbose} = flags
 
     if (verbose) {
       debug.enabled = true
@@ -72,6 +73,7 @@ export default class Push extends Command {
           arch: this.config.arch,
           buildArgs,
           dockerfile: job.dockerfile,
+          noCache,
           path: contextPath,
           resource: job.resource,
         })

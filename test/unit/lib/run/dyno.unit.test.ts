@@ -378,7 +378,7 @@ describe('Dyno', function () {
       expect(runStub.calledOnce).to.equal(true)
       const [appId, command, options] = runStub.firstCall.args
       expect(appId).to.equal('my-app')
-      expect(command).to.equal('bash')
+      expect(command).to.equal('bash ; echo "\uFFFF heroku-command-exit-status: $?"')
       expect(options).to.include({
         attach: true,
         exitCode: true,
@@ -487,6 +487,62 @@ describe('Dyno', function () {
 
       expect(caught).to.equal(failure)
       expect(runStub.calledOnce).to.equal(true)
+    })
+
+    it('appends the exit-status sentinel with a space so the first token stays a bare process type', async function () {
+      runStub.resolves({body: {name: 'run.1234'}})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'web',
+        'exit-code': true,
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+
+      await dyno._doStart()
+
+      const command = runStub.firstCall.args[1]
+      // The runtime resolves Procfile process types off the first whitespace-delimited
+      // token, so it must remain `web` (not `web;`) for `--exit-code` to work.
+      expect(command.split(/\s+/)[0]).to.equal('web')
+      expect(command).to.equal('web ; echo "\uFFFF heroku-command-exit-status: $?"')
+    })
+
+    it('keeps the first token bare for multi-arg commands', async function () {
+      runStub.resolves({body: {name: 'run.1234'}})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'rake db:migrate',
+        'exit-code': true,
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+
+      await dyno._doStart()
+
+      const command = runStub.firstCall.args[1]
+      expect(command.split(/\s+/)[0]).to.equal('rake')
+      expect(command).to.equal('rake db:migrate ; echo "\uFFFF heroku-command-exit-status: $?"')
+    })
+
+    it('does not wrap the command without exit-code', async function () {
+      runStub.resolves({body: {name: 'run.1234'}})
+      const opts: DynoOpts = {
+        app: 'my-app',
+        attach: false,
+        command: 'web',
+        heroku: mockHeroku,
+        showStatus: false,
+      }
+      const dyno = new Dyno(opts)
+
+      await dyno._doStart()
+
+      expect(runStub.firstCall.args[1]).to.equal('web')
     })
   })
 

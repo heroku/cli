@@ -10,8 +10,10 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import open from 'open'
+import tsheredoc from 'tsheredoc'
 
 import {isNotFound} from '../../lib/addons/addons-wait.js'
+const heredoc = tsheredoc.default
 
 export interface AddonSso {
   /**
@@ -152,7 +154,35 @@ export default class Open extends Command {
 
   private async writeSudoTemplate(app: string, addon: string, sso:AddonSso): Promise<string> {
     const ssoPath = path.join(os.tmpdir(), 'heroku-sso.html')
-    const html = `<!DOCTYPE HTML>\n<html lang="en">\n  <head>\n    <meta charset="utf-8">\n    <title>Heroku Add-ons SSO</title>\n    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>\n  </head>\n\n  <body>\n    <h3>Opening ${addon}${app ? ` on ${app}` : ''}...</h3>\n    <form method="POST" action="${sso.action}">\n    </form>\n\n    <script>\n      var params = ${JSON.stringify(sso.params)}\n      var form = document.forms[0]\n      $(document).ready(function() {\n        $.each(params, function(key, value) {\n          $('<input>').attr({ type: 'hidden', name: key, value: value })\n            .appendTo(form)\n        })\n        form.submit()\n      })\n    </script>\n  </body>\n</html>`
+    const html = heredoc`
+      <!DOCTYPE HTML>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <title>Heroku Add-ons SSO</title>
+        </head>
+        <body>
+          <h3>Opening ${addon}${app ? ` on ${app}` : ''}...</h3>
+          <form method="POST" action="${sso.action}">
+          </form>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              var params = ${JSON.stringify(sso.params)}
+              var form = document.forms[0]
+              Object.keys(params).forEach(function(key) {
+                var input = document.createElement('input')
+                input.type = 'hidden'
+                input.name = key
+                input.value = params[key]
+                form.appendChild(input)
+              })
+              form.submit()
+            })
+          </script>
+        </body>
+      </html>
+    `
+
     await fs.writeFile(ssoPath, html)
     return ssoPath
   }

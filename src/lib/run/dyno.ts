@@ -127,8 +127,11 @@ export default class Dyno extends Duplex {
   }
 
   async _doStart(): Promise<void> {
+    // Keep a space before `;` so the first token stays a bare process type the runtime can resolve.
+    const command = this.opts['exit-code'] ? `${this.opts.command} ; echo "\uFFFF heroku-command-exit-status: $?"` : this.opts.command
+
     try {
-      const dyno = await this.sdk.platform.dyno.run(this.opts.app, this.opts.command, {
+      const dyno = await this.sdk.platform.dyno.run(this.opts.app, command, {
         attach: this.opts.attach,
         dyno: this.opts.dyno,
         env: this._env(),

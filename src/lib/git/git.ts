@@ -16,12 +16,17 @@ export default class Git {
   */
   async configureCredentialHelper() {
     const {httpGitHost} = vars
-    await this.exec([
-      'config',
-      '--global',
-      `credential.https://${httpGitHost}.helper`,
-      '!heroku git:credentials',
-    ])
+    const key = `credential.https://${httpGitHost}.helper`
+    const helper = '!heroku git:credentials'
+    // Read the existing value first so we can skip the write when it is already
+    // set to our helper. `git config` rewrites the global config file (new inode)
+    // even when the value is byte-identical, and this runs before nearly every
+    // command via the init hook, so the no-op write churns the user's gitconfig.
+    // When the key is absent the `--get` exits non-zero and `exec` throws, so we
+    // treat that as an empty string.
+    const existing = await this.exec(['config', '--global', '--get', key]).catch(() => '')
+    if (existing === helper) return
+    await this.exec(['config', '--global', key, helper])
   }
 
   createRemote(remote: string, url: string) {

@@ -100,7 +100,9 @@ describe('pipelines:connect', function () {
 
       const {error} = await runCommand(PipelinesConnect, ['my-pipeline', '--repo=my-org/my-repo'])
 
-      expect(error?.message).to.contain('Could not access the my-org/my-repo repo')
+      expect(error?.message).to.contain('Couldn\'t access that repo')
+      expect(error?.message).not.to.contain(repo.name)
+      expect((error as any)?.statusCode).to.equal(401)
     })
   })
 })

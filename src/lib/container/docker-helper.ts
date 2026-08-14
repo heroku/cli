@@ -30,17 +30,20 @@ type BuildImageParams = {
   arch?: string,
   buildArgs: string[],
   dockerfile: string,
+  noCache?: boolean,
   path?: string,
   resource: string,
 }
 
 export class DockerHelper {
-  async buildImage({arch, buildArgs, dockerfile, path, resource}: BuildImageParams): Promise<string> {
+  async buildImage({arch, buildArgs, dockerfile, noCache, path, resource}: BuildImageParams): Promise<string> {
     const cwd = path || Path.dirname(dockerfile)
     const args = ['build', '-f', dockerfile, '-t', resource]
     // Older Docker versions don't allow for this flag, but we are
     // adding it here when necessary to allow for pushing a docker build from m1/m2 Macs.
     if (arch === 'arm64' || arch === 'aarch64') args.push('--platform', 'linux/amd64')
+
+    if (noCache) args.push('--no-cache')
 
     // newer docker versions support attestations and software bill of materials, so we want to disable them to save time/space
     // Heroku's container registry doesn't support pushing them right now
