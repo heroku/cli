@@ -1,3 +1,4 @@
+import type {InboundRuleset} from '@heroku/types/3.sdk'
 import {
   Space,
   Region,
@@ -7,6 +8,12 @@ import {
 
 export type SpaceExpanded = Omit<Space, 'region'> & {
   region: SpaceRegion & Partial<Region>
+}
+
+// The applied field is optional for backward compatibility with API versions that don't include it yet.
+// Once the API always includes the applied field, this will be added directly to @heroku/types.
+export type ExtendedInboundRuleset = InboundRuleset & {
+  applied?: boolean
 }
 
 export type SpaceWithOutboundIps = SpaceExpanded & {

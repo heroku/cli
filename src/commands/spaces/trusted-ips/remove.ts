@@ -1,8 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {ExtendedInboundRuleset} from '../../../lib/types/spaces.js'
 
 const heredoc = tsheredoc.default
 
@@ -25,25 +27,25 @@ export default class Remove extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Remove)
     const {space} = flags
-    const url = `/spaces/${space}/inbound-ruleset`
-    const {body: rules} = await this.heroku.get<Heroku.InboundRuleset>(url)
-    if (rules.rules?.length === 0) {
+    let {rules} = await platform.inboundRuleset.current(space)
+    if (rules.length === 0) {
       throw new Error('No IP ranges are configured. Nothing to do.')
     }
 
-    const originalLength = rules.rules?.length
-    rules.rules = rules.rules?.filter(r => r.source !== args.source)
-    if (rules.rules?.length === originalLength) {
+    const originalLength = rules.length
+    rules = rules.filter(r => r.source !== args.source)
+    if (rules.length === originalLength) {
       throw new Error(`No IP range matching ${args.source} was found.`)
     }
 
-    await this.heroku.put(url, {body: rules})
+    await platform.inboundRuleset.create(space, {rules})
     ux.stdout(`Removed ${color.name(args.source)} from trusted IP ranges on ${color.space(space)}`)
 
     // Fetch updated ruleset to check applied status
-    const {body: updatedRuleset} = await this.heroku.get<Heroku.InboundRuleset>(url)
+    const updatedRuleset = await platform.inboundRuleset.current(space) as ExtendedInboundRuleset
     // Check applied status to inform users whether rules are effectively applied to the space.
     // The applied field is optional for backward compatibility with API versions that don't include it yet.
     // Once the API always includes the applied field (W-19525612), this can be simplified to:
