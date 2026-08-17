@@ -1,5 +1,5 @@
-import {Peering, PeeringInfo} from '@heroku-cli/schema'
 import {captureOutput, expectOutput} from '@heroku-cli/test-utils'
+import {Peering, PeeringInfo} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
 import tsheredoc from 'tsheredoc'
 
@@ -13,7 +13,9 @@ const peerings: Peering[] = [
     aws_account_id: '012345678910',
     aws_region: 'us-west-2',
     aws_vpc_id: 'vpc-1234568a',
+    cidr_block: '10.0.0.0/16',
     cidr_blocks: ['10.0.0.0/16'],
+    expires: '2026-08-17T00:00:00Z',
     pcx_id: 'pcx-12345',
     status: 'active',
     type: 'heroku-managed',
@@ -22,7 +24,9 @@ const peerings: Peering[] = [
     aws_account_id: '012345678911',
     aws_region: 'us-west-2',
     aws_vpc_id: 'vpc-1234568b',
+    cidr_block: '10.0.0.0/16',
     cidr_blocks: ['10.0.0.0/16'],
+    expires: '2026-08-17T00:00:00Z',
     pcx_id: 'pcx-12346',
     status: 'active',
     type: 'heroku-managed',
@@ -33,6 +37,7 @@ describe('displayPeeringInfo', function () {
   const peeringInfo: PeeringInfo = {
     aws_account_id: '012345678900',
     aws_region: 'us-west-2',
+    dyno_cidr_blocks: ['10.0.0.0/16'],
     space_cidr_blocks: ['10.0.128.0/20', '10.0.144.0/20'],
     unavailable_cidr_blocks: ['192.168.2.0/30'],
     vpc_cidr: '10.0.0.0/16',
