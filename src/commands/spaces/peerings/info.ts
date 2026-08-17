@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -45,6 +45,7 @@ export default class Info extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Info)
     const spaceName = flags.space || args.space
     if (!spaceName) {
@@ -55,7 +56,7 @@ export default class Info extends Command {
       `))
     }
 
-    const {body: pInfo} = await this.heroku.get<Heroku.PeeringInfo>(`/spaces/${spaceName}/peering-info`)
+    const pInfo = await platform.peering.info(spaceName)
     if (flags.json)
       ux.stdout(JSON.stringify(pInfo, null, 2))
     else

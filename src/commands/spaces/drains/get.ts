@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 export default class Get extends Command {
@@ -13,12 +13,10 @@ export default class Get extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Get)
     const {json, space} = flags
-    const {body: drain} = await this.heroku.get<Required<Heroku.LogDrain>>(
-      `/spaces/${space}/log-drain`,
-      {headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'}},
-    )
+    const drain = await platform.spaceLogDrain.info(space)
 
     if (json) {
       ux.stdout(JSON.stringify(drain, null, 2))

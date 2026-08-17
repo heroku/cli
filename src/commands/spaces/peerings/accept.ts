@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -21,6 +22,7 @@ Accepting and configuring peering connection pcx-4bd27022`)]
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Accept)
     const space = flags.space || args.space
     if (!space) {
@@ -28,10 +30,7 @@ Accepting and configuring peering connection pcx-4bd27022`)]
     }
 
     const pcxID = flags.pcxid || args.pcxid
-    await this.heroku.post(`/spaces/${space}/peerings`, {
-      body: {pcx_id: pcxID},
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-    })
+    await platform.peering.accept(space, {pcx_id: pcxID})
     ux.stdout(`Accepting and configuring peering connection ${color.name(pcxID)}`)
   }
 }

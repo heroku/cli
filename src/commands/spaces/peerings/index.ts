@@ -1,5 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -19,6 +19,7 @@ export default class Index extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Index)
     const spaceName = flags.space || args.space
     if (!spaceName) {
@@ -28,7 +29,7 @@ export default class Index extends Command {
         `)
     }
 
-    const {body: peerings} = await this.heroku.get<Heroku.Peering[]>(`/spaces/${spaceName}/peerings`)
+    const peerings = await platform.peering.list(spaceName)
 
     if (flags.json)
       displayPeeringsAsJSON(peerings)

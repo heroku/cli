@@ -1,8 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {ExtendedInboundRuleset} from '../../../lib/types/spaces.js'
 
 const heredoc = tsheredoc.default
 
@@ -26,13 +28,14 @@ export default class Index extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Index)
     const space = flags.space || args.space
     if (!space) {
       throw new Error('Space name required.\nUSAGE: heroku trusted-ips my-space')
     }
 
-    const {body: rules} = await this.heroku.get<Required<Heroku.InboundRuleset>>(`/spaces/${space}/inbound-ruleset`)
+    const rules = await platform.inboundRuleset.current(space)
 
     if (flags.json) {
       ux.stdout(JSON.stringify(rules, null, 2))
@@ -41,7 +44,7 @@ export default class Index extends Command {
     }
   }
 
-  private displayRules(space: string, ruleset: Required<Heroku.InboundRuleset>) {
+  private displayRules(space: string, ruleset: ExtendedInboundRuleset) {
     if (ruleset.rules.length > 0) {
       hux.styledHeader('Trusted IP Ranges')
       for (const rule of ruleset.rules) {

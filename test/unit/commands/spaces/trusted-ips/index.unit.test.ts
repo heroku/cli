@@ -1,39 +1,53 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Index from '../../../../../src/commands/spaces/trusted-ips/index.js'
+import {ExtendedInboundRuleset} from '../../../../../src/lib/types/spaces.js'
 
 const heredoc = tsheredoc.default
 
 const now = new Date()
 
+type FakePlatform = {
+  inboundRuleset: {current: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    inboundRuleset: {current: sinon.stub()},
+  }
+}
+
+function buildRuleset(overrides: Partial<ExtendedInboundRuleset> = {}): ExtendedInboundRuleset {
+  return {
+    created_at: now.toISOString(),
+    created_by: 'dickeyxxx',
+    id: 'ruleset-id',
+    rules: [
+      {action: 'allow', source: '127.0.0.1/20'},
+    ],
+    space: {id: 'space-id', name: 'my-space'},
+    ...overrides,
+  }
+}
+
 describe('trusted-ips', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows the trusted IP ranges', async function () {
-    api
-      .get('/spaces/my-space/inbound-ruleset')
-      .reply(200, {
-        applied: true,
-        created_at: now,
-        created_by: 'dickeyxxx',
-        default_action: 'allow',
-        rules: [
-          {action: 'allow', source: '127.0.0.1/20'},
-        ],
-        version: '1',
-      })
+    fakePlatform.inboundRuleset.current.resolves(buildRuleset({applied: true}))
 
     const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
@@ -43,19 +57,11 @@ describe('trusted-ips', function () {
     127.0.0.1/20
     Trusted IP rules are applied to this space.
     `))
+    expect(fakePlatform.inboundRuleset.current.calledOnceWithExactly('my-space')).to.equal(true)
   })
 
   it('shows the trusted IP ranges with blank rules', async function () {
-    api
-      .get('/spaces/my-space/inbound-ruleset')
-      .reply(200, {
-        applied: true,
-        created_at: now,
-        created_by: 'dickeyxxx',
-        default_action: 'allow',
-        rules: [],
-        version: '1',
-      })
+    fakePlatform.inboundRuleset.current.resolves(buildRuleset({applied: true, rules: []}))
 
     const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
@@ -63,39 +69,16 @@ describe('trusted-ips', function () {
   })
 
   it('shows the trusted IP ranges --json', async function () {
-    const ruleSet = {
-      applied: true,
-      created_at: now.toISOString(),
-      created_by: 'dickeyxxx',
-      default_action: 'allow',
-      rules: [
-        {action: 'allow', source: '127.0.0.1/20'},
-      ],
-      version: '1',
-    }
-
-    api
-      .get('/spaces/my-space/inbound-ruleset')
-      .reply(200, ruleSet)
+    const ruleset = buildRuleset({applied: true})
+    fakePlatform.inboundRuleset.current.resolves(ruleset)
 
     const {stdout} = await runCommand(Index, ['--space', 'my-space', '--json', 'true'])
 
-    expect(JSON.parse(stdout)).to.eql(ruleSet)
+    expect(JSON.parse(stdout)).to.eql(ruleset)
   })
 
   it('shows message when applied is false', async function () {
-    api
-      .get('/spaces/my-space/inbound-ruleset')
-      .reply(200, {
-        applied: false,
-        created_at: now,
-        created_by: 'dickeyxxx',
-        default_action: 'allow',
-        rules: [
-          {action: 'allow', source: '127.0.0.1/20'},
-        ],
-        version: '1',
-      })
+    fakePlatform.inboundRuleset.current.resolves(buildRuleset({applied: false}))
 
     const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
@@ -103,17 +86,7 @@ describe('trusted-ips', function () {
   })
 
   it('shows nothing when applied is undefined (backward compatibility)', async function () {
-    api
-      .get('/spaces/my-space/inbound-ruleset')
-      .reply(200, {
-        created_at: now,
-        created_by: 'dickeyxxx',
-        default_action: 'allow',
-        rules: [
-          {action: 'allow', source: '127.0.0.1/20'},
-        ],
-        version: '1',
-      })
+    fakePlatform.inboundRuleset.current.resolves(buildRuleset())
 
     const {stdout} = await runCommand(Index, ['--space', 'my-space'])
 
