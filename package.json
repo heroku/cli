@@ -343,7 +343,7 @@
     },
     "update": {
       "node": {
-        "version": "22.23.2"
+        "version": "24.19.0"
       },
       "s3": {
         "bucket": "heroku-cli-assets",
@@ -356,7 +356,7 @@
     }
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "files": [
     "/autocomplete-scripts",
