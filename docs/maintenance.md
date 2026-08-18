@@ -16,7 +16,7 @@ USAGE
   $ heroku maintenance -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -26,7 +26,7 @@ DESCRIPTION
   display the current maintenance status of app
 ```
 
-_See code: [src/commands/maintenance/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/maintenance/index.ts)_
+_See code: [src/commands/maintenance/index.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/maintenance/index.ts)_
 
 ## `heroku maintenance:off`
 
@@ -37,7 +37,7 @@ USAGE
   $ heroku maintenance:off -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -47,7 +47,7 @@ DESCRIPTION
   take the app out of maintenance mode
 ```
 
-_See code: [src/commands/maintenance/off.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/maintenance/off.ts)_
+_See code: [src/commands/maintenance/off.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/maintenance/off.ts)_
 
 ## `heroku maintenance:on`
 
@@ -58,7 +58,7 @@ USAGE
   $ heroku maintenance:on -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -68,4 +68,4 @@ DESCRIPTION
   put the app into maintenance mode
 ```
 
-_See code: [src/commands/maintenance/on.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/maintenance/on.ts)_
+_See code: [src/commands/maintenance/on.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/maintenance/on.ts)_

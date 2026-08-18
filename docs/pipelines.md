@@ -39,7 +39,7 @@ EXAMPLES
    $ heroku pipelines
 ```
 
-_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/index.ts)_
+_See code: [src/commands/pipelines/index.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/index.ts)_
 
 ## `heroku pipelines:add PIPELINE`
 
@@ -53,7 +53,7 @@ ARGUMENTS
   PIPELINE  name of pipeline
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
 
@@ -69,7 +69,7 @@ EXAMPLES
    $ heroku pipelines:add my-pipeline -a my-app -s production
 ```
 
-_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/add.ts)_
+_See code: [src/commands/pipelines/add.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/add.ts)_
 
 ## `heroku pipelines:connect NAME`
 
@@ -95,7 +95,7 @@ EXAMPLES
    $ heroku pipelines:connect my-pipeline -r githuborg/reponame
 ```
 
-_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/connect.ts)_
+_See code: [src/commands/pipelines/connect.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/connect.ts)_
 
 ## `heroku pipelines:create [NAME]`
 
@@ -109,7 +109,7 @@ ARGUMENTS
   [NAME]  name of pipeline (defaults to basename of the app)
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
   -t, --team=<value>    the team which will own the apps
@@ -130,7 +130,7 @@ EXAMPLES
    $ heroku pipelines:create my-pipeline -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/create.ts)_
+_See code: [src/commands/pipelines/create.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/create.ts)_
 
 ## `heroku pipelines:destroy PIPELINE`
 
@@ -153,7 +153,7 @@ EXAMPLES
    $ heroku pipelines:destroy my-pipeline
 ```
 
-_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/destroy.ts)_
+_See code: [src/commands/pipelines/destroy.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/destroy.ts)_
 
 ## `heroku pipelines:diff`
 
@@ -164,7 +164,7 @@ USAGE
   $ heroku pipelines:diff -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -177,7 +177,7 @@ EXAMPLES
    $ heroku pipelines:diff -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/diff.ts)_
+_See code: [src/commands/pipelines/diff.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/diff.ts)_
 
 ## `heroku pipelines:info PIPELINE`
 
@@ -203,7 +203,7 @@ EXAMPLES
    $ heroku pipelines:info my-pipeline
 ```
 
-_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/info.ts)_
+_See code: [src/commands/pipelines/info.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/info.ts)_
 
 ## `heroku pipelines:open PIPELINE`
 
@@ -226,7 +226,7 @@ EXAMPLES
    $ heroku pipelines:open my-pipeline
 ```
 
-_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/open.ts)_
+_See code: [src/commands/pipelines/open.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/open.ts)_
 
 ## `heroku pipelines:promote`
 
@@ -237,7 +237,7 @@ USAGE
   $ heroku pipelines:promote -a <value> [--prompt] [-r <value>] [-t <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -t, --to=<value>      comma separated list of apps to promote to
 
@@ -251,7 +251,7 @@ EXAMPLES
    $ heroku pipelines:promote -a my-app-staging
 ```
 
-_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/promote.ts)_
+_See code: [src/commands/pipelines/promote.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/promote.ts)_
 
 ## `heroku pipelines:remove`
 
@@ -262,7 +262,7 @@ USAGE
   $ heroku pipelines:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -275,7 +275,7 @@ EXAMPLES
    $ heroku pipelines:remove -a my-app
 ```
 
-_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/remove.ts)_
+_See code: [src/commands/pipelines/remove.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/remove.ts)_
 
 ## `heroku pipelines:rename PIPELINE NAME`
 
@@ -299,7 +299,7 @@ EXAMPLES
    $ heroku pipelines:rename my-pipeline new-pipeline-name
 ```
 
-_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/rename.ts)_
+_See code: [src/commands/pipelines/rename.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/rename.ts)_
 
 ## `heroku pipelines:setup [NAME] [REPO]`
 
@@ -328,7 +328,7 @@ EXAMPLES
    $ heroku pipelines:setup my-pipeline githuborg/reponame -t my-team
 ```
 
-_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/setup.ts)_
+_See code: [src/commands/pipelines/setup.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/setup.ts)_
 
 ## `heroku pipelines:transfer OWNER`
 
@@ -357,7 +357,7 @@ EXAMPLES
    $ heroku pipelines:transfer admin-team -p my-pipeline
 ```
 
-_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/transfer.ts)_
+_See code: [src/commands/pipelines/transfer.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/transfer.ts)_
 
 ## `heroku pipelines:update`
 
@@ -368,7 +368,7 @@ USAGE
   $ heroku pipelines:update -a <value> -s <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   (required) new stage of app
 
@@ -382,4 +382,4 @@ EXAMPLES
    $ heroku pipelines:update -s staging -a my-app
 ```
 
-_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/pipelines/update.ts)_
+_See code: [src/commands/pipelines/update.ts](https://github.com/heroku/cli/blob/v11.10.0-beta.0/src/commands/pipelines/update.ts)_

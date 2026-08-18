@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.10.0-beta.0](https://github.com/heroku/cli/compare/v11.9.0...v11.10.0-beta.0) (2026-08-18)
+
+
+### Features
+
+* add --json flag to heroku buildpacks and subcommands (W-23597909, [#1637](https://github.com/heroku/cli/issues/1637)) ([#3842](https://github.com/heroku/cli/issues/3842)) ([6f56a6f](https://github.com/heroku/cli/commit/6f56a6f6ec38d50d885992a3fdf30d985313e910))
+* add --no-cache flag to container:push (W-23597904, [#1390](https://github.com/heroku/cli/issues/1390)) ([#3840](https://github.com/heroku/cli/issues/3840)) ([91a0c42](https://github.com/heroku/cli/commit/91a0c422a35bd8d7fc58df5d8308bebb70b2f389))
+* add reviewapps:create and reviewapps:wait commands ([#3816](https://github.com/heroku/cli/issues/3816)) ([8ca1582](https://github.com/heroku/cli/commit/8ca1582757aabd950df43531a7f1d3fc579d6a38))
+* **ci:** add not-in-git-repo guard to ci:run and ci:rerun (W-23597902, [#1761](https://github.com/heroku/cli/issues/1761)) ([#3843](https://github.com/heroku/cli/issues/3843)) ([3d21957](https://github.com/heroku/cli/commit/3d2195700420276d61385a6213b7989ae8dc8d1b))
+* enable psql for classic shield ([#3861](https://github.com/heroku/cli/issues/3861)) ([2f0ced0](https://github.com/heroku/cli/commit/2f0ced0daa3d9aada870bd5ac679f7e3663c2dc4))
+* infer --pipeline from heroku.remote git config in CI commands (W-23597910, [#1318](https://github.com/heroku/cli/issues/1318)) ([#3845](https://github.com/heroku/cli/issues/3845)) ([4a0a9b4](https://github.com/heroku/cli/commit/4a0a9b40ec51bf90b2dc11d76c32315aa2e7753f))
+* **pg,redis:** add --as flag to pg:promote and redis:promote (W-23597911, [#1819](https://github.com/heroku/cli/issues/1819)) ([#3841](https://github.com/heroku/cli/issues/3841)) ([8271d51](https://github.com/heroku/cli/commit/8271d5128b214bddafa8a04059496fa0074facc2))
+
+
+### Bug Fixes
+
+* flag value autocompletion (PR [#3686](https://github.com/heroku/cli/issues/3686) recreation) ([#3866](https://github.com/heroku/cli/issues/3866)) ([30ac7e2](https://github.com/heroku/cli/commit/30ac7e22c00c53c99b1996bb5ab8cdab0f2e4aa0))
+* update `access` commands (list, update, add) to Utilize Permission Chain Directly. ([#3856](https://github.com/heroku/cli/issues/3856)) ([be14b93](https://github.com/heroku/cli/commit/be14b9365eaba2058fd94f41891399a0c758347e))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump actions/download-artifact from 7 to 8 ([#3549](https://github.com/heroku/cli/issues/3549)) ([f951097](https://github.com/heroku/cli/commit/f951097e96fc10a50c7b5438ea158462ad5b0bfc))
+* **deps:** bump actions/upload-artifact from 6 to 7 ([#3550](https://github.com/heroku/cli/issues/3550)) ([427d743](https://github.com/heroku/cli/commit/427d743f20f83705dd75c5948a799288e870255e))
+
+
+### Code Refactoring
+
+* remove useless step in Ubuntu install script (PR [#2020](https://github.com/heroku/cli/issues/2020) recreation) ([#3865](https://github.com/heroku/cli/issues/3865)) ([c919b30](https://github.com/heroku/cli/commit/c919b30d36e3c47a194c99fb1c79e60588bfb186))
+
 ## [11.9.0](https://github.com/heroku/cli/compare/v11.8.1...v11.9.0) (2026-08-04)
 
 
