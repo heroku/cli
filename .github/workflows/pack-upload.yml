@@ -11,6 +11,11 @@ jobs:
       HEROKU_AUTHOR: 'Heroku'
     steps:
       - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: npm
       - name: Install system deps
         run: |
           sudo apt-get update
@@ -31,6 +36,11 @@ jobs:
     runs-on: pub-hk-ubuntu-22.04-2xlarge
     steps:
       - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: npm
       - name: Install system deps
         run: |
           sudo apt-get update
@@ -82,6 +92,11 @@ jobs:
       AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: npm
       - run: sudo mkdir -p /build
       - uses: actions/download-artifact@v8
         with:
