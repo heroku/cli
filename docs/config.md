@@ -19,7 +19,7 @@ USAGE
   $ heroku config -a <value> [--prompt] [-j] [-r <value>] [-s]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -j, --json            output config vars in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
@@ -31,7 +31,7 @@ DESCRIPTION
   display the config vars for an app
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/config/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/config/index.ts)_
 
 ## `heroku config:edit [KEY]`
 
@@ -45,7 +45,7 @@ ARGUMENTS
   [KEY]  edit a single key
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -70,7 +70,7 @@ EXAMPLES
    $ VISUAL="atom --wait" heroku config:edit
 ```
 
-_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/config/edit.ts)_
+_See code: [src/commands/config/edit.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/config/edit.ts)_
 
 ## `heroku config:get KEY...`
 
@@ -84,7 +84,7 @@ ARGUMENTS
   KEY...  key name of the config var value
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output config vars in shell format
@@ -100,7 +100,7 @@ EXAMPLES
   production
 ```
 
-_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/config/get.ts)_
+_See code: [src/commands/config/get.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/config/get.ts)_
 
 ## `heroku config:remove`
 
@@ -111,7 +111,7 @@ USAGE
   $ heroku config:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -140,7 +140,7 @@ USAGE
   $ heroku config:set -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -160,7 +160,7 @@ EXAMPLES
   RACK_ENV:  staging
 ```
 
-_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/config/set.ts)_
+_See code: [src/commands/config/set.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/config/set.ts)_
 
 ## `heroku config:unset`
 
@@ -171,7 +171,7 @@ USAGE
   $ heroku config:unset -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -191,4 +191,4 @@ EXAMPLES
   Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10
 ```
 
-_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/config/unset.ts)_
+_See code: [src/commands/config/unset.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/config/unset.ts)_

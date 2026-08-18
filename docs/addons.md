@@ -28,7 +28,7 @@ USAGE
 
 FLAGS
   -A, --all             show add-ons and attachments for all accessible apps
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            return add-ons in json format
       --no-wrap         disable wrapped table cells for easier copy/paste
@@ -51,7 +51,7 @@ EXAMPLES
    $ heroku addons --app acme-inc-www
 ```
 
-_See code: [src/commands/addons/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/index.ts)_
+_See code: [src/commands/addons/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/index.ts)_
 
 ## `heroku addons:attach ADDON_NAME`
 
@@ -66,7 +66,7 @@ ARGUMENTS
   ADDON_NAME  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>         (required) app to run command against
+  -a, --app=<value>         (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>      git remote of app to use
       --as=<value>          name for add-on attachment
       --confirm=<value>     overwrite existing add-on attachment with same name
@@ -79,7 +79,7 @@ DESCRIPTION
   attach an existing add-on resource to an app
 ```
 
-_See code: [src/commands/addons/attach.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/attach.ts)_
+_See code: [src/commands/addons/attach.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/attach.ts)_
 
 ## `heroku addons:create SERVICE:PLAN`
 
@@ -94,7 +94,7 @@ ARGUMENTS
   SERVICE:PLAN...  unique identifier or unique name of the add-on service plan
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>   git remote of app to use
       --as=<value>       name for the initial add-on attachment
       --confirm=<value>  overwrite existing config vars or existing add-on attachments
@@ -118,7 +118,7 @@ EXAMPLES
    $ heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE
 ```
 
-_See code: [src/commands/addons/create.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/create.ts)_
+_See code: [src/commands/addons/create.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/create.ts)_
 
 ## `heroku addons:destroy ADDONNAME`
 
@@ -132,7 +132,7 @@ ARGUMENTS
   ADDONNAME...  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>      app to run command against
+  -a, --app=<value>      [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>
   -f, --force            allow destruction even if connected to other apps
   -r, --remote=<value>   git remote of app to use
@@ -148,7 +148,7 @@ EXAMPLES
    $ addons:destroy [ADDON]... [flags]
 ```
 
-_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/destroy.ts)_
+_See code: [src/commands/addons/destroy.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/destroy.ts)_
 
 ## `heroku addons:detach ATTACHMENT_NAME`
 
@@ -162,7 +162,7 @@ ARGUMENTS
   ATTACHMENT_NAME  unique identifier of the add-on attachment
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -172,7 +172,7 @@ DESCRIPTION
   detach an existing add-on resource from an app
 ```
 
-_See code: [src/commands/addons/detach.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/detach.ts)_
+_See code: [src/commands/addons/detach.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/detach.ts)_
 
 ## `heroku addons:docs ADDON`
 
@@ -186,7 +186,7 @@ ARGUMENTS
   ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --show-url        show URL, do not open browser
 
@@ -197,7 +197,7 @@ DESCRIPTION
   open an add-on's Dev Center documentation in your browser
 ```
 
-_See code: [src/commands/addons/docs.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/docs.ts)_
+_See code: [src/commands/addons/docs.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/docs.ts)_
 
 ## `heroku addons:downgrade ADDON [PLAN]`
 
@@ -212,7 +212,7 @@ ARGUMENTS
   [PLAN]  unique identifier or name of the plan
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -251,7 +251,7 @@ ARGUMENTS
   ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -261,7 +261,7 @@ DESCRIPTION
   show detailed add-on resource and attachment information
 ```
 
-_See code: [src/commands/addons/info.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/info.ts)_
+_See code: [src/commands/addons/info.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/info.ts)_
 
 ## `heroku addons:open ADDON`
 
@@ -275,7 +275,7 @@ ARGUMENTS
   ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --show-url        show URL, do not open browser
 
@@ -286,7 +286,7 @@ DESCRIPTION
   open an add-on's dashboard in your browser
 ```
 
-_See code: [src/commands/addons/open.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/open.ts)_
+_See code: [src/commands/addons/open.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/open.ts)_
 
 ## `heroku addons:plans SERVICE`
 
@@ -309,7 +309,7 @@ DESCRIPTION
   list all available plans for an add-on service
 ```
 
-_See code: [src/commands/addons/plans.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/plans.ts)_
+_See code: [src/commands/addons/plans.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/plans.ts)_
 
 ## `heroku addons:rename ADDON_NAME NEW_NAME`
 
@@ -330,7 +330,7 @@ DESCRIPTION
   rename an add-on
 ```
 
-_See code: [src/commands/addons/rename.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/rename.ts)_
+_See code: [src/commands/addons/rename.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/rename.ts)_
 
 ## `heroku addons:services`
 
@@ -350,7 +350,7 @@ DESCRIPTION
   list all available add-on services
 ```
 
-_See code: [src/commands/addons/services.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/services.ts)_
+_See code: [src/commands/addons/services.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/services.ts)_
 
 ## `heroku addons:upgrade ADDON [PLAN]`
 
@@ -365,7 +365,7 @@ ARGUMENTS
   [PLAN]  unique identifier or name of the plan
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -392,7 +392,7 @@ EXAMPLES
        $ heroku addons:upgrade swimming-briskly-123 heroku-redis:premium-2
 ```
 
-_See code: [src/commands/addons/upgrade.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/upgrade.ts)_
+_See code: [src/commands/addons/upgrade.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/upgrade.ts)_
 
 ## `heroku addons:wait [ADDON]`
 
@@ -406,7 +406,7 @@ ARGUMENTS
   [ADDON]  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>            app to run command against
+  -a, --app=<value>            [env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --wait-interval=<value>  how frequently to poll in seconds
 
@@ -417,4 +417,4 @@ DESCRIPTION
   show provisioning status of the add-ons on the app
 ```
 
-_See code: [src/commands/addons/wait.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/addons/wait.ts)_
+_See code: [src/commands/addons/wait.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/addons/wait.ts)_
