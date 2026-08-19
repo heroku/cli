@@ -14,7 +14,7 @@ USAGE
   $ heroku notifications [--prompt] [--all] [-a <value>] [--json] [--read] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --all             view all notifications (not just the ones for the current app)
       --json            output in json format
@@ -27,4 +27,4 @@ DESCRIPTION
   display notifications
 ```
 
-_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/notifications/index.ts)_
+_See code: [src/commands/notifications/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/notifications/index.ts)_
