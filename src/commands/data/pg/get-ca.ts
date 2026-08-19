@@ -6,6 +6,10 @@ import os from 'node:os'
 import path from 'node:path'
 
 const RDS_CERTIFICATE_HOST = 'https://truststore.pki.rds.amazonaws.com'
+const REGION_ALIASES: Record<string, string> = {
+  eu: 'eu-west-1',
+  us: 'us-east-1',
+}
 
 export default class DataPgGetCa extends Command {
   static description = 'download the RDS CA bundle for a Heroku region'
@@ -21,6 +25,8 @@ export default class DataPgGetCa extends Command {
   }
 
   public async awsRegion(herokuRegion: string): Promise<string> {
+    if (REGION_ALIASES[herokuRegion]) return REGION_ALIASES[herokuRegion]
+
     const {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
     const region = regions.find(candidate => candidate.name === herokuRegion)
     const awsRegion = region?.provider?.region

@@ -60,6 +60,36 @@ describe('data:pg:get-ca', function () {
     expect(stdout).to.equal('RDS CA bundle retrieved successfully: /tmp/postgres/global-bundle.pem\n')
   })
 
+  it('downloads the US Common Runtime CA bundle without requesting Heroku regions', async function () {
+    nock('https://truststore.pki.rds.amazonaws.com')
+      .get('/us-east-1/us-east-1-bundle.pem')
+      .reply(200, certificate)
+
+    const {stdout} = await runCommand(DataPgGetCa, ['--region', 'us'])
+
+    expect(outputFileStub.calledOnceWith(
+      '/tmp/postgres/us-east-1-bundle.pem',
+      Buffer.from(certificate),
+      {mode: 0o600},
+    )).to.be.true
+    expect(stdout).to.equal('RDS CA bundle retrieved successfully: /tmp/postgres/us-east-1-bundle.pem\n')
+  })
+
+  it('downloads the EU Common Runtime CA bundle without requesting Heroku regions', async function () {
+    nock('https://truststore.pki.rds.amazonaws.com')
+      .get('/eu-west-1/eu-west-1-bundle.pem')
+      .reply(200, certificate)
+
+    const {stdout} = await runCommand(DataPgGetCa, ['--region', 'eu'])
+
+    expect(outputFileStub.calledOnceWith(
+      '/tmp/postgres/eu-west-1-bundle.pem',
+      Buffer.from(certificate),
+      {mode: 0o600},
+    )).to.be.true
+    expect(stdout).to.equal('RDS CA bundle retrieved successfully: /tmp/postgres/eu-west-1-bundle.pem\n')
+  })
+
   it('denies retrieval when AWS cannot provide the CA bundle', async function () {
     nock('https://api.heroku.com')
       .get('/regions')
