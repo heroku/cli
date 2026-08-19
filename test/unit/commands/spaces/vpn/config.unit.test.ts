@@ -1,15 +1,33 @@
-import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {VpnConnection} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/config.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  vpnConnection: {
+    info: sinon.SinonStub,
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    vpnConnection: {
+      info: sinon.stub(),
+    },
+  }
+}
+
 describe('spaces:vpn:config', function () {
-  let vpnConnection: Heroku.PrivateSpacesVpn
+  let fakePlatform: FakePlatform
+  let vpnConnection: VpnConnection
 
   beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
     vpnConnection = {
       id: '123456789012',
       ike_version: 1,
@@ -40,10 +58,12 @@ describe('spaces:vpn:config', function () {
     }
   })
 
+  afterEach(function () {
+    sinon.restore()
+  })
+
   it('gets VPN config', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
-      .reply(200, vpnConnection)
+    fakePlatform.vpnConnection.info.resolves(vpnConnection)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -56,12 +76,11 @@ describe('spaces:vpn:config', function () {
     expect(actual).to.include(removeAllWhitespace('VPN Tunnel Customer Gateway VPN Gateway   Pre-shared Key Routable Subnets IKE Version'))
     expect(actual).to.include(removeAllWhitespace('Tunnel 1   52.44.146.197    52.44.146.196 apresharedkey1 10.0.0.0/16      1'))
     expect(actual).to.include(removeAllWhitespace('Tunnel 2   52.44.146.199    52.44.146.198 apresharedkey2 10.0.0.0/16      1'))
+    expect(fakePlatform.vpnConnection.info.calledOnceWithExactly('my-space', 'vpn-connection-name-config')).to.equal(true)
   })
 
   it('gets VPN config in JSON', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/vpn-connections/vpn-connection-name-config')
-      .reply(200, vpnConnection)
+    fakePlatform.vpnConnection.info.resolves(vpnConnection)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',

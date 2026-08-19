@@ -1,16 +1,39 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {VpnConnection} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connections.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  vpnConnection: {
+    list: sinon.SinonStub,
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    vpnConnection: {
+      list: sinon.stub(),
+    },
+  }
+}
+
 describe('spaces:vpn:connections', function () {
-  afterEach(function () {
-    nock.cleanAll()
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
-  const space = {
+  afterEach(function () {
+    sinon.restore()
+  })
+
+  const space: VpnConnection = {
     id: '123456789012',
     ike_version: 1,
     name: 'office',
@@ -42,30 +65,24 @@ describe('spaces:vpn:connections', function () {
   }
 
   it('displays no connection message if none exist', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/spaces/my-space/vpn-connections')
-      .reply(200, [])
+    fakePlatform.vpnConnection.list.resolves([])
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
 
-    api.done()
     expect(stdout).to.eq('No VPN Connections have been created yet\n')
+    expect(fakePlatform.vpnConnection.list.calledOnceWithExactly('my-space')).to.equal(true)
   })
 
   it('displays VPN Connections', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/spaces/my-space/vpn-connections')
-      .reply(200, [space])
+    fakePlatform.vpnConnection.list.resolves([space])
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-
-    api.done()
 
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space VPN Connections'))
@@ -75,16 +92,12 @@ describe('spaces:vpn:connections', function () {
 
   it('displays VPN Connection ID when name is unavailable', async function () {
     const conn = {...space, name: ''}
-    const api = nock('https://api.heroku.com')
-      .get('/spaces/my-space/vpn-connections')
-      .reply(200, [conn])
+    fakePlatform.vpnConnection.list.resolves([conn])
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
-
-    api.done()
 
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space VPN Connections'))
@@ -93,9 +106,7 @@ describe('spaces:vpn:connections', function () {
   })
 
   it('displays VPN Connections in JSON', async function () {
-    const api = nock('https://api.heroku.com')
-      .get('/spaces/my-space/vpn-connections')
-      .reply(200, [space])
+    fakePlatform.vpnConnection.list.resolves([space])
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -103,7 +114,6 @@ describe('spaces:vpn:connections', function () {
       '--json',
     ])
 
-    api.done()
     expect(JSON.parse(stdout)).to.eql([space])
   })
 })
