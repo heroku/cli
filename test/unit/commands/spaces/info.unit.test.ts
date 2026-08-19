@@ -1,5 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import nock from 'nock'
+import {HerokuSDK} from '@heroku/sdk'
+import {expect} from 'chai'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/spaces/info.js'
@@ -9,31 +11,52 @@ import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  space: {info: sinon.SinonStub}
+  spaceNat: {info: sinon.SinonStub}
+  withHeaders: sinon.SinonStub
+}
+
+function buildFakePlatform(): FakePlatform {
+  const spaceStub = {info: sinon.stub()}
+  const spaceNatStub = {info: sinon.stub()}
+  const platform: FakePlatform = {
+    space: spaceStub,
+    spaceNat: spaceNatStub,
+    withHeaders: sinon.stub(),
+  }
+
+  platform.withHeaders.returns({space: spaceStub, spaceNat: spaceNatStub})
+  return platform
+}
+
 describe('spaces:info', function () {
   let space: SpaceWithOutboundIps
   let shieldSpace: SpaceWithOutboundIps
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     space = fixtures.spaces['non-shield-space']
     shieldSpace = fixtures.spaces['shield-space']
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows space info', async function () {
-    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
-      .get(`/spaces/${space.name}`)
-      .reply(200, space)
+    fakePlatform.space.info.resolves(space)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
     ])
+    expect(fakePlatform.withHeaders.calledWith({
+      Accept: 'application/vnd.heroku+json; version=3.fir',
+      'Accept-Expansion': 'region',
+    })).to.equal(true)
     expectOutput(stdout, heredoc(`
       === ⬡ ${space.name}
       ID:         ${space.id}
@@ -49,25 +72,22 @@ describe('spaces:info', function () {
   })
 
   it('shows space info --json', async function () {
-    api
-      .get(`/spaces/${space.name}`)
-      .reply(200, space)
+    fakePlatform.space.info.resolves(space)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
       '--json',
     ])
+    expect(fakePlatform.withHeaders.calledWith({
+      Accept: 'application/vnd.heroku+json; version=3.fir',
+    })).to.equal(true)
     expectOutput(stdout, JSON.stringify(space, null, 2))
   })
 
   it('shows allocated space with enabled nat', async function () {
-    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
-      .get(`/spaces/${space.name}`)
-      .reply(200, space)
-    api
-      .get(`/spaces/${space.name}/nat`)
-      .reply(200, {sources: ['123.456.789.123'], state: 'enabled'})
+    fakePlatform.space.info.resolves(space)
+    fakePlatform.spaceNat.info.resolves({sources: ['123.456.789.123'], state: 'enabled'})
     const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,
@@ -89,12 +109,8 @@ describe('spaces:info', function () {
   })
 
   it('shows allocated space with disabled nat', async function () {
-    nock('https://api.heroku.com', {reqheaders: {'Accept-Expansion': 'region'}})
-      .get(`/spaces/${space.name}`)
-      .reply(200, space)
-    api
-      .get(`/spaces/${space.name}/nat`)
-      .reply(200, {sources: ['123.456.789.123'], state: 'disabled'})
+    fakePlatform.space.info.resolves(space)
+    fakePlatform.spaceNat.info.resolves({sources: ['123.456.789.123'], state: 'disabled'})
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -116,9 +132,7 @@ describe('spaces:info', function () {
   })
 
   it('shows a space with Shield turned off', async function () {
-    api
-      .get(`/spaces/${space.name}`)
-      .reply(200, space)
+    fakePlatform.space.info.resolves(space)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -139,9 +153,7 @@ describe('spaces:info', function () {
   })
 
   it('shows a space with Shield turned on', async function () {
-    api
-      .get(`/spaces/${shieldSpace.name}`)
-      .reply(200, shieldSpace)
+    fakePlatform.space.info.resolves(shieldSpace)
     const {stdout} = await runCommand(Cmd, [
       '--space',
       shieldSpace.name,
@@ -162,9 +174,7 @@ describe('spaces:info', function () {
   })
 
   it('test if nat API call fails ', async function () {
-    api
-      .get(`/spaces/${space.name}`)
-      .reply(200, space)
+    fakePlatform.space.info.resolves(space)
     const {stdout} = await runCommand(Cmd, [
       '--space',
       space.name,

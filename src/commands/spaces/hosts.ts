@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -29,9 +30,10 @@ export default class Hosts extends Command {
       `))
     }
 
-    const {body: hosts} = await this.heroku.get<Host[]>(`/spaces/${spaceName}/hosts`, {
-      headers: {Accept: 'application/vnd.heroku+json; version=3.dogwood'},
-    })
+    const {platform} = new HerokuSDK()
+    const hosts = await platform
+      .withHeaders({Accept: 'application/vnd.heroku+json; version=3.dogwood'})
+      .spaceHost.list(spaceName as string) as Host[]
     if (flags.json)
       displayHostsAsJSON(hosts)
     else

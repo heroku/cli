@@ -1,9 +1,26 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/spaces/hosts.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
+
+type FakePlatform = {
+  spaceHost: {list: sinon.SinonStub}
+  withHeaders: sinon.SinonStub
+}
+
+function buildFakePlatform(): FakePlatform {
+  const spaceHostStub = {list: sinon.stub()}
+  const platform: FakePlatform = {
+    spaceHost: spaceHostStub,
+    withHeaders: sinon.stub(),
+  }
+
+  platform.withHeaders.returns({spaceHost: spaceHostStub})
+  return platform
+}
 
 describe('spaces:hosts', function () {
   const hosts = [
@@ -21,20 +38,25 @@ describe('spaces:hosts', function () {
       state: 'released',
     },
   ]
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
+  })
 
   it('lists space hosts', async function () {
-    nock('https://api.heroku.com', {
-      reqheaders: {
-        Accept: 'application/vnd.heroku+json; version=3.dogwood',
-      },
-    })
-      .get('/spaces/my-space/hosts')
-      .reply(200, hosts)
+    fakePlatform.spaceHost.list.resolves(hosts)
     const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
 
+    expect(fakePlatform.withHeaders.calledOnceWithExactly({Accept: 'application/vnd.heroku+json; version=3.dogwood'})).to.equal(true)
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space Hosts'))
     expect(actual).to.include(removeAllWhitespace('Host ID             State     Available Capacity Allocated At         Released At'))
@@ -43,13 +65,7 @@ describe('spaces:hosts', function () {
   })
 
   it('shows hosts:info --json', async function () {
-    nock('https://api.heroku.com', {
-      reqheaders: {
-        Accept: 'application/vnd.heroku+json; version=3.dogwood',
-      },
-    })
-      .get('/spaces/my-space/hosts')
-      .reply(200, hosts)
+    fakePlatform.spaceHost.list.resolves(hosts)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',

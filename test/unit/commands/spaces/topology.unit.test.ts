@@ -1,12 +1,13 @@
 import {App} from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import type {SpaceTopology} from '../../../../src/lib/types/spaces.js'
 
 import Cmd from '../../../../src/commands/spaces/topology.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 
 const heredoc = tsheredoc.default
@@ -16,25 +17,37 @@ describe('spaces:topology', function () {
   let topo2: SpaceTopology
   let topo3: SpaceTopology
   let app: App
+  let topologyStub: ReturnType<typeof stub>
+  let appInfoStub: ReturnType<typeof stub>
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     topo1 = fixtures.topologies['topology-one']
     topo2 = fixtures.topologies['topology-two']
     topo3 = fixtures.topologies['topology-three']
     app = fixtures.apps.www
+    topologyStub = stub()
+    appInfoStub = stub()
+    sdkMock = mockSDKPlatform({
+      app: {info: appInfoStub},
+      spaceTopology: {topology: topologyStub},
+    })
+    appInfoStub.resolves(app)
+  })
+
+  afterEach(function () {
+    sdkMock.restore()
   })
 
   it('shows space topology', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/topology')
-      .reply(200, topo1)
-      .get(`/apps/${app.id}`)
-      .reply(200, app)
+    topologyStub.resolves(topo1)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
       'my-space',
     ])
+    expect(topologyStub.calledOnceWith('my-space')).to.equal(true)
+    expect(appInfoStub.calledOnceWith(app.id)).to.equal(true)
     expectOutput(stdout, heredoc(`
       === ${app.name} (web)
       Domains: example.com
@@ -45,11 +58,7 @@ describe('spaces:topology', function () {
   })
 
   it('shows space topology with first dyno having higher process number', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/topology')
-      .reply(200, topo2)
-      .get(`/apps/${app.id}`)
-      .reply(200, app)
+    topologyStub.resolves(topo2)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -65,11 +74,7 @@ describe('spaces:topology', function () {
   })
 
   it('shows space topology with dynos having same process number', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/topology')
-      .reply(200, topo3)
-      .get(`/apps/${app.id}`)
-      .reply(200, app)
+    topologyStub.resolves(topo3)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -85,11 +90,7 @@ describe('spaces:topology', function () {
   })
 
   it('shows space topology  --json', async function () {
-    nock('https://api.heroku.com')
-      .get('/spaces/my-space/topology')
-      .reply(200, topo1)
-      .get(`/apps/${app.id}`)
-      .reply(200, app)
+    topologyStub.resolves(topo1)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',

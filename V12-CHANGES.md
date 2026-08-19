@@ -14,6 +14,9 @@
 - `run`, `run:detached`, and `run:inside` now create dynos through `@heroku/sdk` (`platform.dyno.run`) instead of raw API calls.
 - Release-conflict (`409`) retries during one-off dyno creation are now handled by the SDK; the CLI no longer runs its own retry loop.
 
-# Spaces commands
+## Spaces commands
+
 - `spaces:vpn:wait` no longer shows `VPN has been allocated.` when the status is already `active`. Instead it immediately shows `Waiting for VPN Connection ${name} to allocate... done`
 - `spaces:vpn:wait` now has three dots (`.`) instead of six in `Waiting for VPN Connection ${name} to allocate... done`
+- `spaces:create`, `spaces:destroy`, `spaces:hosts`, `spaces:info`, `spaces:rename`, `spaces:topology`, and `spaces:transfer` now make API calls through `@heroku/sdk`'s `platform` client instead of raw `this.heroku.*` calls. Calls that previously sent no explicit `Accept` header (`spaces:destroy`, `spaces:rename`, `spaces:topology`, `spaces:transfer`, and the app lookups made by `spaces:topology`) now default to `application/vnd.heroku+json; version=3.sdk` (previously `application/vnd.heroku+json; version=3`). `spaces:info` and `spaces:hosts` are unaffected: they already sent explicit version headers (`version=3.fir` and `version=3.dogwood`, respectively), which are preserved unchanged.
+- `spaces:transfer` now surfaces API error messages via the SDK's error shape (`error.message`) instead of destructuring `error.body.message`. Behavior is unchanged when the API returns a JSON error body with a `message` field; errors without one now fall back to a generic message instead of throwing an unhandled `TypeError`.

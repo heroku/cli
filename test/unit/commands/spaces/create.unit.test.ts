@@ -1,10 +1,11 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/spaces/create.js'
 import {getGeneration} from '../../../../src/lib/apps/generation.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default
@@ -12,38 +13,31 @@ const heredoc = tsheredoc.default
 describe('spaces:create', function () {
   const now = new Date()
   const features = ['one', 'two']
-  let api: nock.Scope
+  let createStub: ReturnType<typeof stub>
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
+    createStub = stub()
+    sdkMock = mockSDKPlatform({space: {create: createStub}})
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
   it('creates a Standard space', async function () {
-    api
-      .post('/spaces', {
-        features,
-        generation: 'cedar',
-        name: 'my-space',
-        region: 'my-region',
-        team: 'my-team',
-      })
-      .reply(201, {
-        cidr: '10.0.0.0/16',
-        created_at: now,
-        data_cidr: '172.23.0.0/20',
-        features: ['one', 'two'],
-        generation: 'cedar',
-        name: 'my-space',
-        region: {name: 'my-region'},
-        shield: false,
-        state: 'allocated',
-        team: {name: 'my-team'},
-      })
+    createStub.resolves({
+      cidr: '10.0.0.0/16',
+      created_at: now.toISOString(),
+      data_cidr: '172.23.0.0/20',
+      features: ['one', 'two'],
+      generation: 'cedar',
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: false,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    })
 
     const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
@@ -51,6 +45,14 @@ describe('spaces:create', function () {
       '--region=my-region',
       '--features=one, two',
     ])
+
+    expect(createStub.calledOnce).to.equal(true)
+    const requestBody = createStub.firstCall.args[0]
+    expect(requestBody.name).to.eq('my-space')
+    expect(requestBody.team).to.eq('my-team')
+    expect(requestBody.region).to.eq('my-region')
+    expect(requestBody.features).to.deep.eq(features)
+    expect(requestBody.generation).to.eq('cedar')
 
     expect(stdout).to.eq(heredoc`
       === ⬡ my-space
@@ -67,26 +69,18 @@ describe('spaces:create', function () {
   })
 
   it('shows Standard Private Space Add-on cost warning', async function () {
-    api
-      .post('/spaces', {
-        features,
-        generation: 'cedar',
-        name: 'my-space',
-        region: 'my-region',
-        team: 'my-team',
-      })
-      .reply(201, {
-        cidr: '10.0.0.0/16',
-        created_at: now,
-        data_cidr: '172.23.0.0/20',
-        features: ['one', 'two'],
-        generation: 'cedar',
-        name: 'my-space',
-        region: {name: 'my-region'},
-        shield: false,
-        state: 'allocated',
-        team: {name: 'my-team'},
-      })
+    createStub.resolves({
+      cidr: '10.0.0.0/16',
+      created_at: now.toISOString(),
+      data_cidr: '172.23.0.0/20',
+      features: ['one', 'two'],
+      generation: 'cedar',
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: false,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    })
 
     const {stderr} = await runCommand(Cmd, [
       '--team=my-team',
@@ -99,27 +93,18 @@ describe('spaces:create', function () {
   })
 
   it('creates a Shield space', async function () {
-    api
-      .post('/spaces', {
-        features,
-        generation: 'cedar',
-        name: 'my-space',
-        region: 'my-region',
-        shield: true,
-        team: 'my-team',
-      })
-      .reply(201, {
-        cidr: '10.0.0.0/16',
-        created_at: now,
-        data_cidr: '172.23.0.0/20',
-        features: ['one', 'two'],
-        generation: 'cedar',
-        name: 'my-space',
-        region: {name: 'my-region'},
-        shield: true,
-        state: 'allocated',
-        team: {name: 'my-team'},
-      })
+    createStub.resolves({
+      cidr: '10.0.0.0/16',
+      created_at: now.toISOString(),
+      data_cidr: '172.23.0.0/20',
+      features: ['one', 'two'],
+      generation: 'cedar',
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: true,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    })
 
     const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
@@ -128,6 +113,9 @@ describe('spaces:create', function () {
       '--features=one, two',
       '--shield',
     ])
+
+    const requestBody = createStub.firstCall.args[0]
+    expect(requestBody.shield).to.eq(true)
 
     expect(stdout).to.eq(heredoc`
       === ⬡ my-space
@@ -144,27 +132,18 @@ describe('spaces:create', function () {
   })
 
   it('shows Shield Private Space Add-on cost warning', async function () {
-    api
-      .post('/spaces', {
-        features,
-        generation: 'cedar',
-        name: 'my-space',
-        region: 'my-region',
-        shield: true,
-        team: 'my-team',
-      })
-      .reply(201, {
-        cidr: '10.0.0.0/16',
-        created_at: now,
-        data_cidr: '172.23.0.0/20',
-        features: ['one', 'two'],
-        generation: 'cedar',
-        name: 'my-space',
-        region: {name: 'my-region'},
-        shield: true,
-        state: 'allocated',
-        team: {name: 'my-team'},
-      })
+    createStub.resolves({
+      cidr: '10.0.0.0/16',
+      created_at: now.toISOString(),
+      data_cidr: '172.23.0.0/20',
+      features: ['one', 'two'],
+      generation: 'cedar',
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: true,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    })
 
     const {stderr} = await runCommand(Cmd, [
       '--team=my-team',
@@ -178,27 +157,17 @@ describe('spaces:create', function () {
   })
 
   it('creates a space with custom cidr and data cidr', async function () {
-    api
-      .post('/spaces', {
-        cidr: '10.0.0.0/24',
-        data_cidr: '172.23.0.0/28',
-        features,
-        generation: 'cedar',
-        name: 'my-space',
-        region: 'my-region',
-        team: 'my-team',
-      })
-      .reply(201, {
-        cidr: '10.0.0.0/24',
-        created_at: now,
-        data_cidr: '172.23.0.0/28',
-        features: ['one', 'two'],
-        name: 'my-space',
-        region: {name: 'my-region'},
-        shield: false,
-        state: 'allocated',
-        team: {name: 'my-team'},
-      })
+    createStub.resolves({
+      cidr: '10.0.0.0/24',
+      created_at: now.toISOString(),
+      data_cidr: '172.23.0.0/28',
+      features: ['one', 'two'],
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: false,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    })
 
     const {stdout} = await runCommand(Cmd, [
       '--team=my-team',
@@ -208,6 +177,10 @@ describe('spaces:create', function () {
       '--cidr=10.0.0.0/24',
       '--data-cidr=172.23.0.0/28',
     ])
+
+    const requestBody = createStub.firstCall.args[0]
+    expect(requestBody.cidr).to.eq('10.0.0.0/24')
+    expect(requestBody.data_cidr).to.eq('172.23.0.0/28')
 
     expect(stdout).to.eq(heredoc`
       === ⬡ my-space
@@ -225,7 +198,7 @@ describe('spaces:create', function () {
   it('creates a fir space', async function () {
     const firSpace = {
       cidr: '10.0.0.0/16',
-      created_at: now,
+      created_at: now.toISOString(),
       data_cidr: '172.23.0.0/20',
       features: ['one', 'two'],
       generation: 'fir',
@@ -235,15 +208,7 @@ describe('spaces:create', function () {
       state: 'allocated',
       team: {name: 'my-team'},
     }
-    api
-      .post('/spaces', {
-        features: firSpace.features,
-        generation: getGeneration(firSpace),
-        name: firSpace.name,
-        region: firSpace.region.name,
-        team: firSpace.team.name,
-      })
-      .reply(201, firSpace)
+    createStub.resolves(firSpace)
 
     const {stdout} = await runCommand(Cmd, [
       '--team',
@@ -257,6 +222,10 @@ describe('spaces:create', function () {
       '--generation',
       getGeneration(firSpace)!,
     ])
+
+    const requestBody = createStub.firstCall.args[0]
+    expect(requestBody.generation).to.eq(getGeneration(firSpace))
+
     expect(stdout).to.eq(heredoc`
       === ⬡ ${firSpace.name}
 

@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -41,11 +42,12 @@ export default class Destroy extends Command {
       `)
     }
 
+    const {platform} = new HerokuSDK()
     let natWarning = ''
-    const {body: space} = await this.heroku.get<RequiredSpaceWithNat>(`/spaces/${spaceName}`)
+    const space = await platform.space.info(spaceName as string) as RequiredSpaceWithNat
 
     if (space.state === 'allocated') {
-      ({body: space.outbound_ips} = await this.heroku.get<Required<Heroku.SpaceNetworkAddressTranslation>>(`/spaces/${spaceName}/nat`))
+      space.outbound_ips = await platform.spaceNat.info(spaceName as string) as Required<Heroku.SpaceNetworkAddressTranslation>
       if (space.outbound_ips && space.outbound_ips.state === 'enabled') {
         const ipv6 = getGeneration(space) === 'fir' ? ' and IPv6' : ''
         natWarning = heredoc`
@@ -71,7 +73,7 @@ export default class Destroy extends Command {
     )
 
     ux.action.start(`Destroying space ${color.space(spaceName as string)}`)
-    await this.heroku.delete(`/spaces/${spaceName}`)
+    await platform.space.delete(spaceName as string)
     ux.action.stop()
   }
 }
