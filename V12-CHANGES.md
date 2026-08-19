@@ -14,3 +14,6 @@
 - `run`, `run:detached`, and `run:inside` now create dynos through `@heroku/sdk` (`platform.dyno.run`) instead of raw API calls.
 - Release-conflict (`409`) retries during one-off dyno creation are now handled by the SDK; the CLI no longer runs its own retry loop.
 
+# Spaces commands
+- `spaces:vpn:wait` no longer shows `VPN has been allocated.` when the status is already `active`. Instead it immediately shows `Waiting for VPN Connection ${name} to allocate... done`
+- `spaces:vpn:wait` now has three dots (`.`) instead of six in `Waiting for VPN Connection ${name} to allocate... done`

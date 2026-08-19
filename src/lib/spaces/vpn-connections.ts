@@ -1,14 +1,14 @@
-import {PrivateSpacesVpn} from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
+import {VpnConnection} from '@heroku/types/3.sdk'
 
-export function displayVPNConfigInfo(space: string, name: string, config: PrivateSpacesVpn) {
+export function displayVPNConfigInfo(name: string, config: VpnConnection) {
   hux.styledHeader(`${name} VPN Tunnels`)
-  const configTunnels = config.tunnels || []
-  for (const [i, val] of configTunnels.entries()) {
-    val.tunnel_id = 'Tunnel ' + (i + 1)
-    val.routable_cidr = config.space_cidr_block
-    val.ike_version = config.ike_version
-  }
+  const configTunnels = (config.tunnels || []).map((tunnel, index) => ({
+    ...tunnel,
+    ike_version: config.ike_version,
+    routable_cidr: config.space_cidr_block,
+    tunnel_id: `Tunnel ${index + 1}`,
+  }))
 
   /* eslint-disable perfectionist/sort-objects */
   hux.table(configTunnels, {

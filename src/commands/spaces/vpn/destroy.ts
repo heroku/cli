@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -26,6 +27,7 @@ export default class Destroy extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Destroy)
     const {confirm, space} = flags
     const {name} = args
@@ -40,7 +42,7 @@ export default class Destroy extends Command {
     )
 
     ux.action.start(`Tearing down VPN Connection ${color.cyan(name)} in space ${color.space(space)}`)
-    await this.heroku.delete(`/spaces/${space}/vpn-connections/${name}`)
+    await platform.vpnConnection.destroy(space, name)
     ux.action.stop()
   }
 }

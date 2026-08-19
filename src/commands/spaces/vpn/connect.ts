@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -32,18 +33,17 @@ export default class Connect extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Connect)
     const {cidrs, ip, space} = flags
     const {name} = args
-    const parsed_cidrs = splitCsv(cidrs)
+    const parsedCidrs = splitCsv(cidrs)
 
     ux.action.start(`Creating VPN Connection in space ${color.space(space)}`)
-    await this.heroku.post(`/spaces/${space}/vpn-connections`, {
-      body: {
-        name,
-        public_ip: ip,
-        routable_cidrs: parsed_cidrs,
-      },
+    await platform.vpnConnection.create(space, {
+      name,
+      public_ip: ip,
+      routable_cidrs: parsedCidrs,
     })
     ux.action.stop()
 

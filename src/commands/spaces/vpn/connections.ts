@@ -1,12 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {VpnConnection} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {displayVPNStatus} from '../../../lib/spaces/format.js'
 
-type VpnConnectionTunnels = Required<Heroku.PrivateSpacesVpn>['tunnels']
+type VpnConnectionTunnels = VpnConnection['tunnels']
 
 const heredoc = tsheredoc.default
 
@@ -24,7 +25,7 @@ export default class Connections extends Command {
   }
   static topic = 'spaces'
 
-  protected displayVPNConnections(space: string, connections: Required<Heroku.PrivateSpacesVpn>[]) {
+  protected displayVPNConnections(space: string, connections: VpnConnection[]) {
     if (connections.length === 0) {
       ux.stdout('No VPN Connections have been created yet')
       return
@@ -36,19 +37,19 @@ export default class Connections extends Command {
       connections,
       {
         Name: {
-          get: c => c.name || c.id,
+          get: (c: any) => c.name || c.id,
         },
         Status: {
-          get: c => displayVPNStatus(c.status),
+          get: (c: any) => displayVPNStatus(c.status),
         },
         Tunnels: {
-          get: c => this.tunnelFormat(c.tunnels),
+          get: (c: any) => this.tunnelFormat(c.tunnels),
         },
       },
     )
   }
 
-  protected render(space: string, connections: Required<Heroku.PrivateSpacesVpn>[], json: boolean) {
+  protected render(space: string, connections: VpnConnection[], json: boolean) {
     if (json) {
       hux.styledJSON(connections)
     } else {
@@ -57,9 +58,10 @@ export default class Connections extends Command {
   }
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Connections)
     const {json, space} = flags
-    const {body: connections} = await this.heroku.get<Required<Heroku.PrivateSpacesVpn>[]>(`/spaces/${space}/vpn-connections`)
+    const connections = await platform.vpnConnection.list(space)
     this.render(space, connections, json)
   }
 
