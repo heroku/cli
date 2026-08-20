@@ -19,7 +19,7 @@ describe('spaces:rename', function () {
   })
 
   it('renames a space', async function () {
-    updateStub.resolves(undefined)
+    updateStub.resolves()
 
     const {stderr} = await runCommand(Cmd, [
       '--from',

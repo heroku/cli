@@ -7,8 +7,8 @@ import tsheredoc from 'tsheredoc'
 import type {SpaceTopology} from '../../../../src/lib/types/spaces.js'
 
 import Cmd from '../../../../src/commands/spaces/topology.js'
-import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 

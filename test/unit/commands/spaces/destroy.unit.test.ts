@@ -40,7 +40,7 @@ describe('spaces:destroy', function () {
       team: {name: 'my-team'},
     })
     natInfoStub.resolves({sources: ['1.1.1.1', '2.2.2.2'], state: 'enabled'})
-    deleteStub.resolves(undefined)
+    deleteStub.resolves()
 
     const {stderr} = await runCommand(Cmd, ['--space', 'my-space'])
     const replacer = /([»›])/g
@@ -70,7 +70,7 @@ describe('spaces:destroy', function () {
       team: {name: 'my-team'},
     })
     natInfoStub.resolves({sources: ['1.1.1.1', '2.2.2.2'], state: 'enabled'})
-    deleteStub.resolves(undefined)
+    deleteStub.resolves()
 
     const {stderr} = await runCommand(Cmd, ['--space', 'my-space'])
     const replacer = /([»›])/g

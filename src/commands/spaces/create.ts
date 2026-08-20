@@ -1,8 +1,9 @@
+import type {SpaceCreateOpts} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import type {SpaceCreateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 

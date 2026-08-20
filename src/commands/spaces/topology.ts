@@ -92,9 +92,7 @@ export default class Topology extends Command {
     const topology = await platform.spaceTopology.topology(spaceName as string) as SpaceTopology
     let appInfo: Heroku.App[] = []
     if (topology.apps) {
-      appInfo = await Promise.all(topology.apps.map(async topologyApp => {
-        return await platform.app.info(topologyApp.id as string) as Heroku.App
-      }))
+      appInfo = await Promise.all(topology.apps.map(async topologyApp => await platform.app.info(topologyApp.id as string) as Heroku.App))
     }
 
     this.render(topology, appInfo, flags.json)
