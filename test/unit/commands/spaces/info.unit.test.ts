@@ -54,7 +54,6 @@ describe('spaces:info', function () {
       space.name,
     ])
     expect(fakePlatform.withHeaders.calledWith({
-      Accept: 'application/vnd.heroku+json; version=3.fir',
       'Accept-Expansion': 'region',
     })).to.equal(true)
     expectOutput(stdout, heredoc(`
@@ -79,9 +78,7 @@ describe('spaces:info', function () {
       space.name,
       '--json',
     ])
-    expect(fakePlatform.withHeaders.calledWith({
-      Accept: 'application/vnd.heroku+json; version=3.fir',
-    })).to.equal(true)
+    expect(fakePlatform.withHeaders.called).to.equal(false)
     expectOutput(stdout, JSON.stringify(space, null, 2))
   })
 

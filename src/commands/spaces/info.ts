@@ -37,19 +37,12 @@ export default class Info extends Command {
     }
 
     const {platform} = new HerokuSDK()
-    const headers: Record<string, string> = {
-      Accept: 'application/vnd.heroku+json; version=3.fir',
-    }
-    if (!flags.json) {
-      headers['Accept-Expansion'] = 'region'
-    }
-
-    const space = await platform.withHeaders(headers).space.info(spaceName as string) as SpaceWithOutboundIps
+    const space = flags.json
+      ? await platform.space.info(spaceName as string) as SpaceWithOutboundIps
+      : await platform.withHeaders({'Accept-Expansion': 'region'}).space.info(spaceName as string) as SpaceWithOutboundIps
     if (space.state === 'allocated') {
       try {
-        space.outbound_ips = await platform
-          .withHeaders({Accept: 'application/vnd.heroku+json; version=3.fir'})
-          .spaceNat.info(spaceName as string) as SpaceNat
+        space.outbound_ips = await platform.spaceNat.info(spaceName as string) as SpaceNat
       } catch (error) {
         spacesDebug(`Retrieving NAT details for the space failed with ${error}`)
       }
