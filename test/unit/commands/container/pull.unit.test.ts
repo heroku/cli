@@ -1,6 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
+import {App} from '@heroku/types/3.sdk'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -48,7 +49,7 @@ describe('container pull', function () {
       id: 'test-id',
       name: 'testapp',
       stack: {id: 'test-id', name: 'heroku-24'},
-    }))
+    } as App))
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
       'testapp',

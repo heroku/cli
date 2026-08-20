@@ -1,6 +1,7 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
 import {NotAContainerAppError, type RemoveProcessTypesOpts} from '@heroku/sdk/extensions/platform'
+import {App} from '@heroku/types/3.sdk'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -52,7 +53,7 @@ describe('container removal', function () {
       id: 'app-id',
       name: 'testapp',
       stack: {id: 'heroku-24', name: 'heroku-24'},
-    }))
+    } as App))
 
     const {error, stdout} = await runCommand(Cmd, [
       '--app',
