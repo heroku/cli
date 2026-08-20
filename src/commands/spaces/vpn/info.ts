@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {VpnConnection} from '@heroku/types/3.sdk'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -42,15 +43,16 @@ export default class Info extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Info)
     const {json, space} = flags
     const {name} = args
-    const {body: vpnConnection} = await this.heroku.get<Heroku.PrivateSpacesVpn>(`/spaces/${space}/vpn-connections/${name}`)
+    const vpnConnection = await platform.vpnConnection.info(space, name)
     const connectionName = vpnConnection.name || name
     this.render(connectionName, vpnConnection, json)
   }
 
-  private displayVPNInfo(name: string, vpnConnection: Heroku.PrivateSpacesVpn) {
+  private displayVPNInfo(name: string, vpnConnection: VpnConnection) {
     hux.styledHeader(`${name} VPN Info`)
     /* eslint-disable perfectionist/sort-objects */
     hux.styledObject({
@@ -62,10 +64,10 @@ export default class Info extends Command {
       'Status Message': vpnConnection.status_message,
     }, ['Name', 'ID', 'Public IP', 'Routable CIDRs', 'State', 'Status', 'Status Message'])
     /* eslint-enable perfectionist/sort-objects */
-    const vpnConnectionTunnels = vpnConnection.tunnels || []
-    for (const [i, val] of vpnConnectionTunnels.entries()) {
-      val.tunnel_id = 'Tunnel ' + (i + 1)
-    }
+    const vpnConnectionTunnels = (vpnConnection.tunnels || []).map((tunnel, index) => ({
+      ...tunnel,
+      tunnel_id: `Tunnel ${index + 1}`,
+    }))
 
     hux.styledHeader(`${name} VPN Tunnel Info`)
     /* eslint-disable perfectionist/sort-objects */
@@ -82,7 +84,7 @@ export default class Info extends Command {
     /* eslint-enable perfectionist/sort-objects */
   }
 
-  private render(name: string, vpnConnection: Heroku.PrivateSpacesVpn, json: boolean) {
+  private render(name: string, vpnConnection: VpnConnection, json: boolean) {
     if (json) {
       hux.styledJSON(vpnConnection)
     } else {

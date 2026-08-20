@@ -1,11 +1,11 @@
-import {PrivateSpacesVpn} from '@heroku-cli/schema'
 import {captureOutput} from '@heroku-cli/test-utils'
+import {VpnConnection} from '@heroku/types/3.sdk'
 import {expect} from 'chai'
 
 import {displayVPNConfigInfo} from '../../../../src/lib/spaces/vpn-connections.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const vpnConnection: PrivateSpacesVpn = {
+const vpnConnection: VpnConnection = {
   id: '123456789012',
   ike_version: 1,
   name: 'vpn-connection-name-config',
@@ -37,7 +37,7 @@ const vpnConnection: PrivateSpacesVpn = {
 describe('displayVPNConfigInfo', function () {
   it('displays VPN config info', async function () {
     const {stdout} = await captureOutput(async () => {
-      displayVPNConfigInfo('my-space', 'vpn-connection-name-config', vpnConnection)
+      displayVPNConfigInfo('vpn-connection-name-config', vpnConnection)
     })
 
     const actual = removeAllWhitespace(stdout)

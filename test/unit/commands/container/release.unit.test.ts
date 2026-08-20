@@ -2,6 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {NotAContainerAppError} from '@heroku/sdk/extensions/platform'
+import {App} from '@heroku/types/3.sdk'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -60,12 +61,11 @@ describe('container release', function () {
 
   it('exits when the app stack is not "container"', async function () {
     fakePlatform.container.ensureContainerStack.rejects(new NotAContainerAppError({
-
       build_stack: {id: 'heroku-24', name: 'heroku-24'},
       id: 'app-id',
       name: 'testapp',
       stack: {id: 'heroku-24', name: 'heroku-24'},
-    }))
+    } as App))
 
     const {error} = await runCommand(Cmd, [
       '--app',

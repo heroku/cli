@@ -1,34 +1,41 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connect.js'
 
 const heredoc = tsheredoc.default
 
+type FakePlatform = {
+  vpnConnection: {
+    create: sinon.SinonStub,
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    vpnConnection: {
+      create: sinon.stub().resolves(),
+    },
+  }
+}
+
 describe('spaces:vpn:connect', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('creates a VPN', async function () {
-    api
-      .post('/spaces/my-space/vpn-connections', {
-        name: 'office',
-        public_ip: '192.168.0.1',
-        routable_cidrs: ['192.168.0.1/16', '192.168.0.2/16'],
-      })
-      .reply(201)
-
     const {stderr} = await runCommand(Cmd, [
       'office',
       '--space',
@@ -38,12 +45,14 @@ describe('spaces:vpn:connect', function () {
       '--cidrs',
       '192.168.0.1/16,192.168.0.2/16',
     ])
-    api.done()
     expect(stderr).to.contain('Creating VPN Connection in space ⬡ my-space... done\n')
     expect(ansis.strip(stderr)).to.contain(heredoc`
       Use heroku spaces:vpn:wait to track allocation.
     `)
-
-    nock.cleanAll()
+    expect(fakePlatform.vpnConnection.create.calledOnceWithExactly('my-space', {
+      name: 'office',
+      public_ip: '192.168.0.1',
+      routable_cidrs: ['192.168.0.1/16', '192.168.0.2/16'],
+    })).to.equal(true)
   })
 })

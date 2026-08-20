@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -44,15 +44,16 @@ export default class Config extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Config)
     const {json, space} = flags
     const {name} = args
 
-    const {body: vpnConnection} = await this.heroku.get<Heroku.PrivateSpacesVpn>(`/spaces/${space}/vpn-connections/${name}`)
+    const vpnConnection = await platform.vpnConnection.info(space, name)
     if (json) {
       hux.styledJSON(vpnConnection)
     } else {
-      displayVPNConfigInfo(space, name, vpnConnection)
+      displayVPNConfigInfo(name, vpnConnection)
     }
   }
 }

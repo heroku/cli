@@ -1,17 +1,37 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/update.js'
 
-describe('spaces:vpn:update', function () {
-  it('updates VPN', async function () {
-    const api = nock('https://api.heroku.com')
-      .patch('/spaces/my-space/vpn-connections/office', {
-        routable_cidrs: ['192.168.0.1/16', '192.168.0.2/16'],
-      })
-      .reply(201)
+type FakePlatform = {
+  vpnConnection: {
+    update: sinon.SinonStub,
+  }
+}
 
+function buildFakePlatform(): FakePlatform {
+  return {
+    vpnConnection: {
+      update: sinon.stub().resolves(),
+    },
+  }
+}
+
+describe('spaces:vpn:update', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
+  })
+
+  it('updates VPN', async function () {
     const {stderr} = await runCommand(Cmd, [
       'office',
       '--space',
@@ -19,9 +39,9 @@ describe('spaces:vpn:update', function () {
       '--cidrs',
       '192.168.0.1/16,192.168.0.2/16',
     ])
-    api.done()
     expect(stderr).to.eq('Updating VPN Connection in space ⬡ my-space... done\n')
-
-    nock.cleanAll()
+    expect(fakePlatform.vpnConnection.update.calledOnceWithExactly('my-space', 'office', {
+      routable_cidrs: ['192.168.0.1/16', '192.168.0.2/16'],
+    })).to.equal(true)
   })
 })
