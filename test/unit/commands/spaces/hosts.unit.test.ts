@@ -8,18 +8,12 @@ import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 type FakePlatform = {
   spaceHost: {list: sinon.SinonStub}
-  withHeaders: sinon.SinonStub
 }
 
 function buildFakePlatform(): FakePlatform {
-  const spaceHostStub = {list: sinon.stub()}
-  const platform: FakePlatform = {
-    spaceHost: spaceHostStub,
-    withHeaders: sinon.stub(),
+  return {
+    spaceHost: {list: sinon.stub()},
   }
-
-  platform.withHeaders.returns({spaceHost: spaceHostStub})
-  return platform
 }
 
 describe('spaces:hosts', function () {
@@ -56,7 +50,7 @@ describe('spaces:hosts', function () {
       'my-space',
     ])
 
-    expect(fakePlatform.withHeaders.calledOnceWithExactly({Accept: 'application/vnd.heroku+json; version=3.dogwood'})).to.equal(true)
+    expect(fakePlatform.spaceHost.list.calledOnceWithExactly('my-space')).to.equal(true)
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('=== my-space Hosts'))
     expect(actual).to.include(removeAllWhitespace('Host ID             State     Available Capacity Allocated At         Released At'))

@@ -31,9 +31,7 @@ export default class Hosts extends Command {
     }
 
     const {platform} = new HerokuSDK()
-    const hosts = await platform
-      .withHeaders({Accept: 'application/vnd.heroku+json; version=3.dogwood'})
-      .spaceHost.list(spaceName as string) as Host[]
+    const hosts = await platform.spaceHost.list(spaceName as string) as Host[]
     if (flags.json)
       displayHostsAsJSON(hosts)
     else
