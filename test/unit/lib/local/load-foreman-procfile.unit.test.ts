@@ -68,9 +68,9 @@ describe('load-foreman-procfile', function () {
 
     const procHash = loadProc(procfilePath)
     expect(procHash).to.deep.equal({
-      'web': 'npm run start',
+      web: 'npm run start',
       'worker-primary': 'npm run worker:primary',
-      'worker_secondary': 'npm run worker:secondary',
+      worker_secondary: 'npm run worker:secondary',
     })
   })
 
