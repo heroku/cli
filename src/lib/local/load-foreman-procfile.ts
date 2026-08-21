@@ -6,7 +6,7 @@ function parseProcfile(content: string): Record<string, string> {
       return false
     }
 
-    if (/\w/.test(line) && !/^\s*\w+:/.test(line)) {
+    if (/\w/.test(line) && !/^\s*[\w-]+:/.test(line)) {
       throw new Error('line ' + (i + 1) + ' parse error: ' + line)
     }
 
