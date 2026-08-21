@@ -1,20 +1,33 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import nock from 'nock'
+import {expect} from 'chai'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/spaces/rename.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('spaces:rename', function () {
-  it('renames a space', async function () {
-    nock('https://api.heroku.com')
-      .patch('/spaces/old-space-name', {name: 'new-space-name'})
-      .reply(200)
+  let updateStub: ReturnType<typeof stub>
+  let sdkMock: MockSDK
 
-    const {stderr, stdout} = await runCommand(Cmd, [
+  beforeEach(function () {
+    updateStub = stub()
+    sdkMock = mockSDKPlatform({space: {update: updateStub}})
+  })
+
+  afterEach(function () {
+    sdkMock.restore()
+  })
+
+  it('renames a space', async function () {
+    updateStub.resolves()
+
+    const {stderr} = await runCommand(Cmd, [
       '--from',
       'old-space-name',
       '--to',
       'new-space-name',
     ])
+    expect(updateStub.calledOnceWith('old-space-name', {name: 'new-space-name'})).to.equal(true)
     expectOutput(stderr, 'Renaming space from ⬡ old-space-name to new-space-name... done')
   })
 })

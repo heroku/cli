@@ -1,6 +1,9 @@
+import type {SpaceCreateOpts} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -65,24 +68,21 @@ export default class Create extends Command {
     const spaceType = shield ? 'Shield' : 'Standard'
 
     ux.action.start(`Creating space ${color.space(spaceName as string)} in team ${color.cyan(team as string)}`)
-    const {body: space} = await this.heroku.post<Required<Space>>('/spaces', {
-      body: {
-        channel_name: channel,
-        cidr,
-        data_cidr: dataCidr,
-        features: splitCsv(features),
-        generation,
-        kpi_url: kpiUrl,
-        log_drain_url: logDrainUrl,
-        name: spaceName,
-        region,
-        shield,
-        team,
-      },
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const {platform} = new HerokuSDK()
+    const space = await platform.space.create({
+      channel_name: channel,
+      cidr,
+      data_cidr: dataCidr,
+      features: splitCsv(features),
+      generation,
+      // kpi_url isn't declared on SpaceCreateOpts but is forwarded at runtime via the route's JSON body.
+      kpi_url: kpiUrl,
+      log_drain_url: logDrainUrl,
+      name: spaceName as string,
+      region,
+      shield,
+      team,
+    } as SpaceCreateOpts) as Required<Space>
     ux.action.stop()
 
     ux.warn(`${color.warning('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)

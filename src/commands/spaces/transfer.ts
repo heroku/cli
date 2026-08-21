@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -22,12 +23,12 @@ export default class Transfer extends Command {
     const {space} = flags
     const {team} = flags
 
+    const {platform} = new HerokuSDK()
     try {
       ux.action.start(`Transferring space ${color.space(space)} to team ${color.green(team)}`)
-      await this.heroku.post(`/spaces/${space}/transfer`, {body: {new_owner: team}})
+      await platform.spaceTransfer.transfer(space, {new_owner: team})
     } catch (error) {
-      const {body: {message}} = error as {body: {message: string}}
-      ux.error(message)
+      ux.error((error as Error).message)
     } finally {
       ux.action.stop()
     }

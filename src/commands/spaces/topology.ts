@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -87,13 +88,11 @@ export default class Topology extends Command {
       `))
     }
 
-    const {body: topology} = await this.heroku.get<SpaceTopology>(`/spaces/${spaceName}/topology`)
+    const {platform} = new HerokuSDK()
+    const topology = await platform.spaceTopology.topology(spaceName as string) as SpaceTopology
     let appInfo: Heroku.App[] = []
     if (topology.apps) {
-      appInfo = await Promise.all(topology.apps.map(async topologyApp => {
-        const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${topologyApp.id}`)
-        return app
-      }))
+      appInfo = await Promise.all(topology.apps.map(async topologyApp => await platform.app.info(topologyApp.id as string) as Heroku.App))
     }
 
     this.render(topology, appInfo, flags.json)
