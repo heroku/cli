@@ -137,6 +137,7 @@ HRKU
 howmany
 hstore
 htcat
+hyperschema
 Icann
 infile
 iname
