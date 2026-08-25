@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
@@ -21,9 +21,10 @@ export default class Info extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Info)
     const {app, json, shell} = flags
-    const release = await findByLatestOrId(this.heroku, app, args.release)
+    const release = await findByLatestOrId(platform, app, args.release)
 
     if (json) {
       hux.styledJSON(release)
@@ -32,7 +33,7 @@ export default class Info extends Command {
       const status = description(release)
       const statusColor = getStatusColor(release.status)
       const userEmail = color.user(release?.user?.email ?? '')
-      const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${app}/releases/${release.version}/config-vars`)
+      const config = await platform.configVar.infoForAppRelease(app, release.version)
 
       if (status) {
         let colorFn: (s: string) => string
