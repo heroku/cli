@@ -71,7 +71,16 @@ describe('spaces:info', function () {
   })
 
   it('shows space info --json', async function () {
-    fakePlatform.space.info.resolves(space)
+    // Pins the migrated 3.sdk wire shape: `generation` is a string, and the
+    // `:v3_sdk` serializer also emits a `generation_object` ({id, name}) that
+    // the hyperschema doesn't declare yet. Attach it via a cast here (not by
+    // extending SpaceWithOutboundIps) and assert --json preserves both fields
+    // verbatim, so a regression to the old object-only `generation` shape fails.
+    const spaceWithGenerationObject = {
+      ...space,
+      generation_object: {id: '01234567-89ab-cdef-0123-456789abcdef', name: space.generation},
+    } as SpaceWithOutboundIps
+    fakePlatform.space.info.resolves(spaceWithGenerationObject)
 
     const {stdout} = await runCommand(Cmd, [
       '--space',
@@ -79,7 +88,7 @@ describe('spaces:info', function () {
       '--json',
     ])
     expect(fakePlatform.withHeaders.called).to.equal(false)
-    expectOutput(stdout, JSON.stringify(space, null, 2))
+    expectOutput(stdout, JSON.stringify(spaceWithGenerationObject, null, 2))
   })
 
   it('shows allocated space with enabled nat', async function () {

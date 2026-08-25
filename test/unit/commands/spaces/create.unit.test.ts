@@ -239,4 +239,30 @@ describe('spaces:create', function () {
       Created at: ${now.toISOString()}
     `)
   })
+
+  it('forwards the kpi_url in the create request body when --kpi-url is set', async function () {
+    createStub.resolves({
+      cidr: '10.0.0.0/16',
+      created_at: now.toISOString(),
+      data_cidr: '172.23.0.0/20',
+      features: ['one', 'two'],
+      generation: 'cedar',
+      name: 'my-space',
+      region: {name: 'my-region'},
+      shield: false,
+      state: 'allocated',
+      team: {name: 'my-team'},
+    })
+
+    await runCommand(Cmd, [
+      '--team=my-team',
+      '--space=my-space',
+      '--region=my-region',
+      '--kpi-url=https://kpi.example.com',
+    ])
+
+    expect(createStub.calledOnce).to.equal(true)
+    const requestBody = createStub.firstCall.args[0]
+    expect(requestBody.kpi_url).to.eq('https://kpi.example.com')
+  })
 })

@@ -1,5 +1,3 @@
-import type {SpaceCreateOpts} from '@heroku/types/3.sdk'
-
 import {Command, flags} from '@heroku-cli/command'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
@@ -10,7 +8,6 @@ import tsheredoc from 'tsheredoc'
 import {getGeneration} from '../../lib/apps/generation.js'
 import {splitCsv} from '../../lib/spaces/parsers.js'
 import {displayShieldState} from '../../lib/spaces/spaces.js'
-import {Space} from '../../lib/types/fir.js'
 
 const heredoc = tsheredoc.default
 
@@ -75,14 +72,13 @@ export default class Create extends Command {
       data_cidr: dataCidr,
       features: splitCsv(features),
       generation,
-      // kpi_url isn't declared on SpaceCreateOpts but is forwarded at runtime via the route's JSON body.
       kpi_url: kpiUrl,
       log_drain_url: logDrainUrl,
       name: spaceName as string,
       region,
       shield,
       team,
-    } as SpaceCreateOpts) as Required<Space>
+    })
     ux.action.stop()
 
     ux.warn(`${color.warning('Spend Alert.')} Each Heroku ${spaceType} Private Space costs ~${dollarAmountHourly}/hour (max ${dollarAmountMonthly}/month), pro-rated to the second.`)

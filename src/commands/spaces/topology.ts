@@ -89,6 +89,9 @@ export default class Topology extends Command {
     }
 
     const {platform} = new HerokuSDK()
+    // Narrow to the local render view-type: the generated SpaceTopology is intentionally looser
+    // (e.g. domains?: unknown[] and optional formation fields), while render() consumes the tighter
+    // shape (domains: string[], required fields). Kept until the hyperschema tightens those.
     const topology = await platform.spaceTopology.topology(spaceName as string) as SpaceTopology
     let appInfo: Heroku.App[] = []
     if (topology.apps) {
