@@ -154,6 +154,7 @@ kolkrabbi
 libexec
 libpq
 localdb
+LOCALAPPDATA
 localspace
 logfile
 loglevel
@@ -266,6 +267,7 @@ otlpgrpc
 otlphttp
 papertrail
 passw
+PATHEXT
 pcxid
 peerings
 pgappname
@@ -298,6 +300,11 @@ postrelease
 postrun
 preassessment
 preauth
+preauthorization
+preauthorizations
+preauthorize
+preauthorizes
+preauthorizing
 prerun
 preupdate
 privkeypem
@@ -413,6 +420,7 @@ uxxxxxxxxx
 vcpu
 VERSINFO
 webfactory
+WINDIR
 withfig
 wrapline
 writeout

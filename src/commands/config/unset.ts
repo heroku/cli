@@ -41,11 +41,16 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`)]
     const vars = argv.map(v => color.name(v)).join(', ')
 
     ux.action.start(`Unsetting ${vars} and restarting ${color.app(flags.app)}`)
-    await this.heroku.patch(`/apps/${flags.app}/config-vars`, {
-      // body will be like {FOO: null, BAR: null}
-      body: Object.fromEntries(argv.map(v => [v, null])),
-    })
-    const release = await lastRelease()
-    ux.action.stop('done, ' + color.name(`v${release.version}`))
+    try {
+      await this.heroku.patch(`/apps/${flags.app}/config-vars`, {
+        // body will be like {FOO: null, BAR: null}
+        body: Object.fromEntries(argv.map(v => [v, null])),
+      })
+      const release = await lastRelease()
+      ux.action.stop('done, ' + color.name(`v${release.version}`))
+    } catch (error) {
+      ux.action.stop(color.red('!'))
+      throw error
+    }
   }
 }
