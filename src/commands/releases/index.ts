@@ -23,7 +23,7 @@ type ColumnConfig = {
   header?: string
 }
 
-export const getDescriptionTruncation = function (releases: ExtendedRelease[], columns: Record<string, ColumnConfig>, optimizeKey: string) {
+const getDescriptionTruncation = function (releases: ExtendedRelease[], columns: Record<string, ColumnConfig>, optimizeKey: string) {
   // width management here is quite opaque.
   // This entire function is to determine how much of Formation.description should be truncated to accommodate for Formation.status. They both go in the same column.
   // Nothing else is truncated and the table is passed `'no-truncate': true` in options.
