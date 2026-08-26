@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import Git from '../../lib/git/git.js'
@@ -22,12 +22,13 @@ remote: Counting objects: 42, done.
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const git = new Git()
     const {args, flags} = await this.parse(GitClone)
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
-    const directory = args.DIRECTORY || (app.name as string)
+    const app = await platform.app.info(flags.app)
+    const directory = args.DIRECTORY || app.name
     const remote = flags.remote || 'heroku'
-    await git.spawn(['clone', '-o', remote, git.url(app.name!), directory])
+    await git.spawn(['clone', '-o', remote, git.url(app.name), directory])
     await git.configureCredentialHelper()
   }
 }
