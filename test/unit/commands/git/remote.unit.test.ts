@@ -15,7 +15,7 @@ type FakePlatform = {
 function buildFakePlatform(): FakePlatform {
   return {
     app: {
-      info: sinon.stub()
+      info: sinon.stub(),
     },
   }
 }
