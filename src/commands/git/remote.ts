@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 
 import Git from '../../lib/git/git.js'
 
@@ -21,6 +21,7 @@ ${color.command('heroku git:remote --remote heroku-staging -a example-staging')}
   static strict = false
 
   async run() {
+    const {platform} = new HerokuSDK()
     const parsed = await this.parse(GitRemote)
     const {flags} = parsed
     const argv = parsed.argv as string[]
@@ -30,10 +31,10 @@ ${color.command('heroku git:remote --remote heroku-staging -a example-staging')}
       this.error('Specify an app with --app')
     }
 
-    const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
+    const app = await platform.app.info(appName)
     const remote = flags.remote || (await git.remoteFromGitConfig()) || 'heroku'
     const remotes = await git.exec(['remote'])
-    const url = git.url(app.name!)
+    const url = git.url(app.name)
     await (remotes.split('\n').includes(remote)
       ? git.exec(['remote', 'set-url', remote, url].concat(argv))
       : git.exec(['remote', 'add', remote, url].concat(argv)))
