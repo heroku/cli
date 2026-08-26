@@ -1,21 +1,56 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/releases/info.js'
 
 const heredoc = tsheredoc.default
 
-const d = new Date(2000, 1, 1)
+const createdAt = new Date(2000, 1, 1).toISOString()
+
+type FakePlatform = {
+  configVar: {
+    infoForAppRelease: sinon.SinonStub,
+  }
+  release: {
+    info: sinon.SinonStub,
+    list: sinon.SinonStub,
+  }
+  withHeaders: sinon.SinonStub,
+}
+
+function buildFakePlatform(): FakePlatform {
+  const platform: FakePlatform = {
+    configVar: {
+      infoForAppRelease: sinon.stub(),
+    },
+    release: {
+      info: sinon.stub(),
+      list: sinon.stub(),
+    },
+    withHeaders: sinon.stub(),
+  }
+  platform.withHeaders.returns(platform)
+  return platform
+}
+
 describe('releases:info', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
   afterEach(function () {
-    return nock.cleanAll()
+    sinon.restore()
   })
 
   const release = {
     addon_plan_names: ['addon1', 'addon2'],
-    created_at: d,
+    created_at: createdAt,
     description: 'something changed',
     eligible_for_rollback: true,
     user: {
@@ -28,11 +63,8 @@ describe('releases:info', function () {
   const configVars = {FOO: 'foo', BAR: 'bar'}
 
   it('shows most recent release info', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases')
-      .reply(200, [release])
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
+    fakePlatform.release.list.resolves([release])
+    fakePlatform.configVar.infoForAppRelease.resolves(configVars)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -44,21 +76,20 @@ describe('releases:info', function () {
       By:                     foo@foo.com
       Change:                 something changed
       Eligible for Rollback?: Yes
-      When:                   ${d.toISOString()}
+      When:                   ${createdAt}
 
       === v10 Config vars
 
       FOO: foo
       BAR: bar
     `))
+    expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
+    expect(fakePlatform.configVar.infoForAppRelease.calledOnceWithExactly('myapp', 10)).to.equal(true)
   })
 
   it('shows most recent release info config vars as shell', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases')
-      .reply(200, [release])
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
+    fakePlatform.release.list.resolves([release])
+    fakePlatform.configVar.infoForAppRelease.resolves(configVars)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -71,7 +102,7 @@ describe('releases:info', function () {
       By:                     foo@foo.com
       Change:                 something changed
       Eligible for Rollback?: Yes
-      When:                   ${d.toISOString()}
+      When:                   ${createdAt}
 
       === v10 Config vars
 
@@ -81,11 +112,8 @@ describe('releases:info', function () {
   })
 
   it('shows release info by id', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases/10')
-      .reply(200, release)
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
+    fakePlatform.release.info.resolves(release)
+    fakePlatform.configVar.infoForAppRelease.resolves(configVars)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -98,19 +126,19 @@ describe('releases:info', function () {
       By:                     foo@foo.com
       Change:                 something changed
       Eligible for Rollback?: Yes
-      When:                   ${d.toISOString()}
+      When:                   ${createdAt}
 
       === v10 Config vars
 
       FOO: foo
       BAR: bar
     `))
+    expect(fakePlatform.release.info.calledOnceWithExactly('myapp', '10')).to.equal(true)
+    expect(fakePlatform.configVar.infoForAppRelease.calledOnceWithExactly('myapp', 10)).to.equal(true)
   })
 
   it('shows recent release as json', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases/10')
-      .reply(200, release)
+    fakePlatform.release.info.resolves(release)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -118,21 +146,20 @@ describe('releases:info', function () {
       'v10',
     ])
     expect(stdout).to.contain('"version": 10')
+    expect(fakePlatform.release.info.calledOnceWithExactly('myapp', '10')).to.equal(true)
+    expect(fakePlatform.configVar.infoForAppRelease.called).to.equal(false)
   })
 
   it('shows a failed release info', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases')
-      .reply(200, [{
-        created_at: d,
-        description: 'something changed',
-        eligible_for_rollback: false,
-        status: 'failed',
-        user: {email: 'foo@foo.com'},
-        version: 10,
-      }])
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
+    fakePlatform.release.list.resolves([{
+      created_at: createdAt,
+      description: 'something changed',
+      eligible_for_rollback: false,
+      status: 'failed',
+      user: {email: 'foo@foo.com'},
+      version: 10,
+    }])
+    fakePlatform.configVar.infoForAppRelease.resolves(configVars)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -142,7 +169,7 @@ describe('releases:info', function () {
       By:                     foo@foo.com
       Change:                 something changed (release command failed)
       Eligible for Rollback?: No
-      When:                   ${d.toISOString()}
+      When:                   ${createdAt}
 
       === v10 Config vars
 
@@ -152,19 +179,16 @@ describe('releases:info', function () {
   })
 
   it('shows a pending release info', async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases')
-      .reply(200, [{
-        addon_plan_names: ['addon1', 'addon2'],
-        created_at: d,
-        description: 'something changed',
-        eligible_for_rollback: false,
-        status: 'pending',
-        user: {email: 'foo@foo.com'},
-        version: 10,
-      }])
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
+    fakePlatform.release.list.resolves([{
+      addon_plan_names: ['addon1', 'addon2'],
+      created_at: createdAt,
+      description: 'something changed',
+      eligible_for_rollback: false,
+      status: 'pending',
+      user: {email: 'foo@foo.com'},
+      version: 10,
+    }])
+    fakePlatform.configVar.infoForAppRelease.resolves(configVars)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -176,7 +200,7 @@ describe('releases:info', function () {
       By:                     foo@foo.com
       Change:                 something changed (release command executing)
       Eligible for Rollback?: No
-      When:                   ${d.toISOString()}
+      When:                   ${createdAt}
 
       === v10 Config vars
 
@@ -186,18 +210,15 @@ describe('releases:info', function () {
   })
 
   it("shows an expired release's info", async function () {
-    nock('https://api.heroku.com')
-      .get('/apps/myapp/releases')
-      .reply(200, [{
-        created_at: d,
-        description: 'something changed',
-        eligible_for_rollback: false,
-        status: 'expired',
-        user: {email: 'foo@foo.com'},
-        version: 10,
-      }])
-      .get('/apps/myapp/releases/10/config-vars')
-      .reply(200, configVars)
+    fakePlatform.release.list.resolves([{
+      created_at: createdAt,
+      description: 'something changed',
+      eligible_for_rollback: false,
+      status: 'expired',
+      user: {email: 'foo@foo.com'},
+      version: 10,
+    }])
+    fakePlatform.configVar.infoForAppRelease.resolves(configVars)
     const {stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -207,7 +228,7 @@ describe('releases:info', function () {
       By:                     foo@foo.com
       Change:                 something changed (release expired)
       Eligible for Rollback?: No
-      When:                   ${d.toISOString()}
+      When:                   ${createdAt}
 
       === v10 Config vars
 

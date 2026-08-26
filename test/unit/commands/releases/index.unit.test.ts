@@ -1,14 +1,35 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/releases/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  release: {
+    list: sinon.SinonStub,
+  }
+  withHeaders: sinon.SinonStub,
+}
+
+function buildFakePlatform(): FakePlatform {
+  const platform: FakePlatform = {
+    release: {
+      list: sinon.stub(),
+    },
+    withHeaders: sinon.stub(),
+  }
+  platform.withHeaders.returns(platform)
+  return platform
+}
+
 describe('releases', function () {
   let originalColumns: number | undefined
   let originalIsTTY: boolean | undefined
-  let api: nock.Scope
+  let api: sinon.SinonStub
+  let fakePlatform: FakePlatform
 
   before(function () {
     process.env.TZ = 'UTC' // Use UTC time always
@@ -17,7 +38,9 @@ describe('releases', function () {
   beforeEach(function () {
     originalColumns = process.stdout.columns
     originalIsTTY = process.stdout.isTTY
-    api = nock('https://api.heroku.com')
+    api = sinon.stub(HerokuApiClient.prototype, 'get')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
@@ -34,7 +57,7 @@ describe('releases', function () {
       process.stdout.columns = originalColumns
     }
 
-    api.done()
+    sinon.restore()
   })
 
   const releases = [
@@ -106,9 +129,17 @@ describe('releases', function () {
   ]
   const releasesNoSlug = [
     {
-      created_at: '2015-11-18T01:36:38Z', current: false, description: 'first commit', id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a', slug: null, status: 'pending', updated_at: '2015-11-18T01:36:38Z', user: {
+      created_at: '2015-11-18T01:36:38Z',
+      current: false,
+      description: 'first commit',
+      id: '86b20c9f-f5de-4876-aa36-d3dcb1d60f6a',
+      slug: null,
+      status: 'pending',
+      updated_at: '2015-11-18T01:36:38Z',
+      user: {
         email: 'rdagg@heroku.com', id: '5985f8c9-a63f-42a2-bec7-40b875bb986f',
-      }, version: 1,
+      },
+      version: 1,
     },
   ]
   const extended = [
@@ -126,9 +157,7 @@ describe('releases', function () {
   it('shows releases', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releases)
+    fakePlatform.release.list.resolves(releases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -142,14 +171,14 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('releasecomman…'))
     expect(actual).to.include(removeAllWhitespace('v40   Set foo config vars   rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('v37   first commit   rdagg@heroku.com'))
+    expect(fakePlatform.withHeaders.calledOnceWithExactly({Range: 'version ..; max=15, order=desc'})).to.equal(true)
+    expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('shows successful releases', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, onlySuccessfulReleases)
+    fakePlatform.release.list.resolves(onlySuccessfulReleases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -166,9 +195,7 @@ describe('releases', function () {
   it('shows releases in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releases)
+    fakePlatform.release.list.resolves(releases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -185,9 +212,7 @@ describe('releases', function () {
   it('shows successful releases in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, onlySuccessfulReleases)
+    fakePlatform.release.list.resolves(onlySuccessfulReleases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -204,9 +229,7 @@ describe('releases', function () {
   it('shows releases in narrow terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 65
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releases)
+    fakePlatform.release.list.resolves(releases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -225,9 +248,7 @@ describe('releases', function () {
   it('shows pending releases without release phase', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releases)
+    fakePlatform.release.list.resolves(releases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -246,9 +267,7 @@ describe('releases', function () {
   it('shows pending releases without a slug', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 80
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releasesNoSlug)
+    fakePlatform.release.list.resolves(releasesNoSlug)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -263,9 +282,7 @@ describe('releases', function () {
   })
 
   it('shows releases as json', async function () {
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releases)
+    fakePlatform.release.list.resolves(releases)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -277,9 +294,7 @@ describe('releases', function () {
   })
 
   it('shows message if no releases', async function () {
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, [])
+    fakePlatform.release.list.resolves([])
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -290,9 +305,7 @@ describe('releases', function () {
   })
 
   it('shows extended info', async function () {
-    api
-      .get('/apps/myapp/releases?extended=true')
-      .reply(200, extended)
+    api.withArgs('/apps/myapp/releases?extended=true').resolves({json: async () => extended})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -309,15 +322,15 @@ describe('releases', function () {
     expect(actual).to.include(removeAllWhitespace('rdagg@heroku.com'))
     expect(actual).to.include(removeAllWhitespace('1'))
     expect(actual).to.include(removeAllWhitespace('uuid'))
+    expect(api.calledOnce).to.equal(true)
+    expect(fakePlatform.release.list.called).to.equal(false)
     // stderr may contain warnings from other plugins in test environment
   })
 
   it('shows extended info in wider terminal', async function () {
     process.stdout.isTTY = true
     process.stdout.columns = 100
-    api
-      .get('/apps/myapp/releases?extended=true')
-      .reply(200, extended)
+    api.withArgs('/apps/myapp/releases?extended=true').resolves({json: async () => extended})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -344,9 +357,7 @@ describe('releases', function () {
     // Create a copy to avoid mutating the shared releases array
     const releasesCopy = releases.map(r => ({...r}))
     releasesCopy.at(-1)!.current = false
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, releasesCopy)
+    fakePlatform.release.list.resolves(releasesCopy)
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
