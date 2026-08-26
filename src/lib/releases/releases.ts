@@ -1,43 +1,36 @@
-import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {HerokuSDK} from '@heroku/sdk'
+import {Release} from '@heroku/types/3.sdk'
 
-export const findRelease = async function (heroku: APIClient, app: string, search: (releases: Heroku.Release[]) => Heroku.Release) {
-  const {body: releases} = await heroku.request<Heroku.Release[]>(`/apps/${app}/releases`, {
-    headers: {
-      Accept: 'application/vnd.heroku+json; version=3.sdk',
-      Range: 'version ..; max=10, order=desc',
-    },
-    partial: true,
-  })
+type Platform = HerokuSDK['platform']
+
+export const findRelease = async function (platform: Platform, app: string, search: (releases: Release[]) => Release) {
+  const releases = await platform
+    .withHeaders({Range: 'version ..; max=10, order=desc'})
+    .release.list(app)
 
   return search(releases)
 }
 
-export const getRelease = async function (heroku: APIClient, app: string, release: string) {
+export const getRelease = async function (platform: Platform, app: string, release: string) {
   let id = release.toLowerCase()
   id = id.startsWith('v') ? id.slice(1) : id
 
-  const {body: releaseResponse} = await heroku.get<Heroku.Release>(`/apps/${app}/releases/${id}`, {
-    headers: {
-      Accept: 'application/vnd.heroku+json; version=3.sdk',
-    },
-  })
-
+  const releaseResponse = platform.release.info(app, id)
   return releaseResponse
 }
 
-export const findByLatestOrId = async function (heroku: APIClient, app: string, release = 'current') {
+export const findByLatestOrId = async function (platform: Platform, app: string, release = 'current') {
   if (release === 'current') {
-    return findRelease(heroku, app, releases => releases[0])
+    return findRelease(platform, app, releases => releases[0])
   }
 
-  return getRelease(heroku, app, release)
+  return getRelease(platform, app, release)
 }
 
-export const findByPreviousOrId = async function (heroku: APIClient, app: string, release = 'previous') {
+export const findByPreviousOrId = async function (platform: Platform, app: string, release = 'previous') {
   if (release === 'previous') {
-    return findRelease(heroku, app, releases => releases.filter(r => r.eligible_for_rollback)[1])
+    return findRelease(platform, app, releases => releases.filter(r => r.eligible_for_rollback)[1])
   }
 
-  return getRelease(heroku, app, release)
+  return getRelease(platform, app, release)
 }

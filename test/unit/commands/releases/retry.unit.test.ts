@@ -1,19 +1,48 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/releases/retry.js'
 
+type FakePlatform = {
+  formation: {
+    list: sinon.SinonStub,
+  }
+  release: {
+    create: sinon.SinonStub,
+    list: sinon.SinonStub,
+  }
+  withHeaders: sinon.SinonStub,
+}
+
+function buildFakePlatform(): FakePlatform {
+  const platform: FakePlatform = {
+    formation: {
+      list: sinon.stub(),
+    },
+    release: {
+      create: sinon.stub(),
+      list: sinon.stub(),
+    },
+    withHeaders: sinon.stub(),
+  }
+  platform.withHeaders.returns(platform)
+  return platform
+}
+
 describe('releases:retry', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
+    sinon.restore()
     nock.cleanAll()
   })
 
@@ -42,11 +71,8 @@ describe('releases:retry', function () {
   }
 
   it('errors when there are no releases yet', async function () {
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, [])
-      .get('/apps/myapp/formation')
-      .reply(200, [])
+    fakePlatform.release.list.resolves([])
+    fakePlatform.formation.list.resolves([])
 
     await runCommand(Cmd, [
       '--app',
@@ -54,21 +80,19 @@ describe('releases:retry', function () {
     ]).catch((error: Error) => {
       expect(ansis.strip(error.message)).to.eq('No release found for ⬢ myapp.')
     })
+    expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
+    expect(fakePlatform.formation.list.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('retries the release', async function () {
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, release)
-      .get('/apps/myapp/formation')
-      .reply(200, formationWithReleasePhase)
-      .post('/apps/myapp/releases', releaseRetry)
-      .reply(200, {})
-
+    fakePlatform.release.list.resolves(release)
+    fakePlatform.formation.list.resolves(formationWithReleasePhase)
+    fakePlatform.release.create.resolves({})
     await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
+    expect(fakePlatform.release.create.calledOnceWithExactly('myapp', releaseRetry)).to.equal(true)
   })
 
   it('shows the output from the latest release', async function () {
@@ -76,13 +100,9 @@ describe('releases:retry', function () {
       .get('/streams/release.log')
       .reply(200, 'Release Output Content')
 
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, release)
-      .get('/apps/myapp/formation')
-      .reply(200, formationWithReleasePhase)
-      .post('/apps/myapp/releases', releaseRetry)
-      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log'})
+    fakePlatform.release.list.resolves(release)
+    fakePlatform.formation.list.resolves(formationWithReleasePhase)
+    fakePlatform.release.create.resolves({output_stream_url: 'https://busl.test/streams/release.log'})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -92,14 +112,12 @@ describe('releases:retry', function () {
     expect(stderr).to.contain('Retrying v40 on')
     expect(stderr).to.contain('myapp')
     expect(stdout).to.contain('Release Output Content')
+    expect(fakePlatform.release.create.calledOnceWithExactly('myapp', releaseRetry)).to.equal(true)
   })
 
   it('errors if app does not use release-phase', async function () {
-    api
-      .get('/apps/myapp/releases')
-      .reply(200, release)
-      .get('/apps/myapp/formation')
-      .reply(200, formationWithoutReleasePhase)
+    fakePlatform.release.list.resolves(release)
+    fakePlatform.formation.list.resolves(formationWithoutReleasePhase)
 
     await runCommand(Cmd, [
       '--app',
@@ -107,5 +125,6 @@ describe('releases:retry', function () {
     ]).catch((error: Error) => {
       expect(error.message).to.eq('App must have a release-phase command to use this command.')
     })
+    expect(fakePlatform.release.create.called).to.equal(false)
   })
 })

@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {stream} from '../../lib/releases/output.js'
@@ -22,23 +22,17 @@ export default class Rollback extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Rollback)
     const {app} = flags
-    const release = await findByPreviousOrId(this.heroku, app, args.release)
+    const release = await findByPreviousOrId(platform, app, args.release)
 
     if (!release) {
       ux.error(`No eligible release found for ${color.app(app)} to roll back to.`)
     }
 
     ux.action.start(`Rolling back ${color.app(app)} to ${color.green('v' + release.version)}`)
-    const {body: latest} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {
-      body: {
-        release: release.id,
-      },
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const latest = await platform.release.rollback(app, {release: release.id})
     const streamUrl = latest.output_stream_url
     ux.action.stop(`done, ${color.green('v' + latest.version)}`)
     ux.warn("Rollback affects code and config vars; it doesn't add or remove addons.")

@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {stream} from '../../lib/releases/output.js'
@@ -16,10 +16,11 @@ export default class Retry extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Retry)
     const {app} = flags
-    const release = await findByLatestOrId(this.heroku, app)
-    const {body: formations} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
+    const release = await findByLatestOrId(platform, app)
+    const formations = await platform.formation.list(app)
     const releasePhase = formations.filter(formation => formation.type === 'release')
 
     if (!release) {
@@ -32,11 +33,9 @@ export default class Retry extends Command {
 
     ux.action.start(`Retrying ${color.name('v' + release.version)} on ${color.app(app)}`)
 
-    const {body: retry} = await this.heroku.post<Heroku.Release>(`/apps/${app}/releases`, {
-      body: {
-        description: `Retry of v${release.version}: ${release.description}`,
-        slug: release?.slug?.id,
-      },
+    const retry = await platform.release.create(app, {
+      description: `Retry of v${release.version}: ${release.description}`,
+      slug: release?.slug?.id,
     })
 
     ux.action.stop(`done, ${color.name('v' + retry.version)}`)

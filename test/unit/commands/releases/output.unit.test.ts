@@ -1,15 +1,47 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/releases/output.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
+type FakePlatform = {
+  release: {
+    info: sinon.SinonStub,
+    list: sinon.SinonStub,
+  }
+  withHeaders: sinon.SinonStub,
+}
+
+function buildFakePlatform(): FakePlatform {
+  const platform: FakePlatform = {
+    release: {
+      info: sinon.stub(),
+      list: sinon.stub(),
+    },
+    withHeaders: sinon.stub(),
+  }
+  platform.withHeaders.returns(platform)
+  return platform
+}
+
 describe('releases:output', function () {
+  let fakePlatform: FakePlatform
+
+  beforeEach(function () {
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
+    nock.cleanAll()
+  })
+
   it('warns if there is no output available', async function () {
-    const api = nock('https://api.heroku.com:443')
-      .get('/apps/myapp/releases/10')
-      .reply(200, {version: 40})
+    fakePlatform.release.info.resolves({version: 40})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -18,16 +50,14 @@ describe('releases:output', function () {
     ])
     expect(stdout).to.equal('')
     expect(unwrap(stderr)).to.contain('Release v40 has no release output available.\n')
-    api.done()
+    expect(fakePlatform.release.info.calledOnceWithExactly('myapp', '10')).to.equal(true)
   })
 
   it('shows the output from a specific release', async function () {
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
       .reply(200, 'Release Output Content')
-    const api = nock('https://api.heroku.com:443')
-      .get('/apps/myapp/releases/10')
-      .reply(200, {output_stream_url: 'https://busl.test/streams/release.log', version: 40})
+    fakePlatform.release.info.resolves({output_stream_url: 'https://busl.test/streams/release.log', version: 40})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -35,44 +65,37 @@ describe('releases:output', function () {
       'v10',
     ])
     busl.done()
-    api.done()
     expect(stdout).to.equal('Release Output Content')
     expect(stderr).to.equal('')
+    expect(fakePlatform.release.info.calledOnceWithExactly('myapp', '10')).to.equal(true)
   })
 
   it('shows the output from the latest release', async function () {
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
       .reply(200, 'Release Output Content')
-
-    const api = nock('https://api.heroku.com:443')
-      .get('/apps/myapp/releases')
-      .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', version: 40}])
+    fakePlatform.release.list.resolves([{output_stream_url: 'https://busl.test/streams/release.log', version: 40}])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
     busl.done()
-    api.done()
     expect(stdout).to.equal('Release Output Content')
     expect(stderr).to.equal('')
+    expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
-  it('has a missing output', async function () {
+  it('has a missing output when the stream returns 404', async function () {
     const busl = nock('https://busl.test:443')
       .get('/streams/release.log')
       .reply(404, '')
-
-    const api = nock('https://api.heroku.com:443')
-      .get('/apps/myapp/releases')
-      .reply(200, [{output_stream_url: 'https://busl.test/streams/release.log', version: 40}])
+    fakePlatform.release.list.resolves([{output_stream_url: 'https://busl.test/streams/release.log', version: 40}])
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
     ])
-    api.done()
     busl.done()
     expect(stdout).to.equal('')
     expect(stderr).to.contain('Warning: Release command not started yet. Please try again in a few')

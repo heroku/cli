@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {stream} from '../../lib/releases/output.js'
@@ -16,9 +17,10 @@ export default class Output extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Output)
     const {app} = flags
-    const release = await findByLatestOrId(this.heroku, app, args.release)
+    const release = await findByLatestOrId(platform, app, args.release)
     const streamUrl = release.output_stream_url
 
     if (!streamUrl) {

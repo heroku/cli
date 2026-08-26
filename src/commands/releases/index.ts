@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
+import {Release} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 
@@ -8,13 +10,20 @@ import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import * as statusHelper from '../../lib/releases/status-helper.js'
 import * as time from '../../lib/time.js'
 
+type ExtendedRelease = Release & {
+  extended?: {
+    slug_id?: string,
+    slug_uuid?: string,
+  }
+}
+
 type ColumnConfig = {
   extended?: boolean
-  get?: (row: Heroku.Release) => number | string | undefined
+  get?: (row: ExtendedRelease) => number | string | undefined
   header?: string
 }
 
-const getDescriptionTruncation = function (releases: Heroku.Release[], columns: Record<string, ColumnConfig>, optimizeKey: string) {
+const getDescriptionTruncation = function (releases: ExtendedRelease[], columns: Record<string, ColumnConfig>, optimizeKey: string) {
   // width management here is quite opaque.
   // This entire function is to determine how much of Formation.description should be truncated to accommodate for Formation.status. They both go in the same column.
   // Nothing else is truncated and the table is passed `'no-truncate': true` in options.
@@ -39,7 +48,7 @@ const getDescriptionTruncation = function (releases: Heroku.Release[], columns: 
 
         let colValue = row
         for (const part of parts) {
-          colValue = colValue[part]
+          colValue = (colValue as any)[part]
         }
 
         const formattedValue = col.get ? col.get(row) : colValue.toString()
@@ -82,22 +91,30 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const _ = await lazyModuleLoader.loadLodash()
 
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Index)
     const {app, extended, json, num} = flags
+    const range = `version ..; max=${num || 15}, order=desc`
 
-    const url = `/apps/${app}/releases${extended ? '?extended=true' : ''}`
-
-    const {body: releases} = await this.heroku.request<Heroku.Release[]>(url, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-        Range: `version ..; max=${num || 15}, order=desc`,
-      },
-      partial: true,
-    })
+    let releases: ExtendedRelease[]
+    if (extended) {
+      const client = new HerokuApiClient()
+      const response = await client.get(`/apps/${app}/releases?extended=true`, {
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.sdk',
+          Range: range,
+        },
+      })
+      releases = await response.json() as ExtendedRelease[]
+    } else {
+      releases = await platform
+        .withHeaders({Range: range})
+        .release.list(app)
+    }
 
     let optimizationWidth = 0
 
-    const descriptionWithStatus = function (release: Heroku.Release) {
+    const descriptionWithStatus = function (release: ExtendedRelease) {
       const {description} = release
       const width = () => process.stdout?.columns && process.stdout.columns > 80 ? process.stdout.columns : 80
       const trunc = (l: number, s?: string) => {
@@ -143,7 +160,7 @@ export default class Index extends Command {
       return trunc(0, description)
     }
 
-    const getVersionColor = (release: Heroku.Release) => {
+    const getVersionColor = (release: ExtendedRelease) => {
       const statusColor = statusHelper.color(release.status)
       if (statusColor === 'red') return color.failure('v' + release.version)
       if (statusColor === 'yellow') return color.warning('v' + release.version)
@@ -184,7 +201,7 @@ export default class Index extends Command {
 
       hux.styledHeader(header)
       const sortedReleases = releases.sort((a, b) => (b.version ?? 0) - (a.version ?? 0))
-      hux.table(sortedReleases, columns, {extended})
+      hux.table(sortedReleases as any, columns as any, {extended})
     }
   }
 }
