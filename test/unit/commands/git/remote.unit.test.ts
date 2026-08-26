@@ -1,29 +1,40 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
-import sinon from 'sinon'
+import * as sinon from 'sinon'
 
 import {GitRemote as Remote} from '../../../../src/commands/git/remote.js'
 import Git from '../../../../src/lib/git/git.js'
 
+type FakePlatform = {
+  app: {
+    info: sinon.SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    app: {
+      info: sinon.stub()
+    },
+  }
+}
+
 describe('git:remote', function () {
-  let api: nock.Scope
   let configureCredentialHelperStub: sinon.SinonStub
   let execStub: sinon.SinonStub
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
 
     configureCredentialHelperStub = sinon.stub(Git.prototype, 'configureCredentialHelper').resolves()
     execStub = sinon.stub(Git.prototype, 'exec').resolves('')
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
-
-    configureCredentialHelperStub.restore()
-    execStub.restore()
+    sinon.restore()
   })
 
   it('errors if no app given', async function () {
@@ -33,14 +44,13 @@ describe('git:remote', function () {
   })
 
   it('configures git credential helper after adding remote', async function () {
-    api
-      .get('/apps/test-app')
-      .reply(200, {
-        name: 'test-app',
-      })
+    fakePlatform.app.info.resolves({
+      name: 'test-app',
+    })
 
     await runCommand(Remote, ['-a', 'test-app'])
 
+    expect(fakePlatform.app.info.calledOnceWithExactly('test-app')).to.equal(true)
     expect(configureCredentialHelperStub.calledOnce).to.be.true
   })
 })
