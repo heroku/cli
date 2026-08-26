@@ -21,6 +21,19 @@ interface RequestRecord {
   url?: string
 }
 
+interface ProcessResult {
+  childError?: Error
+  exitCode: null | number
+  signal: NodeJS.Signals | null
+  timedOut: boolean
+  transcript: string
+}
+
+interface ProcessContext {
+  child: ReturnType<typeof spawn>
+  completion: Promise<Omit<ProcessResult, 'transcript'>>
+}
+
 const cliRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
 
 const sanitizeTranscript = (transcript: string) => transcript
@@ -90,19 +103,133 @@ const stopChild = async (child: ReturnType<typeof spawn> | undefined) => {
   })
 }
 
+const waitForChild = (child: ReturnType<typeof spawn>): ProcessContext['completion'] => new Promise(resolve => {
+  let timedOut = false
+  const timeout = setNativeTimeout(() => {
+    timedOut = true
+    child.kill('SIGKILL')
+  }, 15_000)
+
+  child.once('error', childError => {
+    clearTimeout(timeout)
+    resolve({
+      childError,
+      exitCode: child.exitCode,
+      signal: child.signalCode,
+      timedOut,
+    })
+  })
+  child.once('close', (exitCode, signal) => {
+    clearTimeout(timeout)
+    resolve({exitCode, signal, timedOut})
+  })
+})
+
+const runConfigSetProcess = async (
+  requestListener: (request: http.IncomingMessage, response: http.ServerResponse) => void,
+  interact: (context: ProcessContext) => Promise<void> | void,
+): Promise<ProcessResult> => {
+  const sockets = new Set<import('node:net').Socket>()
+  const server = http.createServer(requestListener)
+  server.on('connection', socket => {
+    sockets.add(socket)
+    socket.on('close', () => sockets.delete(socket))
+  })
+
+  let child: ReturnType<typeof spawn> | undefined
+  let outputFd: number | undefined
+  let tempDir: string | undefined
+  let result: ProcessResult | undefined
+  let testError: unknown
+  let cleanupError: unknown
+
+  try {
+    tempDir = await mkdtemp(path.join(os.tmpdir(), 'heroku-config-set-'))
+    const outputPath = path.join(tempDir, 'combined-output.log')
+    const cacheDirs = [
+      path.join(tempDir, 'cache', 'heroku'),
+      path.join(tempDir, 'Library', 'Caches', 'heroku'),
+    ]
+    await Promise.all(cacheDirs.map(async cacheDir => {
+      await mkdir(cacheDir, {recursive: true})
+      await writeFile(path.join(cacheDir, 'terms-of-service'), '')
+    }))
+    outputFd = openSync(outputPath, 'w+')
+
+    await new Promise<void>((resolve, reject) => {
+      server.once('error', reject)
+      server.listen(0, '127.0.0.1', resolve)
+    })
+    const address = server.address()
+    if (!address || typeof address === 'string') throw new Error('fixture server did not expose a TCP port')
+
+    child = spawn(process.execPath, [path.join(cliRoot, 'bin/run.js'), 'config:set', 'RACK_ENV=production', '--app', 'myapp'], {
+      cwd: cliRoot,
+      env: childEnvironment(tempDir, `http://127.0.0.1:${address.port}`),
+      stdio: ['pipe', outputFd, outputFd],
+    })
+    const completion = waitForChild(child)
+    await interact({child, completion})
+    const processResult = await completion
+
+    closeSync(outputFd)
+    outputFd = undefined
+    result = {
+      ...processResult,
+      transcript: sanitizeTranscript(await readFile(outputPath, 'utf8')),
+    }
+  } catch (error) {
+    testError = error
+  } finally {
+    try {
+      await stopChild(child)
+    } catch (error) {
+      cleanupError = error
+    }
+
+    try {
+      if (outputFd !== undefined) closeSync(outputFd)
+    } catch (error) {
+      cleanupError ??= error
+    }
+
+    for (const socket of sockets) socket.destroy()
+    try {
+      if (server.listening) {
+        await new Promise<void>(resolve => {
+          server.close(() => resolve())
+        })
+      }
+    } catch (error) {
+      cleanupError ??= error
+    }
+
+    try {
+      if (tempDir) await rm(tempDir, {force: true, recursive: true})
+    } catch (error) {
+      cleanupError ??= error
+    }
+  }
+
+  if (cleanupError && testError) throw new AggregateError([testError, cleanupError], 'test and cleanup failed')
+  if (cleanupError) throw cleanupError
+  if (testError) throw testError
+  if (!result) throw new Error('config:set subprocess did not produce a result')
+  return result
+}
+
 const configDonePattern = /\.\.\.\s*done\b|^\s*done\b/im
 const configResultRowPattern = /^\s*[A-Z][A-Z0-9_]*:\s+\S/m
 
 describe('config:set', function () {
-  // The test keeps lifecycle cleanup and contract diagnostics together.
+  // The test keeps contract diagnostics together.
   // eslint-disable-next-line complexity
   it('rejects a 2fa challenge without an interactive terminal', async function () {
     this.timeout(30_000)
 
     const requests: RequestRecord[] = []
     const requestViolations: string[] = []
-    const sockets = new Set<import('node:net').Socket>()
-    const server = http.createServer((request, response) => {
+    const result = await runConfigSetProcess((request, response) => {
       const chunks: Buffer[] = []
       request.on('data', chunk => chunks.push(Buffer.from(chunk)))
       request.on('end', () => {
@@ -129,172 +256,73 @@ describe('config:set', function () {
           message: 'Two-factor authentication required',
         }))
       })
-    })
-    server.on('connection', socket => {
-      sockets.add(socket)
-      socket.on('close', () => sockets.delete(socket))
-    })
-
-    let child: ReturnType<typeof spawn> | undefined
-    let outputFd: number | undefined
-    let tempDir: string | undefined
-    let transcript = ''
-    let exitCode: null | number = null
-    let signal: NodeJS.Signals | null = null
-    let childError: Error | undefined
-    let timedOut = false
-    let testError: unknown
-    let cleanupError: unknown
-
-    try {
-      tempDir = await mkdtemp(path.join(os.tmpdir(), 'heroku-config-set-'))
-      const outputPath = path.join(tempDir, 'combined-output.log')
-      const cacheDirs = [
-        path.join(tempDir, 'cache', 'heroku'),
-        path.join(tempDir, 'Library', 'Caches', 'heroku'),
-      ]
-      await Promise.all(cacheDirs.map(async cacheDir => {
-        await mkdir(cacheDir, {recursive: true})
-        await writeFile(path.join(cacheDir, 'terms-of-service'), '')
-      }))
-      outputFd = openSync(outputPath, 'w+')
-
-      await new Promise<void>((resolve, reject) => {
-        server.once('error', reject)
-        server.listen(0, '127.0.0.1', resolve)
-      })
-      const address = server.address()
-      if (!address || typeof address === 'string') throw new Error('fixture server did not expose a TCP port')
-
-      child = spawn(process.execPath, [path.join(cliRoot, 'bin/run.js'), 'config:set', 'RACK_ENV=production', '--app', 'myapp'], {
-        cwd: cliRoot,
-        env: childEnvironment(tempDir, `http://127.0.0.1:${address.port}`),
-        stdio: ['pipe', outputFd, outputFd],
-      })
+    }, ({child}) => {
       if (!child.stdin) throw new Error('subprocess stdin was not piped')
       child.stdin.end()
+    })
 
-      await new Promise<void>(resolve => {
-        const timeout = setNativeTimeout(() => {
-          timedOut = true
-          child?.kill('SIGKILL')
-        }, 15_000)
+    const {childError, exitCode, signal, timedOut, transcript} = result
+    const violations = [...requestViolations]
+    if (requests.length !== 1) violations.push(`expected exactly one request, received ${requests.length}`)
+    if (childError) violations.push(`subprocess error: ${childError.message}`)
+    if (timedOut) violations.push('subprocess timed out')
+    if (typeof exitCode !== 'number' || exitCode === 0) violations.push(`expected a numeric nonzero exit code, received ${String(exitCode)}`)
+    if (signal !== null) violations.push(`expected no signal, received ${signal}`)
 
-        child?.once('error', error => {
-          childError = error
-          clearTimeout(timeout)
-          resolve()
-        })
-        child?.once('close', (code, childSignal) => {
-          exitCode = code
-          signal = childSignal
-          clearTimeout(timeout)
-          resolve()
-        })
-      })
-
-      closeSync(outputFd)
-      outputFd = undefined
-      transcript = sanitizeTranscript(await readFile(outputPath, 'utf8'))
-
-      const violations = [...requestViolations]
-      if (requests.length !== 1) violations.push(`expected exactly one request, received ${requests.length}`)
-      if (childError) violations.push(`subprocess error: ${childError.message}`)
-      if (timedOut) violations.push('subprocess timed out')
-      if (typeof exitCode !== 'number' || exitCode === 0) violations.push(`expected a numeric nonzero exit code, received ${String(exitCode)}`)
-      if (signal !== null) violations.push(`expected no signal, received ${signal}`)
-
-      const actionMatch = /Setting\s+RACK_ENV\s+and restarting[^\n]*myapp/i.exec(transcript)
-      if (!actionMatch) {
-        violations.push('missing config action output')
-      }
-
-      const actionStart = actionMatch?.index ?? -1
-      const actionOutput = actionStart >= 0 ? transcript.slice(actionStart) : transcript
-      const failedMarkers = [...actionOutput.matchAll(/(?:^|\s)!(?=\s|$)/g)]
-      if (failedMarkers.length !== 1) violations.push(`expected one meaningful failed marker, received ${failedMarkers.length}`)
-      const failedMarkerRelativeIndex = failedMarkers[0]?.index ?? -1
-      const failedMarkerIndex = failedMarkerRelativeIndex < 0 ? -1 : actionStart + failedMarkerRelativeIndex + failedMarkers[0][0].lastIndexOf('!')
-
-      const promptFailureMatch = /Two-factor authentication requires an interactive terminal/i.exec(actionOutput)
-      if (!promptFailureMatch) {
-        violations.push('missing clear noninteractive two-factor error')
-      }
-
-      const promptFailureIndex = promptFailureMatch ? actionStart + promptFailureMatch.index : -1
-      if (actionStart >= 0 && failedMarkerIndex >= 0 && promptFailureIndex >= 0 && !(actionStart < failedMarkerIndex && failedMarkerIndex < promptFailureIndex)) {
-        violations.push('expected config action start before failed marker before noninteractive two-factor error')
-      }
-
-      if (/warning: detected unsettled top-level await/i.test(transcript)) {
-        violations.push('printed an unsettled top-level-await warning')
-      }
-
-      if (configDonePattern.test(actionOutput)) violations.push('printed a successful config action completion')
-      if (configResultRowPattern.test(actionOutput)) violations.push('printed a config result row')
-
-      const promptFailureSuffix = promptFailureMatch ? actionOutput.slice(promptFailureMatch.index + promptFailureMatch[0].length) : ''
-      if (configDonePattern.test(promptFailureSuffix)) violations.push('printed a successful config action completion after prompt failure')
-      if (configResultRowPattern.test(promptFailureSuffix)) violations.push('printed a config result row after prompt failure')
-
-      const diagnostic = [
-        `exit=${String(exitCode)} signal=${String(signal)}`,
-        `requests=${JSON.stringify(requests)}`,
-        `transcript:\n${transcript}`,
-      ].join('\n')
-      const redactedDiagnostic = redactDiagnostic(diagnostic)
-      expect(violations, redactedDiagnostic).to.deep.equal([])
-    } catch (error) {
-      testError = error
-    } finally {
-      try {
-        await stopChild(child)
-      } catch (error) {
-        cleanupError = error
-      }
-
-      try {
-        if (outputFd !== undefined) closeSync(outputFd)
-      } catch (error) {
-        cleanupError ??= error
-      }
-
-      for (const socket of sockets) socket.destroy()
-      try {
-        if (server.listening) {
-          await new Promise<void>(resolve => {
-            server.close(() => resolve())
-          })
-        }
-      } catch (error) {
-        cleanupError ??= error
-      }
-
-      try {
-        if (tempDir) await rm(tempDir, {force: true, recursive: true})
-      } catch (error) {
-        cleanupError ??= error
-      }
+    const actionMatch = /Setting\s+RACK_ENV\s+and restarting[^\n]*myapp/i.exec(transcript)
+    if (!actionMatch) {
+      violations.push('missing config action output')
     }
 
-    if (cleanupError && testError) throw new AggregateError([testError, cleanupError], 'test and cleanup failed')
-    if (cleanupError) throw cleanupError
-    if (testError) throw testError
+    const actionStart = actionMatch?.index ?? -1
+    const actionOutput = actionStart >= 0 ? transcript.slice(actionStart) : transcript
+    const failedMarkers = [...actionOutput.matchAll(/(?:^|\s)!(?=\s|$)/g)]
+    if (failedMarkers.length !== 1) violations.push(`expected one meaningful failed marker, received ${failedMarkers.length}`)
+    const failedMarkerRelativeIndex = failedMarkers[0]?.index ?? -1
+    const failedMarkerIndex = failedMarkerRelativeIndex < 0 ? -1 : actionStart + failedMarkerRelativeIndex + failedMarkers[0][0].lastIndexOf('!')
+
+    const promptFailureMatch = /Two-factor authentication requires an interactive terminal/i.exec(actionOutput)
+    if (!promptFailureMatch) {
+      violations.push('missing clear noninteractive two-factor error')
+    }
+
+    const promptFailureIndex = promptFailureMatch ? actionStart + promptFailureMatch.index : -1
+    if (actionStart >= 0 && failedMarkerIndex >= 0 && promptFailureIndex >= 0 && !(actionStart < failedMarkerIndex && failedMarkerIndex < promptFailureIndex)) {
+      violations.push('expected config action start before failed marker before noninteractive two-factor error')
+    }
+
+    if (/warning: detected unsettled top-level await/i.test(transcript)) {
+      violations.push('printed an unsettled top-level-await warning')
+    }
+
+    if (configDonePattern.test(actionOutput)) violations.push('printed a successful config action completion')
+    if (configResultRowPattern.test(actionOutput)) violations.push('printed a config result row')
+
+    const promptFailureSuffix = promptFailureMatch ? actionOutput.slice(promptFailureMatch.index + promptFailureMatch[0].length) : ''
+    if (configDonePattern.test(promptFailureSuffix)) violations.push('printed a successful config action completion after prompt failure')
+    if (configResultRowPattern.test(promptFailureSuffix)) violations.push('printed a config result row after prompt failure')
+
+    const diagnostic = [
+      `exit=${String(exitCode)} signal=${String(signal)}`,
+      `requests=${JSON.stringify(requests)}`,
+      `transcript:\n${transcript}`,
+    ].join('\n')
+    const redactedDiagnostic = redactDiagnostic(diagnostic)
+    expect(violations, redactedDiagnostic).to.deep.equal([])
   })
 
-  // The test keeps lifecycle cleanup and contract diagnostics together.
+  // The test keeps contract diagnostics together.
   // eslint-disable-next-line complexity
   it('rejects a piped factor without preauthorizing', async function () {
     this.timeout(30_000)
 
     const requests: RequestRecord[] = []
     const requestViolations: string[] = []
-    const sockets = new Set<import('node:net').Socket>()
     let initialPatchReceivedResolve: (() => void) | undefined
     const initialPatchReceived = new Promise<void>(resolve => {
       initialPatchReceivedResolve = resolve
     })
-    const server = http.createServer((request, response) => {
+    const result = await runConfigSetProcess((request, response) => {
       const chunks: Buffer[] = []
       request.on('data', chunk => chunks.push(Buffer.from(chunk)))
       request.on('end', () => {
@@ -336,173 +364,75 @@ describe('config:set', function () {
         response.writeHead(500, {'content-type': 'application/json'})
         response.end(JSON.stringify({id: 'unexpected_route', message: 'Unexpected fixture route'}))
       })
-    })
-    server.on('connection', socket => {
-      sockets.add(socket)
-      socket.on('close', () => sockets.delete(socket))
-    })
-
-    let child: ReturnType<typeof spawn> | undefined
-    let outputFd: number | undefined
-    let tempDir: string | undefined
-    let transcript = ''
-    let exitCode: null | number = null
-    let signal: NodeJS.Signals | null = null
-    let childError: Error | undefined
-    let timedOut = false
-    let testError: unknown
-    let cleanupError: unknown
-
-    try {
-      tempDir = await mkdtemp(path.join(os.tmpdir(), 'heroku-config-set-'))
-      const outputPath = path.join(tempDir, 'combined-output.log')
-      const cacheDirs = [
-        path.join(tempDir, 'cache', 'heroku'),
-        path.join(tempDir, 'Library', 'Caches', 'heroku'),
-      ]
-      await Promise.all(cacheDirs.map(async cacheDir => {
-        await mkdir(cacheDir, {recursive: true})
-        await writeFile(path.join(cacheDir, 'terms-of-service'), '')
-      }))
-      outputFd = openSync(outputPath, 'w+')
-
-      await new Promise<void>((resolve, reject) => {
-        server.once('error', reject)
-        server.listen(0, '127.0.0.1', resolve)
-      })
-      const address = server.address()
-      if (!address || typeof address === 'string') throw new Error('fixture server did not expose a TCP port')
-
-      child = spawn(process.execPath, [path.join(cliRoot, 'bin/run.js'), 'config:set', 'RACK_ENV=production', '--app', 'myapp'], {
-        cwd: cliRoot,
-        env: childEnvironment(tempDir, `http://127.0.0.1:${address.port}`),
-        stdio: ['pipe', outputFd, outputFd],
-      })
+    }, async ({child, completion}) => {
       if (!child.stdin) throw new Error('subprocess stdin was not piped')
 
-      const childCompletion = new Promise<void>(resolve => {
-        const timeout = setNativeTimeout(() => {
-          timedOut = true
-          child?.kill('SIGKILL')
-        }, 15_000)
-
-        child?.once('error', error => {
-          childError = error
-          clearTimeout(timeout)
-          resolve()
-        })
-        child?.once('close', (code, childSignal) => {
-          exitCode = code
-          signal = childSignal
-          clearTimeout(timeout)
-          resolve()
-        })
-      })
-
       let initialPatchTimeout: NodeJS.Timeout | undefined
-      const initialPatchTimeoutPromise = new Promise<'timeout'>(resolve => {
-        initialPatchTimeout = setNativeTimeout(() => resolve('timeout'), 10_000)
+      const initialPatchTimeoutPromise = new Promise<{type: 'timeout'}>(resolve => {
+        initialPatchTimeout = setNativeTimeout(() => resolve({type: 'timeout'}), 10_000)
       })
       const firstEvent = await Promise.race([
-        initialPatchReceived.then(() => 'patch' as const),
-        childCompletion.then(() => 'exit' as const),
+        initialPatchReceived.then(() => ({type: 'patch'} as const)),
+        completion.then(processResult => ({processResult, type: 'exit'} as const)),
         initialPatchTimeoutPromise,
       ])
       if (initialPatchTimeout) clearTimeout(initialPatchTimeout)
-      if (firstEvent === 'exit') {
+      if (firstEvent.type === 'exit') {
+        const {childError, exitCode, signal} = firstEvent.processResult
         throw new Error(`subprocess exited before the initial config PATCH: exit=${String(exitCode)} signal=${String(signal)} error=${childError?.message ?? 'none'}`)
       }
 
-      if (firstEvent === 'timeout') throw new Error('initial config PATCH was not received within 10000ms')
+      if (firstEvent.type === 'timeout') throw new Error('initial config PATCH was not received within 10000ms')
 
       child.stdin.end('123456\n')
-      await childCompletion
+    })
 
-      closeSync(outputFd)
-      outputFd = undefined
-      transcript = sanitizeTranscript(await readFile(outputPath, 'utf8'))
+    const {childError, exitCode, signal, timedOut, transcript} = result
+    const violations = [...requestViolations]
+    const expectedRequests: RequestRecord[] = [{
+      body: {RACK_ENV: 'production'},
+      factorHeader: false,
+      method: 'PATCH',
+      url: '/apps/myapp/config-vars',
+    }]
+    if (JSON.stringify(requests) !== JSON.stringify(expectedRequests)) violations.push('piped factor triggered an unexpected request')
+    if (childError) violations.push(`subprocess error: ${childError.message}`)
+    if (timedOut) violations.push('subprocess timed out')
+    if (typeof exitCode !== 'number' || exitCode === 0) violations.push(`expected a numeric nonzero exit code, received ${String(exitCode)}`)
+    if (signal !== null) violations.push(`expected no signal, received ${signal}`)
 
-      const violations = [...requestViolations]
-      const expectedRequests: RequestRecord[] = [{
-        body: {RACK_ENV: 'production'},
-        factorHeader: false,
-        method: 'PATCH',
-        url: '/apps/myapp/config-vars',
-      }]
-      if (JSON.stringify(requests) !== JSON.stringify(expectedRequests)) violations.push('piped factor triggered an unexpected request')
-      if (childError) violations.push(`subprocess error: ${childError.message}`)
-      if (timedOut) violations.push('subprocess timed out')
-      if (typeof exitCode !== 'number' || exitCode === 0) violations.push(`expected a numeric nonzero exit code, received ${String(exitCode)}`)
-      if (signal !== null) violations.push(`expected no signal, received ${signal}`)
+    const actionMatch = /Setting\s+RACK_ENV\s+and restarting[^\n]*myapp/i.exec(transcript)
+    if (!actionMatch) violations.push('missing config action output')
 
-      const actionMatch = /Setting\s+RACK_ENV\s+and restarting[^\n]*myapp/i.exec(transcript)
-      if (!actionMatch) violations.push('missing config action output')
+    const actionStart = actionMatch?.index ?? -1
+    const actionOutput = actionStart >= 0 ? transcript.slice(actionStart) : transcript
+    const failedMarkers = [...actionOutput.matchAll(/(?:^|\s)!(?=\s|$)/g)]
+    if (failedMarkers.length !== 1) violations.push(`expected one meaningful failed marker, received ${failedMarkers.length}`)
+    const failedMarkerRelativeIndex = failedMarkers[0]?.index ?? -1
+    const failedMarkerIndex = failedMarkerRelativeIndex < 0 ? -1 : actionStart + failedMarkerRelativeIndex + failedMarkers[0][0].lastIndexOf('!')
 
-      const actionStart = actionMatch?.index ?? -1
-      const actionOutput = actionStart >= 0 ? transcript.slice(actionStart) : transcript
-      const failedMarkers = [...actionOutput.matchAll(/(?:^|\s)!(?=\s|$)/g)]
-      if (failedMarkers.length !== 1) violations.push(`expected one meaningful failed marker, received ${failedMarkers.length}`)
-      const failedMarkerRelativeIndex = failedMarkers[0]?.index ?? -1
-      const failedMarkerIndex = failedMarkerRelativeIndex < 0 ? -1 : actionStart + failedMarkerRelativeIndex + failedMarkers[0][0].lastIndexOf('!')
-
-      const rejectionMatch = /Two-factor authentication requires an interactive terminal/i.exec(actionOutput)
-      if (!rejectionMatch) violations.push('missing clear noninteractive two-factor error')
-      const rejectionIndex = rejectionMatch ? actionStart + rejectionMatch.index : -1
-      if (actionStart >= 0 && failedMarkerIndex >= 0 && rejectionIndex >= 0 && !(actionStart < failedMarkerIndex && failedMarkerIndex < rejectionIndex)) {
-        violations.push('expected config action start before failed marker before noninteractive two-factor error')
-      }
-
-      if (/warning: detected unsettled top-level await/i.test(transcript)) violations.push('printed an unsettled top-level-await warning')
-      if (configDonePattern.test(actionOutput)) violations.push('printed a successful config action completion')
-      if (configResultRowPattern.test(actionOutput)) violations.push('printed a config result row')
-      if (/\bdone,\s*v\d+\b|\brelease\s+v\d+\b/i.test(actionOutput)) violations.push('printed release success output')
-
-      const rejectionSuffix = rejectionMatch ? actionOutput.slice(rejectionMatch.index + rejectionMatch[0].length) : ''
-      if (configDonePattern.test(rejectionSuffix)) violations.push('printed a successful config action completion after the two-factor error')
-      if (configResultRowPattern.test(rejectionSuffix)) violations.push('printed a config result row after the two-factor error')
-
-      const diagnostic = [
-        `exit=${String(exitCode)} signal=${String(signal)}`,
-        `requests=${JSON.stringify(requests)}`,
-        `transcript:\n${transcript}`,
-      ].join('\n')
-      const redactedDiagnostic = redactDiagnostic(diagnostic)
-      expect(violations, redactedDiagnostic).to.deep.equal([])
-    } catch (error) {
-      testError = error
-    } finally {
-      try {
-        await stopChild(child)
-      } catch (error) {
-        cleanupError = error
-      }
-
-      try {
-        if (outputFd !== undefined) closeSync(outputFd)
-      } catch (error) {
-        cleanupError ??= error
-      }
-
-      for (const socket of sockets) socket.destroy()
-      try {
-        if (server.listening) {
-          await new Promise<void>(resolve => {
-            server.close(() => resolve())
-          })
-        }
-      } catch (error) {
-        cleanupError ??= error
-      }
-
-      try {
-        if (tempDir) await rm(tempDir, {force: true, recursive: true})
-      } catch (error) {
-        cleanupError ??= error
-      }
+    const rejectionMatch = /Two-factor authentication requires an interactive terminal/i.exec(actionOutput)
+    if (!rejectionMatch) violations.push('missing clear noninteractive two-factor error')
+    const rejectionIndex = rejectionMatch ? actionStart + rejectionMatch.index : -1
+    if (actionStart >= 0 && failedMarkerIndex >= 0 && rejectionIndex >= 0 && !(actionStart < failedMarkerIndex && failedMarkerIndex < rejectionIndex)) {
+      violations.push('expected config action start before failed marker before noninteractive two-factor error')
     }
 
-    if (cleanupError && testError) throw new AggregateError([testError, cleanupError], 'test and cleanup failed')
-    if (cleanupError) throw cleanupError
-    if (testError) throw testError
+    if (/warning: detected unsettled top-level await/i.test(transcript)) violations.push('printed an unsettled top-level-await warning')
+    if (configDonePattern.test(actionOutput)) violations.push('printed a successful config action completion')
+    if (configResultRowPattern.test(actionOutput)) violations.push('printed a config result row')
+    if (/\bdone,\s*v\d+\b|\brelease\s+v\d+\b/i.test(actionOutput)) violations.push('printed release success output')
+
+    const rejectionSuffix = rejectionMatch ? actionOutput.slice(rejectionMatch.index + rejectionMatch[0].length) : ''
+    if (configDonePattern.test(rejectionSuffix)) violations.push('printed a successful config action completion after the two-factor error')
+    if (configResultRowPattern.test(rejectionSuffix)) violations.push('printed a config result row after the two-factor error')
+
+    const diagnostic = [
+      `exit=${String(exitCode)} signal=${String(signal)}`,
+      `requests=${JSON.stringify(requests)}`,
+      `transcript:\n${transcript}`,
+    ].join('\n')
+    const redactedDiagnostic = redactDiagnostic(diagnostic)
+    expect(violations, redactedDiagnostic).to.deep.equal([])
   })
 })
