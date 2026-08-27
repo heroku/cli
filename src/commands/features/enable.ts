@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 export default class Enable extends Command {
@@ -14,18 +14,17 @@ export default class Enable extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Enable)
 
     const {app} = flags
     const {feature} = args
 
     ux.action.start(`Enabling ${color.name(feature)} for ${color.app(app)}`)
-    const {body: f} = await this.heroku.get<Heroku.AppFeature>(`/apps/${app}/features/${feature}`)
+    const f = await platform.appFeature.info(app, feature)
     if (f.enabled) throw new Error(`${color.name(feature)} is already enabled.`)
 
-    await this.heroku.patch(`/apps/${app}/features/${feature}`, {
-      body: {enabled: true},
-    })
+    await platform.appFeature.update(app, feature, {enabled: true})
     ux.action.stop()
   }
 }

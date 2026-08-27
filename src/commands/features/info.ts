@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 export default class Info extends Command {
@@ -15,10 +15,11 @@ export default class Info extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {args, flags} = await this.parse(Info)
 
     const {app, json} = flags
-    const {body: feature} = await this.heroku.get<Heroku.AppFeature>(`/apps/${app}/features/${args.feature}`)
+    const feature = await platform.appFeature.info(app, args.feature)
 
     if (json) {
       hux.styledJSON(feature)
