@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
@@ -23,8 +23,9 @@ production`)}`
   static usage = 'config:get KEY...'
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {argv, flags} = await this.parse(ConfigGet)
-    const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
+    const config = await platform.configVar.infoForApp(flags.app)
 
     if (flags.json) {
       const results = (argv as string[]).map(key => {

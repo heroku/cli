@@ -1,17 +1,17 @@
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 const heredoc = tsheredoc.default
 
-const lastRelease = async (client: APIClient, app: string) => {
-  const {body: releases} = await client.get<Heroku.Release[]>(`/apps/${app}/releases`, {
-    headers: {Range: 'version ..; order=desc,max=1'},
-    method: 'GET',
-    partial: true,
-  })
+type Platform = HerokuSDK['platform']
+
+const lastRelease = async (platform: Platform, app: string) => {
+  const releases = await platform
+    .withHeaders({Range: 'version ..; order=desc,max=1'})
+    .release.list(app)
   return releases[0]
 }
 
@@ -33,6 +33,7 @@ RACK_ENV:  staging`)]
   static strict = false
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {argv: _argv, flags} = await this.parse(Set)
     const argv = _argv as string[]
 
@@ -53,10 +54,8 @@ RACK_ENV:  staging`)]
     const varsCopy = argv.map((v: string) => color.name(v.split('=')[0])).join(', ')
     ux.action.start(`Setting ${varsCopy} and restarting ${color.app(flags.app)}`)
 
-    let {body: config} = await this.heroku.patch<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`, {
-      body: vars,
-    })
-    const release = await lastRelease(this.heroku, flags.app)
+    let config = await platform.configVar.update(flags.app, vars)
+    const release = await lastRelease(platform, flags.app)
     ux.action.stop(`done, ${color.name('v' + release.version)}`)
 
     config = Object.fromEntries(Object.entries(config)
