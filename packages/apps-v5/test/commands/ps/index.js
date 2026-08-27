@@ -143,10 +143,30 @@ web.1: up ${hourAgoStr} (~ 1h ago)
       ])
 
     return cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
-      .then(() => expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Execution Plane  Instance  IP        Port  AZ       Release  Command    Route     Size
-───  ───────  ───────────────────────────────────────  ──────  ───────────────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────
-101  run.1    up ${hourAgoStr} (~ 1h ago)  us      execution_plane  instance  10.0.0.2  8000  us-east           bash       da route  Free
-100  web.1    up ${hourAgoStr} (~ 1h ago)  us      execution_plane  instance  10.0.0.1  8000  us-east           npm start  da route  Free
+      .then(() => expect(cli.stdout).to.equal(`=== run.1 (Free)
+ID:              101
+State:           up ${hourAgoStr} (~ 1h ago)
+Command:         bash
+Region:          us
+Execution Plane: execution_plane
+Instance:        instance
+IP:              10.0.0.2
+Port:            8000
+AZ:              us-east
+Route:           da route
+
+=== web.1 (Free)
+ID:              100
+State:           up ${hourAgoStr} (~ 1h ago)
+Command:         npm start
+Region:          us
+Execution Plane: execution_plane
+Instance:        instance
+IP:              10.0.0.1
+Port:            8000
+AZ:              us-east
+Route:           da route
+
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())
@@ -165,10 +185,30 @@ web.1: up ${hourAgoStr} (~ 1h ago)
       ])
 
     return cmd.run({ app: 'myapp', args: [], flags: { extended: true } })
-      .then(() => expect(cli.stdout).to.equal(`ID   Process  State                                    Region  Execution Plane  Instance  IP        Port  AZ       Release  Command    Route     Size
-───  ───────  ───────────────────────────────────────  ──────  ───────────────  ────────  ────────  ────  ───────  ───────  ─────────  ────────  ────────
-101  run.1    up ${hourAgoStr} (~ 1h ago)  us      execution_plane  instance  10.0.0.2  8000  us-east           bash       da route  Shield-L
-100  web.1    up ${hourAgoStr} (~ 1h ago)  us      execution_plane  instance  10.0.0.1  8000  us-east           npm start  da route  Shield-M
+      .then(() => expect(cli.stdout).to.equal(`=== run.1 (Shield-L)
+ID:              101
+State:           up ${hourAgoStr} (~ 1h ago)
+Command:         bash
+Region:          us
+Execution Plane: execution_plane
+Instance:        instance
+IP:              10.0.0.2
+Port:            8000
+AZ:              us-east
+Route:           da route
+
+=== web.1 (Shield-M)
+ID:              100
+State:           up ${hourAgoStr} (~ 1h ago)
+Command:         npm start
+Region:          us
+Execution Plane: execution_plane
+Instance:        instance
+IP:              10.0.0.1
+Port:            8000
+AZ:              us-east
+Route:           da route
+
 `))
       .then(() => expect(cli.stderr, 'to be empty'))
       .then(() => api.done())

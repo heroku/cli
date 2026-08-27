@@ -2,32 +2,37 @@
 
 let cli = require('heroku-cli-util')
 let time = require('../../time')
-const { truncate, sortBy, reduce, forEach } = require('lodash')
+const { sortBy, reduce, forEach } = require('lodash')
 
 // gets the process number from a string like web.19 => 19
 let getProcessNum = (s) => parseInt(s.split('.', 2)[1])
 
 function printExtended (dynos) {
-  const trunc = (s) => truncate(s, { length: 35, omission: '…' })
-
   dynos = sortBy(dynos, ['type'], (a) => getProcessNum(a.name))
-  cli.table(dynos, {
-    columns: [
-      { key: 'id', label: 'ID' },
-      { key: 'name', label: 'Process' },
-      { key: 'state', label: 'State', format: (state, row) => `${state} ${time.ago(new Date(row.updated_at))}` },
-      { key: 'extended.region', label: 'Region' },
-      { key: 'extended.execution_plane', label: 'Execution Plane' },
-      { key: 'extended.instance', label: 'Instance' },
-      { key: 'extended.ip', label: 'IP' },
-      { key: 'extended.port', label: 'Port' },
-      { key: 'extended.az', label: 'AZ' },
-      { key: 'release.version', label: 'Release' },
-      { key: 'command', label: 'Command', format: trunc },
-      { key: 'extended.route', label: 'Route' },
-      { key: 'size', label: 'Size' }
+
+  for (let dyno of dynos) {
+    const ext = dyno.extended || {}
+    const rows = [
+      ['ID', dyno.id],
+      ['State', `${dyno.state} ${time.ago(new Date(dyno.updated_at))}`],
+      ['Release', dyno.release && dyno.release.version],
+      ['Command', dyno.command],
+      ['Region', ext.region],
+      ['Execution Plane', ext.execution_plane],
+      ['Instance', ext.instance],
+      ['IP', ext.ip],
+      ['Port', ext.port],
+      ['AZ', ext.az],
+      ['Route', ext.route]
     ]
-  })
+
+    cli.styledHeader(`${dyno.name} (${cli.color.cyan(dyno.size)})`)
+    for (let [label, value] of rows) {
+      if (value === undefined || value === null || value === '') continue
+      cli.log(`${cli.color.dim((label + ':').padEnd(17))}${value}`)
+    }
+    cli.log()
+  }
 }
 
 async function printAccountQuota(context, heroku, app, account) {
