@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default-member */
 import * as Heroku from '@heroku-cli/schema'
 import {runCommand} from '@heroku-cli/test-utils'
-import {hux} from '@heroku/heroku-cli-util'
+import ansis from 'ansis'
 import {expect} from 'chai'
 import inquirer from 'inquirer'
 import mockStdin from 'mock-stdin'
@@ -10,7 +10,7 @@ import sinon from 'sinon'
 
 import DataPgMigrate from '../../../../../src/commands/data/pg/migrate.js'
 import PoolConfig from '../../../../../src/lib/data/pool-config.js'
-import {DatabaseStatus, MigrationStatus} from '../../../../../src/lib/data/types.js'
+import {MigrationSourceStatus, MigrationStatus} from '../../../../../src/lib/data/types.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
   createdMigrationResponse,
@@ -26,7 +26,9 @@ import {
   pricingResponse,
   privateDbAttachment,
   shieldDbAttachment,
+  snapshotMigrationResponse,
   standardDbAttachment,
+  streamingMigrationResponse,
   targetAdvancedDbAttachment,
   targetAdvancedDbInfo,
   unavailableAdvancedDbAttachment,
@@ -39,13 +41,14 @@ describe('data:pg:migrate', function () {
   let createAddonStub: sinon.SinonStub
   let mockedStdinInput: string[] = []
   let poolConfigLeaderInteractiveConfigStub: sinon.SinonStub
+  let promptStub: sinon.SinonStub
   let stdin: mockStdin.MockSTDIN
 
   beforeEach(function () {
     createAddonStub = sinon.stub(DataPgMigrate.prototype, 'createAddon')
     poolConfigLeaderInteractiveConfigStub = sinon.stub(PoolConfig.prototype, 'leaderInteractiveConfig')
     stdin = mockStdin.stdin()
-    sinon.stub(DataPgMigrate.prototype, 'prompt').callsFake(async (...args: Parameters<typeof prompt>) => {
+    promptStub = sinon.stub(DataPgMigrate.prototype, 'prompt').callsFake(async (...args: Parameters<typeof prompt>) => {
       process.nextTick(() => {
         const input = mockedStdinInput.shift()
         if (input) {
@@ -64,228 +67,708 @@ describe('data:pg:migrate', function () {
     stdin.restore()
   })
 
-  describe('main menu loop, without configured migrations', function () {
-    it('hides the table output and shows the no migrations message', async function () {
+  describe('migration list and details', function () {
+    const migrationPath = `/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`
+
+    function mockMigrationState(migration = existentMigrationResponse, times = 1): {dataApi: nock.Scope, herokuApi: nock.Scope} {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .times(times)
+        .reply(200, [targetAdvancedDbAttachment, standardDbAttachment])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(migrationPath)
+        .times(times)
+        .reply(200, migration)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(times)
+        .reply(200, targetAdvancedDbInfo)
+
+      return {dataApi, herokuApi}
+    }
+
+    it('shows useful no-migrations copy and Configure, Refresh, and Exit choices', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
         .reply(200, [])
-
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
+      promptStub.resetBehavior()
+      promptStub.resolves({action: '__exit'})
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).not.to.match(/Source Database\s+Destination Database\s+Status/)
       expect(stdout).to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
+      const {choices} = promptStub.firstCall.args[0]
+      expect(choices.map((choice: {name?: string}) => ansis.strip(choice.name ?? '')).filter(Boolean)).to.deep.equal([
+        'Configure a new migration',
+        'Refresh',
+        'Exit',
+      ])
+      expect(choices[0].disabled).to.contain('no classic Postgres databases pending migration')
     })
 
-    it('enables configuring a new migration option when there are classic databases owned by the app', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          standardDbAttachment,
-        ])
+    it('presents migrations as selectable one-line summaries before main actions', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      promptStub.resetBehavior()
+      promptStub.resolves({action: '__exit'})
 
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      herokuApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('Configure a database migration')
-      expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
-    })
-
-    it('disables configuring a new migration option when there are no classic databases owned by the app', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          foreignStandardDbAttachment,
-        ])
-
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      herokuApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a database migration (no classic Postgres databases pending migration on ⬢ myapp)')
-    })
-
-    it('disables the start and cancel migration options', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(404, {
-          id: 'not_found',
-          message: 'Add-on not found',
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, nonTargetAdvancedDbInfo)
-
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Start a migration (no ready migrations on ⬢ myapp)')
-      expect(stdout).to.contain('- Cancel a migration (no ready migrations on ⬢ myapp)')
+      const {choices} = promptStub.firstCall.args[0]
+      expect(ansis.strip(choices[0].name)).to.equal('⛁ postgresql-cubic-12345 -> ⛁ postgresql-lively-12345 | Snapshot | Ready to copy data')
+      expect(choices[0].value).to.equal(snapshotMigrationResponse.id)
+      expect(ansis.strip(choices[1].name)).to.equal('Configure a new migration')
+      expect(choices[2].name).to.equal('Refresh')
     })
-  })
 
-  describe('main menu loop, with configured migrations', function () {
-    it('shows the configured migrations table', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
+    it('refreshes the main migration list', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse, 2)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: '__refresh'})
+      promptStub.onSecondCall().resolves({action: '__exit'})
 
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).not.to.contain('There are no migrations configured for ⬢ myapp yet.')
-      expect(stdout).to.match(/Source Database\s+Destination Database\s+Status/)
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing/)
+      expect(promptStub.callCount).to.equal(2)
     })
 
-    it('disables configuring a new migration option when there are no additional classic databases pending migration', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
+    it('does not infer Start and Cancel actions from READY', async function () {
+      const readyMigration = {...existentMigrationResponse, status: MigrationStatus.READY}
+      const {dataApi, herokuApi} = mockMigrationState(readyMigration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: readyMigration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
 
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.match(/Method:\s+Unknown/)
+      expect(stdout).to.match(/Status:\s+Ready/)
+      const detailChoices = promptStub.secondCall.args[0].choices
+      expect(detailChoices.map((choice: {name?: string}) => choice.name).filter(Boolean)).to.deep.equal([
+        'Watch status',
+        'Refresh status',
+        'Back to migrations',
+        'Exit',
+      ])
     })
 
-    it('enables configuring a new migration option when there are additional classic databases pending migration', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          targetAdvancedDbAttachment,
-          premiumDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('Configure a database migration')
-      expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
-    })
-
-    it('disables the start and cancel migration options if there are no ready migrations', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .persist(true)
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-      const nonReadyStatuses = Object.values(MigrationStatus).filter(status => status !== MigrationStatus.READY)
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter for each non-ready status
-      mockedStdinInput = Array.from({length: nonReadyStatuses.length}, () => '\u001B[A\n')
-
-      for (const status of nonReadyStatuses) {
-        dataApi
-          .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-          .reply(200, {
-            ...existentMigrationResponse,
-            status,
-          })
-          .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-          .reply(200, targetAdvancedDbInfo)
-
-        // eslint-disable-next-line no-await-in-loop
-        const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-        dataApi.done()
-        expect(stderr).to.equal('')
-        expect(stdout).to.match(new RegExp(`⛁ postgresql-cubic-12345\\s+⛁ postgresql-lively-12345\\s+${status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(status.toString())}`))
-        expect(stdout).to.contain('- Start a migration (no ready migrations on ⬢ myapp)')
-        expect(stdout).to.contain('- Cancel a migration (no ready migrations on ⬢ myapp)')
+    it('shows Snapshot details and starts data copy using the run route', async function () {
+      const migratingMigration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.MIGRATING,
+        status_description: 'Data migration in progress',
       }
-
-      herokuApi.done()
-    })
-
-    it('enables the start and cancel migration options if there are ready migrations', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-        })
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      dataApi.post(`${migrationPath}/run`).reply(202, migratingMigration)
+      promptStub.resetBehavior()
+      promptStub.onCall(0).resolves({action: snapshotMigrationResponse.id})
+      promptStub.onCall(1).resolves({action: '__start_migration'})
+      promptStub.onCall(2).resolves({action: '__confirm'})
+      promptStub.onCall(3).resolves({action: '__exit'})
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
-      expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Ready/)
-      expect(stdout).to.contain('Start a migration')
-      expect(stdout).to.contain('Cancel a migration')
-      expect(stdout).not.to.contain('no ready migrations on ⬢ myapp')
+      expect(stdout).to.match(/Method:\s+Snapshot/)
+      expect(stdout).to.match(/Status:\s+Ready to copy data/)
+      expect(stdout).not.to.contain('Data copy progress:')
+      expect(promptStub.secondCall.args[0].pageSize).to.equal(promptStub.secondCall.args[0].choices.length)
+      expect(stdout).to.contain('Starting data copy makes your source database ⛁ postgresql-cubic-12345 unavailable')
+      expect(stdout).to.match(/Status:\s+Data migration in progress/)
+      expect(promptStub.getCall(3).args[0].message).to.equal('What do you want to do?:')
+      expect(stderr).to.equal('Starting data copy from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+    })
+
+    it('shows Streaming details and starts cutover using the run route', async function () {
+      const migratingMigration = {
+        ...streamingMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.MIGRATING,
+        status_description: 'Cutover in progress',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(streamingMigrationResponse)
+      dataApi.post(`${migrationPath}/run`).reply(202, migratingMigration)
+      promptStub.resetBehavior()
+      promptStub.onCall(0).resolves({action: streamingMigrationResponse.id})
+      promptStub.onCall(1).resolves({action: '__start_migration'})
+      promptStub.onCall(2).resolves({action: '__confirm'})
+      promptStub.onCall(3).resolves({action: '__exit'})
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Method:\s+Streaming/)
+      expect(stdout).to.match(/Status:\s+Streaming changes; ready to start cutover: 3s replication lag/)
+      expect(stdout).not.to.contain('Replication lag:')
+      expect(stdout).to.contain('Starting cutover requests the migration to wait for replication to catch up')
+      expect(stdout).to.contain('Writers must remain stopped until cutover is complete.')
+      expect(stdout).to.match(/Status:\s+Cutover in progress/)
+      expect(promptStub.getCall(3).args[0].message).to.equal('What do you want to do?:')
+      expect(stderr).to.equal('Starting cutover from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+    })
+
+    it('cancels a migration using the cancel route', async function () {
+      const cancellingMigration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.CANCELLING,
+        status_description: 'Restoring source database access',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      dataApi.post(`${migrationPath}/cancel`).reply(202, cancellingMigration)
+      promptStub.resetBehavior()
+      promptStub.onCall(0).resolves({action: snapshotMigrationResponse.id})
+      promptStub.onCall(1).resolves({action: '__cancel_migration'})
+      promptStub.onCall(2).resolves({action: '__confirm'})
+      promptStub.onCall(3).resolves({action: '__exit'})
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.contain('After canceling, you must create a new migration configuration')
+      expect(stdout).to.match(/Status:\s+Restoring source database access/)
+      expect(promptStub.getCall(3).args[0].message).to.equal('What do you want to do?:')
+      expect(stderr).to.equal('Canceling migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+    })
+
+    it('omits mutation actions when enhanced capabilities are false', async function () {
+      const migration = {...snapshotMigrationResponse, can_cancel: false, can_start: false}
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      const detailChoices = promptStub.secondCall.args[0].choices
+      expect(detailChoices.map((choice: {name?: string}) => choice.name).filter(Boolean)).to.deep.equal([
+        'Watch status',
+        'Refresh status',
+        'Back to migrations',
+        'Exit',
+      ])
+    })
+
+    it('refreshes only the selected migration when Watch status is used without a TTY', async function () {
+      const updatedMigration = {
+        ...snapshotMigrationResponse,
+        full_load_progress: 64,
+        status_description: 'Copying data',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      dataApi.get(migrationPath).reply(200, updatedMigration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: snapshotMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Status:\s+Copying data/)
+      expect(stdout).not.to.contain('Data copy progress:')
+      expect(promptStub.thirdCall.args[0].message).to.equal('What do you want to do?:')
+    })
+
+    it('continues through intermediate statuses and exits when Start becomes available', async function () {
+      const initialMigration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.CREATING_TARGET,
+        status_description: 'Preparing destination database',
+      }
+      const preparingMigration = {
+        ...initialMigration,
+        can_cancel: true,
+        status: MigrationStatus.PREPARING,
+        status_description: 'Provisioning migration infrastructure',
+      }
+      const readyMigration = {
+        ...snapshotMigrationResponse,
+        status_description: 'Ready to copy data',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(initialMigration)
+      dataApi
+        .get(migrationPath)
+        .reply(200, preparingMigration)
+        .get(migrationPath)
+        .reply(200, readyMigration)
+      const waitForWatchInputStub = sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('timeout')
+      const setRawModeSpy = sinon.spy(process.stdin as NodeJS.ReadStream, 'setRawMode')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: initialMigration.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(waitForWatchInputStub.callCount).to.equal(2)
+      expect(setRawModeSpy.firstCall.calledWith(true)).to.equal(true)
+      expect(setRawModeSpy.lastCall.calledWith(false)).to.equal(true)
+      expect(stdout).to.contain('Watching status every 5 seconds. Press any key to stop.')
+      expect(stdout).to.match(/Status:\s+Provisioning migration infrastructure/)
+      expect(promptStub.thirdCall.args[0].choices.map((choice: {name?: string}) => choice.name).filter(Boolean)).to.deep.equal([
+        'Start data copy',
+        'Cancel migration',
+        'Watch status',
+        'Refresh status',
+        'Back to migrations',
+        'Exit',
+      ])
+    })
+
+    it('continues through finalization and exits on a terminal status', async function () {
+      const migratingMigration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.MIGRATING,
+        status_description: 'Copying data',
+      }
+      const promotingMigration = {
+        ...migratingMigration,
+        status: MigrationStatus.PROMOTING,
+        status_description: 'Finalizing migration',
+      }
+      const completedMigration = {
+        ...promotingMigration,
+        completed: true,
+        status: MigrationStatus.COMPLETED,
+        status_description: 'Data migration complete; ready to verify destination',
+        successful: true,
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migratingMigration)
+      dataApi
+        .get(migrationPath)
+        .reply(200, promotingMigration)
+        .get(migrationPath)
+        .reply(200, completedMigration)
+      const waitForWatchInputStub = sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('timeout')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migratingMigration.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(waitForWatchInputStub.callCount).to.equal(2)
+      expect(stdout).to.match(/Status:\s+Finalizing migration/)
+      expect(promptStub.thirdCall.args[0].choices.map((choice: {name?: string}) => choice.name).filter(Boolean)).to.deep.equal([
+        'Refresh status',
+        'Back to migrations',
+        'Exit',
+      ])
+    })
+
+    it('continues through cancellation cleanup and exits when cancellation completes', async function () {
+      const cancellingMigration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.CANCELLING,
+        status_description: 'Restoring source database access',
+      }
+      const cancelledMigration = {
+        ...cancellingMigration,
+        status: MigrationStatus.CANCELLED,
+        status_description: 'Migration cancelled',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      dataApi
+        .get(migrationPath)
+        .reply(200, cancellingMigration)
+        .get(migrationPath)
+        .reply(200, cancelledMigration)
+      const waitForWatchInputStub = sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('timeout')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: snapshotMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(waitForWatchInputStub.callCount).to.equal(2)
+      expect(stdout).to.match(/Status:\s+Restoring source database access/)
+      expect(promptStub.thirdCall.args[0].choices.map((choice: {name?: string}) => choice.name).filter(Boolean)).to.deep.equal([
+        'Refresh status',
+        'Back to migrations',
+        'Exit',
+      ])
+    })
+
+    it('retries temporary 503 responses while watching', async function () {
+      const initialMigration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.MIGRATING,
+        status_description: 'Copying data',
+      }
+      const updatedMigration = {
+        ...initialMigration,
+        completed: true,
+        status: MigrationStatus.COMPLETED,
+        status_description: 'Data migration complete; ready to verify destination',
+        successful: true,
+      }
+      const {dataApi, herokuApi} = mockMigrationState(initialMigration)
+      dataApi
+        .get(migrationPath)
+        .twice()
+        .reply(503, {id: 'service_unavailable', message: 'Service unavailable'})
+        .get(migrationPath)
+        .reply(200, updatedMigration)
+      const waitForWatchInputStub = sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('timeout')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: initialMigration.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {error, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(error).to.equal(undefined)
+      expect(waitForWatchInputStub.callCount).to.equal(3)
+      expect(stdout).to.match(/Status:\s+Copying data/)
+    })
+
+    it('fails after repeated 503 responses while watching', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      dataApi
+        .get(migrationPath)
+        .times(13)
+        .reply(503, {id: 'service_unavailable', message: 'Service unavailable'})
+      const waitForWatchInputStub = sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('timeout')
+      const setRawModeSpy = sinon.spy(process.stdin as NodeJS.ReadStream, 'setRawMode')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: snapshotMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+
+      const {error} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(error?.message).to.contain('Service unavailable')
+      expect(waitForWatchInputStub.callCount).to.equal(13)
+      expect(setRawModeSpy.lastCall.calledWith(false)).to.equal(true)
+    })
+
+    it('stops watching on a keypress without polling and restores terminal input', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      const waitForWatchInputStub = sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('keypress')
+      const setRawModeSpy = sinon.spy(process.stdin as NodeJS.ReadStream, 'setRawMode')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: snapshotMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(waitForWatchInputStub.calledOnce).to.equal(true)
+      expect(setRawModeSpy.firstCall.calledWith(true)).to.equal(true)
+      expect(setRawModeSpy.lastCall.calledWith(false)).to.equal(true)
+      expect(stdout).to.contain('Watching status every 5 seconds. Press any key to stop.')
+    })
+
+    it('treats Ctrl+C as an interrupt and restores terminal input', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      sinon.stub(DataPgMigrate.prototype as unknown as {waitForWatchInput: () => Promise<string>}, 'waitForWatchInput').resolves('interrupt')
+      const setRawModeSpy = sinon.spy(process.stdin as NodeJS.ReadStream, 'setRawMode')
+      sinon.define(process.stdin, 'isTTY', true)
+      sinon.define(process.stdout, 'isTTY', true)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: snapshotMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__watch'})
+
+      const {error} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(error?.message).to.equal('SIGINT')
+      expect(setRawModeSpy.firstCall.calledWith(true)).to.equal(true)
+      expect(setRawModeSpy.lastCall.calledWith(false)).to.equal(true)
+    })
+
+    it('uses status description and then status', async function () {
+      const statusDescriptionMigration = {
+        ...existentMigrationResponse,
+        status_description: 'Detailed status',
+      }
+      const statusMigration = {...statusDescriptionMigration, status_description: null}
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .times(2)
+        .reply(200, [targetAdvancedDbAttachment, standardDbAttachment])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(migrationPath)
+        .reply(200, statusDescriptionMigration)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
+        .reply(200, targetAdvancedDbInfo)
+        .get(migrationPath)
+        .reply(200, statusMigration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: statusDescriptionMigration.id})
+      promptStub.onSecondCall().resolves({action: '__refresh'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Status:\s+Detailed status/)
+      expect(stdout).to.match(/Status:\s+Preparing/)
+    })
+
+    it('uses status descriptions for terminal migrations', async function () {
+      const migration = {
+        ...existentMigrationResponse,
+        status: MigrationStatus.FAILED,
+        status_description: 'Migration failed',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Status:\s+Migration failed/)
+      expect(ansis.strip(promptStub.firstCall.args[0].choices[0].name)).to.contain('| Migration failed')
+    })
+
+    it('shows source status beside the source database', async function () {
+      const migration = {...existentMigrationResponse, source_status: MigrationSourceStatus.DISABLED}
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(ansis.strip(stdout)).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(disabled\)/)
+    })
+
+    it('does not show raw error details', async function () {
+      const migration = {
+        ...existentMigrationResponse,
+        last_error_message: 'Internal migration error details',
+        tables_errored: 3,
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Tables errored:\s+3/)
+      expect(stdout).not.to.contain('Error:')
+      expect(stdout).not.to.contain('Internal migration error details')
+    })
+
+    it('shows the failure summary in the status without raw failure details', async function () {
+      const migration = {
+        ...existentMigrationResponse,
+        failure_reason: {
+          category: 'target-load-failed',
+          details: {message_tail: 'Internal DMS error details'},
+          summary: 'DMS target load failed',
+        },
+        status: MigrationStatus.FAILED,
+        status_description: 'Migration failed',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Status:\s+Migration failed \(DMS target load failed\)/)
+      expect(stdout).not.to.contain('Failure reason:')
+      expect(stdout).not.to.contain('target-load-failed')
+      expect(stdout).not.to.contain('Internal DMS error details')
+    })
+
+    it('shows the compact pre-assessment summary', async function () {
+      const migration = {
+        ...existentMigrationResponse,
+        preassessment: {failure_count: 3, status: 'completed' as const, warning_count: 2},
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Pre-assessment:\s+Found 3 blocking issues and 2 warnings/)
+      const detailLines = ansis.strip(stdout).split('\n').filter(line => /^(Source|Destination|Method|Status|Pre-assessment):/.test(line))
+      expect(detailLines.every(line => line === line.trimEnd())).to.equal(true)
+    })
+
+    it('shows a successful pre-assessment with warnings', async function () {
+      const migration = {
+        ...existentMigrationResponse,
+        preassessment: {failure_count: 0, status: 'completed' as const, warning_count: 1},
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.match(/Pre-assessment:\s+Passed with 1 warning/)
+    })
+
+    it('does not show backend stop reasons', async function () {
+      const migration = {...existentMigrationResponse, stop_reason: 'Stop Reason RECOVERABLE_ERROR'}
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: migration.id})
+      promptStub.onSecondCall().resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).not.to.contain('Stop reason:')
+      expect(stdout).not.to.contain('Stop Reason RECOVERABLE_ERROR')
+    })
+
+    it('omits canceled migrations from the main list', async function () {
+      const migration = {
+        ...snapshotMigrationResponse,
+        can_cancel: false,
+        can_start: false,
+        status: MigrationStatus.CANCELLED,
+        status_description: 'Migration cancelled',
+      }
+      const {dataApi, herokuApi} = mockMigrationState(migration)
+      promptStub.resetBehavior()
+      promptStub.resolves({action: '__exit'})
+
+      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stdout).to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
+      const {choices} = promptStub.firstCall.args[0]
+      expect(choices.some((choice: {value: string}) => choice.value === migration.id)).to.equal(false)
+      expect(choices.map((choice: {name?: string}) => ansis.strip(choice.name ?? '')).filter(Boolean)).to.deep.equal([
+        'Configure a new migration',
+        'Refresh',
+        'Exit',
+      ])
+    })
+
+    it('supports Back to migrations and Exit from details', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(existentMigrationResponse, 2)
+      promptStub.resetBehavior()
+      promptStub.onCall(0).resolves({action: existentMigrationResponse.id})
+      promptStub.onCall(1).resolves({action: '__back'})
+      promptStub.onCall(2).resolves({action: existentMigrationResponse.id})
+      promptStub.onCall(3).resolves({action: '__exit'})
+
+      await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(promptStub.callCount).to.equal(4)
+    })
+
+    it('returns to the main list when a refreshed migration no longer exists', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .times(3)
+        .reply(200, [targetAdvancedDbAttachment, standardDbAttachment])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(migrationPath)
+        .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(3)
+        .reply(200, targetAdvancedDbInfo)
+        .get(migrationPath)
+        .twice()
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: existentMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__refresh'})
+      promptStub.onThirdCall().resolves({action: '__exit'})
+
+      await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(promptStub.thirdCall.args[0].message).to.equal('Select a migration or action:')
+    })
+
+    it('stops the mutation spinner when the run request fails', async function () {
+      const {dataApi, herokuApi} = mockMigrationState(snapshotMigrationResponse)
+      dataApi.post(`${migrationPath}/run`).reply(500, {id: 'server_error', message: 'Migration failed to start'})
+      promptStub.resetBehavior()
+      promptStub.onFirstCall().resolves({action: snapshotMigrationResponse.id})
+      promptStub.onSecondCall().resolves({action: '__start_migration'})
+      promptStub.onThirdCall().resolves({action: '__confirm'})
+
+      const {error, stderr} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(error?.message).to.contain('Migration failed to start')
+      expect(stderr).to.equal('Starting data copy from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... failed\n')
     })
   })
 
@@ -358,11 +841,11 @@ describe('data:pg:migrate', function () {
     it('creates a new migration configuration when confirmed', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Migration details: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -371,18 +854,19 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('By continuing, we prepare the necessary steps for the migration.')
       expect(stdout).to.contain('Preparing the migration deletes all the data on the destination database ⛁ postgresql-obscured-12345.')
       expect(stderr).to.equal('Configuring migration... done\n')
-      // Verify the new migration is shown on the configured migrations table
-      expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Preparing/)
+      expect(stdout).to.contain('=== Migration details')
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345/)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345/)
     })
 
     it('shows the expected list of source databases', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -409,11 +893,11 @@ describe('data:pg:migrate', function () {
     it('shows the expected list of target databases', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -440,7 +924,7 @@ describe('data:pg:migrate', function () {
     it('allows the user to navigate back on every step', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n',         // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n',         // Select source database: > Premium database
         '\n',         // Select target database: > Non-target Advanced database
         '\u001B[A\n', // Confirm migration configuration: > Go back
@@ -448,7 +932,7 @@ describe('data:pg:migrate', function () {
         '\n',         // Select source database: > Premium database
         '\n',         // Select target database: > Non-target Advanced database
         '\n',         // Confirm migration configuration: > Confirm
-        '\n',         // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -499,11 +983,11 @@ describe('data:pg:migrate', function () {
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Non-target Advanced database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
@@ -573,11 +1057,11 @@ describe('data:pg:migrate', function () {
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Premium database
         '\n', // Select target database: > Create database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -645,11 +1129,11 @@ describe('data:pg:migrate', function () {
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Private database
         '\n', // Select target database: > Create database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -717,11 +1201,11 @@ describe('data:pg:migrate', function () {
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a database migration
         '\n', // Select source database: > Shield database
         '\n', // Select target database: > Create database
         '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -741,204 +1225,6 @@ describe('data:pg:migrate', function () {
           level: '4G-Performance',
         },
       })
-    })
-  })
-
-  describe('start a migration', function () {
-    let herokuApi: nock.Scope
-    let dataApi: nock.Scope
-
-    beforeEach(function () {
-      herokuApi = nock('https://api.heroku.com')
-        .persist(true)
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
-        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
-        .reply(202, {})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.MIGRATING,
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
-    })
-
-    afterEach(function () {
-      herokuApi.done()
-      dataApi.done()
-      nock.cleanAll()
-    })
-
-    it('starts the migration', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      // Verify the confirmation message is displayed
-      expect(stdout).to.contain('Your database ⛁ postgresql-cubic-12345 will be unavailable after starting the migration until the migration is complete.')
-      expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
-    })
-
-    it('shows the expected list of migrations to choose from', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      const migrationList = stdout.match(/(?<=Select the migration to start: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
-      // The ready migration should appear in the list
-      expect(migrationList).to.contain('From ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345')
-      // The non-ready migration should not appear in the list
-      expect(migrationList).not.to.contain('From ⛁ postgresql-convex-12345 to ⛁ postgresql-obscured-12345')
-    })
-
-    it('allows the user to navigate back on every step', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\u001B[A\n', // Confirm migration start: > Go back
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      expect(stdout.match(/Select the migration to start: \(Use arrow keys\)/g)?.length).to.equal(2)
-      expect(stdout.match(/Confirm to start migration: \(Use arrow keys\)/g)?.length).to.equal(2)
-    })
-  })
-
-  describe('cancel a migration', function () {
-    let herokuApi: nock.Scope
-    let dataApi: nock.Scope
-
-    beforeEach(function () {
-      herokuApi = nock('https://api.heroku.com')
-        .persist(true)
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
-        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
-        .reply(202, {})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.CANCELLED,
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...targetAdvancedDbInfo, status: DatabaseStatus.AVAILABLE})
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
-    })
-
-    afterEach(function () {
-      herokuApi.done()
-      dataApi.done()
-      nock.cleanAll()
-    })
-
-    it('cancels the migration', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Cancel a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration cancel: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      // Verify the confirmation message is displayed
-      expect(stdout).to.contain('After canceling, you must create a new migration configuration')
-      expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
-    })
-
-    it('shows the expected list of migrations to choose from', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Cancel a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration cancel: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      const migrationList = stdout.match(/(?<=Select the migration to cancel: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
-      // The ready migration should appear in the list
-      expect(migrationList).to.contain('From ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345')
-      // The non-ready migration should not appear in the list
-      expect(migrationList).not.to.contain('From ⛁ postgresql-convex-12345 to ⛁ postgresql-obscured-12345')
-    })
-
-    it('allows the user to navigate back on every step', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Cancel a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\u001B[A\n', // Confirm migration cancel: > Go back
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration cancel: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      expect(stdout.match(/Select the migration to cancel: \(Use arrow keys\)/g)?.length).to.equal(2)
-      expect(stdout.match(/Confirm to cancel migration: \(Use arrow keys\)/g)?.length).to.equal(2)
     })
   })
 
@@ -987,7 +1273,7 @@ describe('data:pg:migrate', function () {
         '\n',  // Select target database
         '\n',  // Select snapshot method (first option, default)
         '\n',  // Confirm migration
-        '\n',  // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1021,7 +1307,7 @@ describe('data:pg:migrate', function () {
         '\n',          // Select target database
         '\u001B[B\n',  // Select streaming option from method selection
         '\n',          // Confirm migration
-        '\n',          // Main menu: > Exit
+        '\u001B[A\n',  // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1092,7 +1378,7 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n',  // Confirm migration configuration: > Go back
         '\n',          // Select snapshot method (second selection, default)
         '\n',          // Confirm migration
-        '\n',          // Main menu: > Exit
+        '\u001B[A\n',  // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1132,7 +1418,7 @@ describe('data:pg:migrate', function () {
         '\n',  // Select source database
         '\n',  // Select target database
         '\n',  // Confirm migration (no method selection prompt)
-        '\n',  // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, [
@@ -1170,7 +1456,7 @@ describe('data:pg:migrate', function () {
         '\n',  // Select source database
         '\n',  // Select target database
         '\n',  // Confirm migration (no method selection prompt)
-        '\n',  // Main menu: > Exit
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, [

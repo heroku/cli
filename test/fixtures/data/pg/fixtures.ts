@@ -10,7 +10,9 @@ import {
   DatabaseStatus,
   DeepRequired,
   InfoResponse,
+  MigrationMethod,
   MigrationResponse,
+  MigrationSourceStatus,
   MigrationStatus,
   NonAdvancedCredentialInfo,
   PoolInfoResponse,
@@ -1413,14 +1415,25 @@ export const unavailableAdvancedDbAttachment = {
 } as unknown as pg.ExtendedAddonAttachment
 
 export const existentMigrationResponse: MigrationResponse = {
-  auto_promote: false,
+  auto_promote: true,
+  can_cancel: false,
+  can_start: false,
   cdc_lag: null,
   completed: false,
+  failure_reason: null,
   full_load_progress: 0,
   id: '575ec110-0e86-4f68-82d3-64d100a6dcec',
   last_error_message: null,
+  migration_strategy: null,
+  preassessment: {
+    failure_count: 0,
+    status: 'pending',
+    warning_count: 0,
+  },
   preassessment_results: [],
+  requested_method: null,
   source_id: 'ae4bac9d-99b5-4496-97dc-7b71a9d20999', // Standard DB
+  source_status: MigrationSourceStatus.AVAILABLE,
   status: MigrationStatus.PREPARING,
   status_description: null,
   stop_reason: null,
@@ -1430,20 +1443,61 @@ export const existentMigrationResponse: MigrationResponse = {
 }
 
 export const createdMigrationResponse: MigrationResponse = {
-  auto_promote: false,
+  auto_promote: true,
+  can_cancel: false,
+  can_start: false,
   cdc_lag: null,
   completed: false,
+  failure_reason: null,
   full_load_progress: 0,
   id: 'eb07b33c-f90a-4f7d-9c56-12c10c277121',
   last_error_message: null,
+  migration_strategy: null,
+  preassessment: {
+    failure_count: 0,
+    status: 'pending',
+    warning_count: 0,
+  },
   preassessment_results: [],
+  requested_method: null,
   source_id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054', // Premium DB
+  source_status: MigrationSourceStatus.AVAILABLE,
   status: MigrationStatus.PREPARING,
   status_description: null,
   stop_reason: null,
   successful: false,
   tables_errored: 0,
   target_id: 'cc1995da-f3c2-4f9f-a805-fb0500257818', // Non Target Advanced DB
+}
+
+export const snapshotMigrationResponse: MigrationResponse = {
+  ...existentMigrationResponse,
+  auto_promote: false,
+  can_cancel: true,
+  can_start: true,
+  failure_reason: null,
+  full_load_progress: 42,
+  migration_strategy: 'dms_migrate',
+  preassessment: {
+    failure_count: 0,
+    status: 'completed',
+    warning_count: 0,
+  },
+  requested_method: MigrationMethod.FULL_LOAD,
+  status: MigrationStatus.READY,
+  status_description: 'Ready to copy data',
+}
+
+export const streamingMigrationResponse: MigrationResponse = {
+  ...existentMigrationResponse,
+  auto_promote: false,
+  can_cancel: true,
+  can_start: true,
+  cdc_lag: 3,
+  migration_strategy: 'dms_migrate_cdc',
+  requested_method: MigrationMethod.CDC,
+  status: MigrationStatus.READY,
+  status_description: 'Streaming changes; ready to start cutover: 3s replication lag',
 }
 
 export const targetAdvancedDbInfo: InfoResponse = {

@@ -24,6 +24,7 @@ export enum MaintenanceStatus {
 
 export enum MigrationStatus {
   CANCELLED = 'cancelled',
+  CANCELLING = 'cancelling',
   COMPLETED = 'completed',
   CREATING_TARGET = 'creating_target',
   FAILED = 'failed',
@@ -37,6 +38,26 @@ export enum MigrationStatus {
 export enum MigrationMethod {
   CDC = 'cdc',
   FULL_LOAD = 'full-load',
+}
+
+export enum MigrationSourceStatus {
+  AVAILABLE = 'available',
+  DISABLED = 'disabled',
+  DISABLING = 'disabling',
+  RESTORING = 'restoring',
+  UNKNOWN = 'unknown',
+}
+
+export type MigrationFailureReason = {
+  category: string
+  details: unknown
+  summary: string
+}
+
+export type MigrationPreassessment = {
+  failure_count: number
+  status: 'completed' | 'error' | 'pending' | 'running' | 'unavailable'
+  warning_count: number
 }
 
 export enum PoolStatus {
@@ -165,13 +186,20 @@ export type UpgradeResponse = {
 
 export type MigrationResponse = {
   auto_promote: boolean
+  can_cancel: boolean
+  can_start: boolean
   cdc_lag: null | number
   completed: boolean
+  failure_reason: MigrationFailureReason | null
   full_load_progress: null | number
   id: string
   last_error_message: null | string
+  migration_strategy: null | string
+  preassessment: MigrationPreassessment
   preassessment_results: PreassessmentResults
+  requested_method: MigrationMethod | null
   source_id: string
+  source_status: MigrationSourceStatus
   status: MigrationStatus
   status_description: null | string
   stop_reason: null | string

@@ -6,6 +6,7 @@ import {
 } from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
 import {ux} from '@oclif/core'
+import ansiEscapes from 'ansi-escapes'
 import inquirer, {DistinctChoice, ListChoiceMap} from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
@@ -24,6 +25,8 @@ import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
 
 const heredoc = tsheredoc.default
+const WATCH_INTERVAL_MS = 5000
+const WATCH_MAX_SERVICE_UNAVAILABLE_RETRIES = 12
 
 const {prompt, Separator} = inquirer
 
@@ -70,116 +73,73 @@ export default class DataPgMigrate extends BaseCommand {
       ${color.gray('Press Ctrl+C to cancel')}
     `)
 
-    let action: string | undefined
-    do {
-      action = await this.loopMainMenu(app)
+    let exit = false
+    while (!exit) {
+      const action = await this.loopMainMenu(app)
       switch (action) {
-        case '__cancel_migration': {
-          await this.actOnReadyMigration('cancel')
-          break
-        }
-
         case '__configure_migration': {
-          await this.configureMigration()
+          const migration = await this.configureMigration()
+          if (migration) {
+            await this.refreshState(app)
+            if (!this.migrationTargets.some(candidate => candidate.id === migration.id)) this.replaceMigration(migration)
+            const detailAction = await this.loopMigrationDetails(app, migration.id)
+            exit = detailAction === '__exit'
+          }
+
           break
         }
 
         case '__exit': {
+          exit = true
           break
         }
 
-        case '__start_migration': {
-          await this.actOnReadyMigration('start')
-          break
-        }
-      }
-    } while (action !== '__exit')
-  }
-
-  // eslint-disable-next-line complexity
-  private async actOnReadyMigration(migrationAction: 'cancel' | 'start'): Promise<void> {
-    const readyMigrations = this.migrationTargets.filter(migration => migration.status === MigrationStatus.READY)
-    let currentStep = '__select_migration'
-    let selectedMigrationId: string | undefined
-
-    while (currentStep !== '__exit') {
-      switch (currentStep) {
-        case '__confirm_action': {
-          const selectedMigration = readyMigrations.find(migration => migration.id === selectedMigrationId)!
-          const sourceDatabase = this.classicDatabases.find(db => db.id === selectedMigration.source_id)
-          const targetDatabase = this.advancedDatabases.find(db => db.id === selectedMigration.target_id)
-
-          if (migrationAction === 'start') {
-            ux.stdout(color.info(heredoc`
-
-            Your database ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} will be unavailable after starting the migration until the migration is complete.
-            If there are any issues during the migration, we end the migration and make the source database available again.
-            The database ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} can be offline for several hours during the migration.
-            You'll receive an email when the migration is complete.
-            You can't cancel the migration after starting it.
-
-          `))
-          } else {
-            ux.stdout(color.info(heredoc`
-
-            After canceling, you must create a new migration configuration and wait for the migration tooling to finish preparing to
-            migrate ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} again.
-
-          `))
-          }
-
-          const {action} = await this.prompt<{action: string}>({
-            choices: [
-              {name: 'Confirm', value: '__confirm'},
-              {name: 'Go back', value: '__go_back'},
-            ],
-            message: `Confirm to ${migrationAction} migration:`,
-            name: 'action',
-            type: 'list',
-          })
-          if (action === '__go_back') {
-            currentStep = '__select_migration'
-          } else if (action === '__confirm') {
-            ux.stdout()
-            ux.action.start(`${migrationAction === 'start' ? 'Starting' : 'Canceling'} migration of ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} `
-              + `to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}`)
-            await this.dataApi.post(`/data/postgres/v1/${selectedMigration.target_id}/migrations/${migrationAction === 'start' ? 'run' : 'cancel'}`)
-            ux.action.stop()
-            currentStep = '__exit'
-          }
-
+        case '__refresh': {
           break
         }
 
-        case '__select_migration': {
-          const choices: Array<DistinctChoice<{migration: string}, ListChoiceMap<{migration: string}>>> = []
-          for (const migration of readyMigrations) {
-            const sourceDatabase = this.classicDatabases.find(db => db.id === migration.source_id)
-            const targetDatabase = this.advancedDatabases.find(db => db.id === migration.target_id)
-            const name = `From ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}`
-            choices.push({
-              name,
-              value: migration.id,
-            })
-          }
-
-          choices.push(new Separator(), {name: 'Go back', value: '__go_back'})
-          selectedMigrationId = (await this.prompt<{migration: string}>({
-            choices,
-            message: `Select the migration to ${migrationAction}:`,
-            name: 'migration',
-            type: 'list',
-          })).migration
-
-          currentStep = selectedMigrationId === '__go_back' ? '__exit' : '__confirm_action'
-
-          break
+        default: {
+          const detailAction = await this.loopMigrationDetails(app, action)
+          exit = detailAction === '__exit'
         }
       }
     }
   }
 
-  private async configureMigration(): Promise<void> {
+  private async actOnMigration(migration: MigrationResponse, migrationAction: 'cancel' | 'start'): Promise<MigrationResponse | undefined> {
+    if (!await this.confirmMigrationAction(migration, migrationAction)) return undefined
+
+    const method = this.migrationMethod(migration)
+    let actionName = 'Starting migration'
+    if (migrationAction === 'cancel') actionName = 'Canceling migration'
+    else if (method === MigrationMethod.FULL_LOAD) actionName = 'Starting data copy'
+    else if (method === MigrationMethod.CDC) actionName = 'Starting cutover'
+    ux.stdout()
+    ux.action.start(`${actionName} from ${this.databaseName(migration.source_id)} to ${this.databaseName(migration.target_id)}`)
+    let failed = false
+    let updatedMigration: MigrationResponse
+    try {
+      const {body} = await this.dataApi.post<MigrationResponse>(`/data/postgres/v1/${migration.target_id}/migrations/${migrationAction === 'start' ? 'run' : 'cancel'}`)
+      updatedMigration = body
+    } catch (error) {
+      failed = true
+      throw error
+    } finally {
+      ux.action.stop(failed ? 'failed' : undefined)
+    }
+
+    return updatedMigration
+  }
+
+  private canCancelMigration(migration: MigrationResponse): boolean {
+    return migration.can_cancel === true
+  }
+
+  private canStartMigration(migration: MigrationResponse): boolean {
+    return migration.can_start === true
+  }
+
+  private async configureMigration(): Promise<MigrationResponse | undefined> {
     // When the method wasn't provided via the --method flag, clear any method
     // selected during a previous migration in this session so a stale value can
     // never reach the migration request if the interactive step is ever skipped.
@@ -191,6 +151,7 @@ export default class DataPgMigrate extends BaseCommand {
     let sourceDatabaseId: string | undefined
     let targetDatabaseId: string | undefined
     let targetDatabaseName: string | undefined
+    let migration: MigrationResponse | undefined
 
     const confirmMigration = async (): Promise<string> => {
       ux.stdout(color.info(heredoc`
@@ -218,8 +179,10 @@ export default class DataPgMigrate extends BaseCommand {
       ux.stdout(color.info(heredoc`
 
         Migration methods:
-        · Snapshot: Copies the data from the source database to the destination database. Requires downtime on the source database depending on the size. Best for smaller databases or when a maintenance window is acceptable.
-        · Streaming: Replicates changes from the source database to the destination database continuously until you start the migration. Requires minimal downtime. Best for larger databases or when you need near-zero downtime.
+        · Snapshot: Copies the data from the source database to the destination database. Requires downtime on the source database
+          depending on the size. Best for smaller databases or when a maintenance window is acceptable.
+        · Streaming: Replicates changes from the source database to the destination database continuously until you start the migration.
+          Requires minimal downtime. Best for larger databases or when you need near-zero downtime.
 
       `))
 
@@ -324,13 +287,22 @@ export default class DataPgMigrate extends BaseCommand {
           } else if (action === '__confirm') {
             ux.stdout('')
             ux.action.start('Configuring migration')
-            await this.dataApi.post<MigrationResponse>(`/data/postgres/v1/${targetDatabaseId}/migrations`, {
-              body: {
-                method: this.selectedMigrationMethod!,
-                source_id: sourceDatabaseId,
-              },
-            })
-            ux.action.stop()
+            let failed = false
+            try {
+              const {body} = await this.dataApi.post<MigrationResponse>(`/data/postgres/v1/${targetDatabaseId}/migrations`, {
+                body: {
+                  method: this.selectedMigrationMethod!,
+                  source_id: sourceDatabaseId,
+                },
+              })
+              migration = body
+            } catch (error) {
+              failed = true
+              throw error
+            } finally {
+              ux.action.stop(failed ? 'failed' : undefined)
+            }
+
             currentStep = '__exit'
           }
 
@@ -377,6 +349,66 @@ export default class DataPgMigrate extends BaseCommand {
         }
       }
     }
+
+    return migration
+  }
+
+  private async confirmMigrationAction(migration: MigrationResponse, migrationAction: 'cancel' | 'start'): Promise<boolean> {
+    const sourceDatabase = this.databaseName(migration.source_id)
+    const method = this.migrationMethod(migration)
+
+    if (migrationAction === 'cancel') {
+      ux.stdout(color.info(heredoc`
+
+        After canceling, you must create a new migration configuration and wait for the migration tooling to finish preparing to
+        migrate ${sourceDatabase} again.
+
+      `))
+    } else if (method === MigrationMethod.FULL_LOAD) {
+      ux.stdout(color.info(heredoc`
+
+        Starting data copy makes your source database ${sourceDatabase} unavailable until the copy is complete.
+        If there are any issues during the copy, we end the migration and make the source database available again.
+        The source database can be offline for several hours during the copy.
+        You'll receive an email when the migration is complete.
+        You can't cancel the migration after starting data copy.
+
+      `))
+    } else if (method === MigrationMethod.CDC) {
+      ux.stdout(color.info(heredoc`
+
+        Starting cutover requests the migration to wait for replication to catch up and then block the source database ${sourceDatabase}.
+        Stop all writers before continuing. Writers must remain stopped until cutover is complete.
+        You'll receive an email when the migration is complete.
+
+      `))
+    } else {
+      ux.stdout(color.info(heredoc`
+
+        Your database ${sourceDatabase} will be unavailable after starting the migration until the migration is complete.
+        If there are any issues during the migration, we end the migration and make the source database available again.
+        The database ${sourceDatabase} can be offline for several hours during the migration.
+        You'll receive an email when the migration is complete.
+        You can't cancel the migration after starting it.
+
+      `))
+    }
+
+    let actionName = 'start migration'
+    if (migrationAction === 'cancel') actionName = 'cancel migration'
+    else if (method === MigrationMethod.FULL_LOAD) actionName = 'start data copy'
+    else if (method === MigrationMethod.CDC) actionName = 'start cutover'
+    const {action} = await this.prompt<{action: string}>({
+      choices: [
+        {name: 'Confirm', value: '__confirm'},
+        {name: 'Go back', value: '__go_back'},
+      ],
+      message: `Confirm to ${actionName}:`,
+      name: 'action',
+      type: 'list',
+    })
+
+    return action === '__confirm'
   }
 
   private async createTargetDatabase(sourceDatabaseId: string): Promise<Heroku.AddOn | undefined> {
@@ -427,6 +459,41 @@ export default class DataPgMigrate extends BaseCommand {
     }
 
     return addon
+  }
+
+  private databaseName(databaseId: string): string {
+    const database = [...this.classicDatabases, ...this.advancedDatabases].find(db => db.id === databaseId)
+    return database ? color.datastore(database.name) : color.gray('unknown')
+  }
+
+  private displayMigrationDetails(migration: MigrationResponse): void {
+    ux.stdout(`${this.migrationDetails(migration)}\n`)
+  }
+
+  private formatFailureReason(failureReason: MigrationResponse['failure_reason']): string | undefined {
+    return typeof failureReason?.summary === 'string' ? failureReason.summary : undefined
+  }
+
+  private formatPreassessment(preassessment: MigrationResponse['preassessment']): string | undefined {
+    if (preassessment.status === 'pending') return 'Pending'
+    if (preassessment.status === 'running') return 'Running'
+    if (preassessment.status === 'error') return 'Could not complete'
+    if (preassessment.status === 'unavailable') return undefined
+
+    const failures = preassessment.failure_count
+    const warnings = preassessment.warning_count
+    if (failures > 0) {
+      const blockingIssues = `${failures} blocking ${failures === 1 ? 'issue' : 'issues'}`
+      return warnings > 0 ? `Found ${blockingIssues} and ${warnings} ${warnings === 1 ? 'warning' : 'warnings'}` : `Found ${blockingIssues}`
+    }
+
+    return warnings > 0 ? `Passed with ${warnings} ${warnings === 1 ? 'warning' : 'warnings'}` : 'Passed'
+  }
+
+  private formatStatus(status: string): string {
+    return status
+      .replaceAll(/[_-]+/g, ' ')
+      .replaceAll(/\b\w/g, character => character.toUpperCase())
   }
 
   private async getAppDatabases(app: string): Promise<void> {
@@ -491,89 +558,264 @@ export default class DataPgMigrate extends BaseCommand {
   }
 
   private isActiveMigration(migration: MigrationResponse): boolean {
-    return migration.status === MigrationStatus.CREATING_TARGET
+    return migration.status === MigrationStatus.CANCELLING
+      || migration.status === MigrationStatus.CREATING_TARGET
       || migration.status === MigrationStatus.PREPARING
       || migration.status === MigrationStatus.MIGRATING
       || migration.status === MigrationStatus.PROMOTING
       || migration.status === MigrationStatus.READY
   }
 
+  private isServiceUnavailable(error: unknown): boolean {
+    return error instanceof HerokuAPIError && error.http.statusCode === 503
+  }
+
   private async loopMainMenu(app: string): Promise<string> {
-    // Update our database lists
-    await this.getAppDatabases(app)
-    await this.getMigrationTargetsAndInfo()
+    await this.refreshState(app)
 
     const pendingMigrations = this.classicDatabases.filter(db => !this.migrationTargets.some(migration => migration.source_id === db.id && this.isActiveMigration(migration)))
+    const visibleMigrations = this.orderedMigrations().filter(migration => migration.status !== MigrationStatus.CANCELLED || this.isActiveMigration(migration))
 
-    hux.styledHeader('Configured Migrations')
-
-    if (this.migrationTargets.length > 0) {
-      /* eslint-disable perfectionist/sort-objects */
-      hux.table(this.migrationTargets, {
-        source: {
-          get: (migration: MigrationResponse) => color.datastore(this.classicDatabases.find(db => db.id === migration.source_id)?.name ?? color.gray('unknown')),
-          header: 'Source Database',
-        },
-        destination: {
-          get: (migration: MigrationResponse) => color.datastore(this.advancedDatabases.find(db => db.id === migration.target_id)?.name ?? color.gray('unknown')),
-          header: 'Destination Database',
-        },
-        status: {
-          get: (migration: MigrationResponse) => (migration.status === MigrationStatus.MIGRATING && migration.status_description)
-            ? color.info(migration.status_description)
-            : color.info(migration.status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(migration.status)!),
-          header: 'Status',
-        },
-      })
-      /* eslint-enable perfectionist/sort-objects */
-    } else {
+    if (visibleMigrations.length === 0) {
       ux.stdout(`You haven't configured any migrations for ${color.app(app)} yet.\n`)
     }
 
     const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = []
+    for (const migration of visibleMigrations) {
+      choices.push({name: this.migrationSummary(migration), value: migration.id})
+    }
 
     if (pendingMigrations.length > 0) {
       choices.push({
-        name: 'Configure a database migration',
+        name: 'Configure a new migration',
         value: '__configure_migration',
       })
     } else {
       choices.push({
         disabled: `no classic Postgres databases pending migration on ${color.app(app)}`,
-        name: color.gray('Configure a database migration'),
+        name: color.gray('Configure a new migration'),
         value: '__configure_migration',
       })
     }
 
-    if (this.migrationTargets.some(migration => migration.status === 'ready')) {
-      choices.push({
-        name: 'Start a migration',
-        value: '__start_migration',
-      }, {
-        name: 'Cancel a migration',
-        value: '__cancel_migration',
-      })
-    } else {
-      const disabledReason = `no ready migrations on ${color.app(app)}`
-      choices.push({
-        disabled: disabledReason,
-        name: color.gray('Start a migration'),
-        value: '__start_migration',
-      }, {
-        disabled: disabledReason,
-        name: color.gray('Cancel a migration'),
-        value: '__cancel_migration',
-      })
-    }
-
-    choices.push(new Separator(), {name: 'Exit', value: '__exit'})
+    choices.push({name: 'Refresh', value: '__refresh'}, new Separator(), {name: 'Exit', value: '__exit'})
 
     const {action} = await this.prompt<{action: string}>({
       choices,
-      message: 'What do you want to do?:',
+      message: 'Select a migration or action:',
       name: 'action',
       type: 'list',
     })
     return action
+  }
+
+  private async loopMigrationDetails(app: string, migrationId: string): Promise<'__back' | '__exit'> {
+    while (true) {
+      const migration = this.migrationTargets.find(candidate => candidate.id === migrationId)
+      if (!migration) return '__back'
+
+      this.displayMigrationDetails(migration)
+      const choices: Array<DistinctChoice<{action: string}, ListChoiceMap<{action: string}>>> = []
+      if (this.canStartMigration(migration)) {
+        const method = this.migrationMethod(migration)
+        let name = 'Start migration'
+        if (method === MigrationMethod.FULL_LOAD) name = 'Start data copy'
+        else if (method === MigrationMethod.CDC) name = 'Start cutover'
+
+        choices.push({
+          name,
+          value: '__start_migration',
+        })
+      }
+
+      if (this.canCancelMigration(migration)) choices.push({name: 'Cancel migration', value: '__cancel_migration'})
+      if (choices.length > 0) choices.push(new Separator())
+      if (this.isActiveMigration(migration)) choices.push({name: 'Watch status', value: '__watch'})
+      choices.push(
+        {name: 'Refresh status', value: '__refresh'},
+        new Separator(),
+        {name: 'Back to migrations', value: '__back'},
+        {name: 'Exit', value: '__exit'},
+      )
+
+      const {action} = await this.prompt<{action: string}>({
+        choices,
+        message: 'What do you want to do?:',
+        name: 'action',
+        pageSize: choices.length,
+        type: 'list',
+      })
+
+      if (action === '__exit' || action === '__back') return action
+      if (action === '__refresh') {
+        await this.refreshState(app)
+        if (!this.migrationTargets.some(candidate => candidate.id === migrationId)) return '__back'
+      } else if (action === '__watch') {
+        if (!await this.watchMigration(migration)) return '__back'
+      } else {
+        const updatedMigration = await this.actOnMigration(migration, action === '__start_migration' ? 'start' : 'cancel')
+        if (updatedMigration) this.replaceMigration(updatedMigration)
+      }
+    }
+  }
+
+  private migrationDetails(migration: MigrationResponse): string {
+    const sourceStatus = migration.source_status ? color.gray(` (${migration.source_status.replaceAll('_', ' ')})`) : ''
+    const failureReason = this.formatFailureReason(migration.failure_reason)
+    const status = migration.status === MigrationStatus.FAILED && failureReason
+      ? `${this.migrationStatusDescription(migration)} (${failureReason})`
+      : this.migrationStatusDescription(migration)
+    const details = [
+      ['Source', `${this.databaseName(migration.source_id)}${sourceStatus}`],
+      ['Destination', this.databaseName(migration.target_id)],
+      ['Method', this.migrationMethodName(migration) ?? 'Unknown'],
+      ['Status', status],
+    ]
+
+    if (migration.tables_errored !== null && migration.tables_errored !== undefined && migration.tables_errored > 0) details.push(['Tables errored', migration.tables_errored.toString()])
+
+    const preassessment = this.formatPreassessment(migration.preassessment)
+    if (preassessment) details.push(['Pre-assessment', preassessment])
+
+    const fields = hux.alignColumns(details.map(([label, value]) => [`${color.label(label)}:`, value]))
+      .map(field => field.trimEnd())
+    return `\n${color.label('=== ')}${color.label('Migration details')}\n\n${fields.join('\n')}`
+  }
+
+  private migrationMethod(migration: MigrationResponse): MigrationMethod | undefined {
+    if (migration.requested_method === MigrationMethod.CDC || migration.requested_method === MigrationMethod.FULL_LOAD) {
+      return migration.requested_method
+    }
+
+    return undefined
+  }
+
+  private migrationMethodName(migration: MigrationResponse): 'Snapshot' | 'Streaming' | undefined {
+    const method = this.migrationMethod(migration)
+    if (method === MigrationMethod.FULL_LOAD) return 'Snapshot'
+    if (method === MigrationMethod.CDC) return 'Streaming'
+
+    return undefined
+  }
+
+  private migrationStatusDescription(migration: MigrationResponse): string {
+    if (migration.status_description) return migration.status_description
+
+    return this.formatStatus(migration.status)
+  }
+
+  private migrationSummary(migration: MigrationResponse): string {
+    const method = this.migrationMethodName(migration)
+    const methodSummary = method ? ` | ${method}` : ''
+    return `${this.databaseName(migration.source_id)} -> ${this.databaseName(migration.target_id)}${methodSummary} | ${color.info(this.migrationStatusDescription(migration))}`
+  }
+
+  private orderedMigrations(): MigrationResponse[] {
+    const relevance = (migration: MigrationResponse): number => {
+      if (this.isActiveMigration(migration)
+        || migration.can_start === true
+        || migration.can_cancel === true) return 0
+      if (migration.completed || [MigrationStatus.CANCELLED, MigrationStatus.COMPLETED, MigrationStatus.FAILED].includes(migration.status)) return 2
+      return 1
+    }
+
+    return this.migrationTargets
+      .map((migration, index) => ({index, migration}))
+      .sort((left, right) => relevance(left.migration) - relevance(right.migration) || left.index - right.index)
+      .map(({migration}) => migration)
+  }
+
+  private async refreshState(app: string): Promise<void> {
+    await this.getAppDatabases(app)
+    await this.getMigrationTargetsAndInfo()
+  }
+
+  private renderMigrationWatch(migration: MigrationResponse): void {
+    const content = `${this.migrationDetails(migration)}\n\nWatching status every 5 seconds. Press any key to stop.\n`
+    process.stdout.write(`${ansiEscapes.cursorTo(0, 0)}${ansiEscapes.eraseDown}${content}`)
+  }
+
+  private replaceMigration(migration: MigrationResponse): void {
+    const index = this.migrationTargets.findIndex(candidate => candidate.id === migration.id)
+    if (index === -1) this.migrationTargets.push(migration)
+    else this.migrationTargets[index] = migration
+  }
+
+  private async requestMigration(migration: MigrationResponse): Promise<MigrationResponse | undefined> {
+    try {
+      const {body} = await this.dataApi.get<MigrationResponse>(`/data/postgres/v1/${migration.target_id}/migrations`)
+      return body.id === migration.id ? body : undefined
+    } catch (error) {
+      if (error instanceof HerokuAPIError && error.http.statusCode === 404) return undefined
+      throw error
+    }
+  }
+
+  private waitForWatchInput(): Promise<'interrupt' | 'keypress' | 'timeout'> {
+    return new Promise(resolve => {
+      const onData = (input: Buffer | string): void => {
+        clearTimeout(timeout)
+        resolve(input.toString().includes('\u0003') ? 'interrupt' : 'keypress')
+      }
+
+      const timeout = setTimeout(() => {
+        process.stdin.removeListener('data', onData)
+        process.stdin.pause()
+        resolve('timeout')
+      }, WATCH_INTERVAL_MS)
+
+      process.stdin.once('data', onData)
+      process.stdin.resume()
+    })
+  }
+
+  private async watchMigration(initialMigration: MigrationResponse): Promise<boolean> {
+    if (!process.stdin.isTTY || !process.stdout.isTTY || process.env.TERM === 'dumb') {
+      const migration = await this.requestMigration(initialMigration)
+      if (migration) this.replaceMigration(migration)
+      return Boolean(migration)
+    }
+
+    const stdinWasPaused = process.stdin.isPaused()
+    const stdinWasRaw = process.stdin.isRaw === true
+    let migration = initialMigration
+    let serviceUnavailableRetries = 0
+
+    process.stdin.setRawMode(true)
+    process.stdin.resume()
+    process.stdout.write(`\u001B[?1049h${ansiEscapes.cursorHide}`)
+
+    try {
+      while (true) {
+        this.renderMigrationWatch(migration)
+        const input = await this.waitForWatchInput()
+        if (input === 'keypress') return true
+        if (input === 'interrupt') throw new Error('SIGINT')
+
+        let updatedMigration: MigrationResponse | undefined
+        try {
+          updatedMigration = await this.requestMigration(migration)
+          serviceUnavailableRetries = 0
+        } catch (error) {
+          if (!this.isServiceUnavailable(error) || serviceUnavailableRetries >= WATCH_MAX_SERVICE_UNAVAILABLE_RETRIES) throw error
+          serviceUnavailableRetries++
+          continue
+        }
+
+        if (!updatedMigration) return false
+
+        const startBecameAvailable = !this.canStartMigration(migration) && this.canStartMigration(updatedMigration)
+        const reachedTerminalStatus = [MigrationStatus.CANCELLED, MigrationStatus.COMPLETED, MigrationStatus.FAILED]
+          .includes(updatedMigration.status)
+        this.replaceMigration(updatedMigration)
+        migration = updatedMigration
+        if (startBecameAvailable || reachedTerminalStatus) return true
+      }
+    } finally {
+      process.stdin.setRawMode(stdinWasRaw)
+      if (stdinWasPaused) process.stdin.pause()
+      else process.stdin.resume()
+      process.stdout.write(`${ansiEscapes.cursorShow}\u001B[?1049l`)
+    }
   }
 }
