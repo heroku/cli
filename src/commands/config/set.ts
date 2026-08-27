@@ -53,11 +53,17 @@ RACK_ENV:  staging`)]
     const varsCopy = argv.map((v: string) => color.name(v.split('=')[0])).join(', ')
     ux.action.start(`Setting ${varsCopy} and restarting ${color.app(flags.app)}`)
 
-    let {body: config} = await this.heroku.patch<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`, {
-      body: vars,
-    })
-    const release = await lastRelease(this.heroku, flags.app)
-    ux.action.stop(`done, ${color.name('v' + release.version)}`)
+    let config: Heroku.ConfigVars
+    try {
+      ({body: config} = await this.heroku.patch<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`, {
+        body: vars,
+      }))
+      const release = await lastRelease(this.heroku, flags.app)
+      ux.action.stop(`done, ${color.name('v' + release.version)}`)
+    } catch (error) {
+      ux.action.stop(color.red('!'))
+      throw error
+    }
 
     config = Object.fromEntries(Object.entries(config)
       .filter(([k]) => vars[k])
