@@ -1,35 +1,47 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import {ConfigGet} from '../../../../src/commands/config/get.js'
 
+type FakePlatform = {
+  configVar: {
+    infoForApp: sinon.SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    configVar: {
+      infoForApp: sinon.stub(),
+    },
+  }
+}
+
 describe('config', function () {
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows config vars', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', 'RACK_ENV'])
 
     expect(stdout).to.equal('production\n')
+    expect(fakePlatform.configVar.infoForApp.calledOnceWithExactly('myapp')).to.equal(true)
   })
 
   it('--shell', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', '-s', 'RACK_ENV'])
 
@@ -37,9 +49,7 @@ describe('config', function () {
   })
 
   it('missing', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', 'MISSING'])
 
@@ -47,9 +57,7 @@ describe('config', function () {
   })
 
   it('--json with unset var', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {EMPTY_VAR: '', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({EMPTY_VAR: '', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', '--json', 'MISSING'])
 
@@ -57,9 +65,7 @@ describe('config', function () {
   })
 
   it('--json with empty string var', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {EMPTY_VAR: '', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({EMPTY_VAR: '', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', '--json', 'EMPTY_VAR'])
 
@@ -67,9 +73,7 @@ describe('config', function () {
   })
 
   it('--json with normal var', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({LANG: 'en_US.UTF-8', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', '--json', 'RACK_ENV'])
 
@@ -77,9 +81,7 @@ describe('config', function () {
   })
 
   it('--json with multiple vars', async function () {
-    api
-      .get('/apps/myapp/config-vars')
-      .reply(200, {EMPTY_VAR: '', RACK_ENV: 'production'})
+    fakePlatform.configVar.infoForApp.resolves({EMPTY_VAR: '', RACK_ENV: 'production'})
 
     const {stdout} = await runCommand(ConfigGet, ['--app=myapp', '--json', 'MISSING', 'EMPTY_VAR', 'RACK_ENV'])
 
