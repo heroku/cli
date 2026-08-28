@@ -1,11 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {parse, quote} from '../../lib/config/quote.js'
 import {EditorFactory} from '../../lib/config/util.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+
+type Platform = HerokuSDK['platform']
 
 interface Config {
   [key: string]: string;
@@ -38,12 +40,13 @@ ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
   app!: string
 
   async run() {
+    const {platform} = new HerokuSDK()
     const _ = await lazyModuleLoader.loadLodash()
 
     const {args: {key}, flags: {app}} = await this.parse(ConfigEdit)
     this.app = app
     ux.action.start('Fetching config')
-    const original = await this.fetchLatestConfig()
+    const original = await this.fetchLatestConfig(platform)
     ux.action.stop()
     let newConfig = {...original}
     const prefix = `heroku-${app}-config-`
@@ -58,10 +61,10 @@ ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
 
     if (!await this.diffPrompt(original, newConfig, _)) return
     ux.action.start('Verifying new config')
-    await this.verifyUnchanged(original, _)
+    await this.verifyUnchanged(original, _, platform)
     ux.action.start('Updating config')
     removeDeleted(newConfig, original)
-    await this.updateConfig(newConfig)
+    await this.updateConfig(newConfig, platform)
     ux.action.stop()
   }
 
@@ -78,19 +81,17 @@ ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
     return hux.confirm(`Update config on ${color.app(this.app)} with these values?`)
   }
 
-  private async fetchLatestConfig() {
-    const {body: original} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${this.app}/config-vars`)
+  private async fetchLatestConfig(platform: Platform) {
+    const original = await platform.configVar.infoForApp(this.app)
     return original
   }
 
-  private async updateConfig(newConfig: UploadConfig) {
-    await this.heroku.patch(`/apps/${this.app}/config-vars`, {
-      body: newConfig,
-    })
+  private async updateConfig(newConfig: UploadConfig, platform: Platform) {
+    await platform.configVar.update(this.app, newConfig)
   }
 
-  private async verifyUnchanged(original: Config, _: any) {
-    const latest = await this.fetchLatestConfig()
+  private async verifyUnchanged(original: Config, _: any, platform: Platform) {
+    const latest = await this.fetchLatestConfig(platform)
     if (!_.isEqual(original, latest)) {
       throw new Error('Config changed on server. Refusing to update.')
     }

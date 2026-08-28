@@ -1,26 +1,41 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
 
 import Cmd, {stringToConfig} from '../../../../src/commands/config/edit.js'
 import {EditorFactory} from '../../../../src/lib/config/util.js'
 
+type FakePlatform = {
+  configVar: {
+    infoForApp: SinonStub
+    update: SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    configVar: {
+      infoForApp: stub(),
+      update: stub(),
+    },
+  }
+}
+
 describe('config:edit', function () {
-  let updated: Record<string, unknown> | string
   let editedConfig = ''
   let createEditorStub: SinonStub
   let editorEditStub: SinonStub
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    restore()
   })
 
   describe('stringToConfig', function () {
@@ -50,16 +65,8 @@ describe('config:edit', function () {
       it('nulls out vars to delete', async function () {
         editedConfig = '\n'
 
-        api
-          .get('/apps/myapp/config-vars')
-          .reply(200, {NOT_BLANK: 'not blank'})
-          .get('/apps/myapp/config-vars')
-          .reply(200, {NOT_BLANK: 'not blank'})
-          .patch('/apps/myapp/config-vars')
-          .reply(function (_uri, requestBody) {
-            updated = requestBody as Record<string, unknown>
-            return [200, {}]
-          })
+        fakePlatform.configVar.infoForApp.resolves({NOT_BLANK: 'not blank'})
+        fakePlatform.configVar.update.resolves({})
 
         await runCommand(Cmd, ['--app=myapp'])
 
@@ -69,24 +76,16 @@ describe('config:edit', function () {
           postfix: '.sh',
           prefix: 'heroku-myapp-config-',
         })).to.be.true
-        expect(updated).to.deep.equal({NOT_BLANK: null})
+        expect(fakePlatform.configVar.infoForApp.calledTwice).to.equal(true)
+        expect(fakePlatform.configVar.update.calledOnceWithExactly('myapp', {NOT_BLANK: null})).to.equal(true)
       })
     })
 
     describe('setting config var to blank', function () {
       it('updates the values with blanks', async function () {
         editedConfig = "BLANK=\nNOT_BLANK=''\n"
-
-        api
-          .get('/apps/myapp/config-vars')
-          .reply(200, {NOT_BLANK: 'not blank'})
-          .get('/apps/myapp/config-vars')
-          .reply(200, {NOT_BLANK: 'not blank'})
-          .patch('/apps/myapp/config-vars')
-          .reply(function (_uri, requestBody) {
-            updated = requestBody as Record<string, unknown>
-            return [200, {BLANK: '', NOT_BLANK: 'not blank'}]
-          })
+        fakePlatform.configVar.infoForApp.resolves({NOT_BLANK: 'not blank'})
+        fakePlatform.configVar.update.resolves({BLANK: '', NOT_BLANK: 'not blank'})
 
         await runCommand(Cmd, ['--app=myapp'])
 
@@ -96,24 +95,15 @@ describe('config:edit', function () {
           postfix: '.sh',
           prefix: 'heroku-myapp-config-',
         })).to.be.true
-        expect(updated).to.deep.equal({BLANK: '', NOT_BLANK: ''})
+        expect(fakePlatform.configVar.update.calledOnceWithExactly('myapp', {BLANK: '', NOT_BLANK: ''})).to.be.true
       })
     })
 
     describe('setting specific var', function () {
       it('updates the values with blanks', async function () {
         editedConfig = 'a'
-
-        api
-          .get('/apps/myapp/config-vars')
-          .reply(200, {FIRST: '1', SECOND: '2'})
-          .get('/apps/myapp/config-vars')
-          .reply(200, {FIRST: '1', SECOND: '2'})
-          .patch('/apps/myapp/config-vars')
-          .reply(function (_uri, requestBody) {
-            updated = requestBody as Record<string, unknown>
-            return [200, {DOES_NOT: 'matter'}]
-          })
+        fakePlatform.configVar.infoForApp.resolves({FIRST: '1', SECOND: '2'})
+        fakePlatform.configVar.update.resolves({DOES_NOT: 'matter'})
 
         await runCommand(Cmd, ['--app=myapp', 'FIRST'])
 
@@ -122,7 +112,7 @@ describe('config:edit', function () {
         expect(editorEditStub.calledWith('1', {
           prefix: 'heroku-myapp-config-',
         })).to.be.true
-        expect(updated).to.deep.equal({FIRST: 'a', SECOND: '2'})
+        expect(fakePlatform.configVar.update.calledOnceWithExactly('myapp', {FIRST: 'a', SECOND: '2'})).to.be.true
       })
     })
   })

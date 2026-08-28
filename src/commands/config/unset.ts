@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -23,14 +23,14 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`)]
   static strict = false
 
   async run() {
+    const {platform} = new HerokuSDK()
     const parsed = await this.parse(ConfigUnset)
     const {flags} = parsed
     const argv = parsed.argv as string[]
     const lastRelease = async () => {
-      const {body: releases} = await this.heroku.get<Heroku.Release[]>(`/apps/${flags.app}/releases`, {
-        headers: {Range: 'version ..; order=desc,max=1'},
-        partial: true,
-      })
+      const releases = await platform
+        .withHeaders({Range: 'version ..; order=desc,max=1'})
+        .release.list(flags.app)
       return releases[0]
     }
 
@@ -41,10 +41,8 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`)]
     const vars = argv.map(v => color.name(v)).join(', ')
 
     ux.action.start(`Unsetting ${vars} and restarting ${color.app(flags.app)}`)
-    await this.heroku.patch(`/apps/${flags.app}/config-vars`, {
-      // body will be like {FOO: null, BAR: null}
-      body: Object.fromEntries(argv.map(v => [v, null])),
-    })
+    // body will be like {FOO: null, BAR: null}
+    await platform.configVar.update(flags.app, Object.fromEntries(argv.map(v => [v, null])))
     const release = await lastRelease()
     ux.action.stop('done, ' + color.name(`v${release.version}`))
   }

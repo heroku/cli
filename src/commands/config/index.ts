@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {quote} from '../../lib/config/quote.js'
@@ -15,8 +15,9 @@ export class ConfigIndex extends Command {
   }
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(ConfigIndex)
-    const {body: config} = await this.heroku.get<Heroku.ConfigVars>(`/apps/${flags.app}/config-vars`)
+    const config = await platform.configVar.infoForApp(flags.app)
     if (flags.shell) {
       for (const [k, v] of Object.entries(config)) ux.stdout(`${k}=${quote(v)}`)
     } else if (flags.json) {
