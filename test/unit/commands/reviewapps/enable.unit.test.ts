@@ -1,231 +1,197 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
-import nock from 'nock'
+import {execFileSync} from 'node:child_process'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import * as sinon from 'sinon'
 
 import ReviewappsEnable from '../../../../src/commands/reviewapps/enable.js'
 
+type FakePlatform = {
+  pipeline: {
+    info: sinon.SinonStub
+  }
+  reviewAppConfig: {
+    enable: sinon.SinonStub
+    resolveRepoName: sinon.SinonStub
+    update: sinon.SinonStub
+  }
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    pipeline: {
+      info: sinon.stub(),
+    },
+    reviewAppConfig: {
+      enable: sinon.stub(),
+      resolveRepoName: sinon.stub(),
+      update: sinon.stub(),
+    },
+  }
+}
+
 describe('reviewapps:enable', function () {
+  const mutationResult = {id: 'review-app-config'}
   const pipeline = {
     id: '123-pipeline',
     name: 'my-pipeline',
   }
-  let api: nock.Scope
-  let kolkrabbiApi: nock.Scope
+  const repo = 'james/repo'
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    kolkrabbiApi = nock('https://kolkrabbi.heroku.com')
+    fakePlatform = buildFakePlatform()
+    fakePlatform.pipeline.info.resolves(pipeline)
+    fakePlatform.reviewAppConfig.resolveRepoName.resolves(repo)
+    fakePlatform.reviewAppConfig.enable.resolves(mutationResult)
+    fakePlatform.reviewAppConfig.update.resolves(mutationResult)
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    kolkrabbiApi.done()
-    nock.cleanAll()
+    if (ux.action.running) ux.action.stop()
+
+    sinon.restore()
   })
 
-  describe('with repos api enabled', function () {
-    const feature = {
-      enabled: true,
-      name: 'dashboard-repositories-api',
-    }
+  it('resolves the pipeline and repository before enabling review apps by default', async function () {
+    const {result, stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`])
 
-    const repo = {
-      full_name: 'james/repo',
-    }
-
-    it('succeeds with defaults', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(200, feature)
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/repo`)
-        .reply(200, repo)
-        .post(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      const {stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`])
-
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('succeeds with autodeploy', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(200, feature)
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/repo`)
-        .reply(200, repo)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--autodeploy'])
-
-      expect(stdout).to.include('Enabling auto deployment')
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('it succeeds with autodestroy', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(200, feature)
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/repo`)
-        .reply(200, repo)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--autodestroy'])
-
-      expect(stdout).to.include('Enabling auto destroy')
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('it succeeds with wait-for-ci', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(200, feature)
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/repo`)
-        .reply(200, repo)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--wait-for-ci'])
-
-      expect(stdout).to.include('Enabling wait for CI')
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('it succeeds with autodeploy and autodestroy and wait-for-ci', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(200, feature)
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .get(`/pipelines/${pipeline.id}/repo`)
-        .reply(200, repo)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
-
-      expect(stdout).to.include('Enabling auto deployment')
-      expect(stdout).to.include('Enabling auto destroy')
-      expect(stdout).to.include('Enabling wait for CI')
-      expect(stderr).to.include('Configuring pipeline')
-    })
+    expect(fakePlatform.pipeline.info.calledOnceWithExactly(pipeline.name)).to.equal(true)
+    expect(fakePlatform.reviewAppConfig.resolveRepoName.calledOnceWithExactly(pipeline.id)).to.equal(true)
+    expect(fakePlatform.reviewAppConfig.enable.calledOnceWithExactly(pipeline.id, {
+      automatic_review_apps: undefined,
+      destroy_stale_apps: undefined,
+      pipeline: pipeline.id,
+      repo,
+      wait_for_ci: undefined,
+    })).to.equal(true)
+    expect(fakePlatform.reviewAppConfig.update.called).to.equal(false)
+    expect(stderr).to.include('Configuring pipeline... done\n')
+    expect(result).to.deep.equal(mutationResult)
   })
 
-  describe('with repos api disabled', function () {
-    const feature = {
-      enabled: false,
-      name: 'dashboard-repositories-api',
+  const adjustmentCases = [
+    {
+      expectedOutput: 'Enabling auto deployment',
+      expectedSettings: {automatic_review_apps: true},
+      flag: '--autodeploy',
+    },
+    {
+      expectedOutput: 'Enabling auto destroy',
+      expectedSettings: {destroy_stale_apps: true},
+      flag: '--autodestroy',
+    },
+    {
+      expectedOutput: 'Enabling wait for CI',
+      expectedSettings: {wait_for_ci: true},
+      flag: '--wait-for-ci',
+    },
+  ]
+
+  for (const {expectedOutput, expectedSettings, flag} of adjustmentCases) {
+    it(`updates review apps with ${flag}`, async function () {
+      const {result, stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, flag])
+
+      expect(fakePlatform.reviewAppConfig.update.calledOnceWithExactly(pipeline.id, {
+        automatic_review_apps: undefined,
+        destroy_stale_apps: undefined,
+        pipeline: pipeline.id,
+        repo,
+        wait_for_ci: undefined,
+        ...expectedSettings,
+      })).to.equal(true)
+      expect(fakePlatform.reviewAppConfig.enable.called).to.equal(false)
+      expect(stdout).to.include(expectedOutput)
+      expect(stderr).to.include('Configuring pipeline... done\n')
+      expect(result).to.deep.equal(mutationResult)
+    })
+  }
+
+  it('updates review apps once with all adjustments', async function () {
+    const {stdout} = await runCommand(ReviewappsEnable, [
+      `--pipeline=${pipeline.name}`,
+      '--autodeploy',
+      '--autodestroy',
+      '--wait-for-ci',
+    ])
+
+    expect(fakePlatform.reviewAppConfig.update.calledOnceWithExactly(pipeline.id, {
+      automatic_review_apps: true,
+      destroy_stale_apps: true,
+      pipeline: pipeline.id,
+      repo,
+      wait_for_ci: true,
+    })).to.equal(true)
+    expect(fakePlatform.reviewAppConfig.enable.called).to.equal(false)
+    expect(stdout).to.include('Enabling auto deployment')
+    expect(stdout).to.include('Enabling auto destroy')
+    expect(stdout).to.include('Enabling wait for CI')
+  })
+
+  it('preserves the app flag warning', async function () {
+    const {stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--app=my-app'])
+
+    expect(stderr).to.include('Specifying an app via --app or --remote is no longer needed with')
+    expect(stderr).to.include('Review Apps')
+  })
+
+  it('resolves the app from a remote while enabling review apps', async function () {
+    const originalCwd = process.cwd()
+    const originalHerokuApp = process.env.HEROKU_APP
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'reviewapps-enable-'))
+
+    try {
+      delete process.env.HEROKU_APP
+      execFileSync('git', ['init', '--quiet'], {cwd: tempDir})
+      execFileSync('git', ['remote', 'add', 'staging', 'https://git.heroku.com/remote-app.git'], {cwd: tempDir})
+      process.chdir(tempDir)
+
+      const {result, stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--remote=staging'])
+
+      expect(stderr).to.include('Specifying an app via --app or --remote is no longer needed with')
+      expect(stderr).to.include('Review Apps')
+      expect(fakePlatform.reviewAppConfig.enable.calledOnceWithExactly(pipeline.id, {
+        automatic_review_apps: undefined,
+        destroy_stale_apps: undefined,
+        pipeline: pipeline.id,
+        repo,
+        wait_for_ci: undefined,
+      })).to.equal(true)
+      expect(result).to.deep.equal(mutationResult)
+    } finally {
+      process.chdir(originalCwd)
+      if (originalHerokuApp === undefined) delete process.env.HEROKU_APP
+      else process.env.HEROKU_APP = originalHerokuApp
+
+      fs.rmSync(tempDir, {force: true, recursive: true})
     }
+  })
 
-    const repo = {
-      repository: {
-        name: 'james/repo',
-      },
-    }
+  it('does not resolve a repository or mutate when pipeline lookup fails', async function () {
+    fakePlatform.pipeline.info.rejects(new Error('pipeline failed'))
 
-    it('succeeds with defaults', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(404, {})
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .post(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
+    const {error, stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`])
 
-      kolkrabbiApi
-        .get(`/pipelines/${pipeline.id}/repository`)
-        .reply(200, repo)
+    expect(error?.message).to.equal('pipeline failed')
+    expect(stderr).not.to.include('done')
+    expect(fakePlatform.reviewAppConfig.resolveRepoName.called).to.equal(false)
+    expect(fakePlatform.reviewAppConfig.enable.called).to.equal(false)
+    expect(fakePlatform.reviewAppConfig.update.called).to.equal(false)
+  })
 
-      const {stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`])
+  it('does not mutate when repository resolution fails', async function () {
+    fakePlatform.reviewAppConfig.resolveRepoName.rejects(new Error('repository failed'))
 
-      expect(stderr).to.include('Configuring pipeline')
-    })
+    const {error, stderr} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`])
 
-    it('succeeds with autodeploy', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(404, {})
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      kolkrabbiApi
-        .get(`/pipelines/${pipeline.id}/repository`)
-        .reply(200, repo)
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--autodeploy'])
-
-      expect(stdout).to.include('Enabling auto deployment')
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('it succeeds with autodestroy', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(404, {})
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      kolkrabbiApi
-        .get(`/pipelines/${pipeline.id}/repository`)
-        .reply(200, repo)
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--autodestroy'])
-
-      expect(stdout).to.include('Enabling auto destroy')
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('it succeeds with wait-for-ci', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(404, {})
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      kolkrabbiApi
-        .get(`/pipelines/${pipeline.id}/repository`)
-        .reply(200, repo)
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--wait-for-ci'])
-
-      expect(stdout).to.include('Enabling wait for CI')
-      expect(stderr).to.include('Configuring pipeline')
-    })
-
-    it('it succeeds with autodeploy and autodestroy and wait-for-ci', async function () {
-      api
-        .get(`/account/features/${feature.name}`)
-        .reply(404, {})
-        .get(`/pipelines/${pipeline.name}`)
-        .reply(200, pipeline)
-        .patch(`/pipelines/${pipeline.id}/review-app-config`)
-        .reply(200, {})
-
-      kolkrabbiApi
-        .get(`/pipelines/${pipeline.id}/repository`)
-        .reply(200, repo)
-
-      const {stderr, stdout} = await runCommand(ReviewappsEnable, [`--pipeline=${pipeline.name}`, '--autodeploy', '--autodestroy', '--wait-for-ci'])
-
-      expect(stdout).to.include('Enabling auto deployment')
-      expect(stdout).to.include('Enabling auto destroy')
-      expect(stdout).to.include('Enabling wait for CI')
-      expect(stderr).to.include('Configuring pipeline')
-    })
+    expect(error?.message).to.equal('repository failed')
+    expect(stderr).not.to.include('done')
+    expect(fakePlatform.reviewAppConfig.enable.called).to.equal(false)
+    expect(fakePlatform.reviewAppConfig.update.called).to.equal(false)
   })
 })
