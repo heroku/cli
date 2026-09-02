@@ -316,7 +316,10 @@ describe('pipelines:setup', function () {
               .reply(201, {app: coupling.app, id: coupling.id})
 
             api.get(`/app-setups/${coupling.id}`).reply(200, {status: 'timedout'})
-            api.get(`/app-setups/${coupling.id}`).reply(200, {app: {name: 'my-pipeline'}, failure_message: 'timedout', status: 'failed'})
+            // Both couplings poll concurrently via Promise.all; the first to report `failed`
+            // rejects and short-circuits the rest, so the other coupling's re-poll may never
+            // fire. Mark it optional so teardown doesn't flake on slower runners (e.g. Windows).
+            api.get(`/app-setups/${coupling.id}`).optionally().reply(200, {app: {name: 'my-pipeline'}, failure_message: 'timedout', status: 'failed'})
           }
 
           api.get('/teams/test-org').reply(200, {id: '89-0123-456'})
