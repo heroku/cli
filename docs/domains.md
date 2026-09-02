@@ -21,7 +21,7 @@ USAGE
     [-r <value>] [--sort <value>]
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --csv              output in csv format
   -j, --json             output in json format
   -r, --remote=<value>   git remote of app to use
@@ -51,7 +51,7 @@ EXAMPLES
   www.example.com  CNAME            www.example.herokudns.com
 ```
 
-_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/index.ts)_
+_See code: [src/commands/domains/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/index.ts)_
 
 ## `heroku domains:add HOSTNAME`
 
@@ -65,7 +65,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -c, --cert=<value>    the name of the SSL cert you want to use for this domain
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
@@ -81,7 +81,7 @@ EXAMPLES
    $ heroku domains:add www.example.com
 ```
 
-_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/add.ts)_
+_See code: [src/commands/domains/add.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/add.ts)_
 
 ## `heroku domains:clear`
 
@@ -92,7 +92,7 @@ USAGE
   $ heroku domains:clear -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -105,7 +105,7 @@ EXAMPLES
    $ heroku domains:clear
 ```
 
-_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/clear.ts)_
+_See code: [src/commands/domains/clear.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/clear.ts)_
 
 ## `heroku domains:info HOSTNAME`
 
@@ -119,7 +119,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -132,7 +132,7 @@ EXAMPLES
    $ heroku domains:info www.example.com
 ```
 
-_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/info.ts)_
+_See code: [src/commands/domains/info.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/info.ts)_
 
 ## `heroku domains:remove HOSTNAME`
 
@@ -146,7 +146,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -159,7 +159,7 @@ EXAMPLES
    $ heroku domains:remove www.example.com
 ```
 
-_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/remove.ts)_
+_See code: [src/commands/domains/remove.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/remove.ts)_
 
 ## `heroku domains:update HOSTNAME`
 
@@ -173,7 +173,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --cert=<value>    (required) the name or id of the certificate you want to use for this domain
 
@@ -187,7 +187,7 @@ EXAMPLES
    $ heroku domains:update www.example.com --cert mycert
 ```
 
-_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/update.ts)_
+_See code: [src/commands/domains/update.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/update.ts)_
 
 ## `heroku domains:wait [HOSTNAME]`
 
@@ -201,7 +201,7 @@ ARGUMENTS
   [HOSTNAME]  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -211,4 +211,4 @@ DESCRIPTION
   wait for domain to be active for an app
 ```
 
-_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/domains/wait.ts)_
+_See code: [src/commands/domains/wait.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/domains/wait.ts)_

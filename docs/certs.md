@@ -23,7 +23,7 @@ USAGE
   $ heroku certs -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -33,7 +33,7 @@ DESCRIPTION
   list SSL certificates for an app
 ```
 
-_See code: [src/commands/certs/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/index.ts)_
+_See code: [src/commands/certs/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/index.ts)_
 
 ## `heroku certs:add CRT KEY`
 
@@ -48,7 +48,7 @@ ARGUMENTS
   KEY  absolute path of the key file on disk
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -66,7 +66,7 @@ EXAMPLES
   https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [src/commands/certs/add.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/add.ts)_
+_See code: [src/commands/certs/add.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/add.ts)_
 
 ## `heroku certs:auto`
 
@@ -77,7 +77,7 @@ USAGE
   $ heroku certs:auto -a <value> [--prompt] [-r <value>] [--wait]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --wait            watch ACM status and display the status when complete
 
@@ -88,7 +88,7 @@ DESCRIPTION
   show ACM status for an app
 ```
 
-_See code: [src/commands/certs/auto/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/auto/index.ts)_
+_See code: [src/commands/certs/auto/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/auto/index.ts)_
 
 ## `heroku certs:auto:disable`
 
@@ -99,7 +99,7 @@ USAGE
   $ heroku certs:auto:disable -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -109,7 +109,7 @@ DESCRIPTION
   disable ACM for an app
 ```
 
-_See code: [src/commands/certs/auto/disable.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/auto/disable.ts)_
+_See code: [src/commands/certs/auto/disable.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/auto/disable.ts)_
 
 ## `heroku certs:auto:enable`
 
@@ -120,7 +120,7 @@ USAGE
   $ heroku certs:auto:enable -a <value> [--prompt] [-r <value>] [--wait]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --wait            watch ACM status and exit when complete
 
@@ -131,7 +131,7 @@ DESCRIPTION
   enable ACM status for an app
 ```
 
-_See code: [src/commands/certs/auto/enable.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/auto/enable.ts)_
+_See code: [src/commands/certs/auto/enable.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/auto/enable.ts)_
 
 ## `heroku certs:auto:refresh`
 
@@ -142,7 +142,7 @@ USAGE
   $ heroku certs:auto:refresh -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -152,7 +152,7 @@ DESCRIPTION
   refresh ACM for an app
 ```
 
-_See code: [src/commands/certs/auto/refresh.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/auto/refresh.ts)_
+_See code: [src/commands/certs/auto/refresh.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/auto/refresh.ts)_
 
 ## `heroku certs:generate DOMAIN`
 
@@ -167,7 +167,7 @@ ARGUMENTS
   DOMAIN  domain name to generate
 
 FLAGS
-  -a, --app=<value>      (required) app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>   git remote of app to use
       --area=<value>     sub-country area (state, province, etc.) of owner
       --city=<value>     city of owner
@@ -185,7 +185,7 @@ DESCRIPTION
   generate a key and a CSR or self-signed certificate
 ```
 
-_See code: [src/commands/certs/generate.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/generate.ts)_
+_See code: [src/commands/certs/generate.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/generate.ts)_
 
 ## `heroku certs:info`
 
@@ -196,7 +196,7 @@ USAGE
   $ heroku certs:info -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>] [--show-domains]
 
 FLAGS
-  -a, --app=<value>       (required) app to run command against
+  -a, --app=<value>       (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>    git remote of app to use
       --endpoint=<value>  endpoint to check info on
       --name=<value>      name to check info on
@@ -209,7 +209,7 @@ DESCRIPTION
   show certificate information for an SSL certificate
 ```
 
-_See code: [src/commands/certs/info.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/info.ts)_
+_See code: [src/commands/certs/info.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/info.ts)_
 
 ## `heroku certs:remove`
 
@@ -220,7 +220,7 @@ USAGE
   $ heroku certs:remove -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       (required) app to run command against
+  -a, --app=<value>       (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>    git remote of app to use
       --endpoint=<value>  endpoint to remove
       --name=<value>      name to remove
@@ -232,7 +232,7 @@ DESCRIPTION
   remove an SSL certificate from an app
 ```
 
-_See code: [src/commands/certs/remove.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/remove.ts)_
+_See code: [src/commands/certs/remove.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/remove.ts)_
 
 ## `heroku certs:update CRT KEY`
 
@@ -247,7 +247,7 @@ ARGUMENTS
   KEY  absolute path of the key file on disk
 
 FLAGS
-  -a, --app=<value>       (required) app to run command against
+  -a, --app=<value>       (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>    git remote of app to use
       --endpoint=<value>  endpoint to update
       --name=<value>      name to update
@@ -266,4 +266,4 @@ EXAMPLES
      https://help.salesforce.com/s/articleView?id=000333504&type=1
 ```
 
-_See code: [src/commands/certs/update.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/certs/update.ts)_
+_See code: [src/commands/certs/update.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/certs/update.ts)_

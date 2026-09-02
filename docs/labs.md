@@ -17,7 +17,7 @@ USAGE
   $ heroku labs [--prompt] [-a <value>] [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
 
@@ -28,7 +28,7 @@ DESCRIPTION
   list experimental features
 ```
 
-_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/labs/index.ts)_
+_See code: [src/commands/labs/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/labs/index.ts)_
 
 ## `heroku labs:disable FEATURE`
 
@@ -42,7 +42,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the account feature
 
 FLAGS
-  -a, --app=<value>      app to run command against
+  -a, --app=<value>      [env: HEROKU_APP] app to run command against
   -r, --remote=<value>   git remote of app to use
   --confirm=<value>
 
@@ -53,7 +53,7 @@ DESCRIPTION
   disables an experimental feature
 ```
 
-_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/labs/disable.ts)_
+_See code: [src/commands/labs/disable.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/labs/disable.ts)_
 
 ## `heroku labs:enable FEATURE`
 
@@ -67,7 +67,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the account feature
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -77,7 +77,7 @@ DESCRIPTION
   enables an experimental feature
 ```
 
-_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/labs/enable.ts)_
+_See code: [src/commands/labs/enable.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/labs/enable.ts)_
 
 ## `heroku labs:info FEATURE`
 
@@ -91,7 +91,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the account feature
 
 FLAGS
-  -a, --app=<value>     app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
 
@@ -102,4 +102,4 @@ DESCRIPTION
   show feature info
 ```
 
-_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/labs/info.ts)_
+_See code: [src/commands/labs/info.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/labs/info.ts)_

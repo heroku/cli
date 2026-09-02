@@ -15,7 +15,7 @@ USAGE
     [-s <value>] [-t]
 
 FLAGS
-  -a, --app=<value>           (required) app to run command against
+  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     only show output from this dyno (such as "web-123-456" or "worker.2")
   -n, --num=<value>           number of lines to display (ignored for Fir generation apps)
   -p, --process-type=<value>  only show output from this process type (such as "web" or "worker")
@@ -44,4 +44,4 @@ EXAMPLES
    $ heroku logs --app=my-app --tail
 ```
 
-_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v11.9.0/src/commands/logs.ts)_
+_See code: [src/commands/logs.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/logs.ts)_
