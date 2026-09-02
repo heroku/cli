@@ -1,9 +1,9 @@
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http'
-import {Resource} from '@opentelemetry/resources'
-import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-base'
+import {defaultResource, resourceFromAttributes} from '@opentelemetry/resources'
+import {SimpleSpanProcessor} from '@opentelemetry/sdk-trace-base'
 import {NodeTracerProvider} from '@opentelemetry/sdk-trace-node'
-import {SemanticResourceAttributes} from '@opentelemetry/semantic-conventions'
+import {ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION} from '@opentelemetry/semantic-conventions'
 import debug from 'debug'
 
 import {
@@ -19,14 +19,14 @@ import {
 // Module-level singleton for OTEL provider and processor
 // This avoids conflicts with global OpenTelemetry registry
 let isInitialized = false
-let processor: BatchSpanProcessor
+let processor: SimpleSpanProcessor
 let provider: NodeTracerProvider
 
 export default class BackboardOtelClient {
   /**
-   * Get the BatchSpanProcessor (for backward compatibility)
+   * Get the SimpleSpanProcessor (for backward compatibility)
    */
-  async getProcessor(): Promise<BatchSpanProcessor> {
+  async getProcessor(): Promise<SimpleSpanProcessor> {
     await this.ensureInitialized()
     return processor
   }
@@ -104,18 +104,10 @@ export default class BackboardOtelClient {
     telemetryDebug('Initializing OpenTelemetry...')
     isInitialized = true
 
-    const resource = Resource
-      .default()
-      .merge(new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
-        [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
-      }))
-
-    // Initialize without Sentry sampler initially (Sentry loaded lazily)
-    provider = new NodeTracerProvider({
-      resource,
-    })
-    telemetryDebug('NodeTracerProvider created')
+    const resource = defaultResource().merge(resourceFromAttributes({
+      [ATTR_SERVICE_NAME]: 'heroku-cli',
+      [ATTR_SERVICE_VERSION]: undefined, // will be set later
+    }))
 
     // eslint-disable-next-line unicorn/no-negated-condition
     const token = process.env.IS_HEROKU_TEST_ENV !== 'true' ? await getToken() : ''
@@ -130,9 +122,19 @@ export default class BackboardOtelClient {
       url,
     })
 
-    processor = new BatchSpanProcessor(exporter)
-    provider.addSpanProcessor(processor)
-    telemetryDebug('BatchSpanProcessor added to provider')
+    // The CLI emits a single span per invocation and force-flushes before the
+    // process exits, so a SimpleSpanProcessor (export on span end) is a better
+    // fit than a batch processor and makes delivery deterministic.
+    processor = new SimpleSpanProcessor(exporter)
+
+    // In the OpenTelemetry SDK v2 API, span processors must be supplied at
+    // construction time (provider.addSpanProcessor was removed).
+    // Initialize without Sentry sampler initially (Sentry loaded lazily)
+    provider = new NodeTracerProvider({
+      resource,
+      spanProcessors: [processor],
+    })
+    telemetryDebug('NodeTracerProvider created with SimpleSpanProcessor')
 
     // Register the provider to make it the global tracer provider
     // We don't use Sentry context manager here to avoid loading Sentry upfront

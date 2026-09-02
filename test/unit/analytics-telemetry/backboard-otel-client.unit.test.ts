@@ -90,7 +90,7 @@ describe('backboard-otel-client', function () {
   })
 
   describe('getProcessor', function () {
-    it('returns a BatchSpanProcessor', async function () {
+    it('returns a SimpleSpanProcessor', async function () {
       const processor = await client.getProcessor()
       expect(processor).to.exist
       expect(processor).to.have.property('forceFlush')
