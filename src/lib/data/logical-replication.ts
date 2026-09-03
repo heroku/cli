@@ -32,11 +32,9 @@ export type LogicalReplicationPublication = {
 }
 
 export type LogicalReplicationPublicationsResponse = {
-  publications: LogicalReplicationPublication[]
-}
-
-export type LogicalReplicationPublicationResponse = {
-  publication: LogicalReplicationPublication
+  count: number
+  items: LogicalReplicationPublication[]
+  limit: number
 }
 
 export async function resolveAdvancedDatabase(command: BaseCommand, database: string, app: string): Promise<pg.ExtendedAddon> {
