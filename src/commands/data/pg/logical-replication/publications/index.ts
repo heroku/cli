@@ -7,6 +7,7 @@ import {LogicalReplicationPublicationsResponse, resolveAdvancedDatabase} from '.
 import {huxTableNoWrapOptions} from '../../../../../lib/utils/table-utils.js'
 
 export default class DataPgLogicalReplicationPublicationsIndex extends BaseCommand {
+  static aliases = ['data:pg:lr:publications']
   static args = {
     database: Args.string({
       description: 'database name, database attachment name, or related config var on an app',
@@ -26,14 +27,14 @@ export default class DataPgLogicalReplicationPublicationsIndex extends BaseComma
   async run(): Promise<void> {
     const {args, flags} = await this.parse(DataPgLogicalReplicationPublicationsIndex)
     const addon = await resolveAdvancedDatabase(this, args.database, flags.app)
-    const {body: {publications}} = await this.dataApi.get<LogicalReplicationPublicationsResponse>(`/data/postgres/v1/${addon.id}/logical-replication/publications`)
+    const {body: {items}} = await this.dataApi.get<LogicalReplicationPublicationsResponse>(`/data/postgres/v1/${addon.id}/logical-replication/publications`)
 
-    if (publications.length === 0) {
+    if (items.length === 0) {
       ux.stdout(`No logical replication publications exist on ${addon.name}.`)
       return
     }
 
-    hux.table(publications, {
+    hux.table(items, {
       Name: {get: publication => publication.name},
       'New Tables': {get: publication => publication.target.automatically_includes_new_tables ? 'included' : 'not included'},
       Owner: {get: publication => publication.owner},

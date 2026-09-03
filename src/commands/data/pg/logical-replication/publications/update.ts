@@ -6,6 +6,7 @@ import BaseCommand from '../../../../../lib/data/base-command.js'
 import {PublicationTarget, resolveAdvancedDatabase} from '../../../../../lib/data/logical-replication.js'
 
 export default class DataPgLogicalReplicationPublicationsUpdate extends BaseCommand {
+  static aliases = ['data:pg:lr:publications:update']
   static args = {
     database: Args.string({
       description: 'database name, database attachment name, or related config var on an app',
