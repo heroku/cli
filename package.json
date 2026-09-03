@@ -78,7 +78,7 @@
     "word-wrap": "^1.2.5",
     "ws": "^6.2.2",
     "yaml": "^2.0.1",
-    "yargs-parser": "18.1.3"
+    "yargs-parser": "22.0.0"
   },
   "devDependencies": {
     "@actions/core": "^3.0.0",
