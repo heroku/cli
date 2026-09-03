@@ -3,9 +3,10 @@ import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
 import BaseCommand from '../../../../../lib/data/base-command.js'
-import {LogicalReplicationPublicationResponse, resolveAdvancedDatabase} from '../../../../../lib/data/logical-replication.js'
+import {LogicalReplicationPublication, resolveAdvancedDatabase} from '../../../../../lib/data/logical-replication.js'
 
 export default class DataPgLogicalReplicationPublicationsInfo extends BaseCommand {
+  static aliases = ['data:pg:lr:publications:info']
   static args = {
     database: Args.string({
       description: 'database name, database attachment name, or related config var on an app',
@@ -25,7 +26,7 @@ export default class DataPgLogicalReplicationPublicationsInfo extends BaseComman
   async run(): Promise<void> {
     const {args, flags} = await this.parse(DataPgLogicalReplicationPublicationsInfo)
     const addon = await resolveAdvancedDatabase(this, args.database, flags.app)
-    const {body: {publication}} = await this.dataApi.get<LogicalReplicationPublicationResponse>(`/data/postgres/v1/${addon.id}/logical-replication/publications/${encodeURIComponent(flags.name)}`)
+    const {body: publication} = await this.dataApi.get<LogicalReplicationPublication>(`/data/postgres/v1/${addon.id}/logical-replication/publications/${encodeURIComponent(flags.name)}`)
     const target = publication.target.type === 'schemas' ? publication.target.schemas.join(', ') : publication.current_tables.join(', ')
 
     hux.styledObject({

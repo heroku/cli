@@ -14,7 +14,8 @@ import {addon} from '../../../../fixtures/data/pg/fixtures.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const publicationsResponse = {
-  publications: [{
+  count: 1,
+  items: [{
     current_tables: ['public.orders'],
     name: 'orders',
     owner: 'u12345',
@@ -25,6 +26,7 @@ const publicationsResponse = {
       type: 'tables',
     },
   }],
+  limit: 50,
 }
 
 const resolveAddon = () => nock('https://api.heroku.com')
@@ -127,7 +129,7 @@ describe('data:pg:logical-replication', function () {
     const herokuApi = resolveAddon()
     const dataApi = nock('https://api.data.heroku.com')
       .get(`/data/postgres/v1/${addon.id}/logical-replication/publications/orders`)
-      .reply(200, {publication: publicationsResponse.publications[0]})
+      .reply(200, publicationsResponse.items[0])
 
     const {stdout} = await runCommand(DataPgLogicalReplicationPublicationsInfo, [
       'DATABASE', '--app=myapp', '--name=orders',
