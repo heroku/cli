@@ -8,7 +8,7 @@
   "dependencies": {
     "@heroku-cli/command": "^13.2.0",
     "@heroku-cli/notifications": "^1.2.6",
-    "@heroku-cli/schema": "^1.0.25",
+    "@heroku-cli/schema": "^2.0.1",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/heroku-cli-util": "^10.10.0",
     "@heroku/http-call": "^5.5.1",
