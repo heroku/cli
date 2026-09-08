@@ -68,6 +68,29 @@ describe('config:set', function () {
     expect(fakePlatform.configVar.update.calledOnceWithExactly('myapp', {RACK_ENV: 'production=foo'})).to.equal(true)
   })
 
+  it('ends the action with ! when the config update fails', async function () {
+    fakePlatform.configVar.update.rejects(new Error('Config update failed'))
+
+    const {error, stderr, stdout} = await runCommand(ConfigSet, ['RACK_ENV=production', '--app', 'myapp'])
+
+    expect(error?.message).to.include('Config update failed')
+    expect(stderr).to.include('!')
+    expect(stderr).not.to.include('done')
+    expect(stdout).to.equal('')
+  })
+
+  it('ends the action with ! when the release lookup fails', async function () {
+    fakePlatform.configVar.update.resolves({RACK_ENV: 'production'})
+    fakePlatform.release.list.rejects(new Error('Release lookup failed'))
+
+    const {error, stderr, stdout} = await runCommand(ConfigSet, ['RACK_ENV=production', '--app', 'myapp'])
+
+    expect(error?.message).to.include('Release lookup failed')
+    expect(stderr).to.include('!')
+    expect(stderr).not.to.include('done')
+    expect(stdout).to.equal('')
+  })
+
   it('errors without args', async function () {
     const {error} = await runCommand(ConfigSet, ['--app', 'myapp'])
 
