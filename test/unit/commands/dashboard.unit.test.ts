@@ -1,8 +1,8 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
 import os from 'node:os'
-import {useFakeTimers} from 'sinon'
+import * as sinon from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../src/commands/dashboard.js'
@@ -10,6 +10,26 @@ import {ago} from '../../../src/lib/time.js'
 import {unwrap} from '../../helpers/utils/unwrap.js'
 
 const heredoc = tsheredoc.default
+
+type FakePlatform = {
+  app: {info: sinon.SinonStub}
+  formation: {list: sinon.SinonStub}
+  pipelineCoupling: {infoByApp: sinon.SinonStub}
+  team: {list: sinon.SinonStub}
+}
+
+type FakeDashboardBackend = {
+  favorite: {list: sinon.SinonStub}
+}
+
+type FakeMetrics = {
+  formationMetric: {errors: sinon.SinonStub}
+  routerMetric: {errors: sinon.SinonStub; latency: sinon.SinonStub; status: sinon.SinonStub}
+}
+
+type FakeNotifications = {
+  notification: {list: sinon.SinonStub}
+}
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {
@@ -19,20 +39,43 @@ describe('dashboard', function () {
     return
   }
 
-  let clock: any
+  let clock: sinon.SinonFakeTimers
   let now: Date
+  let fakePlatform: FakePlatform
+  let fakeDashboardBackend: FakeDashboardBackend
+  let fakeMetrics: FakeMetrics
+  let fakeNotifications: FakeNotifications
 
   beforeEach(function () {
-    clock = useFakeTimers({
+    clock = sinon.useFakeTimers({
       now: new Date(2024, 1, 1, 0, 0),
       shouldAdvanceTime: true,
       toFake: ['Date'],
     })
     now = new Date()
+
+    fakePlatform = {
+      app: {info: sinon.stub()},
+      formation: {list: sinon.stub()},
+      pipelineCoupling: {infoByApp: sinon.stub()},
+      team: {list: sinon.stub().resolves([])},
+    }
+    fakeDashboardBackend = {favorite: {list: sinon.stub().resolves([])}}
+    fakeMetrics = {
+      formationMetric: {errors: sinon.stub()},
+      routerMetric: {errors: sinon.stub(), latency: sinon.stub(), status: sinon.stub()},
+    }
+    fakeNotifications = {notification: {list: sinon.stub().resolves([])}}
+
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    sinon.stub(HerokuSDK.prototype, 'dashboardBackend').get(() => fakeDashboardBackend)
+    sinon.stub(HerokuSDK.prototype, 'metrics').get(() => fakeMetrics)
+    sinon.stub(HerokuSDK.prototype, 'notifications').get(() => fakeNotifications)
   })
 
-  this.afterEach(() => {
+  afterEach(function () {
     clock.restore()
+    sinon.restore()
   })
 
   const pipeline = {pipeline: {name: 'foobar'}}
@@ -70,16 +113,6 @@ describe('dashboard', function () {
 
   describe('with no favorites', function () {
     it('shows the dashboard', async function () {
-      nock('https://particleboard.heroku.com:443')
-        .get('/favorites?type=app')
-        .reply(200, [])
-      nock('https://api.heroku.com:443')
-        .get('/teams')
-        .reply(200, [])
-      nock('https://telex.heroku.com:443')
-        .get('/user/notifications')
-        .reply(200, [])
-
       const {stderr, stdout} = await runCommand(Cmd)
       expect(stdout).to.contain(heredoc(`
         See all add-ons with heroku addons
@@ -88,20 +121,13 @@ describe('dashboard', function () {
         See other CLI commands with heroku help
       `))
       expect(unwrap(stderr)).to.contain('Loading... doneWarning: Add apps to this dashboard by favoriting them with heroku apps:favorites:add\n')
+      expect(fakeDashboardBackend.favorite.list.calledOnceWithExactly({type: 'app'})).to.equal(true)
     })
   })
 
   describe('with no telex', function () {
     it('shows the dashboard', async function () {
-      nock('https://particleboard.heroku.com:443')
-        .get('/favorites?type=app')
-        .reply(200, [])
-      nock('https://api.heroku.com:443')
-        .get('/teams')
-        .reply(200, [])
-      nock('https://telex.heroku.com:443')
-        .get('/user/notifications')
-        .reply(401, [])
+      fakeNotifications.notification.list.rejects(new Error('unauthorized'))
 
       const {stderr, stdout} = await runCommand(Cmd, [])
       expect(stdout).to.contain(heredoc(`
@@ -116,15 +142,8 @@ describe('dashboard', function () {
 
   describe('with notifications', function () {
     it('shows the dashboard', async function () {
-      nock('https://particleboard.heroku.com:443')
-        .get('/favorites?type=app')
-        .reply(200, [])
-      nock('https://api.heroku.com:443')
-        .get('/teams')
-        .reply(200, [])
-      nock('https://telex.heroku.com:443')
-        .get('/user/notifications')
-        .reply(200, [{read: false}])
+      fakeNotifications.notification.list.resolves([{read: false}])
+
       const {stdout} = await runCommand(Cmd, [])
       expect(stdout).to.contain(heredoc(`
         See all add-ons with heroku addons
@@ -139,38 +158,16 @@ describe('dashboard', function () {
 
   describe('with a favorite app', function () {
     it('shows the dashboard', async function () {
-      nock('https://particleboard.heroku.com:443')
-        .get('/favorites?type=app')
-        .reply(200, [{resource_name: 'myapp'}])
-      nock('https://api.heroku.com:443')
-        .get('/teams')
-        .reply(200, [])
-        .get('/apps/myapp')
-        .reply(200, {
-          name: 'myapp', owner: {email: 'foo@bar.com'}, released_at: now.toString(),
-        })
-        .get('/apps/myapp/formation')
-        .reply(200, formation)
-      nock('https://telex.heroku.com:443')
-        .get('/user/notifications')
-        .reply(200, [])
-      nock('https://api.metrics.herokai.com:443')
-        .get('/apps/myapp/router-metrics/status')
-        // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
-        .query((params: any) => params.step === '1h' && params.process_type === 'web')
-        .reply(200, router.status)
-        .get('/apps/myapp/router-metrics/latency')
-        .query((params: any) => params.step === '1h' && params.process_type === 'web')
-        .reply(200, router.latency)
-        .get('/apps/myapp/router-metrics/errors')
-        .query((params: any) => params.step === '1h' && params.process_type === 'web')
-        .reply(200, router.errors)
-        .get('/apps/myapp/formation/node/metrics/errors')
-        .query((params: any) => params.step === '1h')
-        .reply(200, {data: {}})
-        .get('/apps/myapp/formation/web/metrics/errors')
-        .query((params: any) => params.step === '1h')
-        .reply(200, {data: {}})
+      fakeDashboardBackend.favorite.list.resolves([{resource_name: 'myapp'}])
+      fakePlatform.app.info.resolves({
+        name: 'myapp', owner: {email: 'foo@bar.com'}, released_at: now.toString(),
+      })
+      fakePlatform.formation.list.resolves(formation)
+      fakePlatform.pipelineCoupling.infoByApp.rejects(new Error('not found'))
+      fakeMetrics.routerMetric.status.resolves(router.status)
+      fakeMetrics.routerMetric.latency.resolves(router.latency)
+      fakeMetrics.routerMetric.errors.resolves(router.errors)
+      fakeMetrics.formationMetric.errors.resolves({data: {}})
 
       const {stderr, stdout} = await runCommand(Cmd, [])
 
@@ -189,45 +186,24 @@ describe('dashboard', function () {
         See other CLI commands with heroku help
       `))
       expect(stderr).to.contain('Loading... done\n')
+      expect(fakePlatform.app.info.calledOnceWithExactly('myapp')).to.equal(true)
+      expect(fakeMetrics.routerMetric.latency.calledOnce).to.equal(true)
+      expect(fakeMetrics.routerMetric.latency.firstCall.args[1].process_type).to.equal('web')
     })
   })
 
   describe('with a apps and metrics', function () {
     it('shows the dashboard', async function () {
-      nock('https://particleboard.heroku.com:443')
-        .get('/favorites?type=app')
-        .reply(200, [{resource_name: 'myapp'}])
-      nock('https://api.heroku.com:443')
-        .get('/teams')
-        .reply(200, [])
-        .get('/apps/myapp')
-        .reply(200, {
-          name: 'myapp', owner: {email: 'foo@bar.com'}, released_at: now.toString(),
-        })
-        .get('/apps/myapp/formation')
-        .reply(200, formation)
-        .get('/apps/myapp/pipeline-couplings')
-        .reply(200, pipeline)
-      nock('https://telex.heroku.com:443')
-        .get('/user/notifications')
-        .reply(200, [])
-      nock('https://api.metrics.herokai.com:443')
-        .get('/apps/myapp/router-metrics/status')
-        // `.query` calls used below to avoid getting mocked time to match exactly for `start_time` and `end_time`
-        .query((params: any) => params.step === '1h' && params.process_type === 'web')
-        .reply(200, router.status)
-        .get('/apps/myapp/router-metrics/latency')
-        .query((params: any) => params.step === '1h' && params.process_type === 'web')
-        .reply(200, router.latency)
-        .get('/apps/myapp/router-metrics/errors')
-        .query((params: any) => params.step === '1h' && params.process_type === 'web')
-        .reply(200, router.errors)
-        .get('/apps/myapp/formation/node/metrics/errors')
-        .query((params: any) => params.step === '1h')
-        .reply(200, {data: {}})
-        .get('/apps/myapp/formation/web/metrics/errors')
-        .query((params: any) => params.step === '1h')
-        .reply(200, {data: {}})
+      fakeDashboardBackend.favorite.list.resolves([{resource_name: 'myapp'}])
+      fakePlatform.app.info.resolves({
+        name: 'myapp', owner: {email: 'foo@bar.com'}, released_at: now.toString(),
+      })
+      fakePlatform.formation.list.resolves(formation)
+      fakePlatform.pipelineCoupling.infoByApp.resolves(pipeline)
+      fakeMetrics.routerMetric.status.resolves(router.status)
+      fakeMetrics.routerMetric.latency.resolves(router.latency)
+      fakeMetrics.routerMetric.errors.resolves(router.errors)
+      fakeMetrics.formationMetric.errors.resolves({data: {}})
 
       const {stdout} = await runCommand(Cmd, [])
       expect(stdout).to.include('Pipeline: foobar')
