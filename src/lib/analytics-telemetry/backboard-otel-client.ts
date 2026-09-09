@@ -1,9 +1,9 @@
 import opentelemetry, {SpanStatusCode} from '@opentelemetry/api'
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http'
-import {Resource} from '@opentelemetry/resources'
+import {defaultResource, resourceFromAttributes} from '@opentelemetry/resources'
 import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-base'
 import {NodeTracerProvider} from '@opentelemetry/sdk-trace-node'
-import {SemanticResourceAttributes} from '@opentelemetry/semantic-conventions'
+import {ATTR_SERVICE_NAME} from '@opentelemetry/semantic-conventions'
 import debug from 'debug'
 
 import {
@@ -104,18 +104,9 @@ export default class BackboardOtelClient {
     telemetryDebug('Initializing OpenTelemetry...')
     isInitialized = true
 
-    const resource = Resource
-      .default()
-      .merge(new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'heroku-cli',
-        [SemanticResourceAttributes.SERVICE_VERSION]: undefined, // will be set later
-      }))
-
-    // Initialize without Sentry sampler initially (Sentry loaded lazily)
-    provider = new NodeTracerProvider({
-      resource,
-    })
-    telemetryDebug('NodeTracerProvider created')
+    const resource = defaultResource().merge(resourceFromAttributes({
+      [ATTR_SERVICE_NAME]: 'heroku-cli',
+    }))
 
     // eslint-disable-next-line unicorn/no-negated-condition
     const token = process.env.IS_HEROKU_TEST_ENV !== 'true' ? await getToken() : ''
@@ -131,11 +122,15 @@ export default class BackboardOtelClient {
     })
 
     processor = new BatchSpanProcessor(exporter)
-    provider.addSpanProcessor(processor)
-    telemetryDebug('BatchSpanProcessor added to provider')
+
+    // Sentry is loaded lazily, so no Sentry sampler/context manager is wired here.
+    provider = new NodeTracerProvider({
+      resource,
+      spanProcessors: [processor],
+    })
+    telemetryDebug('NodeTracerProvider created with BatchSpanProcessor')
 
     // Register the provider to make it the global tracer provider
-    // We don't use Sentry context manager here to avoid loading Sentry upfront
     provider.register()
     telemetryDebug('OpenTelemetry provider registered globally')
   }
