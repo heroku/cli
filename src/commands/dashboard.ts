@@ -1,8 +1,9 @@
-import {APIClient, Command} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import {Command} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {App, Formation, PipelineCoupling} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
-import {execSync} from 'node:child_process'
+import {execFileSync} from 'node:child_process'
 import path from 'node:path'
 import * as process from 'node:process'
 import {fileURLToPath} from 'node:url'
@@ -16,10 +17,19 @@ import {sparkline} from '../lib/utils/sparkline.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+type Metrics = HerokuSDK['metrics']
+
+// `GET /apps/{id}/pipeline-couplings` returns the coupled pipeline's name, but
+// the strict @heroku/types schema only declares `pipeline.id`. Widen it here
+// until the upstream type catches up (see V12 SDK migration).
+type PipelineCouplingWithName = Omit<PipelineCoupling, 'pipeline'> & {
+  pipeline?: {id?: string; name?: string}
+}
+
 type AppsWithMoreInfo = {
-  app: Heroku.App
-  formation: Heroku.Formation
-  pipeline?: Heroku.PipelineCoupling
+  app: App
+  formation: Formation[]
+  pipeline?: PipelineCouplingWithName
 }
 
 type FetchMetricsResponse =  {
@@ -49,10 +59,10 @@ function displayErrors(metrics: FetchMetricsResponse[0], _: any) {
     ux.stdout(`  ${label('Errors:')} ${errors.join(dim(', '))} (see details with ${color.code('heroku apps:errors')})`)
 }
 
-function displayFormation(formation: Heroku.Formation, _: any) {
-  formation = _.groupBy(formation, 'size')
-  formation = _.map(formation, (p: any, size: string) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
-  ux.stdout(`  ${label('Dynos:')} ${formation.join(', ')}`)
+function displayFormation(formation: Formation[], _: any) {
+  const grouped = _.groupBy(formation, 'size')
+  const sizes = _.map(grouped, (p: any, size: string) => `${bold(_.sumBy(p, 'quantity').toString())} | ${size}`)
+  ux.stdout(`  ${label('Dynos:')} ${sizes.join(', ')}`)
 }
 
 function displayMetrics(metrics: FetchMetricsResponse[0], _: any) {
@@ -100,27 +110,28 @@ const dim = (s: string) => color.gray(s)
 const bold = (s: string) => color.bold(s)
 const label = (s: string) => color.label(s)
 
-const fetchMetrics = async (apps: Heroku.App[], heroku: APIClient): Promise<FetchMetricsResponse> => {
+const fetchMetrics = async (apps: AppsWithMoreInfo[], metrics: Metrics): Promise<FetchMetricsResponse> => {
   const NOW = new Date().toISOString()
   const YESTERDAY = new Date(Date.now() - (24 * 60 * 60 * 1000)).toISOString()
-  const date = `start_time=${YESTERDAY}&end_time=${NOW}&step=1h`
+  const query = {end_time: NOW, start_time: YESTERDAY, step: '1h'}
 
   const metricsData = await Promise.all(apps.map(app => {
-    const types = app.formation.map((p: Heroku.Formation) => p.type)
-    const dynoErrorsPromise: Promise<(AppErrors | undefined)[]> = Promise.all(types.map((type: string) => heroku.get<AppErrors>(
-      `/apps/${app.app.name}/formation/${type}/metrics/errors?${date}`,
-      {hostname: 'api.metrics.herokai.com'},
-    ).catch(() => {})))
+    const types = app.formation.map(p => p.type)
+    const dynoErrorsPromise = Promise.all(types.map(type =>
+      metrics.formationMetric.errors(app.app.name, type, query).catch(() => {})))
     return Promise.all([
       dynoErrorsPromise,
-      heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/latency?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
-      heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/errors?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
-      heroku.get<AppErrors>(`/apps/${app.app.name}/router-metrics/status?${date}&process_type=${types[0]}`, {hostname: 'api.metrics.herokai.com'}).catch(() => {}),
+      metrics.routerMetric.latency(app.app.name, {...query, process_type: types[0]}).catch(() => {}),
+      metrics.routerMetric.errors(app.app.name, {...query, process_type: types[0]}).catch(() => {}),
+      metrics.routerMetric.status(app.app.name, {...query, process_type: types[0]}).catch(() => {}),
     ])
   }))
 
   return metricsData.map(([dynoErrors, routerLatency, routerErrors, routerStatus]) => ({
-    dynoErrors, routerErrors: routerErrors?.body, routerLatency: routerLatency?.body, routerStatus: routerStatus?.body,
+    dynoErrors: dynoErrors as (AppErrors | undefined)[],
+    routerErrors: routerErrors as AppErrors | undefined,
+    routerLatency: routerLatency as AppErrors | undefined,
+    routerStatus: routerStatus as AppErrors | undefined,
   }))
 }
 
@@ -131,19 +142,18 @@ export default class Dashboard extends Command {
   static promptFlagActive = false
   static topic = 'dashboard'
 
-  public async run(): Promise<void> {
+  public async run(): Promise<AppsWithMoreInfo[] | void> {
+    const {dashboardBackend, metrics, notifications, platform} = new HerokuSDK()
     const _ = await lazyModuleLoader.loadLodash()
 
     if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {
-      execSync('heroku help', {stdio: 'inherit'})
+      execFileSync('heroku', ['help'], {stdio: 'inherit'})
       return
     }
 
     const favoriteApps = async () => {
-      const {body: apps} = await this.heroku.get<Heroku.App[]>('/favorites?type=app', {
-        hostname: 'particleboard.heroku.com',
-      })
-      return apps.map(app => app.resource_name)
+      const favorites = await dashboardBackend.favorite.list({type: 'app'})
+      return favorites.map(favorite => favorite.resource_name)
     }
 
     try {
@@ -164,27 +174,26 @@ export default class Dashboard extends Command {
 
     ux.action.start('Loading')
     const apps = await favoriteApps()
-    const [{body: teams}, notificationsResponse, appsWithMoreInfo] = await Promise.all([
-      this.heroku.get<Heroku.Team[]>('/teams'),
-      this.heroku.get<{read: boolean}[]>('/user/notifications', {hostname: 'telex.heroku.com'})
-        .catch(() => null),
+    const [teams, notificationsResponse, appsWithMoreInfo] = await Promise.all([
+      platform.team.list(),
+      notifications.notification.list().catch(() => null),
       Promise.all(apps.map(async appID => {
-        const [{body: app}, {body: formation}, pipelineResponse] = await Promise.all([
-          this.heroku.get<Heroku.App>(`/apps/${appID}`),
-          this.heroku.get<Heroku.Formation>(`/apps/${appID}/formation`),
-          this.heroku.get<Heroku.PipelineCoupling>(`/apps/${appID}/pipeline-couplings`)
+        const [app, formation, pipeline] = await Promise.all([
+          platform.app.info(appID),
+          platform.formation.list(appID),
+          platform.pipelineCoupling.infoByApp(appID)
             .catch(() => null),
         ])
         return {
-          app, formation, pipeline: pipelineResponse?.body,
+          app, formation, pipeline: pipeline ?? undefined,
         }
       })),
     ])
 
-    const metrics = await fetchMetrics(appsWithMoreInfo, this.heroku)
+    const metricsData = await fetchMetrics(appsWithMoreInfo, metrics)
     ux.action.stop()
     if (apps.length > 0)
-      displayApps(appsWithMoreInfo, metrics, _)
+      displayApps(appsWithMoreInfo, metricsData, _)
     else
       ux.warn(`Add apps to this dashboard by favoriting them with ${color.code('heroku apps:favorites:add')}`)
     ux.stdout(`See all add-ons with ${color.code('heroku addons')}`)
@@ -192,13 +201,15 @@ export default class Dashboard extends Command {
     if (sampleTeam)
       ux.stdout(`See all apps in ${color.team(sampleTeam.name || '')} with ${color.code('heroku apps --team ' + sampleTeam.name)}`)
     ux.stdout(`See all apps with ${color.code('heroku apps --all')}`)
-    displayNotifications(notificationsResponse?.body)
+    displayNotifications(notificationsResponse ?? undefined)
     ux.stdout(`\nSee other CLI commands with ${color.code('heroku help')}\n`)
+
+    return appsWithMoreInfo
   }
 }
 
 function displayApps(apps: AppsWithMoreInfo[], appsMetrics: FetchMetricsResponse, _: any) {
-  const getOwner = (owner: Heroku.App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
+  const getOwner = (owner: App['owner']) => owner?.email?.endsWith('@herokumanager.com') ? owner.email.split('@')[0] : owner?.email
   const zipped = _.zip(apps, appsMetrics) as [AppsWithMoreInfo, FetchMetricsResponse[0]][]
   for (const a of zipped) {
     const app = a[0]
