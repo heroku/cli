@@ -54,4 +54,25 @@ describe('config', function () {
     expect(fakePlatform.withHeaders.calledOnceWithExactly({Range: 'version ..; order=desc,max=1'})).to.equal(true)
     expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
   })
+
+  it('ends the action with ! when the config update fails', async function () {
+    fakePlatform.configVar.update.rejects(new Error('Config unset failed'))
+
+    const {error, stderr} = await runCommand(ConfigUnset, ['-amyapp', 'FOO'])
+
+    expect(error?.message).to.include('Config unset failed')
+    expect(stderr).to.include('!')
+    expect(stderr).not.to.include('done')
+  })
+
+  it('ends the action with ! when the release lookup fails', async function () {
+    fakePlatform.configVar.update.resolves({})
+    fakePlatform.release.list.rejects(new Error('Release lookup failed'))
+
+    const {error, stderr} = await runCommand(ConfigUnset, ['-amyapp', 'FOO'])
+
+    expect(error?.message).to.include('Release lookup failed')
+    expect(stderr).to.include('!')
+    expect(stderr).not.to.include('done')
+  })
 })
