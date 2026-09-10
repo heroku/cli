@@ -1,9 +1,8 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {hux} from '@heroku/heroku-cli-util'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
-import {restore, stub} from 'sinon'
+import {restore} from 'sinon'
 import strftime from 'strftime'
 import tsheredoc from 'tsheredoc'
 
@@ -269,48 +268,35 @@ describe('ps', function () {
     api.done()
 
     expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
-      Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az      Release Command   Route    Size
-      ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ─────── ─────── ───────── ──────── ────
-      101 run.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.2 8000 us-east 40      bash      da route Eco
-      100 web.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.1 8000 us-east 40      npm start da route Eco
+      === run.1 (Eco)
+      ID:              101
+      State:           up ${hourAgoStr} (~ 1h ago)
+      Release:         40
+      Command:         bash
+      Region:          us
+      Execution Plane: execution_plane
+      Fleet:           fleet
+      Instance:        instance
+      IP:              10.0.0.2
+      Port:            8000
+      AZ:              us-east
+      Route:           da route
+      === web.1 (Eco)
+      ID:              100
+      State:           up ${hourAgoStr} (~ 1h ago)
+      Release:         40
+      Command:         npm start
+      Region:          us
+      Execution Plane: execution_plane
+      Fleet:           fleet
+      Instance:        instance
+      IP:              10.0.0.1
+      Port:            8000
+      AZ:              us-east
+      Route:           da route
     `))
 
     expect(stderr).to.equal('')
-  })
-
-  it('passes no-wrap option through to extended table rendering', async function () {
-    nock('https://api.heroku.com', {reqheaders: {accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get('/account')
-      .reply(200, {id: '1234'})
-      .get('/apps/myapp')
-      .reply(200, {name: 'myapp'})
-      .get('/apps/myapp/dynos?extended=true')
-      .reply(200, [{
-        command: 'npm start',
-        extended: {
-          az: 'us-east',
-          execution_plane: 'execution_plane',
-          fleet: 'fleet',
-          instance: 'instance',
-          ip: '10.0.0.1',
-          port: 8000,
-          region: 'us',
-          route: 'da route',
-        },
-        id: '100',
-        name: 'web.1',
-        release: {id: '10', version: '40'},
-        size: 'Eco',
-        state: 'up',
-        type: 'web',
-        updated_at: hourAgo,
-      }])
-
-    const tableStub = stub(hux, 'table')
-    await runCommand(Cmd, ['--app', 'myapp', '--extended', '--no-wrap'])
-
-    const callArgs = tableStub.firstCall.args
-    expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
   })
 
   it('shows extended info for Private Space app', async function () {
@@ -369,10 +355,22 @@ describe('ps', function () {
     api.done()
 
     expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
-      Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az Release Command   Route Size
-      ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ── ─────── ───────── ───── ────
-      101 run.1   up ${hourAgoStr} (~ 1h ago) us                           instance 10.0.0.1         40      bash            Eco
-      100 web.1   up ${hourAgoStr} (~ 1h ago) us                           instance 10.0.0.1         40      npm start       Eco
+      === run.1 (Eco)
+      ID:       101
+      State:    up ${hourAgoStr} (~ 1h ago)
+      Release:  40
+      Command:  bash
+      Region:   us
+      Instance: instance
+      IP:       10.0.0.1
+      === web.1 (Eco)
+      ID:       100
+      State:    up ${hourAgoStr} (~ 1h ago)
+      Release:  40
+      Command:  npm start
+      Region:   us
+      Instance: instance
+      IP:       10.0.0.1
     `))
     expect(stderr).to.equal('')
   })
@@ -419,10 +417,32 @@ describe('ps', function () {
     api.done()
 
     expect(normalizeTableOutput(stdout)).to.equal(normalizeTableOutput(`
-      Id  Process State                                   Region Execution plane Fleet Instance Ip       Port Az      Release Command   Route    Size
-      ─── ─────── ─────────────────────────────────────── ────── ─────────────── ───── ──────── ──────── ──── ─────── ─────── ───────── ──────── ────────
-      101 run.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.2 8000 us-east 40      bash      da route Shield-L
-      100 web.1   up ${hourAgoStr} (~ 1h ago) us     execution_plane fleet instance 10.0.0.1 8000 us-east 40      npm start da route Shield-M
+      === run.1 (Shield-L)
+      ID:              101
+      State:           up ${hourAgoStr} (~ 1h ago)
+      Release:         40
+      Command:         bash
+      Region:          us
+      Execution Plane: execution_plane
+      Fleet:           fleet
+      Instance:        instance
+      IP:              10.0.0.2
+      Port:            8000
+      AZ:              us-east
+      Route:           da route
+      === web.1 (Shield-M)
+      ID:              100
+      State:           up ${hourAgoStr} (~ 1h ago)
+      Release:         40
+      Command:         npm start
+      Region:          us
+      Execution Plane: execution_plane
+      Fleet:           fleet
+      Instance:        instance
+      IP:              10.0.0.1
+      Port:            8000
+      AZ:              us-east
+      Route:           da route
     `))
     expect(stderr).to.equal('')
   })

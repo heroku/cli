@@ -30,7 +30,6 @@ FLAGS
   -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
-      --no-wrap         disable wrapped table cells for easier copy/paste
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
