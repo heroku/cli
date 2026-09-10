@@ -1,5 +1,5 @@
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HTTP} from '@heroku/http-call'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {Command, Flags, ux} from '@oclif/core'
 
 import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
@@ -16,6 +16,15 @@ import {
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
+
+// Status data comes from public third-party hosts, so token: '' keeps the request unauthenticated.
+const statusClient = (baseUrl: string) => new HerokuApiClient({baseUrl, service: 'custom', token: ''})
+
+// Some status endpoints reply 200 with no body; treat that as absent.
+const getJson = async <T>(response: Response): Promise<T | undefined> => {
+  const text = await response.text()
+  return text ? JSON.parse(text) as T : undefined
+}
 
 const printStatus = (status: string) => {
   const colorize = (color as any)[status]
@@ -37,16 +46,17 @@ const getTrustStatus = async () => {
   let localizations: Localization[] = []
 
   try {
+    const client = statusClient(trustHost)
     const [instanceResponse, activeIncidentsResponse, maintenancesResponse, localizationsResponse] = await Promise.all([
-      HTTP.get<TrustInstance[]>(`${trustHost}/instances?products=Heroku`),
-      HTTP.get<TrustIncident[]>(`${trustHost}/incidents/active`),
-      HTTP.get<TrustMaintenance[]>(`${trustHost}/maintenances?startTime=${currentDateTime}&limit=10&offset=0&product=Heroku&locale=en`),
-      HTTP.get<Localization[]>(`${trustHost}/localizations?locale=en`),
+      client.get('/instances?products=Heroku'),
+      client.get('/incidents/active'),
+      client.get(`/maintenances?startTime=${currentDateTime}&limit=10&offset=0&product=Heroku&locale=en`),
+      client.get('/localizations?locale=en'),
     ])
-    instances = instanceResponse.body
-    activeIncidents = activeIncidentsResponse.body
-    maintenances = maintenancesResponse.body
-    localizations = localizationsResponse.body
+    instances = await getJson<TrustInstance[]>(instanceResponse) ?? []
+    activeIncidents = await getJson<TrustIncident[]>(activeIncidentsResponse) ?? []
+    maintenances = await getJson<TrustMaintenance[]>(maintenancesResponse) ?? []
+    localizations = await getJson<Localization[]>(localizationsResponse) ?? []
   } catch {
     ux.error(errorMessage, {exit: 1})
   }
@@ -145,8 +155,8 @@ export default class Status extends Command {
       try {
         // Try calling the Heroku status API first
         const herokuHost = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-        const herokuStatusResponse = await HTTP.get<HerokuStatus>(herokuHost + herokuApiPath)
-        herokuStatus = herokuStatusResponse.body
+        const herokuStatusResponse = await statusClient(herokuHost).get(herokuApiPath)
+        herokuStatus = await getJson<HerokuStatus>(herokuStatusResponse)
       } catch {
         // If the Heroku status API call fails, call the SF Trust API
         formattedTrustStatus = await getTrustStatus()
