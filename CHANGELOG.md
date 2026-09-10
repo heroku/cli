@@ -4,6 +4,220 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [12.0.0-alpha.0](https://github.com/heroku/cli/compare/v11.10.0...v12.0.0-alpha.0) (2026-09-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate spaces mechanical commands to @heroku/sdk (#3881)
+* spaces:info --json output shape changes. `generation`
+becomes a bare string (was an object {id, name}); the object form is
+preserved under a new `generation_object` key. Additional 3.sdk fields
+(channel_name, features, supported_features, eks_version) may appear.
+No field is removed.
+* **node:** bump baseline to >=22 and bundled Node 24.19.0, retarget CI to [22.x, 24.x] (#3877)
+* exclude backups from long running queries (#3790)
+
+* Task 9: refactor(spaces:info)!: drop 3.fir override for 3.sdk default ([07c4253](https://github.com/heroku/cli/commit/07c4253a9f80ba6a885845eb33f5dfb879d58b1c))
+
+
+### Features
+
+* exclude backups from long running queries ([#3790](https://github.com/heroku/cli/issues/3790)) ([0b72bfc](https://github.com/heroku/cli/commit/0b72bfcf7af2e62e5d46fbe9771effc5a793aaa3))
+* heroku sdk integration ps commands ([#3732](https://github.com/heroku/cli/issues/3732)) ([66cd833](https://github.com/heroku/cli/commit/66cd833551e24823b7e403616f3881d1e80528c2)), closes [#3716](https://github.com/heroku/cli/issues/3716) [#3724](https://github.com/heroku/cli/issues/3724) [#3721](https://github.com/heroku/cli/issues/3721) [#3727](https://github.com/heroku/cli/issues/3727)
+* implement sdk pagination in list commands ([#3739](https://github.com/heroku/cli/issues/3739)) ([1272838](https://github.com/heroku/cli/commit/1272838b6f40e5a168c4f5d3341ee6993bf3da6b))
+* integrate @heroku/sdk from github main ([e779292](https://github.com/heroku/cli/commit/e77929202ca76be234f14fabd92f803a6b598870))
+* integrate @heroku/sdk into the CLI (v12 foundation) ([#3803](https://github.com/heroku/cli/issues/3803)) ([192d869](https://github.com/heroku/cli/commit/192d869ea61c9cbb32208b18e9114b5e3cd9c5c6))
+* migrate adapters to sdk ([#3735](https://github.com/heroku/cli/issues/3735)) ([9be770f](https://github.com/heroku/cli/commit/9be770f1ee399894f11b88d1e34eae9bce90a708))
+* migrate run commands to @heroku/sdk ([#3819](https://github.com/heroku/cli/issues/3819)) ([b3bf021](https://github.com/heroku/cli/commit/b3bf0211a333fa25bf2599580dd8e7a9ddfe8ff4))
+* refactor pg commands to leverage sdk ([#3728](https://github.com/heroku/cli/issues/3728)) ([a2dad85](https://github.com/heroku/cli/commit/a2dad85e51c64d69592ffb2bfafa43b1ec3f46d8))
+* use sdk for reviewapps enable and disable commands ([#3897](https://github.com/heroku/cli/issues/3897)) ([9f958c8](https://github.com/heroku/cli/commit/9f958c889691a03530ee25368eb60e1f931193f8))
+
+
+### Bug Fixes
+
+* **deps:** bump fast-uri to 3.1.7 (closes 4 advisories) ([#3908](https://github.com/heroku/cli/issues/3908)) ([ffe207d](https://github.com/heroku/cli/commit/ffe207dc6e50fd1d6fcfddf345dde94deb1db5b3)), closes [#391](https://github.com/heroku/cli/issues/391) [#392](https://github.com/heroku/cli/issues/392) [#399](https://github.com/heroku/cli/issues/399) [#400](https://github.com/heroku/cli/issues/400)
+* **deps:** pin @heroku/sdk to ^0.6.1 and resync lockfile ([e789717](https://github.com/heroku/cli/commit/e789717c2b57ea554188352b9c2b668f8e555588))
+* **deps:** regenerate lockfile with CI's npm (10.9.8) to fix ci sync ([81fa93e](https://github.com/heroku/cli/commit/81fa93e9c7818e3b542a18f8bbf3607fea7d5e0a))
+* **deps:** resolve GHSA-73wf-gq98-2v4g in browserslist ([#3909](https://github.com/heroku/cli/issues/3909)) ([fe3cd8b](https://github.com/heroku/cli/commit/fe3cd8b5f88b3b22491319879bdb9568db42486a)), closes [#396](https://github.com/heroku/cli/issues/396)
+* fix misleading config output when 2FA fails ([#3887](https://github.com/heroku/cli/issues/3887)) ([e0fd81f](https://github.com/heroku/cli/commit/e0fd81f0b4bafc5d2919c5e3cf83a39279299b20))
+* parse Procfile process types containing dashes in heroku local ([#3883](https://github.com/heroku/cli/issues/3883)) ([5118f40](https://github.com/heroku/cli/commit/5118f40a868e7c07604e2986efc68ea45e9feaee))
+* resolve test failures from the main-merge ([edf0f5f](https://github.com/heroku/cli/commit/edf0f5f1d3cd4030f3fedafae6cc0e36b5f94396))
+* updates opentelemetry deps to match sentry's peer deps ([#3900](https://github.com/heroku/cli/issues/3900)) ([f66d998](https://github.com/heroku/cli/commit/f66d9984b2dd1b8c0cc6c1e4d0f1819340fc4b63))
+
+
+### Documentation
+
+* add SDK command migration guide ([#3811](https://github.com/heroku/cli/issues/3811)) ([e268ed3](https://github.com/heroku/cli/commit/e268ed3cb77957a88983ba507c75ddaec1b419c3))
+* check in-flight branches before SDK command migration ([#3813](https://github.com/heroku/cli/issues/3813)) ([e64d16e](https://github.com/heroku/cli/commit/e64d16e65887883819d6fd53f8d530b87367f2c3))
+
+
+### Miscellaneous Chores
+
+* add SDK command migration tooling ([#3723](https://github.com/heroku/cli/issues/3723)) ([5e710b2](https://github.com/heroku/cli/commit/5e710b288f2fbc756f7944293167cf29f84f4a4f))
+* add setup-node to pack-upload and release-homebrew workflows ([#3879](https://github.com/heroku/cli/issues/3879)) ([d3150a2](https://github.com/heroku/cli/commit/d3150a241a037481199386b6d4a0a34f3e69d53f))
+* fix eslint errors in spaces SDK migration ([f9251fb](https://github.com/heroku/cli/commit/f9251fb459a4996297322dcb59a83fd8d64eedf9))
+* merge main into feat/heroku-sdk-integration ([6c3fe9b](https://github.com/heroku/cli/commit/6c3fe9b6ebdf72ab7e3b65b8d614dc4030c04b58))
+* merge updates from 'main' branch back into the long-lived branch (W-23866240) ([#3868](https://github.com/heroku/cli/issues/3868)) ([a55ad1a](https://github.com/heroku/cli/commit/a55ad1a1394ee051619014b44c039a4bf0e02412))
+* merge updates from 'main' into v12.0.0 (W-23971696) ([#3913](https://github.com/heroku/cli/issues/3913)) ([e360a72](https://github.com/heroku/cli/commit/e360a72e9385fa9f33175dbe1afdfbf8faadb3c3))
+* migrate to published @heroku/sdk and @heroku/types packages ([#3745](https://github.com/heroku/cli/issues/3745)) ([4b248bc](https://github.com/heroku/cli/commit/4b248bcffcb61097f683bf150448bcb93ee18ff0))
+
+
+### Code Refactoring
+
+* adopt heroku/sdk in domains topic ([#3812](https://github.com/heroku/cli/issues/3812)) ([471ac62](https://github.com/heroku/cli/commit/471ac62ed6a455b903edc4bd8f2e1579eaaf055e))
+* **config:** use @heroku/sdk ([#3893](https://github.com/heroku/cli/issues/3893)) ([7309f0f](https://github.com/heroku/cli/commit/7309f0f4205f364a63821d663771ed6e8defe929))
+* drop redundant spaces:hosts 3.dogwood override for 3.sdk default ([5436b6a](https://github.com/heroku/cli/commit/5436b6a22cdcdc9d1803780b9be6f4406a3720b6))
+* **features:** use @heroku/sdk ([#3890](https://github.com/heroku/cli/issues/3890)) ([0069cea](https://github.com/heroku/cli/commit/0069cea0cb350bd8d6b87d591085cb8387f2a6c7))
+* **git:** use @heroku/sdk ([#3889](https://github.com/heroku/cli/issues/3889)) ([48a2fa8](https://github.com/heroku/cli/commit/48a2fa857b7b16c1b620a9a2524ee92857b53fc2))
+* migrate LogDisplayer to @heroku/sdk streamLogs ([#3722](https://github.com/heroku/cli/issues/3722)) ([3b54ace](https://github.com/heroku/cli/commit/3b54ace5cff1068de3aab50d8c5ae00ddd8e437a)), closes [heroku/heroku-sdk#28](https://github.com/heroku/heroku-sdk/issues/28)
+* migrate spaces mechanical commands to @heroku/sdk ([#3881](https://github.com/heroku/cli/issues/3881)) ([4914448](https://github.com/heroku/cli/commit/49144489df3c3bc1cd0fcf7780800d69b4a7af63))
+* **releases:** use @heroku/sdk ([#3888](https://github.com/heroku/cli/issues/3888)) ([a645c81](https://github.com/heroku/cli/commit/a645c81fff4de8089b8e05459ab85a948e35cefd))
+* **run:** use SDK waitForInfo for the post-creation 404 race ([#3746](https://github.com/heroku/cli/issues/3746)) ([ee9124e](https://github.com/heroku/cli/commit/ee9124efb235d23b07a92fcd89cbfdc123c4467e)), closes [heroku/heroku-sdk#49](https://github.com/heroku/heroku-sdk/issues/49)
+* **spaces:vpn:** use @heroku/sdk ([#3882](https://github.com/heroku/cli/issues/3882)) ([8f91994](https://github.com/heroku/cli/commit/8f91994fd0b9d93e10558fab1fde1f980338d32f))
+* **spaces:** adopt @heroku/types 4.6.0 and drop redundant create casts ([45fd0a8](https://github.com/heroku/cli/commit/45fd0a87c6c7f7b8966d71974eeac2cfdba27023))
+* **spaces:** adopt @heroku/types 4.6.0 and remove redundant space casts ([#3884](https://github.com/heroku/cli/issues/3884)) ([d002a7f](https://github.com/heroku/cli/commit/d002a7f12f16ff50239e3528d39f411be25e2f15))
+* **status:** use @heroku/heroku-fetch instead of @heroku/http-call ([#3917](https://github.com/heroku/cli/issues/3917)) ([895cb7f](https://github.com/heroku/cli/commit/895cb7fb3dc020bca11a1a54972e4ea5e7740763))
+* update container:rm message ([#3851](https://github.com/heroku/cli/issues/3851)) ([4c44655](https://github.com/heroku/cli/commit/4c446552b9dfe4406b5618f85347a32c973cc78e))
+* update domains:wait message ([#3823](https://github.com/heroku/cli/issues/3823)) ([6a85865](https://github.com/heroku/cli/commit/6a858657a6a4687cd43b23281dd246d7be6e2191))
+* updates apps and apps:create commands to use sdk ([#3720](https://github.com/heroku/cli/issues/3720)) ([47bea82](https://github.com/heroku/cli/commit/47bea828a49309313207cf1c25b8d4be628e51e1))
+* use @heroku/sdk for accounts:add command ([#3814](https://github.com/heroku/cli/issues/3814)) ([5c5d9ef](https://github.com/heroku/cli/commit/5c5d9ef5543f959daa971e8dea07d61e5e0beda8))
+* use @heroku/sdk for addons commands ([#3718](https://github.com/heroku/cli/issues/3718)) ([5407005](https://github.com/heroku/cli/commit/54070054da6dec24c480f8120afd0c67f9b90782)), closes [heroku/sdk#26](https://github.com/heroku/sdk/issues/26) [#3717](https://github.com/heroku/cli/issues/3717) [heroku-sdk#26](https://github.com/heroku/heroku-sdk/issues/26) [heroku-sdk#27](https://github.com/heroku/heroku-sdk/issues/27) [#27](https://github.com/heroku/cli/issues/27)
+* use @heroku/sdk for apps:info command ([#3749](https://github.com/heroku/cli/issues/3749)) ([3ec2f64](https://github.com/heroku/cli/commit/3ec2f64aaa1b1a332d1ce8f40c8db54eb66ba5a1))
+* use @heroku/sdk for apps:rename and apps:stacks:set commands ([#3753](https://github.com/heroku/cli/issues/3753)) ([0d9830d](https://github.com/heroku/cli/commit/0d9830d2db226a865f737a964a58394a6e5d5600))
+* use @heroku/sdk for auth commands ([#3815](https://github.com/heroku/cli/issues/3815)) ([3504145](https://github.com/heroku/cli/commit/3504145f0c45f1f6a8addf4c1163d14b743310e2))
+* use @heroku/sdk for authorizations commands ([#3855](https://github.com/heroku/cli/issues/3855)) ([ff30230](https://github.com/heroku/cli/commit/ff30230a3493d8f7cdd7179d043d00bea641bc11))
+* use @heroku/sdk for container commands ([#3831](https://github.com/heroku/cli/issues/3831)) ([1faf4e0](https://github.com/heroku/cli/commit/1faf4e0cd0a7cc1cdbfba9a28efe7397e5e860e9))
+* use @heroku/sdk for dashboard command ([#3915](https://github.com/heroku/cli/issues/3915)) ([13e590c](https://github.com/heroku/cli/commit/13e590c9259a304f17628ab04b4f61c14603fbef))
+* use @heroku/sdk for maintenance commands ([#3713](https://github.com/heroku/cli/issues/3713)) ([2cdc0fa](https://github.com/heroku/cli/commit/2cdc0faac46977b9c87b0ccf317599ff19e0a41d))
+* use @heroku/sdk for pipelines commands ([#3717](https://github.com/heroku/cli/issues/3717)) ([b15f593](https://github.com/heroku/cli/commit/b15f593ef7c059e29ac8a771b60c9cc18f1bfd69)), closes [#17](https://github.com/heroku/cli/issues/17)
+* use @heroku/sdk for redis commands ([#3829](https://github.com/heroku/cli/issues/3829)) ([68e5ec5](https://github.com/heroku/cli/commit/68e5ec53357178c225b291577a42f8b00779c9f3))
+* use @heroku/sdk for regions command ([#3914](https://github.com/heroku/cli/issues/3914)) ([5ab1cc6](https://github.com/heroku/cli/commit/5ab1cc6caa0ca0a881e72d2dac1b021ceaff3728))
+* use @heroku/sdk for spaces subcommands ([#3876](https://github.com/heroku/cli/issues/3876)) ([86b87c9](https://github.com/heroku/cli/commit/86b87c9b243ab742d5ebab9e2f848443ae492bad))
+* use @heroku/sdk for telemetry commands ([#3818](https://github.com/heroku/cli/issues/3818)) ([e8dcd4d](https://github.com/heroku/cli/commit/e8dcd4dad05089cb02247f693ab4104566495b81))
+* use sdk for addons commands ([#3850](https://github.com/heroku/cli/issues/3850)) ([ce3fa27](https://github.com/heroku/cli/commit/ce3fa27440cc1b8dddd9ff4ce333bbf24b5803de))
+* use sdk for apps commands ([#3862](https://github.com/heroku/cli/issues/3862)) ([1001e1e](https://github.com/heroku/cli/commit/1001e1e2192a26821c6330fc6ae4592c48f8a011))
+* use sdk poller to restore status messages ([#3857](https://github.com/heroku/cli/issues/3857)) ([d247d10](https://github.com/heroku/cli/commit/d247d106301ef7f07414019067a15b21e1db1e8f))
+
+
+### Tests
+
+* **auth/2fa:** stub @heroku/sdk directly, drop nock ([#3822](https://github.com/heroku/cli/issues/3822)) ([a341ed3](https://github.com/heroku/cli/commit/a341ed340c8659e075027fdf0faa20e59e15c8d9))
+* **spaces:** add hyperschema to cspell dictionary ([40389a9](https://github.com/heroku/cli/commit/40389a9b4a4a86f25dbd150461dec963dbea92c9)), closes [#3884](https://github.com/heroku/cli/issues/3884)
+* **spaces:** pin spaces:info --json generation_object shape ([c2a78eb](https://github.com/heroku/cli/commit/c2a78ebdde1efbea4d6f30d7b1a16edc3a297062)), closes [#3881](https://github.com/heroku/cli/issues/3881) [#5](https://github.com/heroku/cli/issues/5)
+
+
+### Build System
+
+* **node:** bump baseline to >=22 and bundled Node 24.19.0, retarget CI to [22.x, 24.x] ([#3877](https://github.com/heroku/cli/issues/3877)) ([4950341](https://github.com/heroku/cli/commit/4950341abd1b4a3ad6b04c9db753852191ee54d9))
+
+## [12.0.0-beta.0](https://github.com/heroku/cli/compare/v11.10.0...v12.0.0-beta.0) (2026-09-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate spaces mechanical commands to @heroku/sdk (#3881)
+* spaces:info --json output shape changes. `generation`
+becomes a bare string (was an object {id, name}); the object form is
+preserved under a new `generation_object` key. Additional 3.sdk fields
+(channel_name, features, supported_features, eks_version) may appear.
+No field is removed.
+* **node:** bump baseline to >=22 and bundled Node 24.19.0, retarget CI to [22.x, 24.x] (#3877)
+* exclude backups from long running queries (#3790)
+
+* Task 9: refactor(spaces:info)!: drop 3.fir override for 3.sdk default ([07c4253](https://github.com/heroku/cli/commit/07c4253a9f80ba6a885845eb33f5dfb879d58b1c))
+
+
+### Features
+
+* exclude backups from long running queries ([#3790](https://github.com/heroku/cli/issues/3790)) ([0b72bfc](https://github.com/heroku/cli/commit/0b72bfcf7af2e62e5d46fbe9771effc5a793aaa3))
+* heroku sdk integration ps commands ([#3732](https://github.com/heroku/cli/issues/3732)) ([66cd833](https://github.com/heroku/cli/commit/66cd833551e24823b7e403616f3881d1e80528c2)), closes [#3716](https://github.com/heroku/cli/issues/3716) [#3724](https://github.com/heroku/cli/issues/3724) [#3721](https://github.com/heroku/cli/issues/3721) [#3727](https://github.com/heroku/cli/issues/3727)
+* implement sdk pagination in list commands ([#3739](https://github.com/heroku/cli/issues/3739)) ([1272838](https://github.com/heroku/cli/commit/1272838b6f40e5a168c4f5d3341ee6993bf3da6b))
+* integrate @heroku/sdk from github main ([e779292](https://github.com/heroku/cli/commit/e77929202ca76be234f14fabd92f803a6b598870))
+* integrate @heroku/sdk into the CLI (v12 foundation) ([#3803](https://github.com/heroku/cli/issues/3803)) ([192d869](https://github.com/heroku/cli/commit/192d869ea61c9cbb32208b18e9114b5e3cd9c5c6))
+* migrate adapters to sdk ([#3735](https://github.com/heroku/cli/issues/3735)) ([9be770f](https://github.com/heroku/cli/commit/9be770f1ee399894f11b88d1e34eae9bce90a708))
+* migrate run commands to @heroku/sdk ([#3819](https://github.com/heroku/cli/issues/3819)) ([b3bf021](https://github.com/heroku/cli/commit/b3bf0211a333fa25bf2599580dd8e7a9ddfe8ff4))
+* refactor pg commands to leverage sdk ([#3728](https://github.com/heroku/cli/issues/3728)) ([a2dad85](https://github.com/heroku/cli/commit/a2dad85e51c64d69592ffb2bfafa43b1ec3f46d8))
+* use sdk for reviewapps enable and disable commands ([#3897](https://github.com/heroku/cli/issues/3897)) ([9f958c8](https://github.com/heroku/cli/commit/9f958c889691a03530ee25368eb60e1f931193f8))
+
+
+### Bug Fixes
+
+* **deps:** bump fast-uri to 3.1.7 (closes 4 advisories) ([#3908](https://github.com/heroku/cli/issues/3908)) ([ffe207d](https://github.com/heroku/cli/commit/ffe207dc6e50fd1d6fcfddf345dde94deb1db5b3)), closes [#391](https://github.com/heroku/cli/issues/391) [#392](https://github.com/heroku/cli/issues/392) [#399](https://github.com/heroku/cli/issues/399) [#400](https://github.com/heroku/cli/issues/400)
+* **deps:** pin @heroku/sdk to ^0.6.1 and resync lockfile ([e789717](https://github.com/heroku/cli/commit/e789717c2b57ea554188352b9c2b668f8e555588))
+* **deps:** regenerate lockfile with CI's npm (10.9.8) to fix ci sync ([81fa93e](https://github.com/heroku/cli/commit/81fa93e9c7818e3b542a18f8bbf3607fea7d5e0a))
+* **deps:** resolve GHSA-73wf-gq98-2v4g in browserslist ([#3909](https://github.com/heroku/cli/issues/3909)) ([fe3cd8b](https://github.com/heroku/cli/commit/fe3cd8b5f88b3b22491319879bdb9568db42486a)), closes [#396](https://github.com/heroku/cli/issues/396)
+* fix misleading config output when 2FA fails ([#3887](https://github.com/heroku/cli/issues/3887)) ([e0fd81f](https://github.com/heroku/cli/commit/e0fd81f0b4bafc5d2919c5e3cf83a39279299b20))
+* parse Procfile process types containing dashes in heroku local ([#3883](https://github.com/heroku/cli/issues/3883)) ([5118f40](https://github.com/heroku/cli/commit/5118f40a868e7c07604e2986efc68ea45e9feaee))
+* resolve test failures from the main-merge ([edf0f5f](https://github.com/heroku/cli/commit/edf0f5f1d3cd4030f3fedafae6cc0e36b5f94396))
+* updates opentelemetry deps to match sentry's peer deps ([#3900](https://github.com/heroku/cli/issues/3900)) ([f66d998](https://github.com/heroku/cli/commit/f66d9984b2dd1b8c0cc6c1e4d0f1819340fc4b63))
+
+
+### Documentation
+
+* add SDK command migration guide ([#3811](https://github.com/heroku/cli/issues/3811)) ([e268ed3](https://github.com/heroku/cli/commit/e268ed3cb77957a88983ba507c75ddaec1b419c3))
+* check in-flight branches before SDK command migration ([#3813](https://github.com/heroku/cli/issues/3813)) ([e64d16e](https://github.com/heroku/cli/commit/e64d16e65887883819d6fd53f8d530b87367f2c3))
+
+
+### Miscellaneous Chores
+
+* add SDK command migration tooling ([#3723](https://github.com/heroku/cli/issues/3723)) ([5e710b2](https://github.com/heroku/cli/commit/5e710b288f2fbc756f7944293167cf29f84f4a4f))
+* add setup-node to pack-upload and release-homebrew workflows ([#3879](https://github.com/heroku/cli/issues/3879)) ([d3150a2](https://github.com/heroku/cli/commit/d3150a241a037481199386b6d4a0a34f3e69d53f))
+* fix eslint errors in spaces SDK migration ([f9251fb](https://github.com/heroku/cli/commit/f9251fb459a4996297322dcb59a83fd8d64eedf9))
+* merge main into feat/heroku-sdk-integration ([6c3fe9b](https://github.com/heroku/cli/commit/6c3fe9b6ebdf72ab7e3b65b8d614dc4030c04b58))
+* merge updates from 'main' branch back into the long-lived branch (W-23866240) ([#3868](https://github.com/heroku/cli/issues/3868)) ([a55ad1a](https://github.com/heroku/cli/commit/a55ad1a1394ee051619014b44c039a4bf0e02412))
+* merge updates from 'main' into v12.0.0 (W-23971696) ([#3913](https://github.com/heroku/cli/issues/3913)) ([e360a72](https://github.com/heroku/cli/commit/e360a72e9385fa9f33175dbe1afdfbf8faadb3c3))
+* migrate to published @heroku/sdk and @heroku/types packages ([#3745](https://github.com/heroku/cli/issues/3745)) ([4b248bc](https://github.com/heroku/cli/commit/4b248bcffcb61097f683bf150448bcb93ee18ff0))
+
+
+### Code Refactoring
+
+* adopt heroku/sdk in domains topic ([#3812](https://github.com/heroku/cli/issues/3812)) ([471ac62](https://github.com/heroku/cli/commit/471ac62ed6a455b903edc4bd8f2e1579eaaf055e))
+* **config:** use @heroku/sdk ([#3893](https://github.com/heroku/cli/issues/3893)) ([7309f0f](https://github.com/heroku/cli/commit/7309f0f4205f364a63821d663771ed6e8defe929))
+* drop redundant spaces:hosts 3.dogwood override for 3.sdk default ([5436b6a](https://github.com/heroku/cli/commit/5436b6a22cdcdc9d1803780b9be6f4406a3720b6))
+* **features:** use @heroku/sdk ([#3890](https://github.com/heroku/cli/issues/3890)) ([0069cea](https://github.com/heroku/cli/commit/0069cea0cb350bd8d6b87d591085cb8387f2a6c7))
+* **git:** use @heroku/sdk ([#3889](https://github.com/heroku/cli/issues/3889)) ([48a2fa8](https://github.com/heroku/cli/commit/48a2fa857b7b16c1b620a9a2524ee92857b53fc2))
+* migrate LogDisplayer to @heroku/sdk streamLogs ([#3722](https://github.com/heroku/cli/issues/3722)) ([3b54ace](https://github.com/heroku/cli/commit/3b54ace5cff1068de3aab50d8c5ae00ddd8e437a)), closes [heroku/heroku-sdk#28](https://github.com/heroku/heroku-sdk/issues/28)
+* migrate spaces mechanical commands to @heroku/sdk ([#3881](https://github.com/heroku/cli/issues/3881)) ([4914448](https://github.com/heroku/cli/commit/49144489df3c3bc1cd0fcf7780800d69b4a7af63))
+* **releases:** use @heroku/sdk ([#3888](https://github.com/heroku/cli/issues/3888)) ([a645c81](https://github.com/heroku/cli/commit/a645c81fff4de8089b8e05459ab85a948e35cefd))
+* **run:** use SDK waitForInfo for the post-creation 404 race ([#3746](https://github.com/heroku/cli/issues/3746)) ([ee9124e](https://github.com/heroku/cli/commit/ee9124efb235d23b07a92fcd89cbfdc123c4467e)), closes [heroku/heroku-sdk#49](https://github.com/heroku/heroku-sdk/issues/49)
+* **spaces:vpn:** use @heroku/sdk ([#3882](https://github.com/heroku/cli/issues/3882)) ([8f91994](https://github.com/heroku/cli/commit/8f91994fd0b9d93e10558fab1fde1f980338d32f))
+* **spaces:** adopt @heroku/types 4.6.0 and drop redundant create casts ([45fd0a8](https://github.com/heroku/cli/commit/45fd0a87c6c7f7b8966d71974eeac2cfdba27023))
+* **spaces:** adopt @heroku/types 4.6.0 and remove redundant space casts ([#3884](https://github.com/heroku/cli/issues/3884)) ([d002a7f](https://github.com/heroku/cli/commit/d002a7f12f16ff50239e3528d39f411be25e2f15))
+* **status:** use @heroku/heroku-fetch instead of @heroku/http-call ([#3917](https://github.com/heroku/cli/issues/3917)) ([895cb7f](https://github.com/heroku/cli/commit/895cb7fb3dc020bca11a1a54972e4ea5e7740763))
+* update container:rm message ([#3851](https://github.com/heroku/cli/issues/3851)) ([4c44655](https://github.com/heroku/cli/commit/4c446552b9dfe4406b5618f85347a32c973cc78e))
+* update domains:wait message ([#3823](https://github.com/heroku/cli/issues/3823)) ([6a85865](https://github.com/heroku/cli/commit/6a858657a6a4687cd43b23281dd246d7be6e2191))
+* updates apps and apps:create commands to use sdk ([#3720](https://github.com/heroku/cli/issues/3720)) ([47bea82](https://github.com/heroku/cli/commit/47bea828a49309313207cf1c25b8d4be628e51e1))
+* use @heroku/sdk for accounts:add command ([#3814](https://github.com/heroku/cli/issues/3814)) ([5c5d9ef](https://github.com/heroku/cli/commit/5c5d9ef5543f959daa971e8dea07d61e5e0beda8))
+* use @heroku/sdk for addons commands ([#3718](https://github.com/heroku/cli/issues/3718)) ([5407005](https://github.com/heroku/cli/commit/54070054da6dec24c480f8120afd0c67f9b90782)), closes [heroku/sdk#26](https://github.com/heroku/sdk/issues/26) [#3717](https://github.com/heroku/cli/issues/3717) [heroku-sdk#26](https://github.com/heroku/heroku-sdk/issues/26) [heroku-sdk#27](https://github.com/heroku/heroku-sdk/issues/27) [#27](https://github.com/heroku/cli/issues/27)
+* use @heroku/sdk for apps:info command ([#3749](https://github.com/heroku/cli/issues/3749)) ([3ec2f64](https://github.com/heroku/cli/commit/3ec2f64aaa1b1a332d1ce8f40c8db54eb66ba5a1))
+* use @heroku/sdk for apps:rename and apps:stacks:set commands ([#3753](https://github.com/heroku/cli/issues/3753)) ([0d9830d](https://github.com/heroku/cli/commit/0d9830d2db226a865f737a964a58394a6e5d5600))
+* use @heroku/sdk for auth commands ([#3815](https://github.com/heroku/cli/issues/3815)) ([3504145](https://github.com/heroku/cli/commit/3504145f0c45f1f6a8addf4c1163d14b743310e2))
+* use @heroku/sdk for authorizations commands ([#3855](https://github.com/heroku/cli/issues/3855)) ([ff30230](https://github.com/heroku/cli/commit/ff30230a3493d8f7cdd7179d043d00bea641bc11))
+* use @heroku/sdk for container commands ([#3831](https://github.com/heroku/cli/issues/3831)) ([1faf4e0](https://github.com/heroku/cli/commit/1faf4e0cd0a7cc1cdbfba9a28efe7397e5e860e9))
+* use @heroku/sdk for dashboard command ([#3915](https://github.com/heroku/cli/issues/3915)) ([13e590c](https://github.com/heroku/cli/commit/13e590c9259a304f17628ab04b4f61c14603fbef))
+* use @heroku/sdk for maintenance commands ([#3713](https://github.com/heroku/cli/issues/3713)) ([2cdc0fa](https://github.com/heroku/cli/commit/2cdc0faac46977b9c87b0ccf317599ff19e0a41d))
+* use @heroku/sdk for pipelines commands ([#3717](https://github.com/heroku/cli/issues/3717)) ([b15f593](https://github.com/heroku/cli/commit/b15f593ef7c059e29ac8a771b60c9cc18f1bfd69)), closes [#17](https://github.com/heroku/cli/issues/17)
+* use @heroku/sdk for redis commands ([#3829](https://github.com/heroku/cli/issues/3829)) ([68e5ec5](https://github.com/heroku/cli/commit/68e5ec53357178c225b291577a42f8b00779c9f3))
+* use @heroku/sdk for regions command ([#3914](https://github.com/heroku/cli/issues/3914)) ([5ab1cc6](https://github.com/heroku/cli/commit/5ab1cc6caa0ca0a881e72d2dac1b021ceaff3728))
+* use @heroku/sdk for spaces subcommands ([#3876](https://github.com/heroku/cli/issues/3876)) ([86b87c9](https://github.com/heroku/cli/commit/86b87c9b243ab742d5ebab9e2f848443ae492bad))
+* use @heroku/sdk for telemetry commands ([#3818](https://github.com/heroku/cli/issues/3818)) ([e8dcd4d](https://github.com/heroku/cli/commit/e8dcd4dad05089cb02247f693ab4104566495b81))
+* use sdk for addons commands ([#3850](https://github.com/heroku/cli/issues/3850)) ([ce3fa27](https://github.com/heroku/cli/commit/ce3fa27440cc1b8dddd9ff4ce333bbf24b5803de))
+* use sdk for apps commands ([#3862](https://github.com/heroku/cli/issues/3862)) ([1001e1e](https://github.com/heroku/cli/commit/1001e1e2192a26821c6330fc6ae4592c48f8a011))
+* use sdk poller to restore status messages ([#3857](https://github.com/heroku/cli/issues/3857)) ([d247d10](https://github.com/heroku/cli/commit/d247d106301ef7f07414019067a15b21e1db1e8f))
+
+
+### Tests
+
+* **auth/2fa:** stub @heroku/sdk directly, drop nock ([#3822](https://github.com/heroku/cli/issues/3822)) ([a341ed3](https://github.com/heroku/cli/commit/a341ed340c8659e075027fdf0faa20e59e15c8d9))
+* **spaces:** add hyperschema to cspell dictionary ([40389a9](https://github.com/heroku/cli/commit/40389a9b4a4a86f25dbd150461dec963dbea92c9)), closes [#3884](https://github.com/heroku/cli/issues/3884)
+* **spaces:** pin spaces:info --json generation_object shape ([c2a78eb](https://github.com/heroku/cli/commit/c2a78ebdde1efbea4d6f30d7b1a16edc3a297062)), closes [#3881](https://github.com/heroku/cli/issues/3881) [#5](https://github.com/heroku/cli/issues/5)
+
+
+### Build System
+
+* **node:** bump baseline to >=22 and bundled Node 24.19.0, retarget CI to [22.x, 24.x] ([#3877](https://github.com/heroku/cli/issues/3877)) ([4950341](https://github.com/heroku/cli/commit/4950341abd1b4a3ad6b04c9db753852191ee54d9))
+
 ## [11.10.0](https://github.com/heroku/cli/compare/v11.9.0...v11.10.0) (2026-08-18)
 
 

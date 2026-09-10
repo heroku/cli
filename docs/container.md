@@ -29,7 +29,7 @@ DESCRIPTION
   log in to Heroku Container Registry
 ```
 
-_See code: [src/commands/container/login.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/login.ts)_
+_See code: [src/commands/container/login.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/login.ts)_
 
 ## `heroku container:logout`
 
@@ -49,7 +49,7 @@ DESCRIPTION
   log out from Heroku Container Registry
 ```
 
-_See code: [src/commands/container/logout.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/logout.ts)_
+_See code: [src/commands/container/logout.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/logout.ts)_
 
 ## `heroku container:pull -a APP [-v] PROCESS_TYPE...`
 
@@ -60,7 +60,7 @@ USAGE
   $ heroku container:pull -a APP [-v] PROCESS_TYPE...
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -78,7 +78,7 @@ EXAMPLES
    $ heroku container:pull web:latest  # Pulls the latest tag from the web image
 ```
 
-_See code: [src/commands/container/pull.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/pull.ts)_
+_See code: [src/commands/container/pull.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/pull.ts)_
 
 ## `heroku container:push`
 
@@ -91,7 +91,7 @@ USAGE
 
 FLAGS
   -R, --recursive             pushes Dockerfile.<process> found in current and subdirectories
-  -a, --app=<value>           (required) app to run command against
+  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>        git remote of app to use
   -v, --verbose
       --arg=<value>           set build-time variables
@@ -118,7 +118,7 @@ EXAMPLES
    $ heroku container:push --recursive --context-path .  # Pushes Dockerfile.* using current dir as build context
 ```
 
-_See code: [src/commands/container/push.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/push.ts)_
+_See code: [src/commands/container/push.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/push.ts)_
 
 ## `heroku container:release`
 
@@ -129,7 +129,7 @@ USAGE
   $ heroku container:release
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -145,7 +145,7 @@ EXAMPLES
    $ heroku container:release web worker  # Releases the previously pushed web and worker process types
 ```
 
-_See code: [src/commands/container/release.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/release.ts)_
+_See code: [src/commands/container/release.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/release.ts)_
 
 ## `heroku container:rm -a APP [-v] PROCESS_TYPE...`
 
@@ -156,7 +156,7 @@ USAGE
   $ heroku container:rm -a APP [-v] PROCESS_TYPE...
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -171,7 +171,7 @@ EXAMPLES
    $ heroku container:rm web worker  # Destroys the web and worker containers
 ```
 
-_See code: [src/commands/container/rm.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/rm.ts)_
+_See code: [src/commands/container/rm.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/rm.ts)_
 
 ## `heroku container:run -a APP [-v] PROCESS_TYPE...`
 
@@ -182,7 +182,7 @@ USAGE
   $ heroku container:run -a APP [-v] PROCESS_TYPE...
 
 FLAGS
-  -a, --app=<value>     (required) app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -p, --port=<value>    [default: 5000] port the app will run on
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
@@ -201,4 +201,4 @@ EXAMPLES
    $ heroku container:pull web:latest  # Pulls the latest tag from the web image
 ```
 
-_See code: [src/commands/container/run.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/container/run.ts)_
+_See code: [src/commands/container/run.ts](https://github.com/heroku/cli/blob/v12.0.0-alpha.0/src/commands/container/run.ts)_
