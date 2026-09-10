@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 
 export default class Regions extends Command {
   static description = 'list available regions for deployment'
@@ -12,8 +12,9 @@ export default class Regions extends Command {
   static topic = 'regions'
 
   async run() {
+    const {platform} = new HerokuSDK()
     const {flags} = await this.parse(Regions)
-    let {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
+    let regions = await platform.region.list()
     if (flags.private) {
       regions = regions.filter((region: any) => region.private_capable)
     } else if (flags.common) {
@@ -47,5 +48,7 @@ export default class Regions extends Command {
       })
       /* eslint-enable perfectionist/sort-objects */
     }
+
+    return regions
   }
 }

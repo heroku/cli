@@ -1,9 +1,20 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Regions from '../../../src/commands/regions.js'
 import removeAllWhitespace from '../../helpers/utils/remove-whitespaces.js'
+
+type FakePlatform = {
+  region: {list: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    region: {list: sinon.stub()},
+  }
+}
 
 describe('regions', function () {
   const regionData = [
@@ -11,33 +22,30 @@ describe('regions', function () {
     {description: 'United States', name: 'us', private_capable: false},
     {description: 'Oregon, United States', name: 'oregon', private_capable: true},
   ]
-  let api: nock.Scope
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('list regions', async function () {
-    api
-      .get('/regions')
-      .reply(200, regionData)
+    fakePlatform.region.list.resolves(regionData)
 
     const {stdout} = await runCommand(Regions, [])
 
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('ID       Location                Runtime'))
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('eu       Europe                  Common Runtime'))
     expect(removeAllWhitespace(stdout)).to.include(removeAllWhitespace('us       United States           Common Runtime'))
+    expect(fakePlatform.region.list.calledOnceWithExactly()).to.equal(true)
   })
 
   it('--private', async function () {
-    api
-      .get('/regions')
-      .reply(200, regionData)
+    fakePlatform.region.list.resolves(regionData)
 
     const {stdout} = await runCommand(Regions, ['--private'])
 
@@ -46,9 +54,7 @@ describe('regions', function () {
   })
 
   it('--common', async function () {
-    api
-      .get('/regions')
-      .reply(200, regionData)
+    fakePlatform.region.list.resolves(regionData)
 
     const {stdout} = await runCommand(Regions, ['--common'])
 
@@ -58,9 +64,7 @@ describe('regions', function () {
   })
 
   it('--json', async function () {
-    api
-      .get('/regions')
-      .reply(200, regionData)
+    fakePlatform.region.list.resolves(regionData)
 
     const {stdout} = await runCommand(Regions, ['--json'])
 
