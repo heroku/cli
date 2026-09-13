@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@3cdb78d0f62ad29dd32de765782654f4eedea607
+        uses: Homebrew/actions/setup-homebrew@f8d4222eb633e65c2a0157383cf80861fc7fae7f
       - name: Install NSIS
         run: brew install nsis
       - name: npm install
