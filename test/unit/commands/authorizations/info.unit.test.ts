@@ -68,4 +68,21 @@ describe('authorizations:info', function () {
       expect(authJSON.description).to.eql(authorization.description)
     })
   })
+
+  describe('with team flag', function () {
+    it('shows the team-owned authorization', async function () {
+      api
+        .get(`/teams/my-team/oauth/authorizations/${authorizationID}`)
+        .reply(200, authorization)
+
+      const {stdout} = await runCommand(AuthorizationsInfo, [authorizationID, '--team', 'my-team'])
+
+      expect(stdout).to.eq('Client:      <none>\n'
+        + 'ID:          4UTHOri24tIoN-iD-3X4mPl3\n'
+        + 'Description: desc\n'
+        + 'Scope:       global\n'
+        + 'Token:       secrettoken\n'
+        + `Updated at:  ${new Date(0)} (${formatDistanceToNow(new Date(0))} ago)\n`)
+    })
+  })
 })

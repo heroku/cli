@@ -41,4 +41,31 @@ describe('authorizations:update', function () {
       + 'Scope:       global\n'
       + 'Token:       secrettoken\n')
   })
+
+  describe('with team flag', function () {
+    it('updates the team-owned authorization', async function () {
+      api
+        .patch(
+          `/teams/my-team/oauth/authorizations/${authorizationID}`,
+          {client: {id: '100', secret: 'secret'}, description: 'awesome'},
+        )
+        .reply(
+          200,
+          {
+            access_token: {token: 'secrettoken'},
+            description: 'awesome',
+            id: '100',
+            scope: ['global'],
+          },
+        )
+
+      const {stdout} = await runCommand(AuthorizationsUpdate, [authorizationID, '--client-id', '100', '--client-secret', 'secret', '--description', 'awesome', '--team', 'my-team'])
+
+      expect(stdout).to.eq('Client:      <none>\n'
+        + 'ID:          100\n'
+        + 'Description: awesome\n'
+        + 'Scope:       global\n'
+        + 'Token:       secrettoken\n')
+    })
+  })
 })

@@ -12,12 +12,17 @@ export default class AuthorizationsInfo extends Command {
   static description = 'show an existing OAuth authorization'
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
+    team: flags.team({description: 'team to which the authorization belongs'}),
   }
 
   async run() {
     const {args, flags} = await this.parse(AuthorizationsInfo)
 
-    const {body: authentication} = await this.heroku.get<Heroku.OAuthAuthorization>(`/oauth/authorizations/${args.id}`)
+    const endpoint = flags.team
+      ? `/teams/${encodeURIComponent(flags.team)}/oauth/authorizations/${args.id}`
+      : `/oauth/authorizations/${args.id}`
+
+    const {body: authentication} = await this.heroku.get<Heroku.OAuthAuthorization>(endpoint)
 
     if (flags.json) {
       hux.styledJSON(authentication)
