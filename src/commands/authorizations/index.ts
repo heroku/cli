@@ -10,12 +10,16 @@ export default class AuthorizationsIndex extends Command {
   ]
   static flags = {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
+    team: flags.team({description: 'team to list OAuth authorizations for'}),
   }
 
   async run() {
     const {flags} = await this.parse(AuthorizationsIndex)
 
-    const {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>('/oauth/authorizations')
+    const endpoint = flags.team
+      ? `/teams/${encodeURIComponent(flags.team)}/oauth/authorizations`
+      : '/oauth/authorizations'
+    const {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>(endpoint)
 
     if (flags.json) {
       hux.styledJSON(authorizations.sort((a, b) => a.description.localeCompare(b.description)))
