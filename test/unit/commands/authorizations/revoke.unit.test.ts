@@ -27,6 +27,18 @@ describe('authorizations:revoke', function () {
     expect(stderr).to.contain('done, revoked authorization from Example Auth')
   })
 
+  context('with --team', function () {
+    it('revokes the team-owned authorization', async function () {
+      api
+        .delete(`/teams/my-team/oauth/authorizations/${authorizationID}`)
+        .reply(200, {description: 'Example Auth'})
+
+      const {stderr} = await runCommand(AuthorizationsRevoke, [authorizationID, '--team', 'my-team'])
+
+      expect(stderr).to.contain('done, revoked authorization from Example Auth')
+    })
+  })
+
   context('without an ID argument', function () {
     it('shows required ID error', async function () {
       const {error} = await runCommand(AuthorizationsRevoke, [])

@@ -29,4 +29,19 @@ describe('authorizations:rotate', function () {
     expect(stdout).to.contain('Token:  secrettoken\n')
     expect(stderr).to.contain('Rotating OAuth Authorization... done')
   })
+
+  context('with --team', function () {
+    it('rotates the team-owned authorization and prints the authentication', async function () {
+      api
+        .post(`/teams/my-team/oauth/authorizations/${authorizationID}/actions/regenerate-tokens`)
+        .reply(200, {access_token: {token: 'secrettoken'}, scope: ['global', 'app']})
+
+      const {stderr, stdout} = await runCommand(AuthorizationsRotate, [authorizationID, '--team', 'my-team'])
+
+      expect(stdout).to.contain('Client: <none>\n')
+      expect(stdout).to.contain('Scope:  global,app\n')
+      expect(stdout).to.contain('Token:  secrettoken\n')
+      expect(stderr).to.contain('Rotating OAuth Authorization... done')
+    })
+  })
 })
