@@ -18,6 +18,7 @@ export default class AuthorizationsCreate extends Command {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     scope: flags.string({char: 's', completion: ScopeCompletion, description: 'set custom OAuth scopes'}),
     short: flags.boolean({char: 'S', description: 'only output token'}),
+    team: flags.team(),
   }
 
   async run() {
@@ -25,7 +26,11 @@ export default class AuthorizationsCreate extends Command {
 
     ux.action.start('Creating OAuth Authorization')
 
-    const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>('/oauth/authorizations', {
+    const endpoint = flags.team
+      ? `/teams/${encodeURIComponent(flags.team)}/oauth/authorizations`
+      : '/oauth/authorizations'
+
+    const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>(endpoint, {
       body: {
         description: flags.description,
         expires_in: flags['expires-in'],

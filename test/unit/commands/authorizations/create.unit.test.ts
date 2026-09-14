@@ -53,4 +53,18 @@ describe('authorizations:create', function () {
       expect(json.scope).to.contain('global')
     })
   })
+
+  context('with team flag', function () {
+    it('creates the authorization for the team', async function () {
+      api
+        .post('/teams/my-team/oauth/authorizations', {description: 'awesome'})
+        .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
+
+      const {stdout} = await runCommand(AuthorizationsCreate, ['--description', 'awesome', '--team', 'my-team'])
+
+      expect(stdout).to.contain('Client: <none>\n')
+      expect(stdout).to.contain('Scope:  global\n')
+      expect(stdout).to.contain('Token:  secrettoken\n')
+    })
+  })
 })
