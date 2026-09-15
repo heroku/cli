@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {Args, ux} from '@oclif/core'
 
+import {SDK_HEADER} from '../../lib/api.js'
 import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsUpdate extends Command {
@@ -40,6 +41,7 @@ export default class AuthorizationsUpdate extends Command {
           client,
           description: flags.description,
         },
+        ...(flags.team ? {headers: {Accept: SDK_HEADER}} : {}),
       },
     )
 

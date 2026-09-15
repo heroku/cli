@@ -45,6 +45,7 @@ describe('authorizations:update', function () {
   describe('with team flag', function () {
     it('updates the team-owned authorization', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .patch(
           `/teams/my-team/oauth/authorizations/${authorizationID}`,
           {client: {id: '100', secret: 'secret'}, description: 'awesome'},

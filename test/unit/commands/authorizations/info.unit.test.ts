@@ -72,6 +72,7 @@ describe('authorizations:info', function () {
   describe('with team flag', function () {
     it('shows the team-owned authorization', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .get(`/teams/my-team/oauth/authorizations/${authorizationID}`)
         .reply(200, authorization)
 

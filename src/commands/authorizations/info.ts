@@ -3,6 +3,7 @@ import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
 import {Args} from '@oclif/core'
 
+import {SDK_HEADER} from '../../lib/api.js'
 import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsInfo extends Command {
@@ -22,7 +23,10 @@ export default class AuthorizationsInfo extends Command {
       ? `/teams/${encodeURIComponent(flags.team)}/oauth/authorizations/${args.id}`
       : `/oauth/authorizations/${args.id}`
 
-    const {body: authentication} = await this.heroku.get<Heroku.OAuthAuthorization>(endpoint)
+    const {body: authentication} = await this.heroku.get<Heroku.OAuthAuthorization>(
+      endpoint,
+      flags.team ? {headers: {Accept: SDK_HEADER}} : {},
+    )
 
     if (flags.json) {
       hux.styledJSON(authentication)
