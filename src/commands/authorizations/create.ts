@@ -5,6 +5,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
+import {SDK_HEADER} from '../../lib/api.js'
 import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsCreate extends Command {
@@ -36,6 +37,7 @@ export default class AuthorizationsCreate extends Command {
         expires_in: flags['expires-in'],
         scope: flags.scope ? flags.scope.split(',') : undefined,
       },
+      ...(flags.team ? {headers: {Accept: SDK_HEADER}} : {}),
     })
 
     ux.action.stop()

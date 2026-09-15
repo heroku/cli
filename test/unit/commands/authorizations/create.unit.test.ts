@@ -57,6 +57,7 @@ describe('authorizations:create', function () {
   context('with team flag', function () {
     it('creates the authorization for the team', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .post('/teams/my-team/oauth/authorizations', {description: 'awesome'})
         .reply(201, {access_token: {token: 'secrettoken'}, scope: ['global']})
 
