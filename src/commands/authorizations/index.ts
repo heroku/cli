@@ -3,6 +3,8 @@ import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
+import {SDK_HEADER} from '../../lib/api.js'
+
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
   static examples = [
@@ -19,7 +21,10 @@ export default class AuthorizationsIndex extends Command {
     const endpoint = flags.team
       ? `/teams/${encodeURIComponent(flags.team)}/oauth/authorizations`
       : '/oauth/authorizations'
-    const {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>(endpoint)
+    const {body: authorizations} = await this.heroku.get<Array<Heroku.OAuthAuthorization>>(
+      endpoint,
+      flags.team ? {headers: {Accept: SDK_HEADER}} : {},
+    )
 
     if (flags.json) {
       hux.styledJSON(authorizations.sort((a, b) => a.description.localeCompare(b.description)))
