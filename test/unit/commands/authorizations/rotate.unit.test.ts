@@ -33,6 +33,7 @@ describe('authorizations:rotate', function () {
   context('with --team', function () {
     it('rotates the team-owned authorization and prints the authentication', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .post(`/teams/my-team/oauth/authorizations/${authorizationID}/actions/regenerate-tokens`)
         .reply(200, {access_token: {token: 'secrettoken'}, scope: ['global', 'app']})
 

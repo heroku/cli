@@ -30,6 +30,7 @@ describe('authorizations:revoke', function () {
   context('with --team', function () {
     it('revokes the team-owned authorization', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .delete(`/teams/my-team/oauth/authorizations/${authorizationID}`)
         .reply(200, {description: 'Example Auth'})
 

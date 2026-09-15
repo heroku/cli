@@ -3,6 +3,8 @@ import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 
+import {SDK_HEADER} from '../../lib/api.js'
+
 export default class AuthorizationsRevoke extends Command {
   static aliases = ['authorizations:destroy']
   static args = {
@@ -12,7 +14,6 @@ export default class AuthorizationsRevoke extends Command {
   static examples = [
     color.command('heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb'),
   ]
-
   static flags = {
     team: flags.team(),
   }
@@ -25,7 +26,10 @@ export default class AuthorizationsRevoke extends Command {
       : `/oauth/authorizations/${encodeURIComponent(args.id)}`
 
     ux.action.start('Revoking OAuth Authorization')
-    const {body: auth} = await this.heroku.delete<Heroku.OAuthAuthorization>(endpoint)
+    const {body: auth} = await this.heroku.delete<Heroku.OAuthAuthorization>(
+      endpoint,
+      flags.team ? {headers: {Accept: SDK_HEADER}} : {},
+    )
     ux.action.stop(`done, revoked authorization from ${color.cyan(auth.description)}`)
   }
 }
