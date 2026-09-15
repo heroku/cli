@@ -71,6 +71,7 @@ describe('authorizations', function () {
   context('with team flag', function () {
     it('lists the named team\'s authorizations alphabetically by description', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .get('/teams/my-team/oauth/authorizations')
         .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
@@ -85,6 +86,7 @@ describe('authorizations', function () {
 
     it('lists the named team\'s authorizations as json', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .get('/teams/my-team/oauth/authorizations')
         .reply(200, [exampleAuthorization1, exampleAuthorization2])
 
@@ -97,6 +99,7 @@ describe('authorizations', function () {
 
     it('shows no authorizations message for a team with none', async function () {
       api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
         .get('/teams/my-team/oauth/authorizations')
         .reply(200, [])
 
