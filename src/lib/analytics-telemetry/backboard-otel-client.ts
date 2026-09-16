@@ -1,4 +1,6 @@
-import {context, propagation, SpanStatusCode, trace} from '@opentelemetry/api'
+import {
+  context, propagation, SpanStatusCode, trace,
+} from '@opentelemetry/api'
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http'
 import {defaultResource, resourceFromAttributes} from '@opentelemetry/resources'
 import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-base'
