@@ -1,7 +1,6 @@
 import {expect} from 'chai'
 import nock from 'nock'
 
-import {_resetOtelClientForTesting} from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
 import {telemetryManager} from '../../../src/lib/analytics-telemetry/telemetry-manager.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
@@ -25,10 +24,7 @@ describe('telemetry-manager', function () {
     process.env.ENABLE_WINDOWS_TELEMETRY = 'true'
   })
 
-  afterEach(async function () {
-    // Reset the shared OTel singletons so each test (and this file's ordering
-    // relative to backboard-otel-client.unit.test.ts) runs in isolation.
-    await _resetOtelClientForTesting()
+  afterEach(function () {
     nock.cleanAll()
     // Restore test environment
     if (originalTestEnv !== undefined) {

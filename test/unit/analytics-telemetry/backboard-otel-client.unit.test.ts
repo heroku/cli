@@ -2,7 +2,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
-import BackboardOtelClient, {_resetOtelClientForTesting} from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
+import BackboardOtelClient from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
 import {Telemetry} from '../../../src/lib/analytics-telemetry/telemetry-utils.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
@@ -36,12 +36,8 @@ describe('backboard-otel-client', function () {
     client = new BackboardOtelClient()
   })
 
-  afterEach(async function () {
+  afterEach(function () {
     sandbox.restore()
-    // Reset OTel singletons + global registration so each test runs in isolation.
-    // Runs before nock.cleanAll(): tests await the export above, so shutdown() has
-    // nothing left to flush and won't hit a cleaned interceptor.
-    await _resetOtelClientForTesting()
     nock.cleanAll()
     // Restore test environment
     if (originalTestEnv !== undefined) {
