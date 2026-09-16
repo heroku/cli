@@ -1,4 +1,4 @@
-import {SpanStatusCode, trace} from '@opentelemetry/api'
+import {context, propagation, SpanStatusCode, trace} from '@opentelemetry/api'
 import {OTLPTraceExporter} from '@opentelemetry/exporter-trace-otlp-http'
 import {defaultResource, resourceFromAttributes} from '@opentelemetry/resources'
 import {BatchSpanProcessor} from '@opentelemetry/sdk-trace-base'
@@ -29,14 +29,6 @@ export default class BackboardOtelClient {
   async getProcessor(): Promise<BatchSpanProcessor> {
     await this.ensureInitialized()
     return processor
-  }
-
-  /**
-   * Get the TracerProvider
-   */
-  async getTracerProvider(): Promise<NodeTracerProvider> {
-    await this.ensureInitialized()
-    return provider
   }
 
   /**
@@ -144,4 +136,26 @@ export default class BackboardOtelClient {
     provider.register()
     telemetryDebug('OpenTelemetry provider registered globally')
   }
+}
+
+/**
+ * Test-only: tear down the module-level OpenTelemetry singletons and the global
+ * registration so each test runs against fresh, isolated state.
+ *
+ * `provider.register()` installs a global tracer provider, context manager, and
+ * propagator, so all three must be disabled to fully un-register. Callers should
+ * ensure any pending spans are already flushed (e.g. by awaiting the export in the
+ * test) before calling this, so `shutdown()` has nothing left to export.
+ */
+export async function _resetOtelClientForTesting(): Promise<void> {
+  if (provider) {
+    await provider.shutdown()
+  }
+
+  isInitialized = false
+  processor = undefined as unknown as BatchSpanProcessor
+  provider = undefined as unknown as NodeTracerProvider
+  trace.disable()
+  context.disable()
+  propagation.disable()
 }

@@ -2,10 +2,23 @@ import {expect} from 'chai'
 import nock from 'nock'
 import * as sinon from 'sinon'
 
-import BackboardOtelClient from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
+import BackboardOtelClient, {_resetOtelClientForTesting} from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
 import {Telemetry} from '../../../src/lib/analytics-telemetry/telemetry-utils.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
+
+// The OTLP export is dispatched asynchronously (streamed HTTP body), so `send()`
+// resolving does not guarantee nock has served the request yet. Await the scope
+// event before asserting so the tests do not depend on flush/timeout timing.
+const nockReplied = (scope: nock.Scope) =>
+  new Promise<void>(resolve => {
+    scope.once('replied', () => resolve())
+  })
+
+const nockRequested = (scope: nock.Scope) =>
+  new Promise<void>(resolve => {
+    scope.once('request', () => resolve())
+  })
 
 describe('backboard-otel-client', function () {
   let sandbox: sinon.SinonSandbox
@@ -23,8 +36,12 @@ describe('backboard-otel-client', function () {
     client = new BackboardOtelClient()
   })
 
-  afterEach(function () {
+  afterEach(async function () {
     sandbox.restore()
+    // Reset OTel singletons + global registration so each test runs in isolation.
+    // Runs before nock.cleanAll(): tests await the export above, so shutdown() has
+    // nothing left to flush and won't hit a cleaned interceptor.
+    await _resetOtelClientForTesting()
     nock.cleanAll()
     // Restore test environment
     if (originalTestEnv !== undefined) {
@@ -63,7 +80,9 @@ describe('backboard-otel-client', function () {
         .post('/otel/v1/traces')
         .reply(200)
 
+      const replied = nockReplied(honeycombAPI)
       await client.send(mockTelemetry)
+      await replied
       honeycombAPI.done()
     })
 
@@ -75,7 +94,9 @@ describe('backboard-otel-client', function () {
         .post('/otel/v1/traces')
         .reply(200)
 
+      const replied = nockReplied(honeycombAPI)
       await client.send(mockError)
+      await replied
       honeycombAPI.done()
     })
 
@@ -84,8 +105,11 @@ describe('backboard-otel-client', function () {
         .post('/otel/v1/traces')
         .replyWithError('Network error')
 
-      // Should not throw
+      // replyWithError never emits 'replied', so wait for the request to be
+      // dispatched instead, then assert send() swallowed the error (did not throw).
+      const requested = nockRequested(honeycombAPI)
       await client.send(mockTelemetry)
+      await requested
     })
   })
 
