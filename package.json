@@ -7,7 +7,7 @@
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
     "@heroku-cli/command": "^13.2.0",
-    "@heroku-cli/notifications": "^1.2.6",
+    "@heroku-cli/notifications": "^1.2.9",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/heroku-cli-util": "^10.10.0",
