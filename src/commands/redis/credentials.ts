@@ -28,7 +28,7 @@ export default class Credentials extends Command {
       await data.redis.rotateCredentials(addon.name!)
     } else {
       const redis = await data.redis.info(addon.name!)
-      this.log(redis.resource_url)
+      this.log(redis.resource_url!)
     }
   }
 }

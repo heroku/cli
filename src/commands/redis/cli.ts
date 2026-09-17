@@ -195,11 +195,11 @@ export default class Cli extends Command {
     }
 
     const redis = await data.redis.info(addon.id!)
-    if (redis.plan.startsWith('shield-')) {
+    if (redis.plan!.startsWith('shield-')) {
       ux.error('\n      Using redis:cli on Heroku Redis shield plans is not supported.\n      Please see Heroku DevCenter for more details: https://devcenter.heroku.com/articles/shield-private-space#shield-features\n      ', {exit: 1})
     }
 
-    const hobby = redis.plan.indexOf('hobby') === 0
+    const hobby = redis.plan!.indexOf('hobby') === 0
     const {prefer_native_tls} = redis
     if (!prefer_native_tls && hobby) {
       await new ConfirmCommand().confirm(flags.app, flags.confirm, 'WARNING: Insecure action.\nAll data, including the Redis password, will not be encrypted.')
@@ -214,12 +214,12 @@ export default class Cli extends Command {
 
   private async maybeTunnel(redis: RedisInfoResult, config: Record<string, unknown>) {
     const bastions = match(config, /_BASTIONS/)
-    const hobby = redis.plan.indexOf('hobby') === 0
+    const hobby = redis.plan!.indexOf('hobby') === 0
     const preferNativeTls = redis.prefer_native_tls
-    const uri = preferNativeTls && hobby ? new URL(match(config, /_TLS_URL/) ?? '') : new URL(redis.resource_url)
+    const uri = preferNativeTls && hobby ? new URL(match(config, /_TLS_URL/) ?? '') : new URL(redis.resource_url!)
 
     if (bastions !== null) {
-      const client = await this.createBastionConnection(uri, bastions, config, preferNativeTls)
+      const client = await this.createBastionConnection(uri, bastions, config, Boolean(preferNativeTls))
       return redisCLI(uri, client)
     }
 

@@ -70,7 +70,7 @@ export default class DataMaintenancesSchedule extends Command {
 
   protected async scheduleMaintenance(addon: Heroku.AddOn, delayWeeks: string, data: HerokuSDK['data']) {
     ux.action.start(`Scheduling maintenance for ${color.addon(addon.name!)}`)
-    const schedule: MaintenanceScheduleResult = await data.maintenance.schedule(addon.id!, {delay_weeks: delayWeeks})
+    const schedule: MaintenanceScheduleResult = await data.maintenance.schedule(addon.id!, {delay_weeks: Number(delayWeeks)})
     ux.action.stop('maintenance scheduled')
 
     const alreadyScheduled = Boolean(schedule.previously_scheduled_for)
