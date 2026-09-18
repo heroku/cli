@@ -1,4 +1,4 @@
-import type {DatabaseUpgradeWaitResult} from '@heroku/sdk/resources/data/database'
+import type {DatabaseUpgradeWaitStatusResult} from '@heroku/types/data'
 
 import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
@@ -54,7 +54,7 @@ export default class Wait extends Command {
     const {data} = new HerokuSDK({extensions: [databaseExtensions]})
     const waitFor = async (db: pg.ExtendedAddonAttachment['addon']) => {
       const interval = (!waitInterval || waitInterval < 0) ? 5 : waitInterval
-      let status: DatabaseUpgradeWaitResult
+      let status: DatabaseUpgradeWaitStatusResult
       let waiting = false
       let retries = 20
       const notFoundMessage = 'Waiting to provision...'
