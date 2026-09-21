@@ -24,7 +24,7 @@ export default class Timeout extends Command {
 
     const {data} = new HerokuSDK({extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
-    const response = await data.redis.updateConfig(addon.name!, {timeout: seconds} as never)
+    const response = await data.redis.updateConfig(addon.name!, {timeout: seconds})
     ux.stdout(`Timeout for ${addon.name} (${addon.config_vars!.join(', ')}) set to ${response.timeout.value} seconds.`)
     if (response.timeout.value === 0) {
       ux.stdout('Connections to the Redis instance can idle indefinitely.')

@@ -33,10 +33,9 @@ export default class MaxMemory extends Command {
 
     const {data} = new HerokuSDK({extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
-    const config = await data.redis.updateConfig(addon.name!, {maxmemory_policy: policy} as never)
+    const config = await data.redis.updateConfig(addon.name!, {maxmemory_policy: policy})
     const configVars = addon.config_vars || []
-    const {value, values} = config.maxmemory_policy
-    ux.stdout(`Maxmemory policy for ${addon.name} (${configVars.join(', ')}) set to ${value}.`)
-    ux.stdout(`${value} ${values ? values[value as keyof typeof values] : ''}.`)
+    ux.stdout(`Maxmemory policy for ${addon.name} (${configVars.join(', ')}) set to ${config.maxmemory_policy.value}.`)
+    ux.stdout(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values![config.maxmemory_policy.value as keyof typeof config.maxmemory_policy.values]}.`)
   }
 }
