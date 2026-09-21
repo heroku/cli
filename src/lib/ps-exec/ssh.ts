@@ -1,4 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
+import {Errors} from '@oclif/core'
 import {ux} from '@oclif/core/ux'
 import cliProgress from 'cli-progress'
 import debug from 'debug'
@@ -219,6 +220,8 @@ export class HerokuSsh {
         privateKey,
         username: dynoUser,
       })
+    }).on('error', (err: NodeJS.ErrnoException) => {
+      this._reportProxyBindError(err, socksPort)
     }).listen(socksPort, '127.0.0.1', () => {
       ux.stdout(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
       if (callback) callback(socksPort)
@@ -340,6 +343,18 @@ export class HerokuSsh {
     } else {
       stdin.pipe(this._stdinToRemote(c))
     }
+  }
+
+  // A SOCKS-server bind failure fires asynchronously, outside run()'s
+  // error-handling chain, so throwing here (ux.error) would surface as an
+  // unhandled crash with a raw stack trace. Route it through oclif's handler so
+  // it prints cleanly and exits non-zero. (Extracted as a seam so tests can stub
+  // it — Errors.handle exits the process and can't be stubbed as an ESM export.)
+  private _reportProxyBindError(err: NodeJS.ErrnoException, socksPort: number): void {
+    const detail = err.code === 'EADDRINUSE'
+      ? `port ${socksPort} is already in use — stop the process using it and try again`
+      : err.message
+    Errors.handle(new Errors.CLIError(`Could not start the SOCKS proxy server: ${detail}`, {exit: 1}))
   }
 
   // Bridges piped stdin to the remote exec stream, appending an EOF (^D) when

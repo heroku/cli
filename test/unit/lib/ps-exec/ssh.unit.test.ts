@@ -508,7 +508,7 @@ describe('ssh lib', function () {
   })
 
   describe('socksv5()', function () {
-    let mockServer: {listen: SinonStub}
+    let mockServer: {listen: SinonStub; on: SinonStub}
     let createServerStub: SinonStub
     let capturedSocksHandler:
     (info:
@@ -524,7 +524,9 @@ describe('ssh lib', function () {
           cb()
           return mockServer
         }),
+        on: stub(),
       }
+      mockServer.on.returns(mockServer)
       createServerStub = stub(socks5, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
         capturedSocksHandler = handler
         return mockServer
@@ -545,6 +547,26 @@ describe('ssh lib', function () {
         sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
       }).not.to.throw()
       expect(createServerStub.calledOnce).to.be.true
+    })
+
+    it('reports a clean error (not an unhandled crash) when the proxy port is in use', function () {
+      // The real reporter routes through Errors.handle, which prints and exits
+      // the process; stub the seam so the test asserts the SOCKS bind error is
+      // reported (with the port) rather than left to crash unhandled.
+      const reportStub = stub(sshInstance as unknown as {_reportProxyBindError: () => void}, '_reportProxyBindError')
+
+      sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+
+      const errorHandler = mockServer.on.getCalls().find(c => c.args[0] === 'error')?.args[1] as (err: NodeJS.ErrnoException) => void
+      expect(errorHandler, 'an error handler must be registered on the SOCKS server').to.be.a('function')
+
+      const err: NodeJS.ErrnoException = new Error('listen EADDRINUSE')
+      err.code = 'EADDRINUSE'
+      errorHandler(err)
+
+      expect(reportStub.calledOnce).to.be.true
+      expect(reportStub.firstCall.args[0]).to.equal(err)
+      expect(reportStub.firstCall.args[1]).to.equal(1080)
     })
 
     it('calls forwardOut with the SOCKS request info on ready', function () {

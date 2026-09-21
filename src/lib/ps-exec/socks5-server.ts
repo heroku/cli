@@ -71,6 +71,14 @@ export class Socks5Server {
     return this
   }
 
+  // Passthrough for the underlying server's 'error' event (e.g. an EADDRINUSE
+  // bind failure), so callers can report it cleanly instead of letting it
+  // surface as an unhandled 'error' that crashes the process.
+  on(event: 'error', listener: (err: NodeJS.ErrnoException) => void): this {
+    this.server.on(event, listener)
+    return this
+  }
+
   private _handleConnection(socket: net.Socket): void {
     socket.on('error', () => socket.destroy())
 

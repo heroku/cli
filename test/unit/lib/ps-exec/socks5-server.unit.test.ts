@@ -280,6 +280,24 @@ describe('Socks5Server', function () {
     expect(secondResult).to.equal(null)
   })
 
+  it('surfaces a bind failure through the on(error) passthrough', async function () {
+    // First server claims a port; a second server binding the same port must
+    // emit 'error' through the wrapper rather than throwing unhandled.
+    const first = new Socks5Server(() => {})
+    const takenPort: number = await new Promise(resolve =>
+      first.listen(0, '127.0.0.1', () => resolve((first.server.address() as AddressInfo).port)))
+
+    try {
+      const second = new Socks5Server(() => {})
+      const err = await new Promise<NodeJS.ErrnoException>(resolve => {
+        second.on('error', resolve).listen(takenPort, '127.0.0.1')
+      })
+      expect(err.code).to.equal('EADDRINUSE')
+    } finally {
+      first.close()
+    }
+  })
+
   it('ignores a deny() issued after accept() so the tunnel is not corrupted', async function () {
     await startProxy((info, accept, deny) => {
       const clientSocket = accept()
