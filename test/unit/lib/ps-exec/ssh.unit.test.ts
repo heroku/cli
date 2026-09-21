@@ -553,7 +553,7 @@ describe('ssh lib', function () {
       // The real reporter routes through Errors.handle, which prints and exits
       // the process; stub the seam so the test asserts the SOCKS bind error is
       // reported (with the port) rather than left to crash unhandled.
-      const reportStub = stub(sshInstance as unknown as {_reportProxyBindError: () => void}, '_reportProxyBindError')
+      const reportStub = stub(sshInstance as unknown as {_reportProxyBindError: (err: NodeJS.ErrnoException, port: number) => void}, '_reportProxyBindError')
 
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
