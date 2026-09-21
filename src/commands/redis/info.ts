@@ -61,14 +61,15 @@ export default class Info extends Command {
       const redis = await db.redis
       if (!redis) continue
       const configVars = db.addon.config_vars || []
+      const info = redis.info ?? []
       hux.styledHeader(`${db.addon.name} (${configVars.join(', ')})`)
       hux.styledObject(
         // eslint-disable-next-line unicorn/no-array-reduce
-        redis.info.reduce((memo: Record<string, unknown>, row) => {
+        info.reduce((memo: Record<string, unknown>, row) => {
           memo[row.name] = row.values
           return memo
         }, {}),
-        redis.info.map(row => row.name),
+        info.map(row => row.name),
       )
     }
   }
