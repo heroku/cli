@@ -81,7 +81,8 @@ describe('ps:forward', function () {
     expect(herokuExecInitFeatureStub.calledOnce).to.be.true
     expect(herokuExecCreateSocksProxyStub.calledOnce).to.be.true
     expect(netCreateServerStub.calledOnce).to.be.true
-    expect(mockServer.listen.calledWith(8080)).to.be.true
+    // Loopback-only: the forwarded port fronts a no-auth tunnel into the dyno.
+    expect(mockServer.listen.calledWith(8080, '127.0.0.1')).to.be.true
 
     // Send SIGINT to stop the command
     process.emit('SIGINT', 'SIGINT')

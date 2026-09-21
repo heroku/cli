@@ -15,6 +15,11 @@ import socks5 from './socks5-server.js'
 
 const sshDebug = debug('cli:ps-exec:ssh')
 
+// Upper bound on simultaneously-live SOCKS connections (each is its own SSH
+// session). Generous enough for a browser fanning out, low enough to keep a
+// runaway local client from exhausting fds/SSH sessions.
+const MAX_SOCKS_CONNECTIONS = 128
+
 export class HerokuSsh {
   public connect(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: (() => void)) {
     return new Promise<void>((resolve, reject) => {
@@ -143,8 +148,28 @@ export class HerokuSsh {
 
   public socksv5(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: ((port: number) => void)) {
     const socksPort = 1080
+    // Each accepted SOCKS request opens its own SSH connection, so cap how many
+    // can be live at once. Without this a client that fans out many parallel
+    // connections (a browser, or a hostile local process) can drive up fd/memory
+    // and SSH-session load on both the CLI and the dyno's sshd.
+    let activeConnections = 0
     socks5.createServer((info, accept, deny) => {
+      if (activeConnections >= MAX_SOCKS_CONNECTIONS) {
+        sshDebug(`refusing SOCKS request: ${activeConnections} connections already active (max ${MAX_SOCKS_CONNECTIONS})`)
+        return deny()
+      }
+
+      activeConnections++
       const conn = new Client()
+      let released = false
+      // Free the slot exactly once, whenever this SSH connection closes.
+      const release = () => {
+        if (released) return
+        released = true
+        activeConnections--
+      }
+
+      conn.on('close', release)
       let clientSocket: ReturnType<typeof accept> = null
       const teardown = () => {
         if (clientSocket) clientSocket.destroy()
@@ -258,11 +283,23 @@ export class HerokuSsh {
     return {
       hostHash: 'sha256',
       hostVerifier(hashedKey: string) {
+        // proxyKey is the API-provided "ssh-rsa <base64>" host key. If it's
+        // empty or missing the base64 blob, fail closed rather than throwing
+        // out of the verifier on `Buffer.from(undefined, ...)`.
+        const keyBlob = proxyKey?.split(' ')[1]
+        if (!keyBlob) {
+          sshDebug('proxy public key is missing or malformed; refusing host key')
+          return false
+        }
+
         const hasher = crypto.createHash('sha256')
-        hasher.update(Buffer.from(proxyKey.split(' ')[1], 'base64'))
+        hasher.update(Buffer.from(keyBlob, 'base64'))
         return hasher.digest('hex') === hashedKey
       },
       port: 80,
+      // Bound how long a connecting client is held before we give up, so a
+      // stalled SSH endpoint can't pin a paused SOCKS client socket forever.
+      readyTimeout: 20_000,
     }
   }
 

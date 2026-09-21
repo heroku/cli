@@ -107,7 +107,10 @@ export default class Forward extends Command {
               connIn.pipe(info.socket)
               info.socket.pipe(connIn)
             })
-          }).listen(Number.parseInt(localPortNum, 10))
+          // Bind loopback-only so the forwarded port is reachable only from
+          // this machine — it fronts a no-auth tunnel into the dyno, so it must
+          // not be exposed to other hosts on the LAN.
+          }).listen(Number.parseInt(localPortNum, 10), '127.0.0.1')
             .on('listening', () => {
               bound++
               ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)

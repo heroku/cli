@@ -653,6 +653,28 @@ describe('ssh lib', function () {
       expect(config.port).to.equal(80)
       expect(config.hostHash).to.equal('sha256')
     })
+
+    it('denies a new SOCKS request once the connection cap is reached', function () {
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
+
+      sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+
+      // Fill the cap (MAX_SOCKS_CONNECTIONS = 128): each accepted request opens
+      // and holds one SSH connection (we never emit 'close', so none are freed).
+      for (let i = 0; i < 128; i++) {
+        capturedSocksHandler(info, stub().returns(makeStream()), stub())
+      }
+
+      const connectCallsAtCap = clientConnectStub.callCount
+      const deny = stub()
+      capturedSocksHandler(info, stub().returns(makeStream()), deny)
+
+      expect(deny.calledOnce).to.be.true
+      // The over-cap request must not open another SSH connection.
+      expect(clientConnectStub.callCount).to.equal(connectCallsAtCap)
+    })
   })
 
   describe('_stdinToRemote()', function () {
@@ -765,6 +787,40 @@ describe('ssh lib', function () {
       await p
       const {hostVerifier} = clientConnectStub.firstCall.args[0]
       expect(hostVerifier('wrong-hash-value')).to.be.false
+    })
+
+    it('fails closed (returns false) when the proxy key is malformed', async function () {
+      // A proxy key with no base64 blob used to throw out of the verifier on
+      // Buffer.from(undefined, ...); it must instead reject the host key.
+      const proxyKey = 'ssh-rsa'
+
+      const mockStream = makeStream()
+      clientShellStub.callsFake((cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+
+      const p = sshInstance.connect({args: []}, 'addon.host', 'user', Buffer.from('key'), proxyKey)
+      setImmediate(() => {
+        capturedClient.emit('ready')
+        setImmediate(() => mockStream.emit('close'))
+      })
+
+      await p
+      const {hostVerifier} = clientConnectStub.firstCall.args[0]
+      expect(() => hostVerifier('any-hash')).not.to.throw()
+      expect(hostVerifier('any-hash')).to.be.false
+    })
+
+    it('sets a bounded readyTimeout on the SSH connection', async function () {
+      const mockStream = makeStream()
+      clientShellStub.callsFake((cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+
+      const p = sshInstance.connect({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+      setImmediate(() => {
+        capturedClient.emit('ready')
+        setImmediate(() => mockStream.emit('close'))
+      })
+
+      await p
+      expect(clientConnectStub.firstCall.args[0].readyTimeout).to.equal(20_000)
     })
   })
 })
