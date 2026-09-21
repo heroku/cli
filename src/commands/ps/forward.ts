@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import socks from '@heroku/socksv5'
 import {Args, ux} from '@oclif/core'
 import net from 'node:net'
+import {SocksClient} from 'socks'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
@@ -66,15 +66,18 @@ export default class Forward extends Command {
           ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)
 
           net.createServer(connIn => {
-            socks.connect({
-              auths: [socks.auth.None()], // eslint-disable-line new-cap
-              host: '0.0.0.0',
-              port: Number.parseInt(remotePort, 10),
-              proxyHost: 'localhost',
-              proxyPort: socksPort,
-            }, socket => {
-              connIn.pipe(socket)
-              socket.pipe(connIn)
+            SocksClient.createConnection({
+              command: 'connect',
+              destination: {host: '0.0.0.0', port: Number.parseInt(remotePort, 10)},
+              proxy: {host: 'localhost', port: socksPort, type: 5},
+            }, (err, info) => {
+              if (err || !info) {
+                connIn.destroy()
+                return
+              }
+
+              connIn.pipe(info.socket)
+              info.socket.pipe(connIn)
             })
           }).listen(Number.parseInt(localPortNum, 10))
         }

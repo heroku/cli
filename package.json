@@ -13,7 +13,6 @@
     "@heroku/heroku-cli-util": "^10.10.0",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.5",
-    "@heroku/socksv5": "^0.0.9",
     "@inquirer/prompts": "^8.7",
     "@oclif/core": "^4.8.4",
     "@oclif/plugin-commands": "^4.1.40",
@@ -66,6 +65,7 @@
     "printf": "0.6.1",
     "redis-parser": "^3.0.0",
     "shell-quote": "^1.8.1",
+    "socks": "^2.8.8",
     "ssh2": "^1.16.0",
     "strftime": "^0.10.0",
     "term-img": "^7.1.0",
@@ -374,7 +374,6 @@
     "node-notifier": {
       "uuid": "^11.1.1"
     },
-    "socks": "^2.8.8",
     "express-rate-limit": "^8.5.1"
   },
   "repository": "heroku/cli",

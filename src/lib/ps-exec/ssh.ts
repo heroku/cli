@@ -1,5 +1,4 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import socks from '@heroku/socksv5'
 import {ux} from '@oclif/core/ux'
 import cliProgress from 'cli-progress'
 import debug from 'debug'
@@ -11,6 +10,8 @@ import path from 'node:path'
 import stream from 'node:stream'
 import tty from 'node:tty'
 import {Client, ConnectConfig} from 'ssh2'
+
+import socks5 from './socks5-server.js'
 
 const sshDebug = debug('cli:ps-exec:ssh')
 
@@ -142,7 +143,7 @@ export class HerokuSsh {
 
   public socksv5(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: ((port: number) => void)) {
     const socksPort = 1080
-    socks.createServer((info, accept, deny) => {
+    socks5.createServer((info, accept, deny) => {
       const conn = new Client()
       conn.on('ready', () => {
         conn.forwardOut(
@@ -176,7 +177,7 @@ export class HerokuSsh {
     }).listen(socksPort, '127.0.0.1', () => {
       console.log(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
       if (callback) callback(socksPort)
-    }).useAuth(socks.auth.None()) // eslint-disable-line new-cap
+    })
   }
 
   public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
@@ -280,11 +281,26 @@ export class HerokuSsh {
         }
       })
     } else {
-      stdin.pipe(new stream.Transform({
-        flush: done => c.write('\u0004', done),
-        objectMode: true,
-        transform: (chunk, _, next) => c.write(chunk, next),
-      }))
+      stdin.pipe(this._stdinToRemote(c))
     }
+  }
+
+  // Bridges piped stdin to the remote exec stream, appending an EOF (^D) when
+  // stdin ends. For a non-interactive command the remote stream (`c`) closes as
+  // soon as the command exits — which can happen before stdin reaches EOF — so
+  // every write is guarded on `c.writable` (don't write the trailing EOF to an
+  // already-ended stream) and a late write-after-end is swallowed as the
+  // teardown race it is, rather than surfacing as an unhandled error that
+  // crashes the CLI.
+  private _stdinToRemote(c: stream.Writable): stream.Transform {
+    const transform = new stream.Transform({
+      flush: done => (c.writable ? c.write('\u0004', () => done()) : done()),
+      objectMode: true,
+      transform: (chunk, _, next) => (c.writable ? c.write(chunk, next) : next()),
+    })
+    transform.on('error', (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'ERR_STREAM_WRITE_AFTER_END') sshDebug(error)
+    })
+    return transform
   }
 }

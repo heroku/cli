@@ -1,11 +1,12 @@
-import socks from '@heroku/socksv5'
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import cliProgress from 'cli-progress'
 import child from 'node:child_process'
+import stream from 'node:stream'
 import {restore, SinonStub, stub} from 'sinon'
 import {Client} from 'ssh2'
 
+import socks5 from '../../../../src/lib/ps-exec/socks5-server.js'
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
 
 function makeStream() {
@@ -506,7 +507,7 @@ describe('ssh lib', function () {
   })
 
   describe('socksv5()', function () {
-    let mockServer: {listen: SinonStub; useAuth: SinonStub}
+    let mockServer: {listen: SinonStub}
     let createServerStub: SinonStub
     let capturedSocksHandler:
     (info:
@@ -522,9 +523,8 @@ describe('ssh lib', function () {
           cb()
           return mockServer
         }),
-        useAuth: stub().returns(mockServer),
       }
-      createServerStub = stub(socks, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
+      createServerStub = stub(socks5, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
         capturedSocksHandler = handler
         return mockServer
       }) as any)
@@ -544,11 +544,6 @@ describe('ssh lib', function () {
         sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
       }).not.to.throw()
       expect(createServerStub.calledOnce).to.be.true
-    })
-
-    it('calls useAuth on the server', function () {
-      sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      expect(mockServer.useAuth.calledOnce).to.be.true
     })
 
     it('calls forwardOut with the SOCKS request info on ready', function () {
@@ -656,6 +651,44 @@ describe('ssh lib', function () {
       expect(config.username).to.equal('testuser')
       expect(config.port).to.equal(80)
       expect(config.hostHash).to.equal('sha256')
+    })
+  })
+
+  describe('_stdinToRemote()', function () {
+    // Regression: a non-interactive exec closes the remote stream when the
+    // command exits, which can precede stdin's EOF. The trailing ^D must not be
+    // written to the ended stream (that used to crash with ERR_STREAM_WRITE_AFTER_END).
+    it('does not throw or error when the remote stream has already ended', function (done) {
+      const remote = new stream.PassThrough()
+      remote.end()
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.on('error', err => done(err))
+      transform.on('finish', () => done())
+
+      transform.write('leftover input')
+      transform.end() // fires flush -> would write ^D to the ended remote stream
+    })
+
+    it('forwards data and appends the EOF marker when the remote stream is writable', function (done) {
+      const written: string[] = []
+      const remote = new stream.Writable({
+        write(chunk, _enc, cb) {
+          written.push(chunk.toString())
+          cb()
+        },
+      })
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.on('finish', () => {
+        expect(written).to.deep.equal(['hello', '\u0004'])
+        done()
+      })
+
+      transform.write('hello')
+      transform.end()
     })
   })
 
