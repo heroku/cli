@@ -1,8 +1,9 @@
+import type {Usage} from '@heroku/types/3.sdk'
+
 import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import type {Usage} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 interface AppInfo extends Record<string, unknown> {
@@ -112,11 +113,11 @@ export default class UsageAddons extends Command {
     const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
 
     // Display usage for each app
-    usageData.apps.forEach(app => {
+    for (const app of usageData.apps) {
       const appInfo = appInfoArray.find(info => info.id === app.id)
       this.displayAppUsage(appInfo?.name || app.id || '', app.addons ?? [], teamAddons)
       ux.stdout()
-    })
+    }
   }
 
   private getAppInfoFromTeamAddons(teamAddons: Heroku.AddOn[]): AppInfo[] {
