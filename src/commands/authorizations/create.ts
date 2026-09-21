@@ -19,7 +19,7 @@ export default class AuthorizationsCreate extends Command {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     scope: flags.string({char: 's', completion: ScopeCompletion, description: 'set custom OAuth scopes'}),
     short: flags.boolean({char: 'S', description: 'only output token'}),
-    team: flags.team(),
+    team: flags.team({description: 'team to create OAuth authorization on'}),
   }
 
   async run() {
