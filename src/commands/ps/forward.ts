@@ -60,12 +60,27 @@ export default class Forward extends Command {
       return [ports[0], ports[1] || localPort || ports[0]]
     })
 
+    // Each local listener binds asynchronously, so we don't know until its
+    // 'listening'/'error' event whether the port was actually claimed. Resolve
+    // this once every listener has settled with the count that bound, so run()
+    // can fail loudly if forwarding nothing (every requested port in use)
+    // instead of silently exiting 0.
+    let resolveBoundCount!: (count: number) => void
+    const boundCountPromise = new Promise<number>(resolve => {
+      resolveBoundCount = resolve
+    })
+
     await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
       await exec.createSocksProxy(context, this.heroku, configVars, (dynoIp: string, dynoName: string, socksPort: number) => {
+        let bound = 0
+        let settled = 0
+        const onSettled = () => {
+          settled++
+          if (settled === portMappings.length) resolveBoundCount(bound)
+        }
+
         for (const portMapping of portMappings) {
           const [localPortNum, remotePort] = portMapping
-
-          ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)
 
           net.createServer(connIn => {
             // Without a handler a socket reset (e.g. the peer hangs up) surfaces
@@ -92,15 +107,27 @@ export default class Forward extends Command {
               connIn.pipe(info.socket)
               info.socket.pipe(connIn)
             })
-          }).listen(Number.parseInt(localPortNum, 10)).on('error', (err: NodeJS.ErrnoException) => {
-            const detail = err.code === 'EADDRINUSE' ? 'port is already in use' : err.message
-            ux.warn(`Cannot forward to ${dynoName}:${remotePort} on local port ${localPortNum}: ${detail}`)
-          })
+          }).listen(Number.parseInt(localPortNum, 10))
+            .on('listening', () => {
+              bound++
+              ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)
+              onSettled()
+            })
+            .on('error', (err: NodeJS.ErrnoException) => {
+              const detail = err.code === 'EADDRINUSE' ? 'port is already in use' : err.message
+              ux.warn(`Cannot forward to ${dynoName}:${remotePort} on local port ${localPortNum}: ${detail}`)
+              onSettled()
+            })
         }
-
-        ux.stdout(`Use ${color.magenta('CTRL+C')} to stop port forwarding`)
       })
     }, 'forward')
+
+    const boundCount = await boundCountPromise
+    if (boundCount === 0) {
+      this.error('Could not forward any of the requested ports; every requested local port is already in use.')
+    }
+
+    ux.stdout(`Use ${color.magenta('CTRL+C')} to stop port forwarding`)
 
     // Keep the process running until interrupted
     await new Promise<void>(resolve => {

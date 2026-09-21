@@ -163,6 +163,12 @@ export class HerokuSsh {
               return deny()
             }
 
+            // Guard the forwardOut stream against an unhandled 'error' before the
+            // accept() null-check below: if accept() returns null we abandon this
+            // stream (conn.end() emits 'close', not 'error'), but a late error on
+            // the orphaned stream would otherwise go unhandled and crash the CLI.
+            stream.on('error', teardown)
+
             clientSocket = accept()
             if (!clientSocket) {
               conn.end()
@@ -171,7 +177,6 @@ export class HerokuSsh {
 
             // Tear the tunnel down if either side errors, rather than letting an
             // unhandled 'error' event crash the CLI.
-            stream.on('error', teardown)
             clientSocket.on('error', teardown)
             stream.pipe(clientSocket).pipe(stream).on('close', () => {
               conn.end()

@@ -19,7 +19,12 @@ function createMockServerWithSetup(portsCount = 1) {
     listen: stub(),
     on: stub(),
   }
-  mockServer.on.returns(mockServer)
+  // Fire the 'listening' event synchronously so the command's bound-port
+  // accounting resolves; every other event just chains.
+  mockServer.on.callsFake((event: string, cb: () => void) => {
+    if (event === 'listening') cb()
+    return mockServer
+  })
 
   mockServer.listen.callsFake(() => {
     setupCount++
@@ -231,6 +236,28 @@ describe('ps:forward', function () {
 
     process.emit('SIGINT', 'SIGINT')
     await commandPromise
+  })
+
+  it('errors when every requested local port fails to bind', async function () {
+    // A server whose bind always fails: fire 'error' (EADDRINUSE), never 'listening'.
+    const mockServer: {listen: SinonStub; on: SinonStub} = {listen: stub(), on: stub()}
+    mockServer.on.callsFake((event: string, cb: (err?: NodeJS.ErrnoException) => void) => {
+      if (event === 'error') cb(Object.assign(new Error('bind failed'), {code: 'EADDRINUSE'}))
+      return mockServer
+    })
+    mockServer.listen.returns(mockServer)
+    netCreateServerStub.returns(mockServer as any)
+
+    herokuExecInitFeatureStub.callsFake(async (context, heroku, callback) => {
+      await callback({})
+    })
+    herokuExecCreateSocksProxyStub.callsFake((context, heroku, configVars, callback) => {
+      callback('10.0.0.1', 'web.1', 1080)
+    })
+
+    const {error} = await runCommand(PsForward, ['8080', '--app', 'myapp'])
+
+    expect(error?.message).to.contain('Could not forward any of the requested ports')
   })
 
   it('pipes the incoming socket to the proxied socket on a successful SOCKS connection', async function () {
