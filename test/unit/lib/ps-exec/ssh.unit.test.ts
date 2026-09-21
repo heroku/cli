@@ -61,6 +61,7 @@ describe('ssh lib', function () {
     clientEndStub = stub(Client.prototype, 'end')
     clientSftpStub = stub(Client.prototype, 'sftp')
     stub(ux.action, 'stop')
+    stub(ux, 'stdout')
     uxErrorStub = stub(ux, 'error')
     sshInstance = new HerokuSsh()
   })
@@ -689,6 +690,41 @@ describe('ssh lib', function () {
 
       transform.write('hello')
       transform.end()
+    })
+
+    // The guard checks c.writable, but a write can still fail if the remote
+    // stream ends between the check and the write completing. Such a late
+    // ERR_STREAM_WRITE_AFTER_END must be swallowed, not crash the CLI. Without
+    // the transform's 'error' handler this emits an unhandled 'error' and fails.
+    it('swallows a late write-after-end error from the remote stream', function (done) {
+      const remote = new stream.Writable({
+        write(_chunk, _enc, cb) {
+          const err: NodeJS.ErrnoException = new Error('write after end')
+          err.code = 'ERR_STREAM_WRITE_AFTER_END'
+          cb(err)
+        },
+      })
+      remote.on('error', () => {}) // the remote's own error is out of scope here
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.write('x') // fails the remote write; the transform's 'error' must be swallowed
+      // Give the write callback a tick to surface the (swallowed) error.
+      setImmediate(() => done())
+    })
+
+    it('logs and swallows a non-write-after-end remote error without crashing', function (done) {
+      const remote = new stream.Writable({
+        write(_chunk, _enc, cb) {
+          cb(new Error('boom'))
+        },
+      })
+      remote.on('error', () => {}) // the remote's own error is out of scope here
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.write('x')
+      setImmediate(() => done())
     })
   })
 

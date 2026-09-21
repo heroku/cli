@@ -145,6 +145,12 @@ export class HerokuSsh {
     const socksPort = 1080
     socks5.createServer((info, accept, deny) => {
       const conn = new Client()
+      let clientSocket: ReturnType<typeof accept> = null
+      const teardown = () => {
+        if (clientSocket) clientSocket.destroy()
+        conn.end()
+      }
+
       conn.on('ready', () => {
         conn.forwardOut(
           info.srcAddr,
@@ -157,17 +163,26 @@ export class HerokuSsh {
               return deny()
             }
 
-            const clientSocket = accept(true)
-            if (clientSocket) {
-              stream.pipe(clientSocket).pipe(stream).on('close', () => {
-                conn.end()
-              })
-            } else
+            clientSocket = accept()
+            if (!clientSocket) {
               conn.end()
+              return
+            }
+
+            // Tear the tunnel down if either side errors, rather than letting an
+            // unhandled 'error' event crash the CLI.
+            stream.on('error', teardown)
+            clientSocket.on('error', teardown)
+            stream.pipe(clientSocket).pipe(stream).on('close', () => {
+              conn.end()
+            })
           },
         )
       }).on('error', () => {
-        deny()
+        // Before accept, reject the SOCKS request. After, the tunnel is live, so
+        // tear it down instead of injecting a late SOCKS reply into the stream.
+        if (clientSocket) teardown()
+        else deny()
       }).connect({
         ...this._connectionDefaults(proxyKey),
         host: addonHost,
@@ -175,7 +190,7 @@ export class HerokuSsh {
         username: dynoUser,
       })
     }).listen(socksPort, '127.0.0.1', () => {
-      console.log(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
+      ux.stdout(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
       if (callback) callback(socksPort)
     })
   }
@@ -294,8 +309,9 @@ export class HerokuSsh {
   // crashes the CLI.
   private _stdinToRemote(c: stream.Writable): stream.Transform {
     const transform = new stream.Transform({
-      flush: done => (c.writable ? c.write('\u0004', () => done()) : done()),
-      objectMode: true,
+      // Pass the stream callbacks straight through so a genuine write error
+      // reaches the 'error' handler below instead of being silently dropped.
+      flush: done => (c.writable ? c.write('\u0004', done) : done()),
       transform: (chunk, _, next) => (c.writable ? c.write(chunk, next) : next()),
     })
     transform.on('error', (error: NodeJS.ErrnoException) => {

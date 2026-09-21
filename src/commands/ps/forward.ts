@@ -2,6 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
+import debug from 'debug'
 import net from 'node:net'
 import {SocksClient} from 'socks'
 import tsheredoc from 'tsheredoc'
@@ -9,6 +10,7 @@ import tsheredoc from 'tsheredoc'
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 
 const heredoc = tsheredoc.default
+const forwardDebug = debug('cli:ps:forward')
 
 export default class Forward extends Command {
   static args = {
@@ -66,20 +68,34 @@ export default class Forward extends Command {
           ux.stdout(`Listening on ${color.bold(localPortNum)} and forwarding to ${color.bold(`${dynoName}:${remotePort}`)}`)
 
           net.createServer(connIn => {
+            // Without a handler a socket reset (e.g. the peer hangs up) surfaces
+            // as an unhandled 'error' and crashes the CLI.
+            connIn.on('error', err => {
+              forwardDebug('local connection error: %o', err)
+              connIn.destroy()
+            })
             SocksClient.createConnection({
               command: 'connect',
               destination: {host: '0.0.0.0', port: Number.parseInt(remotePort, 10)},
               proxy: {host: 'localhost', port: socksPort, type: 5},
             }, (err, info) => {
               if (err || !info) {
+                forwardDebug('SOCKS connection to %s:%s failed: %o', dynoName, remotePort, err)
                 connIn.destroy()
                 return
               }
 
+              info.socket.on('error', socketErr => {
+                forwardDebug('proxied socket error: %o', socketErr)
+                connIn.destroy()
+              })
               connIn.pipe(info.socket)
               info.socket.pipe(connIn)
             })
-          }).listen(Number.parseInt(localPortNum, 10))
+          }).listen(Number.parseInt(localPortNum, 10)).on('error', (err: NodeJS.ErrnoException) => {
+            const detail = err.code === 'EADDRINUSE' ? 'port is already in use' : err.message
+            ux.warn(`Cannot forward to ${dynoName}:${remotePort} on local port ${localPortNum}: ${detail}`)
+          })
         }
 
         ux.stdout(`Use ${color.magenta('CTRL+C')} to stop port forwarding`)

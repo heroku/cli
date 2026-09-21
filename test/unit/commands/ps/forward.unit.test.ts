@@ -3,6 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import net from 'node:net'
 import {restore, SinonStub, stub} from 'sinon'
+import {SocksClient} from 'socks'
 
 import PsForward from '../../../../src/commands/ps/forward.js'
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
@@ -16,7 +17,9 @@ function createMockServerWithSetup(portsCount = 1) {
   let setupCount = 0
   const mockServer = {
     listen: stub(),
+    on: stub(),
   }
+  mockServer.on.returns(mockServer)
 
   mockServer.listen.callsFake(() => {
     setupCount++
@@ -193,6 +196,72 @@ describe('ps:forward', function () {
     await new Promise(resolve => setImmediate(resolve))
 
     expect(herokuExecInitFeatureStub.firstCall.args[3]).to.equal('forward')
+
+    process.emit('SIGINT', 'SIGINT')
+    await commandPromise
+  })
+
+  it('destroys the incoming socket when the SOCKS connection fails', async function () {
+    const {mockServer, setupPromise} = createMockServerWithSetup()
+    let connectionHandler: ((conn: net.Socket) => void) | undefined
+    netCreateServerStub.callsFake((handler: (conn: net.Socket) => void) => {
+      connectionHandler = handler
+      return mockServer as any
+    })
+    const socksStub = stub(SocksClient, 'createConnection')
+
+    herokuExecInitFeatureStub.callsFake(async (context, heroku, callback) => {
+      await callback({})
+    })
+    herokuExecCreateSocksProxyStub.callsFake((context, heroku, configVars, callback) => {
+      callback('10.0.0.1', 'web.1', 1080)
+    })
+
+    const commandPromise = runCommand(PsForward, ['8080', '--app', 'myapp'])
+    await setupPromise
+    await new Promise(resolve => setImmediate(resolve))
+
+    const connIn = {destroy: stub(), on: stub(), pipe: stub()} as unknown as net.Socket
+    connectionHandler!(connIn)
+    const socksCallback = socksStub.firstCall.args[1] as (err: Error | null, info?: unknown) => void
+    socksCallback(new Error('connection refused'))
+
+    expect((connIn.destroy as SinonStub).calledOnce).to.be.true
+    expect((connIn.pipe as SinonStub).called).to.be.false
+
+    process.emit('SIGINT', 'SIGINT')
+    await commandPromise
+  })
+
+  it('pipes the incoming socket to the proxied socket on a successful SOCKS connection', async function () {
+    const {mockServer, setupPromise} = createMockServerWithSetup()
+    let connectionHandler: ((conn: net.Socket) => void) | undefined
+    netCreateServerStub.callsFake((handler: (conn: net.Socket) => void) => {
+      connectionHandler = handler
+      return mockServer as any
+    })
+    const socksStub = stub(SocksClient, 'createConnection')
+
+    herokuExecInitFeatureStub.callsFake(async (context, heroku, callback) => {
+      await callback({})
+    })
+    herokuExecCreateSocksProxyStub.callsFake((context, heroku, configVars, callback) => {
+      callback('10.0.0.1', 'web.1', 1080)
+    })
+
+    const commandPromise = runCommand(PsForward, ['8080', '--app', 'myapp'])
+    await setupPromise
+    await new Promise(resolve => setImmediate(resolve))
+
+    const proxiedSocket = {on: stub(), pipe: stub()}
+    const connIn = {destroy: stub(), on: stub(), pipe: stub()} as unknown as net.Socket
+    connectionHandler!(connIn)
+    const socksCallback = socksStub.firstCall.args[1] as (err: Error | null, info?: {socket: unknown}) => void
+    socksCallback(null, {socket: proxiedSocket})
+
+    expect((connIn.pipe as SinonStub).calledWith(proxiedSocket)).to.be.true
+    expect(proxiedSocket.pipe.calledWith(connIn)).to.be.true
+    expect((connIn.destroy as SinonStub).called).to.be.false
 
     process.emit('SIGINT', 'SIGINT')
     await commandPromise

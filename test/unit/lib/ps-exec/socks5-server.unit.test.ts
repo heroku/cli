@@ -1,4 +1,4 @@
-// cspell:ignore atyp
+// cspell:ignore atyp gssapi
 import {expect} from 'chai'
 import net, {AddressInfo} from 'node:net'
 
@@ -16,6 +16,12 @@ const ipv4Request = (cmd: number, host: string, port: number): Buffer =>
 const domainRequest = (cmd: number, host: string, port: number): Buffer => {
   const name = Buffer.from(host, 'utf8')
   return Buffer.concat([Buffer.from([0x05, cmd, 0x00, 0x03, name.length]), name, port16(port)])
+}
+
+const ipv6Request = (cmd: number, groups: number[], port: number): Buffer => {
+  const addr = Buffer.alloc(16)
+  for (const [i, group] of groups.entries()) addr.writeUInt16BE(group, i * 2)
+  return Buffer.concat([Buffer.from([0x05, cmd, 0x00, 0x04]), addr, port16(port)])
 }
 
 // Exercises the hand-rolled SOCKS5 server end-to-end over real loopback sockets
@@ -53,7 +59,7 @@ describe('Socks5Server', function () {
   // Handler that accepts and bridges the client socket to the echo upstream —
   // the same shape as ssh.ts bridging to an SSH forwardOut stream.
   const bridgeToUpstream: ConstructorParameters<typeof Socks5Server>[0] = (_info, accept) => {
-    const clientSocket = accept(true)
+    const clientSocket = accept()
     if (!clientSocket) return
     const up = net.connect(upstreamPort, '127.0.0.1')
     // Swallow resets that occur when a test tears down mid-flight (destroy() +
@@ -141,5 +147,159 @@ describe('Socks5Server', function () {
 
     expect(connectReply[1]).to.equal(0x07) // command not supported
     expect(handlerCalled).to.be.false
+  })
+
+  it('decodes an IPv6 destination (ATYP 0x04) and passes it to the handler', async function () {
+    let seen: string | undefined
+    await startProxy((info, accept) => {
+      seen = info.dstAddr
+      bridgeToUpstream(info, accept, () => {})
+    })
+
+    const {connectReply, socket} = await rawConnect(proxyPort, ipv6Request(0x01, [0, 0, 0, 0, 0, 0, 0, 1], upstreamPort))
+    socket.destroy()
+
+    expect(connectReply[1]).to.equal(0x00)
+    expect(seen).to.equal('0:0:0:0:0:0:0:1')
+  })
+
+  it('destroys the connection on an unsupported SOCKS version (no reply)', async function () {
+    await startProxy(bridgeToUpstream)
+
+    const got = await new Promise<Buffer>((resolve, reject) => {
+      const socket = net.connect(proxyPort, '127.0.0.1')
+      let buf = Buffer.alloc(0)
+      socket.on('error', reject)
+      socket.on('connect', () => socket.write(Buffer.from([0x04, 0x01, 0x00]))) // VER 4
+      socket.on('data', d => {
+        buf = Buffer.concat([buf, d])
+      })
+      socket.on('close', () => resolve(buf))
+    })
+
+    expect(got.length).to.equal(0) // server destroyed the socket without replying
+  })
+
+  it('rejects the greeting when no acceptable auth method is offered (REP 0xFF)', async function () {
+    await startProxy(bridgeToUpstream)
+
+    const reply = await new Promise<Buffer>((resolve, reject) => {
+      const socket = net.connect(proxyPort, '127.0.0.1')
+      socket.on('error', reject)
+      socket.on('connect', () => socket.write(Buffer.from([0x05, 0x01, 0x02]))) // only GSSAPI (0x02)
+      socket.on('data', d => resolve(d.subarray(0, 2)))
+    })
+
+    expect([...reply]).to.deep.equal([0x05, 0xFF])
+  })
+
+  it('assembles a handshake whose request is split across TCP segments', async function () {
+    await startProxy(bridgeToUpstream)
+    const request = ipv4Request(0x01, '127.0.0.1', upstreamPort)
+
+    const echoed = await new Promise<string>((resolve, reject) => {
+      const socket = net.connect(proxyPort, '127.0.0.1')
+      socket.setNoDelay(true)
+      let buf = Buffer.alloc(0)
+      // phases: 'greeting' -> 'reply' (awaiting 10-byte CONNECT reply) -> 'echo'
+      let phase: 'echo' | 'greeting' | 'reply' = 'greeting'
+      socket.on('error', reject)
+      socket.on('connect', () => socket.write(Buffer.from([0x05, 0x01, 0x00])))
+      socket.on('data', chunk => {
+        buf = Buffer.concat([buf, chunk])
+        if (phase === 'greeting' && buf.length >= 2) {
+          buf = buf.subarray(2) // consume method-selection reply
+          phase = 'reply'
+          // Deliver the request in two pieces to exercise the partial-buffer path.
+          socket.write(request.subarray(0, 3))
+          setImmediate(() => socket.write(request.subarray(3)))
+        }
+
+        if (phase === 'reply' && buf.length >= 10) {
+          buf = buf.subarray(10) // consume CONNECT reply
+          phase = 'echo'
+          socket.write('ping')
+        }
+
+        if (phase === 'echo' && buf.toString() === 'ping') {
+          socket.destroy()
+          resolve('ping')
+        }
+      })
+    })
+
+    expect(echoed).to.equal('ping')
+  })
+
+  it('replays application bytes pipelined immediately after the CONNECT request', async function () {
+    await startProxy(bridgeToUpstream)
+
+    const tail = await new Promise<string>((resolve, reject) => {
+      const socket = net.connect(proxyPort, '127.0.0.1')
+      let buf = Buffer.alloc(0)
+      let methodReply: Buffer | undefined
+      socket.on('error', reject)
+      socket.on('connect', () => socket.write(Buffer.from([0x05, 0x01, 0x00])))
+      socket.on('data', chunk => {
+        buf = Buffer.concat([buf, chunk])
+        if (!methodReply) {
+          if (buf.length < 2) return
+          methodReply = buf.subarray(0, 2)
+          buf = buf.subarray(2)
+          // Pipeline 'ping' in the same write as the request, before the reply.
+          socket.write(Buffer.concat([ipv4Request(0x01, '127.0.0.1', upstreamPort), Buffer.from('ping')]))
+        }
+
+        // 10-byte CONNECT reply, then the echoed pipelined bytes.
+        if (methodReply && buf.length >= 14) {
+          socket.destroy()
+          resolve(buf.subarray(10, 14).toString())
+        }
+      })
+    })
+
+    expect(tail).to.equal('ping')
+  })
+
+  it('returns null from a second accept() call (idempotent)', async function () {
+    let secondResult: unknown = 'unset'
+    await startProxy((info, accept) => {
+      const first = accept()
+      secondResult = accept()
+      if (!first) return
+      const up = net.connect(upstreamPort, '127.0.0.1')
+      first.on('error', () => {})
+      up.on('error', () => {})
+      first.pipe(up).pipe(first)
+    })
+
+    const {connectReply, socket} = await rawConnect(proxyPort, ipv4Request(0x01, '127.0.0.1', upstreamPort))
+    socket.destroy()
+
+    expect(connectReply[1]).to.equal(0x00)
+    expect(secondResult).to.equal(null)
+  })
+
+  it('ignores a deny() issued after accept() so the tunnel is not corrupted', async function () {
+    await startProxy((info, accept, deny) => {
+      const clientSocket = accept()
+      deny() // must be a no-op: no failure reply injected into the live stream
+      if (!clientSocket) return
+      const up = net.connect(upstreamPort, '127.0.0.1')
+      clientSocket.on('error', () => {})
+      up.on('error', () => {})
+      clientSocket.pipe(up).pipe(clientSocket)
+    })
+
+    const {connectReply, socket} = await rawConnect(proxyPort, ipv4Request(0x01, '127.0.0.1', upstreamPort))
+    const echoed = await new Promise<string>((resolve, reject) => {
+      socket.on('data', d => resolve(d.toString()))
+      socket.on('error', reject)
+      socket.write('ping')
+    })
+    socket.destroy()
+
+    expect(connectReply[1]).to.equal(0x00)
+    expect(echoed).to.equal('ping')
   })
 })

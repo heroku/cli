@@ -9,7 +9,7 @@ import net from 'node:net'
  * Unlike a general SOCKS proxy, this server never dials the destination
  * itself: the destination lives inside the dyno's private network and is only
  * reachable through an SSH tunnel. Instead, the connection handler receives the
- * parsed request and an `accept(true)` callback that hands back the raw client
+ * parsed request and an `accept()` callback that hands back the raw client
  * socket, so the caller can pipe it to an SSH `forwardOut` stream.
  *
  * @see https://datatracker.ietf.org/doc/html/rfc1928
@@ -24,12 +24,13 @@ export interface SocksRequestInfo {
 }
 
 /**
- * Approves the connection. Only intercept mode (`accept(true)`) is supported:
- * it sends the SOCKS success reply and returns the raw client socket for the
- * caller to bridge to its own upstream. Returns `null` if the socket is no
- * longer writable.
+ * Approves the connection: sends the SOCKS success reply and returns the raw
+ * client socket for the caller to bridge to its own upstream. This server only
+ * supports this intercept mode — it never dials the destination itself. Returns
+ * `null` if the connection was already settled by a prior `accept`/`deny` or the
+ * socket is no longer writable.
  */
-export type AcceptFn = (intercept?: boolean) => net.Socket | null
+export type AcceptFn = () => net.Socket | null
 export type DenyFn = () => void
 export type ConnectionHandler = (info: SocksRequestInfo, accept: AcceptFn, deny: DenyFn) => void
 
@@ -43,6 +44,12 @@ const ATYP_IPV6 = 0x04
 const REP_SUCCESS = 0x00
 const REP_GENERAL_FAILURE = 0x01
 const REP_CMD_NOT_SUPPORTED = 0x07
+
+// Guardrails against a client that connects but stalls or floods before the
+// handshake completes. A well-behaved client sends only a few hundred bytes and
+// finishes promptly; anything larger or slower is dropped.
+const HANDSHAKE_TIMEOUT_MS = 10_000
+const MAX_HANDSHAKE_BYTES = 1024
 
 // Replies carry a null bind address (0.0.0.0:0); clients doing CONNECT ignore it.
 const reply = (rep: number) => Buffer.from([SOCKS_VERSION, rep, 0x00, ATYP_IPV4, 0, 0, 0, 0, 0, 0])
@@ -67,11 +74,13 @@ export class Socks5Server {
   private _handleConnection(socket: net.Socket): void {
     socket.on('error', () => socket.destroy())
 
+    // Drop a client that connects but never finishes the handshake, so a slow or
+    // idle peer can't pin the socket open. Cleared once the request is parsed.
+    socket.setTimeout(HANDSHAKE_TIMEOUT_MS)
+    socket.on('timeout', () => socket.destroy())
+
+    let settled = false
     let buffer = Buffer.alloc(0)
-    const onData = (chunk: Buffer) => {
-      buffer = Buffer.concat([buffer, chunk])
-      pump()
-    }
 
     // Sequential reader over the accumulating buffer. Each step consumes a fixed
     // number of bytes once they are available and advances to the next.
@@ -84,6 +93,19 @@ export class Socks5Server {
         buffer = buffer.subarray(need)
         run(bytes)
       }
+    }
+
+    const onData = (chunk: Buffer) => {
+      buffer = Buffer.concat([buffer, chunk])
+      // While still parsing the handshake, a well-behaved client sends only a
+      // few hundred bytes; anything larger is abnormal, so refuse it rather than
+      // buffering without bound.
+      if (steps.length > 0 && buffer.length > MAX_HANDSHAKE_BYTES) {
+        socket.destroy()
+        return
+      }
+
+      pump()
     }
 
     // Greeting: VER, NMETHODS, METHODS...
@@ -124,7 +146,8 @@ export class Socks5Server {
               }
 
               const accept: AcceptFn = () => {
-                if (!socket.writable) return null
+                if (settled || !socket.writable) return null
+                settled = true
                 socket.write(reply(REP_SUCCESS))
                 // Stop intercepting: detach our reader and hand back any bytes
                 // that arrived after the request so piping sees a clean stream.
@@ -138,9 +161,18 @@ export class Socks5Server {
               }
 
               const deny: DenyFn = () => {
-                socket.end(reply(REP_GENERAL_FAILURE))
+                // Ignore a deny once the connection is accepted (or already
+                // denied): writing a SOCKS reply into a live tunnel corrupts it.
+                if (settled) return
+                settled = true
+                if (socket.writable) socket.end(reply(REP_GENERAL_FAILURE))
               }
 
+              // The handshake is parsed: stop the timeout and pause reads so a
+              // client can't flood us while the handler establishes the upstream
+              // tunnel. accept() detaches the reader and piping resumes flow.
+              socket.setTimeout(0)
+              socket.pause()
               this.handler(info, accept, deny)
             })
           })
