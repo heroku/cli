@@ -160,6 +160,23 @@ describe('data:pg:logical-replication', function () {
     expect(ansis.strip(stderr)).to.include('advanced-horizontal-01234... done')
   })
 
+  it('replaces a publication target with all current customer schemas', async function () {
+    const herokuApi = resolveAddon()
+    const dataApi = nock('https://api.data.heroku.com')
+      .put(`/data/postgres/v1/${addon.id}/logical-replication/publications/orders`, {
+        target: {type: 'all_customer_schemas'},
+      })
+      .reply(204)
+
+    const {stdout} = await runCommand(DataPgLogicalReplicationPublicationsUpdate, [
+      'DATABASE', '--app=myapp', '--name=orders', '--all-schemas',
+    ])
+
+    herokuApi.done()
+    dataApi.done()
+    expect(ansis.strip(stdout)).to.equal('The publication includes all current customer schemas. Tables created later and new schemas are not added automatically.\n')
+  })
+
   it('destroys a publication with explicit confirmation', async function () {
     const herokuApi = resolveAddon()
     const dataApi = nock('https://api.data.heroku.com')
