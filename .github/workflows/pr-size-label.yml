@@ -26,10 +26,13 @@ permissions:
   contents: read
   pull-requests: write
 
-# A newer push supersedes an in-flight run for the same PR.
+# Serialize runs per PR. cancel-in-progress: false so an in-flight run always
+# finishes its non-transactional label/comment reconciliation (rather than being
+# cancelled mid-update and leaving a partial state); queued runs then apply in
+# order and the last one reflects the PR's final size.
 concurrency:
   group: pr-size-label-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   label-size:
@@ -69,6 +72,13 @@ jobs:
           churn=0
           docs_changed="false"
 
+          # Fetch changed files up front so a transient API failure degrades to a
+          # clean, non-blocking skip (advisory check) instead of aborting under
+          # set -e — and so a failed read can never be misread as churn=0 (size/XS).
+          files="$(gh api --paginate "repos/$REPO/pulls/$PR/files" \
+                     --jq '.[] | [.filename, .additions, .deletions] | @tsv')" \
+            || { echo "::warning::pr-size-label: could not fetch changed files; skipping (advisory check)"; exit 0; }
+
           # `|| [ -n "$filename" ]` processes a final line that lacks a trailing
           # newline, so no file is ever silently dropped from the count.
           while IFS=$'\t' read -r filename additions deletions || [ -n "${filename:-}" ]; do
@@ -91,8 +101,7 @@ jobs:
             esac
 
             churn=$((churn + add + del))
-          done < <(gh api --paginate "repos/$REPO/pulls/$PR/files" \
-                     --jq '.[] | [.filename, .additions, .deletions] | @tsv')
+          done <<< "$files"
 
           # --- 2. Map code churn to a bucket.
           if   [ "$churn" -lt "$XS_MAX" ]; then bucket="XS"
@@ -112,17 +121,29 @@ jobs:
             echo "- Docs changed: **$docs_changed**"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          # --- 3. Ensure the labels we manage exist (idempotent upsert).
-          gh label create --repo "$REPO" "size/XS" --color "3cbf00" --description "Extra small PR (code churn < ${XS_MAX})"                      --force >/dev/null 2>&1 || true
-          gh label create --repo "$REPO" "size/S"  --color "5d9801" --description "Small PR (code churn < ${S_MAX})"                            --force >/dev/null 2>&1 || true
-          gh label create --repo "$REPO" "size/M"  --color "7f7203" --description "Medium PR (code churn < ${M_MAX})"                           --force >/dev/null 2>&1 || true
-          gh label create --repo "$REPO" "size/L"  --color "a86500" --description "Large PR (code churn < ${L_MAX})"                            --force >/dev/null 2>&1 || true
-          gh label create --repo "$REPO" "size/XL" --color "e11d21" --description "Extra large PR (code churn >= ${L_MAX}); consider splitting" --force >/dev/null 2>&1 || true
-          gh label create --repo "$REPO" "docs"    --color "0075ca" --description "Touches documentation"                                       --force >/dev/null 2>&1 || true
+          # --- 3. On-demand label upsert. Create ONLY the label actually applied
+          # this run (the desired size bucket; the docs label is ensured in step 4
+          # when needed) instead of all six on every event, and route it through
+          # try() so a create failure is a visible ::warning::, not a silent swallow.
+          # A stale size/* label removed in step 4 already exists (it is assigned).
+          ensure_label() {  # name color description
+            try gh label create --repo "$REPO" "$1" --color "$2" --description "$3" --force >/dev/null
+          }
+          case "$bucket" in
+            XS) ensure_label "$desired" "3cbf00" "Extra small PR (code churn < ${XS_MAX})" ;;
+            S)  ensure_label "$desired" "5d9801" "Small PR (code churn < ${S_MAX})" ;;
+            M)  ensure_label "$desired" "7f7203" "Medium PR (code churn < ${M_MAX})" ;;
+            L)  ensure_label "$desired" "a86500" "Large PR (code churn < ${L_MAX})" ;;
+            XL) ensure_label "$desired" "e11d21" "Extra large PR (code churn >= ${L_MAX}); consider splitting" ;;
+          esac
 
           # --- 4. Reconcile labels: exactly one size/* (the desired one), and
           # `docs` present iff documentation changed. Only touch labels we own.
-          current="$(gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name')"
+          # --paginate so a PR with >30 labels isn't truncated (a truncated read
+          # would drop a stale size/* from `current` and leave two size labels);
+          # guard so a transient read failure degrades to a clean skip, not an abort.
+          current="$(gh api --paginate "repos/$REPO/issues/$PR/labels" --jq '.[].name')" \
+            || { echo "::warning::pr-size-label: could not read current labels; skipping reconcile (advisory check)"; exit 0; }
 
           for lbl in size/XS size/S size/M size/L size/XL; do
             if echo "$current" | grep -Fxq "$lbl" && [ "$lbl" != "$desired" ]; then
@@ -141,8 +162,12 @@ jobs:
 
           # --- 5. XL nudge: post the split suggestion once, remove it if the PR
           # later drops below XL. Never fails the check.
+          # Guard: a failed comments read must not abort the step under set -e.
+          # Empty result -> treated as "no existing nudge" (worst case: a duplicate
+          # nudge, which the marker de-dupes on the next successful run).
           existing_comment_id="$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
-            --jq "map(select(.body | contains(\"$COMMENT_MARKER\"))) | .[0].id // empty")"
+            --jq "map(select(.body | contains(\"$COMMENT_MARKER\"))) | .[0].id // empty")" \
+            || { echo "::warning::pr-size-label: could not read comments; skipping XL-nudge reconcile (advisory check)"; existing_comment_id=""; bucket="__skip_nudge__"; }
 
           if [ "$bucket" = "XL" ]; then
             if [ -z "$existing_comment_id" ]; then
