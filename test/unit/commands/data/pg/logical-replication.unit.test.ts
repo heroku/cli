@@ -10,7 +10,7 @@ import DataPgLogicalReplicationPublicationsInfo from '../../../../../src/command
 import DataPgLogicalReplicationPublicationsUpdate from '../../../../../src/commands/data/pg/logical-replication/publications/update.js'
 import DataPgLogicalReplicationPublishingEnable from '../../../../../src/commands/data/pg/logical-replication/publishing/enable.js'
 import DataPgLogicalReplicationSubscribingEnable from '../../../../../src/commands/data/pg/logical-replication/subscribing/enable.js'
-import {addon} from '../../../../fixtures/data/pg/fixtures.js'
+import {addon, nonAdvancedAddon} from '../../../../fixtures/data/pg/fixtures.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
 const publicationsResponse = {
@@ -34,6 +34,17 @@ const resolveAddon = () => nock('https://api.heroku.com')
   .reply(200, [{...addon, addon_service: {...addon.addon_service, name: 'heroku-postgresql'}}])
 
 describe('data:pg:logical-replication', function () {
+  it('errors when used with a non-Advanced-tier database', async function () {
+    const herokuApi = nock('https://api.heroku.com')
+      .post('/actions/addons/resolve')
+      .reply(200, [nonAdvancedAddon])
+
+    const {error} = await runCommand(DataPgLogicalReplicationPublicationsIndex, ['DATABASE', '--app=myapp'])
+
+    herokuApi.done()
+    expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\nUse heroku data:pg:info DATABASE --app myapp to inspect an Advanced database.')
+  })
+
   it('enables publishing and explains how to track the asynchronous operation', async function () {
     const herokuApi = resolveAddon()
     const dataApi = nock('https://api.data.heroku.com')
