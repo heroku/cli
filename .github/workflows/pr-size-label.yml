@@ -33,7 +33,10 @@ concurrency:
 
 jobs:
   label-size:
-    runs-on: ubuntu-latest
+    # The heroku org enforces an IP allow list, so calls to the GitHub API must
+    # originate from an allow-listed runner; GitHub-hosted runners (ubuntu-latest)
+    # get HTTP 403. Same rationale as release-homebrew.yml / direwolf.yml.
+    runs-on: pub-hk-ubuntu-24.04-ip
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO: ${{ github.repository }}
@@ -51,6 +54,11 @@ jobs:
       - name: Compute size and apply labels
         run: |
           set -euo pipefail
+
+          # Label/comment WRITES are best-effort. On a fork PR the pull_request
+          # GITHUB_TOKEN is read-only regardless of the permissions: block, so a
+          # write returns 403; an advisory labeler must warn, not fail the check.
+          try() { "$@" || echo "::warning::pr-size-label: non-fatal, skipping: '$*' (a fork PR gets a read-only token)"; }
 
           # --- 1. Read the PR's changed files (filename, additions, deletions).
           # A file counts toward *size* unless it is documentation, the
@@ -116,17 +124,17 @@ jobs:
 
           for lbl in size/XS size/S size/M size/L size/XL; do
             if echo "$current" | grep -Fxq "$lbl" && [ "$lbl" != "$desired" ]; then
-              gh pr edit "$PR" --remove-label "$lbl"
+              try gh pr edit "$PR" --remove-label "$lbl"
             fi
           done
           if ! echo "$current" | grep -Fxq "$desired"; then
-            gh pr edit "$PR" --add-label "$desired"
+            try gh pr edit "$PR" --add-label "$desired"
           fi
 
           if [ "$docs_changed" = "true" ]; then
-            echo "$current" | grep -Fxq "docs" || gh pr edit "$PR" --add-label "docs"
+            echo "$current" | grep -Fxq "docs" || try gh pr edit "$PR" --add-label "docs"
           else
-            echo "$current" | grep -Fxq "docs" && gh pr edit "$PR" --remove-label "docs" || true
+            echo "$current" | grep -Fxq "docs" && try gh pr edit "$PR" --remove-label "docs" || true
           fi
 
           # --- 5. XL nudge: post the split suggestion once, remove it if the PR
@@ -140,7 +148,7 @@ jobs:
           This PR is labeled **size/XL** (${churn} lines of code churn, excluding docs, \`package-lock.json\`, and generated files).
 
           Large PRs are harder to review well. If it can be split into smaller, independently reviewable pieces, consider doing so. This is a suggestion, not a blocker — the check still passes."
-              gh pr comment "$PR" --body "$body"
+              try gh pr comment "$PR" --body "$body"
             fi
           else
             if [ -n "$existing_comment_id" ]; then
