@@ -55,10 +55,12 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Label/comment WRITES are best-effort. On a fork PR the pull_request
-          # GITHUB_TOKEN is read-only regardless of the permissions: block, so a
-          # write returns 403; an advisory labeler must warn, not fail the check.
-          try() { "$@" || echo "::warning::pr-size-label: non-fatal, skipping: '$*' (a fork PR gets a read-only token)"; }
+          # Label/comment WRITES are best-effort: an advisory labeler must never
+          # fail the check. The most common non-fatal cause is a fork PR, whose
+          # pull_request GITHUB_TOKEN is read-only regardless of the permissions:
+          # block, so a write 403s. Emit a visible ::warning:: with the exit code
+          # so a real regression is never silently swallowed.
+          try() { "$@" || echo "::warning::pr-size-label: '$*' failed (exit $?); continuing (advisory check)"; }
 
           # --- 1. Read the PR's changed files (filename, additions, deletions).
           # A file counts toward *size* unless it is documentation, the
@@ -111,12 +113,12 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           # --- 3. Ensure the labels we manage exist (idempotent upsert).
-          gh label create "size/XS" --color "3cbf00" --description "Extra small PR (code churn < ${XS_MAX})"                      --force >/dev/null 2>&1 || true
-          gh label create "size/S"  --color "5d9801" --description "Small PR (code churn < ${S_MAX})"                            --force >/dev/null 2>&1 || true
-          gh label create "size/M"  --color "7f7203" --description "Medium PR (code churn < ${M_MAX})"                           --force >/dev/null 2>&1 || true
-          gh label create "size/L"  --color "a86500" --description "Large PR (code churn < ${L_MAX})"                            --force >/dev/null 2>&1 || true
-          gh label create "size/XL" --color "e11d21" --description "Extra large PR (code churn >= ${L_MAX}); consider splitting" --force >/dev/null 2>&1 || true
-          gh label create "docs"    --color "0075ca" --description "Touches documentation"                                       --force >/dev/null 2>&1 || true
+          gh label create --repo "$REPO" "size/XS" --color "3cbf00" --description "Extra small PR (code churn < ${XS_MAX})"                      --force >/dev/null 2>&1 || true
+          gh label create --repo "$REPO" "size/S"  --color "5d9801" --description "Small PR (code churn < ${S_MAX})"                            --force >/dev/null 2>&1 || true
+          gh label create --repo "$REPO" "size/M"  --color "7f7203" --description "Medium PR (code churn < ${M_MAX})"                           --force >/dev/null 2>&1 || true
+          gh label create --repo "$REPO" "size/L"  --color "a86500" --description "Large PR (code churn < ${L_MAX})"                            --force >/dev/null 2>&1 || true
+          gh label create --repo "$REPO" "size/XL" --color "e11d21" --description "Extra large PR (code churn >= ${L_MAX}); consider splitting" --force >/dev/null 2>&1 || true
+          gh label create --repo "$REPO" "docs"    --color "0075ca" --description "Touches documentation"                                       --force >/dev/null 2>&1 || true
 
           # --- 4. Reconcile labels: exactly one size/* (the desired one), and
           # `docs` present iff documentation changed. Only touch labels we own.
@@ -124,17 +126,17 @@ jobs:
 
           for lbl in size/XS size/S size/M size/L size/XL; do
             if echo "$current" | grep -Fxq "$lbl" && [ "$lbl" != "$desired" ]; then
-              try gh pr edit "$PR" --remove-label "$lbl"
+              try gh pr edit --repo "$REPO" "$PR" --remove-label "$lbl"
             fi
           done
           if ! echo "$current" | grep -Fxq "$desired"; then
-            try gh pr edit "$PR" --add-label "$desired"
+            try gh pr edit --repo "$REPO" "$PR" --add-label "$desired"
           fi
 
           if [ "$docs_changed" = "true" ]; then
-            echo "$current" | grep -Fxq "docs" || try gh pr edit "$PR" --add-label "docs"
+            echo "$current" | grep -Fxq "docs" || try gh pr edit --repo "$REPO" "$PR" --add-label "docs"
           else
-            echo "$current" | grep -Fxq "docs" && try gh pr edit "$PR" --remove-label "docs" || true
+            echo "$current" | grep -Fxq "docs" && try gh pr edit --repo "$REPO" "$PR" --remove-label "docs" || true
           fi
 
           # --- 5. XL nudge: post the split suggestion once, remove it if the PR
@@ -148,7 +150,7 @@ jobs:
           This PR is labeled **size/XL** (${churn} lines of code churn, excluding docs, \`package-lock.json\`, and generated files).
 
           Large PRs are harder to review well. If it can be split into smaller, independently reviewable pieces, consider doing so. This is a suggestion, not a blocker — the check still passes."
-              try gh pr comment "$PR" --body "$body"
+              try gh pr comment --repo "$REPO" "$PR" --body "$body"
             fi
           else
             if [ -n "$existing_comment_id" ]; then
