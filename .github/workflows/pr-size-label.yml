@@ -1,0 +1,149 @@
+name: PR Size Label
+
+# Labels each PR with a size/* bucket based on *code* churn (additions +
+# deletions), and attaches a `docs` label when documentation changed.
+#
+# Design (see also .github/workflows/pr-title-check.yml, whose zero-dependency
+# bash style this mirrors):
+#   - Size reflects code only. Documentation, the lockfile, and generated
+#     artifacts are excluded from the count so a lockfile bump or a docs sync
+#     never reads as a large PR.
+#   - Advisory, never blocking: the job always succeeds. An XL PR gets a
+#     one-time "consider splitting" comment as a nudge, not a failing check.
+#   - Thresholds are the constants below — a one-line edit to re-tune.
+#
+# Injection safety: every GitHub-context value used in run: is passed through
+# env: (never interpolated into the script body), and only trusted, non-text
+# context (repository slug, PR number) is referenced. Attacker-controllable
+# fields (PR title/body/branch) are never used.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Least privilege: we only read the diff and write labels/comments.
+permissions:
+  contents: read
+  pull-requests: write
+
+# A newer push supersedes an in-flight run for the same PR.
+concurrency:
+  group: pr-size-label-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  label-size:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      # Upper bound (exclusive) of code-churn lines for each bucket; XL is the
+      # open-ended top bucket. Tune here.
+      XS_MAX: "10"
+      S_MAX: "100"
+      M_MAX: "500"
+      L_MAX: "1000"
+      # Hidden marker so the XL nudge is posted once and cleaned up if the PR
+      # later shrinks below XL.
+      COMMENT_MARKER: "<!-- pr-size-labeler -->"
+    steps:
+      - name: Compute size and apply labels
+        run: |
+          set -euo pipefail
+
+          # --- 1. Read the PR's changed files (filename, additions, deletions).
+          # A file counts toward *size* unless it is documentation, the
+          # lockfile, or a generated artifact. `docs` presence is tracked
+          # separately regardless of the size count.
+          churn=0
+          docs_changed="false"
+
+          # `|| [ -n "$filename" ]` processes a final line that lacks a trailing
+          # newline, so no file is ever silently dropped from the count.
+          while IFS=$'\t' read -r filename additions deletions || [ -n "${filename:-}" ]; do
+            [ -z "${filename:-}" ] && continue
+            add="${additions:-0}"; del="${deletions:-0}"
+            # Non-numeric (e.g. binary "-") counts as 0 churn.
+            case "$add" in ''|*[!0-9]*) add=0 ;; esac
+            case "$del" in ''|*[!0-9]*) del=0 ;; esac
+
+            is_docs="false"
+            case "$filename" in
+              docs/*|*.md) is_docs="true" ;;
+            esac
+            [ "$is_docs" = "true" ] && docs_changed="true"
+
+            # Excluded from the size count: docs, lockfile, generated artifacts.
+            case "$filename" in
+              docs/*|*.md|package-lock.json|autocomplete-scripts/*|dist/*)
+                continue ;;
+            esac
+
+            churn=$((churn + add + del))
+          done < <(gh api --paginate "repos/$REPO/pulls/$PR/files" \
+                     --jq '.[] | [.filename, .additions, .deletions] | @tsv')
+
+          # --- 2. Map code churn to a bucket.
+          if   [ "$churn" -lt "$XS_MAX" ]; then bucket="XS"
+          elif [ "$churn" -lt "$S_MAX"  ]; then bucket="S"
+          elif [ "$churn" -lt "$M_MAX"  ]; then bucket="M"
+          elif [ "$churn" -lt "$L_MAX"  ]; then bucket="L"
+          else                                  bucket="XL"
+          fi
+          desired="size/$bucket"
+
+          echo "Code churn (excluding docs/lockfile/generated): $churn lines -> $desired"
+          echo "Docs changed: $docs_changed"
+          {
+            echo "### PR size"
+            echo "- Code churn (add+del, excluding docs, \`package-lock.json\`, and generated files): **$churn**"
+            echo "- Size label: **$desired**"
+            echo "- Docs changed: **$docs_changed**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # --- 3. Ensure the labels we manage exist (idempotent upsert).
+          gh label create "size/XS" --color "3cbf00" --description "Extra small PR (code churn < ${XS_MAX})"                      --force >/dev/null 2>&1 || true
+          gh label create "size/S"  --color "5d9801" --description "Small PR (code churn < ${S_MAX})"                            --force >/dev/null 2>&1 || true
+          gh label create "size/M"  --color "7f7203" --description "Medium PR (code churn < ${M_MAX})"                           --force >/dev/null 2>&1 || true
+          gh label create "size/L"  --color "a86500" --description "Large PR (code churn < ${L_MAX})"                            --force >/dev/null 2>&1 || true
+          gh label create "size/XL" --color "e11d21" --description "Extra large PR (code churn >= ${L_MAX}); consider splitting" --force >/dev/null 2>&1 || true
+          gh label create "docs"    --color "0075ca" --description "Touches documentation"                                       --force >/dev/null 2>&1 || true
+
+          # --- 4. Reconcile labels: exactly one size/* (the desired one), and
+          # `docs` present iff documentation changed. Only touch labels we own.
+          current="$(gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name')"
+
+          for lbl in size/XS size/S size/M size/L size/XL; do
+            if echo "$current" | grep -Fxq "$lbl" && [ "$lbl" != "$desired" ]; then
+              gh pr edit "$PR" --remove-label "$lbl"
+            fi
+          done
+          if ! echo "$current" | grep -Fxq "$desired"; then
+            gh pr edit "$PR" --add-label "$desired"
+          fi
+
+          if [ "$docs_changed" = "true" ]; then
+            echo "$current" | grep -Fxq "docs" || gh pr edit "$PR" --add-label "docs"
+          else
+            echo "$current" | grep -Fxq "docs" && gh pr edit "$PR" --remove-label "docs" || true
+          fi
+
+          # --- 5. XL nudge: post the split suggestion once, remove it if the PR
+          # later drops below XL. Never fails the check.
+          existing_comment_id="$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq "map(select(.body | contains(\"$COMMENT_MARKER\"))) | .[0].id // empty")"
+
+          if [ "$bucket" = "XL" ]; then
+            if [ -z "$existing_comment_id" ]; then
+              body="$COMMENT_MARKER
+          This PR is labeled **size/XL** (${churn} lines of code churn, excluding docs, \`package-lock.json\`, and generated files).
+
+          Large PRs are harder to review well. If it can be split into smaller, independently reviewable pieces, consider doing so. This is a suggestion, not a blocker — the check still passes."
+              gh pr comment "$PR" --body "$body"
+            fi
+          else
+            if [ -n "$existing_comment_id" ]; then
+              gh api --method DELETE "repos/$REPO/issues/comments/$existing_comment_id" >/dev/null || true
+            fi
+          fi
