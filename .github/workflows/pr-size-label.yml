@@ -12,13 +12,20 @@ name: PR Size Label
 #     one-time "consider splitting" comment as a nudge, not a failing check.
 #   - Thresholds are the constants below — a one-line edit to re-tune.
 #
-# Injection safety: every GitHub-context value used in run: is passed through
-# env: (never interpolated into the script body), and only trusted, non-text
-# context (repository slug, PR number) is referenced. Attacker-controllable
-# fields (PR title/body/branch) are never used.
+# Trigger: pull_request_target, NOT pull_request. This job runs on the org's
+# IP-allow-listed runner pool (see runs-on below), which was previously reserved
+# for maintainer-invoked workflows. pull_request_target runs the workflow
+# definition from the BASE branch, so a fork contributor cannot edit this file in
+# their branch to inject run: steps onto that runner network. It is only safe
+# because this job (a) never checks out PR head code — there is no checkout step
+# at all — and (b) references only trusted, non-text context (repository slug, PR
+# number), never attacker-controllable fields (PR title/body/branch). Every such
+# value is passed through env: and never interpolated into the run: body. Do not
+# add a checkout of the PR ref or reference PR-authored text here without
+# re-deriving this safety argument.
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
 
 # Least privilege: we only read the diff and write labels/comments.
@@ -59,10 +66,11 @@ jobs:
           set -euo pipefail
 
           # Label/comment WRITES are best-effort: an advisory labeler must never
-          # fail the check. The most common non-fatal cause is a fork PR, whose
-          # pull_request GITHUB_TOKEN is read-only regardless of the permissions:
-          # block, so a write 403s. Emit a visible ::warning:: with the exit code
-          # so a real regression is never silently swallowed.
+          # fail the check. Under pull_request_target the GITHUB_TOKEN is
+          # read-write even for fork PRs, so writes normally succeed; try() still
+          # guards against transient causes (org label policy, secondary rate
+          # limits, 5xx), emitting a visible ::warning:: with the exit code so a
+          # real regression is never silently swallowed.
           try() { "$@" || echo "::warning::pr-size-label: '$*' failed (exit $?); continuing (advisory check)"; }
 
           # --- 1. Read the PR's changed files (filename, additions, deletions).
