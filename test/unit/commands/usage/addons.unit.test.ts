@@ -1,18 +1,37 @@
 import * as Heroku from '@heroku-cli/schema'
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import * as sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/usage/addons.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
+type FakePlatform = {
+  addOn: {listByApp: sinon.SinonStub; listByTeam: sinon.SinonStub}
+  usage: {forApp: sinon.SinonStub; forTeamApp: sinon.SinonStub; infoGet: sinon.SinonStub}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {
+    addOn: {listByApp: sinon.stub(), listByTeam: sinon.stub()},
+    usage: {forApp: sinon.stub(), forTeamApp: sinon.stub(), infoGet: sinon.stub()},
+  }
+}
+
 describe('usage:addons', function () {
   let redisAddon: Heroku.AddOn
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     redisAddon = fixtures.addons['www-redis']
-    nock.cleanAll()
+    fakePlatform = buildFakePlatform()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+  })
+
+  afterEach(function () {
+    sinon.restore()
   })
 
   describe('app usage', function () {
@@ -34,13 +53,8 @@ describe('usage:addons', function () {
         }],
       }
 
-      nock('https://api.heroku.com')
-        .get(`/apps/${app}/usage`)
-        .reply(200, usage)
-
-      nock('https://api.heroku.com')
-        .get(`/apps/${app}/addons`)
-        .reply(200, [redisAddon])
+      fakePlatform.usage.forApp.resolves(usage)
+      fakePlatform.addOn.listByApp.resolves([redisAddon])
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -55,21 +69,15 @@ describe('usage:addons', function () {
       expect(actual).to.contain(expectedHeader)
       expect(actual).to.contain(expectedColumnHeader)
       expect(actual).to.contain(expected)
+      expect(fakePlatform.usage.forApp.calledOnceWithExactly(app)).to.equal(true)
+      expect(fakePlatform.addOn.listByApp.calledOnceWithExactly(app)).to.equal(true)
     })
 
     it('handles apps with no usage', async function () {
       const app = 'myapp'
-      const usage = {
-        addons: [],
-      }
 
-      nock('https://api.heroku.com')
-        .get(`/apps/${app}/usage`)
-        .reply(200, usage)
-
-      nock('https://api.heroku.com')
-        .get(`/apps/${app}/addons`)
-        .reply(200, [])
+      fakePlatform.usage.forApp.resolves({addons: []})
+      fakePlatform.addOn.listByApp.resolves([])
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -77,6 +85,42 @@ describe('usage:addons', function () {
       ])
 
       expectOutput(stdout, `No usage found for app ⬢ ${app}`)
+    })
+  })
+
+  describe('team app usage', function () {
+    it('shows usage for a single team app', async function () {
+      const team = 'myteam'
+      const app = 'myapp'
+      const usage = {
+        addons: [{
+          id: 'redis-123',
+          meters: {
+            'Data Storage': {
+              quantity: 2.5,
+            },
+          },
+        }],
+      }
+
+      fakePlatform.usage.forTeamApp.resolves(usage)
+      fakePlatform.addOn.listByApp.resolves([redisAddon])
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        app,
+        '--team',
+        team,
+      ])
+
+      const actual = removeAllWhitespace(stdout)
+      const expectedHeader = removeAllWhitespace(`=== Usage for ⬢ ${app}`)
+      const expected = removeAllWhitespace('redis-123 Data Storage 2.5')
+
+      expect(actual).to.contain(expectedHeader)
+      expect(actual).to.contain(expected)
+      expect(fakePlatform.usage.forTeamApp.calledOnceWithExactly(team, app)).to.equal(true)
+      expect(fakePlatform.addOn.listByApp.calledOnceWithExactly(app)).to.equal(true)
     })
   })
 
@@ -118,13 +162,8 @@ describe('usage:addons', function () {
         },
       ]
 
-      nock('https://api.heroku.com')
-        .get(`/teams/${team}/usage`)
-        .reply(200, usage)
-
-      nock('https://api.heroku.com')
-        .get(`/teams/${team}/addons`)
-        .reply(200, teamAddons)
+      fakePlatform.usage.infoGet.resolves(usage)
+      fakePlatform.addOn.listByTeam.resolves(teamAddons)
 
       const {stdout} = await runCommand(Cmd, [
         '--team',
@@ -143,21 +182,15 @@ describe('usage:addons', function () {
       expect(actual).to.contain(expectedOne)
       expect(actual).to.contain(expectedHeaderTwo)
       expect(actual).to.contain(expectedTwo)
+      expect(fakePlatform.usage.infoGet.calledOnceWithExactly(team)).to.equal(true)
+      expect(fakePlatform.addOn.listByTeam.calledOnceWithExactly(team)).to.equal(true)
     })
 
     it('handles teams with no usage', async function () {
       const team = 'myteam'
-      const usage = {
-        apps: [],
-      }
 
-      nock('https://api.heroku.com')
-        .get(`/teams/${team}/usage`)
-        .reply(200, usage)
-
-      nock('https://api.heroku.com')
-        .get(`/teams/${team}/addons`)
-        .reply(200, [])
+      fakePlatform.usage.infoGet.resolves({apps: []})
+      fakePlatform.addOn.listByTeam.resolves([])
 
       const {stdout} = await runCommand(Cmd, [
         '--team',

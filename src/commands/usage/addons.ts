@@ -1,6 +1,9 @@
-import {Command, flags} from '@heroku-cli/command'
+import type {Usage} from '@heroku/types/3.sdk'
+
+import {Command, flags, vars} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 interface AppInfo extends Record<string, unknown> {
@@ -8,23 +11,7 @@ interface AppInfo extends Record<string, unknown> {
   name: string
 }
 
-interface AppUsage {
-  addons: Array<{
-    id: string;
-    meters: {
-      [meterLabel: string]: {
-        quantity: number
-      }
-    }
-  }>
-}
-
-interface TeamUsage {
-  apps: Array<{
-    addons: AppUsage['addons'];
-    id: string;
-  }>;
-}
+type PlatformClient = HerokuSDK['platform']
 
 export default class UsageAddons extends Command {
   static description = 'list usage for metered add-ons attached to an app or apps within a team'
@@ -41,16 +28,23 @@ export default class UsageAddons extends Command {
       ux.error('Specify an app with --app or a team with --team')
     }
 
+    const {platform} = new HerokuSDK({
+      clientOptions: {token: this.heroku.auth},
+      clientOptionsByService: {
+        platform: {baseUrl: vars.apiUrl},
+      },
+    })
+
     if (app) {
-      await this.fetchAndDisplayAppUsageData(app, team)
+      await this.fetchAndDisplayAppUsageData(platform, app, team)
     } else if (team) {
-      await this.fetchAndDisplayTeamUsageData(team)
+      await this.fetchAndDisplayTeamUsageData(platform, team)
     }
   }
 
-  private displayAppUsage(app: string, usageAddons: AppUsage['addons'], appAddons: Heroku.AddOn[]): void {
+  private displayAppUsage(app: string, usageAddons: Usage['addons'], appAddons: Heroku.AddOn[]): void {
     const metersArray = usageAddons.flatMap(addon =>
-      Object.entries(addon.meters).map(([label, data]) => ({
+      Object.entries(addon.meters ?? {}).map(([label, data]) => ({
         addonId: addon.id,
         label,
         quantity: data.quantity,
@@ -61,7 +55,7 @@ export default class UsageAddons extends Command {
       'Add-on': {
         get(row) {
           const matchingAddon = appAddons.find(a => a.id === row.addonId)
-          return matchingAddon?.name || row.addonId
+          return matchingAddon?.name || row.addonId || ''
         },
       },
       Meter: {
@@ -73,27 +67,19 @@ export default class UsageAddons extends Command {
     })
   }
 
-  private async fetchAndDisplayAppUsageData(app: string, team?: string): Promise<void> {
-    let usageData
-    let appAddons
+  private async fetchAndDisplayAppUsageData(platform: PlatformClient, app: string, team?: string): Promise<void> {
+    let usageData: Usage
+    let appAddons: Heroku.AddOn[]
     ux.action.start('Gathering usage data')
     if (team) {
-      [{body: usageData}, {body: appAddons}] = await Promise.all([
-        this.heroku.get<AppUsage>(`/teams/${team}/apps/${app}/usage`, {
-          headers: {
-            Accept: 'application/vnd.heroku+json; version=3.sdk',
-          },
-        }),
-        this.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
+      [usageData, appAddons] = await Promise.all([
+        platform.usage.forTeamApp(team, app),
+        platform.addOn.listByApp(app),
       ])
     } else {
-      [{body: usageData}, {body: appAddons}] = await Promise.all([
-        this.heroku.get<AppUsage>(`/apps/${app}/usage`, {
-          headers: {
-            Accept: 'application/vnd.heroku+json; version=3.sdk',
-          },
-        }),
-        this.heroku.get<Heroku.AddOn[]>(`/apps/${app}/addons`),
+      [usageData, appAddons] = await Promise.all([
+        platform.usage.forApp(app),
+        platform.addOn.listByApp(app),
       ])
     }
 
@@ -109,15 +95,11 @@ export default class UsageAddons extends Command {
     this.displayAppUsage(app, usageAddons, appAddons)
   }
 
-  private async fetchAndDisplayTeamUsageData(team: string): Promise<void> {
+  private async fetchAndDisplayTeamUsageData(platform: PlatformClient, team: string): Promise<void> {
     ux.action.start(`Gathering usage data for ${color.team(team)}`)
-    const [{body: usageData}, {body: teamAddons}] = await Promise.all([
-      this.heroku.get<TeamUsage>(`/teams/${team}/usage`, {
-        headers: {
-          Accept: 'application/vnd.heroku+json; version=3.sdk',
-        },
-      }),
-      this.heroku.get<Heroku.AddOn[]>(`/teams/${team}/addons`),
+    const [usageData, teamAddons] = await Promise.all([
+      platform.usage.infoGet(team),
+      platform.addOn.listByTeam(team),
     ])
 
     ux.action.stop()
@@ -131,11 +113,11 @@ export default class UsageAddons extends Command {
     const appInfoArray = this.getAppInfoFromTeamAddons(teamAddons)
 
     // Display usage for each app
-    usageData.apps.forEach((app: {addons: any[]; id: string}) => {
+    for (const app of usageData.apps) {
       const appInfo = appInfoArray.find(info => info.id === app.id)
-      this.displayAppUsage(appInfo?.name || app.id, app.addons, teamAddons)
+      this.displayAppUsage(appInfo?.name || app.id || '', app.addons ?? [], teamAddons)
       ux.stdout()
-    })
+    }
   }
 
   private getAppInfoFromTeamAddons(teamAddons: Heroku.AddOn[]): AppInfo[] {
