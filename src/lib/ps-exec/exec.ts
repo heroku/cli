@@ -1,16 +1,19 @@
-import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {
+  DynoCrashedError,
+  dynoExtensions,
+  type ExecCredentials,
+  type ExecPrereqs,
+} from '@heroku/sdk/extensions/platform'
+import {ConfigVar} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import debug from 'debug'
-import got, {Response} from 'got'
 import keypair from 'keypair'
 import forge from 'node-forge'
 import child from 'node:child_process'
-import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
-import {App, BuildpackInstallation} from '../types/fir.js'
 import {HerokuSsh} from './ssh.js'
 
 const heredoc = tsheredoc.default
@@ -25,24 +28,28 @@ interface ExecContext {
   }
 }
 
+/**
+ * Bounds the wait for the dyno to come back `up` after the first-run
+ * restart. The SDK's `restartForExec` defaults to 20 attempts (~20s);
+ * the CLI historically waited indefinitely, so this approximates that
+ * with a generous ceiling instead of an unbounded loop.
+ */
+const EXEC_RESTART_ATTEMPTS = 3600
+
 const execDebug = debug('cli:ps-exec:exec')
 
-export class HerokuExec {
-  async checkStatus(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars): Promise<void> {
-    const {body: dynos} = await heroku.request<Heroku.Dyno[]>(`/apps/${context.app}/dynos`)
+type Platform = HerokuSDK<readonly [typeof dynoExtensions]>['platform']
 
-    const execUrl = this._execUrl(context, configVars)
-    const execApiPath = this._execApiPath(configVars)
+export class HerokuExec {
+  async checkStatus(context: ExecContext, platform: Platform, configVars: ConfigVar): Promise<void> {
+    const dynos = await platform.dyno.list(context.app)
 
     try {
-      const response = await got(`https://${execUrl.host}${execApiPath}`, {
+      const reservations = await platform.dyno.execStatus(context.app, {
+        apiKey: this._apiKey(context),
+        configVars,
         headers: this._execHeaders(),
-        method: 'GET',
-        password: execUrl.password,
-        username: execUrl.username,
       })
-
-      const reservations = JSON.parse(response.body)
 
       hux.styledHeader(`Heroku Exec ${color.app(context.app)}`)
 
@@ -73,49 +80,38 @@ export class HerokuExec {
     }
   }
 
-  createSocksProxy(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars, callback?: (dynoIp: string, dyno: string, socksPort: number) => void) {
-    return this.updateClientKey(context, heroku, configVars, (privateKey, dyno, response) => {
-      execDebug(response.body)
-      const json = JSON.parse(response.body)
+  createSocksProxy(context: ExecContext, platform: Platform, configVars: ConfigVar, callback?: (dynoIp: string, dyno: string, socksPort: number) => void) {
+    return this.updateClientKey(context, platform, configVars, (privateKey, dyno, credentials) => {
+      execDebug(credentials)
 
-      new HerokuSsh().socksv5(json.tunnel_host, json.client_user, privateKey, json.proxy_public_key, socks_port => {
-        if (callback) callback(json.dyno_ip, dyno, socks_port)
+      new HerokuSsh().socksv5(credentials.tunnel_host, credentials.client_user, privateKey, credentials.proxy_public_key, socks_port => {
+        if (callback) callback(credentials.dyno_ip, dyno, socks_port)
         else ux.stdout(`Use ${color.command('CTRL+C')} to stop the proxy`)
       })
     })
   }
 
-  async initFeature(context: ExecContext, heroku: APIClient, callback: (configVars: Heroku.ConfigVars) => unknown, command?: string): Promise<void> {
+  async initFeature(context: ExecContext, platform: Platform, callback: (configVars: ConfigVar) => unknown, command?: string): Promise<void> {
     const buildpackUrls = ['https://github.com/heroku/exec-buildpack', 'urn:buildpack:heroku/exec']
 
-    const {body: app} = await heroku.get<App>(`/apps/${context.app}`, {
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.sdk',
-      },
-    })
+    const {buildStack, buildpacks, configVars, featureEnabled, generation, space} = await platform.dyno.execPrereqs(context.app)
 
-    if (app.generation === 'fir') {
+    if (generation === 'fir') {
       const errorMessage = command === 'exec'
         ? `This command is unavailable for this app. Use ${color.command('heroku run:inside')} instead. See https://devcenter.heroku.com/articles/run-tasks-in-an-existing-dyno.`
         : 'This command is unavailable for this app.  See https://devcenter.heroku.com/articles/generations.'
       ux.error(errorMessage)
     }
 
-    const [{body: buildpacks}, {body: configVars}, {body: feature}] = await Promise.all([
-      heroku.get<BuildpackInstallation[]>(`/apps/${context.app}/buildpack-installations`),
-      heroku.get<Heroku.ConfigVars>(`/apps/${context.app}/config-vars`),
-      heroku.get<{enabled: boolean}>(`/apps/${context.app}/features/runtime-heroku-exec`),
-    ])
-
-    if (app.space && app.space.shield) {
+    if (space && space.shield) {
       ux.error('This feature is restricted for Shield Private Spaces')
-    } else if (app.space) {
-      if (app.build_stack.name === 'container') {
+    } else if (space) {
+      if (buildStack === 'container') {
         ux.warn(`${context.app} is using the container stack which is not officially supported.`)
       } else if (buildpacks.length === 0) {
         ux.error(`${context.app} has no Buildpack URL set. You must deploy your application first!`)
       } else if (!(this._hasExecBuildpack(buildpacks, buildpackUrls))) {
-        await this._enableFeature(context, heroku)
+        await this._enableFeature(context, platform)
         ux.stdout(`Adding the Heroku Exec buildpack to ${context.app}`)
         child.execSync(`heroku buildpacks:add -i 1 heroku/exec -a ${context.app}`)
         ux.stdout(heredoc`
@@ -139,7 +135,7 @@ export class HerokuExec {
         + 'to use this feature. Please run the following command to remove the addon\n'
         + 'and then try using Heroku Exec again:\n'
         + color.command('  heroku addons:destroy heroku-exec'))
-    } else if (!feature.enabled) {
+    } else if (!featureEnabled) {
       ux.stdout('Running this command for the first time requires a dyno restart.')
       const answer = await hux.prompt('Do you want to continue? [y/n]')
 
@@ -147,28 +143,30 @@ export class HerokuExec {
         ux.exit()
       }
 
-      await this._enableFeature(context, heroku)
-
-      ux.action.start('Restarting dynos')
-      await new Promise<void>(resolve => {
-        setTimeout(() => resolve(), 2000)
-      })
-      await heroku.delete(`/apps/${context.app}/dynos`)
-      ux.action.stop()
+      await this._enableFeature(context, platform)
 
       const dynoName = this._dyno(context)
-      let state: string | undefined = 'down'
-      ux.action.start(`Waiting for ${color.name(dynoName)} to start`)
-      while (state !== 'up') {
-        await new Promise<void>(resolve => {
-          setTimeout(() => resolve(), 1000)
+      let waitingForStart = false
+      ux.action.start('Restarting dynos')
+
+      try {
+        await platform.dyno.restartForExec(context.app, dynoName, {
+          attempts: EXEC_RESTART_ATTEMPTS,
+          onPoll: () => {
+            if (!waitingForStart) {
+              waitingForStart = true
+              ux.action.stop()
+              ux.action.start(`Waiting for ${color.name(dynoName)} to start`)
+            }
+          },
         })
-        const {body: dyno} = await heroku.request<Heroku.Dyno>(`/apps/${context.app}/dynos/${dynoName}`)
-        state = dyno.state
-        if (state === 'crashed') {
-          ux.action.stop()
+      } catch (error) {
+        ux.action.stop()
+        if (error instanceof DynoCrashedError) {
           throw new Error('The dyno crashed')
         }
+
+        throw error
       }
 
       ux.action.stop()
@@ -177,7 +175,7 @@ export class HerokuExec {
     await callback(configVars)
   }
 
-  async updateClientKey(context: ExecContext, heroku: APIClient, configVars: Heroku.ConfigVars, callback: (privkeypem: string, dyno: string, response: Response<string>) => Promise<void> | void) {
+  async updateClientKey(context: ExecContext, platform: Platform, configVars: ConfigVar, callback: (privkeypem: string, dyno: string, credentials: ExecCredentials) => Promise<void> | void) {
     ux.action.start('Establishing credentials')
     const key = (keypair as any)()
     const privkeypem = key.private
@@ -185,19 +183,18 @@ export class HerokuExec {
     const pubkeypem = forge.ssh.publicKeyToOpenSSH(publicKey, '')
 
     try {
-      const execUrl = this._execUrl(context, configVars)
       const dyno = this._dyno(context)
 
-      const response = await got(`https://${execUrl.host}${this._execApiPath(configVars)}/${dyno}`, {
-        body: JSON.stringify({client_key: pubkeypem}),
-        headers: {...this._execHeaders(), 'content-type': 'application/json'},
-        method: 'PUT',
-        password: execUrl.password,
-        username: execUrl.username,
+      const credentials = await platform.dyno.exchangeExecCredentials(context.app, {
+        apiKey: this._apiKey(context),
+        configVars,
+        dyno,
+        headers: this._execHeaders(),
+        publicKey: pubkeypem,
       })
 
       ux.action.stop()
-      await callback(privkeypem, dyno, response)
+      await callback(privkeypem, dyno, credentials)
     } catch (error) {
       ux.action.stop('error')
       execDebug(error)
@@ -205,24 +202,18 @@ export class HerokuExec {
     }
   }
 
+  private _apiKey(context: ExecContext): string {
+    return process.env.HEROKU_API_KEY || context.auth.password || ''
+  }
+
   private _dyno(context: ExecContext) {
     return context.flags.dyno || 'web.1'
   }
 
-  private async _enableFeature(context: ExecContext, heroku: APIClient) {
+  private async _enableFeature(context: ExecContext, platform: Platform) {
     ux.action.start('Initializing feature')
-    await heroku.patch(`/apps/${context.app}/features/runtime-heroku-exec`, {
-      body: {enabled: true},
-    })
+    await platform.dyno.enableExec(context.app)
     ux.action.stop()
-  }
-
-  private _execApiPath(configVars: Heroku.ConfigVars) {
-    if (configVars.HEROKU_EXEC_URL) {
-      return '/api/v1'
-    }
-
-    return '/api/v2'
   }
 
   private _execHeaders() {
@@ -234,23 +225,7 @@ export class HerokuExec {
     return {}
   }
 
-  private _execUrl(context: ExecContext, configVars: Heroku.ConfigVars) {
-    let urlString = configVars.HEROKU_EXEC_URL
-    if (urlString) {
-      return new URL(urlString)
-    }
-
-    urlString = process.env.HEROKU_EXEC_URL === undefined
-      ? 'https://exec-manager.heroku.com/'
-      : process.env.HEROKU_EXEC_URL
-
-    const execUrl = new URL(urlString)
-    execUrl.username = context.app
-    execUrl.password = process.env.HEROKU_API_KEY || context.auth.password || ''
-    return execUrl
-  }
-
-  private _hasExecBuildpack(buildpacks: BuildpackInstallation[], urls: string[]) {
+  private _hasExecBuildpack(buildpacks: ExecPrereqs['buildpacks'], urls: string[]) {
     if (!Array.isArray(buildpacks)) {
       execDebug('buildpacks is not an array:', buildpacks)
       return false

@@ -38,11 +38,10 @@ describe('ps:copy', function () {
     // Mock updateClientKey to call the callback with mock data
     herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
       const mockResponse = {
-        body: JSON.stringify({
-          client_user: 'user123',
-          proxy_public_key: 'ssh-rsa AAAA...',
-          tunnel_host: 'tunnel.example.com',
-        }),
+        client_user: 'user123',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA...',
+        tunnel_host: 'tunnel.example.com',
       }
       callback('mock-private-key', 'web.1', mockResponse)
     })
@@ -67,11 +66,10 @@ describe('ps:copy', function () {
 
     herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
       const mockResponse = {
-        body: JSON.stringify({
-          client_user: 'user123',
-          proxy_public_key: 'ssh-rsa AAAA...',
-          tunnel_host: 'tunnel.example.com',
-        }),
+        client_user: 'user123',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA...',
+        tunnel_host: 'tunnel.example.com',
       }
       callback('mock-private-key', 'web.1', mockResponse)
     })
@@ -98,11 +96,10 @@ describe('ps:copy', function () {
 
     herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
       const mockResponse = {
-        body: JSON.stringify({
-          client_user: 'user123',
-          proxy_public_key: 'ssh-rsa AAAA...',
-          tunnel_host: 'tunnel.example.com',
-        }),
+        client_user: 'user123',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA...',
+        tunnel_host: 'tunnel.example.com',
       }
       callback('mock-private-key', 'worker.1', mockResponse)
     })
@@ -143,11 +140,10 @@ describe('ps:copy', function () {
 
     herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
       const mockResponse = {
-        body: JSON.stringify({
-          client_user: 'user123',
-          proxy_public_key: 'ssh-rsa AAAA...',
-          tunnel_host: 'tunnel.example.com',
-        }),
+        client_user: 'user123',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA...',
+        tunnel_host: 'tunnel.example.com',
       }
       callback('mock-private-key', 'web.1', mockResponse)
     })
@@ -176,11 +172,10 @@ describe('ps:copy', function () {
 
     herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
       const mockResponse = {
-        body: JSON.stringify({
-          client_user: 'user123',
-          proxy_public_key: 'ssh-rsa AAAA...',
-          tunnel_host: 'tunnel.example.com',
-        }),
+        client_user: 'user123',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA...',
+        tunnel_host: 'tunnel.example.com',
       }
       callback('mock-private-key', 'web.1', mockResponse)
     })
@@ -206,11 +201,10 @@ describe('ps:copy', function () {
 
     herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
       const mockResponse = {
-        body: JSON.stringify({
-          client_user: 'user123',
-          proxy_public_key: 'ssh-rsa AAAA...',
-          tunnel_host: 'tunnel.example.com',
-        }),
+        client_user: 'user123',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA...',
+        tunnel_host: 'tunnel.example.com',
       }
       callback('mock-private-key', 'web.1', mockResponse)
     })

@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
+import {ConfigVar} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import debug from 'debug'
 
@@ -45,19 +47,20 @@ export default class Exec extends Command {
     const ssh = new HerokuSsh()
     const psExecDebug = debug('cli:ps:exec')
 
-    await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+
+    await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
       // eslint-disable-next-line unicorn/prefer-ternary
       if (status) {
-        await exec.checkStatus(context, this.heroku, configVars)
+        await exec.checkStatus(context, platform, configVars)
       } else {
-        await exec.updateClientKey(context, this.heroku, configVars, async (privateKey, dyno, response) => {
+        await exec.updateClientKey(context, platform, configVars, async (privateKey, dyno, credentials) => {
           const message = `Connecting to ${color.name(dyno)} on ${color.app(app)}`
           ux.action.start(message)
-          psExecDebug(response.body)
-          const json = JSON.parse(response.body)
+          psExecDebug(credentials)
           await (useNativeSsh
-            ? ssh.ssh(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
-            : ssh.connect(context, json.tunnel_host, json.client_user, privateKey, json.proxy_public_key)
+            ? ssh.ssh(context, credentials.tunnel_host, credentials.client_user, privateKey, credentials.proxy_public_key)
+            : ssh.connect(context, credentials.tunnel_host, credentials.client_user, privateKey, credentials.proxy_public_key)
           )
 
           ux.action.stop()
