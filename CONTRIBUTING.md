@@ -66,11 +66,5 @@ Issues labelled `good first contribution`.
 > **NOTE**: Be sure to [sync your fork](https://help.github.com/articles/syncing-a-fork/) before making a pull request.
 
 
-# Pull Request Size
-
-Smaller pull requests are reviewed faster and more thoroughly, so please split large changes into smaller, independently reviewable PRs where you can.
-
-CI automatically labels each PR with a `size/*` bucket based on code churn (excluding docs, `package-lock.json`, and generated files), plus a `docs` label when documentation changed. The label is advisory — it never blocks — and a `size/XL` PR gets a one-time comment suggesting a split.
-
 # License
 By contributing your code, you agree to license your contribution under the terms of our project [LICENSE](LICENSE) and to sign the [Salesforce CLA](https://cla.salesforce.com/sign-cla)
