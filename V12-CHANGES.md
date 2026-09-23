@@ -12,6 +12,7 @@
 ## Ps commands
 
 - `ps:type` (aliases `ps:resize`, `dyno:resize`) now reads and resizes the dyno formation through `@heroku/sdk` (`platform.formation.list`, `platform.dyno.scale`) and detects shielded spaces via `platform.app.isShielded` instead of raw `this.heroku.*` calls. These requests previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now default to `application/vnd.heroku+json; version=3.sdk`; the schemas are byte-identical, so the rendered tables and the Eco cost message are unchanged.
+- `ps:wait` now polls for dyno convergence through `@heroku/sdk` (`platform.dyno.waitForRelease`) instead of a CLI-side loop over raw `this.heroku.*` calls. The target-release lookup and dyno polling previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now default to `application/vnd.heroku+json; version=3.sdk`; the schemas are byte-identical, so the progress fraction (`${done} / ${total}`), the `, done` suffix, and the no-releases warning are unchanged.
 
 ## Run commands
 
