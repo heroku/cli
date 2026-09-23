@@ -1,6 +1,9 @@
-import {APIClient, Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import type {Formation} from '@heroku/types/3.sdk'
+
+import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {appExtensions, dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -61,16 +64,13 @@ const emptyFormationErr = (app: string) => (
   new Error(`No process types on ${app}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)
 )
 
-const displayFormation = async (heroku: APIClient, app: string, _: any) => {
-  const {body: formation} = await heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
-  const {body: appProps} = await heroku.get<Heroku.App>(`/apps/${app}`)
-  const shielded = appProps.space && appProps.space.shield
+const displayFormation = (app: string, formation: Formation[], shielded: boolean, _: any) => {
   const dynoTotals: Record<string, number> = {}
   let isShowingEcoCostMessage = false
 
   const formationTableData = _.sortBy(formation, 'type')
     // this filter shouldn't be necessary, but it makes TS happy
-    .filter((f: any): f is Heroku.Formation & {quantity: number, size: string} => typeof f.size === 'string' && typeof f.quantity === 'number')
+    .filter((f: any): f is Formation & {quantity: number, size: string} => typeof f.size === 'string' && typeof f.quantity === 'number')
     .map((d: any) => {
       if (d.size === 'Eco') {
         isShowingEcoCostMessage = true
@@ -160,10 +160,12 @@ export default class Type extends Command {
     const argv = restParse.argv as string[]
     const {app} = flags
 
+    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
+
     const parse = async () => {
       if (!argv || argv.length === 0)
         return []
-      const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)
+      const formation = await platform.formation.list(app)
       if (argv.some(a => a.match(/=/))) {
         return _.compact(argv.map(arg => {
           const match = arg.match(/^([a-zA-Z0-9_]+)=([\w-]+)$/)
@@ -178,17 +180,24 @@ export default class Type extends Command {
         }))
       }
 
-      return formation.map(p => ({size: argv[0], type: p.type}))
+      return formation
+        .filter((p): p is Formation & {type: string} => typeof p.type === 'string')
+        .map(p => ({size: argv[0], type: p.type}))
     }
 
     const changes = await parse()
 
+    let formation: Formation[]
     if (changes.length > 0) {
       ux.action.start(`Scaling dynos on ${color.app(app)}`)
-      await this.heroku.patch(`/apps/${app}/formation`, {body: {updates: changes}})
+      formation = await platform.dyno.scale(app, changes)
       ux.action.stop()
+    } else {
+      formation = await platform.formation.list(app)
     }
 
-    await displayFormation(this.heroku, app, _)
+    const shielded = await platform.app.isShielded(app)
+
+    displayFormation(app, formation, shielded, _)
   }
 }

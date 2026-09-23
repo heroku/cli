@@ -1,72 +1,60 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 
 import Cmd from '../../../../src/commands/ps/type.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
 describe('ps:type', function () {
-  let api: nock.Scope
-
-  beforeEach(function () {
-    api = nock('https://api.heroku.com')
-  })
+  let sdkMock: MockSDK
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    sdkMock.restore()
   })
 
-  function app(args = {}) {
-    const base = {name: 'myapp'}
-    return Object.assign(base, args)
-  }
-
   it('displays cost/hour and max cost/month for all individually-priced dyno sizes', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, app())
-      .get('/apps/myapp/formation')
-      .reply(200, [
-        {quantity: 1, size: 'Eco', type: 'web'},
-        {quantity: 1, size: 'Basic', type: 'web'},
-        {quantity: 1, size: 'Standard-1X', type: 'web'},
-        {quantity: 1, size: 'Standard-2X', type: 'web'},
-        {quantity: 1, size: 'Performance-M', type: 'web'},
-        {quantity: 1, size: 'Performance-L', type: 'web'},
-        {quantity: 1, size: 'Performance-L-RAM', type: 'web'},
-        {quantity: 1, size: 'Performance-XL', type: 'web'},
-        {quantity: 1, size: 'Performance-2XL', type: 'web'},
-        {quantity: 1, size: 'Private-S', type: 'web'},
-        {quantity: 1, size: 'Private-M', type: 'web'},
-        {quantity: 1, size: 'Private-L', type: 'web'},
-        {quantity: 1, size: 'Shield-M', type: 'web'},
-        {quantity: 1, size: 'Shield-L', type: 'web'},
-        {quantity: 1, size: 'Shield-S', type: 'web'},
-        {quantity: 1, size: 'Private-L-RAM', type: 'web'},
-        {quantity: 1, size: 'Private-XL', type: 'web'},
-        {quantity: 1, size: 'Private-2XL', type: 'web'},
-        {quantity: 1, size: 'Shield-L-RAM', type: 'web'},
-        {quantity: 1, size: 'Shield-XL', type: 'web'},
-        {quantity: 1, size: 'Shield-2XL', type: 'web'},
-        {quantity: 1, size: 'dyno-1c-0.5gb', type: 'web'},
-        {quantity: 1, size: 'dyno-2c-1gb', type: 'web'},
-        {quantity: 1, size: 'dyno-1c-4gb', type: 'web'},
-        {quantity: 1, size: 'dyno-2c-8gb', type: 'web'},
-        {quantity: 1, size: 'dyno-4c-16gb', type: 'web'},
-        {quantity: 1, size: 'dyno-8c-32gb', type: 'web'},
-        {quantity: 1, size: 'dyno-16c-64gb', type: 'web'},
-        {quantity: 1, size: 'dyno-2c-4gb', type: 'web'},
-        {quantity: 1, size: 'dyno-4c-8gb', type: 'web'},
-        {quantity: 1, size: 'dyno-8c-16gb', type: 'web'},
-        {quantity: 1, size: 'dyno-16c-32gb', type: 'web'},
-        {quantity: 1, size: 'dyno-32c-64gb', type: 'web'},
-        {quantity: 1, size: 'dyno-1c-8gb', type: 'web'},
-        {quantity: 1, size: 'dyno-2c-16gb', type: 'web'},
-        {quantity: 1, size: 'dyno-4c-32gb', type: 'web'},
-        {quantity: 1, size: 'dyno-8c-64gb', type: 'web'},
-        {quantity: 1, size: 'dyno-16c-128gb', type: 'web'},
-      ])
+    const listStub = stub().resolves([
+      {quantity: 1, size: 'Eco', type: 'web'},
+      {quantity: 1, size: 'Basic', type: 'web'},
+      {quantity: 1, size: 'Standard-1X', type: 'web'},
+      {quantity: 1, size: 'Standard-2X', type: 'web'},
+      {quantity: 1, size: 'Performance-M', type: 'web'},
+      {quantity: 1, size: 'Performance-L', type: 'web'},
+      {quantity: 1, size: 'Performance-L-RAM', type: 'web'},
+      {quantity: 1, size: 'Performance-XL', type: 'web'},
+      {quantity: 1, size: 'Performance-2XL', type: 'web'},
+      {quantity: 1, size: 'Private-S', type: 'web'},
+      {quantity: 1, size: 'Private-M', type: 'web'},
+      {quantity: 1, size: 'Private-L', type: 'web'},
+      {quantity: 1, size: 'Shield-M', type: 'web'},
+      {quantity: 1, size: 'Shield-L', type: 'web'},
+      {quantity: 1, size: 'Shield-S', type: 'web'},
+      {quantity: 1, size: 'Private-L-RAM', type: 'web'},
+      {quantity: 1, size: 'Private-XL', type: 'web'},
+      {quantity: 1, size: 'Private-2XL', type: 'web'},
+      {quantity: 1, size: 'Shield-L-RAM', type: 'web'},
+      {quantity: 1, size: 'Shield-XL', type: 'web'},
+      {quantity: 1, size: 'Shield-2XL', type: 'web'},
+      {quantity: 1, size: 'dyno-1c-0.5gb', type: 'web'},
+      {quantity: 1, size: 'dyno-2c-1gb', type: 'web'},
+      {quantity: 1, size: 'dyno-1c-4gb', type: 'web'},
+      {quantity: 1, size: 'dyno-2c-8gb', type: 'web'},
+      {quantity: 1, size: 'dyno-4c-16gb', type: 'web'},
+      {quantity: 1, size: 'dyno-8c-32gb', type: 'web'},
+      {quantity: 1, size: 'dyno-16c-64gb', type: 'web'},
+      {quantity: 1, size: 'dyno-2c-4gb', type: 'web'},
+      {quantity: 1, size: 'dyno-4c-8gb', type: 'web'},
+      {quantity: 1, size: 'dyno-8c-16gb', type: 'web'},
+      {quantity: 1, size: 'dyno-16c-32gb', type: 'web'},
+      {quantity: 1, size: 'dyno-32c-64gb', type: 'web'},
+      {quantity: 1, size: 'dyno-1c-8gb', type: 'web'},
+      {quantity: 1, size: 'dyno-2c-16gb', type: 'web'},
+      {quantity: 1, size: 'dyno-4c-32gb', type: 'web'},
+      {quantity: 1, size: 'dyno-8c-64gb', type: 'web'},
+      {quantity: 1, size: 'dyno-16c-128gb', type: 'web'},
+    ])
+    sdkMock = mockSDKPlatform({app: {isShielded: stub().resolves(false)}, formation: {list: listStub}})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
@@ -163,15 +151,13 @@ describe('ps:type', function () {
   })
 
   it('switches to performance-l-ram dyno', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, app())
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 1, size: 'Eco', type: 'web'}])
-      .patch('/apps/myapp/formation', {updates: [{size: 'performance-l-ram', type: 'web'}]})
-      .reply(200, [{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
+    const listStub = stub().resolves([{quantity: 1, size: 'Eco', type: 'web'}])
+    const scaleStub = stub().resolves([{quantity: 1, size: 'Performance-L-RAM', type: 'web'}])
+    sdkMock = mockSDKPlatform({
+      app: {isShielded: stub().resolves(false)},
+      dyno: {scale: scaleStub},
+      formation: {list: listStub},
+    })
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -179,30 +165,29 @@ describe('ps:type', function () {
       'web=performance-l-ram',
     ])
 
+    expect(scaleStub.calledOnceWith('myapp', [{size: 'performance-l-ram', type: 'web'}])).to.be.true
     expect(normalizeTableOutput(stdout)).to.eq(normalizeTableOutput(`
       === Process Types
-      type   size                qty   cost/hour   max cost/month  
-      ───────────────────────────────────────────────────────────── 
-      web    Performance-L-RAM   1     ~$0.694     $500            
+      type   size                qty   cost/hour   max cost/month
+      ─────────────────────────────────────────────────────────────
+      web    Performance-L-RAM   1     ~$0.694     $500
 
       === Dyno Totals
-      type                total  
-      ─────────────────────────── 
-      Performance-L-RAM   1      
+      type                total
+      ───────────────────────────
+      Performance-L-RAM   1
     `))
     expectOutput(stderr, 'Scaling dynos on ⬢ myapp... done')
   })
 
   it('switches to hobby dynos', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, app())
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 1, size: 'Eco', type: 'web'}, {quantity: 2, size: 'Eco', type: 'worker'}])
-      .patch('/apps/myapp/formation', {updates: [{size: 'basic', type: 'web'}, {size: 'basic', type: 'worker'}]})
-      .reply(200, [{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
+    const listStub = stub().resolves([{quantity: 1, size: 'Eco', type: 'web'}, {quantity: 2, size: 'Eco', type: 'worker'}])
+    const scaleStub = stub().resolves([{quantity: 1, size: 'Basic', type: 'web'}, {quantity: 2, size: 'Basic', type: 'worker'}])
+    sdkMock = mockSDKPlatform({
+      app: {isShielded: stub().resolves(false)},
+      dyno: {scale: scaleStub},
+      formation: {list: listStub},
+    })
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -210,6 +195,7 @@ describe('ps:type', function () {
       'basic',
     ])
 
+    expect(scaleStub.calledOnceWith('myapp', [{size: 'basic', type: 'web'}, {size: 'basic', type: 'worker'}])).to.be.true
     expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
       === Process Types
        type     size    qty   cost/hour   max cost/month
@@ -226,15 +212,13 @@ describe('ps:type', function () {
   })
 
   it('switches to standard-1x and standard-2x dynos', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, app())
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 1, size: 'Eco', type: 'web'}, {quantity: 2, size: 'Eco', type: 'worker'}])
-      .patch('/apps/myapp/formation', {updates: [{size: 'standard-1x', type: 'web'}, {size: 'standard-2x', type: 'worker'}]})
-      .reply(200, [{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
+    const listStub = stub().resolves([{quantity: 1, size: 'Eco', type: 'web'}, {quantity: 2, size: 'Eco', type: 'worker'}])
+    const scaleStub = stub().resolves([{quantity: 1, size: 'Standard-1X', type: 'web'}, {quantity: 2, size: 'Standard-2X', type: 'worker'}])
+    sdkMock = mockSDKPlatform({
+      app: {isShielded: stub().resolves(false)},
+      dyno: {scale: scaleStub},
+      formation: {list: listStub},
+    })
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -243,6 +227,7 @@ describe('ps:type', function () {
       'worker=standard-2x',
     ])
 
+    expect(scaleStub.calledOnceWith('myapp', [{size: 'standard-1x', type: 'web'}, {size: 'standard-2x', type: 'worker'}])).to.be.true
     expectOutput(normalizeTableOutput(stdout), normalizeTableOutput(`
     === Process Types
      type     size          qty   cost/hour   max cost/month
@@ -260,11 +245,12 @@ describe('ps:type', function () {
   })
 
   it('displays Shield dynos for apps in shielded spaces', async function () {
-    api
-      .get('/apps/myapp')
-      .reply(200, app({space: {shield: true}}))
-      .get('/apps/myapp/formation')
-      .reply(200, [{quantity: 0, size: 'Private-M', type: 'web'}, {quantity: 0, size: 'Private-L', type: 'web'}, {quantity: 1, size: 'Private-L-RAM', type: 'worker'}])
+    const listStub = stub().resolves([
+      {quantity: 0, size: 'Private-M', type: 'web'},
+      {quantity: 0, size: 'Private-L', type: 'web'},
+      {quantity: 1, size: 'Private-L-RAM', type: 'worker'},
+    ])
+    sdkMock = mockSDKPlatform({app: {isShielded: stub().resolves(true)}, formation: {list: listStub}})
 
     const {stdout} = await runCommand(Cmd, [
       '--app',
