@@ -32,7 +32,7 @@ EXAMPLES
    $ heroku reviewapps:create -p my-pipeline -b my-branch --wait
 ```
 
-_See code: [src/commands/reviewapps/create.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/reviewapps/create.ts)_
+_See code: [src/commands/reviewapps/create.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/reviewapps/create.ts)_
 
 ## `heroku reviewapps:disable`
 
@@ -61,7 +61,7 @@ EXAMPLES
    $ heroku reviewapps:disable -p my-pipeline -a my-app --no-autodeploy
 ```
 
-_See code: [src/commands/reviewapps/disable.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/reviewapps/disable.ts)_
+_See code: [src/commands/reviewapps/disable.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/reviewapps/disable.ts)_
 
 ## `heroku reviewapps:enable`
 
@@ -90,7 +90,7 @@ EXAMPLES
    $ heroku reviewapps:enable -p my-pipeline -a my-app --autodeploy --autodestroy
 ```
 
-_See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/reviewapps/enable.ts)_
+_See code: [src/commands/reviewapps/enable.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/reviewapps/enable.ts)_
 
 ## `heroku reviewapps:wait APP`
 
@@ -113,4 +113,4 @@ DESCRIPTION
   wait for a review app to finish creating
 ```
 
-_See code: [src/commands/reviewapps/wait.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/reviewapps/wait.ts)_
+_See code: [src/commands/reviewapps/wait.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/reviewapps/wait.ts)_
