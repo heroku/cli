@@ -1,7 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -40,19 +40,19 @@ export default class Stop extends Command {
     const {app} = flags
     const dyno = flags['dyno-name'] || args.dyno
     const type = flags['process-type']
-    let msg = 'Stopping'
-    let stopUrl = ''
+
+    const {platform} = new HerokuSDK()
 
     if (type) {
-      msg += ` all ${color.info(type)} dynos`
-      stopUrl = `/apps/${app}/formations/${encodeURIComponent(type)}/actions/stop`
+      ux.action.start(`Stopping all ${color.info(type)} dynos on ${color.app(app)}`)
+      await platform.dyno.stopFormation(app, type)
     } else if (dyno) {
       if (args.dyno) {
         ux.warn(`DYNO is a deprecated argument. Use ${color.code('--dyno-name')} or ${color.code('--process-type')} instead.`)
       }
 
-      msg += ` dyno ${color.name(dyno)}`
-      stopUrl = `/apps/${app}/dynos/${encodeURIComponent(dyno)}/actions/stop`
+      ux.action.start(`Stopping dyno ${color.name(dyno)} on ${color.app(app)}`)
+      await platform.dyno.stop(app, dyno)
     } else {
       ux.error(heredoc(`
         Please specify a process type or dyno name to stop.
@@ -60,10 +60,6 @@ export default class Stop extends Command {
       `))
     }
 
-    msg += ` on ${color.app(app)}`
-
-    ux.action.start(msg)
-    await this.heroku.post<Heroku.Dyno>(stopUrl, {headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
     ux.action.stop()
   }
 }
