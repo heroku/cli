@@ -175,35 +175,32 @@ describe('ps', function () {
   it('shows extended info', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}})
-
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get('/apps/myapp/dynos?extended=true')
-      .reply(200, [{
-        command: 'npm start',
-        extended: {
-          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
-        },
-        id: '100',
-        name: 'web.1',
-        release: {id: '10', version: '40'},
-        size: 'Eco',
-        state: 'up',
-        type: 'web',
-        updated_at: hourAgo,
-      }, {
-        command: 'bash',
-        extended: {
-          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, region: 'us', route: 'da route',
-        },
-        id: '101',
-        name: 'run.1',
-        release: {id: '10', version: '40'},
-        size: 'Eco',
-        state: 'up',
-        type: 'run',
-        updated_at: hourAgo,
-      }])
+    const listExtendedStub = stub().resolves([{
+      command: 'npm start',
+      extended: {
+        az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
+      },
+      id: '100',
+      name: 'web.1',
+      release: {id: '10', version: '40'},
+      size: 'Eco',
+      state: 'up',
+      type: 'web',
+      updated_at: hourAgo,
+    }, {
+      command: 'bash',
+      extended: {
+        az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, region: 'us', route: 'da route',
+      },
+      id: '101',
+      name: 'run.1',
+      release: {id: '10', version: '40'},
+      size: 'Eco',
+      state: 'up',
+      type: 'run',
+      updated_at: hourAgo,
+    }])
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -224,23 +221,20 @@ describe('ps', function () {
   it('passes no-wrap option through to extended table rendering', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}})
-
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get('/apps/myapp/dynos?extended=true')
-      .reply(200, [{
-        command: 'npm start',
-        extended: {
-          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
-        },
-        id: '100',
-        name: 'web.1',
-        release: {id: '10', version: '40'},
-        size: 'Eco',
-        state: 'up',
-        type: 'web',
-        updated_at: hourAgo,
-      }])
+    const listExtendedStub = stub().resolves([{
+      command: 'npm start',
+      extended: {
+        az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
+      },
+      id: '100',
+      name: 'web.1',
+      release: {id: '10', version: '40'},
+      size: 'Eco',
+      state: 'up',
+      type: 'web',
+      updated_at: hourAgo,
+    }])
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
 
     const tableStub = stub(hux, 'table')
     await runCommand(Cmd, ['--app', 'myapp', '--extended', '--no-wrap'])
@@ -252,35 +246,32 @@ describe('ps', function () {
   it('shows extended info for Private Space app', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}})
-
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get('/apps/myapp/dynos?extended=true')
-      .reply(200, [{
-        command: 'npm start',
-        extended: {
-          az: null, execution_plane: null, fleet: null, instance: 'instance', ip: '10.0.0.1', port: null, region: 'us', route: null,
-        },
-        id: '100',
-        name: 'web.1',
-        release: {id: '10', version: '40'},
-        size: 'Eco',
-        state: 'up',
-        type: 'web',
-        updated_at: hourAgo,
-      }, {
-        command: 'bash',
-        extended: {
-          az: null, execution_plane: null, fleet: null, instance: 'instance', ip: '10.0.0.1', port: null, region: 'us', route: null,
-        },
-        id: '101',
-        name: 'run.1',
-        release: {id: '10', version: '40'},
-        size: 'Eco',
-        state: 'up',
-        type: 'run',
-        updated_at: hourAgo,
-      }])
+    const listExtendedStub = stub().resolves([{
+      command: 'npm start',
+      extended: {
+        az: null, execution_plane: null, fleet: null, instance: 'instance', ip: '10.0.0.1', port: null, region: 'us', route: null,
+      },
+      id: '100',
+      name: 'web.1',
+      release: {id: '10', version: '40'},
+      size: 'Eco',
+      state: 'up',
+      type: 'web',
+      updated_at: hourAgo,
+    }, {
+      command: 'bash',
+      extended: {
+        az: null, execution_plane: null, fleet: null, instance: 'instance', ip: '10.0.0.1', port: null, region: 'us', route: null,
+      },
+      id: '101',
+      name: 'run.1',
+      release: {id: '10', version: '40'},
+      size: 'Eco',
+      state: 'up',
+      type: 'run',
+      updated_at: hourAgo,
+    }])
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -300,35 +291,32 @@ describe('ps', function () {
   it('shows shield dynos in extended info if app is in a shielded private space', async function () {
     const infoStub = stub().resolves({space: {shield: true}})
     const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}})
-
-    nock('https://api.heroku.com', {reqheaders: {Accept: 'application/vnd.heroku+json; version=3.sdk'}})
-      .get('/apps/myapp/dynos?extended=true')
-      .reply(200, [{
-        command: 'npm start',
-        extended: {
-          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
-        },
-        id: 100,
-        name: 'web.1',
-        release: {id: '10', version: '40'},
-        size: 'Private-M',
-        state: 'up',
-        type: 'web',
-        updated_at: hourAgo,
-      }, {
-        command: 'bash',
-        extended: {
-          az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, region: 'us', route: 'da route',
-        },
-        id: 101,
-        name: 'run.1',
-        release: {id: '10', version: '40'},
-        size: 'Private-L',
-        state: 'up',
-        type: 'run',
-        updated_at: hourAgo,
-      }])
+    const listExtendedStub = stub().resolves([{
+      command: 'npm start',
+      extended: {
+        az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.1', port: 8000, region: 'us', route: 'da route',
+      },
+      id: 100,
+      name: 'web.1',
+      release: {id: '10', version: '40'},
+      size: 'Private-M',
+      state: 'up',
+      type: 'web',
+      updated_at: hourAgo,
+    }, {
+      command: 'bash',
+      extended: {
+        az: 'us-east', execution_plane: 'execution_plane', fleet: 'fleet', instance: 'instance', ip: '10.0.0.2', port: 8000, region: 'us', route: 'da route',
+      },
+      id: 101,
+      name: 'run.1',
+      release: {id: '10', version: '40'},
+      size: 'Private-L',
+      state: 'up',
+      type: 'run',
+      updated_at: hourAgo,
+    }])
+    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {listExtended: listExtendedStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',

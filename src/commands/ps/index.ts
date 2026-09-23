@@ -1,7 +1,7 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import {appExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
+import {appExtensions, dynoExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
@@ -42,12 +42,10 @@ export default class Index extends Command {
     const {app, extended, json} = flags
     const types = restParse.argv as string[]
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
 
     const dynosPromise = extended
-      ? this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos?extended=true`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }).then(r => r.body)
+      ? platform.dyno.listExtended(app) as Promise<DynoExtended[]>
       : platform.dyno.list(app) as Promise<DynoExtended[]>
 
     const [dynos, shielded, appInfo, accountInfo] = await Promise.all([
