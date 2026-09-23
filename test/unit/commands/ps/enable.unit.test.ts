@@ -1,54 +1,57 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {stub} from 'sinon'
 
 import PsAutoscaleEnable from '../../../../src/commands/ps/autoscale/enable.js'
+import {mockSDKMetrics, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('ps:autoscale:enable', function () {
   const APP_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-111111111111'
   const APP_NAME = 'wubalubadubdub'
-  const FORMATION_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-22222222222'
   const MONITOR_ID = 'AAAAAAAA-BBBB-CCCC-DDDD-333333333333'
-  let api: nock.Scope
-  let metricsApi: nock.Scope
+
+  let appInfoStub: ReturnType<typeof stub>
+  let formationListStub: ReturnType<typeof stub>
+  let monitorListStub: ReturnType<typeof stub>
+  let monitorCreateStub: ReturnType<typeof stub>
+  let monitorUpdateStub: ReturnType<typeof stub>
+  let platformMock: ReturnType<typeof mockSDKPlatform>
+  let metricsMock: ReturnType<typeof mockSDKMetrics>
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    metricsApi = nock('https://api.metrics.heroku.com')
+    appInfoStub = stub().resolves({generation: 'cedar', id: APP_ID, name: APP_NAME})
+    formationListStub = stub().resolves([])
+    monitorListStub = stub().resolves([])
+    monitorCreateStub = stub().resolves({})
+    monitorUpdateStub = stub().resolves({})
+
+    platformMock = mockSDKPlatform({
+      app: {info: appInfoStub},
+      formation: {list: formationListStub},
+    })
+    metricsMock = mockSDKMetrics({
+      formationMonitor: {
+        create: monitorCreateStub,
+        list: monitorListStub,
+        update: monitorUpdateStub,
+      },
+    })
   })
 
   afterEach(function () {
-    api.done()
-    metricsApi.done()
-    nock.cleanAll()
+    platformMock.restore()
+    metricsMock.restore()
   })
 
-  function commonSetup() {
-    api
-      .get(`/apps/${APP_NAME}`)
-      .reply(200, {generation: 'cedar', id: APP_ID, name: APP_NAME})
-  }
-
   function dynoTestSetup(dynoType: string) {
-    commonSetup()
-
-    api
-      .get(`/apps/${APP_NAME}/formation`)
-      .reply(200, [{id: FORMATION_ID, size: dynoType, type: 'web'}])
-
-    metricsApi
-      .get(`/apps/${APP_ID}/formation/web/monitors`)
-      .reply(200, [{
-        action_type: 'scale',
-        id: MONITOR_ID,
-        max_quantity: 2,
-        min_quantity: 1,
-        value: 1000,
-      }])
-
-    metricsApi
-      .patch(`/apps/${APP_ID}/formation/web/monitors/${MONITOR_ID}`)
-      .reply(202, {})
+    formationListStub.resolves([{id: 'formation-1', size: dynoType, type: 'web'}])
+    monitorListStub.resolves([{
+      action_type: 'scale',
+      id: MONITOR_ID,
+      max_quantity: 2,
+      min_quantity: 1,
+      value: 1000,
+    }])
   }
 
   describe('without specifying an app', function () {
@@ -77,11 +80,7 @@ describe('ps:autoscale:enable', function () {
 
   describe('without an existing web dyno', function () {
     it('fails without a web dyno', async function () {
-      commonSetup()
-
-      api
-        .get(`/apps/${APP_NAME}/formation`)
-        .reply(200, [])
+      formationListStub.resolves([])
 
       const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
@@ -91,21 +90,13 @@ describe('ps:autoscale:enable', function () {
 
   describe('without an existing metrics monitor', function () {
     it('successfully enabled autoscaling', async function () {
-      commonSetup()
-
-      api
-        .get(`/apps/${APP_NAME}/formation`)
-        .reply(200, [{id: FORMATION_ID, size: 'Performance-L', type: 'web'}])
-
-      metricsApi
-        .post(`/apps/${APP_ID}/formation/web/monitors`)
-        .reply(201, [])
-
-      metricsApi
-        .get(`/apps/${APP_ID}/formation/web/monitors`)
-        .reply(200)
+      formationListStub.resolves([{id: 'formation-1', size: 'Performance-L', type: 'web'}])
+      monitorListStub.resolves([])
 
       await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
+
+      expect(monitorCreateStub.calledOnceWith(APP_ID, 'web')).to.be.true
+      expect(monitorUpdateStub.called).to.be.false
     })
   })
 
@@ -116,6 +107,7 @@ describe('ps:autoscale:enable', function () {
       const {stderr} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
       expect(stderr).to.contain('Enabling dyno autoscaling... done')
+      expect(monitorUpdateStub.calledOnceWith(APP_ID, 'web', MONITOR_ID)).to.be.true
     })
   })
 
@@ -151,11 +143,7 @@ describe('ps:autoscale:enable', function () {
 
   describe('with a Hobby dyno', function () {
     it('rejected non-performance dynos', async function () {
-      commonSetup()
-
-      api
-        .get(`/apps/${APP_NAME}/formation`)
-        .reply(200, [{id: FORMATION_ID, size: 'Hobby', type: 'web'}])
+      formationListStub.resolves([{id: 'formation-1', size: 'Hobby', type: 'web'}])
 
       const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
@@ -165,13 +153,8 @@ describe('ps:autoscale:enable', function () {
 
   describe('with a fir app', function () {
     it('rejected fir app', async function () {
-      api
-        .get(`/apps/${APP_NAME}`)
-        .reply(200, {generation: 'fir', id: APP_ID, name: APP_NAME})
-
-      api
-        .get(`/apps/${APP_NAME}/formation`)
-        .reply(200, [{id: FORMATION_ID, size: 'Performance-L', type: 'web'}])
+      appInfoStub.resolves({generation: 'fir', id: APP_ID, name: APP_NAME})
+      formationListStub.resolves([{id: 'formation-1', size: 'Performance-L', type: 'web'}])
 
       const {error} = await runCommand(PsAutoscaleEnable, ['--min', '1', '--max', '2', '--app', APP_NAME])
 
