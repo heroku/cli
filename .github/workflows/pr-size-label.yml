@@ -1,0 +1,199 @@
+name: PR Size Label
+
+# Labels each PR with a size/* bucket based on *code* churn (additions +
+# deletions), and attaches a `docs` label when documentation changed.
+#
+# Design (see also .github/workflows/pr-title-check.yml, whose zero-dependency
+# bash style this mirrors):
+#   - Size reflects code only. Documentation, the lockfile, and generated
+#     artifacts are excluded from the count so a lockfile bump or a docs sync
+#     never reads as a large PR.
+#   - Advisory, never blocking: the job always succeeds. An XL PR gets a
+#     one-time "consider splitting" comment as a nudge, not a failing check.
+#   - Thresholds are the constants below — a one-line edit to re-tune.
+#
+# Trigger: pull_request_target, NOT pull_request. This job runs on the org's
+# IP-allow-listed runner pool (see runs-on below), which was previously reserved
+# for maintainer-invoked workflows. pull_request_target runs the workflow
+# definition from the BASE branch, so a fork contributor cannot edit this file in
+# their branch to inject run: steps onto that runner network. It is only safe
+# because this job (a) never checks out PR head code — there is no checkout step
+# at all — and (b) references only trusted, non-text context (repository slug, PR
+# number), never attacker-controllable fields (PR title/body/branch). Every such
+# value is passed through env: and never interpolated into the run: body. Do not
+# add a checkout of the PR ref or reference PR-authored text here without
+# re-deriving this safety argument.
+#
+# This trigger is also what lets the labeler cover fork PRs: pull_request_target
+# grants a read-write GITHUB_TOKEN even for forks and runs on every commit
+# (opened/synchronize/reopened), so external contributions are labeled too. Do
+# NOT "simplify" this to pull_request: fork PRs would then get a read-only token
+# (labeling silently stops for exactly the external contributors it should
+# serve), and the runner would execute the fork's own copy of this file.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+# Least privilege: we only read the diff and write labels/comments.
+permissions:
+  contents: read
+  pull-requests: write
+
+# Serialize runs per PR. cancel-in-progress: false so an in-flight run always
+# finishes its non-transactional label/comment reconciliation (rather than being
+# cancelled mid-update and leaving a partial state); queued runs then apply in
+# order and the last one reflects the PR's final size.
+concurrency:
+  group: pr-size-label-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  label-size:
+    # The heroku org enforces an IP allow list, so calls to the GitHub API must
+    # originate from an allow-listed runner; GitHub-hosted runners (ubuntu-latest)
+    # get HTTP 403. Same rationale as release-homebrew.yml / direwolf.yml.
+    runs-on: pub-hk-ubuntu-24.04-ip
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      # Upper bound (exclusive) of code-churn lines for each bucket; XL is the
+      # open-ended top bucket. Tune here.
+      XS_MAX: "10"
+      S_MAX: "100"
+      M_MAX: "500"
+      L_MAX: "1000"
+      # Hidden marker so the XL nudge is posted once and cleaned up if the PR
+      # later shrinks below XL.
+      COMMENT_MARKER: "<!-- pr-size-labeler -->"
+    steps:
+      - name: Compute size and apply labels
+        run: |
+          set -euo pipefail
+
+          # Label/comment WRITES are best-effort: an advisory labeler must never
+          # fail the check. Under pull_request_target the GITHUB_TOKEN is
+          # read-write even for fork PRs, so writes normally succeed; try() still
+          # guards against transient causes (org label policy, secondary rate
+          # limits, 5xx), emitting a visible ::warning:: with the exit code so a
+          # real regression is never silently swallowed.
+          try() { "$@" || echo "::warning::pr-size-label: '$*' failed (exit $?); continuing (advisory check)"; }
+
+          # --- 1. Read the PR's changed files (filename, additions, deletions).
+          # A file counts toward *size* unless it is documentation, the
+          # lockfile, or a generated artifact. `docs` presence is tracked
+          # separately regardless of the size count.
+          churn=0
+          docs_changed="false"
+
+          # Fetch changed files up front so a transient API failure degrades to a
+          # clean, non-blocking skip (advisory check) instead of aborting under
+          # set -e — and so a failed read can never be misread as churn=0 (size/XS).
+          files="$(gh api --paginate "repos/$REPO/pulls/$PR/files" \
+                     --jq '.[] | [.filename, .additions, .deletions] | @tsv')" \
+            || { echo "::warning::pr-size-label: could not fetch changed files; skipping (advisory check)"; exit 0; }
+
+          # `|| [ -n "$filename" ]` processes a final line that lacks a trailing
+          # newline, so no file is ever silently dropped from the count.
+          while IFS=$'\t' read -r filename additions deletions || [ -n "${filename:-}" ]; do
+            [ -z "${filename:-}" ] && continue
+            add="${additions:-0}"; del="${deletions:-0}"
+            # Non-numeric (e.g. binary "-") counts as 0 churn.
+            case "$add" in ''|*[!0-9]*) add=0 ;; esac
+            case "$del" in ''|*[!0-9]*) del=0 ;; esac
+
+            is_docs="false"
+            case "$filename" in
+              docs/*|*.md) is_docs="true" ;;
+            esac
+            [ "$is_docs" = "true" ] && docs_changed="true"
+
+            # Excluded from the size count: docs, lockfile, generated artifacts.
+            case "$filename" in
+              docs/*|*.md|package-lock.json|autocomplete-scripts/*|dist/*)
+                continue ;;
+            esac
+
+            churn=$((churn + add + del))
+          done <<< "$files"
+
+          # --- 2. Map code churn to a bucket.
+          if   [ "$churn" -lt "$XS_MAX" ]; then bucket="XS"
+          elif [ "$churn" -lt "$S_MAX"  ]; then bucket="S"
+          elif [ "$churn" -lt "$M_MAX"  ]; then bucket="M"
+          elif [ "$churn" -lt "$L_MAX"  ]; then bucket="L"
+          else                                  bucket="XL"
+          fi
+          desired="size/$bucket"
+
+          echo "Code churn (excluding docs/lockfile/generated): $churn lines -> $desired"
+          echo "Docs changed: $docs_changed"
+          {
+            echo "### PR size"
+            echo "- Code churn (add+del, excluding docs, \`package-lock.json\`, and generated files): **$churn**"
+            echo "- Size label: **$desired**"
+            echo "- Docs changed: **$docs_changed**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # --- 3. On-demand label upsert. Create ONLY the label actually applied
+          # this run (the desired size bucket; the docs label is ensured in step 4
+          # when needed) instead of all six on every event, and route it through
+          # try() so a create failure is a visible ::warning::, not a silent swallow.
+          # A stale size/* label removed in step 4 already exists (it is assigned).
+          ensure_label() {  # name color description
+            try gh label create --repo "$REPO" "$1" --color "$2" --description "$3" --force >/dev/null
+          }
+          case "$bucket" in
+            XS) ensure_label "$desired" "3cbf00" "Extra small PR (code churn < ${XS_MAX})" ;;
+            S)  ensure_label "$desired" "5d9801" "Small PR (code churn < ${S_MAX})" ;;
+            M)  ensure_label "$desired" "7f7203" "Medium PR (code churn < ${M_MAX})" ;;
+            L)  ensure_label "$desired" "a86500" "Large PR (code churn < ${L_MAX})" ;;
+            XL) ensure_label "$desired" "e11d21" "Extra large PR (code churn >= ${L_MAX}); consider splitting" ;;
+          esac
+
+          # --- 4. Reconcile labels: exactly one size/* (the desired one), and
+          # `docs` present iff documentation changed. Only touch labels we own.
+          # --paginate so a PR with >30 labels isn't truncated (a truncated read
+          # would drop a stale size/* from `current` and leave two size labels);
+          # guard so a transient read failure degrades to a clean skip, not an abort.
+          current="$(gh api --paginate "repos/$REPO/issues/$PR/labels" --jq '.[].name')" \
+            || { echo "::warning::pr-size-label: could not read current labels; skipping reconcile (advisory check)"; exit 0; }
+
+          for lbl in size/XS size/S size/M size/L size/XL; do
+            if echo "$current" | grep -Fxq "$lbl" && [ "$lbl" != "$desired" ]; then
+              try gh pr edit --repo "$REPO" "$PR" --remove-label "$lbl"
+            fi
+          done
+          if ! echo "$current" | grep -Fxq "$desired"; then
+            try gh pr edit --repo "$REPO" "$PR" --add-label "$desired"
+          fi
+
+          if [ "$docs_changed" = "true" ]; then
+            echo "$current" | grep -Fxq "docs" || try gh pr edit --repo "$REPO" "$PR" --add-label "docs"
+          else
+            echo "$current" | grep -Fxq "docs" && try gh pr edit --repo "$REPO" "$PR" --remove-label "docs" || true
+          fi
+
+          # --- 5. XL nudge: post the split suggestion once, remove it if the PR
+          # later drops below XL. Never fails the check.
+          # Guard: a failed comments read must not abort the step under set -e.
+          # Empty result -> treated as "no existing nudge" (worst case: a duplicate
+          # nudge, which the marker de-dupes on the next successful run).
+          existing_comment_id="$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq "map(select(.body | contains(\"$COMMENT_MARKER\"))) | .[0].id // empty")" \
+            || { echo "::warning::pr-size-label: could not read comments; skipping XL-nudge reconcile (advisory check)"; existing_comment_id=""; bucket="__skip_nudge__"; }
+
+          if [ "$bucket" = "XL" ]; then
+            if [ -z "$existing_comment_id" ]; then
+              body="$COMMENT_MARKER
+          This PR is labeled **size/XL** (${churn} lines of code churn, excluding docs, \`package-lock.json\`, and generated files).
+
+          Large PRs are harder to review well. If it can be split into smaller, independently reviewable pieces, consider doing so. This is a suggestion, not a blocker — the check still passes."
+              try gh pr comment --repo "$REPO" "$PR" --body "$body"
+            fi
+          else
+            if [ -n "$existing_comment_id" ]; then
+              gh api --method DELETE "repos/$REPO/issues/comments/$existing_comment_id" >/dev/null || true
+            fi
+          fi
