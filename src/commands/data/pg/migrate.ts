@@ -88,6 +88,10 @@ export default class DataPgMigrate extends BaseCommand {
           break
         }
 
+        case '__refresh': {
+          break
+        }
+
         case '__start_migration': {
           await this.actOnReadyMigration('start')
           break
@@ -569,7 +573,7 @@ export default class DataPgMigrate extends BaseCommand {
       })
     }
 
-    choices.push(new Separator(), {name: 'Exit', value: '__exit'})
+    choices.push(new Separator(), {name: 'Refresh', value: '__refresh'}, {name: 'Exit', value: '__exit'})
 
     const {action} = await this.prompt<{action: string}>({
       choices,
