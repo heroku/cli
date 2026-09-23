@@ -23,6 +23,13 @@ name: PR Size Label
 # value is passed through env: and never interpolated into the run: body. Do not
 # add a checkout of the PR ref or reference PR-authored text here without
 # re-deriving this safety argument.
+#
+# This trigger is also what lets the labeler cover fork PRs: pull_request_target
+# grants a read-write GITHUB_TOKEN even for forks and runs on every commit
+# (opened/synchronize/reopened), so external contributions are labeled too. Do
+# NOT "simplify" this to pull_request: fork PRs would then get a read-only token
+# (labeling silently stops for exactly the external contributors it should
+# serve), and the runner would execute the fork's own copy of this file.
 
 on:
   pull_request_target:

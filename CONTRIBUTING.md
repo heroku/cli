@@ -66,5 +66,25 @@ Issues labelled `good first contribution`.
 > **NOTE**: Be sure to [sync your fork](https://help.github.com/articles/syncing-a-fork/) before making a pull request.
 
 
+# Pull Request Size
+
+Smaller pull requests are reviewed faster and more thoroughly, and are more likely to be merged. Whenever you can, split large changes into a series of smaller, independently reviewable PRs.
+
+To make size visible, a CI check automatically applies a `size/*` label to every PR based on **code** churn (lines added + deleted), and updates it on each push:
+
+| Label | Code churn (add + del) |
+| --- | --- |
+| `size/XS` | fewer than 10 |
+| `size/S` | 10–99 |
+| `size/M` | 100–499 |
+| `size/L` | 500–999 |
+| `size/XL` | 1000 or more |
+
+A few things to know:
+
+- **Docs, `package-lock.json`, and generated files don't count** toward the size. A large docs-only or lockfile-only change won't read as a big PR; a separate `docs` label is applied when documentation changed.
+- **The label is advisory** — it never fails your build. A `size/XL` PR gets a one-time comment suggesting you consider splitting it; that's a suggestion, not a blocker.
+- The label is applied automatically, so you don't need to set it yourself.
+
 # License
 By contributing your code, you agree to license your contribution under the terms of our project [LICENSE](LICENSE) and to sign the [Salesforce CLA](https://cla.salesforce.com/sign-cla)
