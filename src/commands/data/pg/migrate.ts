@@ -523,16 +523,9 @@ export default class DataPgMigrate extends BaseCommand {
           header: 'Destination Database',
         },
         status: {
-          get: (migration: MigrationResponse) => {
-            if (migration.status_description) {
-              return migration.status === MigrationStatus.FAILED
-                ? color.failure(migration.status_description)
-                : color.info(migration.status_description)
-            }
-
-            const label = migration.status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(migration.status)!
-            return color.info(label)
-          },
+          get: (migration: MigrationResponse) => migration.status === MigrationStatus.FAILED
+            ? color.failure(migration.status_description)
+            : color.info(migration.status_description),
           header: 'Status',
         },
       })
