@@ -57,6 +57,23 @@ describe('load-foreman-procfile', function () {
     expect(() => loadProc(procfilePath)).to.throw('line 2 parse error: not a valid procfile line')
   })
 
+  it('supports dashes and underscores in process type names', function () {
+    const procfilePath = path.join(tempDir, 'Procfile')
+    fs.writeFileSync(procfilePath, [
+      'web: npm run start',
+      'worker-primary: npm run worker:primary',
+      'worker_secondary: npm run worker:secondary',
+      '',
+    ].join('\n'))
+
+    const procHash = loadProc(procfilePath)
+    expect(procHash).to.deep.equal({
+      web: 'npm run start',
+      'worker-primary': 'npm run worker:primary',
+      worker_secondary: 'npm run worker:secondary',
+    })
+  })
+
   it('supports additional colons in process commands', function () {
     const procfilePath = path.join(tempDir, 'Procfile')
     fs.writeFileSync(procfilePath, [

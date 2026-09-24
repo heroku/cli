@@ -1,5 +1,5 @@
 import * as color from '@heroku/heroku-cli-util/color'
-import socks from '@heroku/socksv5'
+import {Errors} from '@oclif/core'
 import {ux} from '@oclif/core/ux'
 import cliProgress from 'cli-progress'
 import debug from 'debug'
@@ -12,7 +12,14 @@ import stream from 'node:stream'
 import tty from 'node:tty'
 import {Client, ConnectConfig} from 'ssh2'
 
+import socks5 from './socks5-server.js'
+
 const sshDebug = debug('cli:ps-exec:ssh')
+
+// Upper bound on simultaneously-live SOCKS connections (each is its own SSH
+// session). Generous enough for a browser fanning out, low enough to keep a
+// runaway local client from exhausting fds/SSH sessions.
+const MAX_SOCKS_CONNECTIONS = 128
 
 export class HerokuSsh {
   public connect(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: (() => void)) {
@@ -142,8 +149,34 @@ export class HerokuSsh {
 
   public socksv5(addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: ((port: number) => void)) {
     const socksPort = 1080
-    socks.createServer((info, accept, deny) => {
+    // Each accepted SOCKS request opens its own SSH connection, so cap how many
+    // can be live at once. Without this a client that fans out many parallel
+    // connections (a browser, or a hostile local process) can drive up fd/memory
+    // and SSH-session load on both the CLI and the dyno's sshd.
+    let activeConnections = 0
+    socks5.createServer((info, accept, deny) => {
+      if (activeConnections >= MAX_SOCKS_CONNECTIONS) {
+        sshDebug(`refusing SOCKS request: ${activeConnections} connections already active (max ${MAX_SOCKS_CONNECTIONS})`)
+        return deny()
+      }
+
+      activeConnections++
       const conn = new Client()
+      let released = false
+      // Free the slot exactly once, whenever this SSH connection closes.
+      const release = () => {
+        if (released) return
+        released = true
+        activeConnections--
+      }
+
+      conn.on('close', release)
+      let clientSocket: ReturnType<typeof accept> = null
+      const teardown = () => {
+        if (clientSocket) clientSocket.destroy()
+        conn.end()
+      }
+
       conn.on('ready', () => {
         conn.forwardOut(
           info.srcAddr,
@@ -156,27 +189,43 @@ export class HerokuSsh {
               return deny()
             }
 
-            const clientSocket = accept(true)
-            if (clientSocket) {
-              stream.pipe(clientSocket).pipe(stream).on('close', () => {
-                conn.end()
-              })
-            } else
+            // Guard the forwardOut stream against an unhandled 'error' before the
+            // accept() null-check below: if accept() returns null we abandon this
+            // stream (conn.end() emits 'close', not 'error'), but a late error on
+            // the orphaned stream would otherwise go unhandled and crash the CLI.
+            stream.on('error', teardown)
+
+            clientSocket = accept()
+            if (!clientSocket) {
               conn.end()
+              return
+            }
+
+            // Tear the tunnel down if either side errors, rather than letting an
+            // unhandled 'error' event crash the CLI.
+            clientSocket.on('error', teardown)
+            stream.pipe(clientSocket).pipe(stream).on('close', () => {
+              conn.end()
+            })
           },
         )
       }).on('error', () => {
-        deny()
+        // Before accept, reject the SOCKS request. After, the tunnel is live, so
+        // tear it down instead of injecting a late SOCKS reply into the stream.
+        if (clientSocket) teardown()
+        else deny()
       }).connect({
         ...this._connectionDefaults(proxyKey),
         host: addonHost,
         privateKey,
         username: dynoUser,
       })
+    }).on('error', (err: NodeJS.ErrnoException) => {
+      this._reportProxyBindError(err, socksPort)
     }).listen(socksPort, '127.0.0.1', () => {
-      console.log(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
+      ux.stdout(`SOCKSv5 proxy server started on port ${color.info(socksPort.toString())}`)
       if (callback) callback(socksPort)
-    }).useAuth(socks.auth.None()) // eslint-disable-line new-cap
+    })
   }
 
   public async ssh(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string) {
@@ -237,11 +286,23 @@ export class HerokuSsh {
     return {
       hostHash: 'sha256',
       hostVerifier(hashedKey: string) {
+        // proxyKey is the API-provided "ssh-rsa <base64>" host key. If it's
+        // empty or missing the base64 blob, fail closed rather than throwing
+        // out of the verifier on `Buffer.from(undefined, ...)`.
+        const keyBlob = proxyKey?.split(' ')[1]
+        if (!keyBlob) {
+          sshDebug('proxy public key is missing or malformed; refusing host key')
+          return false
+        }
+
         const hasher = crypto.createHash('sha256')
-        hasher.update(Buffer.from(proxyKey.split(' ')[1], 'base64'))
+        hasher.update(Buffer.from(keyBlob, 'base64'))
         return hasher.digest('hex') === hashedKey
       },
       port: 80,
+      // Bound how long a connecting client is held before we give up, so a
+      // stalled SSH endpoint can't pin a paused SOCKS client socket forever.
+      readyTimeout: 20_000,
     }
   }
 
@@ -280,11 +341,39 @@ export class HerokuSsh {
         }
       })
     } else {
-      stdin.pipe(new stream.Transform({
-        flush: done => c.write('\u0004', done),
-        objectMode: true,
-        transform: (chunk, _, next) => c.write(chunk, next),
-      }))
+      stdin.pipe(this._stdinToRemote(c))
     }
+  }
+
+  // A SOCKS-server bind failure fires asynchronously, outside run()'s
+  // error-handling chain, so throwing here (ux.error) would surface as an
+  // unhandled crash with a raw stack trace. Route it through oclif's handler so
+  // it prints cleanly and exits non-zero. (Extracted as a seam so tests can stub
+  // it — Errors.handle exits the process and can't be stubbed as an ESM export.)
+  private _reportProxyBindError(err: NodeJS.ErrnoException, socksPort: number): void {
+    const detail = err.code === 'EADDRINUSE'
+      ? `port ${socksPort} is already in use — stop the process using it and try again`
+      : err.message
+    Errors.handle(new Errors.CLIError(`Could not start the SOCKS proxy server: ${detail}`, {exit: 1}))
+  }
+
+  // Bridges piped stdin to the remote exec stream, appending an EOF (^D) when
+  // stdin ends. For a non-interactive command the remote stream (`c`) closes as
+  // soon as the command exits — which can happen before stdin reaches EOF — so
+  // every write is guarded on `c.writable` (don't write the trailing EOF to an
+  // already-ended stream) and a late write-after-end is swallowed as the
+  // teardown race it is, rather than surfacing as an unhandled error that
+  // crashes the CLI.
+  private _stdinToRemote(c: stream.Writable): stream.Transform {
+    const transform = new stream.Transform({
+      // Pass the stream callbacks straight through so a genuine write error
+      // reaches the 'error' handler below instead of being silently dropped.
+      flush: done => (c.writable ? c.write('\u0004', done) : done()),
+      transform: (chunk, _, next) => (c.writable ? c.write(chunk, next) : next()),
+    })
+    transform.on('error', (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'ERR_STREAM_WRITE_AFTER_END') sshDebug(error)
+    })
+    return transform
   }
 }

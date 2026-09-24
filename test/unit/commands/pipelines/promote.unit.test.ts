@@ -1,3 +1,4 @@
+import {prompter} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -131,6 +132,30 @@ describe('pipelines:promote', function () {
     expect(stdout).to.contain('failed')
     expect(stdout).to.contain('Because reasons')
     expect(process.exitCode).to.equal(1)
+  })
+
+  it('prompts for 2fa and retries the promotion', async function () {
+    const originalIsTTY = process.stdin.isTTY
+    Object.defineProperty(process.stdin, 'isTTY', {configurable: true, value: true})
+    const promptStub = stub(prompter, 'prompt').resolves({factor: '123456'})
+    setupNock()
+    mockPromotionTargets()
+    api
+      .post('/pipeline-promotions')
+      .reply(403, {id: 'two_factor', message: 'Two-factor authentication required'})
+      .post('/pipeline-promotions')
+      .matchHeader('Heroku-Two-Factor-Code', '123456')
+      .reply(201, promotion)
+
+    try {
+      const {error} = await runCommand(Cmd, [`--app=${sourceApp.name}`])
+
+      expect(error).to.be.undefined
+      expect(promptStub.calledOnce).to.be.true
+    } finally {
+      promptStub.restore()
+      Object.defineProperty(process.stdin, 'isTTY', {configurable: true, value: originalIsTTY})
+    }
   })
 
   context('passing a `to` flag', function () {

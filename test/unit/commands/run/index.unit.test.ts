@@ -139,6 +139,8 @@ describe('run', function () {
   })
 
   it('prompts for 2FA via prompter and retries with Heroku-Two-Factor-Code header on 403 two_factor', async function () {
+    const originalIsTTY = process.stdin.isTTY
+    Object.defineProperty(process.stdin, 'isTTY', {configurable: true, value: true})
     const promptStub = sinon.stub(prompter, 'prompt').resolves({factor: '123456'})
 
     const api = nock('https://api.heroku.com')
@@ -161,22 +163,26 @@ describe('run', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runWithCliArgv([
-      '--app',
-      'myapp',
-      'echo',
-      'test',
-    ]).catch(() => {
-      // Expected to fail when trying to connect to rendezvous
-    })
+    try {
+      await runWithCliArgv([
+        '--app',
+        'myapp',
+        'echo',
+        'test',
+      ]).catch(() => {
+        // Expected to fail when trying to connect to rendezvous
+      })
 
-    expect(promptStub.calledOnce, 'prompter.prompt should be called exactly once').to.be.true
-    expect(promptStub.firstCall.args[0]).to.deep.equal([{
-      mask: '*',
-      message: 'Two-factor code',
-      name: 'factor',
-      type: 'password',
-    }])
-    expect(api.isDone(), 'all expected requests including the 2FA-retried /account should be made').to.be.true
+      expect(promptStub.calledOnce, 'prompter.prompt should be called exactly once').to.be.true
+      expect(promptStub.firstCall.args[0]).to.deep.equal([{
+        mask: '*',
+        message: 'Two-factor code',
+        name: 'factor',
+        type: 'password',
+      }])
+      expect(api.isDone(), 'all expected requests including the 2FA-retried /account should be made').to.be.true
+    } finally {
+      Object.defineProperty(process.stdin, 'isTTY', {configurable: true, value: originalIsTTY})
+    }
   })
 })

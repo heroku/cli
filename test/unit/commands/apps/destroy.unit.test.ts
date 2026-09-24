@@ -1,7 +1,8 @@
+import {prompter} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
-import {createSandbox} from 'sinon'
+import {createSandbox, stub} from 'sinon'
 
 import Destroy from '../../../../src/commands/apps/destroy.js'
 import {gitService} from '../../../../src/lib/ci/git.js'
@@ -38,6 +39,31 @@ describe('apps:destroy', function () {
 
     expect(stdout).to.equal('')
     expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
+  })
+
+  it('pauses the action for 2fa and retries the delete', async function () {
+    const originalIsTTY = process.stdin.isTTY
+    Object.defineProperty(process.stdin, 'isTTY', {configurable: true, value: true})
+    const promptStub = stub(prompter, 'prompt').resolves({factor: '123456'})
+    api
+      .get('/apps/myapp').reply(200, {name: 'myapp'})
+      .delete('/apps/myapp').reply(403, {
+        app: {name: 'myapp'},
+        id: 'two_factor',
+        message: 'Two-factor authentication required',
+      })
+      .put('/apps/myapp/pre-authorizations').matchHeader('Heroku-Two-Factor-Code', '123456').reply(200, {})
+      .delete('/apps/myapp').reply(200)
+
+    try {
+      const {stderr} = await runCommand(Destroy, ['--app', 'myapp', '--confirm', 'myapp'])
+
+      expect(promptStub.calledOnce).to.be.true
+      expect(stderr).to.include('Destroying ⬢ myapp (including all add-ons)... done')
+    } finally {
+      promptStub.restore()
+      Object.defineProperty(process.stdin, 'isTTY', {configurable: true, value: originalIsTTY})
+    }
   })
 
   it('errors without an app', async function () {
