@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
+import {ConfigVar} from '@heroku/types/3.sdk'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
@@ -37,8 +39,10 @@ export default class Socks extends Command {
 
     const exec = new HerokuExec()
 
-    await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
-      await exec.createSocksProxy(context, this.heroku, configVars)
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+
+    await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
+      await exec.createSocksProxy(context, platform, configVars)
     }, 'socks')
 
     // Keep the process running until interrupted

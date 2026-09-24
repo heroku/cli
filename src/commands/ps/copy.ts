@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
+import {ConfigVar} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -49,12 +51,13 @@ export default class Copy extends Command {
     const exec = new HerokuExec()
     const ssh = new HerokuSsh()
 
-    await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
-      await exec.updateClientKey(context, this.heroku, configVars, async (privateKey, dyno, response) => {
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+
+    await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
+      await exec.updateClientKey(context, platform, configVars, async (privateKey, dyno, credentials) => {
         const message = `Connecting to ${color.name(dyno)} on ${color.app(app)}`
         ux.action.start(message)
-        const json = JSON.parse(response.body)
-        await ssh.scp(json.tunnel_host, json.client_user, privateKey, json.proxy_public_key, src, dest)
+        await ssh.scp(credentials.tunnel_host, credentials.client_user, privateKey, credentials.proxy_public_key, src, dest)
       })
     }, 'copy')
   }
