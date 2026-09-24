@@ -1,167 +1,72 @@
-import {runCommand} from '@heroku-cli/test-utils'
-import {hux} from '@heroku/heroku-cli-util'
+import {expectOutput, runCommand} from '@heroku-cli/test-utils'
+import {WaitForReleaseOptions, WaitForReleaseResult} from '@heroku/sdk/extensions/platform'
 import {expect} from 'chai'
-import nock from 'nock'
-import {restore, stub} from 'sinon'
+import {SinonStub, stub} from 'sinon'
 
 import PsWait from '../../../../src/commands/ps/wait.js'
+import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 describe('heroku ps:wait', function () {
   const APP_NAME = 'wubalubadubdub'
-  const CURRENT = {
-    id: '00000000-0000-0000-0000-000000000002',
-    version: 23,
-  }
-  const PREVIOUS = {
-    id: '00000000-0000-0000-0000-000000000001',
-    version: 22,
-  }
 
-  let api: nock.Scope
+  let sdkMock: MockSDK
+  let waitForReleaseStub: SinonStub
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
+    waitForReleaseStub = stub()
+    sdkMock = mockSDKPlatform({dyno: {waitForRelease: waitForReleaseStub}})
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
-    restore()
+    sdkMock.restore()
   })
 
   it('warns and exits 0 if no releases', async function () {
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [])
+    waitForReleaseStub.resolves()
 
     const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.include(`Warning: App ⬢ ${APP_NAME} has no releases`)
   })
 
-  it('exits with no output if app is already on the latest release', async function () {
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [CURRENT])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'web'},
-      ])
+  it('renders no output when the app is already on the latest release', async function () {
+    waitForReleaseStub.resolves({total: 1, version: 23})
 
     const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
     expect(stderr).to.be.empty
   })
 
-  it('waits for all dynos to be on latest release', async function () {
-    stub(hux, 'wait').resolves()
-
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [CURRENT])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: PREVIOUS, state: 'up', type: 'web'},
-        {release: CURRENT, state: 'up', type: 'web'},
-      ])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'starting', type: 'web'},
-        {release: CURRENT, state: 'up', type: 'web'},
-      ])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'web'},
-        {release: CURRENT, state: 'up', type: 'web'},
-      ])
+  it('renders progress from onPoll and a final done line on convergence', async function () {
+    waitForReleaseStub.callsFake(async (_app: string, options?: WaitForReleaseOptions): Promise<WaitForReleaseResult> => {
+      options?.onPoll?.({onLatest: 1, total: 3, version: 23})
+      options?.onPoll?.({onLatest: 3, total: 3, version: 23})
+      return {total: 3, version: 23}
+    })
 
     const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 
-    expect(stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
+    expectOutput(stderr, 'Waiting for every dyno to be running v23... 3 / 3, done')
   })
 
-  it('ignores release process dynos', async function () {
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [CURRENT])
+  it('passes flag values through to waitForRelease', async function () {
+    waitForReleaseStub.resolves({total: 1, version: 23})
 
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'web'},
-        {release: PREVIOUS, state: 'up', type: 'release'},
-      ])
+    await runCommand(PsWait, ['--app', APP_NAME, '--type=worker', '--wait-interval=15'])
 
-    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
-
-    expect(stderr).to.be.empty
+    const [app, options] = waitForReleaseStub.firstCall.args as [string, WaitForReleaseOptions]
+    expect(app).to.equal(APP_NAME)
+    expect(options.type).to.equal('worker')
+    expect(options.withRun).to.equal(undefined)
+    expect(options.delayMs).to.equal(15_000)
   })
 
-  it('ignores run dynos by default', async function () {
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [CURRENT])
+  it('passes withRun through with the --with-run flag', async function () {
+    waitForReleaseStub.resolves({total: 1, version: 23})
 
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'web'},
-        {release: PREVIOUS, state: 'up', type: 'run'},
-      ])
+    await runCommand(PsWait, ['--app', APP_NAME, '--with-run'])
 
-    const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
-
-    expect(stderr).to.be.empty
-  })
-
-  it('includes run dynos with the --with-run flag', async function () {
-    stub(hux, 'wait').resolves()
-
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [CURRENT])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'web'},
-        {release: PREVIOUS, state: 'up', type: 'run'},
-      ])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'web'},
-        {release: CURRENT, state: 'up', type: 'run'},
-      ])
-
-    const {stderr} = await runCommand(PsWait, ['--with-run', '--app', APP_NAME])
-
-    expect(stderr).to.contain('Waiting for every dyno to be running v23... 2 / 2, done')
-  })
-
-  it('waits only for dynos of specific type with the --type flag', async function () {
-    api
-      .get(`/apps/${APP_NAME}/releases`)
-      .reply(200, [CURRENT])
-
-    api
-      .get(`/apps/${APP_NAME}/dynos`)
-      .reply(200, [
-        {release: CURRENT, state: 'up', type: 'worker'},
-        {release: PREVIOUS, state: 'up', type: 'web'},
-      ])
-
-    const {stderr} = await runCommand(PsWait, ['--type=worker', '--app', APP_NAME])
-
-    expect(stderr).to.be.empty
+    const [, options] = waitForReleaseStub.firstCall.args as [string, WaitForReleaseOptions]
+    expect(options.withRun).to.equal(true)
   })
 })
