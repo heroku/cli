@@ -5,8 +5,9 @@ import {appExtensions, dynoExtensions, privateToShield} from '@heroku/sdk/extens
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
+import type {DynoExtended} from '@heroku/sdk/extensions/platform'
+
 import type {AccountQuota} from '../../lib/types/account-quota.js'
-import type {DynoExtended} from '../../lib/types/dyno-extended.js'
 
 import {ago} from '../../lib/time.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
@@ -44,9 +45,9 @@ export default class Index extends Command {
 
     const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
 
-    const dynosPromise = extended
-      ? platform.dyno.listExtended(app) as Promise<DynoExtended[]>
-      : platform.dyno.list(app) as Promise<DynoExtended[]>
+    const dynosPromise: Promise<DynoExtended[]> = extended
+      ? platform.dyno.listExtended(app)
+      : platform.dyno.list(app)
 
     const [dynos, shielded, appInfo, accountInfo] = await Promise.all([
       dynosPromise,
@@ -223,8 +224,9 @@ function printExtended(dynos: DynoExtended[], noWrap = false) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
   /* eslint-disable perfectionist/sort-objects */
-  hux.table<DynoExtended>(
-    sortedDynos,
+  // hux.table needs Record<string, unknown>; the SDK's interface-based DynoExtended has no implicit index signature.
+  hux.table<DynoExtended & Record<string, unknown>>(
+    sortedDynos as (DynoExtended & Record<string, unknown>)[],
     {
       ID: {get: (dyno: DynoExtended) => dyno.id},
       Process: {get: (dyno: DynoExtended) => dyno.name},
