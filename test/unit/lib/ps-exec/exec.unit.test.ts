@@ -1,7 +1,8 @@
+import type {BuildpackInstallation, ConfigVar, Dyno} from '@heroku/types/3.sdk'
+
 import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {DynoCrashedError, dynoExtensions} from '@heroku/sdk/extensions/platform'
-import type {BuildpackInstallation, ConfigVar, Dyno} from '@heroku/types/3.sdk'
 import {Errors, ux} from '@oclif/core'
 import {expect} from 'chai'
 import child from 'node:child_process'
@@ -25,11 +26,11 @@ import {mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 function stubPlatform(overrides: Record<string, SinonStub> = {}) {
   const fakePlatform = {
     dyno: {
-      enableExec: stub().resolves(undefined),
+      enableExec: stub().resolves(),
       exchangeExecCredentials: stub().resolves({}),
       execPrereqs: stub().resolves({
-        buildStack: undefined,
         buildpacks: [],
+        buildStack: undefined,
         configVars: {},
         featureEnabled: true,
         generation: 'cedar',
@@ -260,8 +261,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: undefined,
           buildpacks: [],
+          buildStack: undefined,
           configVars: {},
           featureEnabled: false,
           generation: 'fir',
@@ -282,8 +283,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: undefined,
           buildpacks: [],
+          buildStack: undefined,
           configVars: {},
           featureEnabled: false,
           generation: 'fir',
@@ -304,8 +305,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: false,
           generation: 'cedar',
@@ -326,8 +327,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'container',
           buildpacks: [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}],
+          buildStack: 'container',
           configVars: {},
           featureEnabled: true,
           generation: 'cedar',
@@ -345,8 +346,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: false,
           generation: 'cedar',
@@ -366,10 +367,10 @@ describe('HerokuExec', function () {
     it('enables feature, adds exec buildpack, and exits when app is in a space and exec buildpack is missing', async function () {
       const callback = stub()
       const {platform} = stubPlatform({
-        enableExec: stub().resolves(undefined),
+        enableExec: stub().resolves(),
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: false,
           generation: 'cedar',
@@ -395,8 +396,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [{buildpack: {url: 'https://github.com/heroku/exec-buildpack'}, ordinal: 1}],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: true,
           generation: 'cedar',
@@ -414,8 +415,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars: {HEROKU_EXEC_URL: 'https://legacy.heroku.com'},
           featureEnabled: false,
           generation: 'cedar',
@@ -436,8 +437,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: false,
           generation: 'cedar',
@@ -461,10 +462,10 @@ describe('HerokuExec', function () {
       const callback = stub()
       const restartForExecStub = stub().resolves({name: 'web.1', state: 'up'})
       const {platform} = stubPlatform({
-        enableExec: stub().resolves(undefined),
+        enableExec: stub().resolves(),
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: false,
           generation: 'cedar',
@@ -485,10 +486,10 @@ describe('HerokuExec', function () {
       const callback = stub()
       const crashedDyno = {name: 'web.1', state: 'crashed'} as unknown as Dyno
       const {platform} = stubPlatform({
-        enableExec: stub().resolves(undefined),
+        enableExec: stub().resolves(),
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars: {},
           featureEnabled: false,
           generation: 'cedar',
@@ -513,8 +514,8 @@ describe('HerokuExec', function () {
       const callback = stub()
       const {platform} = stubPlatform({
         execPrereqs: stub().resolves({
-          buildStack: 'heroku-20',
           buildpacks: [],
+          buildStack: 'heroku-20',
           configVars,
           featureEnabled: true,
           generation: 'cedar',

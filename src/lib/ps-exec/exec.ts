@@ -94,7 +94,7 @@ export class HerokuExec {
   async initFeature(context: ExecContext, platform: Platform, callback: (configVars: ConfigVar) => unknown, command?: string): Promise<void> {
     const buildpackUrls = ['https://github.com/heroku/exec-buildpack', 'urn:buildpack:heroku/exec']
 
-    const {buildStack, buildpacks, configVars, featureEnabled, generation, space} = await platform.dyno.execPrereqs(context.app)
+    const {buildpacks, buildStack, configVars, featureEnabled, generation, space} = await platform.dyno.execPrereqs(context.app)
 
     if (generation === 'fir') {
       const errorMessage = command === 'exec'
@@ -152,7 +152,7 @@ export class HerokuExec {
       try {
         await platform.dyno.restartForExec(context.app, dynoName, {
           attempts: EXEC_RESTART_ATTEMPTS,
-          onPoll: () => {
+          onPoll() {
             if (!waitingForStart) {
               waitingForStart = true
               ux.action.stop()
@@ -163,7 +163,7 @@ export class HerokuExec {
       } catch (error) {
         ux.action.stop()
         if (error instanceof DynoCrashedError) {
-          throw new Error('The dyno crashed')
+          throw new TypeError('The dyno crashed')
         }
 
         throw error

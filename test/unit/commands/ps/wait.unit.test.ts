@@ -22,7 +22,7 @@ describe('heroku ps:wait', function () {
   })
 
   it('warns and exits 0 if no releases', async function () {
-    waitForReleaseStub.resolves(undefined)
+    waitForReleaseStub.resolves()
 
     const {stderr} = await runCommand(PsWait, ['--app', APP_NAME])
 

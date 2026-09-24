@@ -1,11 +1,11 @@
+import type {DynoExtended} from '@heroku/sdk/extensions/platform'
+
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, dynoExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
-
-import type {DynoExtended} from '@heroku/sdk/extensions/platform'
 
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 

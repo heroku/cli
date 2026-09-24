@@ -42,7 +42,7 @@ export default class Wait extends Command {
 
     const result = await platform.dyno.waitForRelease(flags.app, {
       delayMs: (flags['wait-interval'] as number) * 1000,
-      onPoll: ({onLatest, total, version}) => {
+      onPoll({onLatest, total, version}) {
         if (!waiting) {
           waiting = true
           ux.action.start(`Waiting for every dyno to be running v${version}`)
