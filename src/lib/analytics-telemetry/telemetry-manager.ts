@@ -87,8 +87,6 @@ class TelemetryManager {
       //   - SIGINT: the user pressed Ctrl+C.
       //   - HEROKU_NONINTERACTIVE_LOGIN: an interactive login was required but
       //     stdin is not a TTY (piped input, CI, or a 401 re-auth) — W-22403348.
-      // NB: filtering happens HERE (Sentry only), not in the finally hook — a
-      // hook-level filter would drop the Honeycomb analytics event too.
       const skipSentry = telemetry.message === 'Received SIGINT'
         || telemetry.code === NONINTERACTIVE_LOGIN_ERROR_CODE
 
