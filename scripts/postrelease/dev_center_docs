@@ -52,5 +52,5 @@ git checkout README.md
 # from DEVCENTER_CLI_CWD and takes the article id from the file's front matter
 # (id: 4088); auth comes from the ~/.netrc api.heroku.com entry written above (via
 # getAuth()).
-run plugins:install @heroku-cli/plugin-devcenter
+run plugins:install @heroku-cli/plugin-devcenter@^2
 DEVCENTER_CLI_CWD=/tmp run devcenter:push heroku-cli-commands
