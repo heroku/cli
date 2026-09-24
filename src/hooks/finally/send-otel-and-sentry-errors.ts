@@ -4,7 +4,16 @@ import {Hook} from '@oclif/core/hooks'
  * Check if an error is a user error (not a bug) that should be filtered out
  * Returns true if the error should NOT be sent to Sentry
  */
-function isUserError(error: any): boolean {
+export function isUserError(error: any): boolean {
+  // Filter out expected user/environment conditions flagged by a stable code.
+  // e.g. HEROKU_NONINTERACTIVE_LOGIN — thrown by @heroku-cli/command when an
+  // interactive login is required but stdin is not a TTY (piped/CI/401 retry).
+  // These are not bugs and were otherwise generating a large volume of Sentry
+  // noise (W-22403348), so filter them by code rather than message text.
+  if (error.code === 'HEROKU_NONINTERACTIVE_LOGIN') {
+    return true
+  }
+
   // Filter out 4xx HTTP errors (client errors)
   if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500) {
     return true
