@@ -55,12 +55,14 @@ export default class DataPgGetCa extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(DataPgGetCa)
-    const awsRegion = flags.region === 'global' ? 'global' : await this.awsRegion(flags.region)
-    const fileName = `${awsRegion}-bundle.pem`
-    const destination = path.join(this.destinationDirectory(), fileName)
-    const url = `${RDS_CERTIFICATE_HOST}/${awsRegion}/${fileName}`
+    let destination = ''
 
     try {
+      destination = path.join(this.destinationDirectory(), '')
+      const awsRegion = flags.region === 'global' ? 'global' : await this.awsRegion(flags.region)
+      const fileName = `${awsRegion}-bundle.pem`
+      destination = path.join(destination, fileName)
+      const url = `${RDS_CERTIFICATE_HOST}/${awsRegion}/${fileName}`
       const certificate = await this.download(url)
       await fs.outputFile(destination, certificate, {mode: 0o600})
       this.log(`RDS CA bundle retrieved successfully: ${destination}`)

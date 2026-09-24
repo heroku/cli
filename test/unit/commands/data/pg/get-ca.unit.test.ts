@@ -117,6 +117,7 @@ describe('data:pg:get-ca', function () {
       .reply(200, [{name: 'example', provider: {region: null}}])
 
     const {error} = await runCommand(DataPgGetCa, ['--region', 'example'])
-    expect(error?.message).to.equal('example is not a Heroku region backed by AWS.')
+    const destination = path.join(destinationDirectory(), '')
+    expect(error?.message).to.equal(`Unable to retrieve the RDS CA bundle at ${destination}: example is not a Heroku region backed by AWS.`)
   })
 })
