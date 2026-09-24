@@ -172,7 +172,7 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing/)
     })
 
-    it('shows the status description alongside the status when present', async function () {
+    it('shows the status description in place of the status when present', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
@@ -196,10 +196,11 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Migrating: syncing/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+syncing/)
+      expect(stdout).not.to.contain('Migrating')
     })
 
-    it('omits the status description when it matches the status label', async function () {
+    it('falls back to the status label when there is no status description', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
@@ -211,7 +212,7 @@ describe('data:pg:migrate', function () {
         .reply(200, {
           ...existentMigrationResponse,
           status: MigrationStatus.MIGRATING,
-          status_description: 'migrating',
+          status_description: null,
         })
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
         .reply(200, targetAdvancedDbInfo)
@@ -224,7 +225,33 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('')
       expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Migrating/)
-      expect(stdout).not.to.contain('Migrating: migrating')
+    })
+
+    it('shows the status description in the failure color for a failed migration', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          targetAdvancedDbAttachment,
+          standardDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, {
+          ...existentMigrationResponse,
+          status: MigrationStatus.FAILED,
+          status_description: 'load error',
+        })
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+
+      mockedStdinInput = ['\u001B[A\n']
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('')
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+load error/)
     })
 
     it('re-fetches and re-renders the view when Refresh is selected', async function () {
