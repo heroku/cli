@@ -1,6 +1,9 @@
 import {expect} from 'chai'
 import nock from 'nock'
+import * as sinon from 'sinon'
 
+import BackboardOtelClient from '../../../src/lib/analytics-telemetry/backboard-otel-client.js'
+import SentryClient from '../../../src/lib/analytics-telemetry/sentry-client.js'
 import {telemetryManager} from '../../../src/lib/analytics-telemetry/telemetry-manager.js'
 
 const isDev = process.env.IS_DEV_ENVIRONMENT === 'true'
@@ -178,6 +181,47 @@ describe('telemetry-manager', function () {
       await telemetryManager.sendTelemetry(mockTelemetry)
 
       process.env.DISABLE_TELEMETRY = originalDisableTelemetry
+    })
+
+    describe('error routing (Honeycomb vs Sentry)', function () {
+      let otelSend: sinon.SinonStub
+      let sentrySend: sinon.SinonStub
+
+      beforeEach(function () {
+        // Stub the clients' send() so nothing hits the network and we can assert
+        // exactly which destinations each error is routed to.
+        otelSend = sinon.stub(BackboardOtelClient.prototype, 'send').resolves()
+        sentrySend = sinon.stub(SentryClient.prototype, 'send').resolves()
+      })
+
+      afterEach(function () {
+        sinon.restore()
+      })
+
+      it('sends genuine errors to both Honeycomb and Sentry', async function () {
+        await telemetryManager.sendTelemetry(new Error('genuine bug'))
+
+        expect(otelSend.calledOnce, 'Honeycomb should receive the error').to.be.true
+        expect(sentrySend.calledOnce, 'Sentry should receive the error').to.be.true
+      })
+
+      it('sends the non-interactive login error to Honeycomb but NOT Sentry (W-22403348)', async function () {
+        const error = Object.assign(new Error('Cannot prompt for login in a non-interactive terminal.'), {
+          code: 'HEROKU_NONINTERACTIVE_LOGIN',
+        })
+
+        await telemetryManager.sendTelemetry(error)
+
+        expect(otelSend.calledOnce, 'Honeycomb should still receive the analytics event').to.be.true
+        expect(sentrySend.called, 'Sentry should be skipped for this expected condition').to.be.false
+      })
+
+      it('sends SIGINT to Honeycomb but NOT Sentry', async function () {
+        await telemetryManager.sendTelemetry(new Error('Received SIGINT'))
+
+        expect(otelSend.calledOnce, 'Honeycomb should still receive the analytics event').to.be.true
+        expect(sentrySend.called, 'Sentry should be skipped for user Ctrl+C').to.be.false
+      })
     })
 
     it('skips sending on Windows without ENABLE_WINDOWS_TELEMETRY', async function () {

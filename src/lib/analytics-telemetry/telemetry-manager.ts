@@ -17,6 +17,15 @@ import {
   telemetryDebug,
 } from './telemetry-utils.js'
 
+// Mirrors NONINTERACTIVE_LOGIN_ERROR_CODE exported by @heroku-cli/command
+// (its src/login.ts) — the code stamped on the error thrown when an interactive
+// login is required but stdin is not a TTY (piped input, CI, or a 401 re-auth,
+// W-22403348). @heroku-cli/command is the source of truth.
+// TODO(W-22403348): import this constant from @heroku-cli/command once a release
+// that exports it is published and reflected in npm-shrinkwrap.json, to remove
+// this cross-repo string duplication.
+const NONINTERACTIVE_LOGIN_ERROR_CODE = 'HEROKU_NONINTERACTIVE_LOGIN'
+
 /**
  * Options passed to telemetry setup (from oclif hooks)
  */
@@ -72,12 +81,19 @@ class TelemetryManager {
     const telemetry = currentTelemetry
 
     if (telemetry instanceof Error) {
-      // Filter SIGINT errors from Sentry (user Ctrl+C is not an error to report)
-      // But still send to Honeycomb for analytics
-      const isSIGINT = telemetry.message === 'Received SIGINT'
+      // Some errors are expected user/environment conditions, not bugs. We still
+      // send them to Honeycomb for analytics (so we can measure how often they
+      // happen) but skip Sentry so they don't pollute error reporting:
+      //   - SIGINT: the user pressed Ctrl+C.
+      //   - HEROKU_NONINTERACTIVE_LOGIN: an interactive login was required but
+      //     stdin is not a TTY (piped input, CI, or a 401 re-auth) — W-22403348.
+      // NB: filtering happens HERE (Sentry only), not in the finally hook — a
+      // hook-level filter would drop the Honeycomb analytics event too.
+      const skipSentry = telemetry.message === 'Received SIGINT'
+        || telemetry.code === NONINTERACTIVE_LOGIN_ERROR_CODE
 
-      if (isSIGINT) {
-        telemetryDebug('Sending error to Honeycomb: %s', telemetry.message)
+      if (skipSentry) {
+        telemetryDebug('Sending error to Honeycomb only (excluded from Sentry): %s', telemetry.message)
         await backboardOtelClient.send(telemetry)
       } else {
         telemetryDebug('Sending error to Honeycomb and Sentry: %s', telemetry.message)
