@@ -527,7 +527,7 @@ export default class DataPgMigrate extends BaseCommand {
             if (migration.status_description) {
               return migration.status === MigrationStatus.FAILED
                 ? color.failure(migration.status_description)
-                : migration.status_description
+                : color.info(migration.status_description)
             }
 
             const label = migration.status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(migration.status)!
