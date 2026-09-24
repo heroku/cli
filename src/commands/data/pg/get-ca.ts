@@ -43,7 +43,7 @@ export default class DataPgGetCa extends Command {
       return path.join(process.env.APPDATA, 'postgresql')
     }
 
-    return path.join(os.homedir(), '.postgres')
+    return path.join(os.homedir(), '.postgresql')
   }
 
   public async download(url: string): Promise<Buffer> {
