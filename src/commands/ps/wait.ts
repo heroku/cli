@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import {Dyno, Release} from '@heroku-cli/schema'
-import {color, hux} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 export default class Wait extends Command {
@@ -35,55 +36,31 @@ export default class Wait extends Command {
 
   async run() {
     const {flags} = await this.parse(Wait)
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
 
-    const {body: releases} = await this.heroku.request<Release[]>(`/apps/${flags.app}/releases`, {
-      headers: {
-        Range: 'version ..; max=1, order=desc',
+    let waiting = false
+
+    const result = await platform.dyno.waitForRelease(flags.app, {
+      delayMs: (flags['wait-interval'] as number) * 1000,
+      onPoll({onLatest, total, version}) {
+        if (!waiting) {
+          waiting = true
+          ux.action.start(`Waiting for every dyno to be running v${version}`)
+        }
+
+        ux.action.status = `${onLatest} / ${total}`
       },
-      partial: true,
+      type: flags.type,
+      withRun: flags['with-run'],
     })
 
-    if (releases.length === 0) {
+    if (result === undefined) {
       this.warn(`App ${color.app(flags.app)} has no releases`)
       return
     }
 
-    const latestRelease = releases[0]
-
-    let released = true
-    const interval = flags['wait-interval'] as number
-
-    while (1 as any) {
-      const {body: dynos} = await this.heroku.get<Dyno[]>(`/apps/${flags.app}/dynos`)
-      const relevantDynos = dynos
-        .filter(dyno => dyno.type !== 'release')
-        .filter(dyno => flags['with-run'] || dyno.type !== 'run')
-        .filter(dyno => !flags.type || dyno.type === flags.type)
-
-      const onLatest = relevantDynos.filter((dyno: Dyno) => (
-        dyno.state === 'up'
-        && latestRelease.version !== undefined
-        && dyno.release !== undefined
-        && dyno.release.version !== undefined
-        && dyno.release.version >= latestRelease.version
-      ))
-      const releasedFraction = `${onLatest.length} / ${relevantDynos.length}`
-      if (onLatest.length === relevantDynos.length) {
-        if (!released) {
-          ux.action.stop(`${releasedFraction}, done`)
-        }
-
-        break
-      }
-
-      if (released) {
-        released = false
-        ux.action.start(`Waiting for every dyno to be running v${latestRelease.version}`)
-      }
-
-      ux.action.status = releasedFraction
-
-      await hux.wait(interval * 1000)
+    if (waiting) {
+      ux.action.stop(`${result.total} / ${result.total}, done`)
     }
   }
 }
