@@ -171,6 +171,29 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing databases/)
     })
 
+    it('accepts the --no-wrap flag and renders the migrations table', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          targetAdvancedDbAttachment,
+          standardDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+
+      mockedStdinInput = ['\n']
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--no-wrap'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('')
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing databases/)
+    })
+
     it('shows the status description in place of the status when present', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
