@@ -222,6 +222,31 @@ describe('telemetry-manager', function () {
         expect(otelSend.calledOnce, 'Honeycomb should still receive the analytics event').to.be.true
         expect(sentrySend.called, 'Sentry should be skipped for user Ctrl+C').to.be.false
       })
+
+      it('sends 4xx client errors to Honeycomb but NOT Sentry', async function () {
+        const error = Object.assign(new Error('Not found'), {http: {statusCode: 404}})
+
+        await telemetryManager.sendTelemetry(error)
+
+        expect(otelSend.calledOnce, 'Honeycomb should still receive the analytics event').to.be.true
+        expect(sentrySend.called, 'Sentry should be skipped for a 4xx client error').to.be.false
+      })
+
+      it('sends command-not-found errors to Honeycomb but NOT Sentry', async function () {
+        const error = Object.assign(new Error('foo is not a heroku command.'), {oclif: {exit: 127}})
+
+        await telemetryManager.sendTelemetry(error)
+
+        expect(otelSend.calledOnce, 'Honeycomb should still receive the analytics event').to.be.true
+        expect(sentrySend.called, 'Sentry should be skipped for a user typo').to.be.false
+      })
+
+      it('sends CI git helper user errors to Honeycomb but NOT Sentry', async function () {
+        await telemetryManager.sendTelemetry(new Error('Please checkout a branch before running this command'))
+
+        expect(otelSend.calledOnce, 'Honeycomb should still receive the analytics event').to.be.true
+        expect(sentrySend.called, 'Sentry should be skipped for git helper guidance').to.be.false
+      })
     })
 
     it('skips sending on Windows without ENABLE_WINDOWS_TELEMETRY', async function () {

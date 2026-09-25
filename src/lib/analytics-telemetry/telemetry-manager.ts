@@ -5,11 +5,10 @@
 
 import type {Config} from '@oclif/core/interfaces'
 
-import {NONINTERACTIVE_LOGIN_ERROR_CODE} from '@heroku-cli/command'
-
 import type BackboardOtelClient from './backboard-otel-client.js'
 import type SentryClient from './sentry-client.js'
 
+import {isExpectedError} from './error-classification.js'
 // Import internal dependencies
 import {
   isTelemetryEnabled,
@@ -18,9 +17,6 @@ import {
   TelemetryData,
   telemetryDebug,
 } from './telemetry-utils.js'
-
-// Code stamped on the error @heroku-cli/command throws when an interactive
-// login is required but stdin is not a TTY (piped input, CI, or a 401 re-auth).
 
 /**
  * Options passed to telemetry setup (from oclif hooks)
@@ -77,14 +73,10 @@ class TelemetryManager {
     const telemetry = currentTelemetry
 
     if (telemetry instanceof Error) {
-      // Some errors are expected user/environment conditions, not bugs. We still
-      // send them to Honeycomb for analytics (so we can measure how often they
-      // happen) but skip Sentry so they don't pollute error reporting:
-      //   - SIGINT: the user pressed Ctrl+C.
-      //   - HEROKU_NONINTERACTIVE_LOGIN: an interactive login was required but
-      //     stdin is not a TTY (piped input, CI, or a 401 re-auth) — W-22403348.
-      const skipSentry = telemetry.message === 'Received SIGINT'
-        || telemetry.code === NONINTERACTIVE_LOGIN_ERROR_CODE
+      // Every error is recorded in Honeycomb for analytics. Expected
+      // user/environment conditions (see isExpectedError) are excluded from
+      // Sentry so they don't pollute error reporting.
+      const skipSentry = isExpectedError(telemetry)
 
       if (skipSentry) {
         telemetryDebug('Sending error to Honeycomb only (excluded from Sentry): %s', telemetry.message)
