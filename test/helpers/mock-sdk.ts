@@ -9,9 +9,12 @@ type DeepPartial<T> = {
 type StubbedDataClient = Record<string, any>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type StubbedPlatformClient = Record<string, any>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type StubbedMetricsClient = Record<string, any>
 
 export interface MockSDK {
   dataStub?: SinonStub
+  metricsStub?: SinonStub
   platformStub?: SinonStub
   restore: () => void
 }
@@ -29,6 +32,14 @@ export function mockSDKPlatform(fakePlatform: StubbedPlatformClient): MockSDK {
   return {
     platformStub,
     restore: () => platformStub.restore(),
+  }
+}
+
+export function mockSDKMetrics(fakeMetrics: StubbedMetricsClient): MockSDK {
+  const metricsStub = stub(HerokuSDK.prototype, 'metrics').get(() => fakeMetrics)
+  return {
+    metricsStub,
+    restore: () => metricsStub.restore(),
   }
 }
 
