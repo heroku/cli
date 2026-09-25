@@ -23,8 +23,17 @@ class Heroku < Formula
       sha256 "__CLI_LINUX_SHA256__"
     end
     on_arm do
-      url "__CLI_LINUX_ARM_DOWNLOAD_URL__"
-      sha256 "__CLI_LINUX_ARM_SHA256__"
+      # Homebrew's on_arm matches any ARM CPU, so serve the build that matches
+      # the machine: the 64-bit (aarch64) build on 64-bit hosts and the 32-bit
+      # (armhf) build otherwise. Serving the wrong one installs a binary the
+      # machine cannot execute ("Exec format error" — see #3919).
+      if Hardware::CPU.is_64_bit?
+        url "__CLI_LINUX_ARM64_DOWNLOAD_URL__"
+        sha256 "__CLI_LINUX_ARM64_SHA256__"
+      else
+        url "__CLI_LINUX_ARM_DOWNLOAD_URL__"
+        sha256 "__CLI_LINUX_ARM_SHA256__"
+      end
     end
   end
 
