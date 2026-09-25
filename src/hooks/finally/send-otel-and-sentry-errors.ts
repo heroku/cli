@@ -6,10 +6,7 @@ const finallyHook: Hook<'finally'> = async function (options) {
     return
   }
 
-  // Record every error in Honeycomb (for analytics) by spawning the telemetry
-  // worker. Whether an error is ALSO reported to Sentry is decided downstream
-  // in telemetry-manager (see isExpectedError) — the hook no longer drops
-  // errors, so expected user/environment conditions still get counted.
+  // Record every error via the telemetry worker; telemetry-manager decides Sentry vs Honeycomb-only.
   const {getTelemetryDisabledReason, isTelemetryEnabled, spawnTelemetryWorker, telemetryDebug} = await import('../../lib/analytics-telemetry/telemetry-utils.js')
 
   // Use the consolidated telemetry check
