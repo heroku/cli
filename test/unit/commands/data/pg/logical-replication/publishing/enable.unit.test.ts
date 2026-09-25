@@ -26,4 +26,19 @@ describe('data:pg:logical-replication:publishing:enable', function () {
     expect(ansis.strip(stderr)).to.include('advanced-horizontal-01234... requested')
     expect(ansis.strip(stdout)).to.include('to finish updating before creating publications.')
   })
+
+  it('shows a failure marker and the API error when enablement fails', async function () {
+    const herokuApi = resolveAddon()
+    const dataApi = nock('https://api.data.heroku.com')
+      .post(`/data/postgres/v1/${addon.id}/logical-replication/publishing/enable`)
+      .reply(500, {message: 'publishing could not be enabled'})
+
+    const {error, stderr} = await runCommand(DataPgLogicalReplicationPublishingEnable, ['DATABASE', '--app=myapp'])
+
+    herokuApi.done()
+    dataApi.done()
+    expect(ansis.strip(stderr)).to.include('Enabling logical replication publishing for')
+    expect(ansis.strip(stderr)).to.include('... !')
+    expect((error as Error).message).to.include('publishing could not be enabled')
+  })
 })

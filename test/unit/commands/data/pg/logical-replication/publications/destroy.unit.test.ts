@@ -26,4 +26,21 @@ describe('data:pg:logical-replication:publications:destroy', function () {
     expect(ansis.strip(stderr)).to.include('Destroying publication orders on')
     expect(ansis.strip(stderr)).to.include('advanced-horizontal-01234... done')
   })
+
+  it('shows a failure marker and the API error when destruction fails', async function () {
+    const herokuApi = resolveAddon()
+    const dataApi = nock('https://api.data.heroku.com')
+      .delete(`/data/postgres/v1/${addon.id}/logical-replication/publications/orders`)
+      .reply(404, {message: 'publication orders was not found'})
+
+    const {error, stderr} = await runCommand(DataPgLogicalReplicationPublicationsDestroy, [
+      'DATABASE', '--app=myapp', '--name=orders', '--confirm=myapp',
+    ])
+
+    herokuApi.done()
+    dataApi.done()
+    expect(ansis.strip(stderr)).to.include('Destroying publication orders on')
+    expect(ansis.strip(stderr)).to.include('... !')
+    expect((error as Error).message).to.include('publication orders was not found')
+  })
 })
