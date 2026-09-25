@@ -1,0 +1,136 @@
+name: Release Readiness Checklist
+
+# Posts a sticky comment linking the Dev Tools Release Readiness Checklist
+# on customer-facing PRs, visible only to internal Heroku
+# contributors. Advisory only: never blocks, no elevated token, no GitHub App.
+#
+# Design (see also .github/workflows/pr-size-label.yml, whose zero-dependency
+# bash style and safety argument this mirrors):
+#   - Trigger: pull_request_target, NOT pull_request. This job runs on the
+#     org's IP-allow-listed runner pool (see runs-on below). pull_request_target
+#     runs the workflow definition from the BASE branch, so a fork contributor
+#     cannot edit this file in their branch to inject run: steps onto that
+#     runner network. It is only safe because this job (a) never checks out PR
+#     head code — there is no checkout step at all — and (b) references only
+#     trusted, non-text context (repository slug, PR number, author
+#     association), never attacker-controllable fields (PR title/body/branch).
+#     Every such value is passed through env: and never interpolated into the
+#     run: body. Do not add a checkout of the PR ref or reference PR-authored
+#     text here without re-deriving this safety argument.
+#   - Internal-only: gated at the job level on author_association, so external
+#     PRs never even start the allow-listed runner. COLLABORATOR is
+#     intentionally excluded alongside external associations — a repo-push
+#     grant is not the same as org membership, and this reminder is meant only
+#     for Heroku staff.
+#   - Customer-facing only: the comment is posted only when the diff touches a
+#     path customers actually see (commands, docs, changelog, readme); a PR
+#     that only touches tests/CI/tooling gets no nudge.
+#   - Advisory, never blocking: the job always succeeds. The comment is a
+#     reminder, not a required check.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+# Least privilege: we only read the diff and write a comment.
+permissions:
+  contents: read
+  pull-requests: write
+
+# Serialize runs per PR. cancel-in-progress: false so an in-flight run always
+# finishes its non-transactional comment reconciliation (rather than being
+# cancelled mid-update and leaving a partial state); queued runs then apply in
+# order and the last one reflects the PR's final state.
+concurrency:
+  group: release-readiness-checklist-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  checklist-reminder:
+    # The heroku org enforces an IP allow list, so calls to the GitHub API must
+    # originate from an allow-listed runner; GitHub-hosted runners (ubuntu-latest)
+    # get HTTP 403. Same rationale as pr-size-label.yml / release-homebrew.yml.
+    runs-on: pub-hk-ubuntu-24.04-ip
+    # Internal-only gate, evaluated before the runner starts. MEMBER/OWNER are
+    # org members; COLLABORATOR (an individually-granted repo-push permission)
+    # is deliberately excluded — it is not proof of org membership, and every
+    # other association covers external contributors, who should never see
+    # this internal reminder or occupy the allow-listed runner pool.
+    if: ${{ contains(fromJSON('["MEMBER","OWNER"]'), github.event.pull_request.author_association) }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      # PR author's login, greeted by name in the comment. Safe to reference as
+      # a plain bash var ($AUTHOR, never ${{ }}) inside run: because (a) this
+      # job only runs for MEMBER/OWNER — a trusted internal author — and (b) a
+      # GitHub login is charset-constrained ([a-zA-Z0-9-], <=39 chars) and
+      # cannot inject markdown or shell.
+      AUTHOR: ${{ github.event.pull_request.user.login }}
+      # Hidden marker so the reminder is posted once and cleaned up if the PR
+      # later stops touching customer-facing paths.
+      COMMENT_MARKER: "<!-- release-readiness-checklist -->"
+    steps:
+      - name: Post or clear release-readiness reminder
+        run: |
+          set -euo pipefail
+
+          # Comment WRITES are best-effort: an advisory reminder must never
+          # fail the check. try() guards against transient causes (secondary
+          # rate limits, 5xx), emitting a visible ::warning:: with the exit
+          # code so a real regression is never silently swallowed.
+          try() { "$@" || echo "::warning::release-readiness-checklist: '$*' failed (exit $?); continuing (advisory check)"; }
+
+          # --- 1. Read the PR's changed files. Fetch up front so a transient
+          # API failure degrades to a clean, non-blocking skip instead of
+          # aborting under set -e — and so a failed read can never be misread
+          # as "no customer-facing files changed".
+          files="$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename')" \
+            || { echo "::warning::release-readiness-checklist: could not fetch changed files; skipping (advisory check)"; exit 0; }
+
+          # --- 2. Determine whether the diff touches anything customer-facing.
+          # `|| [ -n "$filename" ]` processes a final line that lacks a
+          # trailing newline, so no file is ever silently dropped from the check.
+          customer_facing="false"
+          while IFS= read -r filename || [ -n "${filename:-}" ]; do
+            [ -z "${filename:-}" ] && continue
+
+            # Excluded paths never count, even if they'd otherwise match an
+            # include glob below (e.g. docs/** vs .github/**).
+            case "$filename" in
+              test/*|.github/*|scripts/*|bin/*|package-lock.json|autocomplete-scripts/*|dist/*)
+                continue ;;
+            esac
+
+            case "$filename" in
+              src/commands/*|docs/*|CHANGELOG.md|README.md)
+                customer_facing="true" ;;
+            esac
+          done <<< "$files"
+
+          echo "Customer-facing: $customer_facing"
+          echo "### Release readiness checklist" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Customer-facing: **$customer_facing**" >> "$GITHUB_STEP_SUMMARY"
+
+          # --- 3. Find any existing marker comment. A failed read degrades to
+          # a clean skip (advisory check) rather than aborting under set -e.
+          existing_comment_id="$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+            --jq "map(select(.body | contains(\"$COMMENT_MARKER\"))) | .[0].id // empty")" \
+            || { echo "::warning::release-readiness-checklist: could not read comments; skipping reconcile (advisory check)"; exit 0; }
+
+          # --- 4. Reconcile: post once if customer-facing and not already
+          # posted; remove if the PR no longer touches customer-facing paths.
+          # The marker de-dupes, so this is idempotent across repeated runs.
+          if [ "$customer_facing" = "true" ]; then
+            if [ -z "$existing_comment_id" ]; then
+              body="$COMMENT_MARKER
+          **Release readiness reminder**
+
+          Hi @$AUTHOR — this PR looks like it changes something customers see or use. Before it ships, run the [Release Readiness Checklist](https://github.com/heroku/engineering-docs/blob/master/teams/developer-tooling/release-readiness-checklist.md) — only the CX review is required; the rest is optional context. This is a reminder, not a blocker."
+              try gh pr comment --repo "$REPO" "$PR" --body "$body"
+            fi
+          else
+            if [ -n "$existing_comment_id" ]; then
+              gh api --method DELETE "repos/$REPO/issues/comments/$existing_comment_id" >/dev/null || true
+            fi
+          fi
