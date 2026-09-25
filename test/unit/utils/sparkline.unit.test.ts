@@ -57,4 +57,28 @@ describe('sparkline', function () {
     expect(result.length).to.equal(5)
     expect(result).to.match(/^[▁▂▃▄▅▆▇█]+$/)
   })
+
+  it('renders fractional ranges at full resolution (does not collapse to a flat line)', function () {
+    // Regression for #3919-adjacent bug: the old integer-truncating algorithm
+    // floored inputs, so any range < 1 rendered as a flat '▁▁…' line.
+    const result = sparkline([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8])
+    expect(result).to.equal('▁▂▃▄▅▆▇█')
+  })
+
+  it('renders a sub-integer span instead of a flat line', function () {
+    // Values all share the same integer part (12.x) — previously flattened to '▁▁▁'.
+    const result = sparkline([12, 12.4, 12.9])
+    expect(result).to.match(/^[▁▂▃▄▅▆▇█]{3}$/)
+    expect(result).to.not.equal('▁▁▁')
+    expect(result[0]).to.equal('▁')
+    expect(result[2]).to.equal('█')
+  })
+
+  it('never emits "undefined" for fractional ranges (index stays in bounds)', function () {
+    for (const range of [1 / 32, 0.0625, 0.125, 0.1875]) {
+      const result = sparkline([0, range])
+      expect(result, `range ${range}`).to.not.include('undefined')
+      expect(result, `range ${range}`).to.match(/^[▁▂▃▄▅▆▇█]+$/)
+    }
+  })
 })
