@@ -19,10 +19,8 @@ import {
   telemetryDebug,
 } from './telemetry-utils.js'
 
-// NONINTERACTIVE_LOGIN_ERROR_CODE ('HEROKU_NONINTERACTIVE_LOGIN') is the code
-// stamped on the error @heroku-cli/command throws when an interactive login is
-// required but stdin is not a TTY (piped input, CI, or a 401 re-auth,
-// W-22403348). Imported from @heroku-cli/command, the source of truth.
+// Code stamped on the error @heroku-cli/command throws when an interactive
+// login is required but stdin is not a TTY (piped input, CI, or a 401 re-auth).
 
 /**
  * Options passed to telemetry setup (from oclif hooks)
