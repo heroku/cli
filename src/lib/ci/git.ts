@@ -1,6 +1,7 @@
 import {vars} from '@heroku-cli/command'
+import {Errors} from '@oclif/core'
 import fs from 'fs-extra'
-import {spawn} from 'node:child_process'
+import cp from 'node:child_process'
 import tmp from 'tmp'
 
 const NOT_A_GIT_REPOSITORY = 'not a git repository'
@@ -10,7 +11,7 @@ const NOT_ON_A_BRANCH = 'not a symbolic ref'
 const CHECKOUT_A_BRANCH = 'Please checkout a branch before running this command'
 
 function runGit(...args: string[]): Promise <string> {
-  const git = spawn('git', args)
+  const git = cp.spawn('git', args)
 
   return new Promise((resolve, reject) => {
     git.on('exit', (exitCode: number) => {
@@ -22,12 +23,12 @@ function runGit(...args: string[]): Promise <string> {
 
       const error = (git.stderr.read() || 'unknown error').toString().trim()
       if (error.toLowerCase().includes(NOT_A_GIT_REPOSITORY)) {
-        reject(RUN_IN_A_GIT_REPOSITORY)
+        reject(new Errors.CLIError(RUN_IN_A_GIT_REPOSITORY))
         return
       }
 
       if (error.includes(NOT_ON_A_BRANCH)) {
-        reject(CHECKOUT_A_BRANCH)
+        reject(new Errors.CLIError(CHECKOUT_A_BRANCH))
         return
       }
 
@@ -51,7 +52,7 @@ async function getCommitTitle(ref: string): Promise<string | undefined> {
 }
 
 async function createArchive(ref: string): Promise<any> {
-  const tar = spawn('git', ['archive', '--format', 'tar.gz', ref])
+  const tar = cp.spawn('git', ['archive', '--format', 'tar.gz', ref])
   const file = tmp.fileSync({postfix: '.tar.gz'})
   const write = tar.stdout.pipe(fs.createWriteStream(file.name))
 
