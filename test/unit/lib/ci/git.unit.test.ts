@@ -1,3 +1,4 @@
+import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import cp from 'node:child_process'
 import {EventEmitter} from 'node:events'
@@ -34,9 +35,10 @@ describe('ci/git', function () {
   // Regression: these error paths used to `reject` a plain string. oclif's
   // error handler runs `'name' in err` while pretty-printing, which throws a
   // TypeError on a string primitive — the TypeError is swallowed and the user
-  // sees `undefined` instead of the intended message. Rejecting with an Error
-  // instance keeps the message in the output. (heroku/cli#1695)
-  it('rejects with an Error (not a string) when not in a git repository', async function () {
+  // sees `undefined` instead of the intended message. Rejecting with a
+  // CLIError keeps the message in the output and renders it with Heroku's
+  // error styling. (heroku/cli#1695)
+  it('rejects with a CLIError (not a string) when not in a git repository', async function () {
     const child = fakeGit()
     spawnStub.returns(child)
 
@@ -47,12 +49,13 @@ describe('ci/git', function () {
       await promise
       expect.fail('expected listRemotes to reject')
     } catch (error: unknown) {
-      expect(error).to.be.an.instanceOf(Error)
+      expect(error).to.be.an.instanceOf(Errors.CLIError)
       expect((error as Error).message).to.equal('Please run this command from the directory containing your project\'s git repo')
+      expect((error as Errors.CLIError).oclif.exit).to.equal(2)
     }
   })
 
-  it('rejects with an Error (not a string) when HEAD is not on a branch', async function () {
+  it('rejects with a CLIError (not a string) when HEAD is not on a branch', async function () {
     const child = fakeGit()
     spawnStub.returns(child)
 
@@ -63,8 +66,9 @@ describe('ci/git', function () {
       await promise
       expect.fail('expected listRemotes to reject')
     } catch (error: unknown) {
-      expect(error).to.be.an.instanceOf(Error)
+      expect(error).to.be.an.instanceOf(Errors.CLIError)
       expect((error as Error).message).to.equal('Please checkout a branch before running this command')
+      expect((error as Errors.CLIError).oclif.exit).to.equal(2)
     }
   })
 

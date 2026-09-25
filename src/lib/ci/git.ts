@@ -1,4 +1,5 @@
 import {vars} from '@heroku-cli/command'
+import {Errors} from '@oclif/core'
 import fs from 'fs-extra'
 import cp from 'node:child_process'
 import tmp from 'tmp'
@@ -22,12 +23,12 @@ function runGit(...args: string[]): Promise <string> {
 
       const error = (git.stderr.read() || 'unknown error').toString().trim()
       if (error.toLowerCase().includes(NOT_A_GIT_REPOSITORY)) {
-        reject(new Error(RUN_IN_A_GIT_REPOSITORY))
+        reject(new Errors.CLIError(RUN_IN_A_GIT_REPOSITORY))
         return
       }
 
       if (error.includes(NOT_ON_A_BRANCH)) {
-        reject(new Error(CHECKOUT_A_BRANCH))
+        reject(new Errors.CLIError(CHECKOUT_A_BRANCH))
         return
       }
 

@@ -26,6 +26,15 @@ function isUserError(error: any): boolean {
     return true
   }
 
+  // Filter out the CI git helper's actionable user errors (detached HEAD /
+  // not in a git repo) — these are guidance for the user, not CLI bugs.
+  if (error.message && (
+    error.message.includes('Please checkout a branch before running this command')
+    || error.message.includes('Please run this command from the directory containing your project\'s git repo')
+  )) {
+    return true
+  }
+
   return false
 }
 
