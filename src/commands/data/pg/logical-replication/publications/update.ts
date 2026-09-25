@@ -59,6 +59,6 @@ export default class DataPgLogicalReplicationPublicationsUpdate extends BaseComm
     if (tables) return {tables, type: 'tables'}
     if (schemas) return {schemas, type: 'schemas'}
 
-    ux.error('Specify --all-schemas, at least one --table, or at least one --schema.')
+    ux.error('You must use --all-schemas, or either --table or --schema.')
   }
 }
