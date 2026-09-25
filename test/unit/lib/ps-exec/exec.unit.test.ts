@@ -1,9 +1,10 @@
-import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
+import type {BuildpackInstallation, ConfigVar, Dyno} from '@heroku/types/3.sdk'
+
 import {hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {DynoCrashedError, dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {Errors, ux} from '@oclif/core'
 import {expect} from 'chai'
-import nock from 'nock'
 import child from 'node:child_process'
 import {
   match,
@@ -13,11 +14,41 @@ import {
 } from 'sinon'
 
 import {HerokuExec} from '../../../../src/lib/ps-exec/exec.js'
-import {BuildpackInstallation} from '../../../../src/lib/types/fir.js'
-import {getHerokuAPI} from '../../../helpers/test-instances.js'
+import {mockSDKPlatform} from '../../../helpers/mock-sdk.js'
+
+/**
+ * Builds a fake `platform` client with every `dyno.*` method the exec
+ * flow calls stubbed out, then wires it in via `mockSDKPlatform` and
+ * returns a real `platform` obtained from a fresh `HerokuSDK()` (so the
+ * test exercises the same getter production code uses). Individual
+ * tests override only the stubs they care about.
+ */
+function stubPlatform(overrides: Record<string, SinonStub> = {}) {
+  const fakePlatform = {
+    dyno: {
+      enableExec: stub().resolves(),
+      exchangeExecCredentials: stub().resolves({}),
+      execPrereqs: stub().resolves({
+        buildpacks: [],
+        buildStack: undefined,
+        configVars: {},
+        featureEnabled: true,
+        generation: 'cedar',
+        space: null,
+      }),
+      execStatus: stub().resolves([]),
+      list: stub().resolves([]),
+      restartForExec: stub().resolves({name: 'web.1', state: 'up'}),
+      ...overrides,
+    },
+  }
+
+  mockSDKPlatform(fakePlatform)
+  const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+  return {fakePlatform, platform}
+}
 
 describe('HerokuExec', function () {
-  let herokuAPI: APIClient
   let herokuExec: HerokuExec
   let uxActionStartStub: SinonStub
   let uxActionStopStub: SinonStub
@@ -27,8 +58,7 @@ describe('HerokuExec', function () {
   let huxStyledHeaderStub: SinonStub
   let huxTableStub: SinonStub
 
-  beforeEach(async function () {
-    herokuAPI = await getHerokuAPI()
+  beforeEach(function () {
     herokuExec = new HerokuExec()
     uxActionStartStub = stub(ux.action, 'start')
     uxActionStopStub = stub(ux.action, 'stop')
@@ -41,79 +71,31 @@ describe('HerokuExec', function () {
 
   afterEach(function () {
     restore()
-    nock.cleanAll()
-    delete process.env.HEROKU_EXEC_URL
     delete process.env.HEROKU_API_KEY
     delete process.env.HEROKU_HEADERS
   })
 
-  describe('_execApiPath()', function () {
-    it('returns /api/v1 when configVars[HEROKU_EXEC_URL] is present', function () {
-      const configVars = {HEROKU_EXEC_URL: 'https://exec.heroku.com'}
-      // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execApiPath(configVars)
-      expect(result).to.equal('/api/v1')
-    })
-
-    it('returns /api/v2 when configVars[HEROKU_EXEC_URL] is absent', function () {
-      const configVars = {}
-      // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execApiPath(configVars)
-      expect(result).to.equal('/api/v2')
-    })
-  })
-
-  describe('_execUrl()', function () {
-    const context = {
-      app: 'myapp',
-      auth: {password: 'auth-password'},
-      flags: {},
-    }
-
-    it('parses and returns configVars[HEROKU_EXEC_URL] directly when set', function () {
-      const configVars = {HEROKU_EXEC_URL: 'https://user:pass@exec.heroku.com:8080'}
-      // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execUrl(context, configVars)
-      expect(result.href).to.equal('https://user:pass@exec.heroku.com:8080/')
-      expect(result.username).to.equal('user')
-      expect(result.password).to.equal('pass')
-    })
-
-    it('falls back to process.env.HEROKU_EXEC_URL when configVar is unset but env var is defined', function () {
-      process.env.HEROKU_EXEC_URL = 'https://env.exec.heroku.com'
-      const configVars = {}
-      // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execUrl(context, configVars)
-      expect(result.host).to.equal('env.exec.heroku.com')
-    })
-
-    it('uses default https://exec-manager.heroku.com/ when neither configVar nor env var is set', function () {
-      const configVars = {}
-      // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execUrl(context, configVars)
-      expect(result.host).to.equal('exec-manager.heroku.com')
-    })
-
-    it('sets username to context.app when using default/env URL path', function () {
-      const configVars = {}
-      // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execUrl(context, configVars)
-      expect(result.username).to.equal('myapp')
-    })
-
-    it('uses process.env.HEROKU_API_KEY as password when it is defined', function () {
+  describe('_apiKey()', function () {
+    it('returns process.env.HEROKU_API_KEY when it is defined', function () {
       process.env.HEROKU_API_KEY = 'env-api-key'
-      const configVars = {}
+      const context = {app: 'myapp', auth: {password: 'auth-password'}, flags: {}}
       // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execUrl(context, configVars)
-      expect(result.password).to.equal('env-api-key')
+      const result = herokuExec._apiKey(context)
+      expect(result).to.equal('env-api-key')
     })
 
     it('falls back to context.auth.password when HEROKU_API_KEY is undefined', function () {
-      const configVars = {}
+      const context = {app: 'myapp', auth: {password: 'auth-password'}, flags: {}}
       // @ts-expect-error - accessing private method for testing
-      const result = herokuExec._execUrl(context, configVars)
-      expect(result.password).to.equal('auth-password')
+      const result = herokuExec._apiKey(context)
+      expect(result).to.equal('auth-password')
+    })
+
+    it('returns an empty string when neither is set', function () {
+      const context = {app: 'myapp', auth: {password: undefined}, flags: {}}
+      // @ts-expect-error - accessing private method for testing
+      const result = herokuExec._apiKey(context)
+      expect(result).to.equal('')
     })
   })
 
@@ -203,19 +185,14 @@ describe('HerokuExec', function () {
     }
 
     it('displays styled header with the app name', async function () {
-      const configVars = {}
-      const dynos: Heroku.Dyno[] = []
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp/dynos')
-        .reply(200, dynos)
-
-      nock('https://exec-manager.heroku.com')
-        .get('/api/v2')
-        .reply(200, [])
+      const configVars: ConfigVar = {}
+      const {platform} = stubPlatform({
+        execStatus: stub().resolves([]),
+        list: stub().resolves([]),
+      })
 
       try {
-        await herokuExec.checkStatus(context, herokuAPI, configVars)
+        await herokuExec.checkStatus(context, platform, configVars)
       } catch {
         // Expected to throw after displaying header
       }
@@ -225,19 +202,14 @@ describe('HerokuExec', function () {
     })
 
     it('outputs error message when the reservations list is empty', async function () {
-      const configVars = {}
-      const dynos: Heroku.Dyno[] = []
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp/dynos')
-        .reply(200, dynos)
-
-      nock('https://exec-manager.heroku.com')
-        .get('/api/v2')
-        .reply(200, [])
+      const configVars: ConfigVar = {}
+      const {platform} = stubPlatform({
+        execStatus: stub().resolves([]),
+        list: stub().resolves([]),
+      })
 
       try {
-        await herokuExec.checkStatus(context, herokuAPI, configVars)
+        await herokuExec.checkStatus(context, platform, configVars)
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
@@ -246,19 +218,15 @@ describe('HerokuExec', function () {
     })
 
     it('renders a table row per reservation with proxy_status: running', async function () {
-      const configVars = {}
-      const dynos: Heroku.Dyno[] = [{name: 'web.1', state: 'up'}]
+      const configVars: ConfigVar = {}
+      const dynos = [{name: 'web.1', state: 'up'}]
       const reservations = [{dyno_name: 'web.1', proxy_status: 'running'}]
+      const {platform} = stubPlatform({
+        execStatus: stub().resolves(reservations),
+        list: stub().resolves(dynos as unknown as Dyno[]),
+      })
 
-      nock('https://api.heroku.com')
-        .get('/apps/myapp/dynos')
-        .reply(200, dynos)
-
-      nock('https://exec-manager.heroku.com')
-        .get('/api/v2')
-        .reply(200, JSON.stringify(reservations), {'Content-Type': 'application/json'})
-
-      await herokuExec.checkStatus(context, herokuAPI, configVars)
+      await herokuExec.checkStatus(context, platform, configVars)
 
       expect(huxTableStub.calledOnce).to.be.true
       const tableData = huxTableStub.firstCall.args[0]
@@ -266,19 +234,14 @@ describe('HerokuExec', function () {
     })
 
     it('throws an error when the HTTP request rejects', async function () {
-      const configVars = {}
-      const dynos: Heroku.Dyno[] = []
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp/dynos')
-        .reply(200, dynos)
-
-      nock('https://exec-manager.heroku.com')
-        .get('/api/v2')
-        .reply(500, 'Internal Server Error')
+      const configVars: ConfigVar = {}
+      const {platform} = stubPlatform({
+        execStatus: stub().rejects(new Error('Internal Server Error')),
+        list: stub().resolves([]),
+      })
 
       try {
-        await herokuExec.checkStatus(context, herokuAPI, configVars)
+        await herokuExec.checkStatus(context, platform, configVars)
         expect.fail('should have thrown')
       } catch (error) {
         // Error thrown as expected
@@ -295,15 +258,20 @@ describe('HerokuExec', function () {
     }
 
     it('shows exec-specific error message and exits when app generation is fir and command === exec', async function () {
-      const app = {generation: 'fir', space: null}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: undefined,
+          configVars: {},
+          featureEnabled: false,
+          generation: 'fir',
+          space: null,
+        }),
+      })
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback, 'exec')
+        await herokuExec.initFeature(context, platform, callback, 'exec')
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
@@ -312,15 +280,20 @@ describe('HerokuExec', function () {
     })
 
     it('shows generic unavailable message and exits when app generation is fir and command is anything else', async function () {
-      const app = {generation: 'fir', space: null}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: undefined,
+          configVars: {},
+          featureEnabled: false,
+          generation: 'fir',
+          space: null,
+        }),
+      })
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback, 'other')
+        await herokuExec.initFeature(context, platform, callback, 'other')
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
@@ -329,24 +302,20 @@ describe('HerokuExec', function () {
     })
 
     it('errors and exits when app is in a Shield Private Space', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: {shield: true}}
-      const buildpacks: BuildpackInstallation[] = []
-      const configVars = {}
-      const feature = {enabled: false}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: {shield: true},
+        }),
+      })
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback)
+        await herokuExec.initFeature(context, platform, callback)
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
@@ -355,47 +324,39 @@ describe('HerokuExec', function () {
     })
 
     it('warns (does not exit) when app is in a non-shield space using the container stack', async function () {
-      const app = {build_stack: {name: 'container'}, generation: 'cedar', space: {shield: false}}
-      const buildpacks: BuildpackInstallation[] = [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}]
-      const configVars = {}
-      const feature = {enabled: true}
       const callback = stub()
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}],
+          buildStack: 'container',
+          configVars: {},
+          featureEnabled: true,
+          generation: 'cedar',
+          space: {shield: false},
+        }),
+      })
 
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
-
-      await herokuExec.initFeature(context, herokuAPI, callback)
+      await herokuExec.initFeature(context, platform, callback)
 
       expect(uxWarnStub.calledOnce).to.be.true
       expect(uxWarnStub.firstCall.args[0]).to.include('container stack')
     })
 
     it('errors and exits when app is in a space, has no buildpacks, and no exec buildpack', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: {shield: false}}
-      const buildpacks: BuildpackInstallation[] = []
-      const configVars = {}
-      const feature = {enabled: false}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: {shield: false},
+        }),
+      })
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback)
+        await herokuExec.initFeature(context, platform, callback)
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
@@ -404,28 +365,23 @@ describe('HerokuExec', function () {
     })
 
     it('enables feature, adds exec buildpack, and exits when app is in a space and exec buildpack is missing', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: {shield: false}}
-      const buildpacks: BuildpackInstallation[] = [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}]
-      const configVars = {}
-      const feature = {enabled: false}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
-        .patch('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, {enabled: true})
+      const {platform} = stubPlatform({
+        enableExec: stub().resolves(),
+        execPrereqs: stub().resolves({
+          buildpacks: [{buildpack: {url: 'https://github.com/heroku/ruby-buildpack'}, ordinal: 1}],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: {shield: false},
+        }),
+      })
 
       const childExecSyncStub = stub(child, 'execSync')
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback)
+        await herokuExec.initFeature(context, platform, callback)
         expect.fail('should have thrown')
       } catch (error) {
         const {oclif} = error as Errors.ExitError
@@ -437,47 +393,39 @@ describe('HerokuExec', function () {
     })
 
     it('warns to remove exec buildpack when app is NOT in a space but already has the exec buildpack installed', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: null}
-      const buildpacks: BuildpackInstallation[] = [{buildpack: {url: 'https://github.com/heroku/exec-buildpack'}, ordinal: 1}]
-      const configVars = {}
-      const feature = {enabled: true}
       const callback = stub()
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [{buildpack: {url: 'https://github.com/heroku/exec-buildpack'}, ordinal: 1}],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: true,
+          generation: 'cedar',
+          space: null,
+        }),
+      })
 
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
-
-      await herokuExec.initFeature(context, herokuAPI, callback)
+      await herokuExec.initFeature(context, platform, callback)
 
       expect(uxWarnStub.calledOnce).to.be.true
       expect(uxWarnStub.firstCall.args[0]).to.include('no longer required')
     })
 
     it('errors and exits when HEROKU_EXEC_URL config var is present (legacy addon path)', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: null}
-      const buildpacks: BuildpackInstallation[] = []
-      const configVars = {HEROKU_EXEC_URL: 'https://legacy.heroku.com'}
-      const feature = {enabled: false}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars: {HEROKU_EXEC_URL: 'https://legacy.heroku.com'},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: null,
+        }),
+      })
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback)
+        await herokuExec.initFeature(context, platform, callback)
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
@@ -486,26 +434,22 @@ describe('HerokuExec', function () {
     })
 
     it('exits without enabling feature when user answers n to the prompt', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: null}
-      const buildpacks: BuildpackInstallation[] = []
-      const configVars = {}
-      const feature = {enabled: false}
       const callback = stub()
-
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: null,
+        }),
+      })
 
       huxPromptStub.resolves('n')
 
       try {
-        await herokuExec.initFeature(context, herokuAPI, callback)
+        await herokuExec.initFeature(context, platform, callback)
         expect.fail('should have thrown')
       } catch (error) {
         const {oclif} = error as Errors.ExitError
@@ -514,24 +458,72 @@ describe('HerokuExec', function () {
       }
     })
 
-    it('calls callback(configVars) when feature is already enabled', async function () {
-      const app = {build_stack: {name: 'heroku-20'}, generation: 'cedar', space: null}
-      const buildpacks: BuildpackInstallation[] = []
-      const configVars = {}
-      const feature = {enabled: true}
+    it('answers y to the restart prompt, restarts dynos, and invokes callback', async function () {
       const callback = stub()
+      const restartForExecStub = stub().resolves({name: 'web.1', state: 'up'})
+      const {platform} = stubPlatform({
+        enableExec: stub().resolves(),
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: null,
+        }),
+        restartForExec: restartForExecStub,
+      })
 
-      nock('https://api.heroku.com')
-        .get('/apps/myapp')
-        .reply(200, app)
-        .get('/apps/myapp/buildpack-installations')
-        .reply(200, buildpacks)
-        .get('/apps/myapp/config-vars')
-        .reply(200, configVars)
-        .get('/apps/myapp/features/runtime-heroku-exec')
-        .reply(200, feature)
+      huxPromptStub.resolves('y')
 
-      await herokuExec.initFeature(context, herokuAPI, callback)
+      await herokuExec.initFeature(context, platform, callback)
+
+      expect(restartForExecStub.calledOnce).to.be.true
+      expect(callback.calledOnce).to.be.true
+    })
+
+    it('throws "The dyno crashed" when restartForExec rejects with DynoCrashedError', async function () {
+      const callback = stub()
+      const crashedDyno = {name: 'web.1', state: 'crashed'} as unknown as Dyno
+      const {platform} = stubPlatform({
+        enableExec: stub().resolves(),
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars: {},
+          featureEnabled: false,
+          generation: 'cedar',
+          space: null,
+        }),
+        restartForExec: stub().rejects(new DynoCrashedError(crashedDyno)),
+      })
+
+      huxPromptStub.resolves('y')
+
+      try {
+        await herokuExec.initFeature(context, platform, callback)
+        expect.fail('should have thrown')
+      } catch (error) {
+        expect((error as Error).message).to.equal('The dyno crashed')
+        expect(callback.called).to.be.false
+      }
+    })
+
+    it('calls callback(configVars) when feature is already enabled', async function () {
+      const configVars: ConfigVar = {}
+      const callback = stub()
+      const {platform} = stubPlatform({
+        execPrereqs: stub().resolves({
+          buildpacks: [],
+          buildStack: 'heroku-20',
+          configVars,
+          featureEnabled: true,
+          generation: 'cedar',
+          space: null,
+        }),
+      })
+
+      await herokuExec.initFeature(context, platform, callback)
 
       expect(callback.calledOnce).to.be.true
       expect(callback.firstCall.args[0]).to.deep.equal(configVars)
@@ -545,49 +537,52 @@ describe('HerokuExec', function () {
       flags: {},
     }
 
-    it('generates a keypair and sends the public key via PUT request', async function () {
-      const configVars = {}
+    it('generates a keypair and calls exchangeExecCredentials', async function () {
+      const configVars: ConfigVar = {}
       const callback = stub()
+      const exchangeStub = stub().resolves({
+        client_user: 'myapp',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA',
+        tunnel_host: 'tunnel.heroku.com',
+      })
+      const {platform} = stubPlatform({exchangeExecCredentials: exchangeStub})
 
-      nock('https://exec-manager.heroku.com')
-        .put('/api/v2/web.1')
-        .basicAuth({pass: 'pass', user: 'myapp'})
-        .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
-
-      await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
+      await herokuExec.updateClientKey(context, platform, configVars, callback)
 
       expect(uxActionStartStub.calledWith('Establishing credentials')).to.be.true
       expect(uxActionStopStub.calledOnce).to.be.true
+      expect(exchangeStub.calledOnce).to.be.true
     })
 
-    it('calls callback with (privateKey, dyno, response) on success', async function () {
-      const configVars = {}
+    it('calls callback with (privateKey, dyno, credentials) on success', async function () {
+      const configVars: ConfigVar = {}
       const callback = stub()
+      const exchangeStub = stub().resolves({
+        client_user: 'myapp',
+        dyno_ip: '10.0.0.1',
+        proxy_public_key: 'ssh-rsa AAAA',
+        tunnel_host: 'tunnel.heroku.com',
+      })
+      const {platform} = stubPlatform({exchangeExecCredentials: exchangeStub})
 
-      nock('https://exec-manager.heroku.com')
-        .put('/api/v2/web.1')
-        .basicAuth({pass: 'pass', user: 'myapp'})
-        .reply(200, JSON.stringify({dyno_ip: '10.0.0.1', tunnel_host: 'tunnel.heroku.com'}), {'Content-Type': 'application/json'})
-
-      await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
+      await herokuExec.updateClientKey(context, platform, configVars, callback)
 
       expect(callback.calledOnce).to.be.true
       expect(callback.firstCall.args[0]).to.be.a('string') // privateKey
       expect(callback.firstCall.args[1]).to.equal('web.1') // dyno
-      expect(callback.firstCall.args[2]).to.have.property('body') // response
+      expect(callback.firstCall.args[2]).to.have.property('tunnel_host', 'tunnel.heroku.com') // credentials
     })
 
     it('shows "Could not connect to dyno" error and does not call callback when the request rejects', async function () {
-      const configVars = {}
+      const configVars: ConfigVar = {}
       const callback = stub()
-
-      nock('https://exec-manager.heroku.com')
-        .put('/api/v2/web.1')
-        .basicAuth({pass: 'pass', user: 'myapp'})
-        .reply(500, 'Internal Server Error')
+      const {platform} = stubPlatform({
+        exchangeExecCredentials: stub().rejects(new Error('Internal Server Error')),
+      })
 
       try {
-        await herokuExec.updateClientKey(context, herokuAPI, configVars, callback)
+        await herokuExec.updateClientKey(context, platform, configVars, callback)
         expect.fail('should have thrown')
       } catch (error) {
         const {message} = error as Errors.CLIError
