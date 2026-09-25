@@ -41,7 +41,7 @@ export default class DataPgLogicalReplicationPublicationsCreate extends BaseComm
       await this.dataApi.post(`/data/postgres/v1/${addon.id}/logical-replication/publications`, {body: {name: flags.name, target}})
       ux.action.stop()
       if (flags['all-schemas']) {
-        ux.stdout('The publication includes all current customer schemas. Tables created later and new schemas are not added automatically.')
+        ux.stdout('The publication includes all current customer schemas. It doesn’t automatically add new tables or schemas created later.')
       }
     } catch (error) {
       ux.action.stop(color.red('!'))
