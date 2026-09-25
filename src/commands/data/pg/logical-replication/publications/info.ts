@@ -31,8 +31,8 @@ export default class DataPgLogicalReplicationPublicationsInfo extends BaseComman
 
     hux.styledObject({
       'Current Tables': publication.current_tables.join(', '),
-      'New Tables': publication.target.automatically_includes_new_tables ? 'Included' : 'Not Included',
       Name: publication.name,
+      'New Tables': publication.target.automatically_includes_new_tables ? 'Included' : 'Not Included',
       Owner: publication.owner,
       Target: `${publication.target.type}: ${target}`,
     }, ['Name', 'Owner', 'Target', 'Current Tables', 'New Tables'])
