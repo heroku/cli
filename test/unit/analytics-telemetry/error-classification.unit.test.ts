@@ -1,10 +1,23 @@
 import {expect} from 'chai'
 
 import {isExpectedError} from '../../../src/lib/analytics-telemetry/error-classification.js'
-import {CLIError} from '../../../src/lib/analytics-telemetry/telemetry-utils.js'
+import {CLIError, parseWorkerEnvelope, serializeTelemetryData} from '../../../src/lib/analytics-telemetry/telemetry-utils.js'
 
 const asCLIError = (error: Error, extra: Partial<CLIError> = {}): CLIError =>
   Object.assign(error, extra) as CLIError
+
+// Mirrors telemetry-worker.ts: the parent serializes the error, the detached
+// worker reconstructs it as a plain Error before classification runs. This
+// guards the fields isExpectedError depends on against a serialization change.
+function reconstructLikeWorker(error: CLIError): CLIError {
+  const {payload} = parseWorkerEnvelope(serializeTelemetryData(error))
+  const parsed = payload as unknown as CLIError
+  const reconstructed = new Error(parsed.message) as CLIError
+  reconstructed.name = parsed.name
+  reconstructed.stack = parsed.stack
+  Object.assign(reconstructed, parsed)
+  return reconstructed
+}
 
 describe('error-classification', function () {
   describe('isExpectedError', function () {
@@ -50,6 +63,21 @@ describe('error-classification', function () {
 
     it('does NOT treat a genuine bug as expected', function () {
       expect(isExpectedError(asCLIError(new Error('Cannot read properties of undefined')))).to.be.false
+    })
+
+    describe('survives the worker serialize/reconstruct round-trip', function () {
+      it('keeps the non-interactive login code', function () {
+        const error = asCLIError(new Error('Cannot prompt for login in a non-interactive terminal.'), {
+          code: 'HEROKU_NONINTERACTIVE_LOGIN',
+        })
+        expect(isExpectedError(error), 'expected before serialization').to.be.true
+        expect(isExpectedError(reconstructLikeWorker(error)), 'still expected after round-trip').to.be.true
+      })
+
+      it('keeps a 4xx http.statusCode', function () {
+        const error = asCLIError(new Error('Not found'), {http: {statusCode: 404}})
+        expect(isExpectedError(reconstructLikeWorker(error))).to.be.true
+      })
     })
   })
 })

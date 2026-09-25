@@ -49,6 +49,10 @@ function is4xx(statusCode?: number): boolean {
 }
 
 function isCommandNotFound(error: CLIError): boolean {
+  // Both signals below come from @oclif/plugin-not-found's command_not_found
+  // hook (it throws `this.error(..., {exit: 127})` with the message text), not
+  // from oclif core — re-check them if that dependency (pinned ^3.x) changes
+  // its exit code or wording.
   if (error.oclif?.exit === 127) {
     return true
   }
