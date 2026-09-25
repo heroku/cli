@@ -25,7 +25,7 @@ export default class DataPgLogicalReplicationPublicationsCreate extends BaseComm
       exclusive: ['schema', 'table'],
     }),
     app: Flags.app({required: true}),
-    name: Flags.string({description: 'lowercase name for the publication', required: true}),
+    name: Flags.string({description: 'name for publication', required: true}),
     remote: Flags.remote(),
     schema: Flags.string({description: 'schema to include, including new tables created in the schema', multiple: true}),
     table: Flags.string({description: 'fully-qualified table to include', multiple: true}),
