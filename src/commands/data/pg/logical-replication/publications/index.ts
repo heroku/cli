@@ -36,7 +36,7 @@ export default class DataPgLogicalReplicationPublicationsIndex extends BaseComma
 
     hux.table(items, {
       Name: {get: publication => publication.name},
-      'New Tables': {get: publication => publication.target.automatically_includes_new_tables ? 'included' : 'not included'},
+      'New Tables': {get: publication => publication.target.automatically_includes_new_tables ? 'Included' : 'Not Included'},
       Owner: {get: publication => publication.owner},
       Target: {
         get: publication => publication.target.type === 'schemas'

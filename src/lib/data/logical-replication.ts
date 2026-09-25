@@ -42,7 +42,7 @@ export async function resolveAdvancedDatabase(command: BaseCommand, database: st
   const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
 
   if (!utils.pg.isAdvancedDatabase(addon)) {
-    ux.error(`You can only use this command on Advanced-tier databases.\nUse ${color.code(`heroku data:pg:info ${database} --app ${app}`)} to inspect an Advanced database.`)
+    ux.error(`You can only use this command on Advanced-tier databases.\nUse ${color.code(`heroku data:pg:info ${database} --app ${app}`)} to get details on the Advanced database.`)
   }
 
   return addon

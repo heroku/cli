@@ -20,7 +20,7 @@ export default class DataPgLogicalReplicationPublicationsDestroy extends BaseCom
   static flags = {
     app: Flags.app({required: true}),
     confirm: Flags.string({char: 'c', description: 'pass in the app name to skip confirmation prompts'}),
-    name: Flags.string({description: 'name of the publication', required: true}),
+    name: Flags.string({description: 'name of publication', required: true}),
     remote: Flags.remote(),
   }
 

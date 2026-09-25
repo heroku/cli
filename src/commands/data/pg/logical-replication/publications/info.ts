@@ -13,13 +13,13 @@ export default class DataPgLogicalReplicationPublicationsInfo extends BaseComman
       required: true,
     }),
   }
-  static description = 'show a logical replication publication on a Postgres Advanced database'
+  static description = 'show details of a logical replication publication on a Postgres Advanced database'
   static examples = [
     '<%= config.bin %> <%= command.id %> DATABASE --name orders --app example-app',
   ]
   static flags = {
     app: Flags.app({required: true}),
-    name: Flags.string({description: 'name of the publication', required: true}),
+    name: Flags.string({description: 'name of publication', required: true}),
     remote: Flags.remote(),
   }
 
@@ -31,10 +31,10 @@ export default class DataPgLogicalReplicationPublicationsInfo extends BaseComman
 
     hux.styledObject({
       'Current Tables': publication.current_tables.join(', '),
-      'Includes New Tables': publication.target.automatically_includes_new_tables ? 'yes' : 'no',
+      'New Tables': publication.target.automatically_includes_new_tables ? 'Included' : 'Not Included',
       Name: publication.name,
       Owner: publication.owner,
       Target: `${publication.target.type}: ${target}`,
-    }, ['Name', 'Owner', 'Target', 'Current Tables', 'Includes New Tables'])
+    }, ['Name', 'Owner', 'Target', 'Current Tables', 'New Tables'])
   }
 }
