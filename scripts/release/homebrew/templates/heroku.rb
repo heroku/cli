@@ -23,8 +23,8 @@ class Heroku < Formula
       sha256 "__CLI_LINUX_SHA256__"
     end
     on_arm do
-      url "__CLI_LINUX_ARM_DOWNLOAD_URL__"
-      sha256 "__CLI_LINUX_ARM_SHA256__"
+      url "__CLI_LINUX_ARM64_DOWNLOAD_URL__"
+      sha256 "__CLI_LINUX_ARM64_SHA256__"
     end
   end
 
