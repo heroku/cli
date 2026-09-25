@@ -13,7 +13,7 @@ export default class DataPgLogicalReplicationPublicationsUpdate extends BaseComm
       required: true,
     }),
   }
-  static description = 'replace the target of a logical replication publication'
+  static description = 'replace the target of a logical replication publication on a Postgres Advanced database'
   static examples = [
     '<%= config.bin %> <%= command.id %> DATABASE --name orders --table public.orders --app example-app',
     '<%= config.bin %> <%= command.id %> DATABASE --name application --schema public --app example-app',
@@ -25,10 +25,10 @@ export default class DataPgLogicalReplicationPublicationsUpdate extends BaseComm
       exclusive: ['schema', 'table'],
     }),
     app: Flags.app({required: true}),
-    name: Flags.string({description: 'name of the publication', required: true}),
+    name: Flags.string({description: 'name of publication', required: true}),
     remote: Flags.remote(),
     schema: Flags.string({description: 'schema to include, including new tables created in the schema', multiple: true}),
-    table: Flags.string({description: 'fully-qualified table to include', multiple: true}),
+    table: Flags.string({description: 'fully qualified table to include', multiple: true}),
   }
 
   async run(): Promise<void> {
@@ -41,7 +41,7 @@ export default class DataPgLogicalReplicationPublicationsUpdate extends BaseComm
       await this.dataApi.put(`/data/postgres/v1/${addon.id}/logical-replication/publications/${encodeURIComponent(flags.name)}`, {body: {target}})
       ux.action.stop()
       if (flags['all-schemas']) {
-        ux.stdout('The publication includes all current customer schemas. Tables created later and new schemas are not added automatically.')
+        ux.stdout('The publication includes all current customer schemas. It doesn’t automatically add new tables or schemas created later.')
       }
     } catch (error) {
       ux.action.stop(color.red('!'))
