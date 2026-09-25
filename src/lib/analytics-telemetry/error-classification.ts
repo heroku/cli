@@ -10,14 +10,8 @@ const GIT_USER_ERROR_MESSAGES = [
 ]
 
 /**
- * Single source of truth for whether an error is an *expected* user/environment
- * condition rather than a CLI bug.
- *
- * Expected errors are still recorded in Honeycomb (via the OTEL client) so we
- * can measure how often they happen, but are excluded from Sentry so they don't
- * pollute error reporting. The `finally` hook no longer drops errors; it always
- * records them, and `telemetry-manager` uses this classifier to decide whether
- * to ALSO send to Sentry.
+ * Whether an error is an expected user/environment condition rather than a CLI
+ * bug. Expected errors are recorded in Honeycomb but excluded from Sentry.
  */
 export function isExpectedError(error: CLIError): boolean {
   // 4xx client errors (e.g. HerokuAPIError) — the user's request was rejected,
