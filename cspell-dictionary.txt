@@ -255,7 +255,6 @@ nqry
 nsis
 nspname
 oclif
-odie
 oldname
 openredis
 optfile

@@ -56,6 +56,7 @@ async function updateHerokuFormula(brewDir) {
   const fileNameMacIntel = `${fileNamePrefix}-darwin-${ARCH_INTEL}${fileSuffix}`
   const fileNameMacArm = `${fileNamePrefix}-darwin-${ARCH_ARM}${fileSuffix}`
   const fileNameLinuxIntel = `${fileNamePrefix}-linux-${ARCH_INTEL}${fileSuffix}`
+  const fileNameLinuxArm = `${fileNamePrefix}-linux-arm${fileSuffix}`
   const fileNameLinuxArm64 = `${fileNamePrefix}-linux-${ARCH_ARM}${fileSuffix}`
 
   // download files from S3 for SHA calc
@@ -63,12 +64,14 @@ async function updateHerokuFormula(brewDir) {
     downloadFileFromS3(s3KeyPrefix, fileNameMacIntel, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameMacArm, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameLinuxIntel, __dirname),
+    downloadFileFromS3(s3KeyPrefix, fileNameLinuxArm, __dirname),
     downloadFileFromS3(s3KeyPrefix, fileNameLinuxArm64, __dirname),
   ])
 
   const sha256MacIntel = await calculateSHA256(path.join(__dirname, fileNameMacIntel))
   const sha256MacArm = await calculateSHA256(path.join(__dirname, fileNameMacArm))
   const sha256LinuxIntel = await calculateSHA256(path.join(__dirname, fileNameLinuxIntel))
+  const sha256LinuxArm = await calculateSHA256(path.join(__dirname, fileNameLinuxArm))
   const sha256LinuxArm64 = await calculateSHA256(path.join(__dirname, fileNameLinuxArm64))
 
   const templateReplaced
@@ -83,6 +86,9 @@ async function updateHerokuFormula(brewDir) {
 
       .replace('__CLI_LINUX_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxIntel}`)
       .replace('__CLI_LINUX_SHA256__', sha256LinuxIntel)
+
+      .replace('__CLI_LINUX_ARM_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxArm}`)
+      .replace('__CLI_LINUX_ARM_SHA256__', sha256LinuxArm)
 
       .replace('__CLI_LINUX_ARM64_DOWNLOAD_URL__', `${urlPrefix}/${fileNameLinuxArm64}`)
       .replace('__CLI_LINUX_ARM64_SHA256__', sha256LinuxArm64)
