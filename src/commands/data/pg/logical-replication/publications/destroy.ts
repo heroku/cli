@@ -13,7 +13,7 @@ export default class DataPgLogicalReplicationPublicationsDestroy extends BaseCom
       required: true,
     }),
   }
-  static description = 'destroy a logical replication publication'
+  static description = 'destroy a logical replication publication on a Postgres Advanced database'
   static examples = [
     '<%= config.bin %> <%= command.id %> DATABASE --name orders --app example-app --confirm example-app',
   ]
