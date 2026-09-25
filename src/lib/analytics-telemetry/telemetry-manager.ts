@@ -5,6 +5,8 @@
 
 import type {Config} from '@oclif/core/interfaces'
 
+import {NONINTERACTIVE_LOGIN_ERROR_CODE} from '@heroku-cli/command'
+
 import type BackboardOtelClient from './backboard-otel-client.js'
 import type SentryClient from './sentry-client.js'
 
@@ -17,14 +19,10 @@ import {
   telemetryDebug,
 } from './telemetry-utils.js'
 
-// Mirrors NONINTERACTIVE_LOGIN_ERROR_CODE exported by @heroku-cli/command
-// (its src/login.ts) — the code stamped on the error thrown when an interactive
-// login is required but stdin is not a TTY (piped input, CI, or a 401 re-auth,
-// W-22403348). @heroku-cli/command is the source of truth.
-// TODO(W-22403348): import this constant from @heroku-cli/command once a release
-// that exports it is published and reflected in npm-shrinkwrap.json, to remove
-// this cross-repo string duplication.
-const NONINTERACTIVE_LOGIN_ERROR_CODE = 'HEROKU_NONINTERACTIVE_LOGIN'
+// NONINTERACTIVE_LOGIN_ERROR_CODE ('HEROKU_NONINTERACTIVE_LOGIN') is the code
+// stamped on the error @heroku-cli/command throws when an interactive login is
+// required but stdin is not a TTY (piped input, CI, or a 401 re-auth,
+// W-22403348). Imported from @heroku-cli/command, the source of truth.
 
 /**
  * Options passed to telemetry setup (from oclif hooks)
