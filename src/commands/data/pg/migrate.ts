@@ -527,7 +527,7 @@ export default class DataPgMigrate extends BaseCommand {
           header: 'Destination Database',
         },
         status: {
-          get: (migration: MigrationResponse) => color.info(migration.status_description),
+          get: (migration: MigrationResponse) => migration.status_description,
           header: 'Status',
         },
       }, huxTableNoWrapOptions(this.noWrap))
