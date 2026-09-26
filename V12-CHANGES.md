@@ -9,6 +9,12 @@
 
 - `certs:add` matches wildcard certificates against your app's domains more strictly: a `*.example.com` certificate now matches only direct subdomains (e.g. `www.example.com`), no longer matching deeper or trailing-suffix domains
 
+## Ps commands
+
+- `ps:type` (aliases `ps:resize`, `dyno:resize`) now reads and resizes the dyno formation through `@heroku/sdk` (`platform.formation.list`, `platform.dyno.scale`) and detects shielded spaces via `platform.app.isShielded` instead of raw `this.heroku.*` calls. These requests previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now default to `application/vnd.heroku+json; version=3.sdk`; the schemas are byte-identical, so the rendered tables and the Eco cost message are unchanged.
+- `ps:wait` now polls for dyno convergence through `@heroku/sdk` (`platform.dyno.waitForRelease`) instead of a CLI-side loop over raw `this.heroku.*` calls. The target-release lookup and dyno polling previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now default to `application/vnd.heroku+json; version=3.sdk`; the schemas are byte-identical, so the progress fraction (`${done} / ${total}`), the `, done` suffix, and the no-releases warning are unchanged.
+- `ps:autoscale:enable` and `ps:autoscale:disable` now make API calls through `@heroku/sdk` (`platform.app.info`, `platform.formation.list`, and the new `metrics.formationMonitor.{list,create,update}` client for `api.metrics.heroku.com`) instead of raw `this.heroku.*` calls. `ps:autoscale:disable`'s app lookup previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now defaults to `application/vnd.heroku+json; version=3.sdk` (`ps:autoscale:enable`'s app/formation lookups already sent `version=3.sdk`); the schemas are byte-identical, so behavior and output are unchanged.
+
 ## Run commands
 
 - `run`, `run:detached`, and `run:inside` now create dynos through `@heroku/sdk` (`platform.dyno.run`) instead of raw API calls.

@@ -305,6 +305,7 @@ postrelease
 postrun
 preassessment
 preauth
+prereqs
 prerun
 preupdate
 privkeypem

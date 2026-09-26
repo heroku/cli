@@ -1,7 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {HerokuSDK} from '@heroku/sdk'
+import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import socks from '@heroku/socksv5'
+import {ConfigVar} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import net from 'node:net'
 import tsheredoc from 'tsheredoc'
@@ -50,6 +52,8 @@ export default class Forward extends Command {
 
     const exec = new HerokuExec()
 
+    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+
     const portMappings: string[] = args.port.split(',').map((portMapping: string) => {
       const ports = portMapping.split(':')
 
@@ -58,8 +62,8 @@ export default class Forward extends Command {
       return [ports[0], ports[1] || localPort || ports[0]]
     })
 
-    await exec.initFeature(context, this.heroku, async (configVars: Heroku.ConfigVars) => {
-      await exec.createSocksProxy(context, this.heroku, configVars, (dynoIp: string, dynoName: string, socksPort: number) => {
+    await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
+      await exec.createSocksProxy(context, platform, configVars, (dynoIp: string, dynoName: string, socksPort: number) => {
         for (const portMapping of portMappings) {
           const [localPortNum, remotePort] = portMapping
 

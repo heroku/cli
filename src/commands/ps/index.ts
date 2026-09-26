@@ -1,12 +1,13 @@
+import type {DynoExtended} from '@heroku/sdk/extensions/platform'
+
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import {appExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
+import {appExtensions, dynoExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import type {AccountQuota} from '../../lib/types/account-quota.js'
-import type {DynoExtended} from '../../lib/types/dyno-extended.js'
 
 import {ago} from '../../lib/time.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
@@ -42,13 +43,11 @@ export default class Index extends Command {
     const {app, extended, json} = flags
     const types = restParse.argv as string[]
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
 
-    const dynosPromise = extended
-      ? this.heroku.request<DynoExtended[]>(`/apps/${app}/dynos?extended=true`, {
-        headers: {Accept: 'application/vnd.heroku+json; version=3.sdk'},
-      }).then(r => r.body)
-      : platform.dyno.list(app) as Promise<DynoExtended[]>
+    const dynosPromise: Promise<DynoExtended[]> = extended
+      ? platform.dyno.listExtended(app)
+      : platform.dyno.list(app)
 
     const [dynos, shielded, appInfo, accountInfo] = await Promise.all([
       dynosPromise,
@@ -225,8 +224,9 @@ function printExtended(dynos: DynoExtended[], noWrap = false) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
   /* eslint-disable perfectionist/sort-objects */
-  hux.table<DynoExtended>(
-    sortedDynos,
+  // hux.table needs Record<string, unknown>; the SDK's interface-based DynoExtended has no implicit index signature.
+  hux.table<DynoExtended & Record<string, unknown>>(
+    sortedDynos as (DynoExtended & Record<string, unknown>)[],
     {
       ID: {get: (dyno: DynoExtended) => dyno.id},
       Process: {get: (dyno: DynoExtended) => dyno.name},
