@@ -1,12 +1,12 @@
 {
   "name": "heroku",
   "description": "CLI to interact with Heroku",
-  "version": "11.10.0",
+  "version": "11.10.1",
   "author": "Heroku",
   "bin": "./bin/run.js",
   "bugs": "https://github.com/heroku/cli/issues",
   "dependencies": {
-    "@heroku-cli/command": "^13.2.0",
+    "@heroku-cli/command": "^13.2.2",
     "@heroku-cli/notifications": "^1.2.9",
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
@@ -41,7 +41,7 @@
     "chrono-node": "^2.7.6",
     "cli-progress": "^3.12.0",
     "commander": "^2.15.1",
-    "date-fns": "^2.30.0",
+    "date-fns": "^4.4.0",
     "debug": "^4.4.3",
     "eventsource": "^4",
     "execa": "^9.6.1",
