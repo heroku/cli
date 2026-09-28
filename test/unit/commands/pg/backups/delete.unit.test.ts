@@ -1,26 +1,31 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, type SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../../src/commands/pg/backups/delete.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 describe('pg:backups:delete', function () {
-  let pg: nock.Scope
+  let deleteStub: SinonStub
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    pg = nock('https://api.data.heroku.com')
-      .delete('/client/v11/apps/myapp/transfers/3')
-      .reply(200, {
-        url: 'https://dburl',
-      })
+    deleteStub = stub().resolves({url: 'https://dburl'})
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    pg.done()
+    restore()
   })
 
-  it('shows URL', async function () {
+  it('deletes the backup', async function () {
+    sdkMock = mockSDKData({
+      transfer: {
+        deleteByApp: deleteStub,
+        listByApp: stub().resolves([
+          {num: 3, succeeded: true, to_type: 'gof3r'},
+        ]),
+      },
+    })
     const {stderr} = await runCommand(Cmd, [
       '--app',
       'myapp',
@@ -29,5 +34,6 @@ describe('pg:backups:delete', function () {
       'b003',
     ])
     expect(stderr).to.equal('Deleting backup b003 on ⬢ myapp... done\n')
+    expect(deleteStub.calledWith('myapp', '3')).to.be.true
   })
 })
