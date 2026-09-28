@@ -85,3 +85,85 @@ function prefix(transfer: TransferInfoByAppResult) {
     return 'b'
   }
 }
+
+// TODO: Temporary default export so pg:backups:capture, pg:backups:restore, and pg:copy still compile. Remove it when those commands move to @heroku/sdk.
+import {APIClient} from '@heroku-cli/command'
+import {color, utils} from '@heroku/heroku-cli-util'
+import tsheredoc from 'tsheredoc'
+
+import type {BackupTransfer} from './types.js'
+
+const heredoc = tsheredoc.default
+
+export default function backupsFactory(app: string, heroku: APIClient) {
+  const logs = new LogDisplay()
+
+  async function * poll(transferID: string, interval: number, verbose: boolean, appId: string) {
+    const tty = process.env.TERM !== 'dumb' && process.stderr.isTTY
+    let backup = {} as BackupTransfer
+    let failures = 0
+
+    const quietUrl = `/client/v11/apps/${appId}/transfers/${transferID}`
+    const verboseUrl = quietUrl + '?verbose=true'
+    const url = verbose ? verboseUrl : quietUrl
+
+    while (failures < 21) {
+      try {
+        ({body: backup} = await heroku.get<BackupTransfer>(url, {hostname: utils.pg.host()}))
+      } catch (error) {
+        if (failures++ > 20) throw error
+      }
+
+      if (verbose) {
+        logs.displayLogs(backup.logs as TransferInfoByAppResult['logs'])
+      } else if (tty) {
+        const msg = backup.started_at ? filesize(backup.processed_bytes) : 'pending'
+        const log = backup.logs?.pop()
+        ux.action.status = log ? `${msg}\n${log.created_at} ${log.message}` : msg
+      }
+
+      if (backup?.finished_at) {
+        if (backup.succeeded) {
+          yield true
+          break
+        }
+
+        ({body: backup} = await heroku.get<BackupTransfer>(verboseUrl, {hostname: utils.pg.host()}))
+
+        throw new Error(heredoc(`
+          An error occurred and the backup did not finish.
+
+          ${backup.logs.slice(-5).map(l => l.message).join('\n')}
+
+          Run ${color.code('heroku pg:backups:info ' + name(backup as unknown as TransferInfoByAppResult))} for more details.`))
+      }
+
+      yield new Promise(resolve => {
+        setTimeout(resolve, interval * 1000)
+      })
+    }
+  }
+
+  return {
+    name(transfer: BackupTransfer) {
+      return name(transfer as unknown as TransferInfoByAppResult)
+    },
+
+    async wait(action: string, transferID: string, interval: number, verbose: boolean, appId: string) {
+      if (verbose) ux.stdout(`${action}...`)
+
+      ux.action.start(action)
+      try {
+        for await (const backupSucceeded of poll(transferID, interval, verbose, appId || app)) {
+          if (backupSucceeded) {
+            ux.action.stop()
+            break
+          }
+        }
+      } catch (error) {
+        ux.action.stop('!')
+        ux.error(error as Error)
+      }
+    },
+  }
+}

@@ -94,7 +94,7 @@ describe('Backups', function () {
 
   describe('num', function () {
     const app = 'my-app'
-    
+
     it('resolves to the numerical portion of the `name` when the `name` begins with `a`, `b`, `c`, or `r` and is followed by one or more digits upto the end of the `name`', async function () {
       const mockSDK = {} as Data
       expect(await num('a123', app, mockSDK)).to.equal(123)
