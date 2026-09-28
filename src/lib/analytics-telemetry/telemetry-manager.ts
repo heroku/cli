@@ -8,6 +8,7 @@ import type {Config} from '@oclif/core/interfaces'
 import type BackboardOtelClient from './backboard-otel-client.js'
 import type SentryClient from './sentry-client.js'
 
+import {isExpectedError} from './error-classification.js'
 // Import internal dependencies
 import {
   isTelemetryEnabled,
@@ -72,12 +73,13 @@ class TelemetryManager {
     const telemetry = currentTelemetry
 
     if (telemetry instanceof Error) {
-      // Filter SIGINT errors from Sentry (user Ctrl+C is not an error to report)
-      // But still send to Honeycomb for analytics
-      const isSIGINT = telemetry.message === 'Received SIGINT'
+      // Every error is recorded in Honeycomb for analytics. Expected
+      // user/environment conditions (see isExpectedError) are excluded from
+      // Sentry so they don't pollute error reporting.
+      const skipSentry = isExpectedError(telemetry)
 
-      if (isSIGINT) {
-        telemetryDebug('Sending error to Honeycomb: %s', telemetry.message)
+      if (skipSentry) {
+        telemetryDebug('Sending error to Honeycomb only (excluded from Sentry): %s', telemetry.message)
         await backboardOtelClient.send(telemetry)
       } else {
         telemetryDebug('Sending error to Honeycomb and Sentry: %s', telemetry.message)
