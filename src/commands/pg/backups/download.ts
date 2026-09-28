@@ -1,11 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
-import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
-
-import pgBackupsApi from '../../../lib/pg/backups.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 import download from '../../../lib/pg/download.js'
 
 export default class Download extends Command {
@@ -25,14 +24,15 @@ export default class Download extends Command {
     const {backup_id} = args
     const {app} = flags
     const output = flags.output || defaultFilename()
+    const {data} = new HerokuSDK()
     let num
     ux.action.start(`Getting backup from ${color.app(app)}`)
     if (backup_id) {
-      num = await pgBackupsApi(app, this.heroku).num(backup_id)
+      num = await pgBackups.num(backup_id, app, data)
       if (!num)
         throw new Error(`Invalid Backup: ${backup_id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const transfers = await data.transfer.listByApp(app)
       const lastBackup = transfers
         .filter(t => t.succeeded && t.to_type === 'gof3r')
         .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
@@ -42,7 +42,7 @@ export default class Download extends Command {
     }
 
     ux.action.status = `fetching url of #${num}`
-    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: utils.pg.host()})
+    const info = await data.transfer.publicUrl(app, String(num), {})
 
     ux.action.stop(`done, #${num}`)
     await download(info.url, output, {progress: true})

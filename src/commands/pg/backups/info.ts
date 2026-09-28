@@ -1,13 +1,15 @@
+import type {TransferInfoByAppResult} from '@heroku/types/data'
 
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import type {BackupTransfer} from '../../../lib/pg/types.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 
-import pgBackupsApi from '../../../lib/pg/backups.js'
+type Data = HerokuSDK['data']
 
-function status(backup: BackupTransfer) {
+function status(backup: TransferInfoByAppResult) {
   if (backup.succeeded) {
     if (backup.warnings > 0)
       return `Finished with ${backup.warnings} warnings`
@@ -23,7 +25,9 @@ function status(backup: BackupTransfer) {
   return 'Pending'
 }
 
-function compression(compressed: number, total: number) {
+function compression(compressed: null | number, total: null | number) {
+  if (compressed === null || total === null) return ''
+
   let pct = 0
   if (compressed > 0) {
     pct = Math.round((total - compressed) / total * 100)
@@ -43,36 +47,34 @@ export default class Info extends Command {
     remote: flags.remote(),
   }
   static topic = 'pg'
-  displayBackup = (backup: BackupTransfer, app: string) => {
-    const pgbackups = pgBackupsApi(app, this.heroku)
-    hux.styledHeader(`Backup ${color.name(pgbackups.name(backup))}`)
+  displayBackup = (backup: TransferInfoByAppResult) => {
+    hux.styledHeader(`Backup ${color.name(pgBackups.name(backup))}`)
     /* eslint-disable perfectionist/sort-objects */
     hux.styledObject({
-      Database: color.datastore(backup.from_name),
+      Database: backup.from_name ? color.datastore(backup.from_name) : 'UNKNOWN',
       'Started at': backup.started_at,
       'Finished at': backup.finished_at,
       Status: status(backup),
-      Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': pgbackups.filesize(backup.source_bytes),
-      'Backup Size': `${pgbackups.filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes) : ''}`,
+      Type: backup.schedule ? 'Scheduled' : 'Manual', 'Original DB Size': pgBackups.filesize(backup.source_bytes ?? null),
+      'Backup Size': `${pgBackups.filesize(backup.processed_bytes)}${backup.finished_at ? compression(backup.processed_bytes, backup.source_bytes ?? null) : ''}`,
     }, ['Database', 'Started at', 'Finished at', 'Status', 'Type', 'Original DB Size', 'Backup Size'])
     /* eslint-enable perfectionist/sort-objects */
     ux.stdout('\n')
   }
-  displayLogs = (backup: BackupTransfer) => {
+  displayLogs = (backup: TransferInfoByAppResult) => {
     hux.styledHeader('Backup Logs')
-    for (const log of backup.logs)
+    for (const log of backup.logs || [])
       ux.stdout(`${log.created_at} ${log.message}\n`)
     ux.stdout('\n')
   }
-  getBackup = async (id: string | undefined, app: string) => {
+  getBackup = async (id: string | undefined, app: string, data: Data) : Promise<TransferInfoByAppResult> => {
     let backupID
     if (id) {
-      const pgbackups = pgBackupsApi(app, this.heroku)
-      backupID = await pgbackups.num(id)
+      backupID = await pgBackups.num(id, app, data)
       if (!backupID)
         throw new Error(`Invalid ID: ${id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const transfers = await data.transfer.listByApp(app)
       transfers.sort((a, b) => a.created_at.localeCompare(b.created_at))
       const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
       const lastBackup = backups.pop()
@@ -81,7 +83,7 @@ export default class Info extends Command {
       backupID = lastBackup.num
     }
 
-    const {body: backup} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${backupID}?verbose=true`, {hostname: utils.pg.host()})
+    const backup = await data.transfer.infoByApp(app, String(backupID), {verbose: true})
     return backup
   }
 
@@ -89,9 +91,10 @@ export default class Info extends Command {
     const {args, flags} = await this.parse(Info)
     const {app} = flags
     const {backup_id} = args
+    const {data} = new HerokuSDK()
 
-    const backup = await this.getBackup(backup_id, app)
-    this.displayBackup(backup, app)
+    const backup = await this.getBackup(backup_id, app, data)
+    this.displayBackup(backup)
     this.displayLogs(backup)
   }
 }

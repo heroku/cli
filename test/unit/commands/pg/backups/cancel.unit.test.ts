@@ -1,35 +1,38 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, type SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/cancel.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc.default
 
 describe('pg:backups:cancel', function () {
-  let pg: nock.Scope
+  let cancelStub: SinonStub
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    pg = nock('https://api.data.heroku.com')
-      .post('/client/v11/apps/myapp/transfers/100-001/actions/cancel').reply(200, {})
+    cancelStub = stub().resolves({})
   })
 
   afterEach(function () {
-    pg.done()
-    nock.cleanAll()
+    restore()
   })
 
   context('with no id', function () {
+    let listByAppStub: SinonStub
     beforeEach(function () {
-      pg.get('/client/v11/apps/myapp/transfers').reply(200, [
+      listByAppStub = stub().resolves([
         {
-          num: '3', succeeded: true, to_type: 'gof3r', uuid: '100-001',
+          num: 3, succeeded: true, to_type: 'gof3r', uuid: '100-001',
         },
       ])
     })
 
     it('cancels backup', async function () {
+      sdkMock = mockSDKData({transfer: {cancel: cancelStub, listByApp: listByAppStub}})
+
       const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -38,17 +41,22 @@ describe('pg:backups:cancel', function () {
       expect(stderr).to.equal(heredoc`
         Cancelling b003... done
       `)
+      expect(cancelStub.calledWith('myapp', '100-001')).to.be.true
     })
   })
 
   context('with id', function () {
+    let infoByAppStub: SinonStub
+
     beforeEach(function () {
-      pg.get('/client/v11/apps/myapp/transfers/3').reply(200, {
-        num: '3', succeeded: true, to_type: 'gof3r', uuid: '100-001',
+      infoByAppStub = stub().resolves({
+        num: 3, succeeded: true, to_type: 'gof3r', uuid: '100-001',
       })
     })
 
     it('cancels backup', async function () {
+      sdkMock = mockSDKData({transfer: {cancel: cancelStub, infoByApp: infoByAppStub}})
+
       const {stderr} = await runCommand(Cmd, [
         '--app',
         'myapp',
@@ -58,6 +66,7 @@ describe('pg:backups:cancel', function () {
       expect(stderr).to.equal(heredoc`
         Cancelling b003... done
       `)
+      expect(cancelStub.calledWith('myapp', '100-001')).to.be.true
     })
   })
 })
