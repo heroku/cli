@@ -96,6 +96,19 @@ export type ExtendedPostgresLevelInfo = PostgresLevelInfo & {
   pricing: PricingInfo | undefined
 }
 
+export type Link = {
+  created_at: string
+  id: string
+  name: string
+  remote: {
+    attachment_name: string
+    name: string
+  }
+  remote_name: string
+}
+
+export type LinksResponse = Array<Link>
+
 export type InfoResponse = {
   addon: AddonReference
   app: AppReference
