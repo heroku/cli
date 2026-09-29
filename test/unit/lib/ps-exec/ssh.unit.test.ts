@@ -1,11 +1,12 @@
-import socks from '@heroku/socksv5'
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import cliProgress from 'cli-progress'
 import child from 'node:child_process'
+import stream from 'node:stream'
 import {restore, SinonStub, stub} from 'sinon'
 import {Client} from 'ssh2'
 
+import socks5 from '../../../../src/lib/ps-exec/socks5-server.js'
 import {HerokuSsh} from '../../../../src/lib/ps-exec/ssh.js'
 
 function makeStream() {
@@ -60,6 +61,7 @@ describe('ssh lib', function () {
     clientEndStub = stub(Client.prototype, 'end')
     clientSftpStub = stub(Client.prototype, 'sftp')
     stub(ux.action, 'stop')
+    stub(ux, 'stdout')
     uxErrorStub = stub(ux, 'error')
     sshInstance = new HerokuSsh()
   })
@@ -506,7 +508,7 @@ describe('ssh lib', function () {
   })
 
   describe('socksv5()', function () {
-    let mockServer: {listen: SinonStub; useAuth: SinonStub}
+    let mockServer: {listen: SinonStub; on: SinonStub}
     let createServerStub: SinonStub
     let capturedSocksHandler:
     (info:
@@ -522,9 +524,10 @@ describe('ssh lib', function () {
           cb()
           return mockServer
         }),
-        useAuth: stub().returns(mockServer),
+        on: stub(),
       }
-      createServerStub = stub(socks, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
+      mockServer.on.returns(mockServer)
+      createServerStub = stub(socks5, 'createServer').callsFake(((handler: typeof capturedSocksHandler) => {
         capturedSocksHandler = handler
         return mockServer
       }) as any)
@@ -546,9 +549,24 @@ describe('ssh lib', function () {
       expect(createServerStub.calledOnce).to.be.true
     })
 
-    it('calls useAuth on the server', function () {
+    it('reports a clean error (not an unhandled crash) when the proxy port is in use', function () {
+      // The real reporter routes through Errors.handle, which prints and exits
+      // the process; stub the seam so the test asserts the SOCKS bind error is
+      // reported (with the port) rather than left to crash unhandled.
+      const reportStub = stub(sshInstance as unknown as {_reportProxyBindError: (err: NodeJS.ErrnoException, port: number) => void}, '_reportProxyBindError')
+
       sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
-      expect(mockServer.useAuth.calledOnce).to.be.true
+
+      const errorHandler = mockServer.on.getCalls().find(c => c.args[0] === 'error')?.args[1] as (err: NodeJS.ErrnoException) => void
+      expect(errorHandler, 'an error handler must be registered on the SOCKS server').to.be.a('function')
+
+      const err: NodeJS.ErrnoException = new Error('listen EADDRINUSE')
+      err.code = 'EADDRINUSE'
+      errorHandler(err)
+
+      expect(reportStub.calledOnce).to.be.true
+      expect(reportStub.firstCall.args[0]).to.equal(err)
+      expect(reportStub.firstCall.args[1]).to.equal(1080)
     })
 
     it('calls forwardOut with the SOCKS request info on ready', function () {
@@ -657,6 +675,101 @@ describe('ssh lib', function () {
       expect(config.port).to.equal(80)
       expect(config.hostHash).to.equal('sha256')
     })
+
+    it('denies a new SOCKS request once the connection cap is reached', function () {
+      const info = {
+        dstAddr: 'example.com', dstPort: 80, srcAddr: '127.0.0.1', srcPort: 1234,
+      }
+
+      sshInstance.socksv5('addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+
+      // Fill the cap (MAX_SOCKS_CONNECTIONS = 128): each accepted request opens
+      // and holds one SSH connection (we never emit 'close', so none are freed).
+      for (let i = 0; i < 128; i++) {
+        capturedSocksHandler(info, stub().returns(makeStream()), stub())
+      }
+
+      const connectCallsAtCap = clientConnectStub.callCount
+      const deny = stub()
+      capturedSocksHandler(info, stub().returns(makeStream()), deny)
+
+      expect(deny.calledOnce).to.be.true
+      // The over-cap request must not open another SSH connection.
+      expect(clientConnectStub.callCount).to.equal(connectCallsAtCap)
+    })
+  })
+
+  describe('_stdinToRemote()', function () {
+    // Regression: a non-interactive exec closes the remote stream when the
+    // command exits, which can precede stdin's EOF. The trailing ^D must not be
+    // written to the ended stream (that used to crash with ERR_STREAM_WRITE_AFTER_END).
+    it('does not throw or error when the remote stream has already ended', function (done) {
+      const remote = new stream.PassThrough()
+      remote.end()
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.on('error', err => done(err))
+      transform.on('finish', () => done())
+
+      transform.write('leftover input')
+      transform.end() // fires flush -> would write ^D to the ended remote stream
+    })
+
+    it('forwards data and appends the EOF marker when the remote stream is writable', function (done) {
+      const written: string[] = []
+      const remote = new stream.Writable({
+        write(chunk, _enc, cb) {
+          written.push(chunk.toString())
+          cb()
+        },
+      })
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.on('finish', () => {
+        expect(written).to.deep.equal(['hello', '\u0004'])
+        done()
+      })
+
+      transform.write('hello')
+      transform.end()
+    })
+
+    // The guard checks c.writable, but a write can still fail if the remote
+    // stream ends between the check and the write completing. Such a late
+    // ERR_STREAM_WRITE_AFTER_END must be swallowed, not crash the CLI. Without
+    // the transform's 'error' handler this emits an unhandled 'error' and fails.
+    it('swallows a late write-after-end error from the remote stream', function (done) {
+      const remote = new stream.Writable({
+        write(_chunk, _enc, cb) {
+          const err: NodeJS.ErrnoException = new Error('write after end')
+          err.code = 'ERR_STREAM_WRITE_AFTER_END'
+          cb(err)
+        },
+      })
+      remote.on('error', () => {}) // the remote's own error is out of scope here
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.write('x') // fails the remote write; the transform's 'error' must be swallowed
+      // Give the write callback a tick to surface the (swallowed) error.
+      setImmediate(() => done())
+    })
+
+    it('logs and swallows a non-write-after-end remote error without crashing', function (done) {
+      const remote = new stream.Writable({
+        write(_chunk, _enc, cb) {
+          cb(new Error('boom'))
+        },
+      })
+      remote.on('error', () => {}) // the remote's own error is out of scope here
+
+      const transform = (sshInstance as unknown as {_stdinToRemote(c: stream.Writable): stream.Transform})._stdinToRemote(remote)
+      transform.resume()
+      transform.write('x')
+      setImmediate(() => done())
+    })
   })
 
   describe('_connectionDefaults() hostVerifier', function () {
@@ -696,6 +809,40 @@ describe('ssh lib', function () {
       await p
       const {hostVerifier} = clientConnectStub.firstCall.args[0]
       expect(hostVerifier('wrong-hash-value')).to.be.false
+    })
+
+    it('fails closed (returns false) when the proxy key is malformed', async function () {
+      // A proxy key with no base64 blob used to throw out of the verifier on
+      // Buffer.from(undefined, ...); it must instead reject the host key.
+      const proxyKey = 'ssh-rsa'
+
+      const mockStream = makeStream()
+      clientShellStub.callsFake((cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+
+      const p = sshInstance.connect({args: []}, 'addon.host', 'user', Buffer.from('key'), proxyKey)
+      setImmediate(() => {
+        capturedClient.emit('ready')
+        setImmediate(() => mockStream.emit('close'))
+      })
+
+      await p
+      const {hostVerifier} = clientConnectStub.firstCall.args[0]
+      expect(() => hostVerifier('any-hash')).not.to.throw()
+      expect(hostVerifier('any-hash')).to.be.false
+    })
+
+    it('sets a bounded readyTimeout on the SSH connection', async function () {
+      const mockStream = makeStream()
+      clientShellStub.callsFake((cb: (err: Error | null, stream: ReturnType<typeof makeStream>) => void) => cb(null, mockStream))
+
+      const p = sshInstance.connect({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
+      setImmediate(() => {
+        capturedClient.emit('ready')
+        setImmediate(() => mockStream.emit('close'))
+      })
+
+      await p
+      expect(clientConnectStub.firstCall.args[0].readyTimeout).to.equal(20_000)
     })
   })
 })
