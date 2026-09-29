@@ -36,7 +36,7 @@ describe('data:pg:logical-replication:publications:create', function () {
     ])
 
     herokuApi.done()
-    expect((error as Error).message).to.equal('Specify either --table or --schema, not both.')
+    expect((error as Error).message).to.equal('You can only use either --table or --schema, not both.')
   })
 
   it('creates a publication for all current customer schemas', async function () {
@@ -53,6 +53,6 @@ describe('data:pg:logical-replication:publications:create', function () {
 
     herokuApi.done()
     dataApi.done()
-    expect(ansis.strip(stdout)).to.equal('The publication includes all current customer schemas. Tables created later and new schemas are not added automatically.\n')
+    expect(ansis.strip(stdout)).to.equal('The publication includes all current customer schemas. It doesn’t automatically add new tables or schemas created later.\n')
   })
 })

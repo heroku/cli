@@ -36,7 +36,7 @@ describe('data:pg:logical-replication:publications', function () {
     const {error} = await runCommand(DataPgLogicalReplicationPublicationsIndex, ['DATABASE', '--app=myapp'])
 
     herokuApi.done()
-    expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\nUse heroku data:pg:info DATABASE --app myapp to inspect an Advanced database.')
+    expect(ansis.strip((error as Error).message)).to.equal('You can only use this command on Advanced-tier databases.\nUse heroku data:pg:info DATABASE --app myapp to get details on the Advanced database.')
   })
 
   it('lists publications', async function () {
@@ -51,6 +51,6 @@ describe('data:pg:logical-replication:publications', function () {
     dataApi.done()
     const actual = removeAllWhitespace(stdout)
     expect(actual).to.include(removeAllWhitespace('Name New Tables Owner Target'))
-    expect(actual).to.include(removeAllWhitespace('orders not included u12345 tables: public.orders'))
+    expect(actual).to.include(removeAllWhitespace('orders Not Included u12345 tables: public.orders'))
   })
 })

@@ -43,6 +43,6 @@ describe('data:pg:logical-replication:publications:update', function () {
 
     herokuApi.done()
     dataApi.done()
-    expect(ansis.strip(stdout)).to.equal('The publication includes all current customer schemas. Tables created later and new schemas are not added automatically.\n')
+    expect(ansis.strip(stdout)).to.equal('The publication includes all current customer schemas. It doesn’t automatically add new tables or schemas created later.\n')
   })
 })
