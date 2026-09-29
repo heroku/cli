@@ -1,7 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'fs-extra'
-import fetch from 'node-fetch'
 import os from 'node:os'
 import path from 'node:path'
 
@@ -69,6 +68,6 @@ export default class DataPgGetCa extends Command {
     const response = await fetch(url)
     if (!response.ok) throw new Error(`AWS RDS returned ${response.status} ${response.statusText}.`)
 
-    return response.buffer()
+    return Buffer.from(await response.arrayBuffer())
   }
 }
