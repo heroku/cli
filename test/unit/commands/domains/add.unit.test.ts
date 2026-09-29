@@ -83,17 +83,43 @@ describe('domains:add', function () {
 
       it('adds the domain to the app', async function () {
         nock('https://api.heroku.com')
+          .get('/apps/myapp')
+          .reply(200, {acm: false})
+          .get('/apps/myapp/sni-endpoints')
+          .reply(200, certsResponse)
           .post('/apps/myapp/domains', {
             hostname: 'example.com',
             sni_endpoint: 'my-cert',
           })
           .reply(200, domainsResponseWithEndpoint)
-          .get('/apps/myapp/sni-endpoints')
-          .reply(200, certsResponse)
 
         const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
         expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(promptForCertStub.calledOnce).to.equal(true)
       })
+    })
+  })
+
+  describe('adding a domain to an app with ACM enabled', function () {
+    it('skips the SNI chooser and leaves sni_endpoint null', async function () {
+      const promptForCertStub = stub(DomainsAdd.prototype, 'promptForCert')
+
+      nock('https://api.heroku.com')
+        .get('/apps/myapp')
+        .reply(200, {acm: true})
+        .post('/apps/myapp/domains', {
+          hostname: 'example.com',
+          sni_endpoint: null,
+        })
+        .reply(200, domainsResponse)
+
+      try {
+        const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(promptForCertStub.called).to.equal(false)
+      } finally {
+        promptForCertStub.restore()
+      }
     })
   })
 })
