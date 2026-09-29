@@ -94,9 +94,13 @@ export default class DomainsAdd extends Command {
     if (flags.cert) {
       domainCreatePayload.sni_endpoint = flags.cert
     } else {
-      const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
+      const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${flags.app}`)
 
-      certs = [...body]
+      if (!app.acm) {
+        const {body} = await this.heroku.get<Array<Heroku.SniEndpoint>>(`/apps/${flags.app}/sni-endpoints`)
+
+        certs = [...body]
+      }
     }
 
     if (certs.length > 1) {
@@ -131,10 +135,11 @@ export default class DomainsAdd extends Command {
           }
         }
       }
-    } catch (error: any) {
-      ux.error(error)
-    } finally {
+
       ux.action.stop()
+    } catch (error: unknown) {
+      ux.action.stop(color.red('!'))
+      ux.error(error as Error)
     }
   }
 }
