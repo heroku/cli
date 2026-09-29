@@ -1,9 +1,9 @@
+import type {TransferInfoByAppResult, TransferListByAppResult} from '@heroku/types/data'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import {restore, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
-
-import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
@@ -13,7 +13,7 @@ const heredoc = tsheredoc.default
 
 describe('pg:backups', function () {
   let sdkMock: MockSDK
-  let transfers: BackupTransfer[]
+  let transfers: TransferListByAppResult
 
   afterEach(function () {
     sdkMock.restore()
@@ -62,7 +62,7 @@ describe('pg:backups', function () {
           to_type: 'gof3r',
           updated_at: '2016-10-08 00:43:04 +0000',
           warnings: 2,
-        } as BackupTransfer, {
+        } as TransferInfoByAppResult, {
           created_at: '2016-10-02 00:42:54 +0000',
           finished_at: '2016-10-08 00:43:00 +0000',
           from_name: 'DATABASE',
@@ -73,7 +73,7 @@ describe('pg:backups', function () {
           succeeded: true,
           to_type: 'gof3r',
           warnings: 0,
-        } as BackupTransfer, {
+        } as TransferInfoByAppResult, {
           created_at: '2016-10-03 00:42:54 +0000',
           finished_at: '2016-10-08 00:43:00 +0000',
           from_name: 'DATABASE',
@@ -81,14 +81,14 @@ describe('pg:backups', function () {
           num: 4,
           processed_bytes: 1437,
           to_type: 'gof3r',
-        } as BackupTransfer, {
+        } as TransferInfoByAppResult, {
           created_at: '2016-10-04 00:42:54 +0000',
           from_name: 'DATABASE',
           from_type: 'pg_dump',
           num: 5,
           processed_bytes: 1437,
           to_type: 'gof3r',
-        } as BackupTransfer, {
+        } as TransferInfoByAppResult, {
           created_at: '2016-10-05 00:42:54 +0000',
           from_name: 'DATABASE',
           from_type: 'pg_dump',
@@ -96,7 +96,7 @@ describe('pg:backups', function () {
           processed_bytes: 1437,
           started_at: '2016-10-08 00:42:54 +0000',
           to_type: 'gof3r',
-        } as BackupTransfer,
+        } as TransferInfoByAppResult,
       ]
     })
 
@@ -141,7 +141,7 @@ No copies found. Use heroku pg:copy to copy a database to another
           to_type: 'pg_restore',
           updated_at: '2016-10-08 00:43:04 +0000',
           warnings: 0,
-        } as BackupTransfer,
+        } as TransferInfoByAppResult,
       ]
     })
 
@@ -184,7 +184,7 @@ No copies found. Use heroku pg:copy to copy a database to another
           to_type: 'pg_restore',
           updated_at: '2016-10-08 00:43:04 +0000',
           warnings: 0,
-        } as BackupTransfer,
+        } as TransferInfoByAppResult,
       ]
     })
 

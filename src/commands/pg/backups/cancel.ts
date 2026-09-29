@@ -1,9 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import backupsFactory from '../../../lib/pg/backups.js'
-import {BackupTransfer} from '../../../lib/pg/types.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 
 export default class Cancel extends Command {
   static args = {
@@ -20,27 +19,27 @@ export default class Cancel extends Command {
     const {args, flags} = await this.parse(Cancel)
     const {app} = flags
     const {backup_id} = args
-    const pgbackups = backupsFactory(app, this.heroku)
+    const {data} = new HerokuSDK()
 
-    let transfer: BackupTransfer | undefined
+    let transfer
 
     if (backup_id) {
-      const num = await pgbackups.num(backup_id)
+      const num = await pgBackups.num(backup_id, app, data)
       if (!num) {
         ux.error(`Invalid Backup: ${backup_id}`)
       }
 
-      ({body: transfer} = await this.heroku.get<BackupTransfer>(`/client/v11/apps/${app}/transfers/${num}`, {hostname: utils.pg.host()}))
+      transfer = await data.transfer.infoByApp(app, String(num), {})
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const transfers = await data.transfer.listByApp(app)
       transfer = transfers
         .sort((a, b) => b.created_at.localeCompare(a.created_at))
         .find(t => !t.finished_at)
     }
 
     if (transfer) {
-      ux.action.start(`Cancelling ${pgbackups.name(transfer)}`)
-      await this.heroku.post(`/client/v11/apps/${app}/transfers/${transfer.uuid}/actions/cancel`, {hostname: utils.pg.host()})
+      ux.action.start(`Cancelling ${pgBackups.name(transfer)}`)
+      await data.transfer.cancel(app, transfer.uuid)
       ux.action.stop()
     } else {
       ux.error('No active backups/transfers')

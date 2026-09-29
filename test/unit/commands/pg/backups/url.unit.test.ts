@@ -1,44 +1,48 @@
 import {expectOutput, runCommand} from '@heroku-cli/test-utils'
-import nock from 'nock'
+import {expect} from 'chai'
+import {restore, type SinonStub, stub} from 'sinon'
 
 import Cmd from '../../../../../src/commands/pg/backups/url.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
-const shouldUrl = function (cmdRun: (args: string[]) => Promise<any>) {
+describe('pg:backups:url', function () {
+  let publicUrlStub: SinonStub
+  let sdkMock: MockSDK
+
   beforeEach(function () {
-    nock('https://api.data.heroku.com')
-      .post('/client/v11/apps/myapp/transfers/3/actions/public-url')
-      .reply(200, {
-        url: 'https://dburl',
-      })
+    publicUrlStub = stub().resolves({url: 'https://dburl'})
   })
 
   afterEach(function () {
-    nock.cleanAll()
+    restore()
   })
 
   context('with no id', function () {
     beforeEach(function () {
-      nock('https://api.data.heroku.com')
-        .get('/client/v11/apps/myapp/transfers')
-        .reply(200, [
-          {num: 3, succeeded: true, to_type: 'gof3r'},
-        ])
+      sdkMock = mockSDKData({
+        transfer: {
+          listByApp: stub().resolves([
+            {num: 3, succeeded: true, to_type: 'gof3r'},
+          ]),
+          publicUrl: publicUrlStub,
+        },
+      })
     })
 
     it('shows URL', async function () {
-      const {stdout} = await cmdRun(['--app', 'myapp'])
+      const {stdout} = await runCommand(Cmd, ['--app', 'myapp'])
       expectOutput(stdout, 'https://dburl')
+      expect(publicUrlStub.calledOnceWithExactly('myapp', '3', {})).to.equal(true)
     })
   })
 
   context('with id', function () {
     it('shows URL', async function () {
-      const {stdout} = await cmdRun(['--app', 'myapp', 'b003'])
+      sdkMock = mockSDKData({transfer: {publicUrl: publicUrlStub}})
+
+      const {stdout} = await runCommand(Cmd, ['--app', 'myapp', 'b003'])
       expectOutput(stdout, 'https://dburl')
+      expect(publicUrlStub.calledOnceWithExactly('myapp', '3', {})).to.equal(true)
     })
   })
-}
-
-describe('pg:backups:url', function () {
-  shouldUrl((args: string[]) => runCommand(Cmd, args))
 })

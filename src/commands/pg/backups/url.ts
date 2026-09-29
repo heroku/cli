@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import type {BackupTransfer, PublicUrlResponse} from '../../../lib/pg/types.js'
-
-import pgBackupsApi from '../../../lib/pg/backups.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 
 export default class Url extends Command {
   static args = {
@@ -21,14 +20,15 @@ export default class Url extends Command {
     const {args, flags} = await this.parse(Url)
     const {backup_id} = args
     const {app} = flags
+    const {data} = new HerokuSDK()
 
     let num
     if (backup_id) {
-      num = await pgBackupsApi(app, this.heroku).num(backup_id)
+      num = await pgBackups.num(backup_id, app, data)
       if (!num)
         throw new Error(`Invalid Backup: ${backup_id}`)
     } else {
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${app}/transfers`, {hostname: utils.pg.host()})
+      const transfers = await data.transfer.listByApp(app)
       const succeededBackups = transfers.filter(t => t.succeeded && t.to_type === 'gof3r')
       succeededBackups.sort((a, b) => a.created_at.localeCompare(b.created_at))
       const lastBackup = succeededBackups.pop()
@@ -37,7 +37,7 @@ export default class Url extends Command {
       num = lastBackup.num
     }
 
-    const {body: info} = await this.heroku.post<PublicUrlResponse>(`/client/v11/apps/${app}/transfers/${num}/actions/public-url`, {hostname: utils.pg.host()})
+    const info = await data.transfer.publicUrl(app, String(num), {})
     ux.stdout(info.url + '\n')
   }
 }

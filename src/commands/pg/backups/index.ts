@@ -1,12 +1,15 @@
+import type {TransferInfoByAppResult, TransferListByAppResult} from '@heroku/types/data'
+
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {transferExtensions} from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core/ux'
 
-import type {BackupTransfer} from '../../../lib/pg/types.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 
-import backupsFactory from '../../../lib/pg/backups.js'
+// hux.table needs Record<string, unknown>; the SDK's interface-based TransferInfoByAppResult has no implicit index signature.
+type TransferRow = Record<string, unknown> & TransferInfoByAppResult
 
 export default class Index extends Command {
   static description = 'list database backups'
@@ -27,38 +30,37 @@ export default class Index extends Command {
     const {flags: {app}} = await this.parse(Index)
 
     const {data} = new HerokuSDK({extensions: [transferExtensions]})
-    const transfers = await data.transfer.listByApp(app) as BackupTransfer[]
+    const transfers = await data.transfer.listByApp(app)
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))
 
-    this.displayBackups(transfers, app)
-    this.displayRestores(transfers, app)
-    this.displayCopies(transfers, app)
+    this.displayBackups(transfers)
+    this.displayRestores(transfers)
+    this.displayCopies(transfers)
   }
 
-  private displayBackups(transfers: BackupTransfer[], app: string) {
+  private displayBackups(transfers: TransferListByAppResult) {
     const backups = transfers.filter(backupTransfer => backupTransfer.from_type === 'pg_dump' && backupTransfer.to_type === 'gof3r')
-    const pgbackups = backupsFactory(app, this.heroku)
     hux.styledHeader('Backups')
     if (backups.length === 0) {
       ux.stdout(`No backups. Capture one with ${color.code('heroku pg:backups:capture')}`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table<BackupTransfer>(backups, {
+      hux.table<TransferRow>(backups as TransferRow[], {
         ID: {
-          get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
+          get: (transfer: TransferInfoByAppResult) => color.name(pgBackups.name(transfer)),
         },
         'Created at': {
-          get: (transfer: BackupTransfer) => transfer.created_at,
+          get: (transfer: TransferInfoByAppResult) => transfer.created_at,
         },
         Status: {
-          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
+          get: (transfer: TransferInfoByAppResult) => pgBackups.status(transfer),
         },
         Size: {
-          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
+          get: (transfer: TransferInfoByAppResult) => pgBackups.filesize(transfer.processed_bytes),
         },
         Database: {
-          get: (transfer: BackupTransfer) => color.datastore(transfer.from_name) || 'UNKNOWN',
+          get: (transfer: TransferInfoByAppResult) => transfer.from_name ? color.datastore(transfer.from_name) : 'UNKNOWN',
         },
       })
       /* eslint-enable perfectionist/sort-objects */
@@ -67,32 +69,31 @@ export default class Index extends Command {
     ux.stdout()
   }
 
-  private displayCopies(transfers: BackupTransfer[], app: string) {
-    const pgbackups = backupsFactory(app, this.heroku)
+  private displayCopies(transfers: TransferListByAppResult) {
     const copies = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'pg_restore').slice(0, 10)
     hux.styledHeader('Copies')
     if (copies.length === 0) {
       ux.stdout(`No copies found. Use ${color.code('heroku pg:copy')} to copy a database to another`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(copies, {
+      hux.table<TransferRow>(copies as TransferRow[], {
         ID: {
-          get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
+          get: (transfer: TransferInfoByAppResult) => color.name(pgBackups.name(transfer)),
         },
         'Started at': {
-          get: (transfer: BackupTransfer) => transfer.created_at,
+          get: (transfer: TransferInfoByAppResult) => transfer.created_at,
         },
         Status: {
-          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
+          get: (transfer: TransferInfoByAppResult) => pgBackups.status(transfer),
         },
         Size: {
-          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
+          get: (transfer: TransferInfoByAppResult) => pgBackups.filesize(transfer.processed_bytes),
         },
         From: {
-          get: (transfer: BackupTransfer) => color.datastore(transfer.from_name) || color.inactive('UNKNOWN'),
+          get: (transfer: TransferInfoByAppResult) => transfer.from_name ? color.datastore(transfer.from_name) : color.inactive('UNKNOWN'),
         },
         To: {
-          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || color.inactive('UNKNOWN'),
+          get: (transfer: TransferInfoByAppResult) => transfer.to_name ? color.datastore(transfer.to_name) : color.inactive('UNKNOWN'),
         },
       })
     }
@@ -101,31 +102,30 @@ export default class Index extends Command {
     ux.stdout()
   }
 
-  private displayRestores(transfers: BackupTransfer[], app: string) {
+  private displayRestores(transfers: TransferListByAppResult) {
     const restores = transfers
       .filter(t => t.from_type !== 'pg_dump' && t.to_type === 'pg_restore')
       .slice(0, 10) // first 10 only
-    const pgbackups = backupsFactory(app, this.heroku)
     hux.styledHeader('Restores')
     if (restores.length === 0) {
       ux.stdout(`No restores found. Use ${color.code('heroku pg:backups:restore')} to restore a backup`)
     } else {
       /* eslint-disable perfectionist/sort-objects */
-      hux.table(restores, {
+      hux.table<TransferRow>(restores as TransferRow[], {
         ID: {
-          get: (transfer: BackupTransfer) => color.name(pgbackups.name(transfer)),
+          get: (transfer: TransferInfoByAppResult) => color.name(pgBackups.name(transfer)),
         },
         'Started at': {
-          get: (transfer: BackupTransfer) => transfer.created_at,
+          get: (transfer: TransferInfoByAppResult) => transfer.created_at,
         },
         Status: {
-          get: (transfer: BackupTransfer) => pgbackups.status(transfer),
+          get: (transfer: TransferInfoByAppResult) => pgBackups.status(transfer),
         },
         Size: {
-          get: (transfer: BackupTransfer) => pgbackups.filesize(transfer.processed_bytes),
+          get: (transfer: TransferInfoByAppResult) => pgBackups.filesize(transfer.processed_bytes),
         },
         Database: {
-          get: (transfer: BackupTransfer) => color.datastore(transfer.to_name) || 'UNKNOWN',
+          get: (transfer: TransferInfoByAppResult) => transfer.to_name ? color.datastore(transfer.to_name) : 'UNKNOWN',
         },
       })
       /* eslint-enable perfectionist/sort-objects */
