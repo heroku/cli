@@ -24,41 +24,12 @@ export default class DataPgGetCa extends Command {
     }),
   }
 
-  public async awsRegion(herokuRegion: string): Promise<string> {
-    if (REGION_ALIASES[herokuRegion]) return REGION_ALIASES[herokuRegion]
-
-    const {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
-    const region = regions.find(candidate => candidate.name === herokuRegion)
-    const awsRegion = region?.provider?.region
-
-    if (!awsRegion) throw new Error(`${herokuRegion} is not a Heroku region backed by AWS.`)
-
-    return awsRegion
-  }
-
-  public destinationDirectory(): string {
-    if (process.platform === 'win32') {
-      if (!process.env.APPDATA) throw new Error('APPDATA is not set; unable to determine the PostgreSQL certificate directory.')
-
-      return path.join(process.env.APPDATA, 'postgresql')
-    }
-
-    return path.join(os.homedir(), '.postgresql')
-  }
-
-  public async download(url: string): Promise<Buffer> {
-    const response = await fetch(url)
-    if (!response.ok) throw new Error(`AWS RDS returned ${response.status} ${response.statusText}.`)
-
-    return response.buffer()
-  }
-
   public async run(): Promise<void> {
     const {flags} = await this.parse(DataPgGetCa)
     let destination = ''
 
     try {
-      destination = path.join(this.destinationDirectory(), '')
+      destination = this.destinationDirectory()
       const awsRegion = flags.region === 'global' ? 'global' : await this.awsRegion(flags.region)
       const fileName = `${awsRegion}-bundle.pem`
       destination = path.join(destination, fileName)
@@ -70,5 +41,34 @@ export default class DataPgGetCa extends Command {
       const message = error instanceof Error ? error.message : String(error)
       this.error(`Unable to retrieve the RDS CA bundle at ${destination}: ${message}`)
     }
+  }
+
+  private async awsRegion(herokuRegion: string): Promise<string> {
+    if (REGION_ALIASES[herokuRegion]) return REGION_ALIASES[herokuRegion]
+
+    const {body: regions} = await this.heroku.get<Heroku.Region[]>('/regions')
+    const region = regions.find(candidate => candidate.name === herokuRegion)
+    const awsRegion = region?.provider?.region
+
+    if (!awsRegion) throw new Error(`${herokuRegion} is not a Heroku region backed by AWS.`)
+
+    return awsRegion
+  }
+
+  private destinationDirectory(): string {
+    if (process.platform === 'win32') {
+      if (!process.env.APPDATA) throw new Error('APPDATA is not set; unable to determine the PostgreSQL certificate directory.')
+
+      return path.join(process.env.APPDATA, 'postgresql')
+    }
+
+    return path.join(os.homedir(), '.postgresql')
+  }
+
+  private async download(url: string): Promise<Buffer> {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error(`AWS RDS returned ${response.status} ${response.statusText}.`)
+
+    return response.buffer()
   }
 }
