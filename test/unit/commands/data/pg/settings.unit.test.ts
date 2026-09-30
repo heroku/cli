@@ -13,7 +13,7 @@ import {
 } from '../../../../fixtures/data/pg/fixtures.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:settings', function () {
   it('exits with error if it isn\'t a Advanced-tier database', async function () {

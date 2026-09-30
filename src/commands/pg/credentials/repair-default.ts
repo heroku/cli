@@ -7,7 +7,7 @@ import ConfirmCommand from '../../../lib/confirm-command.js'
 import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class RepairDefault extends Command {
   static args = {

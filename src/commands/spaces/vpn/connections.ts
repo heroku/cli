@@ -8,7 +8,7 @@ import {displayVPNStatus} from '../../../lib/spaces/format.js'
 
 type VpnConnectionTunnels = Required<Heroku.PrivateSpacesVpn>['tunnels']
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Connections extends Command {
   static description = 'list the VPN Connections for a space'

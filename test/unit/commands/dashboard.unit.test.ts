@@ -9,7 +9,7 @@ import Cmd from '../../../src/commands/dashboard.js'
 import {ago} from '../../../src/lib/time.js'
 import {unwrap} from '../../helpers/utils/unwrap.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('dashboard', function () {
   if (os.platform() === 'win32') {

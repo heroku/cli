@@ -3,7 +3,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Rename extends Command {
   static description = 'renames a space'

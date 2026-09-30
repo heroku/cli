@@ -15,7 +15,7 @@ import {
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export const shouldHandleArgs = (
   commandText: string,

@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/pg/promote.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:promote when argument is database', function () {
   const addon = fixtures.addons['dwh-db']

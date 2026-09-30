@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import BaseCommand from '../../../../lib/data/base-command.js'
 import {InfoResponse, UpgradeResponse} from '../../../../lib/data/types.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class DataPgUpgradeRun extends BaseCommand {
   static args = {

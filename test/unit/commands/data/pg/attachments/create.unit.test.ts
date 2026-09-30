@@ -20,7 +20,7 @@ import {
   releasesResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:attachments:create', function () {
   let resolveStub: SinonStub

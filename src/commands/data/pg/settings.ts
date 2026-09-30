@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import BaseCommand from '../../../lib/data/base-command.js'
 import {SettingsChangeResponse, SettingsResponse} from '../../../lib/data/types.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const settingsChangeHeaders = {
   Settings: {},

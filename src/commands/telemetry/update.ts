@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {displayTelemetryDrain, validateAndFormatSignals} from '../../lib/telemetry/util.js'
 import {TelemetryDrain, TelemetryDrainWithOptionalKeys, TelemetryExporterWithOptionalKeys} from '../../lib/types/telemetry.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Update extends Command {
   static args = {

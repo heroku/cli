@@ -9,7 +9,7 @@ import {displayNat, displayShieldState, renderInfo} from '../../../../src/lib/sp
 import {SpaceNat} from '../../../../src/lib/types/fir.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('displayShieldState', function () {
   it('returns "on" when shield is true', function () {

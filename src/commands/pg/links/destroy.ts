@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 import {essentialPlan} from '../../../lib/pg/util.js'
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 import {nls} from '../../../nls.js'
 
 export default class Destroy extends Command {

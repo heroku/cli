@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/telemetry/update.js'
 import {appTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('telemetry:update', function () {
   afterEach(function () {

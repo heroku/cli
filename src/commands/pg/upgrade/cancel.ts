@@ -8,7 +8,7 @@ import {PgDatabase, PgUpgradeError, PgUpgradeResponse} from '../../../lib/pg/typ
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Upgrade extends Command {
   static args = {

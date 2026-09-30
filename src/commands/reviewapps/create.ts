@@ -8,7 +8,7 @@ import disambiguate from '../../lib/pipelines/disambiguate.js'
 import createReviewApp from '../../lib/reviewapps/create-review-app.js'
 import {parseWaitInterval} from '../../lib/reviewapps/wait-review-app.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class ReviewappsCreate extends Command {
   static description = 'create a review app from a pipeline\'s connected repository'

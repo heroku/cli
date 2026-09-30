@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import {essentialPlan} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Attach extends Command {
   static args = {

@@ -11,7 +11,7 @@ import BaseCommand from '../../../lib/data/base-command.js'
 import {WaitStatus} from '../../../lib/data/types.js'
 import notify from '../../../lib/notify.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class DataPgWait extends BaseCommand {
   static args = {

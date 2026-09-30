@@ -15,7 +15,7 @@ import {
 } from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku certs:info', function () {
   it('shows certificate details when self-signed', async function () {

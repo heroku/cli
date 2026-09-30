@@ -8,7 +8,7 @@ import backupsApi from '../../../lib/pg/backups.js'
 import {BackupTransfer, PgDatabase} from '../../../lib/pg/types.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Capture extends Command {
   static args = {

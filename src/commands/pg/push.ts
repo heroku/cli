@@ -14,7 +14,7 @@ import {
 } from '../../lib/pg/push-pull.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const {env} = process
 
 export default class Push extends Command {
