@@ -12,7 +12,7 @@
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/heroku-cli-util": "^10.10.0",
     "@heroku/http-call": "^5.5.1",
-    "@heroku/mcp-server": "^1.2.5",
+    "@heroku/mcp-server": "^1.2.9",
     "@inquirer/prompts": "^8.7",
     "@oclif/core": "^4.8.4",
     "@oclif/plugin-commands": "^4.1.40",
