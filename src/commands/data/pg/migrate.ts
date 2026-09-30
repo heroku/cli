@@ -22,6 +22,7 @@ import {
 } from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
+import {huxTableNoWrapOptions} from '../../../lib/utils/table-utils.js'
 
 const heredoc = tsheredoc.default
 
@@ -35,6 +36,7 @@ export default class DataPgMigrate extends BaseCommand {
       hidden: true,
       options: ['snapshot', 'streaming'],
     }),
+    'no-wrap': Flags.noWrap(),
     remote: Flags.remote(),
   }
   private advancedDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[], info?: InfoResponse}> = []
@@ -43,6 +45,7 @@ export default class DataPgMigrate extends BaseCommand {
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private methodProvidedViaFlag = false
   private migrationTargets: Array<MigrationResponse> = []
+  private noWrap = false
   private selectedMigrationMethod?: MigrationMethod
 
   public async createAddon(...args: Parameters<typeof createAddon>): Promise<Heroku.AddOn> {
@@ -57,6 +60,7 @@ export default class DataPgMigrate extends BaseCommand {
     const {flags} = await this.parse(DataPgMigrate)
     const {app, method} = flags
     this.appName = app
+    this.noWrap = flags['no-wrap']
     // If --method flag is provided, convert and store, and record that the method
     // came from the flag so the interactive selection step is skipped throughout.
     if (method !== undefined) {
@@ -85,6 +89,10 @@ export default class DataPgMigrate extends BaseCommand {
         }
 
         case '__exit': {
+          break
+        }
+
+        case '__refresh': {
           break
         }
 
@@ -519,12 +527,10 @@ export default class DataPgMigrate extends BaseCommand {
           header: 'Destination Database',
         },
         status: {
-          get: (migration: MigrationResponse) => (migration.status === MigrationStatus.MIGRATING && migration.status_description)
-            ? color.info(migration.status_description)
-            : color.info(migration.status === MigrationStatus.CANCELLED ? 'Canceled' : hux.toTitleCase(migration.status)!),
+          get: (migration: MigrationResponse) => migration.status_description,
           header: 'Status',
         },
-      })
+      }, huxTableNoWrapOptions(this.noWrap))
       /* eslint-enable perfectionist/sort-objects */
     } else {
       ux.stdout(`You haven't configured any migrations for ${color.app(app)} yet.\n`)
@@ -566,7 +572,7 @@ export default class DataPgMigrate extends BaseCommand {
       })
     }
 
-    choices.push(new Separator(), {name: 'Exit', value: '__exit'})
+    choices.push(new Separator(), {name: 'Refresh', value: '__refresh'}, {name: 'Exit', value: '__exit'})
 
     const {action} = await this.prompt<{action: string}>({
       choices,
