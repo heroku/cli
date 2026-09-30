@@ -51,6 +51,7 @@
     "got": "^14.0.0",
     "https-proxy-agent": "^7.0.6",
     "inquirer": "^8.2.6",
+    "ip-address": "^10.7.2",
     "keypair": "^1.0.4",
     "lodash": "^4.17.21",
     "marked": "^15.0.12",
