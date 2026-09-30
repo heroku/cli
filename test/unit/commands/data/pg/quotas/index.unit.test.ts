@@ -12,7 +12,7 @@ import {
   storageQuotaResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:quotas', function () {
   let dataApi: nock.Scope

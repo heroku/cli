@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/restore.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const addon = {
   app: {name: 'myapp'},
   id: 1,

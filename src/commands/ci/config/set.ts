@@ -8,7 +8,7 @@ import {setPipelineConfigVars} from '../../../lib/api.js'
 import {getPipeline} from '../../../lib/ci/pipelines.js'
 import {validateArgvPresent} from '../../../lib/ci/validate.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class CiConfigSet extends Command {
   static description = 'set CI config vars'

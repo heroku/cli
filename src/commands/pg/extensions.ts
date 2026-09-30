@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {essentialNumPlan} from '../../lib/pg/extras.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export function generateExtensionsQuery(db: pg.ConnectionDetails): string {
   return essentialNumPlan(db.attachment!.addon)

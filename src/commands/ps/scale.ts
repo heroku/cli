@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const emptyFormationErr = (app: string) => (
   new Error(`No process types on ${color.app(app)}.\nUpload a Procfile to add process types.\nhttps://devcenter.heroku.com/articles/procfile`)

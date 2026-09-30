@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/disable.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku certs:auto:disable', function () {
   beforeEach(function () {

@@ -7,7 +7,7 @@ import Cmd from '../../../../src/commands/telemetry/remove.js'
 import {TelemetryDrains} from '../../../../src/lib/types/telemetry.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('telemetry:remove', function () {
   let appId: string

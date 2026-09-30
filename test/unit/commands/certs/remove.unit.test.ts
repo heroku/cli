@@ -9,7 +9,7 @@ import {SniEndpoint} from '../../../../src/lib/types/sni-endpoint.js'
 import {endpoint} from '../../../helpers/stubs/sni-endpoints.js'
 import * as sharedSni from './shared-sni.unit.test.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku certs:remove', function () {
   afterEach(function () {

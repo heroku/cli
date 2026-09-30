@@ -4,7 +4,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku certs:auto:refresh', function () {
   beforeEach(function () {

@@ -8,7 +8,7 @@ import type {NonAdvancedCredentialInfo} from '../../../lib/data/types.js'
 
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Url extends Command {
   static args = {

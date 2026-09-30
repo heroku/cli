@@ -9,7 +9,7 @@ import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Update extends Command {
   static args = {

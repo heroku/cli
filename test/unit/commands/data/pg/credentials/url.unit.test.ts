@@ -17,7 +17,7 @@ import {
   nonAdvancedInactiveCredentialResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:credentials:url', function () {
   it('shows error for Legacy Essential-tier databases with a custom credential name', async function () {

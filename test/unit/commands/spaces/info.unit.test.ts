@@ -7,7 +7,7 @@ import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {SpaceWithOutboundIps} from '../../../../src/lib/types/spaces.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('spaces:info', function () {
   let space: SpaceWithOutboundIps

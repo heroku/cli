@@ -7,7 +7,7 @@ import childProcess, {ChildProcess, SpawnSyncReturns} from 'node:child_process'
 import {Readable, Writable} from 'node:stream'
 import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const debug = debugFactory('pg:push-pull')
 
 export const parseExclusions = (rawExcludeList: string | undefined): Array<string> => (

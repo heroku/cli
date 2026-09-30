@@ -9,7 +9,7 @@ import ConfirmCommand from '../../../lib/confirm-command.js'
 import backupsFactory from '../../../lib/pg/backups.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Restore extends Command {
   static args = {

@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/stubs/sni-endpoints.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku certs', function () {
   it('warns about no SSL certificates if the app has no certs', async function () {

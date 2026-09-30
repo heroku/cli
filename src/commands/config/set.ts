@@ -4,7 +4,7 @@ import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const lastRelease = async (client: APIClient, app: string) => {
   const {body: releases} = await client.get<Heroku.Release[]>(`/apps/${app}/releases`, {
