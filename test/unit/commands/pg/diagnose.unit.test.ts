@@ -10,7 +10,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/pg/diagnose.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:diagnose', function () {
   let api: nock.Scope

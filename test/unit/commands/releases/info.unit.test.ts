@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/releases/info.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const d = new Date(2000, 1, 1)
 describe('releases:info', function () {

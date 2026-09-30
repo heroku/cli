@@ -9,7 +9,7 @@ import {renderInfo} from '../../lib/spaces/spaces.js'
 import {SpaceNat} from '../../lib/types/fir.js'
 import {SpaceWithOutboundIps} from '../../lib/types/spaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const spacesDebug = debug('spaces:info')
 

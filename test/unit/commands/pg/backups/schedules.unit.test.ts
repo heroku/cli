@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/schedules.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const shouldSchedules = function (cmdRun: (args: string[]) => Promise<any>) {
   afterEach(function () {
     nock.cleanAll()

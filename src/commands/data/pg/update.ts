@@ -22,7 +22,7 @@ import {
 import {fetchLevelsAndPricing, renderPricingInfo} from '../../../lib/data/utils.js'
 import {getAllAdvancedDatabases} from '../../../lib/pg/util.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const {prompt, Separator} = inquirer
 

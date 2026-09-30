@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const forwardDebug = debug('cli:ps:forward')
 
 export default class Forward extends Command {

@@ -8,7 +8,7 @@ import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher, revertSortedArgs} from '../../lib/run/helpers.js'
 
 const debug = debugFactory('heroku:run:inside')
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class RunInside extends Command {
   /* eslint-disable perfectionist/sort-objects */

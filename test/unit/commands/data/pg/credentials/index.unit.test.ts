@@ -17,7 +17,7 @@ import {
 } from '../../../../../fixtures/data/pg/fixtures.js'
 import removeAllWhitespace from '../../../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:credentials:index', function () {
   afterEach(function () {

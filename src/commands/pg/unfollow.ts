@@ -9,7 +9,7 @@ import {PgDatabase} from '../../lib/pg/types.js'
 import {databaseNameFromUrl} from '../../lib/pg/util.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Unfollow extends Command {
   static args = {

@@ -24,7 +24,7 @@ import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../../lib/utils/table-utils.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const {prompt, Separator} = inquirer
 

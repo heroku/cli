@@ -4,12 +4,9 @@ import {ux} from '@oclif/core/ux'
 import inquirer from 'inquirer'
 import {readFile} from 'node:fs/promises'
 import {join} from 'node:path'
-import tsheredocLib from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
 import {NpmAuth} from '../../lib/npm-auth.js'
-
-const tsheredoc = tsheredocLib.default
-
 /**
  * Check if user has private plugins that may require npm authentication
  */

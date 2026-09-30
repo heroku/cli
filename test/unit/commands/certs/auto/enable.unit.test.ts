@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/enable.js'
 import removeAllWhitespace from '../../../../helpers/utils/remove-whitespaces.js'
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const sandbox = sinon.createSandbox()
 
 describe('heroku certs:auto:enable', function () {

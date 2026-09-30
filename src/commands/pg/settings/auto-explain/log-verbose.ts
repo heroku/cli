@@ -7,7 +7,7 @@ import type {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {type BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
 import {nls} from '../../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class AutoExplainLogVerbose extends PGSettingsCommand {
   static args = {

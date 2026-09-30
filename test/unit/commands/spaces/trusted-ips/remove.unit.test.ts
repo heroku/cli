@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Remove from '../../../../../src/commands/spaces/trusted-ips/remove.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('trusted-ips:remove', function () {
   let api: nock.Scope

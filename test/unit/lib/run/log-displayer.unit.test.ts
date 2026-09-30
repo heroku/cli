@@ -11,7 +11,7 @@ import {LogDisplayer} from '../../../../src/lib/run/log-displayer.js'
 import {cedarApp, firApp} from '../../../fixtures/apps/fixtures.js'
 
 type CLIError = Errors.CLIError
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('logDisplayer', function () {
   let api: nock.Scope

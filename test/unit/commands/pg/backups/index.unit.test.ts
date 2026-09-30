@@ -8,7 +8,7 @@ import type {BackupTransfer} from '../../../../../src/lib/pg/types.js'
 import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:backups', function () {
   let pg: nock.Scope

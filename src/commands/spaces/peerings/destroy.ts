@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Destroy extends Command {
   static args = {

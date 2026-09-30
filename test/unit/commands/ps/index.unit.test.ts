@@ -10,7 +10,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/ps/index.js'
 import normalizeTableOutput from '../../../helpers/utils/normalize-table-output.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const hourAgo = new Date(Date.now() - (60 * 60 * 1000))
 const hourAgoStr = strftime('%Y/%m/%d %H:%M:%S %z', hourAgo)

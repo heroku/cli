@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import redisApi, {RedisApiResponse} from '../../lib/redis/api.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Upgrade extends Command {
   static args = {

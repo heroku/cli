@@ -16,7 +16,7 @@ import {
 import {nls} from '../../nls.js'
 
 const {env} = process
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Pull extends Command {
   static args = {

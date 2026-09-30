@@ -3,7 +3,7 @@ import tsheredoc from 'tsheredoc'
 
 import DataPgWait from '../wait.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class DataPgUpgradeWait extends DataPgWait {
   static description = 'shows status of an upgrade until it\'s complete'

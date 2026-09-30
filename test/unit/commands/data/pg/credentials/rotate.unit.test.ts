@@ -21,7 +21,7 @@ import {
   nonAdvancedCredentialsResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:credentials:rotate', function () {
   let confirmStub: SinonStub

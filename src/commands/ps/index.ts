@@ -10,7 +10,7 @@ import {DynoExtended} from '../../lib/types/dyno-extended.js'
 import {Account} from '../../lib/types/fir.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Index extends Command {
   static description = 'list dynos for an app'

@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/redis/upgrade.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku redis:upgrade', function () {
   beforeEach(function () {
