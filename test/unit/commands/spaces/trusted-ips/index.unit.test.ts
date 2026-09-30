@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Index from '../../../../../src/commands/spaces/trusted-ips/index.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const now = new Date()
 

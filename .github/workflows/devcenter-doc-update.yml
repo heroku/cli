@@ -28,16 +28,8 @@ jobs:
         with:
           node-version: 22.x
           cache: npm
-      - name: Use Ruby 3.2.x
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
       - name: Install package deps
         run: npm ci
-      - name: Install Devcenter CLI
-        run: |
-          gem install devcenter
-          devcenter help
       - name: Build CLI
         run: npm run build
       - name: Compile documentation and push to devcenter

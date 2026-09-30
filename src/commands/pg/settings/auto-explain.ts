@@ -7,7 +7,7 @@ import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 // ref: https://www.postgresql.org/docs/current/auto-explain.html
 export default class AutoExplain extends PGSettingsCommand {

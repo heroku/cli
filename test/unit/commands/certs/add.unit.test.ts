@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 import Cmd from '../../../../src/commands/certs/add.js'
 import {CertAndKeyManager} from '../../../../src/lib/certs/get-cert-and-key.js'
 import {

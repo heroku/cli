@@ -18,24 +18,21 @@ export function sparkline(values: number[]): string {
   // Unicode block characters for different heights
   const ticks = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
 
-  // NPM sparkline algorithm
-  function lshift(n: number, bits: number): number {
-    // eslint-disable-next-line prefer-exponentiation-operator
-    return Math.floor(n) * Math.pow(2, bits)
-  }
-
   const max = Math.max.apply(null, validValues)
   const min = Math.min.apply(null, validValues)
-  const f = Math.floor(lshift(max - min, 8) / (ticks.length - 1))
-  if (f < 1) {
-    return '▁'.repeat(validValues.length)
+  const range = max - min
+
+  // All values equal (or a single value) — render a flat baseline.
+  if (range === 0) {
+    return ticks[0].repeat(validValues.length)
   }
 
-  const results: string[] = []
-  for (const validValue of validValues) {
-    const value = ticks[Math.floor(lshift(validValue - min, 8) / f)]
-    results.push(value)
-  }
-
-  return results.join('')
+  // Map each value onto a tick by its position within the range. Values are
+  // used as-is (no integer truncation), so fractional data — e.g. the latency
+  // metrics feeding `heroku dashboard` — renders at full resolution. The top of
+  // the range scales to ticks.length, so clamp it down to the last tick to keep
+  // the index in bounds.
+  return validValues
+    .map(value => ticks[Math.min(ticks.length - 1, Math.floor(((value - min) / range) * ticks.length))])
+    .join('')
 }

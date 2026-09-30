@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {ensurePGStatStatement, newBlkTimeFields, newTotalExecTimeField} from '../../lib/pg/extras.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export async function generateCallsQuery(db: pg.ConnectionDetails, flags: {truncate?: boolean}): Promise<string> {
   const schema = await ensurePGStatStatement(db)

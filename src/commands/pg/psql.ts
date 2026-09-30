@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {runPsqlThroughOneOffDyno} from '../../lib/pg/one-off-dyno.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Psql extends Command {
   static aliases = ['psql']

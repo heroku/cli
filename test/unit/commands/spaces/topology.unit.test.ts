@@ -9,7 +9,7 @@ import type {SpaceTopology} from '../../../../src/lib/types/spaces.js'
 import Cmd from '../../../../src/commands/spaces/topology.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('spaces:topology', function () {
   let topo1: SpaceTopology

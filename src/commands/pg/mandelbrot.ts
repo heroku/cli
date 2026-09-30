@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export const generateMandelbrotQuery = (): string => `
   WITH RECURSIVE Z(IX, IY, CX, CY, X, Y, I) AS (

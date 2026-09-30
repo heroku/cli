@@ -15,7 +15,7 @@ import {ExtendedPostgresLevelInfo} from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import notify from '../../../lib/notify.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const {prompt} = inquirer
 
 export default class DataPgCreate extends BaseCommand {

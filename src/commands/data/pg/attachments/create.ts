@@ -16,7 +16,7 @@ import {
 } from '../../../../lib/data/types.js'
 
 const {prompt} = inquirer
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class DataPgAttachmentsCreate extends BaseCommand {
   static args = {

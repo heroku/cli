@@ -34,6 +34,23 @@ These are the help texts for each of the core Heroku CLI commands. You can also 
 <!-- commands -->
 EOF
 oclif readme --no-aliases
-grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" > /tmp/heroku-cli-commands.md
+# The final `sed` rewrites the link content itself so the published article
+# contains a working URL — it is NOT just cosmetic. @oclif/plugin-search tags
+# releases without a leading "v" but ships no `oclif.repositoryPrefix`, so oclif
+# defaults to `blob/v<version>` and generates a 404 "See code" link
+# (…/plugin-search/blob/v1.2.38/… → should be …/blob/1.2.38/…). We strip the stray
+# "v" for plugin-search links only, before the push, so no broken link ever reaches
+# Dev Center. Note: this is a targeted patch for plugin-search — a different plugin
+# with the same no-"v"-tag-without-repositoryPrefix bug would slip through until this
+# rewrite is extended. Remove once the upstream plugin sets `oclif.repositoryPrefix`
+# (https://github.com/oclif/plugin-search).
+grep -v "^\\* \\[\`" README.md | grep -v "^<!--" | sed "s/^## \`/### \`/g" | sed -E "s#(oclif/plugin-search/blob/)v([0-9])#\\1\\2#g" > /tmp/heroku-cli-commands.md
 git checkout README.md
-devcenter push /tmp/heroku-cli-commands.md --trace
+
+# Push via the @heroku-cli/plugin-devcenter oclif plugin. The plugin treats broken
+# links as a non-fatal warning and proceeds to validate + update. It reads <slug>.md
+# from DEVCENTER_CLI_CWD and takes the article id from the file's front matter
+# (id: 4088); auth comes from the ~/.netrc api.heroku.com entry written above (via
+# getAuth()).
+run plugins:install @heroku-cli/plugin-devcenter@^2
+DEVCENTER_CLI_CWD=/tmp run devcenter:push heroku-cli-commands

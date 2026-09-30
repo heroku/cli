@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-verbose.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:settings:auto-explain:log-verbose', function () {
   let api: nock.Scope

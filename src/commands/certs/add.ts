@@ -10,7 +10,7 @@ import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Add extends Command {
   static args = {

@@ -9,7 +9,7 @@ import {AppProcessTier} from '../../lib/types/app-process-tier.js'
 import {DynoExtended} from '../../lib/types/dyno-extended.js'
 import {Account} from '../../lib/types/fir.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Index extends Command {
   static description = 'list dynos for an app'

@@ -95,6 +95,7 @@ EOFTABLE
 EMEA
 envfile
 envl
+esac
 eventsource
 execa
 expialidocious

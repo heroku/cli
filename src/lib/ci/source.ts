@@ -1,6 +1,6 @@
 import {Command} from '@heroku-cli/command'
 import debug from 'debug'
-import {got} from 'got'
+import got from 'got'
 import {createReadStream, promises as fs} from 'node:fs'
 
 import {gitService} from './git.js'

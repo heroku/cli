@@ -6,7 +6,7 @@ import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 import {PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class LogMinDurationStatement extends PGSettingsCommand {
   static args = {
