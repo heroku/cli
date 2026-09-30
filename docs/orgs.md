@@ -25,7 +25,7 @@ DESCRIPTION
   list the teams that you are a member of
 ```
 
-_See code: [src/commands/orgs/index.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/orgs/index.ts)_
+_See code: [src/commands/orgs/index.ts](https://github.com/heroku/cli/blob/v11.11.0-beta.0/src/commands/orgs/index.ts)_
 
 ## `heroku orgs:open`
 
@@ -36,7 +36,7 @@ USAGE
   $ heroku orgs:open -t <value> [--prompt]
 
 FLAGS
-  -t, --team=<value>  (required) team to use
+  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -45,4 +45,4 @@ DESCRIPTION
   open the team interface in a browser window
 ```
 
-_See code: [src/commands/orgs/open.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/orgs/open.ts)_
+_See code: [src/commands/orgs/open.ts](https://github.com/heroku/cli/blob/v11.11.0-beta.0/src/commands/orgs/open.ts)_
