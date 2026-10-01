@@ -15,7 +15,7 @@ USAGE
 
 FLAGS
   -a, --app=<value>   app to list metered add-ons usage for
-  -t, --team=<value>  team to list metered add-ons usage for
+  -t, --team=<value>  [default: terraform-ci-test-team] team to list metered add-ons usage for
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -24,4 +24,4 @@ DESCRIPTION
   list usage for metered add-ons attached to an app or apps within a team
 ```
 
-_See code: [src/commands/usage/addons.ts](https://github.com/heroku/cli/blob/v11.10.1/src/commands/usage/addons.ts)_
+_See code: [src/commands/usage/addons.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/usage/addons.ts)_
