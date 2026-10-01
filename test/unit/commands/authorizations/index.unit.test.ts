@@ -67,4 +67,45 @@ describe('authorizations', function () {
       expect(stdout).to.equal('No OAuth authorizations.\n')
     })
   })
+
+  context('with team flag', function () {
+    it('lists the named team\'s authorizations alphabetically by description', async function () {
+      api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
+        .get('/teams/my-team/oauth/authorizations')
+        .reply(200, [exampleAuthorization1, exampleAuthorization2])
+
+      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team'])
+
+      const actual = removeAllWhitespace(stdout)
+      const expected = removeAllWhitespace(`
+        awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user
+        b description aBcD1234-129f-42d2-854b-dEf123abc123 global`)
+      expect(actual).to.include(expected)
+    })
+
+    it('lists the named team\'s authorizations as json', async function () {
+      api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
+        .get('/teams/my-team/oauth/authorizations')
+        .reply(200, [exampleAuthorization1, exampleAuthorization2])
+
+      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team', '--json'])
+
+      const authJSON = JSON.parse(stdout)
+      expect(authJSON[0]).to.eql(exampleAuthorization2)
+      expect(authJSON[1]).to.eql(exampleAuthorization1)
+    })
+
+    it('shows no authorizations message for a team with none', async function () {
+      api
+        .matchHeader('accept', 'application/vnd.heroku+json; version=3.sdk')
+        .get('/teams/my-team/oauth/authorizations')
+        .reply(200, [])
+
+      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team'])
+
+      expect(stdout).to.equal('No OAuth authorizations.\n')
+    })
+  })
 })

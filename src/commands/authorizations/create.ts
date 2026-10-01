@@ -5,6 +5,7 @@ import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
 
+import {SDK_HEADER} from '../../lib/api.js'
 import {display} from '../../lib/authorizations/authorizations.js'
 
 export default class AuthorizationsCreate extends Command {
@@ -18,6 +19,7 @@ export default class AuthorizationsCreate extends Command {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     scope: flags.string({char: 's', completion: ScopeCompletion, description: 'set custom OAuth scopes'}),
     short: flags.boolean({char: 'S', description: 'only output token'}),
+    team: flags.team({description: 'team to create OAuth authorization on'}),
   }
 
   async run() {
@@ -25,12 +27,17 @@ export default class AuthorizationsCreate extends Command {
 
     ux.action.start('Creating OAuth Authorization')
 
-    const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>('/oauth/authorizations', {
+    const endpoint = flags.team
+      ? `/teams/${encodeURIComponent(flags.team)}/oauth/authorizations`
+      : '/oauth/authorizations'
+
+    const {body: auth} = await this.heroku.post<Heroku.OAuthAuthorization>(endpoint, {
       body: {
         description: flags.description,
         expires_in: flags['expires-in'],
         scope: flags.scope ? flags.scope.split(',') : undefined,
       },
+      ...(flags.team ? {headers: {Accept: SDK_HEADER}} : {}),
     })
 
     ux.action.stop()
