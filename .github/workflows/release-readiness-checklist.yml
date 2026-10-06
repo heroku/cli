@@ -126,7 +126,13 @@ jobs:
               body="$COMMENT_MARKER
           **Release readiness reminder**
 
-          Hi @$AUTHOR — this PR looks like it changes something customers see or use. Before it ships, run the [Release Readiness Checklist](https://github.com/heroku/engineering-docs/blob/master/teams/developer-tooling/release-readiness-checklist.md) — only the CX review is required; the rest is optional context. This is a reminder, not a blocker."
+          Hi @$AUTHOR — if this PR changes something customers see or use, check off the items below. Only the CX review is required; the rest is optional context. See the [Release Readiness Checklist](https://github.com/heroku/engineering-docs/blob/master/teams/developer-tooling/release-readiness-checklist.md) for details, and follow up in #heroku-cli with anything that needs discussion. This is a reminder, not a blocker.
+
+          ### Release readiness
+          - [ ] CX review (required if customer-facing text) — requested in #heroku-cx
+          - [ ] PRD / roadmap (optional) — <link>
+          - [ ] Dev Center docs (optional) — <link, or \"n/a\">
+          - [ ] Release date / needed by (optional) — <date, or \"no date yet\">"
               try gh pr comment --repo "$REPO" "$PR" --body "$body"
             fi
           else
