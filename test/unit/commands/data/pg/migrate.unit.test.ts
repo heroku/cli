@@ -168,7 +168,7 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('')
       expect(stdout).not.to.contain('There are no migrations configured for ⬢ myapp yet.')
       expect(stdout).to.match(/Source Database\s+Destination Database\s+Status/)
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
     })
 
     it('accepts the --no-wrap flag and renders the migrations table', async function () {
@@ -191,7 +191,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
     })
 
     it('shows the status description in place of the status when present', async function () {
@@ -218,7 +218,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+syncing/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+syncing/)
       expect(stdout).not.to.contain('Migrating')
     })
 
@@ -259,8 +259,8 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Refresh')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing databases/)
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Migrating data/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Migrating data/)
     })
 
     it('disables configuring a new migration option when there are no additional classic databases pending migration', async function () {
@@ -341,7 +341,7 @@ describe('data:pg:migrate', function () {
 
         dataApi.done()
         expect(stderr).to.equal('')
-        expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Preparing databases/)
+        expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
         expect(stdout).to.contain('- Start a migration (no ready migrations on ⬢ myapp)')
         expect(stdout).to.contain('- Cancel a migration (no ready migrations on ⬢ myapp)')
       }
@@ -374,7 +374,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Ready to promote/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Ready to promote/)
       expect(stdout).to.contain('Start a migration')
       expect(stdout).to.contain('Cancel a migration')
       expect(stdout).not.to.contain('no ready migrations on ⬢ myapp')
@@ -464,7 +464,7 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('Preparing the migration deletes all the data on the destination database ⛁ postgresql-obscured-12345.')
       expect(stderr).to.equal('Configuring migration... done\n')
       // Verify the new migration is shown on the configured migrations table
-      expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345 v17\.5\s+Preparing databases/)
     })
 
     it('shows the expected list of source databases', async function () {
@@ -513,12 +513,12 @@ describe('data:pg:migrate', function () {
       const targetDatabaseList = stdout.match(/(?<=Select the destination database: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
       expect(stderr).to.equal('Configuring migration... done\n')
       // Entry for the target database that is already a migration destination should be disabled
-      expect(targetDatabaseList).to.contain(`⛁ ${targetAdvancedDbAttachment.addon.name} as ADVANCED_DB (already a destination database for an active migration)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${targetAdvancedDbAttachment.addon.name} as ADVANCED_DB v17.5 (already a destination database for an active migration)`)
       // Entry for the non-target Advanced database should be enabled
       expect(targetDatabaseList).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB`)
       expect(targetDatabaseList).not.to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB (already a destination database for an active migration)`)
       // Entry for the unavailable database should be disabled
-      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} as UNAVAILABLE_DB (database isn't available)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} as UNAVAILABLE_DB v17.5 (database isn't available)`)
       // There should be no entries for non-Advanced or foreign databases
       expect(targetDatabaseList).not.to.contain(essentialDbAttachment.addon.name)
       expect(targetDatabaseList).not.to.contain(foreignAdvancedDbAttachment.addon.name)
@@ -684,7 +684,6 @@ describe('data:pg:migrate', function () {
       expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced')
       expect(createAddonStub.args[0][5]).to.deep.include({
         config: {
-          from: premiumDbAttachment.addon.id,
           'high-availability': true,
           level: '4G-Performance',
         },
@@ -756,7 +755,6 @@ describe('data:pg:migrate', function () {
       expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-private')
       expect(createAddonStub.args[0][5]).to.deep.include({
         config: {
-          from: privateDbAttachment.addon.id,
           'high-availability': true,
           level: '4G-Performance',
         },
@@ -828,7 +826,6 @@ describe('data:pg:migrate', function () {
       expect(createAddonStub.args[0][2]).to.equal('heroku-postgresql:advanced-shield')
       expect(createAddonStub.args[0][5]).to.deep.include({
         config: {
-          from: shieldDbAttachment.addon.id,
           'high-availability': true,
           level: '4G-Performance',
         },
@@ -1276,6 +1273,205 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout).not.to.contain('Select migration method')
+    })
+  })
+
+  describe('Postgres versions', function () {
+    afterEach(function () {
+      nock.cleanAll()
+    })
+
+    it('shows the database versions and warns about a major version change when configuring a migration', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .persist(true)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
+        .times(2)
+        .reply(200, {postgres_version: '16.4'})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Non-target Advanced database
+        '\n', // Confirm migration configuration: > Confirm
+        '\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB v16.4`)
+      expect(stdout).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB v17.5`)
+      expect(stdout).to.contain('The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
+      expect(stdout).to.match(/⛁ postgresql-convex-12345 v16\.4\s+⛁ postgresql-obscured-12345 v17\.5\s+Preparing databases/)
+    })
+
+    it('does not warn about a version change when the major versions match', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .persist(true)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
+        .times(2)
+        .reply(200, {postgres_version: '17.2'})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Non-target Advanced database
+        '\n', // Confirm migration configuration: > Confirm
+        '\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB v17.2`)
+      expect(stdout).not.to.contain('The destination database runs Postgres')
+    })
+
+    it('provisions a new destination database on the source database major version', async function () {
+      poolConfigLeaderInteractiveConfigStub.resolves({
+        action: '__confirm',
+        highAvailability: true,
+        level: '4G-Performance',
+      })
+      createAddonStub.resolves(nonTargetAdvancedDbAttachment.addon as unknown as Heroku.AddOn)
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          premiumDbAttachment,
+        ])
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
+        .times(2)
+        .reply(200, {postgres_version: '16.4'})
+        .get('/data/postgres/v1/levels/advanced')
+        .reply(200, levelsResponse)
+        .get('/data/postgres/v1/pricing')
+        .reply(200, pricingResponse)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Create database
+        '\n', // Confirm migration configuration: > Confirm
+        '\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(createAddonStub.calledOnce).to.be.true
+      expect(createAddonStub.args[0][5]).to.deep.include({
+        config: {
+          'high-availability': true,
+          level: '4G-Performance',
+          version: '16',
+        },
+      })
+      expect(stdout).not.to.contain('The destination database runs Postgres')
+    })
+
+    it('warns about a major version change when starting a migration', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .persist(true)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          targetAdvancedDbAttachment,
+          standardDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/client/v11/databases/${standardDbAttachment.addon.id}`)
+        .times(2)
+        .reply(200, {postgres_version: '16.4'})
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, {
+          ...existentMigrationResponse,
+          status: MigrationStatus.READY,
+          status_description: 'Ready to promote',
+        })
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
+        .reply(202, {})
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, {
+          ...existentMigrationResponse,
+          status: MigrationStatus.MIGRATING,
+        })
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Start a migration
+        '\n',         // Select migration: > Choose the first ready migration
+        '\n',         // Confirm migration start: > Confirm
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+      expect(stdout).to.contain('From ⛁ postgresql-cubic-12345 v16.4 to ⛁ postgresql-lively-12345 v17.5')
+      expect(stdout).to.contain('The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
     })
   })
 })
