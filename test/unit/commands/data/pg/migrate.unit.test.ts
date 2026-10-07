@@ -513,12 +513,12 @@ describe('data:pg:migrate', function () {
       const targetDatabaseList = stdout.match(/(?<=Select the destination database: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
       expect(stderr).to.equal('Configuring migration... done\n')
       // Entry for the target database that is already a migration destination should be disabled
-      expect(targetDatabaseList).to.contain(`⛁ ${targetAdvancedDbAttachment.addon.name} as ADVANCED_DB v17.5 (already a destination database for an active migration)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${targetAdvancedDbAttachment.addon.name} v17.5 as ADVANCED_DB (already a destination database for an active migration)`)
       // Entry for the non-target Advanced database should be enabled
-      expect(targetDatabaseList).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB`)
-      expect(targetDatabaseList).not.to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB (already a destination database for an active migration)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} v17.5 as OTHER_ADVANCED_DB`)
+      expect(targetDatabaseList).not.to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} v17.5 as OTHER_ADVANCED_DB (already a destination database for an active migration)`)
       // Entry for the unavailable database should be disabled
-      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} as UNAVAILABLE_DB v17.5 (database isn't available)`)
+      expect(targetDatabaseList).to.contain(`⛁ ${unavailableAdvancedDbAttachment.addon.name} v17.5 as UNAVAILABLE_DB (database isn't available)`)
       // There should be no entries for non-Advanced or foreign databases
       expect(targetDatabaseList).not.to.contain(essentialDbAttachment.addon.name)
       expect(targetDatabaseList).not.to.contain(foreignAdvancedDbAttachment.addon.name)
@@ -549,6 +549,48 @@ describe('data:pg:migrate', function () {
       expect(stdout.match(/Select the source database: \(Use arrow keys\)/g)?.length).to.equal(2)
       expect(stdout.match(/Select the destination database: \(Use arrow keys\)/g)?.length).to.equal(3)
       expect(stdout.match(/Confirm migration configuration: \(Use arrow keys\)/g)?.length).to.equal(2)
+    })
+  })
+
+  describe('configure a database migration with a provisioning target database', function () {
+    it('allows selecting a target database that is still provisioning', async function () {
+      const provisioningAdvancedDbInfo = {...nonTargetAdvancedDbInfo, status: DatabaseStatus.PROVISIONING}
+      const herokuApi = nock('https://api.heroku.com')
+        .persist(true)
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, provisioningAdvancedDbInfo)
+        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
+          method: 'full-load',
+          source_id: premiumDbAttachment.addon.id,
+        })
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, provisioningAdvancedDbInfo)
+
+      mockedStdinInput = [
+        '\n', // Main menu: > Configure a database migration
+        '\n', // Select source database: > Premium database
+        '\n', // Select target database: > Provisioning Advanced database
+        '\n', // Confirm migration configuration: > Confirm
+        '\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('Configuring migration... done\n')
+      expect(stdout).not.to.contain('database isn\'t available')
     })
   })
 
@@ -1320,9 +1362,9 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB v16.4`)
-      expect(stdout).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} as OTHER_ADVANCED_DB v17.5`)
-      expect(stdout).to.contain('The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
+      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v16.4 as PREMIUM_DB`)
+      expect(stdout).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} v17.5 as OTHER_ADVANCED_DB`)
+      expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
       expect(stdout).to.match(/⛁ postgresql-convex-12345 v16\.4\s+⛁ postgresql-obscured-12345 v17\.5\s+Preparing databases/)
     })
 
@@ -1365,7 +1407,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} as PREMIUM_DB v17.2`)
+      expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v17.2 as PREMIUM_DB`)
       expect(stdout).not.to.contain('The destination database runs Postgres')
     })
 
@@ -1471,7 +1513,7 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       expect(stdout).to.contain('From ⛁ postgresql-cubic-12345 v16.4 to ⛁ postgresql-lively-12345 v17.5')
-      expect(stdout).to.contain('The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
+      expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
     })
   })
 })
