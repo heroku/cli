@@ -21,6 +21,7 @@ import {
   MigrationStatus,
 } from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
+import {PgDatabaseService} from '../../../lib/pg/types.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../../lib/utils/table-utils.js'
 
@@ -41,7 +42,7 @@ export default class DataPgMigrate extends BaseCommand {
   }
   private advancedDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[], info?: InfoResponse}> = []
   private appName: string | undefined
-  private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[]}> = []
+  private classicDatabases: Array<pg.ExtendedAddonAttachment['addon'] & {attachment_names?: string[], version?: string}> = []
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private methodProvidedViaFlag = false
   private migrationTargets: Array<MigrationResponse> = []
@@ -127,6 +128,7 @@ export default class DataPgMigrate extends BaseCommand {
             You can't cancel the migration after starting it.
 
           `))
+            this.printVersionChangeWarning(sourceDatabase?.version, targetDatabase?.info?.version)
           } else {
             ux.stdout(color.info(heredoc`
 
@@ -164,7 +166,8 @@ export default class DataPgMigrate extends BaseCommand {
           for (const migration of readyMigrations) {
             const sourceDatabase = this.classicDatabases.find(db => db.id === migration.source_id)
             const targetDatabase = this.advancedDatabases.find(db => db.id === migration.target_id)
-            const name = `From ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}`
+            const name = `From ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))}${this.versionLabel(sourceDatabase?.version)} `
+              + `to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}${this.versionLabel(targetDatabase?.info?.version)}`
             choices.push({
               name,
               value: migration.id,
@@ -199,6 +202,7 @@ export default class DataPgMigrate extends BaseCommand {
     let sourceDatabaseId: string | undefined
     let targetDatabaseId: string | undefined
     let targetDatabaseName: string | undefined
+    let targetDatabaseVersion: string | undefined
 
     const confirmMigration = async (): Promise<string> => {
       ux.stdout(color.info(heredoc`
@@ -210,6 +214,7 @@ export default class DataPgMigrate extends BaseCommand {
         Preparing the migration deletes all the data on the destination database ${color.datastore(targetDatabaseName!)}.
 
       `))
+      this.printVersionChangeWarning(this.classicDatabases.find(db => db.id === sourceDatabaseId)?.version, targetDatabaseVersion)
       const {action} = await this.prompt<{action: string}>({
         choices: [
           {name: 'Confirm', value: '__confirm'},
@@ -250,6 +255,7 @@ export default class DataPgMigrate extends BaseCommand {
       const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
       for (const database of this.classicDatabases) {
         const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
+          + this.versionLabel(database.version)
         if (this.migrationTargets.some(migration => migration.source_id === database.id && this.isActiveMigration(migration))) {
           choices.push({
             disabled: 'already a source database for an active migration',
@@ -279,6 +285,7 @@ export default class DataPgMigrate extends BaseCommand {
       const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
       for (const database of this.advancedDatabases) {
         const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
+          + this.versionLabel(database.info?.version)
         if (this.migrationTargets.some(migration => migration.target_id === database.id && this.isActiveMigration(migration))) {
           choices.push({
             disabled: 'already a destination database for an active migration',
@@ -318,7 +325,9 @@ export default class DataPgMigrate extends BaseCommand {
         name: 'database',
         type: 'list',
       })).database
-      targetDatabaseName = this.advancedDatabases.find(db => db.id === targetDatabaseId)?.name
+      const targetDatabase = this.advancedDatabases.find(db => db.id === targetDatabaseId)
+      targetDatabaseName = targetDatabase?.name
+      targetDatabaseVersion = targetDatabase?.info?.version
 
       return targetDatabaseId
     }
@@ -417,9 +426,12 @@ export default class DataPgMigrate extends BaseCommand {
 
     // Database cluster provisioning (leader pool)
     const config: Record<string, boolean | string | undefined> = {
-      from: sourceDatabaseId,
       'high-availability': highAvailability,
       level: leaderLevel,
+    }
+    const version = this.majorVersion(sourceDatabase.version)
+    if (version) {
+      config.version = version
     }
 
     let addon: Heroku.AddOn | undefined
@@ -467,7 +479,12 @@ export default class DataPgMigrate extends BaseCommand {
   private async getMigrationTargetsAndInfo(): Promise<void> {
     const migrationPromises = Promise.allSettled(this.advancedDatabases.map(db => this.dataApi.get<MigrationResponse>(`/data/postgres/v1/${db.id}/migrations`)))
     const infoPromises = Promise.allSettled(this.advancedDatabases.map(db => this.dataApi.get<InfoResponse>(`/data/postgres/v1/${db.id}/info`)))
-    const [migrationResults, infoResults] = await Promise.all([migrationPromises, infoPromises])
+    // The source database version is only informational, so failures fetching it are ignored
+    const sourceInfoPromises = Promise.allSettled(this.classicDatabases.map(async db => {
+      const {body} = await this.dataApi.get<PgDatabaseService>(`/client/v11/databases/${db.id}`)
+      db.version = body.postgres_version || undefined
+    }))
+    const [migrationResults, infoResults] = await Promise.all([migrationPromises, infoPromises, sourceInfoPromises])
 
     // 404 errors are expected for Advanced databases that are not a migration target (at least not yet)
     const unexpectedError = [...migrationResults, ...infoResults]
@@ -519,11 +536,17 @@ export default class DataPgMigrate extends BaseCommand {
       /* eslint-disable perfectionist/sort-objects */
       hux.table(this.migrationTargets, {
         source: {
-          get: (migration: MigrationResponse) => color.datastore(this.classicDatabases.find(db => db.id === migration.source_id)?.name ?? color.gray('unknown')),
+          get: (migration: MigrationResponse) => {
+            const sourceDatabase = this.classicDatabases.find(db => db.id === migration.source_id)
+            return color.datastore(sourceDatabase?.name ?? color.gray('unknown')) + this.versionLabel(sourceDatabase?.version)
+          },
           header: 'Source Database',
         },
         destination: {
-          get: (migration: MigrationResponse) => color.datastore(this.advancedDatabases.find(db => db.id === migration.target_id)?.name ?? color.gray('unknown')),
+          get: (migration: MigrationResponse) => {
+            const targetDatabase = this.advancedDatabases.find(db => db.id === migration.target_id)
+            return color.datastore(targetDatabase?.name ?? color.gray('unknown')) + this.versionLabel(targetDatabase?.info?.version)
+          },
           header: 'Destination Database',
         },
         status: {
@@ -581,5 +604,28 @@ export default class DataPgMigrate extends BaseCommand {
       type: 'list',
     })
     return action
+  }
+
+  // Versions can include the minor version (e.g. '16.4'), but we only compare and provision by major version
+  private majorVersion(version?: string): string | undefined {
+    return version?.split('.')[0]
+  }
+
+  private printVersionChangeWarning(sourceVersion?: string, targetVersion?: string): void {
+    const sourceMajorVersion = this.majorVersion(sourceVersion)
+    const targetMajorVersion = this.majorVersion(targetVersion)
+    if (!sourceMajorVersion || !targetMajorVersion || sourceMajorVersion === targetMajorVersion) {
+      return
+    }
+
+    ux.stdout(color.warning(heredoc`
+      The destination database runs Postgres ${targetVersion}, but the source database runs Postgres ${sourceVersion}.
+      Make sure your application and extensions are compatible with Postgres ${targetMajorVersion} before starting the migration.
+
+    `))
+  }
+
+  private versionLabel(version?: string): string {
+    return version ? ` ${color.gray(`v${version}`)}` : ''
   }
 }
