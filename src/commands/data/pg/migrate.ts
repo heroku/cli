@@ -254,8 +254,8 @@ export default class DataPgMigrate extends BaseCommand {
     const selectSource = async (): Promise<string> => {
       const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
       for (const database of this.classicDatabases) {
-        const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
-          + this.versionLabel(database.version)
+        const name = `${color.datastore(database.name)}${this.versionLabel(database.version)} `
+          + `as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
         if (this.migrationTargets.some(migration => migration.source_id === database.id && this.isActiveMigration(migration))) {
           choices.push({
             disabled: 'already a source database for an active migration',
@@ -284,15 +284,15 @@ export default class DataPgMigrate extends BaseCommand {
     const selectTarget = async (): Promise<string> => {
       const choices: Array<DistinctChoice<{database: string}, ListChoiceMap<{database: string}>>> = []
       for (const database of this.advancedDatabases) {
-        const name = `${color.datastore(database.name)} as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
-          + this.versionLabel(database.info?.version)
+        const name = `${color.datastore(database.name)}${this.versionLabel(database.info?.version)} `
+          + `as ${database.attachment_names!.map(name => color.attachment(name)).join(', ')}`
         if (this.migrationTargets.some(migration => migration.target_id === database.id && this.isActiveMigration(migration))) {
           choices.push({
             disabled: 'already a destination database for an active migration',
             name: color.gray(name),
             value: database.id,
           })
-        } else if (database.info?.status === DatabaseStatus.AVAILABLE) {
+        } else if (database.info?.status === DatabaseStatus.AVAILABLE || database.info?.status === DatabaseStatus.PROVISIONING) {
           choices.push({
             name,
             value: database.id,
@@ -619,8 +619,7 @@ export default class DataPgMigrate extends BaseCommand {
     }
 
     ux.stdout(color.warning(heredoc`
-      The destination database runs Postgres ${targetVersion}, but the source database runs Postgres ${sourceVersion}.
-      Make sure your application and extensions are compatible with Postgres ${targetMajorVersion} before starting the migration.
+      Warning: The destination database runs Postgres ${targetVersion}, but the source database runs Postgres ${sourceVersion}.
 
     `))
   }
