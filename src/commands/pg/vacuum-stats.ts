@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class VacuumStats extends Command {
   static args = {

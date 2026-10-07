@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/push.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:push', function () {
   const skipOnWindows = process.platform === 'win32' ? it.skip : it

@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import createAddon from '../../lib/addons/create-addon.js'
 import notify from '../../lib/notify.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Create extends Command {
   static args = {

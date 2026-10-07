@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Disable extends Command {
   static description = 'disable ACM for an app'

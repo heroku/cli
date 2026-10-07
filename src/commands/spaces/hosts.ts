@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayHosts, displayHostsAsJSON, type Host} from '../../lib/spaces/hosts.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Hosts extends Command {
   static args = {

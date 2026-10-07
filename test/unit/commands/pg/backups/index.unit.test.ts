@@ -9,7 +9,7 @@ import Cmd from '../../../../../src/commands/pg/backups/index.js'
 import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 import normalizeTableOutput from '../../../../helpers/utils/normalize-table-output.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:backups', function () {
   let sdkMock: MockSDK

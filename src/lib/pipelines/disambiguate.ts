@@ -1,6 +1,7 @@
 import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {HerokuSDK} from '@heroku/sdk'
+import {Errors} from '@oclif/core'
 import inquirer from 'inquirer'
 
 import {findPipelineByName} from '../api.js'
@@ -39,8 +40,7 @@ export default async function disambiguate(heroku: APIClient, pipelineIDOrName: 
         if (answers.pipeline) {
           resolve(answers.pipeline)
         } else {
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject('Must pick a pipeline')
+          reject(new Errors.CLIError('Must pick a pipeline'))
         }
       })
     }

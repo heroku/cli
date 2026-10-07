@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {runPsqlThroughOneOffDyno} from '../../../lib/pg/one-off-dyno.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class DataPgPsql extends Command {
   static args = {

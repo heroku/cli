@@ -9,7 +9,7 @@ import {
   addon, createCredentialResponse, essentialAddon, legacyEssentialAddon, nonAdvancedAddon,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:credentials:create', function () {
   it('shows error for legacy Essential-tier databases', async function () {

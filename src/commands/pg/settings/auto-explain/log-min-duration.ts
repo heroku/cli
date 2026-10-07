@@ -5,7 +5,7 @@ import {numericConverter, PGSettingsCommand} from '../../../../lib/pg/setter.js'
 import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class LogMinDuration extends PGSettingsCommand {
   static args = {

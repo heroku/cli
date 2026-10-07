@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/links/destroy.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:links:destroy', function () {
   afterEach(function () {

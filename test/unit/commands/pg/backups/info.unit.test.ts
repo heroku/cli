@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/backups/info.js'
 import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:backups:info', function () {
   let sdkMock: MockSDK

@@ -10,7 +10,7 @@ import ConfirmCommand from '../../lib/confirm-command.js'
 import {displayNat} from '../../lib/spaces/spaces.js'
 import {Space} from '../../lib/types/fir.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type RequiredSpaceWithNat = Required<Space> & {outbound_ips?: Required<Heroku.SpaceNetworkAddressTranslation>}
 

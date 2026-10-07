@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {displayPeeringInfo, displayPeerings, displayPeeringsAsJSON} from '../../../../src/lib/spaces/peering.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const peerings: Peering[] = [
   {

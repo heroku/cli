@@ -4,7 +4,7 @@ import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class KeyspaceNotifications extends Command {
   static args = {

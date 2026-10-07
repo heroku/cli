@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export const generateTotalIndexSizeQuery = (): string => `
 SELECT pg_size_pretty(sum(c.relpages::bigint*8192)::bigint) AS size

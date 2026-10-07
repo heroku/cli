@@ -10,7 +10,7 @@ import {InfoResponse} from '../../../lib/data/types.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import notify from '../../../lib/notify.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Fork extends BaseCommand {
   static args = {

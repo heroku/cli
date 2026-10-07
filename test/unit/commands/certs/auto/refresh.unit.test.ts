@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/certs/auto/refresh.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   app: {refreshACM: sinon.SinonStub}

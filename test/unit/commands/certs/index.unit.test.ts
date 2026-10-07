@@ -13,7 +13,7 @@ import {
 } from '../../../helpers/stubs/sni-endpoints.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   sniEndpoint: {list: sinon.SinonStub}

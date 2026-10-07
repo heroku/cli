@@ -8,7 +8,7 @@ import tsheredoc from 'tsheredoc'
 
 import {validateAndFormatSignals} from '../../lib/telemetry/util.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Add extends Command {
   static args = {

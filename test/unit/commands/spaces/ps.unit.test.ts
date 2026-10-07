@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import Ps from '../../../../src/commands/spaces/ps.js'
 import {ago} from '../../../../src/lib/time.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('spaces:ps', function () {
   let hourAgo: Date

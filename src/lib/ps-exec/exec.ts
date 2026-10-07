@@ -16,7 +16,7 @@ import tsheredoc from 'tsheredoc'
 
 import {HerokuSsh} from './ssh.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 interface ExecContext {
   app: string

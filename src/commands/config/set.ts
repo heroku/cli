@@ -4,7 +4,7 @@ import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type Platform = HerokuSDK['platform']
 

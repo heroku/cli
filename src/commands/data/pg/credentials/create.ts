@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class DataPgCredentialsCreate extends BaseCommand {
   static args = {

@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/capture.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:backups:capture', function () {
   const addon = {

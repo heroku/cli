@@ -11,7 +11,7 @@ import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import {Domain} from '../../../lib/types/domain.js'
 import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 function humanize(value: null | string) {
   if (!value) {

@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/telemetry/remove.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   telemetryDrain: {

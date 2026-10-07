@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayPeerings, displayPeeringsAsJSON} from '../../../lib/spaces/peering.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Index extends Command {
   static args = {

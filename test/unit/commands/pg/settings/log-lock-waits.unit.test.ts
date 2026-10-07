@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/settings/log-lock-waits.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:settings:log-lock-waits', function () {
   const addon = fixtures.addons['dwh-db']

@@ -10,7 +10,7 @@ import Cmd from '../../../../src/commands/telemetry/index.js'
 import {appTelemetryDrain1, appTelemetryDrain2, spaceTelemetryDrain1} from '../../../fixtures/telemetry/fixtures.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   telemetryDrain: {

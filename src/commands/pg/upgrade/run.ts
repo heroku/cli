@@ -10,7 +10,7 @@ import ConfirmCommand from '../../../lib/confirm-command.js'
 import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Upgrade extends Command {
   static args = {

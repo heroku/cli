@@ -1,4 +1,4 @@
-import type {DynoExtended} from '@heroku/sdk/extensions/platform'
+import type {DynoExtended, DynoExtendedFields} from '@heroku/sdk/extensions/platform'
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
@@ -10,9 +10,8 @@ import tsheredoc from 'tsheredoc'
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 
 import {ago} from '../../lib/time.js'
-import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Index extends Command {
   static description = 'list dynos for an app'
@@ -31,7 +30,6 @@ export default class Index extends Command {
     app: flags.app({required: true}),
     extended: flags.boolean({char: 'x', hidden: true}), // only works with sudo privileges
     json: flags.boolean({description: 'display as json'}),
-    'no-wrap': flags.noWrap(),
     remote: flags.remote(),
   }
   static strict = false
@@ -80,7 +78,7 @@ export default class Index extends Command {
     if (json)
       hux.styledJSON(selectedDynos)
     else if (extended)
-      printExtended(selectedDynos, flags['no-wrap'])
+      printExtended(selectedDynos)
     else {
       await printAccountQuota(this.heroku, {
         account: accountInfo,
@@ -220,36 +218,31 @@ function printDynos(dynos: DynoExtended[]) : void {
   }
 }
 
-function printExtended(dynos: DynoExtended[], noWrap = false) {
+function printExtended(dynos: DynoExtended[]) {
   const sortedDynos = dynos.sort(byProcessTypeAndNumber)
 
-  /* eslint-disable perfectionist/sort-objects */
-  // hux.table needs Record<string, unknown>; the SDK's interface-based DynoExtended has no implicit index signature.
-  hux.table<DynoExtended & Record<string, unknown>>(
-    sortedDynos as (DynoExtended & Record<string, unknown>)[],
-    {
-      ID: {get: (dyno: DynoExtended) => dyno.id},
-      Process: {get: (dyno: DynoExtended) => dyno.name},
-      State: {get: (dyno: DynoExtended) => `${dyno.state} ${ago(new Date(dyno.updated_at))}`},
-      Region: {get: (dyno: DynoExtended) => dyno.extended?.region ?? ''},
-      'Execution Plane': {get: (dyno: DynoExtended) => dyno.extended?.execution_plane ?? ''},
-      Fleet: {get: (dyno: DynoExtended) => dyno.extended?.fleet ?? ''},
-      Instance: {get: (dyno: DynoExtended) => dyno.extended?.instance ?? ''},
-      IP: {get: (dyno: DynoExtended) => dyno.extended?.ip ?? ''},
-      Port: {get: (dyno: DynoExtended) => dyno.extended?.port?.toString() ?? ''},
-      AZ: {get: (dyno: DynoExtended) => dyno.extended?.az ?? ''},
-      Release: {get: (dyno: DynoExtended) => dyno.release.version},
-      Command: {get: (dyno: DynoExtended) => truncate(dyno.command)},
-      Route: {get: (dyno: DynoExtended) => dyno.extended?.route ?? ''},
-      Size: {get: (dyno: DynoExtended) => dyno.size},
-    },
-    huxTableNoWrapOptions(noWrap),
-  )
-  /* eslint-enable perfectionist/sort-objects */
-}
+  for (const dyno of sortedDynos) {
+    const ext: Partial<DynoExtendedFields> = dyno.extended ?? {}
 
-function truncate(s: string) {
-  return s.length > 35 ? `${s.slice(0, 34)}…` : s
+    hux.styledHeader(`${color.label(dyno.name)} (${color.info(dyno.size)})`)
+    /* eslint-disable perfectionist/sort-objects */
+    hux.styledObject({
+      ID: dyno.id,
+      State: `${dyno.state} ${ago(new Date(dyno.updated_at))}`,
+      Release: dyno.release.version,
+      Command: dyno.command,
+      Region: ext.region,
+      'Execution Plane': ext.execution_plane,
+      Fleet: ext.fleet,
+      Instance: ext.instance,
+      IP: ext.ip,
+      Port: ext.port,
+      AZ: ext.az,
+      Route: ext.route,
+    })
+    /* eslint-enable perfectionist/sort-objects */
+    ux.stdout()
+  }
 }
 
 function uniqueValues(value: string, index: number, self: string[]) : boolean {
