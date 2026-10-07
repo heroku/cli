@@ -3,8 +3,8 @@ import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HTTP} from '@heroku/http-call'
 import {HerokuSDK} from '@heroku/sdk'
-import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {AddonNotFoundError, type ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on'
+import {addOnAttachmentExtensions, addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {AddonAttachmentAmbiguousError, AddonAttachmentNotFoundError, type ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on-attachment'
 import {Args, ux} from '@oclif/core'
 import fs from 'node:fs/promises'
 import os from 'node:os'
@@ -101,17 +101,22 @@ export default class Open extends Command {
       return this.sudo(app, addon)
     }
 
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = new HerokuSDK({extensions: [addOnAttachmentExtensions, addOnExtensions]})
 
     let attachment: null | ResolvedAddOnAttachment = null
     try {
-      attachment = await platform.addOn.describeAttachment(app, addon)
+      attachment = await platform.addOnAttachment.resolve(app, addon)
     } catch (error) {
-      // Swallow not-found so we fall through to a direct add-on resolve.
-      // `describeAttachment` throws `AddonNotFoundError` when no attachment
-      // matches, and the underlying attachment resolution can surface other
-      // 404s; rethrow anything that isn't a 404.
-      if (!(error instanceof AddonNotFoundError) && !isNotFound(error)) {
+      // Swallow not-found and ambiguous matches so we fall through to a
+      // direct add-on resolve. `addOnAttachment.resolve` throws
+      // `AddonAttachmentNotFoundError` when no attachment matches and
+      // `AddonAttachmentAmbiguousError` when more than one does, and the
+      // underlying resolution can surface other 404s; rethrow anything else.
+      if (
+        !(error instanceof AddonAttachmentNotFoundError)
+        && !(error instanceof AddonAttachmentAmbiguousError)
+        && !isNotFound(error)
+      ) {
         throw error
       }
     }

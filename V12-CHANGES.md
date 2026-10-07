@@ -1,5 +1,12 @@
 # Heroku CLI v12 - User-Facing Changes
 
+## Resolver changes
+
+Many commands now resolve add-ons, add-on attachments, and Postgres databases through `@heroku/sdk` instead of the CLI's local resolvers or `heroku-cli-util`. Two behavior changes apply broadly, wherever these new resolvers are used:
+
+- **No config var value fallback.** `heroku-cli-util`'s database resolver, when no attachment matched directly, fell back to scanning the app's attached databases by config var value. The SDK's resolver has no equivalent fallback — an identifier that previously resolved only through that scan now fails outright.
+- **No global fallback.** An add-on identifier scoped to `--app` that isn't found on that app no longer retries as a global lookup — it fails immediately with a not-found error. Previously, an add-on that existed but wasn't attached to the specified app would still be found via a global retry in the CLI addons/resolve.ts lib file.
+
 ## Apps commands
 
 - `apps:create` now provisions add-ons, config vars, and buildpacks through `@heroku/sdk` (`platform.app.createAndSetup`). Setup runs as a single step, so the previous per-item progress lines (`Adding <addon>... done`, `Setting config vars... done`, `Setting buildpack to <url>... done`) are consolidated into the one `Creating app... done` spinner. The final status line (app name, region, and stack) is unchanged.

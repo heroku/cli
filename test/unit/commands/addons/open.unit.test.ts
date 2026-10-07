@@ -1,6 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {NotFoundError} from '@heroku/heroku-fetch'
-import {AddonNotFoundError} from '@heroku/sdk/resources/platform/add-on'
+import {AddonAttachmentAmbiguousError, AddonAttachmentNotFoundError} from '@heroku/sdk/resources/platform/add-on-attachment'
 import {expect} from 'chai'
 import nock from 'nock'
 import fs from 'node:fs/promises'
@@ -13,15 +13,16 @@ import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 describe('The addons:open command', function () {
   let urlOpenerStub: SinonStub
   let sdkMock: MockSDK
-  let describeAttachmentStub: SinonStub
+  let attachmentResolveStub: SinonStub
   let resolveStub: SinonStub
 
   beforeEach(function () {
     urlOpenerStub = stub(Cmd, 'urlOpener').callsFake(async () => {})
-    describeAttachmentStub = stub()
+    attachmentResolveStub = stub()
     resolveStub = stub()
     sdkMock = mockSDKPlatform({
-      addOn: {describeAttachment: describeAttachmentStub, resolve: resolveStub},
+      addOn: {resolve: resolveStub},
+      addOnAttachment: {resolve: attachmentResolveStub},
     })
   })
 
@@ -33,7 +34,7 @@ describe('The addons:open command', function () {
   })
 
   it('should only print the url when --show-url is used', async function () {
-    describeAttachmentStub.rejects(new AddonNotFoundError())
+    attachmentResolveStub.rejects(new AddonAttachmentNotFoundError())
     resolveStub.resolves({id: 'db2', web_url: 'http://db2'})
 
     const {stdout} = await runCommand(Cmd, [
@@ -43,7 +44,7 @@ describe('The addons:open command', function () {
       'db2',
     ])
     expect(stdout).to.equal('http://db2\n')
-    expect(describeAttachmentStub.calledWith('myApp', 'db2')).to.be.true
+    expect(attachmentResolveStub.calledWith('myApp', 'db2')).to.be.true
     expect(resolveStub.calledWith('db2', {appIdentity: 'myApp'})).to.be.true
   })
 
@@ -51,9 +52,9 @@ describe('The addons:open command', function () {
     // Restored pre-SDK intent: for a SHARED add-on attached to more than one
     // app, opening from a non-billing app must use that attachment's
     // context-scoped web_url — NOT the add-on's own (billing-app) dashboard.
-    // Regression guard: the single describeAttachment call carries the
-    // context-scoped web_url directly, so resolve must NOT be hit.
-    describeAttachmentStub.resolves({
+    // Regression guard: the single addOnAttachment.resolve call carries the
+    // context-scoped web_url directly, so addOn.resolve must NOT be hit.
+    attachmentResolveStub.resolves({
       addon: {app: {id: 'x'}, id: 'c7c9cf20-ec87-11e5-aea4-0002a5d5c51b'},
       web_url: 'http://myapp-2-slowdb',
     })
@@ -65,7 +66,7 @@ describe('The addons:open command', function () {
     ])
     expect(urlOpenerStub.calledWith('http://myapp-2-slowdb')).to.be.true
     expect(stdout).to.equal('Opening http://myapp-2-slowdb...\n')
-    expect(describeAttachmentStub.calledWith('myapp-2', 'slowdb')).to.be.true
+    expect(attachmentResolveStub.calledWith('myapp-2', 'slowdb')).to.be.true
     expect(resolveStub.called).to.be.false
   })
 
@@ -75,7 +76,7 @@ describe('The addons:open command', function () {
     })
 
     it('url via the standard happy path.', async function () {
-      describeAttachmentStub.resolves({web_url: 'https://heroku.com'})
+      attachmentResolveStub.resolves({web_url: 'https://heroku.com'})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -84,13 +85,13 @@ describe('The addons:open command', function () {
       ])
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
       expect(stdout).to.equal('Opening https://heroku.com...\n')
-      // describeAttachment receives the raw addon arg and app — a single call.
-      expect(describeAttachmentStub.calledWith('myApp', 'redis-321')).to.be.true
+      // addOnAttachment.resolve receives the raw addon arg and app — a single call.
+      expect(attachmentResolveStub.calledWith('myApp', 'redis-321')).to.be.true
       expect(resolveStub.called).to.be.false
     })
 
     it('url when "::" exists in the addon_attachment.', async function () {
-      describeAttachmentStub.resolves({web_url: 'https://heroku.com'})
+      attachmentResolveStub.resolves({web_url: 'https://heroku.com'})
 
       const {stdout} = await runCommand(Cmd, [
         '--app',
@@ -99,7 +100,7 @@ describe('The addons:open command', function () {
       ])
       expect(urlOpenerStub.calledWith('https://heroku.com')).to.be.true
       expect(stdout).to.equal('Opening https://heroku.com...\n')
-      expect(describeAttachmentStub.calledWith('myApp', 'redis::321')).to.be.true
+      expect(attachmentResolveStub.calledWith('myApp', 'redis::321')).to.be.true
       expect(resolveStub.called).to.be.false
     })
 
@@ -107,7 +108,7 @@ describe('The addons:open command', function () {
       // The source explicitly guards on `attachment?.web_url` — a null web_url
       // means we can't open a context-scoped dashboard, so resolve the add-on
       // for its own web_url.
-      describeAttachmentStub.resolves({web_url: null})
+      attachmentResolveStub.resolves({web_url: null})
       resolveStub.resolves({web_url: 'http://fallback'})
 
       const {stdout} = await runCommand(Cmd, [
@@ -117,15 +118,15 @@ describe('The addons:open command', function () {
         'redis-321',
       ])
       expect(stdout).to.equal('http://fallback\n')
-      expect(describeAttachmentStub.calledWith('myApp', 'redis-321')).to.be.true
+      expect(attachmentResolveStub.calledWith('myApp', 'redis-321')).to.be.true
       expect(resolveStub.calledWith('redis-321', {appIdentity: 'myApp'})).to.be.true
     })
 
-    it('falls through to a direct resolve when describeAttachment throws a plain 404', async function () {
-      // describeAttachment can surface a non-AddonNotFoundError 404 (statusCode
-      // 404). isNotFound() must recognize it so we swallow it and resolve the
-      // add-on directly rather than rethrowing.
-      describeAttachmentStub.rejects(new NotFoundError(new Response('', {status: 404})))
+    it('falls through to a direct resolve when addOnAttachment.resolve throws a plain 404', async function () {
+      // addOnAttachment.resolve can surface a non-AddonAttachmentNotFoundError
+      // 404 (statusCode 404). isNotFound() must recognize it so we swallow it
+      // and resolve the add-on directly rather than rethrowing.
+      attachmentResolveStub.rejects(new NotFoundError(new Response('', {status: 404})))
       resolveStub.resolves({name: 'db2', web_url: 'http://db2'})
 
       const {stdout} = await runCommand(Cmd, [
@@ -138,9 +139,27 @@ describe('The addons:open command', function () {
       expect(resolveStub.calledWith('db2', {appIdentity: 'myApp'})).to.be.true
     })
 
-    it('rethrows non-404 errors from describeAttachment', async function () {
-      // Anything that is neither AddonNotFoundError nor a 404 must propagate.
-      describeAttachmentStub.rejects(Object.assign(new Error('Boom'), {statusCode: 500}))
+    it('falls through to a direct resolve when addOnAttachment.resolve throws an ambiguous match', async function () {
+      attachmentResolveStub.rejects(new AddonAttachmentAmbiguousError([
+        {name: 'DATABASE_URL'},
+        {name: 'HEROKU_POSTGRESQL_PINK_URL'},
+      ] as never))
+      resolveStub.resolves({name: 'db2', web_url: 'http://db2'})
+
+      const {stdout} = await runCommand(Cmd, [
+        '--app',
+        'myApp',
+        '--show-url',
+        'db2',
+      ])
+      expect(stdout).to.equal('http://db2\n')
+      expect(resolveStub.calledWith('db2', {appIdentity: 'myApp'})).to.be.true
+    })
+
+    it('rethrows non-404 errors from addOnAttachment.resolve', async function () {
+      // Anything that is neither AddonAttachmentNotFoundError,
+      // AddonAttachmentAmbiguousError, nor a plain 404 must propagate.
+      attachmentResolveStub.rejects(Object.assign(new Error('Boom'), {statusCode: 500}))
 
       const {error} = await runCommand(Cmd, [
         '--app',
