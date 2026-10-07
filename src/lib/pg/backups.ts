@@ -93,7 +93,7 @@ import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from './types.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default function backupsFactory(app: string, heroku: APIClient) {
   const logs = new LogDisplay()

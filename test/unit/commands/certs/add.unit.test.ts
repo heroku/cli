@@ -15,7 +15,7 @@ import {
   endpointStables,
 } from '../../../helpers/stubs/sni-endpoints.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   sniEndpoint: {createAndAssociate: SinonStub},

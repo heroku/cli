@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const COST_MONTHLY: Record<string, number> = {
   '1X': 36,

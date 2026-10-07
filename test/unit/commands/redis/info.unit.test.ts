@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/info.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const notFound = () => new NotFoundError(new Response('', {status: 404}))
 

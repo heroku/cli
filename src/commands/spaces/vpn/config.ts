@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Config extends Command {
   static args = {

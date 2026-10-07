@@ -10,7 +10,7 @@ import Cmd from '../../../../src/commands/spaces/topology.js'
 import * as fixtures from '../../../fixtures/spaces/fixtures.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('spaces:topology', function () {
   let topo1: SpaceTopology

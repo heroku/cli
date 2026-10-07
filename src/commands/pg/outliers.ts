@@ -7,7 +7,7 @@ import {ensurePGStatStatement} from '../../lib/pg/extras.js'
 import {fetchVersion} from '../../lib/pg/psql.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Outliers extends Command {
   static args = {

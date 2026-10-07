@@ -22,7 +22,7 @@ import {
   pricingResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const {prompt} = inquirer
 
 describe('data:pg:update', function () {

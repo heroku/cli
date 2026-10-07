@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/telemetry/info.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   app: {info: SinonStub}

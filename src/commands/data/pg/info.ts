@@ -9,7 +9,7 @@ import {formatQuotaStatus} from '../../../lib/data/display-quota.js'
 import {parseAttachmentFactors} from '../../../lib/data/parse-attachment-factors.js'
 import {InfoResponse, PoolInfoResponse, Quota} from '../../../lib/data/types.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const poolStatusRenderMap: Record<PoolInfoResponse['status'], string> = {
   available: color.success('✓ Available'),

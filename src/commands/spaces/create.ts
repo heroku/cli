@@ -9,7 +9,7 @@ import {getGeneration} from '../../lib/apps/generation.js'
 import {splitCsv} from '../../lib/spaces/parsers.js'
 import {displayShieldState} from '../../lib/spaces/spaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Create extends Command {
   static args = {

@@ -24,7 +24,7 @@ import {
   endpointHeroku,
 } from '../../../helpers/stubs/sni-endpoints.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export type FakePlatform = {
   domain: {info: SinonStub},

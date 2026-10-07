@@ -8,7 +8,7 @@ import {getGeneration} from '../../../../src/lib/apps/generation.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('spaces:create', function () {
   const now = new Date()

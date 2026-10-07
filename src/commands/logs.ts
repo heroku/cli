@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayLogs} from '../lib/run/log-displayer.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Logs extends Command {
   static description = heredoc`

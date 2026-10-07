@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/peerings/info.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   peering: {info: sinon.SinonStub}

@@ -15,7 +15,7 @@ import {
   pricingResponse,
 } from '../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:create', function () {
   let promptStub: SinonStub

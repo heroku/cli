@@ -12,7 +12,7 @@ import notify from '../../../lib/notify.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)

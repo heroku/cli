@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/credentials/rotate.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const addon = {
   id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},

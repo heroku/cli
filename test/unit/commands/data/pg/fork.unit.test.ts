@@ -17,7 +17,7 @@ import {
 } from '../../../../fixtures/data/pg/fixtures.js'
 
 const stubbedDate = new Date('2025-01-31T00:00:00+00:00')
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:fork', function () {
   beforeEach(function () {

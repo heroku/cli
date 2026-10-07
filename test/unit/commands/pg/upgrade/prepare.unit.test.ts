@@ -13,7 +13,7 @@ import Cmd from '../../../../../src/commands/pg/upgrade/prepare.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:upgrade:prepare', function () {
   let addon: Heroku.AddOn

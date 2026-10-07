@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayCIDR, displayVPNStatus} from '../../../lib/spaces/format.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Info extends Command {
   static args = {

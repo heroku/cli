@@ -8,11 +8,13 @@ import {restore, SinonStub, stub} from 'sinon'
 import DomainsAdd from '../../../../src/commands/domains/add.js'
 
 type FakePlatform = {
+  app: {info: SinonStub}
   domain: {add: SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
+    app: {info: stub()},
     domain: {add: stub()},
   }
 }
@@ -122,6 +124,7 @@ describe('domains:add', function () {
       })
 
       it('adds the domain to the app', async function () {
+        fakePlatform.app.info.resolves({acm: false})
         fakePlatform.domain.add.callsFake(async (_app, _hostname, options) => {
           await options.resolveSniEndpoint(certsResponse)
           return domainsResponseWithEndpoint
@@ -139,6 +142,32 @@ describe('domains:add', function () {
         expect(options.wait).to.be.undefined
         expect(promptForCertStub.calledOnce).to.equal(true)
       })
+    })
+  })
+
+  describe('adding a domain to an app with ACM enabled', function () {
+    const certsResponse = [
+      {name: 'cert1', ssl_cert: {cert_domains: ['foo.com']}},
+      {name: 'cert2', ssl_cert: {cert_domains: ['bar.com']}},
+    ]
+
+    it('skips the SNI chooser and leaves sni_endpoint unset', async function () {
+      const promptForCertStub = stub(DomainsAdd.prototype, 'promptForCert')
+      fakePlatform.app.info.resolves({acm: true})
+      let resolvedSelection: unknown = 'unset'
+      fakePlatform.domain.add.callsFake(async (_app, _hostname, options) => {
+        resolvedSelection = await options.resolveSniEndpoint(certsResponse)
+        return domainsResponse
+      })
+
+      try {
+        const {stderr} = await runCommand(DomainsAdd, ['example.com', '--app', 'myapp'])
+        expect(stderr).to.contain('Adding example.com to ⬢ myapp... done')
+        expect(promptForCertStub.called).to.equal(false)
+        expect(resolvedSelection).to.be.undefined
+      } finally {
+        promptForCertStub.restore()
+      }
     })
   })
 })

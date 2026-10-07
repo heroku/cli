@@ -13,7 +13,7 @@ import open from 'open'
 import tsheredoc from 'tsheredoc'
 
 import {isNotFound} from '../../lib/addons/addons-wait.js'
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export interface AddonSso {
   /**

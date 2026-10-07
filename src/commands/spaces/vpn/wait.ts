@@ -8,7 +8,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayVPNConfigInfo} from '../../../lib/spaces/vpn-connections.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const wait = (ms: number) => new Promise(resolve => {
   setTimeout(resolve, ms)

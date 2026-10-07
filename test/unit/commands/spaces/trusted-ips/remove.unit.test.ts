@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import Remove from '../../../../../src/commands/spaces/trusted-ips/remove.js'
 import {ExtendedInboundRuleset} from '../../../../../src/lib/types/spaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   inboundRuleset: {

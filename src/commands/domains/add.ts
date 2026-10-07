@@ -3,7 +3,8 @@ import type {SniEndpoint} from '@heroku/types/3.sdk'
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
-import {domainExtensions} from '@heroku/sdk/extensions/platform'
+import {appExtensions, domainExtensions} from '@heroku/sdk/extensions/platform'
+import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
@@ -80,7 +81,7 @@ export default class DomainsAdd extends Command {
     const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
-    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
+    const {platform} = new HerokuSDK({extensions: [appExtensions, domainExtensions]})
 
     ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
 
@@ -95,6 +96,13 @@ export default class DomainsAdd extends Command {
         onStop: () => ux.action.stop(),
       },
       resolveSniEndpoint: async (certs: SniEndpoint[]) => {
+        // When ACM is enabled a custom SNI endpoint can't be attached, so skip
+        // the (useless) chooser and leave the SNI endpoint unset (W-17760520).
+        const {acm} = await platform.app.info(flags.app) as App
+        if (acm) {
+          return
+        }
+
         ux.action.stop('resolving SNI endpoint')
         const certSelection = await this.certSelect(certs, inquirer)
         ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)

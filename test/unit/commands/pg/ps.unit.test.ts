@@ -8,7 +8,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/pg/ps.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const FAKE_OUTPUT_TEXT = heredoc(`
   pid  | state  | source  | username | running_for | transaction_start | waiting | query

@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connect.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 type FakePlatform = {
   vpnConnection: {

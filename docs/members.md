@@ -18,7 +18,7 @@ USAGE
 
 FLAGS
   -r, --role=<value>  filter by role
-  -t, --team=<value>  (required) team to use
+  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
       --json          output in json format
       --pending       filter by pending team invitations
 
@@ -29,7 +29,7 @@ DESCRIPTION
   list members of a team
 ```
 
-_See code: [src/commands/members/index.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/members/index.ts)_
+_See code: [src/commands/members/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/members/index.ts)_
 
 ## `heroku members:add EMAIL`
 
@@ -44,7 +44,7 @@ ARGUMENTS
 
 FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
-  -t, --team=<value>  (required) team to use
+  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -53,7 +53,7 @@ DESCRIPTION
   adds a user to a team
 ```
 
-_See code: [src/commands/members/add.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/members/add.ts)_
+_See code: [src/commands/members/add.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/members/add.ts)_
 
 ## `heroku members:remove`
 
@@ -64,7 +64,7 @@ USAGE
   $ heroku members:remove -t <value> [--prompt]
 
 FLAGS
-  -t, --team=<value>  (required) team to use
+  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -73,7 +73,7 @@ DESCRIPTION
   removes a user from a team
 ```
 
-_See code: [src/commands/members/remove.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/members/remove.ts)_
+_See code: [src/commands/members/remove.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/members/remove.ts)_
 
 ## `heroku members:set`
 
@@ -85,7 +85,7 @@ USAGE
 
 FLAGS
   -r, --role=<value>  (required) member role (admin, collaborator, member, owner)
-  -t, --team=<value>  (required) team to use
+  -t, --team=<value>  (required) [default: terraform-ci-test-team] team to use
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -94,4 +94,4 @@ DESCRIPTION
   sets a members role in a team
 ```
 
-_See code: [src/commands/members/set.ts](https://github.com/heroku/cli/blob/v11.10.0/src/commands/members/set.ts)_
+_See code: [src/commands/members/set.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/members/set.ts)_

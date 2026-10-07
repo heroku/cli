@@ -8,7 +8,7 @@ import tsheredoc from 'tsheredoc'
 import {ExtendedPostgresLevelInfo, PoolInfoResponse} from './types.js'
 import {renderLevelChoices, renderPricingInfo} from './utils.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const {prompt, Separator} = inquirer
 

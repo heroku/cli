@@ -16,7 +16,7 @@ import type {
 import {essentialPlan} from '../../lib/pg/util.js'
 import {uuidValidate} from '../../lib/utils/uuid-validate.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const PGDIAGNOSE_HOST = process.env.PGDIAGNOSE_URL || 'pgdiagnose.herokai.com'
 
 export default class Diagnose extends Command {

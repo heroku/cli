@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/releases/info.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 const createdAt = new Date(2000, 1, 1).toISOString()
 

@@ -4,7 +4,7 @@ import nock from 'nock'
 import tsheredoc from 'tsheredoc'
 
 import Buildpacks from '../../../../src/commands/buildpacks/index.js'
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 

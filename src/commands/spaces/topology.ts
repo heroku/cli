@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import {SpaceTopology} from '../../lib/types/spaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Topology extends Command {
   static args = {

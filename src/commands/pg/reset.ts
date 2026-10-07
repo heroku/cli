@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Reset extends Command {
   static args = {

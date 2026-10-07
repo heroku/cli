@@ -13,7 +13,7 @@ import Cmd from '../../../../../src/commands/pg/upgrade/dryrun.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 import {MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:upgrade:dryrun', function () {
   let addon: Heroku.AddOn

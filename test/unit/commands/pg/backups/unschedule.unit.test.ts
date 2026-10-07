@@ -8,7 +8,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/backups/unschedule.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:backups:unschedule', function () {
   const shouldUnschedule = function (cmdRun: (args: string[]) => Promise<any>) {

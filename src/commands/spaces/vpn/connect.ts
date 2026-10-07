@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import {splitCsv} from '../../../lib/spaces/parsers.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Connect extends Command {
   static args = {

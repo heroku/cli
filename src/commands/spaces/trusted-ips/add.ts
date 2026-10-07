@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import {ExtendedInboundRuleset} from '../../../lib/types/spaces.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Add extends Command {
   static args = {
