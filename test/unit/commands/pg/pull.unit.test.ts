@@ -106,7 +106,7 @@ describe('pg:pull', function () {
 
     const getDumpArgs = (): string[] => {
       const dumpCall = spawnStub.getCalls().find(call => call.args[0] === 'pg_dump')
-      expect(dumpCall, 'pg_dump should have been spawned').to.not.eq(undefined)
+      expect(dumpCall, 'pg_dump should have been spawned').to.not.eq()
       return dumpCall!.args[1] as string[]
     }
 
@@ -121,7 +121,7 @@ describe('pg:pull', function () {
 
       const args = getDumpArgs()
       expect(args).to.include('--exclude-table-data=logs')
-      expect(args[args.length - 1]).to.eq('mydb')
+      expect(args.at(-1)).to.eq('mydb')
     })
 
     it('keeps the database name last when excluding multiple tables', async () => {
@@ -136,7 +136,7 @@ describe('pg:pull', function () {
       const args = getDumpArgs()
       expect(args.some(arg => arg.includes('--exclude-table-data=logs'))).to.eq(true)
       expect(args.some(arg => arg.includes('--exclude-table-data=events'))).to.eq(true)
-      expect(args[args.length - 1]).to.eq('mydb')
+      expect(args.at(-1)).to.eq('mydb')
     })
   })
 

@@ -204,7 +204,7 @@ describe('pg:push', function () {
 
     const getSpawnArgs = (command: string): string[] => {
       const call = spawnStub.getCalls().find(call => call.args[0] === command)
-      expect(call, `${command} should have been spawned`).to.not.eq(undefined)
+      expect(call, `${command} should have been spawned`).to.not.eq()
       return call!.args[1] as string[]
     }
 
@@ -219,10 +219,10 @@ describe('pg:push', function () {
 
       const dumpArgs = getSpawnArgs('pg_dump')
       expect(dumpArgs).to.include('--exclude-table-data=logs')
-      expect(dumpArgs[dumpArgs.length - 1]).to.eq('localdb')
+      expect(dumpArgs.at(-1)).to.eq('localdb')
 
       const restoreArgs = getSpawnArgs('pg_restore')
-      expect(restoreArgs[restoreArgs.length - 1]).to.eq('mydb')
+      expect(restoreArgs.at(-1)).to.eq('mydb')
     })
 
     it('keeps the database name last when excluding multiple tables', async () => {
@@ -237,10 +237,10 @@ describe('pg:push', function () {
       const dumpArgs = getSpawnArgs('pg_dump')
       expect(dumpArgs.some(arg => arg.includes('--exclude-table-data=logs'))).to.eq(true)
       expect(dumpArgs.some(arg => arg.includes('--exclude-table-data=events'))).to.eq(true)
-      expect(dumpArgs[dumpArgs.length - 1]).to.eq('localdb')
+      expect(dumpArgs.at(-1)).to.eq('localdb')
 
       const restoreArgs = getSpawnArgs('pg_restore')
-      expect(restoreArgs[restoreArgs.length - 1]).to.eq('mydb')
+      expect(restoreArgs.at(-1)).to.eq('mydb')
     })
   })
 
