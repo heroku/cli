@@ -83,6 +83,8 @@ export default class Pull extends Command {
     }
     if (target.password) restoreOptions.env.PGPASSWORD = target.password
 
+    // Ensures the database name is always the last value in the args.
+    // This is necessary for the windows pg_dump and pg_restore binaries.
     const dumpArgs = dumpFlags.concat(connArgs(source, true))
     const restoreArgs = restoreFlags.concat(connArgs(target))
 
