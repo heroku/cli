@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import {color} from '@heroku/heroku-cli-util'
+import {NotFoundError} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
+import {databaseExtensions, transferScheduleExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
-import {PgDatabase} from '../../../lib/pg/types.js'
 import {nls} from '../../../nls.js'
 
 type Timezone = {
@@ -70,32 +71,29 @@ export default class Schedule extends Command {
     const {args, flags} = await this.parse(Schedule)
     const {app} = flags
     const {database} = args
+    const {data} = new HerokuSDK({extensions: [databaseExtensions, transferScheduleExtensions]})
 
     const schedule = this.parseDate(flags.at)
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const attachment = await dbResolver.getAttachment(app, database)
-    const {addon: db, name} = attachment
     const at = color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)
 
-    const pgResponse = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
-      .catch((error: HTTPError) => {
-        if (error.statusCode !== 404)
+    const dbInfo = await data.database.describe(app, database)
+      .catch(error => {
+        if (!(error instanceof NotFoundError))
           throw error
-        ux.error(`${color.datastore(db.name)} is not yet provisioned.\nRun ${color.code('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
+        ux.error(`${color.datastore(database ?? 'DATABASE_URL')} is not yet provisioned.\nRun ${color.code('heroku addons:wait')} to wait until the db is provisioned.`, {exit: 1})
       })
-    const {body: dbInfo} = pgResponse || {body: null}
-    if (dbInfo) {
-      const dbProtected = /On/.test(dbInfo.info.find(attribute => attribute.name === 'Continuous Protection')?.values[0] || '')
-      if (dbProtected) {
-        ux.warn('Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
-        ux.warn('See https://devcenter.heroku.com/articles/heroku-postgres-data-safety-and-continuous-protection#physical-backups-on-heroku-postgres.')
-      }
+
+    const dbProtected = /On/.test(String(dbInfo.info?.find(attribute => attribute.name === 'Continuous Protection')?.values?.[0]))
+    if (dbProtected) {
+      ux.warn('Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
+      ux.warn('See https://devcenter.heroku.com/articles/heroku-postgres-data-safety-and-continuous-protection#physical-backups-on-heroku-postgres.')
     }
 
-    ux.action.start(`Scheduling automatic daily backups of ${color.datastore(db.name)} at ${at}`)
-    schedule.schedule_name = name + '_URL'
-    await this.heroku.post(`/client/v11/databases/${db.id}/transfer-schedules`, {
-      body: schedule, hostname: utils.pg.host(),
+    ux.action.start(`Scheduling automatic daily backups of ${color.datastore(dbInfo.name ?? database ?? 'DATABASE_URL')} at ${at}`)
+    await data.transferSchedule.create(app, database, {
+      hour: Number.parseInt(schedule.hour, 10),
+      timezone: schedule.timezone,
+      // schedule_name is added in the SDK
     })
     ux.action.stop()
   }

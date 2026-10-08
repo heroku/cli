@@ -22,6 +22,11 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 - `ps:wait` now polls for dyno convergence through `@heroku/sdk` (`platform.dyno.waitForRelease`) instead of a CLI-side loop over raw `this.heroku.*` calls. The target-release lookup and dyno polling previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now default to `application/vnd.heroku+json; version=3.sdk`; the schemas are byte-identical, so the progress fraction (`${done} / ${total}`), the `, done` suffix, and the no-releases warning are unchanged.
 - `ps:autoscale:enable` and `ps:autoscale:disable` now make API calls through `@heroku/sdk` (`platform.app.info`, `platform.formation.list`, and the new `metrics.formationMonitor.{list,create,update}` client for `api.metrics.heroku.com`) instead of raw `this.heroku.*` calls. `ps:autoscale:disable`'s app lookup previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now defaults to `application/vnd.heroku+json; version=3.sdk` (`ps:autoscale:enable`'s app/formation lookups already sent `version=3.sdk`); the schemas are byte-identical, so behavior and output are unchanged.
 
+## Pg commands
+
+- `pg:backups:unschedule` now names the `DATABASE` argument, or the auto-selected schedule name, in the “no daily backups found” error instead of the add-on resource name.
+- `pg:backups:schedule` now names the `DATABASE` argument, or `DATABASE_URL` when that argument is omitted, in the "not yet provisioned" error instead of the add-on resource name. The scheduling spinner still shows that add-on name when `database.describe` returns `name`; if `name` is absent it falls back to the `DATABASE` argument, then `DATABASE_URL`.
+
 ## Run commands
 
 - `run`, `run:detached`, and `run:inside` now create dynos through `@heroku/sdk` (`platform.dyno.run`) instead of raw API calls.
