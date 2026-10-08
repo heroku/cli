@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {transferScheduleExtensions} from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core/ux'
-
-import type {TransferSchedule} from '../../../lib/pg/types.js'
 
 export default class Schedules extends Command {
   static description = 'list backup schedule'
@@ -15,9 +15,8 @@ export default class Schedules extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Schedules)
     const {app} = flags
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const db = await dbResolver.getArbitraryLegacyDB(app)
-    const {body: schedules} = await this.heroku.get<TransferSchedule[]>(`/client/v11/databases/${db.id}/transfer-schedules`, {hostname: utils.pg.host()})
+    const {data} = new HerokuSDK({extensions: [transferScheduleExtensions]})
+    const schedules = await data.transferSchedule.list(app)
     if (schedules.length === 0) {
       ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.code('heroku pg:backups:schedule')} to set one up`)
     } else {

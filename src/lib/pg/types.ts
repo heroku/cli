@@ -1,15 +1,5 @@
 import * as Heroku from '@heroku-cli/schema'
 
-export type TransferSchedule = {
-  hour: number,
-  name: string,
-  timezone: string,
-  uuid: string,
-}
-export type PublicUrlResponse = {
-  url: string,
-}
-
 type TransferTargetType = 'gof3r' | 'htcat' | 'pg_dump' | 'pg_restore'
 
 export type BackupTransfer = {
