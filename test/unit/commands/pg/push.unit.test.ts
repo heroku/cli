@@ -204,7 +204,7 @@ describe('pg:push', function () {
 
     const getSpawnArgs = (command: string): string[] => {
       const call = spawnStub.getCalls().find(call => call.args[0] === command)
-      expect(call, `${command} should have been spawned`).to.not.eq()
+      expect(call, `${command} should have been spawned`).to.not.eq(undefined)
       return call!.args[1] as string[]
     }
 

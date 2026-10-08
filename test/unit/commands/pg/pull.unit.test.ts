@@ -106,7 +106,7 @@ describe('pg:pull', function () {
 
     const getDumpArgs = (): string[] => {
       const dumpCall = spawnStub.getCalls().find(call => call.args[0] === 'pg_dump')
-      expect(dumpCall, 'pg_dump should have been spawned').to.not.eq()
+      expect(dumpCall, 'pg_dump should have been spawned').to.not.eq(undefined)
       return dumpCall!.args[1] as string[]
     }
 
