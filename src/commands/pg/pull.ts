@@ -60,7 +60,7 @@ export default class Pull extends Command {
     const target = await maybeTunnel(targetIn)
     const exclude = exclusions.map(e => ('--exclude-table-data=' + e)).join(' ')
 
-    const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', ...connArgs(source, true)]
+    const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku']
 
     if (exclude !== '') dumpFlags.push(exclude)
 
@@ -74,7 +74,7 @@ export default class Pull extends Command {
     }
     if (source.password) dumpOptions.env.PGPASSWORD = source.password
 
-    const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', ...connArgs(target)]
+    const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner']
 
     const restoreOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {...env},
@@ -83,8 +83,11 @@ export default class Pull extends Command {
     }
     if (target.password) restoreOptions.env.PGPASSWORD = target.password
 
-    const pgDump = childProcess.spawn('pg_dump', dumpFlags, dumpOptions)
-    const pgRestore = childProcess.spawn('pg_restore', restoreFlags, restoreOptions)
+    const dumpArgs = dumpFlags.concat(connArgs(source, true))
+    const restoreArgs = restoreFlags.concat(connArgs(target))
+
+    const pgDump = childProcess.spawn('pg_dump', dumpArgs, dumpOptions)
+    const pgRestore = childProcess.spawn('pg_restore', restoreArgs, restoreOptions)
 
     await spawnPipe(pgDump, pgRestore)
 
