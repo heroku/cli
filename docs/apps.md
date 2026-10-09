@@ -35,7 +35,7 @@ FLAGS
   -j, --json           output in json format
   -p, --personal       list apps in personal account when a default team is set
   -s, --space=<value>  filter by space
-  -t, --team=<value>   [default: terraform-ci-test-team] team to use
+  -t, --team=<value>   team to use
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -47,7 +47,7 @@ EXAMPLES
    $ heroku apps
 ```
 
-_See code: [src/commands/apps/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/index.ts)_
+_See code: [src/commands/apps/index.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/index.ts)_
 
 ## `heroku apps:create [APP]`
 
@@ -66,7 +66,7 @@ FLAGS
   -n, --no-remote          do not create a git remote
   -r, --remote=<value>     [default: heroku] the git remote to create, default "heroku"
   -s, --stack=<value>      the stack to create the app on
-  -t, --team=<value>       [default: terraform-ci-test-team] team to use
+  -t, --team=<value>       team to use
       --addons=<value>     comma-delimited list of addons to install
       --json               output in json format
       --region=<value>     specify region for the app to run in
@@ -102,7 +102,7 @@ EXAMPLES
    $ heroku apps:create --region eu
 ```
 
-_See code: [src/commands/apps/create.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/create.ts)_
+_See code: [src/commands/apps/create.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/create.ts)_
 
 ## `heroku apps:destroy`
 
@@ -124,7 +124,7 @@ DESCRIPTION
   permanently destroy an app
 ```
 
-_See code: [src/commands/apps/destroy.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/destroy.ts)_
+_See code: [src/commands/apps/destroy.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/destroy.ts)_
 
 ## `heroku apps:diff APP1 APP2`
 
@@ -145,7 +145,7 @@ DESCRIPTION
   diffs two apps
 ```
 
-_See code: [src/commands/apps/diff.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/diff.ts)_
+_See code: [src/commands/apps/diff.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/diff.ts)_
 
 ## `heroku apps:errors`
 
@@ -170,7 +170,7 @@ DESCRIPTION
   view app errors
 ```
 
-_See code: [src/commands/apps/errors.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/errors.ts)_
+_See code: [src/commands/apps/errors.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/errors.ts)_
 
 ## `heroku apps:favorites`
 
@@ -190,7 +190,7 @@ DESCRIPTION
   list favorited apps
 ```
 
-_See code: [src/commands/apps/favorites/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/favorites/index.ts)_
+_See code: [src/commands/apps/favorites/index.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/favorites/index.ts)_
 
 ## `heroku apps:favorites:add`
 
@@ -211,7 +211,7 @@ DESCRIPTION
   favorites an app
 ```
 
-_See code: [src/commands/apps/favorites/add.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/favorites/add.ts)_
+_See code: [src/commands/apps/favorites/add.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/favorites/add.ts)_
 
 ## `heroku apps:favorites:remove`
 
@@ -232,7 +232,7 @@ DESCRIPTION
   unfavorites an app
 ```
 
-_See code: [src/commands/apps/favorites/remove.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/favorites/remove.ts)_
+_See code: [src/commands/apps/favorites/remove.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/favorites/remove.ts)_
 
 ## `heroku apps:info`
 
@@ -260,7 +260,7 @@ EXAMPLES
    $ heroku apps:info --shell
 ```
 
-_See code: [src/commands/apps/info.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/info.ts)_
+_See code: [src/commands/apps/info.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/info.ts)_
 
 ## `heroku apps:join`
 
@@ -284,7 +284,7 @@ ALIASES
   $ heroku join
 ```
 
-_See code: [src/commands/apps/join.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/join.ts)_
+_See code: [src/commands/apps/join.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/join.ts)_
 
 ## `heroku apps:leave`
 
@@ -311,7 +311,7 @@ EXAMPLES
    $ heroku apps:leave -a APP
 ```
 
-_See code: [src/commands/apps/leave.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/leave.ts)_
+_See code: [src/commands/apps/leave.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/leave.ts)_
 
 ## `heroku apps:lock`
 
@@ -335,7 +335,7 @@ ALIASES
   $ heroku lock
 ```
 
-_See code: [src/commands/apps/lock.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/lock.ts)_
+_See code: [src/commands/apps/lock.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/lock.ts)_
 
 ## `heroku apps:open [PATH]`
 
@@ -364,7 +364,7 @@ EXAMPLES
    $ heroku open -a myapp /foo
 ```
 
-_See code: [src/commands/apps/open.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/open.ts)_
+_See code: [src/commands/apps/open.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/open.ts)_
 
 ## `heroku apps:rename NEWNAME`
 
@@ -391,7 +391,7 @@ EXAMPLES
    $ heroku apps:rename --app oldname newname
 ```
 
-_See code: [src/commands/apps/rename.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/rename.ts)_
+_See code: [src/commands/apps/rename.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/rename.ts)_
 
 ## `heroku apps:stacks`
 
@@ -412,7 +412,7 @@ DESCRIPTION
   show the list of available stacks
 ```
 
-_See code: [src/commands/apps/stacks/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/stacks/index.ts)_
+_See code: [src/commands/apps/stacks/index.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/stacks/index.ts)_
 
 ## `heroku apps:stacks:set STACK`
 
@@ -442,7 +442,7 @@ EXAMPLES
   Run git push heroku main to trigger a new build on myapp.
 ```
 
-_See code: [src/commands/apps/stacks/set.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/stacks/set.ts)_
+_See code: [src/commands/apps/stacks/set.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/stacks/set.ts)_
 
 ## `heroku apps:transfer RECIPIENT`
 
@@ -478,7 +478,7 @@ EXAMPLES
   ...
 ```
 
-_See code: [src/commands/apps/transfer.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/transfer.ts)_
+_See code: [src/commands/apps/transfer.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/transfer.ts)_
 
 ## `heroku apps:unlock`
 
@@ -502,4 +502,4 @@ ALIASES
   $ heroku unlock
 ```
 
-_See code: [src/commands/apps/unlock.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/apps/unlock.ts)_
+_See code: [src/commands/apps/unlock.ts](https://github.com/heroku/cli/blob/v11.11.1-alpha.0/src/commands/apps/unlock.ts)_
