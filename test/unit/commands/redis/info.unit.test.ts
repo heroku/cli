@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/redis/info.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku redis:info', function () {
   beforeEach(function () {

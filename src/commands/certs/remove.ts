@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import getEndpoint from '../../lib/certs/flags.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Remove extends Command {
   static description = 'remove an SSL certificate from an app'

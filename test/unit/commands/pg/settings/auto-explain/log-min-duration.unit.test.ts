@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../../src/commands/pg/settings/auto-explain/log-min-duration.js'
 import * as fixtures from '../../../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:settings:auto-explain:log-min-duration', function () {
   const addon = fixtures.addons['dwh-db']

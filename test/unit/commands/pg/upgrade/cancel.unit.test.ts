@@ -10,7 +10,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../../src/commands/pg/upgrade/cancel.js'
 import * as fixtures from '../../../../fixtures/addons/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 import ansis from 'ansis'
 

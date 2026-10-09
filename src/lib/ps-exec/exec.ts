@@ -13,7 +13,7 @@ import tsheredoc from 'tsheredoc'
 import {App, BuildpackInstallation} from '../types/fir.js'
 import {HerokuSsh} from './ssh.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 interface ExecContext {
   app: string

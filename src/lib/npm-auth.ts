@@ -1,10 +1,9 @@
 import {ux} from '@oclif/core/ux'
 import {exec, spawn} from 'node:child_process'
 import {promisify} from 'node:util'
-import tsheredocLib from 'tsheredoc'
+import tsheredoc from 'tsheredoc'
 
 const execAsync = promisify(exec)
-const tsheredoc = tsheredocLib.default
 
 // eslint-disable-next-line unicorn/no-static-only-class
 export class NpmAuth {

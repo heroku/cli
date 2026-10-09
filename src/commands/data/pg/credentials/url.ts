@@ -14,7 +14,7 @@ import type {
 import BaseCommand from '../../../../lib/data/base-command.js'
 import {isAdvancedCredentialInfo} from '../../../../lib/data/types.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Url extends BaseCommand {
   static args = {

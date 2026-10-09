@@ -5,7 +5,7 @@ import {BooleanAsString, booleanConverter, PGSettingsCommand} from '../../../../
 import {Setting, SettingKey} from '../../../../lib/pg/types.js'
 import {nls} from '../../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class LogBuffersWaits extends PGSettingsCommand {
   static args = {

@@ -4,6 +4,55 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.11.0](https://github.com/heroku/cli/compare/v11.10.1...v11.11.0) (2026-10-01)
+
+### Features
+
+* add data:pg:get-ca ([#3880](https://github.com/heroku/cli/issues/3880)) ([e0890e1](https://github.com/heroku/cli/commit/e0890e1b0010f51e4ff8b01ca4a407bf3a9bf046))
+* **data:** manage Postgres Advanced logical replication ([#3902](https://github.com/heroku/cli/issues/3902)) ([7c24954](https://github.com/heroku/cli/commit/7c24954d583f52e7661c9352a3072deadb330a32))
+* **data:** show status description consistently and allow refresh in data:pg:migrate ([#3942](https://github.com/heroku/cli/issues/3942)) ([be99e83](https://github.com/heroku/cli/commit/be99e83adb5ceb988774eda7c6e73cca4fc89653))
+
+### Bug Fixes
+
+* **ps:** render ps --extended as vertical detail blocks ([#3892](https://github.com/heroku/cli/issues/3892)) ([db49d87](https://github.com/heroku/cli/commit/db49d8727a5b0351934b78c8b815907d0464a126))
+* render sparklines for fractional values at full resolution ([#3954](https://github.com/heroku/cli/issues/3954)) ([220d68c](https://github.com/heroku/cli/commit/220d68c0cb5053942c7c0743d4365c57dcbe4b49)), closes [#3885](https://github.com/heroku/cli/issues/3885)
+* serve the matching ARM build for Linux Homebrew installs ([#3919](https://github.com/heroku/cli/issues/3919)) ([#3953](https://github.com/heroku/cli/issues/3953)) ([c619f4e](https://github.com/heroku/cli/commit/c619f4edd58da498419640fee7f13c080fec4c1a))
+* skip SNI endpoint chooser with ACM enabled (W-17760520) ([#3959](https://github.com/heroku/cli/issues/3959)) ([b34172c](https://github.com/heroku/cli/commit/b34172cddf3406ebe1722db9286d15ea739ee726))
+* surface ci git & pipeline user errors as CLIErrors, not strings ([#3951](https://github.com/heroku/cli/issues/3951)) ([e4663a8](https://github.com/heroku/cli/commit/e4663a8259623583f156d65f48ece08389c28147)), closes [#1695](https://github.com/heroku/cli/issues/1695) [#1695](https://github.com/heroku/cli/issues/1695)
+
+### Miscellaneous Chores
+
+* update dependencies and regenerate lock file ([#3962](https://github.com/heroku/cli/issues/3962)) ([4b403c1](https://github.com/heroku/cli/commit/4b403c1d0626210bcbddcf0331aaad352ab12b49))
+
+### Code Refactoring
+
+* classify telemetry errors; keep Honeycomb analytics, filter Sentry (W-22403348) ([#3950](https://github.com/heroku/cli/issues/3950)) ([df63a4c](https://github.com/heroku/cli/commit/df63a4cf284fa64ca89d9b3d865f9bd7214edd24)), references [heroku/heroku-cli-command#408](https://github.com/heroku/cli/issues/408)
+
+### Continuous Integration
+
+* publish Dev Center docs via @heroku-cli/plugin-devcenter ([#3945](https://github.com/heroku/cli/issues/3945)) ([8922ea8](https://github.com/heroku/cli/commit/8922ea8f1b7f413e1f225f58d7152f16b7825894))
+
+## [11.10.1](https://github.com/heroku/cli/compare/v11.10.0...v11.10.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* **deps:** bump fast-uri to 3.1.7 (closes 4 advisories) ([#3908](https://github.com/heroku/cli/issues/3908)) ([ffe207d](https://github.com/heroku/cli/commit/ffe207dc6e50fd1d6fcfddf345dde94deb1db5b3)), closes [#391](https://github.com/heroku/cli/issues/391) [#392](https://github.com/heroku/cli/issues/392) [#399](https://github.com/heroku/cli/issues/399) [#400](https://github.com/heroku/cli/issues/400)
+* **deps:** resolve GHSA-73wf-gq98-2v4g in browserslist ([#3909](https://github.com/heroku/cli/issues/3909)) ([fe3cd8b](https://github.com/heroku/cli/commit/fe3cd8b5f88b3b22491319879bdb9568db42486a)), closes [#396](https://github.com/heroku/cli/issues/396)
+* fix misleading config output when 2FA fails ([#3887](https://github.com/heroku/cli/issues/3887)) ([e0fd81f](https://github.com/heroku/cli/commit/e0fd81f0b4bafc5d2919c5e3cf83a39279299b20))
+* parse Procfile process types containing dashes in heroku local ([#3883](https://github.com/heroku/cli/issues/3883)) ([5118f40](https://github.com/heroku/cli/commit/5118f40a868e7c07604e2986efc68ea45e9feaee))
+* updates opentelemetry deps to match sentry's peer deps ([#3900](https://github.com/heroku/cli/issues/3900)) ([f66d998](https://github.com/heroku/cli/commit/f66d9984b2dd1b8c0cc6c1e4d0f1819340fc4b63))
+
+
+### Code Refactoring
+
+* drop @heroku/socksv5 fork to clear ip-address HIGH advisory ([#3939](https://github.com/heroku/cli/issues/3939)) ([af20ead](https://github.com/heroku/cli/commit/af20eadf8bfb65278e8b26bcffdea3cf1a743833))
+
+
+### Continuous Integration
+
+* automatically label each PR with a code-size bucket ([#3941](https://github.com/heroku/cli/issues/3941)) ([2d13484](https://github.com/heroku/cli/commit/2d1348438ec8ab1361a773bce30b3c5c93d8a1e6))
+
 ## [11.10.0](https://github.com/heroku/cli/compare/v11.9.0...v11.10.0) (2026-08-18)
 
 

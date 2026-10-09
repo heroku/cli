@@ -173,7 +173,7 @@ export type MigrationResponse = {
   preassessment_results: PreassessmentResults
   source_id: string
   status: MigrationStatus
-  status_description: null | string
+  status_description: string
   stop_reason: null | string
   successful: boolean
   tables_errored: null | number

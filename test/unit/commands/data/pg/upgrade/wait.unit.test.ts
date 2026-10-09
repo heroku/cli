@@ -16,7 +16,7 @@ import {
   waitStatusUpgrading,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:upgrade:wait', function () {
   let dataApi: nock.Scope

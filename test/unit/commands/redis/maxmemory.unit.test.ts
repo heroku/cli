@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import Cmd from '../../../../src/commands/redis/maxmemory.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku redis:maxmemory should handle standard arg behavior', function () {
   shouldHandleArgs(Cmd, {policy: 'noeviction'})

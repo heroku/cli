@@ -8,7 +8,7 @@ import {
   storageQuotaResponseRestricted, storageQuotaResponseWarning,
 } from '../../../fixtures/data/quotas.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('lib/displayQuota', function () {
   describe('formatQuotaStatus', function () {

@@ -11,7 +11,7 @@ import {
   pgInfo,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:upgrade:run', function () {
   it('upgrades an advanced database to the latest version', async function () {

@@ -6,7 +6,7 @@ import type {Setting, SettingKey} from '../../../lib/pg/types.js'
 import {PGSettingsCommand} from '../../../lib/pg/setter.js'
 import {nls} from '../../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 // ref: https://www.postgresql.org/docs/current/runtime-config-statistics.html#GUC-TRACK-FUNCTIONS
 export default class TrackFunctions extends PGSettingsCommand {

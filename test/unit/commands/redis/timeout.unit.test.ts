@@ -8,7 +8,7 @@ import Cmd from '../../../../src/commands/redis/timeout.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
 import {shouldHandleArgs} from '../../lib/redis/shared.unit.test.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('heroku redis:timeout', function () {
   shouldHandleArgs(Cmd, {seconds: '5'})

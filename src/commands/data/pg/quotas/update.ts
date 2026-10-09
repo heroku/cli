@@ -14,7 +14,7 @@ type QuotaUpdate = {
   warning_gb?: null | number,
 }
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 const validateQuotaSetting = function (flagName: string, settingAmt: string | undefined) {
   if (settingAmt && settingAmt !== 'none' && !Number.parseInt(settingAmt, 10)) {
     ux.error(heredoc(`

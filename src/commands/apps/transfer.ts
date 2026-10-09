@@ -10,7 +10,7 @@ import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
 import AppsLock from './lock.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class AppsTransfer extends Command {
   static args = {

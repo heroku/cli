@@ -7,7 +7,7 @@ import tsheredoc from 'tsheredoc'
 import DataPgDestroy from '../../../../../src/commands/data/pg/destroy.js'
 import {addon, destroyedAddonResponse, nonPostgresAddon} from '../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:destroy', function () {
   it('destroys a advanced addon', async function () {

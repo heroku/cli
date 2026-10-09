@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/spaces/vpn/connect.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('spaces:vpn:connect', function () {
   let api: nock.Scope

@@ -9,7 +9,7 @@ import {getRelease} from '../../lib/pg/fetcher.js'
 import {PgDatabase, PgStatus} from '../../lib/pg/types.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Promote extends Command {
   static args = {

@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Socks extends Command {
   static description = 'Launch a SOCKS proxy into a dyno'

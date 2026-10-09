@@ -5,7 +5,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/cancel.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('pg:backups:cancel', function () {
   let pg: nock.Scope

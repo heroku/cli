@@ -14,7 +14,7 @@ import {
   releasesResponse,
 } from '../../../../../fixtures/data/pg/fixtures.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 describe('data:pg:attachments:destroy', function () {
   let resolveStub: SinonStub

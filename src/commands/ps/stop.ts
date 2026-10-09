@@ -5,7 +5,7 @@ import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class Stop extends Command {
   static aliases = ['dyno:stop', 'ps:kill', 'dyno:kill']

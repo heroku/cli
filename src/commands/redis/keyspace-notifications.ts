@@ -4,7 +4,7 @@ import tsheredoc from 'tsheredoc'
 
 import redisApi, {RedisFormationConfigResponse} from '../../lib/redis/api.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class KeyspaceNotifications extends Command {
   static args = {

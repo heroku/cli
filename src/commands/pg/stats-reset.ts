@@ -6,7 +6,7 @@ import tsheredoc from 'tsheredoc'
 import {ensureEssentialTierPlan} from '../../lib/pg/extras.js'
 import {nls} from '../../nls.js'
 
-const heredoc = tsheredoc.default
+const heredoc = tsheredoc
 
 export default class PgStatsReset extends Command {
   static args = {
