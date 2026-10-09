@@ -186,6 +186,64 @@ describe('pg:push', function () {
     expect(stderr).to.eq('')
   })
 
+  describe('with --exclude-table-data', function () {
+    beforeEach(function () {
+      spawnStub.withArgs('pg_dump', match.array, match.any).returns({
+        on: exitHandler,
+        stdout: {
+          pipe() {},
+        },
+      })
+      spawnStub.withArgs('pg_restore', match.array, match.any).returns({
+        on: exitHandler,
+        stdin: {
+          end() {},
+        },
+      })
+    })
+
+    const getSpawnArgs = (command: string): string[] => {
+      const call = spawnStub.getCalls().find(call => call.args[0] === command)
+      expect(call, `${command} should have been spawned`).to.not.eq(undefined)
+      return call!.args[1] as string[]
+    }
+
+    it('passes the exclusion and keeps the database name as the last pg_dump argument', async () => {
+      await runCommand(Cmd, [
+        'localdb',
+        'postgres-1',
+        '-a',
+        'myapp',
+        '--exclude-table-data=logs',
+      ])
+
+      const dumpArgs = getSpawnArgs('pg_dump')
+      expect(dumpArgs).to.include('--exclude-table-data=logs')
+      expect(dumpArgs.at(-1)).to.eq('localdb')
+
+      const restoreArgs = getSpawnArgs('pg_restore')
+      expect(restoreArgs.at(-1)).to.eq('mydb')
+    })
+
+    it('keeps the database name last when excluding multiple tables', async () => {
+      await runCommand(Cmd, [
+        'localdb',
+        'postgres-1',
+        '-a',
+        'myapp',
+        '--exclude-table-data=logs;events',
+      ])
+
+      const dumpArgs = getSpawnArgs('pg_dump')
+      expect(dumpArgs.some(arg => arg.includes('--exclude-table-data=logs'))).to.eq(true)
+      expect(dumpArgs.some(arg => arg.includes('--exclude-table-data=events'))).to.eq(true)
+      expect(dumpArgs.at(-1)).to.eq('localdb')
+
+      const restoreArgs = getSpawnArgs('pg_restore')
+      expect(restoreArgs.at(-1)).to.eq('mydb')
+    })
+  })
+
   skipOnWindows('exits non-zero when there is an error', async () => {
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku', 'localdb']
     const restoreFlags = ['--verbose', '-F', 'c', '--no-acl', '--no-owner', '-U', 'jeff', '-h', 'herokai.com', '-p', '5432', '-d', 'mydb']
