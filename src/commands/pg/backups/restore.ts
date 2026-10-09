@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {restoreExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import type {BackupTransfer} from '../../../lib/pg/types.js'
-
 import ConfirmCommand from '../../../lib/confirm-command.js'
-import backupsFactory from '../../../lib/pg/backups.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -68,9 +68,8 @@ export default class Restore extends Command {
     const {args, flags} = await this.parse(Restore)
     const {app, confirm, extensions, verbose, 'wait-interval': waitInterval} = flags
     const interval = Math.max(3, waitInterval)
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app as string, args.database)
-    const pgbackups = backupsFactory(app, this.heroku)
+    const {data} = new HerokuSDK({extensions: [restoreExtensions]})
+
     let backupURL
     let backupName = args.backup
 
@@ -84,12 +83,12 @@ export default class Restore extends Command {
         backupApp = app
       }
 
-      const {body: transfers} = await this.heroku.get<BackupTransfer[]>(`/client/v11/apps/${backupApp}/transfers`, {hostname: utils.pg.host()})
+      const transfers = await data.transfer.listByApp(backupApp)
       const backups = transfers.filter(t => t.from_type === 'pg_dump' && t.to_type === 'gof3r')
 
       let backup
       if (backupName) {
-        backup = backups.find(b => pgbackups.name(b) === backupName)
+        backup = backups.find(b => pgBackups.name(b) === backupName)
         if (!backup)
           throw new Error(`Backup ${color.cyan(backupName)} not found for ${color.app(backupApp)}`)
         if (!backup.succeeded)
@@ -108,7 +107,7 @@ export default class Restore extends Command {
           throw new Error(`No backups for ${color.app(backupApp)}. Capture one with ${color.code('heroku pg:backups:capture')}`)
         }
 
-        backupName = pgbackups.name(backup)
+        backupName = pgBackups.name(backup)
       }
 
       backupURL = backup.to_url
@@ -116,20 +115,33 @@ export default class Restore extends Command {
 
     const confirmCmd = new ConfirmCommand()
     await confirmCmd.confirm(app, confirm)
-    ux.action.start(`Starting restore of ${color.cyan(backupName)} to ${color.datastore(db.name)}`)
-    ux.stdout(heredoc(`
 
-    Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
-    Use ${color.code('heroku pg:backups')} to check progress.
-    Stop a running restore with ${color.code('heroku pg:backups:cancel')}.
-    `))
+    const waitOptions = pgBackups.constructWaitOptions(interval, verbose, () => 'Restoring')
 
-    const {body: restore} = await this.heroku.post<{uuid: string}>(`/client/v11/databases/${db.id}/restores`, {
-      body: {backup_url: backupURL, extensions: this.getSortedExtensions(extensions as string)}, hostname: utils.pg.host(),
-    })
+    try {
+      await data.restore.restoreAndWait(app, args.database, backupURL as string, {
+        extensions: this.getSortedExtensions(extensions as string),
+        restorePoller: {
+          onStart(addon) {
+            ux.action.start(`Starting restore of ${color.cyan(backupName)} to ${color.datastore(addon.name)}`)
+            ux.stdout(heredoc(`
 
-    ux.action.stop()
-    await pgbackups.wait('Restoring', restore.uuid, interval, verbose, db.app.id as string)
+            Use Ctrl-C at any time to stop monitoring progress; the backup will continue restoring.
+            Use ${color.code('heroku pg:backups')} to check progress.
+            Stop a running restore with ${color.code('heroku pg:backups:cancel')}.
+            `))
+          },
+          onStop() {
+            ux.action.stop()
+          },
+        },
+        verbose,
+        ...waitOptions,
+      })
+    } catch (error) {
+      if (!(error instanceof TransferFailedError)) throw error
+      pgBackups.reportTransferFailure(error, 'restore')
+    }
   }
 }
 

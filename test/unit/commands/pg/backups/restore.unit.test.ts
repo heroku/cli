@@ -1,9 +1,12 @@
+import type {RestoreAndWaitOptions} from '@heroku/sdk/extensions/data'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/restore.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 const addon = {
@@ -12,40 +15,63 @@ const addon = {
   name: 'postgres-1',
   plan: {name: 'heroku-postgresql:standard-0'},
 }
-describe('pg:backups:restore', function () {
-  let pg: nock.Scope
-  let api: nock.Scope
 
-  beforeEach(async function () {
-    api = nock('https://api.heroku.com')
-    api.post('/actions/addon-attachments/resolve', {
-      addon_attachment: 'DATABASE_URL', app: 'myapp',
-    }).reply(200, [{addon}])
-    pg = nock('https://api.data.heroku.com')
+type FakeData = {
+  restore: {restoreAndWait: SinonStub}
+  transfer: {listByApp: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {
+    restore: {restoreAndWait: stub()},
+    transfer: {listByApp: stub()},
+  }
+}
+
+function fakeRestoreAndWait(addon: Record<string, unknown>, transfer: Record<string, unknown>) {
+  return async (
+    _app: string,
+    _database: string | undefined,
+    _backupUrl: string,
+    options: RestoreAndWaitOptions = {},
+  ) => {
+    const database = addon as never
+    const info = transfer as never
+
+    options.restorePoller?.onStart?.(database)
+    options.restorePoller?.onStop?.(database)
+    options.waitPoller?.onStart?.(info)
+    options.onPoll?.(info)
+    options.waitPoller?.onStop?.(info)
+
+    return transfer
+  }
+}
+
+describe('pg:backups:restore', function () {
+  let fakeData: FakeData
+  let sdkMock: MockSDK
+
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
   })
 
-  afterEach(async function () {
-    nock.cleanAll()
-    pg.done()
-    api.done()
+  afterEach(function () {
+    sdkMock.restore()
   })
 
   context('b005', function () {
-    beforeEach(async function () {
-      pg.get('/client/v11/apps/myapp/transfers')
-        .reply(200, [
-          {
-            from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
-          },
-        ])
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'})
-        .reply(200, {
-          from_name: 'DATABASE', num: 5, uuid: '100-001',
-        })
-      pg.get('/client/v11/apps/myapp/transfers/100-001')
-        .reply(200, {
-          finished_at: '101', succeeded: true,
-        })
+    beforeEach(function () {
+      fakeData.transfer.listByApp.resolves([
+        {
+          from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+        },
+      ])
+      fakeData.restore.restoreAndWait.callsFake(fakeRestoreAndWait(
+        addon,
+        {finished_at: '101', succeeded: true, uuid: '100-001'},
+      ))
     })
 
     it('restores a db', async function () {
@@ -66,6 +92,7 @@ describe('pg:backups:restore', function () {
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
+      expect(fakeData.restore.restoreAndWait.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', undefined, 'https://myurl'])
     })
 
     it('restores a specific db', async function () {
@@ -87,6 +114,7 @@ describe('pg:backups:restore', function () {
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
+      expect(fakeData.restore.restoreAndWait.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', undefined, 'https://myurl'])
     })
 
     it('restores a specific app db', async function () {
@@ -108,25 +136,23 @@ describe('pg:backups:restore', function () {
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
+      expect(fakeData.restore.restoreAndWait.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', undefined, 'https://myurl'])
     })
   })
 
   context('b005 (verbose)', function () {
-    beforeEach(async function () {
-      pg.get('/client/v11/apps/myapp/transfers')
-        .reply(200, [
-          {
-            from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
-          },
-        ])
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl'})
-        .reply(200, {
-          from_name: 'DATABASE', num: 5, uuid: '100-001',
-        })
-      pg.get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
-        .reply(200, {
-          finished_at: '101', logs: [{created_at: '100', message: 'log message 1'}], succeeded: true,
-        })
+    beforeEach(function () {
+      fakeData.transfer.listByApp.resolves([
+        {
+          from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+        },
+      ])
+      fakeData.restore.restoreAndWait.callsFake(fakeRestoreAndWait(
+        addon,
+        {
+          finished_at: '101', logs: [{created_at: '100', message: 'log message 1'}], succeeded: true, uuid: '100-001',
+        },
+      ))
     })
 
     it('shows verbose output', async function () {
@@ -155,15 +181,11 @@ describe('pg:backups:restore', function () {
   })
 
   context('with a URL', function () {
-    beforeEach(async function () {
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://www.dropbox.com?dl=1'})
-        .reply(200, {
-          from_name: 'DATABASE', num: 5, uuid: '100-001',
-        })
-      pg.get('/client/v11/apps/myapp/transfers/100-001')
-        .reply(200, {
-          finished_at: '101', succeeded: true,
-        })
+    beforeEach(function () {
+      fakeData.restore.restoreAndWait.callsFake(fakeRestoreAndWait(
+        addon,
+        {finished_at: '101', succeeded: true, uuid: '100-001'},
+      ))
     })
 
     it('restores a db from a URL', async function () {
@@ -186,25 +208,22 @@ describe('pg:backups:restore', function () {
       Starting restore of https://www.dropbox.com to ⛁ postgres-1... done
       Restoring... done
       `))
+      expect(fakeData.transfer.listByApp.called).to.equal(false)
+      expect(fakeData.restore.restoreAndWait.firstCall.args.slice(0, 3)).to.deep.equal(['myapp', undefined, 'https://www.dropbox.com?dl=1'])
     })
   })
 
   context('with extensions', function () {
-    beforeEach(async function () {
-      pg.get('/client/v11/apps/myapp/transfers')
-        .reply(200, [
-          {
-            from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
-          },
-        ])
-      pg.post('/client/v11/databases/1/restores', {backup_url: 'https://myurl', extensions: ['postgis', 'uuid-ossp']})
-        .reply(200, {
-          from_name: 'DATABASE', num: 5, uuid: '100-001',
-        })
-      pg.get('/client/v11/apps/myapp/transfers/100-001')
-        .reply(200, {
-          finished_at: '101', succeeded: true,
-        })
+    beforeEach(function () {
+      fakeData.transfer.listByApp.resolves([
+        {
+          from_type: 'pg_dump', num: 5, succeeded: true, to_type: 'gof3r', to_url: 'https://myurl',
+        },
+      ])
+      fakeData.restore.restoreAndWait.callsFake(fakeRestoreAndWait(
+        addon,
+        {finished_at: '101', succeeded: true, uuid: '100-001'},
+      ))
     })
 
     it('restores a db with pre-installed extensions', async function () {
@@ -228,6 +247,7 @@ describe('pg:backups:restore', function () {
       Starting restore of b005 to ⛁ postgres-1... done
       Restoring... done
       `))
+      expect(fakeData.restore.restoreAndWait.firstCall.args[3]).to.deep.include({extensions: ['postgis', 'uuid-ossp']})
     })
   })
 })

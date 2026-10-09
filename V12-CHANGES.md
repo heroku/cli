@@ -26,6 +26,7 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 
 - `pg:backups:unschedule` now names the `DATABASE` argument, or the auto-selected schedule name, in the “no daily backups found” error instead of the add-on resource name.
 - `pg:backups:schedule` now names the `DATABASE` argument, or `DATABASE_URL` when that argument is omitted, in the "not yet provisioned" error instead of the add-on resource name. The scheduling spinner still shows that add-on name when `database.describe` returns `name`; if `name` is absent it falls back to the `DATABASE` argument, then `DATABASE_URL`.
+- `pg:backups:capture` now names the `DATABASE` argument, or `DATABASE_URL` when that argument is omitted, in the "not yet provisioned" error instead of the add-on resource name. The backup spinner still shows the resolved add-on name, since `captureAndWait` resolves it independently.
 
 ## Run commands
 
