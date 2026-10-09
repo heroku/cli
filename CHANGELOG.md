@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.11.1-alpha.0](https://github.com/heroku/cli/compare/v11.11.0...v11.11.1-alpha.0) (2026-10-09)
+
+### Bug Fixes
+
+* ensures dbname is always the last arg provided to pg_dump ([61387f1](https://github.com/heroku/cli/commit/61387f16c2d6a9a40c34b8bd1e5d367735619f9c))
+
+### Miscellaneous Chores
+
+* remove spaces-strict-tls from labs:disable ([#3977](https://github.com/heroku/cli/issues/3977)) ([f596ba7](https://github.com/heroku/cli/commit/f596ba78551f3d26f7d800d2658ddd21d4521723))
+
 ## [11.11.0](https://github.com/heroku/cli/compare/v11.10.1...v11.11.0) (2026-10-01)
 
 ### Features
