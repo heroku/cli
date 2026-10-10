@@ -1,11 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
-import {HTTPError} from '@heroku/http-call'
+import {color} from '@heroku/heroku-cli-util'
+import {NotFoundError} from '@heroku/heroku-fetch'
+import {HerokuSDK} from '@heroku/sdk'
+import {backupExtensions, databaseExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import backupsApi from '../../../lib/pg/backups.js'
-import {BackupTransfer, PgDatabase} from '../../../lib/pg/types.js'
+import * as pgBackups from '../../../lib/pg/backups.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -29,47 +30,58 @@ export default class Capture extends Command {
     const {database} = args
 
     const interval = Math.max(3, Number.parseInt(waitInterval || '3', 10))
-    const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
-    const {addon: db} = await dbResolver.getAttachment(app, database)
-    const pgBackupsApi = backupsApi(app, this.heroku)
+    const {data} = new HerokuSDK({extensions: [backupExtensions, databaseExtensions]})
 
     try {
-      const {body: dbInfo} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${db.id}`, {hostname: utils.pg.host()})
-      const dbProtected = /On/.test(dbInfo.info.find(attribute => attribute.name === 'Continuous Protection')?.values[0] || '')
+      const dbInfo = await data.database.describe(app, database)
+      const dbProtected = /On/.test(String(dbInfo.info?.find(attribute => attribute.name === 'Continuous Protection')?.values?.[0]))
       if (dbProtected) {
         ux.warn('Continuous protection is already enabled for this database. Logical backups of large databases are likely to fail.')
         ux.warn('See https://devcenter.heroku.com/articles/heroku-postgres-data-safety-and-continuous-protection#physical-backups-on-heroku-postgres.')
       }
-    } catch (error: unknown) {
-      const httpError = error as HTTPError
-      if (httpError.statusCode !== 404)
-        throw httpError
+    } catch (error) {
+      if (!(error instanceof NotFoundError))
+        throw error
       ux.error(
         heredoc`
-          ${color.datastore(db.name)} is not yet provisioned.
+          ${color.datastore(database ?? 'DATABASE_URL')} is not yet provisioned.
           Run ${color.code('heroku addons:wait')} to wait until the db is provisioned.
         `,
         {exit: 1},
       )
     }
 
-    ux.action.start(`Starting backup of ${color.datastore(db.name)}`)
-    const {body: backup} = await this.heroku.post<BackupTransfer>(`/client/v11/databases/${db.id}/backups`, {hostname: utils.pg.host()})
-    ux.action.stop()
-    ux.stdout(heredoc`
+    const waitOptions = pgBackups.constructWaitOptions(interval, verbose, backup => `Backing up ${backup.from_name ? color.datastore(backup.from_name) : 'UNKNOWN'} to ${color.cyan(pgBackups.name(backup))}`)
 
-      Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
-      Use ${color.code('heroku pg:backups:info')} to check progress.
-      Stop a running backup with ${color.code('heroku pg:backups:cancel')}.
-    `)
+    try {
+      await data.backup.captureAndWait(app, database, {
+        capturePoller: {
+          onStart(db) {
+            ux.action.start(`Starting backup of ${color.datastore(db.name)}`)
+          },
+          onStop(db) {
+            ux.action.stop()
+            ux.stdout(heredoc`
 
-    if (app !== db.app.name) {
-      ux.stdout(heredoc`
-        HINT: You are running this command with a non-billing application.
-        Use ${color.code('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
-      `)
+              Use Ctrl-C at any time to stop monitoring progress; the backup will continue running.
+              Use ${color.code('heroku pg:backups:info')} to check progress.
+              Stop a running backup with ${color.code('heroku pg:backups:cancel')}.
+            `)
+
+            if (app !== db.app.name) {
+              ux.stdout(heredoc`
+                HINT: You are running this command with a non-billing application.
+                Use ${color.code('heroku pg:backups -a ' + db.app.name)} to check the list of backups.
+              `)
+            }
+          },
+        },
+        verbose,
+        ...waitOptions,
+      })
+    } catch (error) {
+      if (!(error instanceof TransferFailedError)) throw error
+      pgBackups.reportTransferFailure(error, 'backup')
     }
-
-    await pgBackupsApi.wait(`Backing up ${color.datastore(backup.from_name)} to ${color.cyan(pgBackupsApi.name(backup))}`, backup.uuid, interval, verbose, db.app.name || app)
   }
 }

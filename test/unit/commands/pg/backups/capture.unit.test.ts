@@ -1,52 +1,69 @@
+import type {CaptureAndWaitOptions} from '@heroku/sdk/extensions/data'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/backups/capture.js'
+import {type MockSDK, mockSDKData} from '../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
+
+type FakeData = {
+  backup: {captureAndWait: SinonStub}
+  database: {describe: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {
+    backup: {captureAndWait: stub()},
+    database: {describe: stub()},
+  }
+}
+
+function fakeCaptureAndWait(addon: Record<string, unknown>, transfer: Record<string, unknown>) {
+  return async (_app: string, _database: string | undefined, options: CaptureAndWaitOptions = {}) => {
+    const database = addon as never
+    const info = transfer as never
+
+    options.capturePoller?.onStart?.(database)
+    options.capturePoller?.onStop?.(database)
+    options.waitPoller?.onStart?.(info)
+    options.onPoll?.(info)
+    options.waitPoller?.onStop?.(info)
+
+    return transfer
+  }
+}
 
 describe('pg:backups:capture', function () {
   const addon = {
     app: {name: 'myapp'}, id: 1, name: 'postgres-1', plan: {name: 'heroku-postgresql:standard-0'},
   }
-  let api: nock.Scope
-  let pgApi: nock.Scope
+  let fakeData: FakeData
+  let sdkMock: MockSDK
 
   beforeEach(function () {
-    api = nock('https://api.heroku.com')
-    pgApi = nock('https://api.data.heroku.com')
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    nock.cleanAll()
-    api.done()
-    pgApi.done()
+    sdkMock.restore()
   })
 
   it('captures a db', async function () {
-    const dbA = {
+    const transfer = {
+      finished_at: '101', from_name: 'DATABASE', num: 5, succeeded: true, uuid: '100-001',
+    }
+
+    fakeData.database.describe.resolves({
       info: [
         {name: 'Continuous Protection', values: ['On']},
       ],
-    }
-    api
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', app: 'myapp',
-      })
-      .reply(200, [{addon}])
-    pgApi
-      .post('/client/v11/databases/1/backups')
-      .reply(200, {
-        from_name: 'DATABASE', num: 5, uuid: '100-001',
-      })
-      .get('/client/v11/apps/myapp/transfers/100-001')
-      .reply(200, {
-        finished_at: '101', succeeded: true,
-      })
-      .get('/client/v11/databases/1')
-      .reply(200, dbA)
+    })
+    fakeData.backup.captureAndWait.callsFake(fakeCaptureAndWait(addon, transfer))
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -65,39 +82,29 @@ describe('pg:backups:capture', function () {
       Backing up ⛁ DATABASE to b005... done
     `))
     expect(stderr).to.match(/backups of large databases are likely to fail/)
+    // eslint-disable-next-line unicorn/no-useless-undefined
+    expect(fakeData.database.describe.calledOnceWithExactly('myapp', undefined)).to.equal(true)
+    expect(fakeData.backup.captureAndWait.firstCall.args[0]).to.equal('myapp')
+    expect(fakeData.backup.captureAndWait.firstCall.args[1]).to.equal(undefined)
   })
 
   it('captures a db (verbose)', async function () {
-    const dbA = {
+    const transfer = {
+      finished_at: '101', from_name: 'DATABASE', logs: [{created_at: '100', message: 'log message 1'}], num: 5, succeeded: true, uuid: '100-001',
+    }
+
+    fakeData.database.describe.resolves({
       info: [
         {name: 'Continuous Protection', values: ['Off']},
       ],
-    }
-    api
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', app: 'myapp',
-      })
-      .reply(200, [{addon}])
-    pgApi
-      .post('/client/v11/databases/1/backups')
-      .reply(200, {
-        from_name: 'DATABASE', num: 5, uuid: '100-001',
-      })
-      .get('/client/v11/apps/myapp/transfers/100-001?verbose=true')
-      .reply(200, {
-        finished_at: '101', logs: [{created_at: '100', message: 'log message 1'}], succeeded: true,
-      })
-      .get('/client/v11/databases/1')
-      .reply(200, dbA)
+    })
+    fakeData.backup.captureAndWait.callsFake(fakeCaptureAndWait(addon, transfer))
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--verbose',
     ])
-
-    api.done()
-    pgApi.done()
 
     expect(stdout).to.equal(heredoc`
 
@@ -114,36 +121,22 @@ describe('pg:backups:capture', function () {
 
   it('captures a db (verbose) with non billing app', async function () {
     addon.app.name = 'mybillingapp'
-    const dbA = {
+    const transfer = {
+      finished_at: '101', from_name: 'DATABASE', logs: [{created_at: '100', message: 'log message 1'}], num: 5, succeeded: true, uuid: '100-001',
+    }
+
+    fakeData.database.describe.resolves({
       info: [
         {name: 'Continuous Protection', values: ['On']},
       ],
-    }
-    api
-      .post('/actions/addon-attachments/resolve', {
-        addon_attachment: 'DATABASE_URL', app: 'myapp',
-      })
-      .reply(200, [{addon}])
-    pgApi
-      .post('/client/v11/databases/1/backups')
-      .reply(200, {
-        from_name: 'DATABASE', num: 5, uuid: '100-001',
-      })
-      .get('/client/v11/apps/mybillingapp/transfers/100-001?verbose=true')
-      .reply(200, {
-        finished_at: '101', logs: [{created_at: '100', message: 'log message 1'}], succeeded: true,
-      })
-      .get('/client/v11/databases/1')
-      .reply(200, dbA)
+    })
+    fakeData.backup.captureAndWait.callsFake(fakeCaptureAndWait(addon, transfer))
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
       'myapp',
       '--verbose',
     ])
-
-    api.done()
-    pgApi.done()
 
     expect(stdout).to.equal(heredoc`
 

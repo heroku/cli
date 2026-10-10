@@ -1,8 +1,14 @@
 import type {HerokuSDK} from '@heroku/sdk'
+import type {TransferFailedError} from '@heroku/sdk/extensions/data'
+import type {CaptureAndWaitOptions, RestoreAndWaitOptions, WaitForTransferOptions} from '@heroku/sdk/extensions/data'
 import type {TransferInfoByAppResult} from '@heroku/types/data'
 
+import {color, utils} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 import bytes from 'bytes'
+import tsheredoc from 'tsheredoc'
+
+const heredoc = tsheredoc
 
 type Data = HerokuSDK['data']
 
@@ -86,14 +92,64 @@ function prefix(transfer: TransferInfoByAppResult) {
   }
 }
 
-// TODO: Temporary default export so pg:backups:capture, pg:backups:restore, and pg:copy still compile. Remove it when those commands move to @heroku/sdk.
+type TransferWaitOptions
+  = Pick<CaptureAndWaitOptions | RestoreAndWaitOptions, 'waitPoller'>
+  & Pick<WaitForTransferOptions, 'intervalMs' | 'onPoll'>
+
+/**
+ * Wait-phase options for `captureAndWait` and `restoreAndWait`.
+ * Spread the result into the SDK call.
+ */
+export function constructWaitOptions(
+  interval: number,
+  verbose: boolean | undefined,
+  action: (transfer: TransferInfoByAppResult) => string,
+): TransferWaitOptions {
+  const logs = new LogDisplay()
+  const tty = process.env.TERM !== 'dumb' && Boolean(process.stderr.isTTY)
+
+  return {
+    intervalMs: interval * 1000,
+    onPoll(transfer) {
+      if (verbose) {
+        logs.displayLogs(transfer?.logs)
+      } else if (tty) {
+        const msg = transfer?.started_at ? filesize(transfer.processed_bytes) : 'pending'
+        const log = transfer?.logs?.pop()
+        ux.action.status = log ? `${msg}\n${log.created_at + ' ' + log.message}` : msg
+      }
+    },
+    waitPoller: {
+      onStart(transfer) {
+        const label = action(transfer)
+        if (verbose) {
+          ux.stdout(`${label}...`)
+        }
+
+        ux.action.start(label)
+      },
+      onStop: () => ux.action.stop(),
+    },
+  }
+}
+
+export function reportTransferFailure(error: TransferFailedError, transferType: 'backup' | 'restore'): void {
+  ux.action.stop('!')
+
+  const {transfer} = error
+
+  ux.error(new Error(heredoc(`
+    An error occurred and the ${transferType} did not finish.
+
+    ${(transfer.logs || []).slice(-5).map(l => l.message).join('\n')}
+
+    Run ${color.code('heroku pg:backups:info ' + name(transfer))} for more details.`)))
+}
+
+// TODO: Temporary default export so pg:copy still compiles. Remove it when that command moves to @heroku/sdk.
 import {APIClient} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
-import tsheredoc from 'tsheredoc'
 
 import type {BackupTransfer} from './types.js'
-
-const heredoc = tsheredoc
 
 export default function backupsFactory(app: string, heroku: APIClient) {
   const logs = new LogDisplay()
