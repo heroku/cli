@@ -11,8 +11,10 @@ amannn
 aname
 APAC
 apikey
+appargs
 appname
 applink
+appscoped
 apresharedkey
 armel
 armhf

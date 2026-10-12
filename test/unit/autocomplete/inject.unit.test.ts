@@ -180,4 +180,24 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
       expect(zshAfter, `${id} suggest (zsh)`).to.include(`autocomplete:__suggest --flag ${id}`)
     }
   })
+
+  it('wires --dyno/--dyno-name to the app-scoped dyno completion', function () {
+    // Both long names (logs/ps:* split the spelling) resolve to the `dyno` id;
+    // bash collapses them into one `|`-joined branch, so match that shape.
+    expect(bashAfter, 'both dyno long names share one dyno branch').to.match(/--dyno(-name)?\|--dyno(-name)?\) __flag=dyno;/)
+    expect(zshAfter, 'dyno helper (zsh)').to.include('_heroku_complete_dyno () {')
+  })
+
+  it('forwards the --app context only for app-scoped ids (dyno), not plain ones (app)', function () {
+    // zsh: the dyno helper threads $opt_args[--app]; the app helper does not.
+    // eslint-disable-next-line no-template-curly-in-string -- literal zsh parameter expansion in the generated script
+    const dynoForward = 'autocomplete:__suggest --flag dyno --app "${opt_args[--app]:-$opt_args[-a]}"'
+    expect(zshAfter, 'dyno helper forwards --app').to.include(dynoForward)
+    expect(zshAfter, 'app helper must not forward --app').to.include('autocomplete:__suggest --flag app 2>/dev/null')
+    // bash: the dyno branch sets __appscoped=1 and the prologue scans for --app;
+    // the app branch is unmarked.
+    expect(bashAfter, 'dyno branch is app-scoped').to.match(/--dyno(-name)?\|--dyno(-name)?\) __flag=dyno; __appscoped=1 ;;/)
+    expect(bashAfter, 'app branch is not app-scoped').to.include('--app) __flag=app ;;')
+    expect(bashAfter, 'prologue scans COMP_WORDS for --app').to.include('__appargs=(--app')
+  })
 })

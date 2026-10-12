@@ -17,12 +17,13 @@ import {completionCatalog} from '../../lib/autocomplete/completions.js'
  *   heroku autocomplete:__suggest --flag app
  *
  * Protocol (frozen — the generated scripts in src/lib/autocomplete/inject.ts
- * depend on it): a single `--flag <completion-id>` option (the id, e.g. `app`
- * or `dynosize`, is baked into the script by the injection, not re-derived
- * here); values are one per line on stdout; anything else goes to stderr. The
- * shell already knows which completion it needs, so this command never parses
- * the command line — that is what keeps bash immune to COMP_WORDBREAKS splitting
- * `apps:info` into tokens.
+ * depend on it): a `--flag <completion-id>` option (the id, e.g. `app` or
+ * `dynosize`, is baked into the script by the injection, not re-derived here)
+ * and, for app-scoped completions (e.g. `dyno`), an optional `--app <name>` the
+ * script extracts from the line it is completing; values are one per line on
+ * stdout; anything else goes to stderr. The shell already knows which completion
+ * it needs, so this command never parses the command line — that is what keeps
+ * bash immune to COMP_WORDBREAKS splitting `apps:info` into tokens.
  *
  * `strict = false` and the optional flag make a stale script (CLI upgraded but
  * `heroku autocomplete` not re-run) degrade to no suggestions rather than erroring.
@@ -39,6 +40,7 @@ const COMPLETION_PROCESS_DEADLINE_MS = 5000
 export default class Suggest extends Command {
   static description = 'suggest flag completion values (used internally by completion functions)'
   static flags = {
+    app: Flags.string({description: 'app context for an app-scoped completion (e.g. dyno names)'}),
     flag: Flags.string({description: 'completion id (catalog key) whose values to suggest'}),
   }
   static hidden = true
@@ -59,7 +61,8 @@ export default class Suggest extends Command {
       if (!flags.flag || !Object.hasOwn(completionCatalog, flags.flag)) return
       const completion = completionCatalog[flags.flag]
 
-      const ctx: CompletionContext = {config: this.config}
+      // An empty --app (flag present but no value) is treated as absent.
+      const ctx: CompletionContext = {app: flags.app || undefined, config: this.config}
       const values = await this.resolveValues(flags.flag, completion, ctx)
       if (values.length > 0) this.log(values.join('\n'))
     } catch (error) {

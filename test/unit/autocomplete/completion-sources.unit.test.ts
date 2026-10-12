@@ -12,6 +12,7 @@ import {
   AppCompletion,
   BuildpackCompletion,
   completionCatalog,
+  DynoCompletion,
   DynoSizeCompletion,
   PipelineCompletion,
   ProcessTypeCompletion,
@@ -106,6 +107,7 @@ describe('autocomplete completion sources', function () {
     beforeEach(function () {
       const platform = {
         app: {listOwnedAndCollaborated: async () => named(['charlie', 'alpha'])},
+        dyno: {list: async (app: string) => (app === 'myapp' ? named(['worker.1', 'web.1']) : [])},
         dynoSize: {list: async () => named(['Standard-1X', 'Performance-M'])},
         pipeline: {list: async () => named(['pipe'])},
         region: {list: async () => named(['us', 'eu'])},
@@ -145,6 +147,14 @@ describe('autocomplete completion sources', function () {
     it('DynoSizeCompletion lower-cases and sorts the dyno sizes', async function () {
       expect(await DynoSizeCompletion.options(ctx)).to.deep.equal(['performance-m', 'standard-1x'])
     })
+
+    it('DynoCompletion lists the dynos of the ctx app, sorted', async function () {
+      expect(await DynoCompletion.options({app: 'myapp', config})).to.deep.equal(['web.1', 'worker.1'])
+    })
+
+    it('DynoCompletion offers nothing when no app is on the line', async function () {
+      expect(await DynoCompletion.options(ctx)).to.deep.equal([])
+    })
   })
 
   describe('StackCompletion (direct /stacks fetch)', function () {
@@ -175,6 +185,13 @@ describe('autocomplete completion sources', function () {
         const key = await completion.cacheKey!(ctx)
         expect(key).to.match(/@api\.heroku\.com$/)
       }
+    })
+
+    it('DynoCompletion partitions the cache by app so apps never share a dyno list', async function () {
+      expect(await DynoCompletion.cacheKey!({app: 'myapp', config})).to.match(/dyno:myapp@api\.heroku\.com#/)
+      const a = await DynoCompletion.cacheKey!({app: 'app-a', config})
+      const b = await DynoCompletion.cacheKey!({app: 'app-b', config})
+      expect(a).to.not.equal(b)
     })
   })
 

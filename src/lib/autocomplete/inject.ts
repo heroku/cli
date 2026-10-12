@@ -50,12 +50,16 @@ const idByExternalCompletion = new Map<unknown, string>([
 
 // Fallback by long name for flags that carry no `completion:` of their own: the
 // `--app`/`--team`/`--pipeline` factory flags, `--remote` (`flags.remote()` is a
-// bare git-remote flag with no completion metadata, used across ~15 commands), and
-// a handful of static-enum flags that declare `options:` but no `completion:`. Each
-// enum name below is used by exactly one visible command, so a global-by-name
-// binding offers that flag's own value set and nothing else.
+// bare git-remote flag with no completion metadata, used across ~15 commands),
+// the `--dyno`/`--dyno-name` flags (logs and ps:* — the long name is always a
+// dyno, so wiring by name is unambiguous; the VALUE is app-scoped, see
+// appScopedIds), and a handful of static-enum flags that declare `options:` but
+// no `completion:`. Each enum name below is used by exactly one visible command,
+// so a global-by-name binding offers that flag's own value set and nothing else.
 const idByFlagName: {[name: string]: string} = {
   app: 'app',
+  dyno: 'dyno',
+  'dyno-name': 'dyno',
   'enforcement-action': 'enforcementaction',
   generation: 'generation',
   network: 'pgnetwork',
@@ -71,6 +75,13 @@ const idByFlagName: {[name: string]: string} = {
 // quota enum (`['storage']`) on `pg:quotas:*`; rather than mis-serve either, we
 // never wire `--type` and complete the unambiguous `--process-type` instead.
 const ambiguousFlagNames = new Set(['type'])
+
+// Completion ids whose values belong to one specific app. Their generated
+// helpers forward the current `--app` value to __suggest (zsh reads it from
+// `$opt_args`; bash scans `COMP_WORDS`) so the completion lists that app's
+// resources rather than nothing. The flags carrying these ids always sit on a
+// command with a required `--app`, so the value is on the line to extract.
+const appScopedIds = new Set(['dyno'])
 
 export function resolveCompletionId(longName: string, completion: unknown): string | undefined {
   if (ambiguousFlagNames.has(longName)) return undefined
@@ -202,11 +213,16 @@ export function patchZsh(src: string, bin: string, bindings: CompletionBinding[]
 }
 
 function zshHelper(bin: string, id: string): string {
+  // App-scoped ids forward the app `_arguments` already parsed into $opt_args
+  // (falling back to the `-a` form). An absent --app expands to "", which
+  // __suggest treats as no app context.
+  // eslint-disable-next-line no-template-curly-in-string -- literal zsh parameter expansion
+  const appArg = appScopedIds.has(id) ? ' --app "${opt_args[--app]:-$opt_args[-a]}"' : ''
   return [
     '',
     `  ${helperName(bin, id)} () {`,
     '    local -a _dyn',
-    `    _dyn=(\${(f)"$(${bin} autocomplete:__suggest --flag ${id} 2>/dev/null)"})`,
+    `    _dyn=(\${(f)"$(${bin} autocomplete:__suggest --flag ${id}${appArg} 2>/dev/null)"})`,
     // eslint-disable-next-line no-template-curly-in-string -- literal zsh parameter expansion
     '    [[ ${#_dyn} -gt 0 ]] && compadd -a _dyn',
     '  }',
@@ -255,13 +271,15 @@ export function patchBash(src: string, bin: string, bindings: CompletionBinding[
     longNamesById.set(id, names)
   }
 
+  // App-scoped ids (dyno names) also mark `__appscoped=1` so the prologue knows
+  // to find and forward the line's --app value.
   const branches = [...longNamesById]
-    .map(([id, patterns]) => `    ${patterns.join('|')}) __flag=${id} ;;`)
+    .map(([id, patterns]) => `    ${patterns.join('|')}) __flag=${id}${appScopedIds.has(id) ? '; __appscoped=1' : ''} ;;`)
     .join('\n')
 
   const prologue = `
   ${open}
-  local __prev="\${COMP_WORDS[COMP_CWORD-1]}" __flag=""
+  local __prev="\${COMP_WORDS[COMP_CWORD-1]}" __flag="" __appscoped=""
   if [[ "$__prev" == "=" ]]; then __prev="\${COMP_WORDS[COMP_CWORD-2]}"; fi
   case "$__prev" in
 ${branches}
@@ -269,8 +287,24 @@ ${branches}
   if [[ -n "$__flag" ]]; then
     # When the line ends at the flag's '=', bash's current word is "=" itself
     # (not ""), so strip a leading '=' to recover the real value prefix.
-    local __dyn __line __cur="\${cur#=}"
-    __dyn=$(${bin} autocomplete:__suggest --flag "$__flag" 2>/dev/null)
+    local __dyn __line __cur="\${cur#=}" __appargs=()
+    if [[ -n "$__appscoped" ]]; then
+      # Scan the line for --app <v> / --app=<v> / -a <v> (COMP_WORDBREAKS may put
+      # the '=' in its own word). Ignore a following flag so '--app --dyno' is not
+      # misread as app '--dyno'. An absent app leaves __appargs empty.
+      local __aw="" __av="" __ai=0
+      for ((__ai=0; __ai<\${#COMP_WORDS[@]}; __ai++)); do
+        __aw="\${COMP_WORDS[__ai]}"
+        if [[ "$__aw" == --app=* ]]; then
+          __appargs=(--app "\${__aw#--app=}")
+        elif [[ "$__aw" == "--app" || "$__aw" == "-a" ]]; then
+          __av="\${COMP_WORDS[__ai+1]}"
+          [[ "$__av" == "=" ]] && __av="\${COMP_WORDS[__ai+2]}"
+          [[ -n "$__av" && "$__av" != -* ]] && __appargs=(--app "$__av")
+        fi
+      done
+    fi
+    __dyn=$(${bin} autocomplete:__suggest --flag "$__flag" "\${__appargs[@]}" 2>/dev/null)
     while IFS= read -r __line; do
       [[ -z "$__line" ]] && continue
       [[ "$__line" == "$__cur"* ]] && COMPREPLY+=("$__line")

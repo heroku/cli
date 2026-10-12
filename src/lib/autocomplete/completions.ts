@@ -203,6 +203,23 @@ export const DynoSizeCompletion: Completion = {
   options: ctx => listNames(ctx, platform => platform.dynoSize.list(), names => names.map(name => name.toLowerCase())),
 }
 
+// App-scoped completions. Unlike the account-wide ones above, these list the
+// resources of ONE app — the app the generated script extracted from the line's
+// `--app` and threaded in as `ctx.app`. With no app on the line there is nothing
+// to scope to, so they offer nothing rather than erroring.
+
+/**
+ * Dyno names for the app on the command line (e.g. `web.1`, `worker.2`), used by
+ * the `--dyno` / `--dyno-name` flags of logs and the ps:* commands. Cached only
+ * briefly and per app: dynos come and go with scaling, restarts, and crashes, so
+ * a long TTL would routinely offer names that no longer exist.
+ */
+export const DynoCompletion: Completion = {
+  cacheDuration: 60,
+  cacheKey: async ctx => accountCacheKey(`dyno:${ctx.app ?? ''}`, apiHost(), await resolveToken(ctx)),
+  options: ctx => (ctx.app ? listNames(ctx, platform => platform.dyno.list(ctx.app!)) : Promise.resolve([])),
+}
+
 // Static and local-context completions. These take no auth and make no API call —
 // a fixed value set, or a read of local state (the cwd Procfile, git remotes) at
 // completion time — so they carry no cache key (`skipCache`) and ignore the context.
@@ -311,6 +328,7 @@ export const EnforcementActionCompletion: Completion = {
 export const completionCatalog: {[id: string]: Completion} = {
   app: AppCompletion,
   buildpack: BuildpackCompletion,
+  dyno: DynoCompletion,
   dynosize: DynoSizeCompletion,
   enforcementaction: EnforcementActionCompletion,
   generation: GenerationCompletion,
