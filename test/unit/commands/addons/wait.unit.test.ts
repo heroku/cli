@@ -142,6 +142,7 @@ Created www-redis as REDIS_URL
         expect(notifyStub.calledOnce).to.be.true
       })
       it('shows that it failed to provision', async function () {
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         const resolveStub = stub().resolves(fixtures.addons['www-redis'])
         const deprovisionedAddon = _.clone(fixtures.addons['www-redis'])
         deprovisionedAddon.state = 'deprovisioned'
@@ -157,6 +158,8 @@ Created www-redis as REDIS_URL
           'www-redis',
         ])
         expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
     })
   })
