@@ -21,16 +21,33 @@ export const oneDay = 60 * 60 * 24
 const COMPLETION_TIMEOUT_MS = 2500
 
 /**
+ * A single authenticated APIClient for this process, memoized.
+ *
+ * Each `autocomplete:__suggest` invocation completes exactly one flag, calling
+ * both `cacheKey` (which needs the token) and `options` (which needs an authed
+ * client) once each. Resolving auth separately in each read HEROKU_API_KEY /
+ * keychain / netrc twice per TAB — two `security` touches on macOS. Resolve it
+ * once and share. `getAuth()` never prompts: it returns no token when none is
+ * found, so an unauthenticated user yields a client with `auth === undefined`
+ * rather than a blocked shell.
+ */
+let authedClientPromise: Promise<APIClient> | undefined
+
+function authedClient(ctx: CompletionContext): Promise<APIClient> {
+  if (!authedClientPromise) {
+    const heroku = new APIClient(ctx.config)
+    authedClientPromise = heroku.getAuth().then(() => heroku)
+  }
+
+  return authedClientPromise
+}
+
+/**
  * Resolve the CLI's auth token non-interactively, or `undefined` when the user
  * is not logged in.
- *
- * `getAuth()` reads HEROKU_API_KEY / keychain / netrc and returns no token when
- * none is found — it never prompts (completions must never block a shell on a
- * login prompt).
  */
 async function resolveToken(ctx: CompletionContext): Promise<string | undefined> {
-  const heroku = new APIClient(ctx.config)
-  await heroku.getAuth()
+  const heroku = await authedClient(ctx)
   return heroku.auth
 }
 
@@ -60,8 +77,7 @@ function completionClientOptions(heroku: APIClient): HerokuApiClientOptions {
  * would hit auth failures mid-completion.
  */
 async function platformClient(ctx: CompletionContext) {
-  const heroku = new APIClient(ctx.config)
-  await heroku.getAuth()
+  const heroku = await authedClient(ctx)
   if (!heroku.auth) return
 
   const sdk = new HerokuSDK({clientOptions: completionClientOptions(heroku)})
@@ -82,8 +98,7 @@ async function platformClient(ctx: CompletionContext) {
  * the other completions (nothing offered when logged out; aborts on timeout).
  */
 async function stackNames(ctx: CompletionContext): Promise<string[]> {
-  const heroku = new APIClient(ctx.config)
-  await heroku.getAuth()
+  const heroku = await authedClient(ctx)
   if (!heroku.auth) return []
 
   const client = new HerokuApiClient(completionClientOptions(heroku))
@@ -134,9 +149,11 @@ export function accountCacheKey(kind: string, host: string, token: string | unde
 }
 
 /**
- * Cache key for a host-global resource (regions, stacks, dyno sizes). These are
- * identical for every account on a host, so the key omits the token — all
- * accounts share one cached list — while still partitioning prod from staging.
+ * Cache key for a host-global resource (regions, stacks). These are identical
+ * for every account on a host, so the key omits the token — all accounts share
+ * one cached list — while still partitioning prod from staging. (Dyno sizes are
+ * NOT host-global: the available set varies by account entitlement, so they use
+ * accountCacheKey.)
  */
 export function hostCacheKey(kind: string, host: string): string {
   return `${kind}@${host}`
@@ -182,7 +199,7 @@ export const StackCompletion: Completion = {
 
 export const DynoSizeCompletion: Completion = {
   cacheDuration: oneDay * 90,
-  cacheKey: () => hostCacheKey('dynosize', apiHost()),
+  cacheKey: async ctx => accountCacheKey('dynosize', apiHost(), await resolveToken(ctx)),
   options: ctx => listNames(ctx, platform => platform.dynoSize.list(), names => names.map(name => name.toLowerCase())),
 }
 

@@ -162,14 +162,16 @@ describe('autocomplete completion sources', function () {
 
   describe('cache keys', function () {
     it('account-scoped completions build an account+host cache key', async function () {
-      for (const completion of [AppCompletion, TeamCompletion, PipelineCompletion, SpaceCompletion]) {
+      // Dyno sizes are account-scoped too: the available set varies by account
+      // entitlement, so the key must carry the token component.
+      for (const completion of [AppCompletion, TeamCompletion, PipelineCompletion, SpaceCompletion, DynoSizeCompletion]) {
         const key = await completion.cacheKey!(ctx)
         expect(key).to.match(/@api\.heroku\.com#/)
       }
     })
 
     it('host-scoped completions build a host-only cache key (no token component)', async function () {
-      for (const completion of [RegionCompletion, StackCompletion, DynoSizeCompletion]) {
+      for (const completion of [RegionCompletion, StackCompletion]) {
         const key = await completion.cacheKey!(ctx)
         expect(key).to.match(/@api\.heroku\.com$/)
       }

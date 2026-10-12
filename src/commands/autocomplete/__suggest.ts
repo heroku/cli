@@ -39,7 +39,7 @@ const COMPLETION_PROCESS_DEADLINE_MS = 5000
 export default class Suggest extends Command {
   static description = 'suggest flag completion values (used internally by completion functions)'
   static flags = {
-    flag: Flags.string({description: 'canonical (long) name of the flag whose values to suggest'}),
+    flag: Flags.string({description: 'completion id (catalog key) whose values to suggest'}),
   }
   static hidden = true
   static strict = false
