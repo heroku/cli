@@ -1,5 +1,6 @@
 import {APIClient, vars} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
+import {HerokuApiClient} from '@heroku/heroku-fetch'
+import {type HerokuApiClientOptions, HerokuSDK} from '@heroku/sdk'
 import {createHash} from 'node:crypto'
 
 import type {Completion, CompletionContext} from '../types/completion.js'
@@ -31,31 +32,64 @@ async function resolveToken(ctx: CompletionContext): Promise<string | undefined>
 }
 
 /**
+ * Client options for completion use: the CLI-resolved token and HEROKU_HOST-aware
+ * `baseUrl` (see src/lib/apps/client-options.ts) plus the two completion-only
+ * guarantees a TAB needs so it can never hang the shell — a short per-request
+ * `timeout`, and a `twoFactor` handler that rejects rather than reading a 2FA
+ * code from stdin (the default handler prompts). Shared by the SDK platform
+ * client and the direct heroku-fetch client the stack completion uses.
+ */
+function completionClientOptions(heroku: APIClient): HerokuApiClientOptions {
+  return {
+    ...sdkClientOptions(heroku),
+    timeout: COMPLETION_TIMEOUT_MS,
+    twoFactor: {onChallenge: () => Promise.reject(new Error('2FA is not available during shell completion'))},
+  }
+}
+
+/**
  * Build a HerokuSDK platform client scoped for completion use, or `undefined`
  * when the user is not authenticated.
  *
  * Completions run with only a `config` (no `this.heroku`), so we construct an
  * APIClient from the config and thread its CLI-resolved token/host into the SDK
- * exactly as commands do (see src/lib/apps/client-options.ts). Without this,
- * keychain- and HEROKU_HOST-authed users would hit auth failures mid-completion.
- *
- * Two completion-only guarantees are layered on so a TAB can never hang the
- * shell: a short per-request `timeout`, and a `twoFactor` handler that rejects
- * rather than reading a 2FA code from stdin (the SDK's default handler prompts).
+ * exactly as commands do. Without this, keychain- and HEROKU_HOST-authed users
+ * would hit auth failures mid-completion.
  */
 async function platformClient(ctx: CompletionContext) {
   const heroku = new APIClient(ctx.config)
   await heroku.getAuth()
   if (!heroku.auth) return
 
-  const sdk = new HerokuSDK({
-    clientOptions: {
-      ...sdkClientOptions(heroku),
-      timeout: COMPLETION_TIMEOUT_MS,
-      twoFactor: {onChallenge: () => Promise.reject(new Error('2FA is not available during shell completion'))},
-    },
-  })
+  const sdk = new HerokuSDK({clientOptions: completionClientOptions(heroku)})
   return sdk.platform
+}
+
+/**
+ * List all stack names via a direct `GET /stacks`.
+ *
+ * The SDK's `platform.stack.listGet()` cannot list stacks account-wide: a
+ * `@heroku/types` generator collision (two "List" links collapsing onto one
+ * method key) leaves its only runtime route app-scoped
+ * (`GET /apps/{app}/available-stacks`), so a no-arg call throws "Missing path
+ * parameter". Until a regenerated `@heroku/types` exposes a no-arg stacks list
+ * (fixed upstream in typescript-api-schema's patch-hyperschema.ts), we bypass
+ * the SDK and hit the real collection endpoint through heroku-fetch directly.
+ * Auth/timeout/2FA handling matches platformClient so behavior is identical to
+ * the other completions (nothing offered when logged out; aborts on timeout).
+ */
+async function stackNames(ctx: CompletionContext): Promise<string[]> {
+  const heroku = new APIClient(ctx.config)
+  await heroku.getAuth()
+  if (!heroku.auth) return []
+
+  const client = new HerokuApiClient(completionClientOptions(heroku))
+  const response = await client.get('/stacks', {signal: AbortSignal.timeout(COMPLETION_TIMEOUT_MS)})
+  const stacks = (await response.json()) as ReadonlyArray<{name?: string}>
+  return stacks
+    .map(stack => stack.name)
+    .filter((name): name is string => typeof name === 'string')
+    .sort()
 }
 
 type PlatformClient = NonNullable<Awaited<ReturnType<typeof platformClient>>>
@@ -140,7 +174,7 @@ export const RegionCompletion: Completion = {
 export const StackCompletion: Completion = {
   cacheDuration: oneDay,
   cacheKey: () => hostCacheKey('stack', apiHost()),
-  options: ctx => listNames(ctx, platform => platform.stack.listGet()),
+  options: ctx => stackNames(ctx),
 }
 
 export const DynoSizeCompletion: Completion = {
