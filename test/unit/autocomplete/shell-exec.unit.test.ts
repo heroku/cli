@@ -87,6 +87,15 @@ describe('autocomplete dynamic-completion injection (shell execution)', function
       expect(reply).to.deep.equal(['malachite-prod', 'malachite-staging'])
     })
 
+    it('fires for a flag whose completion id differs from its name (`run --size=`)', function () {
+      // Proves the metadata binding reaches the shell: `--size` wires to the
+      // `dynosize` id, so the prologue sets __flag=dynosize and shells out.
+      // heroku run --size=  ->  heroku run --size =
+      const SIZES = ['standard-1x', 'standard-2x', 'performance-m']
+      const reply = runBash(['heroku', 'run', '--size', '='], 3, SIZES)
+      expect(reply).to.deep.equal(SIZES)
+    })
+
     it('does not fire for a non-dynamic flag (`--json`)', function () {
       // The prologue must fall through to the plugin's own name completion;
       // our live app values must not leak into an unrelated flag's position.

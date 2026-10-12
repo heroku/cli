@@ -4,7 +4,7 @@ import {Flags} from '@oclif/core'
 import type {Completion, CompletionContext} from '../../lib/types/completion.js'
 
 import {cachedValues} from '../../lib/autocomplete/cache.js'
-import {completionsByFlag} from '../../lib/autocomplete/completions.js'
+import {completionCatalog} from '../../lib/autocomplete/completions.js'
 
 /**
  * Dynamic, API-backed value completion.
@@ -12,15 +12,17 @@ import {completionsByFlag} from '../../lib/autocomplete/completions.js'
  * Internal completion callback — the `__` prefix marks it as plumbing, not a
  * command users type (cf. the `__complete` convention in gh/kubectl/docker).
  * The generated shell completion functions invoke it at completion time, naming
- * the flag whose value is being completed:
+ * the completion whose values are being requested:
  *
  *   heroku autocomplete:__suggest --flag app
  *
  * Protocol (frozen — the generated scripts in src/lib/autocomplete/inject.ts
- * depend on it): a single `--flag <canonical-long-name>` option; values are one
- * per line on stdout; anything else goes to stderr. The shell already knows which
- * flag it is completing, so this command never parses the command line — that is
- * what keeps bash immune to COMP_WORDBREAKS splitting `apps:info` into tokens.
+ * depend on it): a single `--flag <completion-id>` option (the id, e.g. `app`
+ * or `dynosize`, is baked into the script by the injection, not re-derived
+ * here); values are one per line on stdout; anything else goes to stderr. The
+ * shell already knows which completion it needs, so this command never parses
+ * the command line — that is what keeps bash immune to COMP_WORDBREAKS splitting
+ * `apps:info` into tokens.
  *
  * `strict = false` and the optional flag make a stale script (CLI upgraded but
  * `heroku autocomplete` not re-run) degrade to no suggestions rather than erroring.
@@ -54,8 +56,8 @@ export default class Suggest extends Command {
     watchdog.unref()
     try {
       const {flags} = await this.parse(Suggest)
-      if (!flags.flag || !Object.hasOwn(completionsByFlag, flags.flag)) return
-      const completion = completionsByFlag[flags.flag]
+      if (!flags.flag || !Object.hasOwn(completionCatalog, flags.flag)) return
+      const completion = completionCatalog[flags.flag]
 
       const ctx: CompletionContext = {config: this.config}
       const values = await this.resolveValues(flags.flag, completion, ctx)
