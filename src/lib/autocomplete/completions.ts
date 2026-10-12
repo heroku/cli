@@ -113,23 +113,41 @@ async function stackNames(ctx: CompletionContext): Promise<string[]> {
 type PlatformClient = NonNullable<Awaited<ReturnType<typeof platformClient>>>
 
 /**
+ * Run one call against a request-deadline-scoped platform client, or return
+ * `undefined` when the user is not authenticated.
+ *
+ * The single place the auth/abort/empty-when-logged-out behavior lives: resolve
+ * a client (nothing if unauthenticated), apply the per-request completion
+ * deadline, then hand the scoped client to `fetch`. Projection/sorting is left
+ * to the caller so completions whose resource is not a `{name}` list (releases
+ * are keyed by `version`, config vars are an object) can shape their own values.
+ */
+async function withPlatform<T>(
+  ctx: CompletionContext,
+  fetch: (platform: PlatformClient) => Promise<T>,
+): Promise<T | undefined> {
+  const platform = await platformClient(ctx)
+  if (!platform) return undefined
+
+  const scoped = platform.withOptions({signal: AbortSignal.timeout(COMPLETION_TIMEOUT_MS)}) as PlatformClient
+  return fetch(scoped)
+}
+
+/**
  * Run one list call against the platform and return a sorted list of names.
  *
- * Shared by every completion so the auth/abort/empty-when-logged-out behavior
- * lives in exactly one place: resolve a client (nothing if unauthenticated),
- * apply the request deadline, then project to `name` strings. `transform` lets a
- * completion normalize names before sorting (e.g. dyno sizes are lower-cased).
+ * Thin wrapper over `withPlatform` for the common case: project each item to its
+ * `name` string, then sort. `transform` lets a completion normalize names before
+ * sorting (e.g. dyno sizes are lower-cased).
  */
 async function listNames(
   ctx: CompletionContext,
   fetch: (platform: PlatformClient) => Promise<ReadonlyArray<{name?: string}>>,
   transform: (names: string[]) => string[] = names => names,
 ): Promise<string[]> {
-  const platform = await platformClient(ctx)
-  if (!platform) return []
+  const items = await withPlatform(ctx, fetch)
+  if (!items) return []
 
-  const scoped = platform.withOptions({signal: AbortSignal.timeout(COMPLETION_TIMEOUT_MS)}) as PlatformClient
-  const items = await fetch(scoped)
   const names = items.map(item => item.name).filter((name): name is string => typeof name === 'string')
   return transform(names).sort()
 }
@@ -218,6 +236,60 @@ export const DynoCompletion: Completion = {
   cacheDuration: 60,
   cacheKey: async ctx => accountCacheKey(`dyno:${ctx.app ?? ''}`, apiHost(), await resolveToken(ctx)),
   options: ctx => (ctx.app ? listNames(ctx, platform => platform.dyno.list(ctx.app!)) : Promise.resolve([])),
+}
+
+/**
+ * Add-on and attachment names for the app on the command line (e.g.
+ * `postgresql-cubic-12345`), used by the add-on positional args of
+ * `addons:info`, `addons:destroy`, the `data:maintenances:*` commands, etc.
+ * Moderately cached per app: add-ons change only on provision/attach/detach.
+ */
+export const AddonCompletion: Completion = {
+  cacheDuration: 60 * 10,
+  cacheKey: async ctx => accountCacheKey(`addon:${ctx.app ?? ''}`, apiHost(), await resolveToken(ctx)),
+  options: ctx => (ctx.app ? listNames(ctx, platform => platform.addOn.listByApp(ctx.app!)) : Promise.resolve([])),
+}
+
+/**
+ * The newest release versions for the app on the command line, as `vNNN`
+ * (e.g. `v4123`), used by the release positional args of `releases:info`,
+ * `releases:output`, and `releases:rollback`. The API lists releases ascending
+ * and the SDK auto-paginates, so we sort newest-first and cap the menu: a long-
+ * lived app can have thousands of releases, and only the most recent are useful
+ * to complete (an over-large fetch simply aborts on the deadline → nothing).
+ * Short TTL: a new release lands on every deploy and config change.
+ */
+const MAX_RELEASE_COMPLETIONS = 100
+export const ReleaseCompletion: Completion = {
+  cacheDuration: 60,
+  cacheKey: async ctx => accountCacheKey(`release:${ctx.app ?? ''}`, apiHost(), await resolveToken(ctx)),
+  async options(ctx) {
+    if (!ctx.app) return []
+    const releases = await withPlatform(ctx, platform => platform.release.list(ctx.app!))
+    if (!releases) return []
+    return releases
+      .map(release => release.version)
+      .filter((version): version is number => typeof version === 'number')
+      .sort((a, b) => b - a)
+      .slice(0, MAX_RELEASE_COMPLETIONS)
+      .map(version => `v${version}`)
+  },
+}
+
+/**
+ * Config var names for the app on the command line (e.g. `DATABASE_URL`), used
+ * by the key positional of `config:get` and `config:edit`. The API returns the
+ * vars as an object keyed by name, so we complete `Object.keys`. Short TTL:
+ * config vars change under the user's hands.
+ */
+export const ConfigVarCompletion: Completion = {
+  cacheDuration: 60,
+  cacheKey: async ctx => accountCacheKey(`configvar:${ctx.app ?? ''}`, apiHost(), await resolveToken(ctx)),
+  async options(ctx) {
+    if (!ctx.app) return []
+    const config = await withPlatform(ctx, platform => platform.configVar.infoForApp(ctx.app!))
+    return config ? Object.keys(config).sort() : []
+  },
 }
 
 // Static and local-context completions. These take no auth and make no API call —
@@ -326,8 +398,10 @@ export const EnforcementActionCompletion: Completion = {
  * flag's long name — e.g. the `--size` flag binds to the `dynosize` id.
  */
 export const completionCatalog: {[id: string]: Completion} = {
+  addon: AddonCompletion,
   app: AppCompletion,
   buildpack: BuildpackCompletion,
+  configvar: ConfigVarCompletion,
   dyno: DynoCompletion,
   dynosize: DynoSizeCompletion,
   enforcementaction: EnforcementActionCompletion,
@@ -336,6 +410,7 @@ export const completionCatalog: {[id: string]: Completion} = {
   pipeline: PipelineCompletion,
   processtype: ProcessTypeCompletion,
   region: RegionCompletion,
+  release: ReleaseCompletion,
   remote: RemoteCompletion,
   role: RoleCompletion,
   scope: ScopeCompletion,

@@ -9,14 +9,17 @@ import path from 'node:path'
 import type {CompletionContext} from '../../../src/lib/types/completion.js'
 
 import {
+  AddonCompletion,
   AppCompletion,
   BuildpackCompletion,
   completionCatalog,
+  ConfigVarCompletion,
   DynoCompletion,
   DynoSizeCompletion,
   PipelineCompletion,
   ProcessTypeCompletion,
   RegionCompletion,
+  ReleaseCompletion,
   RemoteCompletion,
   RoleCompletion,
   ScopeCompletion,
@@ -106,11 +109,14 @@ describe('autocomplete completion sources', function () {
 
     beforeEach(function () {
       const platform = {
+        addOn: {listByApp: async (app: string) => (app === 'myapp' ? named(['redis-tapered-1', 'pg-curved-9']) : [])},
         app: {listOwnedAndCollaborated: async () => named(['charlie', 'alpha'])},
+        configVar: {infoForApp: async (app: string) => (app === 'myapp' ? {A_SECRET: 'y', DATABASE_URL: 'x'} : {})},
         dyno: {list: async (app: string) => (app === 'myapp' ? named(['worker.1', 'web.1']) : [])},
         dynoSize: {list: async () => named(['Standard-1X', 'Performance-M'])},
         pipeline: {list: async () => named(['pipe'])},
         region: {list: async () => named(['us', 'eu'])},
+        release: {list: async (app: string) => (app === 'myapp' ? [{version: 3}, {version: 1}, {version: 2}] : [])},
         space: {list: async () => named(['space'])},
         team: {list: async () => named(['team-b', 'team-a'])},
         withOptions() {
@@ -155,6 +161,24 @@ describe('autocomplete completion sources', function () {
     it('DynoCompletion offers nothing when no app is on the line', async function () {
       expect(await DynoCompletion.options(ctx)).to.deep.equal([])
     })
+
+    it('AddonCompletion lists the ctx app add-ons, sorted', async function () {
+      expect(await AddonCompletion.options({app: 'myapp', config})).to.deep.equal(['pg-curved-9', 'redis-tapered-1'])
+    })
+
+    it('ReleaseCompletion lists the ctx app releases newest-first as vNNN', async function () {
+      expect(await ReleaseCompletion.options({app: 'myapp', config})).to.deep.equal(['v3', 'v2', 'v1'])
+    })
+
+    it('ConfigVarCompletion lists the ctx app config var names, sorted', async function () {
+      expect(await ConfigVarCompletion.options({app: 'myapp', config})).to.deep.equal(['A_SECRET', 'DATABASE_URL'])
+    })
+
+    it('the app-scoped positional completions offer nothing with no app on the line', async function () {
+      for (const completion of [AddonCompletion, ReleaseCompletion, ConfigVarCompletion]) {
+        expect(await completion.options(ctx)).to.deep.equal([])
+      }
+    })
   })
 
   describe('StackCompletion (direct /stacks fetch)', function () {
@@ -192,6 +216,15 @@ describe('autocomplete completion sources', function () {
       const a = await DynoCompletion.cacheKey!({app: 'app-a', config})
       const b = await DynoCompletion.cacheKey!({app: 'app-b', config})
       expect(a).to.not.equal(b)
+    })
+
+    it('app-scoped positional completions partition the cache by app and carry the token', async function () {
+      for (const [completion, kind] of [[AddonCompletion, 'addon'], [ReleaseCompletion, 'release'], [ConfigVarCompletion, 'configvar']] as const) {
+        expect(await completion.cacheKey!({app: 'myapp', config})).to.match(new RegExp(`${kind}:myapp@api\\.heroku\\.com#`))
+        const a = await completion.cacheKey!({app: 'app-a', config})
+        const b = await completion.cacheKey!({app: 'app-b', config})
+        expect(a, `${kind} must not share a cache across apps`).to.not.equal(b)
+      }
     })
   })
 

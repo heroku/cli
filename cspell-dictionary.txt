@@ -74,6 +74,7 @@ compgen
 compinit
 compopt
 COMPREPLY
+configvar
 createdb
 credname
 creds

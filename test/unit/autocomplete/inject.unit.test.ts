@@ -29,8 +29,10 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
 
   // Mirror the exact spec shape inject.ts rewrites: `"--app=-[desc]:"`.
   const APP_SPEC = /"(?:\*)?--app=-\[[^\]]*]:"/g
-  // The action we rewrite those specs to point at.
-  const WIRED = /:app:_heroku_complete_app/g
+  // A fully-rewired --app FLAG value spec. Deliberately the whole spec, not just
+  // the `:app:_heroku_complete_app` tail, so it does not also count the identical
+  // tail on positional specs (`"2:app:_heroku_complete_app"`, see D2 below).
+  const WIRED = /"(?:\*)?--app=-\[[^\]]*]:app:_heroku_complete_app"/g
   // The bash anchor patchBash inserts after.
   const BASH_COMPREPLY_ANCHOR = /\n(\s*)COMPREPLY=\(\)\n/
 
@@ -199,5 +201,62 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
     expect(bashAfter, 'dyno branch is app-scoped').to.match(/--dyno(-name)?\|--dyno(-name)?\) __flag=dyno; __appscoped=1 ;;/)
     expect(bashAfter, 'app branch is not app-scoped').to.include('--app) __flag=app ;;')
     expect(bashAfter, 'prologue scans COMP_WORDS for --app').to.include('__appargs=(--app')
+  })
+
+  // --- D2: positional-argument value completion (zsh only) ---------------------
+
+  // Return the `_set_flags` case arm (its `_command_flags=(...)` body) for a
+  // command, so a positional spec assertion is scoped to that one command rather
+  // than matching a coincidentally-identical spec elsewhere in the file.
+  function zshArm(id: string): string {
+    const start = zshAfter.indexOf(`\n${id})\n  _command_flags=(\n`)
+    expect(start, `generated zsh must have a _set_flags arm for ${id}`).to.be.greaterThan(-1)
+    const end = zshAfter.indexOf('\n  )\n', start)
+    return zshAfter.slice(start, end)
+  }
+
+  it('wires positional args to their completion id, scoped per command (zsh)', function () {
+    // Each command's first real positional is _arguments position 2 (position 1
+    // is the command id itself). App-scoped ids (addon/release/dyno/configvar)
+    // reuse the very same helpers the flag path defines.
+    for (const [id, completionId] of [
+      ['releases:info', 'release'],
+      ['config:get', 'configvar'],
+      ['config:edit', 'configvar'],
+      ['ps:restart', 'dyno'],
+      ['addons:info', 'addon'],
+      ['addons:detach', 'addon'],
+      ['pipelines:info', 'pipeline'],
+      ['reviewapps:wait', 'app'],
+    ]) {
+      expect(zshArm(id), `${id} positional`).to.include(`"2:${completionId}:_heroku_complete_${completionId}"`)
+      expect(zshAfter, `${completionId} helper defined`).to.include(`_heroku_complete_${completionId} () {`)
+    }
+  })
+
+  it('routes zsh positional completion through _arguments with a file fallback', function () {
+    // The plugin's own `if [[ "$_cur" == -* ]] ... else _path_files` branch is
+    // replaced so _command_flags (now carrying positional specs) is always built
+    // and _arguments dispatches; a trailing catch-all keeps file completion for
+    // positions we do not complete.
+    expect(zshAfter, 'the plugin flag/file branch must be removed').to.not.match(/if \[\[ "\$_cur" == -\* \]\]/)
+    expect(zshAfter, 'file fallback for uncompleted positionals').to.include("'*:file:_path_files'")
+  })
+
+  it('skips positional completion for new-name, overloaded, and hidden args (zsh)', function () {
+    // apps:create/spaces:create name a NEW resource; keys:*/certs: reuse key/KEY
+    // for an SSH key / cert path; addon-service-capabilities takes an addon
+    // SERVICE; apps:info's `app` positional is hidden (its value comes via --app).
+    for (const id of ['apps:create', 'spaces:create', 'keys:add', 'keys:remove', 'certs:add', 'addon-service-capabilities', 'apps:info', 'spaces:info']) {
+      expect(zshArm(id), `${id} must have no positional helper spec`).to.not.match(/"\d+:[a-z]+:_heroku_complete_[a-z]+"/)
+    }
+  })
+
+  it('does not wire positional-only completions into bash (zsh-only slice)', function () {
+    // addon/release/configvar are reachable only as positionals, which bash does
+    // not complete yet, so the bash script must not reference their helpers/ids.
+    for (const id of ['addon', 'release', 'configvar']) {
+      expect(bashAfter, `bash must not reference ${id}`).to.not.include(`__flag=${id}`)
+    }
   })
 })
