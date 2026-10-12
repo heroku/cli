@@ -204,6 +204,7 @@ mhost
 mhttp
 mhttps
 minfo
+mktemp
 mmethod
 mmyapp
 mongolab

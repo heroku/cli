@@ -44,10 +44,11 @@ homegrown impl), which is a clean provenance fingerprint.
 ---
 
 ## 0.1 Spike 2 findings (dynamic completion, Option A) — 2026-10-12
-Proved the Option A injection mechanism end-to-end for bash + zsh. Added (uncommitted):
-`src/lib/types/completion.ts`, `src/lib/autocomplete/completions.ts` (SDK-backed `AppCompletion`
-via `platform.app.listOwnedAndCollaborated('~')`), `src/commands/autocomplete/options.ts`
-(hidden `autocomplete:options` command), `src/lib/autocomplete/inject.ts` (script patcher), and
+Proved the Option A injection mechanism end-to-end for bash + zsh, **including the live SDK call**.
+Committed on `eb/oclif-autocomplete-plugin` (`ffc7f5b43`): `src/lib/types/completion.ts`,
+`src/lib/autocomplete/completions.ts` (SDK-backed `AppCompletion` via
+`platform.app.listOwnedAndCollaborated('~')`), `src/commands/autocomplete/__suggest.ts`
+(hidden `autocomplete:__suggest` command), `src/lib/autocomplete/inject.ts` (script patcher), and
 `src/hooks/postrun/inject-dynamic-completions.ts` (trigger). Registered the postrun hook in
 `package.json`.
 
@@ -59,22 +60,35 @@ hook fires after `autocomplete` / `autocomplete:create` regenerate the cache and
 - **zsh**: each option flag is emitted as `"--app=-[desc]:"` — a dead `_arguments` action. We
   inject a `_heroku_dynamic_completion` helper once and rewrite every dynamic-flag spec to
   `"--app=-[desc]:app:_heroku_dynamic_completion"`. The helper shells out to
-  `heroku autocomplete:options "<line>"` and `compadd`s the result.
+  `heroku autocomplete:__suggest "<line>"` and `compadd`s the result.
 - **bash**: the generated function only completes names, so we prepend a prologue that detects a
-  dynamic-flag value position (`--app`/`-a`, incl. the `=` split) and feeds `autocomplete:options`
+  dynamic-flag value position (`--app`/`-a`, incl. the `=` split) and feeds `autocomplete:__suggest`
   output into `COMPREPLY`.
 
 **What's verified:** a from-scratch regen patches all 295 `--app` specs (0 left), both scripts
-pass `zsh -n` / `bash -n`, and driving the *real* generated functions with a stubbed
-`autocomplete:options` returns completions in both shells (bash `COMPREPLY`, zsh `compadd`). Build
-and lint are clean.
+pass `zsh -n` / `bash -n`, and driving the *real* generated functions returns completions in both
+shells (bash `COMPREPLY`, zsh `compadd`). The **live SDK call works**:
+`./bin/run.js autocomplete:__suggest 'heroku apps:info --app='` prints the authed user's real apps.
+Build and lint are clean.
 
-**What's NOT verified:** the live SDK call. The environment is **not logged in** (no
-`HEROKU_API_KEY`, no `~/.netrc` heroku entry, nothing in an accessible keychain), so
-`platform.app.listOwnedAndCollaborated('~')` fails auth and the command's try/catch returns empty
+**Auth-threading finding (the bug that made the live call look broken).** `APIClient.auth` is a
+*synchronous getter* over a lazily-resolved field — it returns `undefined` on a freshly constructed
+client until `getAuth()` reads the keychain/netrc/`HEROKU_API_KEY`. Commands get this for free via
+`this.heroku`; completions construct their own `APIClient`, so `completions.ts` must
+`await heroku.getAuth()` before `sdkClientOptions(heroku)` — otherwise the SDK is threaded
+`token: undefined` and every call 401s. (The dev branch's `auth:whoami` has this same unfixed bug
+and reports "not logged in" even when a token is present — a red herring, not a lost credential.)
+
+**Testing without clobbering the installed CLI.** The binary is never touched (completion is
+shell-local); the only shared surface is the completion cache at `~/Library/Caches/heroku/autocomplete`.
+Isolate it with `HEROKU_CACHE_DIR=$(mktemp -d)` and keep `bin=heroku` (the keychain token is
+namespaced to the bin name, so renaming it to e.g. `test_heroku` loses auth). Verified: a regen
+under `HEROKU_CACHE_DIR` populates the throwaway dir and leaves the real cache's mtime untouched.
+
+**Superseded note (kept for history):** an earlier run with no accessible credential could not
+exercise `platform.app.listOwnedAndCollaborated('~')` and the command's try/catch returned empty
 — correct behavior, but it means `heroku apps:info --app=<TAB>` → *live apps* is still unproven.
-Acid test once authed: `./bin/run.js autocomplete:options 'heroku apps:info --app='` should print
-app names.
+this was correct behavior for an unauthed environment, now resolved by the auth-threading fix above.
 
 **Material discovery — PowerShell is hard-blocked in colon mode (feeds Phase 4).** Confirmed
 against the running CLI: `heroku autocomplete powershell` **errors** ("PowerShell completion is
