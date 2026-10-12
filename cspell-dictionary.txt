@@ -64,11 +64,13 @@ collab
 commandsstop
 committerdate
 compadd
+compadds
 compaudit
 compdef
 COMPFUNC
 compgen
 compinit
+compopt
 COMPREPLY
 createdb
 credname
@@ -433,6 +435,7 @@ VERSINFO
 walsender
 webfactory
 withfig
+WORDBREAKS
 wrapline
 writeout
 wubalubadubdub

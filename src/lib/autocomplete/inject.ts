@@ -6,35 +6,33 @@ import path from 'node:path'
 import {CompletionMapping} from './completions.js'
 
 /**
- * SPIKE 2 (Option A): patch the plugin-generated completion scripts so that
- * flag VALUES are completed dynamically.
+ * Patch the plugin-generated completion scripts so that flag VALUES complete
+ * dynamically.
  *
- * The @oclif/plugin-autocomplete LEGACY (colon-separator) generators only ever
+ * The `@oclif/plugin-autocomplete` colon-separator generators only ever
  * complete command and flag NAMES — their bash/zsh scripts never read
- * `flag.options`, so there is no built-in path for value completion. Rather than
- * fork the plugin (its internals aren't importable), we post-process the files
- * it writes to the cache: for every flag that has a registered `Completion`, we
- * wire the value position to shell out to `<bin> autocomplete:__suggest "<line>"`.
+ * `flag.options`, so there is no built-in path for value completion. The plugin
+ * internals aren't
+ * importable, so instead of forking it we post-process the files it writes to
+ * the cache: for every flag with a registered `Completion`, we wire the value
+ * position to shell out to `<bin> autocomplete:__suggest --flag <name>`.
  *
- * This runs from a `postrun` hook right after the generator command finishes.
+ * Protocol (frozen — see src/commands/autocomplete/__suggest.ts): the generated
+ * scripts always pass the flag's canonical (long) name explicitly via `--flag`.
+ * Because the shell already knows which flag's value it is completing, __suggest
+ * never re-parses the command line. That is what keeps the bash path immune to
+ * the `:`/`=` word-splitting COMP_WORDBREAKS performs on `apps:info --app=`.
+ *
+ * Runs from a `postrun` hook right after the generator command finishes.
  */
 
-/** Flag names whose values should complete dynamically (from the catalog). */
-function dynamicFlags(): string[] {
-  return Object.keys(CompletionMapping)
-}
-
-/**
- * Short-char aliases per flag, used to match `-a` as well as `--app` in bash.
- * For the spike, apps consistently expose `-a`; Phase 3 should derive these
- * from the command metadata instead of hard-coding.
- */
-const FLAG_CHARS: {[flag: string]: string[]} = {
+/** Short-char aliases per flag, so bash matches `-a` as well as `--app`. */
+const SHORT_FLAG_CHARS: {[flag: string]: string[]} = {
   app: ['a'],
 }
 
 export async function injectDynamicCompletions(config: Interfaces.Config): Promise<void> {
-  const flags = dynamicFlags()
+  const flags = Object.keys(CompletionMapping)
   if (flags.length === 0) return
 
   const {bin} = config
@@ -42,7 +40,10 @@ export async function injectDynamicCompletions(config: Interfaces.Config): Promi
   const zshPath = path.join(functionsDir, 'zsh', `_${bin}`)
   const bashPath = path.join(functionsDir, 'bash', `${bin}.bash`)
 
-  await Promise.all([patchFile(zshPath, src => patchZsh(src, bin, flags)), patchFile(bashPath, src => patchBash(src, bin, flags))])
+  await Promise.all([
+    patchFile(zshPath, src => patchZsh(src, bin, flags)),
+    patchFile(bashPath, src => patchBash(src, bin, flags)),
+  ])
 }
 
 async function patchFile(file: string, transform: (src: string) => string): Promise<void> {
@@ -57,67 +58,115 @@ async function patchFile(file: string, transform: (src: string) => string): Prom
   if (next !== src) await writeFile(file, next)
 }
 
+/** The shell helper/function name that fetches live values for one flag. */
+function helperName(bin: string, flag: string): string {
+  return `_${bin}_complete_${flag}`
+}
+
 /**
  * zsh: each option flag is emitted as an `_arguments` spec ending in a bare `:`
- * (empty message, no action), e.g. `"--app=-[app to run command against]:"`.
- * We append an action that calls a helper so zsh offers live values.
+ * (empty action), e.g. `"--app=-[app to run command against]:"`. For every
+ * dynamic flag we (1) define a helper that shells out to __suggest and (2) point
+ * that flag's value position at the helper via the canonical `:message:_fn`
+ * action form.
  */
 export function patchZsh(src: string, bin: string, flags: string[]): string {
-  const fn = `_${bin}_dynamic_completion`
   let out = src
 
-  // 1. define the helper once, right after the main function opens.
-  if (!out.includes(fn)) {
-    const helper = [
-      '',
-      `  ${fn} () {`,
-      '    local -a _dyn',
-      `    _dyn=(\${(f)"$(${bin} autocomplete:__suggest "\${words[*]}" 2>/dev/null)"})`,
-      // eslint-disable-next-line no-template-curly-in-string -- literal zsh parameter expansion
-      '    [[ ${#_dyn} -gt 0 ]] && compadd -a _dyn',
-      '  }',
-      '',
-    ].join('\n')
-    out = out.replace(`_${bin} () {\n`, `_${bin} () {\n${helper}`)
-  }
+  // 1. define one helper per dynamic flag, right after the main function opens.
+  const helpers = flags
+    .filter(flag => !out.includes(helperName(bin, flag)))
+    .map(flag => zshHelper(bin, flag))
+    .join('')
+  if (helpers) out = out.replace(`_${bin} () {\n`, `_${bin} () {\n${helpers}`)
 
-  // 2. give each dynamic flag's value position an action pointing at the helper.
+  // 2. point each dynamic flag's value position at its helper.
   for (const flag of flags) {
-    const re = new RegExp(`("(?:\\*)?--${flag}=-\\[[^\\]]*\\]):"`, 'g')
-    out = out.replace(re, `$1:${flag}:${fn}"`)
+    out = out.replace(valueSpecRegExp(flag), `$1:${flag}:${helperName(bin, flag)}"`)
   }
 
   return out
 }
 
+function zshHelper(bin: string, flag: string): string {
+  return [
+    '',
+    `  ${helperName(bin, flag)} () {`,
+    '    local -a _dyn',
+    `    _dyn=(\${(f)"$(${bin} autocomplete:__suggest --flag ${flag} 2>/dev/null)"})`,
+    // eslint-disable-next-line no-template-curly-in-string -- literal zsh parameter expansion
+    '    [[ ${#_dyn} -gt 0 ]] && compadd -a _dyn',
+    '  }',
+    '',
+  ].join('\n')
+}
+
+/**
+ * Match a flag's zsh value spec, e.g. `"--app=-[app to run command against]:"`
+ * (an optional leading `*` marks a `multiple` flag). The description class
+ * tolerates escaped brackets (`\]`) so a `]` inside the text can't end the match
+ * early, and `flag` is escaped because it is interpolated into the pattern.
+ */
+function valueSpecRegExp(flag: string): RegExp {
+  const f = escapeRegExp(flag)
+  return new RegExp(String.raw`("(?:\*)?--${f}=-\[(?:\\.|[^\]])*\]):"`, 'g')
+}
+
+function escapeRegExp(s: string): string {
+  return s.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
+}
+
 /**
  * bash: the generated `_<bin>_autocomplete` only completes command/flag names.
- * We inject a prologue that, when the token before the cursor is a dynamic flag
- * (or its `=`), shells out to `autocomplete:__suggest` and returns those values.
+ * We inject a prologue right after its first `COMPREPLY=()` that, when the token
+ * before the cursor is a dynamic flag (or its `=`), shells out to __suggest and
+ * returns those values.
+ *
+ * The flag is read from `$__prev` (the word before the cursor), which is
+ * colon-safe: flag tokens never contain `:` or `=`, so COMP_WORDBREAKS splitting
+ * the command id (`apps:info` -> `apps : info`) is irrelevant. Values are read
+ * line-by-line into COMPREPLY — never through `compgen -W` — so a value
+ * containing shell metacharacters cannot be word-split, globbed, or run as a
+ * command substitution. `compopt +o default` suppresses filename fallback so an
+ * empty result shows nothing rather than offering local files.
  */
 export function patchBash(src: string, bin: string, flags: string[]): string {
-  const marker = '# >>> heroku dynamic value completion'
-  if (src.includes(marker)) return src
+  const open = bashMarker(bin, '>>>')
+  if (src.includes(open)) return src
 
-  const patterns = flags
-    .flatMap(flag => [`--${flag}`, ...(FLAG_CHARS[flag] ?? []).map(c => `-${c}`)])
-    .join('|')
+  const branches = flags
+    .map(flag => {
+      const patterns = [`--${flag}`, ...(SHORT_FLAG_CHARS[flag] ?? []).map(c => `-${c}`)].join('|')
+      return `    ${patterns}) __flag=${flag} ;;`
+    })
+    .join('\n')
 
   const prologue = `
-  ${marker}
-  local __prev="\${COMP_WORDS[COMP_CWORD-1]}"
+  ${open}
+  local __prev="\${COMP_WORDS[COMP_CWORD-1]}" __flag=""
   if [[ "$__prev" == "=" ]]; then __prev="\${COMP_WORDS[COMP_CWORD-2]}"; fi
   case "$__prev" in
-    ${patterns})
-      local __dyn
-      __dyn=$(${bin} autocomplete:__suggest "\${COMP_WORDS[*]}" 2>/dev/null)
-      COMPREPLY=( $(compgen -W "$__dyn" -- "$cur") )
-      return 0
-      ;;
+${branches}
   esac
-  # <<< heroku dynamic value completion
+  if [[ -n "$__flag" ]]; then
+    # When the line ends at the flag's '=', bash's current word is "=" itself
+    # (not ""), so strip a leading '=' to recover the real value prefix.
+    local __dyn __line __cur="\${cur#=}"
+    __dyn=$(${bin} autocomplete:__suggest --flag "$__flag" 2>/dev/null)
+    while IFS= read -r __line; do
+      [[ -z "$__line" ]] && continue
+      [[ "$__line" == "$__cur"* ]] && COMPREPLY+=("$__line")
+    done <<< "$__dyn"
+    compopt +o default 2>/dev/null
+    return 0
+  fi
+  ${bashMarker(bin, '<<<')}
 `
 
   // Insert right after the first `COMPREPLY=()` so it short-circuits name completion.
   return src.replace(/\n(\s*)COMPREPLY=\(\)\n/, `\n$1COMPREPLY=()\n${prologue}`)
+}
+
+function bashMarker(bin: string, fence: string): string {
+  return `# ${fence} ${bin} dynamic value completion`
 }

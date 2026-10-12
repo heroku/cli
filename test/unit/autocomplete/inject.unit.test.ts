@@ -7,7 +7,7 @@ import path from 'node:path'
 import {injectDynamicCompletions} from '../../../src/lib/autocomplete/inject.js'
 
 /**
- * Contract test for the dynamic-completion injection (Spike 2 / Option A).
+ * Contract test for the dynamic-completion injection.
  *
  * `injectDynamicCompletions` does not generate completion scripts — it string-
  * patches the ones `@oclif/plugin-autocomplete` writes. Those patches are regex
@@ -30,7 +30,7 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
   // Mirror the exact spec shape inject.ts rewrites: `"--app=-[desc]:"`.
   const APP_SPEC = /"(?:\*)?--app=-\[[^\]]*]:"/g
   // The action we rewrite those specs to point at.
-  const WIRED = /:app:_heroku_dynamic_completion/g
+  const WIRED = /:app:_heroku_complete_app/g
   // The bash anchor patchBash inserts after.
   const BASH_COMPREPLY_ANCHOR = /\n(\s*)COMPREPLY=\(\)\n/
 
@@ -85,8 +85,12 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
   it('rewires every app spec to the dynamic helper (none missed)', function () {
     const appSpecs = (zshBefore.match(APP_SPEC) ?? []).length
     const wired = (zshAfter.match(WIRED) ?? []).length
-    expect(zshAfter, 'helper should be defined once').to.include('_heroku_dynamic_completion () {')
+    expect(zshAfter, 'helper should be defined once').to.include('_heroku_complete_app () {')
     expect(wired, 'every --app spec should be rewired').to.equal(appSpecs)
+  })
+
+  it('the zsh helper shells out to __suggest with the explicit --flag', function () {
+    expect(zshAfter).to.include('autocomplete:__suggest --flag app')
   })
 
   it('the plugin still emits the bash COMPREPLY anchor patchBash inserts after', function () {
@@ -94,7 +98,21 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
     expect(BASH_COMPREPLY_ANCHOR.test(bashBefore), 'bash should contain a COMPREPLY=() line').to.be.true
   })
 
-  it('injects the bash dynamic-value prologue', function () {
-    expect(bashAfter).to.include('# >>> heroku dynamic value completion')
+  it('injects the bash dynamic-value prologue right after COMPREPLY=()', function () {
+    const marker = '# >>> heroku dynamic value completion'
+    expect(bashAfter).to.include(marker)
+    // The prologue must sit immediately after the first `COMPREPLY=()`, so it
+    // short-circuits the plugin's name completion rather than running too late.
+    const anchor = bashAfter.indexOf('COMPREPLY=()')
+    const markerAt = bashAfter.indexOf(marker)
+    expect(markerAt, 'prologue should follow the first COMPREPLY=()').to.be.greaterThan(anchor)
+    expect(bashAfter.slice(anchor, markerAt).trim(), 'nothing should sit between them').to.equal('COMPREPLY=()')
+  })
+
+  it('derives the flag from $__prev and passes it explicitly to __suggest (bash)', function () {
+    // The explicit --flag protocol is what keeps bash immune to COMP_WORDBREAKS
+    // splitting `apps:info` — guard both halves of it.
+    expect(bashAfter).to.include('--app|-a) __flag=app ;;')
+    expect(bashAfter).to.include('autocomplete:__suggest --flag "$__flag"')
   })
 })
