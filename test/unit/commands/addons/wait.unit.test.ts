@@ -133,6 +133,7 @@ Created www-redis as REDIS_URL
           })
       })
       it('shows that it failed to provision', async function () {
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
@@ -147,6 +148,8 @@ Created www-redis as REDIS_URL
           'www-redis',
         ])
         expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
     })
   })
