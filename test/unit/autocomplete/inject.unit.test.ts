@@ -164,4 +164,20 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
     expect(bashAfter, '--type must not appear in the bash flag case').to.not.include('--type)')
     expect(zshAfter, '--type must not be rewired to a helper in zsh').to.not.match(/"--type=-\[[^\]]*]:processtype:/)
   })
+
+  it('wires static-enum flags (options: with no completion:) by their long name', function () {
+    // These flags declare `options: [...]` but no `completion:`; each long name is
+    // used by exactly one visible command, so a global-by-name binding is safe.
+    //   --network (data:pg:create), --generation (spaces:create),
+    //   --enforcement-action (data:pg:quotas:update).
+    for (const [longName, id] of [
+      ['network', 'pgnetwork'],
+      ['generation', 'generation'],
+      ['enforcement-action', 'enforcementaction'],
+    ]) {
+      expect(bashAfter, `${longName} -> ${id} (bash)`).to.include(`--${longName}) __flag=${id} ;;`)
+      expect(zshAfter, `${id} helper (zsh)`).to.include(`_heroku_complete_${id} () {`)
+      expect(zshAfter, `${id} suggest (zsh)`).to.include(`autocomplete:__suggest --flag ${id}`)
+    }
+  })
 })

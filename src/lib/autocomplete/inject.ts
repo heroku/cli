@@ -49,10 +49,16 @@ const idByExternalCompletion = new Map<unknown, string>([
 ])
 
 // Fallback by long name for flags that carry no `completion:` of their own: the
-// `--app`/`--team`/`--pipeline` factory flags, and `--remote` (`flags.remote()`
-// is a bare git-remote flag with no completion metadata, used across ~15 commands).
+// `--app`/`--team`/`--pipeline` factory flags, `--remote` (`flags.remote()` is a
+// bare git-remote flag with no completion metadata, used across ~15 commands), and
+// a handful of static-enum flags that declare `options:` but no `completion:`. Each
+// enum name below is used by exactly one visible command, so a global-by-name
+// binding offers that flag's own value set and nothing else.
 const idByFlagName: {[name: string]: string} = {
   app: 'app',
+  'enforcement-action': 'enforcementaction',
+  generation: 'generation',
+  network: 'pgnetwork',
   pipeline: 'pipeline',
   remote: 'remote',
   team: 'team',

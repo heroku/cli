@@ -278,6 +278,29 @@ export const RemoteCompletion: Completion = {
   skipCache: true,
 }
 
+// Static enum completions for `options: [...]` flags that declared no completion.
+// Each mirrors the exact `options` array of a single visible flag, so wiring it
+// globally by the flag's long name is safe (no other command reuses the name with
+// a different value set). Kept in sync with the source flag noted on each.
+
+/** `--network` on `data:pg:create` (options: ['private', 'shield']). */
+export const PgNetworkCompletion: Completion = {
+  options: () => ['private', 'shield'],
+  skipCache: true,
+}
+
+/** `--generation` on `spaces:create` (options: ['cedar', 'fir']). */
+export const GenerationCompletion: Completion = {
+  options: () => ['cedar', 'fir'],
+  skipCache: true,
+}
+
+/** `--enforcement-action` on `data:pg:quotas:update` (options: ['notify', 'restrict', 'none']). */
+export const EnforcementActionCompletion: Completion = {
+  options: () => ['notify', 'restrict', 'none'],
+  skipCache: true,
+}
+
 /**
  * Implemented completions, keyed by a stable completion id. The generated shell
  * scripts pass this id back verbatim via `autocomplete:__suggest --flag <id>`,
@@ -289,6 +312,9 @@ export const completionCatalog: {[id: string]: Completion} = {
   app: AppCompletion,
   buildpack: BuildpackCompletion,
   dynosize: DynoSizeCompletion,
+  enforcementaction: EnforcementActionCompletion,
+  generation: GenerationCompletion,
+  pgnetwork: PgNetworkCompletion,
   pipeline: PipelineCompletion,
   processtype: ProcessTypeCompletion,
   region: RegionCompletion,
