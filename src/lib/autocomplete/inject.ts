@@ -58,7 +58,16 @@ const idByFlagName: {[name: string]: string} = {
   team: 'team',
 }
 
+// Long names that are overloaded across commands with incompatible value sets.
+// The generated scripts wire a flag's values globally by long name (no per-command
+// context — see collectBindings), so binding an overloaded name would offer one
+// command's values on another. `--type` is a process type on `run`/`ps:wait` but a
+// quota enum (`['storage']`) on `pg:quotas:*`; rather than mis-serve either, we
+// never wire `--type` and complete the unambiguous `--process-type` instead.
+const ambiguousFlagNames = new Set(['type'])
+
 export function resolveCompletionId(longName: string, completion: unknown): string | undefined {
+  if (ambiguousFlagNames.has(longName)) return undefined
   const byRef = completion ? idByExternalCompletion.get(completion) : undefined
   const id = byRef ?? idByFlagName[longName]
   return id !== undefined && Object.hasOwn(completionCatalog, id) ? id : undefined

@@ -1,5 +1,4 @@
 import {Command, flags} from '@heroku-cli/command'
-import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
@@ -12,7 +11,6 @@ export default class Wait extends Command {
     remote: flags.remote(),
     type: flags.string({
       char: 't',
-      completion: ProcessTypeCompletion,
       description: 'wait for one specific dyno type',
     }),
     'wait-interval': flags.integer({
