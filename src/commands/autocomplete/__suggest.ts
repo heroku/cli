@@ -25,6 +25,15 @@ import {completionsByFlag} from '../../lib/autocomplete/completions.js'
  * `strict = false` and the optional flag make a stale script (CLI upgraded but
  * `heroku autocomplete` not re-run) degrade to no suggestions rather than erroring.
  */
+/**
+ * Absolute ceiling (ms) on one completion process. The SDK call has its own
+ * tighter ~2.5s request deadline; this is the backstop for everything that
+ * deadline can't reach — a wedged keychain read, a slow DNS lookup before the
+ * request starts, any post-boot hang — so a TAB can never leave the shell
+ * waiting on `$(...)` indefinitely.
+ */
+const COMPLETION_PROCESS_DEADLINE_MS = 5000
+
 export default class Suggest extends Command {
   static description = 'suggest flag completion values (used internally by completion functions)'
   static flags = {
@@ -34,6 +43,15 @@ export default class Suggest extends Command {
   static strict = false
 
   async run() {
+    // Hard watchdog: if anything after boot wedges, force-exit with no
+    // suggestions rather than hang the shell. A plain Promise race can't do
+    // this — a stuck child process (e.g. macOS `security`) keeps the event loop
+    // alive, so the subprocess would never exit and the shell would keep
+    // waiting. unref() + clearTimeout mean it only ever fires on a real hang,
+    // never on the normal (fast) path, so it is safe to run in-process in tests.
+    // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit -- a wedged process must be force-terminated so the shell's $(...) unblocks; throwing can't stop a hung await or an event loop held open by a stuck child.
+    const watchdog = setTimeout(() => process.exit(0), COMPLETION_PROCESS_DEADLINE_MS)
+    watchdog.unref()
     try {
       const {flags} = await this.parse(Suggest)
       if (!flags.flag || !Object.hasOwn(completionsByFlag, flags.flag)) return
@@ -48,6 +66,8 @@ export default class Suggest extends Command {
       if (process.env.HEROKU_AC_DEBUG) {
         process.stderr.write(`autocomplete:__suggest error: ${error instanceof Error ? error.message : String(error)}\n`)
       }
+    } finally {
+      clearTimeout(watchdog)
     }
   }
 
