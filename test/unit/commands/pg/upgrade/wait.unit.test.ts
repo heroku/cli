@@ -81,6 +81,7 @@ describe('pg:upgrade:wait', function () {
   })
 
   it('displays errors', async function () {
+    const notifyStub = stub(Cmd, 'notifier')
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
@@ -94,5 +95,6 @@ describe('pg:upgrade:wait', function () {
     const {message, oclif} = error as Errors.CLIError
     expect(message).to.equal('this is an error message')
     expect(oclif.exit).to.equal(1)
+    expect(notifyStub.calledOnce).to.equal(true)
   })
 })
