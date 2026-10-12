@@ -39,7 +39,9 @@ baseport
 bindkey
 binrun
 blks
+blocklist
 blocklisted
+blocklisting
 boop
 Bpcy
 Braintree
@@ -65,6 +67,7 @@ compadd
 compaudit
 compdef
 COMPFUNC
+compgen
 compinit
 createdb
 credname

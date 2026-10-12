@@ -18,6 +18,7 @@
     "@heroku/types": "^5.2.0",
     "@inquirer/prompts": "^8.7",
     "@oclif/core": "^4.8.4",
+    "@oclif/plugin-autocomplete": "^4.0.4",
     "@oclif/plugin-commands": "^4.1.40",
     "@oclif/plugin-help": "^6.2.37",
     "@oclif/plugin-not-found": "^3.2.74",
@@ -200,12 +201,9 @@
       "preupdate": [
         "./dist/hooks/preupdate/check-npm-auth"
       ],
-      "recache": "./dist/hooks/recache",
       "update": [
         "./dist/hooks/update/brew",
-        "./dist/hooks/update/completions",
         "./dist/hooks/update/tidy",
-        "./dist/hooks/recache",
         "./dist/hooks/update/show-version-info"
       ]
     },
@@ -215,6 +213,7 @@
     },
     "npmRegistry": "https://registry.npmjs.org",
     "plugins": [
+      "@oclif/plugin-autocomplete",
       "@oclif/plugin-commands",
       "@oclif/plugin-help",
       "@oclif/plugin-not-found",
