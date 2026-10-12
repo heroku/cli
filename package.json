@@ -193,7 +193,8 @@
         "./dist/hooks/init/configure-git-credential-manager"
       ],
       "postrun": [
-        "./dist/hooks/postrun/send-otel-telemetry"
+        "./dist/hooks/postrun/send-otel-telemetry",
+        "./dist/hooks/postrun/inject-dynamic-completions"
       ],
       "prerun": [
         "./dist/hooks/prerun/collect-and-send-herokulytics"

@@ -69,6 +69,7 @@ compdef
 COMPFUNC
 compgen
 compinit
+COMPREPLY
 createdb
 credname
 creds
@@ -331,6 +332,7 @@ recache
 redii
 redises
 rediss
+regen
 regionize
 rejairieja
 relid
@@ -358,6 +360,7 @@ rowcount
 ruleset
 runtest
 schemaname
+scriptblock
 searchpath
 secrettoken
 segv
@@ -384,6 +387,7 @@ stampy
 statio
 strftime
 stubber
+subpaths
 supersecretkey
 syncer
 tablename

@@ -43,6 +43,50 @@ homegrown impl), which is a clean provenance fingerprint.
 
 ---
 
+## 0.1 Spike 2 findings (dynamic completion, Option A) — 2026-10-12
+Proved the Option A injection mechanism end-to-end for bash + zsh. Added (uncommitted):
+`src/lib/types/completion.ts`, `src/lib/autocomplete/completions.ts` (SDK-backed `AppCompletion`
+via `platform.app.listOwnedAndCollaborated('~')`), `src/commands/autocomplete/options.ts`
+(hidden `autocomplete:options` command), `src/lib/autocomplete/inject.ts` (script patcher), and
+`src/hooks/postrun/inject-dynamic-completions.ts` (trigger). Registered the postrun hook in
+`package.json`.
+
+**Mechanism (why so little configuration was possible).** The plugin exports nothing importable
+(`export default {}`, subpaths blocked by its exports map), so we cannot subclass its commands or
+feed it a template. The only seam is to **patch the scripts it writes to the cache.** A `postrun`
+hook fires after `autocomplete` / `autocomplete:create` regenerate the cache and runs
+`injectDynamicCompletions()`, which does two string transforms:
+- **zsh**: each option flag is emitted as `"--app=-[desc]:"` — a dead `_arguments` action. We
+  inject a `_heroku_dynamic_completion` helper once and rewrite every dynamic-flag spec to
+  `"--app=-[desc]:app:_heroku_dynamic_completion"`. The helper shells out to
+  `heroku autocomplete:options "<line>"` and `compadd`s the result.
+- **bash**: the generated function only completes names, so we prepend a prologue that detects a
+  dynamic-flag value position (`--app`/`-a`, incl. the `=` split) and feeds `autocomplete:options`
+  output into `COMPREPLY`.
+
+**What's verified:** a from-scratch regen patches all 295 `--app` specs (0 left), both scripts
+pass `zsh -n` / `bash -n`, and driving the *real* generated functions with a stubbed
+`autocomplete:options` returns completions in both shells (bash `COMPREPLY`, zsh `compadd`). Build
+and lint are clean.
+
+**What's NOT verified:** the live SDK call. The environment is **not logged in** (no
+`HEROKU_API_KEY`, no `~/.netrc` heroku entry, nothing in an accessible keychain), so
+`platform.app.listOwnedAndCollaborated('~')` fails auth and the command's try/catch returns empty
+— correct behavior, but it means `heroku apps:info --app=<TAB>` → *live apps* is still unproven.
+Acid test once authed: `./bin/run.js autocomplete:options 'heroku apps:info --app='` should print
+app names.
+
+**Material discovery — PowerShell is hard-blocked in colon mode (feeds Phase 4).** Confirmed
+against the running CLI: `heroku autocomplete powershell` **errors** ("PowerShell completion is
+not supported in CLIs using colon as the topic separator"), and a full regen writes **no `.ps1`**
+(only an empty `functions/powershell/` dir). In the plugin, `index.js` `this.error()`s for
+`powershell` when `topicSeparator === ':'`, and `create.js` only writes the PowerShell function in
+its *space-separator* branch. So there is **no static PowerShell completion to adopt** while
+Heroku uses colon topics — this invalidates the earlier §7.5 assumption and reshapes Phase 4
+(below). Not a regression: the homegrown impl never shipped PowerShell either.
+
+---
+
 ## 1. Motivation
 
 The Heroku CLI ships a bespoke autocomplete subsystem that predates (and overlaps heavily
@@ -50,8 +94,9 @@ with) the oclif-maintained `@oclif/plugin-autocomplete`. Both generate bash/zsh 
 scripts from command/flag metadata using essentially the same approach. Maintaining our own
 fork of this logic is a cost we'd like to shed:
 
-- The plugin is actively maintained by oclif (currently `4.x`), tracks oclif core changes,
-  and adds **PowerShell** support we don't have.
+- The plugin is actively maintained by oclif (currently `4.x`) and tracks oclif core changes.
+  (It *has* a PowerShell generator, but — as Spike 2 found, §0.1 — it's unusable while Heroku
+  uses colon topics, so this is not a near-term win for us.)
 - Our homegrown code carries shell-script generation, caching, and diagnostics we have to
   maintain ourselves.
 
@@ -297,8 +342,22 @@ Only after the Option A contract is proven in-CLI:
 - [ ] Re-wire the `update` hook only if completions should regenerate on CLI upgrade — verify
       whether the plugin handles its own recache first.
 - [ ] **Port a slimmed `autocomplete:doctor` (§7.3)** — shim path, cache dir, logged-in state.
-- [ ] **Enable PowerShell static completion (§7.5).** Dynamic completion in PowerShell is a
-      deferred follow-up (Option A's template override would need PowerShell work too).
+
+#### PowerShell completion (§7.5, revised by Spike 2)
+PowerShell completion **does not exist today** and the plugin **cannot produce it** while Heroku
+uses the colon topic separator — `autocomplete powershell` errors and no `.ps1` is written (see
+§0.1). There is nothing to "adopt." This is **not a regression** (homegrown never shipped it), so
+it is out of scope for the baseline migration and tracked here as a deferred option. Two paths, if
+Windows completion becomes a priority:
+- [ ] **(a) Author a PowerShell completer from scratch.** Write a `heroku.ps1` (the plugin won't
+      generate one in colon mode) using `Register-ArgumentCompleter`, and add a PowerShell arm to
+      `inject.ts` that wires dynamic flags to `autocomplete:options` via a scriptblock. PowerShell's
+      completion API is scriptblock-native, so the dynamic shell-out is actually cleaner here than
+      in bash/zsh. Cost: a hand-maintained completer with no plugin backing.
+- [ ] **(b) Move the CLI to the space topic separator** (`heroku apps info`). This unlocks the
+      plugin's modern generators — static *and* a cleaner value-completion story — for **all three**
+      shells at once, retiring most of the Option A injection. Large, breaking UX change; a separate
+      decision, not an autocomplete task.
 
 ### Phase 5 — Homebrew, packaging, docs
 - [ ] **Homebrew (§7.6): keep the static brew scripts for now.** Leave
@@ -361,9 +420,13 @@ Only after the Option A contract is proven in-CLI:
 4. **Cache-invalidation hooks → rely on TTL + `--refresh-cache` for now.** Per-key
    `cacheDuration` already bounds staleness, and today's shipping code has these hooks dead
    anyway, so this is no regression. Revisit if stale-completion complaints appear.
-5. **PowerShell → adopt static completion now.** It's free from the plugin and extends us to
-   Windows. Dynamic (API-backed) value completion in PowerShell is a later follow-up, since
-   Option A's template override would also need PowerShell work.
+5. **PowerShell → deferred; nothing to adopt in colon mode.** ⚠️ *Revised by Spike 2 (§0.1).* The
+   earlier assumption that static PowerShell completion was "free from the plugin" is **false** for
+   Heroku: the plugin hard-blocks PowerShell (errors, writes no `.ps1`) whenever the topic
+   separator is `:`. There is no static completer to adopt and no regression to worry about
+   (homegrown never shipped PowerShell). Treat Windows completion as an out-of-scope follow-up with
+   two paths — author a `.ps1` + injector by hand, or move the CLI to space-separated topics (which
+   unlocks all three shells). See Phase 4 → "PowerShell completion".
 6. **Homebrew → keep shipping static scripts for now.** Do **not** delete
    `autocomplete-scripts/brew/` in the deletion phase; keep the brew formula working.
    Investigate regenerating from the plugin as a follow-up once the runtime migration is proven.
