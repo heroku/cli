@@ -102,7 +102,7 @@ describe('heroku certs:auto:enable', function () {
   context('--wait', function () {
     it('waits until all certs are issued and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.stub(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       fakePlatform.app.enableACM.resolves({acm: true})
       fakePlatform.app.waitForACMCertificates.resolves()
       fakePlatform.domain.list.onFirstCall().resolves([
@@ -135,7 +135,7 @@ describe('heroku certs:auto:enable', function () {
         '--wait',
       ])
 
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... done
@@ -149,7 +149,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are issued or failed and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.stub(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       fakePlatform.app.enableACM.resolves({acm: true})
       fakePlatform.app.waitForACMCertificates.rejects(new Error('ACM not enabled for some domains'))
       fakePlatform.domain.list.onFirstCall().resolves([
@@ -175,7 +175,7 @@ describe('heroku certs:auto:enable', function () {
 
       expect(error).to.exist
       expect(error!.message).to.equal('ACM not enabled for some domains')
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... !
@@ -185,7 +185,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are failed and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.stub(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       fakePlatform.app.enableACM.resolves({acm: true})
       fakePlatform.app.waitForACMCertificates.rejects(new Error('ACM not enabled for some domains'))
       fakePlatform.domain.list.onFirstCall().resolves([
@@ -211,7 +211,7 @@ describe('heroku certs:auto:enable', function () {
 
       expect(error).to.exist
       expect(error!.message).to.equal('ACM not enabled for some domains')
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... !
@@ -221,7 +221,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('does not wait if all certs are issued when first checked', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.stub(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       fakePlatform.app.enableACM.resolves({acm: true})
       fakePlatform.domain.list.onFirstCall().resolves([
         {cname: null, hostname: 'tokyo-1050.herokuapp.com', kind: 'heroku'},
@@ -253,7 +253,7 @@ describe('heroku certs:auto:enable', function () {
         '--wait',
       ])
 
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
       `)

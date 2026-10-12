@@ -83,11 +83,10 @@ describe('addons:destroy', function () {
       expect(stdout).to.equal('postgresql-swiftly-123 is being destroyed in the background. The app will restart when complete...\nRun heroku addons:info postgresql-swiftly-123 to check destruction progress\n')
       expect(ansis.strip(stderr)).to.contain(ansis.strip('Destroying postgresql-swiftly-123 on ⬢ myapp... pending'))
     })
-
     it('with --wait, waits for response and notifies', async function () {
       const addon = baseAddon
       const sandbox = createSandbox()
-      const notifySpy = sandbox.spy(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       api
         .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
         .reply(200, [addon])
@@ -106,8 +105,8 @@ describe('addons:destroy', function () {
         '--wait',
         'postgresql-swiftly-123',
       ])
-      expect(notifySpy.called).to.equal(true)
-      expect(notifySpy.calledOnce).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
+      expect(notifyStub.calledOnce).to.equal(true)
       expect(ansis.strip(stderr)).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... pending')
       expect(stderr).to.contain('Destroying postgresql-swiftly-123... done\n')
       expect(stdout).to.equal('Waiting for postgresql-swiftly-123...\n')
@@ -119,7 +118,7 @@ describe('addons:destroy', function () {
     it('with --wait, notifies of failure and rethrows when deprovisioning fails', async function () {
       const addon = baseAddon
       const sandbox = createSandbox()
-      const notifySpy = sandbox.spy(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       api
         .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
         .reply(200, [addon])
@@ -133,8 +132,8 @@ describe('addons:destroy', function () {
         '--wait',
         'postgresql-swiftly-123',
       ])
-      expect(notifySpy.calledOnce).to.equal(true)
-      expect(notifySpy.calledWith('heroku addons:destroy postgresql-swiftly-123', 'Add-on failed to deprovision', false)).to.equal(true)
+      expect(notifyStub.calledOnce).to.equal(true)
+      expect(notifyStub.calledWith('heroku addons:destroy postgresql-swiftly-123', 'Add-on failed to deprovision', false)).to.equal(true)
       expect(error?.message).to.equal('The add-on was unable to be destroyed, with status provisioned.')
       sandbox.restore()
     })
