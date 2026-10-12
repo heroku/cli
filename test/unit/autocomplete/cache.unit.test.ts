@@ -61,6 +61,23 @@ describe('autocomplete completion cache', function () {
     expect(staging).to.deep.equal(['staging-app'])
   })
 
+  it('does not persist an empty result (recomputes next time)', async function () {
+    let calls = 0
+    const compute = async () => {
+      calls++
+      return calls === 1 ? [] : ['now-authed']
+    }
+
+    const first = await cachedValues(dir, 'app', 60, compute)
+    expect(first).to.deep.equal([])
+    // An empty result must not have been written, so the next call recomputes
+    // even though we are well within the TTL — this is the logged-out→logged-in
+    // (or offline→online) recovery path.
+    const second = await cachedValues(dir, 'app', 60, compute)
+    expect(second).to.deep.equal(['now-authed'])
+    expect(calls, 'empty result must not be cached').to.equal(2)
+  })
+
   it('treats a corrupt cache file as a miss', async function () {
     const values = ['x']
     // Prime the cache, then clobber the file with junk.

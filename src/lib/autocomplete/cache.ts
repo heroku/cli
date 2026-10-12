@@ -29,6 +29,13 @@ export async function cachedValues(
   if (cached && cached.expiresAt > Date.now()) return cached.values
 
   const values = await compute()
+  // Never persist an empty result. An empty list is almost always a transient
+  // "can't answer right now" (logged out, offline, a failed fetch that resolved
+  // to []), not a real answer — caching it with the full TTL would hide live
+  // values for up to a day after the user logs in or reconnects. Recomputing on
+  // the rare genuinely-empty account (zero apps) is one cheap API call.
+  if (values.length === 0) return values
+
   try {
     await mkdir(dir, {recursive: true})
     const entry: CacheEntry = {expiresAt: Date.now() + (ttlSeconds * 1000), values}

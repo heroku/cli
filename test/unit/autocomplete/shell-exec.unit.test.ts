@@ -104,6 +104,15 @@ describe('autocomplete dynamic-completion injection (shell execution)', function
       expect(reply).to.include(evil)
       expect(reply).to.include('safe-app')
     })
+
+    it('treats values as data: backticks, leading-dash and spaces survive verbatim', function () {
+      const sentinel = path.join(tmp, 'PWNED_BACKTICK')
+      const backtick = `evil\`touch ${sentinel}\`app`
+      const values = [backtick, '--rm-rf-flag-lookalike', 'has space value']
+      const reply = runBash(['heroku', 'apps', ':', 'info', '--app', ''], 5, values)
+      expect(existsSync(sentinel), 'backtick substitution must not have run').to.be.false
+      for (const v of values) expect(reply, `value should survive verbatim: ${v}`).to.include(v)
+    })
   })
 
   describe('zsh', function () {
@@ -127,6 +136,15 @@ describe('autocomplete dynamic-completion injection (shell execution)', function
       const reply = runZshHelper(zshPath, ['safe-app', evil])
       expect(existsSync(sentinel), 'command substitution must not have run').to.be.false
       expect(reply).to.include(evil)
+    })
+
+    it('treats values as data: backticks and spaces survive verbatim', function () {
+      const sentinel = path.join(tmp, 'PWNED_ZSH_BACKTICK')
+      const backtick = `evil\`touch ${sentinel}\`app`
+      const values = [backtick, 'has space value']
+      const reply = runZshHelper(zshPath, values)
+      expect(existsSync(sentinel), 'backtick substitution must not have run').to.be.false
+      for (const v of values) expect(reply, `value should survive verbatim: ${v}`).to.include(v)
     })
   })
 

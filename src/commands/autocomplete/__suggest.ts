@@ -4,7 +4,7 @@ import {Flags} from '@oclif/core'
 import type {Completion, CompletionContext} from '../../lib/types/completion.js'
 
 import {cachedValues} from '../../lib/autocomplete/cache.js'
-import {CompletionMapping} from '../../lib/autocomplete/completions.js'
+import {completionsByFlag} from '../../lib/autocomplete/completions.js'
 
 /**
  * Dynamic, API-backed value completion.
@@ -16,8 +16,8 @@ import {CompletionMapping} from '../../lib/autocomplete/completions.js'
  *
  *   heroku autocomplete:__suggest --flag app
  *
- * ABI (frozen — the generated scripts in src/lib/autocomplete/inject.ts depend
- * on it): a single `--flag <canonical-long-name>` option; values are printed one
+ * Protocol (frozen — the generated scripts in src/lib/autocomplete/inject.ts
+ * depend on it): a single `--flag <canonical-long-name>` option; values are one
  * per line on stdout; anything else goes to stderr. The shell already knows which
  * flag it is completing, so this command never parses the command line — that is
  * what keeps bash immune to COMP_WORDBREAKS splitting `apps:info` into tokens.
@@ -36,8 +36,8 @@ export default class Suggest extends Command {
   async run() {
     try {
       const {flags} = await this.parse(Suggest)
-      const completion = flags.flag ? CompletionMapping[flags.flag] : undefined
-      if (!completion || !flags.flag) return
+      if (!flags.flag || !Object.hasOwn(completionsByFlag, flags.flag)) return
+      const completion = completionsByFlag[flags.flag]
 
       const ctx: CompletionContext = {config: this.config}
       const values = await this.resolveValues(flags.flag, completion, ctx)
