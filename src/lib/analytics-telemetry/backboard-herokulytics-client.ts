@@ -57,7 +57,7 @@ export default class BackboardHerokulyticsClient {
   }
 
   async _acAnalytics(id: string): Promise<number> {
-    if (id === 'autocomplete:options') return 0
+    if (id === 'autocomplete:__suggest') return 0
     const root = path.join(this.config.cacheDir, 'autocomplete', 'completion_analytics')
     const meta = {
       cmd: fs.pathExists(path.join(root, 'command')),

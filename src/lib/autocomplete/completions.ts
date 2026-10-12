@@ -1,291 +1,90 @@
-import {APIClient} from '@heroku-cli/command'
-import {configRemote, getGitRemotes} from '@heroku-cli/command/lib/git.js'
-import fs from 'fs-extra'
-import pkg from 'lodash'
-import path from 'node:path'
+import {APIClient, vars} from '@heroku-cli/command'
+import {HerokuSDK} from '@heroku/sdk'
+import {createHash} from 'node:crypto'
 
 import type {Completion, CompletionContext} from '../types/completion.js'
 
-const {flatten} = pkg
+import {sdkClientOptions} from '../apps/client-options.js'
 
 export const oneDay = 60 * 60 * 24
 
-export const herokuGet = async (resource: string, ctx: CompletionContext): Promise<string[]> => {
+/**
+ * Hard upper bound (ms) on any single completion's API work. A TAB must never
+ * freeze the shell: the SDK otherwise defaults to a 30s-per-attempt timeout with
+ * retries, and a stale network could block for well over a minute. We abort the
+ * request after this deadline and offer nothing instead.
+ */
+const COMPLETION_TIMEOUT_MS = 2500
+
+/**
+ * Resolve the CLI's auth token non-interactively, or `undefined` when the user
+ * is not logged in.
+ *
+ * `getAuth()` reads HEROKU_API_KEY / keychain / netrc and returns no token when
+ * none is found — it never prompts (completions must never block a shell on a
+ * login prompt).
+ */
+async function resolveToken(ctx: CompletionContext): Promise<string | undefined> {
   const heroku = new APIClient(ctx.config)
-  let {body} = await heroku.get(`/${resource}`, {retryAuth: false})
-  if (typeof body === 'string') body = JSON.parse(body)
-  return (body as any[]).map((a: any) => a.name).sort()
+  await heroku.getAuth()
+  return heroku.auth
+}
+
+/**
+ * Build a HerokuSDK platform client scoped for completion use, or `undefined`
+ * when the user is not authenticated.
+ *
+ * Completions run with only a `config` (no `this.heroku`), so we construct an
+ * APIClient from the config and thread its CLI-resolved token/host into the SDK
+ * exactly as commands do (see src/lib/apps/client-options.ts). Without this,
+ * keychain- and HEROKU_HOST-authed users would hit auth failures mid-completion.
+ *
+ * Two completion-only guarantees are layered on so a TAB can never hang the
+ * shell: a short per-request `timeout`, and a `twoFactor` handler that rejects
+ * rather than reading a 2FA code from stdin (the SDK's default handler prompts).
+ */
+async function platformClient(ctx: CompletionContext) {
+  const heroku = new APIClient(ctx.config)
+  await heroku.getAuth()
+  if (!heroku.auth) return
+
+  const sdk = new HerokuSDK({
+    clientOptions: {
+      ...sdkClientOptions(heroku),
+      timeout: COMPLETION_TIMEOUT_MS,
+      twoFactor: {onChallenge: () => Promise.reject(new Error('2FA is not available during shell completion'))},
+    },
+  })
+  return sdk.platform
+}
+
+/**
+ * Cache key for the app list. Scoped by both API host and a hash of the auth
+ * token so that neither switching hosts (prod / staging / HEROKU_HOST) nor
+ * switching accounts on the same host can serve another identity's app names.
+ * The token is hashed, never stored.
+ */
+export function appCacheKey(host: string, token: string | undefined): string {
+  const scope = token ? createHash('sha256').update(token).digest('hex').slice(0, 12) : 'anon'
+  return `app@${host}#${scope}`
 }
 
 export const AppCompletion: Completion = {
   cacheDuration: oneDay,
+  cacheKey: async ctx => appCacheKey(new URL(vars.apiUrl).host, await resolveToken(ctx)),
   async options(ctx: CompletionContext) {
-    const teams = await herokuGet('teams', ctx)
-    const apps = {
-      personal: await herokuGet('users/~/apps', ctx),
-      teams: flatten(await Promise.all(teams.map((team: string) => herokuGet(`teams/${team}/apps`, ctx)))),
-    }
-    return apps.personal.concat(apps.teams)
+    const platform = await platformClient(ctx)
+    if (!platform) return []
+    const apps = await platform
+      .withOptions({signal: AbortSignal.timeout(COMPLETION_TIMEOUT_MS)})
+      .app.listOwnedAndCollaborated('~')
+    return apps
+      .map((a: {name?: string}) => a.name)
+      .filter((name): name is string => typeof name === 'string')
+      .sort()
   },
 }
 
-export const AppAddonCompletion: Completion = {
-  cacheDuration: oneDay,
-  async cacheKey(ctx: CompletionContext) {
-    return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_addons` : ''
-  },
-  async options(ctx: CompletionContext) {
-    const addons = ctx.flags && ctx.flags.app ? await herokuGet(`apps/${ctx.flags.app}/addons`, ctx) : []
-    return addons
-  },
-}
-
-export const AppDynoCompletion: Completion = {
-  cacheDuration: oneDay,
-  async cacheKey(ctx: CompletionContext) {
-    return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_dynos` : ''
-  },
-  async options(ctx: CompletionContext) {
-    const dynos = ctx.flags && ctx.flags.app ? await herokuGet(`apps/${ctx.flags.app}/dynos`, ctx) : []
-    return dynos
-  },
-}
-
-export const BuildpackCompletion: Completion = {
-  async options() {
-    return [
-      'heroku/ruby',
-      'heroku/nodejs',
-      'heroku/clojure',
-      'heroku/python',
-      'heroku/java',
-      'heroku/gradle',
-      'heroku/scala',
-      'heroku/php',
-      'heroku/go',
-    ]
-  },
-
-  skipCache: true,
-}
-
-const ConfigCompletion: Completion = {
-  cacheDuration: 60 * 60 * 24 * 7,
-  async cacheKey(ctx: any) {
-    return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_vars` : ''
-  },
-  async options(ctx: any) {
-    const heroku = new APIClient(ctx.config)
-    if (ctx.flags && ctx.flags.app) {
-      const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
-      return Object.keys(configs)
-    }
-
-    return []
-  },
-}
-
-const ConfigSetCompletion: Completion = {
-  cacheDuration: 60 * 60 * 24 * 7,
-  async cacheKey(ctx: any) {
-    return ctx.flags && ctx.flags.app ? `${ctx.flags.app}_config_set_vars` : ''
-  },
-  async options(ctx: any) {
-    const heroku = new APIClient(ctx.config)
-    if (ctx.flags && ctx.flags.app) {
-      const {body: configs} = await heroku.get<{body: Record<string,  any>}>(`/apps/${ctx.flags.app}/config-vars`, {retryAuth: false})
-      return Object.keys(configs).map(k => `${k}=`)
-    }
-
-    return []
-  },
-}
-
-export const DynoSizeCompletion: Completion = {
-  cacheDuration: oneDay * 90,
-  async options(ctx: CompletionContext) {
-    let sizes = await herokuGet('dyno-sizes', ctx)
-    if (sizes) sizes = sizes.map(s => s.toLowerCase())
-    return sizes
-  },
-}
-
-export const FileCompletion: Completion = {
-  async options() {
-    const files = await fs.readdir(process.cwd())
-    return files
-  },
-
-  skipCache: true,
-}
-
-export const PipelineCompletion: Completion = {
-  cacheDuration: oneDay,
-  async options(ctx: CompletionContext) {
-    const pipelines = await herokuGet('pipelines', ctx)
-    return pipelines
-  },
-}
-
-export const ProcessTypeCompletion: Completion = {
-  async options() {
-    let types: string[] = []
-    const procfile = path.join(process.cwd(), 'Procfile')
-    try {
-      const buff = await fs.readFile(procfile)
-      types = buff
-        .toString()
-        .split('\n')
-        .map((s: string) => {
-          if (!s) return false
-          const m = s.match(/^([A-Za-z0-9_-]+)/)
-          return m ? m[0] : false
-        })
-        .filter((t: false | string): t is string => t !== false) as string[]
-    } catch (error: any) {
-      if (error.code !== 'ENOENT') throw error
-    }
-
-    return types
-  },
-
-  skipCache: true,
-}
-
-export const ProtocolCompletion = {
-  cacheDuration: 60 * 60 * 24 * 365,
-  async options() {
-    return ['tcp', 'udp', 'icmp', '0-255', 'any']
-  },
-}
-
-export const RegionCompletion: Completion = {
-  cacheDuration: oneDay * 7,
-  async options(ctx: CompletionContext) {
-    const regions = await herokuGet('regions', ctx)
-    return regions
-  },
-}
-
-export const RemoteCompletion: Completion = {
-  async options() {
-    const remotes = getGitRemotes(configRemote())
-    return remotes.map((r: any) => r.remote)
-  },
-
-  skipCache: true,
-}
-
-export const RoleCompletion: Completion = {
-  async options() {
-    return ['admin', 'collaborator', 'member', 'owner']
-  },
-
-  skipCache: true,
-}
-
-export const ScopeCompletion: Completion = {
-  async options() {
-    return ['global', 'identity', 'read', 'write', 'read-protected', 'write-protected']
-  },
-
-  skipCache: true,
-}
-
-export const SpaceCompletion: Completion = {
-  cacheDuration: oneDay,
-  async options(ctx: CompletionContext) {
-    const spaces = await herokuGet('spaces', ctx)
-    return spaces
-  },
-}
-
-export const StackCompletion: Completion = {
-  cacheDuration: oneDay,
-  async options(ctx: CompletionContext) {
-    const stacks = await herokuGet('stacks', ctx)
-    return stacks
-  },
-}
-
-export const StageCompletion: Completion = {
-  async options() {
-    return ['test', 'review', 'development', 'staging', 'production']
-  },
-
-  skipCache: true,
-}
-
-export const TeamCompletion: Completion = {
-  cacheDuration: oneDay,
-  async options(ctx: CompletionContext) {
-    const teams = await herokuGet('teams', ctx)
-    return teams
-  },
-}
-
-export const CompletionMapping: {[key: string]: Completion} = {
-  addon: AppAddonCompletion,
+export const completionsByFlag: {[flag: string]: Completion} = {
   app: AppCompletion,
-  buildpack: BuildpackCompletion,
-  config: ConfigCompletion,
-  configSet: ConfigSetCompletion,
-  dyno: AppDynoCompletion,
-  dynosize: DynoSizeCompletion,
-  pipeline: PipelineCompletion,
-  processtype: ProcessTypeCompletion,
-  region: RegionCompletion,
-  remote: RemoteCompletion,
-  role: RoleCompletion,
-  scope: ScopeCompletion,
-  space: SpaceCompletion,
-  stack: StackCompletion,
-  stage: StageCompletion,
-  team: TeamCompletion,
-}
-
-export class CompletionLookup {
-  private readonly blocklistMap: {[key: string]: string[]} = {
-    app: ['apps:create'],
-    space: ['spaces:create'],
-  }
-  private readonly commandArgsMap: {[key: string]: {[key: string]: string}} = {
-    key: {
-      'config:set': 'configSet',
-    },
-  }
-  private readonly keyAliasMap: {[key: string]: {[key: string]: string}} = {
-    key: {
-      'config:get': 'config',
-    },
-  }
-
-  constructor(private readonly cmdId: string, private readonly name: string, private readonly description?: string) {}
-
-  private get key(): string {
-    return this.argAlias() || this.keyAlias() || this.descriptionAlias() || this.name
-  }
-
-  run(): Completion | undefined {
-    if (this.blocklisted()) return
-    return CompletionMapping[this.key]
-  }
-
-  private argAlias(): string | undefined {
-    return this.commandArgsMap[this.name] && this.commandArgsMap[this.name][this.cmdId]
-  }
-
-  private blocklisted(): boolean {
-    return this.blocklistMap[this.name] && this.blocklistMap[this.name].includes(this.cmdId)
-  }
-
-  private descriptionAlias(): string | undefined {
-    const d = this.description!
-    if (d.startsWith('dyno size')) return 'dynosize'
-    if (d.startsWith('process type')) return 'processtype'
-  }
-
-  private keyAlias(): string | undefined {
-    return this.keyAliasMap[this.name] && this.keyAliasMap[this.name][this.cmdId]
-  }
 }

@@ -13,7 +13,7 @@ const hook: Hook.Init = async function () {
   // `oclif.additionalHelpFlags` (e.g. `-h`) declared in package.json, and we hard-include
   // `--help`/`-h`/`help` as the same kind of defensive fallback.
   // Completion invocations are matched by the `autocomplete` prefix, since shell completion
-  // actually runs `autocomplete:options` (not the bare `autocomplete` command).
+  // actually runs `autocomplete:__suggest` (not the bare `autocomplete` command).
   // NOTE: temporary hook until v12.
   const arg = process.argv[2]
   const additionalVersionFlags = this.config?.pjson?.oclif?.additionalVersionFlags ?? []

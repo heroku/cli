@@ -1,4 +1,4 @@
-import type {Config, Interfaces} from '@oclif/core'
+import type {Config} from '@oclif/core'
 
 export interface CompletionContext {
   args?: Record<string, any>
@@ -13,5 +13,3 @@ export interface Completion {
   options: (ctx: CompletionContext) => Promise<string[]> | string[]
   skipCache?: boolean
 }
-
-export type FlagInput = Interfaces.FlagInput

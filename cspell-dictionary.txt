@@ -39,7 +39,9 @@ baseport
 bindkey
 binrun
 blks
+blocklist
 blocklisted
+blocklisting
 boop
 Bpcy
 Braintree
@@ -62,10 +64,14 @@ collab
 commandsstop
 committerdate
 compadd
+compadds
 compaudit
 compdef
 COMPFUNC
+compgen
 compinit
+compopt
+COMPREPLY
 createdb
 credname
 creds
@@ -200,6 +206,7 @@ mhost
 mhttp
 mhttps
 minfo
+mktemp
 mmethod
 mmyapp
 mongolab
@@ -328,6 +335,7 @@ recache
 redii
 redises
 rediss
+regen
 regionize
 rejairieja
 relid
@@ -355,6 +363,7 @@ rowcount
 ruleset
 runtest
 schemaname
+scriptblock
 searchpath
 secrettoken
 segv
@@ -381,6 +390,7 @@ stampy
 statio
 strftime
 stubber
+subpaths
 supersecretkey
 syncer
 tablename
@@ -425,6 +435,7 @@ VERSINFO
 walsender
 webfactory
 withfig
+WORDBREAKS
 wrapline
 writeout
 wubalubadubdub
