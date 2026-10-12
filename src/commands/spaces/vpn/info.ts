@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {VpnConnection} from '@heroku/types/3.sdk'
@@ -36,6 +37,7 @@ export default class Info extends Command {
     json: flags.boolean({description: 'output in json format'}),
     space: flags.string({
       char: 's',
+      completion: SpaceCompletion,
       description: 'space the vpn connection belongs to',
       required: true,
     }),

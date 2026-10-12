@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -14,7 +15,7 @@ export default class Hosts extends Command {
   static description = 'list dedicated hosts for a space'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space to get host list from'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'space to get host list from'}),
   }
   static hidden = true
   static topic = 'spaces'

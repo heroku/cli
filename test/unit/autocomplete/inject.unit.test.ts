@@ -137,4 +137,23 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
       expect(zshAfter, `${id} helper (zsh)`).to.include(`_heroku_complete_${id} () {`)
     }
   })
+
+  it('wires the static and local-context completions mirrored from @heroku-cli/command', function () {
+    // Reference-identity bindings (the flag carries an explicit completion: singleton):
+    //   --buildpack (apps:create), --role (members:*), --scope (authorizations:create),
+    //   --stage (pipelines:*), and --type (run/ps/logs) whose id is `processtype`.
+    // Name fallback (flags.remote() carries no completion: of its own): --remote.
+    for (const [longName, id] of [
+      ['buildpack', 'buildpack'],
+      ['role', 'role'],
+      ['scope', 'scope'],
+      ['stage', 'stage'],
+      ['type', 'processtype'],
+      ['remote', 'remote'],
+    ]) {
+      expect(bashAfter, `${longName} -> ${id} (bash)`).to.include(`--${longName}) __flag=${id} ;;`)
+      expect(zshAfter, `${id} helper (zsh)`).to.include(`_heroku_complete_${id} () {`)
+      expect(zshAfter, `${id} suggest (zsh)`).to.include(`autocomplete:__suggest --flag ${id}`)
+    }
+  })
 })

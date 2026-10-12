@@ -1,7 +1,10 @@
 import {APIClient, vars} from '@heroku-cli/command'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {type HerokuApiClientOptions, HerokuSDK} from '@heroku/sdk'
+import {execSync} from 'node:child_process'
 import {createHash} from 'node:crypto'
+import {readFile} from 'node:fs/promises'
+import path from 'node:path'
 
 import type {Completion, CompletionContext} from '../types/completion.js'
 
@@ -183,6 +186,81 @@ export const DynoSizeCompletion: Completion = {
   options: ctx => listNames(ctx, platform => platform.dynoSize.list(), names => names.map(name => name.toLowerCase())),
 }
 
+// Static and local-context completions. These take no auth and make no API call —
+// a fixed value set, or a read of local state (the cwd Procfile, git remotes) at
+// completion time — so they carry no cache key (`skipCache`) and ignore the context.
+// They are defined here, standalone, so this catalog can be the single source of
+// truth as these completions are consolidated out of @heroku-cli/command.
+
+export const BuildpackCompletion: Completion = {
+  options: () => [
+    'heroku/ruby',
+    'heroku/nodejs',
+    'heroku/clojure',
+    'heroku/python',
+    'heroku/java',
+    'heroku/gradle',
+    'heroku/scala',
+    'heroku/php',
+    'heroku/go',
+  ],
+  skipCache: true,
+}
+
+export const RoleCompletion: Completion = {
+  options: () => ['admin', 'collaborator', 'member', 'owner'],
+  skipCache: true,
+}
+
+export const ScopeCompletion: Completion = {
+  options: () => ['global', 'identity', 'read', 'write', 'read-protected', 'write-protected'],
+  skipCache: true,
+}
+
+export const StageCompletion: Completion = {
+  options: () => ['test', 'review', 'development', 'staging', 'production'],
+  skipCache: true,
+}
+
+/**
+ * Process (dyno) types declared in the Procfile in the current directory. Reads
+ * the local Procfile at completion time — no API, no auth — and returns the type
+ * names (the leading word of each non-blank line). Empty when there is no Procfile
+ * or it declares no types.
+ */
+export const ProcessTypeCompletion: Completion = {
+  async options() {
+    try {
+      const procfile = await readFile(path.join(process.cwd(), 'Procfile'), 'utf8')
+      return procfile
+        .split('\n')
+        .flatMap(line => line.match(/^([\w-]+)/)?.[1] ?? [])
+    } catch {
+      return []
+    }
+  },
+  skipCache: true,
+}
+
+/**
+ * Git remote names in the current repository. Shells out to `git remote` at
+ * completion time — no API, no auth. Empty outside a git repo or when git is
+ * absent. The command is a fixed string with no interpolated input.
+ */
+export const RemoteCompletion: Completion = {
+  options() {
+    try {
+      return execSync('git remote', {encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore']})
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean)
+    } catch {
+      return []
+    }
+  },
+  skipCache: true,
+}
+
 /**
  * Implemented completions, keyed by a stable completion id. The generated shell
  * scripts pass this id back verbatim via `autocomplete:__suggest --flag <id>`,
@@ -192,10 +270,16 @@ export const DynoSizeCompletion: Completion = {
  */
 export const completionCatalog: {[id: string]: Completion} = {
   app: AppCompletion,
+  buildpack: BuildpackCompletion,
   dynosize: DynoSizeCompletion,
   pipeline: PipelineCompletion,
+  processtype: ProcessTypeCompletion,
   region: RegionCompletion,
+  remote: RemoteCompletion,
+  role: RoleCompletion,
+  scope: ScopeCompletion,
   space: SpaceCompletion,
   stack: StackCompletion,
+  stage: StageCompletion,
   team: TeamCompletion,
 }

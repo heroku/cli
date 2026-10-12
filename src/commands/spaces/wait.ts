@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {Notification, notify} from '@heroku-cli/notifications'
 import * as color from '@heroku/heroku-cli-util/color'
 import {Args, ux} from '@oclif/core'
@@ -26,7 +27,7 @@ export default class Wait extends Command {
       description: 'seconds to wait between poll intervals',
     }),
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space to get info of'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'space to get info of'}),
     timeout: flags.integer({
       char: 't',
       default: 25 * 60,

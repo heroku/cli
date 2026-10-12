@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'fs-extra'
 import os from 'node:os'
@@ -18,6 +19,7 @@ export default class DataPgGetCa extends Command {
   ]
   static flags = {
     region: flags.string({
+      completion: RegionCompletion,
       description: 'Heroku region or global for the AWS global CA bundle',
       required: true,
     }),

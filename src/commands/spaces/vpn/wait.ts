@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
@@ -35,7 +36,9 @@ export default class Wait extends Command {
   static flags = {
     interval: flags.string({char: 'i', description: 'seconds to wait between poll intervals'}),
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space the vpn connection belongs to', required: true}),
+    space: flags.string({
+      char: 's', completion: SpaceCompletion, description: 'space the vpn connection belongs to', required: true,
+    }),
     timeout: flags.string({char: 't', description: 'maximum number of seconds to wait'}),
   }
   static topic = 'spaces'

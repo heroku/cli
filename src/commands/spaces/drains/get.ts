@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
@@ -8,7 +9,9 @@ export default class Get extends Command {
   static description = 'display the log drain for a space'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space for which to get log drain', required: true}),
+    space: flags.string({
+      char: 's', completion: SpaceCompletion, description: 'space for which to get log drain', required: true,
+    }),
   }
   static topic = 'spaces'
 

@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
@@ -27,7 +28,7 @@ export default class Destroy extends Command {
   `]
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt', hasValue: true}),
-    space: flags.string({char: 's', description: 'space to destroy'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'space to destroy'}),
   }
   static topic = 'spaces'
 

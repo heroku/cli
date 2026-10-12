@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {HerokuSDK} from '@heroku/sdk'
 import {telemetryDrainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
@@ -13,7 +14,7 @@ export default class Remove extends Command {
   static description = 'remove a telemetry drain'
   static flags = {
     app: flags.app({description: 'name of the app to remove all drains from'}),
-    space: flags.string({char: 's', description: 'name of the space to remove all drains from'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'name of the space to remove all drains from'}),
   }
   static topic = 'telemetry'
 

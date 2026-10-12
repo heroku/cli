@@ -34,17 +34,27 @@ interface CompletionBinding {
  */
 const idByExternalCompletion = new Map<unknown, string>([
   [externalCompletions.AppCompletion, 'app'],
+  [externalCompletions.BuildpackCompletion, 'buildpack'],
   [externalCompletions.DynoSizeCompletion, 'dynosize'],
   [externalCompletions.PipelineCompletion, 'pipeline'],
+  [externalCompletions.ProcessTypeCompletion, 'processtype'],
   [externalCompletions.RegionCompletion, 'region'],
+  [externalCompletions.RemoteCompletion, 'remote'],
+  [externalCompletions.RoleCompletion, 'role'],
+  [externalCompletions.ScopeCompletion, 'scope'],
   [externalCompletions.SpaceCompletion, 'space'],
   [externalCompletions.StackCompletion, 'stack'],
+  [externalCompletions.StageCompletion, 'stage'],
   [externalCompletions.TeamCompletion, 'team'],
 ])
 
+// Fallback by long name for flags that carry no `completion:` of their own: the
+// `--app`/`--team`/`--pipeline` factory flags, and `--remote` (`flags.remote()`
+// is a bare git-remote flag with no completion metadata, used across ~15 commands).
 const idByFlagName: {[name: string]: string} = {
   app: 'app',
   pipeline: 'pipeline',
+  remote: 'remote',
   team: 'team',
 }
 

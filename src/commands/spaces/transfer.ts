@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
@@ -13,7 +14,9 @@ export default class Transfer extends Command {
     Transferring space-name to team-name... done
   `)]
   static flags = {
-    space: flags.string({char: 's', description: 'name of space', required: true}),
+    space: flags.string({
+      char: 's', completion: SpaceCompletion, description: 'name of space', required: true,
+    }),
     team: flags.string({char: 't', description: 'desired owner of space', required: true}),
   }
   static topic = 'spaces'
