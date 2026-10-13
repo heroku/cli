@@ -19,6 +19,7 @@ describe('reviewapps:create', function () {
     api = nock('https://api.heroku.com')
     api.get('/pipelines?eq[name]=my-pipeline').reply(200, [pipeline])
     api.get(`/pipelines/${pipeline.id}/repo/branches/my-branch`).reply(200, {name: 'my-branch'})
+    api.get(`/pipelines/${pipeline.id}/repo/pull-requests?page=1&per_page=100`).optionally().reply(200, [])
     sandbox = createSandbox()
     clock = lolex.install()
     clock.setTimeout = function (fn: any) {
@@ -55,7 +56,15 @@ describe('reviewapps:create', function () {
     expect(stdout).to.include('heroku reviewapps:wait my-review-app')
   })
 
-  it('submits the pull request number when --pr-number is passed', async function () {
+  it('submits the number of the pull request for the branch', async function () {
+    nock.cleanAll()
+    api = nock('https://api.heroku.com')
+    api.get('/pipelines?eq[name]=my-pipeline').reply(200, [pipeline])
+    api.get(`/pipelines/${pipeline.id}/repo/branches/my-branch`).reply(200, {name: 'my-branch'})
+    api.get(`/pipelines/${pipeline.id}/repo/pull-requests?page=1&per_page=100`)
+      .reply(206, [{head: {ref: 'other'}, number: 7}])
+    api.get(`/pipelines/${pipeline.id}/repo/pull-requests?page=2&per_page=100`)
+      .reply(200, [{head: {ref: 'my-branch'}, number: 42}])
     nock('https://api.heroku.com', {reqheaders: {Accept: REVIEW_APP_ACCEPT}})
       .post('/review-apps', {
         branch: 'my-branch',
@@ -68,7 +77,7 @@ describe('reviewapps:create', function () {
       })
     api.get('/apps/app-1').reply(200, {id: 'app-1', name: 'my-review-app'})
 
-    const {stdout} = await runCommand(Cmd, ['--pipeline=my-pipeline', '--branch=my-branch', '--pr-number=42'])
+    const {stdout} = await runCommand(Cmd, ['--pipeline=my-pipeline', '--branch=my-branch'])
 
     expect(stdout).to.include('heroku reviewapps:wait my-review-app')
   })

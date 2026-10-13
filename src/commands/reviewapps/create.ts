@@ -6,6 +6,7 @@ import tsheredoc from 'tsheredoc'
 import notify from '../../lib/notify.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import createReviewApp from '../../lib/reviewapps/create-review-app.js'
+import findPullRequestNumber from '../../lib/reviewapps/find-pull-request-number.js'
 import {parseWaitInterval} from '../../lib/reviewapps/wait-review-app.js'
 
 const heredoc = tsheredoc
@@ -25,10 +26,6 @@ export default class ReviewappsCreate extends Command {
       char: 'p',
       description: 'name of pipeline',
       required: true,
-    }),
-    'pr-number': flags.integer({
-      description: 'number of the pull request the review app is built for',
-      min: 1,
     }),
     wait: flags.boolean({
       description: 'watch review app creation status and exit when complete',
@@ -60,7 +57,7 @@ export default class ReviewappsCreate extends Command {
     }
 
     try {
-      await createReviewApp(this.heroku, pipeline.id!, flags.branch, 'resolve', flags.wait, interval, {prNumber: flags['pr-number']})
+      await createReviewApp(this.heroku, pipeline.id!, flags.branch, 'resolve', flags.wait, interval, {prNumber: await findPullRequestNumber(this.heroku, pipeline.id!, flags.branch)})
       if (flags.wait) {
         ReviewappsCreate.notifier(`heroku reviewapps:create ${flags.branch}`, 'Successfully created the review app.')
       }
