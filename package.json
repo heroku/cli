@@ -11,7 +11,7 @@
     "@heroku-cli/schema": "^1.0.25",
     "@heroku/buildpack-registry": "^1.0.1",
     "@heroku/heroku-cli-util": "^10.10.0",
-    "@heroku/heroku-fetch": "^0.1.1-beta",
+    "@heroku/heroku-fetch": "^0.1.6",
     "@heroku/http-call": "^5.5.1",
     "@heroku/mcp-server": "^1.2.9",
     "@heroku/sdk": "^0.9.0",

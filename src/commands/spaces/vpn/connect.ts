@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
@@ -28,7 +29,9 @@ export default class Connect extends Command {
   static flags = {
     cidrs: flags.string({char: 'c', description: 'a list of routable CIDRs separated by commas', required: true}),
     ip: flags.string({char: 'i', description: 'public IP of customer gateway', required: true}),
-    space: flags.string({char: 's', description: 'space name', required: true}),
+    space: flags.string({
+      char: 's', completion: SpaceCompletion, description: 'space name', required: true,
+    }),
   }
   static topic = 'spaces'
 

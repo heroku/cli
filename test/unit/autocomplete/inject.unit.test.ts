@@ -111,8 +111,57 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
 
   it('derives the flag from $__prev and passes it explicitly to __suggest (bash)', function () {
     // The explicit --flag protocol is what keeps bash immune to COMP_WORDBREAKS
-    // splitting `apps:info` — guard both halves of it.
-    expect(bashAfter).to.include('--app|-a) __flag=app ;;')
+    // splitting `apps:info` — guard both halves of it. Long flag names only: a
+    // short char is reused across commands for unrelated flags, so it is not
+    // wired (see collectBindings in inject.ts).
+    expect(bashAfter).to.include('--app) __flag=app ;;')
     expect(bashAfter).to.include('autocomplete:__suggest --flag "$__flag"')
+    expect(bashAfter, 'short chars must not be wired globally').to.not.include('-a) __flag=app')
+  })
+
+  it('binds a flag to a completion id that differs from its long name (--size -> dynosize)', function () {
+    // The metadata-driven resolver reads the flag's `completion:` by reference,
+    // so `--size` wires to the `dynosize` id even though the names differ — the
+    // exact case a name-match binding could not express.
+    expect(bashAfter).to.include('--size) __flag=dynosize ;;')
+    expect(zshAfter).to.include('_heroku_complete_dynosize () {')
+    expect(zshAfter).to.include('autocomplete:__suggest --flag dynosize')
+    expect(zshAfter, 'every --size spec should be rewired').to.match(/"--size=-\[[^\]]*]:dynosize:_heroku_complete_dynosize"/)
+  })
+
+  it('wires the account-wide completions restored in this slice', function () {
+    // team/pipeline resolve by name (factory flags carry no completion:);
+    // space/region/stack resolve by their explicit completion: metadata.
+    for (const [longName, id] of [['team', 'team'], ['pipeline', 'pipeline'], ['space', 'space'], ['region', 'region'], ['stack', 'stack']]) {
+      expect(bashAfter, `${longName} -> ${id} (bash)`).to.include(`--${longName}) __flag=${id} ;;`)
+      expect(zshAfter, `${id} helper (zsh)`).to.include(`_heroku_complete_${id} () {`)
+    }
+  })
+
+  it('wires the static and local-context completions mirrored from @heroku-cli/command', function () {
+    // Reference-identity bindings (the flag carries an explicit completion: singleton):
+    //   --buildpack (apps:create), --role (members:*), --scope (authorizations:create),
+    //   --stage (pipelines:*), and --process-type (logs/ps:stop/ps:restart) -> processtype.
+    // Name fallback (flags.remote() carries no completion: of its own): --remote.
+    for (const [longName, id] of [
+      ['buildpack', 'buildpack'],
+      ['role', 'role'],
+      ['scope', 'scope'],
+      ['stage', 'stage'],
+      ['process-type', 'processtype'],
+      ['remote', 'remote'],
+    ]) {
+      expect(bashAfter, `${longName} -> ${id} (bash)`).to.include(`--${longName}) __flag=${id} ;;`)
+      expect(zshAfter, `${id} helper (zsh)`).to.include(`_heroku_complete_${id} () {`)
+      expect(zshAfter, `${id} suggest (zsh)`).to.include(`autocomplete:__suggest --flag ${id}`)
+    }
+  })
+
+  it('never wires the overloaded --type flag (process type vs the pg:quotas enum)', function () {
+    // `--type` is a process type on run/ps:wait but a quota enum on pg:quotas:*.
+    // Global-by-name wiring can't tell them apart, so it must be bound to nothing
+    // in both shells; the unambiguous --process-type carries process-type completion.
+    expect(bashAfter, '--type must not appear in the bash flag case').to.not.include('--type)')
+    expect(zshAfter, '--type must not be rewired to a helper in zsh').to.not.match(/"--type=-\[[^\]]*]:processtype:/)
   })
 })

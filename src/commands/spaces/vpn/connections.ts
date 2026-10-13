@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {VpnConnection} from '@heroku/types/3.sdk'
@@ -21,7 +22,9 @@ export default class Connections extends Command {
      office active UP/UP`
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space to get VPN connections from', required: true}),
+    space: flags.string({
+      char: 's', completion: SpaceCompletion, description: 'space to get VPN connections from', required: true,
+    }),
   }
   static topic = 'spaces'
 

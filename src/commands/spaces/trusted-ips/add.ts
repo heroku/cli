@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
@@ -20,7 +21,9 @@ export default class Add extends Command {
     Added 192.168.0.1/24 to trusted IP ranges on my-space`)]
   static flags = {
     confirm: flags.string({description: 'set to space name to bypass confirm prompt'}),
-    space: flags.string({char: 's', description: 'space to add rule to', required: true}),
+    space: flags.string({
+      char: 's', completion: SpaceCompletion, description: 'space to add rule to', required: true,
+    }),
   }
   static hiddenAliases = ['trusted-ips:add']
   static topic = 'spaces'

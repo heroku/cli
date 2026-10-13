@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
@@ -18,7 +19,7 @@ export default class Ps extends Command {
   static description = 'list dynos for a space'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space to get dynos of'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'space to get dynos of'}),
   }
   static topic = 'spaces'
 

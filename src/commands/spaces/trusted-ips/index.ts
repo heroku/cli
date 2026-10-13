@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
@@ -22,7 +23,7 @@ export default class Index extends Command {
   `)
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space to get inbound rules from'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'space to get inbound rules from'}),
   }
   static hiddenAliases = ['trusted-ips']
   static topic = 'spaces'

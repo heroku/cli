@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
@@ -16,7 +17,7 @@ export default class Topology extends Command {
   static description = 'show space topology'
   static flags = {
     json: flags.boolean({description: 'output in json format'}),
-    space: flags.string({char: 's', description: 'space to get topology of'}),
+    space: flags.string({char: 's', completion: SpaceCompletion, description: 'space to get topology of'}),
   }
   static topic = 'spaces'
 

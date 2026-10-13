@@ -1,4 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
+import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
@@ -22,6 +23,7 @@ export default class Destroy extends Command {
     pcxid: flags.string({char: 'p', description: 'PCX ID of a pending peering'}),
     space: flags.string({
       char: 's',
+      completion: SpaceCompletion,
       description: 'space to get peering info from',
       required: true,
     }),
