@@ -82,7 +82,7 @@ describe('reviewapps:create', function () {
   })
 
   it('waits until the review app is created with --wait', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     nock('https://api.heroku.com', {reqheaders: {Accept: REVIEW_APP_ACCEPT}})
       .post('/review-apps')
       .reply(201, {
@@ -100,11 +100,11 @@ describe('reviewapps:create', function () {
     const {stderr} = await runCommand(Cmd, ['--pipeline=my-pipeline', '--branch=my-branch', '--wait', '--wait-interval', '1'])
 
     expect(stderr).to.include('Review app is building and will be ready when complete')
-    expect(notifySpy.calledWith('heroku reviewapps:create my-branch', 'Successfully created the review app.')).to.be.true
+    expect(notifyStub.calledWith('heroku reviewapps:create my-branch', 'Successfully created the review app.')).to.be.true
   })
 
   it('throws and notifies with failure when the review app errors with --wait', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .post('/review-apps')
       .reply(201, {
@@ -118,11 +118,11 @@ describe('reviewapps:create', function () {
     const {error} = await runCommand(Cmd, ['--pipeline=my-pipeline', '--branch=my-branch', '--wait', '--wait-interval', '1'])
 
     expect(error?.message).to.equal('boom')
-    expect(notifySpy.calledWith('heroku reviewapps:create my-branch', 'Failed to create the review app.', false)).to.be.true
+    expect(notifyStub.calledWith('heroku reviewapps:create my-branch', 'Failed to create the review app.', false)).to.be.true
   })
 
   it('does not poll and prints nothing when already created with --wait', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .post('/review-apps')
       .reply(201, {
@@ -132,7 +132,7 @@ describe('reviewapps:create', function () {
     const {stderr} = await runCommand(Cmd, ['--pipeline=my-pipeline', '--branch=my-branch', '--wait'])
 
     expect(stderr).to.not.include('Review app is building')
-    expect(notifySpy.calledWith('heroku reviewapps:create my-branch', 'Successfully created the review app.')).to.be.true
+    expect(notifyStub.calledWith('heroku reviewapps:create my-branch', 'Successfully created the review app.')).to.be.true
   })
 
   it('errors before creating when the branch does not exist', async function () {
