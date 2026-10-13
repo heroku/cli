@@ -125,7 +125,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are issued and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -186,7 +186,7 @@ describe('heroku certs:auto:enable', function () {
       domainsApi.done()
       acmApi.done()
 
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... done
@@ -196,7 +196,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are issued or failed and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -248,7 +248,7 @@ describe('heroku certs:auto:enable', function () {
 
       expect(error).to.exist
       expect(error!.message).to.equal('ACM not enabled for some domains')
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... !
@@ -258,7 +258,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('waits until all certs are failed and notifies', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -310,7 +310,7 @@ describe('heroku certs:auto:enable', function () {
 
       expect(error).to.exist
       expect(error!.message).to.equal('ACM not enabled for some domains')
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
         Waiting until the certificate is issued to all domains... !
@@ -320,7 +320,7 @@ describe('heroku certs:auto:enable', function () {
 
     it('does not wait if all certs are issued when first checked', async function () {
       const now = new Date().toISOString()
-      const notifySpy = sandbox.spy(Cmd, 'notifier')
+      const notifyStub = sandbox.stub(Cmd, 'notifier')
       const acmApi = nock('https://api.heroku.com')
         .post('/apps/example/acm', {})
         .reply(200, {acm: true})
@@ -361,7 +361,7 @@ describe('heroku certs:auto:enable', function () {
       domainsApi.done()
       acmApi.done()
 
-      expect(notifySpy.called).to.equal(true)
+      expect(notifyStub.called).to.equal(true)
       expect(stderr).to.equal(heredoc`
         Enabling Automatic Certificate Management... starting.
       `)
