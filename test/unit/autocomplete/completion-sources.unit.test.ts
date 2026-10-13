@@ -16,6 +16,9 @@ import {
   ConfigVarCompletion,
   DynoCompletion,
   DynoSizeCompletion,
+  EnforcementActionCompletion,
+  GenerationCompletion,
+  PgNetworkCompletion,
   PipelineCompletion,
   ProcessTypeCompletion,
   RegionCompletion,
@@ -65,6 +68,18 @@ describe('autocomplete completion sources', function () {
     it('StageCompletion offers the pipeline stages', function () {
       expect(StageCompletion.options(ctx)).to.deep.equal(['test', 'review', 'development', 'staging', 'production'])
     })
+
+    it('PgNetworkCompletion offers the data:pg:create --network values', function () {
+      expect(PgNetworkCompletion.options(ctx)).to.deep.equal(['private', 'shield'])
+    })
+
+    it('GenerationCompletion offers the spaces:create --generation values', function () {
+      expect(GenerationCompletion.options(ctx)).to.deep.equal(['cedar', 'fir'])
+    })
+
+    it('EnforcementActionCompletion offers the data:pg:quotas:update --enforcement-action values', function () {
+      expect(EnforcementActionCompletion.options(ctx)).to.deep.equal(['notify', 'restrict', 'none'])
+    })
   })
 
   describe('local-context completions (read cwd state, no auth, no network)', function () {
@@ -109,7 +124,10 @@ describe('autocomplete completion sources', function () {
 
     beforeEach(function () {
       const platform = {
-        addOn: {listByApp: async (app: string) => (app === 'myapp' ? named(['redis-tapered-1', 'pg-curved-9']) : [])},
+        addOn: {
+          list: async () => named(['acct-redis-7', 'acct-pg-3']),
+          listByApp: async (app: string) => (app === 'myapp' ? named(['redis-tapered-1', 'pg-curved-9']) : []),
+        },
         app: {listOwnedAndCollaborated: async () => named(['charlie', 'alpha'])},
         configVar: {infoForApp: async (app: string) => (app === 'myapp' ? {A_SECRET: 'y', DATABASE_URL: 'x'} : {})},
         dyno: {list: async (app: string) => (app === 'myapp' ? named(['worker.1', 'web.1']) : [])},
@@ -166,6 +184,12 @@ describe('autocomplete completion sources', function () {
       expect(await AddonCompletion.options({app: 'myapp', config})).to.deep.equal(['pg-curved-9', 'redis-tapered-1'])
     })
 
+    it('AddonCompletion lists the account add-ons when no app is on the line (names are global)', async function () {
+      // addons:rename and friends take a globally-unique add-on name with no --app,
+      // so with no app context we complete the account's add-ons, not nothing.
+      expect(await AddonCompletion.options(ctx)).to.deep.equal(['acct-pg-3', 'acct-redis-7'])
+    })
+
     it('ReleaseCompletion lists the ctx app releases newest-first as vNNN', async function () {
       expect(await ReleaseCompletion.options({app: 'myapp', config})).to.deep.equal(['v3', 'v2', 'v1'])
     })
@@ -174,8 +198,11 @@ describe('autocomplete completion sources', function () {
       expect(await ConfigVarCompletion.options({app: 'myapp', config})).to.deep.equal(['A_SECRET', 'DATABASE_URL'])
     })
 
-    it('the app-scoped positional completions offer nothing with no app on the line', async function () {
-      for (const completion of [AddonCompletion, ReleaseCompletion, ConfigVarCompletion]) {
+    it('the per-app positional completions offer nothing with no app on the line', async function () {
+      // Releases and config vars are meaningful only within one app, so with no
+      // app context they offer nothing. (Add-ons are the exception — their names
+      // are global, so they fall back to the account-wide list; see above.)
+      for (const completion of [ReleaseCompletion, ConfigVarCompletion]) {
         expect(await completion.options(ctx)).to.deep.equal([])
       }
     })

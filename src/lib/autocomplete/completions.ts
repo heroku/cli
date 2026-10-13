@@ -239,15 +239,19 @@ export const DynoCompletion: Completion = {
 }
 
 /**
- * Add-on and attachment names for the app on the command line (e.g.
- * `postgresql-cubic-12345`), used by the add-on positional args of
- * `addons:info`, `addons:destroy`, the `data:maintenances:*` commands, etc.
- * Moderately cached per app: add-ons change only on provision/attach/detach.
+ * Add-on and attachment names (e.g. `postgresql-cubic-12345`), used by the
+ * add-on positional args of `addons:info`, `addons:destroy`, `addons:rename`,
+ * the `data:maintenances:*` commands, etc. When the line carries an `--app` we
+ * list just that app's add-ons; otherwise — add-on names are globally unique, so
+ * commands like `addons:rename` take one with no `--app` — we list the account's
+ * add-ons across all apps. Moderately cached (and partitioned by app): add-ons
+ * change only on provision/attach/detach.
  */
 export const AddonCompletion: Completion = {
   cacheDuration: 60 * 10,
   cacheKey: async ctx => accountCacheKey(`addon:${ctx.app ?? ''}`, apiHost(), await resolveToken(ctx)),
-  options: ctx => (ctx.app ? listNames(ctx, platform => platform.addOn.listByApp(ctx.app!)) : Promise.resolve([])),
+  options: ctx =>
+    listNames(ctx, platform => (ctx.app ? platform.addOn.listByApp(ctx.app) : platform.addOn.list())),
 }
 
 /**
