@@ -41,6 +41,7 @@ export default class Wait extends Command {
     remote: flags.remote(),
     'wait-interval': flags.integer({description: 'how frequently to poll in seconds (to avoid rate limiting)'}),
   }
+  public static notifier: (subtitle: string, message: string, success?: boolean) => void = notify
   static topic = 'pg'
 
   public async run(): Promise<void> {
@@ -78,7 +79,7 @@ export default class Wait extends Command {
           message = heredoc(`(${status.step}) ${message}`)
 
         if (status['error?']) {
-          notify('error', `${db.name} ${message}`, false)
+          Wait.notifier('error', `${db.name} ${message}`, false)
           ux.error(message || '', {exit: 1})
         }
 

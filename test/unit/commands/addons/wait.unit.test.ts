@@ -68,7 +68,7 @@ Created www-redis as REDIS_URL
 `)
       })
       it('does NOT notify the user when provisioning takes less than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
@@ -83,11 +83,11 @@ Created www-redis as REDIS_URL
           '1',
           'www-redis',
         ])
-        expect(notifySpy.called).to.be.false
-        expect(notifySpy.calledOnce).to.be.false
+        expect(notifyStub.called).to.be.false
+        expect(notifyStub.calledOnce).to.be.false
       })
       it('notifies the user when provisioning takes longer than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
@@ -106,13 +106,13 @@ Created www-redis as REDIS_URL
           '1',
           'www-redis',
         ])
-        expect(notifySpy.called).to.be.true
-        expect(notifySpy.calledOnce).to.be.true
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
     })
     context('when add-on transitions to deprovisioned state', function () {
       it('shows notification', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
@@ -128,11 +128,12 @@ Created www-redis as REDIS_URL
         await runCommand(Cmd, ['www-redis'])
           .catch(error => {
             expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned')
-            expect(notifySpy.called).to.be.true
-            expect(notifySpy.calledOnce).to.be.true
+            expect(notifyStub.called).to.be.true
+            expect(notifyStub.calledOnce).to.be.true
           })
       })
       it('shows that it failed to provision', async function () {
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         nock('https://api.heroku.com')
           .post('/actions/addons/resolve', {addon: 'www-redis', app: null})
           .reply(200, [fixtures.addons['www-redis']])
@@ -147,6 +148,8 @@ Created www-redis as REDIS_URL
           'www-redis',
         ])
         expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
     })
   })
@@ -171,7 +174,7 @@ Destroying www-redis-2... done
         expectOutput(stdout, '')
       })
       it('does NOT notify the user when deprovisioning takes less than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '37f27548-db4a-4ae0-bb48-57125df0ddc2'
@@ -186,11 +189,11 @@ Destroying www-redis-2... done
           '1',
           'www-redis-3',
         ])
-        expect(notifySpy.called).to.be.false
-        expect(notifySpy.calledOnce).to.be.false
+        expect(notifyStub.called).to.be.false
+        expect(notifyStub.calledOnce).to.be.false
       })
       it('notifies the user when provisioning takes longer than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '967dff74-99b4-4fd2-a0f0-79b523d5c0e1'
@@ -210,8 +213,8 @@ Destroying www-redis-2... done
           '1',
           'www-redis-4',
         ])
-        expect(notifySpy.called).to.be.true
-        expect(notifySpy.calledOnce).to.be.true
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
     })
   })
