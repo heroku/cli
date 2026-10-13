@@ -15,7 +15,7 @@ USAGE
     [-s <value>] [-t]
 
 FLAGS
-  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     only show output from this dyno (such as "web-123-456" or "worker.2")
   -n, --num=<value>           number of lines to display (ignored for Fir generation apps)
   -p, --process-type=<value>  only show output from this process type (such as "web" or "worker")

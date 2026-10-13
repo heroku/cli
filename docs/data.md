@@ -60,7 +60,7 @@ USAGE
     [--sort <value>]
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to list addon maintenances for
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to list addon maintenances for
   -c, --csv              output in csv format
   -j, --json             output result in json
   -r, --remote=<value>   git remote of app to use
@@ -96,7 +96,7 @@ ARGUMENTS
   ADDON  data addon
 
 FLAGS
-  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      [env: HEROKU_APP] app to run command against
   -c, --csv              output in csv format
   -j, --json             show result formatted in json
   -n, --num=<value>      [default: 5] number of maintenances to show (maximum is 20)
@@ -135,7 +135,7 @@ ARGUMENTS
   ADDON  data addon to show maintenance for
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to list addon maintenances for
+  -a, --app=<value>     [env: HEROKU_APP] app to list addon maintenances for
   -j, --json            output result in json
   -r, --remote=<value>  git remote of app to use
 
@@ -167,7 +167,7 @@ ARGUMENTS
   ADDON  data addon to run maintenance on
 
 FLAGS
-  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run addon maintenance for
+  -a, --app=<value>      [env: HEROKU_APP] app to run addon maintenance for
   -c, --confirm=<value>  confirms running maintenance without entering application maintenance mode if the app name
                          matches
   -r, --remote=<value>   git remote of app to use
@@ -203,7 +203,7 @@ ARGUMENTS
   ADDON  addon to schedule or re-schedule maintenance for
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --week=<value>    desired week to run maintenance in
       --weeks=<value>   [default: 2] the number of weeks to delay maintenance for
@@ -240,7 +240,7 @@ ARGUMENTS
   ADDON  data addon
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -269,7 +269,7 @@ ARGUMENTS
   ADDON  addon to show window for
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to show addon maintenance window for
+  -a, --app=<value>     [env: HEROKU_APP] app to show addon maintenance window for
   -j, --json            output result in json
   -r, --remote=<value>  git remote of app to use
 
@@ -301,7 +301,7 @@ ARGUMENTS
   TIME_OF_DAY  UTC maintenance window time of day
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to update addon maintenance window for
+  -a, --app=<value>     [env: HEROKU_APP] app to update addon maintenance window for
   -j, --json            output result in json
   -r, --remote=<value>  git remote of app to use
 
@@ -333,7 +333,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -361,7 +361,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>         (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>         (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>     pass in the app name to skip confirmation prompts
   -r, --remote=<value>      git remote of app to use
       --as=<value>          name for Postgres database attachment
@@ -389,7 +389,7 @@ ARGUMENTS
   ATTACHMENT_NAME  unique identifier of the database attachment
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
 
@@ -413,7 +413,7 @@ USAGE
     [--version <value>] [--wait ]
 
 FLAGS
-  -a, --app=<value>                  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>                  (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>              pass in the app name to skip confirmation prompts
   -r, --remote=<value>               git remote of app to use
       --as=<value>                   name for the initial database attachment
@@ -450,7 +450,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -478,7 +478,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -n, --name=<value>    (required) name for the credential
   -r, --remote=<value>  git remote of app to use
 
@@ -506,7 +506,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -n, --name=<value>     (required) name of credential
   -r, --remote=<value>   git remote of app to use
@@ -536,7 +536,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -n, --name=<value>     [default: owner or default credential, if not specified and --all isn't used] credential to
                          rotate
@@ -565,7 +565,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -n, --name=<value>    [default: owner or default credential, if not specified] credential to show
   -r, --remote=<value>  git remote of app to use
 
@@ -593,7 +593,7 @@ ARGUMENTS
   DATABASE  database name, attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -f, --force            destroy even if connected to other apps
   -r, --remote=<value>   git remote of app to use
@@ -643,7 +643,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>                  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>                  (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>              pass in the app name to skip confirmation prompts
   -n, --name=<value>                 name for the database
   -r, --remote=<value>               git remote of app to use
@@ -715,7 +715,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -756,7 +756,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -788,7 +788,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name for publication
@@ -827,7 +827,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
       --name=<value>     (required) name of publication
@@ -859,7 +859,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --name=<value>    (required) name of publication
 
@@ -891,7 +891,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name of publication
@@ -929,7 +929,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -959,7 +959,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -989,7 +989,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -1019,7 +1019,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name for publication
@@ -1055,7 +1055,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
       --name=<value>     (required) name of publication
@@ -1085,7 +1085,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --name=<value>    (required) name of publication
 
@@ -1115,7 +1115,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name of publication
@@ -1151,7 +1151,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -1179,7 +1179,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -1204,7 +1204,7 @@ USAGE
   $ heroku data:pg:migrate -a <value> [--prompt] [--no-wrap] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -1229,7 +1229,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --command=<value>  SQL command to run
   -f, --file=<value>     SQL file to run
   -r, --remote=<value>   git remote of app to use
@@ -1258,7 +1258,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --type=<option>   type of quota
                         <options: storage>
@@ -1288,7 +1288,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>                  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>                  (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>               git remote of app to use
       --critical=<value>             set critical threshold in GB, set to "none" to remove threshold
       --enforcement-action=<option>  set enforcement action for when database surpasses the critical threshold
@@ -1321,7 +1321,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --set=<value>...  Postgres setting to change in SETTING_NAME:VALUE format (example: 'track_functions:pl' or
                         'log_lock_waits:1')
@@ -1357,7 +1357,7 @@ ARGUMENTS
   [DATABASE]  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
@@ -1378,7 +1378,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>  Postgres version to upgrade to
@@ -1409,7 +1409,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --no-notify              do not show OS notification
       --wait-interval=<value>  [default: 5] how frequently to poll in seconds (to avoid rate limiting)
@@ -1441,7 +1441,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --no-notify              do not show OS notification
       --wait-interval=<value>  [default: 5] how frequently to poll in seconds (to avoid rate limiting)

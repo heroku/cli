@@ -14,7 +14,7 @@ USAGE
   $ heroku notifications [--prompt] [--all] [-a <value>] [--json] [--read] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --all             view all notifications (not just the ones for the current app)
       --json            output in json format

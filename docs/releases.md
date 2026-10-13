@@ -18,7 +18,7 @@ USAGE
   $ heroku releases -a <value> [--prompt] [--json] [-n <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -n, --num=<value>     number of releases to show
   -r, --remote=<value>  git remote of app to use
       --json            output releases in json format
@@ -51,7 +51,7 @@ ARGUMENTS
   [RELEASE]  ID of the release. If omitted, we use the last release ID.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output in shell format
       --json            output in json format
@@ -77,7 +77,7 @@ ARGUMENTS
   [RELEASE]  ID of the release. If omitted, we use the last release ID.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -98,7 +98,7 @@ USAGE
   $ heroku releases:retry -a <value> [--prompt]
 
 FLAGS
-  -a, --app=<value>  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>  (required) [env: HEROKU_APP] app to run command against
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -124,7 +124,7 @@ ARGUMENTS
   [RELEASE]  ID of the release. If omitted, we use the last eligible release.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS

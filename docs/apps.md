@@ -113,7 +113,7 @@ USAGE
   $ heroku apps:destroy [--prompt] [-a <value>] [-c <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -156,7 +156,7 @@ USAGE
   $ heroku apps:errors -a <value> [--prompt] [--dyno] [--hours <value>] [--json] [-r <value>] [--router]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --dyno            show only dyno errors
       --hours=<value>   [default: 24] number of hours to look back (default 24)
@@ -201,7 +201,7 @@ USAGE
   $ heroku apps:favorites:add -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -222,7 +222,7 @@ USAGE
   $ heroku apps:favorites:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -243,7 +243,7 @@ USAGE
   $ heroku apps:info [--prompt] [-a <value>] [-j] [-r <value>] [-s]
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
   -s, --shell           output more shell friendly key/value pairs
@@ -271,7 +271,7 @@ USAGE
   $ heroku apps:join -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -295,7 +295,7 @@ USAGE
   $ heroku apps:leave -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -322,7 +322,7 @@ USAGE
   $ heroku apps:lock -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -349,7 +349,7 @@ ARGUMENTS
   [PATH]  base URL path of app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -378,7 +378,7 @@ ARGUMENTS
   NEWNAME  new unique name of the app
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -402,7 +402,7 @@ USAGE
   $ heroku apps:stacks -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -426,7 +426,7 @@ ARGUMENTS
   STACK  unique name or identifier of the stack
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -456,7 +456,7 @@ ARGUMENTS
   RECIPIENT  user or team to transfer applications to
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -l, --locked          lock the app upon transfer
   -r, --remote=<value>  git remote of app to use
       --bulk            transfer applications in bulk
@@ -489,7 +489,7 @@ USAGE
   $ heroku apps:unlock -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS

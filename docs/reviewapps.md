@@ -44,7 +44,7 @@ USAGE
     [-r <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] parent app used by review apps
+  -a, --app=<value>       [env: HEROKU_APP] parent app used by review apps
   -p, --pipeline=<value>  (required) name of pipeline
   -r, --remote=<value>    git remote of app to use
       --no-autodeploy     disable autodeployments
@@ -73,7 +73,7 @@ USAGE
     [--wait-for-ci]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] parent app used by review apps
+  -a, --app=<value>       [env: HEROKU_APP] parent app used by review apps
   -p, --pipeline=<value>  (required) name of pipeline
   -r, --remote=<value>    git remote of app to use
       --autodeploy        autodeploy the review app

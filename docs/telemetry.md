@@ -101,7 +101,7 @@ ARGUMENTS
   [TELEMETRY_DRAIN_ID]  ID of the drain to remove
 
 FLAGS
-  -a, --app=<value>    [default: app2-mm-test, env: HEROKU_APP] name of the app to remove all drains from
+  -a, --app=<value>    [env: HEROKU_APP] name of the app to remove all drains from
   -s, --space=<value>  name of the space to remove all drains from
 
 GLOBAL FLAGS

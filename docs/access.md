@@ -17,7 +17,7 @@ USAGE
   $ heroku access -a <value> [--prompt] [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            output in json format
 
@@ -42,7 +42,7 @@ ARGUMENTS
   EMAIL  email address of the team member
 
 FLAGS
-  -a, --app=<value>          (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>          (required) [env: HEROKU_APP] app to run command against
   -p, --permissions=<value>  list of permissions comma separated
   -r, --remote=<value>       git remote of app to use
 
@@ -69,7 +69,7 @@ USAGE
   $ heroku access:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -96,7 +96,7 @@ ARGUMENTS
   EMAIL  email address of the team member
 
 FLAGS
-  -a, --app=<value>          (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>          (required) [env: HEROKU_APP] app to run command against
   -p, --permissions=<value>  (required) comma-delimited list of permissions to update (deploy,manage,operate)
   -r, --remote=<value>       git remote of app to use
 

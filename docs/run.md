@@ -17,7 +17,7 @@ USAGE
     <value>] [-s <value>] [--type <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] parent app used by review apps
+  -a, --app=<value>     (required) [env: HEROKU_APP] parent app used by review apps
   -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
@@ -53,7 +53,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -e, --env=<value>     environment variables to set (use ';' to split multiple vars)
   -r, --remote=<value>  git remote of app to use
   -s, --size=<value>    dyno size
@@ -86,7 +86,7 @@ ARGUMENTS
   COMMAND...    command to run (Heroku automatically prepends 'launcher' to the command)
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -x, --exit-code       passthrough the exit code of the remote command
       --no-launcher     don't prepend 'launcher' before a command

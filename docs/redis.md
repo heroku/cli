@@ -28,7 +28,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
 
@@ -55,7 +55,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -86,7 +86,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --reset           reset credentials
 
@@ -112,7 +112,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
 
@@ -141,7 +141,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -c, --config=<value>  (required) set keyspace notifications configuration
   -r, --remote=<value>  git remote of app to use
 
@@ -183,7 +183,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -p, --policy=<value>  (required) set policy name
   -r, --remote=<value>  git remote of app to use
 
@@ -219,7 +219,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --as=<value>      name for the Key-Value Store attachment
 
@@ -245,7 +245,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
 
@@ -271,7 +271,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>   git remote of app to use
   -s, --seconds=<value>  (required) set timeout value
 
@@ -298,7 +298,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>  (required)
@@ -325,7 +325,7 @@ ARGUMENTS
               app.
 
 FLAGS
-  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --wait-interval=<value>  how frequently to poll in seconds
 

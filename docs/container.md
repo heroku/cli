@@ -60,7 +60,7 @@ USAGE
   $ heroku container:pull -a APP [-v] PROCESS_TYPE...
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -91,7 +91,7 @@ USAGE
 
 FLAGS
   -R, --recursive             pushes Dockerfile.<process> found in current and subdirectories
-  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>        git remote of app to use
   -v, --verbose
       --arg=<value>           set build-time variables
@@ -129,7 +129,7 @@ USAGE
   $ heroku container:release
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -v, --verbose
 
@@ -156,7 +156,7 @@ USAGE
   $ heroku container:rm -a APP [-v] PROCESS_TYPE...
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -182,7 +182,7 @@ USAGE
   $ heroku container:run -a APP [-v] PROCESS_TYPE...
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -p, --port=<value>    [default: 5000] port the app will run on
   -r, --remote=<value>  git remote of app to use
   -v, --verbose

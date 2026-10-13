@@ -28,7 +28,7 @@ USAGE
 
 FLAGS
   -A, --all             show add-ons and attachments for all accessible apps
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            return add-ons in json format
       --no-wrap         disable wrapped table cells for easier copy/paste
@@ -66,7 +66,7 @@ ARGUMENTS
   ADDON_NAME  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>         (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>         (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>      git remote of app to use
       --as=<value>          name for add-on attachment
       --confirm=<value>     overwrite existing add-on attachment with same name
@@ -94,7 +94,7 @@ ARGUMENTS
   SERVICE:PLAN...  unique identifier or unique name of the add-on service plan
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>   git remote of app to use
       --as=<value>       name for the initial add-on attachment
       --confirm=<value>  overwrite existing config vars or existing add-on attachments
@@ -132,7 +132,7 @@ ARGUMENTS
   ADDONNAME...  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      [env: HEROKU_APP] app to run command against
   -c, --confirm=<value>
   -f, --force            allow destruction even if connected to other apps
   -r, --remote=<value>   git remote of app to use
@@ -162,7 +162,7 @@ ARGUMENTS
   ATTACHMENT_NAME  unique identifier of the add-on attachment
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -186,7 +186,7 @@ ARGUMENTS
   ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --show-url        show URL, do not open browser
 
@@ -212,7 +212,7 @@ ARGUMENTS
   [PLAN]  unique identifier or name of the plan
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -251,7 +251,7 @@ ARGUMENTS
   ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -275,7 +275,7 @@ ARGUMENTS
   ADDON  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --show-url        show URL, do not open browser
 
@@ -365,7 +365,7 @@ ARGUMENTS
   [PLAN]  unique identifier or name of the plan
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -406,7 +406,7 @@ ARGUMENTS
   [ADDON]  unique identifier or globally unique name of the add-on
 
 FLAGS
-  -a, --app=<value>            [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            [env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --wait-interval=<value>  how frequently to poll in seconds
 

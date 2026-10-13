@@ -17,7 +17,7 @@ USAGE
   $ heroku labs [--prompt] [-a <value>] [--json] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
 
@@ -42,7 +42,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the account feature
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -66,7 +66,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the account feature
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -90,7 +90,7 @@ ARGUMENTS
   FEATURE  unique identifier or name of the account feature
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
 

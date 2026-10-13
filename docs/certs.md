@@ -23,7 +23,7 @@ USAGE
   $ heroku certs -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -48,7 +48,7 @@ ARGUMENTS
   KEY  absolute path of the key file on disk
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -77,7 +77,7 @@ USAGE
   $ heroku certs:auto -a <value> [--prompt] [-r <value>] [--wait]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --wait            watch ACM status and display the status when complete
 
@@ -99,7 +99,7 @@ USAGE
   $ heroku certs:auto:disable -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -120,7 +120,7 @@ USAGE
   $ heroku certs:auto:enable -a <value> [--prompt] [-r <value>] [--wait]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --wait            watch ACM status and exit when complete
 
@@ -142,7 +142,7 @@ USAGE
   $ heroku certs:auto:refresh -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -167,7 +167,7 @@ ARGUMENTS
   DOMAIN  domain name to generate
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>   git remote of app to use
       --area=<value>     sub-country area (state, province, etc.) of owner
       --city=<value>     city of owner
@@ -196,7 +196,7 @@ USAGE
   $ heroku certs:info -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>] [--show-domains]
 
 FLAGS
-  -a, --app=<value>       (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>    git remote of app to use
       --endpoint=<value>  endpoint to check info on
       --name=<value>      name to check info on
@@ -220,7 +220,7 @@ USAGE
   $ heroku certs:remove -a <value> [--prompt] [--endpoint <value>] [--name <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>    git remote of app to use
       --endpoint=<value>  endpoint to remove
       --name=<value>      name to remove
@@ -247,7 +247,7 @@ ARGUMENTS
   KEY  absolute path of the key file on disk
 
 FLAGS
-  -a, --app=<value>       (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>    git remote of app to use
       --endpoint=<value>  endpoint to update
       --name=<value>      name to update

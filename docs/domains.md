@@ -21,7 +21,7 @@ USAGE
     [-r <value>] [--sort <value>]
 
 FLAGS
-  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
   -c, --csv              output in csv format
   -j, --json             output in json format
   -r, --remote=<value>   git remote of app to use
@@ -65,7 +65,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -c, --cert=<value>    the name of the SSL cert you want to use for this domain
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
@@ -92,7 +92,7 @@ USAGE
   $ heroku domains:clear -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -119,7 +119,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -146,7 +146,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -173,7 +173,7 @@ ARGUMENTS
   HOSTNAME  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --cert=<value>    (required) the name or id of the certificate you want to use for this domain
 
@@ -201,7 +201,7 @@ ARGUMENTS
   [HOSTNAME]  unique identifier of the domain or full hostname
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS

@@ -22,7 +22,7 @@ USAGE
   $ heroku webhooks [--prompt] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -47,7 +47,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>            [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            [env: HEROKU_APP] app to run command against
   -i, --include=<value>        (required) comma delimited event types your server will receive
   -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=<value>         git remote of app to use
@@ -76,7 +76,7 @@ USAGE
   $ heroku webhooks:deliveries [--prompt] [-a <value>] [-r <value>] [-s <value>]
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --status=<value>  filter deliveries by status
 
@@ -104,7 +104,7 @@ ARGUMENTS
   ID  ID of the webhook event
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -128,7 +128,7 @@ USAGE
   $ heroku webhooks:events [--prompt] [-a <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -155,7 +155,7 @@ ARGUMENTS
   ID  ID of the webhook event
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -182,7 +182,7 @@ ARGUMENTS
   ID  ID of the webhook
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -209,7 +209,7 @@ ARGUMENTS
   ID  id of webhook to remove
 
 FLAGS
-  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -237,7 +237,7 @@ ARGUMENTS
   ID  ID of the webhook
 
 FLAGS
-  -a, --app=<value>            [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            [env: HEROKU_APP] app to run command against
   -i, --include=<value>        (required) comma delimited event types your server will receive
   -l, --level=<value>          (required) notify does not retry, sync will retry until successful or timeout
   -r, --remote=<value>         git remote of app to use

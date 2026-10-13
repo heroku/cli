@@ -21,7 +21,7 @@ USAGE
   $ heroku buildpacks -a <value> [--prompt] [-j] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
 
@@ -46,7 +46,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -i, --index=<value>   the 1-based index of the URL in the list of URLs
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
@@ -69,7 +69,7 @@ USAGE
   $ heroku buildpacks:clear -a <value> [--prompt] [-j] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
 
@@ -117,7 +117,7 @@ ARGUMENTS
   [BUILDPACK]  namespace/name of the buildpack
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -i, --index=<value>   the 1-based index of the URL to remove from the list of URLs
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use
@@ -166,7 +166,7 @@ ARGUMENTS
   BUILDPACK  namespace/name of the buildpack
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -i, --index=<value>   the 1-based index of the URL in the list of URLs
   -j, --json            output in json format
   -r, --remote=<value>  git remote of app to use

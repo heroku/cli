@@ -27,7 +27,7 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
 
@@ -60,7 +60,7 @@ USAGE
   $ heroku ps:autoscale:disable -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -82,7 +82,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --max=<value>     (required) maximum number of dynos
       --min=<value>     (required) minimum number of dynos
@@ -110,7 +110,7 @@ ARGUMENTS
   FILE  file to copy from dyno to local
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -o, --output=<value>  the name of the output file
   -r, --remote=<value>  git remote of app to use
@@ -136,7 +136,7 @@ USAGE
   $ heroku ps:exec -a <value> [--prompt] [-d <value>] [-r <value>] [--ssh] [--status]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
       --ssh             use native ssh
@@ -168,7 +168,7 @@ ARGUMENTS
   PORT  port or list of ports to forward
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
 
@@ -199,7 +199,7 @@ ARGUMENTS
   [DYNO]  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
   -p, --process-type=<value>  name of the process type to stop
   -r, --remote=<value>        git remote of app to use
@@ -230,7 +230,7 @@ USAGE
   $ heroku ps:resize -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -263,7 +263,7 @@ ARGUMENTS
   [DYNO]  name of the dyno to restart
 
 FLAGS
-  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     name of the dyno to restart
   -p, --process-type=<value>  name of the process type to restart
   -r, --remote=<value>        git remote of app to use
@@ -298,7 +298,7 @@ USAGE
   $ heroku ps:scale -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -334,7 +334,7 @@ USAGE
   $ heroku ps:socks -a <value> [--prompt] [-d <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
 
@@ -365,7 +365,7 @@ ARGUMENTS
   [DYNO]  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
   -p, --process-type=<value>  name of the process type to stop
   -r, --remote=<value>        git remote of app to use
@@ -398,7 +398,7 @@ USAGE
   $ heroku ps:type -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -431,7 +431,7 @@ USAGE
 
 FLAGS
   -R, --with-run               whether to wait for one-off run dynos
-  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
   -t, --type=<value>           wait for one specific dyno type
   -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)

@@ -53,7 +53,7 @@ ARGUMENTS
   PIPELINE  name of pipeline
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
 
@@ -109,7 +109,7 @@ ARGUMENTS
   [NAME]  name of pipeline (defaults to basename of the app)
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   stage of first app in pipeline
   -t, --team=<value>    the team which will own the apps
@@ -164,7 +164,7 @@ USAGE
   $ heroku pipelines:diff -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -237,7 +237,7 @@ USAGE
   $ heroku pipelines:promote -a <value> [--prompt] [-r <value>] [-t <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -t, --to=<value>      comma separated list of apps to promote to
 
@@ -262,7 +262,7 @@ USAGE
   $ heroku pipelines:remove -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -368,7 +368,7 @@ USAGE
   $ heroku pipelines:update -a <value> -s <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
   -s, --stage=<value>   (required) new stage of app
 

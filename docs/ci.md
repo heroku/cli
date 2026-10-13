@@ -25,7 +25,7 @@ USAGE
   $ heroku ci [--prompt] [-a <value>] [--json] [-p <value>] [-r <value>] [--watch]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
       --json              output in json format
@@ -52,7 +52,7 @@ USAGE
   $ heroku ci:config [--prompt] [-a <value>] [--json] [-p <value>] [-r <value>] [-s]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
   -s, --shell             output config vars in shell format
@@ -82,7 +82,7 @@ ARGUMENTS
   KEY  name of the config var key
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
   -s, --shell             output config var in shell format
@@ -108,7 +108,7 @@ USAGE
   $ heroku ci:config:set [--prompt] [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
 
@@ -135,7 +135,7 @@ USAGE
   $ heroku ci:config:unset [--prompt] [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
 
@@ -160,7 +160,7 @@ USAGE
   $ heroku ci:debug [--prompt] [-a <value>] [--no-cache] [--no-setup] [-p <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
       --no-cache          start test run with an empty cache
       --no-setup          start test dyno without running test-setup
@@ -186,7 +186,7 @@ ARGUMENTS
   TEST-RUN  auto-incremented test run number
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
       --node=<value>      the node number to show its setup and output
@@ -212,7 +212,7 @@ USAGE
   $ heroku ci:last [--prompt] [-a <value>] [--node <value>] [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
       --node=<value>      the node number to show its setup and output
@@ -255,7 +255,7 @@ USAGE
   $ heroku ci:open [--prompt] [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
 
@@ -283,7 +283,7 @@ ARGUMENTS
   [NUMBER]  auto-incremented test run number
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
 
@@ -308,7 +308,7 @@ USAGE
   $ heroku ci:run [--prompt] [-a <value>] [-p <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>       [default: app2-mm-test, env: HEROKU_APP] app to run command against
+  -a, --app=<value>       [env: HEROKU_APP] app to run command against
   -p, --pipeline=<value>  name of pipeline
   -r, --remote=<value>    git remote of app to use
 
