@@ -2,7 +2,7 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
-import {stub} from 'sinon'
+import {createSandbox} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
@@ -17,13 +17,16 @@ const all = [
 describe('pg:upgrade:wait', function () {
   let api: nock.Scope
   let pg: nock.Scope
+  let sandbox: ReturnType<typeof createSandbox>
 
   beforeEach(function () {
+    sandbox = createSandbox()
     api = nock('https://api.heroku.com')
     pg = nock('https://api.data.heroku.com')
   })
 
   afterEach(function () {
+    sandbox.restore()
     pg.done()
     nock.cleanAll()
   })
@@ -77,7 +80,7 @@ describe('pg:upgrade:wait', function () {
   })
 
   it('displays errors', async function () {
-    const notifyStub = stub(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
