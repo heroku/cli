@@ -29,8 +29,10 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
 
   // Mirror the exact spec shape inject.ts rewrites: `"--app=-[desc]:"`.
   const APP_SPEC = /"(?:\*)?--app=-\[[^\]]*]:"/g
-  // The action we rewrite those specs to point at.
-  const WIRED = /:app:_heroku_complete_app/g
+  // A fully-rewired --app FLAG value spec. Deliberately the whole spec, not just
+  // the `:app:_heroku_complete_app` tail, so it does not also count the identical
+  // tail on positional specs (`"2:app:_heroku_complete_app"`, see D2 below).
+  const WIRED = /"(?:\*)?--app=-\[[^\]]*]:app:_heroku_complete_app"/g
   // The bash anchor patchBash inserts after.
   const BASH_COMPREPLY_ANCHOR = /\n(\s*)COMPREPLY=\(\)\n/
 
@@ -163,5 +165,116 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
     // in both shells; the unambiguous --process-type carries process-type completion.
     expect(bashAfter, '--type must not appear in the bash flag case').to.not.include('--type)')
     expect(zshAfter, '--type must not be rewired to a helper in zsh').to.not.match(/"--type=-\[[^\]]*]:processtype:/)
+  })
+
+  it('wires static-enum flags (options: with no completion:) by their long name', function () {
+    // These flags declare `options: [...]` but no `completion:`; each long name is
+    // used by exactly one visible command, so a global-by-name binding is safe.
+    //   --network (data:pg:create), --generation (spaces:create),
+    //   --enforcement-action (data:pg:quotas:update).
+    for (const [longName, id] of [
+      ['network', 'pgnetwork'],
+      ['generation', 'generation'],
+      ['enforcement-action', 'enforcementaction'],
+    ]) {
+      expect(bashAfter, `${longName} -> ${id} (bash)`).to.include(`--${longName}) __flag=${id} ;;`)
+      expect(zshAfter, `${id} helper (zsh)`).to.include(`_heroku_complete_${id} () {`)
+      expect(zshAfter, `${id} suggest (zsh)`).to.include(`autocomplete:__suggest --flag ${id}`)
+    }
+  })
+
+  it('wires --dyno/--dyno-name to the app-scoped dyno completion', function () {
+    // Both long names (logs/ps:* split the spelling) resolve to the `dyno` id;
+    // bash collapses them into one `|`-joined branch, so match that shape.
+    expect(bashAfter, 'both dyno long names share one dyno branch').to.match(/--dyno(-name)?\|--dyno(-name)?\) __flag=dyno;/)
+    expect(zshAfter, 'dyno helper (zsh)').to.include('_heroku_complete_dyno () {')
+  })
+
+  it('forwards the --app context only for app-scoped ids (dyno), not plain ones (app)', function () {
+    // zsh: the dyno helper threads $opt_args[--app]; the app helper does not.
+    // eslint-disable-next-line no-template-curly-in-string -- literal zsh parameter expansion in the generated script
+    const dynoForward = 'autocomplete:__suggest --flag dyno --app "${opt_args[--app]:-$opt_args[-a]}"'
+    expect(zshAfter, 'dyno helper forwards --app').to.include(dynoForward)
+    expect(zshAfter, 'app helper must not forward --app').to.include('autocomplete:__suggest --flag app 2>/dev/null')
+    // bash: the dyno branch sets __appscoped=1 and the prologue scans for --app;
+    // the app branch is unmarked.
+    expect(bashAfter, 'dyno branch is app-scoped').to.match(/--dyno(-name)?\|--dyno(-name)?\) __flag=dyno; __appscoped=1 ;;/)
+    expect(bashAfter, 'app branch is not app-scoped').to.include('--app) __flag=app ;;')
+    expect(bashAfter, 'prologue scans COMP_WORDS for --app').to.include('__appargs=(--app')
+  })
+
+  // --- D2: positional-argument value completion (zsh only) ---------------------
+
+  // Return the `_set_flags` case arm (its `_command_flags=(...)` body) for a
+  // command, or '' if the generator emitted no arm for it, so a positional spec
+  // assertion is scoped to that one command rather than matching a coincidentally-
+  // identical spec elsewhere in the file.
+  //
+  // A plain leaf command always gets an arm; a coTopic (a command that is also a
+  // topic, e.g. `addon-service-capabilities` with its `:create`/`:destroy`
+  // subcommands) may not. The plugin builds arms per command inside a try/catch
+  // and silently skips any whose flag spec throws, which is environment-dependent
+  // — so a caller that only needs "this arm, if present, injects no positional
+  // spec" must tolerate absence (the skips test). A caller that requires the arm
+  // uses zshArm(), which asserts it exists.
+  function zshArmOrEmpty(id: string): string {
+    const start = zshAfter.indexOf(`\n${id})\n  _command_flags=(\n`)
+    if (start === -1) return ''
+    const end = zshAfter.indexOf('\n  )\n', start)
+    return zshAfter.slice(start, end)
+  }
+
+  function zshArm(id: string): string {
+    const arm = zshArmOrEmpty(id)
+    expect(arm, `generated zsh must have a _set_flags arm for ${id}`).to.not.equal('')
+    return arm
+  }
+
+  it('wires positional args to their completion id, scoped per command (zsh)', function () {
+    // Each command's first real positional is _arguments position 2 (position 1
+    // is the command id itself). App-scoped ids (addon/release/dyno/configvar)
+    // reuse the very same helpers the flag path defines.
+    for (const [id, completionId] of [
+      ['releases:info', 'release'],
+      ['config:get', 'configvar'],
+      ['config:edit', 'configvar'],
+      ['ps:restart', 'dyno'],
+      ['addons:info', 'addon'],
+      ['addons:detach', 'addon'],
+      ['pipelines:info', 'pipeline'],
+      ['reviewapps:wait', 'app'],
+    ]) {
+      expect(zshArm(id), `${id} positional`).to.include(`"2:${completionId}:_heroku_complete_${completionId}"`)
+      expect(zshAfter, `${completionId} helper defined`).to.include(`_heroku_complete_${completionId} () {`)
+    }
+  })
+
+  it('routes zsh positional completion through _arguments with a file fallback', function () {
+    // The plugin's own `if [[ "$_cur" == -* ]] ... else _path_files` branch is
+    // replaced so _command_flags (now carrying positional specs) is always built
+    // and _arguments dispatches; a trailing catch-all keeps file completion for
+    // positions we do not complete.
+    expect(zshAfter, 'the plugin flag/file branch must be removed').to.not.match(/if \[\[ "\$_cur" == -\* \]\]/)
+    expect(zshAfter, 'file fallback for uncompleted positionals').to.include("'*:file:_path_files'")
+  })
+
+  it('skips positional completion for new-name, overloaded, and hidden args (zsh)', function () {
+    // apps:create/spaces:create name a NEW resource; keys:*/certs: reuse key/KEY
+    // for an SSH key / cert path; addon-service-capabilities takes an addon
+    // SERVICE; apps:info's `app` positional is hidden (its value comes via --app).
+    // zshArmOrEmpty (not zshArm): a coTopic like addon-service-capabilities may
+    // get no arm at all in some environments; an absent arm trivially satisfies
+    // "no positional spec" and must not fail the assertion.
+    for (const id of ['apps:create', 'spaces:create', 'keys:add', 'keys:remove', 'certs:add', 'addon-service-capabilities', 'apps:info', 'spaces:info']) {
+      expect(zshArmOrEmpty(id), `${id} must have no positional helper spec`).to.not.match(/"\d+:[a-z]+:_heroku_complete_[a-z]+"/)
+    }
+  })
+
+  it('does not wire positional-only completions into bash (zsh-only slice)', function () {
+    // addon/release/configvar are reachable only as positionals, which bash does
+    // not complete yet, so the bash script must not reference their helpers/ids.
+    for (const id of ['addon', 'release', 'configvar']) {
+      expect(bashAfter, `bash must not reference ${id}`).to.not.include(`__flag=${id}`)
+    }
   })
 })

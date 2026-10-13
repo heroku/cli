@@ -11,8 +11,10 @@ amannn
 aname
 APAC
 apikey
+appargs
 appname
 applink
+appscoped
 apresharedkey
 armel
 armhf
@@ -72,6 +74,7 @@ compgen
 compinit
 compopt
 COMPREPLY
+configvar
 createdb
 credname
 creds
@@ -104,6 +107,7 @@ elif
 EOFCOMMENT
 EOFTABLE
 EMEA
+enforcementaction
 envfile
 envl
 esac
@@ -292,6 +296,7 @@ pgdatabase
 pgdiagnose
 pgdg
 pghost
+pgnetwork
 pgpassword
 pgport
 pgsslmode

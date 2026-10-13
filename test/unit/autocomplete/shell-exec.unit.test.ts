@@ -96,6 +96,28 @@ describe('autocomplete dynamic-completion injection (shell execution)', function
       expect(reply).to.deep.equal(SIZES)
     })
 
+    it('extracts the line --app and forwards it for an app-scoped dyno flag', function () {
+      // heroku logs --app myapp --dyno   ->  the prologue must scan COMP_WORDS,
+      // find `--app myapp`, and pass it to __suggest. The stub only answers when
+      // it actually received `--app myapp`, so a non-empty reply proves forwarding.
+      const DYNOS = ['web.1', 'worker.2']
+      const script = `
+heroku() {
+  if [[ "$1" == "autocomplete:__suggest" ]]; then
+    local app=""
+    while [[ $# -gt 0 ]]; do [[ "$1" == "--app" ]] && app="$2"; shift; done
+    [[ "$app" == "myapp" ]] && printf '%s\\n' ${DYNOS.map(s => sq(s)).join(' ')}
+  fi
+}
+source ${sq(bashPath)}
+COMP_WORDS=('heroku' 'logs' '--app' 'myapp' '--dyno' '')
+COMP_CWORD=5
+_heroku_autocomplete
+printf '%s\\n' "\${COMPREPLY[@]}"
+`
+      expect(execLines('bash', ['-c', script])).to.deep.equal(DYNOS)
+    })
+
     it('does not fire for a non-dynamic flag (`--json`)', function () {
       // The prologue must fall through to the plugin's own name completion;
       // our live app values must not leak into an unrelated flag's position.
@@ -154,6 +176,30 @@ describe('autocomplete dynamic-completion injection (shell execution)', function
       const reply = runZshHelper(zshPath, values)
       expect(existsSync(sentinel), 'backtick substitution must not have run').to.be.false
       for (const v of values) expect(reply, `value should survive verbatim: ${v}`).to.include(v)
+    })
+
+    it('the dyno helper forwards $opt_args[--app] to __suggest', function () {
+      // _arguments populates $opt_args during completion; the injected app-scoped
+      // helper must read --app from it and forward it. The stub answers only for
+      // the right app, so a reply proves the helper threaded it through.
+      const src = readFileSync(zshPath, 'utf8')
+      const helper = src.match(/_heroku_complete_dyno \(\) \{[\S\s]*?\n {2}}/)?.[0]
+      expect(helper, 'generated zsh must contain the injected dyno helper').to.be.a('string')
+      const DYNOS = ['web.1']
+      const script = `
+emulate -L zsh
+typeset -A opt_args
+opt_args[--app]=myapp
+heroku() {
+  local app=""
+  while [[ $# -gt 0 ]]; do [[ "$1" == "--app" ]] && app="$2"; shift; done
+  [[ "$app" == "myapp" ]] && printf '%s\\n' ${DYNOS.map(s => sq(s)).join(' ')}
+}
+compadd() { [[ "$1" == "-a" ]] && print -l -- "\${(P)2[@]}" }
+${helper}
+_heroku_complete_dyno
+`
+      expect(execLines('zsh', ['-fc', script])).to.deep.equal(DYNOS)
     })
   })
 
