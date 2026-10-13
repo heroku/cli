@@ -27,10 +27,9 @@ USAGE
   $ heroku ps [TYPE [TYPE ...]]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --json            display as json
-      --no-wrap         disable wrapped table cells for easier copy/paste
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -50,7 +49,7 @@ EXAMPLES
   run.1: up for 5m: bash
 ```
 
-_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/index.ts)_
+_See code: [src/commands/ps/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/index.ts)_
 
 ## `heroku ps:autoscale:disable`
 
@@ -61,7 +60,7 @@ USAGE
   $ heroku ps:autoscale:disable -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -71,7 +70,7 @@ DESCRIPTION
   disable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/autoscale/disable.ts)_
+_See code: [src/commands/ps/autoscale/disable.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/autoscale/disable.ts)_
 
 ## `heroku ps:autoscale:enable`
 
@@ -83,7 +82,7 @@ USAGE
     <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --max=<value>     (required) maximum number of dynos
       --min=<value>     (required) minimum number of dynos
@@ -97,7 +96,7 @@ DESCRIPTION
   enable web dyno autoscaling
 ```
 
-_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/autoscale/enable.ts)_
+_See code: [src/commands/ps/autoscale/enable.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/autoscale/enable.ts)_
 
 ## `heroku ps:copy FILE`
 
@@ -111,7 +110,7 @@ ARGUMENTS
   FILE  file to copy from dyno to local
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -o, --output=<value>  the name of the output file
   -r, --remote=<value>  git remote of app to use
@@ -126,7 +125,7 @@ EXAMPLES
    $ heroku ps:copy FILENAME --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ps/copy.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/copy.ts)_
+_See code: [src/commands/ps/copy.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/copy.ts)_
 
 ## `heroku ps:exec`
 
@@ -137,7 +136,7 @@ USAGE
   $ heroku ps:exec -a <value> [--prompt] [-d <value>] [-r <value>] [--ssh] [--status]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
       --ssh             use native ssh
@@ -155,7 +154,7 @@ EXAMPLES
    $ heroku ps:exec --app murmuring-headland-14719 -- node -i
 ```
 
-_See code: [src/commands/ps/exec.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/exec.ts)_
+_See code: [src/commands/ps/exec.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/exec.ts)_
 
 ## `heroku ps:forward PORT`
 
@@ -169,7 +168,7 @@ ARGUMENTS
   PORT  port or list of ports to forward
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
 
@@ -186,7 +185,7 @@ EXAMPLES
    $ heroku ps:forward 8080 --app murmuring-headland-14719
 ```
 
-_See code: [src/commands/ps/forward.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/forward.ts)_
+_See code: [src/commands/ps/forward.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/forward.ts)_
 
 ## `heroku ps:kill [DYNO]`
 
@@ -200,7 +199,7 @@ ARGUMENTS
   [DYNO]  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
   -p, --process-type=<value>  name of the process type to stop
   -r, --remote=<value>        git remote of app to use
@@ -231,7 +230,7 @@ USAGE
   $ heroku ps:resize -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -264,7 +263,7 @@ ARGUMENTS
   [DYNO]  name of the dyno to restart
 
 FLAGS
-  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     name of the dyno to restart
   -p, --process-type=<value>  name of the process type to restart
   -r, --remote=<value>        git remote of app to use
@@ -288,7 +287,7 @@ EXAMPLES
    $ heroku ps:restart --app myapp
 ```
 
-_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/restart.ts)_
+_See code: [src/commands/ps/restart.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/restart.ts)_
 
 ## `heroku ps:scale`
 
@@ -299,7 +298,7 @@ USAGE
   $ heroku ps:scale -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -324,7 +323,7 @@ EXAMPLES
   web=3:Standard-2X worker=1:Standard-1X
 ```
 
-_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/scale.ts)_
+_See code: [src/commands/ps/scale.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/scale.ts)_
 
 ## `heroku ps:socks`
 
@@ -335,7 +334,7 @@ USAGE
   $ heroku ps:socks -a <value> [--prompt] [-d <value>] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno=<value>    specify the dyno to connect to
   -r, --remote=<value>  git remote of app to use
 
@@ -352,7 +351,7 @@ EXAMPLES
   Use CTRL+C to stop the proxy
 ```
 
-_See code: [src/commands/ps/socks.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/socks.ts)_
+_See code: [src/commands/ps/socks.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/socks.ts)_
 
 ## `heroku ps:stop [DYNO]`
 
@@ -366,7 +365,7 @@ ARGUMENTS
   [DYNO]  name of the dyno to stop
 
 FLAGS
-  -a, --app=<value>           (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>           (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -d, --dyno-name=<value>     name of the dyno to stop
   -p, --process-type=<value>  name of the process type to stop
   -r, --remote=<value>        git remote of app to use
@@ -388,7 +387,7 @@ EXAMPLES
    $ heroku ps:stop --app myapp --process-type run
 ```
 
-_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/stop.ts)_
+_See code: [src/commands/ps/stop.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/stop.ts)_
 
 ## `heroku ps:type`
 
@@ -399,7 +398,7 @@ USAGE
   $ heroku ps:type -a <value> [--prompt] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -420,7 +419,7 @@ ALIASES
   $ heroku dyno:resize
 ```
 
-_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/type.ts)_
+_See code: [src/commands/ps/type.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/type.ts)_
 
 ## `heroku ps:wait`
 
@@ -432,7 +431,7 @@ USAGE
 
 FLAGS
   -R, --with-run               whether to wait for one-off run dynos
-  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
   -t, --type=<value>           wait for one specific dyno type
   -w, --wait-interval=<value>  [default: 10] how frequently to poll in seconds (to avoid hitting Heroku API rate limits)
@@ -444,4 +443,4 @@ DESCRIPTION
   wait for all dynos to be running latest version after a release
 ```
 
-_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/ps/wait.ts)_
+_See code: [src/commands/ps/wait.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/ps/wait.ts)_

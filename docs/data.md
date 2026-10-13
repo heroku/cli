@@ -23,6 +23,7 @@ list maintenances for an app's data addons
 * [`heroku data:pg:destroy DATABASE`](#heroku-datapgdestroy-database)
 * [`heroku data:pg:docs`](#heroku-datapgdocs)
 * [`heroku data:pg:fork DATABASE`](#heroku-datapgfork-database)
+* [`heroku data:pg:get-ca`](#heroku-datapgget-ca)
 * [`heroku data:pg:info DATABASE`](#heroku-datapginfo-database)
 * [`heroku data:pg:levels`](#heroku-datapglevels)
 * [`heroku data:pg:logical-replication:publications DATABASE`](#heroku-datapglogical-replicationpublications-database)
@@ -59,7 +60,7 @@ USAGE
     [--sort <value>]
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to list addon maintenances for
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to list addon maintenances for
   -c, --csv              output in csv format
   -j, --json             output result in json
   -r, --remote=<value>   git remote of app to use
@@ -80,7 +81,7 @@ EXAMPLES
   $ heroku data:maintenances --app production-app --json
 ```
 
-_See code: [src/commands/data/maintenances/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/index.ts)_
+_See code: [src/commands/data/maintenances/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/index.ts)_
 
 ## `heroku data:maintenances:history ADDON`
 
@@ -95,7 +96,7 @@ ARGUMENTS
   ADDON  data addon
 
 FLAGS
-  -a, --app=<value>      [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --csv              output in csv format
   -j, --json             show result formatted in json
   -n, --num=<value>      [default: 5] number of maintenances to show (maximum is 20)
@@ -120,7 +121,7 @@ EXAMPLES
   $ heroku data:maintenances:history DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/history.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/history.ts)_
+_See code: [src/commands/data/maintenances/history.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/history.ts)_
 
 ## `heroku data:maintenances:info ADDON`
 
@@ -134,7 +135,7 @@ ARGUMENTS
   ADDON  data addon to show maintenance for
 
 FLAGS
-  -a, --app=<value>     [env: HEROKU_APP] app to list addon maintenances for
+  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to list addon maintenances for
   -j, --json            output result in json
   -r, --remote=<value>  git remote of app to use
 
@@ -152,7 +153,7 @@ EXAMPLES
   $ heroku data:maintenances:info DATABASE --app test-app
 ```
 
-_See code: [src/commands/data/maintenances/info.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/info.ts)_
+_See code: [src/commands/data/maintenances/info.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/info.ts)_
 
 ## `heroku data:maintenances:run ADDON`
 
@@ -166,7 +167,7 @@ ARGUMENTS
   ADDON  data addon to run maintenance on
 
 FLAGS
-  -a, --app=<value>      [env: HEROKU_APP] app to run addon maintenance for
+  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run addon maintenance for
   -c, --confirm=<value>  confirms running maintenance without entering application maintenance mode if the app name
                          matches
   -r, --remote=<value>   git remote of app to use
@@ -188,7 +189,7 @@ EXAMPLES
   $ heroku data:maintenances:run DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/run.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/run.ts)_
+_See code: [src/commands/data/maintenances/run.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/run.ts)_
 
 ## `heroku data:maintenances:schedule ADDON`
 
@@ -202,7 +203,7 @@ ARGUMENTS
   ADDON  addon to schedule or re-schedule maintenance for
 
 FLAGS
-  -a, --app=<value>     [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --week=<value>    desired week to run maintenance in
       --weeks=<value>   [default: 2] the number of weeks to delay maintenance for
@@ -225,7 +226,7 @@ EXAMPLES
   $ heroku data:maintenances:schedule HEROKU_POSTGRESQL_RED --app test-app
 ```
 
-_See code: [src/commands/data/maintenances/schedule.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/schedule.ts)_
+_See code: [src/commands/data/maintenances/schedule.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/schedule.ts)_
 
 ## `heroku data:maintenances:wait ADDON`
 
@@ -239,7 +240,7 @@ ARGUMENTS
   ADDON  data addon
 
 FLAGS
-  -a, --app=<value>     [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -254,7 +255,7 @@ EXAMPLES
   $ heroku data:maintenances:wait DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/wait.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/wait.ts)_
+_See code: [src/commands/data/maintenances/wait.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/wait.ts)_
 
 ## `heroku data:maintenances:window ADDON`
 
@@ -268,7 +269,7 @@ ARGUMENTS
   ADDON  addon to show window for
 
 FLAGS
-  -a, --app=<value>     [env: HEROKU_APP] app to show addon maintenance window for
+  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to show addon maintenance window for
   -j, --json            output result in json
   -r, --remote=<value>  git remote of app to use
 
@@ -284,7 +285,7 @@ EXAMPLES
   $ heroku data:maintenances:window DATABASE --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/window/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/window/index.ts)_
+_See code: [src/commands/data/maintenances/window/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/window/index.ts)_
 
 ## `heroku data:maintenances:window:update ADDON DAY_OF_WEEK TIME_OF_DAY`
 
@@ -300,7 +301,7 @@ ARGUMENTS
   TIME_OF_DAY  UTC maintenance window time of day
 
 FLAGS
-  -a, --app=<value>     [env: HEROKU_APP] app to update addon maintenance window for
+  -a, --app=<value>     [default: app2-mm-test, env: HEROKU_APP] app to update addon maintenance window for
   -j, --json            output result in json
   -r, --remote=<value>  git remote of app to use
 
@@ -318,7 +319,7 @@ EXAMPLES
   $ heroku data:maintenances:window DATABASE sunday 1:30PM --app production-app
 ```
 
-_See code: [src/commands/data/maintenances/window/update.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/maintenances/window/update.ts)_
+_See code: [src/commands/data/maintenances/window/update.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/maintenances/window/update.ts)_
 
 ## `heroku data:pg:attachments DATABASE`
 
@@ -332,7 +333,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -345,7 +346,7 @@ EXAMPLES
   $ heroku data:pg:attachments database_name -a example-app
 ```
 
-_See code: [src/commands/data/pg/attachments/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/attachments/index.ts)_
+_See code: [src/commands/data/pg/attachments/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/attachments/index.ts)_
 
 ## `heroku data:pg:attachments:create DATABASE`
 
@@ -360,7 +361,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>         (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>         (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>     pass in the app name to skip confirmation prompts
   -r, --remote=<value>      git remote of app to use
       --as=<value>          name for Postgres database attachment
@@ -374,7 +375,7 @@ EXAMPLES
   $ heroku data:pg:attachments:create database_name --app example-app
 ```
 
-_See code: [src/commands/data/pg/attachments/create.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/attachments/create.ts)_
+_See code: [src/commands/data/pg/attachments/create.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/attachments/create.ts)_
 
 ## `heroku data:pg:attachments:destroy ATTACHMENT_NAME`
 
@@ -388,7 +389,7 @@ ARGUMENTS
   ATTACHMENT_NAME  unique identifier of the database attachment
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
 
@@ -399,7 +400,7 @@ DESCRIPTION
   detach an existing database attachment from an app
 ```
 
-_See code: [src/commands/data/pg/attachments/destroy.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/attachments/destroy.ts)_
+_See code: [src/commands/data/pg/attachments/destroy.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/attachments/destroy.ts)_
 
 ## `heroku data:pg:create`
 
@@ -412,7 +413,7 @@ USAGE
     [--version <value>] [--wait ]
 
 FLAGS
-  -a, --app=<value>                  (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>                  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>              pass in the app name to skip confirmation prompts
   -r, --remote=<value>               git remote of app to use
       --as=<value>                   name for the initial database attachment
@@ -435,7 +436,7 @@ EXAMPLES
   $ heroku data:pg:create --level 4G-Performance -a example-app
 ```
 
-_See code: [src/commands/data/pg/create.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/create.ts)_
+_See code: [src/commands/data/pg/create.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/create.ts)_
 
 ## `heroku data:pg:credentials DATABASE`
 
@@ -449,7 +450,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -463,7 +464,7 @@ EXAMPLES
   $ heroku data:pg:credentials database_name -a example-app
 ```
 
-_See code: [src/commands/data/pg/credentials/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/credentials/index.ts)_
+_See code: [src/commands/data/pg/credentials/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/credentials/index.ts)_
 
 ## `heroku data:pg:credentials:create DATABASE`
 
@@ -477,7 +478,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -n, --name=<value>    (required) name for the credential
   -r, --remote=<value>  git remote of app to use
 
@@ -491,7 +492,7 @@ EXAMPLES
   $ heroku data:pg:credentials:create DATABASE --name my-credential --app example-app
 ```
 
-_See code: [src/commands/data/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/credentials/create.ts)_
+_See code: [src/commands/data/pg/credentials/create.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/credentials/create.ts)_
 
 ## `heroku data:pg:credentials:destroy DATABASE`
 
@@ -505,7 +506,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -n, --name=<value>     (required) name of credential
   -r, --remote=<value>   git remote of app to use
@@ -520,7 +521,7 @@ EXAMPLES
   $ heroku data:pg:credentials:destroy DATABASE --name my-credential --app example-app
 ```
 
-_See code: [src/commands/data/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/credentials/destroy.ts)_
+_See code: [src/commands/data/pg/credentials/destroy.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/credentials/destroy.ts)_
 
 ## `heroku data:pg:credentials:rotate DATABASE`
 
@@ -535,7 +536,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -n, --name=<value>     [default: owner or default credential, if not specified and --all isn't used] credential to
                          rotate
@@ -550,7 +551,7 @@ DESCRIPTION
   rotate credentials on a Postgres database
 ```
 
-_See code: [src/commands/data/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/credentials/rotate.ts)_
+_See code: [src/commands/data/pg/credentials/rotate.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/credentials/rotate.ts)_
 
 ## `heroku data:pg:credentials:url DATABASE`
 
@@ -564,7 +565,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -n, --name=<value>    [default: owner or default credential, if not specified] credential to show
   -r, --remote=<value>  git remote of app to use
 
@@ -578,7 +579,7 @@ EXAMPLES
   $ heroku data:pg:credentials:url DATABASE --app myapp
 ```
 
-_See code: [src/commands/data/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/credentials/url.ts)_
+_See code: [src/commands/data/pg/credentials/url.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/credentials/url.ts)_
 
 ## `heroku data:pg:destroy DATABASE`
 
@@ -592,7 +593,7 @@ ARGUMENTS
   DATABASE  database name, attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -f, --force            destroy even if connected to other apps
   -r, --remote=<value>   git remote of app to use
@@ -607,7 +608,7 @@ EXAMPLES
   $ heroku data:pg:destroy database_name
 ```
 
-_See code: [src/commands/data/pg/destroy.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/destroy.ts)_
+_See code: [src/commands/data/pg/destroy.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/destroy.ts)_
 
 ## `heroku data:pg:docs`
 
@@ -627,7 +628,7 @@ DESCRIPTION
   open documentation for Heroku Postgres in your web browser
 ```
 
-_See code: [src/commands/data/pg/docs.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/docs.ts)_
+_See code: [src/commands/data/pg/docs.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/docs.ts)_
 
 ## `heroku data:pg:fork DATABASE`
 
@@ -642,7 +643,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>                  (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>                  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>              pass in the app name to skip confirmation prompts
   -n, --name=<value>                 name for the database
   -r, --remote=<value>               git remote of app to use
@@ -675,7 +676,32 @@ EXAMPLES
     $ heroku data:pg:fork DATABASE --app my-app --as RESTORED --rollback-by '1 day 3 hours 20 minutes'
 ```
 
-_See code: [src/commands/data/pg/fork.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/fork.ts)_
+_See code: [src/commands/data/pg/fork.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/fork.ts)_
+
+## `heroku data:pg:get-ca`
+
+download the RDS CA bundle for a Heroku region
+
+```
+USAGE
+  $ heroku data:pg:get-ca --region <value> [--prompt]
+
+FLAGS
+  --region=<value>  (required) Heroku region or global for the AWS global CA bundle
+
+GLOBAL FLAGS
+  --prompt  interactively prompt for command arguments and flags
+
+DESCRIPTION
+  download the RDS CA bundle for a Heroku region
+
+EXAMPLES
+  $ heroku data:pg:get-ca --region virginia
+
+  $ heroku data:pg:get-ca --region global
+```
+
+_See code: [src/commands/data/pg/get-ca.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/get-ca.ts)_
 
 ## `heroku data:pg:info DATABASE`
 
@@ -689,7 +715,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -702,7 +728,7 @@ EXAMPLES
   $ heroku data:pg:info database_name
 ```
 
-_See code: [src/commands/data/pg/info.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/info.ts)_
+_See code: [src/commands/data/pg/info.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/info.ts)_
 
 ## `heroku data:pg:levels`
 
@@ -716,7 +742,7 @@ DESCRIPTION
   show available levels for Heroku Postgres Advanced databases
 ```
 
-_See code: [src/commands/data/pg/levels.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/levels.ts)_
+_See code: [src/commands/data/pg/levels.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/levels.ts)_
 
 ## `heroku data:pg:logical-replication:publications DATABASE`
 
@@ -730,7 +756,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -747,7 +773,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:publications DATABASE --app example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/publications/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/publications/index.ts)_
+_See code: [src/commands/data/pg/logical-replication/publications/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/publications/index.ts)_
 
 ## `heroku data:pg:logical-replication:publications:create DATABASE`
 
@@ -762,7 +788,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name for publication
@@ -786,7 +812,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:publications:create DATABASE --name application --all-schemas --app example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/publications/create.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/publications/create.ts)_
+_See code: [src/commands/data/pg/logical-replication/publications/create.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/publications/create.ts)_
 
 ## `heroku data:pg:logical-replication:publications:destroy DATABASE`
 
@@ -801,7 +827,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
       --name=<value>     (required) name of publication
@@ -819,7 +845,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:publications:destroy DATABASE --name orders --app example-app --confirm example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/publications/destroy.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/publications/destroy.ts)_
+_See code: [src/commands/data/pg/logical-replication/publications/destroy.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/publications/destroy.ts)_
 
 ## `heroku data:pg:logical-replication:publications:info DATABASE`
 
@@ -833,7 +859,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --name=<value>    (required) name of publication
 
@@ -850,7 +876,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:publications:info DATABASE --name orders --app example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/publications/info.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/publications/info.ts)_
+_See code: [src/commands/data/pg/logical-replication/publications/info.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/publications/info.ts)_
 
 ## `heroku data:pg:logical-replication:publications:update DATABASE`
 
@@ -865,7 +891,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name of publication
@@ -889,7 +915,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:publications:update DATABASE --name application --all-schemas --app example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/publications/update.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/publications/update.ts)_
+_See code: [src/commands/data/pg/logical-replication/publications/update.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/publications/update.ts)_
 
 ## `heroku data:pg:logical-replication:publishing:enable DATABASE`
 
@@ -903,7 +929,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -919,7 +945,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:publishing:enable DATABASE --app example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/publishing/enable.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/publishing/enable.ts)_
+_See code: [src/commands/data/pg/logical-replication/publishing/enable.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/publishing/enable.ts)_
 
 ## `heroku data:pg:logical-replication:subscribing:enable DATABASE`
 
@@ -933,7 +959,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -949,7 +975,7 @@ EXAMPLES
   $ heroku data:pg:logical-replication:subscribing:enable DATABASE --app example-app
 ```
 
-_See code: [src/commands/data/pg/logical-replication/subscribing/enable.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/logical-replication/subscribing/enable.ts)_
+_See code: [src/commands/data/pg/logical-replication/subscribing/enable.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/logical-replication/subscribing/enable.ts)_
 
 ## `heroku data:pg:lr:publications DATABASE`
 
@@ -963,7 +989,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --no-wrap         disable wrapped table cells for easier copy/paste
 
@@ -993,7 +1019,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name for publication
@@ -1029,7 +1055,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
       --name=<value>     (required) name of publication
@@ -1059,7 +1085,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --name=<value>    (required) name of publication
 
@@ -1089,7 +1115,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>        (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>        (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>     git remote of app to use
       --all-schemas        include all current customer schemas
       --name=<value>       (required) name of publication
@@ -1125,7 +1151,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -1153,7 +1179,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 GLOBAL FLAGS
@@ -1175,11 +1201,12 @@ migrate an existing classic Postgres database to an Advanced database
 
 ```
 USAGE
-  $ heroku data:pg:migrate -a <value> [--prompt] [-r <value>]
+  $ heroku data:pg:migrate -a <value> [--prompt] [--no-wrap] [-r <value>]
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
+      --no-wrap         disable wrapped table cells for easier copy/paste
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -1188,7 +1215,7 @@ DESCRIPTION
   migrate an existing classic Postgres database to an Advanced database
 ```
 
-_See code: [src/commands/data/pg/migrate.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/migrate.ts)_
+_See code: [src/commands/data/pg/migrate.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/migrate.ts)_
 
 ## `heroku data:pg:psql DATABASE`
 
@@ -1202,7 +1229,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --command=<value>  SQL command to run
   -f, --file=<value>     SQL file to run
   -r, --remote=<value>   git remote of app to use
@@ -1217,7 +1244,7 @@ EXAMPLES
   $ heroku data:pg:psql database_name -a example-app
 ```
 
-_See code: [src/commands/data/pg/psql.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/psql.ts)_
+_See code: [src/commands/data/pg/psql.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/psql.ts)_
 
 ## `heroku data:pg:quotas DATABASE`
 
@@ -1231,7 +1258,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --type=<option>   type of quota
                         <options: storage>
@@ -1246,7 +1273,7 @@ EXAMPLES
   $ heroku data:pg:quotas database_name --app example-app
 ```
 
-_See code: [src/commands/data/pg/quotas/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/quotas/index.ts)_
+_See code: [src/commands/data/pg/quotas/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/quotas/index.ts)_
 
 ## `heroku data:pg:quotas:update DATABASE`
 
@@ -1261,7 +1288,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>                  (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>                  (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>               git remote of app to use
       --critical=<value>             set critical threshold in GB, set to "none" to remove threshold
       --enforcement-action=<option>  set enforcement action for when database surpasses the critical threshold
@@ -1280,7 +1307,7 @@ EXAMPLES
   $ heroku data:pg:quotas:update --app example-app --type storage --warning 12 --critical 15 --enforcement-action notify
 ```
 
-_See code: [src/commands/data/pg/quotas/update.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/quotas/update.ts)_
+_See code: [src/commands/data/pg/quotas/update.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/quotas/update.ts)_
 
 ## `heroku data:pg:settings DATABASE`
 
@@ -1294,7 +1321,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
       --set=<value>...  Postgres setting to change in SETTING_NAME:VALUE format (example: 'track_functions:pl' or
                         'log_lock_waits:1')
@@ -1316,7 +1343,7 @@ EXAMPLES
       app_name
 ```
 
-_See code: [src/commands/data/pg/settings.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/settings.ts)_
+_See code: [src/commands/data/pg/settings.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/settings.ts)_
 
 ## `heroku data:pg:update [DATABASE]`
 
@@ -1330,14 +1357,14 @@ ARGUMENTS
   [DATABASE]  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>     (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>     (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>  git remote of app to use
 
 DESCRIPTION
   update a Postgres Advanced database through interactive prompts
 ```
 
-_See code: [src/commands/data/pg/update.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/update.ts)_
+_See code: [src/commands/data/pg/update.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/update.ts)_
 
 ## `heroku data:pg:upgrade:run DATABASE`
 
@@ -1351,7 +1378,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>      (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>      (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -c, --confirm=<value>  pass in the app name to skip confirmation prompts
   -r, --remote=<value>   git remote of app to use
   -v, --version=<value>  Postgres version to upgrade to
@@ -1368,7 +1395,7 @@ EXAMPLES
     $ heroku data:pg:upgrade:run DATABASE --version 17 --app my-app
 ```
 
-_See code: [src/commands/data/pg/upgrade/run.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/upgrade/run.ts)_
+_See code: [src/commands/data/pg/upgrade/run.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/upgrade/run.ts)_
 
 ## `heroku data:pg:upgrade:wait DATABASE`
 
@@ -1382,7 +1409,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --no-notify              do not show OS notification
       --wait-interval=<value>  [default: 5] how frequently to poll in seconds (to avoid rate limiting)
@@ -1400,7 +1427,7 @@ EXAMPLES
     $ heroku data:pg:upgrade:wait DATABASE --app myapp --wait-interval 10
 ```
 
-_See code: [src/commands/data/pg/upgrade/wait.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/upgrade/wait.ts)_
+_See code: [src/commands/data/pg/upgrade/wait.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/upgrade/wait.ts)_
 
 ## `heroku data:pg:wait DATABASE`
 
@@ -1414,7 +1441,7 @@ ARGUMENTS
   DATABASE  database name, database attachment name, or related config var on an app
 
 FLAGS
-  -a, --app=<value>            (required) [env: HEROKU_APP] app to run command against
+  -a, --app=<value>            (required) [default: app2-mm-test, env: HEROKU_APP] app to run command against
   -r, --remote=<value>         git remote of app to use
       --no-notify              do not show OS notification
       --wait-interval=<value>  [default: 5] how frequently to poll in seconds (to avoid rate limiting)
@@ -1431,4 +1458,4 @@ EXAMPLES
     $ heroku data:pg:wait DATABASE --app myapp
 ```
 
-_See code: [src/commands/data/pg/wait.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/data/pg/wait.ts)_
+_See code: [src/commands/data/pg/wait.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/data/pg/wait.ts)_

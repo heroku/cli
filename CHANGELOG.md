@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.12.0-beta.0](https://github.com/heroku/cli/compare/v11.11.0...v11.12.0-beta.0) (2026-10-13)
+
+### Features
+
+* add --team to authorizations list and authorizations:create ([#3928](https://github.com/heroku/cli/issues/3928)) ([9aa59d0](https://github.com/heroku/cli/commit/9aa59d08c2d73e4da9c956d8fe9746abe3533b54))
+
+### Bug Fixes
+
+* ensures dbname is always the last arg provided to pg_dump ([#3979](https://github.com/heroku/cli/issues/3979)) ([70e5f2e](https://github.com/heroku/cli/commit/70e5f2e6a0c3a5a867103198ec9ba600a4110978))
+* remove Heroku CLI bin dir from PATH on Windows uninstall ([#3967](https://github.com/heroku/cli/issues/3967)) ([2e85df0](https://github.com/heroku/cli/commit/2e85df0c278f4e967db20a4ecc52c09b243a6ab6)), closes [#1883](https://github.com/heroku/cli/issues/1883)
+
+### Miscellaneous Chores
+
+* remove spaces-strict-tls from labs:disable ([#3977](https://github.com/heroku/cli/issues/3977)) ([f596ba7](https://github.com/heroku/cli/commit/f596ba78551f3d26f7d800d2658ddd21d4521723))
+
+### Tests
+
+* stop unit tests from sending desktop notifications ([#3982](https://github.com/heroku/cli/issues/3982)) ([92c3220](https://github.com/heroku/cli/commit/92c322008a573cf5995298bd6d54cbeedb6551c4))
+
 ## [11.11.0](https://github.com/heroku/cli/compare/v11.10.1...v11.11.0) (2026-10-01)
 
 ### Features

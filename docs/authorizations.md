@@ -17,10 +17,11 @@ list OAuth authorizations
 
 ```
 USAGE
-  $ heroku authorizations [--prompt] [-j]
+  $ heroku authorizations [--prompt] [-j] [-t <value>]
 
 FLAGS
-  -j, --json  output in json format
+  -j, --json          output in json format
+  -t, --team=<value>  team to list OAuth authorizations for
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -32,7 +33,7 @@ EXAMPLES
    $ heroku authorizations
 ```
 
-_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/authorizations/index.ts)_
+_See code: [src/commands/authorizations/index.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/authorizations/index.ts)_
 
 ## `heroku authorizations:create`
 
@@ -40,7 +41,7 @@ create a new OAuth authorization
 
 ```
 USAGE
-  $ heroku authorizations:create [--prompt] [-d <value>] [-e <value>] [-j] [-s <value>] [-S]
+  $ heroku authorizations:create [--prompt] [-d <value>] [-e <value>] [-j] [-s <value>] [-S] [-t <value>]
 
 FLAGS
   -S, --short                only output token
@@ -48,6 +49,7 @@ FLAGS
   -e, --expires-in=<value>   set expiration in seconds (default no expiration)
   -j, --json                 output in json format
   -s, --scope=<value>        set custom OAuth scopes
+  -t, --team=<value>         team to create OAuth authorization on
 
 GLOBAL FLAGS
   --prompt  interactively prompt for command arguments and flags
@@ -59,7 +61,7 @@ EXAMPLES
    $ heroku authorizations:create --description "For use with Anvil"
 ```
 
-_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/authorizations/create.ts)_
+_See code: [src/commands/authorizations/create.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/authorizations/create.ts)_
 
 ## `heroku authorizations:destroy ID`
 
@@ -106,7 +108,7 @@ DESCRIPTION
   show an existing OAuth authorization
 ```
 
-_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/authorizations/info.ts)_
+_See code: [src/commands/authorizations/info.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/authorizations/info.ts)_
 
 ## `heroku authorizations:revoke ID`
 
@@ -132,7 +134,7 @@ EXAMPLES
    $ heroku authorizations:revoke 105a7bfa-34c3-476e-873a-b1ac3fdc12fb
 ```
 
-_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/authorizations/revoke.ts)_
+_See code: [src/commands/authorizations/revoke.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/authorizations/revoke.ts)_
 
 ## `heroku authorizations:rotate ID`
 
@@ -152,7 +154,7 @@ DESCRIPTION
   updates an OAuth authorization token
 ```
 
-_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/authorizations/rotate.ts)_
+_See code: [src/commands/authorizations/rotate.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/authorizations/rotate.ts)_
 
 ## `heroku authorizations:update ID`
 
@@ -177,4 +179,4 @@ DESCRIPTION
   updates an OAuth authorization
 ```
 
-_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/authorizations/update.ts)_
+_See code: [src/commands/authorizations/update.ts](https://github.com/heroku/cli/blob/v11.12.0-beta.0/src/commands/authorizations/update.ts)_
