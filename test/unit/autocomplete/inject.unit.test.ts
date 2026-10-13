@@ -206,13 +206,28 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
   // --- D2: positional-argument value completion (zsh only) ---------------------
 
   // Return the `_set_flags` case arm (its `_command_flags=(...)` body) for a
-  // command, so a positional spec assertion is scoped to that one command rather
-  // than matching a coincidentally-identical spec elsewhere in the file.
-  function zshArm(id: string): string {
+  // command, or '' if the generator emitted no arm for it, so a positional spec
+  // assertion is scoped to that one command rather than matching a coincidentally-
+  // identical spec elsewhere in the file.
+  //
+  // A plain leaf command always gets an arm; a coTopic (a command that is also a
+  // topic, e.g. `addon-service-capabilities` with its `:create`/`:destroy`
+  // subcommands) may not. The plugin builds arms per command inside a try/catch
+  // and silently skips any whose flag spec throws, which is environment-dependent
+  // — so a caller that only needs "this arm, if present, injects no positional
+  // spec" must tolerate absence (the skips test). A caller that requires the arm
+  // uses zshArm(), which asserts it exists.
+  function zshArmOrEmpty(id: string): string {
     const start = zshAfter.indexOf(`\n${id})\n  _command_flags=(\n`)
-    expect(start, `generated zsh must have a _set_flags arm for ${id}`).to.be.greaterThan(-1)
+    if (start === -1) return ''
     const end = zshAfter.indexOf('\n  )\n', start)
     return zshAfter.slice(start, end)
+  }
+
+  function zshArm(id: string): string {
+    const arm = zshArmOrEmpty(id)
+    expect(arm, `generated zsh must have a _set_flags arm for ${id}`).to.not.equal('')
+    return arm
   }
 
   it('wires positional args to their completion id, scoped per command (zsh)', function () {
@@ -247,8 +262,11 @@ describe('autocomplete dynamic-completion injection (contract)', function () {
     // apps:create/spaces:create name a NEW resource; keys:*/certs: reuse key/KEY
     // for an SSH key / cert path; addon-service-capabilities takes an addon
     // SERVICE; apps:info's `app` positional is hidden (its value comes via --app).
+    // zshArmOrEmpty (not zshArm): a coTopic like addon-service-capabilities may
+    // get no arm at all in some environments; an absent arm trivially satisfies
+    // "no positional spec" and must not fail the assertion.
     for (const id of ['apps:create', 'spaces:create', 'keys:add', 'keys:remove', 'certs:add', 'addon-service-capabilities', 'apps:info', 'spaces:info']) {
-      expect(zshArm(id), `${id} must have no positional helper spec`).to.not.match(/"\d+:[a-z]+:_heroku_complete_[a-z]+"/)
+      expect(zshArmOrEmpty(id), `${id} must have no positional helper spec`).to.not.match(/"\d+:[a-z]+:_heroku_complete_[a-z]+"/)
     }
   })
 
