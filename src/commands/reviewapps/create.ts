@@ -26,6 +26,10 @@ export default class ReviewappsCreate extends Command {
       description: 'name of pipeline',
       required: true,
     }),
+    'pr-number': flags.integer({
+      description: 'number of the pull request the review app is built for',
+      min: 1,
+    }),
     wait: flags.boolean({
       description: 'watch review app creation status and exit when complete',
     }),
@@ -56,7 +60,7 @@ export default class ReviewappsCreate extends Command {
     }
 
     try {
-      await createReviewApp(this.heroku, pipeline.id!, flags.branch, 'resolve', flags.wait, interval)
+      await createReviewApp(this.heroku, pipeline.id!, flags.branch, 'resolve', flags.wait, interval, {prNumber: flags['pr-number']})
       if (flags.wait) {
         ReviewappsCreate.notifier(`heroku reviewapps:create ${flags.branch}`, 'Successfully created the review app.')
       }

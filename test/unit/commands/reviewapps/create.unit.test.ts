@@ -55,6 +55,24 @@ describe('reviewapps:create', function () {
     expect(stdout).to.include('heroku reviewapps:wait my-review-app')
   })
 
+  it('submits the pull request number when --pr-number is passed', async function () {
+    nock('https://api.heroku.com', {reqheaders: {Accept: REVIEW_APP_ACCEPT}})
+      .post('/review-apps', {
+        branch: 'my-branch',
+        pipeline: pipeline.id,
+        pr_number: 42,
+        source_blob: {url: 'resolve', version: null},
+      })
+      .reply(201, {
+        app: {id: 'app-1'}, branch: 'my-branch', id: 'ra-1', message: null, pipeline: {id: pipeline.id}, pr_number: 42, status: 'pending',
+      })
+    api.get('/apps/app-1').reply(200, {id: 'app-1', name: 'my-review-app'})
+
+    const {stdout} = await runCommand(Cmd, ['--pipeline=my-pipeline', '--branch=my-branch', '--pr-number=42'])
+
+    expect(stdout).to.include('heroku reviewapps:wait my-review-app')
+  })
+
   it('resolves the app name immediately when the POST already returns an app', async function () {
     nock('https://api.heroku.com', {reqheaders: {Accept: REVIEW_APP_ACCEPT}})
       .post('/review-apps')
