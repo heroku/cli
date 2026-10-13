@@ -214,10 +214,15 @@ describe('autocomplete completion sources', function () {
     })
 
     it('lists stack names from the /stacks collection, sorted', async function () {
-      nock('https://api.heroku.com')
+      // The global test setup (test/helpers/init.mjs) runs nock.disableNetConnect()
+      // for the whole suite, so an un-intercepted request throws rather than hitting
+      // api.heroku.com. isDone() additionally asserts the mocked GET was consumed —
+      // i.e. the completion really drove the heroku-fetch request through nock.
+      const scope = nock('https://api.heroku.com')
         .get('/stacks')
         .reply(200, [{name: 'heroku-24'}, {name: 'heroku-22'}])
       expect(await StackCompletion.options(ctx)).to.deep.equal(['heroku-22', 'heroku-24'])
+      expect(scope.isDone(), 'the mocked /stacks request should have been made').to.be.true
     })
   })
 
