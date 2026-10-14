@@ -88,7 +88,7 @@ describe('reviewapps:wait', function () {
   })
 
   it('surfaces the failure without notifying when the review app is already errored', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .get('/apps/my-app/review-app')
       .reply(200, {
@@ -98,11 +98,11 @@ describe('reviewapps:wait', function () {
     const {error} = await runCommand(Cmd, ['my-app'])
 
     expect(error?.message).to.equal('kaboom')
-    expect(notifySpy.called).to.be.false
+    expect(notifyStub.called).to.be.false
   })
 
   it('throws and notifies with failure when the review app errors after polling', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .get('/apps/my-app/review-app')
       .reply(200, {
@@ -119,11 +119,11 @@ describe('reviewapps:wait', function () {
     const {error} = await runCommand(Cmd, ['my-app', '--wait-interval', '1'])
 
     expect(error?.message).to.equal('Build failed.')
-    expect(notifySpy.calledWith('heroku reviewapps:wait my-app', 'Failed to create the review app.', false)).to.be.true
+    expect(notifyStub.calledWith('heroku reviewapps:wait my-app', 'Failed to create the review app.', false)).to.be.true
   })
 
   it('notifies when creation takes at least one poll interval', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .get('/apps/my-app/review-app')
       .reply(200, {
@@ -139,11 +139,11 @@ describe('reviewapps:wait', function () {
 
     await runCommand(Cmd, ['my-app', '--wait-interval', '1'])
 
-    expect(notifySpy.called).to.be.true
+    expect(notifyStub.called).to.be.true
   })
 
   it('does NOT notify when creation takes less than one poll interval', async function () {
-    const notifySpy = sandbox.spy(Cmd, 'notifier')
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .get('/apps/my-app/review-app')
       .reply(200, {
@@ -156,7 +156,7 @@ describe('reviewapps:wait', function () {
 
     await runCommand(Cmd, ['my-app', '--wait-interval', '1'])
 
-    expect(notifySpy.called).to.be.false
+    expect(notifyStub.called).to.be.false
   })
 
   it('errors when no app is provided', async function () {
