@@ -8,11 +8,10 @@ import {
   unsupportedNodeMessage,
 } from '../../../src/lib/check-node-version.js'
 
+const regexCrash = () => new SyntaxError('Invalid regular expression flags')
 const readRepoFile = (path: string) => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
 
 describe('check-node-version', function () {
-  const regexCrash = () => new SyntaxError(String.raw`Invalid regular expression: /[\p{L}--[a-z]]/v: Invalid flags`)
-
   describe('isUnsupportedNodeCrash', function () {
     for (const version of ['18.20.8', 'v18.0.0', '16.20.2']) {
       it(`is true for the regex SyntaxError on Node ${version}`, function () {
@@ -38,11 +37,16 @@ describe('check-node-version', function () {
       expect(isUnsupportedNodeCrash('18.20.8', error)).to.be.false
     })
 
+    it('is false for a runtime bad-pattern SyntaxError on Node 18', function () {
+      const badPattern = new SyntaxError('Invalid regular expression: /(/: Unterminated group')
+      expect(isUnsupportedNodeCrash('18.20.8', badPattern)).to.be.false
+    })
+
     it('is false for non-SyntaxErrors and non-errors on Node 18', function () {
-      expect(isUnsupportedNodeCrash('18.20.8', new Error('Invalid regular expression'))).to.be.false
+      expect(isUnsupportedNodeCrash('18.20.8', new Error('Invalid regular expression flags'))).to.be.false
       expect(isUnsupportedNodeCrash('18.20.8', new TypeError('x'))).to.be.false
       expect(isUnsupportedNodeCrash('18.20.8', null)).to.be.false
-      expect(isUnsupportedNodeCrash('18.20.8', 'Invalid regular expression')).to.be.false
+      expect(isUnsupportedNodeCrash('18.20.8', 'Invalid regular expression flags')).to.be.false
     })
 
     it('fails open on a malformed version', function () {
@@ -92,6 +96,21 @@ describe('check-node-version', function () {
     it('loads the guard helper dynamically inside the catch handler', function () {
       expect(run).to.match(/\.catch\(async error => \{[\s\S]*import\('\.\.\/dist\/lib\/check-node-version\.js'\)[\s\S]*handle\(error\)/)
       expect(run).not.to.match(/await execute\(/)
+    })
+
+    it('falls back to handle(error) when the guard helper fails to load', function () {
+      const tryStart = run.indexOf('try {')
+      const catchStart = run.indexOf('} catch', tryStart)
+      expect(tryStart).to.be.greaterThan(-1)
+      expect(catchStart).to.be.greaterThan(tryStart)
+
+      // The dynamic import sits inside the try; handle() is only called after it.
+      const tryBlock = run.slice(tryStart, catchStart)
+      expect(tryBlock).to.include("import('../dist/lib/check-node-version.js')")
+      expect(tryBlock).not.to.include('handle(')
+
+      const afterCatch = run.slice(run.indexOf('}', catchStart + '} catch'.length))
+      expect(afterCatch).to.match(/return handle\(error\)/)
     })
   })
 })

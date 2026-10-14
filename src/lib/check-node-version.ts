@@ -10,9 +10,10 @@ export const UNSUPPORTED_NODE_ERROR_CODE = 'HEROKU_UNSUPPORTED_NODE'
 /**
  * Whether `error` is the load-time crash an unsupported Node version causes:
  * a dependency using newer regex syntax (e.g. the `v` flag) throws a
- * SyntaxError whose message mentions a "regular expression". Deliberately
- * narrow: other SyntaxErrors (e.g. JSON.parse) must not match. Fails open
- * (false) when the version can't be parsed.
+ * SyntaxError reading "Invalid regular expression flags". Deliberately
+ * narrow: other SyntaxErrors (e.g. JSON.parse, or a runtime bad regex
+ * pattern) must not match. Fails open (false) when the version can't be
+ * parsed.
  */
 export function isUnsupportedNodeCrash(nodeVersion: string, error: unknown): boolean {
   const major = Number.parseInt(String(nodeVersion).replace(/^v/, ''), 10)
@@ -24,7 +25,7 @@ export function isUnsupportedNodeCrash(nodeVersion: string, error: unknown): boo
   // `Error`s (keeping `name`), so `instanceof SyntaxError` alone would miss it.
   const e = error as null | undefined | {message?: unknown; name?: unknown}
   const isSyntaxError = error instanceof SyntaxError || Boolean(e && e.name === 'SyntaxError')
-  return isSyntaxError && typeof (e && e.message) === 'string' && /regular expression/i.test(String(e && e.message))
+  return isSyntaxError && typeof (e && e.message) === 'string' && /invalid regular expression flags/i.test(String(e && e.message))
 }
 
 export function unsupportedNodeMessage(nodeVersion: string): string {
