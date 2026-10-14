@@ -61,6 +61,36 @@ describe('error-classification', function () {
       expect(isExpectedError(asCLIError(new Error('Please run this command from the directory containing your project\'s git repo')))).to.be.true
     })
 
+    describe('unsupported Node.js', function () {
+      const regexCrash = () => new SyntaxError(String.raw`Invalid regular expression: /[\p{L}--[a-z]]/v: Invalid flags`)
+
+      it('treats the converted HEROKU_UNSUPPORTED_NODE error as expected', function () {
+        const error = asCLIError(new Error('Node.js v18.20.8 is not supported.'), {code: 'HEROKU_UNSUPPORTED_NODE'})
+        expect(isExpectedError(error)).to.be.true
+      })
+
+      it('treats the raw regex SyntaxError on Node < 20 as expected, even after the worker round-trip', function () {
+        const error = asCLIError(regexCrash())
+        expect(isExpectedError(error, '18.20.8')).to.be.true
+        expect(isExpectedError(reconstructLikeWorker(error), '18.20.8')).to.be.true
+      })
+
+      it('does NOT treat the same SyntaxError as expected on Node >= 20', function () {
+        expect(isExpectedError(asCLIError(regexCrash()), '20.19.0')).to.be.false
+      })
+
+      it('does NOT treat a JSON.parse SyntaxError on Node < 20 as expected', function () {
+        let error: Error = new Error('unreachable')
+        try {
+          JSON.parse('{')
+        } catch (error_) {
+          error = error_ as Error
+        }
+
+        expect(isExpectedError(asCLIError(error), '18.20.8')).to.be.false
+      })
+    })
+
     it('does NOT treat a genuine bug as expected', function () {
       expect(isExpectedError(asCLIError(new Error('Cannot read properties of undefined')))).to.be.false
     })

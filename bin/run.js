@@ -1,6 +1,8 @@
 #!/usr/bin/env -S node --no-deprecation
 
-import {execute, settings} from '@oclif/core'
+import {
+  Errors, flush, handle, run, settings,
+} from '@oclif/core'
 
 // Enable performance tracking when oclif:perf is specified in DEBUG
 if (process.env.DEBUG?.includes('oclif:perf') || process.env.DEBUG === 'oclif:*' || process.env.DEBUG === '*') {
@@ -32,4 +34,19 @@ if (enableTelemetry) {
   telemetryDebug('Telemetry disabled (%s): skipping telemetry handler setup', reason)
 }
 
-await execute({dir: import.meta.url})
+// Mirrors @oclif/core's execute(), except an unsupported Node version's
+// load-time crash is replaced with an actionable message (see
+// src/lib/check-node-version.ts).
+await run(process.argv.slice(2), import.meta.url)
+  .then(async result => {
+    flush()
+    return result
+  })
+  .catch(async error => {
+    const {isUnsupportedNodeCrash, UNSUPPORTED_NODE_ERROR_CODE, unsupportedNodeMessage} = await import('../dist/lib/check-node-version.js')
+    if (isUnsupportedNodeCrash(process.versions.node, error)) {
+      return handle(new Errors.CLIError(unsupportedNodeMessage(process.versions.node), {code: UNSUPPORTED_NODE_ERROR_CODE, exit: 1}))
+    }
+
+    return handle(error)
+  })
