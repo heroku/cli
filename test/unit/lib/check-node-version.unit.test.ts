@@ -45,7 +45,7 @@ describe('check-node-version', function () {
       expect(isUnsupportedNodeCrash('18.20.8', 'Invalid regular expression')).to.be.false
     })
 
-    it('fails open on an unparseable version', function () {
+    it('fails open on a malformed version', function () {
       expect(isUnsupportedNodeCrash('garbage', regexCrash())).to.be.false
       expect(isUnsupportedNodeCrash('', regexCrash())).to.be.false
     })
