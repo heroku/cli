@@ -10,7 +10,9 @@ import os from 'node:os'
 import path from 'node:path'
 import stream from 'node:stream'
 import tty from 'node:tty'
-import {Client, ConnectConfig} from 'ssh2'
+import {
+  Client, type ClientChannel, ConnectConfig, type PseudoTtyOptions,
+} from 'ssh2'
 
 import socks5 from './socks5-server.js'
 
@@ -22,6 +24,9 @@ const sshDebug = debug('cli:ps-exec:ssh')
 const MAX_SOCKS_CONNECTIONS = 128
 
 export class HerokuSsh {
+  // True while the local stdin is in raw mode for an interactive session.
+  private interactiveRawMode = false
+
   public connect(context: {args: string[]}, addonHost: string, dynoUser: string, privateKey: Buffer | string, proxyKey: string, callback?: (() => void)) {
     return new Promise<void>((resolve, reject) => {
       const conn = new Client()
@@ -32,13 +37,14 @@ export class HerokuSsh {
         if (context.args.length > 0 && !context.args.includes('bash')) {
           const cmd = this._buildCommand(context.args)
           sshDebug(`[cli-ssh] command: ${cmd}`)
-          conn.exec(cmd, {pty: true}, (err, stream) => {
+          conn.exec(cmd, {pty: this._ptyOptions()}, (err, stream) => {
             sshDebug('[cli-ssh] exec')
             if (err) {
               sshDebug(`[cli-ssh] err: ${err}`)
               throw err
             }
 
+            this._prepareInteractiveSession(stream)
             stream.on('close', () => {
               sshDebug('[cli-ssh] close')
               conn.end()
@@ -54,13 +60,14 @@ export class HerokuSsh {
           })
         } else {
           sshDebug('[cli-ssh] bash')
-          conn.shell((err, stream) => {
+          conn.shell(this._ptyOptions(), (err, stream) => {
             sshDebug('[cli-ssh] shell')
             if (err) {
               sshDebug(`[cli-ssh] err: ${err}`)
               return this._logConnectionError()
             }
 
+            this._prepareInteractiveSession(stream)
             stream.on('close', () => {
               sshDebug('[cli-ssh] close')
               conn.end()
@@ -83,7 +90,9 @@ export class HerokuSsh {
         } else {
           ux.error('There was an error connecting to the dyno!')
         }
-      }).connect({
+      })
+
+      conn.connect({
         ...this._connectionDefaults(proxyKey),
         debug: sshDebug,
         host: addonHost,
@@ -92,6 +101,11 @@ export class HerokuSsh {
         privateKey,
         username: dynoUser,
       })
+      // Keystrokes are single-byte writes. Without this, TCP holds each one
+      // until an acknowledgement arrives, so typing through the port-80 proxy
+      // lags by tens or hundreds of milliseconds. heroku run disables that
+      // delay too, which is why a Rails console feels immediate.
+      conn.setNoDelay(true)
     })
   }
 
@@ -239,24 +253,48 @@ export class HerokuSsh {
       await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
       await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
 
-      let sshCommand = 'ssh '
-        + `-o UserKnownHostsFile=${proxyKeyPath} `
-        + '-o ServerAliveInterval=10 '
-        + '-o ServerAliveCountMax=3 '
-        + '-p 80 '
-        + `-i ${keyPath} `
-        + `${dynoUser}@${addonHost} `
-
+      // Same shape as heroku console / heroku run on Private Spaces: the ssh
+      // process inherits the terminal, so keystrokes never pass through Node.
+      // -tt allocates a remote terminal. -e none keeps a leading "~" from
+      // being swallowed as an ssh escape.
+      const args = [
+        '-tt',
+        '-e',
+        'none',
+        '-o',
+        `UserKnownHostsFile=${proxyKeyPath}`,
+        '-o',
+        'ServerAliveInterval=10',
+        '-o',
+        'ServerAliveCountMax=3',
+        '-p',
+        '80',
+        '-i',
+        keyPath,
+        `${dynoUser}@${addonHost}`,
+      ]
       if (context.args.length > 0 && !context.args.includes('bash')) {
-        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
+        args.push(this._buildCommand(context.args))
       }
 
-      try {
-        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
-      } catch (error: any) {
-        if (error.stderr) sshDebug(error.stderr)
-        sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
-      }
+      // Drop the "Connecting..." spinner before ssh draws on this terminal.
+      ux.action.stop()
+      await new Promise<void>((resolve, reject) => {
+        let settled = false
+        const proc = child.spawn('ssh', args, {stdio: 'inherit'})
+        proc.once('error', (error: NodeJS.ErrnoException) => {
+          if (settled) return
+          settled = true
+          sshDebug(error)
+          reject(error)
+        })
+        proc.once('exit', (status: null | number) => {
+          if (settled) return
+          settled = true
+          sshDebug(`[cli-ssh] exit: ${status}`)
+          resolve()
+        })
+      })
     } finally {
       await fsp.unlink(keyPath).catch(() => {})
       await fsp.unlink(proxyKeyPath).catch(() => {})
@@ -310,6 +348,37 @@ export class HerokuSsh {
     ux.error(`Could not connect to the dyno. Check that the dyno is active by running ${color.command('heroku ps')}`)
   }
 
+  private _prepareInteractiveSession(channel: ClientChannel) {
+    const onResize = () => {
+      const pty = this._ptyOptions()
+      channel.setWindow(pty.rows, pty.cols, pty.height, pty.width)
+    }
+
+    process.stdout.on('resize', onResize)
+    channel.on('close', () => {
+      process.stdout.removeListener('resize', onResize)
+      if (this.interactiveRawMode && tty.isatty(0)) {
+        process.stdin.setRawMode(false)
+        this.interactiveRawMode = false
+      }
+    })
+  }
+
+  // The SSH library otherwise requests a generic 80 by 24 terminal and never
+  // updates it. Line editors track the cursor from that size, so the request
+  // has to match the local terminal.
+  private _ptyOptions(): Pick<Required<PseudoTtyOptions>, 'cols' | 'height' | 'rows' | 'term' | 'width'> {
+    const cols = process.stdout.columns || 80
+    const rows = process.stdout.rows || 24
+    return {
+      cols,
+      height: rows * 16,
+      rows,
+      term: process.env.TERM || 'xterm-256color',
+      width: cols * 8,
+    }
+  }
+
   private _readData(c: stream.Writable) {
     let firstLine = true
     return (data: Buffer | string) => {
@@ -318,29 +387,42 @@ export class HerokuSsh {
         this._readStdin(c)
       }
 
-      if (data) {
-        data = data.toString().replace(' \r', '\n')
+      if (!data) return
+
+      // A live terminal must see the remote bytes unchanged. Shells reprint the
+      // input line with a trailing space and a carriage return; rewriting
+      // " \r" into a newline drops the cursor after a few characters.
+      // Piped output keeps that historical rewrite.
+      if (tty.isatty(1)) {
         process.stdout.write(data)
+        return
       }
+
+      const text = typeof data === 'string' ? data : data.toString()
+      process.stdout.write(text.replace(' \r', '\n'))
     }
   }
 
   private _readStdin(c: stream.Writable) {
     const {stdin} = process
-    stdin.setEncoding('utf8')
     if (stdin.unref) stdin.unref()
     if (tty.isatty(0)) {
+      // Leave stdin as raw bytes. Encoding it as text splits keystrokes and
+      // cursor-position replies before they are written to the SSH channel.
       stdin.setRawMode(true)
+      this.interactiveRawMode = true
       stdin.pipe(c)
       let sigints: Date[] = []
-      stdin.on('data', (c: string) => {
-        if (c === '\u0003') sigints.push(new Date())
+      stdin.on('data', (chunk: Buffer | string) => {
+        const isSigint = Buffer.isBuffer(chunk) ? chunk.length === 1 && chunk[0] === 0x03 : chunk === '\u0003'
+        if (isSigint) sigints.push(new Date())
         sigints = sigints.filter(d => d.getTime() > Date.now() - 1000)
         if (sigints.length >= 4) {
           ux.error('forcing dyno disconnect')
         }
       })
     } else {
+      stdin.setEncoding('utf8')
       stdin.pipe(this._stdinToRemote(c))
     }
   }
