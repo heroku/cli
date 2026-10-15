@@ -48,12 +48,11 @@ describe('releases:retry', function () {
       .get('/apps/myapp/formation')
       .reply(200, [])
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch((error: Error) => {
-      expect(ansis.strip(error.message)).to.eq('No release found for ⬢ myapp.')
-    })
+    ])
+    expect(ansis.strip(error?.message ?? '')).to.eq('No release found for ⬢ myapp.')
   })
 
   it('retries the release', async function () {
@@ -101,11 +100,10 @@ describe('releases:retry', function () {
       .get('/apps/myapp/formation')
       .reply(200, formationWithoutReleasePhase)
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch((error: Error) => {
-      expect(error.message).to.eq('App must have a release-phase command to use this command.')
-    })
+    ])
+    expect(error?.message).to.eq('App must have a release-phase command to use this command.')
   })
 })

@@ -136,17 +136,12 @@ describe('addons:upgrade', function () {
   })
 
   it('errors with no plan', async function () {
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'heroku-redis',
-      ])
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(error.message).to.contain('Error: No plan specified')
-      }
-    }
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'heroku-redis',
+    ])
+    expect(error?.message).to.contain('Error: No plan specified')
   })
 
   it('errors with invalid plan', async function () {
@@ -169,46 +164,31 @@ describe('addons:upgrade', function () {
       .patch('/apps/myapp/addons/db1-swiftly-123', {plan: {name: 'heroku-db1:invalid'}})
       .reply(422, {message: 'Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".'})
 
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'heroku-db1:invalid',
-      ])
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(ansis.strip(error.message)).to.equal('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".\n\nHere are the available plans for heroku-db1:\nheroku-db1:free\nheroku-db1:basic\nheroku-db1:premium-0\n\nSee more plan information with heroku addons:plans heroku-db1\n\nhttps://devcenter.heroku.com/articles/managing-add-ons')
-      }
-    }
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'heroku-db1:invalid',
+    ])
+    expect(ansis.strip(error?.message ?? '')).to.equal('Couldn\'t find either the add-on service or the add-on plan of "heroku-db1:invalid".\n\nHere are the available plans for heroku-db1:\nheroku-db1:free\nheroku-db1:basic\nheroku-db1:premium-0\n\nSee more plan information with heroku addons:plans heroku-db1\n\nhttps://devcenter.heroku.com/articles/managing-add-ons')
   })
 
   it('displays an error when multiple matches exist', async function () {
     api.post('/actions/addons/resolve', {addon: 'heroku-postgresql', app: 'myapp'})
       .reply(422, {id: 'multiple_matches', message: 'Multiple matches'})
-    try {
-      await runCommand(Cmd, [
-        '--app',
-        'myapp',
-        'heroku-postgresql:hobby',
-      ])
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(error.message).to.contain('Multiple add-ons match')
-      }
-    }
+    const {error} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'heroku-postgresql:hobby',
+    ])
+    expect(error?.message).to.contain('Multiple add-ons match')
   })
 
   it('handles multiple add-ons', async function () {
     api.post('/actions/addons/resolve', {addon: 'heroku-redis', app: null})
       .reply(200, [{name: 'db1-swiftly-123'}, {name: 'db1-swiftly-456'}])
-    try {
-      await runCommand(Cmd, [
-        'heroku-redis:invalid',
-      ])
-    } catch (error) {
-      if (error instanceof Error) {
-        expect(error.message).to.contain('multiple matching add-ons found')
-      }
-    }
+    const {error} = await runCommand(Cmd, [
+      'heroku-redis:invalid',
+    ])
+    expect(error?.message).to.contain('multiple matching add-ons found')
   })
 })

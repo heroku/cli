@@ -60,16 +60,22 @@ describe('heroku apps:leave', function () {
 
   describe('when the user tries to leave the app', function () {
     it('shows an error if the heroku.delete() operation returns an error', async function () {
-      try {
-        await runCommand(LeaveCommand, [
-          '--app',
-          'myapp',
-        ])
-        apiGetUserAccount.done()
-        apiDeletePersonalAppCollaborator.done()
-      } catch (error) {
-        expect(error).to.be.an.instanceof(Error)
-      }
+      nock.cleanAll()
+
+      const account = nock('https://api.heroku.com')
+        .get('/account')
+        .reply(200, {email: 'gandalf@heroku.com'})
+      const deletion = nock('https://api.heroku.com')
+        .delete(`/apps/myapp/collaborators/${encodeURIComponent('gandalf@heroku.com')}`)
+        .reply(403, {id: 'forbidden', message: 'You cannot leave this app.'})
+
+      const {error} = await runCommand(LeaveCommand, [
+        '--app',
+        'myapp',
+      ])
+      expect(error).to.be.an.instanceof(Error)
+      account.done()
+      deletion.done()
     })
   })
 })

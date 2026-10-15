@@ -25,10 +25,8 @@ describe('accounts:current', function () {
 
   it('should print an error message if no account is found', async function () {
     currentStub.resolves(null)
-    await runCommand(Cmd, [])
-      .catch((error: Error) => {
-        const expected = 'You haven\'t set an account. Run heroku accounts:add <account-name> to add an account to your cache or heroku accounts:set <account-name> to set the current account.'
-        expect(ansis.strip(error.message)).to.equal(expected)
-      })
+    const {error} = await runCommand(Cmd, [])
+    expect(ansis.strip(error?.message ?? '')).to.equal(`You haven't set an account.\n
+      Run heroku accounts:add <account-name> to add an account to your cache or heroku accounts:set <account-name> to set the current account.`)
   })
 })

@@ -58,17 +58,15 @@ describe('addons:create', function () {
   })
   context('calling addons:create without a plan', function () {
     it('errors out with usage', async function () {
-      return runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--name',
         'foobar',
       ])
-        .catch((error: unknown) => {
-          expect((error as Error).message).to.equal('Missing 1 required arg:\n'
-            + 'service:plan  unique identifier or unique name of the add-on service plan\n'
-            + 'See more help with --help')
-        })
+      expect(error?.message).to.equal('Missing 1 required arg:\n'
+        + 'service:plan  unique identifier or unique name of the add-on service plan\n'
+        + 'See more help with --help')
     })
   })
   context('creating a db', function () {
@@ -262,21 +260,19 @@ describe('addons:create', function () {
         deprovisionedAddon.state = 'deprovisioned'
         api.get('/apps/myapp/addons/postgresql-swiftly-123')
           .reply(200, deprovisionedAddon)
-        try {
-          return await runCommand(Cmd, [
-            '--app',
-            'myapp',
-            '--as',
-            'mydb',
-            '--wait',
-            'heroku-postgresql:standard-0',
-            '--',
-            '--wait',
-          ])
-        } catch {
-          expect(notifyStub.called).to.equal(true)
-          expect(notifyStub.calledOnce).to.equal(true)
-        }
+        const {error} = await runCommand(Cmd, [
+          '--app',
+          'myapp',
+          '--as',
+          'mydb',
+          '--wait',
+          'heroku-postgresql:standard-0',
+          '--',
+          '--wait',
+        ])
+        expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        expect(notifyStub.called).to.equal(true)
+        expect(notifyStub.calledOnce).to.equal(true)
       })
     })
     context('when add-on provision errors', function () {
@@ -299,13 +295,13 @@ describe('addons:create', function () {
     })
   })
   context('creating a db requiring confirmation', function () {
-    it('aborts if confirmation does not match', function () {
+    it('aborts if confirmation does not match', async function () {
       api.post('/apps/myapp/addons', {
         attachment: {name: 'mydb'}, config: {follow: 'otherdb', foo: true, rollback: true}, confirm: 'not-my-app', plan: {name: 'heroku-postgresql:standard-0'},
       })
         .reply(423, {id: 'confirmation_required', message: 'This add-on is not automatically networked with this Private Space. '}, {'X-Confirmation-Required': 'myapp-confirm'})
 
-      return runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -319,9 +315,7 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-        .catch(error => {
-          expect(ansis.strip(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
-        })
+      expect(ansis.strip(error?.message ?? '')).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
     })
 
     it('succeeds if confirmation does match', async function () {
