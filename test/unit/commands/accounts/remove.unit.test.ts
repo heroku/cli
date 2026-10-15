@@ -32,27 +32,21 @@ describe('accounts:remove', function () {
   it('should return an error if the selected account name is not included in the account list', async function () {
     currentStub.resolves('test-account')
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
-    await runCommand(Cmd, ['test-account-3'])
-      .catch((error: Error) => {
-        expect(error.message).to.contain('test-account-3 doesn\'t exist in your accounts cache.')
-      })
+    const {error} = await runCommand(Cmd, ['test-account-3'])
+    expect(error?.message).to.contain('test-account-3 doesn\'t exist in your accounts cache.')
   })
 
   it('should return an error if the selected account name is the current account', async function () {
     currentStub.resolves('test-account')
     listStub.resolves([{name: 'test-account', username: 'user1'}, {name: 'test-account-2', username: 'user2'}])
-    await runCommand(Cmd, ['test-account'])
-      .catch((error: Error) => {
-        expect(ansis.strip(error.message)).to.equal('test-account is the current account. To log out, run heroku logout.')
-      })
+    const {error} = await runCommand(Cmd, ['test-account'])
+    expect(ansis.strip(error?.message ?? '')).to.equal('test-account is the current account. To log out, run  $ heroku logout .')
   })
 
   it('should return an error if the selected account is the current account (aliased)', async function () {
     currentStub.resolves('user1@example.com')
     listStub.resolves([{name: 'test-account', username: 'user1@example.com'}, {name: 'test-account-2', username: 'user2@example.com'}])
-    await runCommand(Cmd, ['test-account'])
-      .catch((error: Error) => {
-        expect(ansis.strip(error.message)).to.equal('test-account is the current account. To log out, run heroku logout.')
-      })
+    const {error} = await runCommand(Cmd, ['test-account'])
+    expect(ansis.strip(error?.message ?? '')).to.equal('test-account is the current account. To log out, run  $ heroku logout .')
   })
 })

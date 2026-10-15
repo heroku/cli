@@ -133,20 +133,16 @@ describe('data:pg:credentials:destroy', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst', // credential that has attachments
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst', // credential that has attachments
+        '--confirm=myapp',
+      ])
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(error?.message ?? '')).to.equal('You must detach the credential analyst from the app ⬢ myapp before destroying it.')
     })
 
     it('shows an error when credential is single-factor attached to multiple apps', async function () {
@@ -184,20 +180,16 @@ describe('data:pg:credentials:destroy', function () {
         .get(`/data/postgres/v1/${addon.id}/credentials`)
         .reply(200, advancedCredentialsResponse)
 
-      try {
-        await runCommand(DataPgCredentialsDestroy, [
-          'DATABASE',
-          '--app=myapp',
-          '--name=analyst', // credential that has attachments
-          '--confirm=myapp',
-        ])
-      } catch (error: unknown) {
-        const err = error as Error
+      const {error} = await runCommand(DataPgCredentialsDestroy, [
+        'DATABASE',
+        '--app=myapp',
+        '--name=analyst', // credential that has attachments
+        '--confirm=myapp',
+      ])
 
-        dataApi.done()
-        herokuApi.done()
-        expect(ansis.strip(err.message)).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
-      }
+      dataApi.done()
+      herokuApi.done()
+      expect(ansis.strip(error?.message ?? '')).to.equal('You must detach the credential analyst from the apps ⬢ myapp, ⬢ myapp2 before destroying it.')
     })
 
     it('destroys a credential successfully', async function () {

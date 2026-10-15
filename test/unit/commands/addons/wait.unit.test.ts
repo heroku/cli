@@ -125,12 +125,10 @@ Created www-redis as REDIS_URL
         nock('https://api.heroku.com', {reqheaders: expansionHeaders})
           .get('/apps/acme-inc-www/addons/www-redis')
           .reply(200, deprovisionedAddon)
-        await runCommand(Cmd, ['www-redis'])
-          .catch(error => {
-            expect(error.message).to.equal('The add-on was unable to be created, with status deprovisioned')
-            expect(notifyStub.called).to.be.true
-            expect(notifyStub.calledOnce).to.be.true
-          })
+        const {error} = await runCommand(Cmd, ['www-redis'])
+        expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
       it('shows that it failed to provision', async function () {
         const notifyStub = sandbox.stub(Cmd, 'notifier')

@@ -107,12 +107,11 @@ describe('heroku redis:info', function () {
     nock('https://api.data.heroku.com:443')
       .get('/redis/v0/databases/redis-haiku')
       .reply(503, {})
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'example',
-    ]).catch(function (error: Error) {
-      expect(error.message).to.include('HTTP Error 503')
-      expect(error.message).to.include('redis-haiku')
-    })
+    ])
+    expect(error?.message).to.include('HTTP Error 503')
+    expect(error?.message).to.include('redis-haiku')
   })
 })

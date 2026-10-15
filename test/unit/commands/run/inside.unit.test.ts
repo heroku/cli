@@ -33,13 +33,12 @@ describe('run:inside', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       '--app',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.include('Missing')
-      expect(error.message).to.include('dyno_name')
-    })
+    ])
+    expect(error?.message).to.include('Missing')
+    expect(error?.message).to.include('dyno_name')
   })
 
   it('runs a command inside an existing dyno', async function () {
@@ -62,14 +61,13 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
       'myapp',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
   })
 
   it('handles exit codes when --exit-code is specified', async function () {
@@ -89,16 +87,14 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'false',
       '--app',
       'myapp',
       '--exit-code',
-    ]).catch(error => {
-      // Expected to fail with exit code 1 or connection error
-      expect(error).to.exist
-    })
+    ])
+    expect(error).to.exist
   })
 
   it('respects --no-launcher flag', async function () {
@@ -121,15 +117,14 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
       'myapp',
       '--no-launcher',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
   })
 
   it('prepends launcher by default on cnb apps', async function () {
@@ -152,13 +147,12 @@ describe('run:inside', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
       'myapp',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
   })
 })
