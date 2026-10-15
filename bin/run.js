@@ -49,7 +49,17 @@ await run(process.argv.slice(2), import.meta.url)
     try {
       const {isUnsupportedNodeCrash, UNSUPPORTED_NODE_ERROR_CODE, unsupportedNodeMessage} = await import('../dist/lib/check-node-version.js')
       if (isUnsupportedNodeCrash(process.versions.node, error)) {
-        unsupportedNodeError = new Errors.CLIError(unsupportedNodeMessage(process.versions.node), {code: UNSUPPORTED_NODE_ERROR_CODE, exit: 1})
+        // Dependency-free read of the required Node range. Any failure leaves
+        // it undefined, which gives the generic wording.
+        let enginesRange
+        try {
+          const {readFileSync} = await import('node:fs')
+          enginesRange = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).engines.node
+        } catch {
+          // Ignore: the message falls back to generic wording.
+        }
+
+        unsupportedNodeError = new Errors.CLIError(unsupportedNodeMessage(process.versions.node, enginesRange), {code: UNSUPPORTED_NODE_ERROR_CODE, exit: 1})
       }
     } catch {
       // Ignore: fall back to the original error below.

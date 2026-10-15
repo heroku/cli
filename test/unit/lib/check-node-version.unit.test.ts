@@ -2,8 +2,8 @@ import {expect} from 'chai'
 import {readFileSync} from 'node:fs'
 
 import {
+  FIRST_NODE_MAJOR_WITH_V_FLAG,
   isUnsupportedNodeCrash,
-  MIN_NODE_MAJOR,
   UNSUPPORTED_NODE_ERROR_CODE,
   unsupportedNodeMessage,
 } from '../../../src/lib/check-node-version.js'
@@ -56,18 +56,34 @@ describe('check-node-version', function () {
   })
 
   describe('unsupportedNodeMessage', function () {
-    it('names the running version and the minimum', function () {
-      const message = unsupportedNodeMessage('v18.20.8')
+    it('names the running version, the engines range, and the install link', function () {
+      const message = unsupportedNodeMessage('v18.20.8', '>=20')
       expect(message).to.include('Node.js v18.20.8 is not supported')
-      expect(message).to.include(`Node.js ${MIN_NODE_MAJOR} or later`)
+      expect(message).to.include('The Heroku CLI requires Node.js >=20.')
       expect(message).to.include('https://devcenter.heroku.com/articles/heroku-cli')
+    })
+
+    for (const range of ['>=20', '>=20.6', '^20 || ^22']) {
+      it(`shows the engines range verbatim: ${range}`, function () {
+        expect(unsupportedNodeMessage('18.20.8', range)).to.include(`requires Node.js ${range}. Upgrade Node.js`)
+      })
+    }
+
+    for (const range of [undefined, '', 20, null, {}] as unknown[]) {
+      it(`falls back to generic wording for ${JSON.stringify(range)}`, function () {
+        const message = unsupportedNodeMessage('18.20.8', range as string | undefined)
+        expect(message).to.include('requires a newer version of Node.js. Upgrade Node.js')
+        expect(message).to.include('Node.js v18.20.8 is not supported')
+      })
+    }
+
+    it('falls back to generic wording when the range is omitted', function () {
+      expect(unsupportedNodeMessage('18.20.8')).to.include('requires a newer version of Node.js.')
     })
   })
 
-  it('keeps MIN_NODE_MAJOR in sync with package.json engines.node', function () {
-    const {engines} = JSON.parse(readRepoFile('package.json'))
-    expect(engines.node).to.match(/^>=\s*\d+/)
-    expect(Number.parseInt(engines.node.replace(/^>=\s*/, ''), 10)).to.equal(MIN_NODE_MAJOR)
+  it('treats Node 20 as the first major supporting the regex v flag', function () {
+    expect(FIRST_NODE_MAJOR_WITH_V_FLAG).to.equal(20)
   })
 
   it('exports the error code used by bin/run.js', function () {
@@ -98,10 +114,15 @@ describe('check-node-version', function () {
       expect(run).not.to.match(/await execute\(/)
     })
 
+    // The outer try wraps the guard lookup inside the catch handler; the last
+    // `} catch` in the file is its catch (an inner try guards the engines read).
+    const catchHandlerStart = run.indexOf('.catch(async error => {')
+    const tryStart = run.indexOf('try {', catchHandlerStart)
+    const catchStart = run.lastIndexOf('} catch')
+
     it('falls back to handle(error) when the guard helper fails to load', function () {
-      const tryStart = run.indexOf('try {')
-      const catchStart = run.indexOf('} catch', tryStart)
-      expect(tryStart).to.be.greaterThan(-1)
+      expect(catchHandlerStart).to.be.greaterThan(-1)
+      expect(tryStart).to.be.greaterThan(catchHandlerStart)
       expect(catchStart).to.be.greaterThan(tryStart)
 
       // The dynamic import sits inside the try; handle() is only called after it.
@@ -111,6 +132,22 @@ describe('check-node-version', function () {
 
       const afterCatch = run.slice(run.indexOf('}', catchStart + '} catch'.length))
       expect(afterCatch).to.match(/return handle\(error\)/)
+    })
+
+    it('reads engines.node from package.json inside the try and passes it to the message', function () {
+      const tryBlock = run.slice(tryStart, catchStart)
+      expect(tryBlock).to.include("new URL('../package.json', import.meta.url)")
+      expect(tryBlock).to.include('JSON.parse(')
+      expect(tryBlock).to.match(/unsupportedNodeMessage\(process\.versions\.node, enginesRange\)/)
+    })
+
+    it('guards the engines read so a failure cannot escape the try', function () {
+      const tryBlock = run.slice(tryStart, catchStart)
+      const readIndex = tryBlock.indexOf('../package.json')
+      const innerTry = tryBlock.lastIndexOf('try {', readIndex)
+      const innerCatch = tryBlock.indexOf('} catch', readIndex)
+      expect(innerTry).to.be.greaterThan(0)
+      expect(innerCatch).to.be.greaterThan(readIndex)
     })
   })
 })
