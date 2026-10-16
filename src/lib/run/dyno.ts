@@ -16,7 +16,7 @@ import * as tls from 'node:tls'
 import * as tty from 'node:tty'
 import {URL} from 'node:url'
 
-import {createSDK} from '../sdk.js'
+import {apiClientOptions, createSDK} from '../sdk.js'
 import {buildEnvFromFlag} from './helpers.js'
 
 const debug = debugFactory('heroku:run')
@@ -134,6 +134,10 @@ export default class Dyno extends Duplex {
     try {
       const dyno = await this.sdk.platform.dyno.run(this.opts.app, command, {
         attach: this.opts.attach,
+        // When `dyno` is set (run:inside), the SDK routes through postRun, which builds its
+        // own per-call client from `clientOptions`; thread the CLI token/baseUrl in so it is
+        // not lost. Harmless on the non-dyno path where the SDK-level client already carries them.
+        clientOptions: apiClientOptions(this.opts.heroku),
         dyno: this.opts.dyno,
         env: this._env(),
         exitCode: this.opts['exit-code'],

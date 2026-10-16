@@ -8,7 +8,7 @@ import tsheredoc from 'tsheredoc'
 
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 
-import {createSDK} from '../../lib/sdk.js'
+import {apiClientOptions, createSDK} from '../../lib/sdk.js'
 import {ago} from '../../lib/time.js'
 
 const heredoc = tsheredoc
@@ -43,8 +43,10 @@ export default class Index extends Command {
 
     const {platform} = createSDK(this.heroku, {extensions: [appExtensions, dynoExtensions]})
 
+    // listExtended builds its own per-call HerokuApiClient from `clientOptions`, so the
+    // SDK-level token/baseUrl from createSDK never reach it — thread them in explicitly.
     const dynosPromise: Promise<DynoExtended[]> = extended
-      ? platform.dyno.listExtended(app)
+      ? platform.dyno.listExtended(app, {clientOptions: apiClientOptions(this.heroku)})
       : platform.dyno.list(app)
 
     const [dynos, shielded, appInfo, accountInfo] = await Promise.all([

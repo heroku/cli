@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
@@ -28,6 +29,47 @@ describe('ps', function () {
     nock.cleanAll()
     restore()
     sdkMock.restore()
+  })
+
+  it('threads the CLI auth token into the per-call listExtended client', async function () {
+    // `ps --extended` calls listExtended, which builds its OWN per-call client from
+    // `clientOptions`, not the SDK-level client. The command must thread the CLI token in
+    // via `apiClientOptions(this.heroku)`; drop it and the extended request goes out
+    // unauthenticated. Run the real SDK (no platform-getter mock) with getAuthEntry stubbed
+    // to a sentinel token so this fails if clientOptions stops being threaded. The other
+    // Promise.all calls (app.info, isShielded, account.info) just need to resolve.
+    sdkMock = {restore() {}}
+    stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
+
+    let authHeader: string | undefined
+    const listExtendedAPI = nock('https://api.heroku.com:443')
+      .get('/apps/myapp/dynos')
+      .query({extended: 'true'})
+      .reply(function () {
+        authHeader = this.req.headers.authorization as unknown as string
+        return [200, [{
+          command: 'npm start',
+          extended: {region: 'us'},
+          id: '100',
+          name: 'web.1',
+          release: {id: '10', version: '40'},
+          size: 'Eco',
+          state: 'up',
+          type: 'web',
+          updated_at: hourAgo.toISOString(),
+        }]]
+      })
+    nock('https://api.heroku.com:443').persist().get('/apps/myapp').reply(200, {name: 'myapp'})
+    nock('https://api.heroku.com:443').get('/account').reply(200, {id: '1234'})
+
+    await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      '--extended',
+    ])
+
+    expect(authHeader).to.equal('Bearer cli-keychain-token')
+    listExtendedAPI.done()
   })
 
   it('shows dyno list', async function () {
