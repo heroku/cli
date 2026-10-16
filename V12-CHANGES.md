@@ -2,10 +2,18 @@
 
 ## Resolver changes
 
-Many commands now resolve add-ons, add-on attachments, and Postgres databases through `@heroku/sdk` instead of the CLI's local resolvers or `heroku-cli-util`. Two behavior changes apply broadly, wherever these new resolvers are used:
+Many commands now resolve add-ons, add-on attachments, and Postgres databases through `@heroku/sdk` instead of the CLI's local resolvers or `heroku-cli-util`. These behavior changes apply broadly, wherever the new resolvers are used:
 
 - **No config var value fallback.** `heroku-cli-util`'s database resolver, when no attachment matched directly, fell back to scanning the app's attached databases by config var value. The SDK's resolver has no equivalent fallback — an identifier that previously resolved only through that scan now fails outright.
 - **No global fallback.** An add-on identifier scoped to `--app` that isn't found on that app no longer retries as a global lookup — it fails immediately with a not-found error. Previously, an add-on that existed but wasn't attached to the specified app would still be found via a global retry in the CLI addons/resolve.ts lib file.
+- **Specific wrong-service message.** When a database identifier matches an attachment that isn't on the configured Postgres add-on service, the SDK's Postgres database resolver now returns a specific message (`<name> is not a <service> database on <app>. Valid options are: <list>`) instead of the unformatted `Couldn't find that addon.` that `heroku-cli-util` returned.
+- **App name added to the "unknown database" message.** When a database identifier doesn't match any attachment at all, `heroku-cli-util`'s fallback already returned `Unknown database: <name>. Valid options are: <list>`; the SDK's Postgres database resolver now returns the same message with the app name added: `Unknown database: <name> on <app>. Valid options are: <list>`.
+- **Specific "app not found" message during database resolution.** When a database identifier fails to resolve because the app itself doesn't exist, the SDK's Postgres database resolver now returns `Couldn't find that app: <app>` instead of `heroku-cli-util`'s generic app-not-found error.
+- **No color on identifiers in resolver errors.** `heroku-cli-util` colorized the app name in its "no databases" error. The SDK's resolver errors are plain text, so that identifier is no longer colorized.
+- **Service name included in the "no databases" error.** The SDK's "no databases" error now names the add-on service it was looking for (`<app> has no <service> databases`), instead of `heroku-cli-util`'s generic `<app> has no databases`.
+- **Ambiguous-match wording.** The SDK's ambiguous-identifier error says `multiple matching add-on attachments found: <names>.`, instead of `heroku-cli-util`'s `multiple matching add-ons found: <names>.`
+- **Internal error class name in the message prefix.** The SDK's resolver error classes (e.g. `PgDatabaseNotFoundError`, `AddonAttachmentAmbiguousError`) set `name` to their class name, so an uncaught resolver error prints as `<ClassName>: <message>` (e.g. `PgDatabaseNotFoundError: Unknown database: ...`). `heroku-cli-util`'s equivalent errors didn't override `name`, so those showed a plain `Error: <message>`.
+- **Extra "Caused by:" line for not-found errors.** The SDK's `PgDatabaseNotFoundError` is constructed with the original resolution error as its `cause`. oclif prints that as an additional `Caused by: <InternalClassName>: <message>` line below the main message.
 
 ## Apps commands
 
