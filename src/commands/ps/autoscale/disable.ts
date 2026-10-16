@@ -15,8 +15,7 @@ export default class Disable extends Command {
     const {flags} = await this.parse(Disable)
     ux.action.start('Disabling dyno autoscaling')
 
-    const {platform} = createSDK(this.heroku)
-    const {metrics} = createSDK(this.heroku)
+    const {metrics, platform} = createSDK(this.heroku)
 
     const app = await platform.app.info(flags.app)
     const monitors = await metrics.formationMonitor.list(app.id, 'web')

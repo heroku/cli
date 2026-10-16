@@ -25,8 +25,7 @@ export default class Enable extends Command {
     const {flags} = await this.parse(Enable)
     ux.action.start('Enabling dyno autoscaling')
 
-    const {platform} = createSDK(this.heroku)
-    const {metrics} = createSDK(this.heroku)
+    const {metrics, platform} = createSDK(this.heroku)
 
     const [app, formations] = await Promise.all([
       platform.app.info(flags.app),
