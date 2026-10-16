@@ -215,13 +215,12 @@ describe('heroku apps:transfer', function () {
 
   context('auth token threading', function () {
     // Does NOT stub the HerokuSDK.platform getter, so the real SDK + platform
-    // client run and issue a real HTTP request. The command must forward the
-    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
-    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
-    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
-    // HEROKU_API_KEY so this fails if the command drops
-    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
-    // env token, flipping the header).
+    // client run and issue a real HTTP request. createSDK's token provider
+    // (tokenFor → APIClient.getAuthEntry) supplies the outgoing
+    // `Authorization: Bearer <token>` header. Stub getAuthEntry with a sentinel
+    // token distinct from the test env's HEROKU_API_KEY so this fails if the
+    // command stops routing SDK construction through createSDK (the token would
+    // fall back to the env value, flipping the header).
     it('threads the CLI auth token into the SDK client options', async function () {
       sinon.restore()
       sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})

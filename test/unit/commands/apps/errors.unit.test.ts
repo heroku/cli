@@ -76,14 +76,13 @@ describe('apps:errors', function () {
 
   it('threads the CLI auth token into the SDK client options', async function () {
     // Opt out of the shared platform/metrics getter stubs so the real SDK and
-    // its clients run and issue real HTTP requests. The command must forward
-    // the CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
-    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
-    // header on every service (platform + metrics share the one client
-    // options). Pin `this.heroku.auth` to a sentinel distinct from the test
-    // env's HEROKU_API_KEY so this fails if the command drops
-    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
-    // env token, flipping the header).
+    // its clients run and issue real HTTP requests. createSDK's token provider
+    // (tokenFor → APIClient.getAuthEntry) supplies the outgoing
+    // `Authorization: Bearer <token>` header on every service (platform +
+    // metrics share the one client options). Stub getAuthEntry with a sentinel
+    // token distinct from the test env's HEROKU_API_KEY so this fails if the
+    // command stops routing SDK construction through createSDK (the token would
+    // fall back to the env value, flipping the header).
     sinon.restore()
     sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
