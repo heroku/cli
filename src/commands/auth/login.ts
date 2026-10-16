@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 
 import Git from '../../lib/git/git.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Login extends Command {
   static aliases = ['login']
@@ -15,7 +15,7 @@ export default class Login extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Login)
     let method: 'interactive' | undefined
     if (flags.interactive) method = 'interactive'

@@ -2,10 +2,10 @@ import {Command, flags} from '@heroku-cli/command'
 import {ScopeCompletion} from '@heroku-cli/command/lib/completions.js'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {display} from '../../lib/authorizations/authorizations.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsCreate extends Command {
   static description = 'create a new OAuth authorization'
@@ -21,7 +21,7 @@ export default class AuthorizationsCreate extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(AuthorizationsCreate)
 
     ux.action.start('Creating OAuth Authorization')

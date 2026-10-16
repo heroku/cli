@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ConfigVar} from '@heroku/types/3.sdk'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -39,7 +39,7 @@ export default class Socks extends Command {
 
     const exec = new HerokuExec()
 
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
     await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
       await exec.createSocksProxy(context, platform, configVars)

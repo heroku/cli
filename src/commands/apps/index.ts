@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 import {App} from '../../lib/types/app.js'
 
 export default class AppsIndex extends Command {
@@ -38,7 +38,7 @@ export default class AppsIndex extends Command {
     const {all, json, space} = flags
     const internalRouting = flags['internal-routing']
 
-    const sdk = new HerokuSDK()
+    const sdk = createSDK(this.heroku)
     const {platform} = sdk
 
     if (space) {

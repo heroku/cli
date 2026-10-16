@@ -2,13 +2,13 @@ import type {DynoExtended, DynoExtendedFields} from '@heroku/sdk/extensions/plat
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, dynoExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 
+import {createSDK} from '../../lib/sdk.js'
 import {ago} from '../../lib/time.js'
 
 const heredoc = tsheredoc
@@ -41,7 +41,7 @@ export default class Index extends Command {
     const {app, extended, json} = flags
     const types = restParse.argv as string[]
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions, dynoExtensions]})
 
     const dynosPromise: Promise<DynoExtended[]> = extended
       ? platform.dyno.listExtended(app)

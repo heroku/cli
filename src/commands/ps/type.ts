@@ -2,12 +2,12 @@ import type {Formation} from '@heroku/types/3.sdk'
 
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -160,7 +160,7 @@ export default class Type extends Command {
     const argv = restParse.argv as string[]
     const {app} = flags
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions, dynoExtensions]})
 
     const parse = async () => {
       if (!argv || argv.length === 0)

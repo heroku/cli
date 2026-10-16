@@ -65,7 +65,7 @@ describe('apps:destroy', function () {
     // env token, flipping the header).
     sinon.restore()
     sinon.stub(gitService, 'listRemotes').resolves(new Map())
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
     const destroyAPI = nock('https://api.heroku.com:443')
@@ -96,7 +96,7 @@ describe('apps:destroy', function () {
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     sinon.restore()
     sinon.stub(gitService, 'listRemotes').resolves(new Map())
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
       .get('/apps/myapp')

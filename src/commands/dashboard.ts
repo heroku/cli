@@ -10,6 +10,7 @@ import {fileURLToPath} from 'node:url'
 import img from 'term-img'
 
 import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
+import {createSDK} from '../lib/sdk.js'
 import {ago} from '../lib/time.js'
 import {AppErrors} from '../lib/types/app-errors.js'
 import {sparkline} from '../lib/utils/sparkline.js'
@@ -143,7 +144,7 @@ export default class Dashboard extends Command {
   static topic = 'dashboard'
 
   public async run(): Promise<AppsWithMoreInfo[] | void> {
-    const {dashboardBackend, metrics, notifications, platform} = new HerokuSDK()
+    const {dashboardBackend, metrics, notifications, platform} = createSDK(this.heroku)
     const _ = await lazyModuleLoader.loadLodash()
 
     if (!this.heroku.auth && process.env.IS_HEROKU_TEST_ENV !== 'true') {

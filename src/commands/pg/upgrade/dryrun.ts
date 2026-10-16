@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -39,7 +39,7 @@ export default class Upgrade extends Command {
       ux.error(`You can't use ${color.code('pg:upgrade:dryrun')} on Essential-tier databases. You can only use this command on Standard-tier and higher leader databases.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
-    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [databaseExtensions]})
     const replica = await data.database.describe(app, db.name)
     if (replica.following)
       ux.error(`You can't use ${color.code('pg:upgrade:dryrun')} on follower databases. You can only use this command on Standard-tier and higher leader databases.`)

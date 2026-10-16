@@ -23,6 +23,27 @@ export default [
       'unicorn/prefer-spread': 'warn',
     },
   },
+  // Centralize SDK/client construction: every `new HerokuSDK` / `new HerokuApiClient`
+  // must go through `createSDK` / `createApiClient` in src/lib/sdk.ts, so the CLI-resolved
+  // token and platform baseUrl are threaded in one place. (heroku-fetch 0.2.0 drops the
+  // implicit ~/.netrc fallback, so a bare `new HerokuSDK()` would 401 keychain/netrc users.)
+  {
+    files: ['src/**/*.ts'],
+    ignores: ['src/lib/sdk.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='HerokuSDK']",
+          message: 'Do not construct HerokuSDK directly. Use createSDK(this.heroku, …) from src/lib/sdk.ts.',
+        },
+        {
+          selector: "NewExpression[callee.name='HerokuApiClient']",
+          message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
+        },
+      ],
+    },
+  },
   // Test file overrides
   {
     files: ['test/**/*.ts', 'test/**/*.js'],

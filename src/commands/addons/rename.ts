@@ -1,7 +1,8 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Rename extends Command {
   static args = {
@@ -13,7 +14,7 @@ export default class Rename extends Command {
 
   public async run(): Promise<void> {
     const {args} = await this.parse(Rename)
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const addon = await platform.addOn.info(args.addon_name)
     await platform.addOn.update(addon.app!.id!, addon.id!, {name: args.new_name, plan: addon.plan!.name!})
     ux.stdout(`${color.addon(args.addon_name)} successfully renamed to ${color.info(args.new_name)}.`)

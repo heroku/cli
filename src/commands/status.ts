@@ -1,8 +1,9 @@
+import {APIClient} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {Command, Flags, ux} from '@oclif/core'
 
 import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
+import {createApiClient} from '../lib/sdk.js'
 import {getMaxUpdateTypeLength} from '../lib/status/util.js'
 import {
   FormattedTrustStatus,
@@ -18,7 +19,7 @@ const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
 
 // Status data comes from public third-party hosts, so token: '' keeps the request unauthenticated.
-const statusClient = (baseUrl: string) => new HerokuApiClient({baseUrl, service: 'custom', token: ''})
+const statusClient = (heroku: APIClient, baseUrl: string) => createApiClient(heroku, {baseUrl, service: 'custom', token: ''})
 
 // Some status endpoints reply 200 with no body; treat that as absent.
 const getJson = async <T>(response: Response): Promise<T | undefined> => {
@@ -37,7 +38,7 @@ const printStatus = (status: string) => {
   return colorize(message)
 }
 
-const getTrustStatus = async () => {
+const getTrustStatus = async (heroku: APIClient) => {
   const trustHost = process.env.SF_TRUST_STAGING ? 'https://status-api-stg.test.edgekey.net/v1' : 'https://api.status.salesforce.com/v1'
   const currentDateTime = new Date(Date.now()).toISOString()
   let instances: TrustInstance[] = []
@@ -46,7 +47,7 @@ const getTrustStatus = async () => {
   let localizations: Localization[] = []
 
   try {
-    const client = statusClient(trustHost)
+    const client = statusClient(heroku, trustHost)
     const [instanceResponse, activeIncidentsResponse, maintenancesResponse, localizationsResponse] = await Promise.all([
       client.get('/instances?products=Heroku'),
       client.get('/incidents/active'),
@@ -145,21 +146,22 @@ export default class Status extends Command {
     const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
 
     const {flags} = await this.parse(Status)
+    const heroku = new APIClient(this.config)
     const herokuApiPath = '/api/v4/current-status'
     let herokuStatus
     let formattedTrustStatus
 
     if (process.env.TRUST_ONLY) {
-      formattedTrustStatus = await getTrustStatus()
+      formattedTrustStatus = await getTrustStatus(heroku)
     } else {
       try {
         // Try calling the Heroku status API first
         const herokuHost = process.env.HEROKU_STATUS_HOST || 'https://status.heroku.com'
-        const herokuStatusResponse = await statusClient(herokuHost).get(herokuApiPath)
+        const herokuStatusResponse = await statusClient(heroku, herokuHost).get(herokuApiPath)
         herokuStatus = await getJson<HerokuStatus>(herokuStatusResponse)
       } catch {
         // If the Heroku status API call fails, call the SF Trust API
-        formattedTrustStatus = await getTrustStatus()
+        formattedTrustStatus = await getTrustStatus(heroku)
       }
     }
 

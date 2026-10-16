@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import Git from '../../lib/git/git.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export class GitClone extends Command {
   static args = {
@@ -22,7 +22,7 @@ remote: Counting objects: 42, done.
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const git = new Git()
     const {args, flags} = await this.parse(GitClone)
     const app = await platform.app.info(flags.app)

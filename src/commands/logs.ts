@@ -80,7 +80,7 @@ export default class Logs extends Command {
     if (forceColors)
       ux.warn('The --force-colors flag is deprecated. Use FORCE_COLORS=true to force colors.')
 
-    await Logs.displayLogs({
+    await Logs.displayLogs(this.heroku, {
       app,
       dyno,
       lines: num || 100,

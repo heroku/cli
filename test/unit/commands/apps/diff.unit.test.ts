@@ -45,7 +45,7 @@ describe('apps:diff', function () {
     // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
     // env token, flipping the header).
     platformGetterStub.restore()
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
     // diff fans out GET requests across both apps; intercept every endpoint it
@@ -88,7 +88,7 @@ describe('apps:diff', function () {
     const originalHerokuHost = process.env.HEROKU_HOST
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     platformGetterStub.restore()
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
       .persist()

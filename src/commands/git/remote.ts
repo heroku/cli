@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 
 import Git from '../../lib/git/git.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export class GitRemote extends Command {
   static description = `adds a git remote to an app repo
@@ -21,7 +21,7 @@ ${color.command('heroku git:remote --remote heroku-staging -a example-staging')}
   static strict = false
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const parsed = await this.parse(GitRemote)
     const {flags} = parsed
     const argv = parsed.argv as string[]

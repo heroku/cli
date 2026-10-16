@@ -85,7 +85,7 @@ describe('apps:errors', function () {
     // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
     // env token, flipping the header).
     sinon.restore()
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
     const platformAPI = nock('https://api.heroku.com:443')
@@ -110,10 +110,9 @@ describe('apps:errors', function () {
   })
 
   it('threads the CLI-resolved API host into the SDK platform client while metrics keeps its own host', async function () {
-    // Prove the two-instance split: the platform HerokuSDK is built from
-    // sdkClientOptions (which sets baseUrl from vars.apiUrl → honors
-    // HEROKU_HOST), while the metrics HerokuSDK gets {token} only and resolves
-    // its own host. Point HEROKU_HOST at an allow-listed staging host so the
+    // Prove the host split: createSDK sets baseUrl (from vars.apiUrl → honors
+    // HEROKU_HOST) on the platform service only, so metrics resolves its own
+    // host. Point HEROKU_HOST at an allow-listed staging host so the
     // platform call must land on api.staging.herokudev.com, while metrics must
     // stay on api.metrics.heroku.com. nock.disableNetConnect() is active, so a
     // wrong host throws and fails the test either way the split could break.
@@ -121,7 +120,7 @@ describe('apps:errors', function () {
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     try {
       sinon.restore()
-      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+      sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
       const platformAPI = nock('https://api.staging.herokudev.com:443')
         .get(`/apps/${APP}/formation`)

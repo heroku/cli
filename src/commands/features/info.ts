@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Info extends Command {
   static args = {
@@ -15,7 +16,7 @@ export default class Info extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Info)
 
     const {app, json} = flags

@@ -1,13 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuApiClient} from '@heroku/heroku-fetch'
-import {HerokuSDK} from '@heroku/sdk'
 import {Release} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import ansis from 'ansis'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import * as statusHelper from '../../lib/releases/status-helper.js'
+import {createApiClient, createSDK} from '../../lib/sdk.js'
 import * as time from '../../lib/time.js'
 
 type ExtendedRelease = Release & {
@@ -91,14 +90,14 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const _ = await lazyModuleLoader.loadLodash()
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Index)
     const {app, extended, json, num} = flags
     const range = `version ..; max=${num || 15}, order=desc`
 
     let releases: ExtendedRelease[]
     if (extended) {
-      const client = new HerokuApiClient()
+      const client = createApiClient(this.heroku)
       const response = await client.get(`/apps/${app}/releases?extended=true`, {
         headers: {
           Accept: 'application/vnd.heroku+json; version=3.sdk',

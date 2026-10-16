@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ConfigVar} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
@@ -8,6 +7,7 @@ import debug from 'debug'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../lib/ps-exec/ssh.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Exec extends Command {
   static description = 'Create an SSH session to a dyno'
@@ -47,7 +47,7 @@ export default class Exec extends Command {
     const ssh = new HerokuSsh()
     const psExecDebug = debug('cli:ps:exec')
 
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
     await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
       // eslint-disable-next-line unicorn/prefer-ternary

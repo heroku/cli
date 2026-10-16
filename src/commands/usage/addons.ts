@@ -1,10 +1,12 @@
 import type {Usage} from '@heroku/types/3.sdk'
 
-import {Command, flags, vars} from '@heroku-cli/command'
+import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 interface AppInfo extends Record<string, unknown> {
   id: string
@@ -28,12 +30,7 @@ export default class UsageAddons extends Command {
       ux.error('Specify an app with --app or a team with --team')
     }
 
-    const {platform} = new HerokuSDK({
-      clientOptions: {token: this.heroku.auth},
-      clientOptionsByService: {
-        platform: {baseUrl: vars.apiUrl},
-      },
-    })
+    const {platform} = createSDK(this.heroku)
 
     if (app) {
       await this.fetchAndDisplayAppUsageData(platform, app, team)

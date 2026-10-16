@@ -73,7 +73,7 @@ describe('apps:open', function () {
         }
       }, unref() {},
     } as any)
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
     const infoAPI = nock('https://api.heroku.com:443')
@@ -108,7 +108,7 @@ describe('apps:open', function () {
         }
       }, unref() {},
     } as any)
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
       .get('/apps/myapp')

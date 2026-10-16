@@ -2,7 +2,6 @@ import type {ScaleDynosUpdate} from '@heroku/sdk/resources/platform/dyno'
 
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {
   appExtensions, dynoExtensions, privateToShield, shieldToPrivate,
 } from '@heroku/sdk/extensions/platform'
@@ -10,6 +9,7 @@ import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -58,7 +58,7 @@ export default class Scale extends Command {
       }))
     }
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions, dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions, dynoExtensions]})
     const changes = parse(argv)
 
     if (changes.length === 0) {

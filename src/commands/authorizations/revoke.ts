@@ -1,7 +1,8 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsRevoke extends Command {
   static aliases = ['authorizations:destroy']
@@ -14,7 +15,7 @@ export default class AuthorizationsRevoke extends Command {
   ]
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args} = await this.parse(AuthorizationsRevoke)
 
     ux.action.start('Revoking OAuth Authorization')

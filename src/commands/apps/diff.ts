@@ -2,11 +2,10 @@ import type {DiffRow} from '@heroku/sdk/resources/platform/app'
 
 import {Command} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
-import {sdkClientOptions} from '../../lib/apps/client-options.js'
+import {createSDK} from '../../lib/sdk.js'
 
 function trunc(val: unknown): string {
   const v = (val ?? '').toString()
@@ -23,7 +22,7 @@ export default class AppsDiff extends Command {
   static topic = 'apps'
 
   public async run(): Promise<DiffRow[]> {
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku), extensions: [appExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions]})
     const {args} = await this.parse(AppsDiff)
     const {app1, app2} = args
 

@@ -1,13 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
 import {pollAddonUntilDeprovisioned, waitForAddonProvisioning} from '../../lib/addons/addons-wait.js'
 import notify from '../../lib/notify.js'
 import {ExtendedAddon} from '../../lib/pg/types.js'
+import {createSDK} from '../../lib/sdk.js'
 
 // TODO: remove this type once the schema is fixed
 type AddonWithDeprovisioningState = Omit<ExtendedAddon, 'state'> & {state?: 'deprovisioning' | ExtendedAddon['state']}
@@ -27,7 +27,7 @@ export default class Wait extends Command {
 
   public async run(): Promise<AddonWithDeprovisioningState[]> {
     const {args, flags} = await this.parse(Wait)
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
     let addonsToWaitFor: AddonWithDeprovisioningState[]
     if (args.addon) {
       addonsToWaitFor = [await platform.addOn.resolve(args.addon, {appIdentity: flags.app}) as unknown as AddonWithDeprovisioningState]

@@ -2,8 +2,9 @@ import type {TelemetryDrain} from '@heroku/types/3.sdk'
 
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Index extends Command {
   static description = 'list telemetry drains'
@@ -35,7 +36,7 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Index)
     const {app, space} = flags
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     let drains: TelemetryDrain[] = []
     if (app) {
       drains = await platform.telemetryDrain.listByApp(app)

@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {stream} from '../../lib/releases/output.js'
 import {findByPreviousOrId} from '../../lib/releases/releases.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Rollback extends Command {
   static args = {
@@ -22,7 +22,7 @@ export default class Rollback extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Rollback)
     const {app} = flags
     const release = await findByPreviousOrId(platform, app, args.release)

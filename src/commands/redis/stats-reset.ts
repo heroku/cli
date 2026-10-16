@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -26,7 +26,7 @@ export default class StatsReset extends Command {
     const {app, confirm} = flags
     const {database} = args
 
-    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
     const warning = heredoc(`
       WARNING: Irreversible action.

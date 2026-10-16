@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -26,7 +27,7 @@ export default class Transfer extends Command {
     const {space} = flags
     const {team} = flags
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     try {
       ux.action.start(`Transferring space ${color.space(space)} to team ${color.green(team)}`)
       await platform.spaceTransfer.transfer(space, {new_owner: team})

@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, domainExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {printDomains} from '../../../lib/domains/domains.js'
 import notify from '../../../lib/notify.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {Domain} from '../../../lib/types/domain.js'
 
 export default class Enable extends Command {
@@ -21,7 +21,7 @@ export default class Enable extends Command {
   public async run(): Promise<Domain[]> {
     const {flags} = await this.parse(Enable)
     const {app, wait} = flags
-    const {platform} = new HerokuSDK({extensions: [appExtensions, domainExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions, domainExtensions]})
 
     const allCustomTerminal = (domains: Domain[]) =>
       domains.filter(d => d.kind === 'custom').every(d => d.acm_status === 'cert issued' || d.acm_status === 'failed')

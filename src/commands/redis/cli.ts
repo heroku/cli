@@ -3,7 +3,6 @@ import type {Socket} from 'node:net'
 import type {Duplex, Writable} from 'node:stream'
 
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import * as net from 'node:net'
@@ -15,6 +14,7 @@ import Parser from 'redis-parser'
 import {Client} from 'ssh2'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const REPLY_OK = 'OK'
 
@@ -186,7 +186,7 @@ export default class Cli extends Command {
 
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Cli)
-    const {data, platform} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data, platform} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(flags.app, {database: args.database})
     const appConfig = await platform.configVar.infoForApp(flags.app)
     const configVars: Record<string, unknown> = {}

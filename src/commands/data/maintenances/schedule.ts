@@ -6,6 +6,7 @@ import {MaintenanceInfoResult, MaintenanceScheduleResult} from '@heroku/types/da
 import {Args, ux} from '@oclif/core'
 
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class DataMaintenancesSchedule extends Command {
   static args = {
@@ -59,7 +60,7 @@ export default class DataMaintenancesSchedule extends Command {
     const {app, week, weeks} = flags
 
     const addon = await addonResolver.resolve(args.addon, app)
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
 
     const delayWeeks = week === undefined
       ? weeks

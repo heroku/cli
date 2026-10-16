@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {quote} from '../../lib/config/quote.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export class ConfigIndex extends Command {
   static description = 'display the config vars for an app'
@@ -15,7 +15,7 @@ export class ConfigIndex extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(ConfigIndex)
     const config = await platform.configVar.infoForApp(flags.app)
     if (flags.shell) {

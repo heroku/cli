@@ -1,8 +1,7 @@
 import type {AppInfo} from '@heroku/sdk/resources/platform/app/info'
 
-import {Command, flags} from '@heroku-cli/command'
+import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
@@ -11,6 +10,7 @@ import {inspect} from 'node:util'
 
 import {getGeneration} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createApiClient, createSDK} from '../../lib/sdk.js'
 import {ExtendedApp} from '../../lib/types/app.js'
 
 type Platform = HerokuSDK<readonly [typeof appExtensions]>['platform']
@@ -54,9 +54,9 @@ repo_size=5000000
     const app = args.app || flags.app
     if (!app) throw new Error('No app specified.\nUSAGE: heroku apps:info --app my-app')
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions]})
 
-    const info = await getInfo(app, platform, flags.extended)
+    const info = await getInfo(this.heroku, app, platform, flags.extended)
     const addons = info.addons.map(a => a.plan?.name).sort()
     const collaborators = info.collaborators.map(c => c.user.email)
       .filter(c => c !== info.app.owner.email)
@@ -103,11 +103,11 @@ function formatDate(date: Date) {
   return date.toISOString()
 }
 
-async function getInfo(app: string, platform: Platform, extended: boolean): Promise<Info> {
+async function getInfo(heroku: APIClient, app: string, platform: Platform, extended: boolean): Promise<Info> {
   const data: Info = await platform.app.describe(app)
 
   if (extended) {
-    const client = new HerokuApiClient()
+    const client = createApiClient(heroku)
     const response = await client.get(`/apps/${app}?extended=true`)
     const appExtended = await response.json() as ExtendedApp
     appExtended.acm = data.app.acm

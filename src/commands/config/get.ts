@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export class ConfigGet extends Command {
   static args = {
@@ -23,7 +23,7 @@ production`)}`
   static usage = 'config:get KEY...'
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {argv, flags} = await this.parse(ConfigGet)
     const config = await platform.configVar.infoForApp(flags.app)
 

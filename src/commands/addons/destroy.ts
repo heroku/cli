@@ -2,7 +2,6 @@ import type {AddOn} from '@heroku/types/3.sdk'
 
 import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonProvisioningFailedError} from '@heroku/sdk/resources/platform/add-on'
 import {Args} from '@oclif/core'
@@ -11,6 +10,7 @@ import _ from 'lodash'
 
 import ConfirmCommand from '../../lib/confirm-command.js'
 import notify from '../../lib/notify.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Destroy extends Command {
   static args = {
@@ -35,7 +35,7 @@ export default class Destroy extends Command {
     const {app, confirm, wait} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
     const addonResolver = new utils.AddonResolver(this.heroku)
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
 
     const addons = await Promise.all(argv.map((name: string) => addonResolver.resolve(name as string, app)))
     for (const addon of addons) {

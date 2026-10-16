@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
-import {HerokuSDK} from '@heroku/sdk'
 import {telemetryDrainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -19,7 +20,7 @@ export default class Remove extends Command {
   static topic = 'telemetry'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK({extensions: [telemetryDrainExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [telemetryDrainExtensions]})
     const {args, flags} = await this.parse(Remove)
     const {app, space} = flags
     const {telemetry_drain_id} = args

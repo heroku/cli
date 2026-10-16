@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
 import {NotFoundError} from '@heroku/heroku-fetch'
-import {HerokuSDK} from '@heroku/sdk'
 import {databaseExtensions, transferScheduleExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 type Timezone = {
@@ -71,7 +71,7 @@ export default class Schedule extends Command {
     const {args, flags} = await this.parse(Schedule)
     const {app} = flags
     const {database} = args
-    const {data} = new HerokuSDK({extensions: [databaseExtensions, transferScheduleExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [databaseExtensions, transferScheduleExtensions]})
 
     const schedule = this.parseDate(flags.at)
     const at = color.cyan(`${schedule.hour}:00 ${schedule.timezone}`)

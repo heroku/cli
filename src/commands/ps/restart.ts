@@ -2,10 +2,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -46,7 +47,7 @@ export default class Restart extends Command {
     const dyno = flags['dyno-name'] || args.dyno
     const type = flags['process-type']
 
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
     if (type) {
       ux.action.start(`Restarting all ${color.info(type)} dynos on ${color.app(app)}`)

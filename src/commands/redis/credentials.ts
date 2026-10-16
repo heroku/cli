@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Credentials extends Command {
   static args = {
@@ -20,7 +21,7 @@ export default class Credentials extends Command {
     const {app, reset} = flags
     const {database} = args
 
-    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
 
     if (reset) {

@@ -1,7 +1,8 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import {color, hux, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../../../lib/sdk.js'
 
 export default class DataMaintenancesWindow extends Command {
   static args = {
@@ -27,7 +28,7 @@ export default class DataMaintenancesWindow extends Command {
     const addon = await addonResolver.resolve(args.addon, flags.app)
 
     ux.action.start(`Fetching maintenance window for ${color.addon(addon.name!)}`)
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     const window = await data.maintenance.window(addon.id!)
     ux.action.stop()
 

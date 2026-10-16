@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ConfigVar} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
@@ -10,6 +9,7 @@ import {SocksClient} from 'socks'
 import tsheredoc from 'tsheredoc'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 const forwardDebug = debug('cli:ps:forward')
@@ -54,7 +54,7 @@ export default class Forward extends Command {
 
     const exec = new HerokuExec()
 
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
     const portMappings: string[] = args.port.split(',').map((portMapping: string) => {
       const ports = portMapping.split(':')

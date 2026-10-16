@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {SniEndpoint} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
 import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
 import getEndpoint from '../../lib/certs/flags.js'
+import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint as LocalSniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 export default class Info extends Command {
@@ -20,7 +20,7 @@ export default class Info extends Command {
   static topic = 'certs'
 
   public async run(): Promise<SniEndpoint> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Info)
     const {app} = flags
     const endpoint = await getEndpoint(flags, platform)

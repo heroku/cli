@@ -1,7 +1,8 @@
 import type {Account} from '@heroku/types/3.sdk'
 
 import {Command} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthWhoami extends Command {
   static aliases = ['whoami']
@@ -14,7 +15,7 @@ export default class AuthWhoami extends Command {
   }
 
   async run(): Promise<Account> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
 
     if (process.env.HEROKU_API_KEY) this.warn('HEROKU_API_KEY is set')
     if (!this.heroku.auth) this.notloggedin()

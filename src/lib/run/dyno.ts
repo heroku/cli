@@ -16,6 +16,7 @@ import * as tls from 'node:tls'
 import * as tty from 'node:tty'
 import {URL} from 'node:url'
 
+import {createSDK} from '../sdk.js'
 import {buildEnvFromFlag} from './helpers.js'
 
 const debug = debugFactory('heroku:run')
@@ -64,7 +65,7 @@ export default class Dyno extends Duplex {
     this.cork()
     this.opts = opts
     this.heroku = opts.heroku
-    this.sdk = opts.sdk ?? new HerokuSDK({extensions: [dynoExtensions]})
+    this.sdk = opts.sdk ?? createSDK(opts.heroku, {extensions: [dynoExtensions]})
 
     if (this.opts.showStatus === undefined) {
       this.opts.showStatus = true

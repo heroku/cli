@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
+
+import {createSDK} from '../lib/sdk.js'
 
 export default class Regions extends Command {
   static description = 'list available regions for deployment'
@@ -12,7 +13,7 @@ export default class Regions extends Command {
   static topic = 'regions'
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Regions)
     let regions = await platform.region.list()
     if (flags.private) {

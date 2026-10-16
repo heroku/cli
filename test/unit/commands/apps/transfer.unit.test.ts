@@ -224,7 +224,7 @@ describe('heroku apps:transfer', function () {
     // env token, flipping the header).
     it('threads the CLI auth token into the SDK client options', async function () {
       sinon.restore()
-      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+      sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
       let authHeader: string | undefined
       const infoAPI = nock('https://api.heroku.com:443')
@@ -258,7 +258,7 @@ describe('heroku apps:transfer', function () {
       const originalHerokuHost = process.env.HEROKU_HOST
       process.env.HEROKU_HOST = 'staging.herokudev.com'
       sinon.restore()
-      sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+      sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
       const stagingAPI = nock('https://api.staging.herokudev.com:443')
         .get('/apps/myapp')
