@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Services extends Command {
   static description = 'list all available add-on services'
@@ -12,7 +13,7 @@ export default class Services extends Command {
 
   public async run(): Promise<void> {
     const {flags} = await this.parse(Services)
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const services = await platform.addOnService.list()
     if (flags.json) {
       hux.styledJSON(services)

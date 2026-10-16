@@ -1,11 +1,11 @@
 import {flags as Flags} from '@heroku-cli/command'
 import {color, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
 import {MaintenanceStatus} from '../../../lib/data/types.js'
 import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class DataMaintenancesWait extends BaseCommand {
   static args = {
@@ -31,7 +31,7 @@ export default class DataMaintenancesWait extends BaseCommand {
       this.error('You can\'t await maintenance on an Essential tier database.')
     }
 
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     const maintenance = await data.maintenance.info(addon.id!)
 
     if (maintenance.status !== MaintenanceStatus.running) {

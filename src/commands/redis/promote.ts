@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Promote extends Command {
   static args = {
@@ -20,7 +21,7 @@ export default class Promote extends Command {
     const {app, as} = flags
     const {database} = args
 
-    const {data, platform} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data, platform} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
 
     const addons = await platform.addOn.listByApp(app)

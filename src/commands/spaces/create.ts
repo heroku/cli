@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {RegionCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import {getGeneration} from '../../lib/apps/generation.js'
+import {createSDK} from '../../lib/sdk.js'
 import {splitCsv} from '../../lib/spaces/parsers.js'
 import {displayShieldState} from '../../lib/spaces/spaces.js'
 
@@ -65,7 +65,7 @@ export default class Create extends Command {
     const spaceType = shield ? 'Shield' : 'Standard'
 
     ux.action.start(`Creating space ${color.space(spaceName as string)} in team ${color.cyan(team as string)}`)
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const space = await platform.space.create({
       channel_name: channel,
       cidr,

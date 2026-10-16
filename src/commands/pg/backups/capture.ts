@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
 import {NotFoundError} from '@heroku/heroku-fetch'
-import {HerokuSDK} from '@heroku/sdk'
 import {backupExtensions, databaseExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -30,7 +30,7 @@ export default class Capture extends Command {
     const {database} = args
 
     const interval = Math.max(3, Number.parseInt(waitInterval || '3', 10))
-    const {data} = new HerokuSDK({extensions: [backupExtensions, databaseExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [backupExtensions, databaseExtensions]})
 
     try {
       const dbInfo = await data.database.describe(app, database)

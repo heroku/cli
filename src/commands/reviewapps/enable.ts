@@ -1,8 +1,9 @@
 import {Command, flags, vars} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {reviewAppConfigExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class ReviewappsEnable extends Command {
   static description = 'enable review apps and/or settings on an existing pipeline'
@@ -67,10 +68,8 @@ export default class ReviewappsEnable extends Command {
       settings.wait_for_ci = true
     }
 
-    const sdk = new HerokuSDK({
-      clientOptions: {token: this.heroku.auth},
+    const sdk = createSDK(this.heroku, {
       clientOptionsByService: {
-        platform: {baseUrl: vars.apiUrl},
         repositoriesApi: {baseUrl: vars.apiUrl},
       },
       extensions: [reviewAppConfigExtensions],

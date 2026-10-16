@@ -4,13 +4,13 @@ import type {PipelinePromotionTarget} from '@heroku/types/3.sdk'
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
 import {promotePipeline, type ReleaseStreamContext} from '@heroku/sdk/resources/platform/pipeline/promotion'
 import {ux} from '@oclif/core/ux'
 import assert from 'node:assert'
 
 import keyBy from '../../lib/pipelines/key-by.js'
+import {createSDK} from '../../lib/sdk.js'
 
 function assertNotPromotingToSelf(source: string, target: string) {
   assert.notStrictEqual(source, target, `Cannot promote from an app to itself: ${target}. Specify a different target app.`)
@@ -47,7 +47,7 @@ export default class Promote extends Command {
     const appNameOrId = flags.app
     const coupling = await getCoupling(this.heroku, appNameOrId)
     ux.stdout(`Fetching apps from ${color.pipeline(coupling.pipeline!.name)}...`)
-    const sdk = new HerokuSDK({extensions: [pipelineCouplingExtensions]})
+    const sdk = createSDK(this.heroku, {extensions: [pipelineCouplingExtensions]})
     const {platform} = sdk
     const allApps = await platform.pipelineCoupling.listApps(coupling.pipeline!.id!)
     const sourceStage = coupling.stage

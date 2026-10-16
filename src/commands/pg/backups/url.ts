@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Url extends Command {
   static args = {
@@ -20,7 +20,7 @@ export default class Url extends Command {
     const {args, flags} = await this.parse(Url)
     const {backup_id} = args
     const {app} = flags
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
 
     let num
     if (backup_id) {

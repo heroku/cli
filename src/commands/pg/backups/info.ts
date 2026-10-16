@@ -6,6 +6,7 @@ import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 type Data = HerokuSDK['data']
 
@@ -91,7 +92,7 @@ export default class Info extends Command {
     const {args, flags} = await this.parse(Info)
     const {app} = flags
     const {backup_id} = args
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
 
     const backup = await this.getBackup(backup_id, app, data)
     this.displayBackup(backup)

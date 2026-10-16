@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
 import {description, color as getStatusColor} from '../../lib/releases/status-helper.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Info extends Command {
   static args = {
@@ -21,7 +21,7 @@ export default class Info extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Info)
     const {app, json, shell} = flags
     const release = await findByLatestOrId(platform, app, args.release)

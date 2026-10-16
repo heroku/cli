@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {restoreExtensions, TransferFailedError} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -68,7 +68,7 @@ export default class Restore extends Command {
     const {args, flags} = await this.parse(Restore)
     const {app, confirm, extensions, verbose, 'wait-interval': waitInterval} = flags
     const interval = Math.max(3, waitInterval)
-    const {data} = new HerokuSDK({extensions: [restoreExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [restoreExtensions]})
 
     let backupURL
     let backupName = args.backup

@@ -1,13 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 import {databaseNameFromUrl, formatResponseWithCommands} from '../../../lib/pg/util.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -58,7 +58,7 @@ export default class Upgrade extends Command {
       ux.error(`You can only use ${color.code('pg:upgrade:*')} commands on Essential-* and higher plans.`)
 
     const versionPhrase = version ? heredoc(`Postgres version ${version}`) : heredoc('the latest supported Postgres version')
-    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [databaseExtensions]})
     const replica = await data.database.describe(app, db.name)
 
     if (utils.pg.isEssentialDatabase(db)) {

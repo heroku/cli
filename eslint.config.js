@@ -23,6 +23,40 @@ export default [
       'unicorn/prefer-spread': 'warn',
     },
   },
+  // Centralize SDK/client construction: every `new HerokuSDK` / `new HerokuApiClient`
+  // must go through `createSDK` / `createApiClient` in src/lib/sdk.ts, so the CLI-resolved
+  // token and platform baseUrl are threaded in one place. (heroku-fetch 0.2.0 drops the
+  // implicit ~/.netrc fallback, so a bare `new HerokuSDK()` would 401 keychain/netrc users.)
+  {
+    files: ['src/**/*.ts'],
+    ignores: ['src/lib/sdk.ts'],
+    rules: {
+      // NOTE: flat config does not merge rule options — a later config block that also sets
+      // 'no-restricted-syntax' for src/** REPLACES this list rather than extending it, which
+      // would silently drop these guards. Add new selectors here, not in a separate block.
+      // Each name is matched both as a bare callee (`new HerokuSDK()`) and as a member callee
+      // (`new sdk.HerokuSDK()`) so namespace imports can't bypass the guard.
+      'no-restricted-syntax': [
+        'error',
+        {
+          message: 'Do not construct HerokuSDK directly. Use createSDK(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.name='HerokuSDK']",
+        },
+        {
+          message: 'Do not construct HerokuSDK directly. Use createSDK(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.property.name='HerokuSDK']",
+        },
+        {
+          message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.name='HerokuApiClient']",
+        },
+        {
+          message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.property.name='HerokuApiClient']",
+        },
+      ],
+    },
+  },
   // Test file overrides
   {
     files: ['test/**/*.ts', 'test/**/*.js'],

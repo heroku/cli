@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
 
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import renderPipeline from '../../lib/pipelines/render-pipeline.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class PipelinesInfo extends Command {
   static args = {
@@ -32,7 +32,7 @@ export default class PipelinesInfo extends Command {
   async run() {
     const {args, flags} = await this.parse(PipelinesInfo)
     const pipeline: Heroku.Pipeline = await disambiguate(this.heroku, args.pipeline)
-    const {platform} = new HerokuSDK({extensions: [pipelineCouplingExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [pipelineCouplingExtensions]})
     const pipelineApps = await platform.pipelineCoupling.listApps(pipeline.id!)
 
     if (flags.json) {

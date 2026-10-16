@@ -2,7 +2,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HTTP} from '@heroku/http-call'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnAttachmentExtensions, addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonAttachmentAmbiguousError, AddonAttachmentNotFoundError, type ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on-attachment'
 import {Args, ux} from '@oclif/core'
@@ -13,6 +12,7 @@ import open from 'open'
 import tsheredoc from 'tsheredoc'
 
 import {isNotFound} from '../../lib/addons/addons-wait.js'
+import {createSDK} from '../../lib/sdk.js'
 const heredoc = tsheredoc
 
 export interface AddonSso {
@@ -101,7 +101,7 @@ export default class Open extends Command {
       return this.sudo(app, addon)
     }
 
-    const {platform} = new HerokuSDK({extensions: [addOnAttachmentExtensions, addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnAttachmentExtensions, addOnExtensions]})
 
     let attachment: null | ResolvedAddOnAttachment = null
     try {

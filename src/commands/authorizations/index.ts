@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsIndex extends Command {
   static description = 'list OAuth authorizations'
@@ -13,7 +14,7 @@ export default class AuthorizationsIndex extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(AuthorizationsIndex)
 
     const authorizations = await platform.oauthAuthorization.list()

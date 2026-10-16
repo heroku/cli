@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import push from '../../../lib/git/push.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Set extends Command {
   static args = {
@@ -21,7 +21,7 @@ Run git push heroku main to trigger a new build on myapp.`
   static hiddenAliases = ['stack:set']
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Set)
     const stack = map(args.stack)
 

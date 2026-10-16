@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -19,7 +19,7 @@ export default class Disable extends Command {
   static topic = 'certs'
 
   public async run(): Promise<App> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Disable)
     const {app, confirm} = flags
 

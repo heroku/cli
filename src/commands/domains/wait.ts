@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {domainExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class DomainsWait extends Command {
   static args = {
@@ -17,7 +18,7 @@ export default class DomainsWait extends Command {
 
   async run() {
     const {args, flags} = await this.parse(DomainsWait)
-    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [domainExtensions]})
 
     await platform.domain.wait(flags.app, {
       hostname: args.hostname,

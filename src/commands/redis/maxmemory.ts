@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class MaxMemory extends Command {
   static args = {
@@ -31,7 +32,7 @@ export default class MaxMemory extends Command {
     const {app, policy} = flags
     const {database} = args
 
-    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
     const config = await data.redis.updateConfig(addon.name!, {maxmemory_policy: policy})
     const configVars = addon.config_vars || []

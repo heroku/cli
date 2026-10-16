@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
 import {renderInfo} from '../../lib/spaces/spaces.js'
 import {SpaceNat} from '../../lib/types/fir.js'
 import {SpaceWithOutboundIps} from '../../lib/types/spaces.js'
@@ -37,7 +37,7 @@ export default class Info extends Command {
       `))
     }
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const space = flags.json
       ? await platform.space.info(spaceName as string) as SpaceWithOutboundIps
       : await platform.withHeaders({'Accept-Expansion': 'region'}).space.info(spaceName as string) as SpaceWithOutboundIps

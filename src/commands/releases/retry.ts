@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import {stream} from '../../lib/releases/output.js'
 import {findByLatestOrId} from '../../lib/releases/releases.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Retry extends Command {
   static description = 'retry the latest release-phase command'
@@ -16,7 +16,7 @@ export default class Retry extends Command {
   static topic = 'releases'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Retry)
     const {app} = flags
     const release = await findByLatestOrId(platform, app)

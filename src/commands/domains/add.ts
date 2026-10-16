@@ -2,13 +2,13 @@ import type {SniEndpoint} from '@heroku/types/3.sdk'
 
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions, domainExtensions} from '@heroku/sdk/extensions/platform'
 import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 
 import {quote} from '../../lib/config/quote.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 
 type CertChoice = {
   name: string;
@@ -81,7 +81,7 @@ export default class DomainsAdd extends Command {
     const {args, flags} = await this.parse(DomainsAdd)
     const {hostname} = args
 
-    const {platform} = new HerokuSDK({extensions: [appExtensions, domainExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions, domainExtensions]})
 
     ux.action.start(`Adding ${color.name(hostname)} to ${color.app(flags.app)}`)
 

@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {SniEndpoint} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import getEndpoint from '../../lib/certs/flags.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -22,7 +22,7 @@ export default class Remove extends Command {
   static topic = 'certs'
 
   public async run(): Promise<SniEndpoint> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Remove)
     const {app, confirm} = flags
     const sniEndpoint = await getEndpoint(flags, platform)

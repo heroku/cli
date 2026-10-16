@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ConfigVar} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
@@ -9,6 +8,7 @@ import path from 'node:path'
 
 import {HerokuExec} from '../../lib/ps-exec/exec.js'
 import {HerokuSsh} from '../../lib/ps-exec/ssh.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Copy extends Command {
   static args = {
@@ -51,7 +51,7 @@ export default class Copy extends Command {
     const exec = new HerokuExec()
     const ssh = new HerokuSsh()
 
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
     await exec.initFeature(context, platform, async (configVars: ConfigVar) => {
       await exec.updateClientKey(context, platform, configVars, async (privateKey, dyno, credentials) => {

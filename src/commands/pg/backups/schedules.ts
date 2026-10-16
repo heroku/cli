@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {transferScheduleExtensions} from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Schedules extends Command {
   static description = 'list backup schedule'
@@ -15,7 +16,7 @@ export default class Schedules extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Schedules)
     const {app} = flags
-    const {data} = new HerokuSDK({extensions: [transferScheduleExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [transferScheduleExtensions]})
     const schedules = await data.transferSchedule.list(app)
     if (schedules.length === 0) {
       ux.warn(`No backup schedules found on ${color.app(app)}\nUse ${color.code('heroku pg:backups:schedule')} to set one up`)

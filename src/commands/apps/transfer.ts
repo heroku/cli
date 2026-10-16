@@ -6,9 +6,9 @@ import {App} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 import {getOwner, isTeamApp, isValidEmail} from '../../lib/team-utils.js'
 import AppsLock from './lock.js'
 
@@ -61,7 +61,7 @@ export default class AppsTransfer extends Command {
 
   public async run() {
     const inquirer = await lazyModuleLoader.loadInquirer()
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku), extensions: [appExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions]})
 
     const {args, flags} = await this.parse(AppsTransfer)
     const {app, bulk, confirm, locked} = flags

@@ -1,12 +1,12 @@
 import {Command, flags} from '@heroku-cli/command'
 import {Plan} from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
 import printf from 'printf'
 
 import {formatPrice} from '../../lib/addons/util.js'
+import {createSDK} from '../../lib/sdk.js'
 
 type PlanWithMeteredPrice = Plan & {
   price: {
@@ -30,7 +30,7 @@ export default class Plans extends Command {
   public async run(): Promise<void> {
     const {args, flags} = await this.parse(Plans)
     const {service} = args
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
     const plans = ((await platform.addOn.listPlans(service)) as unknown as PlanWithMeteredPrice[])
       .sort((a, b) => {
         const contractDelta = Number(a.price?.contract ?? false) - Number(b.price?.contract ?? false)

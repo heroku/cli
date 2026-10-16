@@ -303,15 +303,14 @@ describe('apps:create', function () {
 
   it('threads the CLI auth token into the SDK client options', async function () {
     // Opt out of the shared platform getter stub so the real SDK + platform
-    // client run and actually issue an HTTP request. The CLI resolves the
-    // token into `this.heroku.auth` during Command.init(); the command must
-    // forward it as `clientOptions.token`, which heroku-fetch turns into the
-    // outgoing `Authorization: Bearer <token>` header. Pin `this.heroku.auth`
-    // to a sentinel distinct from the test env's HEROKU_API_KEY so this test
-    // fails if the command drops `clientOptions: {token: this.heroku.auth}`
-    // (the SDK would then fall back to the env token, flipping the header).
+    // client run and actually issue an HTTP request. createSDK threads a lazy
+    // token provider backed by `this.heroku.getAuthEntry()`, which heroku-fetch
+    // turns into the outgoing `Authorization: Bearer <token>` header. Pin
+    // `getAuthEntry` to a sentinel distinct from the test env's HEROKU_API_KEY
+    // so this test fails if the command drops the provider (the SDK would then
+    // fall back to the env token, flipping the header).
     platformGetterStub.restore()
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
     api
@@ -338,7 +337,7 @@ describe('apps:create', function () {
     const originalHerokuHost = process.env.HEROKU_HOST
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     platformGetterStub.restore()
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
       .post('/apps')

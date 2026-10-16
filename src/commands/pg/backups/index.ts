@@ -2,10 +2,10 @@ import type {TransferInfoByAppResult, TransferListByAppResult} from '@heroku/typ
 
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 // hux.table needs Record<string, unknown>; the SDK's interface-based TransferInfoByAppResult has no implicit index signature.
 type TransferRow = Record<string, unknown> & TransferInfoByAppResult
@@ -28,7 +28,7 @@ export default class Index extends Command {
   public async run(): Promise<void> {
     const {flags: {app}} = await this.parse(Index)
 
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     const transfers = await data.transfer.listByApp(app)
     // NOTE that the sort order is descending
     transfers.sort((transferA, transferB) => transferB.created_at.localeCompare(transferA.created_at))

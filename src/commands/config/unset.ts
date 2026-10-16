@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -23,7 +24,7 @@ Unsetting RAILS_ENV, RACK_ENV and restarting example... done, v10`)]
   static strict = false
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const parsed = await this.parse(ConfigUnset)
     const {flags} = parsed
     const argv = parsed.argv as string[]

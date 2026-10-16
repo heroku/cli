@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class DomainsUpdate extends Command {
   static args = {
@@ -24,7 +25,7 @@ export default class DomainsUpdate extends Command {
 
     try {
       ux.action.start(`Updating ${color.name(hostname)} to use ${color.name(flags.cert)} certificate`)
-      const {platform} = new HerokuSDK()
+      const {platform} = createSDK(this.heroku)
       await platform.domain.update(flags.app, hostname, {sni_endpoint: flags.cert})
     } catch (error: any) {
       ux.error(error)

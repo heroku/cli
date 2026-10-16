@@ -1,12 +1,12 @@
 import {Command, flags, vars} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
 import {streamer} from '../../lib/container/streamer.js'
+import {createSDK} from '../../lib/sdk.js'
 
 type ImageResponse = {
   config: {digest: string}
@@ -30,7 +30,7 @@ export default class ContainerRelease extends Command {
   static usage = 'container:release'
 
   async run() {
-    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [containerExtensions]})
     const {argv, flags} = await this.parse(ContainerRelease)
     const {app, verbose} = flags
 

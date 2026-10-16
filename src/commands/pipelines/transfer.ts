@@ -1,6 +1,5 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
@@ -11,6 +10,7 @@ import {
 } from '../../lib/api.js'
 import disambiguate from '../../lib/pipelines/disambiguate.js'
 import renderPipeline from '../../lib/pipelines/render-pipeline.js'
+import {createSDK} from '../../lib/sdk.js'
 
 async function getTeamOwner(heroku: APIClient, name: string) {
   const {body: team} = await getTeam(heroku, name)
@@ -51,7 +51,7 @@ export default class PipelinesTransfer extends Command {
     const {args, flags} = await this.parse(PipelinesTransfer)
     const pipeline = await disambiguate(this.heroku, flags.pipeline)
     const newOwner = await getOwner(this.heroku, args.owner)
-    const {platform} = new HerokuSDK({extensions: [pipelineCouplingExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [pipelineCouplingExtensions]})
     const apps = await platform.pipelineCoupling.listApps(pipeline.id!)
     const displayType = newOwner.type === 'user' ? 'account' : newOwner.type
     let confirmName = flags.confirm

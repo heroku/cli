@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Rm extends Command {
   static description = 'remove the process type from your app'
@@ -21,7 +21,7 @@ export default class Rm extends Command {
   static usage = 'container:rm -a APP [-v] PROCESS_TYPE...'
 
   async run() {
-    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [containerExtensions]})
     const {argv, flags} = await this.parse(Rm)
     const {app} = flags
 

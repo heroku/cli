@@ -1,14 +1,15 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class TwoFactor extends Command {
   static aliases = ['2fa', 'twofactor']
   static description = 'check 2fa status'
 
   async run(): Promise<boolean> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const account = await platform.account.info()
     if (account.two_factor_authentication) {
       ux.stdout(`Two-factor authentication is ${color.success('enabled')}`)

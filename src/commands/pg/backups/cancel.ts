@@ -1,8 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Cancel extends Command {
   static args = {
@@ -19,7 +19,7 @@ export default class Cancel extends Command {
     const {args, flags} = await this.parse(Cancel)
     const {app} = flags
     const {backup_id} = args
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
 
     let transfer
 

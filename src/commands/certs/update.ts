@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {SniEndpoint} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -9,6 +8,7 @@ import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
 import getEndpoint from '../../lib/certs/flags.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
+import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint as LocalSniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 const heredoc = tsheredoc
@@ -38,7 +38,7 @@ export default class Update extends Command {
   static topic = 'certs'
 
   public async run(): Promise<SniEndpoint> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Update)
     const {app, confirm} = flags
     let sniEndpoint = await getEndpoint(flags, platform)

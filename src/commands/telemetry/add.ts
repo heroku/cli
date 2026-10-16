@@ -2,10 +2,10 @@ import type {TelemetryDrainCreateOpts} from '@heroku/types/3.sdk'
 
 import {Command, flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
 import {validateAndFormatSignals} from '../../lib/telemetry/util.js'
 
 const heredoc = tsheredoc
@@ -33,7 +33,7 @@ export default class Add extends Command {
     const {args, flags} = await this.parse(Add)
     const {app, headers, signals, space, transport} = flags
     const {endpoint} = args
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
 
     // Allow splunk, but do not show splunk in error message until splunk transport is accepted as a feature
     // When splunk transport is accepted as a feature, and options are added for the transport flag, this section should be removed

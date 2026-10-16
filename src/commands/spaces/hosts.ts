@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
 import {displayHosts, displayHostsAsJSON, type Host} from '../../lib/spaces/hosts.js'
 
 const heredoc = tsheredoc
@@ -31,7 +31,7 @@ export default class Hosts extends Command {
       `))
     }
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const hosts = await platform.spaceHost.list(spaceName as string) as Host[]
     if (flags.json)
       displayHostsAsJSON(hosts)

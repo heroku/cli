@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Timeout extends Command {
   static args = {
@@ -22,7 +23,7 @@ export default class Timeout extends Command {
     const {app, seconds} = flags
     const {database} = args
 
-    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
     const response = await data.redis.updateConfig(addon.name!, {timeout: seconds})
     ux.stdout(`Timeout for ${addon.name} (${addon.config_vars!.join(', ')}) set to ${response.timeout.value} seconds.`)

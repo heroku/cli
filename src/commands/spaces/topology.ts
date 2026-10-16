@@ -2,10 +2,10 @@ import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
 import {SpaceTopology} from '../../lib/types/spaces.js'
 
 const heredoc = tsheredoc
@@ -89,7 +89,7 @@ export default class Topology extends Command {
       `))
     }
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     // Narrow to the local render view-type: the generated SpaceTopology is intentionally looser
     // (e.g. domains?: unknown[] and optional formation fields), while render() consumes the tighter
     // shape (domains: string[], required fields). Kept until the hyperschema tightens those.

@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import {NotFoundError} from '@heroku/heroku-fetch'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const ADDON_SERVICE_PREFIX = process.env.HEROKU_REDIS_ADDON_NAME || 'heroku-redis'
 
@@ -24,7 +25,7 @@ export default class Info extends Command {
     const {app, json} = flags
     const {database} = args
 
-    const {data, platform} = new HerokuSDK()
+    const {data, platform} = createSDK(this.heroku)
     const addons = await platform.addOn.listByApp(app)
     const filter = database?.toUpperCase()
     const redisAddons = addons.filter(addon => {

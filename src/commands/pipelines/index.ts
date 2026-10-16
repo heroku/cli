@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Pipelines extends Command {
   static description = 'list pipelines you have access to'
@@ -15,7 +16,7 @@ export default class Pipelines extends Command {
   async run() {
     const {flags} = await this.parse(Pipelines)
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const pipelines = await platform.pipeline.list()
 
     if (flags.json) {

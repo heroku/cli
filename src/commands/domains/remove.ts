@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class DomainsRemove extends Command {
   static args = {
@@ -18,7 +19,7 @@ export default class DomainsRemove extends Command {
     const {args, flags} = await this.parse(DomainsRemove)
 
     ux.action.start(`Removing ${color.green(args.hostname)} from ${color.app(flags.app)}`)
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     await platform.domain.delete(flags.app, args.hostname)
     ux.action.stop()
   }

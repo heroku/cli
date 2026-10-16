@@ -6,6 +6,7 @@ import {Args, ux} from '@oclif/core'
 import {parse, quote} from '../../lib/config/quote.js'
 import {EditorFactory} from '../../lib/config/util.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 
 type Platform = HerokuSDK['platform']
 
@@ -40,7 +41,7 @@ ${color.command('VISUAL="atom --wait" heroku config:edit')}`,
   app!: string
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const _ = await lazyModuleLoader.loadLodash()
 
     const {args: {key}, flags: {app}} = await this.parse(ConfigEdit)

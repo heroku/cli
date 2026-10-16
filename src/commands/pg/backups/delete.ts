@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import ConfirmCommand from '../../../lib/confirm-command.js'
 import * as pgBackups from '../../../lib/pg/backups.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Delete extends Command {
   static args = {
@@ -25,7 +25,7 @@ export default class Delete extends Command {
     const {args, flags} = await this.parse(Delete)
     const {app, confirm} = flags
     const {backup_id} = args
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
 
     await new ConfirmCommand().confirm(app, confirm)
     ux.action.start(`Deleting backup ${color.cyan(backup_id)} on ${color.app(app)}`)

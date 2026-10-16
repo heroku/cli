@@ -1,12 +1,12 @@
 import {Command, flags, vars} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
 import {DockerHelper, DockerJob} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Run extends Command {
   static description = 'builds, then runs the docker image locally'
@@ -27,7 +27,7 @@ export default class Run extends Command {
   dockerHelper = new DockerHelper()
 
   async run() {
-    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [containerExtensions]})
     const {argv, flags} = await this.parse(Run)
     const {app, port, verbose} = flags
 

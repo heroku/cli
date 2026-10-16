@@ -2,7 +2,6 @@ import type {DatabaseUpgradeWaitStatusResult} from '@heroku/types/data'
 
 import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {databaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 import debug from 'debug'
@@ -10,6 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import notify from '../../../lib/notify.js'
 import {formatResponseWithCommands} from '../../../lib/pg/util.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 const heredoc = tsheredoc
@@ -51,7 +51,7 @@ export default class Wait extends Command {
     const dbName = args.database
     const pgDebug = debug('pg')
 
-    const {data} = new HerokuSDK({extensions: [databaseExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [databaseExtensions]})
     const waitFor = async (db: pg.ExtendedAddonAttachment['addon']) => {
       const interval = (!waitInterval || waitInterval < 0) ? 5 : waitInterval
       let status: DatabaseUpgradeWaitStatusResult
