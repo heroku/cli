@@ -98,3 +98,14 @@ export function createApiClient(
 ): HerokuApiClient {
   return new HerokuApiClient(apiClientOptions(heroku, opts))
 }
+
+/**
+ * Construct a `HerokuApiClient` for an intentionally unauthenticated request to
+ * a third-party host (for example the public Heroku/Salesforce status APIs). No
+ * token is sent, so no CLI credential resolution runs and no `APIClient` is
+ * needed at the call site. Lives here so the `new HerokuApiClient` stays inside
+ * the sdk.ts lint boundary.
+ */
+export function createUnauthenticatedClient(baseUrl: string): HerokuApiClient {
+  return new HerokuApiClient({baseUrl, service: 'custom', token: ''})
+}
