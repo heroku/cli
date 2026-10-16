@@ -31,6 +31,11 @@ export default [
     files: ['src/**/*.ts'],
     ignores: ['src/lib/sdk.ts'],
     rules: {
+      // NOTE: flat config does not merge rule options — a later config block that also sets
+      // 'no-restricted-syntax' for src/** REPLACES this list rather than extending it, which
+      // would silently drop these guards. Add new selectors here, not in a separate block.
+      // Each name is matched both as a bare callee (`new HerokuSDK()`) and as a member callee
+      // (`new sdk.HerokuSDK()`) so namespace imports can't bypass the guard.
       'no-restricted-syntax': [
         'error',
         {
@@ -38,8 +43,16 @@ export default [
           selector: "NewExpression[callee.name='HerokuSDK']",
         },
         {
+          message: 'Do not construct HerokuSDK directly. Use createSDK(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.property.name='HerokuSDK']",
+        },
+        {
           message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
           selector: "NewExpression[callee.name='HerokuApiClient']",
+        },
+        {
+          message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.property.name='HerokuApiClient']",
         },
       ],
     },
