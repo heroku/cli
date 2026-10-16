@@ -34,12 +34,12 @@ export default [
       'no-restricted-syntax': [
         'error',
         {
-          selector: "NewExpression[callee.name='HerokuSDK']",
           message: 'Do not construct HerokuSDK directly. Use createSDK(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.name='HerokuSDK']",
         },
         {
-          selector: "NewExpression[callee.name='HerokuApiClient']",
           message: 'Do not construct HerokuApiClient directly. Use createApiClient(this.heroku, …) from src/lib/sdk.ts.',
+          selector: "NewExpression[callee.name='HerokuApiClient']",
         },
       ],
     },
