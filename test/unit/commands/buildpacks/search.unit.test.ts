@@ -1,9 +1,9 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksSearch from '../../../../src/commands/buildpacks/search.js'
+import {buildpack} from '../../../fixtures/buildpacks/registry.js'
 
 describe('buildpacks:search', function () {
   let registryApi: nock.Scope
@@ -21,7 +21,7 @@ describe('buildpacks:search', function () {
     registryApi
       .get('/buildpacks?in[namespace][]=heroku')
       .reply(200, [
-        Fixture.buildpack({
+        buildpack({
           description: 'Official Heroku Buildpack for Ruby',
           name: 'ruby',
         }),
@@ -34,7 +34,7 @@ describe('buildpacks:search', function () {
   })
 
   it('searches only returns unique buildpacks', async function () {
-    const rubyBuildpack = Fixture.buildpack({
+    const rubyBuildpack = buildpack({
       description: 'Official Heroku Buildpack for Ruby',
       name: 'ruby',
     })

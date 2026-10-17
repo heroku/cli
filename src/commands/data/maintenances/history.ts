@@ -91,7 +91,7 @@ export default class DataMaintenancesHistory extends BaseCommand {
     } else if (flags.csv) {
       outputCSV(maintenances, tableColumns)
     } else {
-      const tableOptions = constructSortFilterTableOptions(flags, tableColumns)
+      const tableOptions = constructSortFilterTableOptions({filter: flags.filter ?? '', sort: flags.sort ?? ''}, tableColumns)
       hux.table(maintenances, tableColumns, tableOptions)
     }
   }

@@ -31,6 +31,10 @@ Accepting and configuring peering connection pcx-4bd27022`)]
     }
 
     const pcxID = flags.pcxid || args.pcxid
+    if (!pcxID) {
+      throw new Error('Peering ID required.\nUSAGE: heroku spaces:peerings:accept pcx-12345678 --space my-space')
+    }
+
     await platform.peering.accept(space, {pcx_id: pcxID})
     ux.stdout(`Accepting and configuring peering connection ${color.name(pcxID)}`)
   }

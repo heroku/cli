@@ -29,6 +29,20 @@ interface ArgBinding {
   position: number
 }
 
+async function mapConcurrent<T, R>(items: readonly T[], limit: number, mapper: (item: T) => Promise<R>): Promise<R[]> {
+  const results: R[] = Array.from({length: items.length})
+  let nextIndex = 0
+  await Promise.all(Array.from({length: Math.min(limit, items.length)}, async () => {
+    while (nextIndex < items.length) {
+      const index = nextIndex++
+      // Each worker handles its next item only after the previous load settles.
+      // eslint-disable-next-line no-await-in-loop
+      results[index] = await mapper(items[index])
+    }
+  }))
+  return results
+}
+
 /**
  * The completion id a flag's values should be drawn from, or `undefined` if the
  * flag has no (implemented) completion.
@@ -166,7 +180,7 @@ export function resolveArgCompletionId(commandId: string, argName: string): stri
  * carry per-command context.
  */
 async function collectBindings(config: Interfaces.Config): Promise<CompletionBinding[]> {
-  const perCommand = await Promise.all(config.commands.map(async loadable => {
+  const perCommand = await mapConcurrent(config.commands, 4, async loadable => {
     const found: CompletionBinding[] = []
     let command
     try {
@@ -177,13 +191,13 @@ async function collectBindings(config: Interfaces.Config): Promise<CompletionBin
 
     const flags = (command.flags ?? {}) as Record<string, {completion?: unknown; hidden?: boolean; type?: string}>
     for (const [longName, flag] of Object.entries(flags)) {
-      if (!flag || flag.type !== 'option' || flag.hidden) continue
+      if (flag?.type !== 'option' || flag.hidden) continue
       const id = resolveCompletionId(longName, flag.completion)
       if (id) found.push({id, longName})
     }
 
     return found
-  }))
+  })
 
   const byLongName = new Map<string, string>()
   for (const bindings of perCommand) {
@@ -204,7 +218,7 @@ async function collectBindings(config: Interfaces.Config): Promise<CompletionBin
  * (counted over all of them, so a hidden arg still occupies its slot).
  */
 async function collectArgBindings(config: Interfaces.Config): Promise<ArgBinding[]> {
-  const perCommand = await Promise.all(config.commands.map(async loadable => {
+  const perCommand = await mapConcurrent(config.commands, 4, async loadable => {
     const found: ArgBinding[] = []
     let command
     try {
@@ -223,7 +237,7 @@ async function collectArgBindings(config: Interfaces.Config): Promise<ArgBinding
     }
 
     return found
-  }))
+  })
 
   return perCommand.flat()
 }
@@ -298,11 +312,11 @@ export function patchZsh(src: string, bin: string, bindings: CompletionBinding[]
     .filter(id => !out.includes(`${helperName(bin, id)} ()`))
     .map(id => zshHelper(bin, id))
     .join('')
-  if (helpers) out = out.replace(`_${bin} () {\n`, `_${bin} () {\n${helpers}`)
+  if (helpers) out = out.replace(`_${bin} () {\n`, match => `${match}${helpers}`)
 
   // 2. point each bound flag's value position at its id's helper.
   for (const {id, longName} of bindings) {
-    out = out.replace(valueSpecRegExp(longName), `$1:${id}:${helperName(bin, id)}"`)
+    out = out.replace(valueSpecRegExp(longName), (_match, prefix: string) => `${prefix}:${id}:${helperName(bin, id)}"`)
   }
 
   // 3. add a positional spec to each bound command's flag array, then route
@@ -327,7 +341,7 @@ export function patchZsh(src: string, bin: string, bindings: CompletionBinding[]
 function injectArgSpec(src: string, bin: string, {commandId, id, position}: ArgBinding): string {
   const spec = `    "${position + 1}:${id}:${helperName(bin, id)}"\n`
   const arm = new RegExp(String.raw`(\n${escapeRegExp(commandId)}\)\n  _command_flags=\(\n)`)
-  return src.replace(arm, `$1${spec}`)
+  return src.replace(arm, match => `${match}${spec}`)
 }
 
 /**
@@ -455,7 +469,7 @@ ${branches}
 `
 
   // Insert right after the first `COMPREPLY=()` so it short-circuits name completion.
-  return src.replace(/\n(\s*)COMPREPLY=\(\)\n/, `\n$1COMPREPLY=()\n${prologue}`)
+  return src.replace(/\n(\s*)COMPREPLY=\(\)\n/, (_match, indent: string) => `\n${indent}COMPREPLY=()\n${prologue}`)
 }
 
 function bashMarker(bin: string, fence: string): string {

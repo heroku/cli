@@ -1,9 +1,9 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksAdd from '../../../../src/commands/buildpacks/add.js'
+import {buildpack} from '../../../fixtures/buildpacks/registry.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 
 describe('buildpacks:add', function () {
@@ -29,7 +29,7 @@ describe('buildpacks:add', function () {
       Stubber.get(api)
       Stubber.put(api, ['https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz'], registry)
 
-      const buildpack = Fixture.buildpack({
+      const registryBuildpack = buildpack({
         blob_url: 'https://buildpack-registry.s3.amazonaws.com/buildpacks/hone/test.tgz',
         name: 'test',
         namespace: 'hone',
@@ -38,7 +38,7 @@ describe('buildpacks:add', function () {
       nock('https://buildpack-registry.heroku.com')
         .get('/buildpacks/hone%2Ftest')
         .times(2)
-        .reply(200, buildpack)
+        .reply(200, registryBuildpack)
 
       const {stderr, stdout} = await runCommand(BuildpacksAdd, ['hone/test', '-a', 'example'])
 
@@ -123,7 +123,7 @@ Run git push heroku main to create a new release using these buildpacks.
         },
       ])
 
-      const buildpack = Fixture.buildpack({
+      const registryBuildpack = buildpack({
         blob_url: 'https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/ruby.tgz',
         name: 'ruby',
         namespace: 'heroku',
@@ -131,7 +131,7 @@ Run git push heroku main to create a new release using these buildpacks.
 
       nock('https://buildpack-registry.heroku.com')
         .get('/buildpacks/heroku%2Fruby')
-        .reply(200, buildpack)
+        .reply(200, registryBuildpack)
 
       const {error} = await runCommand(BuildpacksAdd, ['heroku/ruby', '-a', 'example'])
 

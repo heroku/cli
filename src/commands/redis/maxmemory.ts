@@ -3,6 +3,17 @@ import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
+const maxmemoryPolicies = [
+  'noeviction',
+  'allkeys-lru',
+  'volatile-lru',
+  'allkeys-random',
+  'volatile-random',
+  'volatile-ttl',
+  'allkeys-lfu',
+  'volatile-lfu',
+] as const
+
 export default class MaxMemory extends Command {
   static args = {
     database: Args.string({description: 'name of the Key-Value Store database. If omitted, it defaults to the primary database associated with the app.'}),
@@ -21,7 +32,12 @@ export default class MaxMemory extends Command {
   `
   static flags = {
     app: flags.app({required: true}),
-    policy: flags.string({char: 'p', description: 'set policy name', required: true}),
+    policy: flags.option({
+      char: 'p',
+      description: 'set policy name',
+      options: maxmemoryPolicies,
+      required: true,
+    })(),
     remote: flags.remote(),
   }
   static topic = 'redis'

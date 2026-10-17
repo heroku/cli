@@ -1,9 +1,9 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksInfo from '../../../../src/commands/buildpacks/info.js'
+import {buildpack, readme, revision} from '../../../fixtures/buildpacks/registry.js'
 
 describe('buildpacks:info', function () {
   let registryApi: nock.Scope
@@ -20,7 +20,7 @@ describe('buildpacks:info', function () {
   it('shows info about the buildpack', async function () {
     registryApi
       .get('/buildpacks/heroku%2Fruby')
-      .reply(200, Fixture.buildpack({
+      .reply(200, buildpack({
         name: 'ruby',
         source: {
           owner: 'heroku',
@@ -29,9 +29,9 @@ describe('buildpacks:info', function () {
         },
       }))
       .get('/buildpacks/heroku%2Fruby/revisions')
-      .reply(200, [Fixture.revision()])
+      .reply(200, [revision()])
       .get('/buildpacks/heroku%2Fruby/readme')
-      .reply(200, Fixture.readme())
+      .reply(200, readme())
 
     const {stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby'])
 
@@ -63,7 +63,7 @@ describe('buildpacks:info', function () {
   it('outputs buildpack info as JSON when --json flag is set', async function () {
     registryApi
       .get('/buildpacks/heroku%2Fruby')
-      .reply(200, Fixture.buildpack({
+      .reply(200, buildpack({
         name: 'ruby',
         source: {
           owner: 'heroku',
@@ -72,9 +72,9 @@ describe('buildpacks:info', function () {
         },
       }))
       .get('/buildpacks/heroku%2Fruby/revisions')
-      .reply(200, [Fixture.revision()])
+      .reply(200, [revision()])
       .get('/buildpacks/heroku%2Fruby/readme')
-      .reply(200, Fixture.readme())
+      .reply(200, readme())
 
     const {stdout} = await runCommand(BuildpacksInfo, ['heroku/ruby', '--json'])
 

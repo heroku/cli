@@ -23,15 +23,16 @@ export default class Search extends Command {
 
     if (args.term) {
       const uniqueBuildpacks = new Map<string, BuildpackBody>()
-      const array = ((await registry.search(args.term)).unwrapOr([]))
-        .concat((await registry.search(undefined, args.term)).unwrapOr([]))
-        .concat((await registry.search(undefined, undefined, args.term)).unwrapOr([]))
-      array
-        .forEach((element: BuildpackBody) => {
-          uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
-        })
+      const array: BuildpackBody[] = [
+        ...(await registry.search(args.term)).unwrapOr([]),
+        ...(await registry.search(undefined, args.term)).unwrapOr([]),
+        ...(await registry.search(undefined, undefined, args.term)).unwrapOr([]),
+      ]
+      for (const element of array) {
+        uniqueBuildpacks.set(`${element.namespace}/${element.name}`, element)
+      }
 
-      searchResults = [...uniqueBuildpacks.values()]
+      searchResults = Array.from(uniqueBuildpacks.values())
     } else {
       searchResults = (await registry.search(flags.namespace, flags.name, flags.description)).unwrapOr([])
     }

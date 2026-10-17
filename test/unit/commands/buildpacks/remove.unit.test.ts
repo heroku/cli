@@ -1,10 +1,10 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
 
 import BuildpacksRemove from '../../../../src/commands/buildpacks/remove.js'
+import {buildpack} from '../../../fixtures/buildpacks/registry.js'
 import {BuildpackInstallationsStub as Stubber} from '../../../helpers/buildpacks/buildpack-installations-stub.js'
 import {unwrap} from '../../../helpers/utils/unwrap.js'
 
@@ -196,12 +196,12 @@ Run git push heroku main to create a new release using this buildpack.
         .get('/apps/example/config-vars')
         .reply(200, {})
 
-      const buildpack = Fixture.buildpack({
+      const registryBuildpack = buildpack({
         name: 'ruby',
       })
       nock('https://buildpack-registry.heroku.com')
         .get('/buildpacks/heroku%2Fruby')
-        .reply(200, buildpack)
+        .reply(200, registryBuildpack)
 
       const {stderr, stdout} = await runCommand(BuildpacksRemove, ['heroku/ruby', '-a', 'example'])
 

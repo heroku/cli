@@ -206,7 +206,7 @@ www.example.com  CNAME            www.example.herokudns.com`]
         hux.styledHeader(`${color.app(flags.app)} Custom Domains`)
 
         const tableConfig = this.tableConfig(true, flags.extended, flags.columns ? this.mapColumnHeadersToKeys(flags.columns.split(',')) : undefined)
-        const sortProperty = this.mapSortFieldToProperty(flags.sort)
+        const sortProperty = flags.sort ? this.mapSortFieldToProperty(flags.sort) : undefined
 
         if (flags.csv) {
           this.outputCSV(customDomains, tableConfig, sortProperty)

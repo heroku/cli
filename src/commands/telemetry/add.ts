@@ -47,9 +47,11 @@ export default class Add extends Command {
     if (app) {
       const herokuApp = await platform.app.info(app)
       id = herokuApp.id
-    } else {
+    } else if (space) {
       const herokuSpace = await platform.space.info(space)
       id = herokuSpace.id
+    } else {
+      throw new Error('App or space required.')
     }
 
     const exporterHeaders = headers || '{}'

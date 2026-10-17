@@ -41,16 +41,29 @@ export default class Create extends Command {
   static strict = false
 
   public async run(): Promise<void> {
-    this.allowArbitraryFlags = true
-    const {args, flags, ...restParse} = await this.parse(Create)
+    const separatorIndex = this.argv.indexOf('--')
+    const hasArgumentSeparator = separatorIndex !== -1
+    let commandArgs = hasArgumentSeparator ? this.argv.slice(0, separatorIndex) : this.argv
+    let configArgs = hasArgumentSeparator ? this.argv.slice(separatorIndex + 1) : undefined
+
+    if (!hasArgumentSeparator) {
+      const configIndex = findConfigArgsIndex(commandArgs)
+      if (configIndex >= 0) {
+        configArgs = commandArgs.slice(configIndex)
+        commandArgs = commandArgs.slice(0, configIndex)
+      }
+    }
+
+    const {args, flags, ...restParse} = await this.parse(Create, commandArgs)
     const {app, as, confirm, name, wait} = flags
     const servicePlan = args['service:plan']
-    // oclif duplicates specified args in argv
-    const argv = (restParse.argv as string[])
-      .filter(arg => arg !== servicePlan)
+    const argv = configArgs ?? (restParse.argv as string[]).filter(arg => arg !== servicePlan)
+    const nonExistentFlags = argv.filter(arg => arg.startsWith('--'))
 
-    if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
-      ux.warn(`For example: ${color.code(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
+    if (!hasArgumentSeparator && nonExistentFlags.length > 0) {
+      ux.warn(`You're using a deprecated syntax with the [${nonExistentFlags.join(',')}] flag`)
+      ux.warn('Add a \'--\' (end of options) separator before the flags you\'re passing through.')
+      ux.warn(`For example: ${color.code(`heroku addons:create -a ${app} ${servicePlan} -- ${argv.join(' ')}`)}`)
       ux.warn(`See ${color.info('https://devcenter.heroku.com/changelog-items/2925')} for more info.\n`)
     }
 
@@ -73,6 +86,33 @@ export default class Create extends Command {
     // eslint-disable-next-line no-unsafe-optional-chaining
     ux.stdout(`Run ${color.code('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation.`)
   }
+}
+
+function findConfigArgsIndex(argv: string[]): number {
+  const definitions = {...Create.flags, ...Create.baseFlags}
+  const flagsByName = new Map(Object.entries(definitions))
+  const shortFlags = new Map(Object.entries(definitions).flatMap(([name, flag]) => flag.char ? [[`-${flag.char}`, name]] : []))
+  let isServicePlanFound = false
+
+  for (let index = 0; index < argv.length; index++) {
+    const token = argv[index]
+    if (!token.startsWith('-')) {
+      isServicePlanFound = true
+      continue
+    }
+
+    const flagToken = token.split('=', 1)[0]
+    const flagName = flagToken.startsWith('--') ? flagToken.slice(2) : shortFlags.get(flagToken)
+    const definition = flagName ? flagsByName.get(flagName) : undefined
+    if (!definition) {
+      if (isServicePlanFound) return index
+      continue
+    }
+
+    if (definition.type === 'option' && !token.includes('=') && argv[index + 1]) index++
+  }
+
+  return -1
 }
 
 function parseConfig(args: string[]) {

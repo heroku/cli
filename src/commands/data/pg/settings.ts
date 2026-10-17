@@ -61,7 +61,7 @@ export default class DataPgSettings extends BaseCommand {
     const {args, flags} = await this.parse(DataPgSettings)
     const {database: databaseArg} = args
     const {app, set} = flags
-    const settings: string = set?.map((setting: string) => setting.trim()).join(',')
+    const settings = set?.map((setting: string) => setting.trim()).join(',') ?? ''
 
     const addonResolver = new utils.AddonResolver(this.heroku)
     const database = await addonResolver.resolve(databaseArg, app, utils.pg.addonService())

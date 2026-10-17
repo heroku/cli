@@ -56,12 +56,13 @@ export default class Forward extends Command {
 
     const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
 
-    const portMappings: string[] = args.port.split(',').map((portMapping: string) => {
+    const portMappings: [string, string][] = args.port.split(',').map<[string, string]>((portMapping: string) => {
       const ports = portMapping.split(':')
 
       // this will error out if localPort is used with multiple ports, but
       // that's ok because localPort is only here for backwards compat
-      return [ports[0], ports[1] || localPort || ports[0]]
+      const local = ports[0] ?? ''
+      return [local, ports[1] || localPort || local]
     })
 
     // Each local listener binds asynchronously, so we don't know until its

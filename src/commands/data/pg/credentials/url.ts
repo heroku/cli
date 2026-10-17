@@ -56,7 +56,7 @@ export default class Url extends BaseCommand {
     if (isAdvancedTier) {
       const {body: {items: availableCreds}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`)
       const ownerCred = availableCreds.find(cred => cred.type === 'owner')
-      credName = name || ownerCred?.name
+      credName = name || ownerCred?.name || ''
       if (!credName) {
         ux.error(`There are no active credentials on the database ${color.datastore(addon.name)}.`, {exit: 1})
       }

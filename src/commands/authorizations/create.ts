@@ -14,7 +14,7 @@ export default class AuthorizationsCreate extends Command {
   ]
   static flags = {
     description: flags.string({char: 'd', description: 'set a custom authorization'}),
-    'expires-in': flags.string({char: 'e', description: 'set expiration in seconds (default no expiration)'}),
+    'expires-in': flags.integer({char: 'e', description: 'set expiration in seconds (default no expiration)'}),
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     scope: flags.string({char: 's', completion: ScopeCompletion, description: 'set custom OAuth scopes'}),
     short: flags.boolean({char: 'S', description: 'only output token'}),
@@ -29,7 +29,7 @@ export default class AuthorizationsCreate extends Command {
     const auth = await platform.oauthAuthorization.create({
       description: flags.description,
       expires_in: flags['expires-in'],
-      scope: flags.scope ? flags.scope.split(',') : undefined,
+      scope: flags.scope ? flags.scope.split(',') : ['global'],
     })
 
     ux.action.stop()

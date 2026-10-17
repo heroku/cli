@@ -25,7 +25,6 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-          registry-url: 'https://registry.npmjs.org'
       - name: install dependencies
         run: |
           sudo apt-get update
@@ -42,5 +41,3 @@ jobs:
         shell: bash
       - name: test release
         run: ./scripts/postrelease/test_release
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}

@@ -37,7 +37,7 @@ export default class Destroy extends Command {
     const addonResolver = new utils.AddonResolver(this.heroku)
     const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
 
-    const addons = await Promise.all(argv.map((name: string) => addonResolver.resolve(name as string, app)))
+    const addons = await Promise.all(argv.map(name => addonResolver.resolve(String(name), app)))
     for (const addon of addons) {
       // prevent deletion of add-on when context.app is set but the addon is attached to a different app
       const addonApp = addon.app?.name

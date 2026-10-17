@@ -2,8 +2,10 @@
   "declaration": false,
   "extends": "../tsconfig",
   "compilerOptions": {
+    "rootDir": "..",
     "sourceMap": true,
-    "rootDirs": ["./", "../src"]
+    "rootDirs": ["./", "../src"],
+    "types": ["node", "mocha"]
   },
   "include": [
     "./**/*",

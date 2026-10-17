@@ -38,7 +38,7 @@ describe('authorizations:create', function () {
     expect(fakePlatform.oauthAuthorization.create.calledOnceWithExactly({
       description: 'awesome',
       expires_in: undefined,
-      scope: undefined,
+      scope: ['global'],
     })).to.equal(true)
   })
 
@@ -51,8 +51,8 @@ describe('authorizations:create', function () {
       expect(stdout).to.equal('secrettoken\n')
       expect(fakePlatform.oauthAuthorization.create.calledOnceWithExactly({
         description: undefined,
-        expires_in: '10000',
-        scope: undefined,
+        expires_in: 10000,
+        scope: ['global'],
       })).to.equal(true)
     })
   })

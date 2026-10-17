@@ -1,11 +1,11 @@
 import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
-import {Fixture} from '@heroku/buildpack-registry'
 import {expect} from 'chai'
 import nock from 'nock'
 import {restore, stub} from 'sinon'
 
 import BuildpacksVersions from '../../../../src/commands/buildpacks/versions.js'
+import {revision} from '../../../fixtures/buildpacks/registry.js'
 
 describe('buildpacks:versions', function () {
   let registryApi: nock.Scope
@@ -25,7 +25,7 @@ describe('buildpacks:versions', function () {
     registryApi
       .get('/buildpacks/heroku%2Fruby/revisions')
       .reply(200, [
-        Fixture.revision({
+        revision({
           release: 138,
         }),
       ])
