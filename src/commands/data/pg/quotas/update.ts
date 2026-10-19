@@ -1,18 +1,14 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {getPostgresServiceName, isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
+import {PostgresQuotaUpdateOpts} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import type {Quota} from '../../../../lib/data/types.js'
-
 import BaseCommand from '../../../../lib/data/base-command.js'
 import {displayQuota} from '../../../../lib/data/display-quota.js'
-
-type QuotaUpdate = {
-  critical_gb?: null | number,
-  enforcement_action?: string
-  warning_gb?: null | number,
-}
+import {createSDK} from '../../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 const validateQuotaSetting = function (flagName: string, settingAmt: string | undefined) {
@@ -54,6 +50,7 @@ export default class DataPgQuotasUpdate extends BaseCommand {
     const {args, flags} = await this.parse(DataPgQuotasUpdate)
     const {database} = args
     const {app, critical, 'enforcement-action': enforcementAction, type, warning} = flags
+    const {data, platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
 
     if (!warning && !critical && !enforcementAction) {
       ux.error('You must set a value for either the warning, critical, or enforcement-action flags')
@@ -62,22 +59,22 @@ export default class DataPgQuotasUpdate extends BaseCommand {
     validateQuotaSetting('warning', warning)
     validateQuotaSetting('critical', critical)
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    const addon = await platform.addOn.resolve(database, {
+      addonService: getPostgresServiceName(),
+      appIdentity: app,
+    })
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!isAdvancedDatabase(addon)) {
       ux.error('You can only use this command on Advanced-tier databases.')
     }
 
-    const quotaUpdate: QuotaUpdate = {}
+    const quotaUpdate: PostgresQuotaUpdateOpts = {}
     if (warning) quotaUpdate.warning_gb = warning === 'none' ? null : Number.parseInt(warning, 10)
     if (critical) quotaUpdate.critical_gb = critical === 'none' ? null : Number.parseInt(critical, 10)
-    if (enforcementAction) quotaUpdate.enforcement_action = enforcementAction
+    if (enforcementAction) quotaUpdate.enforcement_action = enforcementAction as PostgresQuotaUpdateOpts['enforcement_action']
 
     ux.action.start(`Updating ${type} quota on ${color.datastore(database)}`)
-    const {body: updatedQuota} = await this.dataApi.patch<Quota>(`/data/postgres/v1/${addon.id}/quotas/${type}`, {
-      body: quotaUpdate,
-    })
+    const updatedQuota = await data.postgresQuota.update(addon.id, type, quotaUpdate)
     ux.action.stop()
 
     displayQuota(updatedQuota)

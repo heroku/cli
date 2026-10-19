@@ -1,12 +1,13 @@
 import {flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {addOnExtensions} from '@heroku/sdk/extensions/platform'
+import {getPostgresServiceName, isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
+import {AddOnAttachment} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
-
-import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
 import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
+import {createSDK} from '../../../../lib/sdk.js'
 
 export default class DataPgAttachmentsIndex extends BaseCommand {
   static args = {
@@ -28,20 +29,23 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
     const {args, flags} = await this.parse(DataPgAttachmentsIndex)
     const {app} = flags
     const {database} = args
+    const {data, platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    const addon = await platform.addOn.resolve(database, {
+      addonService: getPostgresServiceName(),
+      appIdentity: app,
+    })
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
+    if (!isAdvancedDatabase(addon)) {
       ux.error('You can only use this command on Advanced-tier databases.\n'
           + `Use ${color.code(`heroku addons:info ${addon.name} -a ${app}`)} instead.`)
     }
 
-    const [{body: {items: credentials}}, {body: attachments}] = await Promise.all([
-      this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`),
-      this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`),
+    const [{items: credentials}, attachments] = await Promise.all([
+      data.postgresCredential.list(addon.id),
+      platform.addOnAttachment.listByAddOn(addon.id),
     ])
-    const ownerCred = credentials.find((cred: CredentialInfo) => cred.type === 'owner')
+    const ownerCred = credentials.find(cred => cred.type === 'owner')
 
     if (attachments.length === 0) {
       ux.stdout('No attachments found for this database.')
@@ -49,9 +53,10 @@ export default class DataPgAttachmentsIndex extends BaseCommand {
     }
 
     hux.styledHeader(`Attachments for ${color.datastore(addon.name)}`)
-    hux.table(attachments, {
+    // hux.table needs Record<string, unknown>; the SDK's interface-based AddOnAttachment has no implicit index signature.
+    hux.table<AddOnAttachment & Record<string, unknown>>(attachments as (AddOnAttachment & Record<string, unknown>)[], {
       Attachment: {
-        get: attachment => `${color.attachment(attachment.app.name! + '::' + attachment.name)}`,
+        get: attachment => `${color.attachment(attachment.app.name + '::' + attachment.name)}`,
       },
       Credential: {
         get(attachment) {

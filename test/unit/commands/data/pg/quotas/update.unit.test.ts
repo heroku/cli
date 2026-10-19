@@ -1,7 +1,9 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {getPostgresServiceName} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgQuotasUpdate from '../../../../../../src/commands/data/pg/quotas/update.js'
@@ -13,27 +15,40 @@ import {
 
 const heredoc = tsheredoc
 
+type FakeData = {
+  postgresQuota: {update: SinonStub}
+}
+
+type FakePlatform = {
+  addOn: {resolve: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {postgresQuota: {update: stub()}}
+}
+
+function buildFakePlatform(): FakePlatform {
+  return {addOn: {resolve: stub()}}
+}
+
 describe('data:pg:quotas:update', function () {
-  let dataApi: nock.Scope
-  let herokuApi: nock.Scope
+  let fakeData: FakeData
+  let fakePlatform: FakePlatform
 
   beforeEach(function () {
-    dataApi = nock('https://api.data.heroku.com')
-    herokuApi = nock('https://api.heroku.com')
+    fakeData = buildFakeData()
+    fakePlatform = buildFakePlatform()
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
+    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
-    dataApi.done()
-    herokuApi.done()
+    restore()
   })
 
   it('prints the updated quota settings when the quota update is successful', async function () {
-    herokuApi
-      .post('/actions/addons/resolve')
-      .reply(200, [addon])
-    dataApi
-      .patch(`/data/postgres/v1/${addon.id}/quotas/storage`)
-      .reply(200, storageQuotaResponse)
+    fakePlatform.addOn.resolve.resolves(addon)
+    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
 
     const {stderr, stdout} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -55,19 +70,15 @@ describe('data:pg:quotas:update', function () {
       Enforcement Action: None
       Status:             0.00 MB / 100.00 GB (Within configured quotas)
     `))
+    expect(fakePlatform.addOn.resolve.calledOnceWithExactly('advanced-horizontal-01234', {
+      addonService: getPostgresServiceName(),
+      appIdentity: 'myapp',
+    })).to.equal(true)
   })
 
   it('sends the correct quota updates to the data API', async function () {
-    herokuApi
-      .post('/actions/addons/resolve')
-      .reply(200, [addon])
-    dataApi
-      .patch(`/data/postgres/v1/${addon.id}/quotas/storage`, {
-        critical_gb: 100,
-        enforcement_action: 'none',
-        warning_gb: 50,
-      })
-      .reply(200, storageQuotaResponse)
+    fakePlatform.addOn.resolve.resolves(addon)
+    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -78,18 +89,16 @@ describe('data:pg:quotas:update', function () {
       '--enforcement-action=none',
     ])
 
-    // this test will fail with "Nock: No match for request" if the dataApi patch request body is incorrect
+    expect(fakeData.postgresQuota.update.calledOnceWithExactly(addon.id, 'storage', {
+      critical_gb: 100,
+      enforcement_action: 'none',
+      warning_gb: 50,
+    })).to.equal(true)
   })
 
   it('sets the warning_gb to null when the warning flag is set to "none"', async function () {
-    herokuApi
-      .post('/actions/addons/resolve')
-      .reply(200, [addon])
-    dataApi
-      .patch(`/data/postgres/v1/${addon.id}/quotas/storage`, {
-        warning_gb: null,
-      })
-      .reply(200, storageQuotaResponse)
+    fakePlatform.addOn.resolve.resolves(addon)
+    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -98,18 +107,14 @@ describe('data:pg:quotas:update', function () {
       '--warning=none',
     ])
 
-    // this test will fail with "Nock: No match for request" if the dataApi patch request body is incorrect
+    expect(fakeData.postgresQuota.update.calledOnceWithExactly(addon.id, 'storage', {
+      warning_gb: null,
+    })).to.equal(true)
   })
 
   it('sets the critical_gp to null when the critical flag is set to "none"', async function () {
-    herokuApi
-      .post('/actions/addons/resolve')
-      .reply(200, [addon])
-    dataApi
-      .patch(`/data/postgres/v1/${addon.id}/quotas/storage`, {
-        critical_gb: null,
-      })
-      .reply(200, storageQuotaResponse)
+    fakePlatform.addOn.resolve.resolves(addon)
+    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -118,7 +123,9 @@ describe('data:pg:quotas:update', function () {
       '--critical=none',
     ])
 
-    // this test will fail with "Nock: No match for request" if the dataApi patch request body is incorrect
+    expect(fakeData.postgresQuota.update.calledOnceWithExactly(addon.id, 'storage', {
+      critical_gb: null,
+    })).to.equal(true)
   })
 
   it('will fail if neither of the warning, critical, or enforcement-action flags are set', async function () {
@@ -130,12 +137,11 @@ describe('data:pg:quotas:update', function () {
     const err = error as Error
 
     expect(ansis.strip(err.message)).to.equal('You must set a value for either the warning, critical, or enforcement-action flags')
+    expect(fakePlatform.addOn.resolve.called).to.equal(false)
   })
 
   it('errors when used with non-Advanced-tier add-ons', async function () {
-    herokuApi
-      .post('/actions/addons/resolve')
-      .reply(200, [nonAdvancedAddon])
+    fakePlatform.addOn.resolve.resolves(nonAdvancedAddon)
 
     const {error} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -145,8 +151,8 @@ describe('data:pg:quotas:update', function () {
     ])
     const err = error as Error
 
-    herokuApi.done()
     expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.')
+    expect(fakeData.postgresQuota.update.called).to.equal(false)
   })
 
   it('errors when the --warning flag is not an integer or "none"', async function () {
