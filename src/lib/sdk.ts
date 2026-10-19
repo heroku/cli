@@ -23,8 +23,8 @@ import {
  * keep working with no second credential reader. On a miss we coerce to `''`:
  * heroku-fetch only sends `Authorization` for a truthy token, so an empty string
  * yields a server `401` (not a client-side throw — construct-but-never-fetch
- * paths like shell completion stay safe) and satisfies the `string`-returning
- * `TokenProvider` on heroku-fetch `0.1.x`.
+ * paths like shell completion stay safe) and satisfies heroku-fetch's
+ * `string`-returning `TokenProvider`.
  */
 export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): Promise<string> =>
   (await heroku.getAuthEntry())?.token ?? ''
