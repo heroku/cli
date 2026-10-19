@@ -49,7 +49,7 @@ export default class RunDetached extends Command {
     await dyno.start()
 
     if (flags.tail) {
-      await RunDetached.displayLogs({
+      await RunDetached.displayLogs(this.heroku, {
         app: flags.app,
         dyno: dyno.dyno?.name,
         tail: true,

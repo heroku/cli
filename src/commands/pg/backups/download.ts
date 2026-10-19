@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import fs from 'fs-extra'
 
 import * as pgBackups from '../../../lib/pg/backups.js'
 import download from '../../../lib/pg/download.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Download extends Command {
   static args = {
@@ -24,7 +24,7 @@ export default class Download extends Command {
     const {backup_id} = args
     const {app} = flags
     const output = flags.output || defaultFilename()
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     let num
     ux.action.start(`Getting backup from ${color.app(app)}`)
     if (backup_id) {

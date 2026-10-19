@@ -1,8 +1,8 @@
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {Command, Flags, ux} from '@oclif/core'
 
 import {lazyModuleLoader} from '../lib/lazy-module-loader.js'
+import {createUnauthenticatedClient} from '../lib/sdk.js'
 import {getMaxUpdateTypeLength} from '../lib/status/util.js'
 import {
   FormattedTrustStatus,
@@ -17,8 +17,8 @@ import {
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 const errorMessage = 'Heroku platform status is unavailable at this time. Refer to https://status.salesforce.com/products/Heroku or try again later.'
 
-// Status data comes from public third-party hosts, so token: '' keeps the request unauthenticated.
-const statusClient = (baseUrl: string) => new HerokuApiClient({baseUrl, service: 'custom', token: ''})
+// Status data comes from public third-party hosts, so these requests are unauthenticated.
+const statusClient = (baseUrl: string) => createUnauthenticatedClient(baseUrl)
 
 // Some status endpoints reply 200 with no body; treat that as absent.
 const getJson = async <T>(response: Response): Promise<T | undefined> => {

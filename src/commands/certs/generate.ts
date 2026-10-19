@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 import {spawn} from 'node:child_process'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 function getCommand(certs: SniEndpoint[], domain: string): 'add' | 'update' {
@@ -92,7 +92,7 @@ export default class Generate extends Command {
   }
 
   public async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const inquirer = await lazyModuleLoader.loadInquirer()
 
     const {args, flags} = await this.parse(Generate)

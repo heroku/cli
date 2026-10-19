@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {transferScheduleExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
 
+import {createSDK} from '../../../lib/sdk.js'
 import {nls} from '../../../nls.js'
 
 export default class Unschedule extends Command {
@@ -21,7 +21,7 @@ export default class Unschedule extends Command {
     const {args, flags} = await this.parse(Unschedule)
     const {app} = flags
     const {database} = args
-    const {data} = new HerokuSDK({extensions: [transferScheduleExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [transferScheduleExtensions]})
 
     const schedules = await data.transferSchedule.list(app)
     let db = database

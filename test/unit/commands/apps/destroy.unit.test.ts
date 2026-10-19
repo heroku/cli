@@ -56,16 +56,15 @@ describe('apps:destroy', function () {
 
   it('threads the CLI auth token into the SDK client options', async function () {
     // Opt out of the shared platform getter stub so the real SDK + platform
-    // client run and issue a real HTTP request. The command must forward the
-    // CLI-resolved `this.heroku.auth` as `clientOptions.token`, which
-    // heroku-fetch turns into the outgoing `Authorization: Bearer <token>`
-    // header. Pin `this.heroku.auth` to a sentinel distinct from the test env's
-    // HEROKU_API_KEY so this fails if the command drops
-    // `clientOptions: {token: this.heroku.auth}` (the SDK would fall back to the
-    // env token, flipping the header).
+    // client run and issue a real HTTP request. createSDK's token provider
+    // (tokenFor → APIClient.getAuthEntry) supplies the outgoing
+    // `Authorization: Bearer <token>` header. Stub getAuthEntry with a sentinel
+    // token distinct from the test env's HEROKU_API_KEY so this fails if the
+    // command stops routing SDK construction through createSDK (the token would
+    // fall back to the env value, flipping the header).
     sinon.restore()
     sinon.stub(gitService, 'listRemotes').resolves(new Map())
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     let authHeader: string | undefined
     const destroyAPI = nock('https://api.heroku.com:443')
@@ -96,7 +95,7 @@ describe('apps:destroy', function () {
     process.env.HEROKU_HOST = 'staging.herokudev.com'
     sinon.restore()
     sinon.stub(gitService, 'listRemotes').resolves(new Map())
-    sinon.stub(APIClient.prototype, 'auth').get(() => 'cli-keychain-token')
+    sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
     const stagingAPI = nock('https://api.staging.herokudev.com:443')
       .get('/apps/myapp')

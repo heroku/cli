@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {sniEndpointExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
@@ -8,6 +7,7 @@ import tsheredoc from 'tsheredoc'
 import {displayCertificateDetails} from '../../lib/certs/certificate-details.js'
 import {CertAndKeyManager} from '../../lib/certs/get-cert-and-key.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
+import {createSDK} from '../../lib/sdk.js'
 import {SniEndpoint} from '../../lib/types/sni-endpoint.js'
 
 const heredoc = tsheredoc
@@ -39,7 +39,7 @@ export default class Add extends Command {
     const {app} = flags
     const certManager = new CertAndKeyManager()
     const files = await certManager.getCertAndKey(args)
-    const {platform} = new HerokuSDK({extensions: [sniEndpointExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [sniEndpointExtensions]})
 
     ux.action.start(`Adding SSL certificate to ${color.app(app)}`)
     let sniEndpoint: SniEndpoint

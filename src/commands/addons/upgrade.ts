@@ -8,6 +8,7 @@ import {AddonAmbiguousError} from '@heroku/sdk/resources/platform/add-on'
 import {Args, ux} from '@oclif/core'
 
 import {formatPriceText} from '../../lib/addons/util.js'
+import {createSDK} from '../../lib/sdk.js'
 
 type Platform = HerokuSDK<readonly [typeof addOnExtensions]>['platform']
 
@@ -100,7 +101,7 @@ ${color.cyan('https://devcenter.heroku.com/articles/managing-add-ons')}`
     // called with just one argument in the form of `heroku addons:upgrade heroku-redis:hobby`
     const {addon, plan} = this.getAddonPartsFromArgs(args)
 
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
     let addonServiceName: string | undefined
 
     let updatedAddon: Required<AddOn>

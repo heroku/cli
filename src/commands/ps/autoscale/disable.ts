@@ -1,8 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
-import {sdkClientOptions} from '../../../lib/apps/client-options.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Disable extends Command {
   static description = 'disable web dyno autoscaling'
@@ -16,8 +15,7 @@ export default class Disable extends Command {
     const {flags} = await this.parse(Disable)
     ux.action.start('Disabling dyno autoscaling')
 
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
-    const {metrics} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
+    const {metrics, platform} = createSDK(this.heroku)
 
     const app = await platform.app.info(flags.app)
     const monitors = await metrics.formationMonitor.list(app.id, 'web')

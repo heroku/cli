@@ -1,12 +1,12 @@
 import {Command, flags, vars} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {containerExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {debug} from '../../lib/container/debug.js'
 import {DockerHelper, DockerJob, GroupedDockerJobs} from '../../lib/container/docker-helper.js'
 import {ensureContainerStack} from '../../lib/container/helpers.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Push extends Command {
   static description = 'builds, then pushes Docker images to deploy your Heroku app'
@@ -32,7 +32,7 @@ export default class Push extends Command {
   dockerHelper = new DockerHelper()
 
   async run(): Promise<void> {
-    const {platform} = new HerokuSDK({extensions: [containerExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [containerExtensions]})
     const {argv: processTypes, flags} = await this.parse(Push)
     const {app, arg, 'context-path': contextPath, 'no-cache': noCache, recursive, verbose} = flags
 

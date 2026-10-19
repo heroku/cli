@@ -1,11 +1,11 @@
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../lib/data/base-command.js'
 import {waitUntilMaintenanceComplete} from '../../../lib/data/utils.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class DataMaintenancesRun extends BaseCommand {
   static args = {
@@ -64,7 +64,7 @@ export default class DataMaintenancesRun extends BaseCommand {
     await this.confirmMaintenanceMode(addon, confirm, force || false)
 
     ux.action.start('Triggering maintenance')
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     await data.maintenance.run(addon.id!)
     ux.action.stop('maintenance triggered')
 

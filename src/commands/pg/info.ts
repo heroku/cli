@@ -3,11 +3,11 @@ import * as Heroku from '@heroku-cli/schema'
 import {
   color, hux, pg, utils,
 } from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import {PgDatabaseTenant} from '../../lib/pg/types.js'
 import {configVarNamesFromValue, databaseNameFromUrl} from '../../lib/pg/util.js'
+import {createSDK} from '../../lib/sdk.js'
 import {nls} from '../../nls.js'
 
 type DBObject = {
@@ -50,7 +50,7 @@ export default class Info extends Command {
       }
     }
 
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     let dbs: DBObject[] = await Promise.all(addons.map(async addon => {
       const dbInfo = await (data.database.info(addon.id) as Promise<PgDatabaseTenant>)
         .catch(error => {

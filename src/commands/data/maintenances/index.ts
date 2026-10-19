@@ -1,11 +1,11 @@
 import {Command, flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {MaintenanceInfoByAppResult} from '@heroku/types/data'
 import {ux} from '@oclif/core/ux'
 
 import {MaintenanceStatus} from '../../../lib/data/types.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {constructSortFilterTableOptions, constructTableColumns, outputCSV} from '../../../lib/utils/table-utils.js'
 
 type MaintenanceItem = MaintenanceInfoByAppResult['maintenances'][number]
@@ -53,7 +53,7 @@ export default class DataMaintenancesIndex extends Command {
   private async fetchMaintenances(appName: string) {
     ux.action.start('Fetching maintenances')
     const {body: app} = await this.heroku.get<Heroku.App>(`/apps/${appName}`)
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     const result = await data.maintenance.infoByApp(app.id!)
     ux.action.stop()
 

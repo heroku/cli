@@ -1,11 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
-import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import {gitService} from '../../lib/ci/git.js'
 import ConfirmCommand from '../../lib/confirm-command.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Destroy extends Command {
   static args = {
@@ -21,7 +20,7 @@ export default class Destroy extends Command {
   static hiddenAliases = ['destroy', 'apps:delete']
 
   async run() {
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Destroy)
 
     const app = args.app || flags.app

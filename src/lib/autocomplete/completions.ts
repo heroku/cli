@@ -1,6 +1,6 @@
+import type {HerokuApiClientOptions} from '@heroku/sdk'
+
 import {APIClient, vars} from '@heroku-cli/command'
-import {HerokuApiClient} from '@heroku/heroku-fetch'
-import {type HerokuApiClientOptions, HerokuSDK} from '@heroku/sdk'
 import {execSync} from 'node:child_process'
 import {createHash} from 'node:crypto'
 import {readFile} from 'node:fs/promises'
@@ -8,7 +8,7 @@ import path from 'node:path'
 
 import type {Completion, CompletionContext} from '../types/completion.js'
 
-import {sdkClientOptions} from '../apps/client-options.js'
+import {createApiClient, createSDK} from '../sdk.js'
 
 export const oneDay = 60 * 60 * 24
 
@@ -52,16 +52,15 @@ async function resolveToken(ctx: CompletionContext): Promise<string | undefined>
 }
 
 /**
- * Client options for completion use: the CLI-resolved token and HEROKU_HOST-aware
- * `baseUrl` (see src/lib/apps/client-options.ts) plus the two completion-only
- * guarantees a TAB needs so it can never hang the shell — a short per-request
- * `timeout`, and a `twoFactor` handler that rejects rather than reading a 2FA
- * code from stdin (the default handler prompts). Shared by the SDK platform
- * client and the direct heroku-fetch client the stack completion uses.
+ * Completion-only client options: the two guarantees a TAB needs so it can never
+ * hang the shell — a short per-request `timeout`, and a `twoFactor` handler that
+ * rejects rather than reading a 2FA code from stdin (the default handler
+ * prompts). The CLI-resolved token and HEROKU_HOST-aware `baseUrl` come from
+ * `createSDK` / `createApiClient`. Shared by the SDK platform client and the
+ * direct heroku-fetch client the stack completion uses.
  */
-function completionClientOptions(heroku: APIClient): HerokuApiClientOptions {
+function completionClientOptions(): HerokuApiClientOptions {
   return {
-    ...sdkClientOptions(heroku),
     timeout: COMPLETION_TIMEOUT_MS,
     twoFactor: {onChallenge: () => Promise.reject(new Error('2FA is not available during shell completion'))},
   }
@@ -80,7 +79,7 @@ async function platformClient(ctx: CompletionContext) {
   const heroku = await authedClient(ctx)
   if (!heroku.auth) return
 
-  const sdk = new HerokuSDK({clientOptions: completionClientOptions(heroku)})
+  const sdk = createSDK(heroku, {clientOptions: completionClientOptions()})
   return sdk.platform
 }
 
@@ -101,7 +100,7 @@ async function stackNames(ctx: CompletionContext): Promise<string[]> {
   const heroku = await authedClient(ctx)
   if (!heroku.auth) return []
 
-  const client = new HerokuApiClient(completionClientOptions(heroku))
+  const client = createApiClient(heroku, completionClientOptions())
   const response = await client.get('/stacks', {signal: AbortSignal.timeout(COMPLETION_TIMEOUT_MS)})
   const stacks = (await response.json()) as ReadonlyArray<{name?: string}>
   return stacks

@@ -1,9 +1,12 @@
+import type {APIClient} from '@heroku-cli/command'
+
 import {expect} from 'chai'
 import {restore, type SinonStub, stub} from 'sinon'
 
 import {displayLogs} from '../../../../src/lib/run/log-displayer.js'
 
 describe('displayLogs', function () {
+  const heroku = {async getAuthEntry() {}} as unknown as APIClient
   let streamLogsStub: SinonStub
 
   beforeEach(function () {
@@ -35,7 +38,7 @@ describe('displayLogs', function () {
   it('forwards command options as streamLogs options', async function () {
     await patchExtension(streamLogsStub)
 
-    await displayLogs({
+    await displayLogs(heroku, {
       app: 'my-app',
       dyno: 'web.1',
       lines: 50,
@@ -59,7 +62,7 @@ describe('displayLogs', function () {
   it('passes through optional fields as undefined when not provided', async function () {
     await patchExtension(streamLogsStub)
 
-    await displayLogs({
+    await displayLogs(heroku, {
       app: 'my-app',
       tail: false,
     })
@@ -88,7 +91,7 @@ describe('displayLogs', function () {
 
     await patchExtension(abortAwareStub)
 
-    const displayPromise = displayLogs({app: 'my-app', tail: true})
+    const displayPromise = displayLogs(heroku, {app: 'my-app', tail: true})
     process.emit('SIGINT')
 
     await displayPromise

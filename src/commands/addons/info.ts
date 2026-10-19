@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {Args} from '@oclif/core'
 
 import {formatPrice, formatState} from '../../lib/addons/util.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const topic = 'addons'
 
@@ -25,7 +25,7 @@ export default class Info extends Command {
     const {args, flags} = await this.parse(Info)
     const {app} = flags
 
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
     const addon = await platform.addOn.describe(args.addon, {appIdentity: app})
     const plan = addon.plan as undefined | {name?: string; price?: Heroku.AddOn['price']}
 

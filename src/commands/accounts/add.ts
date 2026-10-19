@@ -1,9 +1,9 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 
 import AccountsModule from '../../lib/accounts/accounts.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Add extends Command {
   static args = {
@@ -13,7 +13,7 @@ export default class Add extends Command {
   static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args} = await this.parse(Add)
     const {name} = args
     const accounts = await AccountsModule.list()

@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class PipelinesUpdate extends Command {
   static description = 'update the app\'s stage in a pipeline'
@@ -24,7 +25,7 @@ export default class PipelinesUpdate extends Command {
     const {flags} = await this.parse(PipelinesUpdate)
 
     const {app, stage} = flags
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
 
     ux.action.start(`Changing ${color.app(app)} to ${stage}`)
     const coupling = await platform.pipelineCoupling.infoByApp(app)

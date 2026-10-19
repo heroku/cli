@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 import open from 'open'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Docs extends Command {
   static args = {
@@ -21,7 +22,7 @@ export default class Docs extends Command {
   public async run(): Promise<string> {
     const {args, flags} = await this.parse(Docs)
     const {app} = flags
-    const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
     const id = args.addon.split(':')[0]
     const addonService = await platform.addOnService.info(id).catch(() => null)
 

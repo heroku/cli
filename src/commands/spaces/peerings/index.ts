@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../../lib/sdk.js'
 import {displayPeerings, displayPeeringsAsJSON} from '../../../lib/spaces/peering.js'
 
 const heredoc = tsheredoc
@@ -20,7 +20,7 @@ export default class Index extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Index)
     const spaceName = flags.space || args.space
     if (!spaceName) {

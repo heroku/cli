@@ -1,3 +1,4 @@
+import {APIClient} from '@heroku-cli/command'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
 import nock from 'nock'
@@ -43,6 +44,56 @@ describe('run:inside', function () {
     sdkMock.restore()
     nock.enableNetConnect()
     process.argv = [...originalProcessArgv]
+  })
+
+  it('threads the CLI auth token into the per-call run:inside client', async function () {
+    // run:inside sets options.dyno, so the SDK routes dyno.run through postRun, which builds
+    // its OWN per-call client (POST /apps/{app}/dynos/{dyno}), not the SDK-level client. The
+    // command must thread the CLI token in via apiClientOptions(this.opts.heroku); drop it and
+    // the exec request goes out unauthenticated. Run the real SDK (restore the platform-getter
+    // mock) with getAuthEntry stubbed to a sentinel token so this fails if clientOptions stops
+    // being threaded.
+    sdkMock.restore()
+    sdkMock = {restore() {}}
+    const getAuthEntryStub = sinon.stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
+
+    try {
+      nock('https://api.heroku.com')
+        .get('/apps/myapp')
+        .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
+
+      let authHeader: string | undefined
+      const runAPI = nock('https://api.heroku.com')
+        .post('/apps/myapp/dynos/web.1')
+        .reply(function () {
+          authHeader = this.req.headers.authorization as unknown as string
+          return [200, {
+            attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
+            command: 'bash',
+            created_at: '2020-01-01T00:00:00Z',
+            id: '12345678-1234-1234-1234-123456789012',
+            name: 'web.1',
+            size: 'basic',
+            state: 'starting',
+            type: 'web',
+            updated_at: '2020-01-01T00:00:00Z',
+          }]
+        })
+
+      await runWithCliArgv([
+        'web.1',
+        'bash',
+        '--app',
+        'myapp',
+      ]).catch(() => {
+        // Expected to fail when attaching to the rendezvous endpoint
+      })
+
+      expect(authHeader).to.equal('Bearer cli-keychain-token')
+      runAPI.done()
+    } finally {
+      getAuthEntryStub.restore()
+    }
   })
 
   it('requires a dyno name and command', async function () {

@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../../lib/sdk.js'
 import {ExtendedInboundRuleset} from '../../../lib/types/spaces.js'
 
 const heredoc = tsheredoc
@@ -29,7 +29,7 @@ export default class Add extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Add)
     const {space} = flags
     const ruleset = await platform.inboundRuleset.current(space)

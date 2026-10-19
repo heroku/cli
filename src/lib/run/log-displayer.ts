@@ -1,8 +1,9 @@
+import {APIClient} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {logSessionExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
+import {createSDK} from '../sdk.js'
 import colorize from './colorize.js'
 
 export interface LogDisplayerOptions {
@@ -29,13 +30,13 @@ if (!process.env.IS_HEROKU_TEST_ENV) {
   })
 }
 
-export async function displayLogs(options: LogDisplayerOptions): Promise<void> {
+export async function displayLogs(heroku: APIClient, options: LogDisplayerOptions): Promise<void> {
   const controller = new AbortController()
   const onAbort = () => controller.abort()
   process.once('SIGINT', onAbort)
   process.once('SIGTERM', onAbort)
 
-  const {platform} = new HerokuSDK({extensions: [logSessionExtensions]})
+  const {platform} = createSDK(heroku, {extensions: [logSessionExtensions]})
 
   try {
     for await (const line of platform.logSession.streamLogs(options.app, {

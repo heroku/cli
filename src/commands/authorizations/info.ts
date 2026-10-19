@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
 import {display} from '../../lib/authorizations/authorizations.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsInfo extends Command {
   static args = {
@@ -15,7 +15,7 @@ export default class AuthorizationsInfo extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(AuthorizationsInfo)
 
     const authentication = await platform.oauthAuthorization.info(args.id)

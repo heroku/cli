@@ -1,10 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {MaintenanceInfoResult} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 type StyledMaintenance = Record<string, any> & {
   duration_approximate?: string;
@@ -75,7 +75,7 @@ export default class DataMaintenancesInfo extends Command {
     const addon = await addonResolver.resolve(args.addon, app)
 
     ux.action.start(`Fetching maintenance for ${color.addon(addon.name!)}`)
-    const {data} = new HerokuSDK()
+    const {data} = createSDK(this.heroku)
     let maintenance: MaintenanceInfoResult
     try {
       maintenance = await data.maintenance.info(addon.id!)

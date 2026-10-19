@@ -1,8 +1,8 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args} from '@oclif/core'
 
+import {createSDK} from '../../lib/sdk.js'
 import {displayTelemetryDrain} from '../../lib/telemetry/util.js'
 
 export default class Info extends Command {
@@ -16,7 +16,7 @@ export default class Info extends Command {
   public async run(): Promise<void> {
     const {args} = await this.parse(Info)
     const {telemetry_drain_id} = args
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
 
     const telemetryDrain = await platform.telemetryDrain.info(telemetry_drain_id)
     await displayTelemetryDrain(telemetryDrain, platform)

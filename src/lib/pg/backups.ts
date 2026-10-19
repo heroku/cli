@@ -1,6 +1,7 @@
 import type {HerokuSDK} from '@heroku/sdk'
-import type {TransferFailedError} from '@heroku/sdk/extensions/data'
-import type {CaptureAndWaitOptions, RestoreAndWaitOptions, WaitForTransferOptions} from '@heroku/sdk/extensions/data'
+import type {
+  CaptureAndWaitOptions, RestoreAndWaitOptions, TransferFailedError, WaitForTransferOptions,
+} from '@heroku/sdk/extensions/data'
 import type {TransferInfoByAppResult} from '@heroku/types/data'
 
 import {color, utils} from '@heroku/heroku-cli-util'

@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -22,7 +23,7 @@ export default class Rename extends Command {
     const {flags} = await this.parse(Rename)
     const {from, to} = flags
     ux.action.start(`Renaming space from ${color.space(from)} to ${color.info(to)}`)
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     await platform.space.update(from, {name: to})
     ux.action.stop()
   }

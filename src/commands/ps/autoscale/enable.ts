@@ -1,9 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 
-import {sdkClientOptions} from '../../../lib/apps/client-options.js'
 import {getGeneration} from '../../../lib/apps/generation.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 const isPerfOrPrivateTier = (size: string) => {
   const applicableTiers = ['performance', 'private', 'shield']
@@ -26,8 +25,7 @@ export default class Enable extends Command {
     const {flags} = await this.parse(Enable)
     ux.action.start('Enabling dyno autoscaling')
 
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
-    const {metrics} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
+    const {metrics, platform} = createSDK(this.heroku)
 
     const [app, formations] = await Promise.all([
       platform.app.info(flags.app),

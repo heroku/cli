@@ -1,7 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {HTTP} from '@heroku/http-call'
-import {HerokuSDK} from '@heroku/sdk'
 import {pipelineCouplingExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
@@ -16,6 +15,7 @@ import {
 } from '../../lib/api.js'
 import {GenerationKind, getGeneration} from '../../lib/apps/generation.js'
 import KolkrabbiAPI from '../../lib/pipelines/kolkrabbi-api.js'
+import {createSDK} from '../../lib/sdk.js'
 
 interface AppInfo {
   hash?: string;
@@ -88,7 +88,7 @@ export default class PipelinesDiff extends Command {
     const generation = getGeneration(pipeline)!
 
     ux.action.start('Fetching apps from pipeline')
-    const {platform} = new HerokuSDK({extensions: [pipelineCouplingExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [pipelineCouplingExtensions]})
     const allApps = await platform.pipelineCoupling.listApps(coupling!.pipeline!.id!)
     ux.action.stop()
 

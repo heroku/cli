@@ -1,9 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import {HerokuSDK} from '@heroku/sdk'
 import {OauthAuthorizationUpdateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 
 import {display} from '../../lib/authorizations/authorizations.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthorizationsUpdate extends Command {
   static args = {
@@ -17,7 +17,7 @@ export default class AuthorizationsUpdate extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(AuthorizationsUpdate)
 
     ux.action.start('Updating OAuth Authorization')

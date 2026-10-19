@@ -1,11 +1,12 @@
+import {APIClient} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, utils} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
 import {AddonConfirmationRequiredError} from '@heroku/sdk/resources/platform/add-on'
 import {ux} from '@oclif/core/ux'
 
 import ConfirmCommand from '../confirm-command.js'
+import {createSDK} from '../sdk.js'
 import * as util from './util.js'
 
 function formatConfigVarsMessage(addon: Heroku.AddOn) {
@@ -20,6 +21,7 @@ function formatConfigVarsMessage(addon: Heroku.AddOn) {
 
 // eslint-disable-next-line max-params
 export default async function createAddon(
+  heroku: APIClient,
   app: string,
   plan: string,
   confirm: string | undefined,
@@ -32,7 +34,7 @@ export default async function createAddon(
     name?: string,
   },
 ): Promise<Heroku.AddOn> {
-  const {platform} = new HerokuSDK({extensions: [addOnExtensions]})
+  const {platform} = createSDK(heroku, {extensions: [addOnExtensions]})
   const buildBody = (confirmed?: string) => ({
     attachment: {name: options.as},
     config: options.config as Record<string, string>,

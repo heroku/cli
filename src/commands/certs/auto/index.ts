@@ -1,6 +1,5 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {appExtensions} from '@heroku/sdk/extensions/platform'
 import {App} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
@@ -8,6 +7,7 @@ import tsheredoc from 'tsheredoc'
 
 import {displayCertificateDetails} from '../../../lib/certs/certificate-details.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
+import {createSDK} from '../../../lib/sdk.js'
 import {Domain} from '../../../lib/types/domain.js'
 import {SniEndpoint} from '../../../lib/types/sni-endpoint.js'
 
@@ -53,7 +53,7 @@ export default class Index extends Command {
     const {formatDistanceToNow} = await lazyModuleLoader.loadDateFns()
 
     const {flags} = await this.parse(Index)
-    const {platform} = new HerokuSDK({extensions: [appExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [appExtensions]})
     const [app, sniEndpoints] = await Promise.all([
       platform.app.info(flags.app),
       platform.sniEndpoint.list(flags.app),

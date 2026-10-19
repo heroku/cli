@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {NotFoundError} from '@heroku/heroku-fetch'
-import {HerokuSDK} from '@heroku/sdk'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Wait extends Command {
   static args = {
@@ -22,7 +23,7 @@ export default class Wait extends Command {
     const {app, 'wait-interval': waitInterval} = flags
     const {database} = args
 
-    const {data} = new HerokuSDK({extensions: [redisExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
 
     let intervalSeconds = waitInterval && Number.parseInt(waitInterval, 10)

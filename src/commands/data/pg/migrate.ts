@@ -28,6 +28,8 @@ const heredoc = tsheredoc
 
 const {prompt, Separator} = inquirer
 
+type DropFirst<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never
+
 export default class DataPgMigrate extends BaseCommand {
   static description = 'migrate an existing classic Postgres database to an Advanced database'
   static flags = {
@@ -48,8 +50,8 @@ export default class DataPgMigrate extends BaseCommand {
   private noWrap = false
   private selectedMigrationMethod?: MigrationMethod
 
-  public async createAddon(...args: Parameters<typeof createAddon>): Promise<Heroku.AddOn> {
-    return createAddon(...args)
+  public async createAddon(...args: DropFirst<Parameters<typeof createAddon>>): Promise<Heroku.AddOn> {
+    return createAddon(this.heroku, ...args)
   }
 
   public async prompt<T extends inquirer.Answers>(...args: Parameters<typeof inquirer.prompt<T>>): Promise<T> {

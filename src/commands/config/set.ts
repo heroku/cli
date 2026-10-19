@@ -4,6 +4,8 @@ import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
+
 const heredoc = tsheredoc
 
 type Platform = HerokuSDK['platform']
@@ -33,7 +35,7 @@ RACK_ENV:  staging`)]
   static strict = false
 
   async run() {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {argv: _argv, flags} = await this.parse(Set)
     const argv = _argv as string[]
 

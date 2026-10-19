@@ -1,10 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import open from 'open'
 
-import {sdkClientOptions} from '../../lib/apps/client-options.js'
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AppsOpen extends Command {
   static args = {
@@ -23,7 +22,7 @@ export default class AppsOpen extends Command {
   static topic = 'apps'
 
   async run() {
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(AppsOpen)
     const app = await platform.app.info(flags.app)
     const path = args.path || ''

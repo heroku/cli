@@ -1,7 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {PipelineCreateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
@@ -10,6 +9,7 @@ import {getGenerationByAppId} from '../../lib/apps/generation.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
+import {createSDK} from '../../lib/sdk.js'
 
 // The Heroku API accepts an undocumented `generation` field on POST /pipelines
 // that is not declared in heroku/api's schema, so the @heroku/types
@@ -84,7 +84,7 @@ export default class Create extends Command {
 
     const ownerType = teamName ? 'team' : 'user'
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
 
     // If team or org is not specified, we assign ownership to the user creating
     const ownerRecord = teamName

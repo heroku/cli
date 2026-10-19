@@ -1,13 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher, revertSortedArgs} from '../../lib/run/helpers.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const debug = debugFactory('heroku:run')
 
@@ -39,7 +39,7 @@ export default class Run extends Command {
     const {argv, flags} = await this.parse(Run)
     const command = revertSortedArgs(process.argv, argv as string[])
     const builtCommand = await buildCommandWithLauncher(this.heroku, flags.app, command, flags['no-launcher'])
-    const sdk = new HerokuSDK({extensions: [dynoExtensions]})
+    const sdk = createSDK(this.heroku, {extensions: [dynoExtensions]})
     const opts = {
       app: flags.app,
       attach: true,

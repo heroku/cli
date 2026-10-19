@@ -11,9 +11,10 @@ const gitDebug = debug('git')
 export default class Git {
   private readonly execFile = execFilePromise
 
-  /** Configures `heroku git:credentials` as a Git credential helper
-  * that is URL-scoped to Heroku Git operations only.
-  */
+  /**
+   * Configures `heroku git:credentials` as a Git credential helper
+   * that is URL-scoped to Heroku Git operations only.
+   */
   async configureCredentialHelper() {
     const {httpGitHost} = vars
     const key = `credential.https://${httpGitHost}.helper`

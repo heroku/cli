@@ -2,10 +2,10 @@ import type {TelemetryDrainUpdateOpts} from '@heroku/types/3.sdk'
 
 import {Command, flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../lib/sdk.js'
 import {displayTelemetryDrain, validateAndFormatSignals} from '../../lib/telemetry/util.js'
 
 const heredoc = tsheredoc
@@ -28,7 +28,7 @@ export default class Update extends Command {
     const {args, flags} = await this.parse(Update)
     const {telemetry_drain_id} = args
     const {endpoint, headers, signals, transport} = flags
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     if (!(endpoint || headers || signals || transport)) {
       ux.error(heredoc(`
         Requires either --signals, --endpoint, --transport or HEADERS to be provided.

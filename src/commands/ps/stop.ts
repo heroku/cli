@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
+
+import {createSDK} from '../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -41,7 +42,7 @@ export default class Stop extends Command {
     const dyno = flags['dyno-name'] || args.dyno
     const type = flags['process-type']
 
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
 
     if (type) {
       ux.action.start(`Stopping all ${color.info(type)} dynos on ${color.app(app)}`)

@@ -1,11 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {VpnConnection} from '@heroku/types/3.sdk'
 import {Args} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {createSDK} from '../../../lib/sdk.js'
 import {displayCIDR, displayVPNStatus} from '../../../lib/spaces/format.js'
 
 const heredoc = tsheredoc
@@ -45,7 +45,7 @@ export default class Info extends Command {
   static topic = 'spaces'
 
   public async run(): Promise<void> {
-    const {platform} = new HerokuSDK()
+    const {platform} = createSDK(this.heroku)
     const {args, flags} = await this.parse(Info)
     const {json, space} = flags
     const {name} = args

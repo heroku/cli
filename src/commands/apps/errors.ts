@@ -1,11 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {Formation} from '@heroku/types/3.sdk'
 import {ux} from '@oclif/core/ux'
 
-import {sdkClientOptions} from '../../lib/apps/client-options.js'
 import errorInfo from '../../lib/apps/error-info.js'
+import {createSDK} from '../../lib/sdk.js'
 import {AppErrors} from '../../lib/types/app-errors.js'
 
 type ErrorSummary = Record<string, number>
@@ -75,8 +74,7 @@ export default class Errors extends Command {
   }
 
   async run() {
-    const {platform} = new HerokuSDK({clientOptions: sdkClientOptions(this.heroku)})
-    const {metrics} = new HerokuSDK({clientOptions: {token: this.heroku.auth}})
+    const {metrics, platform} = createSDK(this.heroku)
     const {flags} = await this.parse(Errors)
 
     const hours = Number.parseInt(flags.hours, 10)

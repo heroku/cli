@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class Wait extends Command {
   static description = 'wait for all dynos to be running latest version after a release'
@@ -36,7 +37,7 @@ export default class Wait extends Command {
 
   async run() {
     const {flags} = await this.parse(Wait)
-    const {platform} = new HerokuSDK({extensions: [dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
     let waiting = false
 

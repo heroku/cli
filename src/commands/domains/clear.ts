@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {HerokuSDK} from '@heroku/sdk'
 import {domainExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class DomainsClear extends Command {
   static description = 'remove all domains from an app'
@@ -14,7 +15,7 @@ export default class DomainsClear extends Command {
 
   async run() {
     const {flags} = await this.parse(DomainsClear)
-    const {platform} = new HerokuSDK({extensions: [domainExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [domainExtensions]})
 
     ux.action.start(`Removing all domains from ${color.app(flags.app)}`)
     await platform.domain.clear(flags.app)

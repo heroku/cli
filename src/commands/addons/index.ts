@@ -1,11 +1,11 @@
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {HerokuSDK} from '@heroku/sdk'
 import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
 
 import {formatPrice, formatState, grandfatheredPrice} from '../../lib/addons/util.js'
+import {createSDK} from '../../lib/sdk.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 
 // The Platform expands nested addon_service and plan when this header is set.
@@ -72,7 +72,7 @@ export function renderAttachment(attachment: Heroku.AddOnAttachment, app: string
 }
 
 async function addonGetter(api: APIClient, app?: string) {
-  const {platform} = new HerokuSDK()
+  const {platform} = createSDK(api)
   // Apply Accept-Expansion only on add-on list calls (the global list
   // endpoint rejects it; the attachments endpoints don't need it).
   const platformWithExpansion = platform.withHeaders(ADDON_EXPANSION_HEADERS)

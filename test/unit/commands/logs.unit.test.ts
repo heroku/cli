@@ -26,7 +26,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
@@ -48,7 +48,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 20,
@@ -70,7 +70,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: 'web.2',
         lines: 100,
@@ -92,7 +92,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
@@ -114,7 +114,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
@@ -187,7 +187,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
@@ -209,7 +209,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
@@ -231,7 +231,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
@@ -253,7 +253,7 @@ describe('logs', function () {
 
       // Verify display was called with correct parameters
       const displayCall = logDisplayerStub.getCall(0)
-      expect(displayCall.args[0]).to.deep.equal({
+      expect(displayCall.args[1]).to.deep.equal({
         app: 'my-app',
         dyno: undefined,
         lines: 100,
