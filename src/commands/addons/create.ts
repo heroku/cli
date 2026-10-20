@@ -41,18 +41,12 @@ export default class Create extends Command {
   static strict = false
 
   public async run(): Promise<void> {
-    this.allowArbitraryFlags = true
     const {args, flags, ...restParse} = await this.parse(Create)
     const {app, as, confirm, name, wait} = flags
     const servicePlan = args['service:plan']
-    // oclif duplicates specified args in argv
+    // config items passed after `--` land in argv, where oclif also repeats the service:plan arg; drop it
     const argv = (restParse.argv as string[])
       .filter(arg => arg !== servicePlan)
-
-    if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
-      ux.warn(`For example: ${color.code(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
-      ux.warn(`See ${color.info('https://devcenter.heroku.com/changelog-items/2925')} for more info.\n`)
-    }
 
     const config = parseConfig(argv)
     let addon: Heroku.AddOn

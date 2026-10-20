@@ -28,8 +28,9 @@ export default class AuthorizationsCreate extends Command {
 
     const auth = await platform.oauthAuthorization.create({
       description: flags.description,
-      expires_in: flags['expires-in'],
-      scope: flags.scope ? flags.scope.split(',') : undefined,
+      expires_in: flags['expires-in'] ? Number.parseInt(flags['expires-in'], 10) : undefined,
+      // scope is optional server-side (omitted ⇒ global); @heroku/types types it as required, so cast the absent case
+      scope: (flags.scope ? flags.scope.split(',') : undefined) as string[],
     })
 
     ux.action.stop()

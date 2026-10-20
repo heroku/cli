@@ -12,7 +12,7 @@ export function huxTableNoWrapOptions(noWrap: boolean): {
   }
 }
 
-export const constructSortFilterTableOptions = (flags: Record<string, string>, tableColumns: Record<string, any>) => {
+export const constructSortFilterTableOptions = (flags: {filter?: string; sort?: string}, tableColumns: Record<string, any>) => {
   const {filter, sort} = flags
   const columnNames = new Set(Object.keys(tableColumns).map(key => key.toLowerCase()))
   const tableOptions: Record<string, any> = {}
