@@ -1,5 +1,6 @@
 import {APIClient} from '@heroku-cli/command'
-import {getStorageConfig, removeAuth, writeLoginState} from '@heroku/heroku-credential-manager'
+import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
+import {getStorageConfig, writeLoginState} from '@heroku/heroku-credential-manager'
 import * as Heroku from '@heroku-cli/schema'
 import fs from 'node:fs'
 import os from 'node:os'

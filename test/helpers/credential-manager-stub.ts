@@ -1,9 +1,9 @@
+import {setCredentialManagerProvider} from '@heroku-cli/command/lib/credential-manager.js'
 import {
   getAuth as originalGetAuth,
   removeAuth as originalRemoveAuth,
   saveAuth as originalSaveAuth,
-} from '@heroku-cli/command/lib/credential-manager-core/index.js'
-import {setCredentialManagerProvider} from '@heroku-cli/command/lib/credential-manager.js'
+} from '@heroku/heroku-credential-manager'
 
 interface Provider {
   getAuth: () => Promise<{account: string | undefined, token: string | undefined}>
