@@ -18,7 +18,7 @@ export interface IAccountsWrapper {
   currentNetrc(): Promise<null | string>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
   list(): AccountEntry[]
-  remove(name: string): void
+  remove(name: string): Promise<void>
   set(account: AccountEntry, dataDir: string): Promise<void>
   writeLoginState(dataDir: string, name: string): Promise<void>
 }

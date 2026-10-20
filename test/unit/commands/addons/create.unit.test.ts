@@ -109,6 +109,7 @@ describe('addons:create', function () {
         '--foo',
       ])
       expect(error?.message).to.contain('Nonexistent flags: --rollback, --follow, --foo')
+      expect(error?.message).to.contain('place them after a double-dash (--)')
       expect(createAndWaitStub.called).to.be.false
     })
     it('creates an addon with = args', async function () {
