@@ -5,8 +5,10 @@ import * as sinon from 'sinon'
 
 import AuthorizationsCreate from '../../../../src/commands/authorizations/create.js'
 
+// Anchor the fake to the real SDK platform so renaming the oauthAuthorization.create
+// path fails to compile here; intersect with SinonStub so the stub assertions stay available.
 type FakePlatform = {
-  oauthAuthorization: {create: sinon.SinonStub}
+  oauthAuthorization: {create: HerokuSDK['platform']['oauthAuthorization']['create'] & sinon.SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {

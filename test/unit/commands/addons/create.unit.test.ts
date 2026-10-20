@@ -56,17 +56,15 @@ describe('addons:create', function () {
   context('calling addons:create without a plan', function () {
     it('errors out with usage', async function () {
       sdkMock = mockSDKPlatform({addOn: {createAndWait: stub()}})
-      return runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--name',
         'foobar',
       ])
-        .catch((error: unknown) => {
-          expect((error as Error).message).to.equal('Missing 1 required arg:\n'
-            + 'service:plan  unique identifier or unique name of the add-on service plan\n'
-            + 'See more help with --help')
-        })
+      expect(error?.message).to.equal('Missing 1 required arg:\n'
+        + 'service:plan  unique identifier or unique name of the add-on service plan\n'
+        + 'See more help with --help')
     })
   })
   context('creating a db', function () {
