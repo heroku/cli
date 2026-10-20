@@ -29,15 +29,22 @@ export function isUnsupportedNodeCrash(nodeVersion: string, error: unknown): boo
 }
 
 /**
- * `enginesRange` is package.json `engines.node`, shown verbatim; generic
- * wording is used when it is missing or not a non-empty string.
+ * `enginesRange` is package.json `engines.node`. A plain minimum (`>=20`) reads
+ * as "v20 or later"; any other range is shown verbatim rather than parsed, so
+ * it can't drift from `engines`. Generic wording when it is missing or not a
+ * non-empty string.
  */
 export function unsupportedNodeMessage(nodeVersion: string, enginesRange?: string): string {
   const version = String(nodeVersion).replace(/^v/, '')
-  const requirement = typeof enginesRange === 'string' && enginesRange !== ''
-    ? `Node.js ${enginesRange}`
-    : 'a newer version of Node.js'
-  return `Node.js v${version} is not supported. The Heroku CLI requires ${requirement}. `
-    + 'Upgrade Node.js, or install the standalone Heroku CLI, which includes its own Node.js: '
-    + 'https://devcenter.heroku.com/articles/heroku-cli'
+  let requirement = 'a newer version of Node.js'
+  if (typeof enginesRange === 'string' && enginesRange !== '') {
+    const minimum = /^>=\s*v?(\d+(?:\.\d+){0,2})$/.exec(enginesRange)
+    requirement = minimum
+      ? `Node.js v${minimum[1]} or later`
+      : `a Node.js version matching ${enginesRange}`
+  }
+
+  return `The Heroku CLI doesn't support Node.js v${version}. Upgrade to ${requirement}. `
+    + 'Or install the standalone Heroku CLI, which includes its own Node.js. '
+    + 'See: https://devcenter.heroku.com/articles/heroku-cli'
 }

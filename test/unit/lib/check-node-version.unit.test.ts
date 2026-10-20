@@ -56,29 +56,40 @@ describe('check-node-version', function () {
   })
 
   describe('unsupportedNodeMessage', function () {
-    it('names the running version, the engines range, and the install link', function () {
-      const message = unsupportedNodeMessage('v18.20.8', '>=20')
-      expect(message).to.include('Node.js v18.20.8 is not supported')
-      expect(message).to.include('The Heroku CLI requires Node.js >=20.')
-      expect(message).to.include('https://devcenter.heroku.com/articles/heroku-cli')
+    it('names the running version, the requirement, and the standalone install link', function () {
+      expect(unsupportedNodeMessage('v18.20.8', '>=20')).to.equal("The Heroku CLI doesn't support Node.js v18.20.8. Upgrade to Node.js v20 or later. "
+        + 'Or install the standalone Heroku CLI, which includes its own Node.js. '
+        + 'See: https://devcenter.heroku.com/articles/heroku-cli')
     })
 
-    for (const range of ['>=20', '>=20.6', '^20 || ^22']) {
-      it(`shows the engines range verbatim: ${range}`, function () {
-        expect(unsupportedNodeMessage('18.20.8', range)).to.include(`requires Node.js ${range}. Upgrade Node.js`)
+    const orLater: Array<[string, string]> = [
+      ['>=20', 'v20'],
+      ['>=20.6', 'v20.6'],
+      ['>= 20.6.1', 'v20.6.1'],
+      ['>=v22', 'v22'],
+    ]
+    for (const [range, expected] of orLater) {
+      it(`words a minimum-version range as "or later": ${range}`, function () {
+        expect(unsupportedNodeMessage('18.20.8', range)).to.include(`Upgrade to Node.js ${expected} or later. Or install`)
+      })
+    }
+
+    for (const range of ['^20 || ^22', '>=20 <25', '20.x', '>20']) {
+      it(`shows any other range verbatim: ${range}`, function () {
+        expect(unsupportedNodeMessage('18.20.8', range)).to.include(`Upgrade to a Node.js version matching ${range}. Or install`)
       })
     }
 
     for (const range of [undefined, '', 20, null, {}] as unknown[]) {
       it(`falls back to generic wording for ${JSON.stringify(range)}`, function () {
         const message = unsupportedNodeMessage('18.20.8', range as string | undefined)
-        expect(message).to.include('requires a newer version of Node.js. Upgrade Node.js')
-        expect(message).to.include('Node.js v18.20.8 is not supported')
+        expect(message).to.include('Upgrade to a newer version of Node.js. Or install')
+        expect(message).to.include("doesn't support Node.js v18.20.8")
       })
     }
 
     it('falls back to generic wording when the range is omitted', function () {
-      expect(unsupportedNodeMessage('18.20.8')).to.include('requires a newer version of Node.js.')
+      expect(unsupportedNodeMessage('18.20.8')).to.include('Upgrade to a newer version of Node.js.')
     })
   })
 
