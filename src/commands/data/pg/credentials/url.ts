@@ -50,7 +50,7 @@ export default class Url extends BaseCommand {
       ux.error('Essential-tier databases don\'t support named credentials.', {exit: 1})
     }
 
-    let credName: string
+    let credName: string | undefined
     let credInfo: CredentialInfo
 
     if (isAdvancedTier) {

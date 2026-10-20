@@ -48,7 +48,7 @@ export default class Add extends Command {
       const herokuApp = await platform.app.info(app)
       id = herokuApp.id
     } else {
-      const herokuSpace = await platform.space.info(space)
+      const herokuSpace = await platform.space.info(space!)
       id = herokuSpace.id
     }
 

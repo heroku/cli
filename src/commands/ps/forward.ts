@@ -56,7 +56,7 @@ export default class Forward extends Command {
 
     const {platform} = createSDK(this.heroku, {extensions: [dynoExtensions]})
 
-    const portMappings: string[] = args.port.split(',').map((portMapping: string) => {
+    const portMappings: string[][] = args.port.split(',').map((portMapping: string) => {
       const ports = portMapping.split(':')
 
       // this will error out if localPort is used with multiple ports, but

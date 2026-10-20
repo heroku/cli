@@ -1,10 +1,7 @@
-import {
-  APIClient,
-  getStorageConfig,
-  writeLoginState,
-} from '@heroku-cli/command'
+import {APIClient} from '@heroku-cli/command'
 import {removeAuth} from '@heroku-cli/command/lib/credential-manager.js'
 import * as Heroku from '@heroku-cli/schema'
+import {getStorageConfig, writeLoginState} from '@heroku/heroku-credential-manager'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -21,7 +18,7 @@ export interface IAccountsWrapper {
   currentNetrc(): Promise<null | string>
   getStorageConfig(): ReturnType<typeof getStorageConfig>
   list(): AccountEntry[]
-  remove(name: string): void
+  remove(name: string): Promise<void>
   set(account: AccountEntry, dataDir: string): Promise<void>
   writeLoginState(dataDir: string, name: string): Promise<void>
 }

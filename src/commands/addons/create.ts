@@ -41,18 +41,29 @@ export default class Create extends Command {
   static strict = false
 
   public async run(): Promise<void> {
-    this.allowArbitraryFlags = true
-    const {args, flags, ...restParse} = await this.parse(Create)
+    let parsed
+    try {
+      parsed = await this.parse(Create)
+    } catch (error) {
+      // Arbitrary config flags are no longer accepted inline; they must follow a `--`.
+      // Rewrite oclif's bare "Nonexistent flag" error into a hint that points at the `--` form.
+      if (error instanceof Error && /^Nonexistent flags?:/.test(error.message)) {
+        error.message += heredoc(`
+
+          To pass config vars to the add-on, place them after a double-dash (--). For example:
+          ${color.command('heroku addons:create heroku-postgresql:standard-0 --app my-app -- --fork DATABASE')}
+        `)
+      }
+
+      throw error
+    }
+
+    const {args, flags, ...restParse} = parsed
     const {app, as, confirm, name, wait} = flags
     const servicePlan = args['service:plan']
-    // oclif duplicates specified args in argv
+    // config items passed after `--` land in argv, where oclif also repeats the service:plan arg; drop it
     const argv = (restParse.argv as string[])
       .filter(arg => arg !== servicePlan)
-
-    if (restParse.nonExistentFlags && restParse.nonExistentFlags.length > 0) {
-      ux.warn(`For example: ${color.code(`heroku addons:create -a ${app} ${restParse.raw[0].input} -- ${restParse.nonExistentFlags.join(' ')}`)}`)
-      ux.warn(`See ${color.info('https://devcenter.heroku.com/changelog-items/2925')} for more info.\n`)
-    }
 
     const config = parseConfig(argv)
     let addon: Heroku.AddOn
@@ -70,8 +81,7 @@ export default class Create extends Command {
     }
 
     await this.config.runHook('recache', {addon, app, type: 'addon'})
-    // eslint-disable-next-line no-unsafe-optional-chaining
-    ux.stdout(`Run ${color.code('heroku addons:docs ' + addon?.addon_service?.name || '')} to view documentation.`)
+    ux.stdout(`Run ${color.code('heroku addons:docs ' + (addon?.addon_service?.name || ''))} to view documentation.`)
   }
 }
 

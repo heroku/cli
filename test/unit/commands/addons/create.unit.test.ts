@@ -56,17 +56,15 @@ describe('addons:create', function () {
   context('calling addons:create without a plan', function () {
     it('errors out with usage', async function () {
       sdkMock = mockSDKPlatform({addOn: {createAndWait: stub()}})
-      return runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--name',
         'foobar',
       ])
-        .catch((error: unknown) => {
-          expect((error as Error).message).to.equal('Missing 1 required arg:\n'
-            + 'service:plan  unique identifier or unique name of the add-on service plan\n'
-            + 'See more help with --help')
-        })
+      expect(error?.message).to.equal('Missing 1 required arg:\n'
+        + 'service:plan  unique identifier or unique name of the add-on service plan\n'
+        + 'See more help with --help')
     })
   })
   context('creating a db', function () {
@@ -93,11 +91,11 @@ describe('addons:create', function () {
       expect(bodyArg.config).to.deep.equal({follow: 'otherdb', foo: true, rollback: true})
       expect(bodyArg.attachment).to.deep.equal({name: 'mydb'})
     })
-    it('creates an add-on with proper output using old syntax with deprecation message', async function () {
+    it('errors when config flags are passed without a -- separator', async function () {
       const createAndWaitStub = stub().resolves(addon)
       sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
 
-      const {stderr} = await runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -108,10 +106,9 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-      expect(unwrap(stderr)).to.contain("Warning: You're using a deprecated syntax with the [--rollback,--follow,--foo] flag")
-      expect(unwrap(stderr)).to.contain("Add a '--' (end of options) separator before the flags you're passing through.")
-      expect(unwrap(stderr)).to.contain('For example: heroku addons:create -a myapp heroku-postgresql:standard-0 -- --rollback --follow otherdb --foo')
-      expect(unwrap(stderr)).to.contain('See https://devcenter.heroku.com/changelog-items/2925 for more info.')
+      expect(error?.message).to.contain('Nonexistent flags: --rollback, --follow, --foo')
+      expect(error?.message).to.contain('place them after a double-dash (--)')
+      expect(createAndWaitStub.called).to.be.false
     })
     it('creates an addon with = args', async function () {
       const createAndWaitStub = stub().resolves(addon)

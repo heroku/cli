@@ -129,7 +129,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
         if (error instanceof Error && error.message.includes('invalid credential provided')) {
           ux.error(
             heredoc(`
-              The credential ${color.name(credential)} doesn't exist on the database ${color.datastore(addon.name)}.
+              The credential ${color.name(credential!)} doesn't exist on the database ${color.datastore(addon.name)}.
               Use ${color.code(`heroku data:pg:credentials ${addon.name} -a ${app}`)} to list the credentials on the database.
             `).trimEnd(),
             {exit: 1},
@@ -139,7 +139,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
         if (error instanceof Error && error.message.includes('invalid pool provided')) {
           ux.error(
             heredoc(`
-              The pool ${color.name(pool)} doesn't exist on the database ${color.datastore(addon.name)}.
+              The pool ${color.name(pool!)} doesn't exist on the database ${color.datastore(addon.name)}.
               Use ${color.code(`heroku data:pg:info ${addon.name} -a ${app}`)} to list the pools on the database.
             `).trimEnd(),
             {exit: 1},

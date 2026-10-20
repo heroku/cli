@@ -10,7 +10,7 @@ export default class DataPgDocs extends BaseCommand {
     browser: flags.string({description: 'browser to open docs with (example: "firefox", "safari")'}),
   }
 
-  public async openUrl(url: string, browser: string, description: string): Promise<void> {
+  public async openUrl(url: string, browser: string | undefined, description: string): Promise<void> {
     await hux.openUrl(url, browser, description)
   }
 

@@ -1,5 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import {redisExtensions} from '@heroku/sdk/extensions/data'
+import {type RedisUpdateConfigOpts} from '@heroku/types/data'
 import {Args, ux} from '@oclif/core'
 
 import {createSDK} from '../../lib/sdk.js'
@@ -34,7 +35,7 @@ export default class MaxMemory extends Command {
 
     const {data} = createSDK(this.heroku, {extensions: [redisExtensions]})
     const addon = await data.redis.resolveByApp(app, {database})
-    const config = await data.redis.updateConfig(addon.name!, {maxmemory_policy: policy})
+    const config = await data.redis.updateConfig(addon.name!, {maxmemory_policy: policy as RedisUpdateConfigOpts['maxmemory_policy']})
     const configVars = addon.config_vars || []
     ux.stdout(`Maxmemory policy for ${addon.name} (${configVars.join(', ')}) set to ${config.maxmemory_policy.value}.`)
     ux.stdout(`${config.maxmemory_policy.value} ${config.maxmemory_policy.values![config.maxmemory_policy.value as keyof typeof config.maxmemory_policy.values]}.`)
