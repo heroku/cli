@@ -167,9 +167,11 @@ export type MigrationResponse = {
   auto_promote: boolean
   cdc_lag: null | number
   completed: boolean
+  created_at?: string
   full_load_progress: null | number
   id: string
   last_error_message: null | string
+  migration_strategy: null | string
   preassessment_results: PreassessmentResults
   source_id: string
   status: MigrationStatus
