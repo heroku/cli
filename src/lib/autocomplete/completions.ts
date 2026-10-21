@@ -52,17 +52,22 @@ async function resolveToken(ctx: CompletionContext): Promise<string | undefined>
 }
 
 /**
- * Completion-only client options: the two guarantees a TAB needs so it can never
- * hang the shell — a short per-request `timeout`, and a `twoFactor` handler that
+ * Completion-only client options: the guarantees a TAB needs so it can never
+ * disrupt the shell — a short per-request `timeout`, a `twoFactor` handler that
  * rejects rather than reading a 2FA code from stdin (the default handler
- * prompts). The CLI-resolved token and HEROKU_HOST-aware `baseUrl` come from
- * `createSDK` / `createApiClient`. Shared by the SDK platform client and the
- * direct heroku-fetch client the stack completion uses.
+ * prompts), and `warn: undefined` to opt out of the default API-warning sink so
+ * no `Warning:` ever lands on stderr mid-completion and corrupts the prompt. The
+ * CLI-resolved token and HEROKU_HOST-aware `baseUrl` come from `createSDK` /
+ * `createApiClient`. Shared by the SDK platform client and the direct
+ * heroku-fetch client the stack completion uses.
  */
-function completionClientOptions(): HerokuApiClientOptions {
+// @internal — exported only so the completion-silence guarantees (notably
+// opting out of the default `warn` sink) are unit-testable.
+export function completionClientOptions(): HerokuApiClientOptions {
   return {
     timeout: COMPLETION_TIMEOUT_MS,
     twoFactor: {onChallenge: () => Promise.reject(new Error('2FA is not available during shell completion'))},
+    warn: undefined,
   }
 }
 

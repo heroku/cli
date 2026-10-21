@@ -95,6 +95,14 @@ describe('lib/sdk', function () {
   })
 
   describe('apiClientOptions', function () {
+    it('defaults the warn sink so raw-client calls surface API warnings too', function () {
+      expect(apiClientOptions(fakeHeroku('tok')).warn).to.equal(oclifWarn)
+    })
+
+    it('lets a caller disable the warn sink with warn: undefined', function () {
+      expect(apiClientOptions(fakeHeroku('tok'), {warn: undefined})).to.have.property('warn', undefined)
+    })
+
     it('sets baseUrl and a token provider, with caller overrides winning', async function () {
       const opts = apiClientOptions(fakeHeroku('tok'))
       expect(opts.baseUrl).to.equal(vars.apiUrl)

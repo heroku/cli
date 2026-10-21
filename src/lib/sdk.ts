@@ -16,7 +16,7 @@ import {warn as oclifWarn} from '@oclif/core/errors'
 
 /**
  * Lazy token provider backed by the CLI's `APIClient`. Passing heroku-fetch a
- * *function* (not a snapshot) means a `heroku login`/`logout` after the SDK is
+ * function* (not a snapshot) means a `heroku login`/`logout` after the SDK is
  * built is still honored — the token is re-resolved per request.
  *
  * `getAuthEntry()` reuses `APIClient`'s precedence (cached `_auth` →
@@ -86,16 +86,20 @@ export function createSDK<const Exts extends readonly ResourceExtension[] = read
  * {@link sdkOptions}; prefer `createApiClient` at call sites.
  *
  * A `HerokuApiClient` is a single-service client, so `baseUrl` lives on the
- * common options here (there is no other service to clobber). Caller overrides
- * win via the spread — e.g. the status command passes `service: 'custom'` and an
+ * common options here (there is no other service to clobber). The default `warn`
+ * sink is applied for the same reason as {@link sdkOptions} — so raw-client calls
+ * surface Heroku API warnings too, not just the SDK path. Caller overrides win
+ * via the spread — e.g. the status command passes `service: 'custom'` and an
  * empty `token` to build an intentionally unauthenticated client against a
- * custom host.
+ * custom host, and shell completion passes `warn: undefined` to stay silent.
  */
 export function apiClientOptions(
   heroku: Pick<APIClient, 'getAuthEntry'>,
   opts: HerokuApiClientOptions = {},
 ): HerokuApiClientOptions {
-  return {baseUrl: vars.apiUrl, token: tokenFor(heroku), ...opts}
+  return {
+    baseUrl: vars.apiUrl, token: tokenFor(heroku), warn: oclifWarn, ...opts,
+  }
 }
 
 /**
