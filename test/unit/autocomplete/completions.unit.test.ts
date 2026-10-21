@@ -1,6 +1,20 @@
 import {expect} from 'chai'
 
-import {accountCacheKey, hostCacheKey} from '../../../src/lib/autocomplete/completions.js'
+import {accountCacheKey, completionClientOptions, hostCacheKey} from '../../../src/lib/autocomplete/completions.js'
+
+describe('autocomplete completionClientOptions', function () {
+  it('opts out of the default warn sink so a TAB never prints to stderr', function () {
+    // spread last over sdkOptions/apiClientOptions, so warn: undefined wins and
+    // the default oclif warn never fires mid-completion
+    expect(completionClientOptions()).to.have.property('warn', undefined)
+  })
+
+  it('keeps the shell-safety guarantees (short timeout, non-prompting 2FA)', async function () {
+    const opts = completionClientOptions()
+    expect(opts.timeout).to.be.a('number').and.to.be.greaterThan(0)
+    await expect(opts.twoFactor?.onChallenge?.()).to.be.rejected
+  })
+})
 
 describe('autocomplete completions cache keys', function () {
   describe('accountCacheKey (per-account resources)', function () {

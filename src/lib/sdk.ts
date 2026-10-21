@@ -3,6 +3,7 @@ import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {
   type HerokuApiClientOptions, HerokuSDK, type HerokuSDKOptions, type ResourceExtension,
 } from '@heroku/sdk'
+import {warn as oclifWarn} from '@oclif/core/errors'
 
 /**
  * The CLI's single, canonical way to construct a `HerokuSDK` (or, rarely, a raw
@@ -15,7 +16,7 @@ import {
 
 /**
  * Lazy token provider backed by the CLI's `APIClient`. Passing heroku-fetch a
- * *function* (not a snapshot) means a `heroku login`/`logout` after the SDK is
+ * function* (not a snapshot) means a `heroku login`/`logout` after the SDK is
  * built is still honored — the token is re-resolved per request.
  *
  * `getAuthEntry()` reuses `APIClient`'s precedence (cached `_auth` →
@@ -32,17 +33,27 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
 /**
  * @internal
  *
- * Exported only so the wiring (token present, `baseUrl` on the *platform*
- * service and nowhere else, caller overrides winning) is unit-testable without
- * constructing a real client. Prefer `createSDK` at call sites.
+ * Exported only so the wiring (token present, default `warn` sink, `baseUrl` on
+ * the *platform* service and nowhere else, caller overrides winning) is
+ * unit-testable without constructing a real client. Prefer `createSDK` at call
+ * sites.
+ *
+ * `warn` is defaulted on the common `clientOptions` so Heroku API warnings
+ * (deprecation and billing/account notices) surface to the user. heroku-fetch
+ * detects, normalizes, and de-duplicates the server's `x-heroku-warning` /
+ * `warning-message` headers and invokes this callback once per unique message,
+ * so the sink only emits — oclif's `warn` prints it to stderr with a `Warning:`
+ * prefix. On the common `clientOptions`, it reaches every per-service client the
+ * SDK builds.
  *
  * `baseUrl` is set on `clientOptionsByService.platform` — never on the common
  * `clientOptions` — because a shared `baseUrl` clobbers every service's own host
  * (metrics, data, repositories resolve different hosts). `vars.apiUrl` is the
  * CLI's `HEROKU_HOST`-aware platform URL, which equals the SDK's own production
  * default when `HEROKU_HOST` is unset, so it is a no-op for normal users and the
- * correct override for staging. Caller-supplied `clientOptions.token` and
- * `clientOptionsByService.platform` still win via the spreads.
+ * correct override for staging. Caller-supplied `clientOptions` (including
+ * `warn` and `token`) and `clientOptionsByService.platform` still win via the
+ * spreads — a caller can override the sink or disable it with `warn: undefined`.
  */
 export function sdkOptions<Exts extends readonly ResourceExtension[]>(
   heroku: APIClient,
@@ -50,7 +61,7 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
 ): HerokuSDKOptions<Exts> {
   return {
     ...opts,
-    clientOptions: {token: tokenFor(heroku), ...opts.clientOptions},
+    clientOptions: {token: tokenFor(heroku), warn: oclifWarn, ...opts.clientOptions},
     clientOptionsByService: {
       ...opts.clientOptionsByService,
       platform: {baseUrl: vars.apiUrl, ...opts.clientOptionsByService?.platform},
@@ -75,16 +86,20 @@ export function createSDK<const Exts extends readonly ResourceExtension[] = read
  * {@link sdkOptions}; prefer `createApiClient` at call sites.
  *
  * A `HerokuApiClient` is a single-service client, so `baseUrl` lives on the
- * common options here (there is no other service to clobber). Caller overrides
- * win via the spread — e.g. the status command passes `service: 'custom'` and an
+ * common options here (there is no other service to clobber). The default `warn`
+ * sink is applied for the same reason as {@link sdkOptions} — so raw-client calls
+ * surface Heroku API warnings too, not just the SDK path. Caller overrides win
+ * via the spread — e.g. the status command passes `service: 'custom'` and an
  * empty `token` to build an intentionally unauthenticated client against a
- * custom host.
+ * custom host, and shell completion passes `warn: undefined` to stay silent.
  */
 export function apiClientOptions(
   heroku: Pick<APIClient, 'getAuthEntry'>,
   opts: HerokuApiClientOptions = {},
 ): HerokuApiClientOptions {
-  return {baseUrl: vars.apiUrl, token: tokenFor(heroku), ...opts}
+  return {
+    baseUrl: vars.apiUrl, token: tokenFor(heroku), warn: oclifWarn, ...opts,
+  }
 }
 
 /**
