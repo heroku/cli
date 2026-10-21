@@ -84,6 +84,23 @@ describe('ps:scale', function () {
     expect(stderr).to.contain('Scaling dynos... done, now running web at 1:Free, worker at 2:Free\n')
   })
 
+  it('scales a dyno size containing a dot', async function () {
+    api
+      .patch('/apps/myapp/formation', {updates: [{quantity: '1', size: 'dyno-1c-0.5gb', type: 'worker'}]})
+      .reply(200, [{quantity: 1, size: 'dyno-1c-0.5gb', type: 'worker'}])
+      .get('/apps/myapp')
+      .reply(200, {name: 'myapp'})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'worker=1:dyno-1c-0.5gb',
+    ])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Scaling dynos... done, now running worker at 1:dyno-1c-0.5gb\n')
+  })
+
   it('scales up a shield dyno if the app is in a shielded private space', async function () {
     api
       .patch('/apps/myapp/formation', {updates: [{quantity: '1', size: 'Private-L', type: 'web'}]})
