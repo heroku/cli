@@ -1,4 +1,5 @@
 import {APIClient, vars} from '@heroku-cli/command'
+import {warn as oclifWarn} from '@oclif/core/errors'
 import {expect} from 'chai'
 import {stub} from 'sinon'
 
@@ -49,6 +50,23 @@ describe('lib/sdk', function () {
       expect(clientOptions?.token).to.be.a('function')
       // the provider is the lazy one, not a snapshot string
       expect(await (clientOptions!.token as () => Promise<string>)()).to.equal('tok')
+    })
+
+    it('defaults a warn sink onto the common clientOptions so API warnings reach every service', function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'))
+      // on the *common* options (not per-service) → forwarded to every client the SDK builds
+      expect(clientOptions?.warn).to.equal(oclifWarn)
+    })
+
+    it('lets a caller-supplied warn win', function () {
+      const warn = stub()
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {warn}})
+      expect(clientOptions?.warn).to.equal(warn)
+    })
+
+    it('lets a caller disable the warn sink with warn: undefined', function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {warn: undefined}})
+      expect(clientOptions).to.have.property('warn', undefined)
     })
 
     it('sets baseUrl on the platform service only, never on common clientOptions', function () {
