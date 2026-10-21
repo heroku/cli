@@ -279,6 +279,7 @@ pgbackups
 pgbouncer
 pgbouncers
 PGCHANNELBINDING
+pgcopydb
 pgdatabase
 pgdiagnose
 pgdg

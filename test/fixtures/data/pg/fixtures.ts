@@ -1416,9 +1416,11 @@ export const existentMigrationResponse: MigrationResponse = {
   auto_promote: false,
   cdc_lag: null,
   completed: false,
+  created_at: '2026-10-21T16:00:00Z',
   full_load_progress: 0,
   id: '575ec110-0e86-4f68-82d3-64d100a6dcec',
   last_error_message: null,
+  migration_strategy: 'dms_migrate_cdc',
   preassessment_results: [],
   source_id: 'ae4bac9d-99b5-4496-97dc-7b71a9d20999', // Standard DB
   status: MigrationStatus.PREPARING,
@@ -1433,9 +1435,11 @@ export const createdMigrationResponse: MigrationResponse = {
   auto_promote: false,
   cdc_lag: null,
   completed: false,
+  created_at: '2026-10-21T17:30:00Z',
   full_load_progress: 0,
   id: 'eb07b33c-f90a-4f7d-9c56-12c10c277121',
   last_error_message: null,
+  migration_strategy: 'dms_migrate',
   preassessment_results: [],
   source_id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054', // Premium DB
   status: MigrationStatus.PREPARING,

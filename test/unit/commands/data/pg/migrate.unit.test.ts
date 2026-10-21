@@ -9,7 +9,7 @@ import sinon from 'sinon'
 
 import DataPgMigrate from '../../../../../src/commands/data/pg/migrate.js'
 import PoolConfig from '../../../../../src/lib/data/pool-config.js'
-import {DatabaseStatus, MigrationStatus} from '../../../../../src/lib/data/types.js'
+import {DatabaseStatus, MigrationResponse, MigrationStatus} from '../../../../../src/lib/data/types.js'
 import {clearLevelsAndPricingCache} from '../../../../../src/lib/data/utils.js'
 import {
   createdMigrationResponse,
@@ -33,6 +33,17 @@ import {
 } from '../../../../fixtures/data/pg/fixtures.js'
 
 const {prompt} = inquirer
+
+// Replies to the requests each refresh makes for the target Advanced database
+function replyWithTargetMigration(dataApi: nock.Scope, migration: Partial<MigrationResponse>, times = 1): nock.Scope {
+  return dataApi
+    .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+    .times(times)
+    .reply(200, {...existentMigrationResponse, ...migration})
+    .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+    .times(times)
+    .reply(200, targetAdvancedDbInfo)
+}
 
 describe('data:pg:migrate', function () {
   let createAddonStub: sinon.SinonStub
@@ -69,14 +80,14 @@ describe('data:pg:migrate', function () {
         .get('/apps/myapp/addon-attachments')
         .reply(200, [])
 
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
+      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
+      mockedStdinInput = ['\u001B[A\n']
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).not.to.match(/Source Database\s+Destination Database\s+Status/)
+      expect(stdout).not.to.match(/Source Database\s+Destination Database\s+Method\s+Status/)
       expect(stdout).to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
     })
 
@@ -94,7 +105,7 @@ describe('data:pg:migrate', function () {
 
       herokuApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Configure a database migration')
+      expect(stdout).to.contain('Configure a new database migration')
       expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
     })
 
@@ -105,17 +116,17 @@ describe('data:pg:migrate', function () {
           foreignStandardDbAttachment,
         ])
 
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
+      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
+      mockedStdinInput = ['\u001B[A\n']
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
 
-    it('disables the start and cancel migration options', async function () {
+    it('doesn\'t show any migrations to manage', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
@@ -139,8 +150,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Start a migration (no ready migrations on ⬢ myapp)')
-      expect(stdout).to.contain('- Cancel a migration (no ready migrations on ⬢ myapp)')
+      expect(stdout).not.to.contain('Manage migration')
     })
   })
 
@@ -158,17 +168,49 @@ describe('data:pg:migrate', function () {
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
         .reply(200, targetAdvancedDbInfo)
 
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
+      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
+      mockedStdinInput = ['\u001B[A\n']
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).not.to.contain('There are no migrations configured for ⬢ myapp yet.')
-      expect(stdout).to.match(/Source Database\s+Destination Database\s+Status/)
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
+      expect(stdout).not.to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
+      expect(stdout).to.match(/Source Database\s+Destination Database\s+Method\s+Status/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+Preparing databases/)
+    })
+
+    it('shows an option to manage each configured migration', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          nonTargetAdvancedDbAttachment,
+          premiumDbAttachment,
+          targetAdvancedDbAttachment,
+          standardDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, existentMigrationResponse)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .reply(200, createdMigrationResponse)
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, targetAdvancedDbInfo)
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .reply(200, nonTargetAdvancedDbInfo)
+
+      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
+      mockedStdinInput = ['\u001B[A\n']
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(stderr).to.equal('')
+      expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Snapshot\s+Preparing databases/)
+      expect(stdout).to.contain('Manage migration from ⛁ postgresql-convex-12345 to ⛁ postgresql-obscured-12345')
+      expect(stdout).to.contain('Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345')
     })
 
     it('accepts the --no-wrap flag and renders the migrations table', async function () {
@@ -184,14 +226,14 @@ describe('data:pg:migrate', function () {
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
         .reply(200, targetAdvancedDbInfo)
 
-      mockedStdinInput = ['\n']
+      mockedStdinInput = ['\u001B[A\n']
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--no-wrap'])
 
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+Preparing databases/)
     })
 
     it('shows the status description in place of the status when present', async function () {
@@ -218,7 +260,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+syncing/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+syncing/)
       expect(stdout).not.to.contain('Migrating')
     })
 
@@ -259,8 +301,8 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Refresh')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Migrating data/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+Migrating data/)
     })
 
     it('disables configuring a new migration option when there are no additional classic databases pending migration', async function () {
@@ -276,15 +318,15 @@ describe('data:pg:migrate', function () {
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
         .reply(200, targetAdvancedDbInfo)
 
-      // Simulate the user selecting the 'Exit' option by pressing Enter
-      mockedStdinInput = ['\n']
+      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
+      mockedStdinInput = ['\u001B[A\n']
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
 
     it('enables configuring a new migration option when there are additional classic databases pending migration', async function () {
@@ -309,75 +351,153 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Configure a database migration')
+      expect(stdout).to.contain('Configure a new database migration')
       expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
     })
+  })
 
-    it('disables the start and cancel migration options if there are no ready migrations', async function () {
-      const herokuApi = nock('https://api.heroku.com')
+  describe('manage a migration', function () {
+    let herokuApi: nock.Scope
+    let dataApi: nock.Scope
+
+    beforeEach(function () {
+      herokuApi = nock('https://api.heroku.com')
         .persist(true)
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
           targetAdvancedDbAttachment,
           standardDbAttachment,
         ])
-      const dataApi = nock('https://api.data.heroku.com')
-      const nonReadyStatuses = Object.values(MigrationStatus).filter(status => status !== MigrationStatus.READY)
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter for each non-ready status
-      mockedStdinInput = Array.from({length: nonReadyStatuses.length}, () => '\u001B[A\n')
+      dataApi = nock('https://api.data.heroku.com')
+    })
 
-      for (const status of nonReadyStatuses) {
-        dataApi
-          .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-          .reply(200, {
-            ...existentMigrationResponse,
-            status,
-          })
-          .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-          .reply(200, targetAdvancedDbInfo)
+    afterEach(function () {
+      herokuApi.done()
+      dataApi.done()
+      nock.cleanAll()
+    })
+
+    it('shows the migration details', async function () {
+      dataApi
+        .get(`/client/v11/databases/${standardDbAttachment.addon.id}`)
+        .times(2)
+        .reply(200, {info: [{name: 'Status', values: ['Available']}], postgres_version: '16.4'})
+      replyWithTargetMigration(dataApi, {}, 2)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('=== Migration details')
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4 - Available/)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\) - Postgres 17\.5 - Migrating/)
+      expect(stdout).to.match(/Method:\s+Streaming/)
+      expect(stdout).to.match(/Migration configured at:\s+2026-10-21 16:00 UTC/)
+      expect(stdout).to.match(/Status:\s+Preparing databases/)
+    })
+
+    it('only enables canceling a migration that is being prepared', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.PREPARING}, 2)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('- Start the migration (the migration is being prepared)')
+      expect(stdout).to.contain('Cancel the migration')
+      expect(stdout).not.to.contain('- Cancel the migration (')
+    })
+
+    it('enables starting and canceling a ready migration', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('Start the migration')
+      expect(stdout).to.contain('Cancel the migration')
+      expect(stdout).not.to.contain('- Start the migration (')
+      expect(stdout).not.to.contain('- Cancel the migration (')
+    })
+
+    it('disables starting and canceling a migration that already started or ended', async function () {
+      const disabledReasons = [
+        {cancelReason: 'the migration was canceled', startReason: 'the migration was canceled', status: MigrationStatus.CANCELLED},
+        {cancelReason: 'the migration completed successfully', startReason: 'the migration completed successfully', status: MigrationStatus.COMPLETED},
+        {cancelReason: 'the migration failed', startReason: 'the migration failed', status: MigrationStatus.FAILED},
+        {cancelReason: 'the migration is running and can\'t be canceled', startReason: 'the migration is running', status: MigrationStatus.MIGRATING},
+        {cancelReason: 'the migration is running and can\'t be canceled', startReason: 'the migration is running', status: MigrationStatus.PROMOTING},
+        // Statuses the CLI doesn't know about fall back to the status description
+        {cancelReason: 'Preparing databases', startReason: 'Preparing databases', status: MigrationStatus.UNKNOWN},
+      ]
+
+      for (const {cancelReason, startReason, status} of disabledReasons) {
+        replyWithTargetMigration(dataApi, {status}, 2)
+        mockedStdinInput = [
+          '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+          '\u001B[A\n', // Manage migration: > Go back
+          '\u001B[A\n', // Main menu: > Exit
+        ]
 
         // eslint-disable-next-line no-await-in-loop
         const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
         dataApi.done()
         expect(stderr).to.equal('')
-        expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Preparing databases/)
-        expect(stdout).to.contain('- Start a migration (no ready migrations on ⬢ myapp)')
-        expect(stdout).to.contain('- Cancel a migration (no ready migrations on ⬢ myapp)')
+        expect(stdout).to.contain(`- Start the migration (${startReason})`)
+        expect(stdout).to.contain(`- Cancel the migration (${cancelReason})`)
       }
-
-      herokuApi.done()
     })
 
-    it('enables the start and cancel migration options if there are ready migrations', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          targetAdvancedDbAttachment,
-          standardDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-          status_description: 'Ready to promote',
-        })
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
+    it('refreshes the migration details when Refresh is selected', async function () {
+      replyWithTargetMigration(dataApi, {})
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
 
-      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
-      mockedStdinInput = ['\u001B[A\n']
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\n',         // Manage migration: > Refresh migration details
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      herokuApi.done()
-      dataApi.done()
       expect(stderr).to.equal('')
-      expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345 v17\.5\s+Ready to promote/)
-      expect(stdout).to.contain('Start a migration')
-      expect(stdout).to.contain('Cancel a migration')
-      expect(stdout).not.to.contain('no ready migrations on ⬢ myapp')
+      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
+      expect(stdout).to.match(/Status:\s+Preparing databases/)
+      expect(stdout).to.match(/Status:\s+Ready to promote/)
+    })
+
+    it('goes back to the main menu when a newer migration replaces the migration', async function () {
+      replyWithTargetMigration(dataApi, {})
+      replyWithTargetMigration(dataApi, {id: 'a6d41b1c-3d3e-4ad5-a7a1-ef2d0ad09d6f'}, 2)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\n',         // Manage migration: > Refresh migration details
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(stderr).to.equal('')
+      expect(stdout.match(/=== Migration details/g)?.length).to.equal(1)
     })
   })
 
@@ -424,20 +544,27 @@ describe('data:pg:migrate', function () {
           source_id: premiumDbAttachment.addon.id,
         })
         .reply(200, createdMigrationResponse)
+        // The migration details and then the main menu refresh after configuring the migration
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, existentMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(404, {
           id: 'not_found',
           message: 'Add-on not found',
         })
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, targetAdvancedDbInfo)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
         .get(`/data/postgres/v1/${unavailableAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, unavailableAdvancedDbInfo)
     })
 
@@ -450,11 +577,12 @@ describe('data:pg:migrate', function () {
     it('creates a new migration configuration when confirmed', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Non-target Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Non-target Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -463,18 +591,23 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('By continuing, we prepare the necessary steps for the migration.')
       expect(stdout).to.contain('Preparing the migration deletes all the data on the destination database ⛁ postgresql-obscured-12345.')
       expect(stderr).to.equal('Configuring migration... done\n')
+      // Verify the details of the new migration are shown
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\)/)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - Postgres 17\.5 - Available/)
+      expect(stdout).to.match(/Migration configured at:\s+2026-10-21 17:30 UTC/)
       // Verify the new migration is shown on the configured migrations table
-      expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345 v17\.5\s+Preparing databases/)
+      expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Snapshot\s+Preparing databases/)
     })
 
     it('shows the expected list of source databases', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Non-target Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Non-target Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -501,11 +634,12 @@ describe('data:pg:migrate', function () {
     it('shows the expected list of target databases', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Non-target Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Non-target Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -532,7 +666,7 @@ describe('data:pg:migrate', function () {
     it('allows the user to navigate back on every step', async function () {
       // Simulate the user selections
       mockedStdinInput = [
-        '\n',         // Main menu: > Configure a database migration
+        '\u001B[B\n', // Main menu: > Configure a new database migration
         '\n',         // Select source database: > Premium database
         '\n',         // Select target database: > Non-target Advanced database
         '\u001B[A\n', // Confirm migration configuration: > Go back
@@ -540,7 +674,8 @@ describe('data:pg:migrate', function () {
         '\n',         // Select source database: > Premium database
         '\n',         // Select target database: > Non-target Advanced database
         '\n',         // Confirm migration configuration: > Confirm
-        '\n',         // Main menu: > Exit
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -573,16 +708,19 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, provisioningAdvancedDbInfo)
 
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Provisioning Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\n',         // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Provisioning Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -598,12 +736,7 @@ describe('data:pg:migrate', function () {
     it('sends method=cdc when --method=streaming', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-        .get('/apps/myapp/addon-attachments')
+        .times(3)
         .reply(200, [
           nonTargetAdvancedDbAttachment,
           premiumDbAttachment,
@@ -624,20 +757,25 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, existentMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, targetAdvancedDbInfo)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Non-target Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Non-target Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
@@ -676,6 +814,7 @@ describe('data:pg:migrate', function () {
           targetAdvancedDbAttachment,
         ])
         .get('/apps/myapp/addon-attachments')
+        .times(2)
         .reply(200, [
           nonTargetAdvancedDbAttachment,
           premiumDbAttachment,
@@ -697,21 +836,26 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, existentMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, targetAdvancedDbInfo)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Create database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -741,6 +885,7 @@ describe('data:pg:migrate', function () {
           targetAdvancedDbAttachment,
         ])
         .get('/apps/myapp/addon-attachments')
+        .times(2)
         .reply(200, [
           nonTargetAdvancedDbAttachment,
           privateDbAttachment,
@@ -765,24 +910,29 @@ describe('data:pg:migrate', function () {
           source_id: privateDbAttachment.addon.id,
         })
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, existentMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, {
           ...createdMigrationResponse,
           source_id: privateDbAttachment.addon.id,
         })
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, targetAdvancedDbInfo)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Private database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Private database
+        '\n',         // Select target database: > Create database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -812,6 +962,7 @@ describe('data:pg:migrate', function () {
           targetAdvancedDbAttachment,
         ])
         .get('/apps/myapp/addon-attachments')
+        .times(2)
         .reply(200, [
           nonTargetAdvancedDbAttachment,
           shieldDbAttachment,
@@ -836,24 +987,29 @@ describe('data:pg:migrate', function () {
           source_id: shieldDbAttachment.addon.id,
         })
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, existentMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, {
           ...createdMigrationResponse,
           source_id: shieldDbAttachment.addon.id,
         })
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, targetAdvancedDbInfo)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       // Simulate the user selections
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Shield database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\u001B[B\n', // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Shield database
+        '\n',         // Select target database: > Create database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -884,37 +1040,10 @@ describe('data:pg:migrate', function () {
         .persist(true)
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
           targetAdvancedDbAttachment,
           standardDbAttachment,
         ])
       dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-          status_description: 'Ready to promote',
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
-        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
-        .reply(202, {})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.MIGRATING,
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
     })
 
     afterEach(function () {
@@ -924,11 +1053,18 @@ describe('data:pg:migrate', function () {
     })
 
     it('starts the migration', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      dataApi
+        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
+        .reply(202, {})
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.MIGRATING, status_description: 'Migrating data'}, 2)
+
       // Simulate the user selections
       mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\n', // Manage migration: > Start the migration
+        '\n',         // Confirm to start migration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
       ]
 
@@ -937,41 +1073,28 @@ describe('data:pg:migrate', function () {
       // Verify the confirmation message is displayed
       expect(stdout).to.contain('Your database ⛁ postgresql-cubic-12345 will be unavailable after starting the migration until the migration is complete.')
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+      // Verify the migration details are refreshed after starting the migration
+      expect(stdout).to.match(/Status:\s+Migrating data/)
+      expect(stdout).to.contain('- Start the migration (the migration is running)')
     })
 
-    it('shows the expected list of migrations to choose from', async function () {
+    it('goes back to the migration details without starting the migration', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 3)
+
       // Simulate the user selections
       mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\n', // Manage migration: > Start the migration
+        '\u001B[A\n', // Confirm to start migration: > Go back
+        '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      const migrationList = stdout.match(/(?<=Select the migration to start: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
-      // The ready migration should appear in the list
-      expect(migrationList).to.contain('From ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345')
-      // The non-ready migration should not appear in the list
-      expect(migrationList).not.to.contain('From ⛁ postgresql-convex-12345 to ⛁ postgresql-obscured-12345')
-    })
-
-    it('allows the user to navigate back on every step', async function () {
-      // Simulate the user selections
-      mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\u001B[A\n', // Confirm migration start: > Go back
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      expect(stdout.match(/Select the migration to start: \(Use arrow keys\)/g)?.length).to.equal(2)
-      expect(stdout.match(/Confirm to start migration: \(Use arrow keys\)/g)?.length).to.equal(2)
+      expect(stderr).to.equal('')
+      expect(stdout.match(/Confirm to start migration: \(Use arrow keys\)/g)?.length).to.equal(1)
+      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
     })
   })
 
@@ -984,37 +1107,10 @@ describe('data:pg:migrate', function () {
         .persist(true)
         .get('/apps/myapp/addon-attachments')
         .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
           targetAdvancedDbAttachment,
           standardDbAttachment,
         ])
       dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-          status_description: 'Ready to promote',
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
-        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
-        .reply(202, {})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.CANCELLED,
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...targetAdvancedDbInfo, status: DatabaseStatus.AVAILABLE})
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, {...nonTargetAdvancedDbInfo, status: DatabaseStatus.MIGRATING})
     })
 
     afterEach(function () {
@@ -1023,13 +1119,20 @@ describe('data:pg:migrate', function () {
       nock.cleanAll()
     })
 
-    it('cancels the migration', async function () {
+    it('cancels a ready migration', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      dataApi
+        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
+        .reply(202, {})
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+
       // Simulate the user selections
       mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Cancel a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration cancel: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
+        '\n',                 // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\u001B[B\n', // Manage migration: > Cancel the migration
+        '\n',                 // Confirm to cancel migration: > Confirm
+        '\u001B[A\n',         // Manage migration: > Go back
+        '\u001B[A\n',         // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1037,41 +1140,49 @@ describe('data:pg:migrate', function () {
       // Verify the confirmation message is displayed
       expect(stdout).to.contain('After canceling, you must create a new migration configuration')
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+      // Verify the migration details are refreshed after canceling the migration
+      expect(stdout).to.match(/Status:\s+Migration canceled\./)
+      expect(stdout).to.contain('- Cancel the migration (the migration was canceled)')
     })
 
-    it('shows the expected list of migrations to choose from', async function () {
+    it('cancels a migration that is being prepared', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.PREPARING})
+      dataApi
+        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
+        .reply(202, {})
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+
       // Simulate the user selections
       mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Cancel a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration cancel: > Confirm
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\n', // Manage migration: > Cancel the migration
+        '\n',         // Confirm to cancel migration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      const migrationList = stdout.match(/(?<=Select the migration to cancel: \(Use arrow keys\)\n)(.*?)(?=Go back)/s)?.[1]
-      // The ready migration should appear in the list
-      expect(migrationList).to.contain('From ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345')
-      // The non-ready migration should not appear in the list
-      expect(migrationList).not.to.contain('From ⛁ postgresql-convex-12345 to ⛁ postgresql-obscured-12345')
+      expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
-    it('allows the user to navigate back on every step', async function () {
+    it('goes back to the migration details without canceling the migration', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 3)
+
       // Simulate the user selections
       mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Cancel a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\u001B[A\n', // Confirm migration cancel: > Go back
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration cancel: > Confirm
-        '\u001B[A\n', // Main menu: > Exit
+        '\n',                 // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\u001B[B\n', // Manage migration: > Cancel the migration
+        '\u001B[A\n',         // Confirm to cancel migration: > Go back
+        '\u001B[A\n',         // Manage migration: > Go back
+        '\u001B[A\n',         // Main menu: > Exit
       ]
 
-      const {stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      expect(stdout.match(/Select the migration to cancel: \(Use arrow keys\)/g)?.length).to.equal(2)
-      expect(stdout.match(/Confirm to cancel migration: \(Use arrow keys\)/g)?.length).to.equal(2)
+      expect(stderr).to.equal('')
+      expect(stdout.match(/Confirm to cancel migration: \(Use arrow keys\)/g)?.length).to.equal(1)
+      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
     })
   })
 
@@ -1110,8 +1221,10 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
@@ -1120,7 +1233,8 @@ describe('data:pg:migrate', function () {
         '\n',  // Select target database
         '\n',  // Select snapshot method (first option, default)
         '\n',  // Confirm migration
-        '\n',  // Main menu: > Exit
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1144,8 +1258,10 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
@@ -1154,7 +1270,8 @@ describe('data:pg:migrate', function () {
         '\n',          // Select target database
         '\u001B[B\n',  // Select streaming option from method selection
         '\n',          // Confirm migration
-        '\n',          // Main menu: > Exit
+        '\u001B[A\n',  // Manage migration: > Go back
+        '\u001B[A\n',  // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1213,8 +1330,10 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
@@ -1225,7 +1344,8 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n',  // Confirm migration configuration: > Go back
         '\n',          // Select snapshot method (second selection, default)
         '\n',          // Confirm migration
-        '\n',          // Main menu: > Exit
+        '\u001B[A\n',  // Manage migration: > Go back
+        '\u001B[A\n',  // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
@@ -1256,8 +1376,10 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
@@ -1265,7 +1387,8 @@ describe('data:pg:migrate', function () {
         '\n',  // Select source database
         '\n',  // Select target database
         '\n',  // Confirm migration (no method selection prompt)
-        '\n',  // Main menu: > Exit
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, [
@@ -1294,8 +1417,10 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
@@ -1303,7 +1428,8 @@ describe('data:pg:migrate', function () {
         '\n',  // Select source database
         '\n',  // Select target database
         '\n',  // Confirm migration (no method selection prompt)
-        '\n',  // Main menu: > Exit
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, [
@@ -1333,7 +1459,7 @@ describe('data:pg:migrate', function () {
         ])
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
-        .times(2)
+        .times(3)
         .reply(200, {postgres_version: '16.4'})
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(404, {id: 'not_found', message: 'Add-on not found'})
@@ -1345,16 +1471,19 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Non-target Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\n',         // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Non-target Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -1365,7 +1494,8 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain(`⛁ ${premiumDbAttachment.addon.name} v16.4 as PREMIUM_DB`)
       expect(stdout).to.contain(`⛁ ${nonTargetAdvancedDbAttachment.addon.name} v17.5 as OTHER_ADVANCED_DB`)
       expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
-      expect(stdout).to.match(/⛁ postgresql-convex-12345 v16\.4\s+⛁ postgresql-obscured-12345 v17\.5\s+Preparing databases/)
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\) - Postgres 16\.4$/m)
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - Postgres 17\.5 - Available/)
     })
 
     it('does not warn about a version change when the major versions match', async function () {
@@ -1378,7 +1508,7 @@ describe('data:pg:migrate', function () {
         ])
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
-        .times(2)
+        .times(3)
         .reply(200, {postgres_version: '17.2'})
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
         .reply(404, {id: 'not_found', message: 'Add-on not found'})
@@ -1390,16 +1520,19 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Non-target Advanced database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\n',         // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Non-target Advanced database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -1424,13 +1557,14 @@ describe('data:pg:migrate', function () {
           premiumDbAttachment,
         ])
         .get('/apps/myapp/addon-attachments')
+        .times(2)
         .reply(200, [
           nonTargetAdvancedDbAttachment,
           premiumDbAttachment,
         ])
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
-        .times(2)
+        .times(3)
         .reply(200, {postgres_version: '16.4'})
         .get('/data/postgres/v1/levels/advanced')
         .reply(200, levelsResponse)
@@ -1442,16 +1576,19 @@ describe('data:pg:migrate', function () {
         })
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
         .reply(200, createdMigrationResponse)
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
         .reply(200, nonTargetAdvancedDbInfo)
 
       mockedStdinInput = [
-        '\n', // Main menu: > Configure a database migration
-        '\n', // Select source database: > Premium database
-        '\n', // Select target database: > Create database
-        '\n', // Confirm migration configuration: > Confirm
-        '\n', // Main menu: > Exit
+        '\n',         // Main menu: > Configure a new database migration
+        '\n',         // Select source database: > Premium database
+        '\n',         // Select target database: > Create database
+        '\n',         // Confirm migration configuration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
@@ -1480,30 +1617,19 @@ describe('data:pg:migrate', function () {
         ])
       const dataApi = nock('https://api.data.heroku.com')
         .get(`/client/v11/databases/${standardDbAttachment.addon.id}`)
-        .times(2)
+        .times(3)
         .reply(200, {postgres_version: '16.4'})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.READY,
-          status_description: 'Ready to promote',
-        })
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
         .reply(202, {})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, {
-          ...existentMigrationResponse,
-          status: MigrationStatus.MIGRATING,
-        })
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.MIGRATING}, 2)
 
       mockedStdinInput = [
-        '\n',         // Main menu: > Start a migration
-        '\n',         // Select migration: > Choose the first ready migration
-        '\n',         // Confirm migration start: > Confirm
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\n', // Manage migration: > Start the migration
+        '\n',         // Confirm to start migration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
       ]
 
@@ -1512,7 +1638,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       dataApi.done()
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
-      expect(stdout).to.contain('From ⛁ postgresql-cubic-12345 v16.4 to ⛁ postgresql-lively-12345 v17.5')
+      expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4$/m)
       expect(stdout).to.contain('Warning: The destination database runs Postgres 17.5, but the source database runs Postgres 16.4.')
     })
   })
