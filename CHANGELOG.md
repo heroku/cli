@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [11.12.1-beta.0](https://github.com/heroku/cli/compare/v11.12.0...v11.12.1-beta.0) (2026-10-22)
+
+### Bug Fixes
+
+* accept dots in dyno sizes for ps:scale (W-24613548) ([#4006](https://github.com/heroku/cli/issues/4006)) ([7a6a08b](https://github.com/heroku/cli/commit/7a6a08b7448ce1775f0133ceec7b92b1205c2661))
+* show a clear error when an unsupported Node.js version crashes the CLI ([#3995](https://github.com/heroku/cli/issues/3995)) ([65ca0bc](https://github.com/heroku/cli/commit/65ca0bc5c42c2dd864cd4dbc788d4ddf493bb84d))
+
+### Tests
+
+* assert command failures from the error runCommand returns ([#3997](https://github.com/heroku/cli/issues/3997)) ([afc97fa](https://github.com/heroku/cli/commit/afc97fa20ac7bd6ec903c0cdb750b5b324810738))
+
 ## [11.12.0](https://github.com/heroku/cli/compare/v11.11.0...v11.12.0) (2026-10-13)
 
 ### Features
