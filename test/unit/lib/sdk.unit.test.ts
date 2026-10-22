@@ -1,11 +1,20 @@
 import {APIClient, vars} from '@heroku-cli/command'
 import {warn as oclifWarn} from '@oclif/core/errors'
 import {expect} from 'chai'
+import {readFileSync} from 'node:fs'
 import {stub} from 'sinon'
 
 import {
   apiClientOptions, createSDK, sdkOptions, tokenFor,
 } from '../../../src/lib/sdk.js'
+
+// The User-Agent the helpers default onto every request. Built the same way the
+// implementation does — CLI package.json version + process.platform — so the
+// assertion tracks a version bump instead of hard-coding a number that rots.
+const {version: cliVersion} = JSON.parse(
+  readFileSync(new URL('../../../package.json', import.meta.url), 'utf8'),
+) as {version: string}
+const expectedUserAgent = `heroku-cli/${cliVersion} ${process.platform}`
 
 /**
  * Unit coverage for the CLI's canonical SDK constructor. The two concerns worth
@@ -92,6 +101,21 @@ describe('lib/sdk', function () {
       const opts = sdkOptions(fakeHeroku('tok'), {extensions})
       expect(opts.extensions).to.equal(extensions)
     })
+
+    it('defaults the user-agent header onto the common clientOptions', function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'))
+      expect(clientOptions?.headers?.['user-agent']).to.equal(expectedUserAgent)
+    })
+
+    it('merges caller headers with the default user-agent rather than replacing them', function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {headers: {'x-custom': 'yes'}}})
+      expect(clientOptions?.headers).to.deep.equal({'user-agent': expectedUserAgent, 'x-custom': 'yes'})
+    })
+
+    it("lets a caller's own user-agent win over the default", function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {headers: {'user-agent': 'mine/1.0'}}})
+      expect(clientOptions?.headers?.['user-agent']).to.equal('mine/1.0')
+    })
   })
 
   describe('apiClientOptions', function () {
@@ -113,6 +137,18 @@ describe('lib/sdk', function () {
       expect(custom.baseUrl).to.equal('https://status.test')
       expect(custom.service).to.equal('custom')
       expect(custom.token).to.equal('')
+    })
+
+    it('defaults the user-agent header', function () {
+      expect(apiClientOptions(fakeHeroku('tok')).headers?.['user-agent']).to.equal(expectedUserAgent)
+    })
+
+    it('merges caller headers with the default user-agent, letting a caller user-agent win', function () {
+      expect(apiClientOptions(fakeHeroku('tok'), {headers: {'x-custom': 'yes'}}).headers).to.deep.equal({
+        'user-agent': expectedUserAgent, 'x-custom': 'yes',
+      })
+      expect(apiClientOptions(fakeHeroku('tok'), {headers: {'user-agent': 'mine/1.0'}}).headers?.['user-agent'])
+        .to.equal('mine/1.0')
     })
   })
 

@@ -1,26 +1,22 @@
+import {HerokuSDK} from '@heroku/sdk'
 import {runCommand} from '@heroku-cli/test-utils'
 import {expect} from 'chai'
-import nock from 'nock'
 import sinon from 'sinon'
 
 import Cmd from '../../../../src/commands/orgs/open.js'
-import {teamInfo} from '../../../helpers/stubs/get.js'
 
 describe('heroku org:open', function () {
-  let apiGetOrgInfo: nock.Scope
+  let getWithDelinquencyStub: sinon.SinonStub
   let urlOpenerStub: sinon.SinonStub
 
-  before(function () {
-    urlOpenerStub = sinon.stub(Cmd, 'openUrl')
-  })
-
   beforeEach(function () {
-    apiGetOrgInfo = teamInfo()
-    urlOpenerStub.reset()
+    urlOpenerStub = sinon.stub(Cmd, 'openUrl')
+    getWithDelinquencyStub = sinon.stub()
+    sinon.stub(HerokuSDK.prototype, 'platform').get(() => ({team: {getWithDelinquency: getWithDelinquencyStub}}))
   })
 
   afterEach(function () {
-    nock.cleanAll()
+    sinon.restore()
   })
 
   it('shows an error if team flag is not passed', async function () {
@@ -31,11 +27,11 @@ describe('heroku org:open', function () {
   })
 
   it('opens org in dashboard via browser if team flag is passed', async function () {
-    await runCommand(Cmd, [
-      '--team',
-      'myteam',
-    ])
-      .then(() => apiGetOrgInfo.done())
-      .then(() => expect(urlOpenerStub.called).to.equal(true))
+    getWithDelinquencyStub.resolves({delinquency: null, team: {name: 'myteam'}})
+
+    await runCommand(Cmd, ['--team', 'myteam'])
+
+    expect(getWithDelinquencyStub.calledOnceWithExactly('myteam')).to.equal(true)
+    expect(urlOpenerStub.calledOnceWithExactly('https://dashboard.heroku.com/teams/myteam')).to.equal(true)
   })
 })

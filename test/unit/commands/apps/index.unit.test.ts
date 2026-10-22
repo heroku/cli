@@ -7,7 +7,7 @@ import Apps from '../../../../src/commands/apps/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 type FakePlatform = {
-  account: {info: sinon.SinonStub}
+  account: {getWithDelinquency: sinon.SinonStub}
   app: {
     list: sinon.SinonStub
     listOwnedAndCollaborated: sinon.SinonStub
@@ -18,7 +18,7 @@ type FakePlatform = {
 
 function buildFakePlatform(): FakePlatform {
   return {
-    account: {info: sinon.stub()},
+    account: {getWithDelinquency: sinon.stub()},
     app: {
       list: sinon.stub(),
       listOwnedAndCollaborated: sinon.stub(),
@@ -112,7 +112,7 @@ describe('apps', function () {
 
   describe('with no args', function () {
     it('displays a message when the user has no apps', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -123,7 +123,7 @@ describe('apps', function () {
     })
 
     it('list all user apps', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, collabApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -141,7 +141,7 @@ describe('apps', function () {
     })
 
     it('lists all apps', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.list.resolves([example, collabApp, teamApp1])
 
       const {stderr, stdout} = await runCommand(Apps, ['--all'])
@@ -161,7 +161,7 @@ describe('apps', function () {
     })
 
     it('shows as json', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, collabApp])
 
       const {stderr, stdout} = await runCommand(Apps, ['--json'])
@@ -171,7 +171,7 @@ describe('apps', function () {
     })
 
     it('shows region if not us', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -181,7 +181,7 @@ describe('apps', function () {
     })
 
     it('shows locked app', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, lockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -192,7 +192,7 @@ describe('apps', function () {
 
     it('shows locked eu app', async function () {
       const euLockedApp = {...lockedApp, region: {name: 'eu'}}
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, euLockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -202,7 +202,7 @@ describe('apps', function () {
     })
 
     it('shows internal app', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, internalApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -212,7 +212,7 @@ describe('apps', function () {
     })
 
     it('shows internal locked app', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, internalLockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -223,7 +223,7 @@ describe('apps', function () {
 
     it('shows internal eu app', async function () {
       const euInternalApp = {...internalApp, region: {name: 'eu'}}
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, euInternalApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -234,7 +234,7 @@ describe('apps', function () {
 
     it('shows internal locked eu app', async function () {
       const euInternalLockedApp = {...internalLockedApp, region: {name: 'eu'}}
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.app.listOwnedAndCollaborated.resolves([example, euApp, euInternalLockedApp])
 
       const {stderr, stdout} = await runCommand(Apps, [])
@@ -246,7 +246,7 @@ describe('apps', function () {
 
   describe('with team', function () {
     it('displays a message when the team has no apps', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.teamApp.listByTeam.resolves([])
 
       const {stderr, stdout} = await runCommand(Apps, ['--team', 'test-team'])
@@ -257,7 +257,7 @@ describe('apps', function () {
     })
 
     it('list all in a team', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.teamApp.listByTeam.resolves([teamApp1, teamApp2])
 
       const {stderr, stdout} = await runCommand(Apps, ['--team', 'test-team'])
@@ -269,7 +269,7 @@ describe('apps', function () {
 
   describe('with space', function () {
     it('displays a message when the space has no apps', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.space.info.resolves({team: {name: 'test-team'}})
       fakePlatform.teamApp.listByTeam.resolves([])
 
@@ -282,7 +282,7 @@ describe('apps', function () {
     })
 
     it('lists only apps in spaces by name', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.space.info.resolves({team: {name: 'test-team'}})
       fakePlatform.teamApp.listByTeam.resolves([teamSpaceApp1, teamSpaceApp2, teamApp1])
 
@@ -293,7 +293,7 @@ describe('apps', function () {
     })
 
     it('lists only internal apps in spaces by name', async function () {
-      fakePlatform.account.info.resolves({email: 'foo@bar.com'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'foo@bar.com'}, delinquency: null})
       fakePlatform.space.info.resolves({team: {name: 'test-team'}})
       fakePlatform.teamApp.listByTeam.resolves([teamSpaceApp1, teamSpaceApp2, teamApp1, teamSpaceInternalApp])
 

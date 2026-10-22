@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
+import {formatDelinquencyWarning, teamExtensions} from '@heroku/sdk/extensions/platform'
 import {PipelineCreateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
@@ -84,13 +85,19 @@ export default class Create extends Command {
 
     const ownerType = teamName ? 'team' : 'user'
 
-    const {platform} = createSDK(this.heroku)
+    const {platform} = createSDK(this.heroku, {extensions: [teamExtensions]})
 
     // If team or org is not specified, we assign ownership to the user creating
-    const ownerRecord = teamName
-      ? await platform.team.info(teamName)
-      : await platform.account.infoByUser('~')
-    const ownerID = ownerRecord.id!
+    let ownerID: string
+    if (teamName) {
+      const {delinquency, team} = await platform.team.getWithDelinquency(teamName)
+      const delinquencyWarning = formatDelinquencyWarning('team', delinquency)
+      if (delinquencyWarning) this.warn(delinquencyWarning)
+      ownerID = team.id!
+    } else {
+      const account = await platform.account.infoByUser('~')
+      ownerID = account.id!
+    }
 
     const answers: Answers = await inquirer.prompt(questions)
     if (answers.name) name = answers.name

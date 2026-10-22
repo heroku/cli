@@ -7,13 +7,13 @@ import Run from '../../../../src/commands/run/index.js'
 import {type MockSDK, mockSDKPlatform} from '../../../helpers/mock-sdk.js'
 
 type FakePlatform = {
-  account: {info: sinon.SinonStub}
+  account: {getWithDelinquency: sinon.SinonStub}
   dyno: {run: sinon.SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    account: {info: sinon.stub()},
+    account: {getWithDelinquency: sinon.stub()},
     dyno: {run: sinon.stub()},
   }
 }
@@ -64,7 +64,7 @@ describe('run', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    fakePlatform.account.info.resolves({email: 'test@example.com'})
+    fakePlatform.account.getWithDelinquency.resolves({account: {email: 'test@example.com'}, delinquency: null})
     fakePlatform.dyno.run.resolves({
       attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
       command: 'echo test',
@@ -81,7 +81,7 @@ describe('run', function () {
       // Expected to fail when trying to connect to rendezvous
     })
 
-    expect(fakePlatform.account.info.calledOnce).to.equal(true)
+    expect(fakePlatform.account.getWithDelinquency.calledOnce).to.equal(true)
     expect(fakePlatform.dyno.run.calledOnce).to.equal(true)
     const [appId, command, options] = fakePlatform.dyno.run.firstCall.args
     expect(appId).to.equal('myapp')
@@ -94,7 +94,7 @@ describe('run', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    fakePlatform.account.info.resolves({email: 'test@example.com'})
+    fakePlatform.account.getWithDelinquency.resolves({account: {email: 'test@example.com'}, delinquency: null})
     fakePlatform.dyno.run.resolves({
       attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
       command: 'false; echo "\uFFFF heroku-command-exit-status: 1"',
@@ -122,7 +122,7 @@ describe('run', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'cnb'}})
 
-    fakePlatform.account.info.resolves({email: 'test@example.com'})
+    fakePlatform.account.getWithDelinquency.resolves({account: {email: 'test@example.com'}, delinquency: null})
     fakePlatform.dyno.run.resolves({
       attach_url: 'rendezvous://rendezvous.runtime.heroku.com:5000',
       command: 'echo test',

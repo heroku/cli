@@ -1,9 +1,12 @@
 import {APIClient, vars} from '@heroku-cli/command'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {
-  type HerokuApiClientOptions, HerokuSDK, type HerokuSDKOptions, type ResourceExtension,
+  type HerokuApiClientOptions, HerokuSDK, type HerokuSDKOptions, type ResourceExtension, type ServiceName,
 } from '@heroku/sdk'
 import {warn as oclifWarn} from '@oclif/core/errors'
+import {readFileSync} from 'node:fs'
+import path from 'node:path'
+import {fileURLToPath} from 'node:url'
 
 /**
  * The CLI's single, canonical way to construct a `HerokuSDK` (or, rarely, a raw
@@ -13,6 +16,97 @@ import {warn as oclifWarn} from '@oclif/core/errors'
  * call sites — SDK calls resolve the CLI user's credentials via `APIClient` (the
  * same path as the rest of the CLI) rather than heroku-fetch's own default.
  */
+
+/**
+ * `heroku-cli/<version> <platform>` — the User-Agent the legacy
+ * `@heroku-cli/command` base class put on every request so Heroku's request
+ * logs can attribute CLI traffic. SDK-backed commands bypass that base class,
+ * so without this their requests lose the header (W-22735462). The version is
+ * read from the CLI's own `package.json` — the same source oclif derives
+ * `config.version` from — so no command/`config` reference is needed and the
+ * helper stays usable from `src/lib/` call sites that only hold an `APIClient`.
+ * `process.platform` stands in for `config.platform`; they match everywhere
+ * except WSL, which oclif reports as `wsl` and this reports as `linux` — a
+ * cosmetic request-log distinction, not a functional one.
+ */
+const {version: cliVersion} = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../package.json'), 'utf8')) as {version: string}
+const userAgent = `heroku-cli/${cliVersion} ${process.platform}`
+
+/**
+ * The SDK service namespaces `createSDK` binds the cancellation signal onto.
+ * These are exactly the service getters `HerokuSDK` exposes; binding the signal
+ * to each means every request a command issues — generated route calls and
+ * extension methods alike — aborts when the signal fires.
+ */
+const SERVICE_NAMESPACES: ReadonlySet<ServiceName> = new Set([
+  'dashboardBackend', 'data', 'metrics', 'notifications', 'platform', 'repositories', 'repositoriesApi',
+])
+
+let abortController: AbortController | undefined
+
+/**
+ * Process-wide cancellation signal for SDK requests. A CLI invocation is a
+ * single process, so one controller scoped to the process lifetime is the right
+ * granularity — there is no narrower unit to cancel. It is created lazily on
+ * first use (a command that never builds an SDK installs no handlers) and
+ * shared across every `createSDK` call, so exactly one pair of signal listeners
+ * is ever registered regardless of how many clients a command builds.
+ *
+ * `SIGINT`/`SIGTERM` abort it, so an interrupted command's in-flight SDK
+ * requests reject with an `AbortError` instead of being orphaned by process
+ * teardown. Listeners are registered with `process.once`, matching the existing
+ * `log-displayer` convention: the first Ctrl-C aborts in-flight work (which
+ * rejects and unwinds the command to exit); a second falls through to the
+ * default/other handlers for a hard exit.
+ */
+function cliAbortSignal(): AbortSignal {
+  if (!abortController) {
+    abortController = new AbortController()
+    const onInterrupt = () => abortController!.abort()
+    process.once('SIGINT', onInterrupt)
+    process.once('SIGTERM', onInterrupt)
+  }
+
+  return abortController.signal
+}
+
+/**
+ * Wrap an SDK so each service namespace it hands back is bound to `signal` via
+ * the SDK's own `withOptions({signal})`. The SDK re-derives its extension
+ * context under that call (see `mergeExtensions`), so the signal reaches both
+ * generated route methods and the requests extension methods issue internally —
+ * a single bind covers everything a caller can reach through the namespace.
+ *
+ * Bound namespaces are memoized so repeated `sdk.platform` access returns the
+ * same derived client (stable identity, no repeated re-derivation). The getter
+ * reads through to the target (never the proxy) so `HerokuSDK`'s private-field
+ * accessors keep working. Non-namespace reads pass straight through.
+ *
+ * A namespace that doesn't expose `withOptions` is passed through unchanged
+ * rather than bound: the real service clients always have it, but a test double
+ * that replaces the `platform` getter with a plain object does not, and signal
+ * binding is a no-op on something that can't carry a sticky signal anyway.
+ */
+function bindAbortSignal<Exts extends readonly ResourceExtension[]>(
+  sdk: HerokuSDK<Exts>,
+  signal: AbortSignal,
+): HerokuSDK<Exts> {
+  const bound = new Map<string, unknown>()
+  return new Proxy(sdk, {
+    get(target, prop) {
+      if (typeof prop === 'string' && SERVICE_NAMESPACES.has(prop as ServiceName)) {
+        if (!bound.has(prop)) {
+          const namespace = Reflect.get(target, prop) as {withOptions?(opts: {signal: AbortSignal}): unknown}
+          bound.set(prop, typeof namespace?.withOptions === 'function' ? namespace.withOptions({signal}) : namespace)
+        }
+
+        return bound.get(prop)
+      }
+
+      return Reflect.get(target, prop)
+    },
+  }) as HerokuSDK<Exts>
+}
 
 /**
  * Lazy token provider backed by the CLI's `APIClient`. Passing heroku-fetch a
@@ -33,10 +127,15 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
 /**
  * @internal
  *
- * Exported only so the wiring (token present, default `warn` sink, `baseUrl` on
- * the *platform* service and nowhere else, caller overrides winning) is
- * unit-testable without constructing a real client. Prefer `createSDK` at call
- * sites.
+ * Exported only so the wiring (token present, default `warn` sink and
+ * `user-agent` header, `baseUrl` on the *platform* service and nowhere else,
+ * caller overrides winning) is unit-testable without constructing a real
+ * client. Prefer `createSDK` at call sites.
+ *
+ * `headers['user-agent']` is defaulted on the common `clientOptions` so every
+ * service client identifies CLI traffic in Heroku's request logs. Headers merge
+ * key-by-key rather than replacing wholesale, so a caller's own headers add to
+ * (and a caller's `user-agent` still overrides) the default.
  *
  * `warn` is defaulted on the common `clientOptions` so Heroku API warnings
  * (deprecation and billing/account notices) surface to the user. heroku-fetch
@@ -61,7 +160,12 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
 ): HerokuSDKOptions<Exts> {
   return {
     ...opts,
-    clientOptions: {token: tokenFor(heroku), warn: oclifWarn, ...opts.clientOptions},
+    clientOptions: {
+      token: tokenFor(heroku),
+      warn: oclifWarn,
+      ...opts.clientOptions,
+      headers: {'user-agent': userAgent, ...opts.clientOptions?.headers},
+    },
     clientOptionsByService: {
       ...opts.clientOptionsByService,
       platform: {baseUrl: vars.apiUrl, ...opts.clientOptionsByService?.platform},
@@ -77,7 +181,7 @@ export function createSDK<const Exts extends readonly ResourceExtension[] = read
   heroku: APIClient,
   opts: HerokuSDKOptions<Exts> = {},
 ): HerokuSDK<Exts> {
-  return new HerokuSDK<Exts>(sdkOptions(heroku, opts))
+  return bindAbortSignal(new HerokuSDK<Exts>(sdkOptions(heroku, opts)), cliAbortSignal())
 }
 
 /**
@@ -99,6 +203,7 @@ export function apiClientOptions(
 ): HerokuApiClientOptions {
   return {
     baseUrl: vars.apiUrl, token: tokenFor(heroku), warn: oclifWarn, ...opts,
+    headers: {'user-agent': userAgent, ...opts.headers},
   }
 }
 
@@ -122,5 +227,7 @@ export function createApiClient(
  * the sdk.ts lint boundary.
  */
 export function createUnauthenticatedClient(baseUrl: string): HerokuApiClient {
-  return new HerokuApiClient({baseUrl, service: 'custom', token: ''})
+  return new HerokuApiClient({
+    baseUrl, headers: {'user-agent': userAgent}, service: 'custom', token: '',
+  })
 }

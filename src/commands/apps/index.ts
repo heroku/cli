@@ -1,6 +1,7 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
@@ -38,7 +39,7 @@ export default class AppsIndex extends Command {
     const {all, json, space} = flags
     const internalRouting = flags['internal-routing']
 
-    const sdk = createSDK(this.heroku)
+    const sdk = createSDK(this.heroku, {extensions: [accountExtensions]})
     const {platform} = sdk
 
     if (space) {
@@ -46,14 +47,17 @@ export default class AppsIndex extends Command {
       team = spaceInfo.team?.name ?? null
     }
 
-    const [appsList, user] = await Promise.all([
+    const [appsList, {account: user, delinquency}] = await Promise.all([
       (async () => {
         if (team) return platform.teamApp.listByTeam(team)
         if (all) return platform.app.list()
         return platform.app.listOwnedAndCollaborated('~')
       })(),
-      platform.account.info(),
+      platform.account.getWithDelinquency(),
     ])
+
+    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
+    if (delinquencyWarning) this.warn(delinquencyWarning)
 
     let apps = appsList as App[]
 

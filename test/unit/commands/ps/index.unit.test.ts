@@ -61,6 +61,7 @@ describe('ps', function () {
       })
     nock('https://api.heroku.com:443').persist().get('/apps/myapp').reply(200, {name: 'myapp'})
     nock('https://api.heroku.com:443').get('/account').reply(200, {id: '1234'})
+    nock('https://api.heroku.com:443').get('/account/delinquency').reply(200, {})
 
     await runCommand(Cmd, [
       '--app',
@@ -82,8 +83,8 @@ describe('ps', function () {
       },
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -116,8 +117,8 @@ describe('ps', function () {
       },
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -150,8 +151,8 @@ describe('ps', function () {
     const infoStub = stub().resolves({
       id: '6789', owner: {id: '1234'}, process_tier: 'basic', space: {shield: true},
     })
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -181,8 +182,8 @@ describe('ps', function () {
       },
     ])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {error, stdout} = await runCommand(Cmd, [
       'foo',
@@ -200,8 +201,8 @@ describe('ps', function () {
       },
     ])
     const infoStub = stub().resolves({name: 'myapp'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -215,7 +216,7 @@ describe('ps', function () {
 
   it('shows extended info', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
-    const accountStub = stub().resolves({id: '1234'})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
     const listExtendedStub = stub().resolves([{
       command: 'npm start',
       extended: {
@@ -241,7 +242,7 @@ describe('ps', function () {
       type: 'run',
       updated_at: hourAgo,
     }])
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -283,7 +284,7 @@ describe('ps', function () {
 
   it('shows extended info for Private Space app', async function () {
     const infoStub = stub().resolves({name: 'myapp'})
-    const accountStub = stub().resolves({id: '1234'})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
     const listExtendedStub = stub().resolves([{
       command: 'npm start',
       extended: {
@@ -309,7 +310,7 @@ describe('ps', function () {
       type: 'run',
       updated_at: hourAgo,
     }])
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {listExtended: listExtendedStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -340,7 +341,7 @@ describe('ps', function () {
 
   it('shows shield dynos in extended info if app is in a shielded private space', async function () {
     const infoStub = stub().resolves({space: {shield: true}})
-    const accountStub = stub().resolves({id: '1234'})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
     const listExtendedStub = stub().resolves([{
       command: 'npm start',
       extended: {
@@ -366,7 +367,7 @@ describe('ps', function () {
       type: 'run',
       updated_at: hourAgo,
     }])
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {listExtended: listExtendedStub}})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(true)}, dyno: {listExtended: listExtendedStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
@@ -410,8 +411,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 1000, apps: [], quota_used: 1})
 
     const ecoExpression = heredoc`
@@ -440,8 +441,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 3_600_000, apps: [], quota_used: 178_200})
 
     const ecoExpression = heredoc`
@@ -470,8 +471,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 3_600_000, apps: [{app_uuid: '6789', quota_used: 178_200}], quota_used: 178_200})
 
     const ecoExpression = heredoc`
@@ -500,8 +501,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {account_quota: 0, apps: [], quota_used: 0})
 
     const ecoExpression = heredoc`
@@ -530,8 +531,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 404, {id: 'not_found'})
 
     const ecoExpression = heredoc`
@@ -555,8 +556,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 200, {id: 'not_found'})
 
     const ecoExpression = heredoc`
@@ -580,8 +581,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({owner: {id: '5678'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const ecoExpression = heredoc`
       === run: one-off processes (1)
@@ -604,8 +605,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({owner: {id: '1234'}, process_tier: 'basic'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const ecoExpression = heredoc`
       === run: one-off processes (1)
@@ -628,8 +629,8 @@ describe('ps', function () {
       command: 'bash', name: 'run.1', size: 'Eco', state: 'up', type: 'run', updated_at: hourAgo,
     }])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'eco'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
     stubQuotaApi('1234', 503, {id: 'server_error'})
 
     const ecoExpression = heredoc`
@@ -651,8 +652,8 @@ describe('ps', function () {
   it('logs to stdout and exits zero when no dynos', async function () {
     const listStub = stub().resolves([])
     const infoStub = stub().resolves({id: '6789', owner: {id: '1234'}, process_tier: 'basic'})
-    const accountStub = stub().resolves({id: '1234'})
-    sdkMock = mockSDKPlatform({account: {info: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
+    const accountStub = stub().resolves({account: {id: '1234'}, delinquency: null})
+    sdkMock = mockSDKPlatform({account: {getWithDelinquency: accountStub}, app: {info: infoStub, isShielded: stub().resolves(false)}, dyno: {list: listStub}})
 
     const {stderr, stdout} = await runCommand(Cmd, [
       '--app',
