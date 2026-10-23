@@ -114,6 +114,31 @@ export default class DataPgMigrate extends BaseCommand {
     } while (action !== '__exit')
   }
 
+  // The API decides whether a migration can be canceled. Returns why not, when the status explains it.
+  private cancelDisabledReason(migration: MigrationResponse): string | undefined {
+    switch (migration.status) {
+      case MigrationStatus.CANCELLED: {
+        return 'the migration was canceled'
+      }
+
+      case MigrationStatus.COMPLETED: {
+        return 'the migration completed successfully'
+      }
+
+      case MigrationStatus.FAILED: {
+        return 'the migration failed'
+      }
+
+      case MigrationStatus.PROMOTING: {
+        return 'the migration is promoting and can\'t be canceled'
+      }
+
+      default: {
+        return undefined
+      }
+    }
+  }
+
   // Returns the ID of the configured migration, or undefined if the user went back
   private async configureMigration(): Promise<string | undefined> {
     // When the method wasn't provided via the --method flag, clear any method
@@ -442,48 +467,6 @@ export default class DataPgMigrate extends BaseCommand {
     return color.datastore(database?.name ?? color.gray('unknown'))
   }
 
-  // Migrations can only be started when ready. The API decides whether they can be canceled, and the status explains why not.
-  private disabledActionReason(migration: MigrationResponse, migrationAction: 'cancel' | 'start'): string | undefined {
-    if (migrationAction === 'cancel' && migration.can_cancel) {
-      return undefined
-    }
-
-    switch (migration.status) {
-      case MigrationStatus.CANCELLED: {
-        return 'the migration was canceled'
-      }
-
-      case MigrationStatus.COMPLETED: {
-        return 'the migration completed successfully'
-      }
-
-      case MigrationStatus.CREATING_TARGET:
-      case MigrationStatus.PREPARING: {
-        return migrationAction === 'start' ? 'the migration is being prepared' : 'the migration can\'t be canceled right now'
-      }
-
-      case MigrationStatus.FAILED: {
-        return 'the migration failed'
-      }
-
-      case MigrationStatus.MIGRATING: {
-        return migrationAction === 'start' ? 'the migration is running' : 'the migration can\'t be canceled right now'
-      }
-
-      case MigrationStatus.PROMOTING: {
-        return migrationAction === 'start' ? 'the migration is running' : 'the migration is promoting and can\'t be canceled'
-      }
-
-      case MigrationStatus.READY: {
-        return migrationAction === 'start' ? undefined : 'the migration can\'t be canceled right now'
-      }
-
-      default: {
-        return migration.status_description
-      }
-    }
-  }
-
   // Matches the data:pg:info timestamp format, e.g. 2026-10-21 16:00 UTC
   private formatTimestamp(timestamp?: null | string): string | undefined {
     return timestamp ? `${new Date(timestamp).toISOString().slice(0, 16).replace('T', ' ')} UTC` : undefined
@@ -643,14 +626,15 @@ export default class DataPgMigrate extends BaseCommand {
 
       this.printMigrationDetails(migration)
 
-      const actionChoice = (name: string, value: string, disabledReason?: string) => (
-        disabledReason ? {disabled: disabledReason, name: color.gray(name), value} : {name, value}
+      // Disabled choices without a reason show the default "(Disabled)"
+      const actionChoice = (name: string, value: string, enabled: boolean, disabledReason?: string) => (
+        enabled ? {name, value} : {disabled: disabledReason ?? true, name: color.gray(name), value}
       )
       action = (await this.prompt<{action: string}>({
         choices: [
           {name: 'Refresh migration details', value: '__refresh'},
-          actionChoice('Start the migration', '__start_migration', this.disabledActionReason(migration, 'start')),
-          actionChoice('Cancel the migration', '__cancel_migration', this.disabledActionReason(migration, 'cancel')),
+          actionChoice('Start the migration', '__start_migration', migration.status === MigrationStatus.READY, this.startDisabledReason(migration)),
+          actionChoice('Cancel the migration', '__cancel_migration', Boolean(migration.can_cancel), this.cancelDisabledReason(migration)),
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
@@ -712,6 +696,37 @@ export default class DataPgMigrate extends BaseCommand {
   private async refreshDatabasesAndMigrations(): Promise<void> {
     await this.getAppDatabases(this.appName!)
     await this.getMigrationTargetsAndInfo()
+  }
+
+  // Migrations can only be started when ready. Returns why not, when the status explains it.
+  private startDisabledReason(migration: MigrationResponse): string | undefined {
+    switch (migration.status) {
+      case MigrationStatus.CANCELLED: {
+        return 'the migration was canceled'
+      }
+
+      case MigrationStatus.COMPLETED: {
+        return 'the migration completed successfully'
+      }
+
+      case MigrationStatus.CREATING_TARGET:
+      case MigrationStatus.PREPARING: {
+        return 'the migration is being prepared'
+      }
+
+      case MigrationStatus.FAILED: {
+        return 'the migration failed'
+      }
+
+      case MigrationStatus.MIGRATING:
+      case MigrationStatus.PROMOTING: {
+        return 'the migration is running'
+      }
+
+      default: {
+        return undefined
+      }
+    }
   }
 
   private versionLabel(version?: string): string {
