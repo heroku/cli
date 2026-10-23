@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import {SpaceCompletion} from '@heroku-cli/command/lib/completions.js'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import {createSDK} from '../../lib/sdk.js'
 import {App} from '../../lib/types/app.js'
@@ -56,8 +57,7 @@ export default class AppsIndex extends Command {
       platform.account.getWithDelinquency(),
     ])
 
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
 
     let apps = appsList as App[]
 

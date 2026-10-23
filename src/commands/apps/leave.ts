@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class Leave extends Command {
@@ -20,8 +21,7 @@ export default class Leave extends Command {
     const {app} = flags
     const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
     const {account, delinquency} = await platform.account.getWithDelinquency()
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
     ux.action.start(`Leaving ${color.app(app)}`)
     await this.heroku.delete(`/apps/${app}/collaborators/${encodeURIComponent(account.email as string)}`)
     ux.action.stop()

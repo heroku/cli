@@ -1,9 +1,10 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
 import AccountsModule from '../../lib/accounts/accounts.js'
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class Add extends Command {
@@ -24,8 +25,7 @@ export default class Add extends Command {
     }
 
     const {account, delinquency} = await platform.account.getWithDelinquency()
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
     const email = account.email!
 
     const existingAlias = accounts.find(account => account.name && account.username === email)

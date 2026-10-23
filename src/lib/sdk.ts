@@ -18,19 +18,20 @@ import {fileURLToPath} from 'node:url'
  */
 
 /**
- * `heroku-cli/<version> <platform>` — the User-Agent the legacy
- * `@heroku-cli/command` base class put on every request so Heroku's request
- * logs can attribute CLI traffic. SDK-backed commands bypass that base class,
- * so without this their requests lose the header (W-22735462). The version is
- * read from the CLI's own `package.json` — the same source oclif derives
- * `config.version` from — so no command/`config` reference is needed and the
- * helper stays usable from `src/lib/` call sites that only hold an `APIClient`.
- * `process.platform` stands in for `config.platform`; they match everywhere
- * except WSL, which oclif reports as `wsl` and this reports as `linux` — a
- * cosmetic request-log distinction, not a functional one.
+ * The CLI's User-Agent identity, applied to every SDK request so Heroku's
+ * request logs can attribute CLI traffic. We hand heroku-fetch the structured
+ * `{name, version}` option, which it applies to every client it builds —
+ * including the custom-host stream clients (logplex/busl/exec), which inherit
+ * `userAgent` while their `headers` are stripped to keep credentials from
+ * crossing origins. heroku-fetch assembles it into the canonical RFC 9110
+ * §10.1.5 form: a `product` token with a platform/runtime comment,
+ * `heroku-cli/<version> (<platform>; <arch>) Node.js/<version>`. The version is
+ * read from the CLI's own `package.json` (the same source oclif derives
+ * `config.version` from), so the helper stays usable from `src/lib/` call sites
+ * that only hold an `APIClient`.
  */
 const {version: cliVersion} = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../package.json'), 'utf8')) as {version: string}
-const userAgent = `heroku-cli/${cliVersion} ${process.platform}`
+const userAgent = {name: 'heroku-cli', version: cliVersion}
 
 let abortController: AbortController | undefined
 let onInterrupt: (() => void) | undefined
@@ -39,49 +40,37 @@ let onInterrupt: (() => void) | undefined
  * Process-wide cancellation signal for SDK requests. A CLI invocation is a
  * single process, so one controller scoped to the process lifetime is the right
  * granularity — there is no narrower unit to cancel. It is created lazily on
- * first use (a command that never builds an SDK installs no handlers) and
- * shared across every `createSDK` call, so exactly one pair of signal listeners
- * is ever registered regardless of how many clients a command builds.
+ * first use and reused across every `createSDK` call, so exactly one pair of
+ * signal listeners is registered at a time no matter how many clients a command
+ * builds.
  *
  * `SIGINT`/`SIGTERM` abort it, so an interrupted command's in-flight SDK
  * requests reject with an `AbortError` instead of being orphaned by process
- * teardown. Listeners are registered with `process.once`, matching the existing
- * `log-displayer` convention: the first Ctrl-C aborts in-flight work (which
- * rejects and unwinds the command to exit); a second falls through to the
- * default/other handlers for a hard exit.
+ * teardown. The first Ctrl-C aborts in-flight work (which rejects and unwinds
+ * the command to exit); a second, with the one-shot listeners already spent,
+ * falls through to Node's default handler for a hard exit.
+ *
+ * An aborted signal stays aborted, so once it has fired the next call hands back
+ * a fresh controller (swapping in fresh listeners): a client built during
+ * post-abort cleanup is cancellable on its own terms rather than born already
+ * aborted. Reusing the live controller otherwise keeps repeated calls from
+ * accumulating listeners.
  */
 function cliAbortSignal(): AbortSignal {
-  if (!abortController) {
-    abortController = new AbortController()
-    onInterrupt = () => abortController!.abort()
+  if (!abortController || abortController.signal.aborted) {
+    if (onInterrupt) {
+      process.removeListener('SIGINT', onInterrupt)
+      process.removeListener('SIGTERM', onInterrupt)
+    }
+
+    const controller = new AbortController()
+    abortController = controller
+    onInterrupt = () => controller.abort()
     process.once('SIGINT', onInterrupt)
     process.once('SIGTERM', onInterrupt)
   }
 
   return abortController.signal
-}
-
-/**
- * @internal
- *
- * Test-only. Discards the memoized {@link cliAbortSignal} controller and removes
- * its `SIGINT`/`SIGTERM` listeners so the next `cliAbortSignal()` builds a fresh
- * one. A CLI process builds a single controller for its lifetime, so production
- * never needs this — but the unit suite runs thousands of "invocations" in one
- * process, and a test that emits `SIGINT`/`SIGTERM` (ps:forward, ps:socks,
- * mcp:start, log-displayer) would otherwise abort the shared signal for every
- * later real-SDK test. The shared `beforeEach` hook calls this so each test
- * starts with an un-aborted signal; removing the listeners also keeps them from
- * accumulating on `process` across the suite.
- */
-export function resetCliAbortSignalForTesting(): void {
-  if (onInterrupt) {
-    process.removeListener('SIGINT', onInterrupt)
-    process.removeListener('SIGTERM', onInterrupt)
-    onInterrupt = undefined
-  }
-
-  abortController = undefined
 }
 
 /**
@@ -103,15 +92,15 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
 /**
  * @internal
  *
- * Exported only so the wiring (token present, default `warn` sink and
- * `user-agent` header, `baseUrl` on the *platform* service and nowhere else,
- * caller overrides winning) is unit-testable without constructing a real
+ * Exported only so the wiring (token present, default `warn` sink, `userAgent`,
+ * and cancellation `signal`; `baseUrl` on the *platform* service and nowhere
+ * else; caller overrides winning) is unit-testable without constructing a real
  * client. Prefer `createSDK` at call sites.
  *
- * `headers['user-agent']` is defaulted on the common `clientOptions` so every
- * service client identifies CLI traffic in Heroku's request logs. Headers merge
- * key-by-key rather than replacing wholesale, so a caller's own headers add to
- * (and a caller's `user-agent` still overrides) the default.
+ * `userAgent` is defaulted on the common `clientOptions` so every service client
+ * identifies CLI traffic in Heroku's request logs, including the custom-host
+ * stream clients the SDK builds internally (which inherit `userAgent`). A
+ * caller's own `userAgent` wins via the spread.
  *
  * `warn` is defaulted on the common `clientOptions` so Heroku API warnings
  * (deprecation and billing/account notices) surface to the user. heroku-fetch
@@ -122,15 +111,11 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
  * SDK builds.
  *
  * `signal` is defaulted on the common `clientOptions` from the process-wide
- * {@link cliAbortSignal}, so a `SIGINT`/`SIGTERM` aborts every in-flight SDK
- * request. heroku-fetch folds a client-level signal into *every* request, and
- * the SDK threads the resolved options through to the bare/custom clients its
- * extensions build internally (logplex/busl/exec streams, `ps` extended, …), so
- * one default here covers both generated route calls and extension methods —
- * this replaces the former `bindAbortSignal` proxy. Wiring one process-lifetime
- * signal into shared clients is sized for the short-lived CLI; a long-lived host
- * would scope the signal per unit of work instead. A caller can override it (or
- * drop it with `signal: undefined`) via `clientOptions`.
+ * {@link cliAbortSignal}, so a `SIGINT`/`SIGTERM` aborts the in-flight requests
+ * of every client the SDK builds — heroku-fetch folds a client-level signal into
+ * each request. One process-lifetime signal on shared clients suits the
+ * short-lived CLI. A caller can override it (or drop it with `signal: undefined`)
+ * via `clientOptions`.
  *
  * `baseUrl` is set on `clientOptionsByService.platform` — never on the common
  * `clientOptions` — because a shared `baseUrl` clobbers every service's own host
@@ -150,9 +135,9 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
     clientOptions: {
       signal: cliAbortSignal(),
       token: tokenFor(heroku),
+      userAgent,
       warn: oclifWarn,
       ...opts.clientOptions,
-      headers: {'user-agent': userAgent, ...opts.clientOptions?.headers},
     },
     clientOptionsByService: {
       ...opts.clientOptionsByService,
@@ -180,18 +165,20 @@ export function createSDK<const Exts extends readonly ResourceExtension[] = read
  * A `HerokuApiClient` is a single-service client, so `baseUrl` lives on the
  * common options here (there is no other service to clobber). The default `warn`
  * sink is applied for the same reason as {@link sdkOptions} — so raw-client calls
- * surface Heroku API warnings too, not just the SDK path. Caller overrides win
- * via the spread — e.g. the status command passes `service: 'custom'` and an
- * empty `token` to build an intentionally unauthenticated client against a
- * custom host, and shell completion passes `warn: undefined` to stay silent.
+ * surface Heroku API warnings too, not just the SDK path. The `userAgent`
+ * identity and the process-wide cancellation `signal` are defaulted for the same
+ * reason, so raw-client calls (e.g. `ps -x`) are attributable in request logs
+ * and abort on `SIGINT`/`SIGTERM`. Caller overrides win via the spread — e.g.
+ * the status command passes `service: 'custom'` and an empty `token` to build an
+ * intentionally unauthenticated client against a custom host, and shell
+ * completion passes `warn: undefined` to stay silent.
  */
 export function apiClientOptions(
   heroku: Pick<APIClient, 'getAuthEntry'>,
   opts: HerokuApiClientOptions = {},
 ): HerokuApiClientOptions {
   return {
-    baseUrl: vars.apiUrl, token: tokenFor(heroku), warn: oclifWarn, ...opts,
-    headers: {'user-agent': userAgent, ...opts.headers},
+    baseUrl: vars.apiUrl, signal: cliAbortSignal(), token: tokenFor(heroku), userAgent, warn: oclifWarn, ...opts,
   }
 }
 
@@ -211,11 +198,13 @@ export function createApiClient(
  * Construct a `HerokuApiClient` for an intentionally unauthenticated request to
  * a third-party host (for example the public Heroku/Salesforce status APIs). No
  * token is sent, so no CLI credential resolution runs and no `APIClient` is
- * needed at the call site. Lives here so the `new HerokuApiClient` stays inside
- * the sdk.ts lint boundary.
+ * needed at the call site. It still carries the CLI `userAgent` and the
+ * process-wide cancellation `signal`, so these requests stay attributable and
+ * abort on `SIGINT`/`SIGTERM`. Lives here so the `new HerokuApiClient` stays
+ * inside the sdk.ts lint boundary.
  */
 export function createUnauthenticatedClient(baseUrl: string): HerokuApiClient {
   return new HerokuApiClient({
-    baseUrl, headers: {'user-agent': userAgent}, service: 'custom', token: '',
+    baseUrl, service: 'custom', signal: cliAbortSignal(), token: '', userAgent,
   })
 }

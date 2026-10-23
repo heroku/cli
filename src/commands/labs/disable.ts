@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 const SecurityExceptionFeatures: any = {
@@ -53,8 +54,7 @@ export default class LabsDisable extends Command {
       await this.heroku.get(`/account/features/${feature}`)
       request = this.disableFeature(feature)
       const {account, delinquency} = await platform.account.getWithDelinquency()
-      const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-      if (delinquencyWarning) this.warn(delinquencyWarning)
+      warnDelinquency(this, 'account', delinquency)
       target = color.user(account.email || '')
     } catch (error: any) {
       if (error.http?.statusCode !== 404) throw error

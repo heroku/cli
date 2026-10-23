@@ -3,9 +3,10 @@ import type {Account} from '@heroku/types/3.sdk'
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 interface Features {
@@ -32,8 +33,7 @@ export default class LabsIndex extends Command {
       (flags.app ? this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features`) : null),
     ])
 
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
 
     let app = null
     const user = userResponse.body

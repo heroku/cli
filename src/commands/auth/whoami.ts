@@ -1,8 +1,9 @@
 import type {Account} from '@heroku/types/3.sdk'
 
 import {Command} from '@heroku-cli/command'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class AuthWhoami extends Command {
@@ -22,8 +23,7 @@ export default class AuthWhoami extends Command {
     if (!this.heroku.auth) this.notloggedin()
     try {
       const {account, delinquency} = await platform.account.getWithDelinquency()
-      const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-      if (delinquencyWarning) this.warn(delinquencyWarning)
+      warnDelinquency(this, 'account', delinquency)
       this.log(account.email)
       return account
     } catch (error: unknown) {

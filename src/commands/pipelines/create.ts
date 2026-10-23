@@ -1,12 +1,13 @@
 import {Command, flags} from '@heroku-cli/command'
 import {StageCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {formatDelinquencyWarning, teamExtensions} from '@heroku/sdk/extensions/platform'
+import {teamExtensions} from '@heroku/sdk/extensions/platform'
 import {PipelineCreateOpts} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 import {type Answers, type InputQuestion, type ListQuestion} from 'inquirer'
 
 import {getGenerationByAppId} from '../../lib/apps/generation.js'
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {lazyModuleLoader} from '../../lib/lazy-module-loader.js'
 import infer from '../../lib/pipelines/infer.js'
 import {inferrableStageNames as stages} from '../../lib/pipelines/stages.js'
@@ -91,8 +92,7 @@ export default class Create extends Command {
     let ownerID: string
     if (teamName) {
       const {delinquency, team} = await platform.team.getWithDelinquency(teamName)
-      const delinquencyWarning = formatDelinquencyWarning('team', delinquency)
-      if (delinquencyWarning) this.warn(delinquencyWarning)
+      warnDelinquency(this, 'team', delinquency)
       ownerID = team.id!
     } else {
       const account = await platform.account.infoByUser('~')

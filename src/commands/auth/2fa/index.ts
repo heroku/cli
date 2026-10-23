@@ -1,8 +1,9 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {accountExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
+import {warnDelinquency} from '../../../lib/delinquency.js'
 import {createSDK} from '../../../lib/sdk.js'
 
 export default class TwoFactor extends Command {
@@ -12,8 +13,7 @@ export default class TwoFactor extends Command {
   async run(): Promise<boolean> {
     const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
     const {account, delinquency} = await platform.account.getWithDelinquency()
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
     if (account.two_factor_authentication) {
       ux.stdout(`Two-factor authentication is ${color.success('enabled')}`)
     } else {

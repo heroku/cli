@@ -8,11 +8,13 @@ import {
   apiClientOptions, createSDK, sdkOptions, tokenFor,
 } from '../../../src/lib/sdk.js'
 
-// The User-Agent the helpers default onto every request. Built the same way the
-// implementation does — CLI package.json version + process.platform — so the
-// assertion tracks a version bump instead of hard-coding a number that rots.
+// The User-Agent identity the helpers default onto every request. We pass the
+// structured {name, version} option so it reaches the SDK's custom-host stream
+// clients too; heroku-fetch assembles the final string. Built from the CLI
+// package.json version the same way the implementation does, so the assertion
+// tracks a version bump instead of hard-coding a number that rots.
 const {version: cliVersion} = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8')) as {version: string}
-const expectedUserAgent = `heroku-cli/${cliVersion} ${process.platform}`
+const expectedUserAgent = {name: 'heroku-cli', version: cliVersion}
 
 /**
  * Unit coverage for the CLI's canonical SDK constructor. The two concerns worth
@@ -100,25 +102,24 @@ describe('lib/sdk', function () {
       expect(opts.extensions).to.equal(extensions)
     })
 
-    it('defaults the user-agent header onto the common clientOptions', function () {
+    it('defaults the userAgent identity onto the common clientOptions', function () {
       const {clientOptions} = sdkOptions(fakeHeroku('tok'))
-      expect(clientOptions?.headers?.['user-agent']).to.equal(expectedUserAgent)
+      expect(clientOptions?.userAgent).to.deep.equal(expectedUserAgent)
     })
 
-    it('merges caller headers with the default user-agent rather than replacing them', function () {
+    it("lets a caller's own userAgent win over the default", function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {userAgent: {name: 'mine', version: '1.0'}}})
+      expect(clientOptions?.userAgent).to.deep.equal({name: 'mine', version: '1.0'})
+    })
+
+    it('passes caller headers through untouched', function () {
       const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {headers: {'x-custom': 'yes'}}})
-      expect(clientOptions?.headers).to.deep.equal({'user-agent': expectedUserAgent, 'x-custom': 'yes'})
-    })
-
-    it("lets a caller's own user-agent win over the default", function () {
-      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {headers: {'user-agent': 'mine/1.0'}}})
-      expect(clientOptions?.headers?.['user-agent']).to.equal('mine/1.0')
+      expect(clientOptions?.headers).to.deep.equal({'x-custom': 'yes'})
     })
 
     it('defaults the process cancellation signal onto the common clientOptions', function () {
       // On the *common* options so heroku-fetch folds it into every request and
-      // the SDK threads it into the clients its extensions build internally —
-      // this is what replaced the bindAbortSignal proxy.
+      // the SDK threads it into the clients its extensions build internally.
       const {clientOptions} = sdkOptions(fakeHeroku('tok'))
       expect(clientOptions?.signal).to.be.an.instanceOf(AbortSignal)
     })
@@ -157,16 +158,22 @@ describe('lib/sdk', function () {
       expect(custom.token).to.equal('')
     })
 
-    it('defaults the user-agent header', function () {
-      expect(apiClientOptions(fakeHeroku('tok')).headers?.['user-agent']).to.equal(expectedUserAgent)
+    it('defaults the userAgent identity', function () {
+      expect(apiClientOptions(fakeHeroku('tok')).userAgent).to.deep.equal(expectedUserAgent)
     })
 
-    it('merges caller headers with the default user-agent, letting a caller user-agent win', function () {
-      expect(apiClientOptions(fakeHeroku('tok'), {headers: {'x-custom': 'yes'}}).headers).to.deep.equal({
-        'user-agent': expectedUserAgent, 'x-custom': 'yes',
-      })
-      expect(apiClientOptions(fakeHeroku('tok'), {headers: {'user-agent': 'mine/1.0'}}).headers?.['user-agent'])
-        .to.equal('mine/1.0')
+    it('lets a caller userAgent win', function () {
+      expect(apiClientOptions(fakeHeroku('tok'), {userAgent: {name: 'mine', version: '1.0'}}).userAgent)
+        .to.deep.equal({name: 'mine', version: '1.0'})
+    })
+
+    it('defaults the process cancellation signal so raw-client calls abort on SIGINT/SIGTERM', function () {
+      expect(apiClientOptions(fakeHeroku('tok')).signal).to.be.an.instanceOf(AbortSignal)
+    })
+
+    it('lets a caller-supplied signal win', function () {
+      const {signal} = new AbortController()
+      expect(apiClientOptions(fakeHeroku('tok'), {signal}).signal).to.equal(signal)
     })
   })
 

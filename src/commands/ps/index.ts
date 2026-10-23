@@ -3,13 +3,14 @@ import type {DynoExtended, DynoExtendedFields} from '@heroku/sdk/extensions/plat
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {
-  accountExtensions, appExtensions, dynoExtensions, formatDelinquencyWarning, privateToShield,
+  accountExtensions, appExtensions, dynoExtensions, privateToShield,
 } from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {apiClientOptions, createSDK} from '../../lib/sdk.js'
 import {ago} from '../../lib/time.js'
 
@@ -58,8 +59,7 @@ export default class Index extends Command {
       platform.account.getWithDelinquency(),
     ])
 
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
 
     const processTier = (appInfo as {process_tier?: string}).process_tier
 

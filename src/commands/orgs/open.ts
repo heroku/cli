@@ -1,9 +1,10 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {formatDelinquencyWarning, teamExtensions} from '@heroku/sdk/extensions/platform'
+import {teamExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import open from 'open'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class OrgsOpen extends Command {
@@ -23,8 +24,7 @@ export default class OrgsOpen extends Command {
     const {team} = flags
     const {platform} = createSDK(this.heroku, {extensions: [teamExtensions]})
     const {delinquency, team: org} = await platform.team.getWithDelinquency(team)
-    const delinquencyWarning = formatDelinquencyWarning('team', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'team', delinquency)
     await OrgsOpen.openUrl(`https://dashboard.heroku.com/teams/${org.name}`)
   }
 }

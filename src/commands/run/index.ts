@@ -1,10 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import {DynoSizeCompletion, ProcessTypeCompletion} from '@heroku-cli/command/lib/completions.js'
 import * as color from '@heroku/heroku-cli-util/color'
-import {accountExtensions, dynoExtensions, formatDelinquencyWarning} from '@heroku/sdk/extensions/platform'
+import {accountExtensions, dynoExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import debugFactory from 'debug'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import Dyno from '../../lib/run/dyno.js'
 import {buildCommandWithLauncher, revertSortedArgs} from '../../lib/run/helpers.js'
 import {createSDK} from '../../lib/sdk.js'
@@ -61,8 +62,7 @@ export default class Run extends Command {
 
     const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
     const {delinquency} = await platform.account.getWithDelinquency()
-    const delinquencyWarning = formatDelinquencyWarning('account', delinquency)
-    if (delinquencyWarning) this.warn(delinquencyWarning)
+    warnDelinquency(this, 'account', delinquency)
     const dyno = new Dyno(opts)
     try {
       await dyno.start()
