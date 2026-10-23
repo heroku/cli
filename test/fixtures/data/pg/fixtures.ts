@@ -1415,6 +1415,7 @@ export const unavailableAdvancedDbAttachment = {
 export const existentMigrationResponse: MigrationResponse = {
   auto_promote: false,
   can_cancel: true,
+  cancel_disabled_reason: null,
   cdc_lag: null,
   completed: false,
   created_at: '2026-10-21T16:00:00Z',
@@ -1435,6 +1436,7 @@ export const existentMigrationResponse: MigrationResponse = {
 export const createdMigrationResponse: MigrationResponse = {
   auto_promote: false,
   can_cancel: true,
+  cancel_disabled_reason: null,
   cdc_lag: null,
   completed: false,
   created_at: '2026-10-21T17:30:00Z',

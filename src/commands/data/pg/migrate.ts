@@ -114,31 +114,6 @@ export default class DataPgMigrate extends BaseCommand {
     } while (action !== '__exit')
   }
 
-  // The API decides whether a migration can be canceled. Returns why not, when the status explains it.
-  private cancelDisabledReason(migration: MigrationResponse): string | undefined {
-    switch (migration.status) {
-      case MigrationStatus.CANCELLED: {
-        return 'the migration was canceled'
-      }
-
-      case MigrationStatus.COMPLETED: {
-        return 'the migration completed successfully'
-      }
-
-      case MigrationStatus.FAILED: {
-        return 'the migration failed'
-      }
-
-      case MigrationStatus.PROMOTING: {
-        return 'the migration is promoting and can\'t be canceled'
-      }
-
-      default: {
-        return undefined
-      }
-    }
-  }
-
   // Returns the ID of the configured migration, or undefined if the user went back
   private async configureMigration(): Promise<string | undefined> {
     // When the method wasn't provided via the --method flag, clear any method
@@ -627,14 +602,15 @@ export default class DataPgMigrate extends BaseCommand {
       this.printMigrationDetails(migration)
 
       // Disabled choices without a reason show the default "(Disabled)"
-      const actionChoice = (name: string, value: string, enabled: boolean, disabledReason?: string) => (
-        enabled ? {name, value} : {disabled: disabledReason ?? true, name: color.gray(name), value}
+      const actionChoice = (name: string, value: string, enabled: boolean, disabledReason?: null | string) => (
+        enabled ? {name, value} : {disabled: disabledReason || true, name: color.gray(name), value}
       )
       action = (await this.prompt<{action: string}>({
         choices: [
           {name: 'Refresh migration details', value: '__refresh'},
           actionChoice('Start the migration', '__start_migration', migration.status === MigrationStatus.READY, this.startDisabledReason(migration)),
-          actionChoice('Cancel the migration', '__cancel_migration', Boolean(migration.can_cancel), this.cancelDisabledReason(migration)),
+          // The API decides whether a migration can be canceled, and why not
+          actionChoice('Cancel the migration', '__cancel_migration', Boolean(migration.can_cancel), migration.cancel_disabled_reason),
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
