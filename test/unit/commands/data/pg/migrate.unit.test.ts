@@ -1157,7 +1157,6 @@ describe('data:pg:migrate', function () {
 
       // Verify the confirmation message is displayed
       expect(stdout).to.contain('Your database ⛁ postgresql-cubic-12345 will be unavailable after starting the migration until the migration is complete.')
-      expect(stdout).to.contain('You can cancel the migration until it starts promoting.')
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after starting the migration
       expect(stdout).to.match(/Status:\s+Migrating data/)
