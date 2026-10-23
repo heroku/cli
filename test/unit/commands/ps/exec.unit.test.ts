@@ -2,6 +2,7 @@ import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import nock from 'nock'
+import tty from 'node:tty'
 import {restore, SinonStub, stub} from 'sinon'
 
 import PsExec from '../../../../src/commands/ps/exec.js'
@@ -21,6 +22,7 @@ describe('ps:exec', function () {
     herokuExecCheckStatusStub = stub(HerokuExec.prototype, 'checkStatus')
     herokuSshConnectStub = stub(HerokuSsh.prototype, 'connect')
     herokuSshSshStub = stub(HerokuSsh.prototype, 'ssh')
+    stub(tty, 'isatty').returns(false)
   })
 
   afterEach(function () {
@@ -112,6 +114,65 @@ describe('ps:exec', function () {
 
     expect(herokuSshSshStub.calledOnce).to.be.true
     expect(herokuSshConnectStub.called).to.be.false
+  })
+
+  it('hands an interactive terminal to the system ssh', async function () {
+    (tty.isatty as SinonStub).returns(true)
+    herokuExecInitFeatureStub.callsFake(async (context, heroku, callback) => {
+      await callback({})
+    })
+
+    herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
+      const mockResponse = {
+        body: JSON.stringify({
+          client_user: 'user123',
+          proxy_public_key: 'ssh-rsa AAAA...',
+          tunnel_host: 'tunnel.example.com',
+        }),
+      }
+      callback('mock-private-key', 'web.1', mockResponse)
+    })
+
+    herokuSshSshStub.resolves()
+
+    await runCommand(PsExec, [
+      '--app',
+      'myapp',
+    ])
+
+    expect(herokuSshSshStub.calledOnce).to.be.true
+    expect(herokuSshConnectStub.called).to.be.false
+  })
+
+  it('falls back to the built-in client when ssh is not installed', async function () {
+    (tty.isatty as SinonStub).returns(true)
+    herokuExecInitFeatureStub.callsFake(async (context, heroku, callback) => {
+      await callback({})
+    })
+
+    herokuExecUpdateClientKeyStub.callsFake(async (context, heroku, configVars, callback) => {
+      const mockResponse = {
+        body: JSON.stringify({
+          client_user: 'user123',
+          proxy_public_key: 'ssh-rsa AAAA...',
+          tunnel_host: 'tunnel.example.com',
+        }),
+      }
+      callback('mock-private-key', 'web.1', mockResponse)
+    })
+
+    const missing: NodeJS.ErrnoException = new Error('spawn ssh ENOENT')
+    missing.code = 'ENOENT'
+    herokuSshSshStub.rejects(missing)
+    herokuSshConnectStub.resolves()
+
+    await runCommand(PsExec, [
+      '--app',
+      'myapp',
+    ])
+
+    expect(herokuSshSshStub.calledOnce).to.be.true
+    expect(herokuSshConnectStub.calledOnce).to.be.true
   })
 
   it('checks status when --status flag is specified', async function () {
