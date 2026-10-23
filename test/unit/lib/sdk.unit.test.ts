@@ -60,10 +60,12 @@ describe('lib/sdk', function () {
     })
 
     let savedApiKey: string | undefined
+
     beforeEach(function () {
       savedApiKey = process.env.HEROKU_API_KEY
       delete process.env.HEROKU_API_KEY
     })
+
     afterEach(function () {
       if (savedApiKey === undefined) delete process.env.HEROKU_API_KEY
       else process.env.HEROKU_API_KEY = savedApiKey
