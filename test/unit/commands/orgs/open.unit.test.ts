@@ -1,5 +1,5 @@
-import {HerokuSDK} from '@heroku/sdk'
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
 import sinon from 'sinon'
 
