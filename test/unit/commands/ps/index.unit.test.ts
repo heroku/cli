@@ -31,13 +31,14 @@ describe('ps', function () {
     sdkMock.restore()
   })
 
-  it('threads the CLI auth token into the per-call listExtended client', async function () {
-    // `ps --extended` calls listExtended, which builds its OWN per-call client from
-    // `clientOptions`, not the SDK-level client. The command must thread the CLI token in
-    // via `apiClientOptions(this.heroku)`; drop it and the extended request goes out
-    // unauthenticated. Run the real SDK (no platform-getter mock) with getAuthEntry stubbed
-    // to a sentinel token so this fails if clientOptions stops being threaded. The other
-    // Promise.all calls (app.info, isShielded, account.info) just need to resolve.
+  it('inherits the CLI auth token on the listExtended client built from createSDK', async function () {
+    // `ps --extended` calls listExtended, which builds its OWN bare client. The SDK threads
+    // the createSDK-resolved client options (token, baseUrl, signal, identity) into the
+    // clients its extensions build, so the command no longer threads them per call — the
+    // extended request must still go out authenticated. Run the real SDK (no platform-getter
+    // mock) with getAuthEntry stubbed to a sentinel token so this fails if the SDK stops
+    // inheriting the token. The other Promise.all calls (app.info, isShielded, account) just
+    // need to resolve.
     sdkMock = {restore() {}}
     stub(APIClient.prototype, 'getAuthEntry').resolves({account: undefined, token: 'cli-keychain-token'})
 
