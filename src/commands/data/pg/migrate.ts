@@ -323,7 +323,8 @@ export default class DataPgMigrate extends BaseCommand {
     return undefined
   }
 
-  private async confirmMigrationAction(migration: MigrationResponse, migrationAction: 'cancel' | 'start'): Promise<void> {
+  // Returns whether the user confirmed the action
+  private async confirmMigrationAction(migration: MigrationResponse, migrationAction: 'cancel' | 'start'): Promise<boolean> {
     const sourceDatabase = this.classicDatabases.find(db => db.id === migration.source_id)
     const targetDatabase = this.advancedDatabases.find(db => db.id === migration.target_id)
 
@@ -334,13 +335,20 @@ export default class DataPgMigrate extends BaseCommand {
         If there are any issues during the migration, we end the migration and make the source database available again.
         The database ${this.databaseName(sourceDatabase)} can be offline for several hours during the migration.
         You'll receive an email when the migration is complete.
-        You can't cancel the migration after starting it.
+        You can cancel the migration until it starts promoting.
 
       `))
       this.printVersionChangeWarning(sourceDatabase?.version, targetDatabase?.info?.version)
     } else {
-      ux.stdout(color.info(heredoc`
+      ux.stdout()
+      if (migration.status === MigrationStatus.MIGRATING) {
+        ux.stdout(color.info(heredoc`
+          Canceling stops the running migration and makes ${this.databaseName(sourceDatabase)} available again.
+          You'll receive an email when ${this.databaseName(sourceDatabase)} is available.
+        `.trimEnd()))
+      }
 
+      ux.stdout(color.info(heredoc`
         After canceling, you must create a new migration configuration and wait for the migration tooling to finish preparing to
         migrate ${this.databaseName(sourceDatabase)} again.
 
@@ -363,6 +371,8 @@ export default class DataPgMigrate extends BaseCommand {
       await this.dataApi.post(`/data/postgres/v1/${migration.target_id}/migrations/${migrationAction === 'start' ? 'run' : 'cancel'}`)
       ux.action.stop()
     }
+
+    return action === '__confirm'
   }
 
   private async createTargetDatabase(sourceDatabaseId: string): Promise<Heroku.AddOn | undefined> {
@@ -432,8 +442,12 @@ export default class DataPgMigrate extends BaseCommand {
     return color.datastore(database?.name ?? color.gray('unknown'))
   }
 
-  // Migrations can only be started when ready, and only canceled until they start
+  // Migrations can only be started when ready. The API decides whether they can be canceled, and the status explains why not.
   private disabledActionReason(migration: MigrationResponse, migrationAction: 'cancel' | 'start'): string | undefined {
+    if (migrationAction === 'cancel' && migration.can_cancel) {
+      return undefined
+    }
+
     switch (migration.status) {
       case MigrationStatus.CANCELLED: {
         return 'the migration was canceled'
@@ -445,20 +459,23 @@ export default class DataPgMigrate extends BaseCommand {
 
       case MigrationStatus.CREATING_TARGET:
       case MigrationStatus.PREPARING: {
-        return migrationAction === 'start' ? 'the migration is being prepared' : undefined
+        return migrationAction === 'start' ? 'the migration is being prepared' : 'the migration can\'t be canceled right now'
       }
 
       case MigrationStatus.FAILED: {
         return 'the migration failed'
       }
 
-      case MigrationStatus.MIGRATING:
+      case MigrationStatus.MIGRATING: {
+        return migrationAction === 'start' ? 'the migration is running' : 'the migration can\'t be canceled right now'
+      }
+
       case MigrationStatus.PROMOTING: {
-        return migrationAction === 'start' ? 'the migration is running' : 'the migration is running and can\'t be canceled'
+        return migrationAction === 'start' ? 'the migration is running' : 'the migration is promoting and can\'t be canceled'
       }
 
       case MigrationStatus.READY: {
-        return undefined
+        return migrationAction === 'start' ? undefined : 'the migration can\'t be canceled right now'
       }
 
       default: {
@@ -619,8 +636,8 @@ export default class DataPgMigrate extends BaseCommand {
     let action: string | undefined
     do {
       const migration = this.migrationTargets.find(migration => migration.id === migrationId)
-      // A newer migration on the same destination database replaces this one
       if (!migration) {
+        ux.stdout(color.warning('\nThe migration is no longer available. Either a newer migration replaced it or its destination database was removed.\n'))
         return
       }
 
@@ -642,11 +659,13 @@ export default class DataPgMigrate extends BaseCommand {
         type: 'list',
       })).action
 
+      // Going back from the confirmation changes nothing, so there's nothing to refresh
+      let refresh = action === '__refresh'
       if (action === '__start_migration' || action === '__cancel_migration') {
-        await this.confirmMigrationAction(migration, action === '__start_migration' ? 'start' : 'cancel')
+        refresh = await this.confirmMigrationAction(migration, action === '__start_migration' ? 'start' : 'cancel')
       }
 
-      if (action !== '__go_back') {
+      if (refresh) {
         await this.refreshDatabasesAndMigrations()
       }
     } while (action !== '__go_back')

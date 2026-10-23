@@ -83,9 +83,10 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).not.to.match(/Source Database\s+Destination Database\s+Method\s+Status/)
       expect(stdout).to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
@@ -101,9 +102,10 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Configure a new database migration')
       expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
@@ -119,9 +121,10 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
@@ -145,10 +148,11 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).not.to.contain('Manage migration')
     })
@@ -171,10 +175,11 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).not.to.contain('You haven\'t configured any migrations for ⬢ myapp yet.')
       expect(stdout).to.match(/Source Database\s+Destination Database\s+Method\s+Status/)
@@ -203,10 +208,11 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Snapshot\s+Preparing databases/)
       expect(stdout).to.contain('Manage migration from ⛁ postgresql-convex-12345 to ⛁ postgresql-obscured-12345')
@@ -228,10 +234,11 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--no-wrap'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--no-wrap'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+Preparing databases/)
     })
@@ -255,10 +262,11 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+syncing/)
       expect(stdout).not.to.contain('Migrating')
@@ -295,10 +303,11 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = ['\u001B[A\u001B[A\n', '\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Refresh')
       expect(stdout).to.match(/⛁ postgresql-cubic-12345\s+⛁ postgresql-lively-12345\s+Streaming\s+Preparing databases/)
@@ -321,10 +330,11 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
@@ -346,10 +356,11 @@ describe('data:pg:migrate', function () {
       // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
       mockedStdinInput = ['\u001B[A\n']
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Configure a new database migration')
       expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
@@ -390,8 +401,9 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('=== Migration details')
       expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4 - Available/)
@@ -401,21 +413,31 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
 
-    it('only enables canceling a migration that is being prepared', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.PREPARING}, 2)
-
-      mockedStdinInput = [
-        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[A\n', // Manage migration: > Go back
-        '\u001B[A\n', // Main menu: > Exit
+    it('only enables canceling a migration that is being prepared or running', async function () {
+      const startReasons = [
+        {startReason: 'the migration is being prepared', status: MigrationStatus.CREATING_TARGET},
+        {startReason: 'the migration is being prepared', status: MigrationStatus.PREPARING},
+        {startReason: 'the migration is running', status: MigrationStatus.MIGRATING},
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      for (const {startReason, status} of startReasons) {
+        replyWithTargetMigration(dataApi, {status}, 2)
+        mockedStdinInput = [
+          '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+          '\u001B[A\n', // Manage migration: > Go back
+          '\u001B[A\n', // Main menu: > Exit
+        ]
 
-      expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Start the migration (the migration is being prepared)')
-      expect(stdout).to.contain('Cancel the migration')
-      expect(stdout).not.to.contain('- Cancel the migration (')
+        // eslint-disable-next-line no-await-in-loop
+        const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+        dataApi.done()
+        expect(error).to.be.undefined
+        expect(stderr).to.equal('')
+        expect(stdout).to.contain(`- Start the migration (${startReason})`)
+        expect(stdout).to.contain('Cancel the migration')
+        expect(stdout).not.to.contain('- Cancel the migration (')
+      }
     })
 
     it('enables starting and canceling a ready migration', async function () {
@@ -427,8 +449,9 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Start the migration')
       expect(stdout).to.contain('Cancel the migration')
@@ -436,19 +459,33 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('- Cancel the migration (')
     })
 
-    it('disables starting and canceling a migration that already started or ended', async function () {
+    it('disables starting and canceling a migration that is promoting or ended', async function () {
       const disabledReasons = [
         {cancelReason: 'the migration was canceled', startReason: 'the migration was canceled', status: MigrationStatus.CANCELLED},
         {cancelReason: 'the migration completed successfully', startReason: 'the migration completed successfully', status: MigrationStatus.COMPLETED},
         {cancelReason: 'the migration failed', startReason: 'the migration failed', status: MigrationStatus.FAILED},
-        {cancelReason: 'the migration is running and can\'t be canceled', startReason: 'the migration is running', status: MigrationStatus.MIGRATING},
-        {cancelReason: 'the migration is running and can\'t be canceled', startReason: 'the migration is running', status: MigrationStatus.PROMOTING},
-        // Statuses the CLI doesn't know about fall back to the status description
-        {cancelReason: 'Preparing databases', startReason: 'Preparing databases', status: MigrationStatus.UNKNOWN},
+        {
+          cancelReason: 'the migration is promoting and can\'t be canceled',
+          startReason: 'the migration is running',
+          status: MigrationStatus.PROMOTING,
+        },
+        // Other statuses fall back to the status description
+        {
+          cancelReason: 'Assessment completed. No data was migrated. Check your email for details.',
+          startReason: 'Assessment completed. No data was migrated. Check your email for details.',
+          status: 'assessment_completed' as MigrationStatus,
+          statusDescription: 'Assessment completed. No data was migrated. Check your email for details.',
+        },
+        {
+          cancelReason: 'Unknown migration status',
+          startReason: 'Unknown migration status',
+          status: MigrationStatus.UNKNOWN,
+          statusDescription: 'Unknown migration status',
+        },
       ]
 
-      for (const {cancelReason, startReason, status} of disabledReasons) {
-        replyWithTargetMigration(dataApi, {status}, 2)
+      for (const {cancelReason, startReason, status, statusDescription} of disabledReasons) {
+        replyWithTargetMigration(dataApi, {can_cancel: false, status, ...(statusDescription && {status_description: statusDescription})}, 2)
         mockedStdinInput = [
           '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
           '\u001B[A\n', // Manage migration: > Go back
@@ -456,13 +493,29 @@ describe('data:pg:migrate', function () {
         ]
 
         // eslint-disable-next-line no-await-in-loop
-        const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+        const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
         dataApi.done()
+        expect(error).to.be.undefined
         expect(stderr).to.equal('')
         expect(stdout).to.contain(`- Start the migration (${startReason})`)
         expect(stdout).to.contain(`- Cancel the migration (${cancelReason})`)
       }
+    })
+
+    it('disables canceling a migration when the API doesn\'t allow it', async function () {
+      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.MIGRATING}, 2)
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('- Cancel the migration (the migration can\'t be canceled right now)')
     })
 
     it('refreshes the migration details when Refresh is selected', async function () {
@@ -476,8 +529,9 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
       expect(stdout).to.match(/Status:\s+Preparing databases/)
@@ -494,10 +548,37 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout.match(/=== Migration details/g)?.length).to.equal(1)
+      expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database was removed.')
+    })
+
+    it('omits the migration details that aren\'t available', async function () {
+      dataApi
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
+        .reply(200, {...existentMigrationResponse, created_at: undefined, migration_strategy: null})
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
+        .reply(404, {id: 'not_found', message: 'Not found.'})
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\)$/m)
+      expect(stdout).not.to.contain('Method:')
+      expect(stdout).not.to.contain('Migration configured at:')
+      expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
   })
 
@@ -1072,6 +1153,7 @@ describe('data:pg:migrate', function () {
 
       // Verify the confirmation message is displayed
       expect(stdout).to.contain('Your database ⛁ postgresql-cubic-12345 will be unavailable after starting the migration until the migration is complete.')
+      expect(stdout).to.contain('You can cancel the migration until it starts promoting.')
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after starting the migration
       expect(stdout).to.match(/Status:\s+Migrating data/)
@@ -1079,7 +1161,8 @@ describe('data:pg:migrate', function () {
     })
 
     it('goes back to the migration details without starting the migration', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 3)
+      // Only the main menu refreshes, since going back from the confirmation changes nothing
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1090,8 +1173,9 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n', // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout.match(/Confirm to start migration: \(Use arrow keys\)/g)?.length).to.equal(1)
       expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
@@ -1124,7 +1208,7 @@ describe('data:pg:migrate', function () {
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1139,10 +1223,37 @@ describe('data:pg:migrate', function () {
 
       // Verify the confirmation message is displayed
       expect(stdout).to.contain('After canceling, you must create a new migration configuration')
+      expect(stdout).not.to.contain('Canceling stops the running migration')
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after canceling the migration
       expect(stdout).to.match(/Status:\s+Migration canceled\./)
       expect(stdout).to.contain('- Cancel the migration (the migration was canceled)')
+    })
+
+    it('cancels a running migration', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.MIGRATING, status_description: 'Migrating data'})
+      dataApi
+        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
+        .reply(202, {})
+      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+
+      // Simulate the user selections
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\n', // Manage migration: > Cancel the migration
+        '\n',         // Confirm to cancel migration: > Confirm
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      // Verify the running migration confirmation message is displayed
+      expect(stdout).to.contain('Canceling stops the running migration and makes ⛁ postgresql-cubic-12345 available again.')
+      expect(stdout).to.contain('You\'ll receive an email when ⛁ postgresql-cubic-12345 is available.')
+      expect(stdout).to.contain('After canceling, you must create a new migration configuration')
+      expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
+      expect(stdout).to.match(/Status:\s+Migration canceled\./)
     })
 
     it('cancels a migration that is being prepared', async function () {
@@ -1150,7 +1261,7 @@ describe('data:pg:migrate', function () {
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1166,8 +1277,27 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
+    it('shows the API error when canceling the migration fails', async function () {
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      dataApi
+        .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
+        .reply(422, {id: 'unprocessable_entity', message: 'Cannot cancel migration in current state'})
+
+      // Simulate the user selections
+      mockedStdinInput = [
+        '\n',                 // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[B\u001B[B\n', // Manage migration: > Cancel the migration
+        '\n',                 // Confirm to cancel migration: > Confirm
+      ]
+
+      const {error} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(error?.message).to.contain('Cannot cancel migration in current state')
+    })
+
     it('goes back to the migration details without canceling the migration', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 3)
+      // Only the main menu refreshes, since going back from the confirmation changes nothing
+      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1178,8 +1308,9 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n',         // Main menu: > Exit
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout.match(/Confirm to cancel migration: \(Use arrow keys\)/g)?.length).to.equal(1)
       expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
@@ -1307,10 +1438,11 @@ describe('data:pg:migrate', function () {
         '\u001B[A\n',  // Exit from main menu
       ]
 
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
       herokuApi.done()
       dataApi.done()
+      expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.match(/Select the migration method: Go back/)
     })
