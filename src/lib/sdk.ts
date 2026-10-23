@@ -139,8 +139,12 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
  * a request 401s, awaits it, then retries the request exactly once, re-resolving
  * the {@link tokenFor} provider so the fresh token `login()` stored is picked up
  * (our provider reads `getAuthEntry()` per request). heroku-fetch coalesces
- * concurrent 401s, so a batch of in-flight requests sharing a stale token drives
- * a single `login()` rather than one prompt each.
+ * concurrent 401s *per client instance*, so a batch of in-flight requests on one
+ * client sharing a stale token drives a single `login()` rather than one prompt
+ * each. Because we scope `reauthorize` to the platform service only (see
+ * {@link sdkOptions}), that one platform client is the sole re-auth path, so in
+ * practice a command's SDK traffic prompts at most once; the dedupe is not shared
+ * with a mixed-in legacy `APIClient` call, which keeps its own.
  *
  * When `HEROKU_API_KEY` is set the token is not interactively recoverable, so we
  * surface the invalid-token error instead of prompting. Otherwise
