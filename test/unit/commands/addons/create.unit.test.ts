@@ -244,21 +244,19 @@ describe('addons:create', function () {
         const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon as any))
         sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
 
-        try {
-          await runCommand(Cmd, [
-            '--app',
-            'myapp',
-            '--as',
-            'mydb',
-            '--wait',
-            'heroku-postgresql:standard-0',
-            '--',
-            '--wait',
-          ])
-        } catch {
-          expect(notifyStub.called).to.equal(true)
-          expect(notifyStub.calledOnce).to.equal(true)
-        }
+        const {error} = await runCommand(Cmd, [
+          '--app',
+          'myapp',
+          '--as',
+          'mydb',
+          '--wait',
+          'heroku-postgresql:standard-0',
+          '--',
+          '--wait',
+        ])
+        expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned.')
+        expect(notifyStub.called).to.equal(true)
+        expect(notifyStub.calledOnce).to.equal(true)
       })
     })
     context('when add-on provision errors', function () {
@@ -286,7 +284,7 @@ describe('addons:create', function () {
         .onSecondCall().resolves(addon)
       sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
 
-      return runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--as',
@@ -300,9 +298,7 @@ describe('addons:create', function () {
         'otherdb',
         '--foo',
       ])
-        .catch(error => {
-          expect(ansis.strip(error.message)).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
-        })
+      expect(ansis.strip(error?.message ?? '')).to.equal('Confirmation not-my-app did not match myapp. Aborted.')
     })
 
     it('succeeds if confirmation does match', async function () {

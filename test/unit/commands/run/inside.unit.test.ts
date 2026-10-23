@@ -80,14 +80,13 @@ describe('run:inside', function () {
           }]
         })
 
-      await runWithCliArgv([
+      const {error} = await runWithCliArgv([
         'web.1',
         'bash',
         '--app',
         'myapp',
-      ]).catch(() => {
-        // Expected to fail when attaching to the rendezvous endpoint
-      })
+      ])
+      expect(error).to.exist
 
       expect(authHeader).to.equal('Bearer cli-keychain-token')
       runAPI.done()
@@ -126,14 +125,13 @@ describe('run:inside', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
       'myapp',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
 
     expect(fakePlatform.dyno.run.calledOnce).to.equal(true)
     const [appId, command, options] = fakePlatform.dyno.run.firstCall.args
@@ -187,15 +185,14 @@ describe('run:inside', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
       'myapp',
       '--no-launcher',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
 
     expect(fakePlatform.dyno.run.calledOnce).to.equal(true)
     const command = fakePlatform.dyno.run.firstCall.args[1]
@@ -219,14 +216,13 @@ describe('run:inside', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       'web.1',
       'bash',
       '--app',
       'myapp',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
 
     expect(fakePlatform.dyno.run.calledOnce).to.equal(true)
     const [appId, command] = fakePlatform.dyno.run.firstCall.args
