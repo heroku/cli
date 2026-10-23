@@ -1,11 +1,13 @@
 import {APIClient, vars} from '@heroku-cli/command'
 import {warn as oclifWarn} from '@oclif/core/errors'
 import {expect} from 'chai'
+import nock from 'nock'
 import {readFileSync} from 'node:fs'
+import {inspect} from 'node:util'
 import {stub} from 'sinon'
 
 import {
-  apiClientOptions, createSDK, reauthorizeFor, resetCliAbortSignal, sdkOptions, tokenFor,
+  apiClientOptions, createApiClient, createSDK, reauthorizeFor, resetCliAbortSignal, sdkOptions, tokenFor,
 } from '../../../src/lib/sdk.js'
 
 // The User-Agent identity the helpers default onto every request. We pass the
@@ -93,9 +95,9 @@ describe('lib/sdk', function () {
       getAuthEntry.onSecondCall().resolves({account: 'a', token: 'fresh'})
       const heroku = {getAuthEntry, login: stub().resolves()} as unknown as APIClient
 
-      const {clientOptions} = sdkOptions(heroku)
+      const {clientOptions, clientOptionsByService} = sdkOptions(heroku)
       expect(await (clientOptions!.token as () => Promise<string>)()).to.equal('stale')
-      await (clientOptions!.reauthorize as () => Promise<void>)()
+      await (clientOptionsByService!.platform!.reauthorize as () => Promise<void>)()
       expect((heroku.login as ReturnType<typeof stub>).calledOnce).to.equal(true)
       expect(await (clientOptions!.token as () => Promise<string>)()).to.equal('fresh')
     })
@@ -184,16 +186,30 @@ describe('lib/sdk', function () {
       expect(clientOptions?.signal).to.equal(signal)
     })
 
-    it('defaults a reauthorize callback onto the common clientOptions so a 401 drives re-login', function () {
-      // on the *common* options → every service client the SDK builds recovers
-      // from an expired token, not just the platform client
-      const {clientOptions} = sdkOptions(fakeHeroku('tok'))
-      expect(clientOptions?.reauthorize).to.be.a('function')
+    it('defaults a reauthorize callback onto the platform service only, never on common clientOptions', function () {
+      // scoped to the platform service → only the platform front door recovers
+      // from an expired token by replaying the request. A blind replay after
+      // re-auth is unsafe on data-plane/proxied services (a 401 can land after a
+      // non-idempotent write), so they get no reauthorize.
+      const opts = sdkOptions(fakeHeroku('tok'))
+      expect(opts.clientOptionsByService?.platform?.reauthorize).to.be.a('function')
+      // forced off on the common options so it can't ride onto a non-platform client
+      expect(opts.clientOptions?.reauthorize).to.equal(undefined)
     })
 
-    it('lets a caller disable reauthorize with reauthorize: undefined', function () {
-      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {reauthorize: undefined}})
-      expect(clientOptions).to.have.property('reauthorize', undefined)
+    it('lets a caller disable reauthorize via the common clientOptions (reauthorize: undefined)', function () {
+      // the opt-out seam stays on the *common* options even though the default is
+      // platform-scoped: completion and auth:whoami/auth:token disable it this way
+      const opts = sdkOptions(fakeHeroku('tok'), {clientOptions: {reauthorize: undefined}})
+      expect(opts.clientOptionsByService?.platform).to.have.property('reauthorize', undefined)
+      // and it stays off the common options too
+      expect(opts.clientOptions?.reauthorize).to.equal(undefined)
+    })
+
+    it('lets a caller force a reauthorize callback onto a non-platform service', function () {
+      const reauthorize = stub()
+      const opts = sdkOptions(fakeHeroku('tok'), {clientOptionsByService: {data: {reauthorize}}})
+      expect(opts.clientOptionsByService?.data?.reauthorize).to.equal(reauthorize)
     })
   })
 
@@ -356,6 +372,82 @@ describe('lib/sdk', function () {
       const second = sdkOptions(fakeHeroku('tok')).clientOptions?.signal as AbortSignal
       expect(second).to.not.equal(first)
       expect(second.aborted).to.be.false
+    })
+  })
+
+  // End-to-end coverage of the 401→reauthorize→retry flow against a real client
+  // over nock, rather than asserting on the wiring in isolation. Proves the
+  // headline behavior (an expired token drives one re-login and the retry carries
+  // the refreshed token) and the no-leak claim (the credential never appears in a
+  // surfaced error) hold through the actual heroku-fetch request path.
+  describe('createApiClient 401 recovery (round trip)', function () {
+    let savedApiKey: string | undefined
+
+    beforeEach(function () {
+      savedApiKey = process.env.HEROKU_API_KEY
+      delete process.env.HEROKU_API_KEY
+    })
+
+    afterEach(function () {
+      nock.cleanAll()
+      if (savedApiKey === undefined) delete process.env.HEROKU_API_KEY
+      else process.env.HEROKU_API_KEY = savedApiKey
+    })
+
+    const herokuThatRefreshesOnLogin = () => {
+      // first request reads the stale token; login() "refreshes" the stored
+      // entry, so every read after it hands back the fresh token
+      const getAuthEntry = stub()
+      getAuthEntry.onFirstCall().resolves({account: 'a', token: 'stale'})
+      getAuthEntry.resolves({account: 'a', token: 'fresh'})
+      return {getAuthEntry, login: stub().resolves()} as unknown as APIClient & {login: ReturnType<typeof stub>}
+    }
+
+    it('on a 401 runs login() once and retries with the refreshed token, returning the 200', async function () {
+      let firstAuth: string | undefined
+      let retryAuth: string | undefined
+      nock(vars.apiUrl)
+        .get('/account')
+        .reply(function () {
+          firstAuth = this.req.headers.authorization as unknown as string
+          return [401, {id: 'unauthorized', message: 'stale'}]
+        })
+        .get('/account')
+        .reply(function () {
+          retryAuth = this.req.headers.authorization as unknown as string
+          return [200, {email: 'a@b.com'}]
+        })
+
+      const heroku = herokuThatRefreshesOnLogin()
+      const response = await createApiClient(heroku).get('/account')
+
+      expect(heroku.login.calledOnce).to.equal(true)
+      expect(response.status).to.equal(200)
+      expect(firstAuth).to.equal('Bearer stale')
+      expect(retryAuth).to.equal('Bearer fresh')
+      expect(await response.json()).to.deep.equal({email: 'a@b.com'})
+    })
+
+    it('propagates a second 401 (no retry loop) with no credential in the surfaced error', async function () {
+      nock(vars.apiUrl)
+        .get('/account').reply(401, {id: 'unauthorized'})
+        .get('/account').reply(401, {id: 'unauthorized'})
+
+      const heroku = herokuThatRefreshesOnLogin()
+      let caught: unknown
+      try {
+        await createApiClient(heroku).get('/account')
+      } catch (error) {
+        caught = error
+      }
+
+      expect(heroku.login.calledOnce).to.equal(true)
+      expect(caught).to.be.an('error')
+      // the whole cause chain must be free of the bearer token
+      const dump = inspect(caught, {depth: null})
+      expect(dump).to.not.contain('stale')
+      expect(dump).to.not.contain('fresh')
+      expect(dump).to.not.contain('Bearer')
     })
   })
 })

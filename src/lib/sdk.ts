@@ -190,11 +190,20 @@ export const reauthorizeFor = (heroku: Pick<APIClient, 'login'>) => async (): Pr
  * short-lived CLI. A caller can override it (or drop it with `signal: undefined`)
  * via `clientOptions`.
  *
- * `reauthorize` is defaulted on the common `clientOptions` from
- * {@link reauthorizeFor}, so a 401 from an expired or invalid token re-prompts
- * for login and retries the request for every SDK-backed command. A caller can
- * drop it with `reauthorize: undefined` (shell completion does, so a TAB never
- * prompts for login) or a single request can opt out with `reauthorize: false`.
+ * `reauthorize` is defaulted on `clientOptionsByService.platform` — the platform
+ * front door — and nowhere else, so a 401 from an expired or invalid token
+ * re-prompts for login and retries the request. We scope it to platform (not the
+ * common `clientOptions`) because heroku-fetch's retry transparently replays the
+ * request after re-auth, which is only safe for the platform's front-door auth:
+ * a data-plane/proxied service can return a 401 *after* a non-idempotent write
+ * has begun, and a blind replay would double it. v11 only recovered platform
+ * traffic, so this also matches the behavior we're restoring. The opt-out still
+ * reads from the common `clientOptions`: passing `reauthorize: undefined` there
+ * disables the platform default (shell completion and `auth:whoami`/`auth:token`
+ * do this, so a TAB never prompts and a `whoami` on a stale token still reports
+ * "not logged in" instead of prompting). A single request can also opt out with
+ * `reauthorize: false`, and a caller can still force a callback onto another
+ * service via `clientOptionsByService.<service>.reauthorize`.
  *
  * `baseUrl` is set on `clientOptionsByService.platform` — never on the common
  * `clientOptions` — because a shared `baseUrl` clobbers every service's own host
@@ -209,25 +218,43 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
   heroku: APIClient,
   opts: HerokuSDKOptions<Exts> = {},
 ): HerokuSDKOptions<Exts> {
+  // `reauthorize` is a platform-only default (see the doc comment), but a caller
+  // disables it through the *common* `clientOptions` — `reauthorize: undefined` —
+  // the same seam that disables every other default. Read that opt-out here, then
+  // force `reauthorize` off the common options below so a caller-passed callback
+  // can never reach a non-platform (data-plane/proxied) client, where a blind
+  // retry after re-auth is unsafe. `'reauthorize' in …` distinguishes "disabled"
+  // from "not mentioned" so an explicit `undefined` disables, while omitting the
+  // key gets the default.
+  const platformReauthorize = opts.clientOptions && 'reauthorize' in opts.clientOptions
+    ? opts.clientOptions.reauthorize
+    : reauthorizeFor(heroku)
+
   return {
     ...opts,
     clientOptions: {
       // These defaults are seeded before the `...opts.clientOptions` spread on
       // purpose: a caller's own value then wins — including an explicit
       // `undefined` to disable a default (e.g. `signal: undefined` to drop
-      // cancellation, or completion's `reauthorize: undefined` to never prompt
-      // for login). Seeding lazily instead (`?? cliAbortSignal()`) would ignore
-      // an explicit `undefined` and refuse to disable.
-      reauthorize: reauthorizeFor(heroku),
+      // cancellation). Seeding lazily instead (`?? cliAbortSignal()`) would
+      // ignore an explicit `undefined` and refuse to disable.
       signal: cliAbortSignal(),
       token: tokenFor(heroku),
       userAgent,
       warn: oclifWarn,
       ...opts.clientOptions,
+      // Forced last: reauthorize is platform-scoped only, so it never rides the
+      // common options onto a non-platform client. The platform service
+      // re-enables it (honoring the caller opt-out captured in platformReauthorize).
+      reauthorize: undefined,
     },
     clientOptionsByService: {
       ...opts.clientOptionsByService,
-      platform: {baseUrl: vars.apiUrl, ...opts.clientOptionsByService?.platform},
+      platform: {
+        baseUrl: vars.apiUrl,
+        reauthorize: platformReauthorize,
+        ...opts.clientOptionsByService?.platform,
+      },
     },
   }
 }
