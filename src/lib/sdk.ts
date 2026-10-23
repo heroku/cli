@@ -1,7 +1,7 @@
 import {APIClient, vars} from '@heroku-cli/command'
 import {HerokuApiClient} from '@heroku/heroku-fetch'
 import {
-  type HerokuApiClientOptions, HerokuSDK, type HerokuSDKOptions, type ResourceExtension, type ServiceName,
+  type HerokuApiClientOptions, HerokuSDK, type HerokuSDKOptions, type ResourceExtension,
 } from '@heroku/sdk'
 import {warn as oclifWarn} from '@oclif/core/errors'
 import {readFileSync} from 'node:fs'
@@ -32,17 +32,8 @@ import {fileURLToPath} from 'node:url'
 const {version: cliVersion} = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../package.json'), 'utf8')) as {version: string}
 const userAgent = `heroku-cli/${cliVersion} ${process.platform}`
 
-/**
- * The SDK service namespaces `createSDK` binds the cancellation signal onto.
- * These are exactly the service getters `HerokuSDK` exposes; binding the signal
- * to each means every request a command issues — generated route calls and
- * extension methods alike — aborts when the signal fires.
- */
-const SERVICE_NAMESPACES: ReadonlySet<ServiceName> = new Set([
-  'dashboardBackend', 'data', 'metrics', 'notifications', 'platform', 'repositories', 'repositoriesApi',
-])
-
 let abortController: AbortController | undefined
+let onInterrupt: (() => void) | undefined
 
 /**
  * Process-wide cancellation signal for SDK requests. A CLI invocation is a
@@ -62,7 +53,7 @@ let abortController: AbortController | undefined
 function cliAbortSignal(): AbortSignal {
   if (!abortController) {
     abortController = new AbortController()
-    const onInterrupt = () => abortController!.abort()
+    onInterrupt = () => abortController!.abort()
     process.once('SIGINT', onInterrupt)
     process.once('SIGTERM', onInterrupt)
   }
@@ -71,41 +62,26 @@ function cliAbortSignal(): AbortSignal {
 }
 
 /**
- * Wrap an SDK so each service namespace it hands back is bound to `signal` via
- * the SDK's own `withOptions({signal})`. The SDK re-derives its extension
- * context under that call (see `mergeExtensions`), so the signal reaches both
- * generated route methods and the requests extension methods issue internally —
- * a single bind covers everything a caller can reach through the namespace.
+ * @internal
  *
- * Bound namespaces are memoized so repeated `sdk.platform` access returns the
- * same derived client (stable identity, no repeated re-derivation). The getter
- * reads through to the target (never the proxy) so `HerokuSDK`'s private-field
- * accessors keep working. Non-namespace reads pass straight through.
- *
- * A namespace that doesn't expose `withOptions` is passed through unchanged
- * rather than bound: the real service clients always have it, but a test double
- * that replaces the `platform` getter with a plain object does not, and signal
- * binding is a no-op on something that can't carry a sticky signal anyway.
+ * Test-only. Discards the memoized {@link cliAbortSignal} controller and removes
+ * its `SIGINT`/`SIGTERM` listeners so the next `cliAbortSignal()` builds a fresh
+ * one. A CLI process builds a single controller for its lifetime, so production
+ * never needs this — but the unit suite runs thousands of "invocations" in one
+ * process, and a test that emits `SIGINT`/`SIGTERM` (ps:forward, ps:socks,
+ * mcp:start, log-displayer) would otherwise abort the shared signal for every
+ * later real-SDK test. The shared `beforeEach` hook calls this so each test
+ * starts with an un-aborted signal; removing the listeners also keeps them from
+ * accumulating on `process` across the suite.
  */
-function bindAbortSignal<Exts extends readonly ResourceExtension[]>(
-  sdk: HerokuSDK<Exts>,
-  signal: AbortSignal,
-): HerokuSDK<Exts> {
-  const bound = new Map<string, unknown>()
-  return new Proxy(sdk, {
-    get(target, prop) {
-      if (typeof prop === 'string' && SERVICE_NAMESPACES.has(prop as ServiceName)) {
-        if (!bound.has(prop)) {
-          const namespace = Reflect.get(target, prop) as {withOptions?(opts: {signal: AbortSignal}): unknown}
-          bound.set(prop, typeof namespace?.withOptions === 'function' ? namespace.withOptions({signal}) : namespace)
-        }
+export function resetCliAbortSignalForTesting(): void {
+  if (onInterrupt) {
+    process.removeListener('SIGINT', onInterrupt)
+    process.removeListener('SIGTERM', onInterrupt)
+    onInterrupt = undefined
+  }
 
-        return bound.get(prop)
-      }
-
-      return Reflect.get(target, prop)
-    },
-  }) as HerokuSDK<Exts>
+  abortController = undefined
 }
 
 /**
@@ -145,6 +121,17 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
  * prefix. On the common `clientOptions`, it reaches every per-service client the
  * SDK builds.
  *
+ * `signal` is defaulted on the common `clientOptions` from the process-wide
+ * {@link cliAbortSignal}, so a `SIGINT`/`SIGTERM` aborts every in-flight SDK
+ * request. heroku-fetch folds a client-level signal into *every* request, and
+ * the SDK threads the resolved options through to the bare/custom clients its
+ * extensions build internally (logplex/busl/exec streams, `ps` extended, …), so
+ * one default here covers both generated route calls and extension methods —
+ * this replaces the former `bindAbortSignal` proxy. Wiring one process-lifetime
+ * signal into shared clients is sized for the short-lived CLI; a long-lived host
+ * would scope the signal per unit of work instead. A caller can override it (or
+ * drop it with `signal: undefined`) via `clientOptions`.
+ *
  * `baseUrl` is set on `clientOptionsByService.platform` — never on the common
  * `clientOptions` — because a shared `baseUrl` clobbers every service's own host
  * (metrics, data, repositories resolve different hosts). `vars.apiUrl` is the
@@ -161,6 +148,7 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
   return {
     ...opts,
     clientOptions: {
+      signal: cliAbortSignal(),
       token: tokenFor(heroku),
       warn: oclifWarn,
       ...opts.clientOptions,
@@ -181,7 +169,7 @@ export function createSDK<const Exts extends readonly ResourceExtension[] = read
   heroku: APIClient,
   opts: HerokuSDKOptions<Exts> = {},
 ): HerokuSDK<Exts> {
-  return bindAbortSignal(new HerokuSDK<Exts>(sdkOptions(heroku, opts)), cliAbortSignal())
+  return new HerokuSDK<Exts>(sdkOptions(heroku, opts))
 }
 
 /**

@@ -11,9 +11,7 @@ import {
 // The User-Agent the helpers default onto every request. Built the same way the
 // implementation does — CLI package.json version + process.platform — so the
 // assertion tracks a version bump instead of hard-coding a number that rots.
-const {version: cliVersion} = JSON.parse(
-  readFileSync(new URL('../../../package.json', import.meta.url), 'utf8'),
-) as {version: string}
+const {version: cliVersion} = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8')) as {version: string}
 const expectedUserAgent = `heroku-cli/${cliVersion} ${process.platform}`
 
 /**
@@ -115,6 +113,26 @@ describe('lib/sdk', function () {
     it("lets a caller's own user-agent win over the default", function () {
       const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {headers: {'user-agent': 'mine/1.0'}}})
       expect(clientOptions?.headers?.['user-agent']).to.equal('mine/1.0')
+    })
+
+    it('defaults the process cancellation signal onto the common clientOptions', function () {
+      // On the *common* options so heroku-fetch folds it into every request and
+      // the SDK threads it into the clients its extensions build internally —
+      // this is what replaced the bindAbortSignal proxy.
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'))
+      expect(clientOptions?.signal).to.be.an.instanceOf(AbortSignal)
+    })
+
+    it('shares one process signal across calls (lazy, memoized controller)', function () {
+      const a = sdkOptions(fakeHeroku('tok')).clientOptions?.signal
+      const b = sdkOptions(fakeHeroku('tok')).clientOptions?.signal
+      expect(a).to.equal(b)
+    })
+
+    it('lets a caller-supplied signal win', function () {
+      const {signal} = new AbortController()
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {signal}})
+      expect(clientOptions?.signal).to.equal(signal)
     })
   })
 

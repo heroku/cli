@@ -2,6 +2,7 @@ import nock from 'nock'
 
 // @heroku-cli/command reads and writes credentials via the OS (keychain / .netrc)
 // Unit tests should not run that code; we swap in a fake provider and restore after.
+import {resetCliAbortSignalForTesting} from '../../src/lib/sdk.js'
 import {stubCredentialManager} from './credential-manager-stub.js'
 // ux.action.start and stop are not working as expected in tests
 // this stub is a workaround to get the tests to pass by just
@@ -20,6 +21,9 @@ export const mochaHooks = {
   },
 
   beforeEach(done: () => void) {
+    // Discard any process abort controller a prior test left aborted (e.g. a
+    // test that emitted SIGINT/SIGTERM) so each test starts with a fresh signal.
+    resetCliAbortSignalForTesting()
     uxStub = stubUxActionStart()
     credentialManagerStub = stubCredentialManager()
     done()
