@@ -117,7 +117,7 @@ describe('data:pg:attachments:destroy', function () {
       ])
       const err = error as Error
 
-      expect(err.message).to.equal('Couldn\'t find that attachment.')
+      expect(err.message).to.equal('Resource not found')
       expect(fakePlatform.addOnAttachment.infoByApp.calledOnceWithExactly('myapp', 'NONEXISTENT')).to.equal(true)
       expect(fakePlatform.addOn.resolve.called).to.equal(false)
     })
