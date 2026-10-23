@@ -133,6 +133,36 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
   (await heroku.getAuthEntry())?.token ?? ''
 
 /**
+ * 401 recovery for SDK/heroku-fetch traffic: on an expired or invalid token the
+ * CLI re-authenticates and retries instead of failing with a raw auth error.
+ * Wired as heroku-fetch's `reauthorize` callback — the client fires it once when
+ * a request 401s, awaits it, then retries the request exactly once, re-resolving
+ * the {@link tokenFor} provider so the fresh token `login()` stored is picked up
+ * (our provider reads `getAuthEntry()` per request). heroku-fetch coalesces
+ * concurrent 401s, so a batch of in-flight requests sharing a stale token drives
+ * a single `login()` rather than one prompt each.
+ *
+ * When `HEROKU_API_KEY` is set the token is not interactively recoverable, so we
+ * surface the invalid-token error instead of prompting. Otherwise
+ * `heroku.login()` runs — and `login()` itself refuses to prompt in a
+ * non-interactive terminal (pointing the user at `HEROKU_API_KEY`), so the
+ * CI/non-interactive guard needs no duplication here.
+ *
+ * We throw a bare `Error` for the `HEROKU_API_KEY` case: heroku-fetch attaches
+ * the originating 401 as the error's `cause`, and that 401 carries only the
+ * server `Response` (not the request), so the bearer token is not in the cause
+ * chain — safe to surface, and keeping the 401 as cause preserves its status/id
+ * for debugging.
+ */
+export const reauthorizeFor = (heroku: Pick<APIClient, 'login'>) => async (): Promise<void> => {
+  if (process.env.HEROKU_API_KEY) {
+    throw new Error('The token provided to HEROKU_API_KEY is invalid. Please double-check that you have the correct token, or run `heroku login` without HEROKU_API_KEY set.')
+  }
+
+  await heroku.login()
+}
+
+/**
  * @internal
  *
  * Exported only so the wiring (token present, default `warn` sink, `userAgent`,
@@ -160,6 +190,12 @@ export const tokenFor = (heroku: Pick<APIClient, 'getAuthEntry'>) => async (): P
  * short-lived CLI. A caller can override it (or drop it with `signal: undefined`)
  * via `clientOptions`.
  *
+ * `reauthorize` is defaulted on the common `clientOptions` from
+ * {@link reauthorizeFor}, so a 401 from an expired or invalid token re-prompts
+ * for login and retries the request for every SDK-backed command. A caller can
+ * drop it with `reauthorize: undefined` (shell completion does, so a TAB never
+ * prompts for login) or a single request can opt out with `reauthorize: false`.
+ *
  * `baseUrl` is set on `clientOptionsByService.platform` — never on the common
  * `clientOptions` — because a shared `baseUrl` clobbers every service's own host
  * (metrics, data, repositories resolve different hosts). `vars.apiUrl` is the
@@ -176,11 +212,13 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
   return {
     ...opts,
     clientOptions: {
-      // Evaluated eagerly (before the `...opts.clientOptions` spread) on purpose:
-      // this seeds the default, and a caller's own `signal` — including an explicit
-      // `signal: undefined` to disable cancellation — then wins via the spread. A
-      // lazy `?? cliAbortSignal()` would instead ignore `undefined` and refuse to
-      // disable.
+      // These defaults are seeded before the `...opts.clientOptions` spread on
+      // purpose: a caller's own value then wins — including an explicit
+      // `undefined` to disable a default (e.g. `signal: undefined` to drop
+      // cancellation, or completion's `reauthorize: undefined` to never prompt
+      // for login). Seeding lazily instead (`?? cliAbortSignal()`) would ignore
+      // an explicit `undefined` and refuse to disable.
+      reauthorize: reauthorizeFor(heroku),
       signal: cliAbortSignal(),
       token: tokenFor(heroku),
       userAgent,
@@ -216,17 +254,19 @@ export function createSDK<const Exts extends readonly ResourceExtension[] = read
  * surface Heroku API warnings too, not just the SDK path. The `userAgent`
  * identity and the process-wide cancellation `signal` are defaulted for the same
  * reason, so raw-client calls (e.g. `ps -x`) are attributable in request logs
- * and abort on `SIGINT`/`SIGTERM`. Caller overrides win via the spread — e.g.
- * the status command passes `service: 'custom'` and an empty `token` to build an
- * intentionally unauthenticated client against a custom host, and shell
- * completion passes `warn: undefined` to stay silent.
+ * and abort on `SIGINT`/`SIGTERM`. The 401→`login()`→retry `reauthorize` seam is
+ * defaulted too, so a raw-client call recovers from an expired token like the
+ * SDK path. Caller overrides win via the spread — e.g. the status command uses
+ * {@link createUnauthenticatedClient} for an intentionally unauthenticated
+ * third-party request, and shell completion passes `warn: undefined` /
+ * `reauthorize: undefined` to stay silent and never prompt for login.
  */
 export function apiClientOptions(
-  heroku: Pick<APIClient, 'getAuthEntry'>,
+  heroku: Pick<APIClient, 'getAuthEntry' | 'login'>,
   opts: HerokuApiClientOptions = {},
 ): HerokuApiClientOptions {
   return {
-    baseUrl: vars.apiUrl, signal: cliAbortSignal(), token: tokenFor(heroku), userAgent, warn: oclifWarn, ...opts,
+    baseUrl: vars.apiUrl, reauthorize: reauthorizeFor(heroku), signal: cliAbortSignal(), token: tokenFor(heroku), userAgent, warn: oclifWarn, ...opts,
   }
 }
 
@@ -236,7 +276,7 @@ export function apiClientOptions(
  * endpoint the generated routes don't expose); otherwise prefer `createSDK`.
  */
 export function createApiClient(
-  heroku: Pick<APIClient, 'getAuthEntry'>,
+  heroku: Pick<APIClient, 'getAuthEntry' | 'login'>,
   opts: HerokuApiClientOptions = {},
 ): HerokuApiClient {
   return new HerokuApiClient(apiClientOptions(heroku, opts))

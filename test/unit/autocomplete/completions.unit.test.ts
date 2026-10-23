@@ -14,6 +14,12 @@ describe('autocomplete completionClientOptions', function () {
     expect(opts.timeout).to.be.a('number').and.to.be.greaterThan(0)
     await expect(opts.twoFactor?.onChallenge?.()).to.be.rejected
   })
+
+  it('opts out of reauthorize so an expired token never drives a login prompt mid-completion', function () {
+    // spread last over sdkOptions/apiClientOptions, so reauthorize: undefined
+    // wins and a 401 during a TAB surfaces quietly instead of prompting for login
+    expect(completionClientOptions()).to.have.property('reauthorize', undefined)
+  })
 })
 
 describe('autocomplete completions cache keys', function () {

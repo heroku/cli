@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs'
 import {stub} from 'sinon'
 
 import {
-  apiClientOptions, createSDK, resetCliAbortSignal, sdkOptions, tokenFor,
+  apiClientOptions, createSDK, reauthorizeFor, resetCliAbortSignal, sdkOptions, tokenFor,
 } from '../../../src/lib/sdk.js'
 
 // The User-Agent identity the helpers default onto every request. We pass the
@@ -50,6 +50,52 @@ describe('lib/sdk', function () {
       const provider = tokenFor({getAuthEntry} as unknown as APIClient)
       expect(await provider()).to.equal('first')
       expect(await provider()).to.equal('second')
+    })
+  })
+
+  describe('reauthorizeFor', function () {
+    const herokuWithLogin = (token?: string) => ({
+      getAuthEntry: stub().resolves(token === undefined ? undefined : {account: 'a', token}),
+      login: stub().resolves(),
+    })
+
+    let savedApiKey: string | undefined
+    beforeEach(function () {
+      savedApiKey = process.env.HEROKU_API_KEY
+      delete process.env.HEROKU_API_KEY
+    })
+    afterEach(function () {
+      if (savedApiKey === undefined) delete process.env.HEROKU_API_KEY
+      else process.env.HEROKU_API_KEY = savedApiKey
+    })
+
+    it('recovers from a 401 by running heroku.login()', async function () {
+      const heroku = herokuWithLogin('stale')
+      await reauthorizeFor(heroku as unknown as APIClient)()
+      expect(heroku.login.calledOnce).to.equal(true)
+    })
+
+    it('surfaces the invalid-token error without prompting when HEROKU_API_KEY is set', async function () {
+      process.env.HEROKU_API_KEY = 'env-token'
+      const heroku = herokuWithLogin('env-token')
+      await expect(reauthorizeFor(heroku as unknown as APIClient)()).to.be.rejectedWith(/HEROKU_API_KEY is invalid/)
+      expect(heroku.login.called).to.equal(false)
+    })
+
+    it('fires the re-login and the token provider then returns the refreshed token on retry', async function () {
+      // Mirrors heroku-fetch's 401 flow: run reauthorize (login), then re-resolve
+      // the token provider for the retry. A successful login refreshes the stored
+      // entry, so the retry carries the new token.
+      const getAuthEntry = stub()
+      getAuthEntry.onFirstCall().resolves({account: 'a', token: 'stale'})
+      getAuthEntry.onSecondCall().resolves({account: 'a', token: 'fresh'})
+      const heroku = {getAuthEntry, login: stub().resolves()} as unknown as APIClient
+
+      const {clientOptions} = sdkOptions(heroku)
+      expect(await (clientOptions!.token as () => Promise<string>)()).to.equal('stale')
+      await (clientOptions!.reauthorize as () => Promise<void>)()
+      expect((heroku.login as ReturnType<typeof stub>).calledOnce).to.equal(true)
+      expect(await (clientOptions!.token as () => Promise<string>)()).to.equal('fresh')
     })
   })
 
@@ -135,6 +181,18 @@ describe('lib/sdk', function () {
       const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {signal}})
       expect(clientOptions?.signal).to.equal(signal)
     })
+
+    it('defaults a reauthorize callback onto the common clientOptions so a 401 drives re-login', function () {
+      // on the *common* options → every service client the SDK builds recovers
+      // from an expired token, not just the platform client
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'))
+      expect(clientOptions?.reauthorize).to.be.a('function')
+    })
+
+    it('lets a caller disable reauthorize with reauthorize: undefined', function () {
+      const {clientOptions} = sdkOptions(fakeHeroku('tok'), {clientOptions: {reauthorize: undefined}})
+      expect(clientOptions).to.have.property('reauthorize', undefined)
+    })
   })
 
   describe('apiClientOptions', function () {
@@ -174,6 +232,14 @@ describe('lib/sdk', function () {
     it('lets a caller-supplied signal win', function () {
       const {signal} = new AbortController()
       expect(apiClientOptions(fakeHeroku('tok'), {signal}).signal).to.equal(signal)
+    })
+
+    it('defaults a reauthorize callback so raw-client calls recover from an expired token', function () {
+      expect(apiClientOptions(fakeHeroku('tok')).reauthorize).to.be.a('function')
+    })
+
+    it('lets a caller disable reauthorize with reauthorize: undefined', function () {
+      expect(apiClientOptions(fakeHeroku('tok'), {reauthorize: undefined})).to.have.property('reauthorize', undefined)
     })
   })
 
