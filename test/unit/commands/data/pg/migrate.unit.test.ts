@@ -469,23 +469,13 @@ describe('data:pg:migrate', function () {
           startReason: 'the migration is running',
           status: MigrationStatus.PROMOTING,
         },
-        // Other statuses fall back to the status description
-        {
-          cancelReason: 'Assessment completed. No data was migrated. Check your email for details.',
-          startReason: 'Assessment completed. No data was migrated. Check your email for details.',
-          status: 'assessment_completed' as MigrationStatus,
-          statusDescription: 'Assessment completed. No data was migrated. Check your email for details.',
-        },
-        {
-          cancelReason: 'Unknown migration status',
-          startReason: 'Unknown migration status',
-          status: MigrationStatus.UNKNOWN,
-          statusDescription: 'Unknown migration status',
-        },
+        // Other statuses don't explain why
+        {cancelReason: 'Disabled', startReason: 'Disabled', status: 'assessment_completed' as MigrationStatus},
+        {cancelReason: 'Disabled', startReason: 'Disabled', status: MigrationStatus.UNKNOWN},
       ]
 
-      for (const {cancelReason, startReason, status, statusDescription} of disabledReasons) {
-        replyWithTargetMigration(dataApi, {can_cancel: false, status, ...(statusDescription && {status_description: statusDescription})}, 2)
+      for (const {cancelReason, startReason, status} of disabledReasons) {
+        replyWithTargetMigration(dataApi, {can_cancel: false, status}, 2)
         mockedStdinInput = [
           '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
           '\u001B[A\n', // Manage migration: > Go back
@@ -515,7 +505,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Cancel the migration (the migration can\'t be canceled right now)')
+      expect(stdout).to.contain('- Cancel the migration (Disabled)')
     })
 
     it('refreshes the migration details when Refresh is selected', async function () {
