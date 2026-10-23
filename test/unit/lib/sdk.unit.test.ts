@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs'
 import {stub} from 'sinon'
 
 import {
-  apiClientOptions, createSDK, sdkOptions, tokenFor,
+  apiClientOptions, createSDK, resetCliAbortSignal, sdkOptions, tokenFor,
 } from '../../../src/lib/sdk.js'
 
 // The User-Agent identity the helpers default onto every request. We pass the
@@ -181,6 +181,108 @@ describe('lib/sdk', function () {
     it('constructs a HerokuSDK', function () {
       const sdk = createSDK(fakeHeroku('tok'))
       expect(sdk.platform).to.be.an('object')
+    })
+  })
+
+  /**
+   * The signal does more than cancel in-flight requests: because registering a
+   * signal listener suppresses Node's default "exit on signal", the handler must
+   * also guarantee the process still terminates on a Ctrl-C during a non-SDK
+   * wait when nothing else (the telemetry handler) would exit. These tests pin
+   * the abort-then-exit path with the telemetry handler both absent and present.
+   *
+   * We isolate the process's signal listeners for the block (saving, clearing,
+   * and restoring the originals) so `listenerCount` is deterministic, stub
+   * `process.exit` so the deferred exit doesn't kill the test run, and reset the
+   * module's memoized controller around every test so no wiring leaks.
+   */
+  describe('cliAbortSignal termination', function () {
+    let savedSigint: NodeJS.SignalsListener[]
+    let savedSigterm: NodeJS.SignalsListener[]
+    let exitStub: ReturnType<typeof stub>
+
+    const flushImmediate = () => new Promise(resolve => {
+      setImmediate(resolve)
+    })
+
+    before(function () {
+      savedSigint = process.listeners('SIGINT')
+      savedSigterm = process.listeners('SIGTERM')
+      process.removeAllListeners('SIGINT')
+      process.removeAllListeners('SIGTERM')
+    })
+
+    after(function () {
+      process.removeAllListeners('SIGINT')
+      process.removeAllListeners('SIGTERM')
+      for (const l of savedSigint) process.on('SIGINT', l)
+      for (const l of savedSigterm) process.on('SIGTERM', l)
+    })
+
+    beforeEach(function () {
+      resetCliAbortSignal()
+      exitStub = stub(process, 'exit')
+    })
+
+    afterEach(function () {
+      resetCliAbortSignal()
+      exitStub.restore()
+    })
+
+    it('aborts the signal on SIGINT', function () {
+      const signal = sdkOptions(fakeHeroku('tok')).clientOptions?.signal as AbortSignal
+      expect(signal.aborted).to.be.false
+      process.emit('SIGINT', 'SIGINT')
+      expect(signal.aborted).to.be.true
+    })
+
+    it('restores termination (deferred process.exit) when no other signal handler remains', async function () {
+      sdkOptions(fakeHeroku('tok'))
+      process.emit('SIGINT', 'SIGINT')
+      // deferred: not exited synchronously, so aborted requests can unwind first
+      expect(exitStub.called).to.be.false
+      await flushImmediate()
+      expect(exitStub.calledOnceWithExactly(1)).to.be.true
+    })
+
+    it('leaves the exit to the telemetry handler when one is registered', async function () {
+      const telemetryHandler = stub()
+      process.on('SIGINT', telemetryHandler)
+      try {
+        sdkOptions(fakeHeroku('tok'))
+        process.emit('SIGINT', 'SIGINT')
+        await flushImmediate()
+        // the telemetry handler ran and still owns the exit; we did not exit too
+        expect(telemetryHandler.calledOnce).to.be.true
+        expect(exitStub.called).to.be.false
+      } finally {
+        process.removeListener('SIGINT', telemetryHandler)
+      }
+    })
+
+    it('drops its one-shot listeners after firing so a second signal is not handled by it', async function () {
+      sdkOptions(fakeHeroku('tok'))
+      expect(process.listenerCount('SIGINT')).to.equal(1)
+      process.emit('SIGINT', 'SIGINT')
+      await flushImmediate()
+      expect(process.listenerCount('SIGINT')).to.equal(0)
+    })
+
+    it('aborts and restores termination on SIGTERM too', async function () {
+      const signal = sdkOptions(fakeHeroku('tok')).clientOptions?.signal as AbortSignal
+      process.emit('SIGTERM', 'SIGTERM')
+      expect(signal.aborted).to.be.true
+      await flushImmediate()
+      expect(exitStub.calledOnceWithExactly(1)).to.be.true
+    })
+
+    it('hands back a fresh, non-aborted signal for a client built after an abort', function () {
+      const first = sdkOptions(fakeHeroku('tok')).clientOptions?.signal as AbortSignal
+      process.emit('SIGINT', 'SIGINT')
+      expect(first.aborted).to.be.true
+      const second = sdkOptions(fakeHeroku('tok')).clientOptions?.signal as AbortSignal
+      expect(second).to.not.equal(first)
+      expect(second.aborted).to.be.false
     })
   })
 })

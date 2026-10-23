@@ -34,7 +34,7 @@ const {version: cliVersion}: {version: string} = JSON.parse(readFileSync(path.re
 const userAgent = {name: 'heroku-cli', version: cliVersion}
 
 let abortController: AbortController | undefined
-let onInterrupt: (() => void) | undefined
+let onInterrupt: ((signal: NodeJS.Signals) => void) | undefined
 
 /**
  * Process-wide cancellation signal for SDK requests. A CLI invocation is a
@@ -46,9 +46,19 @@ let onInterrupt: (() => void) | undefined
  *
  * `SIGINT`/`SIGTERM` abort it, so an interrupted command's in-flight SDK
  * requests reject with an `AbortError` instead of being orphaned by process
- * teardown. The first Ctrl-C aborts in-flight work (which rejects and unwinds
- * the command to exit); a second, with the one-shot listeners already spent,
- * falls through to Node's default handler for a hard exit.
+ * teardown. But registering any signal listener suppresses Node's default
+ * "terminate on signal", and aborting only reaches in-flight SDK requests — a
+ * non-SDK wait (an interactive prompt, a `this.heroku` poll loop, the TLS attach
+ * in `run`) would otherwise keep the event loop alive and swallow the Ctrl-C.
+ * So the handler also guarantees termination: it aborts, drops its own one-shot
+ * listeners, and — only when no *other* signal listener remains to exit — defers
+ * a `process.exit` so the aborted requests reject and unwind first. When the
+ * telemetry handler is registered (its persistent `process.on` listener, absent
+ * on Windows / in CI / under `DISABLE_TELEMETRY` / in `bin/dev.js`), that owns
+ * the exit instead, so we neither double-exit nor double-send telemetry. We
+ * mirror the telemetry handler's exit code (`1`) so the interrupted exit code is
+ * the same whether or not telemetry is on. A second Ctrl-C, with the one-shot
+ * listeners already spent, falls through to whatever remains or Node's default.
  *
  * An aborted signal stays aborted, so once it has fired the next call hands back
  * a fresh controller (swapping in fresh listeners): a client built during
@@ -65,12 +75,45 @@ function cliAbortSignal(): AbortSignal {
 
     const controller = new AbortController()
     abortController = controller
-    onInterrupt = () => controller.abort()
+    onInterrupt = (signal: NodeJS.Signals) => {
+      controller.abort()
+      // One-shot: drop our handler for both signals so a repeat falls through to
+      // whatever else is registered, or to Node's default termination.
+      if (onInterrupt) {
+        process.removeListener('SIGINT', onInterrupt)
+        process.removeListener('SIGTERM', onInterrupt)
+      }
+
+      // If no other listener is left to exit the process (telemetry off), restore
+      // termination ourselves — deferred to the next tick so the microtask queue
+      // drains and the aborted in-flight requests reject and unwind first.
+      if (process.listenerCount(signal) === 0) {
+        // eslint-disable-next-line n/no-process-exit, unicorn/no-process-exit -- aborting only cancels in-flight SDK requests; a non-SDK wait would keep the process alive and swallow the signal, so we must restore the default termination that our listener suppressed.
+        setImmediate(() => process.exit(1))
+      }
+    }
+
     process.once('SIGINT', onInterrupt)
     process.once('SIGTERM', onInterrupt)
   }
 
   return abortController.signal
+}
+
+/**
+ * @internal
+ * Test-only: tear down the process-wide signal wiring and clear the memoized
+ * controller so each test starts from a clean slate (no listeners leaked across
+ * the run, next `cliAbortSignal` builds fresh). Not for production call sites.
+ */
+export function resetCliAbortSignal(): void {
+  if (onInterrupt) {
+    process.removeListener('SIGINT', onInterrupt)
+    process.removeListener('SIGTERM', onInterrupt)
+  }
+
+  abortController = undefined
+  onInterrupt = undefined
 }
 
 /**
