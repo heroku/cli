@@ -335,7 +335,6 @@ export default class DataPgMigrate extends BaseCommand {
         If there are any issues during the migration, we end the migration and make the source database available again.
         The database ${this.databaseName(sourceDatabase)} can be offline for several hours during the migration.
         You'll receive an email when the migration is complete.
-        You can cancel the migration until it starts promoting.
 
       `))
       this.printVersionChangeWarning(sourceDatabase?.version, targetDatabase?.info?.version)
