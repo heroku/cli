@@ -166,6 +166,7 @@ export type UpgradeResponse = {
 export type MigrationResponse = {
   auto_promote: boolean
   can_cancel?: boolean
+  cancel_disabled_reason?: null | string
   cdc_lag: null | number
   completed: boolean
   created_at?: string

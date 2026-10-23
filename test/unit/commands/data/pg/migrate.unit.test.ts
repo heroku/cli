@@ -459,22 +459,18 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('- Cancel the migration (')
     })
 
-    it('disables starting and canceling a migration that is promoting or ended', async function () {
-      const disabledReasons = [
-        {cancelReason: 'the migration was canceled', startReason: 'the migration was canceled', status: MigrationStatus.CANCELLED},
-        {cancelReason: 'the migration completed successfully', startReason: 'the migration completed successfully', status: MigrationStatus.COMPLETED},
-        {cancelReason: 'the migration failed', startReason: 'the migration failed', status: MigrationStatus.FAILED},
-        {
-          cancelReason: 'the migration is promoting and can\'t be canceled',
-          startReason: 'the migration is running',
-          status: MigrationStatus.PROMOTING,
-        },
+    it('disables starting a migration that is promoting or ended', async function () {
+      const startReasons = [
+        {startReason: 'the migration was canceled', status: MigrationStatus.CANCELLED},
+        {startReason: 'the migration completed successfully', status: MigrationStatus.COMPLETED},
+        {startReason: 'the migration failed', status: MigrationStatus.FAILED},
+        {startReason: 'the migration is running', status: MigrationStatus.PROMOTING},
         // Other statuses don't explain why
-        {cancelReason: 'Disabled', startReason: 'Disabled', status: 'assessment_completed' as MigrationStatus},
-        {cancelReason: 'Disabled', startReason: 'Disabled', status: MigrationStatus.UNKNOWN},
+        {startReason: 'Disabled', status: 'assessment_completed' as MigrationStatus},
+        {startReason: 'Disabled', status: MigrationStatus.UNKNOWN},
       ]
 
-      for (const {cancelReason, startReason, status} of disabledReasons) {
+      for (const {startReason, status} of startReasons) {
         replyWithTargetMigration(dataApi, {can_cancel: false, status}, 2)
         mockedStdinInput = [
           '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
@@ -489,11 +485,29 @@ describe('data:pg:migrate', function () {
         expect(error).to.be.undefined
         expect(stderr).to.equal('')
         expect(stdout).to.contain(`- Start the migration (${startReason})`)
-        expect(stdout).to.contain(`- Cancel the migration (${cancelReason})`)
       }
     })
 
-    it('disables canceling a migration when the API doesn\'t allow it', async function () {
+    it('shows why the API doesn\'t allow canceling a migration', async function () {
+      replyWithTargetMigration(dataApi, {
+        can_cancel: false,
+        cancel_disabled_reason: 'the migration is promoting',
+        status: MigrationStatus.PROMOTING,
+      }, 2)
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('- Cancel the migration (the migration is promoting)')
+    })
+
+    it('disables canceling a migration when the API doesn\'t allow it or explain why', async function () {
       replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.MIGRATING}, 2)
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
@@ -1198,7 +1212,12 @@ describe('data:pg:migrate', function () {
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
-      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+      replyWithTargetMigration(dataApi, {
+        can_cancel: false,
+        cancel_disabled_reason: 'the migration was canceled',
+        status: MigrationStatus.CANCELLED,
+        status_description: 'Migration canceled.',
+      }, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1225,7 +1244,12 @@ describe('data:pg:migrate', function () {
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
-      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+      replyWithTargetMigration(dataApi, {
+        can_cancel: false,
+        cancel_disabled_reason: 'the migration was canceled',
+        status: MigrationStatus.CANCELLED,
+        status_description: 'Migration canceled.',
+      }, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1251,7 +1275,12 @@ describe('data:pg:migrate', function () {
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
-      replyWithTargetMigration(dataApi, {can_cancel: false, status: MigrationStatus.CANCELLED, status_description: 'Migration canceled.'}, 2)
+      replyWithTargetMigration(dataApi, {
+        can_cancel: false,
+        cancel_disabled_reason: 'the migration was canceled',
+        status: MigrationStatus.CANCELLED,
+        status_description: 'Migration canceled.',
+      }, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
