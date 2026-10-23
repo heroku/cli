@@ -8,12 +8,15 @@ import AuthorizationsCreate from '../../../../src/commands/authorizations/create
 // Anchor the fake to the real SDK platform so renaming the oauthAuthorization.create
 // path fails to compile here; intersect with SinonStub so the stub assertions stay available.
 type FakePlatform = {
-  oauthAuthorization: {create: HerokuSDK['platform']['oauthAuthorization']['create'] & sinon.SinonStub}
+  oauthAuthorization: {
+    create: HerokuSDK['platform']['oauthAuthorization']['create'] & sinon.SinonStub
+    teamCreate: HerokuSDK['platform']['oauthAuthorization']['teamCreate'] & sinon.SinonStub
+  }
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    oauthAuthorization: {create: sinon.stub()},
+    oauthAuthorization: {create: sinon.stub(), teamCreate: sinon.stub()},
   }
 }
 
@@ -68,6 +71,23 @@ describe('authorizations:create', function () {
       const json = JSON.parse(stdout)
       expect(json.access_token).to.contain({token: 'secrettoken'})
       expect(json.scope).to.contain('global')
+    })
+  })
+
+  context('with team flag', function () {
+    it('creates the authorization for the team', async function () {
+      fakePlatform.oauthAuthorization.teamCreate.resolves({access_token: {token: 'secrettoken'}, scope: ['global']})
+
+      const {stdout} = await runCommand(AuthorizationsCreate, ['--description', 'awesome', '--team', 'my-team'])
+
+      expect(stdout).to.contain('Client: <none>\n')
+      expect(stdout).to.contain('Scope:  global\n')
+      expect(stdout).to.contain('Token:  secrettoken\n')
+      expect(fakePlatform.oauthAuthorization.teamCreate.calledOnceWithExactly('my-team', {
+        description: 'awesome',
+        expires_in: undefined,
+        scope: undefined,
+      })).to.equal(true)
     })
   })
 })

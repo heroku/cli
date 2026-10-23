@@ -210,7 +210,7 @@ describe('addons:create', function () {
         sandbox.restore()
       })
       it('waits for response and notifies', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         // When wait is true, createAndWait calls onProvisioning then returns provisioned addon
         const createAndWaitStub = stub().callsFake(async (_app, _body, options) => {
           if (options?.onProvisioning) {
@@ -232,14 +232,14 @@ describe('addons:create', function () {
           '--',
           '--wait',
         ])
-        expect(notifySpy.called).to.equal(true)
-        expect(notifySpy.calledOnce).to.equal(true)
+        expect(notifyStub.called).to.equal(true)
+        expect(notifyStub.calledOnce).to.equal(true)
         expect(stderr).to.contain('Creating heroku-postgresql:standard-0 on ⬢ myapp... ~$0.139/hour (max $100/month)')
         expect(stderr).to.contain('Creating postgresql-swiftly-123... done')
         expect(stdout).to.equal('provision message\nWaiting for postgresql-swiftly-123...\nCreated postgresql-swiftly-123 as DATABASE_URL\nRun heroku addons:docs heroku-postgresql to view documentation.\n')
       })
       it('notifies when provisioning failure occurs', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         const deprovisionedAddon = {..._.clone(addon), state: 'deprovisioned'}
         const createAndWaitStub = stub().rejects(new AddonProvisioningFailedError(deprovisionedAddon as any))
         sdkMock = mockSDKPlatform({addOn: {createAndWait: createAndWaitStub}})
@@ -256,8 +256,8 @@ describe('addons:create', function () {
             '--wait',
           ])
         } catch {
-          expect(notifySpy.called).to.equal(true)
-          expect(notifySpy.calledOnce).to.equal(true)
+          expect(notifyStub.called).to.equal(true)
+          expect(notifyStub.calledOnce).to.equal(true)
         }
       })
     })

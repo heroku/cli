@@ -74,12 +74,11 @@ describe('releases:retry', function () {
     fakePlatform.release.list.resolves([])
     fakePlatform.formation.list.resolves([])
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch((error: Error) => {
-      expect(ansis.strip(error.message)).to.eq('No release found for ⬢ myapp.')
-    })
+    ])
+    expect(ansis.strip(error?.message ?? '')).to.eq('No release found for ⬢ myapp.')
     expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
     expect(fakePlatform.formation.list.calledOnceWithExactly('myapp')).to.equal(true)
   })
@@ -119,12 +118,11 @@ describe('releases:retry', function () {
     fakePlatform.release.list.resolves(release)
     fakePlatform.formation.list.resolves(formationWithoutReleasePhase)
 
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'myapp',
-    ]).catch((error: Error) => {
-      expect(error.message).to.eq('App must have a release-phase command to use this command.')
-    })
+    ])
+    expect(error?.message).to.eq('App must have a release-phase command to use this command.')
     expect(fakePlatform.release.create.called).to.equal(false)
   })
 })

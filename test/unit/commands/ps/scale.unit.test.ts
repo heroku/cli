@@ -74,6 +74,22 @@ describe('ps:scale', function () {
     expect(scaleStub.calledOnceWith('myapp', [{quantity: '1', size: undefined, type: 'web'}, {quantity: '2', size: undefined, type: 'worker'}])).to.be.true
   })
 
+  it('scales a dyno size containing a dot', async function () {
+    const scaleStub = stub().resolves([{quantity: 1, size: 'dyno-1c-0.5gb', type: 'worker'}])
+    const isShieldedStub = stub().resolves(false)
+    sdkMock = mockSDKPlatform({app: {isShielded: isShieldedStub}, dyno: {scale: scaleStub}})
+
+    const {stderr, stdout} = await runCommand(Cmd, [
+      '--app',
+      'myapp',
+      'worker=1:dyno-1c-0.5gb',
+    ])
+
+    expect(stdout).to.equal('')
+    expect(stderr).to.contain('Scaling dynos... done, now running worker at 1:dyno-1c-0.5gb\n')
+    expect(scaleStub.calledOnceWith('myapp', [{quantity: '1', size: 'dyno-1c-0.5gb', type: 'worker'}])).to.be.true
+  })
+
   it('scales up a shield dyno if the app is in a shielded private space', async function () {
     const scaleStub = stub().resolves([{quantity: 1, size: 'Private-L', type: 'web'}])
     const isShieldedStub = stub().resolves(true)

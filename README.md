@@ -48,7 +48,7 @@ For other issues, [submit a support ticket](https://help.heroku.com/).
 * [`heroku apps`](docs/apps.md) - manage apps on Heroku
 * [`heroku auth`](docs/auth.md) - manage authentication for your Heroku account
 * [`heroku authorizations`](docs/authorizations.md) - OAuth authorizations
-* [`heroku autocomplete`](docs/autocomplete.md) - display autocomplete installation instructions
+* [`heroku autocomplete`](docs/autocomplete.md) - Display autocomplete installation instructions.
 * [`heroku buildpacks`](docs/buildpacks.md) - scripts used to compile apps
 * [`heroku certs`](docs/certs.md) - SSL certificates
 * [`heroku ci`](docs/ci.md) - test runner for Heroku Pipelines

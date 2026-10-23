@@ -18,6 +18,7 @@ export default class AuthorizationsCreate extends Command {
     json: flags.boolean({char: 'j', description: 'output in json format'}),
     scope: flags.string({char: 's', completion: ScopeCompletion, description: 'set custom OAuth scopes'}),
     short: flags.boolean({char: 'S', description: 'only output token'}),
+    team: flags.team({description: 'team to create OAuth authorization on'}),
   }
 
   async run() {
@@ -26,12 +27,19 @@ export default class AuthorizationsCreate extends Command {
 
     ux.action.start('Creating OAuth Authorization')
 
-    const auth = await platform.oauthAuthorization.create({
-      description: flags.description,
-      expires_in: flags['expires-in'],
-      // scope is optional server-side (omitted ⇒ global); @heroku/types types it as required, so cast the absent case
-      scope: (flags.scope ? flags.scope.split(',') : undefined) as string[],
-    })
+    const scope = flags.scope ? flags.scope.split(',') : undefined
+    const auth = flags.team
+      ? await platform.oauthAuthorization.teamCreate(flags.team, {
+        description: flags.description,
+        expires_in: flags['expires-in'],
+        scope,
+      })
+      : await platform.oauthAuthorization.create({
+        description: flags.description,
+        expires_in: flags['expires-in'],
+        // scope is optional server-side (omitted ⇒ global); @heroku/types types it as required, so cast the absent case
+        scope: scope as string[],
+      })
 
     ux.action.stop()
 

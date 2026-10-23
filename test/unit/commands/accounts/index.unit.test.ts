@@ -27,9 +27,7 @@ describe('accounts', function () {
 
   it('should print an error message if no accounts are found', async function () {
     listStub.resolves([])
-    await runCommand(Cmd, [])
-      .catch((error: Error) => {
-        expect(error.message).to.contain('You don\'t have any accounts in your cache.')
-      })
+    const {error} = await runCommand(Cmd, [])
+    expect(error?.message).to.contain('You don\'t have any accounts in your cache.')
   })
 })
