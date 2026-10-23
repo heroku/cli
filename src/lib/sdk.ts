@@ -30,7 +30,7 @@ import {fileURLToPath} from 'node:url'
  * `config.version` from), so the helper stays usable from `src/lib/` call sites
  * that only hold an `APIClient`.
  */
-const {version: cliVersion} = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../package.json'), 'utf8')) as {version: string}
+const {version: cliVersion}: {version: string} = JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../package.json'), 'utf8'))
 const userAgent = {name: 'heroku-cli', version: cliVersion}
 
 let abortController: AbortController | undefined
@@ -133,6 +133,11 @@ export function sdkOptions<Exts extends readonly ResourceExtension[]>(
   return {
     ...opts,
     clientOptions: {
+      // Evaluated eagerly (before the `...opts.clientOptions` spread) on purpose:
+      // this seeds the default, and a caller's own `signal` — including an explicit
+      // `signal: undefined` to disable cancellation — then wins via the spread. A
+      // lazy `?? cliAbortSignal()` would instead ignore `undefined` and refuse to
+      // disable.
       signal: cliAbortSignal(),
       token: tokenFor(heroku),
       userAgent,

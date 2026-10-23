@@ -40,7 +40,7 @@ export default class Run extends Command {
     const {argv, flags} = await this.parse(Run)
     const command = revertSortedArgs(process.argv, argv as string[])
     const builtCommand = await buildCommandWithLauncher(this.heroku, flags.app, command, flags['no-launcher'])
-    const sdk = createSDK(this.heroku, {extensions: [dynoExtensions]})
+    const sdk = createSDK(this.heroku, {extensions: [dynoExtensions, accountExtensions]})
     const opts = {
       app: flags.app,
       attach: true,
@@ -60,8 +60,7 @@ export default class Run extends Command {
       throw new Error('Usage: heroku run COMMAND\n\nExample: heroku run bash')
     }
 
-    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
-    const {delinquency} = await platform.account.getWithDelinquency()
+    const {delinquency} = await sdk.platform.account.getWithDelinquency()
     warnDelinquency(this, 'account', delinquency)
     const dyno = new Dyno(opts)
     try {

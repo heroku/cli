@@ -33,7 +33,7 @@ export interface DynoOpts {
   'no-tty'?: boolean
   notificationSubtitle?: string
   notify?: boolean
-  sdk?: HerokuSDK<readonly [typeof dynoExtensions]>
+  sdk?: Pick<HerokuSDK<readonly [typeof dynoExtensions]>, 'platform'>
   showStatus?: boolean
   size?: string
   type?: string
@@ -53,7 +53,7 @@ export default class Dyno extends Duplex {
   p: any
   reject?: (reason?: any) => void
   resolve?: (value?: unknown) => void
-  sdk: HerokuSDK<readonly [typeof dynoExtensions]>
+  sdk: Pick<HerokuSDK<readonly [typeof dynoExtensions]>, 'platform'>
   unpipeStdin: any
   uri?: URL
   useSSH: any
