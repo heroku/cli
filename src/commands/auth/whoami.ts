@@ -17,7 +17,9 @@ export default class AuthWhoami extends Command {
   }
 
   async run(): Promise<Account> {
-    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
+    // Opt out of the default 401→re-login→retry: a stale/invalid token here must
+    // report "not logged in" (the 401 branch below), not prompt for a new login.
+    const {platform} = createSDK(this.heroku, {clientOptions: {reauthorize: undefined}, extensions: [accountExtensions]})
 
     if (process.env.HEROKU_API_KEY) this.warn('HEROKU_API_KEY is set')
     if (!this.heroku.auth) this.notloggedin()
