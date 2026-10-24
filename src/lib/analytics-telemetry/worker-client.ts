@@ -52,7 +52,12 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
       },
     })
     spawnTelemetryWorker(error)
-    process.exit(1)
+    // Defer termination to the next tick so every other SIGINT listener in this
+    // emit runs first (e.g. the SDK's AbortController, dyno/ssh/forward/socks/mcp
+    // connection teardown) instead of being cut off by a synchronous exit.
+    // Draining the microtask queue in between also lets aborted in-flight
+    // requests reject and unwind, and gives the worker's stdin write time to flush.
+    setImmediate(() => process.exit(1))
   })
 
   process.on('SIGTERM', () => {
@@ -61,6 +66,7 @@ export function setupTelemetryHandlers(options: SetupTelemetryOptions): void {
       cliRunDuration: computeDuration(cliStartTime),
     })
     spawnTelemetryWorker(error)
-    process.exit(1)
+    // Defer termination; see the SIGINT handler above for why.
+    setImmediate(() => process.exit(1))
   })
 }

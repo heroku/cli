@@ -8,12 +8,12 @@ import Login from '../../../../src/commands/auth/login.js'
 import Git from '../../../../src/lib/git/git.js'
 
 type FakePlatform = {
-  account: {info: SinonStub}
+  account: {getWithDelinquency: SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    account: {info: stub()},
+    account: {getWithDelinquency: stub()},
   }
 }
 
@@ -45,7 +45,7 @@ describe('auth:login', function () {
   })
 
   it('displays the logged in user', async function () {
-    fakePlatform.account.info.resolves({email: 'user@example.com'})
+    fakePlatform.account.getWithDelinquency.resolves({account: {email: 'user@example.com'}, delinquency: null})
 
     const {stdout} = await runCommand(Login, [])
 
@@ -53,8 +53,9 @@ describe('auth:login', function () {
   })
 
   it('configures git credential helper after successful login', async function () {
-    fakePlatform.account.info.resolves({
-      email: 'user@example.com',
+    fakePlatform.account.getWithDelinquency.resolves({
+      account: {email: 'user@example.com'},
+      delinquency: null,
     })
 
     await runCommand(Login, [])
@@ -63,8 +64,9 @@ describe('auth:login', function () {
   })
 
   it('rejects stale git credentials after successful login', async function () {
-    fakePlatform.account.info.resolves({
-      email: 'user@example.com',
+    fakePlatform.account.getWithDelinquency.resolves({
+      account: {email: 'user@example.com'},
+      delinquency: null,
     })
 
     await runCommand(Login, [])
@@ -84,8 +86,9 @@ describe('auth:login', function () {
   it('does not fail login if git credential helper configuration fails', async function () {
     configureCredentialHelperStub.rejects(new Error('Git not found'))
 
-    fakePlatform.account.info.resolves({
-      email: 'user@example.com',
+    fakePlatform.account.getWithDelinquency.resolves({
+      account: {email: 'user@example.com'},
+      delinquency: null,
     })
 
     const {error} = await runCommand(Login, [])
@@ -97,8 +100,9 @@ describe('auth:login', function () {
   it('does not fail login if git credential deletion fails', async function () {
     eraseCredentialsStub.rejects(new Error('Git not found'))
 
-    fakePlatform.account.info.resolves({
-      email: 'user@example.com',
+    fakePlatform.account.getWithDelinquency.resolves({
+      account: {email: 'user@example.com'},
+      delinquency: null,
     })
 
     const {error} = await runCommand(Login, [])

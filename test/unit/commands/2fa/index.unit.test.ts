@@ -6,12 +6,12 @@ import {restore, SinonStub, stub} from 'sinon'
 import TwoFactorAuth from '../../../../src/commands/auth/2fa/index.js'
 
 type FakePlatform = {
-  account: {info: SinonStub}
+  account: {getWithDelinquency: SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    account: {info: stub()},
+    account: {getWithDelinquency: stub()},
   }
 }
 
@@ -28,7 +28,7 @@ describe('2fa', function () {
   })
 
   it('shows 2fa is enabled', async function () {
-    fakePlatform.account.info.resolves({two_factor_authentication: true})
+    fakePlatform.account.getWithDelinquency.resolves({account: {two_factor_authentication: true}, delinquency: null})
 
     const {stdout} = await runCommand(TwoFactorAuth, [])
 
@@ -36,7 +36,7 @@ describe('2fa', function () {
   })
 
   it('shows 2fa is not enabled', async function () {
-    fakePlatform.account.info.resolves({two_factor_authentication: false})
+    fakePlatform.account.getWithDelinquency.resolves({account: {two_factor_authentication: false}, delinquency: null})
 
     const {stdout} = await runCommand(TwoFactorAuth, [])
 

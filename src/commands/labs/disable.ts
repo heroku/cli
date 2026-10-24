@@ -1,7 +1,11 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
+
+import {warnDelinquency} from '../../lib/delinquency.js'
+import {createSDK} from '../../lib/sdk.js'
 
 const SecurityExceptionFeatures: any = {
   'spaces-strict-tls': {
@@ -34,6 +38,7 @@ export default class LabsDisable extends Command {
   async run() {
     const {args, flags} = await this.parse(LabsDisable)
     const {feature} = args
+    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
     let request
     let target
 
@@ -48,10 +53,11 @@ export default class LabsDisable extends Command {
     try {
       await this.heroku.get(`/account/features/${feature}`)
       request = this.disableFeature(feature)
-      const targetResponse = await this.heroku.get<Heroku.Account>('/account')
-      target = color.user(targetResponse.body.email || '')
+      const {account, delinquency} = await platform.account.getWithDelinquency()
+      warnDelinquency(this, 'account', delinquency)
+      target = color.user(account.email || '')
     } catch (error: any) {
-      if (error.http.statusCode !== 404) throw error
+      if (error.http?.statusCode !== 404) throw error
       // might be an app feature
       if (!flags.app) throw error
       await this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features/${feature}`)

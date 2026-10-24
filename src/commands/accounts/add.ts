@@ -1,8 +1,10 @@
 import {Command} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {Args, ux} from '@oclif/core'
 
 import AccountsModule from '../../lib/accounts/accounts.js'
+import {warnDelinquency} from '../../lib/delinquency.js'
 import {createSDK} from '../../lib/sdk.js'
 
 export default class Add extends Command {
@@ -13,7 +15,7 @@ export default class Add extends Command {
   static example = `${color.command('heroku accounts:add my-account')}`
 
   async run() {
-    const {platform} = createSDK(this.heroku)
+    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
     const {args} = await this.parse(Add)
     const {name} = args
     const accounts = await AccountsModule.list()
@@ -22,7 +24,8 @@ export default class Add extends Command {
       ux.error(`${name} already exists`)
     }
 
-    const account = await platform.account.info()
+    const {account, delinquency} = await platform.account.getWithDelinquency()
+    warnDelinquency(this, 'account', delinquency)
     const email = account.email!
 
     const existingAlias = accounts.find(account => account.name && account.username === email)

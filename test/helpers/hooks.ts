@@ -1,5 +1,9 @@
 import nock from 'nock'
 
+// createSDK/createApiClient register process-wide SIGINT/SIGTERM listeners for the
+// cancellation signal. Tear them down (and reset the memoized controller) after each
+// test so listeners don't leak across the run or fire during an unrelated test.
+import {resetCliAbortSignal} from '../../src/lib/sdk.js'
 // @heroku-cli/command reads and writes credentials via the OS (keychain / .netrc)
 // Unit tests should not run that code; we swap in a fake provider and restore after.
 import {stubCredentialManager} from './credential-manager-stub.js'
@@ -16,6 +20,7 @@ export const mochaHooks = {
     nock.cleanAll()
     uxStub.restore()
     credentialManagerStub.restore()
+    resetCliAbortSignal()
     done()
   },
 
