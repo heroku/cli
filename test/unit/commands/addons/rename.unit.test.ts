@@ -38,8 +38,8 @@ describe('addons:rename', function () {
       }
       sdkMock = mockSDKPlatform(fakePlatform)
 
-      await runCommand(Cmd, ['not-an-addon', 'cache-redis'])
-        .catch(error => expect(error.message).to.contain("Couldn't find that add-on."))
+      const {error} = await runCommand(Cmd, ['not-an-addon', 'cache-redis'])
+      expect(error?.message).to.contain("Couldn't find that add-on.")
     })
   })
 })

@@ -1,38 +1,37 @@
 `heroku autocomplete`
 =====================
 
-display autocomplete installation instructions
+Display autocomplete installation instructions.
 
 * [`heroku autocomplete [SHELL]`](#heroku-autocomplete-shell)
 
 ## `heroku autocomplete [SHELL]`
 
-display autocomplete installation instructions
+Display autocomplete installation instructions.
 
 ```
 USAGE
-  $ heroku autocomplete [SHELL] [--prompt] [-r]
+  $ heroku autocomplete [SHELL] [-r]
 
 ARGUMENTS
-  [SHELL]  shell type
+  [SHELL]  (zsh|bash|powershell) Shell type
 
 FLAGS
-  -r, --refresh-cache  refresh cache only (ignores displaying instructions)
-
-GLOBAL FLAGS
-  --prompt  interactively prompt for command arguments and flags
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
 
 DESCRIPTION
-  display autocomplete installation instructions
+  Display autocomplete installation instructions.
 
 EXAMPLES
-   $ heroku autocomplete 
+  $ heroku autocomplete
 
-   $ heroku autocomplete bash 
+  $ heroku autocomplete bash
 
-   $ heroku autocomplete zsh 
+  $ heroku autocomplete zsh
 
-   $ heroku autocomplete --refresh-cache
+  $ heroku autocomplete powershell
+
+  $ heroku autocomplete --refresh-cache
 ```
 
-_See code: [src/commands/autocomplete/index.ts](https://github.com/heroku/cli/blob/v11.11.0/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v4.0.5/src/commands/autocomplete/index.ts)_

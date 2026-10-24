@@ -19,10 +19,12 @@ describe('pg:upgrade:wait', function () {
   let api: nock.Scope
   let sdkMock: MockSDK
   let upgradeWaitStatusStub: ReturnType<typeof stub>
+  let notifierStub: ReturnType<typeof stub>
 
   beforeEach(function () {
     api = nock('https://api.heroku.com')
     upgradeWaitStatusStub = stub()
+    notifierStub = stub(Cmd, 'notifier')
     sdkMock = mockSDKData({
       database: {upgradeWaitStatus: upgradeWaitStatusStub},
     })
@@ -30,6 +32,7 @@ describe('pg:upgrade:wait', function () {
 
   afterEach(function () {
     sdkMock.restore()
+    notifierStub.restore()
     nock.cleanAll()
   })
 
@@ -94,5 +97,6 @@ describe('pg:upgrade:wait', function () {
     const {message, oclif} = error as Errors.CLIError
     expect(message).to.equal('this is an error message')
     expect(oclif.exit).to.equal(1)
+    expect(notifierStub.calledOnce).to.equal(true)
   })
 })

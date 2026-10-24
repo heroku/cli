@@ -77,9 +77,8 @@ describe('run', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv(['--app', 'myapp', 'echo', 'test']).catch(() => {
-      // Expected to fail when trying to connect to rendezvous
-    })
+    const {error} = await runWithCliArgv(['--app', 'myapp', 'echo', 'test'])
+    expect(error).to.exist
 
     expect(fakePlatform.account.getWithDelinquency.calledOnce).to.equal(true)
     expect(fakePlatform.dyno.run.calledOnce).to.equal(true)
@@ -135,15 +134,14 @@ describe('run', function () {
       updated_at: '2020-01-01T00:00:00Z',
     })
 
-    await runWithCliArgv([
+    const {error} = await runWithCliArgv([
       '--app',
       'myapp',
       '--no-launcher',
       'echo',
       'test',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
   })
 
   // NOTE: Integration test needed for 2FA prompting behavior.

@@ -20,10 +20,8 @@ describe('heroku org:open', function () {
   })
 
   it('shows an error if team flag is not passed', async function () {
-    await runCommand(Cmd, [])
-      .catch(error => {
-        expect(error).to.be.instanceOf(Error)
-      })
+    const {error} = await runCommand(Cmd, [])
+    expect(error).to.be.instanceOf(Error)
   })
 
   it('opens org in dashboard via browser if team flag is passed', async function () {

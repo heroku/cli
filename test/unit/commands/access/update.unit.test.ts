@@ -70,16 +70,14 @@ describe('heroku access:update', function () {
     })
     it('returns an error when passing permissions', async function () {
       personalApp()
-      await runCommand(Cmd, [
+      const {error} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--permissions',
         'view,deploy',
         'gandalf@heroku.com',
-      ]).catch(error => {
-        const {message} = error as {message: string}
-        expect(ansis.strip(message)).to.contain('Error: cannot update permissions. The app ⬢ myapp is not owned by a team')
-      })
+      ])
+      expect(ansis.strip(error?.message ?? '')).to.contain('Error: cannot update permissions. The app ⬢ myapp is not owned by a team')
     })
   })
 })

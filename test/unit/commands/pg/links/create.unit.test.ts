@@ -37,19 +37,15 @@ describe('pg:links:create', function () {
         app: 'myapp',
       }).reply(200, [addon])
 
-      try {
-        await runCommand(Cmd, [
-          '--app',
-          'myapp',
-          '--as',
-          'foobar',
-          'heroku-redis',
-          'heroku-postgres',
-        ])
-      } catch (error) {
-        const {message} = error as {message: string}
-        expect(message).to.equal('pg:links isn\'t available for Essential-tier databases.')
-      }
+      const {error} = await runCommand(Cmd, [
+        '--app',
+        'myapp',
+        '--as',
+        'foobar',
+        'heroku-redis',
+        'heroku-postgres',
+      ])
+      expect(error?.message).to.equal('pg:links isn\'t available for Essential-tier databases.')
     })
   })
 
