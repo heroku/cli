@@ -224,7 +224,12 @@ describe('lib/sdk', function () {
       exitStub = stub(process, 'exit')
     })
 
-    afterEach(function () {
+    afterEach(async function () {
+      // Drain any pending `setImmediate(() => process.exit(1))` the handler queued
+      // (tests that emit a signal but don't await the deferred exit) *while the stub
+      // is still installed* — otherwise the real process.exit fires a tick later,
+      // after restore, and kills the whole mocha run.
+      await flushImmediate()
       resetCliAbortSignal()
       exitStub.restore()
     })

@@ -91,9 +91,21 @@ describe('displayLogs', function () {
 
     await patchExtension(abortAwareStub)
 
+    // createSDK registers the process-wide SIGINT handler that aborts the shared
+    // signal — that abort is what we emit SIGINT to trigger here. Because no other
+    // SIGINT listener is registered during this test, that handler also schedules a
+    // deferred `process.exit(1)` to restore Ctrl-C termination. Stub `process.exit`
+    // so the real one doesn't kill the mocha run, then drain the pending immediate
+    // (while the stub is still installed) before the shared afterEach restores it.
+    const exitStub = stub(process, 'exit')
+
     const displayPromise = displayLogs(heroku, {app: 'my-app', tail: true})
     process.emit('SIGINT')
 
     await displayPromise
+    await new Promise(resolve => {
+      setImmediate(resolve)
+    })
+    expect(exitStub.calledOnceWithExactly(1)).to.be.true
   })
 })
