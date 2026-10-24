@@ -62,13 +62,13 @@ describe('pipelines:create', function () {
 
         api.get('/apps/example-app').reply(200, {generation: 'fir', id: '0123', name: 'example-app'})
 
-        const teamInfoStub = stub().resolves({id: '89-0123-456'})
+        const getWithDelinquencyStub = stub().resolves({delinquency: null, team: {id: '89-0123-456'}})
         const pipelineCreateStub = stub().resolves(pipeline)
         const couplingCreateStub = stub().resolves({id: '0123', stage: 'production'})
         sdkMock = mockSDKPlatform({
           pipeline: {create: pipelineCreateStub},
           pipelineCoupling: {create: couplingCreateStub},
-          team: {info: teamInfoStub},
+          team: {getWithDelinquency: getWithDelinquencyStub},
         })
 
         const {stderr, stdout} = await runCommand(PipelinesCreate, [
@@ -84,7 +84,7 @@ describe('pipelines:create', function () {
         expect(stdout).to.equal('')
         expect(stderr).to.contain('Creating example-pipeline pipeline... done')
         expect(stderr).to.contain('Adding ⬢ example-app to example-pipeline pipeline as production... done')
-        expect(teamInfoStub.calledOnceWith('my-team')).to.be.true
+        expect(getWithDelinquencyStub.calledOnceWith('my-team')).to.be.true
         expect(pipelineCreateStub.firstCall.args[0]).to.deep.include({name: 'example-pipeline', owner: {id: '89-0123-456', type: 'team'}})
       })
     })

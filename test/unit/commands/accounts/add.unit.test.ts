@@ -8,12 +8,12 @@ import Cmd from '../../../../src/commands/accounts/add.js'
 import AccountsModule from '../../../../src/lib/accounts/accounts.js'
 
 type FakePlatform = {
-  account: {info: SinonStub}
+  account: {getWithDelinquency: SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    account: {info: stub()},
+    account: {getWithDelinquency: stub()},
   }
 }
 
@@ -44,7 +44,7 @@ describe('accounts:add', function () {
 
   describe('when the user is logged in', function () {
     it('should call the accounts.add function with the account name and user email', async function () {
-      fakePlatform.account.info.resolves({email: 'testEmail'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'testEmail'}, delinquency: null})
 
       await runCommand(Cmd, ['testAccountName'])
       expect(addStub.calledOnce).to.equal(true)
@@ -56,7 +56,7 @@ describe('accounts:add', function () {
       const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
       getStorageConfigStub.returns({credentialStore: 'keychain' as any, useNetrc: false})
 
-      fakePlatform.account.info.resolves({email: 'testEmail'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'testEmail'}, delinquency: null})
 
       await runCommand(Cmd, ['testAccountName'])
 
@@ -70,7 +70,7 @@ describe('accounts:add', function () {
       const getStorageConfigStub = stub(AccountsModule, 'getStorageConfig')
       getStorageConfigStub.returns({credentialStore: null, useNetrc: true})
 
-      fakePlatform.account.info.resolves({email: 'testEmail'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'testEmail'}, delinquency: null})
 
       await runCommand(Cmd, ['testAccountName'])
 
@@ -88,7 +88,7 @@ describe('accounts:add', function () {
     })
 
     it('should error if the email already has an alias', async function () {
-      fakePlatform.account.info.resolves({email: 'testEmail'})
+      fakePlatform.account.getWithDelinquency.resolves({account: {email: 'testEmail'}, delinquency: null})
 
       listStub.resolves([{name: 'existingAlias', username: 'testEmail'}])
 
@@ -97,7 +97,7 @@ describe('accounts:add', function () {
     })
 
     it('should error if the user is not logged in', async function () {
-      fakePlatform.account.info.throws(new Error('Not logged in'))
+      fakePlatform.account.getWithDelinquency.throws(new Error('Not logged in'))
 
       try {
         await runCommand(Cmd, ['testAccountName'])

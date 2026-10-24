@@ -2,13 +2,16 @@ import type {DynoExtended, DynoExtendedFields} from '@heroku/sdk/extensions/plat
 
 import {APIClient, Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {appExtensions, dynoExtensions, privateToShield} from '@heroku/sdk/extensions/platform'
+import {
+  accountExtensions, appExtensions, dynoExtensions, privateToShield,
+} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 import tsheredoc from 'tsheredoc'
 
 import type {AccountQuota} from '../../lib/types/account-quota.js'
 
-import {apiClientOptions, createSDK} from '../../lib/sdk.js'
+import {warnDelinquency} from '../../lib/delinquency.js'
+import {createSDK} from '../../lib/sdk.js'
 import {ago} from '../../lib/time.js'
 
 const heredoc = tsheredoc
@@ -41,20 +44,23 @@ export default class Index extends Command {
     const {app, extended, json} = flags
     const types = restParse.argv as string[]
 
-    const {platform} = createSDK(this.heroku, {extensions: [appExtensions, dynoExtensions]})
+    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions, appExtensions, dynoExtensions]})
 
-    // listExtended builds its own per-call HerokuApiClient from `clientOptions`, so the
-    // SDK-level token/baseUrl from createSDK never reach it — thread them in explicitly.
+    // listExtended builds its own bare HerokuApiClient, but the SDK threads the
+    // createSDK-resolved identity/token/baseUrl/signal into the clients its
+    // extensions build, so it inherits them without per-call wiring.
     const dynosPromise: Promise<DynoExtended[]> = extended
-      ? platform.dyno.listExtended(app, {clientOptions: apiClientOptions(this.heroku)})
+      ? platform.dyno.listExtended(app)
       : platform.dyno.list(app)
 
-    const [dynos, shielded, appInfo, accountInfo] = await Promise.all([
+    const [dynos, shielded, appInfo, {account: accountInfo, delinquency}] = await Promise.all([
       dynosPromise,
       platform.app.isShielded(app),
       platform.app.info(app),
-      platform.account.info(),
+      platform.account.getWithDelinquency(),
     ])
+
+    warnDelinquency(this, 'account', delinquency)
 
     const processTier = (appInfo as {process_tier?: string}).process_tier
 

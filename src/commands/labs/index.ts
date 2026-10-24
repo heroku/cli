@@ -1,11 +1,17 @@
+import type {Account} from '@heroku/types/3.sdk'
+
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux} from '@heroku/heroku-cli-util'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
+
+import {warnDelinquency} from '../../lib/delinquency.js'
+import {createSDK} from '../../lib/sdk.js'
 
 interface Features {
   app?: Heroku.AppFeature | null,
-  currentUser: Heroku.Account,
+  currentUser: Account,
   user: Heroku.AccountFeature,
 }
 
@@ -20,14 +26,16 @@ export default class LabsIndex extends Command {
 
   async run() {
     const {flags} = await this.parse(LabsIndex)
-    const [currentUserResponse, userResponse, appResponse] = await Promise.all([
-      this.heroku.get<Heroku.Account>('/account'),
+    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
+    const [{account: currentUser, delinquency}, userResponse, appResponse] = await Promise.all([
+      platform.account.getWithDelinquency(),
       this.heroku.get<Heroku.AccountFeature>('/account/features'),
       (flags.app ? this.heroku.get<Heroku.AppFeature>(`/apps/${flags.app}/features`) : null),
     ])
 
+    warnDelinquency(this, 'account', delinquency)
+
     let app = null
-    const currentUser = currentUserResponse.body
     const user = userResponse.body
 
     const features: Features = {

@@ -1,6 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {accountExtensions} from '@heroku/sdk/extensions/platform'
 
+import {warnDelinquency} from '../../lib/delinquency.js'
 import Git from '../../lib/git/git.js'
 import {createSDK} from '../../lib/sdk.js'
 
@@ -15,12 +17,13 @@ export default class Login extends Command {
   }
 
   async run() {
-    const {platform} = createSDK(this.heroku)
+    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
     const {flags} = await this.parse(Login)
     let method: 'interactive' | undefined
     if (flags.interactive) method = 'interactive'
     await this.heroku.login({browser: flags.browser, expiresIn: flags['expires-in'], method})
-    const account = await platform.account.info()
+    const {account, delinquency} = await platform.account.getWithDelinquency()
+    warnDelinquency(this, 'account', delinquency)
     this.log(`Logged in as ${color.user(account.email!)}`)
 
     const git = new Git()

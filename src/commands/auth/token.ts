@@ -12,7 +12,9 @@ By default, the CLI auth token is only valid for 1 year. To generate a long-live
   static promptFlagActive = false
 
   async run(): Promise<string> {
-    const {platform} = createSDK(this.heroku)
+    // Opt out of the default 401→re-login→retry: an expired token here should
+    // fall through to warning + printing the stored token, not prompt for login.
+    const {platform} = createSDK(this.heroku, {clientOptions: {reauthorize: undefined}})
     const {formatRelative} = await lazyModuleLoader.loadDateFns()
 
     this.parse(AuthToken)
