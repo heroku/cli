@@ -7,12 +7,12 @@ import Authorizations from '../../../../src/commands/authorizations/index.js'
 import removeAllWhitespace from '../../../helpers/utils/remove-whitespaces.js'
 
 type FakePlatform = {
-  oauthAuthorization: {list: sinon.SinonStub}
+  oauthAuthorization: {list: sinon.SinonStub; teamList: sinon.SinonStub}
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
-    oauthAuthorization: {list: sinon.stub()},
+    oauthAuthorization: {list: sinon.stub(), teamList: sinon.stub()},
   }
 }
 
@@ -68,6 +68,39 @@ describe('authorizations', function () {
       fakePlatform.oauthAuthorization.list.resolves([])
 
       const {stdout} = await runCommand(Authorizations, [])
+
+      expect(stdout).to.equal('No OAuth authorizations.\n')
+    })
+  })
+
+  context('with team flag', function () {
+    it('lists the named team\'s authorizations alphabetically by description', async function () {
+      fakePlatform.oauthAuthorization.teamList.resolves([exampleAuthorization1, exampleAuthorization2])
+
+      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team'])
+
+      const actual = removeAllWhitespace(stdout)
+      const expected = removeAllWhitespace(`
+        awesome       f6e8d969-129f-42d2-854b-c2eca9d5a42e app,user
+        b description aBcD1234-129f-42d2-854b-dEf123abc123 global`)
+      expect(actual).to.include(expected)
+      expect(fakePlatform.oauthAuthorization.teamList.calledOnceWithExactly('my-team')).to.equal(true)
+    })
+
+    it('lists the named team\'s authorizations as json', async function () {
+      fakePlatform.oauthAuthorization.teamList.resolves([exampleAuthorization1, exampleAuthorization2])
+
+      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team', '--json'])
+
+      const authJSON = JSON.parse(stdout)
+      expect(authJSON[0]).to.eql(exampleAuthorization2)
+      expect(authJSON[1]).to.eql(exampleAuthorization1)
+    })
+
+    it('shows no authorizations message for a team with none', async function () {
+      fakePlatform.oauthAuthorization.teamList.resolves([])
+
+      const {stdout} = await runCommand(Authorizations, ['--team', 'my-team'])
 
       expect(stdout).to.equal('No OAuth authorizations.\n')
     })

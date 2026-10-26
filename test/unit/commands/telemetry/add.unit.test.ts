@@ -46,31 +46,23 @@ describe('telemetry:add', function () {
   })
 
   it('returns an error if an app, remote, or space is not set', async function () {
-    try {
-      await runCommand(Cmd, [
-        testEndpoint,
-        '--headers',
-        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
-      ])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(message).to.contain('Exactly one of the following must be provided: --app, --space')
-    }
+    const {error} = await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
+      '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+    ])
+    expect(error?.message).to.contain('Exactly one of the following must be provided: --app, --space')
   })
 
   it('returns an error if values are provided for both the app and the space flags', async function () {
-    try {
-      await runCommand(Cmd, [
-        testEndpoint,
-        '--app',
-        firApp.name || '',
-        '--space',
-        'myspace',
-      ])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(message).to.contain('--space cannot also be provided when using --app')
-    }
+    const {error} = await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      firApp.name || '',
+      '--space',
+      'myspace',
+    ])
+    expect(error?.message).to.contain('--space cannot also be provided when using --app')
   })
 
   it('successfully creates a telemetry drain for an app', async function () {
@@ -111,38 +103,30 @@ describe('telemetry:add', function () {
 
   it('does not accept options other than logs, metrics, traces, or all for the --signal flag', async function () {
     fakePlatform.space.info.resolves(space)
-    try {
-      await runCommand(Cmd, [
-        testEndpoint,
-        '--headers',
-        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
-        '--space',
-        spaceId,
-        '--signals',
-        'logs,foo',
-      ])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
-    }
+    const {error} = await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
+      '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+      '--space',
+      spaceId,
+      '--signals',
+      'logs,foo',
+    ])
+    expect(error?.message).to.contain('Invalid signal option: logs,foo. Run heroku telemetry:add --help to see signal options.')
   })
 
   it('returns an error when the --signal flag is set to "all" in combination with other options', async function () {
     fakePlatform.space.info.resolves(space)
-    try {
-      await runCommand(Cmd, [
-        testEndpoint,
-        '--headers',
-        '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
-        '--space',
-        spaceId,
-        '--signals',
-        'logs,all',
-      ])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(message).to.contain('Invalid signal option: logs,all. Run heroku telemetry:add --help to see signal options.')
-    }
+    const {error} = await runCommand(Cmd, [
+      testEndpoint,
+      '--headers',
+      '{"x-honeycomb-team": "your-api-key", "x-honeycomb-dataset": "your-dataset"}',
+      '--space',
+      spaceId,
+      '--signals',
+      'logs,all',
+    ])
+    expect(error?.message).to.contain('Invalid signal option: logs,all. Run heroku telemetry:add --help to see signal options.')
   })
 
   it('successfully creates a telemetry drain for an app with grpc', async function () {
@@ -179,18 +163,14 @@ describe('telemetry:add', function () {
   })
 
   it('returns an error for invalid transport option', async function () {
-    try {
-      await runCommand(Cmd, [
-        testEndpoint,
-        '--app',
-        appId,
-        '--transport',
-        'invalid-transport',
-      ])
-    } catch (error) {
-      const {message} = error as {message: string}
-      expect(message).to.contain('Expected --transport=invalid-transport to be one of: http, grpc')
-    }
+    const {error} = await runCommand(Cmd, [
+      testEndpoint,
+      '--app',
+      appId,
+      '--transport',
+      'invalid-transport',
+    ])
+    expect(error?.message).to.contain('Expected --transport=invalid-transport to be one of: http, grpc')
   })
 
   it('uses default http transport when no transport is specified', async function () {

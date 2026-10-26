@@ -49,7 +49,7 @@ export default class Scale extends Command {
 
     function parse(args: string[]): ScaleDynosUpdate[] {
       return _.compact(args.map(arg => {
-        const change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w-]+))?$/)
+        const change = arg.match(/^([\w-]+)([=+-]\d+)(?::([\w.-]+))?$/)
         if (!change)
           return
         const quantity = change[2][0] === '=' ? change[2].slice(1) : change[2]

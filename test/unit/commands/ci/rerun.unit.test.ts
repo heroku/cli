@@ -23,11 +23,8 @@ describe('ci:rerun', function () {
   })
 
   it('errors when not specifying a pipeline or an app', async function () {
-    try {
-      await runCommand(Cmd, [])
-    } catch (error: any) {
-      expect(error.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
-    }
+    const {error} = await runCommand(Cmd, [])
+    expect(error?.message).to.contain('Required flag:  --pipeline PIPELINE or --app APP')
   })
 
   describe('when not in a git repository', function () {

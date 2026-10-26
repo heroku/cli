@@ -1,6 +1,5 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
-import {Errors} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -81,22 +80,14 @@ describe('spaces', function () {
   it('shows spaces team error message', async function () {
     fakePlatform.space.list.resolves(spaces)
 
-    try {
-      await runCommand(Cmd, ['--team', 'other-team'])
-    } catch (error) {
-      const {message} = error as Errors.CLIError
-      expect(ansis.strip(message)).to.eq('No spaces in other-team.')
-    }
+    const {error} = await runCommand(Cmd, ['--team', 'other-team'])
+    expect(ansis.strip(error?.message ?? '')).to.eq('No spaces in other-team.')
   })
 
   it('shows spaces error message', async function () {
     fakePlatform.space.list.resolves([])
 
-    try {
-      await runCommand(Cmd, [])
-    } catch (error) {
-      const {message} = error as Errors.CLIError
-      expect(message).to.eq('You do not have access to any spaces.')
-    }
+    const {error} = await runCommand(Cmd, [])
+    expect(error?.message).to.eq('You do not have access to any spaces.')
   })
 })

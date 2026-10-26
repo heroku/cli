@@ -75,7 +75,7 @@ Created www-redis as REDIS_URL
 `)
       })
       it('does NOT notify the user when provisioning takes less than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
@@ -93,11 +93,11 @@ Created www-redis as REDIS_URL
           '1',
           'www-redis',
         ])
-        expect(notifySpy.called).to.be.false
-        expect(notifySpy.calledOnce).to.be.false
+        expect(notifyStub.called).to.be.false
+        expect(notifyStub.calledOnce).to.be.false
       })
       it('notifies the user when provisioning takes longer than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const provisionedAddon = _.clone(fixtures.addons['www-redis'])
         provisionedAddon.state = 'provisioned'
@@ -118,13 +118,13 @@ Created www-redis as REDIS_URL
           '1',
           'www-redis',
         ])
-        expect(notifySpy.called).to.be.true
-        expect(notifySpy.calledOnce).to.be.true
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
     })
     context('when add-on transitions to deprovisioned state', function () {
       it('shows notification', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const resolveStub = stub().resolves(fixtures.addons['www-redis'])
         // waitForAddonProvisioning polls and finds the add-on deprovisioned
@@ -138,8 +138,8 @@ Created www-redis as REDIS_URL
 
         const {error} = await runCommand(Cmd, ['--wait-interval', '1', 'www-redis'])
         expect(error?.message).to.equal('The add-on was unable to be created, with status deprovisioned')
-        expect(notifySpy.calledWith('heroku addons:wait www-redis', 'Add-on failed to provision', false)).to.be.true
-        expect(notifySpy.calledOnce).to.be.true
+        expect(notifyStub.calledWith('heroku addons:wait www-redis', 'Add-on failed to provision', false)).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
       it('shows that it failed to provision', async function () {
         const resolveStub = stub().resolves(fixtures.addons['www-redis'])
@@ -185,7 +185,7 @@ Destroying www-redis-2... done
         expectOutput(stdout, '')
       })
       it('does NOT notify the user when deprovisioning takes less than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '37f27548-db4a-4ae0-bb48-57125df0ddc2'
@@ -203,11 +203,11 @@ Destroying www-redis-2... done
           '1',
           'www-redis-3',
         ])
-        expect(notifySpy.called).to.be.false
-        expect(notifySpy.calledOnce).to.be.false
+        expect(notifyStub.called).to.be.false
+        expect(notifyStub.calledOnce).to.be.false
       })
       it('notifies the user when provisioning takes longer than 5 seconds', async function () {
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
 
         const deprovisioningAddon = _.clone(fixtures.addons['www-redis-2'])
         deprovisioningAddon.id = '967dff74-99b4-4fd2-a0f0-79b523d5c0e1'
@@ -230,8 +230,8 @@ Destroying www-redis-2... done
           '1',
           'www-redis-4',
         ])
-        expect(notifySpy.called).to.be.true
-        expect(notifySpy.calledOnce).to.be.true
+        expect(notifyStub.called).to.be.true
+        expect(notifyStub.calledOnce).to.be.true
       })
       it('rethrows non-404 errors raised while polling for deprovisioning', async function () {
         // pollAddonUntilDeprovisioned treats a 404 as "deprovisioned"; any

@@ -1,5 +1,4 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
 
@@ -127,16 +126,12 @@ describe('logs', function () {
 
   context('with both --dyno-name and --ps options', function () {
     it('shows an error and doesn\'t call logDisplayer function', async function () {
-      try {
-        await runCommand(Cmd, [
-          '--app=my-app',
-          '--dyno-name=web.1',
-          '--ps=worker',
-        ])
-      } catch (error: unknown) {
-        const {message} = error as Errors.CLIError
-        expect(message).to.include('--dyno-name=web.1 cannot also be provided when using --ps')
-      }
+      const {error} = await runCommand(Cmd, [
+        '--app=my-app',
+        '--dyno-name=web.1',
+        '--ps=worker',
+      ])
+      expect(error?.message).to.include('--dyno-name=web.1 cannot also be provided when using --ps')
 
       expect(logDisplayerStub.notCalled).to.be.true
     })
@@ -144,16 +139,12 @@ describe('logs', function () {
 
   context('with both --dyno-name and --type options', function () {
     it('shows an error and doesn\'t call logDisplayer function', async function () {
-      try {
-        await runCommand(Cmd, [
-          '--app=my-app',
-          '--dyno-name=web.1',
-          '--process-type=worker',
-        ])
-      } catch (error: unknown) {
-        const {message} = error as Errors.CLIError
-        expect(message).to.include('--dyno-name=web.1 cannot also be provided when using --process-type')
-      }
+      const {error} = await runCommand(Cmd, [
+        '--app=my-app',
+        '--dyno-name=web.1',
+        '--process-type=worker',
+      ])
+      expect(error?.message).to.include('--dyno-name=web.1 cannot also be provided when using --process-type')
 
       expect(logDisplayerStub.notCalled).to.be.true
     })
@@ -161,16 +152,12 @@ describe('logs', function () {
 
   context('with both --ps and --type options', function () {
     it('shows an error and doesn\'t call logDisplayer function', async function () {
-      try {
-        await runCommand(Cmd, [
-          '--app=my-app',
-          '--ps=web',
-          '--process-type=worker',
-        ])
-      } catch (error: unknown) {
-        const {message} = error as Errors.CLIError
-        expect(message).to.include('--ps=web cannot also be provided when using --process-type')
-      }
+      const {error} = await runCommand(Cmd, [
+        '--app=my-app',
+        '--ps=web',
+        '--process-type=worker',
+      ])
+      expect(error?.message).to.include('--ps=web cannot also be provided when using --process-type')
 
       expect(logDisplayerStub.notCalled).to.be.true
     })
@@ -266,16 +253,12 @@ describe('logs', function () {
 
   context('with both --force-colors and --no-color flag', function () {
     it('shows an error and doesn\'t call logDisplayer function', async function () {
-      try {
-        await runCommand(Cmd, [
-          '--app=my-app',
-          '--force-colors',
-          '--no-color',
-        ])
-      } catch (error: unknown) {
-        const {message} = error as Errors.CLIError
-        expect(message).to.include('--force-colors=true cannot also be provided when using --no-color')
-      }
+      const {error} = await runCommand(Cmd, [
+        '--app=my-app',
+        '--force-colors',
+        '--no-color',
+      ])
+      expect(error?.message).to.include('--force-colors=true cannot also be provided when using --no-color')
 
       expect(logDisplayerStub.notCalled).to.be.true
     })

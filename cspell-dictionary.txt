@@ -5,6 +5,7 @@ aabb
 aarch
 abcr
 addonname
+advapi
 allkeys
 amyapp
 amannn
@@ -136,6 +137,7 @@ Ghpcy
 githuborg
 GUSINFO
 hamurai
+HKCU
 herokai
 herokuapp
 herokudev
@@ -151,6 +153,7 @@ htcat
 hyperschema
 Icann
 infile
+INSTDIR
 iname
 indexrelid
 indexrelname
@@ -421,6 +424,7 @@ uncolorized
 undefinedcommand
 undeployed
 unfavorites
+Uninst
 unfollow
 unfollowing
 unfollows
@@ -439,6 +443,8 @@ vcpu
 VERSINFO
 walsender
 webfactory
+WINDIR
+WININICHANGE
 withfig
 WORDBREAKS
 wrapline
