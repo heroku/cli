@@ -6,7 +6,7 @@ import {hux, utils} from '@heroku/heroku-cli-util'
 import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {Args} from '@oclif/core'
 
-import {presentCredentialAttachments} from '../../lib/pg/util.js'
+// import {presentCredentialAttachments} from '../../lib/pg/util.js'
 import {createSDK} from '../../lib/sdk.js'
 import {huxTableNoWrapOptions} from '../../lib/utils/table-utils.js'
 import {nls} from '../../nls.js'
@@ -64,4 +64,69 @@ export default class Credentials extends Command {
       return isDefaultB < isDefaultA ? -1 : (isDefaultA < isDefaultB ? 1 : a.name.localeCompare(b.name))
     })
   }
+}
+
+// TODO: Remove this once pg:credentials is migrated to use the SDK
+import * as color from '@heroku/heroku-cli-util/color'
+
+import {multiSortCompareFn} from '../../lib/utils/multisort.js'
+import {renderAttachment} from '../addons/index.js'
+
+function presentCredentialAttachments(app: string, credAttachments: Required<Heroku.AddOnAttachment>[], credentials: CredentialInfo[], cred: string) {
+  const isForeignApp = (attOrAddon: Required<Heroku.AddOnAttachment>) => attOrAddon.app.name === app ? 0 : 1
+  const comparators = [
+    (a: Required<Heroku.AddOnAttachment>, b: Required<Heroku.AddOnAttachment>) => {
+      const fa = isForeignApp(a)
+      const fb = isForeignApp(b)
+      return fa < fb ? -1 : (fb < fa ? 1 : 0)
+    },
+    (a: Required<Heroku.AddOnAttachment>, b: Required<Heroku.AddOnAttachment>) => a.name.localeCompare(b.name),
+    (a: Required<Heroku.AddOnAttachment>, b: Required<Heroku.AddOnAttachment>) => a.app?.name?.localeCompare(b.app?.name ?? '') ?? 0,
+  ]
+  credAttachments.sort(multiSortCompareFn(comparators))
+  const attLines = credAttachments.map((attachment, idx) => {
+    const isLast = (idx === credAttachments.length - 1)
+    return renderAttachment(attachment, app, isLast)
+  })
+
+  const rotationLines = []
+  const credentialStore = credentials.find(a => a.name === cred)
+  if (credentialStore?.state === 'rotating') {
+    const formatted = credentialStore.credentials.map(credential => ({
+      connections: credential.connections,
+      state: credential.state,
+      user: credential.user,
+    }))
+    // eslint-disable-next-line no-eq-null, eqeqeq
+    const connectionInformationAvailable = formatted.some(c => c.connections != null)
+    if (connectionInformationAvailable) {
+      const prefix = '       '
+      rotationLines.push(`${prefix}Usernames currently active for this credential:`)
+      const printLine = (line: unknown) => {
+        rotationLines.push(line as string)
+      }
+
+      hux.table(formatted, {
+        connections: {
+          get(row) {
+            return `${row.connections} connections`
+          },
+        },
+        state: {
+          get(row) {
+            return row.state === 'revoking' ? 'waiting for no connections to be revoked' : row.state
+          },
+        },
+        user: {
+          get(row: typeof formatted[0]) {
+            return `${prefix}${row.user}`
+          },
+        },
+      }, {
+        printLine,
+      })
+    }
+  }
+
+  return [color.name(cred), ...attLines, ...rotationLines].join('\n') + '\n'
 }

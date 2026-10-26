@@ -10,7 +10,7 @@ import tsheredoc from 'tsheredoc'
 
 import {trapConfirmationRequired} from '../../../../lib/addons/util.js'
 import BaseCommand from '../../../../lib/data/base-command.js'
-import {sortByLeaderAndName, sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
+// import {sortByLeaderAndName, sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
 import {
   AdvancedCredentialState, type CredentialsInfo, type InfoResponse, PoolStatus,
 } from '../../../../lib/data/types.js'
@@ -255,4 +255,33 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
     return pool || undefined
   }
+}
+
+// TODO: Remove this once data:pg:attachments:create is migrated to use the SDK
+import type {CredentialInfo, PoolInfoResponse} from '../../../../lib/data/types.js'
+
+function isLeaderPool(pool: PoolInfoResponse): boolean {
+  return pool.name === 'leader'
+}
+
+function isOwnerCredential(cred: CredentialInfo): boolean {
+  return cred.type === 'owner'
+}
+
+function sortByLeaderAndName(pools: PoolInfoResponse[]) {
+  return pools.sort((a, b) => {
+    const isLeaderA = isLeaderPool(a)
+    const isLeaderB = isLeaderPool(b)
+
+    return isLeaderB < isLeaderA ? -1 : (isLeaderA < isLeaderB ? 1 : a.name.localeCompare(b.name))
+  })
+}
+
+function sortByOwnerAndName(credentials: CredentialInfo[]) {
+  return credentials.sort((a, b) => {
+    const isOwnerA = isOwnerCredential(a)
+    const isOwnerB = isOwnerCredential(b)
+
+    return isOwnerB < isOwnerA ? -1 : (isOwnerA < isOwnerB ? 1 : a.name.localeCompare(b.name))
+  })
 }

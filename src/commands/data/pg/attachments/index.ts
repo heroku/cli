@@ -1,12 +1,11 @@
 import {flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {getPostgresServiceName, isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
+import {getPostgresServiceName, isAdvancedDatabase, parseAttachmentFactors} from '@heroku/sdk/resources/data/postgres-database'
 import {AddOnAttachment} from '@heroku/types/3.sdk'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
-import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 import {createSDK} from '../../../../lib/sdk.js'
 
 export default class DataPgAttachmentsIndex extends BaseCommand {
