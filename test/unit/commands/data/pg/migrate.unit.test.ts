@@ -34,6 +34,13 @@ import {
 
 const {prompt} = inquirer
 
+const readyMigration: Partial<MigrationResponse> = {
+  can_start: true,
+  start_disabled_reason: null,
+  status: MigrationStatus.READY,
+  status_description: 'Ready to promote',
+}
+
 // Replies to the requests each refresh makes for the target Advanced database
 function replyWithTargetMigration(dataApi: nock.Scope, migration: Partial<MigrationResponse>, times = 1): nock.Scope {
   return dataApi
@@ -434,35 +441,8 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
 
-    it('only enables canceling a migration that is being prepared or running', async function () {
-      const startReasons = [
-        {startReason: 'the migration is being prepared', status: MigrationStatus.CREATING_TARGET},
-        {startReason: 'the migration is being prepared', status: MigrationStatus.PREPARING},
-        {startReason: 'the migration is running', status: MigrationStatus.MIGRATING},
-      ]
-
-      for (const {startReason, status} of startReasons) {
-        replyWithTargetMigration(dataApi, {status}, 2)
-        mockedStdinInput = [
-          '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-          '\u001B[A\n', // Manage migration: > Go back
-          '\u001B[A\n', // Main menu: > Exit
-        ]
-
-        // eslint-disable-next-line no-await-in-loop
-        const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-        dataApi.done()
-        expect(error).to.be.undefined
-        expect(stderr).to.equal('')
-        expect(stdout).to.contain(`- Start the migration (${startReason})`)
-        expect(stdout).to.contain('Cancel the migration')
-        expect(stdout).not.to.contain('- Cancel the migration (')
-      }
-    })
-
     it('enables starting and canceling a ready migration', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
+      replyWithTargetMigration(dataApi, readyMigration, 2)
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
@@ -480,34 +460,38 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('- Cancel the migration (')
     })
 
-    it('disables starting a migration that is promoting, being canceled or ended', async function () {
-      const startReasons = [
-        {startReason: 'the migration was canceled', status: MigrationStatus.CANCELLED},
-        {startReason: 'the migration is being canceled', status: MigrationStatus.CANCELLING},
-        {startReason: 'the migration completed successfully', status: MigrationStatus.COMPLETED},
-        {startReason: 'the migration failed', status: MigrationStatus.FAILED},
-        {startReason: 'the migration is running', status: MigrationStatus.PROMOTING},
-        // Other statuses don't explain why
-        {startReason: 'Disabled', status: 'assessment_completed' as MigrationStatus},
-        {startReason: 'Disabled', status: MigrationStatus.UNKNOWN},
+    it('shows why the API doesn\'t allow starting a migration', async function () {
+      replyWithTargetMigration(dataApi, {
+        can_start: false,
+        start_disabled_reason: 'the migration is running',
+        status: MigrationStatus.MIGRATING,
+      }, 2)
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
       ]
 
-      for (const {startReason, status} of startReasons) {
-        replyWithTargetMigration(dataApi, {can_cancel: false, status}, 2)
-        mockedStdinInput = [
-          '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-          '\u001B[A\n', // Manage migration: > Go back
-          '\u001B[A\n', // Main menu: > Exit
-        ]
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-        // eslint-disable-next-line no-await-in-loop
-        const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('- Start the migration (the migration is running)')
+    })
 
-        dataApi.done()
-        expect(error).to.be.undefined
-        expect(stderr).to.equal('')
-        expect(stdout).to.contain(`- Start the migration (${startReason})`)
-      }
+    it('disables starting a migration when the API doesn\'t allow it or explain why', async function () {
+      replyWithTargetMigration(dataApi, {...readyMigration, can_start: false}, 2)
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('- Start the migration (Disabled)')
     })
 
     it('shows why the API doesn\'t allow canceling a migration', async function () {
@@ -546,7 +530,7 @@ describe('data:pg:migrate', function () {
 
     it('refreshes the migration details when Refresh is selected', async function () {
       replyWithTargetMigration(dataApi, {})
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
+      replyWithTargetMigration(dataApi, readyMigration, 2)
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
@@ -1160,11 +1144,15 @@ describe('data:pg:migrate', function () {
     })
 
     it('starts the migration', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      replyWithTargetMigration(dataApi, readyMigration)
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
         .reply(202, {})
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.MIGRATING, status_description: 'Migrating data'}, 2)
+      replyWithTargetMigration(dataApi, {
+        start_disabled_reason: 'the migration is running',
+        status: MigrationStatus.MIGRATING,
+        status_description: 'Migrating data',
+      }, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1187,7 +1175,7 @@ describe('data:pg:migrate', function () {
 
     it('goes back to the migration details without starting the migration', async function () {
       // Only the main menu refreshes, since going back from the confirmation changes nothing
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
+      replyWithTargetMigration(dataApi, readyMigration, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1229,13 +1217,14 @@ describe('data:pg:migrate', function () {
     })
 
     it('cancels a ready migration', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      replyWithTargetMigration(dataApi, readyMigration)
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
         cancel_disabled_reason: 'the migration is already being canceled',
+        start_disabled_reason: 'the migration is being canceled',
         status: MigrationStatus.CANCELLING,
         status_description: 'Canceling migration. You can start a new migration once this finishes.',
       }, 2)
@@ -1269,6 +1258,7 @@ describe('data:pg:migrate', function () {
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
         cancel_disabled_reason: 'the migration is already being canceled',
+        start_disabled_reason: 'the migration is being canceled',
         status: MigrationStatus.CANCELLING,
         status_description: 'Canceling migration. You can start a new migration once this finishes.',
       }, 2)
@@ -1300,6 +1290,7 @@ describe('data:pg:migrate', function () {
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
         cancel_disabled_reason: 'the migration is already being canceled',
+        start_disabled_reason: 'the migration is being canceled',
         status: MigrationStatus.CANCELLING,
         status_description: 'Canceling migration. You can start a new migration once this finishes.',
       }, 2)
@@ -1319,7 +1310,7 @@ describe('data:pg:migrate', function () {
     })
 
     it('shows the API error when canceling the migration fails', async function () {
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      replyWithTargetMigration(dataApi, readyMigration)
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/cancel`)
         .reply(422, {id: 'unprocessable_entity', message: 'Cannot cancel migration in current state'})
@@ -1338,7 +1329,7 @@ describe('data:pg:migrate', function () {
 
     it('goes back to the migration details without canceling the migration', async function () {
       // Only the main menu refreshes, since going back from the confirmation changes nothing
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'}, 2)
+      replyWithTargetMigration(dataApi, readyMigration, 2)
 
       // Simulate the user selections
       mockedStdinInput = [
@@ -1792,7 +1783,7 @@ describe('data:pg:migrate', function () {
         .get(`/client/v11/databases/${standardDbAttachment.addon.id}`)
         .times(3)
         .reply(200, {postgres_version: '16.4'})
-      replyWithTargetMigration(dataApi, {status: MigrationStatus.READY, status_description: 'Ready to promote'})
+      replyWithTargetMigration(dataApi, readyMigration)
       dataApi
         .post(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations/run`)
         .reply(202, {})

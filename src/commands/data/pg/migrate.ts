@@ -609,8 +609,8 @@ export default class DataPgMigrate extends BaseCommand {
       action = (await this.prompt<{action: string}>({
         choices: [
           {name: 'Refresh migration details', value: '__refresh'},
-          actionChoice('Start the migration', '__start_migration', migration.status === MigrationStatus.READY, this.startDisabledReason(migration)),
-          // The API decides whether a migration can be canceled, and why not
+          // The API decides whether a migration can be started or canceled, and why not
+          actionChoice('Start the migration', '__start_migration', Boolean(migration.can_start), migration.start_disabled_reason),
           actionChoice('Cancel the migration', '__cancel_migration', Boolean(migration.can_cancel), migration.cancel_disabled_reason),
           new Separator(),
           {name: 'Go back', value: '__go_back'},
@@ -673,41 +673,6 @@ export default class DataPgMigrate extends BaseCommand {
   private async refreshDatabasesAndMigrations(): Promise<void> {
     await this.getAppDatabases(this.appName!)
     await this.getMigrationTargetsAndInfo()
-  }
-
-  // Migrations can only be started when ready. Returns why not, when the status explains it.
-  private startDisabledReason(migration: MigrationResponse): string | undefined {
-    switch (migration.status) {
-      case MigrationStatus.CANCELLED: {
-        return 'the migration was canceled'
-      }
-
-      case MigrationStatus.CANCELLING: {
-        return 'the migration is being canceled'
-      }
-
-      case MigrationStatus.COMPLETED: {
-        return 'the migration completed successfully'
-      }
-
-      case MigrationStatus.CREATING_TARGET:
-      case MigrationStatus.PREPARING: {
-        return 'the migration is being prepared'
-      }
-
-      case MigrationStatus.FAILED: {
-        return 'the migration failed'
-      }
-
-      case MigrationStatus.MIGRATING:
-      case MigrationStatus.PROMOTING: {
-        return 'the migration is running'
-      }
-
-      default: {
-        return undefined
-      }
-    }
   }
 
   private versionLabel(version?: string): string {
