@@ -824,61 +824,9 @@ describe('data:pg:migrate', function () {
   })
 
   describe('configure a database migration with the hidden --method flag', function () {
-    it('sends method=cdc when --method=streaming', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .get('/apps/myapp/addon-attachments')
-        .times(3)
-        .reply(200, [
-          nonTargetAdvancedDbAttachment,
-          premiumDbAttachment,
-          targetAdvancedDbAttachment,
-        ])
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(404, {id: 'not_found', message: 'Add-on not found'})
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, nonTargetAdvancedDbInfo)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          method: 'cdc',
-          source_id: premiumDbAttachment.addon.id,
-        })
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
-        .times(2)
-        .reply(200, existentMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .times(2)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
-        .times(2)
-        .reply(200, targetAdvancedDbInfo)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .times(2)
-        .reply(200, nonTargetAdvancedDbInfo)
-
-      mockedStdinInput = [
-        '\u001B[B\n', // Main menu: > Configure a new database migration
-        '\n',         // Select source database: > Premium database
-        '\n',         // Select target database: > Non-target Advanced database
-        '\n',         // Confirm migration configuration: > Confirm
-        '\u001B[A\n', // Manage migration: > Go back
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
-
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr).to.equal('Configuring migration... done\n')
-    })
-
     it('rejects unsupported method values', async function () {
-      const {error} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=bogus'])
-      expect(error?.message).to.match(/Expected --method=bogus to be one of: snapshot, streaming/)
+      const {error} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
+      expect(error?.message).to.match(/Expected --method=streaming to be one of: snapshot/)
     })
   })
 
@@ -1406,43 +1354,6 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/Select the migration method: Snapshot/)
     })
 
-    it('allows user to select cdc streaming migration method', async function () {
-      dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(404, {
-          id: 'not_found',
-          message: 'Add-on not found',
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, nonTargetAdvancedDbInfo)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          method: 'cdc',
-          source_id: premiumDbAttachment.addon.id,
-        })
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .times(2)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .times(2)
-        .reply(200, nonTargetAdvancedDbInfo)
-
-      mockedStdinInput = [
-        '\n',          // Select configure migration
-        '\n',          // Select source database
-        '\n',          // Select target database
-        '\u001B[B\n',  // Select streaming option from method selection
-        '\n',          // Confirm migration
-        '\u001B[A\n',  // Manage migration: > Go back
-        '\u001B[A\n',  // Main menu: > Exit
-      ]
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
-
-      expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).to.match(/Select the migration method: Streaming/)
-    })
-
     it('allows user to go back from method selection to target selection', async function () {
       dataApi = nock('https://api.data.heroku.com')
         .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
@@ -1504,9 +1415,9 @@ describe('data:pg:migrate', function () {
         '\n',          // Select configure migration
         '\n',          // Select source database
         '\n',          // Select target database
-        '\u001B[B\n',  // Select streaming method (first selection)
+        '\n',          // Select snapshot method (first selection)
         '\u001B[A\n',  // Confirm migration configuration: > Go back
-        '\n',          // Select snapshot method (second selection, default)
+        '\n',          // Select snapshot method (second selection)
         '\n',          // Confirm migration
         '\u001B[A\n',  // Manage migration: > Go back
         '\u001B[A\n',  // Main menu: > Exit
@@ -1521,8 +1432,6 @@ describe('data:pg:migrate', function () {
       // the second pass. The "(Use arrow keys)" hint renders only on a prompt's
       // first paint, so counting it yields one match per distinct prompt display.
       expect(stdout.match(/Select the migration method: \(Use arrow keys\)/g)?.length).to.equal(2)
-      // The second selection (snapshot -> full-load) must be what gets submitted,
-      // which is asserted by the nock POST body matcher above requiring method=full-load
     })
 
     it('skips method selection prompt when --method=snapshot flag is provided', async function () {
@@ -1564,47 +1473,6 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(stderr).to.equal('Configuring migration... done\n')
       expect(stdout).not.to.contain('Select the migration method')
-    })
-
-    it('skips method selection prompt when --method=streaming flag is provided', async function () {
-      dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .reply(404, {
-          id: 'not_found',
-          message: 'Add-on not found',
-        })
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .reply(200, nonTargetAdvancedDbInfo)
-        .post(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`, {
-          method: 'cdc',
-          source_id: premiumDbAttachment.addon.id,
-        })
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
-        .times(2)
-        .reply(200, createdMigrationResponse)
-        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
-        .times(2)
-        .reply(200, nonTargetAdvancedDbInfo)
-
-      mockedStdinInput = [
-        '\n',  // Select configure migration
-        '\n',  // Select source database
-        '\n',  // Select target database
-        '\n',  // Confirm migration (no method selection prompt)
-        '\u001B[A\n', // Manage migration: > Go back
-        '\u001B[A\n', // Main menu: > Exit
-      ]
-
-      const {stderr, stdout} = await runCommand(DataPgMigrate, [
-        '--app=myapp',
-        '--method=streaming',
-      ])
-
-      herokuApi.done()
-      dataApi.done()
-      expect(stderr).to.equal('Configuring migration... done\n')
-      expect(stdout).not.to.contain('Select migration method')
     })
   })
 

@@ -44,7 +44,7 @@ export default class DataPgMigrate extends BaseCommand {
     app: Flags.app({required: true}),
     method: Flags.string({
       hidden: true,
-      options: ['snapshot', 'streaming'],
+      options: ['snapshot'],
     }),
     'no-wrap': Flags.noWrap(),
     remote: Flags.remote(),
@@ -75,7 +75,7 @@ export default class DataPgMigrate extends BaseCommand {
     // came from the flag so the interactive selection step is skipped throughout.
     if (method !== undefined) {
       this.methodProvidedViaFlag = true
-      this.selectedMigrationMethod = method === 'streaming' ? MigrationMethod.CDC : MigrationMethod.FULL_LOAD
+      this.selectedMigrationMethod = MigrationMethod.FULL_LOAD
     }
 
     ux.stdout(heredoc`
@@ -157,14 +157,12 @@ export default class DataPgMigrate extends BaseCommand {
 
         Migration methods:
         · Snapshot: Copies the data from the source database to the destination database. Requires downtime on the source database depending on the size. Best for smaller databases or when a maintenance window is acceptable.
-        · Streaming: Replicates changes from the source database to the destination database continuously until you start the migration. Requires minimal downtime. Best for larger databases or when you need near-zero downtime.
 
       `))
 
       const {method} = await this.prompt<{method: string}>({
         choices: [
           {name: 'Snapshot', value: '__snapshot'},
-          {name: 'Streaming', value: '__streaming'},
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
