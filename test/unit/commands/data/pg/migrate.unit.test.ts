@@ -339,6 +339,27 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
     })
 
+    it('keeps the databases of a migration that is being canceled from new migrations', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .reply(200, [
+          targetAdvancedDbAttachment,
+          standardDbAttachment,
+        ])
+      const dataApi = replyWithTargetMigration(nock('https://api.data.heroku.com'), {status: MigrationStatus.CANCELLING})
+
+      // Simulate the user selecting the 'Exit' option by pressing the up arrow and then Enter
+      mockedStdinInput = ['\u001B[A\n']
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+    })
+
     it('enables configuring a new migration option when there are additional classic databases pending migration', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
@@ -459,9 +480,10 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('- Cancel the migration (')
     })
 
-    it('disables starting a migration that is promoting or ended', async function () {
+    it('disables starting a migration that is promoting, being canceled or ended', async function () {
       const startReasons = [
         {startReason: 'the migration was canceled', status: MigrationStatus.CANCELLED},
+        {startReason: 'the migration is being canceled', status: MigrationStatus.CANCELLING},
         {startReason: 'the migration completed successfully', status: MigrationStatus.COMPLETED},
         {startReason: 'the migration failed', status: MigrationStatus.FAILED},
         {startReason: 'the migration is running', status: MigrationStatus.PROMOTING},
@@ -1213,9 +1235,9 @@ describe('data:pg:migrate', function () {
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration was canceled',
-        status: MigrationStatus.CANCELLED,
-        status_description: 'Migration canceled.',
+        cancel_disabled_reason: 'the migration is already being canceled',
+        status: MigrationStatus.CANCELLING,
+        status_description: 'Canceling migration. You can start a new migration once this finishes.',
       }, 2)
 
       // Simulate the user selections
@@ -1234,8 +1256,9 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('Canceling stops the running migration')
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after canceling the migration
-      expect(stdout).to.match(/Status:\s+Migration canceled\./)
-      expect(stdout).to.contain('- Cancel the migration (the migration was canceled)')
+      expect(stdout).to.match(/Status:\s+Canceling migration\. You can start a new migration once this finishes\./)
+      expect(stdout).to.contain('- Start the migration (the migration is being canceled)')
+      expect(stdout).to.contain('- Cancel the migration (the migration is already being canceled)')
     })
 
     it('cancels a running migration', async function () {
@@ -1245,9 +1268,9 @@ describe('data:pg:migrate', function () {
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration was canceled',
-        status: MigrationStatus.CANCELLED,
-        status_description: 'Migration canceled.',
+        cancel_disabled_reason: 'the migration is already being canceled',
+        status: MigrationStatus.CANCELLING,
+        status_description: 'Canceling migration. You can start a new migration once this finishes.',
       }, 2)
 
       // Simulate the user selections
@@ -1266,7 +1289,7 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('You\'ll receive an email when ⛁ postgresql-cubic-12345 is available.')
       expect(stdout).to.contain('After canceling, you must create a new migration configuration')
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
-      expect(stdout).to.match(/Status:\s+Migration canceled\./)
+      expect(stdout).to.match(/Status:\s+Canceling migration\. You can start a new migration once this finishes\./)
     })
 
     it('cancels a migration that is being prepared', async function () {
@@ -1276,9 +1299,9 @@ describe('data:pg:migrate', function () {
         .reply(202, {})
       replyWithTargetMigration(dataApi, {
         can_cancel: false,
-        cancel_disabled_reason: 'the migration was canceled',
-        status: MigrationStatus.CANCELLED,
-        status_description: 'Migration canceled.',
+        cancel_disabled_reason: 'the migration is already being canceled',
+        status: MigrationStatus.CANCELLING,
+        status_description: 'Canceling migration. You can start a new migration once this finishes.',
       }, 2)
 
       // Simulate the user selections
