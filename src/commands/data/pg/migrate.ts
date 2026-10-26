@@ -513,8 +513,10 @@ export default class DataPgMigrate extends BaseCommand {
       .map(queryResult => (queryResult as PromiseFulfilledResult<HTTP<MigrationResponse>>).value.body)
   }
 
+  // A canceling migration keeps its databases until the cancellation finishes cleaning up
   private isActiveMigration(migration: MigrationResponse): boolean {
-    return migration.status === MigrationStatus.CREATING_TARGET
+    return migration.status === MigrationStatus.CANCELLING
+      || migration.status === MigrationStatus.CREATING_TARGET
       || migration.status === MigrationStatus.PREPARING
       || migration.status === MigrationStatus.MIGRATING
       || migration.status === MigrationStatus.PROMOTING
@@ -678,6 +680,10 @@ export default class DataPgMigrate extends BaseCommand {
     switch (migration.status) {
       case MigrationStatus.CANCELLED: {
         return 'the migration was canceled'
+      }
+
+      case MigrationStatus.CANCELLING: {
+        return 'the migration is being canceled'
       }
 
       case MigrationStatus.COMPLETED: {

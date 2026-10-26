@@ -24,6 +24,7 @@ export enum MaintenanceStatus {
 
 export enum MigrationStatus {
   CANCELLED = 'cancelled',
+  CANCELLING = 'cancelling',
   COMPLETED = 'completed',
   CREATING_TARGET = 'creating_target',
   FAILED = 'failed',
