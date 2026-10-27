@@ -102,9 +102,6 @@ function presentCredentialAttachments(app: string, credAttachments: Required<Her
     if (connectionInformationAvailable) {
       const prefix = '       '
       rotationLines.push(`${prefix}Usernames currently active for this credential:`)
-      const printLine = (line: unknown) => {
-        rotationLines.push(line as string)
-      }
 
       hux.table(formatted, {
         connections: {
@@ -122,8 +119,6 @@ function presentCredentialAttachments(app: string, credAttachments: Required<Her
             return `${prefix}${row.user}`
           },
         },
-      }, {
-        printLine,
       })
     }
   }
