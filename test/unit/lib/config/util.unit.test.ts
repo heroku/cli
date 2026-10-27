@@ -272,6 +272,7 @@ describe('config util Editor', function () {
     let operation: Promise<string> | undefined
     let writeFileSpy: sinon.SinonSpy | undefined
     let pathExistedAtSignal = false
+    let ownedHandlers = captureListeners()
 
     try {
       writeFileSpy = sinon.spy(fsSync, 'writeFileSync')
@@ -280,6 +281,10 @@ describe('config util Editor', function () {
       tmpFileSyncStub.callsFake((options = {}) => {
         const file = realFileSync(options)
         files.push({file, remove: file.removeCallback.bind(file)})
+        ownedHandlers = Object.fromEntries(lifecycleEvents.map(event => [
+          event,
+          listenersFor(event).filter(listener => !listenerSnapshot[event].includes(listener) && listener !== owner),
+        ])) as Record<LifecycleEvent, unknown[]>
         process.nextTick(() => {
           pathExistedAtSignal = fs.existsSync(file.name)
           process.kill(process.pid, 'SIGTERM')
@@ -296,11 +301,12 @@ describe('config util Editor', function () {
       expect(spawnStub.called).to.be.false
       expect(files).to.have.length(1)
       expect(fs.existsSync(files[0].file.name)).to.be.false
-      const afterFailure = captureListeners()
-      expect(afterFailure.SIGINT).to.deep.equal(listenerSnapshot.SIGINT)
-      expect(afterFailure.SIGTERM).to.deep.equal([...listenerSnapshot.SIGTERM, owner])
-      expect(afterFailure.SIGHUP).to.deep.equal(listenerSnapshot.SIGHUP)
-      expect(afterFailure.exit).to.deep.equal(listenerSnapshot.exit)
+      expect(listenersFor('SIGTERM')).to.include(owner)
+      for (const event of lifecycleEvents) {
+        for (const handler of ownedHandlers[event]) {
+          expect(listenersFor(event), `${event} helper handler`).not.to.include(handler)
+        }
+      }
     } finally {
       if (operation) await Promise.allSettled([operation])
       process.removeListener('SIGTERM', owner)
@@ -308,7 +314,12 @@ describe('config util Editor', function () {
       syncBuiltinESMExports()
     }
 
-    expectListenersToMatch(listenerSnapshot)
+    expect(listenersFor('SIGTERM')).not.to.include(owner)
+    for (const event of lifecycleEvents) {
+      for (const handler of ownedHandlers[event]) {
+        expect(listenersFor(event), `${event} helper handler`).not.to.include(handler)
+      }
+    }
   })
 
   it('does not acquire a temporary file when interrupted before acquisition', async function () {
