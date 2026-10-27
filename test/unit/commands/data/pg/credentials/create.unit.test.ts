@@ -1,66 +1,79 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsCreate from '../../../../../../src/commands/data/pg/credentials/create.js'
 import {
-  addon, createCredentialResponse, essentialAddon, legacyEssentialAddon, nonAdvancedAddon,
+  advancedAddon,
+  createCredentialResponse,
+  essentialAddon,
+  legacyEssentialAddon,
+  standardAddon,
 } from '../../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
+type FakeData = {
+  databaseCredential: {create: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {databaseCredential: {create: stub()}}
+}
+
 describe('data:pg:credentials:create', function () {
+  let fakeData: FakeData
+  let sdkMock: MockSDK
+
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
+  })
+
+  afterEach(function () {
+    sdkMock.restore()
+  })
+
   it('shows error for legacy Essential-tier databases', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [legacyEssentialAddon])
+    fakeData.databaseCredential.create.rejects(new Error('You can\'t create custom credentials on Essential-tier databases.'))
 
     const {error} = await runCommand(DataPgCredentialsCreate, [
-      addon.name!,
+      legacyEssentialAddon.name,
       '--app=myapp',
       '--name=my-credential',
     ])
     const err = error as Error
 
-    herokuApi.done()
     expect(ansis.strip(err.message)).to.equal('You can\'t create custom credentials on Essential-tier databases.')
   })
 
   it('shows error for Essential-tier databases', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [essentialAddon])
+    fakeData.databaseCredential.create.rejects(new Error('You can\'t create custom credentials on Essential-tier databases.'))
 
     const {error} = await runCommand(DataPgCredentialsCreate, [
-      addon.name!,
+      essentialAddon.name,
       '--app=myapp',
       '--name=my-credential',
     ])
     const err = error as Error
 
-    herokuApi.done()
     expect(ansis.strip(err.message)).to.equal('You can\'t create custom credentials on Essential-tier databases.')
   })
 
   it('creates a credential successfully on Advanced-tier databases', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [addon])
-
-    const dataApi = nock('https://api.data.heroku.com')
-      .post(`/data/postgres/v1/${addon.id}/credentials`)
-      .reply(201, createCredentialResponse)
+    fakeData.databaseCredential.create.resolves({
+      addon: advancedAddon,
+      credential: createCredentialResponse,
+    })
 
     const {stderr, stdout} = await runCommand(DataPgCredentialsCreate, [
       'DATABASE',
       '--app=myapp',
       '--name=my-credential',
     ])
-
-    dataApi.done()
-    herokuApi.done()
 
     expect(stderr).to.equal(heredoc`
       Creating credential my-credential... done
@@ -70,25 +83,20 @@ describe('data:pg:credentials:create', function () {
         Define the new grants for the credential in Postgres with heroku pg:psql advanced-horizontal-01234 -a myapp.
 
       `))
+    expect(fakeData.databaseCredential.create.calledOnceWithExactly('DATABASE', {name: 'my-credential'}, {appIdentity: 'myapp'})).to.equal(true)
   })
 
   it('creates a credential successfully on legacy non-Essential tier databases', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [nonAdvancedAddon])
-
-    const dataApi = nock('https://api.data.heroku.com')
-      .post(`/postgres/v0/databases/${essentialAddon.id}/credentials`)
-      .reply(201, createCredentialResponse)
+    fakeData.databaseCredential.create.resolves({
+      addon: standardAddon,
+      credential: {message: 'Credential my-credential created.'},
+    })
 
     const {stderr, stdout} = await runCommand(DataPgCredentialsCreate, [
       'DATABASE',
       '--app=myapp',
       '--name=my-credential',
     ])
-
-    dataApi.done()
-    herokuApi.done()
 
     expect(stderr).to.equal(heredoc`
       Creating credential my-credential... done
@@ -101,62 +109,44 @@ describe('data:pg:credentials:create', function () {
   })
 
   it('handles API errors gracefully on Advanced-tier databases', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [addon])
+    fakeData.databaseCredential.create.rejects(new Error(heredoc`
+      my-credential on ${advancedAddon.name} already exists.
+      Credential names must be unique within the database. Choose another name and try again.
+    `))
 
-    const dataApi = nock('https://api.data.heroku.com')
-      .post(`/data/postgres/v1/${addon.id}/credentials`)
-      .reply(422, {
-        id: 'unprocessable_entity',
-        message: heredoc`
-          my-credential on ${addon.name} already exists.
-          Credential names must be unique within the database. Choose another name and try again.
-        `,
-      })
-
-    const {error} = await runCommand(DataPgCredentialsCreate, [
+    const {error, stderr} = await runCommand(DataPgCredentialsCreate, [
       'DATABASE',
       '--app=myapp',
       '--name=my-credential',
     ])
     const err = error as Error
     expect(ansis.strip(err.message)).to.include(heredoc`
-          my-credential on ${addon.name} already exists.
+          my-credential on ${advancedAddon.name} already exists.
           Credential names must be unique within the database. Choose another name and try again.
         `)
-
-    herokuApi.done()
-    dataApi.done()
+    expect(ansis.strip(stderr)).to.equal(heredoc`
+      Creating credential my-credential... !
+    `)
   })
 
   it('handles API errors gracefully on legacy non-Essential tier databases', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [nonAdvancedAddon])
+    fakeData.databaseCredential.create.rejects(new Error(heredoc`
+      my-credential on ${standardAddon.name} already exists.
+      Credential names must be unique within the database. Choose another name and try again.
+    `))
 
-    const dataApi = nock('https://api.data.heroku.com')
-      .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-      .reply(422, {
-        id: 'unprocessable_entity',
-        message: heredoc`
-          my-credential on ${nonAdvancedAddon.name} already exists.
-          Credential names must be unique within the database. Choose another name and try again.
-        `,
-      })
-
-    const {error} = await runCommand(DataPgCredentialsCreate, [
+    const {error, stderr} = await runCommand(DataPgCredentialsCreate, [
       'DATABASE',
       '--app=myapp',
       '--name=my-credential',
     ])
     const err = error as Error
     expect(ansis.strip(err.message)).to.include(heredoc`
-          my-credential on ${nonAdvancedAddon.name} already exists.
+          my-credential on ${standardAddon.name} already exists.
           Credential names must be unique within the database. Choose another name and try again.
         `)
-
-    herokuApi.done()
-    dataApi.done()
+    expect(ansis.strip(stderr)).to.equal(heredoc`
+      Creating credential my-credential... !
+    `)
   })
 })

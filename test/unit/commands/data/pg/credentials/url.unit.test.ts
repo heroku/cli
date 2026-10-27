@@ -1,68 +1,96 @@
+import type {GetDatabaseCredentialUrlResult} from '@heroku/sdk/resources/data/database-credential'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsUrl from '../../../../../../src/commands/data/pg/credentials/url.js'
-import {type AdvancedCredentialInfo, AdvancedCredentialState} from '../../../../../../src/lib/data/types.js'
 import {
-  addon,
-  advancedCredentialsResponse,
+  advancedAddon,
   essentialAddon,
-  inactiveCredentialResponse,
   legacyEssentialAddon,
-  nonAdvancedAddon,
-  nonAdvancedCredentialsResponse,
-  nonAdvancedInactiveCredentialResponse,
+  standardAddon,
 } from '../../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
+type CredentialConnectionInfo = GetDatabaseCredentialUrlResult['credentialConnectionInfo']
+
+type FakeData = {
+  databaseCredential: {getUrl: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {databaseCredential: {getUrl: stub()}}
+}
+
+// cspell:disable
+const ownerUrl: CredentialConnectionInfo = {
+  credName: 'u2vi1nt40t3mcq',
+  database: 'd4w8akz45kmru7',
+  host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
+  password: 'secret1',
+  port: 5432,
+  url: 'postgres://u2vi1nt40t3mcq:secret1@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7',
+  user: 'u2vi1nt40t3mcq',
+}
+
+const analystUrl: CredentialConnectionInfo = {
+  credName: 'analyst',
+  database: 'd4w8akz45kmru7',
+  host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
+  password: 'secret2',
+  port: 5432,
+  url: 'postgres://analyst:secret2@cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com:5432/d4w8akz45kmru7',
+  user: 'analyst',
+}
+// cspell:enable
+
 describe('data:pg:credentials:url', function () {
+  let fakeData: FakeData
+  let sdkMock: MockSDK
+
+  beforeEach(function () {
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
+  })
+
+  afterEach(function () {
+    sdkMock.restore()
+  })
+
   it('shows error for Legacy Essential-tier databases with a custom credential name', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [legacyEssentialAddon])
+    fakeData.databaseCredential.getUrl.rejects(new Error('Essential-tier databases don\'t support named credentials.'))
 
     const {error} = await runCommand(DataPgCredentialsUrl, [
-      'DATABASE',
+      legacyEssentialAddon.name,
       '--app=myapp',
       '--name=non-default-credential',
     ])
     const err = error as Error
 
-    herokuApi.done()
     expect(ansis.strip(err.message)).to.equal('Essential-tier databases don\'t support named credentials.')
   })
 
   it('shows error for Essential-tier databases with a custom credential name', async function () {
-    const herokuApi = nock('https://api.heroku.com')
-      .post('/actions/addons/resolve')
-      .reply(200, [essentialAddon])
+    fakeData.databaseCredential.getUrl.rejects(new Error('Essential-tier databases don\'t support named credentials.'))
 
     const {error} = await runCommand(DataPgCredentialsUrl, [
-      'DATABASE',
+      essentialAddon.name,
       '--app=myapp',
       '--name=non-default-credential',
     ])
     const err = error as Error
 
-    herokuApi.done()
     expect(ansis.strip(err.message)).to.equal('Essential-tier databases don\'t support named credentials.')
   })
 
   describe('Advanced-tier databases', function () {
     it('shows error when no active credentials found', async function () {
-      const emptyCredentialsResponse = {items: []}
-
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, emptyCredentialsResponse)
+      fakeData.databaseCredential.getUrl.rejects(new Error(`There are no active credentials on the database ${advancedAddon.name}.`))
 
       const {error} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
@@ -70,21 +98,11 @@ describe('data:pg:credentials:url', function () {
       ])
       const err = error as Error
 
-      dataApi.done()
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('There are no active credentials on the database ⛁ advanced-horizontal-01234.')
+      expect(ansis.strip(err.message)).to.equal('There are no active credentials on the database advanced-horizontal-01234.')
     })
 
     it('shows error when specified credential isn\'t active', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .get(`/data/postgres/v1/${addon.id}/credentials/analyst`)
-        .reply(200, inactiveCredentialResponse)
+      fakeData.databaseCredential.getUrl.rejects(new Error(`The credential analyst isn't active on the database ${advancedAddon.name}.`))
 
       const {error} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
@@ -93,29 +111,19 @@ describe('data:pg:credentials:url', function () {
       ])
       const err = error as Error
 
-      dataApi.done()
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database ⛁ advanced-horizontal-01234.')
+      expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database advanced-horizontal-01234.')
     })
 
     it('shows owner credential URL by default when no name specified', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .get(`/data/postgres/v1/${addon.id}/credentials/u2vi1nt40t3mcq`)
-        .reply(200, advancedCredentialsResponse.items[0])
+      fakeData.databaseCredential.getUrl.resolves({
+        addon: advancedAddon,
+        credentialConnectionInfo: ownerUrl,
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       expect(stderr).to.equal('')
       // cspell:disable
@@ -130,46 +138,20 @@ describe('data:pg:credentials:url', function () {
 
         `))
       // cspell:enable
+      expect(fakeData.databaseCredential.getUrl.calledOnceWithExactly('DATABASE', undefined, {appIdentity: 'myapp'})).to.equal(true)
     })
 
     it('shows specific credential URL when name is specified', async function () {
-      // cspell:disable
-      const analystCredentialResponse: AdvancedCredentialInfo = {
-        database: 'd4w8akz45kmru7',
-        host: 'cc3hipc68aca1l.cluster-caqt9jk3hth8.us-east-1.rds.amazonaws.com',
-        id: '9eb68dd8-5b3e-410a-890a-e44de90356d3',
-        name: 'analyst',
-        port: '5432',
-        roles: [
-          {
-            password: 'secret2',
-            state: 'active',
-            user: 'analyst',
-          },
-        ],
-        state: AdvancedCredentialState.ACTIVE,
-        type: 'additional',
-      }
-      // cspell:enable
-
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .get(`/data/postgres/v1/${addon.id}/credentials/analyst`)
-        .reply(200, analystCredentialResponse)
+      fakeData.databaseCredential.getUrl.resolves({
+        addon: advancedAddon,
+        credentialConnectionInfo: analystUrl,
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       expect(stderr).to.equal('')
       // cspell:disable
@@ -184,21 +166,11 @@ describe('data:pg:credentials:url', function () {
 
         `))
       // cspell:enable
+      expect(fakeData.databaseCredential.getUrl.calledOnceWithExactly('DATABASE', 'analyst', {appIdentity: 'myapp'})).to.equal(true)
     })
 
     it('handles API errors gracefully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .get(`/data/postgres/v1/${addon.id}/credentials/analyst`)
-        .reply(404, {
-          id: 'not_found',
-          message: 'Credential not found.',
-        })
+      fakeData.databaseCredential.getUrl.rejects(new Error('Credential not found.'))
 
       const {error} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
@@ -207,21 +179,12 @@ describe('data:pg:credentials:url', function () {
       ])
       const err = error as Error
       expect(ansis.strip(err.message)).to.include('Credential not found.')
-
-      dataApi.done()
-      herokuApi.done()
     })
   })
 
   describe('Non-Advanced-tier databases', function () {
     it('shows error when specified credential isn\'t active', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${addon.id}/credentials/analyst`)
-        .reply(200, nonAdvancedInactiveCredentialResponse)
+      fakeData.databaseCredential.getUrl.rejects(new Error(`The credential analyst isn't active on the database ${standardAddon.name}.`))
 
       const {error} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
@@ -230,27 +193,19 @@ describe('data:pg:credentials:url', function () {
       ])
       const err = error as Error
 
-      dataApi.done()
-      herokuApi.done()
-      expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database ⛁ standard-database.')
+      expect(ansis.strip(err.message)).to.equal('The credential analyst isn\'t active on the database standard-database.')
     })
 
     it('shows default credential URL by default when no name specified', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${addon.id}/credentials/default`)
-        .reply(200, nonAdvancedCredentialsResponse[0])
+      fakeData.databaseCredential.getUrl.resolves({
+        addon: standardAddon,
+        credentialConnectionInfo: {...ownerUrl, credName: 'default'},
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       expect(stderr).to.equal('')
       // cspell:disable
@@ -268,22 +223,16 @@ describe('data:pg:credentials:url', function () {
     })
 
     it('shows specific credential URL when name is specified', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${addon.id}/credentials/analyst`)
-        .reply(200, nonAdvancedCredentialsResponse[1])
+      fakeData.databaseCredential.getUrl.resolves({
+        addon: standardAddon,
+        credentialConnectionInfo: analystUrl,
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       expect(stderr).to.equal('')
       // cspell:disable
@@ -301,16 +250,7 @@ describe('data:pg:credentials:url', function () {
     })
 
     it('handles API errors gracefully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${addon.id}/credentials/analyst`)
-        .reply(404, {
-          id: 'not_found',
-          message: 'Not found.',
-        })
+      fakeData.databaseCredential.getUrl.rejects(new Error('Not found.'))
 
       const {error} = await runCommand(DataPgCredentialsUrl, [
         'DATABASE',
@@ -319,9 +259,6 @@ describe('data:pg:credentials:url', function () {
       ])
       const err = error as Error
       expect(ansis.strip(err.message)).to.include('Not found.')
-
-      dataApi.done()
-      herokuApi.done()
     })
   })
 })

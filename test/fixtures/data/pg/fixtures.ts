@@ -1,7 +1,10 @@
 /* eslint-disable max-lines */
+import type {ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
+
 import * as Heroku from '@heroku-cli/schema'
 import {pg} from '@heroku/heroku-cli-util'
 
+// TODO: these types should be removed and replaced with the types from @heroku/sdk or @heroku/types
 import {
   AdvancedCredentialInfo,
   AdvancedCredentialState,
@@ -23,6 +26,32 @@ import {
   SettingsResponse,
   WaitStatus,
 } from '../../../../src/lib/data/types.js'
+
+export function postgresAddon(name: string, planName: string): ResolvedAddOn {
+  return {
+    actions: [],
+    addon_service: {id: 'addon-service-id', name: 'heroku-postgresql'},
+    app: {id: 'app-id', name: 'myapp'},
+    billed_price: {
+      cents: 0, contract: false, metered: false, unit: 'month',
+    },
+    billing_entity: {id: 'app-id', name: 'myapp', type: 'app'},
+    config_vars: [],
+    created_at: '2025-01-01T12:00:00Z',
+    id: 'addon-id',
+    name,
+    plan: {id: 'plan-id', name: planName},
+    provider_id: 'addon-id',
+    state: 'provisioning',
+    updated_at: '2025-01-01T12:00:00Z',
+    web_url: null,
+  }
+}
+
+export const advancedAddon = postgresAddon('advanced-horizontal-01234', 'heroku-postgresql:advanced')
+export const essentialAddon = postgresAddon('essential-database', 'heroku-postgresql:essential-0')
+export const legacyEssentialAddon = postgresAddon('mini-database', 'heroku-postgresql:mini-0')
+export const standardAddon = postgresAddon('standard-database', 'heroku-postgresql:standard-0')
 
 export const addon: DeepRequired<Heroku.AddOn> = {
   actions: [],
@@ -84,11 +113,6 @@ export const nonAdvancedAddon: DeepRequired<Heroku.AddOn> = {
   plan: {...addon.plan, name: 'heroku-postgresql:standard-0'},
 }
 
-export const legacyEssentialAddon: DeepRequired<Heroku.AddOn> = {
-  ...addon,
-  plan: {...addon.plan, name: 'heroku-postgresql:mini-0'},
-}
-
 export const nonPostgresAddon: DeepRequired<Heroku.AddOn> = {
   ...addon,
   addon_service: {
@@ -106,11 +130,6 @@ export const nonPostgresAddon: DeepRequired<Heroku.AddOn> = {
     human_name: 'Premium 0',
     name: 'heroku-redis:premium-0',
   },
-}
-
-export const essentialAddon: DeepRequired<Heroku.AddOn> = {
-  ...addon,
-  plan: {...addon.plan, name: 'heroku-postgresql:essential-0'},
 }
 
 export const levelsResponse: PostgresLevelsResponse = {
