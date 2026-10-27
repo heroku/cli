@@ -224,7 +224,7 @@ describe('config util Editor', function () {
       Reflect.apply(realPrependListener, process, [event, listener])
       if (String(event) === 'SIGINT' && !sentSignal) {
         sentSignal = true
-        process.emit('SIGINT')
+        Reflect.apply(listener, process, [])
       }
 
       return process
@@ -232,7 +232,7 @@ describe('config util Editor', function () {
 
     const error = await rejectionOf(new Editor().edit('initial-content'))
 
-    expect(owner.calledOnce).to.be.true
+    expect(owner.notCalled).to.be.true
     expect(error).to.be.instanceOf(Error)
     expect(error.message).to.equal('Editor interrupted by SIGINT')
     expect(spawnStub.called).to.be.false
@@ -484,7 +484,14 @@ describe('config util Editor', function () {
 
     const operations = [new Editor().edit('first-config'), new Editor().edit('second-config')]
     await spawned
-    process.emit('SIGTERM')
+    const signalHandlers = listenersFor('SIGTERM')
+      .filter(listener => !listenerSnapshot.SIGTERM.includes(listener)) as NodeJS.SignalsListener[]
+    const realListeners = process.listeners.bind(process)
+    sinon.stub(process, 'listeners').callsFake(event => String(event) === 'SIGTERM'
+      ? signalHandlers as unknown as ReturnType<typeof process.listeners>
+      : realListeners(event))
+    expect(signalHandlers).to.have.length(2)
+    Reflect.apply(signalHandlers[0], process, [])
     const results = await Promise.allSettled(operations)
 
     expect(killStub.calledOnceWith(process.pid, 'SIGTERM')).to.be.true
