@@ -25,6 +25,7 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 
 ## Data commands
 - `data:pg:credentials:url` error messages ("no active credentials", "credential isn't active", "Essential-tier databases don't support named credentials") are now plain text. Previously the app/database name and credential name in these messages were colorized (`color.datastore`, `color.name`) with a `⛁` icon on the database name; the SDK throws plain, uncolored `Error`s instead.
+- `data:pg:credentials:destroy`'s "you must detach the credential" error is now plain text. Previously the credential name and app name(s) in this message were colorized (`color.name`, `color.app`); the SDK throws a plain, uncolored `Error` instead.
 
 ## Ps commands
 
