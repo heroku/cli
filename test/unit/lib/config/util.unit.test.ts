@@ -451,7 +451,7 @@ describe('config util Editor', function () {
 
     const operation = new Editor().edit('config-value')
     await spawned
-    const signalHandler = listenersFor('SIGINT').find(listener => listener !== owner && !listenerSnapshot.SIGINT.includes(listener))
+    const signalHandler = listenersFor('SIGINT').find(listener => listener !== owner && !listenerSnapshot.SIGINT.includes(listener)) as NodeJS.SignalsListener | undefined
     const killStub = sinon.stub(process, 'kill')
 
     const realListeners = process.listeners.bind(process)
@@ -460,7 +460,7 @@ describe('config util Editor', function () {
       : realListeners(event))
     if (signalHandler) {
       Reflect.apply(owner, process, ['SIGINT'])
-      Reflect.apply(signalHandler, process, [])
+      signalHandler.call(process, 'SIGINT')
     }
 
     child.emit('exit', 0, null)
@@ -500,7 +500,7 @@ describe('config util Editor', function () {
       ? signalHandlers as unknown as ReturnType<typeof process.listeners>
       : realListeners(event))
     expect(signalHandlers).to.have.length(2)
-    Reflect.apply(signalHandlers[0], process, [])
+    signalHandlers[0].call(process, 'SIGTERM')
     const results = await Promise.allSettled(operations)
 
     expect(killStub.calledOnceWith(process.pid, 'SIGTERM')).to.be.true
@@ -541,7 +541,7 @@ describe('config util Editor', function () {
       callbackAttempts += 1
       throw new Error('one-shot callback failure')
     })
-    const signalHandler = listenersFor('SIGTERM').find(listener => !listenerSnapshot.SIGTERM.includes(listener))
+    const signalHandler = listenersFor('SIGTERM').find(listener => !listenerSnapshot.SIGTERM.includes(listener)) as NodeJS.SignalsListener | undefined
     const exitListener = listenersFor('exit').find(listener => !listenerSnapshot.exit.includes(listener))
 
     const realListeners = process.listeners.bind(process)
@@ -549,7 +549,7 @@ describe('config util Editor', function () {
       ? [signalHandler] as unknown as ReturnType<typeof process.listeners>
       : realListeners(event))
     expect(signalHandler, 'helper-owned SIGTERM listener').to.be.a('function')
-    Reflect.apply(signalHandler!, process, [])
+    signalHandler!.call(process, 'SIGTERM')
     expect(fs.existsSync(file.name)).to.be.true
     expect(unlinkAttempts).to.equal(1)
     expect(callbackAttempts).to.equal(1)
