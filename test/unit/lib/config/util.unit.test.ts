@@ -217,31 +217,139 @@ describe('config util Editor', function () {
 
   it('cleans up interruption during the initial write before spawning the editor', async function () {
     const owner = sinon.spy()
+    const realWriteFileSync = fsSync.writeFileSync.bind(fsSync)
+    let operation: Promise<string> | undefined
+    let sentSignal = false
+    let writeFileStub: sinon.SinonStub | undefined
+    let killStub: sinon.SinonStub | undefined
+
+    try {
+      process.on('SIGINT', owner)
+      writeFileStub = sinon.stub(fsSync, 'writeFileSync').callsFake((path, data, options) => {
+        const result = realWriteFileSync(path, data, options)
+        if (!sentSignal) {
+          sentSignal = true
+          const signalHandler = listenersFor('SIGINT').find(listener => listener !== owner && !listenerSnapshot.SIGINT.includes(listener)) as NodeJS.SignalsListener | undefined
+          expect(signalHandler, 'helper-owned SIGINT listener').to.be.a('function')
+          signalHandler?.call(process, 'SIGINT')
+        }
+
+        return result
+      })
+      syncBuiltinESMExports()
+      killStub = sinon.stub(process, 'kill')
+      operation = new Editor().edit('initial-content')
+      const error = await rejectionOf(operation)
+
+      expect(owner.notCalled).to.be.true
+      expect(sentSignal).to.be.true
+      expect(writeFileStub.calledOnce, 'interruption must not trigger a second write').to.be.true
+      expect(error).to.be.instanceOf(Error)
+      expect(error.message).to.equal('Editor interrupted by SIGINT')
+      expect(killStub?.notCalled).to.be.true
+      expect(spawnStub.called).to.be.false
+      expect(files).to.have.length(1)
+      expect(fs.existsSync(files[0].file.name)).to.be.false
+      const afterFailure = captureListeners()
+      expect(afterFailure.SIGINT).to.deep.equal([...listenerSnapshot.SIGINT, owner])
+      expect(afterFailure.SIGTERM).to.deep.equal(listenerSnapshot.SIGTERM)
+      expect(afterFailure.SIGHUP).to.deep.equal(listenerSnapshot.SIGHUP)
+      expect(afterFailure.exit).to.deep.equal(listenerSnapshot.exit)
+    } finally {
+      if (operation) await Promise.allSettled([operation])
+      process.removeListener('SIGINT', owner)
+      sinon.restore()
+      syncBuiltinESMExports()
+    }
+
+    expectListenersToMatch(listenerSnapshot)
+  })
+
+  it('cleans up interruption during temporary-file acquisition before spawning the editor', async function () {
+    if (process.platform === 'win32') this.skip()
+
+    const owner = sinon.spy()
+    let operation: Promise<string> | undefined
+    let writeFileSpy: sinon.SinonSpy | undefined
+    let pathExistedAtSignal = false
+
+    try {
+      writeFileSpy = sinon.spy(fsSync, 'writeFileSync')
+      syncBuiltinESMExports()
+      process.on('SIGTERM', owner)
+      tmpFileSyncStub.callsFake((options = {}) => {
+        const file = realFileSync(options)
+        files.push({file, remove: file.removeCallback.bind(file)})
+        process.nextTick(() => {
+          pathExistedAtSignal = fs.existsSync(file.name)
+          process.kill(process.pid, 'SIGTERM')
+        })
+        return file
+      })
+      operation = new Editor().edit('initial-content')
+      const error = await rejectionOf(operation)
+
+      expect(error.message).to.equal('Editor interrupted by SIGTERM')
+      expect(pathExistedAtSignal).to.be.true
+      expect(owner.calledOnce).to.be.true
+      expect(writeFileSpy?.notCalled, 'initial write must not run after interruption').to.be.true
+      expect(spawnStub.called).to.be.false
+      expect(files).to.have.length(1)
+      expect(fs.existsSync(files[0].file.name)).to.be.false
+      const afterFailure = captureListeners()
+      expect(afterFailure.SIGINT).to.deep.equal(listenerSnapshot.SIGINT)
+      expect(afterFailure.SIGTERM).to.deep.equal([...listenerSnapshot.SIGTERM, owner])
+      expect(afterFailure.SIGHUP).to.deep.equal(listenerSnapshot.SIGHUP)
+      expect(afterFailure.exit).to.deep.equal(listenerSnapshot.exit)
+    } finally {
+      if (operation) await Promise.allSettled([operation])
+      process.removeListener('SIGTERM', owner)
+      sinon.restore()
+      syncBuiltinESMExports()
+    }
+
+    expectListenersToMatch(listenerSnapshot)
+  })
+
+  it('does not acquire a temporary file when interrupted before acquisition', async function () {
     const realPrependListener = process.prependListener
     let sentSignal = false
-    process.on('SIGINT', owner)
-    sinon.stub(process, 'prependListener').callsFake((event, listener) => {
-      Reflect.apply(realPrependListener, process, [event, listener])
-      if (String(event) === 'SIGINT' && !sentSignal) {
-        sentSignal = true
-        Reflect.apply(listener, process, [])
-      }
+    let operation: Promise<string> | undefined
+    let prependListenerStub: sinon.SinonStub | undefined
+    let killStub: sinon.SinonStub | undefined
+    let writeFileSpy: sinon.SinonSpy | undefined
 
-      return process
-    })
+    try {
+      killStub = sinon.stub(process, 'kill')
+      writeFileSpy = sinon.spy(fsSync, 'writeFileSync')
+      syncBuiltinESMExports()
+      prependListenerStub = sinon.stub(process, 'prependListener').callsFake((event, listener) => {
+        Reflect.apply(realPrependListener, process, [event, listener])
+        if (String(event) === 'SIGHUP' && !sentSignal) {
+          sentSignal = true
+          process.emit('SIGHUP')
+        }
 
-    const error = await rejectionOf(new Editor().edit('initial-content'))
+        return process
+      })
+      operation = new Editor().edit('config-value')
+      const error = await rejectionOf(operation)
 
-    expect(owner.notCalled).to.be.true
-    expect(error).to.be.instanceOf(Error)
-    expect(error.message).to.equal('Editor interrupted by SIGINT')
-    expect(spawnStub.called).to.be.false
-    expect(fs.existsSync(files[0].file.name)).to.be.false
-    const afterFailure = captureListeners()
-    expect(afterFailure.SIGINT).to.deep.equal([...listenerSnapshot.SIGINT, owner])
-    expect(afterFailure.SIGTERM).to.deep.equal(listenerSnapshot.SIGTERM)
-    expect(afterFailure.SIGHUP).to.deep.equal(listenerSnapshot.SIGHUP)
-    expect(afterFailure.exit).to.deep.equal(listenerSnapshot.exit)
+      expect(sentSignal, 'signal fired after final handler registration').to.be.true
+      expect(error.message).to.equal('Editor interrupted by SIGHUP')
+      expect(tmpFileSyncStub.notCalled, 'temporary file must not be acquired').to.be.true
+      expect(writeFileSpy?.notCalled, 'initial write must not run').to.be.true
+      expect(spawnStub.notCalled, 'editor must not spawn').to.be.true
+      expect(files).to.be.empty
+    } finally {
+      if (operation) await Promise.allSettled([operation])
+      prependListenerStub?.restore()
+      killStub?.restore()
+      writeFileSpy?.restore()
+      syncBuiltinESMExports()
+    }
+
+    expectListenersToMatch(listenerSnapshot)
   })
 
   it('rejects a synchronous spawn error and removes the temporary file', async function () {

@@ -16,7 +16,7 @@ const handlingEditSignals = new Set<NodeJS.Signals>()
 
 export class Editor {
   async edit(input: string, options = {}) {
-    const tmpFile = tmp.fileSync(options)
+    let tmpFile: ReturnType<typeof tmp.fileSync> | undefined
     let removeCallbackAttempted = false
     let cleanupFailed = false
     let cleanupFailureReported = false
@@ -30,6 +30,8 @@ export class Editor {
     let removeChildListeners = () => {}
 
     const cleanup = () => {
+      if (!tmpFile) return
+
       if (!removeCallbackAttempted) {
         removeCallbackAttempted = true
         try {
@@ -190,8 +192,20 @@ export class Editor {
 
       installLifecycleListeners()
 
-      if (tmpFile.fd === undefined) writeFileSync(tmpFile.name, input, 'utf8')
-      else writeFileSync(tmpFile.fd, input, 'utf8')
+      if (interruptedSignal) throw new Error(`Editor interrupted by ${interruptedSignal}`)
+
+      const acquiredTmpFile = tmp.fileSync(options)
+      tmpFile = acquiredTmpFile
+
+      await Promise.race([new Promise<void>(resolve => setImmediate(resolve)), interruptionPromise])
+
+      if (interruptedSignal) {
+        cleanup()
+        throw new Error(`Editor interrupted by ${interruptedSignal}`)
+      }
+
+      if (acquiredTmpFile.fd === undefined) writeFileSync(acquiredTmpFile.name, input, 'utf8')
+      else writeFileSync(acquiredTmpFile.fd, input, 'utf8')
 
       if (interruptedSignal) throw new Error(`Editor interrupted by ${interruptedSignal}`)
 
@@ -200,7 +214,7 @@ export class Editor {
       if (interruptedSignal) throw new Error(`Editor interrupted by ${interruptedSignal}`)
 
       const editor = process.env.VISUAL || process.env.EDITOR || 'vim'
-      const child = childProcess.spawn(editor, [tmpFile.name], {stdio: 'inherit'})
+      const child = childProcess.spawn(editor, [acquiredTmpFile.name], {stdio: 'inherit'})
 
       const editorPromise = new Promise<void>((resolve, reject) => {
         let settled = false
@@ -246,7 +260,7 @@ export class Editor {
       await Promise.race([editorPromise, interruptionPromise])
       if (interruptedBySignalOwner) throw new Error(`Editor interrupted by ${interruptedSignal}`)
 
-      result = await Promise.race([fs.readFile(tmpFile.name, 'utf8'), interruptionPromise])
+      result = await Promise.race([fs.readFile(acquiredTmpFile.name, 'utf8'), interruptionPromise])
       if (interruptedBySignalOwner) throw new Error(`Editor interrupted by ${interruptedSignal}`)
     } catch (error) {
       primaryError = error
