@@ -212,4 +212,42 @@ describe('pg:credentials', function () {
     const callArgs = tableStub.firstCall.args
     expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
   })
+
+  // Targets coverage gaps in presentCredentialAttachments' local `isForeignApp`
+  // comparator (src/commands/pg/credentials.ts), which only branches correctly
+  // when at least one attachment's app matches the command's --app flag. Should
+  // be removed once pg:credentials is migrated to use @heroku/sdk.
+  describe('attachment sorting', function () {
+    it('sorts the local-app attachment ahead of foreign-app attachments', async function () {
+      const sortCredentials = [
+        {
+          credentials: [], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'active', uuid: 'cccc',
+        },
+      ]
+      const mixedAttachments = [
+        {app: {name: 'another-app'}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
+        {app: {name: 'myapp'}, name: 'DATABASE', namespace: null},
+        {app: {name: 'yet-another-app'}, name: 'HEROKU_POSTGRESQL_BLUE', namespace: null},
+      ]
+
+      api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
+        .reply(200, [{addon}])
+        .get('/addons/1/addon-attachments')
+        .reply(200, mixedAttachments)
+      sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(sortCredentials)}})
+
+      const {stdout} = await runCommand(Cmd, ['--app', 'myapp'])
+
+      const normalized = normalizeTableOutput(stripAppIcon(stdout))
+      const localIndex = normalized.indexOf('as database')
+      const pinkIndex = normalized.indexOf('heroku_postgresql_pink')
+      const blueIndex = normalized.indexOf('heroku_postgresql_blue')
+
+      expect(localIndex).to.be.greaterThan(-1)
+      expect(localIndex).to.be.lessThan(pinkIndex)
+      expect(localIndex).to.be.lessThan(blueIndex)
+      // the local attachment omits the "on <app> app" suffix since it isn't foreign
+      expect(normalized).not.to.include('as database on')
+    })
+  })
 })
