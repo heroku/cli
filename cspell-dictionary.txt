@@ -99,6 +99,7 @@ envl
 esac
 eventsource
 execa
+execvpe
 expialidocious
 extnamespace
 extwlist
@@ -426,8 +427,12 @@ vcpu
 VERSINFO
 webfactory
 WINDIR
+WIFSIGNALED
+WNOHANG
+WTERMSIG
 WININICHANGE
 withfig
+waitpid
 wrapline
 writeout
 wubalubadubdub
