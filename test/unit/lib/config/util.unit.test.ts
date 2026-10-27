@@ -454,7 +454,15 @@ describe('config util Editor', function () {
     const signalHandler = listenersFor('SIGINT').find(listener => listener !== owner && !listenerSnapshot.SIGINT.includes(listener))
     const killStub = sinon.stub(process, 'kill')
 
-    if (signalHandler) process.emit('SIGINT')
+    const realListeners = process.listeners.bind(process)
+    sinon.stub(process, 'listeners').callsFake(event => String(event) === 'SIGINT'
+      ? [owner, signalHandler] as unknown as ReturnType<typeof process.listeners>
+      : realListeners(event))
+    if (signalHandler) {
+      Reflect.apply(owner, process, ['SIGINT'])
+      Reflect.apply(signalHandler, process, [])
+    }
+
     child.emit('exit', 0, null)
     child.emit('close', 0, null)
     const [result] = await Promise.allSettled([operation])
@@ -463,6 +471,7 @@ describe('config util Editor', function () {
     expect(owner.calledOnce).to.be.true
     expect(result.status, 'interrupted edit must not return config').to.equal('rejected')
     expect(killStub.called).to.be.false
+
     expect(process.listeners('SIGINT')).to.include(owner)
     expect(fs.existsSync(files[0].file.name)).to.be.false
     process.removeListener('SIGINT', owner)
@@ -532,9 +541,15 @@ describe('config util Editor', function () {
       callbackAttempts += 1
       throw new Error('one-shot callback failure')
     })
+    const signalHandler = listenersFor('SIGTERM').find(listener => !listenerSnapshot.SIGTERM.includes(listener))
     const exitListener = listenersFor('exit').find(listener => !listenerSnapshot.exit.includes(listener))
 
-    process.emit('SIGTERM')
+    const realListeners = process.listeners.bind(process)
+    sinon.stub(process, 'listeners').callsFake(event => String(event) === 'SIGTERM'
+      ? [signalHandler] as unknown as ReturnType<typeof process.listeners>
+      : realListeners(event))
+    expect(signalHandler, 'helper-owned SIGTERM listener').to.be.a('function')
+    Reflect.apply(signalHandler!, process, [])
     expect(fs.existsSync(file.name)).to.be.true
     expect(unlinkAttempts).to.equal(1)
     expect(callbackAttempts).to.equal(1)
