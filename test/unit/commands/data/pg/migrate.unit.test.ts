@@ -115,7 +115,7 @@ describe('data:pg:migrate', function () {
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Configure a new database migration')
-      expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
+      expect(stdout).not.to.contain('- Configure a new database migration (')
     })
 
     it('disables configuring a new migration option when there are no classic databases owned by the app', async function () {
@@ -133,7 +133,7 @@ describe('data:pg:migrate', function () {
       herokuApi.done()
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases on ⬢ myapp)')
     })
 
     it('doesn\'t show any migrations to manage', async function () {
@@ -343,7 +343,7 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a new database migration (all classic Postgres databases on ⬢ myapp already have an active migration)')
     })
 
     it('keeps the databases of a migration that is being canceled from new migrations', async function () {
@@ -364,7 +364,7 @@ describe('data:pg:migrate', function () {
       dataApi.done()
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Configure a new database migration (no classic Postgres databases pending migration on ⬢ myapp)')
+      expect(stdout).to.contain('- Configure a new database migration (all classic Postgres databases on ⬢ myapp already have an active migration)')
     })
 
     it('enables configuring a new migration option when there are additional classic databases pending migration', async function () {
@@ -391,7 +391,7 @@ describe('data:pg:migrate', function () {
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
       expect(stdout).to.contain('Configure a new database migration')
-      expect(stdout).not.to.contain('no classic Postgres databases pending migration on ⬢ myapp')
+      expect(stdout).not.to.contain('- Configure a new database migration (')
     })
   })
 
