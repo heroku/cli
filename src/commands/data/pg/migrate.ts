@@ -567,7 +567,9 @@ export default class DataPgMigrate extends BaseCommand {
       })
     } else {
       choices.push({
-        disabled: `no classic Postgres databases pending migration on ${color.app(app)}`,
+        disabled: this.classicDatabases.length === 0
+          ? `no classic Postgres databases on ${color.app(app)}`
+          : `all classic Postgres databases on ${color.app(app)} already have an active migration`,
         name: color.gray('Configure a new database migration'),
         value: '__configure_migration',
       })
