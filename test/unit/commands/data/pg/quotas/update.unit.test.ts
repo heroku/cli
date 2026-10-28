@@ -1,17 +1,13 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {HerokuSDK} from '@heroku/sdk'
 import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import {restore, SinonStub, stub} from 'sinon'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgQuotasUpdate from '../../../../../../src/commands/data/pg/quotas/update.js'
-import {
-  addon,
-  nonAdvancedAddon,
-  storageQuotaResponse,
-} from '../../../../../fixtures/data/pg/fixtures.js'
+import {advancedAddon, standardAddon, storageQuotaResponse} from '../../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
@@ -25,18 +21,19 @@ function buildFakeData(): FakeData {
 
 describe('data:pg:quotas:update', function () {
   let fakeData: FakeData
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     fakeData = buildFakeData()
-    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    restore()
+    sdkMock.restore()
   })
 
   it('prints the updated quota settings when the quota update is successful', async function () {
-    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
+    fakeData.postgresQuota.update.resolves({addon: advancedAddon, quota: storageQuotaResponse})
 
     const {stderr, stdout} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -47,21 +44,19 @@ describe('data:pg:quotas:update', function () {
       '--enforcement-action=none',
     ])
 
-    expect(stderr).to.equal(heredoc(`
-      Updating storage quota on ⛁ advanced-horizontal-01234... done
-    `))
-    expect(stdout).to.equal(heredoc(`
+    expect(ansis.strip(stderr)).to.equal(heredoc('Updating storage quota on ⛁ advanced-horizontal-01234... done\n'))
+    expect(ansis.strip(stdout)).to.equal(heredoc(`
       === Storage
 
       Warning:            50.00 GB
       Critical:           100.00 GB
       Enforcement Action: None
       Status:             0.00 MB / 100.00 GB (Within configured quotas)
-    `))
+      `))
   })
 
   it('sends the correct quota updates to the data API', async function () {
-    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
+    fakeData.postgresQuota.update.resolves({addon: advancedAddon, quota: storageQuotaResponse})
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -80,7 +75,7 @@ describe('data:pg:quotas:update', function () {
   })
 
   it('sets the warning_gb to null when the warning flag is set to "none"', async function () {
-    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
+    fakeData.postgresQuota.update.resolves({addon: advancedAddon, quota: storageQuotaResponse})
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -95,7 +90,7 @@ describe('data:pg:quotas:update', function () {
   })
 
   it('sets the critical_gp to null when the critical flag is set to "none"', async function () {
-    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
+    fakeData.postgresQuota.update.resolves({addon: advancedAddon, quota: storageQuotaResponse})
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -122,7 +117,7 @@ describe('data:pg:quotas:update', function () {
   })
 
   it('errors when used with non-Advanced-tier add-ons', async function () {
-    fakeData.postgresQuota.update.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
+    fakeData.postgresQuota.update.rejects(new NotAdvancedDatabaseError(standardAddon, 'not an advanced-tier database'))
 
     const {error} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
