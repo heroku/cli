@@ -1,6 +1,9 @@
-import type {PostgresCredentialInfoResult as AdvancedCredentialInfo} from '@heroku/types/data'
+import type {
+  PostgresCredentialInfoResult as AdvancedCredentialInfo,
+  PostgresInfoResult,
+} from '@heroku/types/data'
 
-import type {PoolInfoResponse} from './types.js'
+type PoolInfoResponse = PostgresInfoResult['pools'][number]
 
 export function isLeaderPool(pool: PoolInfoResponse): boolean {
   return pool.name === 'leader'
