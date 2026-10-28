@@ -1,9 +1,9 @@
+import type {CredentialInfo as NonAdvancedCredentialInfo} from '@heroku/sdk/resources/data/postgres-database'
+import type {ResolvedAddOnAttachment} from '@heroku/sdk/resources/platform/add-on-attachment'
+
 import {APIClient} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import {expect} from 'chai'
 import sinon from 'sinon'
-
-import type {NonAdvancedCredentialInfo} from '../../../../src/lib/data/types.js'
 
 import {
   configVarNamesFromValue,
@@ -34,9 +34,14 @@ describe('util', function () {
     it('returns credential name and attachments', function () {
       const app = 'myapp'
       const cred = 'default'
-      const credAttachments: Required<Heroku.AddOnAttachment>[] = [
+      const credAttachments: ResolvedAddOnAttachment[] = [
         {
-          addon: {id: 'addon-id', name: 'postgres-1'} as Required<Heroku.AddOn>,
+          addon: {
+            app: {id: 'billing-app', name: app},
+            id: 'addon-id',
+            name: 'postgres-1',
+            plan: {id: 'plan-id', name: 'heroku-postgresql:standard-0'},
+          },
           app: {id: 'app-id', name: app},
           config_vars: ['DATABASE_URL'],
           created_at: '2024-01-01T00:00:00Z',

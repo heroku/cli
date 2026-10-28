@@ -1,61 +1,118 @@
+import type {RotateDatabaseCredentialPreview} from '@heroku/sdk/resources/data/database-credential'
+import type {AddOnAttachment} from '@heroku/types/3.sdk'
+
 import {runCommand} from '@heroku-cli/test-utils'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
-import {restore, SinonStub, stub} from 'sinon'
+import {SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgCredentialsRotate from '../../../../../../src/commands/data/pg/credentials/rotate.js'
 import {
-  addon,
-  advancedCredentialsAttachmentsMultiFactorResponse,
-  advancedCredentialsAttachmentsResponse,
-  advancedCredentialsMultipleAttachmentsResponse,
-  advancedCredentialsResponse,
+  advancedAddon,
   essentialAddon,
-  essentialCredentialsResponse,
   legacyEssentialAddon,
-  nonAdvancedAddon,
-  nonAdvancedCredentialsAttachmentsResponse,
-  nonAdvancedCredentialsMultipleAttachmentsResponse,
-  nonAdvancedCredentialsResponse,
+  standardAddon,
 } from '../../../../../fixtures/data/pg/fixtures.js'
+import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const heredoc = tsheredoc
 
+type AdvancedCredential = NonNullable<RotateDatabaseCredentialPreview['ownerCred']>
+type ClassicCredential = NonNullable<RotateDatabaseCredentialPreview['defaultCred']>
+
+function attachment(appName: string, namespace: null | string): AddOnAttachment {
+  return {
+    addon: {
+      app: {id: 'billing-app', name: 'myapp'},
+      id: 'addon-id',
+      name: 'addon-name',
+    },
+    app: {id: `${appName}-id`, name: appName},
+    created_at: '2025-01-01T12:00:00Z',
+    id: `${appName}-attachment`,
+    log_input_url: null,
+    name: appName,
+    namespace,
+    updated_at: '2025-01-01T12:00:00Z',
+    web_url: null,
+  }
+}
+
+function advancedCredential(name: string, type: AdvancedCredential['type'] = 'additional'): AdvancedCredential {
+  return {
+    created_at: '2025-01-01T12:00:00Z',
+    database: 'd123',
+    host: 'ec2.amazonaws.com',
+    id: `${name}-id`,
+    name,
+    port: 5432,
+    roles: [{password: 'secret', state: 'active', user: name}],
+    state: 'active',
+    type,
+  }
+}
+
+function classicCredential(name: string): ClassicCredential {
+  return {
+    credentials: [{password: 'secret', state: 'active', user: name}],
+    database: 'd123',
+    host: 'ec2.amazonaws.com',
+    name,
+    port: 5432,
+    state: 'active',
+    uuid: `${name}-uuid`,
+  }
+}
+
+type FakeData = {
+  databaseCredential: {rotate: SinonStub}
+}
+
+function buildFakeData(): FakeData {
+  return {databaseCredential: {rotate: stub()}}
+}
+
 describe('data:pg:credentials:rotate', function () {
   let confirmStub: SinonStub
+  let fakeData: FakeData
+  let sdkMock: MockSDK
 
   beforeEach(function () {
     confirmStub = stub(DataPgCredentialsRotate.prototype, 'confirmCommand').resolves()
+    fakeData = buildFakeData()
+    sdkMock = mockSDKData(fakeData)
   })
 
   afterEach(function () {
-    restore()
+    confirmStub.restore()
+    sdkMock.restore()
   })
 
   context('Advanced-tier databases', function () {
-    it('rotates a specific credential single-factor attached to a single app successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+    const owner = advancedCredential('u2vi1nt40t3mcq', 'owner')
+    const analyst = advancedCredential('analyst')
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
-        .reply(202, {})
+    it('rotates a specific credential single-factor attached to a single app successfully', async function () {
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [attachment('myapp', 'role:analyst')],
+        credToRotate: analyst,
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
+
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credential: undefined}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -69,26 +126,25 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates a specific credential attached to multiple apps successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsMultipleAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [attachment('myapp', 'role:analyst'), attachment('myapp2', 'role:analyst')],
+        credToRotate: analyst,
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credential: undefined}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -102,26 +158,25 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates a specific credential multi-factor attached to a single app successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsMultiFactorResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [attachment('myapp', 'role:analyst|proxy:false|pool:analytics')],
+        credToRotate: analyst,
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credential: undefined}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -135,25 +190,24 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates owner credential by default when no name specified', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [attachment('myapp', null)],
+        credToRotate: owner,
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/credentials/u2vi1nt40t3mcq/rotate`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credential: undefined}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -167,17 +221,18 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates all credentials successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [],
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/rotate_credentials`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credentials: {message: 'Rotation initiated for all credentials.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -185,14 +240,10 @@ describe('data:pg:credentials:rotate', function () {
         '--all',
       ])
 
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('You\'re rotating the passwords for all credentials including the owner (u2vi1nt40t3mcq) credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
-
       expect(stderr).to.equal(heredoc`
         Rotating all credentials on ⛁ advanced-horizontal-01234... done
       `)
@@ -200,19 +251,19 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates specific credential with force flag', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [attachment('myapp', 'role:analyst')],
+        credToRotate: analyst,
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`, {
-          forced: true,
-        })
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credential: undefined}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -220,9 +271,6 @@ describe('data:pg:credentials:rotate', function () {
         '--name=analyst',
         '--force',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -234,20 +282,22 @@ describe('data:pg:credentials:rotate', function () {
         Rotating analyst on ⛁ advanced-horizontal-01234... done
       `)
       expect(stdout).to.equal('')
+      expect(fakeData.databaseCredential.rotate.firstCall.args[1]).to.deep.equal({all: undefined, credName: 'analyst', forced: true})
     })
 
     it('rotates all credentials with force flag', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [],
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/rotate_credentials`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: advancedAddon, credentials: {message: 'Rotation initiated for all credentials.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -255,9 +305,6 @@ describe('data:pg:credentials:rotate', function () {
         '--all',
         '--force',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -268,59 +315,56 @@ describe('data:pg:credentials:rotate', function () {
         Rotating all credentials on ⛁ advanced-horizontal-01234... done
       `)
       expect(stdout).to.equal('')
+      expect(fakeData.databaseCredential.rotate.firstCall.args[1]).to.deep.equal({all: true, credName: undefined, forced: true})
     })
   })
 
   context('Non-Advanced-tier databases', function () {
+    const analyst = classicCredential('analyst')
+    const defaultCred = classicCredential('default')
+
     it('shows error for legacy essential databases when --name does not equal default', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [legacyEssentialAddon])
+      fakeData.databaseCredential.rotate.rejects(new Error('Legacy Essential-tier databases do not support named credentials.'))
 
       const {error} = await runCommand(DataPgCredentialsRotate, [
-        'DATABASE',
+        legacyEssentialAddon.name,
         '--app=myapp',
         '--name=analyst',
       ])
-      herokuApi.done()
       expect(error!.message).to.equal('Legacy Essential-tier databases do not support named credentials.')
     })
 
     it('shows error for essential databases when --name does not equal default', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [essentialAddon])
+      fakeData.databaseCredential.rotate.rejects(new Error('Essential-tier databases do not support named credentials.'))
 
       const {error} = await runCommand(DataPgCredentialsRotate, [
-        'DATABASE',
+        essentialAddon.name,
         '--app=myapp',
         '--name=analyst',
       ])
-      herokuApi.done()
       expect(error!.message).to.equal('Essential-tier databases do not support named credentials.')
     })
 
     it('rotates a specific credential attached to a single app successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: standardAddon,
+        attachments: [attachment('myapp', 'credential:analyst')],
+        credToRotate: analyst,
+        defaultCred,
+        isAdvancedTier: false,
+        isEssentialTier: false,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, nonAdvancedCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/analyst/credentials_rotation`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: standardAddon, credential: {message: 'Rotation initiated.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -334,26 +378,25 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates a specific credential attached to multiple apps successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsMultipleAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: standardAddon,
+        attachments: [attachment('myapp', 'credential:analyst'), attachment('myapp2', 'credential:analyst')],
+        credToRotate: analyst,
+        defaultCred,
+        isAdvancedTier: false,
+        isEssentialTier: false,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, nonAdvancedCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/analyst/credentials_rotation`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: standardAddon, credential: {message: 'Rotation initiated.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
         '--name=analyst',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -367,25 +410,24 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates default credential by default when no name specified', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: standardAddon,
+        attachments: [attachment('myapp', null)],
+        credToRotate: defaultCred,
+        defaultCred,
+        isAdvancedTier: false,
+        isEssentialTier: false,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, nonAdvancedCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/default/credentials_rotation`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: standardAddon, credential: {message: 'Rotation initiated.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -399,17 +441,18 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates all credentials successfully', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: standardAddon,
+        attachments: [],
+        defaultCred,
+        isAdvancedTier: false,
+        isEssentialTier: false,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, nonAdvancedCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials_rotation`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: standardAddon, credentials: {message: 'Rotation initiated for all credentials.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -417,14 +460,10 @@ describe('data:pg:credentials:rotate', function () {
         '--all',
       ])
 
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('You\'re rotating the passwords for all credentials including the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
-
       expect(stderr).to.equal(heredoc`
         Rotating all credentials on ⛁ standard-database... done
       `)
@@ -432,19 +471,19 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates specific credential with force flag', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: standardAddon,
+        attachments: [attachment('myapp', 'credential:analyst')],
+        credToRotate: analyst,
+        defaultCred,
+        isAdvancedTier: false,
+        isEssentialTier: false,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, nonAdvancedCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/analyst/credentials_rotation`, {
-          forced: true,
-        })
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: standardAddon, credential: {message: 'Rotation initiated.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -452,9 +491,6 @@ describe('data:pg:credentials:rotate', function () {
         '--name=analyst',
         '--force',
       ])
-
-      dataApi.done()
-      herokuApi.done()
 
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
@@ -469,17 +505,18 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('rotates all credentials with force flag', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: standardAddon,
+        attachments: [],
+        defaultCred,
+        isAdvancedTier: false,
+        isEssentialTier: false,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, nonAdvancedCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials_rotation`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: standardAddon, credentials: {message: 'Rotation initiated for all credentials.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -488,12 +525,8 @@ describe('data:pg:credentials:rotate', function () {
         '--force',
       ])
 
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
-
       expect(warningMessage).to.include('You\'re force rotating the passwords for all credentials including the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('You can\'t access any followers lagging in replication until they\'re caught up.')
@@ -504,52 +537,53 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('successfully rotates essential-tier database credential', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [essentialAddon])
-        .get(`/addons/${nonAdvancedAddon.id}/addon-attachments`)
-        .reply(200, nonAdvancedCredentialsAttachmentsResponse)
+      const essentialCred = classicCredential('a1b2c3d4e5f6g7')
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: essentialAddon,
+        attachments: [attachment('myapp', null)],
+        credToRotate: essentialCred,
+        defaultCred: essentialCred,
+        isAdvancedTier: false,
+        isEssentialTier: true,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials`)
-        .reply(200, essentialCredentialsResponse)
-        .post(`/postgres/v0/databases/${nonAdvancedAddon.id}/credentials/default/credentials_rotation`)
-        .reply(202, {})
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        return {addon: essentialAddon, credential: {message: 'Rotation initiated.'}}
+      })
 
       const {stderr, stdout} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
         '--app=myapp',
       ])
 
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
-      console.log(warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('You\'re rotating the password for the default credential.')
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
       expect(warningMessage).to.include('This command will affect the app ⬢ myapp.')
       expect(stderr).to.equal(heredoc`
-        Rotating default on ⛁ advanced-horizontal-01234... done
+        Rotating default on ⛁ essential-database... done
       `)
       expect(stdout).to.equal('')
     })
   })
 
   context('error handling', function () {
+    const owner = advancedCredential('u2vi1nt40t3mcq', 'owner')
+    const analyst = advancedCredential('analyst')
+
     it('shows error when no active credentials found', async function () {
-      const emptyCredentialsResponse = {items: []}
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [],
+        isAdvancedTier: true,
+        isEssentialTier: false,
+      }
 
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, emptyCredentialsResponse)
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+      })
 
       const {error} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -557,30 +591,25 @@ describe('data:pg:credentials:rotate', function () {
       ])
       const err = error as Error
       expect(ansis.strip(err.message)).to.equal('There are no credentials on the database ⛁ advanced-horizontal-01234.')
-
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('This action resets connections and applications using the credential.')
     })
 
     it('handles API errors gracefully with specific credential', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [attachment('myapp', 'role:analyst')],
+        credToRotate: analyst,
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/credentials/analyst/rotate`)
-        .reply(404, {
-          id: 'not_found',
-          message: 'Credential not found.',
-        })
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        throw new Error('Credential not found.')
+      })
 
       const {error} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -589,10 +618,6 @@ describe('data:pg:credentials:rotate', function () {
       ])
       const err = error as Error
       expect(ansis.strip(err.message)).to.include('Credential not found.')
-
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('You\'re rotating the password for the analyst credential.')
@@ -601,20 +626,18 @@ describe('data:pg:credentials:rotate', function () {
     })
 
     it('handles API errors gracefully with all credentials', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .get(`/addons/${addon.id}/addon-attachments`)
-        .reply(200, advancedCredentialsAttachmentsResponse)
+      const impact: RotateDatabaseCredentialPreview = {
+        addon: advancedAddon,
+        attachments: [],
+        isAdvancedTier: true,
+        isEssentialTier: false,
+        ownerCred: owner,
+      }
 
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/credentials`)
-        .reply(200, advancedCredentialsResponse)
-        .post(`/data/postgres/v1/${addon.id}/rotate_credentials`)
-        .reply(500, {
-          id: 'internal_server_error',
-          message: 'Internal server error.',
-        })
+      fakeData.databaseCredential.rotate.callsFake(async (_addonIdentity, _body, options) => {
+        await options?.beforeRotate?.(impact)
+        throw new Error('Internal server error.')
+      })
 
       const {error} = await runCommand(DataPgCredentialsRotate, [
         'DATABASE',
@@ -623,10 +646,6 @@ describe('data:pg:credentials:rotate', function () {
       ])
       const err = error as Error
       expect(ansis.strip(err.message)).to.include('Internal server error.')
-
-      dataApi.done()
-      herokuApi.done()
-
       const warningMessage = ansis.strip(confirmStub.firstCall.args[0].warningMessage)
       expect(confirmStub.calledOnce).to.be.true
       expect(warningMessage).to.include('You\'re rotating the passwords for all credentials including the owner (u2vi1nt40t3mcq) credential.')

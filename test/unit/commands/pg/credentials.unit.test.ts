@@ -212,4 +212,43 @@ describe('pg:credentials', function () {
     const callArgs = tableStub.firstCall.args
     expect(callArgs[2]).to.include({maxWidth: 'none', overflow: 'truncate'})
   })
+
+  // Targets coverage gaps in the local presentCredentialAttachments sort
+  // (src/commands/pg/credentials.ts). Same-app vs foreign hits isForeignApp, and
+  // two foreign attachments with the same name fall through to the app-name
+  // comparator. Remove once pg:credentials is migrated to use @heroku/sdk.
+  describe('attachment sorting', function () {
+    it('sorts the local-app attachment ahead of foreign-app attachments, then by app name', async function () {
+      const sortCredentials = [
+        {
+          credentials: [], database: 'd123', host: 'localhost', name: 'default', port: 5442, state: 'active', uuid: 'cccc',
+        },
+      ]
+      const mixedAttachments = [
+        {app: {name: 'zeta-app'}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
+        {app: {name: 'myapp'}, name: 'DATABASE', namespace: null},
+        {app: {}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
+        {app: {name: 'alpha-app'}, name: 'HEROKU_POSTGRESQL_PINK', namespace: null},
+      ]
+
+      api.post('/actions/addon-attachments/resolve', {addon_attachment: 'DATABASE_URL', app: 'myapp'})
+        .reply(200, [{addon}])
+        .get('/addons/1/addon-attachments')
+        .reply(200, mixedAttachments)
+      sdkMock = mockSDKData({postgresDatabase: {listCredentials: stub().resolves(sortCredentials)}})
+
+      const {stdout} = await runCommand(Cmd, ['--app', 'myapp'])
+
+      const normalized = normalizeTableOutput(stripAppIcon(stdout))
+      const localIndex = normalized.indexOf('as database')
+      const alphaIndex = normalized.indexOf('on alpha-app app')
+      const zetaIndex = normalized.indexOf('on zeta-app app')
+
+      expect(localIndex).to.be.greaterThan(-1)
+      expect(localIndex).to.be.lessThan(alphaIndex)
+      expect(alphaIndex).to.be.lessThan(zetaIndex)
+      // the local attachment omits the "on <app> app" suffix since it isn't foreign
+      expect(normalized).not.to.include('as database on')
+    })
+  })
 })

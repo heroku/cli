@@ -1,14 +1,16 @@
-import {flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
-import {Args, ux} from '@oclif/core'
+import type {PostgresCredentialInfoResult as AdvancedCredentialInfo} from '@heroku/types/data'
 
-import type {CredentialInfo, CredentialsInfo} from '../../../../lib/data/types.js'
+import {flags as Flags} from '@heroku-cli/command'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {databaseCredentialExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/database-credential'
+import {parseAttachmentFactors} from '@heroku/sdk/resources/data/postgres-database'
+import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
 import {sortByOwnerAndName} from '../../../../lib/data/credential-utils.js'
-import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
 import {presentCredentialAttachments} from '../../../../lib/pg/util.js'
+import {createSDK} from '../../../../lib/sdk.js'
 import {huxTableNoWrapOptions} from '../../../../lib/utils/table-utils.js'
 
 export default class DataPgCredentialsIndex extends BaseCommand {
@@ -32,25 +34,32 @@ export default class DataPgCredentialsIndex extends BaseCommand {
     const {args, flags} = await this.parse(DataPgCredentialsIndex)
     const {app} = flags
     const {database} = args
+    const {data, platform} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions]})
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const {body: attachments} = await this.heroku.get<Required<Heroku.AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`)
+    let addon
+    let credentials: AdvancedCredentialInfo[]
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
-      const appAttachment = attachments.find(a => a.app.name === app)
-      const suggestedDatabase = appAttachment?.name || database
-      ux.error('You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku pg:credentials ${suggestedDatabase} -a ${app}`)} instead.`)
+    try {
+      const result = await data.databaseCredential.list(database, {appIdentity: app})
+      addon = result.addon
+      credentials = result.credentials.items
+    } catch (error) {
+      if (error instanceof NotAdvancedDatabaseError) {
+        const attachments = await platform.addOnAttachment.listByAddOn(error.addon.id)
+        const appAttachment = attachments.find(a => a.app.name === app)
+        const suggestedDatabase = appAttachment?.name || database
+        ux.error('You can only use this command on Advanced-tier databases.\n'
+            + `Use ${color.code(`heroku pg:credentials ${suggestedDatabase} -a ${app}`)} instead.`)
+      }
+
+      throw error
     }
 
-    const {body: {items: credentials}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`)
-
+    const attachments = await platform.addOnAttachment.listByAddOn(addon.id)
     const sortedCredentials = sortByOwnerAndName(credentials)
 
-    const presentCredential = (cred: CredentialInfo): string => {
-      let credAttachments = [] as Required<Heroku.AddOnAttachment>[]
-      credAttachments = cred.type === 'owner'
+    const presentCredential = (cred: AdvancedCredentialInfo): string => {
+      const credAttachments = cred.type === 'owner'
         ? attachments.filter(a => {
           const attachmentRole = parseAttachmentFactors(a.namespace).role
           return !attachmentRole || attachmentRole === cred.name
@@ -63,7 +72,8 @@ export default class DataPgCredentialsIndex extends BaseCommand {
       return presentCredentialAttachments(app, credAttachments, sortedCredentials, cred.name)
     }
 
-    hux.table(credentials, {
+    // hux.table needs Record<string, unknown>; the SDK's interface-based PostgresCredentialInfoResult has no implicit index signature.
+    hux.table<AdvancedCredentialInfo & Record<string, unknown>>(credentials as (AdvancedCredentialInfo & Record<string, unknown>)[], {
       Credential: {
         get: presentCredential,
       },

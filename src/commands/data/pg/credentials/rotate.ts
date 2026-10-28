@@ -1,12 +1,16 @@
+import type {AddOnAttachment} from '@heroku/types/3.sdk'
+import type {PostgresCredentialInfoResult as AdvancedCredentialInfo} from '@heroku/types/data'
+
 import {flags as Flags} from '@heroku-cli/command'
-import {AddOn, AddOnAttachment} from '@heroku-cli/schema'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {databaseCredentialExtensions} from '@heroku/sdk/extensions/data'
+import {isAdvancedCredential, CredentialInfo as NonAdvancedCredentialInfo, parseAttachmentFactors} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 
-import type {CredentialInfo, CredentialsInfo, NonAdvancedCredentialInfo} from '../../../../lib/data/types.js'
-
 import BaseCommand from '../../../../lib/data/base-command.js'
-import {parseAttachmentFactors} from '../../../../lib/data/parse-attachment-factors.js'
+import {createSDK} from '../../../../lib/sdk.js'
+
+type CredentialInfo = AdvancedCredentialInfo | NonAdvancedCredentialInfo
 
 export default class Rotate extends BaseCommand {
   static args = {
@@ -39,81 +43,61 @@ export default class Rotate extends BaseCommand {
     const {args, flags} = await this.parse(Rotate)
     const {database} = args
     const {all, app, confirm, force, name} = flags
+    const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions]})
+    const {confirmCommand, getCredAttachmentsAndUniqueAppNames, renderWarnings} = this
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    try {
+      await data.databaseCredential.rotate(database, {all, credName: name, forced: force}, {
+        appIdentity: app,
+        async beforeRotate(preview) {
+          const {
+            addon,
+            attachments,
+            credToRotate,
+            defaultCred,
+            isAdvancedTier,
+            isEssentialTier,
+            ownerCred,
+          } = preview
 
-    const isAdvancedTier = utils.pg.isAdvancedDatabase(addon)
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon)
+          const warnings = isAdvancedTier
+            ? renderWarnings({
+              all, credToRotate, force, isAdvancedTier, isEssentialTier, ownerCred,
+            })
+            : renderWarnings({
+              all, credToRotate, defaultCred, force, isAdvancedTier, isEssentialTier,
+            })
 
-    if (!isAdvancedTier && name && name !== 'default') {
-      if (utils.pg.isLegacyEssentialDatabase(addon)) {
-        ux.error('Legacy Essential-tier databases do not support named credentials.')
-      }
+          if (credToRotate && !all) {
+            const {credAttachments, uniqueAppNames} = getCredAttachmentsAndUniqueAppNames(isEssentialTier, credToRotate, attachments)
+            if (credAttachments.length > 0) {
+              warnings.push(`This command will affect the app${(credAttachments.length > 1) ? 's' : ''} ${uniqueAppNames}.`)
+            }
+          }
 
-      if (isEssentialTier) {
-        ux.error('Essential-tier databases do not support named credentials.')
-      }
-    }
+          await confirmCommand({comparison: app, confirmation: confirm, warningMessage: `Destructive Action\n${warnings.join('\n')}`})
 
-    const {attachments, availableCreds} = await this.getCredsAndAttachments(isAdvancedTier, addon)
+          if (all) {
+            ux.action.start(`Rotating all credentials on ${color.datastore(addon.name)}`)
+            return
+          }
 
-    const {credToRotate, defaultCred, ownerCred} = this.getCredToRotate(isAdvancedTier, availableCreds, isEssentialTier, name)
+          const finalCredName = isEssentialTier ? 'default' : credToRotate?.name
+          if (!finalCredName) {
+            ux.error(`There are no credentials on the database ${color.datastore(addon.name)}.`, {exit: 1})
+          }
 
-    const warnings = isAdvancedTier
-      ? this.renderWarnings({
-        all, credToRotate, force, isAdvancedTier, isEssentialTier, ownerCred,
+          ux.action.start(`Rotating ${color.name(finalCredName)} on ${color.datastore(addon.name)}`)
+        },
       })
-      : this.renderWarnings({
-        all, credToRotate, defaultCred, force, isAdvancedTier, isEssentialTier,
-      })
-
-    if (credToRotate && !all) {
-      const {credAttachments, uniqueAppNames} = this.getCredAttachmentsAndUniqueAppNames(isAdvancedTier, isEssentialTier, credToRotate, attachments)
-      if (credAttachments.length > 0) {
-        warnings.push(`This command will affect the app${(credAttachments.length > 1) ? 's' : ''} ${uniqueAppNames}.`)
-      }
-    }
-
-    await this.confirmCommand({comparison: app, confirmation: confirm, warningMessage: `Destructive Action\n${warnings.join('\n')}`})
-
-    const body = {body: {forced: force ?? undefined}}
-
-    if (all) {
-      try {
-        ux.action.start(`Rotating all credentials on ${color.datastore(addon.name)}`)
-        await (isAdvancedTier
-          ? this.dataApi.post(`/data/postgres/v1/${addon.id}/rotate_credentials`, body)
-          : this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials_rotation`, body)
-        )
-        ux.action.stop()
-      } catch (error) {
-        ux.action.stop('!')
-        throw error
-      }
-    } else {
-      const credName = isEssentialTier ? 'default' : credToRotate?.name
-
-      if (!credName) {
-        ux.error(`There are no credentials on the database ${color.datastore(addon.name)}.`, {exit: 1})
-      }
-
-      try {
-        ux.action.start(`Rotating ${color.name(credName)} on ${color.datastore(addon.name)}`)
-        await (isAdvancedTier
-          ? this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}/rotate`, body)
-          : this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}/credentials_rotation`, body)
-        )
-        ux.action.stop()
-      } catch (error) {
-        ux.action.stop('!')
-        throw error
-      }
+      ux.action.stop()
+    } catch (error) {
+      ux.action.stop('!')
+      throw error
     }
   }
 
   private getCredAttachmentsAndUniqueAppNames(
-    isAdvancedTier: boolean,
     isEssentialTier: boolean,
     credToRotate: CredentialInfo,
     attachments: AddOnAttachment[],
@@ -123,7 +107,7 @@ export default class Rotate extends BaseCommand {
   } {
     let uniqueAppNames = ''
     const credAttachments = attachments.filter(a => {
-      if (isAdvancedTier) {
+      if (isAdvancedCredential(credToRotate)) {
         const attachmentRoleFactor = parseAttachmentFactors(a.namespace).role
         return attachmentRoleFactor === credToRotate.name || (credToRotate.type === 'owner' && !attachmentRoleFactor)
       }
@@ -142,48 +126,6 @@ export default class Rotate extends BaseCommand {
     }
 
     return {credAttachments, uniqueAppNames}
-  }
-
-  private async getCredsAndAttachments(isAdvancedTier: boolean, addon: AddOn): Promise<{
-    attachments: AddOnAttachment[]
-    availableCreds: CredentialInfo[],
-  }> {
-    let availableCreds: CredentialInfo[]
-    let attachments: AddOnAttachment[]
-
-    if (isAdvancedTier) {
-      [{body: {items: availableCreds}}, {body: attachments}] = await Promise.all([
-        this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`),
-        this.heroku.get<Required<AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`),
-      ])
-    } else {
-      [{body: availableCreds}, {body: attachments}] = await Promise.all([
-        this.dataApi.get<NonAdvancedCredentialInfo[]>(`/postgres/v0/databases/${addon.id}/credentials`),
-        this.heroku.get<Required<AddOnAttachment>[]>(`/addons/${addon.id}/addon-attachments`),
-      ])
-    }
-
-    return {attachments, availableCreds}
-  }
-
-  private getCredToRotate(isAdvancedTier: boolean, availableCreds: CredentialInfo[], isEssentialTier: boolean, credName?: string): {
-    credToRotate: CredentialInfo | undefined,
-    defaultCred: CredentialInfo | undefined
-    ownerCred: CredentialInfo | undefined,
-  } {
-    let credToRotate: CredentialInfo | undefined
-    let ownerCred: CredentialInfo | undefined
-    let defaultCred: CredentialInfo | undefined
-
-    if (isAdvancedTier) {
-      ownerCred = availableCreds.find((cred: CredentialInfo) => cred.type === 'owner')
-      credToRotate = credName ? availableCreds.find((cred: CredentialInfo) => cred.name === credName) : ownerCred
-    } else {
-      defaultCred = isEssentialTier ? availableCreds[0] : availableCreds.find((cred: CredentialInfo) => cred.name === 'default')
-      credToRotate = credName && !isEssentialTier ? availableCreds.find((cred: CredentialInfo) => cred.name === credName) : defaultCred
-    }
-
-    return {credToRotate, defaultCred, ownerCred}
   }
 
   private renderWarnings({

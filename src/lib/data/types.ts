@@ -338,7 +338,3 @@ type TableLimit = {
   limit: number
   name: 'table-limit'
 }
-
-export function isAdvancedCredentialInfo(credential: CredentialInfo): credential is AdvancedCredentialInfo {
-  return 'type' in credential
-}

@@ -1,5 +1,6 @@
 import type {APIClient} from '@heroku-cli/command'
-import type {AddOnAttachment} from '@heroku-cli/schema'
+import type {AddOnAttachment} from '@heroku/types/3.sdk'
+import type {PostgresCredentialInfoResult as AdvancedCredentialInfo} from '@heroku/types/data'
 
 import {
   color,
@@ -7,9 +8,12 @@ import {
   pg,
   utils,
 } from '@heroku/heroku-cli-util'
+import {
+  isAdvancedCredential,
+  type CredentialInfo as NonAdvancedCredentialInfo,
+} from '@heroku/sdk/resources/data/postgres-database'
 
 import {renderAttachment} from '../../commands/addons/index.js'
-import {type CredentialInfo, isAdvancedCredentialInfo, type NonAdvancedCredentialInfo} from '../../lib/data/types.js'
 import {multiSortCompareFn} from '../utils/multisort.js'
 
 export function essentialPlan(addon: pg.ExtendedAddon | pg.ExtendedAddonAttachment['addon']) {
@@ -20,16 +24,16 @@ export function formatResponseWithCommands(response: string): string {
   return response.replaceAll(/`(.*?)`/g, (_, word) => color.code(word))
 }
 
-export function presentCredentialAttachments(app: string, credAttachments: Required<AddOnAttachment>[], credentials: CredentialInfo[], cred: string) {
-  const isForeignApp = (attOrAddon: Required<AddOnAttachment>) => attOrAddon.app.name === app ? 0 : 1
+export function presentCredentialAttachments(app: string, credAttachments: AddOnAttachment[], credentials: AdvancedCredentialInfo[] | NonAdvancedCredentialInfo[], cred: string) {
+  const isForeignApp = (attOrAddon: AddOnAttachment) => attOrAddon.app.name === app ? 0 : 1
   const comparators = [
-    (a: Required<AddOnAttachment>, b: Required<AddOnAttachment>) => {
+    (a: AddOnAttachment, b: AddOnAttachment) => {
       const fa = isForeignApp(a)
       const fb = isForeignApp(b)
       return fa < fb ? -1 : (fb < fa ? 1 : 0)
     },
-    (a: Required<AddOnAttachment>, b: Required<AddOnAttachment>) => a.name.localeCompare(b.name),
-    (a: Required<AddOnAttachment>, b: Required<AddOnAttachment>) => a.app?.name?.localeCompare(b.app?.name ?? '') ?? 0,
+    (a: AddOnAttachment, b: AddOnAttachment) => a.name.localeCompare(b.name),
+    (a: AddOnAttachment, b: AddOnAttachment) => a.app?.name?.localeCompare(b.app?.name ?? '') ?? 0,
   ]
   credAttachments.sort(multiSortCompareFn(comparators))
   // render each attachment under the credential
@@ -38,8 +42,7 @@ export function presentCredentialAttachments(app: string, credAttachments: Requi
     return renderAttachment(attachment, app, isLast)
   })
 
-  // We would use utils.pg.isAdvancedDatabase from @heroku/heroku-cli-util, but we're not passing the add-on as a parameter.
-  if (credentials.length > 0 && isAdvancedCredentialInfo(credentials[0])) {
+  if (credentials.length > 0 && isAdvancedCredential(credentials[0])) {
     return [color.name(cred), ...attLines].join('\n') + '\n'
   }
 

@@ -1,9 +1,12 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {databaseCredentialExtensions} from '@heroku/sdk/extensions/data'
+import {isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
+import {createSDK} from '../../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -28,36 +31,23 @@ export default class DataPgCredentialsCreate extends BaseCommand {
     const {args, flags} = await this.parse(DataPgCredentialsCreate)
     const {app, name} = flags
     const {database} = args
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
+    const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions]})
 
-    if (isEssentialTier) {
-      ux.error('You can\'t create custom credentials on Essential-tier databases.')
-    }
-
-    const data = {name}
-    let attachCmd = ''
     try {
       ux.action.start(`Creating credential ${color.name(name)}`)
-      if (utils.pg.isAdvancedDatabase(addon)) {
-        await this.dataApi.post(`/data/postgres/v1/${addon.id}/credentials`, {body: data})
-        attachCmd = `heroku data:pg:attachments:create ${addon.name} --credential ${name} -a ${app}`
-      } else {
-        await this.dataApi.post(`/postgres/v0/databases/${addon.id}/credentials`, {body: data})
-        attachCmd = `heroku addons:attach ${addon.name} --credential ${name} -a ${app}`
-      }
-
+      const {addon} = await data.databaseCredential.create(database, {name}, {appIdentity: app})
+      const attachCmd = isAdvancedDatabase(addon)
+        ? `heroku data:pg:attachments:create ${addon.name} --credential ${name} -a ${app}`
+        : `heroku addons:attach ${addon.name} --credential ${name} -a ${app}`
+      const psqlCmd = `heroku pg:psql ${addon.name} -a ${app}`
+      ux.stdout(heredoc`
+      Attach the credential to the apps you want to use it in with ${color.code(attachCmd)}.
+      Define the new grants for the credential in Postgres with ${color.code(psqlCmd)}.
+    `)
       ux.action.stop()
     } catch (error) {
       ux.action.stop(color.red('!'))
       throw error
     }
-
-    const psqlCmd = `heroku pg:psql ${addon.name} -a ${app}`
-    ux.stdout(heredoc`
-      Attach the credential to the apps you want to use it in with ${color.code(attachCmd)}.
-      Define the new grants for the credential in Postgres with ${color.code(psqlCmd)}.
-    `)
   }
 }

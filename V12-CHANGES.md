@@ -23,6 +23,10 @@ Many commands now resolve add-ons, add-on attachments, and Postgres databases th
 
 - `certs:add` matches wildcard certificates against your app's domains more strictly: a `*.example.com` certificate now matches only direct subdomains (e.g. `www.example.com`), no longer matching deeper or trailing-suffix domains
 
+## Data commands
+- `data:pg:credentials:url` error messages ("no active credentials", "credential isn't active", "Essential-tier databases don't support named credentials") are now plain text. Previously the app/database name and credential name in these messages were colorized (`color.datastore`, `color.name`) with a `⛁` icon on the database name; the SDK throws plain, uncolored `Error`s instead.
+- `data:pg:credentials:destroy`'s "you must detach the credential" error is now plain text. Previously the credential name and app name(s) in this message were colorized (`color.name`, `color.app`); the SDK throws a plain, uncolored `Error` instead.
+
 ## Ps commands
 
 - `ps:type` (aliases `ps:resize`, `dyno:resize`) now reads and resizes the dyno formation through `@heroku/sdk` (`platform.formation.list`, `platform.dyno.scale`) and detects shielded spaces via `platform.app.isShielded` instead of raw `this.heroku.*` calls. These requests previously sent no explicit `Accept` header (`application/vnd.heroku+json; version=3`) and now default to `application/vnd.heroku+json; version=3.sdk`; the schemas are byte-identical, so the rendered tables and the Eco cost message are unchanged.

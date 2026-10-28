@@ -1,12 +1,12 @@
 import {flags as Flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {parseAttachmentFactors} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../lib/data/base-command.js'
 import {formatQuotaStatus} from '../../../lib/data/display-quota.js'
-import {parseAttachmentFactors} from '../../../lib/data/parse-attachment-factors.js'
 import {InfoResponse, PoolInfoResponse, Quota} from '../../../lib/data/types.js'
 
 const heredoc = tsheredoc

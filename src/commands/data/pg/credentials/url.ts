@@ -1,18 +1,11 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {color, hux, utils} from '@heroku/heroku-cli-util'
+import {color, hux} from '@heroku/heroku-cli-util'
+import {databaseCredentialExtensions} from '@heroku/sdk/extensions/data'
 import {Args, ux} from '@oclif/core'
-import {URL} from 'node:url'
 import tsheredoc from 'tsheredoc'
 
-import type {
-  AdvancedCredentialInfo,
-  CredentialInfo,
-  CredentialsInfo,
-  NonAdvancedCredentialInfo,
-} from '../../../../lib/data/types.js'
-
 import BaseCommand from '../../../../lib/data/base-command.js'
-import {isAdvancedCredentialInfo} from '../../../../lib/data/types.js'
+import {createSDK} from '../../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -40,64 +33,18 @@ export default class Url extends BaseCommand {
     const {args, flags} = await this.parse(Url)
     const {app, name} = flags
     const {database} = args
+    const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions]})
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
-    const isAdvancedTier = utils.pg.isAdvancedDatabase(addon)
-    const isEssentialTier = utils.pg.isEssentialDatabase(addon) || utils.pg.isLegacyEssentialDatabase(addon)
+    const {credentialConnectionInfo: credentialInfo} = await data.databaseCredential.getUrl(database, name, {appIdentity: app})
 
-    if (isEssentialTier && name && name !== 'default') {
-      ux.error('Essential-tier databases don\'t support named credentials.', {exit: 1})
-    }
-
-    let credName: string | undefined
-    let credInfo: CredentialInfo
-
-    if (isAdvancedTier) {
-      const {body: {items: availableCreds}} = await this.dataApi.get<CredentialsInfo>(`/data/postgres/v1/${addon.id}/credentials`)
-      const ownerCred = availableCreds.find(cred => cred.type === 'owner')
-      credName = name || ownerCred?.name
-      if (!credName) {
-        ux.error(`There are no active credentials on the database ${color.datastore(addon.name)}.`, {exit: 1})
-      }
-
-      ({body: credInfo} = await this.dataApi.get<AdvancedCredentialInfo>(`/data/postgres/v1/${addon.id}/credentials/${encodeURIComponent(credName)}`))
-    } else {
-      credName = name ?? 'default';
-      ({body: credInfo} = await this.dataApi.get<NonAdvancedCredentialInfo>(`/postgres/v0/databases/${addon.id}/credentials/${encodeURIComponent(credName)}`))
-    }
-
-    const activeCreds = isAdvancedCredentialInfo(credInfo)
-      ? credInfo.roles.find(c => c.state === 'active')
-      : credInfo.credentials.find(c => c.state === 'active')
-    if (!activeCreds) {
-      ux.error(`The credential ${color.name(credName)} isn't active on the database ${color.datastore(addon.name)}.`, {exit: 1})
-    }
-
-    const creds = {
-      ...addon,
-      database: credInfo.database,
-      host: credInfo.host,
-      password: activeCreds.password,
-      port: credInfo.port,
-      user: activeCreds.user,
-    }
-
-    const connUrl = new URL(`postgres://${creds.host}/${creds.database}`)
-    connUrl.port = creds.port.toString()
-    if (creds.user && creds.password) {
-      connUrl.username = creds.user
-      connUrl.password = creds.password
-    }
-
-    hux.styledHeader(`Connection information for ${color.name(credName)} credential:`)
+    hux.styledHeader(`Connection information for ${color.name(credentialInfo.credName)} credential:`)
 
     ux.stdout(heredoc`
       Connection info string:
-      ${color.info(`"dbname=${creds.database} host=${creds.host} port=${creds.port} user=${creds.user} password=${creds.password} sslmode=require"`)}
+      ${color.info(`"dbname=${credentialInfo.database} host=${credentialInfo.host} port=${credentialInfo.port} user=${credentialInfo.user} password=${credentialInfo.password} sslmode=require"`)}
 
       Connection URL:
-      ${color.info(connUrl.toString())}
+      ${color.info(credentialInfo.url)}
     `)
   }
 }
