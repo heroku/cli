@@ -437,7 +437,7 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.match(/Source:\s+⛁ postgresql-cubic-12345 \(STANDARD_DB\) - Postgres 16\.4 - Available/)
       expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\) - Postgres 17\.5 - Migrating/)
       expect(stdout).to.match(/Method:\s+Streaming/)
-      expect(stdout).to.match(/Migration configured at:\s+2026-10-21 16:00 UTC/)
+      expect(stdout).to.match(/Configured at:\s+2026-10-21 16:00 UTC/)
       expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
 
@@ -454,10 +454,10 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('Start the migration')
-      expect(stdout).to.contain('Cancel the migration')
-      expect(stdout).not.to.contain('- Start the migration (')
-      expect(stdout).not.to.contain('- Cancel the migration (')
+      expect(stdout).to.match(/^ {2}Start *$/m)
+      expect(stdout).to.match(/^ {2}Cancel *$/m)
+      expect(stdout).not.to.contain('- Start (')
+      expect(stdout).not.to.contain('- Cancel (')
     })
 
     it('shows why the API doesn\'t allow starting a migration', async function () {
@@ -476,7 +476,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Start the migration (the migration is running)')
+      expect(stdout).to.contain('- Start (the migration is running)')
     })
 
     it('disables starting a migration when the API doesn\'t allow it or explain why', async function () {
@@ -491,7 +491,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Start the migration (Disabled)')
+      expect(stdout).to.contain('- Start (Disabled)')
     })
 
     it('shows why the API doesn\'t allow canceling a migration', async function () {
@@ -510,7 +510,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Cancel the migration (the migration is promoting)')
+      expect(stdout).to.contain('- Cancel (the migration is promoting)')
     })
 
     it('disables canceling a migration when the API doesn\'t allow it or explain why', async function () {
@@ -525,7 +525,7 @@ describe('data:pg:migrate', function () {
 
       expect(error).to.be.undefined
       expect(stderr).to.equal('')
-      expect(stdout).to.contain('- Cancel the migration (Disabled)')
+      expect(stdout).to.contain('- Cancel (Disabled)')
     })
 
     it('refreshes the migration details when Refresh is selected', async function () {
@@ -534,7 +534,7 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\n',         // Manage migration: > Refresh migration details
+        '\n',         // Manage migration: > Refresh
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
       ]
@@ -554,7 +554,7 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\n',         // Manage migration: > Refresh migration details
+        '\n',         // Manage migration: > Refresh
         '\u001B[A\n', // Main menu: > Exit
       ]
 
@@ -578,7 +578,7 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\n',         // Manage migration: > Refresh migration details
+        '\n',         // Manage migration: > Refresh
         '\u001B[A\n', // Main menu: > Exit
       ]
 
@@ -611,7 +611,7 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('')
       expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\)$/m)
       expect(stdout).not.to.contain('Method:')
-      expect(stdout).not.to.contain('Migration configured at:')
+      expect(stdout).not.to.contain('Configured at:')
       expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
   })
@@ -658,7 +658,7 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\n',         // Manage migration: > Refresh migration details
+        '\n',         // Manage migration: > Refresh
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
       ]
@@ -767,7 +767,7 @@ describe('data:pg:migrate', function () {
       // Verify the details of the new migration are shown
       expect(stdout).to.match(/Source:\s+⛁ postgresql-convex-12345 \(PREMIUM_DB\)/)
       expect(stdout).to.match(/Destination:\s+⛁ postgresql-obscured-12345 \(OTHER_ADVANCED_DB\) - Postgres 17\.5 - Available/)
-      expect(stdout).to.match(/Migration configured at:\s+2026-10-21 17:30 UTC/)
+      expect(stdout).to.match(/Configured at:\s+2026-10-21 17:30 UTC/)
       // Verify the new migration is shown on the configured migrations table
       expect(stdout).to.match(/⛁ postgresql-convex-12345\s+⛁ postgresql-obscured-12345\s+Snapshot\s+Preparing databases/)
     })
@@ -1187,7 +1187,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\n', // Manage migration: > Start the migration
+        '\u001B[B\n', // Manage migration: > Start
         '\n',         // Confirm to start migration: > Confirm
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
@@ -1200,7 +1200,7 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after starting the migration
       expect(stdout).to.match(/Status:\s+Migrating data/)
-      expect(stdout).to.contain('- Start the migration (the migration is running)')
+      expect(stdout).to.contain('- Start (the migration is running)')
     })
 
     it('goes back to the migration details without starting the migration', async function () {
@@ -1210,7 +1210,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\n', // Manage migration: > Start the migration
+        '\u001B[B\n', // Manage migration: > Start
         '\u001B[A\n', // Confirm to start migration: > Go back
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
@@ -1262,7 +1262,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',                 // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\u001B[B\n', // Manage migration: > Cancel the migration
+        '\u001B[B\u001B[B\n', // Manage migration: > Cancel
         '\n',                 // Confirm to cancel migration: > Confirm
         '\u001B[A\n',         // Manage migration: > Go back
         '\u001B[A\n',         // Main menu: > Exit
@@ -1276,8 +1276,8 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
       // Verify the migration details are refreshed after canceling the migration
       expect(stdout).to.match(/Status:\s+Canceling migration\. You can start a new migration once this finishes\./)
-      expect(stdout).to.contain('- Start the migration (the migration is being canceled)')
-      expect(stdout).to.contain('- Cancel the migration (the migration is already being canceled)')
+      expect(stdout).to.contain('- Start (the migration is being canceled)')
+      expect(stdout).to.contain('- Cancel (the migration is already being canceled)')
     })
 
     it('cancels a running migration', async function () {
@@ -1296,7 +1296,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\n', // Manage migration: > Cancel the migration
+        '\u001B[B\n', // Manage migration: > Cancel
         '\n',         // Confirm to cancel migration: > Confirm
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
@@ -1328,7 +1328,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\n', // Manage migration: > Cancel the migration
+        '\u001B[B\n', // Manage migration: > Cancel
         '\n',         // Confirm to cancel migration: > Confirm
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit
@@ -1348,7 +1348,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',                 // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\u001B[B\n', // Manage migration: > Cancel the migration
+        '\u001B[B\u001B[B\n', // Manage migration: > Cancel
         '\n',                 // Confirm to cancel migration: > Confirm
       ]
 
@@ -1364,7 +1364,7 @@ describe('data:pg:migrate', function () {
       // Simulate the user selections
       mockedStdinInput = [
         '\n',                 // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\u001B[B\n', // Manage migration: > Cancel the migration
+        '\u001B[B\u001B[B\n', // Manage migration: > Cancel
         '\u001B[A\n',         // Confirm to cancel migration: > Go back
         '\u001B[A\n',         // Manage migration: > Go back
         '\u001B[A\n',         // Main menu: > Exit
@@ -1741,7 +1741,7 @@ describe('data:pg:migrate', function () {
 
       mockedStdinInput = [
         '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
-        '\u001B[B\n', // Manage migration: > Start the migration
+        '\u001B[B\n', // Manage migration: > Start
         '\n',         // Confirm to start migration: > Confirm
         '\u001B[A\n', // Manage migration: > Go back
         '\u001B[A\n', // Main menu: > Exit

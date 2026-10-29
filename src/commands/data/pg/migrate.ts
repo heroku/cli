@@ -614,10 +614,10 @@ export default class DataPgMigrate extends BaseCommand {
       )
       action = (await this.prompt<{action: string}>({
         choices: [
-          {name: 'Refresh migration details', value: '__refresh'},
+          {name: 'Refresh', value: '__refresh'},
           // The API decides whether a migration can be started or canceled, and why not
-          actionChoice('Start the migration', '__start_migration', Boolean(migration.can_start), migration.start_disabled_reason),
-          actionChoice('Cancel the migration', '__cancel_migration', Boolean(migration.can_cancel), migration.cancel_disabled_reason),
+          actionChoice('Start', '__start_migration', Boolean(migration.can_start), migration.start_disabled_reason),
+          actionChoice('Cancel', '__cancel_migration', Boolean(migration.can_cancel), migration.cancel_disabled_reason),
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
@@ -656,7 +656,7 @@ export default class DataPgMigrate extends BaseCommand {
       Source: this.databaseDetails(sourceDatabase, sourceDatabase?.version, sourceDatabase?.status),
       Destination: this.databaseDetails(targetDatabase, targetDatabase?.info?.version, hux.toTitleCase(targetDatabase?.info?.status)),
       Method: this.methodLabel(migration),
-      'Migration configured at': this.formatTimestamp(migration.created_at),
+      'Configured at': this.formatTimestamp(migration.created_at),
       Status: migration.status_description,
     }
     /* eslint-enable perfectionist/sort-objects */
