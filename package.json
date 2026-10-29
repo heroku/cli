@@ -373,7 +373,7 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.5",
+    "serialize-javascript": "^7.1.4",
     "node-notifier": {
       "uuid": "^11.1.1"
     },
