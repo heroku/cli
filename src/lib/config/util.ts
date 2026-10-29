@@ -7,18 +7,56 @@ import tmp from 'tmp'
 
 const editSignalHandlers = new WeakSet<NodeJS.SignalsListener>()
 type EditSignalHandler = {
-  interrupt: (hasOtherOwner: boolean) => void
+  interrupt: (hasOtherOwner: boolean) => Promise<void>
   reportCleanupFailure: () => void
+}
+
+type PendingEditSignal = {
+  hasOtherOwner: boolean
 }
 
 const editSignalHandlerCallbacks = new Map<NodeJS.Signals, Map<NodeJS.SignalsListener, EditSignalHandler>>()
 const handlingEditSignals = new Set<NodeJS.Signals>()
+const pendingEditSignals = new Map<NodeJS.Signals, PendingEditSignal>()
+const pendingEditSignalRedeliveries: NodeJS.Signals[] = []
+
+const handleEditSignal = (signal: NodeJS.Signals, pending: PendingEditSignal) => {
+  const activeEdits = [...(editSignalHandlerCallbacks.get(signal)?.values() ?? [])]
+  handlingEditSignals.add(signal)
+  Promise.all(activeEdits.map(edit => edit.interrupt(pending.hasOtherOwner)))
+    .catch(() => {})
+    .finally(() => {
+      if (!pending.hasOtherOwner) {
+        for (const edit of activeEdits) edit.reportCleanupFailure()
+        pendingEditSignalRedeliveries.push(signal)
+      }
+
+      handlingEditSignals.delete(signal)
+
+      const nextSignal = pendingEditSignals.keys().next().value as NodeJS.Signals | undefined
+      if (nextSignal) {
+        const nextPending = pendingEditSignals.get(nextSignal)!
+        pendingEditSignals.delete(nextSignal)
+        handleEditSignal(nextSignal, nextPending)
+      } else {
+        for (const pendingSignal of pendingEditSignalRedeliveries.splice(0)) {
+          try {
+            // Restore Node's default signal termination once, after every edit is cleaned up.
+            process.kill(process.pid, pendingSignal)
+          } catch {
+            // The interruption promise still prevents config processing.
+          }
+        }
+      }
+    })
+}
 
 export class Editor {
   async edit(input: string, options = {}) {
     let tmpFile: ReturnType<typeof tmp.fileSync> | undefined
     let removeCallbackAttempted = false
     let cleanupFailed = false
+    let cleanupCompleted = false
     let cleanupFailureReported = false
     let result: string | undefined
     let primaryError: unknown
@@ -28,9 +66,77 @@ export class Editor {
     let removeOwnedListeners = () => {}
     let removeOwnedSignalListeners = () => {}
     let removeChildListeners = () => {}
+    let removeChildExitListeners = () => {}
+    let child: ReturnType<typeof childProcess.spawn> | undefined
+    let childExitObserved = false
+    let lateChildCleanupPending = false
+    let lateChildCleanupCompleted = false
+    let childExitPromise: Promise<void> | undefined
+    let childTerminationPromise: Promise<boolean> | undefined
+
+    const childIsRunning = () => Boolean(child && !childExitObserved
+      && (child.exitCode === null || child.exitCode === undefined)
+      && (child.signalCode === null || child.signalCode === undefined))
+
+    const waitForChildExit = async (timeoutMs: number) => {
+      if (!childExitPromise) return true
+
+      let timeout: NodeJS.Timeout | undefined
+      const exited = await Promise.race([
+        childExitPromise.then(() => true),
+        new Promise<boolean>(resolve => {
+          timeout = setTimeout(() => resolve(false), timeoutMs)
+          timeout.unref?.()
+        }),
+      ])
+      if (timeout) clearTimeout(timeout)
+
+      return exited
+    }
+
+    const terminateChild = (): Promise<boolean> => {
+      if (!child || !childExitPromise) return Promise.resolve(true)
+      if (childTerminationPromise) return childTerminationPromise
+
+      childTerminationPromise = (async () => {
+        if (!childIsRunning()) return true
+
+        try {
+          child!.kill('SIGTERM')
+        } catch {
+          // The child may already have exited; wait for its exit event below.
+        }
+
+        if (await waitForChildExit(1000)) return true
+
+        if (childIsRunning()) {
+          try {
+            child!.kill('SIGKILL')
+          } catch {
+            // The child may have exited while escalating termination.
+          }
+        }
+
+        return waitForChildExit(1000)
+      })()
+
+      return childTerminationPromise
+    }
+
+    const terminateChildBeforeExit = () => {
+      if (!child || !childIsRunning()) return true
+
+      try {
+        return child.kill('SIGKILL') || !childIsRunning()
+      } catch (error) {
+        const code = error && typeof error === 'object' && 'code' in error ? error.code : undefined
+        // ESRCH means the owned child already exited; all other failures are inconclusive.
+        return code === 'ESRCH'
+      }
+    }
 
     const cleanup = () => {
-      if (!tmpFile) return
+      if (!tmpFile || cleanupCompleted) return
 
       if (!removeCallbackAttempted) {
         removeCallbackAttempted = true
@@ -53,6 +159,7 @@ export class Editor {
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
           cleanupFailed = false
+          cleanupCompleted = true
           return
         }
 
@@ -71,9 +178,21 @@ export class Editor {
       }
     }
 
+    const cleanupAfterLateChildExit = () => {
+      if (lateChildCleanupCompleted) return
+
+      lateChildCleanupPending = false
+      lateChildCleanupCompleted = true
+      cleanup()
+      reportCleanupFailure()
+      removeChildListeners()
+      removeChildExitListeners()
+    }
+
     try {
       let interruptionRejected = false
       let interruptedBySignalOwner = false
+      let interruptionCleanupPromise: Promise<void> | undefined
       let exitListenerInstalled = false
       let listenersRemoved = false
       const signalHandlers: Array<{handler: NodeJS.SignalsListener; signal: NodeJS.Signals;}> = []
@@ -86,33 +205,22 @@ export class Editor {
 
       const onExit = () => {
         removeOwnedListeners()
-        cleanup()
+        if (terminateChildBeforeExit()) cleanup()
+        else cleanupFailed = true
         reportCleanupFailure()
       }
 
       const onEditSignal = (signal: NodeJS.Signals) => {
-        if (interruptedSignal || handlingEditSignals.has(signal)) return
+        if (handlingEditSignals.has(signal)) return
 
         const hasOtherOwner = process.listeners(signal).some(listener => !editSignalHandlers.has(listener))
-        const activeEdits = Array.from(editSignalHandlerCallbacks.get(signal)?.values() ?? [])
-        handlingEditSignals.add(signal)
-        try {
-          // All edits must clean up before restoring native signal termination.
-          for (const edit of activeEdits) edit.interrupt(hasOtherOwner)
-
-          if (!hasOtherOwner) {
-            for (const edit of activeEdits) edit.reportCleanupFailure()
-
-            try {
-              // Restore Node's default signal termination once, after every edit is cleaned up.
-              process.kill(process.pid, signal)
-            } catch {
-              // The interruption promise still prevents config processing.
-            }
-          }
-        } finally {
-          handlingEditSignals.delete(signal)
+        const pending = {hasOtherOwner}
+        if (handlingEditSignals.size > 0) {
+          if (!pendingEditSignals.has(signal)) pendingEditSignals.set(signal, pending)
+          return
         }
+
+        handleEditSignal(signal, pending)
       }
 
       removeOwnedSignalListeners = () => {
@@ -130,7 +238,8 @@ export class Editor {
       }
 
       const interruptThisEdit = (signal: NodeJS.Signals, hasOtherOwner: boolean) => {
-        if (interruptedSignal) return
+        if (interruptionCleanupPromise) return interruptionCleanupPromise
+        if (interruptedSignal) return Promise.resolve()
 
         interruptedSignal = signal
         interruptedBySignalOwner = hasOtherOwner
@@ -139,8 +248,16 @@ export class Editor {
           rejectInterruption(new Error(`Editor interrupted by ${signal}`))
         }
 
-        cleanup()
-        removeOwnedSignalListeners()
+        interruptionCleanupPromise = (async () => {
+          if (await terminateChild()) {
+            if (!lateChildCleanupCompleted) cleanup()
+          } else if (childExitObserved) cleanupAfterLateChildExit()
+          else lateChildCleanupPending = true
+
+          removeOwnedSignalListeners()
+        })()
+
+        return interruptionCleanupPromise
       }
 
       removeOwnedListeners = () => {
@@ -214,7 +331,36 @@ export class Editor {
       if (interruptedSignal) throw new Error(`Editor interrupted by ${interruptedSignal}`)
 
       const editor = process.env.VISUAL || process.env.EDITOR || 'vim'
-      const child = childProcess.spawn(editor, [acquiredTmpFile.name], {stdio: 'inherit'})
+      const spawnedChild = childProcess.spawn(editor, [acquiredTmpFile.name], {stdio: 'inherit'})
+      child = spawnedChild
+      childExitPromise = new Promise<void>(resolve => {
+        const onExit = () => {
+          childExitObserved = true
+          resolve()
+          if (lateChildCleanupPending) cleanupAfterLateChildExit()
+        }
+
+        const onError = () => {
+          if (spawnedChild.pid === undefined) {
+            childExitObserved = true
+            resolve()
+            if (lateChildCleanupPending) cleanupAfterLateChildExit()
+          }
+        }
+
+        removeChildExitListeners = () => {
+          for (const [event, listener] of [['exit', onExit], ['error', onError]] as const) {
+            try {
+              spawnedChild.removeListener(event, listener)
+            } catch {
+              // Attempt to remove every listener owned by this edit.
+            }
+          }
+        }
+
+        spawnedChild.once('exit', onExit)
+        spawnedChild.once('error', onError)
+      })
 
       const editorPromise = new Promise<void>((resolve, reject) => {
         let settled = false
@@ -245,16 +391,16 @@ export class Editor {
             ['close', onClose],
           ] as const) {
             try {
-              child.removeListener(event, listener)
+              spawnedChild.removeListener(event, listener)
             } catch {
               // Attempt to remove every listener owned by this edit.
             }
           }
         }
 
-        child.on('error', onError)
-        child.on('exit', onExit)
-        child.on('close', onClose)
+        spawnedChild.on('error', onError)
+        spawnedChild.on('exit', onExit)
+        spawnedChild.on('close', onClose)
       })
 
       await Promise.race([editorPromise, interruptionPromise])
@@ -271,15 +417,19 @@ export class Editor {
         hasPrimaryError = true
       }
 
+      const childTerminated = !child || childExitObserved || await terminateChild()
+      if (!childTerminated) {
+        if (childExitObserved) cleanupAfterLateChildExit()
+        else lateChildCleanupPending = true
+      }
+
       removeChildListeners()
       removeOwnedListeners()
-      cleanup()
-      if (cleanupFailed) {
-        if (hasPrimaryError) reportCleanupFailure()
-        else {
-          primaryError = new Error('Failed to remove temporary config file')
-          hasPrimaryError = true
-        }
+
+      if (childTerminated) {
+        if (!lateChildCleanupCompleted) cleanup()
+        if (cleanupFailed) reportCleanupFailure()
+        removeChildExitListeners()
       }
     }
 

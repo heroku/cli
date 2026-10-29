@@ -222,10 +222,10 @@ const isProcessAlive = (pid: number): boolean => {
   }
 }
 
-const waitForPidExit = async (pid: number): Promise<void> => {
-  const deadline = Date.now() + cleanupDeadlineMs
+const waitForPidExit = async (pid: number, timeoutMs = exitDeadlineMs): Promise<void> => {
+  const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline && isProcessAlive(pid)) await delay(25)
-  if (isProcessAlive(pid)) throw new Error(`owned process ${pid} did not exit within ${cleanupDeadlineMs}ms`)
+  if (isProcessAlive(pid)) throw new Error(`owned process ${pid} did not exit within ${timeoutMs}ms`)
 }
 
 const stopOwnedPid = async (pid: number | undefined): Promise<void> => {
@@ -235,7 +235,7 @@ const stopOwnedPid = async (pid: number | undefined): Promise<void> => {
   while (Date.now() < deadline && isProcessAlive(pid)) await delay(25)
   if (!isProcessAlive(pid)) return
   process.kill(pid, 'SIGKILL')
-  await waitForPidExit(pid)
+  await waitForPidExit(pid, cleanupDeadlineMs)
 }
 
 const stopProcess = async (context: ProcessContext | undefined, isPtyHarness = false): Promise<void> => {
@@ -326,25 +326,6 @@ const readOptionalEditorMarker = async (markerPath: string): Promise<EditorMarke
   }
 }
 
-const readEditorHeartbeat = async (heartbeatPath: string): Promise<number> => {
-  const heartbeat = Number(await readFile(heartbeatPath, 'utf8'))
-  if (!Number.isSafeInteger(heartbeat) || heartbeat < 0) throw new Error('external editor wrote an invalid heartbeat')
-  return heartbeat
-}
-
-const waitForEditorHeartbeat = async (marker: EditorMarker, previousHeartbeat: number): Promise<number> => {
-  const deadline = Date.now() + startupDeadlineMs
-  while (Date.now() < deadline) {
-    // eslint-disable-next-line no-await-in-loop
-    const heartbeat = await readEditorHeartbeat(marker.heartbeatPath)
-    if (heartbeat > previousHeartbeat) return heartbeat
-    // eslint-disable-next-line no-await-in-loop
-    await delay(25)
-  }
-
-  throw new Error(`external editor heartbeat did not advance beyond ${previousHeartbeat} after CLI exit`)
-}
-
 const assertEditorPathRemoved = async (tempDir: string, markerPath: string): Promise<EditorMarker> => {
   const marker = await readMarker(markerPath)
   const resolvedTempDir = await realpath(tempDir)
@@ -353,7 +334,8 @@ const assertEditorPathRemoved = async (tempDir: string, markerPath: string): Pro
     resolvedEditorDir,
     `editor temp path must be inside the isolated HOME/TMPDIR: ${marker.tempPath}`,
   ).to.equal(resolvedTempDir)
-  expect(isProcessAlive(marker.editorPid), 'owned editor must remain alive until after the tempfile assertion').to.equal(true)
+  await waitForPidExit(marker.editorPid)
+  expect(isProcessAlive(marker.editorPid), 'owned editor must exit before its tempfile is removed').to.equal(false)
   expect(existsSync(marker.tempPath), `editor temp file still exists: ${marker.tempPath}`).to.equal(false)
 
   const leftovers = (await readdir(tempDir)).filter(name => name.startsWith(editorTempPrefix))
@@ -539,11 +521,8 @@ const runScenario = async (signal: NodeJS.Signals, usePty: boolean): Promise<Sce
       expect(waitStatus.signaled, `PTY child must be signaled; raw wait status=${waitStatus.waitStatus}`).to.equal(true)
       expect(waitStatus.signal, `PTY child raw wait status=${waitStatus.waitStatus} must identify SIGHUP`).to.equal(os.constants.signals.SIGHUP)
       result = {exitCode: null, signal: 'SIGHUP'}
-      const heartbeatAtCliExit = await readEditorHeartbeat(marker.heartbeatPath)
-      expect(isProcessAlive(marker.editorPid), 'closing the PTY master must not terminate the external editor').to.equal(true)
-      const heartbeatAfterCliExit = await waitForEditorHeartbeat(marker, heartbeatAtCliExit)
-      expect(heartbeatAfterCliExit, 'external editor must respond after the CLI exits').to.be.greaterThan(heartbeatAtCliExit)
-      expect(isProcessAlive(marker.editorPid), 'external editor must still be alive after its post-exit heartbeat').to.equal(true)
+      await waitForPidExit(marker.editorPid)
+      expect(isProcessAlive(marker.editorPid), 'PTY close must not leave the external editor running').to.equal(false)
     } else {
       expect(context.child.pid, 'CLI subprocess must have a PID').to.be.a('number')
       expect(context.child.kill(signal), `could not deliver parent-only ${signal}`).to.equal(true)
@@ -554,8 +533,7 @@ const runScenario = async (signal: NodeJS.Signals, usePty: boolean): Promise<Sce
     expect(result.exitCode, 'interrupted process must not exit normally').to.equal(null)
     expect(result.signal, 'subprocess must terminate with the expected controlled signal').to.equal(signal)
 
-    // Assert removal while the external editor is still alive; teardown must
-    // never make this cleanup assertion pass.
+    // Verify editor exit and tempfile removal before teardown can mask a leak.
     marker = await assertEditorPathRemoved(tempDir, markerPath)
     expect(requests, 'interrupted edit must not verify or update config').to.deep.equal([
       {method: 'GET', url: configRoute},
@@ -622,7 +600,7 @@ describe('config:edit full CLI signal cleanup', function () {
   })
 
   ptyDescribe('macOS PTY terminal close', function () {
-    it('cleans up after Python closes the PTY master while the editor stays alive', async function () {
+    it('stops the editor and cleans up after Python closes the PTY master', async function () {
       const {requests, result} = await runScenario('SIGHUP', true)
       expect(result.exitCode).to.equal(null)
       expect(result.signal).to.equal('SIGHUP')

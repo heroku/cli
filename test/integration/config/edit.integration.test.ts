@@ -103,10 +103,10 @@ const isProcessAlive = (pid: number): boolean => {
   }
 }
 
-const waitForProcessExit = async (pid: number): Promise<void> => {
-  const deadline = Date.now() + cleanupDeadlineMs
+const waitForProcessExit = async (pid: number): Promise<boolean> => {
+  const deadline = Date.now() + exitDeadlineMs
   while (Date.now() < deadline && isProcessAlive(pid)) await delay(25)
-  if (isProcessAlive(pid)) throw new Error(`owned editor process ${pid} did not exit within ${cleanupDeadlineMs}ms`)
+  return !isProcessAlive(pid)
 }
 
 const stopEditor = async (pid: number | undefined): Promise<void> => {
@@ -116,7 +116,7 @@ const stopEditor = async (pid: number | undefined): Promise<void> => {
   while (Date.now() < deadline && isProcessAlive(pid)) await delay(25)
   if (isProcessAlive(pid)) {
     process.kill(pid, 'SIGKILL')
-    await waitForProcessExit(pid)
+    if (!await waitForProcessExit(pid)) throw new Error(`owned editor process ${pid} did not exit within ${exitDeadlineMs}ms`)
   }
 }
 
@@ -198,7 +198,11 @@ const waitForEditorMarker = async (markerPath: string, exit: ChildContext['exit'
   throw new Error(`editor readiness marker was not written within ${startupDeadlineMs}ms`)
 }
 
-const assertTempFileAbsent = async (tempDir: string, markerPath: string): Promise<EditorMarker | undefined> => {
+const assertTempFileAbsent = async (
+  tempDir: string,
+  markerPath: string,
+  verifyEditorExitCleanup = false,
+): Promise<EditorMarker | undefined> => {
   const resolvedTempDir = await realpath(tempDir)
   let marker: EditorMarker | undefined
   try {
@@ -210,6 +214,10 @@ const assertTempFileAbsent = async (tempDir: string, markerPath: string): Promis
   if (marker) {
     const relativePath = path.relative(resolvedTempDir, marker.tempPath)
     expect(relativePath === '' || relativePath.startsWith('..') || path.isAbsolute(relativePath), 'editor marker path must be inside the isolated temp directory').to.equal(false)
+    if (verifyEditorExitCleanup) {
+      expect(await waitForProcessExit(marker.editorPid), 'fixture termination must stop the editor before teardown').to.equal(true)
+    }
+
     expect(existsSync(marker.tempPath), `editor temp path still exists: ${marker.tempPath}`).to.equal(false)
   }
 
@@ -410,10 +418,9 @@ const runScenario = async (options: ScenarioOptions) => {
     expect(childResult.timedOut, 'fixture process exceeded its bounded exit deadline').to.equal(false)
     marker = await readEditorMarker(markerPath)
 
-    // Check the tracked path while its editor is still alive, before cleanup kills
-    // either owned process or removes the isolated directory.
-    expect(isProcessAlive(marker.editorPid), 'editor fixture must still be alive for the cleanup assertion').to.equal(true)
-    await assertTempFileAbsent(tempDir, markerPath)
+    // Confirm the editor is gone before checking its temp path. Teardown must
+    // not terminate it to make either assertion pass.
+    await assertTempFileAbsent(tempDir, markerPath, true)
     await waitForClose(childContext.close, cleanupDeadlineMs)
 
     records = (await readFile(telemetryRecordPath, 'utf8'))
