@@ -126,7 +126,7 @@
     "eslint-config-oclif": "^6.0.157",
     "eslint-import-resolver-typescript": "^4.4.4",
     "husky": "8.0.3",
-    "lolex": "^5.1.2",
+    "lolex": "^6.0.0",
     "mocha": "^10.8.2",
     "mock-stdin": "^1",
     "nock": "^14.0.12",
