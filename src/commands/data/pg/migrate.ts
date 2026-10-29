@@ -471,11 +471,12 @@ export default class DataPgMigrate extends BaseCommand {
     this.advancedDatabases = ownedDatabaseAddons.filter(db => utils.pg.isAdvancedDatabase(db))
   }
 
-  private async getMigrationTargetsAndInfo(): Promise<void> {
-    const migrationPromises = Promise.allSettled(this.advancedDatabases.map(db => this.dataApi.get<MigrationResponse>(`/data/postgres/v1/${db.id}/migrations`)))
-    const infoPromises = Promise.allSettled(this.advancedDatabases.map(db => this.dataApi.get<InfoResponse>(`/data/postgres/v1/${db.id}/info`)))
+  // Loads the migrations and info of the given databases, every database on the app by default
+  private async getMigrationTargetsAndInfo(advancedDatabases = this.advancedDatabases, classicDatabases = this.classicDatabases): Promise<void> {
+    const migrationPromises = Promise.allSettled(advancedDatabases.map(db => this.dataApi.get<MigrationResponse>(`/data/postgres/v1/${db.id}/migrations`)))
+    const infoPromises = Promise.allSettled(advancedDatabases.map(db => this.dataApi.get<InfoResponse>(`/data/postgres/v1/${db.id}/info`)))
     // The source database version and status are only informational, so failures fetching them are ignored
-    const sourceInfoPromises = Promise.allSettled(this.classicDatabases.map(async db => {
+    const sourceInfoPromises = Promise.allSettled(classicDatabases.map(async db => {
       const {body} = await this.dataApi.get<PgDatabaseService>(`/client/v11/databases/${db.id}`)
       db.version = body.postgres_version || undefined
       db.status = body.info?.find(info => info.name === 'Status')?.values[0]
@@ -506,9 +507,14 @@ export default class DataPgMigrate extends BaseCommand {
       }
     }
 
-    this.migrationTargets = migrationResults
-      .filter(queryResult => queryResult.status === 'fulfilled')
-      .map(queryResult => (queryResult as PromiseFulfilledResult<HTTP<MigrationResponse>>).value.body)
+    // Keep the migrations of databases that weren't loaded
+    const loadedDatabaseIds = new Set(advancedDatabases.map(db => db.id))
+    this.migrationTargets = [
+      ...this.migrationTargets.filter(migration => !loadedDatabaseIds.has(migration.target_id)),
+      ...migrationResults
+        .filter(queryResult => queryResult.status === 'fulfilled')
+        .map(queryResult => (queryResult as PromiseFulfilledResult<HTTP<MigrationResponse>>).value.body),
+    ]
   }
 
   // A canceling migration keeps its databases until the cancellation finishes cleaning up
@@ -627,7 +633,11 @@ export default class DataPgMigrate extends BaseCommand {
       }
 
       if (refresh) {
-        await this.refreshDatabasesAndMigrations()
+        // The details only show this migration and its databases
+        await this.getMigrationTargetsAndInfo(
+          this.advancedDatabases.filter(db => db.id === migration.target_id),
+          this.classicDatabases.filter(db => db.id === migration.source_id),
+        )
       }
     } while (action !== '__go_back')
   }
@@ -672,6 +682,8 @@ export default class DataPgMigrate extends BaseCommand {
 
   private async refreshDatabasesAndMigrations(): Promise<void> {
     await this.getAppDatabases(this.appName!)
+    // Drops the migrations of databases that are no longer on the app
+    this.migrationTargets = []
     await this.getMigrationTargetsAndInfo()
   }
 

@@ -566,6 +566,30 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database was removed.')
     })
 
+    it('goes back to the main menu when the destination database of the migration is removed', async function () {
+      replyWithTargetMigration(dataApi, {})
+      dataApi
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+        .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\n',         // Manage migration: > Refresh migration details
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout.match(/=== Migration details/g)?.length).to.equal(1)
+      expect(stdout).to.contain('The migration is no longer available. Either a newer migration replaced it or its destination database was removed.')
+    })
+
     it('omits the migration details that aren\'t available', async function () {
       dataApi
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
@@ -589,6 +613,64 @@ describe('data:pg:migrate', function () {
       expect(stdout).not.to.contain('Method:')
       expect(stdout).not.to.contain('Migration configured at:')
       expect(stdout).to.match(/Status:\s+Preparing databases/)
+    })
+  })
+
+  describe('refresh the migration details on an app with other databases', function () {
+    const unmatchedRequests: string[] = []
+    const recordUnmatchedRequest = (request: {path: string}) => unmatchedRequests.push(request.path)
+
+    beforeEach(function () {
+      unmatchedRequests.length = 0
+      nock.emitter.on('no match', recordUnmatchedRequest)
+    })
+
+    afterEach(function () {
+      nock.emitter.removeListener('no match', recordUnmatchedRequest)
+      nock.cleanAll()
+    })
+
+    it('only reloads the migration and its databases', async function () {
+      // Only the main menu, which loads twice, reloads the app's databases
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .times(2)
+        .reply(200, [
+          targetAdvancedDbAttachment,
+          nonTargetAdvancedDbAttachment,
+          standardDbAttachment,
+          premiumDbAttachment,
+        ])
+      const dataApi = nock('https://api.data.heroku.com')
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/migrations`)
+        .times(2)
+        .reply(404, {id: 'not_found', message: 'Add-on not found'})
+        .get(`/data/postgres/v1/${nonTargetAdvancedDbAttachment.addon.id}/info`)
+        .times(2)
+        .reply(200, nonTargetAdvancedDbInfo)
+        .get(`/client/v11/databases/${premiumDbAttachment.addon.id}`)
+        .times(2)
+        .reply(200, {postgres_version: '16.4'})
+        .get(`/client/v11/databases/${standardDbAttachment.addon.id}`)
+        .times(3)
+        .reply(200, {postgres_version: '16.4'})
+      replyWithTargetMigration(dataApi, {}, 3)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345
+        '\n',         // Manage migration: > Refresh migration details
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(unmatchedRequests).to.be.empty
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout.match(/=== Migration details/g)?.length).to.equal(2)
     })
   })
 
