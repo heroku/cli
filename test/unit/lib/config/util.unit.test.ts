@@ -690,6 +690,21 @@ describe('config util Editor', function () {
     }))
     let spawnedCount = 0
     let spawnedResolve!: () => void
+    const killRequests = children.map(() => {
+      let resolve!: () => void
+      const requested = new Promise<void>(res => {
+        resolve = res
+      })
+      return {requested, resolve}
+    })
+
+    for (const [index, child] of children.entries()) {
+      child.kill.callsFake(() => {
+        killRequests[index].resolve()
+        return true
+      })
+    }
+
     const spawned = new Promise<void>(resolve => {
       spawnedResolve = resolve
     })
@@ -699,60 +714,77 @@ describe('config util Editor', function () {
       return children[spawnedCount - 1]
     })
     const killStub = sinon.stub(process, 'kill').callsFake(() => true)
+    const realListeners = process.listeners.bind(process)
+    const listenersStub = sinon.stub(process, 'listeners').callsFake(event => {
+      if (String(event) !== 'SIGTERM') return realListeners(event)
+
+      // Treat the coordinator as the only listener so ambient platform handlers
+      // cannot change whether this test expects the signal to be re-raised.
+      return listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)) as unknown as ReturnType<typeof process.listeners>
+    })
+    const terminationTimeouts: NodeJS.Timeout[] = []
+    const timeoutStub = sinon.stub(globalThis, 'setTimeout').callsFake((callback, delay, ...args) => {
+      const timeout = nativeSetTimeout(callback, delay === 1000 ? 2_147_483_647 : delay, ...args)
+      if (delay === 1000) terminationTimeouts.push(timeout)
+      return timeout
+    })
 
     const operations = [new Editor().edit('first-config'), new Editor().edit('second-config')]
-    await spawned
-    const signalHandlers = listenersFor('SIGTERM')
-      .filter(listener => !listenerSnapshot.SIGTERM.includes(listener)) as NodeJS.SignalsListener[]
-    const realListeners = process.listeners.bind(process)
-    sinon.stub(process, 'listeners').callsFake(event => {
-      if (String(event) !== 'SIGTERM') return realListeners(event)
-      return [...signalHandlers, ...listenerSnapshot.SIGTERM] as unknown as ReturnType<typeof process.listeners>
-    })
-    expect(signalHandlers, 'active editors must share one coordinator listener').to.have.length(1)
     const settled = Promise.allSettled(operations)
-    signalHandlers[0].call(process, 'SIGTERM')
-    await waitForImmediate()
+    try {
+      await spawned
+      const signalHandlers = listenersFor('SIGTERM')
+        .filter(listener => !listenerSnapshot.SIGTERM.includes(listener)) as NodeJS.SignalsListener[]
 
-    expect(children.map(child => child.kill.args), 'each editor must receive one termination request')
-      .to.deep.equal([[['SIGTERM']], [['SIGTERM']]])
-    expect(files.map(({file}) => fs.existsSync(file.name)), 'all files must remain until each child exits').to.deep.equal([true, true])
-    const settledBeforeExit = await Promise.race([
-      settled.then(() => true),
-      new Promise<boolean>(resolve => {
-        setImmediate(() => resolve(false))
-      }),
-    ])
-    expect(settledBeforeExit, 'edits must await both editor exits').to.be.false
-    expect(killStub.notCalled, 'signal must not be re-raised before all children exit').to.be.true
+      expect(signalHandlers, 'active editors must share one coordinator listener').to.have.length(1)
+      signalHandlers[0].call(process, 'SIGTERM')
+      await Promise.all(killRequests.map(({requested}) => requested))
 
-    children[0].exitCode = 0
-    children[0].emit('exit', 0, null)
-    children[0].emit('close', 0, null)
-    await Promise.allSettled([operations[0]])
+      expect(children.map(child => child.kill.args), 'each editor must receive one termination request')
+        .to.deep.equal([[['SIGTERM']], [['SIGTERM']]])
+      expect(files.map(({file}) => fs.existsSync(file.name)), 'all files must remain until each child exits').to.deep.equal([true, true])
+      expect(await Promise.race([settled.then(() => true), waitForImmediate().then(() => false)]), 'edits must await both editor exits')
+        .to.be.false
+      expect(killStub.notCalled, 'signal must not be re-raised before all children exit').to.be.true
 
-    expect(files[0] && fs.existsSync(files[0].file.name), 'first editor cleanup completes after its exit').to.be.false
-    expect(files[1] && fs.existsSync(files[1].file.name), 'second editor remains active until its own exit').to.be.true
-    expect(listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)))
-      .to.have.length(1, 'coordinator listener remains while one participant is registered')
+      children[0].exitCode = 0
+      children[0].emit('exit', 0, null)
+      children[0].emit('close', 0, null)
+      await Promise.allSettled([operations[0]])
 
-    children[1].exitCode = 0
-    children[1].emit('exit', 0, null)
-    children[1].emit('close', 0, null)
+      expect(files[0] && fs.existsSync(files[0].file.name), 'first editor cleanup completes after its exit').to.be.false
+      expect(files[1] && fs.existsSync(files[1].file.name), 'second editor remains active until its own exit').to.be.true
+      expect(listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)))
+        .to.have.length(1, 'coordinator listener remains while one participant is registered')
 
-    const results = await settled
-    await new Promise(resolve => {
-      setImmediate(resolve)
-    })
+      children[1].exitCode = 0
+      children[1].emit('exit', 0, null)
+      children[1].emit('close', 0, null)
 
-    expect(killStub.calledOnceWith(process.pid, 'SIGTERM')).to.be.true
-    expect(files).to.have.length(2)
-    expect(files.every(({file}) => !fs.existsSync(file.name))).to.be.true
-    expect(results.map(result => result.status)).to.deep.equal(['rejected', 'rejected'])
-    expect(results.map(result => (result as PromiseRejectedResult).reason.message))
-      .to.deep.equal(['Editor interrupted by SIGTERM', 'Editor interrupted by SIGTERM'])
-    expect(listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)))
-      .to.deep.equal([], 'coordinator listener is removed after the final participant unregisters')
+      const results = await settled
+      await waitForImmediate()
+
+      expect(killStub.calledOnceWith(process.pid, 'SIGTERM')).to.be.true
+      expect(files).to.have.length(2)
+      expect(files.every(({file}) => !fs.existsSync(file.name))).to.be.true
+      expect(results.map(result => result.status)).to.deep.equal(['rejected', 'rejected'])
+      expect(results.map(result => (result as PromiseRejectedResult).reason.message))
+        .to.deep.equal(['Editor interrupted by SIGTERM', 'Editor interrupted by SIGTERM'])
+      expect(listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)))
+        .to.deep.equal([], 'coordinator listener is removed after the final participant unregisters')
+    } finally {
+      for (const child of children) {
+        child.exitCode = 0
+        child.emit('exit', 0, null)
+        child.emit('close', 0, null)
+      }
+
+      await settled
+      timeoutStub.restore()
+      listenersStub.restore()
+      for (const timeout of terminationTimeouts) clearTimeout(timeout)
+    }
+
     expectListenersToMatch(listenerSnapshot)
   })
 
@@ -788,7 +820,7 @@ describe('config util Editor', function () {
       if (!['SIGHUP', 'SIGTERM'].includes(signal)) return realListeners(event)
 
       const coordinator = listenersFor(signal).find(listener => !listenerSnapshot[signal].includes(listener))
-      return [...(coordinator ? [coordinator] : []), ...listenerSnapshot[signal]] as unknown as ReturnType<typeof process.listeners>
+      return (coordinator ? [coordinator] : []) as unknown as ReturnType<typeof process.listeners>
     })
 
     expect(sigtermHandler, 'helper-owned SIGTERM listener').to.be.a('function')
