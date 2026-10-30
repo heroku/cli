@@ -782,9 +782,13 @@ describe('config util Editor', function () {
     const sighupHandler = listenersFor('SIGHUP')
       .find(listener => !listenerSnapshot.SIGHUP.includes(listener)) as NodeJS.SignalsListener | undefined
     const realListeners = process.listeners.bind(process)
-    sinon.stub(process, 'listeners').callsFake(event => ['SIGHUP', 'SIGTERM'].includes(String(event))
-      ? listenersFor(String(event) as LifecycleEvent) as unknown as ReturnType<typeof process.listeners>
-      : realListeners(event))
+    sinon.stub(process, 'listeners').callsFake(event => {
+      const signal = String(event) as LifecycleEvent
+      if (!['SIGHUP', 'SIGTERM'].includes(signal)) return realListeners(event)
+
+      const coordinator = listenersFor(signal).find(listener => !listenerSnapshot[signal].includes(listener))
+      return (coordinator ? [coordinator] : []) as unknown as ReturnType<typeof process.listeners>
+    })
 
     expect(sigtermHandler, 'helper-owned SIGTERM listener').to.be.a('function')
     expect(sighupHandler, 'helper-owned SIGHUP listener').to.be.a('function')

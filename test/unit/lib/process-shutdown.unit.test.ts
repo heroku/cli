@@ -15,6 +15,21 @@ function emitSignal(signal: ShutdownSignal) {
   EventEmitter.prototype.emit.call(process, signal, signal)
 }
 
+function stubSignalListeners(
+  originalListeners: Record<ShutdownSignal, unknown[]>,
+  owners: Partial<Record<ShutdownSignal, unknown>> = {},
+) {
+  const realListeners = process.listeners.bind(process)
+  sinon.stub(process, 'listeners').callsFake(event => {
+    const signal = String(event) as ShutdownSignal
+    if (!shutdownSignals.includes(signal)) return realListeners(event)
+
+    const coordinator = listenersFor(signal).find(listener => !originalListeners[signal].includes(listener))
+    const listeners = [...(coordinator ? [coordinator] : []), ...(owners[signal] ? [owners[signal]] : [])]
+    return listeners as unknown as ReturnType<typeof process.listeners>
+  })
+}
+
 const waitForImmediate = () => new Promise<void>(resolve => {
   setImmediate(resolve)
 })
@@ -55,6 +70,7 @@ describe('process shutdown coordinator', function () {
       ownerShutdown.then(() => order.push('owner finished'))
     })
     process.on('SIGTERM', owner)
+    stubSignalListeners(originalListeners, {SIGTERM: owner})
     const coordinators = new Map<ShutdownSignal, unknown>(shutdownSignals.map(signal => [
       signal,
       listenersFor(signal).find(listener => !originalListeners[signal].includes(listener)),
@@ -114,6 +130,7 @@ describe('process shutdown coordinator', function () {
       order.push(`kill:${signal}`)
       return true
     })
+    stubSignalListeners(originalListeners)
 
     try {
       emitSignal('SIGTERM')
@@ -145,6 +162,7 @@ describe('process shutdown coordinator', function () {
     })
     const unregisterFirst = registerShutdownParticipant(firstParticipant)
     const kill = sinon.stub(process, 'kill').returns(true)
+    stubSignalListeners(originalListeners)
 
     try {
       const shutdown = awaitProcessShutdown('SIGHUP')
