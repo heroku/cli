@@ -635,6 +635,12 @@ describe('config util Editor', function () {
     const spawned = new Promise<void>(resolve => {
       spawnedResolve = resolve
     })
+    const terminationTimeouts: NodeJS.Timeout[] = []
+    const timeoutStub = sinon.stub(globalThis, 'setTimeout').callsFake((callback, delay, ...args) => {
+      const timeout = nativeSetTimeout(callback, delay === 1000 ? 2_147_483_647 : delay, ...args)
+      if (delay === 1000) terminationTimeouts.push(timeout)
+      return timeout
+    })
     let operation: Promise<string> | undefined
     process.on('SIGINT', owner)
     spawnStub.callsFake(() => {
@@ -677,6 +683,8 @@ describe('config util Editor', function () {
       child.emit('exit', null, 'SIGTERM')
       child.emit('close', null, 'SIGTERM')
       if (operation) await Promise.allSettled([operation])
+      timeoutStub.restore()
+      for (const timeout of terminationTimeouts) clearTimeout(timeout)
       process.removeListener('SIGINT', owner)
     }
 
