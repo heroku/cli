@@ -134,6 +134,7 @@ export class Editor {
 
       cleanupFailureReported = true
       try {
+        // Write synchronously so cleanup diagnostics are not lost during process termination.
         writeSync(2, 'Failed to clean up temporary config file\n')
       } catch {
         // Cleanup diagnostics must not change termination behavior.

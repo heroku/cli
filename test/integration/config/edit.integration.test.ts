@@ -353,7 +353,7 @@ await new Editor().edit(editorInput, {
 })
 `
 
-const editorSource = `#!/usr/bin/env node
+const editorSource = `#!${process.execPath}
 import {renameSync, writeFileSync} from 'node:fs'
 
 const tempPath = process.argv[2]
@@ -530,6 +530,7 @@ describe('config:edit subprocess cleanup', function () {
     }
 
     for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+      // Telemetry calls process.exit(1), so these cases cover exit-listener cleanup; the disabled cases above cover signal termination.
       it(`removes the editor temp file through enabled telemetry ${signal} handling`, async function () {
         const {childResult, records} = await runScenario({enableTelemetry: true, signal})
         expect(childResult.exitCode).to.equal(1)
