@@ -17,11 +17,16 @@ type FakePlatform = {
     list: sinon.SinonStub
     transfer: sinon.SinonStub
   }
+  teamApp: {
+    info: sinon.SinonStub
+    updateLocked: sinon.SinonStub
+  }
 }
 
 function buildFakePlatform(): FakePlatform {
   return {
     app: {info: sinon.stub(), list: sinon.stub(), transfer: sinon.stub()},
+    teamApp: {info: sinon.stub(), updateLocked: sinon.stub()},
   }
 }
 
@@ -189,18 +194,15 @@ describe('heroku apps:transfer', function () {
 
     it('transfers and locks the app if --locked is passed', async function () {
       fakePlatform.app.transfer.resolves({state: 'transferred'})
-      // AppsLock is a separate command still on raw this.heroku, so it keeps nock.
-      const lockedAPI = nock('https://api.heroku.com:443')
-        .get('/teams/apps/myapp')
-        .reply(200, {locked: false, name: 'myapp'})
-        .patch('/teams/apps/myapp', {locked: true})
-        .reply(200)
-      const {stderr, stdout} = await runCommand(Cmd, [
+      fakePlatform.teamApp.info.resolves({locked: false, name: 'myapp'})
+      fakePlatform.teamApp.updateLocked.resolves({})
+      const {error, stderr, stdout} = await runCommand(Cmd, [
         '--app',
         'myapp',
         '--locked',
         'team',
       ])
+      expect(error).to.be.undefined
       expect('').to.eq(stdout)
       expect(stderr).to.eq('Transferring ⬢ myapp to team... done\nLocking ⬢ myapp... done\n')
       // team-owned app → personalToPersonal is always false.
@@ -209,7 +211,9 @@ describe('heroku apps:transfer', function () {
         'team',
         sinon.match({personalToPersonal: false}),
       )).to.equal(true)
-      lockedAPI.done()
+      expect(fakePlatform.teamApp.info.calledOnceWithExactly('myapp')).to.equal(true)
+      expect(fakePlatform.teamApp.updateLocked.calledOnceWithExactly('myapp', {locked: true})).to.equal(true)
+      sinon.assert.callOrder(fakePlatform.app.transfer, fakePlatform.teamApp.info, fakePlatform.teamApp.updateLocked)
     })
   })
 

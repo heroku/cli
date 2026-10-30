@@ -1,7 +1,8 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AppsLock extends Command {
   static aliases = ['lock']
@@ -15,7 +16,8 @@ export default class AppsLock extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(AppsLock)
     const {app} = flags
-    const {body: appResponse} = await this.heroku.get<Heroku.TeamApp>(`/teams/apps/${app}`)
+    const {platform} = createSDK(this.heroku)
+    const appResponse = await platform.teamApp.info(app)
     const appName = appResponse.name ?? app
     if (appResponse.locked) {
       throw new Error(`Error: cannot lock ${color.app(appName)}.\nThis app is already locked.`)
@@ -23,12 +25,7 @@ export default class AppsLock extends Command {
 
     ux.action.start(`Locking ${color.app(appName)}`)
 
-    await this.heroku.patch(
-      `/teams/apps/${appName}`,
-      {
-        body: {locked: true},
-      },
-    )
+    await platform.teamApp.updateLocked(appName, {locked: true})
     ux.action.stop()
   }
 }

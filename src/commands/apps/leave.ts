@@ -1,6 +1,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
-import {accountExtensions} from '@heroku/sdk/extensions/platform'
+import {appCollaboratorExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
 
 import {warnDelinquency} from '../../lib/delinquency.js'
@@ -19,11 +19,13 @@ export default class Leave extends Command {
   public async run(): Promise<void> {
     const {flags} = await this.parse(Leave)
     const {app} = flags
-    const {platform} = createSDK(this.heroku, {extensions: [accountExtensions]})
-    const {account, delinquency} = await platform.account.getWithDelinquency()
-    warnDelinquency(this, 'account', delinquency)
-    ux.action.start(`Leaving ${color.app(app)}`)
-    await this.heroku.delete(`/apps/${app}/collaborators/${encodeURIComponent(account.email as string)}`)
+    const {platform} = createSDK(this.heroku, {extensions: [appCollaboratorExtensions]})
+    await platform.appCollaborator.removeSelf(app, {
+      beforeRemove: async ({delinquency}) => {
+        warnDelinquency(this, 'account', delinquency)
+        ux.action.start(`Leaving ${color.app(app)}`)
+      },
+    })
     ux.action.stop()
   }
 }
