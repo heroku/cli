@@ -62,7 +62,7 @@ const ptyChildDeadlineSeconds = 20
 const configRoute = '/apps/myapp/config-vars'
 const configBody = JSON.stringify({SYNTHETIC_CONFIG: 'synthetic-value'})
 const hasSystemPython = (): boolean => {
-  if (process.platform !== 'darwin') return false
+  if (!['darwin', 'linux'].includes(process.platform)) return false
   try {
     return spawnSync('python3', ['-c', 'import os, pty, select, signal, sys, time'], {stdio: 'ignore', timeout: 5000}).status === 0
   } catch {
@@ -583,7 +583,7 @@ const runScenario = async (signal: NodeJS.Signals, usePty: boolean): Promise<Sce
 }
 
 const posixDescribe = process.platform === 'win32' ? describe.skip : describe
-const ptyDescribe = process.platform === 'darwin' && ptyPythonPath ? describe : describe.skip
+const ptyDescribe = ['darwin', 'linux'].includes(process.platform) && ptyPythonPath ? describe : describe.skip
 
 describe('config:edit full CLI signal cleanup', function () {
   this.timeout(90_000)
@@ -599,7 +599,7 @@ describe('config:edit full CLI signal cleanup', function () {
     }
   })
 
-  ptyDescribe('macOS PTY terminal close', function () {
+  ptyDescribe('POSIX PTY terminal close', function () {
     it('stops the editor and cleans up after Python closes the PTY master', async function () {
       const {requests, result} = await runScenario('SIGHUP', true)
       expect(result.exitCode).to.equal(null)
