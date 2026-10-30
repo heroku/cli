@@ -99,15 +99,26 @@ describe('apps:favorites:add', function () {
     expect(error).to.equal(displayedCause)
   })
 
-  it('preserves the absent original cause ux.error failure', async function () {
-    const uxError = sinon.stub(ux, 'error').throws(new Error('first argument must be a string or instance of Error'))
-    fakeDashboardBackend.favorite.addByAppName.rejects(new FavoriteCreateError(MY_APP, new Error('request error')))
+  it('falls back to the request error when it has no displayable cause', async function () {
+    const requestError = new Error('request error')
+    const uxError = sinon.stub(ux, 'error').throws(requestError)
+    fakeDashboardBackend.favorite.addByAppName.rejects(new FavoriteCreateError(MY_APP, requestError))
 
     const {error} = await runCommand(Add, [`--app=${MY_APP}`])
 
-    expect(uxError.calledOnce).to.equal(true)
-    expect(uxError.firstCall.args).to.eql([undefined])
-    expect(error?.message).to.equal('first argument must be a string or instance of Error')
+    expect(uxError.calledOnceWithExactly(requestError)).to.equal(true)
+    expect(error).to.equal(requestError)
+  })
+
+  it('falls back to FavoriteCreateError for an unsupported request cause', async function () {
+    const createError = new FavoriteCreateError(MY_APP, {statusCode: 500})
+    const uxError = sinon.stub(ux, 'error').throws(createError)
+    fakeDashboardBackend.favorite.addByAppName.rejects(createError)
+
+    const {error} = await runCommand(Add, [`--app=${MY_APP}`])
+
+    expect(uxError.calledOnceWithExactly(createError)).to.equal(true)
+    expect(error).to.equal(createError)
   })
 
   it('passes through generic list failures unchanged and does not stop the spinner', async function () {

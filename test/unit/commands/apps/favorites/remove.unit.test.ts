@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import * as color from '@heroku/heroku-cli-util/color'
 import {HerokuSDK} from '@heroku/sdk'
-import {NotFavoriteError} from '@heroku/sdk/extensions/dashboard-backend'
+import {NotFavoriteError, removeByAppName} from '@heroku/sdk/extensions/dashboard-backend'
 import {ux} from '@oclif/core/ux'
 import {expect} from 'chai'
 import * as sinon from 'sinon'
@@ -90,11 +90,29 @@ describe('apps:favorites:remove', function () {
     const failure = new Error('favorite delete failed')
     sinon.stub(ux.action, 'start')
     const actionStop = sinon.stub(ux.action, 'stop')
-    fakeDashboardBackend.favorite.removeByAppName.rejects(failure)
+    const favoriteList = sinon.stub().resolves([
+      {
+        id: 'favorite-id', resource_id: MY_APP, resource_name: MY_APP, type: 'app',
+      },
+    ])
+    const deleteFavorite = sinon.stub().rejects(failure)
+    fakeDashboardBackend.favorite.removeByAppName.callsFake(app => removeByAppName(
+      {
+        dashboardBackend: {
+          favorite: {
+            delete: deleteFavorite,
+            list: favoriteList,
+          },
+        },
+      } as unknown as Parameters<typeof removeByAppName>[0],
+      app,
+    ))
 
     const {error, stderr} = await runCommand(Remove, [`--app=${MY_APP}`])
 
     expect(error).to.equal(failure)
+    expect(favoriteList.calledOnceWithExactly({type: 'app'})).to.equal(true)
+    expect(deleteFavorite.calledOnceWithExactly('favorite-id')).to.equal(true)
     expect(actionStop.called).to.equal(false)
     expect(stderr).to.not.contain('... done')
   })

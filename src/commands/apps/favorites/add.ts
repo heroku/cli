@@ -39,8 +39,18 @@ export default class Add extends Command {
       }
 
       if (error instanceof FavoriteCreateError) {
-        const originalError = error.cause as Error
-        ux.error(originalError.cause as Error)
+        const originalError = error.cause
+        let displayError: Error | string = error
+        if (typeof originalError === 'string') {
+          displayError = originalError
+        } else if (originalError instanceof Error) {
+          const originalCause = originalError.cause
+          displayError = originalCause instanceof Error || typeof originalCause === 'string'
+            ? originalCause
+            : originalError
+        }
+
+        ux.error(displayError)
       }
 
       throw error
