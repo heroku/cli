@@ -9,6 +9,7 @@ import * as sinon from 'sinon'
 import tmp, {type FileOptions, type FileResult} from 'tmp'
 
 import {Editor} from '../../../../src/lib/config/util.js'
+import {awaitProcessShutdown} from '../../../../src/lib/process-shutdown.js'
 
 const lifecycleEvents = ['SIGINT', 'SIGTERM', 'SIGHUP', 'exit'] as const
 type LifecycleEvent = typeof lifecycleEvents[number]
@@ -19,6 +20,9 @@ interface TrackedFile {
 }
 
 const realFileSync = tmp.fileSync.bind(tmp) as (options?: FileOptions) => FileResult
+const waitForImmediate = () => new Promise<void>(resolve => {
+  setImmediate(resolve)
+})
 
 function makeChild() {
   // ChildProcess uses EventEmitter semantics, so mirror those in the fake.
@@ -75,7 +79,8 @@ describe('config util Editor', function () {
     syncBuiltinESMExports()
   })
 
-  afterEach(function () {
+  afterEach(async function () {
+    await waitForImmediate()
     sinon.restore()
     syncBuiltinESMExports()
 
@@ -111,6 +116,10 @@ describe('config util Editor', function () {
     process.env.EDITOR = 'editor-from-editor'
     process.env.VISUAL = 'editor-from-visual'
     const child = makeChild()
+    let spawnedResolve!: () => void
+    const spawned = new Promise<void>(resolve => {
+      spawnedResolve = resolve
+    })
     let editorPath = ''
     const readFileSpy = sinon.spy(fs, 'readFile')
 
@@ -119,14 +128,12 @@ describe('config util Editor', function () {
       expect(fs.readFileSync(editorPath, 'utf8')).to.equal(original)
       expect(options.stdio).to.equal('inherit')
       fs.writeFileSync(editorPath, edited, 'utf8')
-      process.nextTick(() => {
-        child.emit('exit', 0, null)
-        child.emit('close', 0, null)
-      })
+      spawnedResolve()
       return child
     })
 
     const operation = new Editor().edit(original)
+    await spawned
     const {file} = files[0]
     const remove = file.removeCallback.bind(file)
     let pathExistedOnCleanup = false
@@ -134,6 +141,8 @@ describe('config util Editor', function () {
       pathExistedOnCleanup = fs.existsSync(file.name)
       remove()
     })
+    child.emit('exit', 0, null)
+    child.emit('close', 0, null)
     const result = await operation
 
     expect(result).to.equal(edited)
@@ -323,11 +332,11 @@ describe('config util Editor', function () {
     }
   })
 
-  it('does not acquire a temporary file when interrupted before acquisition', async function () {
+  it('does not acquire a temporary file when interrupted during coordinator registration', async function () {
     const realPrependListener = process.prependListener
     let sentSignal = false
     let operation: Promise<string> | undefined
-    let prependListenerStub: sinon.SinonStub | undefined
+    let processPrependListenerStub: sinon.SinonStub | undefined
     let killStub: sinon.SinonStub | undefined
     let writeFileSpy: sinon.SinonSpy | undefined
 
@@ -335,27 +344,27 @@ describe('config util Editor', function () {
       killStub = sinon.stub(process, 'kill')
       writeFileSpy = sinon.spy(fsSync, 'writeFileSync')
       syncBuiltinESMExports()
-      prependListenerStub = sinon.stub(process, 'prependListener').callsFake((event, listener) => {
-        Reflect.apply(realPrependListener, process, [event, listener])
+      processPrependListenerStub = sinon.stub(process, 'prependListener').callsFake((event, listener) => {
+        const result = Reflect.apply(realPrependListener, process, [event, listener])
         if (String(event) === 'SIGHUP' && !sentSignal) {
           sentSignal = true
           process.emit('SIGHUP')
         }
 
-        return process
+        return result
       })
       operation = new Editor().edit('config-value')
       const error = await rejectionOf(operation)
 
       expect(sentSignal, 'signal fired after final handler registration').to.be.true
       expect(error.message).to.equal('Editor interrupted by SIGHUP')
-      expect(tmpFileSyncStub.notCalled, 'temporary file must not be acquired').to.be.true
+      expect(tmpFileSyncStub.notCalled, 'temporary file must not be acquired after interruption').to.be.true
       expect(writeFileSpy?.notCalled, 'initial write must not run').to.be.true
       expect(spawnStub.notCalled, 'editor must not spawn').to.be.true
       expect(files).to.be.empty
     } finally {
       if (operation) await Promise.allSettled([operation])
-      prependListenerStub?.restore()
+      processPrependListenerStub?.restore()
       killStub?.restore()
       writeFileSpy?.restore()
       syncBuiltinESMExports()
@@ -431,19 +440,23 @@ describe('config util Editor', function () {
   it('settles once when an asynchronous error is followed by close', async function () {
     const spawnError = new Error('editor launch failed')
     const child = makeChild()
+    let spawnedResolve!: () => void
+    const spawned = new Promise<void>(resolve => {
+      spawnedResolve = resolve
+    })
     spawnStub.callsFake(() => {
-      process.nextTick(() => {
-        child.emit('error', spawnError)
-        child.emit('exit', 1, null)
-        child.emit('close', 1, null)
-      })
+      spawnedResolve()
       return child
     })
 
     const operation = new Editor().edit('config-value')
+    await spawned
     const {file} = files[0]
     const realRemove = file.removeCallback.bind(file)
     const removeStub = sinon.stub(file, 'removeCallback').callsFake(() => realRemove())
+    child.emit('error', spawnError)
+    child.emit('exit', 1, null)
+    child.emit('close', 1, null)
 
     const error = await rejectionOf(operation)
 
@@ -477,12 +490,13 @@ describe('config util Editor', function () {
   it('returns edited content and warns when temporary-file cleanup fails', async function () {
     const edited = 'CONFIG=updated-value'
     const child = makeChild()
+    let spawnedResolve!: () => void
+    const spawned = new Promise<void>(resolve => {
+      spawnedResolve = resolve
+    })
     spawnStub.callsFake((_editor: string, [editorPath]: string[]) => {
       fs.writeFileSync(editorPath, edited, 'utf8')
-      process.nextTick(() => {
-        child.emit('exit', 0, null)
-        child.emit('close', 0, null)
-      })
+      spawnedResolve()
       return child
     })
     const diagnostics: string[] = []
@@ -494,8 +508,11 @@ describe('config util Editor', function () {
     syncBuiltinESMExports()
 
     const operation = new Editor().edit('CONFIG=initial-value')
+    await spawned
     const {file} = files[0]
     sinon.stub(file, 'removeCallback').callsFake(() => {})
+    child.emit('exit', 0, null)
+    child.emit('close', 0, null)
 
     const result = await operation
 
@@ -511,11 +528,12 @@ describe('config util Editor', function () {
     const cleanupError = new Error('unlink failed')
     const diagnostics: string[] = []
     const child = makeChild()
+    let spawnedResolve!: () => void
+    const spawned = new Promise<void>(resolve => {
+      spawnedResolve = resolve
+    })
     spawnStub.callsFake(() => {
-      process.nextTick(() => {
-        child.emit('error', editorError)
-        child.emit('close', 1, null)
-      })
+      spawnedResolve()
       return child
     })
     sinon.stub(fsSync, 'writeSync').callsFake((_fd: number, chunk: string | Uint8Array) => {
@@ -526,8 +544,11 @@ describe('config util Editor', function () {
     syncBuiltinESMExports()
 
     const operation = new Editor().edit(secret)
+    await spawned
     const {file} = files[0]
     sinon.stub(file, 'removeCallback').throws(cleanupError)
+    child.emit('error', editorError)
+    child.emit('close', 1, null)
 
     const error = await rejectionOf(operation)
     const diagnosticText = diagnostics.join('\n')
@@ -629,6 +650,7 @@ describe('config util Editor', function () {
 
       expect(signalHandler, 'helper-owned SIGINT listener').to.be.a('function')
       signalHandler!.call(process, 'SIGINT')
+      await waitForImmediate()
 
       expect(child.kill.calledOnceWith('SIGTERM'), 'interruption must request graceful editor termination').to.be.true
       expect(fs.existsSync(file.name), 'temporary file must remain while the editor process is still running').to.be.true
@@ -686,9 +708,10 @@ describe('config util Editor', function () {
     sinon.stub(process, 'listeners').callsFake(event => String(event) === 'SIGTERM'
       ? signalHandlers as unknown as ReturnType<typeof process.listeners>
       : realListeners(event))
-    expect(signalHandlers).to.have.length(2)
+    expect(signalHandlers, 'active editors must share one coordinator listener').to.have.length(1)
     const settled = Promise.allSettled(operations)
     signalHandlers[0].call(process, 'SIGTERM')
+    await waitForImmediate()
 
     expect(children.map(child => child.kill.args), 'each editor must receive one termination request')
       .to.deep.equal([[['SIGTERM']], [['SIGTERM']]])
@@ -702,11 +725,19 @@ describe('config util Editor', function () {
     expect(settledBeforeExit, 'edits must await both editor exits').to.be.false
     expect(killStub.notCalled, 'signal must not be re-raised before all children exit').to.be.true
 
-    for (const child of children) {
-      child.exitCode = 0
-      child.emit('exit', 0, null)
-      child.emit('close', 0, null)
-    }
+    children[0].exitCode = 0
+    children[0].emit('exit', 0, null)
+    children[0].emit('close', 0, null)
+    await Promise.allSettled([operations[0]])
+
+    expect(files[0] && fs.existsSync(files[0].file.name), 'first editor cleanup completes after its exit').to.be.false
+    expect(files[1] && fs.existsSync(files[1].file.name), 'second editor remains active until its own exit').to.be.true
+    expect(listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)))
+      .to.have.length(1, 'coordinator listener remains while one participant is registered')
+
+    children[1].exitCode = 0
+    children[1].emit('exit', 0, null)
+    children[1].emit('close', 0, null)
 
     const results = await settled
     await new Promise(resolve => {
@@ -719,6 +750,8 @@ describe('config util Editor', function () {
     expect(results.map(result => result.status)).to.deep.equal(['rejected', 'rejected'])
     expect(results.map(result => (result as PromiseRejectedResult).reason.message))
       .to.deep.equal(['Editor interrupted by SIGTERM', 'Editor interrupted by SIGTERM'])
+    expect(listenersFor('SIGTERM').filter(listener => !listenerSnapshot.SIGTERM.includes(listener)))
+      .to.deep.equal([], 'coordinator listener is removed after the final participant unregisters')
     expectListenersToMatch(listenerSnapshot)
   })
 
@@ -757,6 +790,7 @@ describe('config util Editor', function () {
     expect(sighupHandler, 'helper-owned SIGHUP listener').to.be.a('function')
     sigtermHandler!.call(process, 'SIGTERM')
     sighupHandler!.call(process, 'SIGHUP')
+    await waitForImmediate()
 
     expect(child.kill.calledOnceWith('SIGTERM')).to.be.true
     expect(fs.existsSync(files[0].file.name), 'temporary file must remain while editor is alive').to.be.true
@@ -821,6 +855,7 @@ describe('config util Editor', function () {
       : realListeners(event))
     expect(signalHandler, 'helper-owned SIGTERM listener').to.be.a('function')
     signalHandler!.call(process, 'SIGTERM')
+    await waitForImmediate()
     expect(fs.existsSync(file.name)).to.be.true
     expect(unlinkAttempts, 'do not unlink while the editor can still use the file').to.equal(0)
     expect(callbackAttempts).to.equal(0)
@@ -836,10 +871,11 @@ describe('config util Editor', function () {
     expect(unlinkAttempts).to.be.greaterThan(1)
     expect(callbackAttempts).to.equal(1)
     expect(fs.existsSync(file.name)).to.be.false
+    await awaitProcessShutdown('SIGTERM')
     expectListenersToMatch(listenerSnapshot)
   })
 
-  it('best-effort force-kills and attempts cleanup synchronously on process exit', async function () {
+  it('best-effort force-kills without unlinking until child exit is confirmed', async function () {
     const child = Object.assign(makeChild(), {
       exitCode: null as null | number,
       kill: sinon.stub().returns(true),
@@ -858,15 +894,23 @@ describe('config util Editor', function () {
     await spawned
     const {file} = files[0]
     const removeStub = sinon.spy(file, 'removeCallback')
+    const diagnostics: string[] = []
+    sinon.stub(fsSync, 'writeSync').callsFake((_fd: number, chunk: string | Uint8Array) => {
+      diagnostics.push(String(chunk))
+      return Buffer.byteLength(String(chunk))
+    })
+    syncBuiltinESMExports()
     const exitListener = listenersFor('exit').find(listener => !listenerSnapshot.exit.includes(listener))
 
     expect(exitListener, 'helper-owned exit listener').to.be.a('function')
     expect(fs.existsSync(file.name), 'temporary file exists while editor is alive').to.be.true
     if (exitListener) (exitListener as (code: number) => void).call(process, 1)
-    expect(child.kill.calledWith('SIGKILL'), 'exit event must request forced termination').to.be.true
-    expect(removeStub.calledOnce, 'exit event must attempt synchronous cleanup').to.be.true
-    expect(fs.existsSync(file.name), 'successful forced termination must remove the temporary file').to.be.false
+    expect(child.kill.calledOnceWith('SIGKILL'), 'exit event must request forced termination').to.be.true
+    expect(removeStub.notCalled, 'an unconfirmed exit must not attempt synchronous cleanup').to.be.true
+    expect(fs.existsSync(file.name), 'temporary file must remain until child exit is confirmed').to.be.true
+    expect(diagnostics).to.deep.equal(['Could not confirm editor termination; temporary config file may remain\n'])
 
+    // Simulate the child exit so the asynchronous edit can finish and clean up safely.
     child.exitCode = 0
     child.emit('exit', 0, null)
     child.emit('close', 0, null)
@@ -910,6 +954,7 @@ describe('config util Editor', function () {
 
       expect(signalHandler, 'helper-owned SIGTERM listener').to.be.a('function')
       signalHandler!.call(process, 'SIGTERM')
+      await waitForImmediate()
 
       const outcome = operation.then(
         () => ({status: 'fulfilled' as const}),
@@ -927,6 +972,7 @@ describe('config util Editor', function () {
         expect(boundedOutcome.error.message).to.equal('Editor interrupted by SIGTERM')
       }
 
+      await awaitProcessShutdown('SIGTERM')
       expect(child.kill.args, 'termination must escalate from graceful to forced').to.deep.equal([['SIGTERM'], ['SIGKILL']])
       expect(child.exitCode).to.be.null
       expect(child.signalCode).to.be.null

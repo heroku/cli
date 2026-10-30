@@ -31,14 +31,18 @@ interface ChildContext {
 interface ScenarioOptions {
   action?: 'process-exit' | 'uncaught-exception'
   enableTelemetry: boolean
+  followupSignal?: NodeJS.Signals
   signal?: NodeJS.Signals
 }
 
 interface TelemetrySpawnRecord {
   args?: string[]
   command?: string
-  kind: 'blocked-unexpected-spawn' | 'telemetry-worker-preload-block' | 'telemetry-worker-spawn'
+  editorExitObserved?: boolean
+  editorTempExists?: boolean
+  kind: 'blocked-unexpected-spawn' | 'editor-kill-request' | 'fixture-exit' | 'telemetry-worker-preload-block' | 'telemetry-worker-spawn'
   payload?: string
+  signal?: NodeJS.Signals
 }
 
 const cliRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
@@ -229,7 +233,7 @@ const assertTempFileAbsent = async (
 const makePreload = (recordPath: string, editorPidPath: string, editorScriptPath: string) => `
 import childProcess from 'node:child_process'
 import {
-  appendFileSync, renameSync, writeFileSync,
+  appendFileSync, existsSync, readFileSync, renameSync, writeFileSync,
 } from 'node:fs'
 import {syncBuiltinESMExports} from 'node:module'
 import path from 'node:path'
@@ -240,6 +244,12 @@ const editorScriptPath = ${JSON.stringify(editorScriptPath)}
 const editorTempPrefix = ${JSON.stringify(editorTempPrefix)}
 const appendRecord = record => appendFileSync(recordPath, JSON.stringify(record) + '\\n')
 const isTelemetryWorker = value => typeof value === 'string' && /(?:^|[\\\\/])telemetry-worker\\.js$/.test(value)
+let editorExitObserved = false
+const editorShutdownState = () => {
+  const {tempPath} = JSON.parse(readFileSync(process.env.TEST_EDITOR_MARKER, 'utf8'))
+
+  return {editorExitObserved, editorTempExists: existsSync(tempPath)}
+}
 
 // Defense in depth: if spawn interception ever fails, the worker's own preload
 // exits before its entrypoint can import telemetry clients or make network calls.
@@ -272,7 +282,7 @@ const guardedSpawn = function (command, args, options) {
           return true
         },
         end() {
-          appendRecord({kind: 'telemetry-worker-spawn', command: String(command), args: argv.map(String), payload})
+          appendRecord({kind: 'telemetry-worker-spawn', command: String(command), args: argv.map(String), payload, ...editorShutdownState()})
         },
       },
       unref() {},
@@ -286,6 +296,14 @@ const guardedSpawn = function (command, args, options) {
   )
   if (isEditor) {
     const editor = originalSpawn.call(childProcess, command, args, options)
+    const originalKill = editor.kill
+    editor.kill = function (signal, ...killArgs) {
+      if (signal === 'SIGKILL') appendRecord({kind: 'editor-kill-request', signal})
+      return originalKill.call(this, signal, ...killArgs)
+    }
+    editor.once('exit', () => {
+      editorExitObserved = true
+    })
     if (Number.isSafeInteger(editor.pid) && editor.pid > 0) writeFileSync(editorPidPath, String(editor.pid))
     return editor
   }
@@ -302,7 +320,7 @@ if (childProcess.spawn !== guardedSpawn || esmChildProcess.spawn !== guardedSpaw
 `
 
 const fixtureSource = `
-import {existsSync} from 'node:fs'
+import {appendFileSync, existsSync, readFileSync} from 'node:fs'
 import {Editor} from ${JSON.stringify(editorModuleUrl)}
 
 const telemetry = await import(${JSON.stringify(telemetryModuleUrl)})
@@ -318,6 +336,10 @@ if (action) {
   const timer = setInterval(() => {
     if (!existsSync(triggerPath)) return
     clearInterval(timer)
+    process.once('exit', () => {
+      const {tempPath} = JSON.parse(readFileSync(process.env.TEST_EDITOR_MARKER, 'utf8'))
+      appendFileSync(process.env.TEST_TELEMETRY_RECORD, JSON.stringify({kind: 'fixture-exit', editorTempExists: existsSync(tempPath)}) + '\\n')
+    })
     if (action === 'process-exit') process.exit(23)
     if (action === 'uncaught-exception') throw new Error('synthetic uncaught exception')
   }, 10)
@@ -327,6 +349,7 @@ const editorInput = process.platform === 'win32' ? '// Windows editor fixture is
 await new Editor().edit(editorInput, {
   prefix: ${JSON.stringify(editorTempPrefix)},
   dir: process.env.TEST_TMPDIR,
+  keep: Boolean(action),
 })
 `
 
@@ -410,6 +433,9 @@ const runScenario = async (options: ScenarioOptions) => {
 
     if (options.signal) {
       expect(child.kill(options.signal), `could not signal owned fixture with ${options.signal}`).to.equal(true)
+      if (options.followupSignal) {
+        expect(child.kill(options.followupSignal), `could not signal owned fixture with ${options.followupSignal}`).to.equal(true)
+      }
     } else {
       await writeFile(triggerPath, '')
     }
@@ -418,9 +444,12 @@ const runScenario = async (options: ScenarioOptions) => {
     expect(childResult.timedOut, 'fixture process exceeded its bounded exit deadline').to.equal(false)
     marker = await readEditorMarker(markerPath)
 
-    // Confirm the editor is gone before checking its temp path. Teardown must
-    // not terminate it to make either assertion pass.
-    await assertTempFileAbsent(tempDir, markerPath, true)
+    if (!options.action) {
+      // Confirm the editor is gone before checking its temp path. Teardown must
+      // not terminate it to make either assertion pass.
+      await assertTempFileAbsent(tempDir, markerPath, true)
+    }
+
     await waitForClose(childContext.close, cleanupDeadlineMs)
 
     records = (await readFile(telemetryRecordPath, 'utf8'))
@@ -434,7 +463,7 @@ const runScenario = async (options: ScenarioOptions) => {
   } finally {
     try {
       // Keep this check ahead of every forced process termination and directory removal.
-      await assertTempFileAbsent(tempDir, markerPath)
+      if (!options.action) await assertTempFileAbsent(tempDir, markerPath)
     } catch (error) {
       cleanupError ??= error
     }
@@ -515,22 +544,48 @@ describe('config:edit subprocess cleanup', function () {
         expect(payloadRecord.command).to.equal(process.execPath)
         expect(payloadRecord.args).to.have.length(1)
         expect(path.basename(payloadRecord.args![0])).to.equal('telemetry-worker.js')
+        expect(payloadRecord.editorExitObserved, 'telemetry worker must start after the editor child exits').to.equal(true)
+        expect(payloadRecord.editorTempExists, 'telemetry worker must start after editor temp cleanup').to.equal(false)
         const envelope = JSON.parse(payloadRecord.payload) as {payload: {_type?: string; message?: string;}}
         expect(envelope.payload).to.include({_type: 'error', message: `Received ${signal}`})
         expect(records.some(record => record.kind === 'telemetry-worker-preload-block')).to.equal(false)
       })
     }
+
+    it('replays an unowned distinct signal after telemetry starts during cleanup', async function () {
+      const {childResult, records} = await runScenario({
+        enableTelemetry: true,
+        followupSignal: 'SIGHUP',
+        signal: 'SIGTERM',
+      })
+      expect(childResult.exitCode).to.equal(null)
+      expect(childResult.signal).to.equal('SIGHUP')
+      expect(records.filter(record => record.kind === 'telemetry-worker-spawn')).to.have.length(1)
+      const payloadRecord = records.find(record => record.kind === 'telemetry-worker-spawn' && record.payload)
+      expect(payloadRecord?.editorExitObserved, 'telemetry worker must start after the editor child exits').to.equal(true)
+      expect(payloadRecord?.editorTempExists, 'telemetry worker must start after editor temp cleanup').to.equal(false)
+    })
   })
 
-  it('removes the editor temp file on explicit process.exit', async function () {
-    const {childResult} = await runScenario({action: 'process-exit', enableTelemetry: false})
+  it('requests editor termination but may leave its temp file on explicit process.exit', async function () {
+    const {childResult, records} = await runScenario({action: 'process-exit', enableTelemetry: false})
     expect(childResult.exitCode).to.equal(23)
     expect(childResult.signal).to.equal(null)
+    expect(records.filter(record => record.kind === 'editor-kill-request')).to.deep.equal([
+      {kind: 'editor-kill-request', signal: 'SIGKILL'},
+    ])
+    expect(records.map(record => record.kind)).to.deep.equal(['editor-kill-request', 'fixture-exit'])
+    expect(records[1]?.editorTempExists, 'synchronous exit cannot confirm editor termination or remove its temp file').to.equal(true)
   })
 
-  it('removes the editor temp file on ordinary uncaught-exception exit', async function () {
-    const {childResult} = await runScenario({action: 'uncaught-exception', enableTelemetry: false})
+  it('requests editor termination but may leave its temp file on uncaught-exception exit', async function () {
+    const {childResult, records} = await runScenario({action: 'uncaught-exception', enableTelemetry: false})
     expect(childResult.exitCode).to.equal(1)
     expect(childResult.signal).to.equal(null)
+    expect(records.filter(record => record.kind === 'editor-kill-request')).to.deep.equal([
+      {kind: 'editor-kill-request', signal: 'SIGKILL'},
+    ])
+    expect(records.map(record => record.kind)).to.deep.equal(['editor-kill-request', 'fixture-exit'])
+    expect(records[1]?.editorTempExists, 'synchronous exit cannot confirm editor termination or remove its temp file').to.equal(true)
   })
 })
