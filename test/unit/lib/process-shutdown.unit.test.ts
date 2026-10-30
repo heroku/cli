@@ -181,12 +181,15 @@ describe('process shutdown coordinator', function () {
     const firstParticipant = sinon.stub()
     const unregisterFirst = registerShutdownParticipant(firstParticipant)
     const kill = sinon.stub(process, 'kill').returns(true)
+    stubSignalListeners(originalListeners)
 
     try {
       const firstShutdown = awaitProcessShutdown('SIGINT')
       expect(firstParticipant.calledOnceWith('SIGINT'), 'callbacks start synchronously').to.be.true
       await firstShutdown
+      await waitForImmediate()
       expect(firstParticipant.calledOnceWith('SIGINT')).to.be.true
+      expect(kill.calledOnceWith(process.pid, 'SIGINT')).to.be.true
 
       const nextParticipant = sinon.stub()
       const unregisterNext = registerShutdownParticipant(nextParticipant)

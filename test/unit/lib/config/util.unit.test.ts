@@ -705,9 +705,10 @@ describe('config util Editor', function () {
     const signalHandlers = listenersFor('SIGTERM')
       .filter(listener => !listenerSnapshot.SIGTERM.includes(listener)) as NodeJS.SignalsListener[]
     const realListeners = process.listeners.bind(process)
-    sinon.stub(process, 'listeners').callsFake(event => String(event) === 'SIGTERM'
-      ? signalHandlers as unknown as ReturnType<typeof process.listeners>
-      : realListeners(event))
+    sinon.stub(process, 'listeners').callsFake(event => {
+      if (String(event) !== 'SIGTERM') return realListeners(event)
+      return [...signalHandlers, ...listenerSnapshot.SIGTERM] as unknown as ReturnType<typeof process.listeners>
+    })
     expect(signalHandlers, 'active editors must share one coordinator listener').to.have.length(1)
     const settled = Promise.allSettled(operations)
     signalHandlers[0].call(process, 'SIGTERM')
@@ -787,7 +788,7 @@ describe('config util Editor', function () {
       if (!['SIGHUP', 'SIGTERM'].includes(signal)) return realListeners(event)
 
       const coordinator = listenersFor(signal).find(listener => !listenerSnapshot[signal].includes(listener))
-      return (coordinator ? [coordinator] : []) as unknown as ReturnType<typeof process.listeners>
+      return [...(coordinator ? [coordinator] : []), ...listenerSnapshot[signal]] as unknown as ReturnType<typeof process.listeners>
     })
 
     expect(sigtermHandler, 'helper-owned SIGTERM listener').to.be.a('function')
