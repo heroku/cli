@@ -612,6 +612,7 @@ describe('config util Editor', function () {
     child.emit('exit', 0, null)
     child.emit('close', 0, null)
     const [result] = await Promise.allSettled([operation])
+    await awaitProcessShutdown('SIGINT')
 
     expect(signalHandler, 'helper-owned SIGINT listener').to.be.a('function')
     expect(owner.calledOnce).to.be.true
