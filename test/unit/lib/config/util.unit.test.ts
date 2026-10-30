@@ -809,6 +809,7 @@ describe('config util Editor', function () {
     })
 
     const operation = new Editor().edit('config-value')
+    const operationSettled = Promise.allSettled([operation])
     await spawned
     const sigtermHandler = listenersFor('SIGTERM')
       .find(listener => !listenerSnapshot.SIGTERM.includes(listener)) as NodeJS.SignalsListener | undefined
@@ -839,7 +840,8 @@ describe('config util Editor', function () {
     child.exitCode = 0
     child.emit('exit', 0, null)
     child.emit('close', 0, null)
-    await rejectionOf(operation)
+    const [result] = await operationSettled
+    expect(result.status, 'interrupted edit must reject').to.equal('rejected')
     await new Promise(resolve => {
       setImmediate(resolve)
     })
