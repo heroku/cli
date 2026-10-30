@@ -51,7 +51,7 @@
     "got": "^14.0.0",
     "https-proxy-agent": "^7.0.6",
     "inquirer": "^8.2.6",
-    "ip-address": "^10.7.2",
+    "ip-address": "^10.7.5",
     "keypair": "^1.0.4",
     "lodash": "^4.17.21",
     "marked": "^15.0.12",
@@ -92,7 +92,7 @@
     "@types/cli-progress": "^3.11.6",
     "@types/debug": "^4.1.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/glob": "^7.1.1",
+    "@types/glob": "^9.0.0",
     "@types/inquirer": "^8.2.10",
     "@types/lodash": "^4.14.123",
     "@types/lolex": "^5.1.6",
@@ -126,7 +126,7 @@
     "eslint-config-oclif": "^6.0.157",
     "eslint-import-resolver-typescript": "^4.4.4",
     "husky": "8.0.3",
-    "lolex": "^5.1.2",
+    "lolex": "^6.0.0",
     "mocha": "^10.8.2",
     "mock-stdin": "^1",
     "nock": "^14.0.12",
@@ -373,7 +373,7 @@
   "license": "ISC",
   "main": "dist/index.js",
   "overrides": {
-    "serialize-javascript": "^7.0.5",
+    "serialize-javascript": "^7.1.4",
     "node-notifier": {
       "uuid": "^11.1.1"
     },
