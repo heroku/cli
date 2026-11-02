@@ -5,6 +5,8 @@ import {color, utils} from '@heroku/heroku-cli-util'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
+import {parseAttachmentFactors} from '../../lib/data/parse-attachment-factors.js'
+import {WaitStatus} from '../../lib/data/types.js'
 import {getRelease} from '../../lib/pg/fetcher.js'
 import {PgDatabase, PgStatus} from '../../lib/pg/types.js'
 import {nls} from '../../nls.js'
@@ -30,6 +32,8 @@ export default class Promote extends Command {
     const {database} = args
     const dbResolver = new utils.pg.DatabaseResolver(this.heroku)
     const attachment = await dbResolver.getAttachment(app, database)
+    // data-api rejects the legacy /client/v11 wait_status and follower endpoints for Advanced-tier databases
+    const isAdvanced = utils.pg.isAdvancedDatabase(attachment.addon)
     ux.action.start(`Ensuring an alternate alias for existing ${color.datastore('DATABASE_URL')}`)
     const {body: attachments} = await this.heroku.get<Heroku.AddOnAttachment[]>(`/apps/${app}/addon-attachments`)
     const current = attachments.find(a => a.name === 'DATABASE')
@@ -64,14 +68,24 @@ export default class Promote extends Command {
     }
 
     if (!force) {
-      const {body: status} = await this.heroku.get<PgStatus>(`/client/v11/databases/${attachment.addon.id}/wait_status`, {
-        hostname: utils.pg.host(),
-      })
-      if (status['waiting?']) {
+      let status: WaitStatus
+      if (isAdvanced) {
+        ({body: status} = await this.heroku.get<WaitStatus>(`/data/postgres/v1/${attachment.addon.id}/wait_status`, {
+          hostname: utils.pg.host(),
+        }))
+      } else {
+        const {body} = await this.heroku.get<PgStatus>(`/client/v11/databases/${attachment.addon.id}/wait_status`, {
+          hostname: utils.pg.host(),
+        })
+        status = {message: body.message, waiting: body['waiting?']}
+      }
+
+      if (status.waiting) {
+        const waitCommand = isAdvanced ? 'heroku data:pg:wait' : 'heroku pg:wait'
         ux.error(heredoc(`
           Database cannot be promoted while in state: ${status.message}
 
-          Promoting this database can lead to application errors and outage. Please run ${color.code('heroku pg:wait')} to wait for database to become available.
+          Promoting this database can lead to application errors and outage. Please run ${color.code(waitCommand)} to wait for database to become available.
 
           To ignore this error, you can pass the --force flag to promote the database and risk application issues.
         `))
@@ -94,7 +108,14 @@ export default class Promote extends Command {
     })
     ux.action.stop()
     const currentPooler = attachments.find(a => a.namespace === 'connection-pooling:default' && a.addon?.id === current?.addon?.id && a.name === 'DATABASE_CONNECTION_POOL')
-    if (currentPooler) {
+    if (currentPooler && isAdvanced) {
+      // Advanced-tier databases have no connection-pooling:default namespace, so reattaching would leave an empty attachment
+      ux.warn(heredoc(`
+        ${color.attachment(currentPooler.name + '_URL')} still points to ${color.addon(current?.addon?.name as string)}.
+
+        ${color.code('heroku pg:promote')} doesn't reattach connection pooling to Advanced-tier databases.
+      `))
+    } else if (currentPooler) {
       ux.action.start('Reattaching pooler to new leader')
       await this.heroku.post('/addon-attachments', {
         body: {
@@ -108,18 +129,30 @@ export default class Promote extends Command {
       ux.action.stop()
     }
 
-    const {body: promotedDatabaseDetails} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${attachment.addon.id}`, {
-      hostname: utils.pg.host(),
-    })
-    if (promotedDatabaseDetails.following) {
-      const unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`
-      ux.warn(heredoc(`
-        Your database has been promoted but it is currently a follower database in read-only mode.
+    if (isAdvanced) {
+      const {pool} = parseAttachmentFactors(attachment.namespace)
+      if (pool && pool !== 'leader') {
+        ux.warn(heredoc(`
+          Your database has been promoted but ${color.attachment(attachment.name)} connects to the ${color.name(pool)} follower pool in read-only mode.
 
-        Promoting a database with ${color.code('heroku pg:promote')} doesn't automatically unfollow its leader.
+          To make ${color.datastore('DATABASE_URL')} writable, promote an attachment that uses the ${color.name('leader')} pool.
+          Use ${color.code(`heroku data:pg:attachments ${attachment.addon.name} -a ${app}`)} to list the attachments on the database.
+        `))
+      }
+    } else {
+      const {body: promotedDatabaseDetails} = await this.heroku.get<PgDatabase>(`/client/v11/databases/${attachment.addon.id}`, {
+        hostname: utils.pg.host(),
+      })
+      if (promotedDatabaseDetails.following) {
+        const unfollowLeaderCmd = `heroku pg:unfollow ${attachment.addon.name}`
+        ux.warn(heredoc(`
+          Your database has been promoted but it is currently a follower database in read-only mode.
 
-        Use ${color.code(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.datastore(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
-      `))
+          Promoting a database with ${color.code('heroku pg:promote')} doesn't automatically unfollow its leader.
+
+          Use ${color.code(unfollowLeaderCmd)} to stop this follower from replicating from its leader (${color.datastore(promotedDatabaseDetails.leader as string)}) and convert it into a writable database.
+        `))
+      }
     }
 
     const {body: formation} = await this.heroku.get<Heroku.Formation[]>(`/apps/${app}/formation`)

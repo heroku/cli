@@ -6,6 +6,7 @@ import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../src/commands/pg/promote.js'
 import * as fixtures from '../../../fixtures/addons/fixtures.js'
+import {addon as advancedAddon, essentialAddon} from '../../../fixtures/data/pg/fixtures.js'
 
 const heredoc = tsheredoc
 
@@ -895,5 +896,163 @@ describe('pg:promote when promoted database is a follower', function () {
       'DATABASE',
     ])
     expect(stderr).to.include('Your database has been promoted but it is currently a follower')
+  })
+})
+
+function resolveToAdvanced(namespace: null | string) {
+  nock('https://api.heroku.com')
+    .post('/actions/addon-attachments/resolve')
+    .reply(200, [{addon: advancedAddon, name: 'ADVANCED', namespace}])
+}
+
+function promoteAdvanced(namespace: null | string) {
+  return nock('https://api.heroku.com')
+    .post('/addon-attachments', {
+      addon: {name: advancedAddon.name},
+      app: {name: 'myapp'},
+      confirm: 'myapp',
+      name: 'DATABASE',
+      namespace,
+    })
+    .reply(201)
+}
+
+describe('pg:promote when database is Advanced-tier', function () {
+  const currentLeader = {addon: {id: 'c23b5a31-3c0a-4c49-9a2b-2ad9b2b4ab70', name: 'postgres-2'}, name: 'DATABASE', namespace: null}
+  const currentLeaderAlias = {...currentLeader, name: 'RED'}
+
+  beforeEach(function () {
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/formation')
+      .reply(200, [])
+  })
+
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
+  it('checks the Advanced wait status and promotes the database', async function () {
+    resolveToAdvanced(null)
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [currentLeader, currentLeaderAlias])
+    promoteAdvanced(null)
+    const dataApi = nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
+      .reply(200, {message: null, waiting: false})
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    dataApi.done()
+    expectOutput(stderr, heredoc(`
+      Ensuring an alternate alias for existing ⛁ DATABASE_URL... RED_URL
+      Promoting ⛁ ${advancedAddon.name} to ⛁ DATABASE_URL on ⬢ myapp... done
+    `))
+  })
+
+  it('errors and points to data:pg:wait when the Advanced database is waiting', async function () {
+    resolveToAdvanced(null)
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [currentLeader, currentLeaderAlias])
+    nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
+      .reply(200, {message: 'Modifying', waiting: true})
+
+    const {error} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(error!.message)).to.equal(heredoc(`
+      Database cannot be promoted while in state: Modifying
+
+      Promoting this database can lead to application errors and outage. Please run heroku data:pg:wait to wait for database to become available.
+
+      To ignore this error, you can pass the --force flag to promote the database and risk application issues.
+    `))
+  })
+
+  it('skips the Advanced wait status when --force is present', async function () {
+    resolveToAdvanced(null)
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [currentLeader, currentLeaderAlias])
+    const promoted = promoteAdvanced(null)
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', '--force', 'DATABASE'])
+
+    promoted.done()
+    expect(stderr).to.include('Promoting')
+  })
+
+  it('warns when the promoted attachment uses a follower pool', async function () {
+    const namespace = 'pool:analytics|proxy:false|role:owner'
+    resolveToAdvanced(namespace)
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [currentLeader, currentLeaderAlias])
+    promoteAdvanced(namespace)
+    nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
+      .reply(200, {message: null, waiting: false})
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(ansis.strip(stderr)).to.include('analytics follower pool')
+  })
+
+  it('does not warn when the promoted attachment uses the leader pool', async function () {
+    const namespace = 'pool:leader|proxy:false|role:owner'
+    resolveToAdvanced(namespace)
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [currentLeader, currentLeaderAlias])
+    promoteAdvanced(namespace)
+    nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
+      .reply(200, {message: null, waiting: false})
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).not.to.include('Warning')
+  })
+
+  it('does not reattach the connection pooler to an Advanced database', async function () {
+    resolveToAdvanced(null)
+    nock('https://api.heroku.com')
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [
+        currentLeader,
+        currentLeaderAlias,
+        {...currentLeader, name: 'DATABASE_CONNECTION_POOL', namespace: 'connection-pooling:default'},
+      ])
+    promoteAdvanced(null)
+    nock('https://api.data.heroku.com')
+      .get(`/data/postgres/v1/${advancedAddon.id}/wait_status`)
+      .reply(200, {message: null, waiting: false})
+
+    const {stderr} = await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    expect(stderr).not.to.include('Reattaching pooler')
+    expect(ansis.strip(stderr)).to.include('DATABASE_CONNECTION_POOL_URL still points to postgres-2')
+  })
+
+  it('keeps using the legacy endpoints for Essential-tier databases', async function () {
+    nock('https://api.heroku.com')
+      .post('/actions/addon-attachments/resolve')
+      .reply(200, [{addon: essentialAddon, name: 'ESSENTIAL', namespace: null}])
+      .get('/apps/myapp/addon-attachments')
+      .reply(200, [currentLeader, currentLeaderAlias])
+      .post('/addon-attachments', {
+        addon: {name: essentialAddon.name}, app: {name: 'myapp'}, confirm: 'myapp', name: 'DATABASE', namespace: null,
+      })
+      .reply(201)
+    const dataApi = nock('https://api.data.heroku.com')
+      .get(`/client/v11/databases/${essentialAddon.id}/wait_status`)
+      .reply(200, {message: 'available', 'waiting?': false})
+      .get(`/client/v11/databases/${essentialAddon.id}`)
+      .reply(200, {following: null})
+
+    await runCommand(Cmd, ['--app', 'myapp', 'DATABASE'])
+
+    dataApi.done()
   })
 })
