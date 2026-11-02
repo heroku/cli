@@ -594,7 +594,7 @@ describe('data:pg:migrate', function () {
       dataApi
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/migrations`)
         .times(2)
-        .reply(200, {...existentMigrationResponse, created_at: undefined, migration_strategy: null})
+        .reply(200, {...existentMigrationResponse, migration_strategy: null})
         .get(`/data/postgres/v1/${targetAdvancedDbAttachment.addon.id}/info`)
         .times(2)
         .reply(404, {id: 'not_found', message: 'Not found.'})
@@ -611,7 +611,6 @@ describe('data:pg:migrate', function () {
       expect(stderr).to.equal('')
       expect(stdout).to.match(/Destination:\s+⛁ postgresql-lively-12345 \(ADVANCED_DB\)$/m)
       expect(stdout).not.to.contain('Method:')
-      expect(stdout).not.to.contain('Configured at:')
       expect(stdout).to.match(/Status:\s+Preparing databases/)
     })
   })

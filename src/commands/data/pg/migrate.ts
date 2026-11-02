@@ -440,7 +440,7 @@ export default class DataPgMigrate extends BaseCommand {
   }
 
   // Matches the data:pg:info timestamp format, e.g. 2026-10-21 16:00 UTC
-  private formatTimestamp(timestamp?: null | string): string | undefined {
+  private formatTimestamp(timestamp: null | string): string | undefined {
     return timestamp ? `${new Date(timestamp).toISOString().slice(0, 16).replace('T', ' ')} UTC` : undefined
   }
 
@@ -609,15 +609,15 @@ export default class DataPgMigrate extends BaseCommand {
       this.printMigrationDetails(migration)
 
       // Disabled choices without a reason show the default "(Disabled)"
-      const actionChoice = (name: string, value: string, enabled: boolean, disabledReason?: null | string) => (
+      const actionChoice = (name: string, value: string, enabled: boolean, disabledReason: null | string) => (
         enabled ? {name, value} : {disabled: disabledReason || true, name: color.gray(name), value}
       )
       action = (await this.prompt<{action: string}>({
         choices: [
           {name: 'Refresh', value: '__refresh'},
           // The API decides whether a migration can be started or canceled, and why not
-          actionChoice('Start', '__start_migration', Boolean(migration.can_start), migration.start_disabled_reason),
-          actionChoice('Cancel', '__cancel_migration', Boolean(migration.can_cancel), migration.cancel_disabled_reason),
+          actionChoice('Start', '__start_migration', migration.can_start, migration.start_disabled_reason),
+          actionChoice('Cancel', '__cancel_migration', migration.can_cancel, migration.cancel_disabled_reason),
           new Separator(),
           {name: 'Go back', value: '__go_back'},
         ],
