@@ -2,19 +2,19 @@ import {flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {styledHeader, styledObject} from '@heroku/heroku-cli-util/hux'
 import {
-  AddonResolver, getAddonService, isAdvancedDatabase, isEssentialDatabase, isLegacyEssentialDatabase,
+  isAdvancedDatabase, isEssentialDatabase, isLegacyEssentialDatabase,
 } from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
 import type {Link} from '../../../../lib/data/types.js'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
-import {getAllAdvancedDatabases} from '../../../../lib/pg/util.js'
+import {getAdvancedAttachment, getAllAdvancedDatabases} from '../../../../lib/pg/util.js'
 
 export default class DataPgLinks extends BaseCommand {
   static args = {
     database: Args.string({
-      description: 'database name, database attachment name, or related config var on an app',
+      description: 'database attachment name or related config var on an app',
     }),
   }
   static description = 'list Data Links on a Postgres Advanced database'
@@ -33,16 +33,15 @@ export default class DataPgLinks extends BaseCommand {
 
     let databases
     if (database) {
-      const addonResolver = new AddonResolver(this.heroku)
-      const addon = await addonResolver.resolve(database, app, getAddonService())
+      const {addon} = await getAdvancedAttachment(this.heroku, app, database)
 
-      if (isEssentialDatabase(addon) || isLegacyEssentialDatabase(addon)) {
-        ux.error("data:pg:links isn't available for Essential-tier databases.")
+      if (isEssentialDatabase(addon as any) || isLegacyEssentialDatabase(addon as any)) {
+        ux.error("You can only use this command to view Data Links on Advanced-tier databases.")
       }
 
-      if (!isAdvancedDatabase(addon)) {
-        ux.error('You can only use this command on Advanced-tier databases.\n'
-          + `Run ${color.code(`heroku pg:links ${addon.name} -a ${app}`)} instead.`)
+      if (!isAdvancedDatabase(addon as any)) {
+        ux.error('You can only use this command to view Data Links on Advanced-tier databases.\n'
+          + `Use ${color.code(`heroku pg:links ${addon.name} -a ${app}`)} instead.`)
       }
 
       databases = [addon]
@@ -55,7 +54,7 @@ export default class DataPgLinks extends BaseCommand {
 
     let once = false
     for (const db of databases) {
-      const {body: links} = await this.dataApi.get<Link[]>(`/data/postgres/v1/${db.id}/links`)
+      const {body: {items: links}} = await this.dataApi.get<{items: Link[]}>(`/data/postgres/v1/${db.id}/links`)
 
       if (once) {
         ux.stdout('')
@@ -66,7 +65,7 @@ export default class DataPgLinks extends BaseCommand {
       styledHeader(color.datastore(db.name))
 
       if (links.length === 0) {
-        ux.stdout('No data sources are linked into this database')
+        ux.stdout("This database isn't linked to another data source.")
         continue
       }
 

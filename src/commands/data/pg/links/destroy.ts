@@ -2,19 +2,20 @@ import {flags as Flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
 import {confirmCommand} from '@heroku/heroku-cli-util/hux'
 import {
-  AddonResolver, getAddonService, isAdvancedDatabase, isEssentialDatabase, isLegacyEssentialDatabase,
+  isAdvancedDatabase, isEssentialDatabase, isLegacyEssentialDatabase,
 } from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
+import {getAdvancedAttachment} from '../../../../lib/pg/util.js'
 
 const heredoc = tsheredoc
 
 export default class DataPgLinksDestroy extends BaseCommand {
   static args = {
     database: Args.string({
-      description: 'database name, database attachment name, or related config var on an app',
+      description: 'database attachment name or related config var on an app',
       required: true,
     }),
     link: Args.string({
@@ -24,7 +25,7 @@ export default class DataPgLinksDestroy extends BaseCommand {
   }
   static description = 'destroy a link between Advanced-tier data stores'
   static examples = [
-    '<%= config.bin %> <%= command.id %> HEROKU_POSTGRESQL_CERULEAN pg-symmetrical-link --app example-app',
+    '<%= config.bin %> <%= command.id %> HEROKU_POSTGRESQL_CERULEAN example_link_name --app example-app',
   ]
   static flags = {
     app: Flags.app({required: true}),
@@ -37,16 +38,15 @@ export default class DataPgLinksDestroy extends BaseCommand {
     const {app, confirm} = flags
     const {database, link} = args
 
-    const addonResolver = new AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, getAddonService())
+    const {addon} = await getAdvancedAttachment(this.heroku, app, database)
 
-    if (isEssentialDatabase(addon) || isLegacyEssentialDatabase(addon)) {
-      ux.error("data:pg:links isn't available for Essential-tier databases.")
+    if (isEssentialDatabase(addon as any) || isLegacyEssentialDatabase(addon as any)) {
+      ux.error("You can only use this command to destroy Data Links on Advanced-tier databases.")
     }
 
-    if (!isAdvancedDatabase(addon)) {
-      ux.error('You can only use this command on Advanced-tier databases.\n'
-        + `Run ${color.code(`heroku pg:links:destroy ${addon.name} ${link} -a ${app}`)} instead.`)
+    if (!isAdvancedDatabase(addon as any)) {
+      ux.error('You can only use this command to destroy Data Links on Advanced-tier databases.\n'
+        + `Use ${color.code(`heroku pg:links:destroy ${addon.name} ${link} -a ${app}`)} instead.`)
     }
 
     await confirmCommand({

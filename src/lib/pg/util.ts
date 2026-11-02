@@ -147,6 +147,35 @@ async function allAdvancedDatabaseAttachments(heroku: APIClient, app: string) {
 }
 
 /**
+ * Resolve a database attachment, scoping the "Unknown database" error to Advanced-tier options.
+ *
+ * The shared DatabaseResolver lists every Postgres attachment on the app in its error message;
+ * for Advanced-only commands we rewrite that list to only include Advanced-tier databases.
+ */
+export async function getAdvancedAttachment(heroku: APIClient, app: string, database: string): Promise<pg.ExtendedAddonAttachment> {
+  const dbResolver = new utils.pg.DatabaseResolver(heroku)
+  try {
+    return await dbResolver.getAttachment(app, database)
+  } catch (error) {
+    const message = (error as Error)?.message ?? ''
+    if (!message.startsWith('Unknown database:')) {
+      throw error
+    }
+
+    const advancedDbs = await getAllAdvancedDatabases(heroku, app)
+    if (advancedDbs.length === 0) {
+      throw new Error('No Heroku Postgres Advanced-tier databases found on the app.')
+    }
+
+    const validOptions = advancedDbs
+      .flatMap(db => db.attachment_names ?? [db.name!])
+      .map(name => name.endsWith('_URL') ? name.slice(0, -4) : name)
+      .join(', ')
+    throw new Error(`Unknown Advanced-tier database: ${database}. Valid options are: ${validOptions}`)
+  }
+}
+
+/**
  * Return all Heroku Postgres databases on the Advanced-tier for a given app.
  *
  * @param heroku - The API client to use
