@@ -20,7 +20,7 @@ import {
   MigrationResponse,
   MigrationStatus,
 } from '../../../lib/data/types.js'
-import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
+import {fetchLevelsAndPricing, renderTimestamp} from '../../../lib/data/utils.js'
 import {PgDatabaseService} from '../../../lib/pg/types.js'
 import {getAttachmentNamesByAddon} from '../../../lib/pg/util.js'
 import {huxTableNoWrapOptions} from '../../../lib/utils/table-utils.js'
@@ -439,11 +439,6 @@ export default class DataPgMigrate extends BaseCommand {
     return color.datastore(database?.name ?? color.gray('unknown'))
   }
 
-  // Matches the data:pg:info timestamp format, e.g. 2026-10-21 16:00 UTC
-  private formatTimestamp(timestamp: null | string): string | undefined {
-    return timestamp ? `${new Date(timestamp).toISOString().slice(0, 16).replace('T', ' ')} UTC` : undefined
-  }
-
   private async getAppDatabases(app: string): Promise<void> {
     const {body: appAttachments} = await this.heroku.get<pg.ExtendedAddonAttachment[]>(
       `/apps/${app}/addon-attachments`,
@@ -656,7 +651,7 @@ export default class DataPgMigrate extends BaseCommand {
       Source: this.databaseDetails(sourceDatabase, sourceDatabase?.version, sourceDatabase?.status),
       Destination: this.databaseDetails(targetDatabase, targetDatabase?.info?.version, hux.toTitleCase(targetDatabase?.info?.status)),
       Method: this.methodLabel(migration),
-      'Configured at': this.formatTimestamp(migration.created_at),
+      'Configured at': migration.created_at ? renderTimestamp(migration.created_at) : undefined,
       Status: migration.status_description,
     }
     /* eslint-enable perfectionist/sort-objects */
