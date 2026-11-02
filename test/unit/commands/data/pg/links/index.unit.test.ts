@@ -78,7 +78,7 @@ describe('data:pg:links', function () {
     const {error} = await runCommand(DataPgLinks, ['my-addon', '--app=myapp'])
 
     herokuApi.done()
-    expect((error as Error).message).to.equal("You can only use this command to view Data Links on Advanced-tier databases.")
+    expect((error as Error).message).to.equal('You can only use this command to view Data Links on Advanced-tier databases.')
   })
 
   it('errors on legacy Essential-tier databases', async function () {
@@ -89,7 +89,7 @@ describe('data:pg:links', function () {
     const {error} = await runCommand(DataPgLinks, ['my-addon', '--app=myapp'])
 
     herokuApi.done()
-    expect((error as Error).message).to.equal("You can only use this command to view Data Links on Advanced-tier databases.")
+    expect((error as Error).message).to.equal('You can only use this command to view Data Links on Advanced-tier databases.')
   })
 
   it('lists only Advanced-tier databases when the database arg is unknown', async function () {

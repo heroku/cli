@@ -3,20 +3,20 @@ import {color} from '@heroku/heroku-cli-util'
 import {isAdvancedDatabase, isLegacyDatabase} from '@heroku/heroku-cli-util/utils'
 import {Args, ux} from '@oclif/core'
 
-import type { Link } from '../../../../lib/data/types.js'
+import type {Link} from '../../../../lib/data/types.js'
 
-import BaseCommand from '../../../../lib/data/base-command.js'
 import {addonResolver} from '../../../../lib/addons/resolve.js'
+import BaseCommand from '../../../../lib/data/base-command.js'
 import {getAdvancedAttachment} from '../../../../lib/pg/util.js'
 
 export default class DataPgLinksCreate extends BaseCommand {
   static args = {
-    remote: Args.string({
-      description: 'remote data store name, attachment name, or related config var on an app',
-      required: true,
-    }),
     database: Args.string({
       description: 'database attachment name or related config var on an app',
+      required: true,
+    }),
+    remote: Args.string({
+      description: 'remote data store name, attachment name, or related config var on an app',
       required: true,
     }),
   }

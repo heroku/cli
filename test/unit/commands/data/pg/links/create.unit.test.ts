@@ -63,7 +63,7 @@ describe('data:pg:links:create', function () {
     ])
 
     herokuApi.done()
-    expect((error as Error).message).to.equal("You can only use this command to create Data Links on Advanced-tier databases.")
+    expect((error as Error).message).to.equal('You can only use this command to create Data Links on Advanced-tier databases.')
   })
 
   it('lists only Advanced-tier databases when the database arg is unknown', async function () {

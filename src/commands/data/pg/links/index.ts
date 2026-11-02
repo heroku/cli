@@ -36,7 +36,7 @@ export default class DataPgLinks extends BaseCommand {
       const {addon} = await getAdvancedAttachment(this.heroku, app, database)
 
       if (isEssentialDatabase(addon as any) || isLegacyEssentialDatabase(addon as any)) {
-        ux.error("You can only use this command to view Data Links on Advanced-tier databases.")
+        ux.error('You can only use this command to view Data Links on Advanced-tier databases.')
       }
 
       if (!isAdvancedDatabase(addon as any)) {

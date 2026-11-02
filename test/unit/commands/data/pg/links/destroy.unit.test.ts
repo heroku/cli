@@ -53,7 +53,7 @@ describe('data:pg:links:destroy', function () {
     ])
 
     herokuApi.done()
-    expect((error as Error).message).to.equal("You can only use this command to destroy Data Links on Advanced-tier databases.")
+    expect((error as Error).message).to.equal('You can only use this command to destroy Data Links on Advanced-tier databases.')
   })
 
   it('redirects to pg:links:destroy on non-Advanced databases', async function () {
