@@ -1,7 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
 import * as color from '@heroku/heroku-cli-util/color'
+import {teamAppExtensions} from '@heroku/sdk/extensions/platform'
 import {ux} from '@oclif/core/ux'
+
+import {createSDK} from '../../lib/sdk.js'
 
 export default class AppsJoin extends Command {
   static aliases = ['join']
@@ -16,10 +18,8 @@ export default class AppsJoin extends Command {
     const {flags} = await this.parse(AppsJoin)
     const {app} = flags
     ux.action.start(`Joining ${color.app(app)}`)
-    const {body: user} = await this.heroku.get<Heroku.Account>('/account')
-    await this.heroku.post<Heroku.TeamAppCollaborator>(`/teams/apps/${app}/collaborators`, {
-      body: {user: user.email},
-    })
+    const {platform} = createSDK(this.heroku, {extensions: [teamAppExtensions]})
+    await platform.teamApp.joinSelf(app)
     ux.action.stop()
   }
 }

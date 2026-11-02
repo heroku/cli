@@ -1,8 +1,14 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {
+  AlreadyFavoriteError,
+  AppNotFoundError,
+  FavoriteCreateError,
+  favoriteExtensions,
+} from '@heroku/sdk/extensions/dashboard-backend'
 import {ux} from '@oclif/core/ux'
 
-import {Favorites} from '../../../lib/types/favorites.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Add extends Command {
   static description = 'favorites an app'
@@ -18,26 +24,36 @@ export default class Add extends Command {
 
     ux.action.start(`Adding ${color.app(app)} to favorites`)
 
-    const {body: favorites} = await this.heroku.get<Favorites>(
-      '/favorites?type=app',
-      {hostname: 'particleboard.heroku.com'},
-    )
-
-    if (favorites.some(f => f.resource_name === app)) {
-      throw new Error(`${color.app(app)} is already a favorite app.`)
-    }
-
+    const {dashboardBackend} = createSDK(this.heroku, {extensions: [favoriteExtensions]})
     try {
-      await this.heroku.post('/favorites', {
-        body: {resource_id: app, type: 'app'},
-        hostname: 'particleboard.heroku.com',
-      })
-    } catch (error: any) {
-      if (error.statusCode === 404) {
-        ux.error('App not found')
-      } else {
-        ux.error(error.cause)
+      await dashboardBackend.favorite.addByAppName(app)
+    } catch (error: unknown) {
+      if (error instanceof AlreadyFavoriteError) {
+        // Preserve the legacy error class as well as its message.
+        // eslint-disable-next-line unicorn/prefer-type-error -- exact legacy error class is part of CLI compatibility.
+        throw new Error(`${color.app(app)} is already a favorite app.`)
       }
+
+      if (error instanceof AppNotFoundError) {
+        ux.error('App not found')
+      }
+
+      if (error instanceof FavoriteCreateError) {
+        const originalError = error.cause
+        let displayError: Error | string = error
+        if (typeof originalError === 'string') {
+          displayError = originalError
+        } else if (originalError instanceof Error) {
+          const originalCause = originalError.cause
+          displayError = originalCause instanceof Error || typeof originalCause === 'string'
+            ? originalCause
+            : originalError
+        }
+
+        ux.error(displayError)
+      }
+
+      throw error
     }
 
     ux.action.stop()

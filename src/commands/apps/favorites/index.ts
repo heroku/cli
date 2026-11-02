@@ -2,7 +2,7 @@ import {Command, flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {ux} from '@oclif/core/ux'
 
-import {Favorites} from '../../../lib/types/favorites.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Index extends Command {
   static description = 'list favorited apps'
@@ -13,14 +13,11 @@ export default class Index extends Command {
 
   async run() {
     const {flags} = await this.parse(Index)
-
-    const {body: favorites} = await this.heroku.get<Favorites>(
-      '/favorites?type=app',
-      {hostname: 'particleboard.heroku.com'},
-    )
+    const sdk = createSDK(this.heroku)
+    const favorites = await sdk.dashboardBackend.favorite.list({type: 'app'})
 
     if (flags.json) {
-      hux.styledJSON(favorites)
+      ux.stdout(JSON.stringify(favorites, null, 2))
     } else {
       hux.styledHeader('Favorited Apps')
       for (const f of favorites) {

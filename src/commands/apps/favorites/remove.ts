@@ -1,8 +1,9 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as color from '@heroku/heroku-cli-util/color'
+import {favoriteExtensions, NotFavoriteError} from '@heroku/sdk/extensions/dashboard-backend'
 import {ux} from '@oclif/core/ux'
 
-import {Favorites} from '../../../lib/types/favorites.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 export default class Remove extends Command {
   static description = 'unfavorites an app'
@@ -18,20 +19,18 @@ export default class Remove extends Command {
 
     ux.action.start(`Removing ${color.app(app)} from favorites`)
 
-    const {body: favorites} = await this.heroku.get<Favorites>(
-      '/favorites?type=app',
-      {hostname: 'particleboard.heroku.com'},
-    )
+    const {dashboardBackend} = createSDK(this.heroku, {extensions: [favoriteExtensions]})
+    try {
+      await dashboardBackend.favorite.removeByAppName(app)
+    } catch (error) {
+      if (error instanceof NotFavoriteError) {
+        // Preserve the legacy error class as well as its message.
+        // eslint-disable-next-line unicorn/prefer-type-error -- exact legacy error class is part of CLI compatibility.
+        throw new Error(`${color.app(app)} is not already a favorite app.`)
+      }
 
-    const favorite = favorites.find(f => f.resource_name === app)
-
-    if (!favorite) {
-      throw new Error(`${color.app(app)} is not already a favorite app.`)
+      throw error
     }
-
-    await this.heroku.delete(`/favorites/${favorite.id}`, {
-      hostname: 'particleboard.heroku.com',
-    })
 
     ux.action.stop()
   }
