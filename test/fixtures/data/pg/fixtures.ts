@@ -1446,7 +1446,7 @@ export const createdMigrationResponse: MigrationResponse = {
   full_load_progress: 0,
   id: 'eb07b33c-f90a-4f7d-9c56-12c10c277121',
   last_error_message: null,
-  migration_strategy: 'dms_migrate',
+  migration_strategy: 'pgcopydb_migrate',
   preassessment_results: [],
   source_id: 'b02c94bd-bc1b-4f6c-9169-1d9b7d97d054', // Premium DB
   start_disabled_reason: 'the migration is being prepared',
