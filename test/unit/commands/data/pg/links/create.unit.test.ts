@@ -35,8 +35,8 @@ describe('data:pg:links:create', function () {
       .reply(200, {name: 'pg_link'})
 
     const {stderr} = await runCommand(DataPgLinksCreate, [
-      'heroku-postgres-remote',
       'heroku-postgres',
+      'heroku-postgres-remote',
       '--app=myapp',
       '--as=pg_link',
     ])
@@ -56,8 +56,8 @@ describe('data:pg:links:create', function () {
       .reply(200, [remoteAddon])
 
     const {error} = await runCommand(DataPgLinksCreate, [
-      'heroku-postgres-remote',
       'heroku-postgres',
+      'heroku-postgres-remote',
       '--app=myapp',
       '--as=pg_link',
     ])
@@ -97,8 +97,8 @@ describe('data:pg:links:create', function () {
       .reply(200, [remoteAddon])
 
     const {error} = await runCommand(DataPgLinksCreate, [
-      'heroku-postgres-remote',
       'nonexistent',
+      'heroku-postgres-remote',
       '--app=myapp',
       '--as=pg_link',
     ])
@@ -115,8 +115,8 @@ describe('data:pg:links:create', function () {
       .reply(200, [nonAdvancedAddon])
 
     const {error} = await runCommand(DataPgLinksCreate, [
-      'heroku-postgres-remote',
       'heroku-postgres',
+      'heroku-postgres-remote',
       '--app=myapp',
       '--as=pg_link',
     ])
@@ -136,8 +136,8 @@ describe('data:pg:links:create', function () {
       .reply(200, [nonAdvancedAddon])
 
     const {error} = await runCommand(DataPgLinksCreate, [
-      'heroku-postgres-remote',
       'heroku-postgres',
+      'heroku-postgres-remote',
       '--app=myapp',
       '--as=pg_link',
     ])
@@ -154,8 +154,8 @@ describe('data:pg:links:create', function () {
       .reply(200, [remoteAddon])
 
     const {error} = await runCommand(DataPgLinksCreate, [
-      'heroku-postgres-remote',
       'heroku-postgres',
+      'heroku-postgres-remote',
       '--app=myapp',
       '--as=pg_link',
     ])
