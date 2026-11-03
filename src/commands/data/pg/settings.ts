@@ -2,8 +2,8 @@ import type {PostgresSettingsInfoResult, PostgresSettingsUpdateResult} from '@he
 
 import {flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {getPostgresServiceName, isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
+import {postgresSettingsExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
@@ -67,39 +67,39 @@ export default class DataPgSettings extends BaseCommand {
     const {app, set} = flags
     const settings: string | undefined = set?.map((setting: string) => setting.trim()).join(',')
 
-    const {data, platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
-    const database = await platform.addOn.resolve(databaseArg, {
-      addonService: getPostgresServiceName(),
-      appIdentity: app,
-    })
+    const {data} = createSDK(this.heroku, {extensions: [postgresSettingsExtensions]})
 
-    if (!isAdvancedDatabase(database)) {
-      ux.error(heredoc(`
-        You can only use this command to configure settings on Advanced-tier databases.
-        See https://devcenter.heroku.com/articles/heroku-postgres-settings to configure settings on non-Advanced-tier databases.
-      `))
-    }
+    try {
+      if (settings) {
+        const {addon, settings: body} = await data.postgresSettings.update(databaseArg, {settings}, {appIdentity: app})
 
-    if (settings) {
-      const body = await data.postgresSettings.update(database.id, {settings})
+        if ((body.changes?.length ?? 0) === 0) {
+          ux.stdout(`\nThose settings are already applied to ${color.addon(addon.name)}. `
+            + `Use ${color.code(`heroku data:pg:settings ${addon.name} -a ${app}`)} to see the current settings on the database.`)
+        } else {
+          const tableData = settingsChangeTableData(body)
+          ux.stdout('Updating these settings...')
+          hux.table(tableData, settingsChangeHeaders)
+          ux.stdout(`Updating your database ${color.addon(addon.name)} shortly. You can use ${color.code(`data:pg:info ${addon.name} -a ${app}`)} to track progress`)
+        }
 
-      if ((body.changes?.length ?? 0) === 0) {
-        ux.stdout(`\nThose settings are already applied to ${color.addon(database.name)}. `
-          + `Use ${color.code(`heroku data:pg:settings ${database.name} -a ${app}`)} to see the current settings on the database.`)
-      } else {
-        const tableData = settingsChangeTableData(body)
-        ux.stdout('Updating these settings...')
-        hux.table(tableData, settingsChangeHeaders)
-        ux.stdout(`Updating your database ${color.addon(database.name)} shortly. You can use ${color.code(`data:pg:info ${database.name} -a ${app}`)} to track progress`)
+        return body
       }
 
+      const {addon, settings: body} = await data.postgresSettings.info(databaseArg, {appIdentity: app})
+      const tableData = settingsTableData(body)
+      ux.stdout(`=== ${color.addon(addon.name)}`)
+      hux.table(tableData, settingsHeaders)
       return body
-    }
+    } catch (error) {
+      if (error instanceof NotAdvancedDatabaseError) {
+        ux.error(heredoc(`
+          You can only use this command to configure settings on Advanced-tier databases.
+          See https://devcenter.heroku.com/articles/heroku-postgres-settings to configure settings on non-Advanced-tier databases.
+        `))
+      }
 
-    const body = await data.postgresSettings.info(database.id)
-    const tableData = settingsTableData(body)
-    ux.stdout(`=== ${color.addon(database.name)}`)
-    hux.table(tableData, settingsHeaders)
-    return body
+      throw error
+    }
   }
 }
