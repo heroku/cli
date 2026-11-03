@@ -1,7 +1,7 @@
 import {flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
-import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {getPostgresServiceName, isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
+import {postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
@@ -25,37 +25,27 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
     const {args, flags} = await this.parse(DataPgAttachmentsDestroy)
     const {attachment_name: attachmentName} = args
     const {app, confirm} = flags
-    const {platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
-
-    const attachment = await platform.addOnAttachment.infoByApp(app, attachmentName)
-    const addon = await platform.addOn.resolve(attachment.addon.name, {
-      addonService: getPostgresServiceName(),
-    })
-
-    if (!isAdvancedDatabase(addon)) {
-      ux.error('You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(`heroku addons:detach ${attachmentName} -a ${app}`)} instead.`)
-    }
-
-    await hux.confirmCommand({comparison: app, confirmation: confirm})
+    const {data} = createSDK(this.heroku, {extensions: [postgresDatabaseExtensions]})
 
     try {
-      ux.action.start(`Detaching ${color.attachment(attachmentName)} on ${color.datastore(addon.name)} from ${color.app(app)}`)
-      await platform.addOnAttachment.delete(attachment.id)
-      ux.action.stop()
+      const {releaseVersion} = await data.postgresDatabase.deleteAttachment(app, attachmentName, {
+        async beforeDelete({addon}) {
+          await hux.confirmCommand({comparison: app, confirmation: confirm})
+          ux.action.start(`Detaching ${color.attachment(attachmentName)} on ${color.datastore(addon.name)} from ${color.app(app)}`)
+        },
+        onDetached() {
+          ux.action.stop()
+          ux.action.start(`Unsetting ${color.attachment(attachmentName)} config vars and restarting ${color.app(app)}`)
+        },
+      })
+      ux.action.stop(`done, v${releaseVersion}`)
     } catch (error) {
       ux.action.stop(color.red('!'))
-      throw error
-    }
+      if (error instanceof NotAdvancedDatabaseError) {
+        ux.error('You can only use this command on Advanced-tier databases.\n'
+            + `Use ${color.code(`heroku addons:detach ${attachmentName} -a ${app}`)} instead.`)
+      }
 
-    try {
-      ux.action.start(`Unsetting ${color.attachment(attachmentName)} config vars and restarting ${color.app(app)}`)
-      const releases = await platform
-        .withHeaders({Range: 'version ..; max=1, order=desc'})
-        .release.list(app)
-      ux.action.stop(`done, v${releases[0].version}`)
-    } catch (error) {
-      ux.action.stop(color.red('!'))
       throw error
     }
   }
