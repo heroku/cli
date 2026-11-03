@@ -71,7 +71,7 @@ export default class DataPgQuotasUpdate extends BaseCommand {
       ux.action.stop()
       displayQuota(quota)
     } catch (error) {
-      ux.action.stop('!')
+      ux.action.stop(color.red('!'))
       if (error instanceof NotAdvancedDatabaseError) {
         ux.error('You can only use this command on Advanced-tier databases.')
       }
