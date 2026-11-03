@@ -90,17 +90,37 @@ describe('data:pg:destroy', function () {
     expect(ansis.strip((error as Error).message)).to.equal('Couldn\'t find that addon.')
   })
 
+  it('reports background deprovisioning without claiming success', async function () {
+    fakeData.postgresDatabase.destroy.callsFake(destroyResolvingWith({...destroyedAddonResponse, state: 'deprovisioning'}))
+
+    const {stderr, stdout} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
+
+    expect(ansis.strip(stderr)).to.equal(heredoc(`
+        Destroying advanced-horizontal-01234 on ⬢ myapp... pending
+      `))
+    const out = ansis.strip(stdout)
+    expect(out).to.include(`${addon.name} is being destroyed in the background. The app will restart when complete...`)
+    expect(out).to.include(`Run heroku addons:info ${addon.name} to check destruction progress`)
+    expect(out).to.not.include('We successfully destroyed your database.')
+  })
+
   it('displays the correct error message when the addon is not destroyed', async function () {
     fakeData.postgresDatabase.destroy.callsFake(destroyFailingWith({body: {message: 'Test error'}}))
 
-    const {error} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
+    const {error, stderr} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
     expect(ansis.strip((error as Error).message)).to.equal('We can\'t destroy your database due to an error: Test error. Try again or open a ticket with Heroku Support: https://help.heroku.com/')
+    expect(ansis.strip(stderr)).to.equal(heredoc(`
+        Destroying advanced-horizontal-01234 on ⬢ myapp... !
+      `))
   })
 
   it('displays the correct error message when the addon status is not "deprovisioned"', async function () {
     fakeData.postgresDatabase.destroy.callsFake(destroyResolvingWith({...destroyedAddonResponse, state: 'provisioning'}))
 
-    const {error} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
+    const {error, stderr} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
     expect(ansis.strip((error as Error).message)).to.equal('You can\'t destroy a database with a provisioning status.')
+    expect(ansis.strip(stderr)).to.equal(heredoc(`
+        Destroying advanced-horizontal-01234 on ⬢ myapp... !
+      `))
   })
 })

@@ -54,9 +54,12 @@ export default class DataPgDestroy extends BaseCommand {
         force,
       })
     } catch (error) {
+      // Mark the spinner failed. This is a no-op when the failure preceded
+      // `beforeDestroy` starting it (resolution or aborted confirmation).
       // Resolution and confirmation failures (confirmedAddon still unset)
       // surface as-is. Once confirmed, the only remaining step is the delete
       // request, so wrap its failure with tier-specific guidance.
+      ux.action.stop(color.red('!'))
       if (confirmedAddon) {
         const errorMessage = (error as {body?: {message?: string}}).body?.message || (error as Error).message || error
         throw isAdvancedDatabase(confirmedAddon)
@@ -74,19 +77,19 @@ export default class DataPgDestroy extends BaseCommand {
 
     if (state === 'deprovisioning') {
       ux.action.stop(color.info('pending'))
-    }
-
-    ux.action.stop()
-
-    if (state === 'deprovisioning') {
       ux.stdout(`${color.addon(addon.name!)} is being destroyed in the background. The app will restart when complete...`)
       ux.stdout(`Run ${color.code('heroku addons:info ' + addon.name)} to check destruction progress`)
-    } else if (state !== 'deprovisioned') {
+      return result
+    }
+
+    if (state !== 'deprovisioned') {
+      ux.action.stop(color.red('!'))
       throw isAdvancedDatabase(result)
         ? new Error(`You can't destroy a database with a ${result.state} status.`)
         : new Error(`The add-on was unable to be destroyed, with status ${result.state}.`)
     }
 
+    ux.action.stop()
     ux.stdout('We successfully destroyed your database.')
     return result
   }
