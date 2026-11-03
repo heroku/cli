@@ -1,17 +1,22 @@
+import type {PostgresLevelInfoResult} from '@heroku/types/data'
+
 import {Command} from '@heroku-cli/command'
 import {hux} from '@heroku/heroku-cli-util'
 import {printTable, TableOptions} from '@oclif/table'
 
 import BaseCommand from '../../../lib/data/base-command.js'
-import {PostgresLevelInfo, PostgresLevelsResponse} from '../../../lib/data/types.js'
+import {createSDK} from '../../../lib/sdk.js'
+
+type PostgresLevelItem = PostgresLevelInfoResult['items'][number]
 
 export default class DataPgLevels extends BaseCommand {
   static baseFlags = Command.baseFlagsWithoutPrompt()
   static description = 'show available levels for Heroku Postgres Advanced databases'
   static promptFlagActive = false
 
-  async run(): Promise<void> {
-    const {body: {items: levels}} = await this.dataApi.get<PostgresLevelsResponse>('/data/postgres/v1/levels/advanced')
+  async run(): Promise<PostgresLevelItem[]> {
+    const {data} = createSDK(this.heroku)
+    const {items: levels} = await data.postgresLevel.info('advanced')
 
     hux.styledHeader('Available levels for Heroku Postgres Advanced databases')
 
@@ -22,9 +27,9 @@ export default class DataPgLevels extends BaseCommand {
         bold: true,
         color: 'white',
       },
-    } as Partial<TableOptions<PostgresLevelInfo>>
+    } as Partial<TableOptions<PostgresLevelItem>>
 
-    printTable<PostgresLevelInfo>({
+    printTable<PostgresLevelItem>({
       columns: [
         {key: 'name', name: 'Name'},
         {horizontalAlignment: 'right', key: 'vcpu', name: 'vCPU'},
@@ -34,5 +39,7 @@ export default class DataPgLevels extends BaseCommand {
       data: levels,
       ...defaultStyle,
     })
+
+    return levels
   }
 }
