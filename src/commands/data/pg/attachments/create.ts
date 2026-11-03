@@ -1,10 +1,11 @@
+import type {ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
 import type {PostgresCredentialListResult, PostgresInfoResult} from '@heroku/types/data'
 
 import {flags as Flags} from '@heroku-cli/command'
 import {color} from '@heroku/heroku-cli-util'
+import {NotFoundError} from '@heroku/heroku-fetch'
 import {databaseCredentialExtensions, postgresDatabaseExtensions} from '@heroku/sdk/extensions/data'
 import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
-import {AddonNotFoundError} from '@heroku/sdk/resources/platform/add-on'
 import {Args, ux} from '@oclif/core'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
@@ -16,6 +17,8 @@ import {createSDK} from '../../../../lib/sdk.js'
 
 const {prompt} = inquirer
 const heredoc = tsheredoc
+
+type AdvancedCredentials = PostgresCredentialListResult['items']
 
 export default class DataPgAttachmentsCreate extends BaseCommand {
   static args = {
@@ -51,8 +54,8 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     let {app, as, confirm, credential, pool} = flags
     const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions, postgresDatabaseExtensions]})
 
-    let addon
-    let credentials
+    let addon: ResolvedAddOn
+    let credentials: AdvancedCredentials
     try {
       // For attachment creation, app is always the target app where the attachment will be created.
       // When attaching to the same app, both add-on name and attachment name will resolve without issues
@@ -63,7 +66,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       try {
         result = await data.databaseCredential.list(databaseArg, {appIdentity: app})
       } catch (error) {
-        if (!(error instanceof AddonNotFoundError)) {
+        if (!(error instanceof NotFoundError)) {
           throw error
         }
 
@@ -126,7 +129,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
       try {
         ux.action.start(attachMessage)
-        const {attachment, releaseVersion} = await data.postgresDatabase.createAttachment(app, databaseArg, body, {
+        const {attachment, releaseVersion} = await data.postgresDatabase.createAttachment(app, `${addon.app.name}::${addon.name}`, body, {
           onAttached(attachment) {
             ux.action.stop()
             ux.action.start(`Setting ${color.attachment(attachment.name!)} config vars and restarting ${color.app(app)}`)
@@ -176,7 +179,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     return attachmentName.trim() || undefined
   }
 
-  private async promptCredential(credentials: PostgresCredentialListResult['items']): Promise<string | undefined> {
+  private async promptCredential(credentials: AdvancedCredentials): Promise<string | undefined> {
     const sortedCredentials = sortByOwnerAndName(credentials)
 
     if (sortedCredentials.length === 0) {

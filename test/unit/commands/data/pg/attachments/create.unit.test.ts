@@ -1,6 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {NotFoundError} from '@heroku/heroku-fetch'
 import {type CreateAttachmentBody, NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
-import {AddonNotFoundError} from '@heroku/sdk/resources/platform/add-on'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {
@@ -21,6 +21,7 @@ import {
 import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const releaseVersion = releasesResponse[0].version
+const advancedAddonIdentity = `${advancedAddon.app.name}::${advancedAddon.name}`
 
 type FakeData = {
   databaseCredential: {list: SinonStub}
@@ -108,7 +109,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.postgres.info.calledOnceWithExactly(advancedAddon.id)).to.equal(true)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        'advanced-horizontal-01234',
+        advancedAddonIdentity,
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -117,7 +118,11 @@ describe('data:pg:attachments:create', function () {
     })
 
     it('creates a foreign multi-factor attachment to a different app using the database name', async function () {
-      fakeData.databaseCredential.list.onFirstCall().rejects(new AddonNotFoundError())
+      fakeData.databaseCredential.list.onFirstCall().rejects(new NotFoundError(new Response(null, {status: 404}), {
+        id: 'not_found',
+        message: 'Couldn\'t find that addon.',
+        resource: 'add_on',
+      }))
       fakeData.databaseCredential.list.onSecondCall().resolves({addon: advancedAddon, credentials: advancedCredentialsResponse})
       fakeData.postgres.info.resolves(pgInfo)
       fakeData.postgresDatabase.createAttachment.callsFake(async (_app, _database, _body, options) => {
@@ -140,7 +145,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.databaseCredential.list.secondCall.args).to.deep.equal(['advanced-horizontal-01234'])
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp2',
-        'advanced-horizontal-01234',
+        advancedAddonIdentity,
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST2'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -173,7 +178,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.databaseCredential.list.calledOnceWithExactly('myapp::DATABASE', {appIdentity: 'myapp2'})).to.equal(true)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp2',
-        'myapp::DATABASE',
+        advancedAddonIdentity,
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST2'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -210,7 +215,7 @@ describe('data:pg:attachments:create', function () {
 
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        'advanced-horizontal-01234',
+        advancedAddonIdentity,
         createAttachmentBody('u2vi1nt40t3mcq', 'leader'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -247,7 +252,7 @@ describe('data:pg:attachments:create', function () {
 
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        'advanced-horizontal-01234',
+        advancedAddonIdentity,
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'MY_CUSTOM_NAME'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -269,7 +274,11 @@ describe('data:pg:attachments:create', function () {
     })
 
     it('handles API errors gracefully if the add-on doesn\'t exist', async function () {
-      fakeData.databaseCredential.list.rejects(new AddonNotFoundError())
+      fakeData.databaseCredential.list.rejects(new NotFoundError(new Response(null, {status: 404}), {
+        id: 'not_found',
+        message: 'Couldn\'t find that addon.',
+        resource: 'add_on',
+      }))
 
       const {error} = await runCommand(DataPgAttachmentsCreate, [
         'advanced-horizontal-01234',
@@ -299,7 +308,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.databaseCredential.list.calledOnce).to.equal(true)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        'advanced-horizontal-01234',
+        advancedAddonIdentity,
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -360,7 +369,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.postgres.info.called).to.equal(false)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        'advanced-horizontal-01234',
+        advancedAddonIdentity,
         createAttachmentBody('mycredential', 'mypool', 'MYCREDENTIAL'),
         {onAttached: match.func},
       )).to.equal(true)

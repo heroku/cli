@@ -37,14 +37,10 @@ export default class DataPgUpgradeRun extends BaseCommand {
     const {database} = args
     const {data} = createSDK(this.heroku, {extensions: [postgresExtensions]})
     const newVersion = version ?? 'the latest supported Postgres version'
-    let addonName = database
 
     try {
-      await data.postgres.runUpgrade(app, database, {version}, {
-        async beforeRunUpgrade(preview) {
-          const {addon, currentVersion} = preview
-          addonName = addon.name
-
+      const {addon} = await data.postgres.runUpgrade(app, database, {version}, {
+        async beforeRunUpgrade({addon, currentVersion}) {
           await hux.confirmCommand({
             comparison: app,
             confirmation: confirm,
@@ -57,7 +53,7 @@ export default class DataPgUpgradeRun extends BaseCommand {
         },
       })
       ux.action.stop()
-      ux.stderr(`Upgrade started. Use ${color.code(`heroku data:pg:upgrade:wait ${addonName} -a ${app}`)} to monitor progress.`)
+      ux.stderr(`Upgrade started. Use ${color.code(`heroku data:pg:upgrade:wait ${addon.name} -a ${app}`)} to monitor progress.`)
     } catch (error) {
       if (error instanceof NotAdvancedDatabaseError) {
         ux.error('You can only use this command on Advanced-tier databases.\n'
