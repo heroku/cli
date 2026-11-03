@@ -1,6 +1,6 @@
 import {flags as Flags} from '@heroku-cli/command'
-import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {getPostgresServiceName, isAdvancedDatabase} from '@heroku/sdk/resources/data/postgres-database'
+import {postgresQuotaExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
@@ -28,27 +28,26 @@ export default class DataPgQuotasIndex extends BaseCommand {
     const {args, flags} = await this.parse(DataPgQuotasIndex)
     const {app, type} = flags
     const {database} = args
-    const {data, platform} = createSDK(this.heroku, {extensions: [addOnExtensions]})
+    const {data} = createSDK(this.heroku, {extensions: [postgresQuotaExtensions]})
 
-    const addon = await platform.addOn.resolve(database, {
-      addonService: getPostgresServiceName(),
-      appIdentity: app,
-    })
-
-    if (!isAdvancedDatabase(addon)) {
-      ux.error('You can only use this command on Advanced-tier databases')
-    }
-
-    if (type) {
-      const quota = await data.postgresQuota.info(addon.id, type)
-      displayQuota(quota)
-    } else {
-      const quotas = await data.postgresQuota.list(addon.id)
-
-      for (const quota of quotas.items ?? []) {
+    try {
+      if (type) {
+        const {quota} = await data.postgresQuota.info(database, type, {appIdentity: app})
         displayQuota(quota)
-        ux.stdout('')
+      } else {
+        const {quotas} = await data.postgresQuota.list(database, {appIdentity: app})
+
+        for (const quota of quotas.items ?? []) {
+          displayQuota(quota)
+          ux.stdout('')
+        }
       }
+    } catch (error) {
+      if (error instanceof NotAdvancedDatabaseError) {
+        ux.error('You can only use this command on Advanced-tier databases')
+      }
+
+      throw error
     }
   }
 }
