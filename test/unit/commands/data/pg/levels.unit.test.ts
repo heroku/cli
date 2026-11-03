@@ -1,25 +1,29 @@
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
 import {expect} from 'chai'
-import nock from 'nock'
+import {restore, SinonStub, stub} from 'sinon'
 
 import DataPgLevels from '../../../../../src/commands/data/pg/levels.js'
 import {levelsResponse} from '../../../../fixtures/data/pg/fixtures.js'
 
+interface FakeData {
+  postgresLevel: {info: SinonStub}
+}
+
 describe('data:pg:levels', () => {
-  let dataApi: nock.Scope
+  let fakeData: FakeData
 
   beforeEach(() => {
-    dataApi = nock('https://api.data.heroku.com')
+    fakeData = {postgresLevel: {info: stub()}}
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
   })
 
   afterEach(() => {
-    dataApi.done()
+    restore()
   })
 
   it('displays available levels for advanced databases', async () => {
-    dataApi
-      .get('/data/postgres/v1/levels/advanced')
-      .reply(200, levelsResponse)
+    fakeData.postgresLevel.info.resolves(levelsResponse)
 
     const {stderr, stdout} = await runCommand(DataPgLevels, [])
 
@@ -30,12 +34,11 @@ describe('data:pg:levels', () => {
     expect(stdout).to.include('Max Connections')
     expect(stdout).to.include('4G-Performance')
     expect(stdout).to.include('8G-Performance')
+    expect(fakeData.postgresLevel.info.calledOnceWithExactly('advanced')).to.equal(true)
   })
 
   it('displays an empty table when no levels are available', async () => {
-    dataApi
-      .get('/data/postgres/v1/levels/advanced')
-      .reply(200, {items: []})
+    fakeData.postgresLevel.info.resolves({items: []})
 
     const {stderr, stdout} = await runCommand(DataPgLevels, [])
 
@@ -49,9 +52,7 @@ describe('data:pg:levels', () => {
   })
 
   it('handles API errors gracefully', async () => {
-    dataApi
-      .get('/data/postgres/v1/levels/advanced')
-      .reply(500, {id: 'server_error', message: 'Internal Server Error'})
+    fakeData.postgresLevel.info.rejects(new Error('Internal Server Error'))
 
     const {error} = await runCommand(DataPgLevels, [])
     expect(error).to.exist
