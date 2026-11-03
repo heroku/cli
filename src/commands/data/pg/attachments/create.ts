@@ -129,7 +129,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
 
       try {
         ux.action.start(attachMessage)
-        const {attachment, releaseVersion} = await data.postgresDatabase.createAttachment(app, `${addon.app.name}::${addon.name}`, body, {
+        const {attachment, releaseVersion} = await data.postgresDatabase.createAttachment(app, addon.name, body, {
           onAttached(attachment) {
             ux.action.stop()
             ux.action.start(`Setting ${color.attachment(attachment.name!)} config vars and restarting ${color.app(app)}`)

@@ -21,7 +21,6 @@ import {
 import {type MockSDK, mockSDKData} from '../../../../../helpers/mock-sdk.js'
 
 const releaseVersion = releasesResponse[0].version
-const advancedAddonIdentity = `${advancedAddon.app.name}::${advancedAddon.name}`
 
 type FakeData = {
   databaseCredential: {list: SinonStub}
@@ -109,7 +108,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.postgres.info.calledOnceWithExactly(advancedAddon.id)).to.equal(true)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -145,7 +144,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.databaseCredential.list.secondCall.args).to.deep.equal(['advanced-horizontal-01234'])
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp2',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST2'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -178,7 +177,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.databaseCredential.list.calledOnceWithExactly('myapp::DATABASE', {appIdentity: 'myapp2'})).to.equal(true)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp2',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST2'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -215,7 +214,7 @@ describe('data:pg:attachments:create', function () {
 
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('u2vi1nt40t3mcq', 'leader'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -252,7 +251,7 @@ describe('data:pg:attachments:create', function () {
 
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'MY_CUSTOM_NAME'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -308,7 +307,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.databaseCredential.list.calledOnce).to.equal(true)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('u2vi1nt40t3mcq', 'leader', 'TEST'),
         {onAttached: match.func},
       )).to.equal(true)
@@ -369,7 +368,7 @@ describe('data:pg:attachments:create', function () {
       expect(fakeData.postgres.info.called).to.equal(false)
       expect(fakeData.postgresDatabase.createAttachment.calledOnceWithExactly(
         'myapp',
-        advancedAddonIdentity,
+        'advanced-horizontal-01234',
         createAttachmentBody('mycredential', 'mypool', 'MYCREDENTIAL'),
         {onAttached: match.func},
       )).to.equal(true)
