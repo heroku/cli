@@ -7,7 +7,7 @@ import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgDestroy from '../../../../../src/commands/data/pg/destroy.js'
-import {addon, destroyedAddonResponse} from '../../../../fixtures/data/pg/fixtures.js'
+import {addon, advancedAddon, destroyedAddonResponse} from '../../../../fixtures/data/pg/fixtures.js'
 
 const heredoc = tsheredoc
 
@@ -84,11 +84,11 @@ describe('data:pg:destroy', function () {
     // Resolution is scoped by appIdentity; when the database exists under a
     // different app the SDK raises AddonAppMismatchError, which the command
     // surfaces as-is (the delete never fires, so no tier-specific wrapping).
-    fakeData.postgresDatabase.destroy.rejects(new AddonAppMismatchError(addon, 'another-app'))
+    fakeData.postgresDatabase.destroy.rejects(new AddonAppMismatchError(advancedAddon, 'another-app'))
 
     const {error} = await runCommand(DataPgDestroy, [addon.name!, '--app=another-app'])
     expect(fakeData.postgresDatabase.destroy.firstCall.args[1].appIdentity).to.equal('another-app')
-    expect(ansis.strip((error as Error).message)).to.equal(`Database ${addon.name} is on ${addon.app.name} not another-app. Try again with the correct app.`)
+    expect(ansis.strip((error as Error).message)).to.equal(`Database ${advancedAddon.name} is on ${advancedAddon.app.name} not another-app. Try again with the correct app.`)
   })
 
   it('reports background deprovisioning without claiming success', async function () {
@@ -106,7 +106,7 @@ describe('data:pg:destroy', function () {
   })
 
   it('displays the correct error message when the addon is not destroyed', async function () {
-    fakeData.postgresDatabase.destroy.callsFake(destroyFailingWith(new AddonDestroyFailedError(addon, {body: {message: 'Test error'}})))
+    fakeData.postgresDatabase.destroy.callsFake(destroyFailingWith(new AddonDestroyFailedError(advancedAddon, {body: {message: 'Test error'}})))
 
     const {error, stderr} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
     expect(ansis.strip((error as Error).message)).to.equal('We can\'t destroy your database due to an error: Test error. Try again or open a ticket with Heroku Support: https://help.heroku.com/')

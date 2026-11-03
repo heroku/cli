@@ -53,7 +53,7 @@ describe('data:pg:credentials:index', function () {
   })
 
   it('shows error for non-advanced databases', async function () {
-    fakeData.databaseCredential.list.rejects(new NotAdvancedDatabaseError(standardAddon))
+    fakeData.databaseCredential.list.rejects(new NotAdvancedDatabaseError(standardAddon, 'not advanced'))
     fakePlatform.addOnAttachment.listByAddOn.resolves(nonAdvancedCredentialsAttachmentsResponse)
 
     const {error} = await runCommand(DataPgCredentialsIndex, [standardAddon.name, '--app=myapp'])

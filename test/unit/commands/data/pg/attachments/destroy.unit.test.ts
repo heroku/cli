@@ -20,9 +20,11 @@ const heredoc = tsheredoc
 const attachment = multipleAttachmentsResponse[1]
 const releaseVersion = releasesResponse[0].version
 
+type Attachment = typeof attachment
+
 type DeleteAttachmentOptions = {
-  beforeDelete?: (preview: {addon: typeof addon; attachment: typeof attachment}) => Promise<void> | void
-  onDetached?: (attachment: typeof attachment) => Promise<void> | void
+  beforeDelete?: (preview: {addon: typeof addon; attachment: Attachment}) => Promise<void> | void
+  onDetached?: (attachment: Attachment) => Promise<void> | void
 }
 
 interface FakeData {
