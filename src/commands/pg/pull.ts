@@ -58,18 +58,15 @@ export default class Pull extends Command {
 
     const source = await maybeTunnel(sourceIn)
     const target = await maybeTunnel(targetIn)
-    const exclude = exclusions.map(e => ('--exclude-table-data=' + e)).join(' ')
-
     const dumpFlags = ['--verbose', '-F', 'c', '-Z', '0', '-N', '_heroku']
 
-    if (exclude !== '') dumpFlags.push(exclude)
+    dumpFlags.push(...exclusions.map(exclusion => `--exclude-table-data=${exclusion}`))
 
     const dumpOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {
         PGSSLMODE: 'prefer',
         ...env,
       } as {[key: string]: string},
-      shell: true,
       stdio: ['pipe', 'pipe', 2],
     }
     if (source.password) dumpOptions.env.PGPASSWORD = source.password
@@ -78,7 +75,6 @@ export default class Pull extends Command {
 
     const restoreOptions: childProcess.SpawnOptions & {env: NodeJS.ProcessEnv} = {
       env: {...env},
-      shell: true,
       stdio: ['pipe', 'pipe', 2],
     }
     if (target.password) restoreOptions.env.PGPASSWORD = target.password

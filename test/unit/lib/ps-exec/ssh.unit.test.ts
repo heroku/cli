@@ -289,58 +289,55 @@ describe('ssh lib', function () {
   })
 
   describe('ssh() native', function () {
-    let childExecSyncStub: SinonStub
+    let childExecFileSyncStub: SinonStub
 
     beforeEach(function () {
-      childExecSyncStub = stub(child, 'execSync')
+      childExecFileSyncStub = stub(child, 'execFileSync')
     })
 
-    it('includes host, user, port in the ssh command', async function () {
+    it('passes host, user, and port as ssh arguments', async function () {
       await sshInstance.ssh({args: []}, 'addon.host', 'testuser', Buffer.from('key'), 'ssh-rsa abc123')
 
-      const cmd = childExecSyncStub.firstCall.args[0] as string
-      expect(cmd).to.include('testuser@addon.host')
-      expect(cmd).to.include('-p 80')
-      expect(cmd).to.include('-o ServerAliveInterval=10')
-      expect(cmd).to.include('-o ServerAliveCountMax=3')
+      expect(childExecFileSyncStub.firstCall.args[0]).to.equal('ssh')
+      const args = childExecFileSyncStub.firstCall.args[1] as string[]
+      expect(args).to.include('testuser@addon.host')
+      expect(args).to.include.members(['-p', '80', '-o', 'ServerAliveInterval=10', '-o', 'ServerAliveCountMax=3'])
     })
 
-    it('appends the built command when args do not include "bash"', async function () {
+    it('passes the built remote command as a single ssh argument', async function () {
       await sshInstance.ssh({args: ['rake', 'test']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
-      const cmd = childExecSyncStub.firstCall.args[0] as string
-      expect(cmd).to.include('rake test')
+      const args = childExecFileSyncStub.firstCall.args[1] as string[]
+      expect(args.at(-1)).to.equal('rake test')
     })
 
     it('does not append a sub-command when args include "bash"', async function () {
       await sshInstance.ssh({args: ['bash']}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
-      const cmd = childExecSyncStub.firstCall.args[0] as string
-      const afterHost = cmd.split('user@addon.host')[1].trim()
-      expect(afterHost).to.equal('')
+      const args = childExecFileSyncStub.firstCall.args[1] as string[]
+      expect(args.at(-1)).to.equal('user@addon.host')
     })
 
     it('does not append a sub-command when no args are provided', async function () {
       await sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
-      const cmd = childExecSyncStub.firstCall.args[0] as string
-      const afterHost = cmd.split('user@addon.host')[1].trim()
-      expect(afterHost).to.equal('')
+      const args = childExecFileSyncStub.firstCall.args[1] as string[]
+      expect(args.at(-1)).to.equal('user@addon.host')
     })
 
-    it('does not throw when execSync succeeds', async function () {
+    it('does not throw when execFileSync succeeds', async function () {
       await sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
-      expect(childExecSyncStub.calledOnce).to.be.true
+      expect(childExecFileSyncStub.calledOnce).to.be.true
     })
 
-    it('does not throw when execSync fails', async function () {
-      childExecSyncStub.throws(new Error('ssh failed'))
+    it('does not throw when execFileSync fails', async function () {
+      childExecFileSyncStub.throws(new Error('ssh failed'))
 
       // Should not throw - errors are caught and logged
       await sshInstance.ssh({args: []}, 'addon.host', 'user', Buffer.from('key'), 'ssh-rsa abc123')
 
-      expect(childExecSyncStub.calledOnce).to.be.true
+      expect(childExecFileSyncStub.calledOnce).to.be.true
     })
   })
 

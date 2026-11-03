@@ -16,12 +16,12 @@ export const parseExclusions = (rawExcludeList: string | undefined): Array<strin
     .filter(texcl => texcl !== '')
 )
 
-type ExecFn = typeof exec
+type ExecFn = (command: string, args: string[]) => void
 
 export const prepare = async (target: pg.ConnectionDetails, execFn: ExecFn = exec): Promise<void> => {
   const psqlService = new utils.pg.PsqlService(target)
   if (target.host === 'localhost' || !target.host) {
-    execFn(`createdb ${connArgs(target, true).join(' ')}`)
+    execFn('createdb', connArgs(target, true))
   } else {
     // N.B.: we don't have a proper postgres driver and we don't want to rely on overriding
     // possible .psqlrc output configurations, so we generate a random marker that is returned
@@ -64,12 +64,11 @@ export const connArgs = (uri: pg.ConnectionDetails, skipDFlag = false) => {
   return args
 }
 
-const exec = (cmd: string, opts = {}) => {
-  debug(cmd)
-  opts = {...opts, stdio: 'inherit'}
+const exec: ExecFn = (command, args) => {
+  debug([command, ...args].join(' '))
 
   try {
-    return childProcess.execSync(cmd, opts)
+    childProcess.execFileSync(command, args, {stdio: 'inherit'})
   } catch (error) {
     const {status} = error as SpawnSyncReturns<Buffer | string>
     if (status) ux.exit(status)

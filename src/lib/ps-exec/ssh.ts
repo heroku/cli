@@ -239,20 +239,26 @@ export class HerokuSsh {
       await fsp.writeFile(keyPath, Buffer.isBuffer(privateKey) ? privateKey : Buffer.from(privateKey), {mode: 0o600})
       await fsp.writeFile(proxyKeyPath, `[${addonHost}]:80 ${proxyKey}`, {mode: 0o600})
 
-      let sshCommand = 'ssh '
-        + `-o UserKnownHostsFile=${proxyKeyPath} `
-        + '-o ServerAliveInterval=10 '
-        + '-o ServerAliveCountMax=3 '
-        + '-p 80 '
-        + `-i ${keyPath} `
-        + `${dynoUser}@${addonHost} `
+      const sshArgs = [
+        '-o',
+        `UserKnownHostsFile=${proxyKeyPath}`,
+        '-o',
+        'ServerAliveInterval=10',
+        '-o',
+        'ServerAliveCountMax=3',
+        '-p',
+        '80',
+        '-i',
+        keyPath,
+        `${dynoUser}@${addonHost}`,
+      ]
 
       if (context.args.length > 0 && !context.args.includes('bash')) {
-        sshCommand = `${sshCommand} ${this._buildCommand(context.args)}`
+        sshArgs.push(this._buildCommand(context.args))
       }
 
       try {
-        child.execSync(sshCommand, {stdio: ['inherit', 'inherit', 'ignore']})
+        child.execFileSync('ssh', sshArgs, {stdio: ['inherit', 'inherit', 'ignore']})
       } catch (error: any) {
         if (error.stderr) sshDebug(error.stderr)
         sshDebug(`[cli-ssh] exit: ${error.status}, ${error.message}`)
