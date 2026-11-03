@@ -40,6 +40,12 @@ async function deleteResolving(_app: string, _name: string, options: DeleteAttac
   return {addon, attachment, releaseVersion}
 }
 
+async function deleteResolvingWithoutRelease(_app: string, _name: string, options: DeleteAttachmentOptions = {}) {
+  await options.beforeDelete?.({addon, attachment})
+  await options.onDetached?.(attachment)
+  return {addon, attachment, releaseVersion: undefined}
+}
+
 const deleteFailingAtDelete = (error: unknown) => async (_app: string, _name: string, options: DeleteAttachmentOptions = {}) => {
   await options.beforeDelete?.({addon, attachment})
   throw error
@@ -100,6 +106,21 @@ describe('data:pg:attachments:destroy', function () {
       const [app, name] = fakeData.postgresDatabase.deleteAttachment.firstCall.args
       expect(app).to.equal('myapp')
       expect(name).to.equal('DATABASE_ANALYST')
+    })
+
+    it('omits the release version when none is returned', async function () {
+      fakeData.postgresDatabase.deleteAttachment.callsFake(deleteResolvingWithoutRelease)
+
+      const {stderr} = await runCommand(DataPgAttachmentsDestroy, [
+        'DATABASE_ANALYST',
+        '--app=myapp',
+        '--confirm=myapp',
+      ])
+
+      expect(ansis.strip(stderr)).to.equal(heredoc`
+        Detaching DATABASE_ANALYST on ⛁ advanced-horizontal-01234 from ⬢ myapp... done
+        Unsetting DATABASE_ANALYST config vars and restarting ⬢ myapp... done
+      `)
     })
   })
 

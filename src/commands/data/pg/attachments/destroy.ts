@@ -38,7 +38,7 @@ export default class DataPgAttachmentsDestroy extends BaseCommand {
           ux.action.start(`Unsetting ${color.attachment(attachmentName)} config vars and restarting ${color.app(app)}`)
         },
       })
-      ux.action.stop(`done, v${releaseVersion}`)
+      ux.action.stop(releaseVersion === undefined ? 'done' : `done, v${releaseVersion}`)
     } catch (error) {
       ux.action.stop(color.red('!'))
       if (error instanceof NotAdvancedDatabaseError) {
