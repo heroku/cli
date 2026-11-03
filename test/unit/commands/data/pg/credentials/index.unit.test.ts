@@ -1,6 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {hux} from '@heroku/heroku-cli-util'
-import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/database-credential'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'

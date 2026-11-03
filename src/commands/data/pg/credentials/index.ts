@@ -3,8 +3,7 @@ import type {PostgresCredentialInfoResult as AdvancedCredentialInfo} from '@hero
 import {flags as Flags} from '@heroku-cli/command'
 import {color, hux} from '@heroku/heroku-cli-util'
 import {databaseCredentialExtensions} from '@heroku/sdk/extensions/data'
-import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/database-credential'
-import {parseAttachmentFactors} from '@heroku/sdk/resources/data/postgres-database'
+import {NotAdvancedDatabaseError, parseAttachmentFactors} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 
 import BaseCommand from '../../../../lib/data/base-command.js'
