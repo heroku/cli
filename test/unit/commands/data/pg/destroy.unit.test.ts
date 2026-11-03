@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {AddonAppMismatchError, AddonDestroyFailedError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -79,15 +80,15 @@ describe('data:pg:destroy', function () {
     expect(ansis.strip((error as Error).message)).to.equal('Couldn\'t find that addon.')
   })
 
-  it('scopes resolution to the --app flag', async function () {
-    // The SDK resolution is scoped by appIdentity, so a database on a different
-    // app simply isn't found under the given app — replacing the old manual
-    // app-mismatch check.
-    fakeData.postgresDatabase.destroy.rejects(new Error('Couldn\'t find that addon.'))
+  it('scopes resolution to the --app flag and surfaces an app mismatch', async function () {
+    // Resolution is scoped by appIdentity; when the database exists under a
+    // different app the SDK raises AddonAppMismatchError, which the command
+    // surfaces as-is (the delete never fires, so no tier-specific wrapping).
+    fakeData.postgresDatabase.destroy.rejects(new AddonAppMismatchError(addon, 'another-app'))
 
     const {error} = await runCommand(DataPgDestroy, [addon.name!, '--app=another-app'])
     expect(fakeData.postgresDatabase.destroy.firstCall.args[1].appIdentity).to.equal('another-app')
-    expect(ansis.strip((error as Error).message)).to.equal('Couldn\'t find that addon.')
+    expect(ansis.strip((error as Error).message)).to.equal(`Database ${addon.name} is on ${addon.app.name} not another-app. Try again with the correct app.`)
   })
 
   it('reports background deprovisioning without claiming success', async function () {
@@ -105,7 +106,7 @@ describe('data:pg:destroy', function () {
   })
 
   it('displays the correct error message when the addon is not destroyed', async function () {
-    fakeData.postgresDatabase.destroy.callsFake(destroyFailingWith({body: {message: 'Test error'}}))
+    fakeData.postgresDatabase.destroy.callsFake(destroyFailingWith(new AddonDestroyFailedError(addon, {body: {message: 'Test error'}})))
 
     const {error, stderr} = await runCommand(DataPgDestroy, [addon.name!, '--app=myapp', '--confirm=myapp'])
     expect(ansis.strip((error as Error).message)).to.equal('We can\'t destroy your database due to an error: Test error. Try again or open a ticket with Heroku Support: https://help.heroku.com/')
