@@ -1,5 +1,6 @@
 import {NONINTERACTIVE_LOGIN_ERROR_CODE} from '@heroku-cli/command'
 
+import {isUnsupportedNodeCrash, UNSUPPORTED_NODE_ERROR_CODE} from '../check-node-version.js'
 import {CLIError} from './telemetry-utils.js'
 
 // Actionable user-guidance messages the CI git helper rejects with
@@ -13,7 +14,7 @@ const GIT_USER_ERROR_MESSAGES = [
  * Whether an error is an expected user/environment condition rather than a CLI
  * bug. Expected errors are recorded in Honeycomb but excluded from Sentry.
  */
-export function isExpectedError(error: CLIError): boolean {
+export function isExpectedError(error: CLIError, nodeVersion: string = process.versions.node): boolean {
   // 4xx client errors (e.g. HerokuAPIError) — the user's request was rejected,
   // not a CLI bug. statusCode and http.statusCode are checked independently.
   if (is4xx(error.statusCode) || is4xx(error.http?.statusCode)) {
@@ -33,6 +34,13 @@ export function isExpectedError(error: CLIError): boolean {
   // An interactive login was required but stdin is not a TTY (piped input, CI,
   // or a 401 re-auth) — thrown by @heroku-cli/command.
   if (error.code === NONINTERACTIVE_LOGIN_ERROR_CODE) {
+    return true
+  }
+
+  // Unsupported Node.js version. The telemetry `finally` hook sees the raw
+  // SyntaxError before bin/run.js converts it, so match the underlying crash
+  // as well as the converted error code.
+  if (error.code === UNSUPPORTED_NODE_ERROR_CODE || isUnsupportedNodeCrash(nodeVersion, error)) {
     return true
   }
 

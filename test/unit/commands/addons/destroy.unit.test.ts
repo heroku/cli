@@ -117,7 +117,7 @@ describe('addons:destroy', function () {
           },
           state: 'provisioned',
         }
-        const notifySpy = sandbox.spy(Cmd, 'notifier')
+        const notifyStub = sandbox.stub(Cmd, 'notifier')
         api
           .post('/actions/addons/resolve', {addon: 'postgresql-swiftly-123', app: 'myapp'})
           .reply(200, [addon])
@@ -135,8 +135,8 @@ describe('addons:destroy', function () {
           '--wait',
           'postgresql-swiftly-123',
         ])
-        expect(notifySpy.called).to.equal(true)
-        expect(notifySpy.calledOnce).to.equal(true)
+        expect(notifyStub.called).to.equal(true)
+        expect(notifyStub.calledOnce).to.equal(true)
         expect(ansis.strip(stderr)).to.contain('Destroying postgresql-swiftly-123 on ⬢ myapp... pending')
         expect(stderr).to.contain('Destroying postgresql-swiftly-123... done\n')
         expect(stdout).to.equal('Waiting for postgresql-swiftly-123...\n')

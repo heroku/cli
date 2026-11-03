@@ -19,6 +19,7 @@ export default [
       'unicorn/no-array-for-each': 'warn',
       'unicorn/no-array-reduce': 'warn',
       'unicorn/no-empty-file': 'warn',
+      'unicorn/no-useless-undefined': 'warn',
       'unicorn/prefer-event-target': 'warn',
       'unicorn/prefer-spread': 'warn',
     },

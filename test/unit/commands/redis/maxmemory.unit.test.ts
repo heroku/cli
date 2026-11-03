@@ -43,14 +43,13 @@ describe('heroku redis:maxmemory', function () {
   })
 
   it('# errors on missing eviction policy', async function () {
-    await runCommand(Cmd, [
+    const {error} = await runCommand(Cmd, [
       '--app',
       'example',
-    ]).catch(function (error: Error) {
-      expect(ansis.strip(error.message)).to.equal(heredoc(`
-        The following error occurred:
-          Missing required flag policy
-        See more help with --help`))
-    })
+    ])
+    expect(ansis.strip(error?.message ?? '')).to.equal(heredoc(`
+      The following error occurred:
+        Missing required flag policy
+      See more help with --help`))
   })
 })

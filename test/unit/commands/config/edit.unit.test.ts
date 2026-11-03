@@ -12,15 +12,29 @@ describe('config:edit', function () {
   let editedConfig = ''
   let createEditorStub: SinonStub
   let editorEditStub: SinonStub
+  let confirmStub: SinonStub
   let api: nock.Scope
+  let unmatchedRequests: unknown[]
+  let noMatchListener: (request: unknown) => void
 
   beforeEach(function () {
+    unmatchedRequests = []
+    noMatchListener = request => unmatchedRequests.push(request)
+    nock.emitter.on('no match', noMatchListener)
     api = nock('https://api.heroku.com')
   })
 
   afterEach(function () {
-    api.done()
-    nock.cleanAll()
+    try {
+      try {
+        api.done()
+      } finally {
+        expect(unmatchedRequests, 'unexpected Nock requests').to.be.empty
+      }
+    } finally {
+      nock.emitter.removeListener('no match', noMatchListener)
+      nock.cleanAll()
+    }
   })
 
   describe('stringToConfig', function () {
@@ -39,11 +53,43 @@ describe('config:edit', function () {
       createEditorStub = stub(EditorFactory, 'createEditor').callsFake(() => ({
         edit: editorEditStub,
       }) as any)
-      stub(hux, 'confirm').returns(Promise.resolve(true) as any)
+      confirmStub = stub(hux, 'confirm').returns(Promise.resolve(true) as any)
     })
 
     afterEach(function () {
       restore()
+    })
+
+    describe('editor failures', function () {
+      it('returns the editor error without updating the full config', async function () {
+        const editorError = new Error('editor rejected')
+        editorEditStub.rejects(editorError)
+
+        api
+          .get('/apps/myapp/config-vars')
+          .reply(200, {FIRST: '1'})
+
+        const {error} = await runCommand(Cmd, ['--app=myapp'])
+
+        expect(error).to.equal(editorError)
+        expect(confirmStub.notCalled).to.be.true
+        expect(api.isDone()).to.be.true
+      })
+
+      it('returns the editor error without updating a single key', async function () {
+        const editorError = new Error('editor rejected')
+        editorEditStub.rejects(editorError)
+
+        api
+          .get('/apps/myapp/config-vars')
+          .reply(200, {FIRST: '1'})
+
+        const {error} = await runCommand(Cmd, ['--app=myapp', 'FIRST'])
+
+        expect(error).to.equal(editorError)
+        expect(confirmStub.notCalled).to.be.true
+        expect(api.isDone()).to.be.true
+      })
     })
 
     describe('deleting config var', function () {

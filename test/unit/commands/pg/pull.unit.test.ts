@@ -88,6 +88,58 @@ describe('pg:pull', function () {
     expect(stderr).to.eq('')
   })
 
+  describe('with --exclude-table-data', function () {
+    beforeEach(function () {
+      spawnStub.withArgs('pg_dump', match.array, match.any).returns({
+        on: exitHandler,
+        stdout: {
+          pipe() {},
+        },
+      })
+      spawnStub.withArgs('pg_restore', match.array, match.any).returns({
+        on: exitHandler,
+        stdin: {
+          end() {},
+        },
+      })
+    })
+
+    const getDumpArgs = (): string[] => {
+      const dumpCall = spawnStub.getCalls().find(call => call.args[0] === 'pg_dump')
+      expect(dumpCall, 'pg_dump should have been spawned').to.not.eq(undefined)
+      return dumpCall!.args[1] as string[]
+    }
+
+    it('passes the exclusion and keeps the database name as the last pg_dump argument', async () => {
+      await runCommand(Cmd, [
+        'postgres-1',
+        'localdb',
+        '-a',
+        'myapp',
+        '--exclude-table-data=logs',
+      ])
+
+      const args = getDumpArgs()
+      expect(args).to.include('--exclude-table-data=logs')
+      expect(args.at(-1)).to.eq('mydb')
+    })
+
+    it('keeps the database name last when excluding multiple tables', async () => {
+      await runCommand(Cmd, [
+        'postgres-1',
+        'localdb',
+        '-a',
+        'myapp',
+        '--exclude-table-data=logs;events',
+      ])
+
+      const args = getDumpArgs()
+      expect(args.some(arg => arg.includes('--exclude-table-data=logs'))).to.eq(true)
+      expect(args.some(arg => arg.includes('--exclude-table-data=events'))).to.eq(true)
+      expect(args.at(-1)).to.eq('mydb')
+    })
+  })
+
   skipOnWindows('opens an SSH tunnel and runs pg_dump for bastion databases', async () => {
     db.bastionHost = 'bastion-host'
     db.bastionKey = 'super-private-key'

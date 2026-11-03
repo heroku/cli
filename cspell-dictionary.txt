@@ -5,6 +5,7 @@ aabb
 aarch
 abcr
 addonname
+advapi
 allkeys
 amyapp
 amannn
@@ -98,6 +99,7 @@ envl
 esac
 eventsource
 execa
+execvpe
 expialidocious
 extnamespace
 extwlist
@@ -121,6 +123,7 @@ Ghpcy
 githuborg
 GUSINFO
 hamurai
+HKCU
 herokai
 herokuapp
 herokudns
@@ -134,6 +137,7 @@ hstore
 htcat
 Icann
 infile
+INSTDIR
 iname
 indexrelid
 indexrelname
@@ -405,6 +409,7 @@ uncolorized
 undefinedcommand
 undeployed
 unfavorites
+Uninst
 unfollow
 unfollowing
 unfollows
@@ -422,7 +427,12 @@ vcpu
 VERSINFO
 webfactory
 WINDIR
+WIFSIGNALED
+WNOHANG
+WTERMSIG
+WININICHANGE
 withfig
+waitpid
 wrapline
 writeout
 wubalubadubdub

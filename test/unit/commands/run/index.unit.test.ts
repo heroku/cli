@@ -36,12 +36,11 @@ describe('run', function () {
       .get('/apps/myapp')
       .reply(200, {name: 'myapp', stack: {name: 'heroku-20'}})
 
-    await runCommand(Run, [
+    const {error} = await runCommand(Run, [
       '--app',
       'myapp',
-    ]).catch(error => {
-      expect(error.message).to.include('Usage: heroku run COMMAND')
-    })
+    ])
+    expect(error?.message).to.include('Usage: heroku run COMMAND')
   })
 
   it('creates and attaches to a dyno', async function () {
@@ -68,14 +67,13 @@ describe('run', function () {
 
     // The command will try to connect to rendezvous, which will fail
     // but we can verify the API calls were made correctly
-    await runCommand(Run, [
+    const {error} = await runCommand(Run, [
       '--app',
       'myapp',
       'echo',
       'test',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
   })
 
   it('handles exit codes when --exit-code is specified', async function () {
@@ -97,15 +95,13 @@ describe('run', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(Run, [
+    const {error} = await runCommand(Run, [
       '--app',
       'myapp',
       '--exit-code',
       'false',
-    ]).catch(error => {
-      // Expected to fail with exit code 1 or connection error
-      expect(error).to.exist
-    })
+    ])
+    expect(error).to.exist
   })
 
   it('respects --no-launcher flag', async function () {
@@ -127,15 +123,14 @@ describe('run', function () {
         updated_at: '2020-01-01T00:00:00Z',
       })
 
-    await runCommand(Run, [
+    const {error} = await runCommand(Run, [
       '--app',
       'myapp',
       '--no-launcher',
       'echo',
       'test',
-    ]).catch(() => {
-      // Expected to fail when trying to connect
-    })
+    ])
+    expect(error).to.exist
   })
 
   it('prompts for 2FA via prompter and retries with Heroku-Two-Factor-Code header on 403 two_factor', async function () {
@@ -164,14 +159,13 @@ describe('run', function () {
       })
 
     try {
-      await runWithCliArgv([
+      const {error} = await runWithCliArgv([
         '--app',
         'myapp',
         'echo',
         'test',
-      ]).catch(() => {
-        // Expected to fail when trying to connect to rendezvous
-      })
+      ])
+      expect(error).to.exist
 
       expect(promptStub.calledOnce, 'prompter.prompt should be called exactly once').to.be.true
       expect(promptStub.firstCall.args[0]).to.deep.equal([{

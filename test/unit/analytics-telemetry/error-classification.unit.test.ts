@@ -3,6 +3,8 @@ import {expect} from 'chai'
 import {isExpectedError} from '../../../src/lib/analytics-telemetry/error-classification.js'
 import {CLIError, parseWorkerEnvelope, serializeTelemetryData} from '../../../src/lib/analytics-telemetry/telemetry-utils.js'
 
+const regexCrash = () => new SyntaxError('Invalid regular expression flags')
+
 const asCLIError = (error: Error, extra: Partial<CLIError> = {}): CLIError =>
   Object.assign(error, extra) as CLIError
 
@@ -59,6 +61,39 @@ describe('error-classification', function () {
     it('treats CI git helper guidance as expected', function () {
       expect(isExpectedError(asCLIError(new Error('Please checkout a branch before running this command')))).to.be.true
       expect(isExpectedError(asCLIError(new Error('Please run this command from the directory containing your project\'s git repo')))).to.be.true
+    })
+
+    describe('unsupported Node.js', function () {
+      it('treats the converted HEROKU_UNSUPPORTED_NODE error as expected', function () {
+        const error = asCLIError(new Error('Node.js v18.20.8 is not supported.'), {code: 'HEROKU_UNSUPPORTED_NODE'})
+        expect(isExpectedError(error)).to.be.true
+      })
+
+      it('treats the raw regex SyntaxError on Node < 20 as expected, even after the worker round-trip', function () {
+        const error = asCLIError(regexCrash())
+        expect(isExpectedError(error, '18.20.8')).to.be.true
+        expect(isExpectedError(reconstructLikeWorker(error), '18.20.8')).to.be.true
+      })
+
+      it('does NOT treat the same SyntaxError as expected on Node >= 20', function () {
+        expect(isExpectedError(asCLIError(regexCrash()), '20.19.0')).to.be.false
+      })
+
+      it('does NOT treat a runtime bad-pattern SyntaxError on Node < 20 as expected', function () {
+        const badPattern = new SyntaxError('Invalid regular expression: /(/: Unterminated group')
+        expect(isExpectedError(asCLIError(badPattern), '18.20.8')).to.be.false
+      })
+
+      it('does NOT treat a JSON.parse SyntaxError on Node < 20 as expected', function () {
+        let error: Error = new Error('unreachable')
+        try {
+          JSON.parse('{')
+        } catch (error_) {
+          error = error_ as Error
+        }
+
+        expect(isExpectedError(asCLIError(error), '18.20.8')).to.be.false
+      })
     })
 
     it('does NOT treat a genuine bug as expected', function () {

@@ -104,11 +104,8 @@ describe('accounts:add', function () {
 
       listStub.resolves([{name: 'testAccountName', username: 'testEmail'}])
 
-      try {
-        await runCommand(Cmd, ['testAccountName'])
-      } catch (error: unknown) {
-        expect((error as Error).message).to.contain('testAccountName already exists')
-      }
+      const {error} = await runCommand(Cmd, ['testAccountName'])
+      expect(error?.message).to.contain('testAccountName already exists')
     })
 
     it('should error if the email already has an alias', async function () {
@@ -121,11 +118,8 @@ describe('accounts:add', function () {
 
       listStub.resolves([{name: 'existingAlias', username: 'testEmail'}])
 
-      try {
-        await runCommand(Cmd, ['newAlias'])
-      } catch (error: unknown) {
-        expect((error as Error).message).to.contain('testEmail already has an alias: existingAlias')
-      }
+      const {error} = await runCommand(Cmd, ['newAlias'])
+      expect(error?.message).to.equal('Account testEmail already has an alias of existingAlias.')
     })
   })
 })

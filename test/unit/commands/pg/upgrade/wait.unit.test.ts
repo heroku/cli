@@ -2,6 +2,7 @@ import {expectOutput, runCommand} from '@heroku-cli/test-utils'
 import {Errors} from '@oclif/core'
 import {expect} from 'chai'
 import nock from 'nock'
+import {createSandbox} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Cmd from '../../../../../src/commands/pg/upgrade/wait.js'
@@ -16,13 +17,16 @@ const all = [
 describe('pg:upgrade:wait', function () {
   let api: nock.Scope
   let pg: nock.Scope
+  let sandbox: ReturnType<typeof createSandbox>
 
   beforeEach(function () {
+    sandbox = createSandbox()
     api = nock('https://api.heroku.com')
     pg = nock('https://api.data.heroku.com')
   })
 
   afterEach(function () {
+    sandbox.restore()
     pg.done()
     nock.cleanAll()
   })
@@ -76,6 +80,7 @@ describe('pg:upgrade:wait', function () {
   })
 
   it('displays errors', async function () {
+    const notifyStub = sandbox.stub(Cmd, 'notifier')
     api
       .post('/actions/addon-attachments/resolve')
       .reply(200, [{addon: all[0]}])
@@ -90,5 +95,6 @@ describe('pg:upgrade:wait', function () {
     const {message, oclif} = error as Errors.CLIError
     expect(message).to.equal('this is an error message')
     expect(oclif.exit).to.equal(1)
+    expect(notifyStub.calledOnce).to.equal(true)
   })
 })
