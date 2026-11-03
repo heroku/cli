@@ -1,5 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
@@ -20,19 +21,12 @@ interface FakeData {
   postgresSettings: {info: SinonStub; update: SinonStub}
 }
 
-interface FakePlatform {
-  addOn: {resolve: SinonStub}
-}
-
 describe('data:pg:settings', function () {
   let fakeData: FakeData
-  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     fakeData = {postgresSettings: {info: stub(), update: stub()}}
-    fakePlatform = {addOn: {resolve: stub()}}
     stub(HerokuSDK.prototype, 'data').get(() => fakeData)
-    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
@@ -40,7 +34,8 @@ describe('data:pg:settings', function () {
   })
 
   it('exits with error if it isn\'t a Advanced-tier database', async function () {
-    fakePlatform.addOn.resolve.resolves(nonAdvancedAddon)
+    const notAdvanced = new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced')
+    fakeData.postgresSettings.info.rejects(notAdvanced)
 
     const {error} = await runCommand(DataPgSettings, [
       'my-addon',
@@ -51,14 +46,11 @@ describe('data:pg:settings', function () {
         You can only use this command to configure settings on Advanced-tier databases.
         See https://devcenter.heroku.com/articles/heroku-postgres-settings to configure settings on non-Advanced-tier databases.
       `))
-    expect(fakeData.postgresSettings.info.called).to.equal(false)
-    expect(fakeData.postgresSettings.update.called).to.equal(false)
   })
 
   context('put', function () {
     it('shows no changes applied when no changes received', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakeData.postgresSettings.update.resolves(emptySettingsChangeResponse)
+      fakeData.postgresSettings.update.resolves({addon, settings: emptySettingsChangeResponse})
 
       const {stderr, stdout} = await runCommand(DataPgSettings, [
         'my-addon',
@@ -68,12 +60,11 @@ describe('data:pg:settings', function () {
 
       expect(stderr).to.equal('')
       expect(stdout.trim()).to.include('Those settings are already applied to advanced-horizontal-01234.')
-      expect(fakeData.postgresSettings.update.calledOnceWithExactly(addon.id, {settings: 'log_min_duration_statement:500'})).to.equal(true)
+      expect(fakeData.postgresSettings.update.calledOnceWithExactly('my-addon', {settings: 'log_min_duration_statement:500'}, {appIdentity: 'myapp'})).to.equal(true)
     })
 
     it('shows received changes', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakeData.postgresSettings.update.resolves(settingsPutResponse)
+      fakeData.postgresSettings.update.resolves({addon, settings: settingsPutResponse})
 
       const {stderr, stdout} = await runCommand(DataPgSettings, [
         'my-addon',
@@ -84,8 +75,9 @@ describe('data:pg:settings', function () {
 
       expect(stderr).to.equal('')
       expect(fakeData.postgresSettings.update.calledOnceWithExactly(
-        addon.id,
+        'my-addon',
         {settings: 'log_min_duration_statement:500,idle_in_transaction_session_timeout:864000'},
+        {appIdentity: 'myapp'},
       )).to.equal(true)
 
       const actual = removeAllWhitespace(stdout)
@@ -98,8 +90,7 @@ describe('data:pg:settings', function () {
 
   context('get', function () {
     it('shows settings', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakeData.postgresSettings.info.resolves(settingsGetResponse)
+      fakeData.postgresSettings.info.resolves({addon, settings: settingsGetResponse})
 
       const {stderr, stdout} = await runCommand(DataPgSettings, [
         'my-addon',
@@ -107,7 +98,7 @@ describe('data:pg:settings', function () {
       ])
 
       expect(stderr).to.equal('')
-      expect(fakeData.postgresSettings.info.calledOnceWithExactly(addon.id)).to.equal(true)
+      expect(fakeData.postgresSettings.info.calledOnceWithExactly('my-addon', {appIdentity: 'myapp'})).to.equal(true)
 
       const actual = removeAllWhitespace(stdout)
       expect(actual).to.include(removeAllWhitespace('=== advanced-horizontal-01234'))
