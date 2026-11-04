@@ -1,14 +1,18 @@
+import type {AddOn} from '@heroku/types/3.sdk'
+
 import {flags as Flags} from '@heroku-cli/command'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {postgresExtensions} from '@heroku/sdk/extensions/data'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Args, ux} from '@oclif/core'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../../lib/addons/create-addon.js'
 import BaseCommand from '../../../lib/data/base-command.js'
 import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
-import {InfoResponse} from '../../../lib/data/types.js'
+import provisionAdvancedWithUx from '../../../lib/data/provision-advanced.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import notify from '../../../lib/notify.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 
@@ -94,8 +98,9 @@ export default class Fork extends BaseCommand {
 
     const {args, flags} = await this.parse(Fork)
     const {database} = args
-    const {app, as, confirm, name, 'provision-option': provisionOpts, 'rollback-by': rollbackBy, 'rollback-to': rollbackTo, wait} = flags
-    let {level} = flags
+    const {app, as, confirm, level, name, 'provision-option': provisionOpts, 'rollback-by': rollbackBy, 'rollback-to': rollbackTo, wait} = flags
+
+    const {data} = createSDK(this.heroku, {extensions: [postgresExtensions]})
 
     // Parse provision options
     let provisionConfig: Record<string, string> = {}
@@ -107,64 +112,55 @@ export default class Fork extends BaseCommand {
       }
     }
 
-    const addonResolver = new utils.AddonResolver(this.heroku)
-    const addon = await addonResolver.resolve(database, app, utils.pg.addonService())
+    // `--rollback-to` is a platform-formatted timestamp passed through verbatim;
+    // `--rollback-by` is a CLI-only interval parsed to a Date here, which the SDK
+    // formats to the platform's UTC timestamp.
+    let recoveryTime: Date | string | undefined
+    if (rollbackTo) {
+      recoveryTime = rollbackTo
+    } else if (rollbackBy) {
+      recoveryTime = this.parseRollbackInterval(rollbackBy, chrono)
+    }
 
-    const renderLegacyCommand = (): string => `heroku addons:create ${addon.plan.name}`
+    const rollbackMessage = `with a rollback ${rollbackTo ? `to ${rollbackTo}` : `by ${rollbackBy}`}`
+    const actionStartMessage = recoveryTime
+      ? `Creating a fork for ${color.addon(database)} on ${color.app(app)} ${rollbackMessage}`
+      : `Creating a fork for ${color.addon(database)} on ${color.app(app)}`
+
+    // Builds the classic-command hint from the resolved source the SDK carries
+    // on NotAdvancedDatabaseError, so we never resolve the source twice.
+    const renderLegacyCommand = (source: AddOn): string => `heroku addons:create ${source.plan?.name}`
         + ` -a ${app}`
         + `${name ? ` --name ${name}` : ''}`
         + `${as ? ` --as ${as}` : ''}`
         + `${wait ? ' --wait' : ''}`
-        + ` -- ${rollbackTo || rollbackBy ? '--rollback' : '--fork'} ${addon.name}`
+        + ` -- ${rollbackTo || rollbackBy ? '--rollback' : '--fork'} ${source.name}`
         + `${rollbackTo ? ` --to '${rollbackTo}'` : ''}`
         + `${rollbackBy ? ` --by '${rollbackBy}'` : ''}`
 
-    if (!utils.pg.isAdvancedDatabase(addon)) {
-      ux.error('You can only use this command on Advanced-tier databases.\n'
-          + `Use ${color.code(renderLegacyCommand())} instead.`)
-    }
-
-    if (!level) {
-      const {body: databaseInfo} = await this.dataApi.get<InfoResponse>(`/data/postgres/v1/${addon.id}/info`)
-      level = databaseInfo.pools.find(p => p.name === 'leader')?.expected_level
-    }
-
-    let recoveryTime: string | undefined
-
-    if (rollbackTo) {
-      recoveryTime = rollbackTo
-    } else if (rollbackBy) {
-      const parsedDate = this.parseRollbackInterval(rollbackBy, chrono)
-      recoveryTime = this.formatRecoveryTime(parsedDate)
-    }
-
-    const config = recoveryTime
-      ? {
-        level,
-        'recovery-time': recoveryTime,
-        rollback: database,
-        ...provisionConfig,
-      }
-      : {
-        fork: database,
-        level,
-        ...provisionConfig,
-      }
-
     try {
-      const rollbackMessage = `with a rollback ${rollbackTo ? `to ${rollbackTo}` : `by ${rollbackBy}`}`
-      const actionStartMessage = recoveryTime
-        ? `Creating a fork for ${color.addon(addon.name)} on ${color.app(app)} ${rollbackMessage}`
-        : `Creating a fork for ${color.addon(addon.name)} on ${color.app(app)}`
-      await createAddon(this.heroku, app, addon.plan.name!, confirm, wait, {
-        actionStartMessage, actionStopMessage: 'done', as, config, name,
-      })
+      await provisionAdvancedWithUx(
+        {
+          actionStartMessage, actionStopMessage: 'done', app, confirm, wait: Boolean(wait),
+        },
+        (confirmValue, hooks) => data.postgres.fork(app, database, {
+          as,
+          config: provisionConfig,
+          confirm: confirmValue,
+          level,
+          name,
+          recoveryTime,
+        }, hooks),
+      )
 
       if (wait) {
         this.notify('We successfully provisioned the database fork')
       }
     } catch (error) {
-      ux.action.stop()
+      if (error instanceof NotAdvancedDatabaseError) {
+        ux.error('You can only use this command on Advanced-tier databases.\n'
+            + `Use ${color.code(renderLegacyCommand(error.addon as AddOn))} instead.`)
+      }
 
       if (wait) {
         this.notify(
@@ -175,23 +171,5 @@ export default class Fork extends BaseCommand {
 
       throw error
     }
-  }
-
-  /**
-   * Formats a Date object to the backend-expected timestamp format.
-   * Format: YYYY-MM-DDTHH:MM:SS (e.g., '2025-11-17T15:20:00')
-   *
-   * @param date - Date object to format
-   * @returns Formatted timestamp string
-   */
-  private formatRecoveryTime(date: Date): string {
-    const year = date.getUTCFullYear()
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0')
-    const day = String(date.getUTCDate()).padStart(2, '0')
-    const hours = String(date.getUTCHours()).padStart(2, '0')
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0')
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0')
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
   }
 }
