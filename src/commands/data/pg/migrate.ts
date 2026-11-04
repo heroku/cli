@@ -282,7 +282,7 @@ export default class DataPgMigrate extends BaseCommand {
           if (method === '__go_back') {
             currentStep = '__select_target'
           } else {
-            this.selectedMigrationMethod = method === '__snapshot' ? MigrationMethod.FULL_LOAD : MigrationMethod.CDC
+            this.selectedMigrationMethod = MigrationMethod.FULL_LOAD
             currentStep = '__confirm_migration'
           }
 
