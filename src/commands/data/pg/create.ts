@@ -1,22 +1,26 @@
 /* eslint-disable no-await-in-loop */
+import type {AddOn} from '@heroku/types/3.sdk'
+
 import {flags as Flags} from '@heroku-cli/command'
-import * as Heroku from '@heroku-cli/schema'
-import {color, utils} from '@heroku/heroku-cli-util'
+import {color} from '@heroku/heroku-cli-util'
+import {postgresExtensions} from '@heroku/sdk/extensions/data'
 import {ux} from '@oclif/core/ux'
 import inquirer from 'inquirer'
 import tsheredoc from 'tsheredoc'
 
-import createAddon from '../../../lib/addons/create-addon.js'
 import BaseCommand from '../../../lib/data/base-command.js'
-import createPool from '../../../lib/data/create-pool.js'
 import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
 import PoolConfig from '../../../lib/data/pool-config.js'
+import provisionAdvancedWithUx from '../../../lib/data/provision-advanced.js'
 import {ExtendedPostgresLevelInfo} from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import notify from '../../../lib/notify.js'
+import {createSDK} from '../../../lib/sdk.js'
 
 const heredoc = tsheredoc
 const {prompt} = inquirer
+
+type Data = ReturnType<typeof createSDK<readonly [typeof postgresExtensions]>>['data']
 
 export default class DataPgCreate extends BaseCommand {
   static baseFlags = BaseCommand.baseFlagsWithoutPrompt()
@@ -56,7 +60,7 @@ export default class DataPgCreate extends BaseCommand {
     }),
   }
   static promptFlagActive = false
-  private addon: Heroku.AddOn | undefined
+  private addon: AddOn | undefined
   private extendedLevelsInfo: ExtendedPostgresLevelInfo[] | undefined
   private followerInstanceCount: number = 0
   private highAvailability: boolean | undefined
@@ -70,10 +74,10 @@ export default class DataPgCreate extends BaseCommand {
     const {flags} = await this.parse(DataPgCreate)
     const {app, as, confirm, name, network, 'provision-option': provisionOpts, version, wait} = flags
     const {followers, 'high-availability': highAvailability, level} = flags
-    const service = utils.pg.addonService()
+
+    const {data} = createSDK(this.heroku, {extensions: [postgresExtensions]})
 
     const plan = `advanced${network ? `-${network}` : ''}`
-    const servicePlan = `${service}:${plan}`
 
     // Parse provision options
     let provisionConfig: Record<string, string> = {}
@@ -99,27 +103,38 @@ export default class DataPgCreate extends BaseCommand {
       await this.leaderPoolConfig()
     }
 
-    // Database cluster provisioning (leader pool)
-    const config: Record<string, boolean | string | undefined> = {
-      'high-availability': this.highAvailability,
-      level: this.leaderLevel,
-      version,
-      ...provisionConfig,
-    }
-
+    // Database cluster provisioning (leader pool, and bundled follower pool in
+    // non-interactive mode). The SDK's provisionAdvanced owns create + optional
+    // wait-poll + follower-pool create; the helper owns the CLI UX.
+    let pool
     try {
-      this.addon = await createAddon(this.heroku, app, servicePlan, confirm, wait, {
-        actionStartMessage: `Creating a ${color.addon(this.leaderLevel || '')} database on ${color.app(app)}`,
-        actionStopMessage: 'done',
-        as, config, name,
-      })
+      const result = await provisionAdvancedWithUx(
+        {
+          actionStartMessage: `Creating a ${color.addon(this.leaderLevel || '')} database on ${color.app(app)}`,
+          actionStopMessage: 'done',
+          app,
+          confirm,
+          wait: Boolean(wait),
+        },
+        (confirmValue, hooks) => data.postgres.provisionAdvanced(app, {
+          as,
+          config: provisionConfig,
+          confirm: confirmValue,
+          followers,
+          highAvailability: this.highAvailability,
+          level: this.leaderLevel!,
+          name,
+          network: network as 'private' | 'shield' | undefined,
+          version,
+        }, hooks),
+      )
+      this.addon = result.addon
+      pool = result.pool
 
       if (wait) {
         notify('heroku data:pg:create', 'We successfully provisioned the database')
       }
     } catch (error) {
-      ux.action.stop()
-
       if (wait) {
         notify(
           'heroku data:pg:create',
@@ -135,17 +150,13 @@ export default class DataPgCreate extends BaseCommand {
 
     if (!level) {
       // Interactive mode
-      await this.followerPoolConfigLoop()
+      await this.followerPoolConfigLoop(data)
       process.stderr.write(`Running ${color.code(`heroku data:pg:info ${this.addon.name!} --app=${app}`)}...\n\n`)
       await this.runCommand('data:pg:info', [this.addon.name!, `--app=${app}`])
-    } else if (followers && followers > 0) {
-      const poolInfo = await createPool(this.dataApi, this.addon!, {
-        count: followers,
-        level: this.leaderLevel!,
-      })
+    } else if (pool) {
       ux.stdout(heredoc`
-        ${color.green('Success:')} we're provisioning ${color.bold(poolInfo.name)} follower pool on ${color.addon(this.addon.name!)}.
-        Run ${color.code(`heroku data:pg:info ${this.addon!.name} -a ${this.addon!.app?.name}`)} to check creation progress.
+        ${color.green('Success:')} we're provisioning ${color.bold(pool.name)} follower pool on ${color.addon(this.addon.name!)}.
+        Run ${color.code(`heroku data:pg:info ${this.addon.name} -a ${this.addon.app?.name}`)} to check creation progress.
       `)
     }
   }
@@ -154,7 +165,7 @@ export default class DataPgCreate extends BaseCommand {
     await this.config.runCommand(command, args)
   }
 
-  private async followerPoolConfigLoop(): Promise<void> {
+  private async followerPoolConfigLoop(data: Data): Promise<void> {
     process.stderr.write('\n')
     const {action} = await this.prompt<{action: string}>({
       choices: [
@@ -174,7 +185,7 @@ export default class DataPgCreate extends BaseCommand {
         const {count, level, name} = await poolConfig.followerInteractiveConfig()
         try {
           ux.action.start('Configuring follower pool')
-          const poolInfo = await createPool(this.dataApi, this.addon!, {count, level, name})
+          const poolInfo = await data.postgresPool.create(this.addon!.id!, {count, level, name})
           ux.action.stop()
           ux.stdout(heredoc`
             ${color.green('Success:')} we're provisioning ${color.bold(poolInfo.name)} follower pool on ${color.addon(this.addon!.name!)}.
