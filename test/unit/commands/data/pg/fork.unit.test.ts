@@ -1,11 +1,14 @@
 
 import {runCommand} from '@heroku-cli/test-utils'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import {Config} from '@oclif/core'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import * as chrono from 'chrono-node'
-import nock from 'nock'
-import {restore, stub, useFakeTimers} from 'sinon'
+import {
+  restore, SinonStub, stub, useFakeTimers,
+} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import Fork from '../../../../../src/commands/data/pg/fork.js'
@@ -13,19 +16,54 @@ import {
   addon,
   createForkResponse,
   nonAdvancedAddon,
-  pgInfo,
 } from '../../../../fixtures/data/pg/fixtures.js'
 
 const stubbedDate = new Date('2025-01-31T00:00:00+00:00')
 const heredoc = tsheredoc
 
+interface FakeData {
+  postgres: {fork: SinonStub}
+}
+
+type ForkBody = {
+  [key: string]: unknown
+  config?: Record<string, unknown>
+  recoveryTime?: Date | string
+}
+
+type ForkOptions = {
+  onPoll?: (status: unknown) => void
+  onProvisioning?: (addon: unknown) => Promise<void> | void
+  wait?: boolean
+}
+
+// The command owns flag parsing, the chrono interval parsing, the spinner, and
+// output rendering, but delegates source resolution, the Advanced-tier check,
+// level defaulting, and config building to data.postgres.fork. This fake stands
+// in for fork: it returns the created fork add-on (and its resolved source),
+// driving the wait hooks only when `wait` is set — so the command's UX branches
+// are exercised without any HTTP.
+const forkResolving = (forkAddon = createForkResponse, source = addon) =>
+  async (_app: string, _source: string, body: ForkBody, options: ForkOptions = {}) => {
+    if (options.wait) {
+      await options.onProvisioning?.(forkAddon)
+      options.onPoll?.({message: 'available', waiting: false})
+    }
+
+    return {addon: forkAddon, source}
+  }
+
 describe('data:pg:fork', function () {
+  let fakeData: FakeData
+
   beforeEach(function () {
     useFakeTimers({
       now: stubbedDate,
       shouldAdvanceTime: false,
       toFake: ['Date'],
     })
+    fakeData = {postgres: {fork: stub().callsFake(forkResolving())}}
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
     stub(Fork.prototype, 'notify').resolves()
   })
 
@@ -35,30 +73,17 @@ describe('data:pg:fork', function () {
 
   describe('basic fork functionality', function () {
     it('creates a fork from an existing database', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            fork: 'advanced-horizontal-01234',
-            level: '4G-Performance',
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createForkResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-
       const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      const [app, source, body] = fakeData.postgres.fork.firstCall.args
+      expect(app).to.equal('myapp')
+      expect(source).to.equal('advanced-horizontal-01234')
+      expect(body.level).to.be.undefined
+      expect(body.recoveryTime).to.be.undefined
+      expect(body.config).to.deep.equal({})
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
@@ -70,24 +95,6 @@ describe('data:pg:fork', function () {
     })
 
     it('creates a fork with custom name and attachment', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .post('/apps/myapp/addons', {
-          attachment: {name: 'DATABASE_COPY'},
-          config: {
-            fork: 'advanced-horizontal-01234',
-            level: '4G-Performance',
-          },
-          name: 'my-forked-db',
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createForkResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-
       const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
@@ -95,8 +102,9 @@ describe('data:pg:fork', function () {
         '--as=DATABASE_COPY',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      const body = fakeData.postgres.fork.firstCall.args[2]
+      expect(body.name).to.equal('my-forked-db')
+      expect(body.as).to.equal('DATABASE_COPY')
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
@@ -108,26 +116,14 @@ describe('data:pg:fork', function () {
     })
 
     it('creates a fork with custom level', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            fork: 'advanced-horizontal-01234',
-            level: '8G-Performance',
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createForkResponse)
-
       const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--level=8G-Performance',
       ])
 
-      herokuApi.done()
+      const body = fakeData.postgres.fork.firstCall.args[2]
+      expect(body.level).to.equal('8G-Performance')
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
@@ -139,21 +135,6 @@ describe('data:pg:fork', function () {
     })
 
     it('creates a fork with provision options', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .post('/apps/myapp/addons', (body: any) => body.config.level === '4G-Performance'
-            && body.config.fork === 'advanced-horizontal-01234'
-            && body.config.foo === 'bar'
-            && body.config.baz === 'true'
-            && body.config.key === 'value:with:colons')
-        .reply(200, createForkResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, pgInfo)
-
       const {stderr} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
@@ -162,8 +143,12 @@ describe('data:pg:fork', function () {
         '--provision-option=key:value:with:colons',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      const body = fakeData.postgres.fork.firstCall.args[2]
+      expect(body.config).to.deep.equal({
+        baz: 'true',
+        foo: 'bar',
+        key: 'value:with:colons',
+      })
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp... done
       `)
@@ -172,38 +157,14 @@ describe('data:pg:fork', function () {
 
   describe('rollback functionality', function () {
     it('creates a rollback fork with rollback-to timestamp', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            level: '4G-Performance',
-            'recovery-time': '2025-01-11T12:35:00',
-            rollback: 'advanced-horizontal-01234',
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createForkResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
-          ...pgInfo,
-          forked_from: {
-            id: addon.id,
-            name: addon.name,
-          },
-        })
-
       const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--rollback-to=2025-01-11T12:35:00',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      const body = fakeData.postgres.fork.firstCall.args[2]
+      expect(body.recoveryTime).to.equal('2025-01-11T12:35:00')
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback to 2025-01-11T12:35:00... done
       `)
@@ -215,38 +176,18 @@ describe('data:pg:fork', function () {
     })
 
     it('creates a rollback fork with rollback-by interval', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        .post('/apps/myapp/addons', {
-          attachment: {},
-          config: {
-            level: '4G-Performance',
-            'recovery-time': '2025-01-30T00:00:00',
-            rollback: 'advanced-horizontal-01234',
-          },
-          plan: 'heroku-postgresql:advanced',
-        })
-        .reply(200, createForkResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
-          ...pgInfo,
-          forked_from: {
-            id: addon.id,
-            name: addon.name,
-          },
-        })
-
       const {stderr, stdout} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
         '--rollback-by=1 day',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      // The CLI parses the interval to a Date (the SDK formats it to the
+      // platform timestamp); with the clock pinned to 2025-01-31, "1 day" ago is
+      // 2025-01-30T00:00:00Z.
+      const body = fakeData.postgres.fork.firstCall.args[2]
+      expect(body.recoveryTime).to.be.instanceOf(Date)
+      expect((body.recoveryTime as Date).toISOString()).to.equal('2025-01-30T00:00:00.000Z')
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback by 1 day... done
       `)
@@ -258,27 +199,6 @@ describe('data:pg:fork', function () {
     })
 
     it('creates a rollback fork with provision options', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [addon])
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .post('/apps/myapp/addons', (body: any) => body.config.level === '4G-Performance'
-            && body.config.rollback === 'advanced-horizontal-01234'
-            && body.config['recovery-time'] === '2025-01-11T12:35:00'
-            && body.config.foo === 'bar'
-            && body.config.baz === 'true')
-        .reply(200, createForkResponse)
-
-      const dataApi = nock('https://api.data.heroku.com')
-        .get(`/data/postgres/v1/${addon.id}/info`)
-        .reply(200, {
-          ...pgInfo,
-          forked_from: {
-            id: addon.id,
-            name: addon.name,
-          },
-        })
-
       const {stderr} = await runCommand(Fork, [
         'advanced-horizontal-01234',
         '--app=myapp',
@@ -287,8 +207,9 @@ describe('data:pg:fork', function () {
         '--provision-option=baz',
       ])
 
-      herokuApi.done()
-      dataApi.done()
+      const body = fakeData.postgres.fork.firstCall.args[2]
+      expect(body.recoveryTime).to.equal('2025-01-11T12:35:00')
+      expect(body.config).to.deep.equal({baz: 'true', foo: 'bar'})
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Creating a fork for advanced-horizontal-01234 on ⬢ myapp with a rollback to 2025-01-11T12:35:00... done
       `)
@@ -296,10 +217,11 @@ describe('data:pg:fork', function () {
   })
 
   describe('error handling', function () {
+    // The SDK resolves and tier-checks the source, rejecting with
+    // NotAdvancedDatabaseError (carrying the resolved source); the command
+    // renders the classic-command hint from the source the error carries.
     it('shows error for non-Advanced databases', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
+      fakeData.postgres.fork.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
       const {error} = await runCommand(Fork, [
         'advanced-horizontal-01234',
@@ -309,14 +231,10 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --fork standard-database instead.`)
-
-      herokuApi.done()
     })
 
     it('shows error for non-Advanced databases with rollback to', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
+      fakeData.postgres.fork.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
       const {error} = await runCommand(Fork, [
         'advanced-horizontal-01234',
@@ -327,14 +245,10 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --to '2025-08-11T12:35:00' instead.`)
-
-      herokuApi.done()
     })
 
     it('shows error for non-Advanced databases with rollback by', async function () {
-      const herokuApi = nock('https://api.heroku.com')
-        .post('/actions/addons/resolve')
-        .reply(200, [nonAdvancedAddon])
+      fakeData.postgres.fork.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
       const {error} = await runCommand(Fork, [
         'advanced-horizontal-01234',
@@ -345,8 +259,6 @@ describe('data:pg:fork', function () {
       expect(ansis.strip(err.message)).to.equal(heredoc`
           You can only use this command on Advanced-tier databases.
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --rollback standard-database --by '3 days 7 hours 22 minutes' instead.`)
-
-      herokuApi.done()
     })
   })
 
