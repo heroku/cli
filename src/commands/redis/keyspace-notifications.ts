@@ -44,7 +44,7 @@ export default class KeyspaceNotifications extends Command {
 
     const addon = await api.getRedisAddon()
 
-    const {body: updated_config} = await api.request<RedisFormationConfigResponse>(`/redis/v0/databases/${addon.name}/config`, 'PATCH', {notify_keyspace_events: config})
+    const {body: updated_config} = await api.request<RedisFormationConfigResponse>(`/redis/v0/databases/${addon.id}/config`, 'PATCH', {notify_keyspace_events: config})
     this.log(`Keyspace notifications for ${addon.name} (${addon.config_vars.join(', ')}) set to '${updated_config.notify_keyspace_events.value}'.`)
   }
 }
