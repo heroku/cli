@@ -1,4 +1,5 @@
 import type {ResolvedAddOn} from '@heroku/sdk/resources/platform/add-on'
+import type {AddOnAttachment} from '@heroku/types/3.sdk'
 import type {PostgresCredentialListResult, PostgresInfoResult} from '@heroku/types/data'
 
 import {flags as Flags} from '@heroku-cli/command'
@@ -54,14 +55,14 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
     let {app, as, confirm, credential, pool} = flags
     const {data} = createSDK(this.heroku, {extensions: [databaseCredentialExtensions, postgresDatabaseExtensions]})
 
+    // For attachment creation, app is always the target app where the attachment will be created.
+    // When attaching to the same app, both add-on name and attachment name will resolve without issues
+    // by passing the app name for resolution, but when attaching to a different app using the add-on name
+    // to specify the source add-on, we have to remove the app name from the resolution for the resolver to
+    // find the correct add-on.
     let addon: ResolvedAddOn
     let credentials: AdvancedCredentials
     try {
-      // For attachment creation, app is always the target app where the attachment will be created.
-      // When attaching to the same app, both add-on name and attachment name will resolve without issues
-      // by passing the app name for resolution, but when attaching to a different app using the add-on name
-      // to specify the source add-on, we have to remove the app name from the resolution for the resolver to
-      // find the correct add-on.
       let result
       try {
         result = await data.databaseCredential.list(databaseArg, {appIdentity: app})
@@ -108,7 +109,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
       as = await this.promptAttachmentName()
     }
 
-    const createAttachment = async (confirmed?: string) => {
+    const createAttachment = async (confirmed?: string): Promise<AddOnAttachment> => {
       const namespaceConfig = {
         pool,
         proxy: 'false',
@@ -135,7 +136,7 @@ export default class DataPgAttachmentsCreate extends BaseCommand {
             ux.action.start(`Setting ${color.attachment(attachment.name!)} config vars and restarting ${color.app(app)}`)
           },
         })
-        ux.action.stop(`done, v${releaseVersion}`)
+        ux.action.stop(releaseVersion === undefined ? 'done' : `done, v${releaseVersion}`)
 
         return attachment
       } catch (error) {
