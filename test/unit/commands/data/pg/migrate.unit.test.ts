@@ -89,10 +89,10 @@ const existingCandidateContext = (): MigrationContext => migrationContext({
 
 interface FakeData {
   postgresMigration: {
-    cancel: sinon.SinonStub
-    create: sinon.SinonStub
+    abortBeforeRun: sinon.SinonStub
     listMigrationContext: sinon.SinonStub
-    run: sinon.SinonStub
+    prepare: sinon.SinonStub
+    startWhenReady: sinon.SinonStub
   }
 }
 
@@ -108,10 +108,10 @@ describe('data:pg:migrate', function () {
     poolConfigLeaderInteractiveConfigStub = sinon.stub(PoolConfig.prototype, 'leaderInteractiveConfig')
     fakeData = {
       postgresMigration: {
-        cancel: sinon.stub().resolves(asMigration(existentMigrationResponse)),
-        create: sinon.stub().resolves(asMigration(createdMigrationResponse)),
+        abortBeforeRun: sinon.stub().resolves(asMigration(existentMigrationResponse)),
         listMigrationContext: sinon.stub().resolves(migrationContext()),
-        run: sinon.stub().resolves(asMigration(existentMigrationResponse)),
+        prepare: sinon.stub().resolves(asMigration(createdMigrationResponse)),
+        startWhenReady: sinon.stub().resolves(asMigration(existentMigrationResponse)),
       },
     }
     sinon.stub(HerokuSDK.prototype, 'data').get(() => fakeData)
@@ -372,9 +372,9 @@ describe('data:pg:migrate', function () {
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
-      expect(fakeData.postgresMigration.create.calledOnce).to.be.true
-      expect(fakeData.postgresMigration.create.firstCall.args[0]).to.equal(nonTargetAdvancedDbAttachment.addon.id)
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.calledOnce).to.be.true
+      expect(fakeData.postgresMigration.prepare.firstCall.args[0]).to.equal(nonTargetAdvancedDbAttachment.addon.id)
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'full-load',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -464,8 +464,8 @@ describe('data:pg:migrate', function () {
 
       const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
 
-      expect(fakeData.postgresMigration.create.firstCall.args[0]).to.equal(nonTargetAdvancedDbAttachment.addon.id)
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[0]).to.equal(nonTargetAdvancedDbAttachment.addon.id)
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'cdc',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -527,8 +527,8 @@ describe('data:pg:migrate', function () {
         },
       })
       // The migration is created against the newly provisioned target database.
-      expect(fakeData.postgresMigration.create.firstCall.args[0]).to.equal(nonTargetAdvancedDbAttachment.addon.id)
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[0]).to.equal(nonTargetAdvancedDbAttachment.addon.id)
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'full-load',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -626,8 +626,8 @@ describe('data:pg:migrate', function () {
 
       const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      expect(fakeData.postgresMigration.run.calledOnce).to.be.true
-      expect(fakeData.postgresMigration.run.firstCall.args[0]).to.equal(targetAdvancedDbAttachment.addon.id)
+      expect(fakeData.postgresMigration.startWhenReady.calledOnce).to.be.true
+      expect(fakeData.postgresMigration.startWhenReady.firstCall.args[0]).to.equal(targetAdvancedDbAttachment.addon.id)
       expect(stderr).to.equal('Starting migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
@@ -693,8 +693,8 @@ describe('data:pg:migrate', function () {
 
       const {stderr} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      expect(fakeData.postgresMigration.cancel.calledOnce).to.be.true
-      expect(fakeData.postgresMigration.cancel.firstCall.args[0]).to.equal(targetAdvancedDbAttachment.addon.id)
+      expect(fakeData.postgresMigration.abortBeforeRun.calledOnce).to.be.true
+      expect(fakeData.postgresMigration.abortBeforeRun.firstCall.args[0]).to.equal(targetAdvancedDbAttachment.addon.id)
       expect(stderr).to.equal('Canceling migration of ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345... done\n')
     })
 
@@ -750,7 +750,7 @@ describe('data:pg:migrate', function () {
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'full-load',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -770,7 +770,7 @@ describe('data:pg:migrate', function () {
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'cdc',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -791,7 +791,7 @@ describe('data:pg:migrate', function () {
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
 
-      expect(fakeData.postgresMigration.create.called).to.be.false
+      expect(fakeData.postgresMigration.prepare.called).to.be.false
       expect(stderr).to.equal('')
       expect(stdout).to.match(/Select the migration method: Go back/)
     })
@@ -816,7 +816,7 @@ describe('data:pg:migrate', function () {
       // so counting it yields one match per distinct method prompt.
       expect(stdout.match(/Select the migration method: \(Use arrow keys\)/g)?.length).to.equal(2)
       // The second selection (snapshot -> full-load) is what gets submitted.
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'full-load',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -833,7 +833,7 @@ describe('data:pg:migrate', function () {
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=snapshot'])
 
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'full-load',
         source_id: premiumDbAttachment.addon.id,
       })
@@ -852,7 +852,7 @@ describe('data:pg:migrate', function () {
 
       const {stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp', '--method=streaming'])
 
-      expect(fakeData.postgresMigration.create.firstCall.args[1]).to.deep.equal({
+      expect(fakeData.postgresMigration.prepare.firstCall.args[1]).to.deep.equal({
         method: 'cdc',
         source_id: premiumDbAttachment.addon.id,
       })

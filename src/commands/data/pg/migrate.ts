@@ -156,8 +156,8 @@ export default class DataPgMigrate extends BaseCommand {
             ux.action.start(`${migrationAction === 'start' ? 'Starting' : 'Canceling'} migration of ${color.datastore(sourceDatabase?.name ?? color.gray('unknown'))} `
               + `to ${color.datastore(targetDatabase?.name ?? color.gray('unknown'))}`)
             await (migrationAction === 'start'
-              ? data.postgresMigration.run(selectedMigration.target_id)
-              : data.postgresMigration.cancel(selectedMigration.target_id))
+              ? data.postgresMigration.startWhenReady(selectedMigration.target_id)
+              : data.postgresMigration.abortBeforeRun(selectedMigration.target_id))
             ux.action.stop()
             currentStep = '__exit'
           }
@@ -338,7 +338,7 @@ export default class DataPgMigrate extends BaseCommand {
           } else if (action === '__confirm') {
             ux.stdout('')
             ux.action.start('Configuring migration')
-            await data.postgresMigration.create(targetDatabaseId!, {
+            await data.postgresMigration.prepare(targetDatabaseId!, {
               method: this.selectedMigrationMethod!,
               source_id: sourceDatabaseId!,
             })
