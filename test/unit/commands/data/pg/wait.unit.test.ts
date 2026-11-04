@@ -1,17 +1,16 @@
 import {runCommand} from '@heroku-cli/test-utils'
-import {utils} from '@heroku/heroku-cli-util'
+import {HerokuSDK} from '@heroku/sdk'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
-import nock from 'nock'
 import {restore, SinonStub, stub} from 'sinon'
 import tsheredoc from 'tsheredoc'
 
 import DataPgWait from '../../../../../src/commands/data/pg/wait.js'
 import {WaitStatus} from '../../../../../src/lib/data/types.js'
 import {
-  addon,
-  advancedAddonAttachment,
-  nonAdvancedAddonAttachment,
+  advancedAddon,
+  standardAddon,
   waitStatusAvailable,
   waitStatusMigrating,
   waitStatusProvisioning,
@@ -21,54 +20,64 @@ import {
 
 const heredoc = tsheredoc
 
+interface FakeData {
+  postgres: {waitForReady: SinonStub}
+}
+
+type WaitForReadyOptions = {
+  onPoll?: (status: WaitStatus) => void
+  onResolved?: (addon: {name: string}) => Promise<void> | void
+  waitIntervalMs?: number
+}
+
+// The command owns the spinner and OS notification but delegates resolution,
+// the Advanced-tier gate, and the poll loop to data.postgres.waitForReady.
+// This fake stands in for the resolving method: it fires `onResolved` with the
+// resolved add-on (as the real method does before its first poll), then drives
+// `onPoll` once per supplied status, then returns the terminal result — so the
+// command's UX branches are exercised without any HTTP.
+const waitResolvingThrough = (statuses: WaitStatus[], resolved = advancedAddon) =>
+  async (_app: string, _db: string, options: WaitForReadyOptions = {}) => {
+    await options.onResolved?.(resolved)
+    for (const status of statuses) options.onPoll?.(status)
+    return {addon: resolved, result: statuses.at(-1)}
+  }
+
 describe('data:pg:wait', function () {
-  let dataApi: nock.Scope
+  let fakeData: FakeData
   let notifyStub: SinonStub
-  let resolverStub: SinonStub
 
   beforeEach(function () {
-    dataApi = nock('https://api.data.heroku.com')
+    fakeData = {postgres: {waitForReady: stub()}}
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
     notifyStub = stub(DataPgWait.prototype, 'notify')
-    resolverStub = stub(utils.pg.DatabaseResolver.prototype, 'getAttachment')
   })
 
   afterEach(function () {
-    dataApi.done()
     restore()
   })
 
   describe('database resolution', function () {
     it('does not wait when database is already available', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
+      fakeData.postgres.waitForReady.callsFake(waitResolvingThrough([waitStatusAvailable]))
 
       const {stderr, stdout} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp'])
 
+      const [app, database] = fakeData.postgres.waitForReady.firstCall.args
+      expect(app).to.equal('myapp')
+      expect(database).to.equal('DATABASE')
       expect(stdout).to.contain('advanced-horizontal-01234 is available')
       expect(stderr).to.not.contain('Waiting for database')
       expect(notifyStub.called).to.be.false
     })
 
     it('waits for database through multiple status transitions', async function () {
-      const waitingStatus1: WaitStatus = {
-        message: 'Provisioning...',
-        waiting: true,
-      }
-      const waitingStatus2: WaitStatus = {
-        message: 'Modifying...',
-        waiting: true,
-      }
-
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitingStatus1)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitingStatus2)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
+      const transitions: WaitStatus[] = [
+        {message: 'Provisioning...', waiting: true},
+        {message: 'Modifying...', waiting: true},
+        waitStatusAvailable,
+      ]
+      fakeData.postgres.waitForReady.callsFake(waitResolvingThrough(transitions))
 
       const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
 
@@ -77,70 +86,24 @@ describe('data:pg:wait', function () {
       expect(notifyStub.calledOnce).to.be.true
     })
 
-    it('waits for database with migrating status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusMigrating)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
+    for (const status of [waitStatusMigrating, waitStatusProvisioning, waitStatusUpdating, waitStatusUpgrading]) {
+      it(`waits for database with ${status.message} status`, async function () {
+        fakeData.postgres.waitForReady.callsFake(waitResolvingThrough([status, waitStatusAvailable]))
 
-      const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
+        const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
 
-      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
-
-    it('waits for database with provisioning status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusProvisioning)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
-
-      const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
-
-      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
-
-    it('waits for database with updating status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusUpdating)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
-
-      const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
-
-      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
-
-    it('waits for database with upgrading status', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusUpgrading)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
-
-      const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=1'])
-
-      expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
-      expect(stderr).to.contain('available')
-      expect(notifyStub.calledOnce).to.be.true
-    })
+        expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
+        expect(stderr).to.contain('available')
+        expect(notifyStub.calledOnce).to.be.true
+      })
+    }
   })
 
   describe('error handling', function () {
     it('errors when database is not Advanced-tier', async function () {
-      resolverStub.resolves(nonAdvancedAddonAttachment)
+      // The SDK gates on tier and rejects before firing onResolved; the command
+      // catches NotAdvancedDatabaseError and renders the classic-command hint.
+      fakeData.postgres.waitForReady.rejects(new NotAdvancedDatabaseError(standardAddon, 'not advanced'))
 
       const {error} = await runCommand(DataPgWait, ['STANDARD_DATABASE', '--app=myapp'])
       expect(error).to.exist
@@ -151,10 +114,7 @@ describe('data:pg:wait', function () {
     })
 
     it('handles API errors gracefully', async function () {
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(500, {id: 'server_error', message: 'Internal Server Error'})
-      resolverStub.resolves(advancedAddonAttachment)
+      fakeData.postgres.waitForReady.rejects(new Error('Internal Server Error'))
 
       const {error} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp'])
       expect(error).to.exist
@@ -165,17 +125,7 @@ describe('data:pg:wait', function () {
 
   describe('flags', function () {
     it('respects --no-notify flag', async function () {
-      const waitingStatus: WaitStatus = {
-        message: 'Provisioning...',
-        waiting: true,
-      }
-
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitingStatus)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
+      fakeData.postgres.waitForReady.callsFake(waitResolvingThrough([waitStatusProvisioning, waitStatusAvailable]))
 
       const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--no-notify', '--wait-interval=1'])
 
@@ -184,21 +134,12 @@ describe('data:pg:wait', function () {
       expect(notifyStub.called).to.be.false
     })
 
-    it('respects --wait-interval flag', async function () {
-      const waitingStatus: WaitStatus = {
-        message: 'Provisioning...',
-        waiting: true,
-      }
-
-      dataApi
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitingStatus)
-        .get(`/data/postgres/v1/${addon.id}/wait_status`)
-        .reply(200, waitStatusAvailable)
-      resolverStub.resolves(advancedAddonAttachment)
+    it('passes --wait-interval through to the SDK as milliseconds', async function () {
+      fakeData.postgres.waitForReady.callsFake(waitResolvingThrough([waitStatusProvisioning, waitStatusAvailable]))
 
       const {stderr} = await runCommand(DataPgWait, ['DATABASE', '--app=myapp', '--wait-interval=2'])
 
+      expect(fakeData.postgres.waitForReady.firstCall.args[2].waitIntervalMs).to.equal(2000)
       expect(stderr).to.contain('Waiting for database advanced-horizontal-01234')
       expect(stderr).to.contain('available')
     })
