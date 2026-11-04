@@ -226,6 +226,34 @@ describe('data:pg:migrate', function () {
       expect(stdout).to.contain('Manage migration from ⛁ postgresql-cubic-12345 to ⛁ postgresql-lively-12345')
     })
 
+    it('shows a migration whose source database is no longer on the app', async function () {
+      const herokuApi = nock('https://api.heroku.com')
+        .get('/apps/myapp/addon-attachments')
+        .times(2)
+        .reply(200, [
+          targetAdvancedDbAttachment,
+        ])
+      const dataApi = replyWithTargetMigration(nock('https://api.data.heroku.com'), readyMigration, 2)
+
+      mockedStdinInput = [
+        '\n',         // Main menu: > Manage migration from ⛁ unknown to ⛁ postgresql-lively-12345
+        '\u001B[A\n', // Manage migration: > Go back
+        '\u001B[A\n', // Main menu: > Exit
+      ]
+
+      const {error, stderr, stdout} = await runCommand(DataPgMigrate, ['--app=myapp'])
+
+      herokuApi.done()
+      dataApi.done()
+      expect(error).to.be.undefined
+      expect(stderr).to.equal('')
+      expect(stdout).to.match(/⛁ unknown\s+⛁ postgresql-lively-12345\s+Streaming\s+Ready to promote/)
+      expect(stdout).to.contain('Manage migration from ⛁ unknown to ⛁ postgresql-lively-12345')
+      expect(stdout).to.match(/^Source:\s+⛁ unknown$/m)
+      expect(stdout).to.match(/^ {2}Start *$/m)
+      expect(stdout).to.match(/^ {2}Cancel *$/m)
+    })
+
     it('accepts the --no-wrap flag and renders the migrations table', async function () {
       const herokuApi = nock('https://api.heroku.com')
         .get('/apps/myapp/addon-attachments')
