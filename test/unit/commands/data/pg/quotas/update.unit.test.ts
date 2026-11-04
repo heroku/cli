@@ -1,6 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
-import {getPostgresServiceName} from '@heroku/sdk/resources/data/postgres-database'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -19,27 +19,16 @@ type FakeData = {
   postgresQuota: {update: SinonStub}
 }
 
-type FakePlatform = {
-  addOn: {resolve: SinonStub}
-}
-
 function buildFakeData(): FakeData {
   return {postgresQuota: {update: stub()}}
 }
 
-function buildFakePlatform(): FakePlatform {
-  return {addOn: {resolve: stub()}}
-}
-
 describe('data:pg:quotas:update', function () {
   let fakeData: FakeData
-  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     fakeData = buildFakeData()
-    fakePlatform = buildFakePlatform()
     stub(HerokuSDK.prototype, 'data').get(() => fakeData)
-    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
@@ -47,8 +36,7 @@ describe('data:pg:quotas:update', function () {
   })
 
   it('prints the updated quota settings when the quota update is successful', async function () {
-    fakePlatform.addOn.resolve.resolves(addon)
-    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
+    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
 
     const {stderr, stdout} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -70,15 +58,10 @@ describe('data:pg:quotas:update', function () {
       Enforcement Action: None
       Status:             0.00 MB / 100.00 GB (Within configured quotas)
     `))
-    expect(fakePlatform.addOn.resolve.calledOnceWithExactly('advanced-horizontal-01234', {
-      addonService: getPostgresServiceName(),
-      appIdentity: 'myapp',
-    })).to.equal(true)
   })
 
   it('sends the correct quota updates to the data API', async function () {
-    fakePlatform.addOn.resolve.resolves(addon)
-    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
+    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -89,16 +72,15 @@ describe('data:pg:quotas:update', function () {
       '--enforcement-action=none',
     ])
 
-    expect(fakeData.postgresQuota.update.calledOnceWithExactly(addon.id, 'storage', {
+    expect(fakeData.postgresQuota.update.calledOnceWithExactly('advanced-horizontal-01234', 'storage', {
       critical_gb: 100,
       enforcement_action: 'none',
       warning_gb: 50,
-    })).to.equal(true)
+    }, {appIdentity: 'myapp'})).to.equal(true)
   })
 
   it('sets the warning_gb to null when the warning flag is set to "none"', async function () {
-    fakePlatform.addOn.resolve.resolves(addon)
-    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
+    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -107,14 +89,13 @@ describe('data:pg:quotas:update', function () {
       '--warning=none',
     ])
 
-    expect(fakeData.postgresQuota.update.calledOnceWithExactly(addon.id, 'storage', {
+    expect(fakeData.postgresQuota.update.calledOnceWithExactly('advanced-horizontal-01234', 'storage', {
       warning_gb: null,
-    })).to.equal(true)
+    }, {appIdentity: 'myapp'})).to.equal(true)
   })
 
   it('sets the critical_gp to null when the critical flag is set to "none"', async function () {
-    fakePlatform.addOn.resolve.resolves(addon)
-    fakeData.postgresQuota.update.resolves(storageQuotaResponse)
+    fakeData.postgresQuota.update.resolves({addon, quota: storageQuotaResponse})
 
     await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -123,9 +104,9 @@ describe('data:pg:quotas:update', function () {
       '--critical=none',
     ])
 
-    expect(fakeData.postgresQuota.update.calledOnceWithExactly(addon.id, 'storage', {
+    expect(fakeData.postgresQuota.update.calledOnceWithExactly('advanced-horizontal-01234', 'storage', {
       critical_gb: null,
-    })).to.equal(true)
+    }, {appIdentity: 'myapp'})).to.equal(true)
   })
 
   it('will fail if neither of the warning, critical, or enforcement-action flags are set', async function () {
@@ -137,11 +118,11 @@ describe('data:pg:quotas:update', function () {
     const err = error as Error
 
     expect(ansis.strip(err.message)).to.equal('You must set a value for either the warning, critical, or enforcement-action flags')
-    expect(fakePlatform.addOn.resolve.called).to.equal(false)
+    expect(fakeData.postgresQuota.update.called).to.equal(false)
   })
 
   it('errors when used with non-Advanced-tier add-ons', async function () {
-    fakePlatform.addOn.resolve.resolves(nonAdvancedAddon)
+    fakeData.postgresQuota.update.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
     const {error} = await runCommand(DataPgQuotasUpdate, [
       'advanced-horizontal-01234',
@@ -152,7 +133,6 @@ describe('data:pg:quotas:update', function () {
     const err = error as Error
 
     expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.')
-    expect(fakeData.postgresQuota.update.called).to.equal(false)
   })
 
   it('errors when the --warning flag is not an integer or "none"', async function () {

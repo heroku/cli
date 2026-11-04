@@ -3,7 +3,7 @@ import type {AddOn} from '@heroku/types/3.sdk'
 import {Command, flags} from '@heroku-cli/command'
 import {color, pg, utils} from '@heroku/heroku-cli-util'
 import {addOnExtensions} from '@heroku/sdk/extensions/platform'
-import {AddonProvisioningFailedError} from '@heroku/sdk/resources/platform/add-on'
+import {AddonProvisioningFailedError, type DeprovisioningAddOn} from '@heroku/sdk/resources/platform/add-on'
 import {Args} from '@oclif/core'
 import {ux} from '@oclif/core/ux'
 import _ from 'lodash'
@@ -30,7 +30,7 @@ export default class Destroy extends Command {
   static strict = false
   static topic = 'addons'
 
-  public async run(): Promise<AddOn[]> {
+  public async run(): Promise<DeprovisioningAddOn[]> {
     const {argv, flags} = await this.parse(Destroy)
     const {app, confirm, wait} = flags
     const force = flags.force || process.env.HEROKU_FORCE === '1'
@@ -46,7 +46,7 @@ export default class Destroy extends Command {
       }
     }
 
-    const destroyed: AddOn[] = []
+    const destroyed: DeprovisioningAddOn[] = []
     for (const addonApps of Object.entries(_.groupBy(addons, 'app.name'))) {
       const currentAddons = addonApps[1]
       const appName = addonApps[0]
@@ -68,7 +68,7 @@ export default class Destroy extends Command {
             wait,
           })
 
-          const resultState = result.state as string
+          const resultState = result.state
           if (resultState === 'deprovisioning') {
             // Async deprovisioning without --wait: leave the destruction running in the background.
             ux.action.stop(color.info('pending'))
@@ -79,7 +79,7 @@ export default class Destroy extends Command {
           } else {
             // A synchronous delete that settled into an unexpected terminal state.
             ux.action.stop()
-            throw new AddonProvisioningFailedError(result)
+            throw new AddonProvisioningFailedError(result as AddOn)
           }
 
           if (wait) {

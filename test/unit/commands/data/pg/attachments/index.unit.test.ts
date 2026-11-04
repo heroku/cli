@@ -1,6 +1,6 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {HerokuSDK} from '@heroku/sdk'
-import {getPostgresServiceName} from '@heroku/sdk/resources/data/postgres-database'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -19,34 +19,25 @@ import {
 import removeAllWhitespace from '../../../../../helpers/utils/remove-whitespaces.js'
 
 type FakeData = {
-  postgresCredential: {list: SinonStub}
-}
-
-type FakePlatform = {
-  addOn: {resolve: SinonStub}
-  addOnAttachment: {listByAddOn: SinonStub}
+  postgresDatabase: {listAttachments: SinonStub}
 }
 
 function buildFakeData(): FakeData {
-  return {postgresCredential: {list: stub()}}
+  return {postgresDatabase: {listAttachments: stub()}}
 }
 
-function buildFakePlatform(): FakePlatform {
-  return {
-    addOn: {resolve: stub()},
-    addOnAttachment: {listByAddOn: stub()},
-  }
-}
+// The command delegates resolution + the credentials/attachments fan-out to
+// the resolving `data.postgresDatabase.listAttachments`, which returns the
+// credential array (the SDK unwraps the `{items}` envelope) alongside the
+// resolved add-on and its attachments.
+const credentials = advancedCredentialsResponse.items
 
 describe('data:pg:attachments', function () {
   let fakeData: FakeData
-  let fakePlatform: FakePlatform
 
   beforeEach(function () {
     fakeData = buildFakeData()
-    fakePlatform = buildFakePlatform()
     stub(HerokuSDK.prototype, 'data').get(() => fakeData)
-    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
   })
 
   afterEach(function () {
@@ -54,7 +45,7 @@ describe('data:pg:attachments', function () {
   })
 
   it('shows error for non-advanced databases', async function () {
-    fakePlatform.addOn.resolve.resolves(nonAdvancedAddon)
+    fakeData.postgresDatabase.listAttachments.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
     const {error} = await runCommand(DataPgAttachmentsIndex, [
       'DATABASE',
@@ -64,18 +55,12 @@ describe('data:pg:attachments', function () {
 
     expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
          + 'Use heroku addons:info standard-database -a myapp instead.')
-    expect(fakePlatform.addOn.resolve.calledOnceWithExactly('DATABASE', {
-      addonService: getPostgresServiceName(),
-      appIdentity: 'myapp',
-    })).to.equal(true)
-    expect(fakePlatform.addOnAttachment.listByAddOn.called).to.equal(false)
+    expect(fakeData.postgresDatabase.listAttachments.calledOnceWithExactly('DATABASE', {appIdentity: 'myapp'})).to.equal(true)
   })
 
   describe('when attachments exist', function () {
     it('displays single attachment information', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.listByAddOn.resolves(singleAttachmentResponse)
-      fakeData.postgresCredential.list.resolves(advancedCredentialsResponse)
+      fakeData.postgresDatabase.listAttachments.resolves({addon, attachments: singleAttachmentResponse, credentials})
 
       const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
@@ -84,14 +69,11 @@ describe('data:pg:attachments', function () {
       expect(output).to.include(removeAllWhitespace('Attachments for ⛁ advanced-horizontal-01234'))
       expect(output).to.include(removeAllWhitespace('Attachment Credential Pool'))
       expect(output).to.include(removeAllWhitespace('myapp::DATABASE u2vi1nt40t3mcq (owner) leader'))
-      expect(fakeData.postgresCredential.list.calledOnceWithExactly(addon.id)).to.equal(true)
-      expect(fakePlatform.addOnAttachment.listByAddOn.calledOnceWithExactly(addon.id)).to.equal(true)
+      expect(fakeData.postgresDatabase.listAttachments.calledOnceWithExactly('DATABASE', {appIdentity: 'myapp'})).to.equal(true)
     })
 
     it('displays multiple attachments', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.listByAddOn.resolves(multipleAttachmentsResponse)
-      fakeData.postgresCredential.list.resolves(advancedCredentialsResponse)
+      fakeData.postgresDatabase.listAttachments.resolves({addon, attachments: multipleAttachmentsResponse, credentials})
 
       const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
@@ -105,9 +87,7 @@ describe('data:pg:attachments', function () {
     })
 
     it('displays multiple multi-factor attachments', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.listByAddOn.resolves(multipleAttachmentsMultiFactorResponse)
-      fakeData.postgresCredential.list.resolves(advancedCredentialsResponse)
+      fakeData.postgresDatabase.listAttachments.resolves({addon, attachments: multipleAttachmentsMultiFactorResponse, credentials})
 
       const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
@@ -120,9 +100,7 @@ describe('data:pg:attachments', function () {
     })
 
     it('handles missing namespace gracefully', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.listByAddOn.resolves(attachmentWithMissingNamespace)
-      fakeData.postgresCredential.list.resolves(advancedCredentialsResponse)
+      fakeData.postgresDatabase.listAttachments.resolves({addon, attachments: attachmentWithMissingNamespace, credentials})
 
       const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 
@@ -136,9 +114,7 @@ describe('data:pg:attachments', function () {
 
   describe('when no attachments exist', function () {
     it('displays appropriate message for empty attachments', async function () {
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.listByAddOn.resolves(emptyAttachmentsResponse)
-      fakeData.postgresCredential.list.resolves(advancedCredentialsResponse)
+      fakeData.postgresDatabase.listAttachments.resolves({addon, attachments: emptyAttachmentsResponse, credentials})
 
       const {stderr, stdout} = await runCommand(DataPgAttachmentsIndex, ['DATABASE', '--app=myapp'])
 

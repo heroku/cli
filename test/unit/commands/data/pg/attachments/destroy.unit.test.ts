@@ -1,7 +1,7 @@
 import {runCommand} from '@heroku-cli/test-utils'
 import {NotFoundError} from '@heroku/heroku-fetch'
 import {HerokuSDK} from '@heroku/sdk'
-import {getPostgresServiceName} from '@heroku/sdk/resources/data/postgres-database'
+import {NotAdvancedDatabaseError} from '@heroku/sdk/resources/data/postgres-database'
 import ansis from 'ansis'
 import {expect} from 'chai'
 import {restore, SinonStub, stub} from 'sinon'
@@ -18,31 +18,53 @@ import {
 const heredoc = tsheredoc
 
 const attachment = multipleAttachmentsResponse[1]
+const releaseVersion = releasesResponse[0].version
 
-type FakePlatform = {
-  addOn: {resolve: SinonStub}
-  addOnAttachment: {delete: SinonStub, infoByApp: SinonStub}
-  release: {list: SinonStub}
-  withHeaders: SinonStub
+type Attachment = typeof attachment
+
+type DeleteAttachmentOptions = {
+  beforeDelete?: (preview: {addon: typeof addon; attachment: Attachment}) => Promise<void> | void
+  onDetached?: (attachment: Attachment) => Promise<void> | void
 }
 
-function buildFakePlatform(): FakePlatform {
-  const platform: FakePlatform = {
-    addOn: {resolve: stub()},
-    addOnAttachment: {delete: stub(), infoByApp: stub()},
-    release: {list: stub()},
-    withHeaders: stub(),
-  }
-  platform.withHeaders.returns(platform)
-  return platform
+interface FakeData {
+  postgresDatabase: {deleteAttachment: SinonStub}
+}
+
+// The command owns the confirmation prompt and the two-phase status rendering
+// but delegates resolution, the delete, and the release fetch to the SDK.
+// These fakes stand in for the resolving `data.postgresDatabase.deleteAttachment`,
+// invoking the command's `beforeDelete`/`onDetached` callbacks the way the real
+// method does so the confirm/detach/unset render path is covered.
+async function deleteResolving(_app: string, _name: string, options: DeleteAttachmentOptions = {}) {
+  await options.beforeDelete?.({addon, attachment})
+  await options.onDetached?.(attachment)
+  return {addon, attachment, releaseVersion}
+}
+
+async function deleteResolvingWithoutRelease(_app: string, _name: string, options: DeleteAttachmentOptions = {}) {
+  await options.beforeDelete?.({addon, attachment})
+  await options.onDetached?.(attachment)
+  return {addon, attachment, releaseVersion: undefined}
+}
+
+const deleteFailingAtDelete = (error: unknown) => async (_app: string, _name: string, options: DeleteAttachmentOptions = {}) => {
+  await options.beforeDelete?.({addon, attachment})
+  throw error
+}
+
+const deleteFailingAtRelease = (error: unknown) => async (_app: string, _name: string, options: DeleteAttachmentOptions = {}) => {
+  await options.beforeDelete?.({addon, attachment})
+  await options.onDetached?.(attachment)
+  throw error
 }
 
 describe('data:pg:attachments:destroy', function () {
-  let fakePlatform: FakePlatform
+  let fakeData: FakeData
 
   beforeEach(function () {
-    fakePlatform = buildFakePlatform()
-    stub(HerokuSDK.prototype, 'platform').get(() => fakePlatform)
+    fakeData = {postgresDatabase: {deleteAttachment: stub()}}
+    stub(HerokuSDK.prototype, 'data').get(() => fakeData)
   })
 
   afterEach(function () {
@@ -50,18 +72,7 @@ describe('data:pg:attachments:destroy', function () {
   })
 
   it('shows error for non-advanced databases', async function () {
-    fakePlatform.addOnAttachment.infoByApp.resolves({
-      ...attachment,
-      addon: {
-        app: {
-          id: nonAdvancedAddon.app.id,
-          name: nonAdvancedAddon.app.name,
-        },
-        id: nonAdvancedAddon.id,
-        name: nonAdvancedAddon.name,
-      },
-    })
-    fakePlatform.addOn.resolve.resolves(nonAdvancedAddon)
+    fakeData.postgresDatabase.deleteAttachment.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 
     const {error} = await runCommand(DataPgAttachmentsDestroy, [
       'DATABASE_ANALYST',
@@ -72,16 +83,15 @@ describe('data:pg:attachments:destroy', function () {
 
     expect(ansis.strip(err.message)).to.equal('You can only use this command on Advanced-tier databases.\n'
          + 'Use heroku addons:detach DATABASE_ANALYST -a myapp instead.')
-    expect(fakePlatform.addOn.resolve.calledOnceWithExactly(nonAdvancedAddon.name, {addonService: getPostgresServiceName()})).to.equal(true)
-    expect(fakePlatform.addOnAttachment.delete.called).to.equal(false)
+    expect(fakeData.postgresDatabase.deleteAttachment.calledOnce).to.equal(true)
+    const [app, name] = fakeData.postgresDatabase.deleteAttachment.firstCall.args
+    expect(app).to.equal('myapp')
+    expect(name).to.equal('DATABASE_ANALYST')
   })
 
   describe('basic attachment destruction', function () {
     it('destroys an attachment successfully', async function () {
-      fakePlatform.addOnAttachment.infoByApp.resolves(attachment)
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.delete.resolves(attachment)
-      fakePlatform.release.list.resolves(releasesResponse)
+      fakeData.postgresDatabase.deleteAttachment.callsFake(deleteResolving)
 
       const {stderr, stdout} = await runCommand(DataPgAttachmentsDestroy, [
         'DATABASE_ANALYST',
@@ -94,17 +104,31 @@ describe('data:pg:attachments:destroy', function () {
         Unsetting DATABASE_ANALYST config vars and restarting ⬢ myapp... done, v123
       `)
       expect(stdout).to.equal('')
-      expect(fakePlatform.addOnAttachment.infoByApp.calledOnceWithExactly('myapp', 'DATABASE_ANALYST')).to.equal(true)
-      expect(fakePlatform.addOn.resolve.calledOnceWithExactly(addon.name, {addonService: getPostgresServiceName()})).to.equal(true)
-      expect(fakePlatform.addOnAttachment.delete.calledOnceWithExactly(attachment.id)).to.equal(true)
-      expect(fakePlatform.withHeaders.calledOnceWithExactly({Range: 'version ..; max=1, order=desc'})).to.equal(true)
-      expect(fakePlatform.release.list.calledOnceWithExactly('myapp')).to.equal(true)
+      expect(fakeData.postgresDatabase.deleteAttachment.calledOnce).to.equal(true)
+      const [app, name] = fakeData.postgresDatabase.deleteAttachment.firstCall.args
+      expect(app).to.equal('myapp')
+      expect(name).to.equal('DATABASE_ANALYST')
+    })
+
+    it('omits the release version when none is returned', async function () {
+      fakeData.postgresDatabase.deleteAttachment.callsFake(deleteResolvingWithoutRelease)
+
+      const {stderr} = await runCommand(DataPgAttachmentsDestroy, [
+        'DATABASE_ANALYST',
+        '--app=myapp',
+        '--confirm=myapp',
+      ])
+
+      expect(ansis.strip(stderr)).to.equal(heredoc`
+        Detaching DATABASE_ANALYST on ⛁ advanced-horizontal-01234 from ⬢ myapp... done
+        Unsetting DATABASE_ANALYST config vars and restarting ⬢ myapp... done
+      `)
     })
   })
 
   describe('error handling', function () {
     it('handles attachment not found error', async function () {
-      fakePlatform.addOnAttachment.infoByApp.rejects(new NotFoundError(new Response(null, {status: 404}), {
+      fakeData.postgresDatabase.deleteAttachment.rejects(new NotFoundError(new Response(null, {status: 404}), {
         id: 'not_found',
         message: 'Couldn\'t find that attachment.',
         resource: 'attachment',
@@ -118,14 +142,11 @@ describe('data:pg:attachments:destroy', function () {
       const err = error as Error
 
       expect(err.message).to.equal('Couldn\'t find that attachment.')
-      expect(fakePlatform.addOnAttachment.infoByApp.calledOnceWithExactly('myapp', 'NONEXISTENT')).to.equal(true)
-      expect(fakePlatform.addOn.resolve.called).to.equal(false)
+      expect(fakeData.postgresDatabase.deleteAttachment.firstCall.args[1]).to.equal('NONEXISTENT')
     })
 
     it('handles API errors gracefully on the attachment destruction', async function () {
-      fakePlatform.addOnAttachment.infoByApp.resolves(attachment)
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.delete.rejects(new Error('Internal server error.'))
+      fakeData.postgresDatabase.deleteAttachment.callsFake(deleteFailingAtDelete(new Error('Internal server error.')))
 
       const {error, stderr} = await runCommand(DataPgAttachmentsDestroy, [
         'DATABASE_ANALYST',
@@ -138,14 +159,10 @@ describe('data:pg:attachments:destroy', function () {
       expect(ansis.strip(stderr)).to.equal(heredoc`
         Detaching DATABASE_ANALYST on ⛁ advanced-horizontal-01234 from ⬢ myapp... !
       `)
-      expect(fakePlatform.release.list.called).to.equal(false)
     })
 
     it('handles API errors gracefully on the release retrieval', async function () {
-      fakePlatform.addOnAttachment.infoByApp.resolves(attachment)
-      fakePlatform.addOn.resolve.resolves(addon)
-      fakePlatform.addOnAttachment.delete.resolves(attachment)
-      fakePlatform.release.list.rejects(new Error('Internal server error.'))
+      fakeData.postgresDatabase.deleteAttachment.callsFake(deleteFailingAtRelease(new Error('Internal server error.')))
 
       const {error, stderr} = await runCommand(DataPgAttachmentsDestroy, [
         'DATABASE_ANALYST',
