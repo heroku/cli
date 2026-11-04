@@ -42,7 +42,8 @@ export function renderPricingInfo(pricingInfo?: null | PricingInfo, count: numbe
  * @returns The formatted timestamp
  */
 export function renderTimestamp(timestamp: string): string {
-  return `${new Date(timestamp).toISOString().slice(0, 16).replace('T', ' ')} UTC`
+  const date = new Date(timestamp)
+  return Number.isNaN(date.getTime()) ? timestamp : `${date.toISOString().slice(0, 16).replace('T', ' ')} UTC`
 }
 
 /**
