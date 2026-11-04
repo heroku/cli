@@ -11,7 +11,7 @@ import tsheredoc from 'tsheredoc'
 import BaseCommand from '../../../lib/data/base-command.js'
 import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
 import PoolConfig from '../../../lib/data/pool-config.js'
-import provisionAdvancedWithUx from '../../../lib/data/provision-advanced.js'
+import provisionInteractively from '../../../lib/data/provision-interactively.js'
 import {ExtendedPostgresLevelInfo} from '../../../lib/data/types.js'
 import {fetchLevelsAndPricing} from '../../../lib/data/utils.js'
 import notify from '../../../lib/notify.js'
@@ -108,7 +108,7 @@ export default class DataPgCreate extends BaseCommand {
     // wait-poll + follower-pool create; the helper owns the CLI UX.
     let pool
     try {
-      const result = await provisionAdvancedWithUx(
+      const result = await provisionInteractively(
         {
           actionStartMessage: `Creating a ${color.addon(this.leaderLevel || '')} database on ${color.app(app)}`,
           actionStopMessage: 'done',

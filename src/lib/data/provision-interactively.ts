@@ -13,7 +13,7 @@ export type ProvisionHooks = {
   wait: boolean
 }
 
-export type ProvisionAdvancedUxOptions = {
+export type ProvisionInteractivelyOptions = {
   /** Spinner text for the initial create phase. */
   actionStartMessage: string
   /** Spinner completion text when the create request returns. */
@@ -54,8 +54,8 @@ function formatConfigVarsMessage(addon: AddOn): string {
  * Returns whatever the thunk returns (e.g. `{addon, pool?}` or
  * `{addon, source}`) so the caller can render resource-specific follow-ups.
  */
-export default async function provisionAdvancedWithUx<T extends {addon: AddOn}>(
-  {actionStartMessage, actionStopMessage, app, confirm, wait}: ProvisionAdvancedUxOptions,
+export default async function provisionInteractively<T extends {addon: AddOn}>(
+  {actionStartMessage, actionStopMessage, app, confirm, wait}: ProvisionInteractivelyOptions,
   provision: (confirm: string | undefined, hooks: ProvisionHooks) => Promise<T>,
 ): Promise<T> {
   // Two-phase UX during a wait: the create-phase action wraps the initial

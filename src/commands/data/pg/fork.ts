@@ -9,7 +9,7 @@ import tsheredoc from 'tsheredoc'
 
 import BaseCommand from '../../../lib/data/base-command.js'
 import {parseProvisionOpts} from '../../../lib/data/parse-provision-opts.js'
-import provisionAdvancedWithUx from '../../../lib/data/provision-advanced.js'
+import provisionInteractively from '../../../lib/data/provision-interactively.js'
 import {lazyModuleLoader} from '../../../lib/lazy-module-loader.js'
 import notify from '../../../lib/notify.js'
 import {createSDK} from '../../../lib/sdk.js'
@@ -139,7 +139,7 @@ export default class Fork extends BaseCommand {
         + `${rollbackBy ? ` --by '${rollbackBy}'` : ''}`
 
     try {
-      await provisionAdvancedWithUx(
+      await provisionInteractively(
         {
           actionStartMessage, actionStopMessage: 'done', app, confirm, wait: Boolean(wait),
         },
