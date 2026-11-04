@@ -233,6 +233,21 @@ describe('data:pg:fork', function () {
           Use heroku addons:create heroku-postgresql:standard-0 -a myapp -- --fork standard-database instead.`)
     })
 
+    it('surfaces a captured wait failure as a thrown error', async function () {
+      // fork keeps the created fork and reports a failed wait on the result
+      // instead of throwing; the command must still surface it as a failed run.
+      const waitError = new Error('wait polling failed')
+      fakeData.postgres.fork.callsFake(async () => ({addon: createForkResponse, source: addon, waitError}))
+
+      const {error} = await runCommand(Fork, [
+        'advanced-horizontal-01234',
+        '--app=myapp',
+        '--wait',
+      ])
+
+      expect(error).to.equal(waitError)
+    })
+
     it('shows error for non-Advanced databases with rollback to', async function () {
       fakeData.postgres.fork.rejects(new NotAdvancedDatabaseError(nonAdvancedAddon, 'not advanced'))
 

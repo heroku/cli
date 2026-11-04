@@ -188,6 +188,29 @@ describe('data:pg:create', function () {
     })
   })
 
+  describe('partial provisioning failure', function () {
+    // provisionAdvanced keeps the created leader and reports a post-creation
+    // failure on the result instead of throwing. The command must still surface
+    // these as a failed run (today's behavior), so the helper rethrows them.
+    it('surfaces a captured wait failure as a thrown error', async function () {
+      const waitError = new Error('wait polling failed')
+      fakeData.postgres.provisionAdvanced.callsFake(async () => ({addon: createAddonResponse, waitError}))
+
+      const {error} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--wait'])
+
+      expect(error).to.equal(waitError)
+    })
+
+    it('surfaces a captured follower-pool failure as a thrown error', async function () {
+      const poolError = new Error('follower pool create failed')
+      fakeData.postgres.provisionAdvanced.callsFake(async () => ({addon: createAddonResponse, poolError}))
+
+      const {error} = await runCommand(DataPgCreate, ['--app=myapp', '--level=4G-Performance', '--followers=2'])
+
+      expect(error).to.equal(poolError)
+    })
+  })
+
   describe('interactive mode (--level flag omitted)', function () {
     beforeEach(function () {
       nock('https://api.data.heroku.com')

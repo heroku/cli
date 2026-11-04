@@ -53,8 +53,14 @@ function formatConfigVarsMessage(addon: AddOn): string {
  *
  * Returns whatever the thunk returns (e.g. `{addon, pool?}` or
  * `{addon, source}`) so the caller can render resource-specific follow-ups.
+ *
+ * The SDK provision methods capture a post-creation failure (a failed wait or
+ * follower-pool create) on the resolved result rather than throwing, so the
+ * created add-on isn't lost. This helper re-surfaces that as a thrown error so
+ * callers keep their existing failure handling; `result` is only returned when
+ * provisioning fully succeeded.
  */
-export default async function provisionInteractively<T extends {addon: AddOn}>(
+export default async function provisionInteractively<T extends {addon: AddOn; poolError?: unknown; waitError?: unknown}>(
   {actionStartMessage, actionStopMessage, app, confirm, wait}: ProvisionInteractivelyOptions,
   provision: (confirm: string | undefined, hooks: ProvisionHooks) => Promise<T>,
 ): Promise<T> {
@@ -98,6 +104,18 @@ export default async function provisionInteractively<T extends {addon: AddOn}>(
   } catch (error) {
     ux.action.stop(color.red('!'))
     throw error
+  }
+
+  // `provisionAdvanced`/`fork` no longer throw once the add-on exists: a failed
+  // `wait_status` poll or follower-pool create is reported on the result
+  // (`waitError`/`poolError`) so the SDK doesn't discard the created leader.
+  // The CLI still treats either as a provisioning failure — close whichever
+  // spinner phase is open and rethrow the captured cause, matching today's
+  // behavior where these surfaced as a thrown error.
+  const postCreateError = result.waitError ?? result.poolError
+  if (postCreateError !== undefined) {
+    ux.action.stop(color.red('!'))
+    throw postCreateError
   }
 
   const {addon} = result
