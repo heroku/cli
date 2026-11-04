@@ -31,7 +31,7 @@ describe('data:pg:links:create', function () {
       .post('/actions/addons/resolve', {addon: 'heroku-postgres-remote', app: 'myapp'})
       .reply(200, [remoteAddon])
     const dataApi = nock('https://api.data.heroku.com')
-      .post(`/data/postgres/v1/${addon.id}/links`, {as: 'pg_link', target: remoteAddon.name})
+      .post(`/data/postgres/v1/${addon.id}/links`, {as: 'pg_link', target: remoteAddon.id})
       .reply(200, {name: 'pg_link'})
 
     const {stderr} = await runCommand(DataPgLinksCreate, [

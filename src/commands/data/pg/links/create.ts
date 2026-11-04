@@ -54,7 +54,7 @@ export default class DataPgLinksCreate extends BaseCommand {
       const {body: link} = await this.dataApi.post<Link>(`/data/postgres/v1/${database.id}/links`, {
         body: {
           as,
-          target: target.name,
+          target: target.id,
         },
       })
       ux.action.stop(`done, ${color.name(link.name)}`)
